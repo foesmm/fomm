@@ -1,0 +1,290 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{4A0302F4-DEA4-4753-98C8-3571742E4EB5}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>fomm</RootNamespace>
+    <AssemblyName>fomm</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Drawing.Design" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.XML" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ArchiveInvalidation.cs" />
+    <Compile Include="BSABrowser.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BSABrowser.Designer.cs">
+      <DependentUpon>BSABrowser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BSACreator.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BSACreator.Designer.cs">
+      <DependentUpon>BSACreator.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Imports.cs" />
+    <Compile Include="PackageManager\PackageManager.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PackageManager\PackageManager.Designer.cs">
+      <DependentUpon>PackageManager.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SaveForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SaveForm.Designer.cs">
+      <DependentUpon>SaveForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ScriptCompiler\ScriptCompiler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ScriptCompiler\Tokenizer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TESsnip\GroupEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TESsnip\GroupEditor.Designer.cs">
+      <DependentUpon>GroupEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TESsnip\HexBox\ByteCollection.cs" />
+    <Compile Include="TESsnip\HexBox\DataBlock.cs" />
+    <Compile Include="TESsnip\HexBox\DataMap.cs" />
+    <Compile Include="TESsnip\HexBox\Design\HexFontEditor.cs" />
+    <Compile Include="TESsnip\HexBox\DynamicByteProvider.cs" />
+    <Compile Include="TESsnip\HexBox\DynamicFileByteProvider.cs" />
+    <Compile Include="TESsnip\HexBox\FileByteProvider.cs" />
+    <Compile Include="TESsnip\HexBox\FileDataBlock.cs" />
+    <Compile Include="TESsnip\HexBox\HexBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="TESsnip\HexBox\IByteProvider.cs" />
+    <Compile Include="TESsnip\HexBox\MemoryDataBlock.cs" />
+    <Compile Include="TESsnip\HexBox\NativeMethods.cs" />
+    <Compile Include="TESsnip\HexDataEdit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TESsnip\HexDataEdit.Designer.cs">
+      <DependentUpon>HexDataEdit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TESsnip\MediumLevelRecordEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TESsnip\MediumLevelRecordEditor.Designer.cs">
+      <DependentUpon>MediumLevelRecordEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TESsnip\RecordStructure.cs" />
+    <Compile Include="UtilitiesOnlyForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UtilitiesOnlyForm.Designer.cs">
+      <DependentUpon>UtilitiesOnlyForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="ProgressForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="BSABrowser.resx">
+      <DependentUpon>BSABrowser.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BSACreator.resx">
+      <DependentUpon>BSACreator.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SaveForm.resx">
+      <DependentUpon>SaveForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TESsnip\GroupEditor.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>GroupEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TESsnip\HexDataEdit.resx">
+      <DependentUpon>HexDataEdit.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TESsnip\MediumLevelRecordEditor.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>MediumLevelRecordEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UtilitiesOnlyForm.resx">
+      <DependentUpon>UtilitiesOnlyForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProgressForm.resx">
+      <DependentUpon>ProgressForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ShaderEdit\HLSLImporter.resx">
+      <DependentUpon>HLSLImporter.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ShaderEdit\MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TESsnip\DataEdit.resx">
+      <DependentUpon>DataEdit.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TESsnip\HeaderEditor.resx">
+      <DependentUpon>HeaderEditor.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TESsnip\SearchForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>SearchForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TESsnip\TESsnip.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>TESsnip.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="ShaderEdit\HLSLImporter.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ShaderEdit\HLSLImporter.Designer.cs">
+      <DependentUpon>HLSLImporter.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ShaderEdit\MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ShaderEdit\MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SharpZipLib\Checksums\Adler32.cs" />
+    <Compile Include="SharpZipLib\Checksums\CRC32.cs" />
+    <Compile Include="SharpZipLib\Checksums\IChecksum.cs" />
+    <Compile Include="SharpZipLib\Core\FileSystemScanner.cs" />
+    <Compile Include="SharpZipLib\Core\INameTransform.cs" />
+    <Compile Include="SharpZipLib\Core\IScanFilter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SharpZipLib\Core\NameFilter.cs" />
+    <Compile Include="SharpZipLib\Core\PathFilter.cs" />
+    <Compile Include="SharpZipLib\Core\StreamUtils.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SharpZipLib\Core\WindowsPathUtils.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SharpZipLib\Encryption\PkzipClassic.cs" />
+    <Compile Include="SharpZipLib\SharpZipBaseException.cs" />
+    <Compile Include="SharpZipLib\Zip\Compression\Deflater.cs" />
+    <Compile Include="SharpZipLib\Zip\Compression\DeflaterConstants.cs" />
+    <Compile Include="SharpZipLib\Zip\Compression\DeflaterEngine.cs" />
+    <Compile Include="SharpZipLib\Zip\Compression\DeflaterHuffman.cs" />
+    <Compile Include="SharpZipLib\Zip\Compression\DeflaterPending.cs" />
+    <Compile Include="SharpZipLib\Zip\Compression\Inflater.cs" />
+    <Compile Include="SharpZipLib\Zip\Compression\InflaterDynHeader.cs" />
+    <Compile Include="SharpZipLib\Zip\Compression\InflaterHuffmanTree.cs" />
+    <Compile Include="SharpZipLib\Zip\Compression\PendingBuffer.cs" />
+    <Compile Include="SharpZipLib\Zip\Compression\Streams\DeflaterOutputStream.cs" />
+    <Compile Include="SharpZipLib\Zip\Compression\Streams\InflaterInputStream.cs" />
+    <Compile Include="SharpZipLib\Zip\Compression\Streams\OutputWindow.cs" />
+    <Compile Include="SharpZipLib\Zip\Compression\Streams\StreamManipulator.cs" />
+    <Compile Include="SharpZipLib\Zip\FastZip.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SharpZipLib\Zip\IEntryFactory.cs" />
+    <Compile Include="SharpZipLib\Zip\WindowsNameTransform.cs" />
+    <Compile Include="SharpZipLib\Zip\ZipConstants.cs" />
+    <Compile Include="SharpZipLib\Zip\ZipEntry.cs" />
+    <Compile Include="SharpZipLib\Zip\ZipEntryFactory.cs" />
+    <Compile Include="SharpZipLib\Zip\ZipException.cs" />
+    <Compile Include="SharpZipLib\Zip\ZipExtraData.cs" />
+    <Compile Include="SharpZipLib\Zip\ZipFile.cs" />
+    <Compile Include="SharpZipLib\Zip\ZipHelperStream.cs" />
+    <Compile Include="SharpZipLib\Zip\ZipInputStream.cs" />
+    <Compile Include="SharpZipLib\Zip\ZipNameTransform.cs" />
+    <Compile Include="SharpZipLib\Zip\ZipOutputStream.cs" />
+    <Compile Include="TESsnip\DataEdit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TESsnip\DataEdit.Designer.cs">
+      <DependentUpon>DataEdit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TESsnip\HeaderEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TESsnip\HeaderEditor.Designer.cs">
+      <DependentUpon>HeaderEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TESsnip\SearchForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TESsnip\SearchForm.Designer.cs">
+      <DependentUpon>SearchForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TESsnip\TESsnip.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TESsnip\TESsnip.Designer.cs">
+      <DependentUpon>TESsnip.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TESsnip\TESsnipParser.cs" />
+    <Compile Include="TypeConverter.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ScriptCompiler\ScriptFunctions.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ScriptCompiler\ScriptFunctionsFormat.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TESsnip\RecordStructure.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TESsnip\RecordStructureFormat.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

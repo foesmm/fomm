@@ -1,0 +1,5 @@
+LIBRARY ShaderDisasm
+EXPORTS
+Asm=Asm
+Disasm=Disasm
+Compile=Compile
