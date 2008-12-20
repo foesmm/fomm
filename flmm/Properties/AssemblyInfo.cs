@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Timeslip")]
 [assembly: AssemblyProduct("fomm")]
-[assembly: AssemblyCopyright("Copyright ©  2008")]
+[assembly: AssemblyCopyright("Copyright ©  2008 Timeslip")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

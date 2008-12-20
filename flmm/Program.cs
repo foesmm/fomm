@@ -1,3 +1,21 @@
+/*
+ *    Fallout Mod Manager
+ *    Copyright (C) 2008  Timeslip
+ *
+ *    This program is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation, either version 3 of the License, or
+ *    (at your option) any later version.
+ *
+ *    This program is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details.
+ *
+ *    You should have received a copy of the GNU General Public License
+ *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 using System;
 using System.Windows.Forms;
 using System.IO;
@@ -6,7 +24,7 @@ namespace fomm {
     class fommException : Exception { public fommException(string msg) : base(msg) { } }
 
     static class Program {
-        public const string Version="0.8.5";
+        public const string Version="0.9.0";
         /*private static string typefromint(int i, bool name) {
             switch(i) {
             case 0x00:
@@ -116,31 +134,10 @@ namespace fomm {
             default:
                 if(name) return "!!!Unknown!!!"; else return "ref";
             }
-        }*/
-
-        private static readonly string tmpPath=Path.Combine(Path.GetTempPath(), "fomm");
-        public static readonly string Fallout3SaveDir=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "My games\\Fallout3");
-        public static readonly string FOIniPath=Path.Combine(Fallout3SaveDir, "Fallout.ini");
-        public static readonly string FOSavesPath=Path.Combine(Fallout3SaveDir, Imports.GetPrivateProfileString("General", "SLocalSavePath", "Games", FOIniPath));
-
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
-        [STAThread]
-        static void Main() {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            if(!File.Exists("Fallout3.exe")&&!File.Exists("Fallout3ng.exe")) {
-                string path;
-                try {
-                    path=Microsoft.Win32.Registry.GetValue(@"HKEY_LOCAL_MACHINE\Software\Bethesda Softworks\Fallout3", "Installed Path", null) as string;
-                } catch { path=null; }
-                if(path!=null) {
-                    Directory.SetCurrentDirectory(path);
-                }
-            }
-
-            /*StreamWriter sw=new StreamWriter("Functions.xml");
+        }
+         
+         private static void DumpFunctions() {
+            StreamWriter sw=new StreamWriter("Functions.xml");
             System.Collections.Generic.List<string> args=new System.Collections.Generic.List<string>();
             string[] lines=File.ReadAllLines("functiondump.txt");
             for(int i=0;i<lines.Length;i++) {
@@ -169,15 +166,68 @@ namespace fomm {
                     args.Clear();
                 } else sw.WriteLine(" />");
             }
-            sw.Close();*/
+            sw.Close();
+         }
+         */
 
+        private static readonly string tmpPath=Path.Combine(Path.GetTempPath(), "fomm");
+        public static readonly string exeDir=Path.GetDirectoryName(Application.ExecutablePath);
+        public static readonly string Fallout3SaveDir=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "My games\\Fallout3");
+        public static readonly string FOIniPath=Path.Combine(Fallout3SaveDir, "Fallout.ini");
+        public static readonly string FOSavesPath=Path.Combine(Fallout3SaveDir, Imports.GetPrivateProfileString("General", "SLocalSavePath", "Games", FOIniPath));
+        public static readonly string PackageDir=Path.Combine(exeDir, "mods");
+
+        /// <summary>
+        /// The main entry point for the application.
+        /// </summary>
+        [STAThread]
+        static void Main(string[] args) {
+            //Style setup
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+
+            //If we aren't in fallouts directory, look it up in the registry
             if(!File.Exists("Fallout3.exe")&&!File.Exists("Fallout3ng.exe")) {
-                MessageBox.Show("Could not find fallout 3 directory", "Warning");
-                Application.Run(new UtilitiesOnlyForm());
-            } else {
-                Application.Run(new MainForm());
-                //Application.Run(new TESsnip.TESsnip());
+                string path;
+                try {
+                    path=Microsoft.Win32.Registry.GetValue(@"HKEY_LOCAL_MACHINE\Software\Bethesda Softworks\Fallout3", "Installed Path", null) as string;
+                } catch { path=null; }
+                if(path!=null) {
+                    Directory.SetCurrentDirectory(path);
+                }
             }
+
+            //Check that we're in fallout's directory and that we have write access
+            bool limitedmode=true;
+            if(File.Exists("fallout3.exe")||File.Exists("fallout3ng.exe")) {
+                if(Array.IndexOf<string>(args, "-no-uac-check")==-1) {
+                    try {
+                        File.Delete("limited");
+                        string VistaVirtualStore=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "VirtualStore\\");
+                        VistaVirtualStore=Path.Combine(VistaVirtualStore, Directory.GetCurrentDirectory().Remove(0, 3));
+                        VistaVirtualStore=Path.Combine(VistaVirtualStore, "limited");
+                        if(File.Exists(VistaVirtualStore)) File.Delete(VistaVirtualStore);
+                        FileStream fs=File.Create("limited");
+                        fs.Close();
+                        if(File.Exists(VistaVirtualStore)) {
+                            MessageBox.Show("Vista's UAC is preventing Fallout mod manager from obtaining write access to fallout's installation directory.\n"+
+                            "Either right click fomm.exe and check the 'run as administrator' checkbox on the comptibility tab, or disable UAC", "Error");
+                            File.Delete("limited");
+                        } else {
+                            File.Delete("limited");
+                            limitedmode=false;
+                        }
+                    } catch {
+                        MessageBox.Show("Unable to get write permissions for fallout's installation directory", "Error");
+                    }
+                }
+            } else MessageBox.Show("Could not find fallout 3 directory\nFallout's registry entry appear to be missing or incorrect. Install fomm into fallout's base directory instead.", "Error");
+
+            if(limitedmode) return;
+
+            if(!Directory.Exists(PackageDir)) Directory.CreateDirectory(PackageDir);
+            Application.Run(new MainForm());
+
             if(Directory.Exists(tmpPath)) Directory.Delete(tmpPath, true);
         }
 

@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("fomm.Scripting")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Handler for running .fomod scripts")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Timeslip")]
 [assembly: AssemblyProduct("fomm.Scripting")]
-[assembly: AssemblyCopyright("Copyright ©  2008")]
+[assembly: AssemblyCopyright("Copyright ©  2008 Timeslip")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

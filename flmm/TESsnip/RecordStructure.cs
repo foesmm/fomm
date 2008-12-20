@@ -219,9 +219,9 @@ namespace fomm.TESsnip {
         public static Dictionary<string, RecordStructure> Records;
 
 #if DEBUG
-        private static string xmlPath=@"C:\Documents and Settings\Gareth\My Documents\Visual Studio 2005\Projects\fomm\flmm\TESsnip\RecordStructure.xml";
+        private static string xmlPath=System.IO.Path.Combine(Program.exeDir, "..\\flmm\\TESsnip\\RecordStructure.xml");
 #else
-        private static string xmlPath=System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath), "TESsnip\\RecordStructure.xml");
+        private static string xmlPath=System.IO.Path.Combine(Program.exeDir, "TESsnip\\RecordStructure.xml");
 #endif
 
         public static void Load() {

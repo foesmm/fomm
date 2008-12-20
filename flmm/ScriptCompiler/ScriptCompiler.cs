@@ -116,9 +116,9 @@ namespace fomm.ScriptCompiler {
         private static readonly Dictionary<string, Dictionary<string, ushort>> farVars=new Dictionary<string, Dictionary<string, ushort>>();
 
 #if DEBUG
-        private static string xmlPath=@"C:\Documents and Settings\Gareth\My Documents\Visual Studio 2005\Projects\fomm\flmm\ScriptCompiler\ScriptFunctions.xml";
+        private static string xmlPath=System.IO.Path.Combine(Program.exeDir, "..\\flmm\\ScriptCompiler\\ScriptFunctions.xml");
 #else
-        private static string xmlPath=System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath), "ScriptCompiler\\ScriptFunctions.xml");
+        private static string xmlPath=System.IO.Path.Combine(Program.exeDir, "ScriptCompiler\\ScriptFunctions.xml");
 #endif
         private static void AddFunction(string name, string sname, FunctionSig sig) {
             name=name.ToLowerInvariant();

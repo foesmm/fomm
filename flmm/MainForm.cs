@@ -12,7 +12,6 @@ namespace fomm {
             InitializeComponent();
             PluginsFile=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Fallout3\\plugins.txt");
             Text+=" ("+Program.Version+")";
-            bPackageManager.Enabled=false;
         }
 
         private void bBSAUnpack_Click(object sender, EventArgs e) {
@@ -42,7 +41,9 @@ namespace fomm {
                 return;
             }
             Close();
-            System.Diagnostics.Process.Start("Fallout3.exe");
+            if(File.Exists("fose_loader.exe")) System.Diagnostics.Process.Start("fose_loader.exe");
+            else if(File.Exists("fallout3.exe")) System.Diagnostics.Process.Start("fallout3.exe");
+            else System.Diagnostics.Process.Start("fallout3ng.exe");
         }
 
         private void MainForm_Load(object sender, EventArgs e) {
