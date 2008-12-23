@@ -32,6 +32,7 @@ namespace fomm.PackageManager {
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.bEditScript = new System.Windows.Forms.Button();
             this.bEditReadme = new System.Windows.Forms.Button();
+            this.bEditInfo = new System.Windows.Forms.Button();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
@@ -68,6 +69,7 @@ namespace fomm.PackageManager {
             this.columnHeader2,
             this.columnHeader3});
             this.lvModList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lvModList.HideSelection = false;
             this.lvModList.Location = new System.Drawing.Point(0, 0);
             this.lvModList.MultiSelect = false;
             this.lvModList.Name = "lvModList";
@@ -131,11 +133,22 @@ namespace fomm.PackageManager {
             this.bEditReadme.UseVisualStyleBackColor = true;
             this.bEditReadme.Click += new System.EventHandler(this.bEditReadme_Click);
             // 
+            // bEditInfo
+            // 
+            this.bEditInfo.Location = new System.Drawing.Point(362, 166);
+            this.bEditInfo.Name = "bEditInfo";
+            this.bEditInfo.Size = new System.Drawing.Size(120, 23);
+            this.bEditInfo.TabIndex = 22;
+            this.bEditInfo.Text = "Edit info";
+            this.bEditInfo.UseVisualStyleBackColor = true;
+            this.bEditInfo.Click += new System.EventHandler(this.bEditInfo_Click);
+            // 
             // PackageManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(494, 346);
+            this.Controls.Add(this.bEditInfo);
             this.Controls.Add(this.bEditReadme);
             this.Controls.Add(this.bEditScript);
             this.Controls.Add(this.splitContainer1);
@@ -164,5 +177,6 @@ namespace fomm.PackageManager {
         private System.Windows.Forms.ColumnHeader columnHeader3;
         private System.Windows.Forms.Button bEditScript;
         private System.Windows.Forms.Button bEditReadme;
+        private System.Windows.Forms.Button bEditInfo;
     }
 }

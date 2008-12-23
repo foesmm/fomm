@@ -5,12 +5,17 @@ using File=System.IO.File;
 using Path=System.IO.Path;
 
 /*
- * XML Structure
+ * Installed data XML Structure
  * <installData>
  *   <installedFiles>
  *     <file>filepath</file>
  *   </installedFiles>
  * </installData>
+ * 
+ * Info XML structure
+ * <fomod>
+ *   <Name>bingle</Name>
+ * </fomod>
  */
 
 namespace fomm.PackageManager {
@@ -20,6 +25,9 @@ namespace fomm.PackageManager {
 
             public StringDataSource(string str) {
                 ms=new System.IO.MemoryStream(System.Text.Encoding.Default.GetBytes(str));
+            }
+            public StringDataSource(byte[] bytes) {
+                ms=new System.IO.MemoryStream(bytes);
             }
 
             public System.IO.Stream GetSource() { return ms; }
@@ -32,6 +40,9 @@ namespace fomm.PackageManager {
 
         public readonly string filepath;
         public readonly string xmlpath;
+
+        public static readonly Version DefaultVersion=new Version(1,0);
+        public static readonly Version DefaultMinFommVersion=new Version(0,0,0,0);
 
         private bool hasInfo;
         public bool HasInfo { get { return hasInfo; } }
@@ -52,6 +63,7 @@ namespace fomm.PackageManager {
         public Version Version;
         public string VersionS;
         private System.Drawing.Bitmap screenshot;
+        public Version MinFommVersion;
 
         private string readmeext;
         public string ReadmeExt { get { return readmeext; } }
@@ -123,7 +135,9 @@ namespace fomm.PackageManager {
             Author="DEFAULT";
             Description=string.Empty;
             VersionS="1.0";
-            Version=new Version(1, 0);
+            Version=DefaultVersion;
+            MinFommVersion=DefaultMinFommVersion;
+
             LoadInfo();
             hasScript=(file.GetEntry("fomod/script.cs")!=null);
             string[] extensions=new string[] { ".txt", ".rtf", ".htm", ".html" };
@@ -202,6 +216,70 @@ namespace fomm.PackageManager {
                 sds.Close();
                 hasReadme=true;
             }
+        }
+
+        public void CommitInfo(bool SetScreenshot, byte[] screenshot) {
+            XmlDocument xmlDoc=new XmlDocument();
+            XmlElement el=xmlDoc.CreateElement("fomod"), el2;
+            StringDataSource sds1, sds2=null;
+
+            if(SetScreenshot&&this.screenshot!=null) {
+                this.screenshot.Dispose();
+                this.screenshot=null;
+            }
+
+            xmlDoc.AppendChild(el);
+            if(Name!="") {
+                el2=xmlDoc.CreateElement("Name");
+                el2.InnerText=Name;
+                el.AppendChild(el2);
+            }
+            if(Author!="DEFAULT") {
+                el2=xmlDoc.CreateElement("Author");
+                el2.InnerText=Author;
+                el.AppendChild(el2);
+            }
+            if(VersionS!=""||Version!=DefaultVersion) {
+                el2=xmlDoc.CreateElement("Version");
+                el2.InnerText=VersionS==""?Version.ToString():VersionS;
+                el2.Attributes.Append(xmlDoc.CreateAttribute("MachineVersion"));
+                el2.Attributes[0].Value=Version.ToString();
+                el.AppendChild(el2);
+            }
+            if(Description!="") {
+                el2=xmlDoc.CreateElement("Description");
+                el2.InnerText=Description;
+                el.AppendChild(el2);
+            }
+            if(MinFommVersion!=DefaultMinFommVersion) {
+                el2=xmlDoc.CreateElement("MinFommVersion");
+                el2.InnerText=MinFommVersion.ToString();
+                el.AppendChild(el2);
+            }
+
+            file.BeginUpdate();
+            hasInfo=true;
+            sds1=new StringDataSource(xmlDoc.OuterXml);
+            file.Add(sds1,"fomod/info.xml");
+            if(SetScreenshot) {
+                if(screenshot==null) {
+                    if(hasScreenshot) {
+                        file.Delete("fomod/screenshot"+screenshotext);
+                        hasScreenshot=false;
+                    }
+                } else {
+                    if(hasScreenshot&&screenshotext!=".png") {
+                        file.Delete("fomod/screenshot"+screenshotext);
+                    }
+                    hasScreenshot=true;
+                    screenshotext=".png";
+                    sds2=new StringDataSource(screenshot);
+                    file.Add(sds2, "fomod/screenshot.png");
+                }
+            }
+            file.CommitUpdate();
+            sds1.Close();
+            if(sds2!=null) sds2.Close();
         }
 
         public System.Drawing.Bitmap GetScreenshot() {

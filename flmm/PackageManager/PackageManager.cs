@@ -109,5 +109,18 @@ namespace fomm.PackageManager {
                 ((fomod)lvi.Tag).Dispose();
             }
         }
+
+        private void bEditInfo_Click(object sender, EventArgs e) {
+            if(lvModList.SelectedItems.Count!=1) return;
+            fomod mod=(fomod)lvModList.SelectedItems[0].Tag;
+            if((new InfoEditor(mod)).ShowDialog()==DialogResult.OK) {
+                ListViewItem lvi=lvModList.SelectedItems[0];
+                lvi.SubItems[0].Text=mod.Name;
+                lvi.SubItems[1].Text=mod.VersionS;
+                lvi.SubItems[2].Text=mod.Author;
+                tbModInfo.Text=mod.Description;
+                pictureBox1.Image=mod.GetScreenshot();
+            }
+        }
     }
 }
