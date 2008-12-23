@@ -23,8 +23,9 @@ using System.IO;
 namespace fomm {
     class fommException : Exception { public fommException(string msg) : base(msg) { } }
 
-    static class Program {
+    public static class Program {
         public const string Version="0.9.0";
+        public static readonly Version MVersion=new Version(Version+".0");
         /*private static string typefromint(int i, bool name) {
             switch(i) {
             case 0x00:
@@ -170,18 +171,19 @@ namespace fomm {
          }
          */
 
-        private static readonly string tmpPath=Path.Combine(Path.GetTempPath(), "fomm");
+        public static readonly string tmpPath=Path.Combine(Path.GetTempPath(), "fomm");
         public static readonly string exeDir=Path.GetDirectoryName(Application.ExecutablePath);
         public static readonly string Fallout3SaveDir=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "My games\\Fallout3");
         public static readonly string FOIniPath=Path.Combine(Fallout3SaveDir, "Fallout.ini");
         public static readonly string FOSavesPath=Path.Combine(Fallout3SaveDir, Imports.GetPrivateProfileString("General", "SLocalSavePath", "Games", FOIniPath));
         public static readonly string PackageDir=Path.Combine(exeDir, "mods");
+        public static readonly string fommDir=Path.Combine(exeDir, "fomm");
 
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main(string[] args) {
+        private static void Main(string[] args) {
             //Style setup
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
@@ -225,7 +227,9 @@ namespace fomm {
 
             if(limitedmode) return;
 
+            if(!Directory.Exists(tmpPath)) Directory.CreateDirectory(tmpPath);
             if(!Directory.Exists(PackageDir)) Directory.CreateDirectory(PackageDir);
+            if(!Directory.Exists(fommDir)) Directory.CreateDirectory(fommDir);
             Application.Run(new MainForm());
 
             if(Directory.Exists(tmpPath)) Directory.Delete(tmpPath, true);

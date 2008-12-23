@@ -26,10 +26,12 @@ namespace fomm.PackageManager {
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.lvModList = new System.Windows.Forms.ListView();
             this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
-            this.tbModInfo = new System.Windows.Forms.TextBox();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
             this.columnHeader3 = new System.Windows.Forms.ColumnHeader();
+            this.tbModInfo = new System.Windows.Forms.TextBox();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.bEditScript = new System.Windows.Forms.Button();
+            this.bEditReadme = new System.Windows.Forms.Button();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
@@ -73,13 +75,20 @@ namespace fomm.PackageManager {
             this.lvModList.TabIndex = 0;
             this.lvModList.UseCompatibleStateImageBehavior = false;
             this.lvModList.View = System.Windows.Forms.View.Details;
-            this.lvModList.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.lvModList_ItemChecked);
             this.lvModList.SelectedIndexChanged += new System.EventHandler(this.lvModList_SelectedIndexChanged);
             // 
             // columnHeader1
             // 
             this.columnHeader1.Text = "Name";
             this.columnHeader1.Width = 219;
+            // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Text = "Version";
+            // 
+            // columnHeader3
+            // 
+            this.columnHeader3.Text = "Author";
             // 
             // tbModInfo
             // 
@@ -102,23 +111,39 @@ namespace fomm.PackageManager {
             this.pictureBox1.TabIndex = 16;
             this.pictureBox1.TabStop = false;
             // 
-            // columnHeader2
+            // bEditScript
             // 
-            this.columnHeader2.Text = "Version";
+            this.bEditScript.Location = new System.Drawing.Point(362, 137);
+            this.bEditScript.Name = "bEditScript";
+            this.bEditScript.Size = new System.Drawing.Size(120, 23);
+            this.bEditScript.TabIndex = 20;
+            this.bEditScript.Text = "Edit script";
+            this.bEditScript.UseVisualStyleBackColor = true;
+            this.bEditScript.Click += new System.EventHandler(this.bEditScript_Click);
             // 
-            // columnHeader3
+            // bEditReadme
             // 
-            this.columnHeader3.Text = "Author";
+            this.bEditReadme.Location = new System.Drawing.Point(362, 108);
+            this.bEditReadme.Name = "bEditReadme";
+            this.bEditReadme.Size = new System.Drawing.Size(120, 23);
+            this.bEditReadme.TabIndex = 21;
+            this.bEditReadme.Text = "View readme";
+            this.bEditReadme.UseVisualStyleBackColor = true;
+            this.bEditReadme.Click += new System.EventHandler(this.bEditReadme_Click);
             // 
             // PackageManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(494, 346);
+            this.Controls.Add(this.bEditReadme);
+            this.Controls.Add(this.bEditScript);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.pictureBox1);
             this.Name = "PackageManager";
             this.Text = "PackageManager";
+            this.Shown += new System.EventHandler(this.PackageManager_Shown);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.PackageManager_FormClosing);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             this.splitContainer1.Panel2.PerformLayout();
@@ -137,5 +162,7 @@ namespace fomm.PackageManager {
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.ColumnHeader columnHeader3;
+        private System.Windows.Forms.Button bEditScript;
+        private System.Windows.Forms.Button bEditReadme;
     }
 }

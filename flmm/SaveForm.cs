@@ -91,71 +91,80 @@ namespace fomm {
             cmbSort.SelectedIndex=3;
             lvSaves.ListViewItemSorter=new SaveListSorter();
             foreach(string file in Directory.GetFiles(SaveFolder)) {
-                BinaryReader br=new BinaryReader(File.OpenRead(file));
-                if(br.BaseStream.Length<12) {
-                    br.Close();
-                    continue;
-                }
-                string str="";
-                for(int i=0;i<11;i++) str+=(char)br.ReadByte();
-                if(str!="FO3SAVEGAME") {
-                    br.Close();
-                    continue;
-                }
-                SaveFile sf=new SaveFile();
-                sf.saved=(new FileInfo(file)).LastWriteTime;
-                sf.FileName=Path.GetFileName(file);
-                br.BaseStream.Position+=9;
+                BinaryReader br;
+                SaveFile sf;
+                try {
+                    br=new BinaryReader(File.OpenRead(file));
+                } catch { continue; }
+                try {
+                    if(br.BaseStream.Length<12) {
+                        br.Close();
+                        continue;
+                    }
+                    string str="";
+                    for(int i=0;i<11;i++) str+=(char)br.ReadByte();
+                    if(str!="FO3SAVEGAME") {
+                        br.Close();
+                        continue;
+                    }
+                    sf=new SaveFile();
+                    sf.saved=(new FileInfo(file)).LastWriteTime;
+                    sf.FileName=Path.GetFileName(file);
+                    br.BaseStream.Position+=9;
 
-                sf.ImageWidth=br.ReadInt32();
-                br.ReadByte();
-                sf.ImageHeight=br.ReadInt32();
-                br.ReadByte();
-                br.ReadInt32();
-                br.ReadByte();
-                short s=br.ReadInt16();
-                br.ReadByte();
-                for(int i=0;i<s;i++) sf.Player+=(char)br.ReadByte();
-                br.ReadByte();
-                s=br.ReadInt16();
-                br.ReadByte();
-                for(int i=0;i<s;i++) sf.Karma+=(char)br.ReadByte();
-                br.ReadByte();
-                sf.Level=br.ReadInt32();
-                br.ReadByte();
-                s=br.ReadInt16();
-                br.ReadByte();
-                for(int i=0;i<s;i++) sf.Location+=(char)br.ReadByte();
-                br.ReadInt32(); //|<short>|
-                for(int i=0;i<3;i++) sf.Playtime+=(char)br.ReadByte();
-                sf.Playtime+=" hours, ";
-                br.ReadByte();
-                for(int i=0;i<2;i++) sf.Playtime+=(char)br.ReadByte();
-                sf.Playtime+=" minutes and ";
-                br.ReadByte();
-                for(int i=0;i<2;i++) sf.Playtime+=(char)br.ReadByte();
-                sf.Playtime+=" seconds";
-                br.ReadByte();
-                
-                sf.ImageData=new byte[sf.ImageHeight*sf.ImageWidth*3];
-                br.Read(sf.ImageData, 0, sf.ImageData.Length);
-                //Flip the blue and red channels
-                for(int i=0;i<sf.ImageWidth*sf.ImageHeight;i++) {
-                    byte temp=sf.ImageData[i*3];
-                    sf.ImageData[i*3]=sf.ImageData[i*3+2];
-                    sf.ImageData[i*3+2]=temp;
-                }
-                br.ReadByte();
-                br.ReadInt32();
-                sf.plugins=new string[br.ReadByte()];
-                for(int i=0;i<sf.plugins.Length;i++) {
+                    sf.ImageWidth=br.ReadInt32();
+                    br.ReadByte();
+                    sf.ImageHeight=br.ReadInt32();
+                    br.ReadByte();
+                    br.ReadInt32();
+                    br.ReadByte();
+                    short s=br.ReadInt16();
+                    br.ReadByte();
+                    for(int i=0;i<s;i++) sf.Player+=(char)br.ReadByte();
                     br.ReadByte();
                     s=br.ReadInt16();
                     br.ReadByte();
-                    sf.plugins[i]="";
-                    for(int j=0;j<s;j++) sf.plugins[i]+=(char)br.ReadByte();
+                    for(int i=0;i<s;i++) sf.Karma+=(char)br.ReadByte();
+                    br.ReadByte();
+                    sf.Level=br.ReadInt32();
+                    br.ReadByte();
+                    s=br.ReadInt16();
+                    br.ReadByte();
+                    for(int i=0;i<s;i++) sf.Location+=(char)br.ReadByte();
+                    br.ReadInt32(); //|<short>|
+                    for(int i=0;i<3;i++) sf.Playtime+=(char)br.ReadByte();
+                    sf.Playtime+=" hours, ";
+                    br.ReadByte();
+                    for(int i=0;i<2;i++) sf.Playtime+=(char)br.ReadByte();
+                    sf.Playtime+=" minutes and ";
+                    br.ReadByte();
+                    for(int i=0;i<2;i++) sf.Playtime+=(char)br.ReadByte();
+                    sf.Playtime+=" seconds";
+                    br.ReadByte();
+
+                    sf.ImageData=new byte[sf.ImageHeight*sf.ImageWidth*3];
+                    br.Read(sf.ImageData, 0, sf.ImageData.Length);
+                    //Flip the blue and red channels
+                    for(int i=0;i<sf.ImageWidth*sf.ImageHeight;i++) {
+                        byte temp=sf.ImageData[i*3];
+                        sf.ImageData[i*3]=sf.ImageData[i*3+2];
+                        sf.ImageData[i*3+2]=temp;
+                    }
+                    br.ReadByte();
+                    br.ReadInt32();
+                    sf.plugins=new string[br.ReadByte()];
+                    for(int i=0;i<sf.plugins.Length;i++) {
+                        br.ReadByte();
+                        s=br.ReadInt16();
+                        br.ReadByte();
+                        sf.plugins[i]="";
+                        for(int j=0;j<s;j++) sf.plugins[i]+=(char)br.ReadByte();
+                    }
+                } catch {
+                    continue;
+                } finally {
+                    br.Close();
                 }
-                br.Close();
                 saves.Add(sf);
             }
             UpdateSaveList();
