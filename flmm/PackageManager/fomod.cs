@@ -57,6 +57,7 @@ namespace fomm.PackageManager {
         private bool hasSubfolderEsp;
         public bool HasSubfolderEsp { get { return hasSubfolderEsp; } }
 
+        private string baseName;
         public string Name;
         public string Author;
         public string Description;
@@ -132,6 +133,7 @@ namespace fomm.PackageManager {
 
             file=new ZipFile(path);
             Name=System.IO.Path.GetFileNameWithoutExtension(path);
+            baseName=Name.ToLowerInvariant();
             Author="DEFAULT";
             Description=string.Empty;
             VersionS="1.0";
@@ -142,10 +144,10 @@ namespace fomm.PackageManager {
             hasScript=(file.GetEntry("fomod/script.cs")!=null);
             string[] extensions=new string[] { ".txt", ".rtf", ".htm", ".html" };
             for(int i=0;i<extensions.Length;i++) {
-                if(file.GetEntry("readme - "+Name+extensions[i])!=null) {
+                if(file.GetEntry("readme - "+baseName+extensions[i])!=null) {
                     hasReadme=true;
                     readmeext=extensions[i];
-                    readmepath="readme - "+Name.ToLowerInvariant()+extensions[i];
+                    readmepath="readme - "+baseName+extensions[i];
                     break;
                 }
             }
@@ -207,7 +209,7 @@ namespace fomm.PackageManager {
                 }
             } else {
                 file.BeginUpdate();
-                if(readmeext!=".rtf") file.Delete(readmepath);
+                if(hasReadme&&readmeext!=".rtf") file.Delete(readmepath);
                 readmeext=".rtf";
                 readmepath=Path.ChangeExtension(readmepath, ".rtf");
                 StringDataSource sds=new StringDataSource(value);

@@ -33,6 +33,9 @@ namespace fomm.PackageManager {
             this.bEditScript = new System.Windows.Forms.Button();
             this.bEditReadme = new System.Windows.Forms.Button();
             this.bEditInfo = new System.Windows.Forms.Button();
+            this.bActivate = new System.Windows.Forms.Button();
+            this.bAddNew = new System.Windows.Forms.Button();
+            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
@@ -78,6 +81,7 @@ namespace fomm.PackageManager {
             this.lvModList.UseCompatibleStateImageBehavior = false;
             this.lvModList.View = System.Windows.Forms.View.Details;
             this.lvModList.SelectedIndexChanged += new System.EventHandler(this.lvModList_SelectedIndexChanged);
+            this.lvModList.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.lvModList_ItemCheck);
             // 
             // columnHeader1
             // 
@@ -110,12 +114,13 @@ namespace fomm.PackageManager {
             this.pictureBox1.Location = new System.Drawing.Point(362, 12);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(120, 90);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 16;
             this.pictureBox1.TabStop = false;
             // 
             // bEditScript
             // 
-            this.bEditScript.Location = new System.Drawing.Point(362, 137);
+            this.bEditScript.Location = new System.Drawing.Point(362, 224);
             this.bEditScript.Name = "bEditScript";
             this.bEditScript.Size = new System.Drawing.Size(120, 23);
             this.bEditScript.TabIndex = 20;
@@ -125,7 +130,7 @@ namespace fomm.PackageManager {
             // 
             // bEditReadme
             // 
-            this.bEditReadme.Location = new System.Drawing.Point(362, 108);
+            this.bEditReadme.Location = new System.Drawing.Point(362, 195);
             this.bEditReadme.Name = "bEditReadme";
             this.bEditReadme.Size = new System.Drawing.Size(120, 23);
             this.bEditReadme.TabIndex = 21;
@@ -135,7 +140,7 @@ namespace fomm.PackageManager {
             // 
             // bEditInfo
             // 
-            this.bEditInfo.Location = new System.Drawing.Point(362, 166);
+            this.bEditInfo.Location = new System.Drawing.Point(362, 253);
             this.bEditInfo.Name = "bEditInfo";
             this.bEditInfo.Size = new System.Drawing.Size(120, 23);
             this.bEditInfo.TabIndex = 22;
@@ -143,11 +148,38 @@ namespace fomm.PackageManager {
             this.bEditInfo.UseVisualStyleBackColor = true;
             this.bEditInfo.Click += new System.EventHandler(this.bEditInfo_Click);
             // 
+            // bActivate
+            // 
+            this.bActivate.Location = new System.Drawing.Point(362, 108);
+            this.bActivate.Name = "bActivate";
+            this.bActivate.Size = new System.Drawing.Size(120, 23);
+            this.bActivate.TabIndex = 23;
+            this.bActivate.Text = "Activate";
+            this.bActivate.UseVisualStyleBackColor = true;
+            this.bActivate.Click += new System.EventHandler(this.bActivate_Click);
+            // 
+            // bAddNew
+            // 
+            this.bAddNew.Location = new System.Drawing.Point(362, 137);
+            this.bAddNew.Name = "bAddNew";
+            this.bAddNew.Size = new System.Drawing.Size(120, 23);
+            this.bAddNew.TabIndex = 24;
+            this.bAddNew.Text = "Add new";
+            this.bAddNew.UseVisualStyleBackColor = true;
+            this.bAddNew.Click += new System.EventHandler(this.bAddNew_Click);
+            // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.Filter = "mod archive (*.fomod, *.zip)|*.fomod;*.zip";
+            this.openFileDialog1.RestoreDirectory = true;
+            // 
             // PackageManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(494, 346);
+            this.Controls.Add(this.bAddNew);
+            this.Controls.Add(this.bActivate);
             this.Controls.Add(this.bEditInfo);
             this.Controls.Add(this.bEditReadme);
             this.Controls.Add(this.bEditScript);
@@ -155,7 +187,6 @@ namespace fomm.PackageManager {
             this.Controls.Add(this.pictureBox1);
             this.Name = "PackageManager";
             this.Text = "PackageManager";
-            this.Shown += new System.EventHandler(this.PackageManager_Shown);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.PackageManager_FormClosing);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
@@ -178,5 +209,8 @@ namespace fomm.PackageManager {
         private System.Windows.Forms.Button bEditScript;
         private System.Windows.Forms.Button bEditReadme;
         private System.Windows.Forms.Button bEditInfo;
+        private System.Windows.Forms.Button bActivate;
+        private System.Windows.Forms.Button bAddNew;
+        private System.Windows.Forms.OpenFileDialog openFileDialog1;
     }
 }

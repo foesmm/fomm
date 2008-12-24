@@ -7,24 +7,33 @@ namespace fomm.PackageManager {
     public partial class PackageManager : Form {
 
         private readonly List<fomod> mods=new List<fomod>();
+        private bool AllowCheckedChanges;
 
+        private void AddFomod(string modpath) {
+            fomod mod;
+            try {
+                mod=new fomod(modpath);
+            } catch(Exception ex) {
+                MessageBox.Show("Error loading '"+Path.GetFileName(modpath)+"'\n"+ex.Message);
+                return;
+            }
+            mods.Add(mod);
+            ListViewItem lvi=new ListViewItem(new string[] { mod.Name, mod.VersionS, mod.Author });
+            lvi.Tag=mod;
+            lvi.Checked=mod.IsActive;
+            lvModList.Items.Add(lvi);
+        }
         public PackageManager() {
             InitializeComponent();
             Settings.GetWindowPosition("PackageManager", this);
-            foreach(string modpath in Directory.GetFiles(Program.PackageDir, "*.fomod")) {
-                fomod mod;
-                try {
-                    mod=new fomod(modpath);
-                } catch(Exception ex) {
-                    MessageBox.Show("Error loading '"+Path.GetFileName(modpath)+"'\n"+ex.Message);
-                    continue;
-                }
-                mods.Add(mod);
-                ListViewItem lvi=new ListViewItem(new string[] { mod.Name, mod.VersionS, mod.Author });
-                lvi.Tag=mod;
-                lvi.Checked=mod.IsActive;
-                lvModList.Items.Add(lvi);
+            foreach(string modpath in Directory.GetFiles(Program.PackageDir, "*.fomod.zip")) {
+                if(!File.Exists(Path.ChangeExtension(modpath, null))) File.Move(modpath, Path.ChangeExtension(modpath, null));
             }
+            AllowCheckedChanges=true;
+            foreach(string modpath in Directory.GetFiles(Program.PackageDir, "*.fomod")) {
+                AddFomod(modpath);
+            }
+            AllowCheckedChanges=false;
         }
 
         private void lvModList_SelectedIndexChanged(object sender, EventArgs e) {
@@ -33,28 +42,17 @@ namespace fomm.PackageManager {
             if(mod.HasInfo) tbModInfo.Text=mod.Description;
             else tbModInfo.Text="Warning: info.xml is missing from this fomod.";
 
+            if(!mod.IsActive) bActivate.Text="Activate";
+            else bActivate.Text="Deactivate";
+
             if(mod.HasScript) bEditScript.Text="Edit script";
             else bEditScript.Text="Create script";
 
             pictureBox1.Image=mod.GetScreenshot();
         }
 
-        private void lvModList_ItemChecked(object sender, ItemCheckedEventArgs e) {
-            if(e.Item.Checked) ((fomod)e.Item.Tag).Activate();
-            else ((fomod)e.Item.Tag).Deactivate();
-        }
-
         private void lvModList_ItemCheck(object sender, ItemCheckEventArgs e) {
-            if(e.NewValue==CheckState.Checked) {
-
-            } else {
-
-            }
-        }
-
-        private void PackageManager_Shown(object sender, EventArgs e) {
-            lvModList.ItemCheck+=new ItemCheckEventHandler(lvModList_ItemCheck);
-            lvModList.ItemChecked+=new ItemCheckedEventHandler(lvModList_ItemChecked);
+            if(!AllowCheckedChanges) e.NewValue=e.CurrentValue;
         }
 
         private void bEditScript_Click(object sender, EventArgs e) {
@@ -123,6 +121,44 @@ namespace fomm.PackageManager {
                 tbModInfo.Text=mod.Description;
                 pictureBox1.Image=mod.GetScreenshot();
             }
+        }
+
+        private void bActivate_Click(object sender, EventArgs e) {
+            if(lvModList.SelectedItems.Count!=1) return;
+            fomod mod=(fomod)lvModList.SelectedItems[0].Tag;
+            if(!mod.IsActive) mod.Activate();
+            else mod.Deactivate();
+            AllowCheckedChanges=true;
+            lvModList.SelectedItems[0].Checked=mod.IsActive;
+            AllowCheckedChanges=false;
+            if(!mod.IsActive) bActivate.Text="Activate";
+            else bActivate.Text="Deactivate";
+        }
+
+        private void bAddNew_Click(object sender, EventArgs e) {
+            if(openFileDialog1.ShowDialog()!=DialogResult.OK) return;
+            string oldpath=openFileDialog1.FileName, newpath;
+            if(oldpath.EndsWith(".fomod", StringComparison.InvariantCultureIgnoreCase)) {
+                newpath=Path.Combine(Program.PackageDir, Path.GetFileName(oldpath));
+            } else if(oldpath.EndsWith(".fomod.zip", StringComparison.InvariantCultureIgnoreCase)) {
+                newpath=Path.Combine(Program.PackageDir, Path.GetFileNameWithoutExtension(oldpath));
+            } else if(oldpath.EndsWith(".zip", StringComparison.InvariantCultureIgnoreCase)) {
+                //Insert checks that this is a valid fomod here
+                newpath=Path.Combine(Program.PackageDir, Path.ChangeExtension(Path.GetFileName(oldpath), ".fomod"));
+            } else {
+                MessageBox.Show("Unknown file type", "Error");
+                return;
+            }
+            if(File.Exists(newpath)) {
+                MessageBox.Show("A fomod with the same name is already installed", "Error");
+                return;
+            }
+            if(MessageBox.Show("Make a copy of the original file?", "", MessageBoxButtons.YesNo)!=DialogResult.Yes) {
+                File.Move(oldpath, newpath);
+            } else {
+                File.Copy(oldpath, newpath);
+            }
+            AddFomod(newpath);
         }
     }
 }

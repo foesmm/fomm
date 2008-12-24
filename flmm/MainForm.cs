@@ -48,6 +48,8 @@ namespace fomm {
         }
 
         private void MainForm_Load(object sender, EventArgs e) {
+            lvEspList.Items.Clear();
+
             List<ListViewItem> plugins=new List<ListViewItem>();
             DirectoryInfo di=new DirectoryInfo("data");
             List<FileInfo> files=new List<FileInfo>(di.GetFiles("*.esp"));
