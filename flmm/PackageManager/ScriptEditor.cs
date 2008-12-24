@@ -7,6 +7,7 @@ namespace fomm.PackageManager {
 
         private ScriptEditor(string text) {
             InitializeComponent();
+            Settings.GetWindowPosition("ScriptEditor", this);
             tbScript.Text=text;
             tbScript.ShowVRuler=false;
             tbScript.SetHighlighting("C#");
@@ -30,6 +31,10 @@ namespace fomm.PackageManager {
             } else {
                 MessageBox.Show("No errors found");
             }
+        }
+
+        private void ScriptEditor_FormClosing(object sender, FormClosingEventArgs e) {
+            Settings.SetWindowPosition("ScriptEditor", this);
         }
     }
 }

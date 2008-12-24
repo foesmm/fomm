@@ -117,6 +117,7 @@ namespace fomm.PackageManager {
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "Overwriteform";
             this.Text = "Overwriteform";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Overwriteform_FormClosing);
             this.ResumeLayout(false);
             this.PerformLayout();
 

@@ -25,6 +25,7 @@ namespace fomm.TESsnip {
                 }
             }
             InitializeComponent();
+            Settings.GetWindowPosition("TESsnip", this);
         }
 
         private void LoadPlugin(string s) {
@@ -541,6 +542,7 @@ namespace fomm.TESsnip {
             Clipboard=null;
             ClipboardNode=null;
             parentRecord=null;
+            Settings.SetWindowPosition("TESsnip", this);
         }
 
         private void tbInfo_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e) {

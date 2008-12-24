@@ -7,6 +7,7 @@ namespace fomm.PackageManager {
     partial class Overwriteform : Form {
         private Overwriteform(string msg, bool allowFolder) {
             InitializeComponent();
+            Settings.GetWindowPosition("OverwriteForm", this);
             label1.Text=msg;
             if(!allowFolder) {
                 bYesToFolder.Enabled=false;
@@ -50,6 +51,10 @@ namespace fomm.PackageManager {
         private void bNo_Click(object sender, EventArgs e) {
             result=OverwriteResult.No;
             Close();
+        }
+
+        private void Overwriteform_FormClosing(object sender, FormClosingEventArgs e) {
+            Settings.SetWindowPosition("OverwriteForm", this);
         }
     }
 }

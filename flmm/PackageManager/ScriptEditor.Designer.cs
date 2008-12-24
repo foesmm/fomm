@@ -91,6 +91,7 @@ namespace fomm.PackageManager {
             this.Controls.Add(this.toolStrip1);
             this.Name = "ScriptEditor";
             this.Text = "Script Editor";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ScriptEditor_FormClosing);
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.panel1.ResumeLayout(false);

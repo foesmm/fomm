@@ -10,6 +10,7 @@ namespace fomm {
 
         public MainForm() {
             InitializeComponent();
+            Settings.GetWindowPosition("MainForm", this);
             PluginsFile=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Fallout3\\plugins.txt");
             Text+=" ("+Program.Version+")";
         }
@@ -131,6 +132,7 @@ namespace fomm {
                 plugins.Add(lvi.Text);
             }
             File.WriteAllLines(PluginsFile, plugins.ToArray());
+            Settings.SetWindowPosition("MainForm", this);
         }
 
         private void lvEspList_SelectedIndexChanged(object sender, EventArgs e) {

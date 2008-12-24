@@ -29,6 +29,7 @@
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PlatformTarget>x86</PlatformTarget>
+    <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ICSharpCode.TextEditor, Version=3.0.0.3683, Culture=neutral, PublicKeyToken=4d61825e8dd49f1a, processorArchitecture=MSIL">
@@ -102,6 +103,7 @@
     <Compile Include="ScriptCompiler\Tokenizer.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Settings.cs" />
     <Compile Include="TESsnip\GroupEditor.cs">
       <SubType>Form</SubType>
     </Compile>

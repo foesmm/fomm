@@ -230,6 +230,9 @@ namespace fomm {
             if(!Directory.Exists(tmpPath)) Directory.CreateDirectory(tmpPath);
             if(!Directory.Exists(PackageDir)) Directory.CreateDirectory(PackageDir);
             if(!Directory.Exists(fommDir)) Directory.CreateDirectory(fommDir);
+
+            Settings.Init();
+
             Application.Run(new MainForm());
 
             if(Directory.Exists(tmpPath)) Directory.Delete(tmpPath, true);

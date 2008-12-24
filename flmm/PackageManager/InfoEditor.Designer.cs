@@ -216,6 +216,7 @@ namespace fomm.PackageManager {
             this.Controls.Add(this.tbName);
             this.Name = "InfoEditor";
             this.Text = "InfoEditor";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.InfoEditor_FormClosing);
             this.ResumeLayout(false);
             this.PerformLayout();
 

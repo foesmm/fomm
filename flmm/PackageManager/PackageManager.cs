@@ -10,6 +10,7 @@ namespace fomm.PackageManager {
 
         public PackageManager() {
             InitializeComponent();
+            Settings.GetWindowPosition("PackageManager", this);
             foreach(string modpath in Directory.GetFiles(Program.PackageDir, "*.fomod")) {
                 fomod mod;
                 try {
@@ -105,6 +106,7 @@ namespace fomm.PackageManager {
         }
 
         private void PackageManager_FormClosing(object sender, FormClosingEventArgs e) {
+            Settings.SetWindowPosition("PackageManager", this);
             foreach(ListViewItem lvi in lvModList.Items) {
                 ((fomod)lvi.Tag).Dispose();
             }

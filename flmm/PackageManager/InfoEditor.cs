@@ -7,6 +7,7 @@ namespace fomm.PackageManager {
         public InfoEditor(fomod mod) {
             this.mod=mod;
             InitializeComponent();
+            Settings.GetWindowPosition("InfoEditor", this);
             tbName.Text=mod.Name;
             tbAuthor.Text=mod.Author;
             tbVersion.Text=mod.VersionS;
@@ -68,6 +69,10 @@ namespace fomm.PackageManager {
             mod.CommitInfo(setScreenshot, screenshot);
             DialogResult=DialogResult.OK;
             Close();
+        }
+
+        private void InfoEditor_FormClosing(object sender, FormClosingEventArgs e) {
+            Settings.SetWindowPosition("InfoEditor", this);
         }
     }
 }

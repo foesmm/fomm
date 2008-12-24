@@ -47,7 +47,7 @@ namespace fomm.PackageManager {
         }
 
         internal static XmlDocument BasicInstallScript() {
-            foreach(string file in GetFileList()) InstallFileFromFomod(file);
+            foreach(string file in GetFomodFileList()) InstallFileFromFomod(file);
             return xmlDoc;
         }
 
@@ -70,7 +70,7 @@ namespace fomm.PackageManager {
             return System.Windows.Forms.MessageBox.Show(message, title, buttons);
         }
 
-        public static string[] GetFileList() {
+        public static string[] GetFomodFileList() {
             permissions.Assert();
             List<string> files=new List<string>();
             foreach(ZipEntry ze in file) {
@@ -80,6 +80,7 @@ namespace fomm.PackageManager {
         }
 
         private static bool TestDoOverwrite(string path) {
+            if(!File.Exists(path)) return true;
             string lpath=path.ToLowerInvariant();
             if(OverwriteFolders.Contains(lpath)) return true;
             if(DontOverwriteFolders.Contains(lpath)) return false;
@@ -136,10 +137,8 @@ namespace fomm.PackageManager {
             if(!Directory.Exists(Path.GetDirectoryName(datapath))) {
                 Directory.CreateDirectory(Path.GetDirectoryName(datapath));
             } else {
-                if(File.Exists(datapath)) {
-                    if(!TestDoOverwrite(datapath)) return false;
-                    else File.Delete(datapath);
-                }
+                if(!TestDoOverwrite(datapath)) return false;
+                else File.Delete(datapath);
             }
             FileStream fs=File.Create(datapath);
             Stream s=ScriptFunctions.file.GetInputStream(ze);

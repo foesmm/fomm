@@ -7,6 +7,7 @@ namespace fomm.PackageManager {
 
         private TextEditor(string text, bool rtf) {
             InitializeComponent();
+            Settings.GetWindowPosition("TextEditor", this);
             if(rtf) rtbEdit.Rtf=text;
             else rtbEdit.Text=text;
         }
@@ -20,6 +21,10 @@ namespace fomm.PackageManager {
         private void bSave_Click(object sender, EventArgs e) {
             if(rtbEdit.TextLength==0) saved="";
             else saved=rtbEdit.Rtf;
+        }
+
+        private void TextEditor_FormClosing(object sender, FormClosingEventArgs e) {
+            Settings.SetWindowPosition("TextEditor", this);
         }
     }
 }
