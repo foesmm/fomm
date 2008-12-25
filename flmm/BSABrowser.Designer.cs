@@ -172,7 +172,6 @@ namespace fomm {
             this.Controls.Add(this.cmbSortOrder);
             this.Controls.Add(this.bSort);
             this.Controls.Add(this.lvFiles);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(590, 150);
             this.Name = "BSABrowser";
             this.Text = "BSA Browser";

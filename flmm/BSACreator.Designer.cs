@@ -182,7 +182,6 @@ namespace fomm {
             this.Controls.Add(this.bAddFile);
             this.Controls.Add(this.cmbCompression);
             this.Controls.Add(this.bCreate);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(396, 338);
             this.Name = "BSACreator";
             this.Text = "BSA Creator";
