@@ -74,6 +74,7 @@ namespace fomm.PackageManager {
             permissions.Assert();
             List<string> files=new List<string>();
             foreach(ZipEntry ze in file) {
+                if(ze.IsDirectory) continue;
                 if(!ze.Name.StartsWith("fomod", StringComparison.InvariantCultureIgnoreCase)) files.Add(ze.Name);
             }
             return files.ToArray();

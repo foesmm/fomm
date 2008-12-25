@@ -7,7 +7,6 @@ namespace fomm.PackageManager {
     public partial class PackageManager : Form {
 
         private readonly List<fomod> mods=new List<fomod>();
-        private bool AllowCheckedChanges;
 
         private void AddFomod(string modpath) {
             fomod mod;
@@ -29,11 +28,9 @@ namespace fomm.PackageManager {
             foreach(string modpath in Directory.GetFiles(Program.PackageDir, "*.fomod.zip")) {
                 if(!File.Exists(Path.ChangeExtension(modpath, null))) File.Move(modpath, Path.ChangeExtension(modpath, null));
             }
-            AllowCheckedChanges=true;
             foreach(string modpath in Directory.GetFiles(Program.PackageDir, "*.fomod")) {
                 AddFomod(modpath);
             }
-            AllowCheckedChanges=false;
         }
 
         private void lvModList_SelectedIndexChanged(object sender, EventArgs e) {
@@ -52,7 +49,8 @@ namespace fomm.PackageManager {
         }
 
         private void lvModList_ItemCheck(object sender, ItemCheckEventArgs e) {
-            if(!AllowCheckedChanges) e.NewValue=e.CurrentValue;
+            if(((fomod)lvModList.Items[e.Index].Tag).IsActive) e.NewValue=CheckState.Checked;
+            else e.NewValue=CheckState.Unchecked;
         }
 
         private void bEditScript_Click(object sender, EventArgs e) {
@@ -121,6 +119,7 @@ namespace fomm.PackageManager {
                 tbModInfo.Text=mod.Description;
                 pictureBox1.Image=mod.GetScreenshot();
             }
+            
         }
 
         private void bActivate_Click(object sender, EventArgs e) {
@@ -128,9 +127,7 @@ namespace fomm.PackageManager {
             fomod mod=(fomod)lvModList.SelectedItems[0].Tag;
             if(!mod.IsActive) mod.Activate();
             else mod.Deactivate();
-            AllowCheckedChanges=true;
             lvModList.SelectedItems[0].Checked=mod.IsActive;
-            AllowCheckedChanges=false;
             if(!mod.IsActive) bActivate.Text="Activate";
             else bActivate.Text="Deactivate";
         }

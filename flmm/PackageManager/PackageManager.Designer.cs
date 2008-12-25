@@ -64,7 +64,6 @@ namespace fomm.PackageManager {
             // 
             // lvModList
             // 
-            this.lvModList.AllowDrop = true;
             this.lvModList.AutoArrange = false;
             this.lvModList.CheckBoxes = true;
             this.lvModList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
@@ -72,6 +71,8 @@ namespace fomm.PackageManager {
             this.columnHeader2,
             this.columnHeader3});
             this.lvModList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lvModList.FullRowSelect = true;
+            this.lvModList.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.lvModList.HideSelection = false;
             this.lvModList.Location = new System.Drawing.Point(0, 0);
             this.lvModList.MultiSelect = false;
