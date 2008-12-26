@@ -116,7 +116,6 @@ namespace fomm {
             this.columnHeader1});
             this.lvEspList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lvEspList.Location = new System.Drawing.Point(0, 0);
-            this.lvEspList.MultiSelect = false;
             this.lvEspList.Name = "lvEspList";
             this.lvEspList.Size = new System.Drawing.Size(318, 198);
             this.lvEspList.TabIndex = 0;
