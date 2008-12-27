@@ -69,12 +69,6 @@
     <Compile Include="PackageManager\TextEditor.Designer.cs">
       <DependentUpon>TextEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="PackageManager\ScriptEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PackageManager\ScriptEditor.Designer.cs">
-      <DependentUpon>ScriptEditor.cs</DependentUpon>
-    </Compile>
     <Compile Include="PackageManager\ScriptFunctions.cs" />
     <Compile Include="PackageManager\fomod.cs" />
     <Compile Include="PackageManager\InstallLog.cs" />
@@ -171,10 +165,6 @@
     <EmbeddedResource Include="PackageManager\PackageManager.resx">
       <SubType>Designer</SubType>
       <DependentUpon>PackageManager.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PackageManager\ScriptEditor.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>ScriptEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SaveForm.resx">
       <DependentUpon>SaveForm.cs</DependentUpon>

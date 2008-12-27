@@ -27,9 +27,7 @@ namespace fomm.PackageManager {
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.bSave = new System.Windows.Forms.ToolStripButton();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.rtbEdit = new System.Windows.Forms.RichTextBox();
             this.toolStrip1.SuspendLayout();
-            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -54,21 +52,11 @@ namespace fomm.PackageManager {
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.rtbEdit);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 25);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(503, 399);
             this.panel1.TabIndex = 2;
-            // 
-            // rtbEdit
-            // 
-            this.rtbEdit.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rtbEdit.Location = new System.Drawing.Point(0, 0);
-            this.rtbEdit.Name = "rtbEdit";
-            this.rtbEdit.Size = new System.Drawing.Size(503, 399);
-            this.rtbEdit.TabIndex = 0;
-            this.rtbEdit.Text = "";
             // 
             // TextEditor
             // 
@@ -82,7 +70,6 @@ namespace fomm.PackageManager {
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.TextEditor_FormClosing);
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
-            this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -93,6 +80,5 @@ namespace fomm.PackageManager {
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.ToolStripButton bSave;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.RichTextBox rtbEdit;
     }
 }

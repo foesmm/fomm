@@ -139,6 +139,7 @@ namespace fomm.PackageManager {
             VersionS="1.0";
             Version=DefaultVersion;
             MinFommVersion=DefaultMinFommVersion;
+            readmepath="readme - "+baseName+".rtf";
 
             LoadInfo();
             hasScript=(file.GetEntry("fomod/script.cs")!=null);
