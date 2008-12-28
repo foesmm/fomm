@@ -54,6 +54,7 @@ namespace fomm.TESsnip {
             this.compileScriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.compileAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.generateLLXmlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.makeEsmToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.OpenModDialog = new System.Windows.Forms.OpenFileDialog();
             this.tbInfo = new System.Windows.Forms.TextBox();
             this.SaveModDialog = new System.Windows.Forms.SaveFileDialog();
@@ -63,6 +64,7 @@ namespace fomm.TESsnip {
             this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
             this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
             this.SaveEdidListDialog = new System.Windows.Forms.SaveFileDialog();
+            this.martigensToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -174,7 +176,7 @@ namespace fomm.TESsnip {
             this.cutToolStripMenuItem.Enabled = false;
             this.cutToolStripMenuItem.Name = "cutToolStripMenuItem";
             this.cutToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
-            this.cutToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.cutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.cutToolStripMenuItem.Text = "Cut";
             this.cutToolStripMenuItem.Click += new System.EventHandler(this.cutToolStripMenuItem_Click);
             // 
@@ -183,7 +185,7 @@ namespace fomm.TESsnip {
             this.copyToolStripMenuItem.Enabled = false;
             this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
             this.copyToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-            this.copyToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.copyToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.copyToolStripMenuItem.Text = "Copy";
             this.copyToolStripMenuItem.Click += new System.EventHandler(this.copyToolStripMenuItem_Click);
             // 
@@ -192,7 +194,7 @@ namespace fomm.TESsnip {
             this.pasteToolStripMenuItem.Enabled = false;
             this.pasteToolStripMenuItem.Name = "pasteToolStripMenuItem";
             this.pasteToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
-            this.pasteToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.pasteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.pasteToolStripMenuItem.Text = "Paste";
             this.pasteToolStripMenuItem.Click += new System.EventHandler(this.pasteToolStripMenuItem_Click);
             // 
@@ -201,7 +203,7 @@ namespace fomm.TESsnip {
             this.deleteToolStripMenuItem.Enabled = false;
             this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
             this.deleteToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Delete;
-            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.deleteToolStripMenuItem.Text = "Delete";
             this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
             // 
@@ -209,7 +211,7 @@ namespace fomm.TESsnip {
             // 
             this.insertRecordToolStripMenuItem.Enabled = false;
             this.insertRecordToolStripMenuItem.Name = "insertRecordToolStripMenuItem";
-            this.insertRecordToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.insertRecordToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.insertRecordToolStripMenuItem.Text = "New record";
             this.insertRecordToolStripMenuItem.Click += new System.EventHandler(this.insertRecordToolStripMenuItem_Click);
             // 
@@ -217,7 +219,7 @@ namespace fomm.TESsnip {
             // 
             this.insertSubrecordToolStripMenuItem.Enabled = false;
             this.insertSubrecordToolStripMenuItem.Name = "insertSubrecordToolStripMenuItem";
-            this.insertSubrecordToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.insertSubrecordToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.insertSubrecordToolStripMenuItem.Text = "New subrecord";
             this.insertSubrecordToolStripMenuItem.Click += new System.EventHandler(this.insertSubrecordToolStripMenuItem_Click);
             // 
@@ -225,7 +227,7 @@ namespace fomm.TESsnip {
             // 
             this.findToolStripMenuItem.Name = "findToolStripMenuItem";
             this.findToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F)));
-            this.findToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.findToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.findToolStripMenuItem.Text = "Find";
             this.findToolStripMenuItem.Click += new System.EventHandler(this.findToolStripMenuItem_Click);
             // 
@@ -277,7 +279,9 @@ namespace fomm.TESsnip {
             this.findNonconformingRecordToolStripMenuItem,
             this.compileScriptToolStripMenuItem,
             this.compileAllToolStripMenuItem,
-            this.generateLLXmlToolStripMenuItem});
+            this.generateLLXmlToolStripMenuItem,
+            this.makeEsmToolStripMenuItem,
+            this.martigensToolStripMenuItem});
             this.spellsToolStripMenuItem.Name = "spellsToolStripMenuItem";
             this.spellsToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
             this.spellsToolStripMenuItem.Text = "Spells";
@@ -344,6 +348,13 @@ namespace fomm.TESsnip {
             this.generateLLXmlToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
             this.generateLLXmlToolStripMenuItem.Text = "Generate LL xml";
             this.generateLLXmlToolStripMenuItem.Click += new System.EventHandler(this.generateLLXmlToolStripMenuItem_Click);
+            // 
+            // makeEsmToolStripMenuItem
+            // 
+            this.makeEsmToolStripMenuItem.Name = "makeEsmToolStripMenuItem";
+            this.makeEsmToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.makeEsmToolStripMenuItem.Text = "Make esm";
+            this.makeEsmToolStripMenuItem.Click += new System.EventHandler(this.makeEsmToolStripMenuItem_Click);
             // 
             // OpenModDialog
             // 
@@ -446,6 +457,13 @@ namespace fomm.TESsnip {
             this.SaveEdidListDialog.RestoreDirectory = true;
             this.SaveEdidListDialog.Title = "Save file as";
             // 
+            // martigensToolStripMenuItem
+            // 
+            this.martigensToolStripMenuItem.Name = "martigensToolStripMenuItem";
+            this.martigensToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.martigensToolStripMenuItem.Text = "SCTX replacer";
+            this.martigensToolStripMenuItem.Click += new System.EventHandler(this.martigensToolStripMenuItem_Click);
+            // 
             // TESsnip
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -514,5 +532,7 @@ namespace fomm.TESsnip {
         private System.Windows.Forms.ToolStripMenuItem compileScriptToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem compileAllToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem generateLLXmlToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem makeEsmToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem martigensToolStripMenuItem;
     }
 }

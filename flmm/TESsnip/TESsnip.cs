@@ -1201,6 +1201,83 @@ namespace fomm.TESsnip {
             bmp.UnlockBits(bmpdata);
             bmp.Save("heightmap.bmp");
         }
+
+        private void makeEsmToolStripMenuItem_Click(object sender, EventArgs e) {
+            if(PluginTree.SelectedNode==null) return;
+
+            TreeNode tn=PluginTree.SelectedNode;
+            while(!(tn.Tag is Plugin)) tn=tn.Parent;
+            Plugin p=(Plugin)tn.Tag;
+
+            if(p.Records.Count==0||p.Records[0].Name!="TES4") {
+                MessageBox.Show("Plugin has no TES4 record");
+                return;
+            }
+
+            Record tes4=(Record)p.Records[0];
+            if((tes4.Flags1&1)==1) {
+                MessageBox.Show("Plugin is already a master file");
+                return;
+            }
+            tes4.Flags1|=1;
+
+            SaveModDialog.FileName=System.IO.Path.ChangeExtension(p.Name, ".esm");
+            if(SaveModDialog.ShowDialog()==DialogResult.OK) {
+                p.Save(SaveModDialog.FileName);
+            }
+            if(p.Name!=tn.Text) tn.Text=p.Name;
+        }
+
+        private void martigensToolStripMenuItem_Click(object sender, EventArgs e) {
+            if(PluginTree.SelectedNode==null) return;
+
+            TreeNode tn=PluginTree.SelectedNode;
+            while(!(tn.Tag is Plugin)) tn=tn.Parent;
+            Plugin p=(Plugin)tn.Tag;
+
+
+            Form f=new Form();
+            f.Text="Replace";
+            TextBox tb=new TextBox();
+            f.Controls.Add(tb);
+            tb.Dock=DockStyle.Fill;
+            tb.AcceptsReturn=true;
+            tb.Multiline=true;
+            tb.ScrollBars=ScrollBars.Vertical;
+            f.ShowDialog();
+
+            string replace=tb.Text;
+            f.Text="Replace with";
+            tb.Text="";
+            f.ShowDialog();
+            string with=tb.Text;
+
+            Queue<Rec> recs=new Queue<Rec>(p.Records);
+            while(recs.Count>0) {
+                if(recs.Peek() is GroupRecord) {
+                    GroupRecord gr=(GroupRecord)recs.Dequeue();
+                    for(int i=0;i<gr.Records.Count;i++) recs.Enqueue(gr.Records[i]);
+                } else {
+                    Record r=(Record)recs.Dequeue();
+                    foreach(SubRecord sr in r.SubRecords) {
+                        if(sr.Name!="SCTX") continue;
+                        string text=sr.GetStrData();
+                        int upto=0;
+                        bool replaced=false;
+                        while(true) {
+                            int i=text.IndexOf(replace, upto, StringComparison.InvariantCultureIgnoreCase);
+                            if(i==-1) break;
+                            text=text.Remove(i, replace.Length).Insert(i, with);
+                            upto=i+with.Length;
+                            replaced=true;
+                        }
+                        if(replaced) {
+                            sr.SetStrData(text, false);
+                        }
+                    }
+                }
+            }
+        }
         #endregion
 
         private void FindMasters() {
