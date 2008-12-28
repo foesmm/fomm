@@ -27,6 +27,18 @@ namespace fomm.TESsnip {
             InitializeComponent();
             Settings.GetWindowPosition("TESsnip", this);
         }
+        public TESsnip(string[] mods) {
+            if(!RecordStructure.Loaded) {
+                try {
+                    RecordStructure.Load();
+                } catch(Exception ex) {
+                    MessageBox.Show("Could not parse RecordStructure.xml. Record-at-once editing will be unavailable.\n"+ex.Message, "Warning");
+                }
+            }
+            InitializeComponent();
+            Settings.GetWindowPosition("TESsnip", this);
+            for(int i=0;i<mods.Length;i++) LoadPlugin(mods[i]);
+        }
 
         private void LoadPlugin(string s) {
             Plugin p = new Plugin(s, false);

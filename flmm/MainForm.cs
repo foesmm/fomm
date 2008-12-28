@@ -29,7 +29,7 @@ namespace fomm {
             tes.FormClosed+=pm_FormClosed;
             tes.Show();
             GC.Collect();
-            GC.WaitForPendingFinalizers();
+            //GC.WaitForPendingFinalizers();
         }
 
         private void bShaderEdit_Click(object sender, EventArgs e) {
@@ -54,6 +54,16 @@ namespace fomm {
             DirectoryInfo di=new DirectoryInfo("data");
             List<FileInfo> files=new List<FileInfo>(di.GetFiles("*.esp"));
             files.AddRange(di.GetFiles("*.esm"));
+            int count=0;
+            for(int i=0;i<files.Count;i++) {
+                try {
+                    count+=files[i].LastWriteTime.Hour;
+                } catch(ArgumentOutOfRangeException) {
+                    MessageBox.Show("File '"+files[i].Name+"' had an invalid time stamp, and has been reset.\n"+
+                        "Please check its position in the load order.", "Warning");
+                    files[i].LastWriteTime=DateTime.Now;
+                }
+            }
             files.Sort(delegate(FileInfo a, FileInfo b) {
                 return a.LastWriteTime.CompareTo(b.LastWriteTime);
             });
@@ -202,6 +212,17 @@ namespace fomm {
 
         private void bSaveGames_Click(object sender, EventArgs e) {
             (new SaveForm()).Show();
+        }
+
+        private void openInTESsnipToolStripMenuItem_Click(object sender, EventArgs e) {
+            if(lvEspList.SelectedItems.Count==0) return;
+            string[] mods=new string[lvEspList.SelectedItems.Count];
+            for(int i=0;i<mods.Length;i++) mods[i]="data\\"+lvEspList.SelectedItems[i].Text;
+            TESsnip.TESsnip tes=new TESsnip.TESsnip(mods);
+            tes.FormClosed+=pm_FormClosed;
+            tes.Show();
+            GC.Collect();
+            //GC.WaitForPendingFinalizers();
         }
     }
 }

@@ -211,7 +211,7 @@ namespace fomm.TESsnip {
         }
     }
 
-    class RecordStructure {
+    public class RecordStructure {
         #region Static
         private static bool loaded;
         public static bool Loaded { get { return loaded; } }

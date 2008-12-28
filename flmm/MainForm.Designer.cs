@@ -23,6 +23,7 @@ namespace fomm {
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
+            this.components = new System.ComponentModel.Container();
             this.bBSAUnpack = new System.Windows.Forms.Button();
             this.cBSACreator = new System.Windows.Forms.Button();
             this.bTESsnip = new System.Windows.Forms.Button();
@@ -36,10 +37,13 @@ namespace fomm {
             this.bPackageManager = new System.Windows.Forms.Button();
             this.bEnableAI = new System.Windows.Forms.Button();
             this.bSaveGames = new System.Windows.Forms.Button();
+            this.cmsPlugins = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.openInTESsnipToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            this.cmsPlugins.SuspendLayout();
             this.SuspendLayout();
             // 
             // bBSAUnpack
@@ -114,6 +118,7 @@ namespace fomm {
             this.lvEspList.CheckBoxes = true;
             this.lvEspList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1});
+            this.lvEspList.ContextMenuStrip = this.cmsPlugins;
             this.lvEspList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lvEspList.Location = new System.Drawing.Point(0, 0);
             this.lvEspList.Name = "lvEspList";
@@ -197,6 +202,20 @@ namespace fomm {
             this.bSaveGames.UseVisualStyleBackColor = true;
             this.bSaveGames.Click += new System.EventHandler(this.bSaveGames_Click);
             // 
+            // cmsPlugins
+            // 
+            this.cmsPlugins.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.openInTESsnipToolStripMenuItem});
+            this.cmsPlugins.Name = "cmsPlugins";
+            this.cmsPlugins.Size = new System.Drawing.Size(152, 26);
+            // 
+            // openInTESsnipToolStripMenuItem
+            // 
+            this.openInTESsnipToolStripMenuItem.Name = "openInTESsnipToolStripMenuItem";
+            this.openInTESsnipToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.openInTESsnipToolStripMenuItem.Text = "Open in TESsnip";
+            this.openInTESsnipToolStripMenuItem.Click += new System.EventHandler(this.openInTESsnipToolStripMenuItem_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -221,6 +240,7 @@ namespace fomm {
             this.splitContainer1.Panel2.ResumeLayout(false);
             this.splitContainer1.Panel2.PerformLayout();
             this.splitContainer1.ResumeLayout(false);
+            this.cmsPlugins.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -240,6 +260,8 @@ namespace fomm {
         private System.Windows.Forms.Button bPackageManager;
         private System.Windows.Forms.Button bEnableAI;
         private System.Windows.Forms.Button bSaveGames;
+        private System.Windows.Forms.ContextMenuStrip cmsPlugins;
+        private System.Windows.Forms.ToolStripMenuItem openInTESsnipToolStripMenuItem;
     }
 }
 

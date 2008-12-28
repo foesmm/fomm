@@ -237,7 +237,13 @@ namespace fomm.PackageManager {
             fomod mod=(fomod)lvModList.SelectedItems[0].Tag;
             if(!mod.IsActive) mod.Activate();
             else mod.Deactivate();
-            lvModList.SelectedItems[0].Checked=mod.IsActive;
+            if(cbGroups.Checked) {
+                foreach(ListViewItem lvi in lvModList.Items) {
+                    if(lvi.Tag==mod) lvi.Checked=mod.IsActive;
+                }
+            } else {
+                lvModList.SelectedItems[0].Checked=mod.IsActive;
+            }
             if(!mod.IsActive) bActivate.Text="Activate";
             else bActivate.Text="Deactivate";
         }
