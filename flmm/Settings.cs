@@ -62,5 +62,70 @@ namespace fomm {
 
             xmlDoc.Save(xmlPath);
         }
+
+        public static string[] GetStringArray(string name) {
+            XmlElement xe=rootNode.SelectSingleNode("descendant::strArray[@name='"+name+"']") as XmlElement;
+            if(xe==null) return null;
+            string[] result=new string[xe.ChildNodes.Count];
+            for(int i=0;i<result.Length;i++) result[i]=xe.ChildNodes[i].InnerText;
+            return result;
+        }
+
+        public static void SetStringArray(string name, string[] items) {
+            XmlElement xe=rootNode.SelectSingleNode("descendant::strArray[@name='"+name+"']") as XmlElement;
+            if(xe==null) {
+                rootNode.AppendChild(xe=xmlDoc.CreateElement("strArray"));
+                xe.Attributes.Append(xmlDoc.CreateAttribute("name"));
+                xe.Attributes[0].Value=name;
+            }
+
+            while(xe.ChildNodes.Count>0) xe.RemoveChild(xe.FirstChild);
+
+            foreach(string str in items) {
+                XmlElement xe2=xmlDoc.CreateElement("element");
+                xe2.InnerText=str;
+                xe.AppendChild(xe2);
+            }
+
+            xmlDoc.Save(xmlPath);
+        }
+
+        public static string GetString(string name) {
+            XmlElement xe=rootNode.SelectSingleNode("descendant::strValue[@name='"+name+"']") as XmlElement;
+            if(xe==null) return null;
+            else return xe.InnerText;
+        }
+
+        public static void SetString(string name, string value) {
+            XmlElement xe=rootNode.SelectSingleNode("descendant::strValue[@name='"+name+"']") as XmlElement;
+            if(xe==null) {
+                rootNode.AppendChild(xe=xmlDoc.CreateElement("strValue"));
+                xe.Attributes.Append(xmlDoc.CreateAttribute("name"));
+                xe.Attributes[0].Value=name;
+            }
+
+            xe.InnerText=value;
+
+            xmlDoc.Save(xmlPath);
+        }
+
+        public static bool GetBool(string name) {
+            XmlElement xe=rootNode.SelectSingleNode("descendant::boolValue[@name='"+name+"']") as XmlElement;
+            if(xe==null) return false;
+            else return xe.InnerText=="true";
+        }
+
+        public static void SetBool(string name, bool value) {
+            XmlElement xe=rootNode.SelectSingleNode("descendant::boolValue[@name='"+name+"']") as XmlElement;
+            if(xe==null) {
+                rootNode.AppendChild(xe=xmlDoc.CreateElement("boolValue"));
+                xe.Attributes.Append(xmlDoc.CreateAttribute("name"));
+                xe.Attributes[0].Value=name;
+            }
+
+            xe.InnerText=value?"true":"false";
+
+            xmlDoc.Save(xmlPath);
+        }
     }
 }

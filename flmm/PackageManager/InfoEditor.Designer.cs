@@ -40,6 +40,12 @@ namespace fomm.PackageManager {
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.tbMinFommVersion = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.tbWebsite = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.tbEmail = new System.Windows.Forms.TextBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.clbGroups = new System.Windows.Forms.CheckedListBox();
             this.SuspendLayout();
             // 
             // tbName
@@ -77,7 +83,7 @@ namespace fomm.PackageManager {
             // bScreenshot
             // 
             this.bScreenshot.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.bScreenshot.Location = new System.Drawing.Point(12, 319);
+            this.bScreenshot.Location = new System.Drawing.Point(12, 424);
             this.bScreenshot.Name = "bScreenshot";
             this.bScreenshot.Size = new System.Drawing.Size(115, 23);
             this.bScreenshot.TabIndex = 4;
@@ -88,7 +94,7 @@ namespace fomm.PackageManager {
             // bSave
             // 
             this.bSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.bSave.Location = new System.Drawing.Point(271, 348);
+            this.bSave.Location = new System.Drawing.Point(271, 453);
             this.bSave.Name = "bSave";
             this.bSave.Size = new System.Drawing.Size(75, 23);
             this.bSave.TabIndex = 5;
@@ -99,7 +105,7 @@ namespace fomm.PackageManager {
             // bCancel
             // 
             this.bCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.bCancel.Location = new System.Drawing.Point(271, 319);
+            this.bCancel.Location = new System.Drawing.Point(271, 424);
             this.bCancel.Name = "bCancel";
             this.bCancel.Size = new System.Drawing.Size(75, 23);
             this.bCancel.TabIndex = 6;
@@ -110,7 +116,7 @@ namespace fomm.PackageManager {
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(9, 139);
+            this.label3.Location = new System.Drawing.Point(9, 191);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(84, 13);
             this.label3.TabIndex = 8;
@@ -120,13 +126,12 @@ namespace fomm.PackageManager {
             // 
             this.tbDescription.AcceptsReturn = true;
             this.tbDescription.AcceptsTab = true;
-            this.tbDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.tbDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbDescription.Location = new System.Drawing.Point(12, 166);
+            this.tbDescription.Location = new System.Drawing.Point(12, 207);
             this.tbDescription.Multiline = true;
             this.tbDescription.Name = "tbDescription";
-            this.tbDescription.Size = new System.Drawing.Size(334, 147);
+            this.tbDescription.Size = new System.Drawing.Size(334, 142);
             this.tbDescription.TabIndex = 7;
             // 
             // label4
@@ -157,7 +162,7 @@ namespace fomm.PackageManager {
             // bClearScreenshot
             // 
             this.bClearScreenshot.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.bClearScreenshot.Location = new System.Drawing.Point(12, 348);
+            this.bClearScreenshot.Location = new System.Drawing.Point(12, 453);
             this.bClearScreenshot.Name = "bClearScreenshot";
             this.bClearScreenshot.Size = new System.Drawing.Size(115, 23);
             this.bClearScreenshot.TabIndex = 14;
@@ -179,7 +184,7 @@ namespace fomm.PackageManager {
             // 
             // tbMinFommVersion
             // 
-            this.tbMinFommVersion.Location = new System.Drawing.Point(12, 116);
+            this.tbMinFommVersion.Location = new System.Drawing.Point(12, 168);
             this.tbMinFommVersion.Name = "tbMinFommVersion";
             this.tbMinFommVersion.Size = new System.Drawing.Size(178, 20);
             this.tbMinFommVersion.TabIndex = 17;
@@ -187,17 +192,78 @@ namespace fomm.PackageManager {
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(196, 119);
+            this.label6.Location = new System.Drawing.Point(196, 171);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(130, 13);
             this.label6.TabIndex = 16;
             this.label6.Text = "Min required fomm version";
             // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(196, 119);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(46, 13);
+            this.label7.TabIndex = 19;
+            this.label7.Text = "Website";
+            // 
+            // tbWebsite
+            // 
+            this.tbWebsite.Location = new System.Drawing.Point(12, 116);
+            this.tbWebsite.Name = "tbWebsite";
+            this.tbWebsite.Size = new System.Drawing.Size(178, 20);
+            this.tbWebsite.TabIndex = 18;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(196, 145);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(71, 13);
+            this.label8.TabIndex = 21;
+            this.label8.Text = "Contact email";
+            // 
+            // tbEmail
+            // 
+            this.tbEmail.Location = new System.Drawing.Point(12, 142);
+            this.tbEmail.Name = "tbEmail";
+            this.tbEmail.Size = new System.Drawing.Size(178, 20);
+            this.tbEmail.TabIndex = 20;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(12, 352);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(41, 13);
+            this.label9.TabIndex = 22;
+            this.label9.Text = "Groups";
+            // 
+            // clbGroups
+            // 
+            this.clbGroups.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.clbGroups.CheckOnClick = true;
+            this.clbGroups.FormattingEnabled = true;
+            this.clbGroups.IntegralHeight = false;
+            this.clbGroups.Location = new System.Drawing.Point(12, 368);
+            this.clbGroups.Name = "clbGroups";
+            this.clbGroups.Size = new System.Drawing.Size(334, 50);
+            this.clbGroups.TabIndex = 23;
+            this.clbGroups.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.clbGroups_ItemCheck);
+            // 
             // InfoEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(358, 381);
+            this.ClientSize = new System.Drawing.Size(358, 486);
+            this.Controls.Add(this.clbGroups);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.label8);
+            this.Controls.Add(this.tbEmail);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.tbWebsite);
             this.Controls.Add(this.tbMinFommVersion);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.tbMVersion);
@@ -241,5 +307,11 @@ namespace fomm.PackageManager {
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.TextBox tbMinFommVersion;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.TextBox tbWebsite;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TextBox tbEmail;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.CheckedListBox clbGroups;
     }
 }

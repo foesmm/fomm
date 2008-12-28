@@ -23,11 +23,12 @@ namespace fomm.PackageManager {
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
+            this.components = new System.ComponentModel.Container();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.lvModList = new System.Windows.Forms.ListView();
-            this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
-            this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
-            this.columnHeader3 = new System.Windows.Forms.ColumnHeader();
+            this.fomodContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.visitWebsiteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.emailAuthorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tbModInfo = new System.Windows.Forms.TextBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.bEditScript = new System.Windows.Forms.Button();
@@ -36,9 +37,12 @@ namespace fomm.PackageManager {
             this.bActivate = new System.Windows.Forms.Button();
             this.bAddNew = new System.Windows.Forms.Button();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.cbGroups = new System.Windows.Forms.CheckBox();
+            this.bEditGroups = new System.Windows.Forms.Button();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            this.fomodContextMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -66,10 +70,7 @@ namespace fomm.PackageManager {
             // 
             this.lvModList.AutoArrange = false;
             this.lvModList.CheckBoxes = true;
-            this.lvModList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1,
-            this.columnHeader2,
-            this.columnHeader3});
+            this.lvModList.ContextMenuStrip = this.fomodContextMenu;
             this.lvModList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lvModList.FullRowSelect = true;
             this.lvModList.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
@@ -84,18 +85,28 @@ namespace fomm.PackageManager {
             this.lvModList.SelectedIndexChanged += new System.EventHandler(this.lvModList_SelectedIndexChanged);
             this.lvModList.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.lvModList_ItemCheck);
             // 
-            // columnHeader1
+            // fomodContextMenu
             // 
-            this.columnHeader1.Text = "Name";
-            this.columnHeader1.Width = 219;
+            this.fomodContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.visitWebsiteToolStripMenuItem,
+            this.emailAuthorToolStripMenuItem});
+            this.fomodContextMenu.Name = "fomodContextMenu";
+            this.fomodContextMenu.Size = new System.Drawing.Size(134, 48);
+            this.fomodContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.fomodContextMenu_Opening);
             // 
-            // columnHeader2
+            // visitWebsiteToolStripMenuItem
             // 
-            this.columnHeader2.Text = "Version";
+            this.visitWebsiteToolStripMenuItem.Name = "visitWebsiteToolStripMenuItem";
+            this.visitWebsiteToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
+            this.visitWebsiteToolStripMenuItem.Text = "Visit website";
+            this.visitWebsiteToolStripMenuItem.Click += new System.EventHandler(this.visitWebsiteToolStripMenuItem_Click);
             // 
-            // columnHeader3
+            // emailAuthorToolStripMenuItem
             // 
-            this.columnHeader3.Text = "Author";
+            this.emailAuthorToolStripMenuItem.Name = "emailAuthorToolStripMenuItem";
+            this.emailAuthorToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
+            this.emailAuthorToolStripMenuItem.Text = "email author";
+            this.emailAuthorToolStripMenuItem.Click += new System.EventHandler(this.emailAuthorToolStripMenuItem_Click);
             // 
             // tbModInfo
             // 
@@ -121,7 +132,7 @@ namespace fomm.PackageManager {
             // 
             // bEditScript
             // 
-            this.bEditScript.Location = new System.Drawing.Point(362, 224);
+            this.bEditScript.Location = new System.Drawing.Point(362, 240);
             this.bEditScript.Name = "bEditScript";
             this.bEditScript.Size = new System.Drawing.Size(120, 23);
             this.bEditScript.TabIndex = 20;
@@ -131,7 +142,7 @@ namespace fomm.PackageManager {
             // 
             // bEditReadme
             // 
-            this.bEditReadme.Location = new System.Drawing.Point(362, 195);
+            this.bEditReadme.Location = new System.Drawing.Point(362, 211);
             this.bEditReadme.Name = "bEditReadme";
             this.bEditReadme.Size = new System.Drawing.Size(120, 23);
             this.bEditReadme.TabIndex = 21;
@@ -141,7 +152,7 @@ namespace fomm.PackageManager {
             // 
             // bEditInfo
             // 
-            this.bEditInfo.Location = new System.Drawing.Point(362, 253);
+            this.bEditInfo.Location = new System.Drawing.Point(362, 269);
             this.bEditInfo.Name = "bEditInfo";
             this.bEditInfo.Size = new System.Drawing.Size(120, 23);
             this.bEditInfo.TabIndex = 22;
@@ -174,17 +185,40 @@ namespace fomm.PackageManager {
             this.openFileDialog1.Filter = "mod archive (*.fomod, *.zip)|*.fomod;*.zip";
             this.openFileDialog1.RestoreDirectory = true;
             // 
+            // cbGroups
+            // 
+            this.cbGroups.AutoSize = true;
+            this.cbGroups.Location = new System.Drawing.Point(362, 166);
+            this.cbGroups.Name = "cbGroups";
+            this.cbGroups.Size = new System.Drawing.Size(97, 17);
+            this.cbGroups.TabIndex = 25;
+            this.cbGroups.Text = "Display Groups";
+            this.cbGroups.UseVisualStyleBackColor = true;
+            this.cbGroups.CheckedChanged += new System.EventHandler(this.cbGroups_CheckedChanged);
+            // 
+            // bEditGroups
+            // 
+            this.bEditGroups.Location = new System.Drawing.Point(362, 298);
+            this.bEditGroups.Name = "bEditGroups";
+            this.bEditGroups.Size = new System.Drawing.Size(120, 23);
+            this.bEditGroups.TabIndex = 26;
+            this.bEditGroups.Text = "Edit groups";
+            this.bEditGroups.UseVisualStyleBackColor = true;
+            this.bEditGroups.Click += new System.EventHandler(this.bEditGroups_Click);
+            // 
             // PackageManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(494, 346);
+            this.Controls.Add(this.bEditGroups);
+            this.Controls.Add(this.cbGroups);
             this.Controls.Add(this.bAddNew);
             this.Controls.Add(this.bActivate);
-            this.Controls.Add(this.bEditInfo);
             this.Controls.Add(this.bEditReadme);
-            this.Controls.Add(this.bEditScript);
+            this.Controls.Add(this.bEditInfo);
             this.Controls.Add(this.splitContainer1);
+            this.Controls.Add(this.bEditScript);
             this.Controls.Add(this.pictureBox1);
             this.Name = "PackageManager";
             this.Text = "PackageManager";
@@ -193,8 +227,10 @@ namespace fomm.PackageManager {
             this.splitContainer1.Panel2.ResumeLayout(false);
             this.splitContainer1.Panel2.PerformLayout();
             this.splitContainer1.ResumeLayout(false);
+            this.fomodContextMenu.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -202,16 +238,18 @@ namespace fomm.PackageManager {
 
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.ListView lvModList;
-        private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.TextBox tbModInfo;
         private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.ColumnHeader columnHeader2;
-        private System.Windows.Forms.ColumnHeader columnHeader3;
         private System.Windows.Forms.Button bEditScript;
         private System.Windows.Forms.Button bEditReadme;
         private System.Windows.Forms.Button bEditInfo;
         private System.Windows.Forms.Button bActivate;
         private System.Windows.Forms.Button bAddNew;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
+        private System.Windows.Forms.ContextMenuStrip fomodContextMenu;
+        private System.Windows.Forms.ToolStripMenuItem visitWebsiteToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem emailAuthorToolStripMenuItem;
+        private System.Windows.Forms.CheckBox cbGroups;
+        private System.Windows.Forms.Button bEditGroups;
     }
 }

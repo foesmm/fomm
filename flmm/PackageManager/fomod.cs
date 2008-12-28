@@ -63,8 +63,11 @@ namespace fomm.PackageManager {
         public string Description;
         public Version Version;
         public string VersionS;
+        public string email;
+        public string website;
         private System.Drawing.Bitmap screenshot;
         public Version MinFommVersion;
+        public string[] groups;
 
         private string readmeext;
         public string ReadmeExt { get { return readmeext; } }
@@ -115,6 +118,16 @@ namespace fomm.PackageManager {
                             if(Program.MVersion<v) throw new fomodLoadException("This fomod requires a newer version of Fallout mod manager to load\n"+
                                 "Expected "+n.InnerText);
                             break;
+                        case "Email":
+                            email=n.InnerText;
+                            break;
+                        case "Website":
+                            website=n.InnerText;
+                            break;
+                        case "Groups":
+                            groups=new string[n.ChildNodes.Count];
+                            for(int i=0;i<n.ChildNodes.Count;i++) groups[i]=n.ChildNodes[i].InnerText;
+                            break;
                         default:
                             throw new fomodLoadException("Unexpected node type '"+n.Name+"' in info.xml");
                         }
@@ -135,11 +148,12 @@ namespace fomm.PackageManager {
             Name=System.IO.Path.GetFileNameWithoutExtension(path);
             baseName=Name.ToLowerInvariant();
             Author="DEFAULT";
-            Description=string.Empty;
+            Description=email=website=string.Empty;
             VersionS="1.0";
             Version=DefaultVersion;
             MinFommVersion=DefaultMinFommVersion;
             readmepath="readme - "+baseName+".rtf";
+            groups=new string[0];
 
             LoadInfo();
             hasScript=(file.GetEntry("fomod/script.cs")!=null);
@@ -254,9 +268,30 @@ namespace fomm.PackageManager {
                 el2.InnerText=Description;
                 el.AppendChild(el2);
             }
+            if(email!="") {
+                el2=xmlDoc.CreateElement("Email");
+                el2.InnerText=email;
+                el.AppendChild(el2);
+            }
+            if(website!="") {
+                el2=xmlDoc.CreateElement("Website");
+                el2.InnerText=website;
+                el.AppendChild(el2);
+            }
+            if(Description!="") {
+                el2=xmlDoc.CreateElement("Description");
+                el2.InnerText=Description;
+                el.AppendChild(el2);
+            }
             if(MinFommVersion!=DefaultMinFommVersion) {
                 el2=xmlDoc.CreateElement("MinFommVersion");
                 el2.InnerText=MinFommVersion.ToString();
+                el.AppendChild(el2);
+            }
+            if(groups.Length>0) {
+                el2=xmlDoc.CreateElement("Groups");
+                for(int i=0;i<groups.Length;i++) el2.AppendChild(xmlDoc.CreateElement("element"));
+                for(int i=0;i<groups.Length;i++) el2.ChildNodes[i].InnerText=groups[i];
                 el.AppendChild(el2);
             }
 

@@ -7,6 +7,72 @@ namespace fomm.PackageManager {
     public partial class PackageManager : Form {
 
         private readonly List<fomod> mods=new List<fomod>();
+        private readonly List<string> groups;
+        private readonly List<string> lgroups;
+
+        private void AddFomodToList(fomod mod) {
+            if(!cbGroups.Checked) {
+                ListViewItem lvi=new ListViewItem(new string[] { mod.Name, mod.VersionS, mod.Author });
+                lvi.Tag=mod;
+                lvi.Checked=mod.IsActive;
+                lvModList.Items.Add(lvi);
+                return;
+            }
+            bool added=false;
+            for(int i=0;i<groups.Count;i++) {
+                if(Array.IndexOf<string>(mod.groups, lgroups[i])!=-1) {
+                    added=true;
+                    ListViewItem lvi=new ListViewItem(new string[] { mod.Name, mod.VersionS, mod.Author });
+                    lvi.Tag=mod;
+                    lvi.Checked=mod.IsActive;
+                    lvModList.Items.Add(lvi);
+                    lvModList.Groups[i+1].Items.Add(lvi);
+                }
+            }
+            if(!added) {
+                ListViewItem lvi=new ListViewItem(new string[] { mod.Name, mod.VersionS, mod.Author });
+                lvi.Tag=mod;
+                lvi.Checked=mod.IsActive;
+                lvModList.Items.Add(lvi);
+                lvModList.Groups[0].Items.Add(lvi);
+            }
+        }
+        private void RebuildListView() {
+            lvModList.SuspendLayout();
+
+            lvModList.Clear();
+            lvModList.Groups.Clear();
+
+            if(!cbGroups.Checked) {
+                lvModList.ShowGroups=false;
+            } else {
+                ListViewGroup lvg=new ListViewGroup("No group");
+                lvModList.Groups.Add(lvg);
+
+                for(int i=0;i<groups.Count;i++) {
+                    lvg=new ListViewGroup(groups[i]);
+                    lvModList.Groups.Add(lvg);
+                }
+                lvModList.ShowGroups=true;
+            }
+
+            if(lvModList.Columns.Count==0) {
+                lvModList.Columns.Add("Name");
+                lvModList.Columns[0].Width=200;
+                lvModList.Columns.Add("Version");
+                lvModList.Columns.Add("Author");
+            }
+
+            foreach(fomod mod in mods) AddFomodToList(mod);
+
+            lvModList.ResumeLayout();
+        }
+        private void ReaddFomodToList(fomod mod) {
+            lvModList.SuspendLayout();
+            for(int i=0;i<lvModList.Items.Count;i++) if(lvModList.Items[i].Tag==mod) lvModList.Items.RemoveAt(i--);
+            AddFomodToList(mod);
+            lvModList.ResumeLayout();
+        }
 
         private void AddFomod(string modpath) {
             fomod mod;
@@ -17,10 +83,6 @@ namespace fomm.PackageManager {
                 return;
             }
             mods.Add(mod);
-            ListViewItem lvi=new ListViewItem(new string[] { mod.Name, mod.VersionS, mod.Author });
-            lvi.Tag=mod;
-            lvi.Checked=mod.IsActive;
-            lvModList.Items.Add(lvi);
         }
         public PackageManager() {
             InitializeComponent();
@@ -28,9 +90,54 @@ namespace fomm.PackageManager {
             foreach(string modpath in Directory.GetFiles(Program.PackageDir, "*.fomod.zip")) {
                 if(!File.Exists(Path.ChangeExtension(modpath, null))) File.Move(modpath, Path.ChangeExtension(modpath, null));
             }
+
+            string[] groups=Settings.GetStringArray("fomodGroups");
+            if(groups==null) {
+                groups=new string[] {
+                    "Items",
+                    "Items/Guns",
+                    "Items/Armor",
+                    "Items/Misc",
+                    "Locations",
+                    "Locations/Houses",
+                    "Locations/Interiors",
+                    "Locations/Exteriors",
+                    "Gameplay",
+                    "Gameplay/Perks",
+                    "Gameplay/Realism",
+                    "Gameplay/Combat",
+                    "Gameplay/Loot",
+                    "Gameplay/Enemies",
+                    "Quests",
+                    "Companions",
+                    "ModResource",
+                    "UI",
+                    "Music",
+                    "Replacers",
+                    "Replacers/Meshes",
+                    "Replacers/Textures",
+                    "Replacers/Sounds",
+                    "Tweaks",
+                    "Fixes",
+                    "Cosmetic",
+                    "Cosmetic/Races",
+                    "Cosmetic/Eyes",
+                    "Cosmetic/Hair"
+                };
+                Settings.SetStringArray("fomodGroups", groups);
+            }
+            this.groups=new List<string>(groups);
+            this.lgroups=new List<string>(groups.Length);
+            for(int i=0;i<groups.Length;i++) lgroups.Add(groups[i].ToLowerInvariant());
+
+            if(Settings.GetBool("PackageManagerShowsGroups")) {
+                cbGroups.Checked=true;
+            }
             foreach(string modpath in Directory.GetFiles(Program.PackageDir, "*.fomod")) {
                 AddFomod(modpath);
             }
+
+            RebuildListView();
         }
 
         private void lvModList_SelectedIndexChanged(object sender, EventArgs e) {
@@ -112,12 +219,15 @@ namespace fomm.PackageManager {
             if(lvModList.SelectedItems.Count!=1) return;
             fomod mod=(fomod)lvModList.SelectedItems[0].Tag;
             if((new InfoEditor(mod)).ShowDialog()==DialogResult.OK) {
-                ListViewItem lvi=lvModList.SelectedItems[0];
-                lvi.SubItems[0].Text=mod.Name;
-                lvi.SubItems[1].Text=mod.VersionS;
-                lvi.SubItems[2].Text=mod.Author;
-                tbModInfo.Text=mod.Description;
-                pictureBox1.Image=mod.GetScreenshot();
+                if(cbGroups.Checked) ReaddFomodToList(mod);
+                else {
+                    ListViewItem lvi=lvModList.SelectedItems[0];
+                    lvi.SubItems[0].Text=mod.Name;
+                    lvi.SubItems[1].Text=mod.VersionS;
+                    lvi.SubItems[2].Text=mod.Author;
+                    tbModInfo.Text=mod.Description;
+                    pictureBox1.Image=mod.GetScreenshot();
+                }
             }
             
         }
@@ -156,6 +266,63 @@ namespace fomm.PackageManager {
                 File.Copy(oldpath, newpath);
             }
             AddFomod(newpath);
+        }
+
+        private void fomodContextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e) {
+            if(lvModList.SelectedItems.Count!=1) {
+                e.Cancel=true;
+                return;
+            }
+            fomod mod=(fomod)lvModList.SelectedItems[0].Tag;
+            if(mod.email=="") emailAuthorToolStripMenuItem.Visible=false;
+            else emailAuthorToolStripMenuItem.Visible=true;
+            if(mod.website=="") visitWebsiteToolStripMenuItem.Visible=false;
+            else visitWebsiteToolStripMenuItem.Visible=true;
+        }
+
+        private void visitWebsiteToolStripMenuItem_Click(object sender, EventArgs e) {
+            if(lvModList.SelectedItems.Count!=1) return;
+            fomod mod=(fomod)lvModList.SelectedItems[0].Tag;
+            System.Diagnostics.Process.Start(mod.website, "");
+        }
+
+        private void emailAuthorToolStripMenuItem_Click(object sender, EventArgs e) {
+            if(lvModList.SelectedItems.Count!=1) return;
+            fomod mod=(fomod)lvModList.SelectedItems[0].Tag;
+            System.Diagnostics.Process.Start("mailto://"+mod.email, "");
+        }
+
+        private void cbGroups_CheckedChanged(object sender, EventArgs e) {
+            RebuildListView();
+            Settings.SetBool("PackageManagerShowsGroups", cbGroups.Checked);
+        }
+
+        private void bEditGroups_Click(object sender, EventArgs e) {
+            Form f=new Form();
+            Settings.GetWindowPosition("GroupEditor", f);
+            f.Text="Groups";
+            TextBox tb=new TextBox();
+            f.Controls.Add(tb);
+            tb.Dock=DockStyle.Fill;
+            tb.AcceptsReturn=true;
+            tb.Multiline=true;
+            tb.ScrollBars=ScrollBars.Vertical;
+            tb.Text=string.Join(Environment.NewLine, groups.ToArray());
+            tb.Select(0, 0);
+            f.FormClosing+=delegate(object sender2, FormClosingEventArgs args2)
+            {
+                Settings.SetWindowPosition("GroupEditor", f);
+            };
+            f.ShowDialog();
+            groups.Clear();
+            groups.AddRange(tb.Lines);
+            for(int i=0;i<groups.Count;i++) {
+                if(groups[i]=="") groups.RemoveAt(i--);
+            }
+            lgroups.Clear();
+            for(int i=0;i<groups.Count;i++) lgroups.Add(groups[i].ToLowerInvariant());
+            RebuildListView();
+            Settings.SetStringArray("fomodGroups", groups.ToArray());
         }
     }
 }
