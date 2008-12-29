@@ -132,6 +132,7 @@ namespace fomm.PackageManager {
             // 
             // bEditScript
             // 
+            this.bEditScript.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.bEditScript.Location = new System.Drawing.Point(362, 215);
             this.bEditScript.Name = "bEditScript";
             this.bEditScript.Size = new System.Drawing.Size(120, 23);
@@ -142,6 +143,7 @@ namespace fomm.PackageManager {
             // 
             // bEditReadme
             // 
+            this.bEditReadme.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.bEditReadme.Location = new System.Drawing.Point(362, 186);
             this.bEditReadme.Name = "bEditReadme";
             this.bEditReadme.Size = new System.Drawing.Size(120, 23);
@@ -152,6 +154,7 @@ namespace fomm.PackageManager {
             // 
             // bEditInfo
             // 
+            this.bEditInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.bEditInfo.Location = new System.Drawing.Point(362, 244);
             this.bEditInfo.Name = "bEditInfo";
             this.bEditInfo.Size = new System.Drawing.Size(120, 23);
@@ -162,6 +165,7 @@ namespace fomm.PackageManager {
             // 
             // bActivate
             // 
+            this.bActivate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.bActivate.Location = new System.Drawing.Point(362, 108);
             this.bActivate.Name = "bActivate";
             this.bActivate.Size = new System.Drawing.Size(120, 23);
@@ -172,6 +176,7 @@ namespace fomm.PackageManager {
             // 
             // bAddNew
             // 
+            this.bAddNew.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.bAddNew.Location = new System.Drawing.Point(362, 137);
             this.bAddNew.Name = "bAddNew";
             this.bAddNew.Size = new System.Drawing.Size(120, 23);
@@ -187,6 +192,7 @@ namespace fomm.PackageManager {
             // 
             // cbGroups
             // 
+            this.cbGroups.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbGroups.AutoSize = true;
             this.cbGroups.Location = new System.Drawing.Point(362, 317);
             this.cbGroups.Name = "cbGroups";
@@ -198,6 +204,7 @@ namespace fomm.PackageManager {
             // 
             // bEditGroups
             // 
+            this.bEditGroups.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.bEditGroups.Location = new System.Drawing.Point(362, 288);
             this.bEditGroups.Name = "bEditGroups";
             this.bEditGroups.Size = new System.Drawing.Size(120, 23);

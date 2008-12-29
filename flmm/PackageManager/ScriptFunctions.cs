@@ -20,6 +20,7 @@ namespace fomm.PackageManager {
         private static XmlDocument xmlDoc;
         private static XmlElement rootNode;
         private static XmlElement dataFileNode;
+        private static string LastError;
 
         static ScriptFunctions() {
             permissions=new System.Security.PermissionSet(PermissionState.None);
@@ -42,12 +43,22 @@ namespace fomm.PackageManager {
             xmlDoc=new XmlDocument();
             rootNode=xmlDoc.CreateElement("installData");
             xmlDoc.AppendChild(rootNode);
+            activePlugins=null;
 
             dataFileNode=null;
         }
 
         internal static XmlDocument BasicInstallScript() {
-            foreach(string file in GetFomodFileList()) InstallFileFromFomod(file);
+            char[] seperators=new char[] {Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar};
+            foreach(string file in GetFomodFileList()) {
+                InstallFileFromFomod(file);
+                string ext=Path.GetExtension(file).ToLowerInvariant();
+                if((ext==".esp"||ext==".esm")&&file.IndexOfAny(seperators)==-1) {
+                    SetPluginActivation(file, true);
+                }
+            }
+            CommitActivePlugins();
+            activePlugins=null;
             return xmlDoc;
         }
 
@@ -57,27 +68,9 @@ namespace fomm.PackageManager {
             return xmlDoc;
         }
 
-        public static void MessageBox(string message) {
-            permissions.Assert();
-            System.Windows.Forms.MessageBox.Show(message);
-        }
-        public static void MessageBox(string message, string title) {
-            permissions.Assert();
-            System.Windows.Forms.MessageBox.Show(message, title);
-        }
-        public static DialogResult MessageBox(string message, string title, MessageBoxButtons buttons) {
-            permissions.Assert();
-            return System.Windows.Forms.MessageBox.Show(message, title, buttons);
-        }
-
-        public static string[] GetFomodFileList() {
-            permissions.Assert();
-            List<string> files=new List<string>();
-            foreach(ZipEntry ze in file) {
-                if(ze.IsDirectory) continue;
-                if(!ze.Name.StartsWith("fomod", StringComparison.InvariantCultureIgnoreCase)) files.Add(ze.Name);
-            }
-            return files.ToArray();
+        private static void CommitActivePlugins() {
+            if(activePlugins==null) return;
+            File.WriteAllLines(Program.PluginsFile, activePlugins.ToArray());
         }
 
         private static bool TestDoOverwrite(string path) {
@@ -129,6 +122,40 @@ namespace fomm.PackageManager {
             }
         }
 
+        private static List<string> activePlugins;
+        private static void LoadActivePlugins() {
+            if(File.Exists(Program.PluginsFile)) {
+                string[] lines=File.ReadAllLines(Program.PluginsFile);
+                for(int i=0;i<lines.Length;i++) lines[i]=lines[i].Trim().ToLowerInvariant();
+                activePlugins=new List<string>(lines);
+            } else {
+                activePlugins=new List<string>();
+            }
+        }
+
+        public static void MessageBox(string message) {
+            permissions.Assert();
+            System.Windows.Forms.MessageBox.Show(message);
+        }
+        public static void MessageBox(string message, string title) {
+            permissions.Assert();
+            System.Windows.Forms.MessageBox.Show(message, title);
+        }
+        public static DialogResult MessageBox(string message, string title, MessageBoxButtons buttons) {
+            permissions.Assert();
+            return System.Windows.Forms.MessageBox.Show(message, title, buttons);
+        }
+
+        public static string[] GetFomodFileList() {
+            permissions.Assert();
+            List<string> files=new List<string>();
+            foreach(ZipEntry ze in file) {
+                if(ze.IsDirectory) continue;
+                if(!ze.Name.StartsWith("fomod", StringComparison.InvariantCultureIgnoreCase)) files.Add(ze.Name);
+            }
+            return files.ToArray();
+        }
+
         public static bool InstallFileFromFomod(string file) {
             permissions.Assert();
             string datapath=Path.GetFullPath(Path.Combine("Data", file));
@@ -138,8 +165,10 @@ namespace fomm.PackageManager {
             if(!Directory.Exists(Path.GetDirectoryName(datapath))) {
                 Directory.CreateDirectory(Path.GetDirectoryName(datapath));
             } else {
-                if(!TestDoOverwrite(datapath)) return false;
-                else File.Delete(datapath);
+                if(!TestDoOverwrite(datapath)) {
+                    LastError="User chose not to overwrite";
+                    return false;
+                } else File.Delete(datapath);
             }
             FileStream fs=File.Create(datapath);
             Stream s=ScriptFunctions.file.GetInputStream(ze);
@@ -162,6 +191,41 @@ namespace fomm.PackageManager {
             return true;
         }
 
-        //public static string GetLastError() { return LastError; }
+        public static void SetPluginActivation(string s, bool activate) {
+            permissions.Assert();
+            if(activePlugins==null) LoadActivePlugins();
+            s=s.ToLowerInvariant();
+            if(s.IndexOfAny(Path.GetInvalidFileNameChars())!=-1) {
+                LastError="Illegal plugin path";
+                return;
+            }
+            if(!File.Exists("Data\\"+s)) {
+                LastError="Plugin '"+s+"' does not exist";
+                return;
+            }
+            if(activate) {
+                if(!activePlugins.Contains(s)) activePlugins.Add(s);
+            } else {
+                activePlugins.Remove(s);
+            }
+        }
+
+        public static Version GetFommVersion() {
+            permissions.Assert();
+            return Program.MVersion;
+        }
+
+        public static bool ScriptExtenderPresent() {
+            permissions.Assert();
+            return File.Exists("fose_loader.exe");
+        }
+
+        public static Version GetFoseVersion() {
+            permissions.Assert();
+            if(!File.Exists("fose_loader.exe")) return null;
+            return new Version(System.Diagnostics.FileVersionInfo.GetVersionInfo("fose_loader.exe").FileVersion.Replace(", ", "."));
+        }
+
+        public static string GetLastError() { return LastError; }
     }
 }

@@ -178,6 +178,7 @@ namespace fomm {
         public static readonly string FOSavesPath=Path.Combine(Fallout3SaveDir, Imports.GetPrivateProfileString("General", "SLocalSavePath", "Games", FOIniPath));
         public static readonly string PackageDir=Path.Combine(exeDir, "mods");
         public static readonly string fommDir=Path.Combine(exeDir, "fomm");
+        public static readonly string PluginsFile=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Fallout3\\plugins.txt");
 
         /// <summary>
         /// The main entry point for the application.

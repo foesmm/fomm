@@ -9,6 +9,7 @@ namespace fomm.PackageManager {
         private readonly List<fomod> mods=new List<fomod>();
         private readonly List<string> groups;
         private readonly List<string> lgroups;
+        private readonly MainForm mf;
 
         private void AddFomodToList(fomod mod) {
             if(!cbGroups.Checked) {
@@ -84,7 +85,8 @@ namespace fomm.PackageManager {
             }
             mods.Add(mod);
         }
-        public PackageManager() {
+        public PackageManager(MainForm mf) {
+            this.mf=mf;
             InitializeComponent();
             Settings.GetWindowPosition("PackageManager", this);
             foreach(string modpath in Directory.GetFiles(Program.PackageDir, "*.fomod.zip")) {
@@ -246,6 +248,8 @@ namespace fomm.PackageManager {
             }
             if(!mod.IsActive) bActivate.Text="Activate";
             else bActivate.Text="Deactivate";
+
+            mf.RefreshEspList();
         }
 
         private void bAddNew_Click(object sender, EventArgs e) {

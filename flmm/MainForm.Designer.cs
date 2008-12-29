@@ -127,6 +127,7 @@ namespace fomm {
             this.lvEspList.TabIndex = 0;
             this.lvEspList.UseCompatibleStateImageBehavior = false;
             this.lvEspList.View = System.Windows.Forms.View.Details;
+            this.lvEspList.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.lvEspList_ItemChecked);
             this.lvEspList.SelectedIndexChanged += new System.EventHandler(this.lvEspList_SelectedIndexChanged);
             this.lvEspList.DragDrop += new System.Windows.Forms.DragEventHandler(this.lvEspList_DragDrop);
             this.lvEspList.DragEnter += new System.Windows.Forms.DragEventHandler(this.lvEspList_DragEnter);

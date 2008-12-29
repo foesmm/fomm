@@ -6,81 +6,16 @@ using fomm.TESsnip;
 
 namespace fomm {
     public partial class MainForm : Form {
-        private readonly string PluginsFile;
 
         public MainForm() {
             InitializeComponent();
             Settings.GetWindowPosition("MainForm", this);
-            PluginsFile=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Fallout3\\plugins.txt");
+            
             Text+=" ("+Program.Version+")";
         }
 
-        private void bBSAUnpack_Click(object sender, EventArgs e) {
-            new BSABrowser().Show();
-        }
-
-        private void cBSACreator_Click(object sender, EventArgs e) {
-            MessageBox.Show("Warning: This tool hasn't been fully updated for fallout yet. BSAs created with it may not be able to be read.", "Warning");
-            new BSACreator().Show();
-        }
-
-        private void bTESsnip_Click(object sender, EventArgs e) {
-            TESsnip.TESsnip tes=new TESsnip.TESsnip();
-            tes.FormClosed+=pm_FormClosed;
-            tes.Show();
-            GC.Collect();
-            //GC.WaitForPendingFinalizers();
-        }
-
-        private void bShaderEdit_Click(object sender, EventArgs e) {
-            new ShaderEdit.MainForm().Show();
-        }
-
-        private void bLaunch_Click(object sender, EventArgs e) {
-            if(Application.OpenForms.Count>1) {
-                MessageBox.Show("Please close all utility windows before launching fallout");
-                return;
-            }
-            Close();
-            if(File.Exists("fose_loader.exe")) System.Diagnostics.Process.Start("fose_loader.exe");
-            else if(File.Exists("fallout3.exe")) System.Diagnostics.Process.Start("fallout3.exe");
-            else System.Diagnostics.Process.Start("fallout3ng.exe");
-        }
-
         private void MainForm_Load(object sender, EventArgs e) {
-            lvEspList.Items.Clear();
-
-            List<ListViewItem> plugins=new List<ListViewItem>();
-            DirectoryInfo di=new DirectoryInfo("data");
-            List<FileInfo> files=new List<FileInfo>(di.GetFiles("*.esp"));
-            files.AddRange(di.GetFiles("*.esm"));
-            int count=0;
-            for(int i=0;i<files.Count;i++) {
-                try {
-                    count+=files[i].LastWriteTime.Hour;
-                } catch(ArgumentOutOfRangeException) {
-                    MessageBox.Show("File '"+files[i].Name+"' had an invalid time stamp, and has been reset.\n"+
-                        "Please check its position in the load order.", "Warning");
-                    files[i].LastWriteTime=DateTime.Now;
-                }
-            }
-            files.Sort(delegate(FileInfo a, FileInfo b) {
-                return a.LastWriteTime.CompareTo(b.LastWriteTime);
-            });
-            foreach(FileInfo fi in files) {
-                plugins.Add(new ListViewItem(fi.Name));
-            }
-
-            if(File.Exists(PluginsFile)) {
-                string[] lines=File.ReadAllLines(PluginsFile);
-                for(int i=0;i<lines.Length;i++) lines[i]=lines[i].Trim().ToLowerInvariant();
-                Array.Sort<string>(lines);
-                foreach(ListViewItem lvi in plugins) {
-                    if(Array.IndexOf<string>(lines, lvi.Text.ToLowerInvariant())!=-1) lvi.Checked=true;
-                }
-            }
-
-            lvEspList.Items.AddRange(plugins.ToArray());
+            RefreshEspList();
         }
 
         private void lvEspList_GiveFeedback(object sender, GiveFeedbackEventArgs e) {
@@ -139,11 +74,7 @@ namespace fomm {
                 e.Cancel=true;
                 return;
             }
-            List<string> plugins=new List<string>();
-            foreach(ListViewItem lvi in lvEspList.CheckedItems) {
-                plugins.Add(lvi.Text);
-            }
-            File.WriteAllLines(PluginsFile, plugins.ToArray());
+            
             Settings.SetWindowPosition("MainForm", this);
         }
 
@@ -195,38 +126,119 @@ namespace fomm {
         private void bPackageManager_Click(object sender, EventArgs e) {
             if(PackageManagerForm!=null) PackageManagerForm.Focus();
             else {
-                PackageManagerForm=new fomm.PackageManager.PackageManager();
-                PackageManagerForm.FormClosed+=new FormClosedEventHandler(pm_FormClosed);
+                PackageManagerForm=new fomm.PackageManager.PackageManager(this);
+                PackageManagerForm.FormClosed+=delegate(object sender2, FormClosedEventArgs e2)
+                {
+                    RefreshEspList();
+                    PackageManagerForm=null;
+                };
                 PackageManagerForm.Show();
             }
         }
+        public void RefreshEspList() {
+            lvEspList.Items.Clear();
 
-        void pm_FormClosed(object sender, FormClosedEventArgs e) {
-            MainForm_Load(null, null);
-            PackageManagerForm=null;
+            List<ListViewItem> plugins=new List<ListViewItem>();
+            DirectoryInfo di=new DirectoryInfo("data");
+            List<FileInfo> files=new List<FileInfo>(di.GetFiles("*.esp"));
+            files.AddRange(di.GetFiles("*.esm"));
+            int count=0;
+            for(int i=0;i<files.Count;i++) {
+                try {
+                    count+=files[i].LastWriteTime.Hour;
+                } catch(ArgumentOutOfRangeException) {
+                    MessageBox.Show("File '"+files[i].Name+"' had an invalid time stamp, and has been reset.\n"+
+                        "Please check its position in the load order.", "Warning");
+                    files[i].LastWriteTime=DateTime.Now;
+                }
+            }
+            files.Sort(delegate(FileInfo a, FileInfo b)
+            {
+                return a.LastWriteTime.CompareTo(b.LastWriteTime);
+            });
+            foreach(FileInfo fi in files) {
+                plugins.Add(new ListViewItem(fi.Name));
+            }
+
+            if(File.Exists(Program.PluginsFile)) {
+                string[] lines=File.ReadAllLines(Program.PluginsFile);
+                for(int i=0;i<lines.Length;i++) lines[i]=lines[i].Trim().ToLowerInvariant();
+                Array.Sort<string>(lines);
+                foreach(ListViewItem lvi in plugins) {
+                    if(Array.IndexOf<string>(lines, lvi.Text.ToLowerInvariant())!=-1) lvi.Checked=true;
+                }
+            }
+
+            lvEspList.Items.AddRange(plugins.ToArray());
         }
 
         private void bEnableAI_Click(object sender, EventArgs e) {
             ArchiveInvalidation.Update();
         }
 
-        private void bSaveGames_Click(object sender, EventArgs e) {
-            (new SaveForm()).Show();
-        }
-
+        #region toolbuttons
         private void openInTESsnipToolStripMenuItem_Click(object sender, EventArgs e) {
             if(lvEspList.SelectedItems.Count==0) return;
             string[] mods=new string[lvEspList.SelectedItems.Count];
             for(int i=0;i<mods.Length;i++) mods[i]="data\\"+lvEspList.SelectedItems[i].Text;
             TESsnip.TESsnip tes=new TESsnip.TESsnip(mods);
-            tes.FormClosed+=pm_FormClosed;
+            tes.FormClosed+=delegate(object sender2, FormClosedEventArgs e2)
+                {
+                    RefreshEspList();
+                };
             tes.Show();
             GC.Collect();
-            //GC.WaitForPendingFinalizers();
+        }
+
+        private void bBSAUnpack_Click(object sender, EventArgs e) {
+            new BSABrowser().Show();
+        }
+
+        private void cBSACreator_Click(object sender, EventArgs e) {
+            MessageBox.Show("Warning: This tool hasn't been fully updated for fallout yet. BSAs created with it may not be able to be read.", "Warning");
+            new BSACreator().Show();
+        }
+
+        private void bTESsnip_Click(object sender, EventArgs e) {
+            TESsnip.TESsnip tes=new TESsnip.TESsnip();
+            tes.FormClosed+=delegate(object sender2, FormClosedEventArgs e2)
+                {
+                    RefreshEspList();
+                };
+            tes.Show();
+            GC.Collect();
+        }
+
+        private void bShaderEdit_Click(object sender, EventArgs e) {
+            new ShaderEdit.MainForm().Show();
+        }
+
+        private void bLaunch_Click(object sender, EventArgs e) {
+            if(Application.OpenForms.Count>1) {
+                MessageBox.Show("Please close all utility windows before launching fallout");
+                return;
+            }
+            Close();
+            if(File.Exists("fose_loader.exe")) System.Diagnostics.Process.Start("fose_loader.exe");
+            else if(File.Exists("fallout3.exe")) System.Diagnostics.Process.Start("fallout3.exe");
+            else System.Diagnostics.Process.Start("fallout3ng.exe");
+        }
+
+        private void bSaveGames_Click(object sender, EventArgs e) {
+            (new SaveForm()).Show();
         }
 
         private void bHelp_Click(object sender, EventArgs e) {
             System.Diagnostics.Process.Start(Path.Combine(Program.fommDir, "fomm.chm"));
+        }
+        #endregion
+
+        private void lvEspList_ItemChecked(object sender, ItemCheckedEventArgs e) {
+            string[] plugins=new string[lvEspList.CheckedItems.Count];
+            for(int i=0;i<plugins.Length;i++) {
+                plugins[i]=lvEspList.CheckedItems[i].Text;
+            }
+            File.WriteAllLines(Program.PluginsFile, plugins);
         }
     }
 }
