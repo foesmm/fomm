@@ -132,7 +132,7 @@ namespace fomm.PackageManager {
             // 
             // bEditScript
             // 
-            this.bEditScript.Location = new System.Drawing.Point(362, 240);
+            this.bEditScript.Location = new System.Drawing.Point(362, 215);
             this.bEditScript.Name = "bEditScript";
             this.bEditScript.Size = new System.Drawing.Size(120, 23);
             this.bEditScript.TabIndex = 20;
@@ -142,7 +142,7 @@ namespace fomm.PackageManager {
             // 
             // bEditReadme
             // 
-            this.bEditReadme.Location = new System.Drawing.Point(362, 211);
+            this.bEditReadme.Location = new System.Drawing.Point(362, 186);
             this.bEditReadme.Name = "bEditReadme";
             this.bEditReadme.Size = new System.Drawing.Size(120, 23);
             this.bEditReadme.TabIndex = 21;
@@ -152,7 +152,7 @@ namespace fomm.PackageManager {
             // 
             // bEditInfo
             // 
-            this.bEditInfo.Location = new System.Drawing.Point(362, 269);
+            this.bEditInfo.Location = new System.Drawing.Point(362, 244);
             this.bEditInfo.Name = "bEditInfo";
             this.bEditInfo.Size = new System.Drawing.Size(120, 23);
             this.bEditInfo.TabIndex = 22;
@@ -188,7 +188,7 @@ namespace fomm.PackageManager {
             // cbGroups
             // 
             this.cbGroups.AutoSize = true;
-            this.cbGroups.Location = new System.Drawing.Point(362, 166);
+            this.cbGroups.Location = new System.Drawing.Point(362, 317);
             this.cbGroups.Name = "cbGroups";
             this.cbGroups.Size = new System.Drawing.Size(97, 17);
             this.cbGroups.TabIndex = 25;
@@ -198,7 +198,7 @@ namespace fomm.PackageManager {
             // 
             // bEditGroups
             // 
-            this.bEditGroups.Location = new System.Drawing.Point(362, 298);
+            this.bEditGroups.Location = new System.Drawing.Point(362, 288);
             this.bEditGroups.Name = "bEditGroups";
             this.bEditGroups.Size = new System.Drawing.Size(120, 23);
             this.bEditGroups.TabIndex = 26;
@@ -211,15 +211,15 @@ namespace fomm.PackageManager {
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(494, 346);
-            this.Controls.Add(this.bEditGroups);
-            this.Controls.Add(this.cbGroups);
             this.Controls.Add(this.bAddNew);
+            this.Controls.Add(this.bEditGroups);
             this.Controls.Add(this.bActivate);
+            this.Controls.Add(this.cbGroups);
             this.Controls.Add(this.bEditReadme);
-            this.Controls.Add(this.bEditInfo);
             this.Controls.Add(this.splitContainer1);
-            this.Controls.Add(this.bEditScript);
+            this.Controls.Add(this.bEditInfo);
             this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.bEditScript);
             this.Name = "PackageManager";
             this.Text = "PackageManager";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.PackageManager_FormClosing);

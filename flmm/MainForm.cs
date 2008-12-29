@@ -224,5 +224,9 @@ namespace fomm {
             GC.Collect();
             //GC.WaitForPendingFinalizers();
         }
+
+        private void bHelp_Click(object sender, EventArgs e) {
+            System.Diagnostics.Process.Start(Path.Combine(Program.fommDir, "fomm.chm"));
+        }
     }
 }

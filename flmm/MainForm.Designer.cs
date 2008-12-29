@@ -32,24 +32,25 @@ namespace fomm {
             this.bLaunch = new System.Windows.Forms.Button();
             this.lvEspList = new System.Windows.Forms.ListView();
             this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
+            this.cmsPlugins = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.openInTESsnipToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.tbPluginInfo = new System.Windows.Forms.TextBox();
             this.bPackageManager = new System.Windows.Forms.Button();
             this.bEnableAI = new System.Windows.Forms.Button();
             this.bSaveGames = new System.Windows.Forms.Button();
-            this.cmsPlugins = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.openInTESsnipToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.bHelp = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.cmsPlugins.SuspendLayout();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
-            this.cmsPlugins.SuspendLayout();
             this.SuspendLayout();
             // 
             // bBSAUnpack
             // 
             this.bBSAUnpack.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.bBSAUnpack.Location = new System.Drawing.Point(336, 137);
+            this.bBSAUnpack.Location = new System.Drawing.Point(367, 166);
             this.bBSAUnpack.Name = "bBSAUnpack";
             this.bBSAUnpack.Size = new System.Drawing.Size(120, 23);
             this.bBSAUnpack.TabIndex = 0;
@@ -60,7 +61,7 @@ namespace fomm {
             // cBSACreator
             // 
             this.cBSACreator.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.cBSACreator.Location = new System.Drawing.Point(336, 166);
+            this.cBSACreator.Location = new System.Drawing.Point(367, 195);
             this.cBSACreator.Name = "cBSACreator";
             this.cBSACreator.Size = new System.Drawing.Size(120, 23);
             this.cBSACreator.TabIndex = 1;
@@ -71,7 +72,7 @@ namespace fomm {
             // bTESsnip
             // 
             this.bTESsnip.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.bTESsnip.Location = new System.Drawing.Point(336, 195);
+            this.bTESsnip.Location = new System.Drawing.Point(367, 224);
             this.bTESsnip.Name = "bTESsnip";
             this.bTESsnip.Size = new System.Drawing.Size(120, 23);
             this.bTESsnip.TabIndex = 2;
@@ -82,7 +83,7 @@ namespace fomm {
             // bShaderEdit
             // 
             this.bShaderEdit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.bShaderEdit.Location = new System.Drawing.Point(336, 224);
+            this.bShaderEdit.Location = new System.Drawing.Point(367, 253);
             this.bShaderEdit.Name = "bShaderEdit";
             this.bShaderEdit.Size = new System.Drawing.Size(120, 23);
             this.bShaderEdit.TabIndex = 3;
@@ -94,7 +95,7 @@ namespace fomm {
             // 
             this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.pictureBox1.Location = new System.Drawing.Point(336, 12);
+            this.pictureBox1.Location = new System.Drawing.Point(367, 12);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(120, 90);
             this.pictureBox1.TabIndex = 4;
@@ -103,7 +104,7 @@ namespace fomm {
             // bLaunch
             // 
             this.bLaunch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.bLaunch.Location = new System.Drawing.Point(336, 108);
+            this.bLaunch.Location = new System.Drawing.Point(367, 108);
             this.bLaunch.Name = "bLaunch";
             this.bLaunch.Size = new System.Drawing.Size(120, 23);
             this.bLaunch.TabIndex = 5;
@@ -122,7 +123,7 @@ namespace fomm {
             this.lvEspList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lvEspList.Location = new System.Drawing.Point(0, 0);
             this.lvEspList.Name = "lvEspList";
-            this.lvEspList.Size = new System.Drawing.Size(318, 198);
+            this.lvEspList.Size = new System.Drawing.Size(349, 215);
             this.lvEspList.TabIndex = 0;
             this.lvEspList.UseCompatibleStateImageBehavior = false;
             this.lvEspList.View = System.Windows.Forms.View.Details;
@@ -136,6 +137,20 @@ namespace fomm {
             // 
             this.columnHeader1.Text = "File";
             this.columnHeader1.Width = 219;
+            // 
+            // cmsPlugins
+            // 
+            this.cmsPlugins.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.openInTESsnipToolStripMenuItem});
+            this.cmsPlugins.Name = "cmsPlugins";
+            this.cmsPlugins.Size = new System.Drawing.Size(152, 26);
+            // 
+            // openInTESsnipToolStripMenuItem
+            // 
+            this.openInTESsnipToolStripMenuItem.Name = "openInTESsnipToolStripMenuItem";
+            this.openInTESsnipToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+            this.openInTESsnipToolStripMenuItem.Text = "Open in TESsnip";
+            this.openInTESsnipToolStripMenuItem.Click += new System.EventHandler(this.openInTESsnipToolStripMenuItem_Click);
             // 
             // splitContainer1
             // 
@@ -153,8 +168,8 @@ namespace fomm {
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.tbPluginInfo);
-            this.splitContainer1.Size = new System.Drawing.Size(318, 323);
-            this.splitContainer1.SplitterDistance = 198;
+            this.splitContainer1.Size = new System.Drawing.Size(349, 352);
+            this.splitContainer1.SplitterDistance = 215;
             this.splitContainer1.TabIndex = 6;
             // 
             // tbPluginInfo
@@ -165,14 +180,14 @@ namespace fomm {
             this.tbPluginInfo.Multiline = true;
             this.tbPluginInfo.Name = "tbPluginInfo";
             this.tbPluginInfo.ReadOnly = true;
-            this.tbPluginInfo.Size = new System.Drawing.Size(318, 121);
+            this.tbPluginInfo.Size = new System.Drawing.Size(349, 133);
             this.tbPluginInfo.TabIndex = 0;
             this.tbPluginInfo.Text = "Drag/Drop to modify load order";
             // 
             // bPackageManager
             // 
             this.bPackageManager.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.bPackageManager.Location = new System.Drawing.Point(336, 253);
+            this.bPackageManager.Location = new System.Drawing.Point(367, 282);
             this.bPackageManager.Name = "bPackageManager";
             this.bPackageManager.Size = new System.Drawing.Size(120, 23);
             this.bPackageManager.TabIndex = 9;
@@ -183,7 +198,7 @@ namespace fomm {
             // bEnableAI
             // 
             this.bEnableAI.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.bEnableAI.Location = new System.Drawing.Point(336, 282);
+            this.bEnableAI.Location = new System.Drawing.Point(367, 311);
             this.bEnableAI.Name = "bEnableAI";
             this.bEnableAI.Size = new System.Drawing.Size(120, 23);
             this.bEnableAI.TabIndex = 10;
@@ -194,7 +209,7 @@ namespace fomm {
             // bSaveGames
             // 
             this.bSaveGames.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.bSaveGames.Location = new System.Drawing.Point(336, 311);
+            this.bSaveGames.Location = new System.Drawing.Point(367, 340);
             this.bSaveGames.Name = "bSaveGames";
             this.bSaveGames.Size = new System.Drawing.Size(120, 23);
             this.bSaveGames.TabIndex = 11;
@@ -202,45 +217,43 @@ namespace fomm {
             this.bSaveGames.UseVisualStyleBackColor = true;
             this.bSaveGames.Click += new System.EventHandler(this.bSaveGames_Click);
             // 
-            // cmsPlugins
+            // bHelp
             // 
-            this.cmsPlugins.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.openInTESsnipToolStripMenuItem});
-            this.cmsPlugins.Name = "cmsPlugins";
-            this.cmsPlugins.Size = new System.Drawing.Size(152, 26);
-            // 
-            // openInTESsnipToolStripMenuItem
-            // 
-            this.openInTESsnipToolStripMenuItem.Name = "openInTESsnipToolStripMenuItem";
-            this.openInTESsnipToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.openInTESsnipToolStripMenuItem.Text = "Open in TESsnip";
-            this.openInTESsnipToolStripMenuItem.Click += new System.EventHandler(this.openInTESsnipToolStripMenuItem_Click);
+            this.bHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.bHelp.Location = new System.Drawing.Point(367, 137);
+            this.bHelp.Name = "bHelp";
+            this.bHelp.Size = new System.Drawing.Size(120, 23);
+            this.bHelp.TabIndex = 12;
+            this.bHelp.Text = "Help";
+            this.bHelp.UseVisualStyleBackColor = true;
+            this.bHelp.Click += new System.EventHandler(this.bHelp_Click);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(468, 346);
+            this.ClientSize = new System.Drawing.Size(499, 375);
+            this.Controls.Add(this.bHelp);
+            this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.bSaveGames);
             this.Controls.Add(this.bEnableAI);
             this.Controls.Add(this.bPackageManager);
-            this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.bLaunch);
             this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.bBSAUnpack);
             this.Controls.Add(this.bShaderEdit);
             this.Controls.Add(this.bTESsnip);
             this.Controls.Add(this.cBSACreator);
-            this.Controls.Add(this.bBSAUnpack);
             this.Name = "MainForm";
             this.Text = "Fallout Mod Manager";
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.cmsPlugins.ResumeLayout(false);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             this.splitContainer1.Panel2.PerformLayout();
             this.splitContainer1.ResumeLayout(false);
-            this.cmsPlugins.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -262,6 +275,7 @@ namespace fomm {
         private System.Windows.Forms.Button bSaveGames;
         private System.Windows.Forms.ContextMenuStrip cmsPlugins;
         private System.Windows.Forms.ToolStripMenuItem openInTESsnipToolStripMenuItem;
+        private System.Windows.Forms.Button bHelp;
     }
 }
 
