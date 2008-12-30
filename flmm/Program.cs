@@ -175,6 +175,7 @@ namespace fomm {
         public static readonly string exeDir=Path.GetDirectoryName(Application.ExecutablePath);
         public static readonly string Fallout3SaveDir=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "My games\\Fallout3");
         public static readonly string FOIniPath=Path.Combine(Fallout3SaveDir, "Fallout.ini");
+        public static readonly string FOPrefsIniPath=Path.Combine(Fallout3SaveDir, "FalloutPrefs.ini");
         public static readonly string FOSavesPath=Path.Combine(Fallout3SaveDir, Imports.GetPrivateProfileString("General", "SLocalSavePath", "Games", FOIniPath));
         public static readonly string PackageDir=Path.Combine(exeDir, "mods");
         public static readonly string fommDir=Path.Combine(exeDir, "fomm");

@@ -56,12 +56,24 @@
     <Compile Include="BSACreator.Designer.cs">
       <DependentUpon>BSACreator.cs</DependentUpon>
     </Compile>
+    <Compile Include="ImageForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ImageForm.Designer.cs">
+      <DependentUpon>ImageForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Imports.cs" />
     <Compile Include="PackageManager\InfoEditor.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="PackageManager\InfoEditor.Designer.cs">
       <DependentUpon>InfoEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PackageManager\SelectForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PackageManager\SelectForm.Designer.cs">
+      <DependentUpon>SelectForm.cs</DependentUpon>
     </Compile>
     <Compile Include="PackageManager\TextEditor.cs">
       <SubType>Form</SubType>
@@ -150,9 +162,17 @@
       <DependentUpon>BSACreator.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="ImageForm.resx">
+      <DependentUpon>ImageForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="PackageManager\InfoEditor.resx">
       <SubType>Designer</SubType>
       <DependentUpon>InfoEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PackageManager\SelectForm.resx">
+      <DependentUpon>SelectForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="PackageManager\TextEditor.resx">
       <DependentUpon>TextEditor.cs</DependentUpon>

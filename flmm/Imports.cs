@@ -13,6 +13,7 @@ namespace fomm {
         public unsafe static extern byte* Compile(string data, int len, string EntryPoint, string Profile, byte Debug);
 
         [DllImport("kernel32", CharSet=CharSet.Ansi)]
+        [System.Security.SuppressUnmanagedCodeSecurity()]
         public static extern int GetPrivateProfileIntA(string section, string value, int def, string path);
 
         public static void WritePrivateProfileIntA(string section, string value, int val, string path) {
@@ -20,6 +21,7 @@ namespace fomm {
         }
 
         [DllImport("kernel32", CharSet=CharSet.Ansi)]
+        [System.Security.SuppressUnmanagedCodeSecurity()]
         private static extern int GetPrivateProfileStringA(string section, string value, string def,
             [MarshalAs(UnmanagedType.LPArray)]
             byte[] buf, int buflen, string path);
@@ -31,6 +33,7 @@ namespace fomm {
         }
 
         [DllImport("kernel32", CharSet=CharSet.Ansi)]
+        [System.Security.SuppressUnmanagedCodeSecurity()]
         public static extern int WritePrivateProfileStringA(string section, string value, string val, string path);
     }
 }

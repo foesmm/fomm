@@ -64,13 +64,20 @@ namespace fomm.PackageManager {
 
         internal static XmlDocument CustomInstallScript(string script) {
             permissions.Assert();
-            ScriptCompiler.Execute(script);
-            return xmlDoc;
+            if(ScriptCompiler.Execute(script)) return xmlDoc;
+            else return null;
         }
 
         private static void CommitActivePlugins() {
             if(activePlugins==null) return;
             File.WriteAllLines(Program.PluginsFile, activePlugins.ToArray());
+        }
+
+        private static bool IsSafeFilePath(string path) {
+            if(path.IndexOfAny(Path.GetInvalidPathChars())!=-1) return false;
+            if(Path.IsPathRooted(path)) return false;
+            if(path.Contains("..")) return false;
+            return true;
         }
 
         private static bool TestDoOverwrite(string path) {
@@ -122,6 +129,18 @@ namespace fomm.PackageManager {
             }
         }
 
+        private static void AddDataFile(string datapath) {
+            string ldatapath=datapath.ToLowerInvariant();
+            if(dataFileNode==null) {
+                rootNode.AppendChild(dataFileNode=xmlDoc.CreateElement("installedFiles"));
+            }
+            if(dataFileNode.SelectSingleNode("descendant::file[.=\""+ldatapath.Replace("&", "&amp;")+"\"]")==null) {
+                dataFileNode.AppendChild(xmlDoc.CreateElement("file"));
+                dataFileNode.LastChild.InnerText=ldatapath;
+                InstallLog.InstallDataFile(ldatapath);
+            }
+        }
+
         private static List<string> activePlugins;
         private static void LoadActivePlugins() {
             if(File.Exists(Program.PluginsFile)) {
@@ -156,12 +175,70 @@ namespace fomm.PackageManager {
             return files.ToArray();
         }
 
+        public static byte[] GetFileFromFomod(string file) {
+            permissions.Assert();
+            ZipEntry ze=ScriptFunctions.file.GetEntry(file.Replace('\\', '/'));
+            if(ze==null||!ze.CanDecompress) return null;
+            Stream s=ScriptFunctions.file.GetInputStream(ze);
+            byte[] buffer=new byte[ze.Size];
+            int upto=0, size;
+            while((size=s.Read(buffer, 0, (int)ze.Size-upto))>0) upto+=size;
+            return buffer;
+        }
+
+        public static bool GenerateDataFile(string path, byte[] data) {
+            if(!IsSafeFilePath(path)) {
+                LastError="Illegal file path";
+                return false;
+            }
+            permissions.Assert();
+            string datapath=Path.GetFullPath(Path.Combine("Data", path));
+            if(!Directory.Exists(Path.GetDirectoryName(datapath))) {
+                Directory.CreateDirectory(Path.GetDirectoryName(datapath));
+            } else {
+                if(!TestDoOverwrite(datapath)) {
+                    LastError="User chose not to overwrite";
+                    return false;
+                } else File.Delete(datapath);
+            }
+            File.WriteAllBytes(datapath, data);
+            AddDataFile(datapath);
+            return true;
+        }
+
+        public static bool DataFileExists(string path) {
+            if(!IsSafeFilePath(path)) {
+                LastError="Illegal file path";
+                return false;
+            }
+            permissions.Assert();
+            string datapath=Path.Combine("Data", path);
+            return File.Exists(datapath);
+        }
+
+        public static byte[] GetExistingDataFile(string path) {
+            if(!IsSafeFilePath(path)) {
+                LastError="Illegal file path";
+                return null;
+            }
+            permissions.Assert();
+            string datapath=Path.Combine("Data", path);
+            if(!File.Exists(datapath)) {
+                LastError="File not found";
+                return null;
+            }
+            return File.ReadAllBytes(datapath);
+        }
+
         public static bool InstallFileFromFomod(string file) {
             permissions.Assert();
             string datapath=Path.GetFullPath(Path.Combine("Data", file));
             string ldatapath=datapath.ToLowerInvariant();
-            ZipEntry ze=ScriptFunctions.file.GetEntry(file);
-            //if(ze==null) return false;
+            ZipEntry ze=ScriptFunctions.file.GetEntry(file.Replace('\\', '/'));
+            if(ze==null) {
+                LastError="File doesn't exist in fomod";
+                return false;
+            }
             if(!Directory.Exists(Path.GetDirectoryName(datapath))) {
                 Directory.CreateDirectory(Path.GetDirectoryName(datapath));
             } else {
@@ -179,15 +256,8 @@ namespace fomm.PackageManager {
             }
             fs.Close();
             s.Close();
-            if(dataFileNode==null) {
-                dataFileNode=xmlDoc.CreateElement("installedFiles");
-                rootNode.AppendChild(dataFileNode);
-            }
-            if(dataFileNode.SelectSingleNode("descendant::file[.=\""+ldatapath.Replace("&", "&amp;")+"\"]")==null) {
-                dataFileNode.AppendChild(xmlDoc.CreateElement("file"));
-                dataFileNode.LastChild.InnerText=ldatapath;
-            }
-            InstallLog.InstallDataFile(ldatapath);
+            AddDataFile(datapath);
+            AddDataFile(datapath);
             return true;
         }
 
@@ -227,5 +297,61 @@ namespace fomm.PackageManager {
         }
 
         public static string GetLastError() { return LastError; }
+
+        public static string[] GetActivePlugins() {
+            permissions.Assert();
+            FileInfo[] files=new FileInfo[activePlugins.Count];
+            for(int i=0;i<files.Length;i++) files[i]=new FileInfo(Path.Combine("data", activePlugins[i]));
+            Array.Sort<FileInfo>(files, delegate(FileInfo a, FileInfo b)
+            {
+                return a.LastWriteTime.CompareTo(b.LastWriteTime);
+            });
+            string[] result=new string[files.Length];
+            for(int i=0;i<files.Length;i++) result[i]=files[i].Name;
+            return result;
+        }
+
+        public static string GetFalloutIniString(string section, string value) {
+            permissions.Assert();
+            return Imports.GetPrivateProfileString(section, value, null, Program.FOIniPath);
+        }
+
+        public static int GetFalloutIniInt(string section, string value) {
+            permissions.Assert();
+            return Imports.GetPrivateProfileIntA(section, value, 0, Program.FOIniPath);
+        }
+
+        public static string GetPrefsIniString(string section, string value) {
+            permissions.Assert();
+            return Imports.GetPrivateProfileString(section, value, null, Program.FOPrefsIniPath);
+        }
+
+        public static int GetPrefsIniInt(string section, string value) {
+            permissions.Assert();
+            return Imports.GetPrivateProfileIntA(section, value, 0, Program.FOPrefsIniPath);
+        }
+
+        public static int[] Select(string[] items, string[] previews, string[] descs, string title, bool many) {
+            permissions.Assert();
+            System.Drawing.Image[] ipreviews=null;
+            if(previews!=null) {
+                ipreviews=new System.Drawing.Image[previews.Length];
+                int failcount=0;
+                for(int i=0;i<previews.Length;i++) {
+                    if(previews[i]==null) continue;
+                    ZipEntry ze=file.GetEntry(previews[i].Replace('\\', '/'));
+                    if(ze==null) failcount++;
+                    else ipreviews[i]=System.Drawing.Image.FromStream(file.GetInputStream(ze));
+                }
+                if(failcount>0) {
+                    LastError="There were "+failcount+" filenames specified for preview images which could not be loaded";
+                }
+            }
+            SelectForm sf=new SelectForm(items, title, many, ipreviews, descs);
+            sf.ShowDialog();
+            int[] result=new int[sf.SelectedIndex.Length];
+            for(int i=0;i<sf.SelectedIndex.Length;i++) result[i]=sf.SelectedIndex[i];
+            return result;
+        }
     }
 }
