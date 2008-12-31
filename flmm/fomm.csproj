@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArchiveInvalidation.cs" />
+    <Compile Include="BSAArchive.cs" />
     <Compile Include="BSABrowser.cs">
       <SubType>Form</SubType>
     </Compile>

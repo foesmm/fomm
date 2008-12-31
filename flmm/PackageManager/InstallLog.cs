@@ -11,6 +11,8 @@ namespace fomm.PackageManager {
      *     <file count="10">filepath</file>
      *   </dataFiles>
      *   <iniEdits>
+     *     <ini file='' section='' key='' mod=''>old value</ini>
+     *   </iniEdits>
      *   <sdpEdits>
      * </installLog>
      */ 
@@ -57,13 +59,53 @@ namespace fomm.PackageManager {
         public static void UninstallDataFile(string path) {
             path=path.ToLowerInvariant();
             XmlNode node=dataFilesNode.SelectSingleNode("file[.=\""+path.Replace("&", "&amp;")+"\"]");
-            if(node!=null) {
-                int i=int.Parse(node.Attributes.GetNamedItem("count").Value)-1;
-                if(i==0) {
-                    node.ParentNode.RemoveChild(node);
-                    File.Delete(path);
-                } else node.Attributes.GetNamedItem("count").Value=i.ToString();
+            if(node==null) return;
+            int i=int.Parse(node.Attributes.GetNamedItem("count").Value)-1;
+            if(i==0) {
+                node.ParentNode.RemoveChild(node);
+                File.Delete(path);
+            } else node.Attributes.GetNamedItem("count").Value=i.ToString();
+        }
+
+        public static void AddIniEdit(string file, string section, string key, string mod, string value) {
+            XmlNode node=dataFilesNode.SelectSingleNode("ini[@file='"+file+"' and @section='"+section+"' and @key='"+key+"']");
+            if(node==null) {
+                node=xmlDoc.CreateElement("ini");
+                node.Attributes.Append(xmlDoc.CreateAttribute("file"));
+                node.Attributes.Append(xmlDoc.CreateAttribute("section"));
+                node.Attributes.Append(xmlDoc.CreateAttribute("key"));
+                node.Attributes.Append(xmlDoc.CreateAttribute("mod"));
+                node.Attributes[0].Value=file;
+                node.Attributes[1].Value=section;
+                node.Attributes[2].Value=key;
+                node.Attributes[3].Value=mod;
+                node.InnerText=Imports.GetPrivateProfileString(section, key, "", file);
+                iniEditsNode.AppendChild(node);
+            } else {
+                node.Attributes.GetNamedItem("mod").Value=mod;
             }
+        }
+
+        public static string GetIniEdit(string file, string section, string key, out string mod) {
+            mod=null;
+            XmlNode node=iniEditsNode.SelectSingleNode("ini[@file='"+file+"' and @section='"+section+"' and @key='"+key+"']");
+            if(node==null) return null;
+            XmlNode modnode=node.Attributes.GetNamedItem("mod");
+            if(modnode!=null) mod=modnode.Value;
+            return node.InnerText;
+        }
+
+        public static void UndoIniEdit(string file, string section, string key) {
+            XmlNode node=iniEditsNode.SelectSingleNode("ini[@file='"+file+"' and @section='"+section+"' and @key='"+key+"']");
+            if(node==null) return;
+            Imports.WritePrivateProfileStringA(section, key, node.InnerText, file);
+            iniEditsNode.RemoveChild(node);
+        }
+        public static void UndoIniEdit(string file, string section, string key, string mod) {
+            XmlNode node=iniEditsNode.SelectSingleNode("ini[@file='"+file+"' and @section='"+section+"' and @key='"+key+"' and @mod='"+mod+"']");
+            if(node==null) return;
+            Imports.WritePrivateProfileStringA(section, key, node.InnerText, file);
+            iniEditsNode.RemoveChild(node);
         }
     }
 }

@@ -57,7 +57,7 @@ namespace fomm.PackageManager {
         private bool hasSubfolderEsp;
         public bool HasSubfolderEsp { get { return hasSubfolderEsp; } }
 
-        private string baseName;
+        public readonly string baseName;
         public string Name;
         public string Author;
         public string Description;
@@ -352,6 +352,13 @@ namespace fomm.PackageManager {
             if(bnode!=null) {
                 foreach(XmlNode node in bnode.ChildNodes) {
                     InstallLog.UninstallDataFile(node.InnerText);
+                }
+            }
+            bnode=xmlDoc.FirstChild.SelectSingleNode("iniEdits");
+            if(bnode!=null) {
+                foreach(XmlNode node in bnode.ChildNodes) {
+                    InstallLog.UndoIniEdit(node.Attributes.GetNamedItem("file").Value, node.Attributes.GetNamedItem("section").Value,
+                        node.Attributes.GetNamedItem("key").Value, baseName);
                 }
             }
             File.Delete(xmlpath);

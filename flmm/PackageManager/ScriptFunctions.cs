@@ -6,6 +6,11 @@ using System.IO;
 using System.Xml;
 using System.Windows.Forms;
 
+//Edit sdp
+//List data files in data folder
+//Get file from bsa
+//Block original files from being overwritten
+
 namespace fomm.PackageManager {
     public static class ScriptFunctions {
         private static readonly System.Security.PermissionSet permissions;
@@ -15,11 +20,15 @@ namespace fomm.PackageManager {
 
         private static readonly List<string> OverwriteFolders=new List<string>();
         private static readonly List<string> DontOverwriteFolders=new List<string>();
+        private static readonly Dictionary<string, BSAArchive> bsas=new Dictionary<string, BSAArchive>();
+        private static List<string> activePlugins;
         private static bool DontOverwriteAll;
         private static bool OverwriteAll;
         private static XmlDocument xmlDoc;
         private static XmlElement rootNode;
         private static XmlElement dataFileNode;
+        private static XmlElement iniEditsNode;
+        private static XmlElement sdpEditsNode;
         private static string LastError;
 
         static ScriptFunctions() {
@@ -40,6 +49,7 @@ namespace fomm.PackageManager {
             OverwriteAll=false;
             OverwriteFolders.Clear();
             DontOverwriteFolders.Clear();
+            bsas.Clear();
             xmlDoc=new XmlDocument();
             rootNode=xmlDoc.CreateElement("installData");
             xmlDoc.AppendChild(rootNode);
@@ -57,15 +67,26 @@ namespace fomm.PackageManager {
                     SetPluginActivation(file, true);
                 }
             }
-            CommitActivePlugins();
-            activePlugins=null;
+            Cleanup();
             return xmlDoc;
         }
 
         internal static XmlDocument CustomInstallScript(string script) {
-            permissions.Assert();
-            if(ScriptCompiler.Execute(script)) return xmlDoc;
+            //permissions.Assert();
+            bool b=ScriptCompiler.Execute(script);
+            Cleanup();
+            if(b) return xmlDoc;
             else return null;
+        }
+
+        private static void Cleanup() {
+            CommitActivePlugins();
+            activePlugins=null;
+            rootNode=dataFileNode=iniEditsNode=sdpEditsNode=null;
+            OverwriteFolders.Clear();
+            DontOverwriteFolders.Clear();
+            foreach(BSAArchive ba in bsas.Values) ba.Dispose();
+            bsas.Clear();
         }
 
         private static void CommitActivePlugins() {
@@ -141,7 +162,6 @@ namespace fomm.PackageManager {
             }
         }
 
-        private static List<string> activePlugins;
         private static void LoadActivePlugins() {
             if(File.Exists(Program.PluginsFile)) {
                 string[] lines=File.ReadAllLines(Program.PluginsFile);
@@ -214,6 +234,15 @@ namespace fomm.PackageManager {
             permissions.Assert();
             string datapath=Path.Combine("Data", path);
             return File.Exists(datapath);
+        }
+
+        public static string[] GetExistingDataFileList(string path, string pattern, bool allFolders) {
+            if(!IsSafeFilePath(path)) {
+                LastError="Illegal file path";
+                return null;
+            }
+            permissions.Assert();
+            return Directory.GetFiles(Path.Combine("Data", path), pattern, allFolders?SearchOption.AllDirectories:SearchOption.TopDirectoryOnly);
         }
 
         public static byte[] GetExistingDataFile(string path) {
@@ -352,6 +381,63 @@ namespace fomm.PackageManager {
             int[] result=new int[sf.SelectedIndex.Length];
             for(int i=0;i<sf.SelectedIndex.Length;i++) result[i]=sf.SelectedIndex[i];
             return result;
+        }
+
+        public static bool EditFalloutINI(string section, string key, string value, bool saveOld) {
+            permissions.Assert();
+            if(iniEditsNode==null) {
+                rootNode.AppendChild(iniEditsNode=xmlDoc.CreateElement("iniEdits"));
+            }
+            if(iniEditsNode.SelectSingleNode("descendant::ini[@file='"+Program.FOIniPath+"' and @section='"+section+"' and @key='"+key+"']")!=null) {
+                LastError="You've already set this ini key";
+                return false;
+            }
+            string oldmod, oldvalue=InstallLog.GetIniEdit(Program.FOIniPath, section, key, out oldmod);
+            if(oldmod!=null) {
+                if(System.Windows.Forms.MessageBox.Show("Key '"+key+"' in section '"+section+"' of fallout.ini has already been overwritten by '"+oldmod+"'\n"+
+                    "Overwrite again with this mod?", "", MessageBoxButtons.YesNo)!=DialogResult.Yes) {
+                    LastError="User chose not to overwrite old value";
+                    return false;
+                } else if(!saveOld) {
+                    InstallLog.UndoIniEdit(Program.FOIniPath, section, key);
+                }
+            }
+            if(saveOld) {
+                XmlElement node=xmlDoc.CreateElement("ini");
+                node.Attributes.Append(xmlDoc.CreateAttribute("file"));
+                node.Attributes.Append(xmlDoc.CreateAttribute("section"));
+                node.Attributes.Append(xmlDoc.CreateAttribute("key"));
+                node.Attributes[0].Value=Program.FOIniPath;
+                node.Attributes[1].Value=section;
+                node.Attributes[2].Value=key;
+                iniEditsNode.AppendChild(node);
+                InstallLog.AddIniEdit(Program.FOIniPath, section, key, mod.baseName, value);
+            }
+            Imports.WritePrivateProfileStringA(section, key, value, Program.FOIniPath);
+            return true;
+        }
+        public static bool EditShader(int package, string name, string path) {
+            permissions.Assert();
+            return false;
+            //srd.SDPEdits.Add(new SDPEditInfo(package, name, DataFiles+path));
+        }
+
+        public static byte[] GetDataFileFromBSA(string bsa, string file) {
+            if(!IsSafeFilePath(bsa)||!IsSafeFilePath(file)||bsa.Contains("\\")||bsa.Contains("/")) {
+                LastError="Invalid file path";
+                return null;
+            }
+            permissions.Assert();
+            bsa=bsa.ToLowerInvariant();
+            if(!bsas.ContainsKey(bsa)) {
+                try {
+                    bsas[bsa]=new BSAArchive(Path.Combine("data", bsa));
+                } catch(BSAArchive.BSALoadException) {
+                    LastError="Failed to load BSA";
+                    return null;
+                }
+            }
+            return bsas[bsa].GetFile(file);
         }
     }
 }

@@ -26,5 +26,9 @@ namespace fomm.Scripting {
         public static int GetPrefsIniInt(string section, string value) { return ScriptFunctions.GetPrefsIniInt(section, value); }
         public static bool DataFileExists(string path) { return ScriptFunctions.DataFileExists(path); }
         public static int[] Select(string[] items, string[] previews, string[] descs, string title, bool many) { return ScriptFunctions.Select(items, previews, descs, title, many); }
+        public static bool EditFalloutINI(string section, string key, string value, bool saveOld) { return ScriptFunctions.EditFalloutINI(section, key, value, saveOld); }
+        public static bool EditShader(int package, string name, string path) { return ScriptFunctions.EditShader(package, name, path); }
+        public static string[] GetExistingDataFileList(string path, string pattern, bool allFolders) { return ScriptFunctions.GetExistingDataFileList(path, pattern, allFolders); }
+        public static byte[] GetDataFileFromBSA(string bsa, string file) { return ScriptFunctions.GetDataFileFromBSA(bsa, file); }
     }
 }

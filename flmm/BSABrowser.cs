@@ -143,7 +143,7 @@ namespace fomm {
                 }
                 br.ReadUInt32();
                 uint flags=br.ReadUInt32();
-                if((flags&0x00000004)>0) Compressed=true; else Compressed=false;
+                if((flags&0x004)>0) Compressed=true; else Compressed=false;
                 if((flags&0x100)>0) ContainsFileNameBlobs=true; else ContainsFileNameBlobs=false;
                 FolderCount=br.ReadInt32();
                 FileCount=br.ReadInt32();
