@@ -54,8 +54,6 @@ namespace fomm.PackageManager {
         public bool HasReadme { get { return hasReadme; } }
         private bool hasScreenshot;
         public bool HasScreenshot { get { return hasScreenshot; } }
-        private bool hasSubfolderEsp;
-        public bool HasSubfolderEsp { get { return hasSubfolderEsp; } }
 
         public readonly string baseName;
         public string Name;

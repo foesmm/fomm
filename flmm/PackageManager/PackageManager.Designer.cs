@@ -187,7 +187,7 @@ namespace fomm.PackageManager {
             // 
             // openFileDialog1
             // 
-            this.openFileDialog1.Filter = "mod archive (*.fomod, *.zip)|*.fomod;*.zip";
+            this.openFileDialog1.Filter = "Compressed archives (fomod, zip, rar, 7z)|*.fomod;*.zip;*.rar;*.7z";
             this.openFileDialog1.RestoreDirectory = true;
             // 
             // cbGroups

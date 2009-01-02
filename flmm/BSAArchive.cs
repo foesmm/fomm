@@ -111,6 +111,8 @@ namespace fomm {
         private bool defaultCompressed;
         private bool SkipNames;
         private HashTable files;
+        private string[] fileNames;
+        public string[] FileNames { get { return fileNames; } }
 
         internal BSAArchive(string path) {
             name=Path.GetFileNameWithoutExtension(path).ToLower();
@@ -125,6 +127,7 @@ namespace fomm {
             //Read folder info
             BSAFolderInfo4[] folderInfo = new BSAFolderInfo4[header.folderCount];
             BSAFileInfo4[] fileInfo = new BSAFileInfo4[header.fileCount];
+            fileNames=new string[header.fileCount];
             for(int i=0;i<header.folderCount;i++) folderInfo[i]=new BSAFolderInfo4(br);
             int count=0;
             for(uint i=0;i<header.folderCount;i++) {
@@ -148,8 +151,11 @@ namespace fomm {
                     string fpath=Path.Combine(folderInfo[i].path, Path.GetFileNameWithoutExtension(fi4.path));
                     ulong hash=GenHash(fpath, ext);
                     files[hash]=fi;
+                    fileNames[folderInfo[i].offset+j]=fpath+ext;
                 }
             }
+
+            Array.Sort<string>(fileNames);
         }
 
         private static ulong GenHash(string file) {

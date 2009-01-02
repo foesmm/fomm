@@ -75,7 +75,7 @@ namespace fomm.PackageManager {
             lvModList.ResumeLayout();
         }
 
-        private void AddFomod(string modpath) {
+        private void AddFomod(string modpath, bool addToList) {
             fomod mod;
             try {
                 mod=new fomod(modpath);
@@ -84,6 +84,7 @@ namespace fomm.PackageManager {
                 return;
             }
             mods.Add(mod);
+            if(addToList) AddFomodToList(mod);
         }
         public PackageManager(MainForm mf) {
             this.mf=mf;
@@ -136,7 +137,7 @@ namespace fomm.PackageManager {
                 cbGroups.Checked=true;
             }
             foreach(string modpath in Directory.GetFiles(Program.PackageDir, "*.fomod")) {
-                AddFomod(modpath);
+                AddFomod(modpath, false);
             }
 
             RebuildListView();
@@ -254,13 +255,46 @@ namespace fomm.PackageManager {
 
         private void bAddNew_Click(object sender, EventArgs e) {
             if(openFileDialog1.ShowDialog()!=DialogResult.OK) return;
-            string oldpath=openFileDialog1.FileName, newpath;
+            bool Repack=false;
+            string oldpath=openFileDialog1.FileName, newpath, tmppath=null;
             if(oldpath.EndsWith(".fomod", StringComparison.InvariantCultureIgnoreCase)) {
                 newpath=Path.Combine(Program.PackageDir, Path.GetFileName(oldpath));
             } else if(oldpath.EndsWith(".fomod.zip", StringComparison.InvariantCultureIgnoreCase)) {
                 newpath=Path.Combine(Program.PackageDir, Path.GetFileNameWithoutExtension(oldpath));
             } else if(oldpath.EndsWith(".zip", StringComparison.InvariantCultureIgnoreCase)) {
-                //Insert checks that this is a valid fomod here
+                tmppath=Program.CreateTempDirectory();
+                ICSharpCode.SharpZipLib.Zip.FastZip fastZip=new ICSharpCode.SharpZipLib.Zip.FastZip();
+                fastZip.ExtractZip(oldpath, tmppath, null);
+                Repack=true;
+                newpath=Path.Combine(Program.PackageDir, Path.ChangeExtension(Path.GetFileName(oldpath), ".fomod"));
+            } else if(oldpath.EndsWith(".rar", StringComparison.InvariantCultureIgnoreCase)) {
+                tmppath=Program.CreateTempDirectory();
+                Unrar unrar=null;
+                try {
+                    unrar=new Unrar(oldpath);
+                    unrar.Open(Unrar.OpenMode.Extract);
+                    while(unrar.ReadHeader()) unrar.ExtractToDirectory(tmppath);
+                } catch {
+                    MessageBox.Show("The file was password protected, or was not a valid rar file.", "Error");
+                    return;
+                } finally {
+                    if(unrar!=null) unrar.Close();
+                }
+                Repack=true;
+                newpath=Path.Combine(Program.PackageDir, Path.ChangeExtension(Path.GetFileName(oldpath), ".fomod"));
+            } else if(oldpath.EndsWith(".7z", StringComparison.InvariantCultureIgnoreCase)) {
+                tmppath=Program.CreateTempDirectory();
+                System.Diagnostics.ProcessStartInfo psi=new System.Diagnostics.ProcessStartInfo(@"fomm\7za.exe",
+                    "x \""+oldpath+"\" * -o\""+tmppath+"\" -aos -y  -r");
+                psi.CreateNoWindow=true;
+                psi.UseShellExecute=false;
+                System.Diagnostics.Process p=System.Diagnostics.Process.Start(psi);
+                p.WaitForExit();
+                if(Directory.GetFileSystemEntries(tmppath).Length==0) {
+                    MessageBox.Show("Failed to extract anything from 7-zip archive", "Error");
+                    return;
+                }
+                Repack=true;
                 newpath=Path.Combine(Program.PackageDir, Path.ChangeExtension(Path.GetFileName(oldpath), ".fomod"));
             } else {
                 MessageBox.Show("Unknown file type", "Error");
@@ -270,12 +304,18 @@ namespace fomm.PackageManager {
                 MessageBox.Show("A fomod with the same name is already installed", "Error");
                 return;
             }
-            if(MessageBox.Show("Make a copy of the original file?", "", MessageBoxButtons.YesNo)!=DialogResult.Yes) {
-                File.Move(oldpath, newpath);
+            if(Repack) {
+                //Check for packing errors here
+                ICSharpCode.SharpZipLib.Zip.FastZip fastZip=new ICSharpCode.SharpZipLib.Zip.FastZip();
+                fastZip.CreateZip(newpath, tmppath, true, null);
             } else {
-                File.Copy(oldpath, newpath);
+                if(MessageBox.Show("Make a copy of the original file?", "", MessageBoxButtons.YesNo)!=DialogResult.Yes) {
+                    File.Move(oldpath, newpath);
+                } else {
+                    File.Copy(oldpath, newpath);
+                }
             }
-            AddFomod(newpath);
+            AddFomod(newpath, true);
         }
 
         private void fomodContextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e) {

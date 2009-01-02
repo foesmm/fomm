@@ -22,6 +22,7 @@ namespace fomm.PackageManager {
                 else rtbEdit.Text=text;
                 rtbEdit.Dock=DockStyle.Fill;
                 rtbEdit.TextChanged+=textChanged;
+                Text="Readme editor";
                 break;
             case TextEditorType.Script:
                 tbScript=new ICSharpCode.TextEditor.TextEditorControl();

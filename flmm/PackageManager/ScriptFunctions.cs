@@ -7,8 +7,7 @@ using System.Xml;
 using System.Windows.Forms;
 
 //Edit sdp
-//List data files in data folder
-//Get file from bsa
+//Get/set global variables
 //Block original files from being overwritten
 
 namespace fomm.PackageManager {
@@ -170,6 +169,40 @@ namespace fomm.PackageManager {
             } else {
                 activePlugins=new List<string>();
             }
+        }
+
+        private static bool EditINI(string file, string section, string key, string value, bool saveOld) {
+            permissions.Assert();
+            if(iniEditsNode==null) {
+                rootNode.AppendChild(iniEditsNode=xmlDoc.CreateElement("iniEdits"));
+            }
+            if(iniEditsNode.SelectSingleNode("descendant::ini[@file='"+file+"' and @section='"+section+"' and @key='"+key+"']")!=null) {
+                LastError="You've already set this ini key";
+                return false;
+            }
+            string oldmod, oldvalue=InstallLog.GetIniEdit(file, section, key, out oldmod);
+            if(oldmod!=null) {
+                if(System.Windows.Forms.MessageBox.Show("Key '"+key+"' in section '"+section+"' of fallout.ini has already been overwritten by '"+oldmod+"'\n"+
+                    "Overwrite again with this mod?", "", MessageBoxButtons.YesNo)!=DialogResult.Yes) {
+                    LastError="User chose not to overwrite old value";
+                    return false;
+                } else if(!saveOld) {
+                    InstallLog.UndoIniEdit(file, section, key);
+                }
+            }
+            if(saveOld) {
+                XmlElement node=xmlDoc.CreateElement("ini");
+                node.Attributes.Append(xmlDoc.CreateAttribute("file"));
+                node.Attributes.Append(xmlDoc.CreateAttribute("section"));
+                node.Attributes.Append(xmlDoc.CreateAttribute("key"));
+                node.Attributes[0].Value=file;
+                node.Attributes[1].Value=section;
+                node.Attributes[2].Value=key;
+                iniEditsNode.AppendChild(node);
+                InstallLog.AddIniEdit(file, section, key, mod.baseName, value);
+            }
+            Imports.WritePrivateProfileStringA(section, key, value, file);
+            return true;
         }
 
         public static void MessageBox(string message) {
@@ -384,37 +417,10 @@ namespace fomm.PackageManager {
         }
 
         public static bool EditFalloutINI(string section, string key, string value, bool saveOld) {
-            permissions.Assert();
-            if(iniEditsNode==null) {
-                rootNode.AppendChild(iniEditsNode=xmlDoc.CreateElement("iniEdits"));
-            }
-            if(iniEditsNode.SelectSingleNode("descendant::ini[@file='"+Program.FOIniPath+"' and @section='"+section+"' and @key='"+key+"']")!=null) {
-                LastError="You've already set this ini key";
-                return false;
-            }
-            string oldmod, oldvalue=InstallLog.GetIniEdit(Program.FOIniPath, section, key, out oldmod);
-            if(oldmod!=null) {
-                if(System.Windows.Forms.MessageBox.Show("Key '"+key+"' in section '"+section+"' of fallout.ini has already been overwritten by '"+oldmod+"'\n"+
-                    "Overwrite again with this mod?", "", MessageBoxButtons.YesNo)!=DialogResult.Yes) {
-                    LastError="User chose not to overwrite old value";
-                    return false;
-                } else if(!saveOld) {
-                    InstallLog.UndoIniEdit(Program.FOIniPath, section, key);
-                }
-            }
-            if(saveOld) {
-                XmlElement node=xmlDoc.CreateElement("ini");
-                node.Attributes.Append(xmlDoc.CreateAttribute("file"));
-                node.Attributes.Append(xmlDoc.CreateAttribute("section"));
-                node.Attributes.Append(xmlDoc.CreateAttribute("key"));
-                node.Attributes[0].Value=Program.FOIniPath;
-                node.Attributes[1].Value=section;
-                node.Attributes[2].Value=key;
-                iniEditsNode.AppendChild(node);
-                InstallLog.AddIniEdit(Program.FOIniPath, section, key, mod.baseName, value);
-            }
-            Imports.WritePrivateProfileStringA(section, key, value, Program.FOIniPath);
-            return true;
+            return EditINI(Program.FOIniPath, section, key, value, saveOld);
+        }
+        public static bool EditPrefsINI(string section, string key, string value, bool saveOld) {
+            return EditINI(Program.FOPrefsIniPath, section, key, value, saveOld);
         }
         public static bool EditShader(int package, string name, string path) {
             permissions.Assert();
@@ -438,6 +444,23 @@ namespace fomm.PackageManager {
                 }
             }
             return bsas[bsa].GetFile(file);
+        }
+
+        public static string[] GetBSAFileList(string bsa) {
+            if(!IsSafeFilePath(bsa)||bsa.Contains("\\")||bsa.Contains("/")) {
+                LastError="Invalid file path";
+                return null;
+            }
+            permissions.Assert();
+            if(!bsas.ContainsKey(bsa)) {
+                try {
+                    bsas[bsa]=new BSAArchive(Path.Combine("data", bsa));
+                } catch(BSAArchive.BSALoadException) {
+                    LastError="Failed to load BSA";
+                    return null;
+                }
+            }
+            return (string[])bsas[bsa].FileNames.Clone();
         }
     }
 }
