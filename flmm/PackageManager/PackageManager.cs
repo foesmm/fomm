@@ -306,6 +306,13 @@ namespace fomm.PackageManager {
             }
             if(Repack) {
                 //Check for packing errors here
+                string[] readme=Directory.GetFiles(tmppath, "readme - "+Path.GetFileNameWithoutExtension(newpath)+".*", SearchOption.TopDirectoryOnly);
+                if(readme.Length==0) {
+                    readme=Directory.GetFiles(tmppath, "*readme*.*", SearchOption.AllDirectories);
+                    if(readme.Length>0) {
+                        File.Move(readme[0], Path.Combine(tmppath, "Readme - "+Path.GetFileNameWithoutExtension(newpath)+Path.GetExtension(readme[0])));
+                    }
+                }
                 ICSharpCode.SharpZipLib.Zip.FastZip fastZip=new ICSharpCode.SharpZipLib.Zip.FastZip();
                 fastZip.CreateZip(newpath, tmppath, true, null);
             } else {

@@ -358,6 +358,13 @@ namespace fomm.PackageManager {
             return new Version(System.Diagnostics.FileVersionInfo.GetVersionInfo("fose_loader.exe").FileVersion.Replace(", ", "."));
         }
 
+        public static Version GetFalloutVersion() {
+            permissions.Assert();
+            if(File.Exists("Fallout3.exe")) return new Version(System.Diagnostics.FileVersionInfo.GetVersionInfo("Fallout3.exe").FileVersion.Replace(", ", "."));
+            else if(File.Exists("Fallout3ng.exe")) return new Version(System.Diagnostics.FileVersionInfo.GetVersionInfo("Fallout3ng.exe").FileVersion.Replace(", ", "."));
+            else return null;
+        }
+
         public static string GetLastError() { return LastError; }
 
         public static string[] GetActivePlugins() {

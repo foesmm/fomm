@@ -15,6 +15,7 @@ namespace fomm.Scripting {
         public static Version GetFommVersion() { return ScriptFunctions.GetFommVersion(); }
         public static bool ScriptExtenderPresent() { return ScriptFunctions.ScriptExtenderPresent(); }
         public static Version GetFoseVersion() { return ScriptFunctions.GetFoseVersion(); }
+        public static Version GetFalloutVersion() { return ScriptFunctions.GetFalloutVersion(); }
 
         public static string[] GetFomodFileList() { return ScriptFunctions.GetFomodFileList(); }
         public static bool InstallFileFromFomod(string file) { return ScriptFunctions.InstallFileFromFomod(file); }
