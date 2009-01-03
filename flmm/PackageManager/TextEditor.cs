@@ -25,6 +25,19 @@ namespace fomm.PackageManager {
                 Text="Readme editor";
                 break;
             case TextEditorType.Script:
+                if(text==null) {
+                    text=
+@"using System;
+using fomm.Scripting;
+
+class Script : BaseScript {
+	public static bool OnActivate() {
+		//Add tasks to be performed by script here
+		return true;
+	}
+}
+";
+                }
                 tbScript=new ICSharpCode.TextEditor.TextEditorControl();
                 panel1.Controls.Add(tbScript);
                 tbScript.Text=text;

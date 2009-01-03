@@ -32,6 +32,8 @@ namespace fomm {
             int swapwith=lvEspList.SelectedIndices[0];
             if(toswap[0]==swapwith) return;
 
+            RefreshingList=true;
+
             string[] names=new string[toswap.Length];
             Array.Sort<int>(toswap);
             for(int i=0;i<toswap.Length;i++) names[i]=lvEspList.Items[toswap[i]].Text;
@@ -50,6 +52,8 @@ namespace fomm {
                 File.SetLastWriteTime("data\\"+lvEspList.Items[index++].Text, time);
                 time+=TimeSpan.FromMinutes(2);
             }
+
+            RefreshEspList();
         }
 
         private bool DragDropInProgress=false;
@@ -136,6 +140,7 @@ namespace fomm {
             }
         }
         public void RefreshEspList() {
+            RefreshingList=true;
             lvEspList.Items.Clear();
 
             List<ListViewItem> plugins=new List<ListViewItem>();
@@ -160,16 +165,28 @@ namespace fomm {
                 plugins.Add(new ListViewItem(fi.Name));
             }
 
+            int icount=0;
             if(File.Exists(Program.PluginsFile)) {
                 string[] lines=File.ReadAllLines(Program.PluginsFile);
                 for(int i=0;i<lines.Length;i++) lines[i]=lines[i].Trim().ToLowerInvariant();
                 Array.Sort<string>(lines);
                 foreach(ListViewItem lvi in plugins) {
-                    if(Array.IndexOf<string>(lines, lvi.Text.ToLowerInvariant())!=-1) lvi.Checked=true;
+                    if(Array.IndexOf<string>(lines, lvi.Text.ToLowerInvariant())!=-1) {
+                        lvi.Checked=true;
+                        lvi.SubItems.Add(icount.ToString("X2"));
+                        icount++;
+                    } else {
+                        lvi.SubItems.Add("NA");
+                    }
+                }
+            } else {
+                foreach(ListViewItem lvi in plugins) {
+                    lvi.SubItems.Add("NA");
                 }
             }
 
             lvEspList.Items.AddRange(plugins.ToArray());
+            RefreshingList=false;
         }
 
         private void bEnableAI_Click(object sender, EventArgs e) {
@@ -233,12 +250,24 @@ namespace fomm {
         }
         #endregion
 
+        private bool RefreshingList;
         private void lvEspList_ItemChecked(object sender, ItemCheckedEventArgs e) {
+            if(RefreshingList) return;
             string[] plugins=new string[lvEspList.CheckedItems.Count];
             for(int i=0;i<plugins.Length;i++) {
                 plugins[i]=lvEspList.CheckedItems[i].Text;
             }
             File.WriteAllLines(Program.PluginsFile, plugins);
+            int icount=0;
+            foreach(ListViewItem lvi in lvEspList.Items) {
+                if(lvi.Checked) {
+                    lvi.SubItems[1].Text=icount.ToString("X2");
+                    icount++;
+                } else {
+                    lvi.SubItems[1].Text="NA";
+                }
+            }
+
         }
     }
 }

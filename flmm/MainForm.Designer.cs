@@ -40,6 +40,7 @@ namespace fomm {
             this.bEnableAI = new System.Windows.Forms.Button();
             this.bSaveGames = new System.Windows.Forms.Button();
             this.bHelp = new System.Windows.Forms.Button();
+            this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.cmsPlugins.SuspendLayout();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -118,7 +119,8 @@ namespace fomm {
             this.lvEspList.AutoArrange = false;
             this.lvEspList.CheckBoxes = true;
             this.lvEspList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1});
+            this.columnHeader1,
+            this.columnHeader2});
             this.lvEspList.ContextMenuStrip = this.cmsPlugins;
             this.lvEspList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lvEspList.Location = new System.Drawing.Point(0, 0);
@@ -229,6 +231,11 @@ namespace fomm {
             this.bHelp.UseVisualStyleBackColor = true;
             this.bHelp.Click += new System.EventHandler(this.bHelp_Click);
             // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Text = "Mod index";
+            this.columnHeader2.Width = 87;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -277,6 +284,7 @@ namespace fomm {
         private System.Windows.Forms.ContextMenuStrip cmsPlugins;
         private System.Windows.Forms.ToolStripMenuItem openInTESsnipToolStripMenuItem;
         private System.Windows.Forms.Button bHelp;
+        private System.Windows.Forms.ColumnHeader columnHeader2;
     }
 }
 
