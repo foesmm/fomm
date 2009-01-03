@@ -363,10 +363,58 @@ namespace fomm.PackageManager {
             InstallLog.Commit();
         }
 
-
         public void Dispose() {
             if(screenshot!=null) screenshot.Dispose();
             file.Close();
+        }
+
+        public string GetStatusString() {
+            System.Text.StringBuilder sb=new System.Text.StringBuilder();
+            sb.AppendLine("Mod name: "+Name);
+            sb.AppendLine("File name: "+baseName);
+            if(Author!="DEFAULT") sb.AppendLine("Author: "+Author);
+            if(VersionS!="1.0") sb.AppendLine("Version: "+VersionS);
+            if(email!="") sb.AppendLine("email: "+email);
+            if(website!="") sb.AppendLine("website: "+website);
+            if(MinFommVersion!=new Version(0,0,0,0)) sb.AppendLine("Minimum required fomm version: "+MinFommVersion.ToString());
+            if(Description!="") sb.AppendLine("Description:"+Environment.NewLine+Description);
+            if(groups.Length>0) sb.AppendLine(Environment.NewLine+"Group tags: "+string.Join(", ", groups));
+            sb.AppendLine();
+            sb.AppendLine("Has readme: "+(hasReadme?("Yes ("+readmeext+")"):"No"));
+            sb.AppendLine("Has script: "+(hasScript?"Yes":"No"));
+            sb.AppendLine("Has screenshot: "+(hasScreenshot?("Yes ("+screenshotext+")"):"No"));
+            sb.AppendLine("Is active: "+(isActive?"Yes":"No"));
+            sb.AppendLine();
+            sb.AppendLine("-- fomod contents list:");
+            foreach(ZipEntry ze in file) {
+                if(!ze.IsFile) continue;
+                sb.AppendLine(ze.Name);
+            }
+            if(isActive) {
+                sb.AppendLine();
+                sb.AppendLine("Activation data"+Environment.NewLine);
+                XmlDocument xmlDoc=new XmlDocument();
+                xmlDoc.Load(xmlpath);
+                XmlNode bnode=xmlDoc.FirstChild.SelectSingleNode("installedFiles");
+                if(bnode!=null) {
+                    sb.AppendLine("-- Installed data files");
+                    foreach(XmlNode node in bnode.ChildNodes) {
+                        sb.AppendLine(node.InnerText);
+                    }
+                    sb.AppendLine();
+                }
+                bnode=xmlDoc.FirstChild.SelectSingleNode("iniEdits");
+                if(bnode!=null) {
+                    sb.AppendLine("-- Ini edits");
+                    foreach(XmlNode node in bnode.ChildNodes) {
+                        sb.AppendLine("File: "+node.Attributes.GetNamedItem("file").Value);
+                        sb.AppendLine("Section: "+node.Attributes.GetNamedItem("section").Value);
+                        sb.AppendLine("Key: "+node.Attributes.GetNamedItem("key").Value);
+                        sb.AppendLine();
+                    }
+                }
+            }
+            return sb.ToString();
         }
     }
 }

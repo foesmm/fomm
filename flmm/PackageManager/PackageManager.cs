@@ -304,13 +304,40 @@ namespace fomm.PackageManager {
                 MessageBox.Show("A fomod with the same name is already installed", "Error");
                 return;
             }
+            string texnexusext=Path.GetFileNameWithoutExtension(newpath);
+            int unused;
+            if(texnexusext.Contains("-")&&int.TryParse(texnexusext.Substring(texnexusext.LastIndexOf('-'))+1, out unused)) {
+                newpath=Path.Combine(Path.GetDirectoryName(newpath), texnexusext.Remove(texnexusext.LastIndexOf('-')))+Path.GetExtension(newpath);
+            }
             if(Repack) {
                 //Check for packing errors here
+                foreach(string aifile in Directory.GetFiles(tmppath, "ArchiveInvalidation.txt", SearchOption.AllDirectories)) File.Delete(aifile);
+                string[] directories=Directory.GetDirectories(tmppath);
+                if(directories.Length==1&&Directory.GetFiles(tmppath, "*.esp").Length==0&&Directory.GetFiles(tmppath, "*.esm").Length==0&&Directory.GetFiles(tmppath, "*.bsa").Length==0) {
+                    directories=directories[0].Split(Path.DirectorySeparatorChar);
+                    string name=directories[directories.Length-1].ToLowerInvariant();
+                    if(name!="textures"&&name!="meshes"&&name!="music"&&name!="shaders"&&name!="video"&&name!="facegen"&&name!="menus"&&name!="lodsettings"&&name!="lsdata") {
+                        foreach(string file in Directory.GetFiles(tmppath)) {
+                            string newpath2=Path.Combine(Path.Combine(Path.GetDirectoryName(file), name), Path.GetFileName(file));
+                            if(!File.Exists(newpath2)) File.Move(file, newpath2);
+                        }
+                        tmppath=Path.Combine(tmppath, name);
+                    }
+                }
                 string[] readme=Directory.GetFiles(tmppath, "readme - "+Path.GetFileNameWithoutExtension(newpath)+".*", SearchOption.TopDirectoryOnly);
                 if(readme.Length==0) {
                     readme=Directory.GetFiles(tmppath, "*readme*.*", SearchOption.AllDirectories);
+                    if(readme.Length==0) readme=Directory.GetFiles(tmppath, "*.rtf", SearchOption.AllDirectories);
+                    if(readme.Length==0) readme=Directory.GetFiles(tmppath, "*.txt", SearchOption.AllDirectories);
+                    if(readme.Length==0) readme=Directory.GetFiles(tmppath, "*.html", SearchOption.AllDirectories);
                     if(readme.Length>0) {
                         File.Move(readme[0], Path.Combine(tmppath, "Readme - "+Path.GetFileNameWithoutExtension(newpath)+Path.GetExtension(readme[0])));
+                    }
+                }
+                if(Directory.GetFiles(tmppath, "*.esp", SearchOption.AllDirectories).Length+Directory.GetFiles(tmppath, "*.esm", SearchOption.AllDirectories).Length>
+                    Directory.GetFiles(tmppath, "*.esp", SearchOption.TopDirectoryOnly).Length+Directory.GetFiles(tmppath, "*.esm", SearchOption.TopDirectoryOnly).Length) {
+                    if(!File.Exists(Path.Combine(tmppath, "fomod\\script.cs"))) {
+                        MessageBox.Show("This archive contains plugins in subdirectories, and will need a script attached for fomm to install it correctly.", "Warning");
                     }
                 }
                 ICSharpCode.SharpZipLib.Zip.FastZip fastZip=new ICSharpCode.SharpZipLib.Zip.FastZip();
@@ -380,6 +407,25 @@ namespace fomm.PackageManager {
             for(int i=0;i<groups.Count;i++) lgroups.Add(groups[i].ToLowerInvariant());
             RebuildListView();
             Settings.SetStringArray("fomodGroups", groups.ToArray());
+        }
+
+        private void fomodStatusToolStripMenuItem_Click(object sender, EventArgs e) {
+            if(lvModList.SelectedItems.Count!=1) return;
+            fomod mod=(fomod)lvModList.SelectedItems[0].Tag;
+            Form f=new Form();
+            Settings.GetWindowPosition("FomodStatus", f);
+            f.Text="Fomod status";
+            TextBox tb=new TextBox();
+            f.Controls.Add(tb);
+            tb.Dock=DockStyle.Fill;
+            tb.Multiline=true;
+            tb.Text=mod.GetStatusString();
+            tb.ReadOnly=true;
+            tb.BackColor=System.Drawing.SystemColors.Window;
+            tb.Select(0, 0);
+            tb.ScrollBars=ScrollBars.Vertical;
+            f.ShowDialog();
+            Settings.SetWindowPosition("FomodStatus", f);
         }
     }
 }

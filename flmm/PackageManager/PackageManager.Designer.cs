@@ -39,6 +39,7 @@ namespace fomm.PackageManager {
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.cbGroups = new System.Windows.Forms.CheckBox();
             this.bEditGroups = new System.Windows.Forms.Button();
+            this.fomodStatusToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
@@ -89,22 +90,23 @@ namespace fomm.PackageManager {
             // 
             this.fomodContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.visitWebsiteToolStripMenuItem,
-            this.emailAuthorToolStripMenuItem});
+            this.emailAuthorToolStripMenuItem,
+            this.fomodStatusToolStripMenuItem});
             this.fomodContextMenu.Name = "fomodContextMenu";
-            this.fomodContextMenu.Size = new System.Drawing.Size(134, 48);
+            this.fomodContextMenu.Size = new System.Drawing.Size(153, 92);
             this.fomodContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.fomodContextMenu_Opening);
             // 
             // visitWebsiteToolStripMenuItem
             // 
             this.visitWebsiteToolStripMenuItem.Name = "visitWebsiteToolStripMenuItem";
-            this.visitWebsiteToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
+            this.visitWebsiteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.visitWebsiteToolStripMenuItem.Text = "Visit website";
             this.visitWebsiteToolStripMenuItem.Click += new System.EventHandler(this.visitWebsiteToolStripMenuItem_Click);
             // 
             // emailAuthorToolStripMenuItem
             // 
             this.emailAuthorToolStripMenuItem.Name = "emailAuthorToolStripMenuItem";
-            this.emailAuthorToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
+            this.emailAuthorToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.emailAuthorToolStripMenuItem.Text = "email author";
             this.emailAuthorToolStripMenuItem.Click += new System.EventHandler(this.emailAuthorToolStripMenuItem_Click);
             // 
@@ -213,6 +215,13 @@ namespace fomm.PackageManager {
             this.bEditGroups.UseVisualStyleBackColor = true;
             this.bEditGroups.Click += new System.EventHandler(this.bEditGroups_Click);
             // 
+            // fomodStatusToolStripMenuItem
+            // 
+            this.fomodStatusToolStripMenuItem.Name = "fomodStatusToolStripMenuItem";
+            this.fomodStatusToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.fomodStatusToolStripMenuItem.Text = "Fomod status";
+            this.fomodStatusToolStripMenuItem.Click += new System.EventHandler(this.fomodStatusToolStripMenuItem_Click);
+            // 
             // PackageManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -258,5 +267,6 @@ namespace fomm.PackageManager {
         private System.Windows.Forms.ToolStripMenuItem emailAuthorToolStripMenuItem;
         private System.Windows.Forms.CheckBox cbGroups;
         private System.Windows.Forms.Button bEditGroups;
+        private System.Windows.Forms.ToolStripMenuItem fomodStatusToolStripMenuItem;
     }
 }
