@@ -269,5 +269,67 @@ namespace fomm {
             }
 
         }
+
+        private void sendToTopToolStripMenuItem_Click(object sender, EventArgs e) {
+            if(lvEspList.SelectedIndices.Count==0) return;
+            int[] toswap=new int[lvEspList.SelectedIndices.Count];
+            for(int i=0;i<lvEspList.SelectedIndices.Count;i++) toswap[i]=lvEspList.SelectedIndices[i];
+            if(toswap[0]==0) return;
+
+            RefreshingList=true;
+            lvEspList.BeginUpdate();
+
+            string[] names=new string[toswap.Length];
+            Array.Sort<int>(toswap);
+            for(int i=0;i<toswap.Length;i++) names[i]=lvEspList.Items[toswap[i]].Text;
+            for(int i=toswap.Length-1;i>=0;i--) {
+                lvEspList.Items.RemoveAt(toswap[i]);
+            }
+            DateTime time=File.GetLastWriteTime("data\\"+lvEspList.Items[0].Text) - TimeSpan.FromMinutes(5);
+            for(int i=0;i<toswap.Length;i++) {
+                File.SetLastWriteTime("data\\"+names[i], time);
+                lvEspList.Items.Insert(i, new ListViewItem(names[i]));
+                time+=TimeSpan.FromMinutes(2);
+            }
+            int index=toswap.Length;
+            while(index<lvEspList.Items.Count&&File.GetLastWriteTime("data\\"+lvEspList.Items[index].Text)<time) {
+                File.SetLastWriteTime("data\\"+lvEspList.Items[index++].Text, time);
+                time+=TimeSpan.FromMinutes(2);
+            }
+
+            RefreshEspList();
+            lvEspList.EndUpdate();
+        }
+
+        private void sendToBottomToolStripMenuItem_Click(object sender, EventArgs e) {
+            if(lvEspList.SelectedIndices.Count==0) return;
+            int[] toswap=new int[lvEspList.SelectedIndices.Count];
+            for(int i=0;i<lvEspList.SelectedIndices.Count;i++) toswap[i]=lvEspList.SelectedIndices[i];
+            int swapwith=lvEspList.Items.Count-1;
+            if(toswap[0]==swapwith) return;
+
+            RefreshingList=true;
+
+            string[] names=new string[toswap.Length];
+            Array.Sort<int>(toswap);
+            for(int i=0;i<toswap.Length;i++) names[i]=lvEspList.Items[toswap[i]].Text;
+            for(int i=toswap.Length-1;i>=0;i--) {
+                if(toswap[i]<swapwith) swapwith--;
+                lvEspList.Items.RemoveAt(toswap[i]);
+            }
+            DateTime time=File.GetLastWriteTime("data\\"+lvEspList.Items[swapwith].Text) + TimeSpan.FromMinutes(2);
+            for(int i=0;i<toswap.Length;i++) {
+                File.SetLastWriteTime("data\\"+names[i], time);
+                lvEspList.Items.Insert(swapwith+i+1, new ListViewItem(names[i]));
+                time+=TimeSpan.FromMinutes(2);
+            }
+            int index=swapwith+toswap.Length;
+            while(index<lvEspList.Items.Count&&File.GetLastWriteTime("data\\"+lvEspList.Items[index].Text)<time) {
+                File.SetLastWriteTime("data\\"+lvEspList.Items[index++].Text, time);
+                time+=TimeSpan.FromMinutes(2);
+            }
+
+            RefreshEspList();
+        }
     }
 }

@@ -89,6 +89,8 @@ namespace fomm.PackageManager {
         public PackageManager(MainForm mf) {
             this.mf=mf;
             InitializeComponent();
+            cmbSortOrder.ContextMenu=new ContextMenu();
+            lvModList.ListViewItemSorter=new FomodSorter();
             Settings.GetWindowPosition("PackageManager", this);
             foreach(string modpath in Directory.GetFiles(Program.PackageDir, "*.fomod.zip")) {
                 if(!File.Exists(Path.ChangeExtension(modpath, null))) File.Move(modpath, Path.ChangeExtension(modpath, null));
@@ -147,7 +149,7 @@ namespace fomm.PackageManager {
             if(lvModList.SelectedItems.Count==0) return;
             fomod mod=(fomod)lvModList.SelectedItems[0].Tag;
             if(mod.HasInfo) tbModInfo.Text=mod.Description;
-            else tbModInfo.Text="Warning: info.xml is missing from this fomod.";
+            else tbModInfo.Text="No description is associaited with this fomod. Click 'edit info' if you want to add one.";
 
             if(!mod.IsActive) bActivate.Text="Activate";
             else bActivate.Text="Deactivate";
@@ -379,6 +381,9 @@ namespace fomm.PackageManager {
         private void cbGroups_CheckedChanged(object sender, EventArgs e) {
             RebuildListView();
             Settings.SetBool("PackageManagerShowsGroups", cbGroups.Checked);
+            bActivateGroup.Enabled=cbGroups.Checked;
+            bDeactivateGroup.Enabled=cbGroups.Checked;
+            cmbSortOrder.Enabled=!cbGroups.Checked;
         }
 
         private void bEditGroups_Click(object sender, EventArgs e) {
@@ -426,6 +431,100 @@ namespace fomm.PackageManager {
             tb.ScrollBars=ScrollBars.Vertical;
             f.ShowDialog();
             Settings.SetWindowPosition("FomodStatus", f);
+        }
+
+        private void deleteToolStripMenuItem_Click(object sender, EventArgs e) {
+            if(lvModList.SelectedItems.Count!=1) return;
+            fomod mod=(fomod)lvModList.SelectedItems[0].Tag;
+            if(mod.IsActive) {
+                MessageBox.Show("Cannot delete an active fomod");
+                return;
+            }
+            for(int i=0;i<lvModList.Items.Count;i++) if(lvModList.Items[i].Tag==mod) lvModList.Items.RemoveAt(i--);
+            mod.Dispose();
+            File.Delete(mod.filepath);
+            mods.Remove(mod);
+        }
+
+        private void bActivateGroup_Click(object sender, EventArgs e) {
+            if(lvModList.SelectedItems.Count!=1) return;
+            if(!cbGroups.Checked) return;
+            foreach(ListViewItem lvi in lvModList.SelectedItems[0].Group.Items) {
+                fomod mod=(fomod)lvi.Tag;
+                if(mod.IsActive) continue;
+                mod.Activate();
+                if(cbGroups.Checked) {
+                    foreach(ListViewItem lvi2 in lvModList.Items) {
+                        if(lvi2.Tag==mod) lvi2.Checked=mod.IsActive;
+                    }
+                } else {
+                    lvModList.SelectedItems[0].Checked=mod.IsActive;
+                }
+            }
+
+            mf.RefreshEspList();
+        }
+
+        private void bDeactivateGroup_Click(object sender, EventArgs e) {
+            if(lvModList.SelectedItems.Count!=1) return;
+            if(!cbGroups.Checked) return;
+            foreach(ListViewItem lvi in lvModList.SelectedItems[0].Group.Items) {
+                fomod mod=(fomod)lvi.Tag;
+                if(!mod.IsActive) continue;
+                mod.Deactivate();
+                if(cbGroups.Checked) {
+                    foreach(ListViewItem lvi2 in lvModList.Items) {
+                        if(lvi2.Tag==mod) lvi2.Checked=mod.IsActive;
+                    }
+                } else {
+                    lvModList.SelectedItems[0].Checked=mod.IsActive;
+                }
+            }
+
+            mf.RefreshEspList();
+        }
+
+        private void bDeactivateAll_Click(object sender, EventArgs e) {
+            if(MessageBox.Show("This will deactivate all fomods.\nAre you sure you want to continue?", "Warning", MessageBoxButtons.YesNo)!=DialogResult.Yes) return;
+            foreach(ListViewItem lvi in lvModList.Items) {
+                fomod mod=(fomod)lvi.Tag;
+                if(!mod.IsActive) continue;
+                else mod.Deactivate();
+            }
+            foreach(ListViewItem lvi in lvModList.Items) lvi.Checked=false;
+
+            mf.RefreshEspList();
+        }
+
+        private class FomodSorter : System.Collections.IComparer {
+            public static int Mode=0;
+            public int Compare(object a, object b) {
+                fomod m1=(fomod)((ListViewItem)a).Tag;
+                fomod m2=(fomod)((ListViewItem)b).Tag;
+
+                switch(Mode) {
+                case 0:
+                    return 0;
+                case 1:
+                    return m1.baseName.CompareTo(m2.baseName);
+                case 2:
+                    return m1.Name.CompareTo(m2.Name);
+                case 3:
+                    return m1.Author.CompareTo(m2.Author);
+                }
+                return 0;
+            }
+        }
+
+        private void cmbSortOrder_SelectedIndexChanged(object sender, EventArgs e) {
+            if(cmbSortOrder.SelectedIndex<0) return;
+            FomodSorter.Mode=cmbSortOrder.SelectedIndex+1;
+            lvModList.Sort();
+            cmbSortOrder.Text="Sort order";
+        }
+
+        private void cmbSortOrder_KeyPress(object sender, KeyPressEventArgs e) {
+            e.Handled=true;
         }
     }
 }

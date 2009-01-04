@@ -32,6 +32,7 @@ namespace fomm {
             this.bLaunch = new System.Windows.Forms.Button();
             this.lvEspList = new System.Windows.Forms.ListView();
             this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
+            this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
             this.cmsPlugins = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.openInTESsnipToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
@@ -40,7 +41,8 @@ namespace fomm {
             this.bEnableAI = new System.Windows.Forms.Button();
             this.bSaveGames = new System.Windows.Forms.Button();
             this.bHelp = new System.Windows.Forms.Button();
-            this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
+            this.sendToTopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.sendToBottomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.cmsPlugins.SuspendLayout();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -141,17 +143,24 @@ namespace fomm {
             this.columnHeader1.Text = "File";
             this.columnHeader1.Width = 219;
             // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Text = "Mod index";
+            this.columnHeader2.Width = 87;
+            // 
             // cmsPlugins
             // 
             this.cmsPlugins.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.openInTESsnipToolStripMenuItem});
+            this.openInTESsnipToolStripMenuItem,
+            this.sendToTopToolStripMenuItem,
+            this.sendToBottomToolStripMenuItem});
             this.cmsPlugins.Name = "cmsPlugins";
-            this.cmsPlugins.Size = new System.Drawing.Size(152, 26);
+            this.cmsPlugins.Size = new System.Drawing.Size(153, 92);
             // 
             // openInTESsnipToolStripMenuItem
             // 
             this.openInTESsnipToolStripMenuItem.Name = "openInTESsnipToolStripMenuItem";
-            this.openInTESsnipToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+            this.openInTESsnipToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.openInTESsnipToolStripMenuItem.Text = "Open in TESsnip";
             this.openInTESsnipToolStripMenuItem.Click += new System.EventHandler(this.openInTESsnipToolStripMenuItem_Click);
             // 
@@ -185,7 +194,8 @@ namespace fomm {
             this.tbPluginInfo.ReadOnly = true;
             this.tbPluginInfo.Size = new System.Drawing.Size(349, 133);
             this.tbPluginInfo.TabIndex = 0;
-            this.tbPluginInfo.Text = "Drag/Drop to modify load order";
+            this.tbPluginInfo.Text = "Drag/Drop to modify load order\r\nMods towards the bottom override those above them" +
+    "";
             // 
             // bPackageManager
             // 
@@ -231,10 +241,19 @@ namespace fomm {
             this.bHelp.UseVisualStyleBackColor = true;
             this.bHelp.Click += new System.EventHandler(this.bHelp_Click);
             // 
-            // columnHeader2
+            // sendToTopToolStripMenuItem
             // 
-            this.columnHeader2.Text = "Mod index";
-            this.columnHeader2.Width = 87;
+            this.sendToTopToolStripMenuItem.Name = "sendToTopToolStripMenuItem";
+            this.sendToTopToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.sendToTopToolStripMenuItem.Text = "Load first";
+            this.sendToTopToolStripMenuItem.Click += new System.EventHandler(this.sendToTopToolStripMenuItem_Click);
+            // 
+            // sendToBottomToolStripMenuItem
+            // 
+            this.sendToBottomToolStripMenuItem.Name = "sendToBottomToolStripMenuItem";
+            this.sendToBottomToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.sendToBottomToolStripMenuItem.Text = "Load last";
+            this.sendToBottomToolStripMenuItem.Click += new System.EventHandler(this.sendToBottomToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -285,6 +304,8 @@ namespace fomm {
         private System.Windows.Forms.ToolStripMenuItem openInTESsnipToolStripMenuItem;
         private System.Windows.Forms.Button bHelp;
         private System.Windows.Forms.ColumnHeader columnHeader2;
+        private System.Windows.Forms.ToolStripMenuItem sendToTopToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem sendToBottomToolStripMenuItem;
     }
 }
 
