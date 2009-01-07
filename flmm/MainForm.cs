@@ -331,5 +331,14 @@ namespace fomm {
 
             RefreshEspList();
         }
+
+        private void copyLoadOrderToClipboardToolStripMenuItem_Click(object sender, EventArgs e) {
+            System.Text.StringBuilder sb=new System.Text.StringBuilder();
+            for(int i=0;i<lvEspList.CheckedItems.Count;i++) sb.AppendLine(lvEspList.CheckedItems[i].Text);
+            sb.AppendLine();
+            sb.AppendLine("Total active plugins: "+lvEspList.CheckedItems.Count);
+            sb.AppendLine("Total plugins: "+lvEspList.Items.Count);
+            Clipboard.SetText(sb.ToString());
+        }
     }
 }

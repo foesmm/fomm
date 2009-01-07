@@ -35,14 +35,15 @@ namespace fomm {
             this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
             this.cmsPlugins = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.openInTESsnipToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.sendToTopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.sendToBottomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.tbPluginInfo = new System.Windows.Forms.TextBox();
             this.bPackageManager = new System.Windows.Forms.Button();
             this.bEnableAI = new System.Windows.Forms.Button();
             this.bSaveGames = new System.Windows.Forms.Button();
             this.bHelp = new System.Windows.Forms.Button();
-            this.sendToTopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.sendToBottomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.copyLoadOrderToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.cmsPlugins.SuspendLayout();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -153,16 +154,31 @@ namespace fomm {
             this.cmsPlugins.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openInTESsnipToolStripMenuItem,
             this.sendToTopToolStripMenuItem,
-            this.sendToBottomToolStripMenuItem});
+            this.sendToBottomToolStripMenuItem,
+            this.copyLoadOrderToClipboardToolStripMenuItem});
             this.cmsPlugins.Name = "cmsPlugins";
-            this.cmsPlugins.Size = new System.Drawing.Size(153, 92);
+            this.cmsPlugins.Size = new System.Drawing.Size(211, 114);
             // 
             // openInTESsnipToolStripMenuItem
             // 
             this.openInTESsnipToolStripMenuItem.Name = "openInTESsnipToolStripMenuItem";
-            this.openInTESsnipToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.openInTESsnipToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
             this.openInTESsnipToolStripMenuItem.Text = "Open in TESsnip";
             this.openInTESsnipToolStripMenuItem.Click += new System.EventHandler(this.openInTESsnipToolStripMenuItem_Click);
+            // 
+            // sendToTopToolStripMenuItem
+            // 
+            this.sendToTopToolStripMenuItem.Name = "sendToTopToolStripMenuItem";
+            this.sendToTopToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
+            this.sendToTopToolStripMenuItem.Text = "Load first";
+            this.sendToTopToolStripMenuItem.Click += new System.EventHandler(this.sendToTopToolStripMenuItem_Click);
+            // 
+            // sendToBottomToolStripMenuItem
+            // 
+            this.sendToBottomToolStripMenuItem.Name = "sendToBottomToolStripMenuItem";
+            this.sendToBottomToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
+            this.sendToBottomToolStripMenuItem.Text = "Load last";
+            this.sendToBottomToolStripMenuItem.Click += new System.EventHandler(this.sendToBottomToolStripMenuItem_Click);
             // 
             // splitContainer1
             // 
@@ -241,19 +257,12 @@ namespace fomm {
             this.bHelp.UseVisualStyleBackColor = true;
             this.bHelp.Click += new System.EventHandler(this.bHelp_Click);
             // 
-            // sendToTopToolStripMenuItem
+            // copyLoadOrderToClipboardToolStripMenuItem
             // 
-            this.sendToTopToolStripMenuItem.Name = "sendToTopToolStripMenuItem";
-            this.sendToTopToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.sendToTopToolStripMenuItem.Text = "Load first";
-            this.sendToTopToolStripMenuItem.Click += new System.EventHandler(this.sendToTopToolStripMenuItem_Click);
-            // 
-            // sendToBottomToolStripMenuItem
-            // 
-            this.sendToBottomToolStripMenuItem.Name = "sendToBottomToolStripMenuItem";
-            this.sendToBottomToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.sendToBottomToolStripMenuItem.Text = "Load last";
-            this.sendToBottomToolStripMenuItem.Click += new System.EventHandler(this.sendToBottomToolStripMenuItem_Click);
+            this.copyLoadOrderToClipboardToolStripMenuItem.Name = "copyLoadOrderToClipboardToolStripMenuItem";
+            this.copyLoadOrderToClipboardToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
+            this.copyLoadOrderToClipboardToolStripMenuItem.Text = "Copy load order to clipboard";
+            this.copyLoadOrderToClipboardToolStripMenuItem.Click += new System.EventHandler(this.copyLoadOrderToClipboardToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -306,6 +315,7 @@ namespace fomm {
         private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.ToolStripMenuItem sendToTopToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem sendToBottomToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem copyLoadOrderToClipboardToolStripMenuItem;
     }
 }
 
