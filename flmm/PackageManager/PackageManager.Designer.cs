@@ -79,7 +79,6 @@ namespace fomm.PackageManager {
             this.lvModList.ContextMenuStrip = this.fomodContextMenu;
             this.lvModList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lvModList.FullRowSelect = true;
-            this.lvModList.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.lvModList.HideSelection = false;
             this.lvModList.Location = new System.Drawing.Point(0, 0);
             this.lvModList.MultiSelect = false;
@@ -88,8 +87,10 @@ namespace fomm.PackageManager {
             this.lvModList.TabIndex = 0;
             this.lvModList.UseCompatibleStateImageBehavior = false;
             this.lvModList.View = System.Windows.Forms.View.Details;
+            this.lvModList.ItemActivate += new System.EventHandler(this.lvModList_ItemActivate);
             this.lvModList.SelectedIndexChanged += new System.EventHandler(this.lvModList_SelectedIndexChanged);
             this.lvModList.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.lvModList_ItemCheck);
+            this.lvModList.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.lvModList_ColumnClick);
             // 
             // fomodContextMenu
             // 

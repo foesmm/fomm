@@ -526,5 +526,21 @@ namespace fomm.PackageManager {
         private void cmbSortOrder_KeyPress(object sender, KeyPressEventArgs e) {
             e.Handled=true;
         }
+
+        private void lvModList_ColumnClick(object sender, ColumnClickEventArgs e) {
+            if(cbGroups.Checked) return;
+            switch(e.Column) {
+            case 0:
+                cmbSortOrder.SelectedIndex=1;
+                break;
+            case 2:
+                cmbSortOrder.SelectedIndex=2;
+                break;
+            }
+        }
+
+        private void lvModList_ItemActivate(object sender, EventArgs e) {
+            bActivate_Click(null, null);
+        }
     }
 }

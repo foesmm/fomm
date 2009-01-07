@@ -469,5 +469,10 @@ namespace fomm.PackageManager {
             }
             return (string[])bsas[bsa].FileNames.Clone();
         }
+
+        public static Form CreateCustomForm() {
+            permissions.Assert();
+            return new Form();
+        }
     }
 }

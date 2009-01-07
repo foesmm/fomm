@@ -44,5 +44,7 @@ namespace fomm.Scripting {
         public static bool EditShader(int package, string name, string path) { return ScriptFunctions.EditShader(package, name, path); }
 
         public static string GetLastError() { return ScriptFunctions.GetLastError(); }
+
+        public static System.Windows.Forms.Form CreateCustomForm() { return ScriptFunctions.CreateCustomForm(); }
     }
 }

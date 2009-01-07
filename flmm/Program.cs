@@ -177,9 +177,11 @@ namespace fomm {
         public static readonly string FOIniPath=Path.Combine(Fallout3SaveDir, "Fallout.ini");
         public static readonly string FOPrefsIniPath=Path.Combine(Fallout3SaveDir, "FalloutPrefs.ini");
         public static readonly string FOSavesPath=Path.Combine(Fallout3SaveDir, Imports.GetPrivateProfileString("General", "SLocalSavePath", "Games", FOIniPath));
-        public static readonly string PackageDir=Path.Combine(exeDir, "mods");
+        private static string packageDir;
         public static readonly string fommDir=Path.Combine(exeDir, "fomm");
         public static readonly string PluginsFile=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Fallout3\\plugins.txt");
+
+        public static string PackageDir { get { return packageDir; } }
 
         /// <summary>
         /// The main entry point for the application.
@@ -189,6 +191,11 @@ namespace fomm {
             //Style setup
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+
+            Settings.Init();
+
+            packageDir=Settings.GetString("FomodDir");
+            if(packageDir==null) packageDir=Path.Combine(exeDir, "mods");
 
             //If we aren't in fallouts directory, look it up in the registry
             if(!File.Exists("Fallout3.exe")&&!File.Exists("Fallout3ng.exe")) {
@@ -232,8 +239,6 @@ namespace fomm {
             if(!Directory.Exists(tmpPath)) Directory.CreateDirectory(tmpPath);
             if(!Directory.Exists(PackageDir)) Directory.CreateDirectory(PackageDir);
             if(!Directory.Exists(fommDir)) Directory.CreateDirectory(fommDir);
-
-            Settings.Init();
 
             Application.Run(new MainForm());
 
