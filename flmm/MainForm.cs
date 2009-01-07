@@ -18,52 +18,42 @@ namespace fomm {
             RefreshEspList();
         }
 
+        private int DragDropIndex=-1;
         private void lvEspList_GiveFeedback(object sender, GiveFeedbackEventArgs e) {
             System.Drawing.Point p=lvEspList.PointToClient(Form.MousePosition);
             ListViewItem lvi=lvEspList.GetItemAt(p.X, p.Y);
+            if(lvi==null) {
+                DragDropIndex=-1;
+                return;
+            }
+            DragDropIndex=lvi.Index;
+            System.Drawing.Rectangle itemBounds = lvEspList.GetItemRect(DragDropIndex);
+            if(p.Y > itemBounds.Top + (itemBounds.Height / 2)) {
+                DragDropIndex++;
+            }
             lvEspList.SelectedIndices.Clear();
-            if(lvi!=null) lvi.Selected=true;
+            if(DragDropIndex!=-1) {
+                if(DragDropIndex!=lvEspList.Items.Count) lvEspList.SelectedIndices.Add(DragDropIndex);
+                if(DragDropIndex!=0) lvEspList.SelectedIndices.Add(DragDropIndex-1);
+            }
         }
 
         private void lvEspList_DragDrop(object sender, DragEventArgs e) {
-            if(lvEspList.SelectedIndices.Count!=1) return;
+            if(DragDropIndex==1) return;
             int[] toswap=(int[])e.Data.GetData(typeof(int[]));
             if(toswap==null) return;
-            int swapwith=lvEspList.SelectedIndices[0];
-            if(toswap[0]==swapwith) return;
-
-            RefreshingList=true;
-
-            string[] names=new string[toswap.Length];
-            Array.Sort<int>(toswap);
-            for(int i=0;i<toswap.Length;i++) names[i]=lvEspList.Items[toswap[i]].Text;
-            for(int i=toswap.Length-1;i>=0;i--) {
-                if(toswap[i]<swapwith) swapwith--;
-                lvEspList.Items.RemoveAt(toswap[i]);
-            }
-            DateTime time=File.GetLastWriteTime("data\\"+lvEspList.Items[swapwith].Text) + TimeSpan.FromMinutes(2);
-            for(int i=0;i<toswap.Length;i++) {
-                File.SetLastWriteTime("data\\"+names[i], time);
-                lvEspList.Items.Insert(swapwith+i+1, new ListViewItem(names[i]));
-                time+=TimeSpan.FromMinutes(2);
-            }
-            int index=swapwith+toswap.Length;
-            while(index<lvEspList.Items.Count&&File.GetLastWriteTime("data\\"+lvEspList.Items[index].Text)<time) {
-                File.SetLastWriteTime("data\\"+lvEspList.Items[index++].Text, time);
-                time+=TimeSpan.FromMinutes(2);
-            }
-
-            RefreshEspList();
+            CommitLoadOrder(DragDropIndex, toswap);
+            DragDropIndex=-1;
         }
 
         private bool DragDropInProgress=false;
         private void lvEspList_ItemDrag(object sender, ItemDragEventArgs e) {
             if(lvEspList.SelectedIndices.Count==0||e.Button!=MouseButtons.Left) return;
-            //if(EspListSorter.order!=EspSortOrder.LoadOrder) return;
             DragDropInProgress=true;
             int[] indicies=new int[lvEspList.SelectedIndices.Count];
             for(int i=0;i<indicies.Length;i++) indicies[i]=lvEspList.SelectedIndices[i];
             lvEspList.DoDragDrop(indicies, DragDropEffects.Move);
+
         }
 
         private void lvEspList_DragEnter(object sender, DragEventArgs e) {
@@ -141,6 +131,7 @@ namespace fomm {
         }
         public void RefreshEspList() {
             RefreshingList=true;
+            lvEspList.BeginUpdate();
             lvEspList.Items.Clear();
 
             List<ListViewItem> plugins=new List<ListViewItem>();
@@ -186,6 +177,7 @@ namespace fomm {
             }
 
             lvEspList.Items.AddRange(plugins.ToArray());
+            lvEspList.EndUpdate();
             RefreshingList=false;
         }
 
@@ -250,6 +242,40 @@ namespace fomm {
         }
         #endregion
 
+        private void CommitLoadOrder(int position, int[] indicies) {
+            Array.Sort<int>(indicies);
+            DateTime timestamp=DateTime.Now - TimeSpan.FromMinutes(lvEspList.Items.Count*2 + 4);
+            TimeSpan twomins=TimeSpan.FromMinutes(2);
+            List<ListViewItem> items=new List<ListViewItem>();
+            RefreshingList=true;
+            lvEspList.BeginUpdate();
+            for(int i=0;i<position;i++) {
+                if(Array.BinarySearch<int>(indicies, i)>=0) continue;
+                File.SetLastWriteTime(Path.Combine("data\\",lvEspList.Items[i].Text), timestamp);
+                timestamp+=twomins;
+                items.Add(lvEspList.Items[i]);
+                items[items.Count-1].Selected=false;
+            }
+            for(int i=0;i<indicies.Length;i++) {
+                File.SetLastWriteTime(Path.Combine("data\\",lvEspList.Items[indicies[i]].Text), timestamp);
+                timestamp+=twomins;
+                items.Add(lvEspList.Items[indicies[i]]);
+                items[items.Count-1].Selected=true;
+            }
+            for(int i=position;i<lvEspList.Items.Count;i++) {
+                if(Array.BinarySearch<int>(indicies, i)>=0) continue;
+                File.SetLastWriteTime(Path.Combine("data\\",lvEspList.Items[i].Text), timestamp);
+                timestamp+=twomins;
+                items.Add(lvEspList.Items[i]);
+                items[items.Count-1].Selected=false;
+            }
+            lvEspList.Items.Clear();
+            lvEspList.Items.AddRange(items.ToArray());
+            lvEspList.EndUpdate();
+            RefreshingList=false;
+            lvEspList.EnsureVisible(position==lvEspList.Items.Count?position-1:position);
+        }
+
         private bool RefreshingList;
         private void lvEspList_ItemChecked(object sender, ItemCheckedEventArgs e) {
             if(RefreshingList) return;
@@ -274,62 +300,14 @@ namespace fomm {
             if(lvEspList.SelectedIndices.Count==0) return;
             int[] toswap=new int[lvEspList.SelectedIndices.Count];
             for(int i=0;i<lvEspList.SelectedIndices.Count;i++) toswap[i]=lvEspList.SelectedIndices[i];
-            if(toswap[0]==0) return;
-
-            RefreshingList=true;
-            lvEspList.BeginUpdate();
-
-            string[] names=new string[toswap.Length];
-            Array.Sort<int>(toswap);
-            for(int i=0;i<toswap.Length;i++) names[i]=lvEspList.Items[toswap[i]].Text;
-            for(int i=toswap.Length-1;i>=0;i--) {
-                lvEspList.Items.RemoveAt(toswap[i]);
-            }
-            DateTime time=File.GetLastWriteTime("data\\"+lvEspList.Items[0].Text) - TimeSpan.FromMinutes(5);
-            for(int i=0;i<toswap.Length;i++) {
-                File.SetLastWriteTime("data\\"+names[i], time);
-                lvEspList.Items.Insert(i, new ListViewItem(names[i]));
-                time+=TimeSpan.FromMinutes(2);
-            }
-            int index=toswap.Length;
-            while(index<lvEspList.Items.Count&&File.GetLastWriteTime("data\\"+lvEspList.Items[index].Text)<time) {
-                File.SetLastWriteTime("data\\"+lvEspList.Items[index++].Text, time);
-                time+=TimeSpan.FromMinutes(2);
-            }
-
-            RefreshEspList();
-            lvEspList.EndUpdate();
+            CommitLoadOrder(0, toswap);
         }
 
         private void sendToBottomToolStripMenuItem_Click(object sender, EventArgs e) {
             if(lvEspList.SelectedIndices.Count==0) return;
             int[] toswap=new int[lvEspList.SelectedIndices.Count];
             for(int i=0;i<lvEspList.SelectedIndices.Count;i++) toswap[i]=lvEspList.SelectedIndices[i];
-            int swapwith=lvEspList.Items.Count-1;
-            if(toswap[0]==swapwith) return;
-
-            RefreshingList=true;
-
-            string[] names=new string[toswap.Length];
-            Array.Sort<int>(toswap);
-            for(int i=0;i<toswap.Length;i++) names[i]=lvEspList.Items[toswap[i]].Text;
-            for(int i=toswap.Length-1;i>=0;i--) {
-                if(toswap[i]<swapwith) swapwith--;
-                lvEspList.Items.RemoveAt(toswap[i]);
-            }
-            DateTime time=File.GetLastWriteTime("data\\"+lvEspList.Items[swapwith].Text) + TimeSpan.FromMinutes(2);
-            for(int i=0;i<toswap.Length;i++) {
-                File.SetLastWriteTime("data\\"+names[i], time);
-                lvEspList.Items.Insert(swapwith+i+1, new ListViewItem(names[i]));
-                time+=TimeSpan.FromMinutes(2);
-            }
-            int index=swapwith+toswap.Length;
-            while(index<lvEspList.Items.Count&&File.GetLastWriteTime("data\\"+lvEspList.Items[index].Text)<time) {
-                File.SetLastWriteTime("data\\"+lvEspList.Items[index++].Text, time);
-                time+=TimeSpan.FromMinutes(2);
-            }
-
-            RefreshEspList();
+            CommitLoadOrder(lvEspList.Items.Count, toswap);
         }
 
         private void copyLoadOrderToClipboardToolStripMenuItem_Click(object sender, EventArgs e) {
