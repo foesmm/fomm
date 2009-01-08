@@ -31,6 +31,8 @@ namespace fomm.Scripting {
 
         public static string[] GetActivePlugins() { return ScriptFunctions.GetActivePlugins(); }
         public static void SetPluginActivation(string s, bool activate) { ScriptFunctions.SetPluginActivation(s, activate); }
+        public static void SetLoadOrder(int[] plugins) { ScriptFunctions.SetLoadOrder(plugins); }
+        public static void SetLoadOrder(int[] plugins, int position) { ScriptFunctions.SetLoadOrder(plugins, position); }
 
         public static string GetFalloutIniString(string section, string value) { return ScriptFunctions.GetFalloutIniString(section, value); }
         public static int GetFalloutIniInt(string section, string value) { return ScriptFunctions.GetFalloutIniInt(section, value); }

@@ -199,14 +199,17 @@ namespace fomm {
 
             //If we aren't in fallouts directory, look it up in the registry
             if(!File.Exists("Fallout3.exe")&&!File.Exists("Fallout3ng.exe")) {
-                string path;
-                try {
-                    path=Microsoft.Win32.Registry.GetValue(@"HKEY_LOCAL_MACHINE\Software\Bethesda Softworks\Fallout3", "Installed Path", null) as string;
-                } catch { path=null; }
-                if(path!=null) {
-                    Directory.SetCurrentDirectory(path);
+                string path=Settings.GetString("FalloutDir");
+                if(path==null) {
+                    try {
+                        path=Microsoft.Win32.Registry.GetValue(@"HKEY_LOCAL_MACHINE\Software\Bethesda Softworks\Fallout3", "Installed Path", null) as string;
+                    } catch { path=null; }
+                    if(path!=null) {
+                        Directory.SetCurrentDirectory(path);
+                    }
                 }
             }
+
 
             //Check that we're in fallout's directory and that we have write access
             bool limitedmode=true;

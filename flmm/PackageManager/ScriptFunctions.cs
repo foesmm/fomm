@@ -380,6 +380,45 @@ namespace fomm.PackageManager {
             return result;
         }
 
+        public static void SetLoadOrder(int[] plugins) {
+            string[] names=GetActivePlugins();
+            if(plugins.Length!=names.Length) {
+                LastError="Length of new load order array was different to the total number of plugins";
+                return;
+            }
+            permissions.Assert();
+            DateTime timestamp=DateTime.Now - TimeSpan.FromMinutes(names.Length*2 + 4);
+            TimeSpan twomins=TimeSpan.FromMinutes(2);
+
+            for(int i=0;i<names.Length;i++) {
+                if(Array.BinarySearch<int>(plugins, i)>=0) continue;
+                File.SetLastWriteTime(Path.Combine("data\\", names[plugins[i]]), timestamp);
+                timestamp+=twomins;
+            }
+        }
+        public static void SetLoadOrder(int[] plugins, int position) {
+            string[] names=GetActivePlugins();
+            permissions.Assert();
+            Array.Sort<int>(plugins);
+            DateTime timestamp=DateTime.Now - TimeSpan.FromMinutes(names.Length*2 + 4);
+            TimeSpan twomins=TimeSpan.FromMinutes(2);
+            
+            for(int i=0;i<position;i++) {
+                if(Array.BinarySearch<int>(plugins, i)>=0) continue;
+                File.SetLastWriteTime(Path.Combine("data\\", names[i]), timestamp);
+                timestamp+=twomins;
+            }
+            for(int i=0;i<plugins.Length;i++) {
+                File.SetLastWriteTime(Path.Combine("data\\", names[plugins[i]]), timestamp);
+                timestamp+=twomins;
+            }
+            for(int i=position;i<names.Length;i++) {
+                if(Array.BinarySearch<int>(plugins, i)>=0) continue;
+                File.SetLastWriteTime(Path.Combine("data\\", names[i]), timestamp);
+                timestamp+=twomins;
+            }
+        }
+
         public static string GetFalloutIniString(string section, string value) {
             permissions.Assert();
             return Imports.GetPrivateProfileString(section, value, null, Program.FOIniPath);

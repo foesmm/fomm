@@ -26,11 +26,13 @@ namespace fomm {
                 DragDropIndex=-1;
                 return;
             }
-            DragDropIndex=lvi.Index;
-            System.Drawing.Rectangle itemBounds = lvEspList.GetItemRect(DragDropIndex);
+            int newDragDropIndex=lvi.Index;
+            System.Drawing.Rectangle itemBounds = lvEspList.GetItemRect(newDragDropIndex);
             if(p.Y > itemBounds.Top + (itemBounds.Height / 2)) {
-                DragDropIndex++;
+                newDragDropIndex++;
             }
+            if(DragDropIndex==newDragDropIndex) return;
+            DragDropIndex=newDragDropIndex;
             lvEspList.SelectedIndices.Clear();
             if(DragDropIndex!=-1) {
                 if(DragDropIndex!=lvEspList.Items.Count) lvEspList.SelectedIndices.Add(DragDropIndex);
