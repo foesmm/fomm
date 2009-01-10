@@ -197,6 +197,38 @@ namespace fomm {
             packageDir=Settings.GetString("FomodDir");
             if(packageDir==null) packageDir=Path.Combine(exeDir, "mods");
 
+            if(args.Length>0) {
+                if(!args[0].StartsWith("-")&&File.Exists(args[0])) {
+                    switch(Path.GetExtension(args[0]).ToLowerInvariant()) {
+                    //case ".fomod":
+                    case ".bsa":
+                        Application.Run(new BSABrowser(args[0]));
+                        return;
+                    case ".sdp":
+                        Application.Run(new ShaderEdit.MainForm(args[0]));
+                        return;
+                    }
+                } else {
+                    switch(args[0]) {
+                    case "-setup":
+                        Application.Run(new SetupForm());
+                        return;
+                    case "-bsa-unpacker":
+                        Application.Run(new BSABrowser());
+                        return;
+                    case "-bsa-creator":
+                        Application.Run(new BSACreator());
+                        return;
+                    case "-tessnip":
+                        Application.Run(new TESsnip.TESsnip());
+                        return;
+                    case "-sdp-editor":
+                        Application.Run(new ShaderEdit.MainForm());
+                        return;
+                    }
+                }
+            }
+
             //If we aren't in fallouts directory, look it up in the registry
             if(!File.Exists("Fallout3.exe")&&!File.Exists("Fallout3ng.exe")) {
                 string path=Settings.GetString("FalloutDir");

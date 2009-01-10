@@ -109,6 +109,11 @@ namespace fomm {
             xmlDoc.Save(xmlPath);
         }
 
+        public static void RemoveString(string name) {
+            XmlElement xe=rootNode.SelectSingleNode("descendant::strValue[@name='"+name+"']") as XmlElement;
+            if(xe!=null) xe.ParentNode.RemoveChild(xe);
+        }
+
         public static bool GetBool(string name) {
             XmlElement xe=rootNode.SelectSingleNode("descendant::boolValue[@name='"+name+"']") as XmlElement;
             if(xe==null) return false;

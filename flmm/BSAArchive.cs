@@ -119,9 +119,9 @@ namespace fomm {
             BSAHeader4 header;
             br=new BinaryReader(File.OpenRead(path), System.Text.Encoding.Default);
             header=new BSAHeader4(br);
-            if(header.bsaVersion!=0x68) throw new BSALoadException();
+            if(header.bsaVersion!=0x68&&header.bsaVersion!=0x67) throw new BSALoadException();
             defaultCompressed=(header.archiveFlags & 4)>0;
-            SkipNames=(header.archiveFlags&0x100)>0;
+            SkipNames=(header.archiveFlags&0x100)>0 && header.bsaVersion==0x68;
             files=new HashTable();
 
             //Read folder info

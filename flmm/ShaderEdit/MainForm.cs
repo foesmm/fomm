@@ -23,15 +23,17 @@ namespace fomm.ShaderEdit {
 
         public MainForm() { InitializeComponent(); }
 
+        public MainForm(string path) {
+            InitializeComponent();
+            Open(path);
+        }
+
         private void cmbShaderSelect_KeyPress(object sender, KeyPressEventArgs e) { e.Handled=true; }
 
-        private void bOpen_Click(object sender, EventArgs e) {
-            openFileDialog1.Filter="Fallout 3 shader package (*.sdp)|*.sdp";
-            openFileDialog1.Title="Select Shader package to edit";
-            if(openFileDialog1.ShowDialog()!=DialogResult.OK) return;
-            FileName=Path.GetFileName(openFileDialog1.FileName);
+        private void Open(string path) {
+            FileName=Path.GetFileName(path);
             Text="SDP Editor ("+FileName+")";
-            BinaryReader br=new BinaryReader(File.OpenRead(openFileDialog1.FileName), System.Text.Encoding.Default);
+            BinaryReader br=new BinaryReader(File.OpenRead(path), System.Text.Encoding.Default);
             unknown=br.ReadUInt32();
             int num=br.ReadInt32();
             br.ReadInt32();
@@ -51,6 +53,13 @@ namespace fomm.ShaderEdit {
             bClose.Enabled=true;
             cmbShaderSelect.Enabled=true;
             bSave.Enabled=true;
+        }
+
+        private void bOpen_Click(object sender, EventArgs e) {
+            openFileDialog1.Filter="Fallout 3 shader package (*.sdp)|*.sdp";
+            openFileDialog1.Title="Select Shader package to edit";
+            if(openFileDialog1.ShowDialog()!=DialogResult.OK) return;
+            Open(openFileDialog1.FileName);
         }
 
         private unsafe void cmbShaderSelect_SelectedIndexChanged(object sender, EventArgs e) {

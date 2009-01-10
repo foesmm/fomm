@@ -134,7 +134,8 @@ namespace fomm {
             try {
                 br=new BinaryReader(File.OpenRead(path));
                 if(Program.ReadCString(br)!="BSA") throw new fommException("File was not a valid BSA archive");
-                if(br.ReadUInt32()!=104) {
+                int version=br.ReadInt32();
+                if(version!=0x67&&version!=0x68) {
                     if(MessageBox.Show("This BSA archive has an unknown version number.\n"+
                     "Attempt to open anyway?", "Warning", MessageBoxButtons.YesNo)!=DialogResult.Yes) {
                         br.Close();
@@ -144,7 +145,7 @@ namespace fomm {
                 br.ReadUInt32();
                 uint flags=br.ReadUInt32();
                 if((flags&0x004)>0) Compressed=true; else Compressed=false;
-                if((flags&0x100)>0) ContainsFileNameBlobs=true; else ContainsFileNameBlobs=false;
+                if((flags&0x100)>0&&version==0x68) ContainsFileNameBlobs=true; else ContainsFileNameBlobs=false;
                 FolderCount=br.ReadInt32();
                 FileCount=br.ReadInt32();
                 br.BaseStream.Position+=12;

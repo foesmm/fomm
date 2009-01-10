@@ -335,7 +335,7 @@ namespace fomm {
             bw.Write((byte)'S');
             bw.Write((byte)'A');
             bw.Write((byte)0);
-            bw.Write((uint)104);
+            bw.Write((uint)0x67);
             bw.Write((uint)36);
             uint flags;
             bool Compressed;

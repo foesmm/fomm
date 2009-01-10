@@ -206,7 +206,6 @@ namespace fomm {
         }
 
         private void cBSACreator_Click(object sender, EventArgs e) {
-            MessageBox.Show("Warning: This tool hasn't been fully updated for fallout yet. BSAs created with it may not be able to be read.", "Warning");
             new BSACreator().Show();
         }
 
@@ -230,9 +229,14 @@ namespace fomm {
                 return;
             }
             Close();
-            if(File.Exists("fose_loader.exe")) System.Diagnostics.Process.Start("fose_loader.exe");
-            else if(File.Exists("fallout3.exe")) System.Diagnostics.Process.Start("fallout3.exe");
-            else System.Diagnostics.Process.Start("fallout3ng.exe");
+            string command=Settings.GetString("LaunchCommand");
+            if(command!=null) {
+                System.Diagnostics.Process.Start(command);
+            } else {
+                if(File.Exists("fose_loader.exe")) System.Diagnostics.Process.Start("fose_loader.exe");
+                else if(File.Exists("fallout3.exe")) System.Diagnostics.Process.Start("fallout3.exe");
+                else System.Diagnostics.Process.Start("fallout3ng.exe");
+            }
         }
 
         private void bSaveGames_Click(object sender, EventArgs e) {
