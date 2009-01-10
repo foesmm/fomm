@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using StringList=System.Collections.Generic.List<string>;
 using HashTable=System.Collections.Generic.Dictionary<ulong, fomm.BSAArchive.BSAFileInfo>;
 using System.IO;
@@ -218,6 +219,64 @@ namespace fomm {
             ulong hash=GenHash(path);
             if(!files.ContainsKey(hash)) return null;
             else return files[hash].GetRawData();
+        }
+    }
+
+    internal static class SDPArchives {
+        private static string GetPath(int package) {
+            return "data\\shaders\\shaderpackage"+package.ToString().PadLeft(3, '0')+".sdp";
+        }
+
+        private static bool ReplaceShader(string file, string shader, byte[] newdata, out byte[] OldData) {
+            string tempshader=Path.Combine(Program.tmpPath, "tempshader");
+
+            DateTime timeStamp=File.GetLastWriteTime(file);
+            File.Delete(tempshader);
+            File.Move(file, tempshader);
+            BinaryReader br=new BinaryReader(File.OpenRead(tempshader), System.Text.Encoding.Default);
+            BinaryWriter bw=new BinaryWriter(File.Create(file), System.Text.Encoding.Default);
+            bw.Write(br.ReadInt32());
+            int num=br.ReadInt32();
+            bw.Write(num);
+            long sizeoffset=br.BaseStream.Position;
+            bw.Write(br.ReadInt32());
+            bool found=false;
+            OldData=null;
+            for(int i=0;i<num;i++) {
+                char[] name=br.ReadChars(0x100);
+                int size=br.ReadInt32();
+                byte[] data=br.ReadBytes(size);
+                bw.Write(name);
+                string sname="";
+                for(int i2=0;i2<100;i2++) { if(name[i2]=='\0') break; sname+=name[i2]; }
+                if(!found&&sname==shader) {
+                    bw.Write(newdata.Length);
+                    bw.Write(newdata);
+                    found=true;
+                    OldData=data;
+                } else {
+                    bw.Write(size);
+                    bw.Write(data);
+                }
+            }
+            bw.BaseStream.Position=sizeoffset;
+            bw.Write(bw.BaseStream.Length-12);
+            br.Close();
+            bw.Close();
+            File.Delete(tempshader);
+            File.SetLastWriteTime(file, timeStamp);
+            return found;
+        }
+
+        internal static bool EditShader(int package, string name, byte[] newData, out byte[] oldData) {
+            string path=GetPath(package);
+            if(!File.Exists(path)) { oldData=null; return false; }
+            return ReplaceShader(path, name, newData, out oldData);
+        }
+
+        internal static void RestoreShader(int package, string name, byte[] data) {
+            byte[] unused;
+            EditShader(package, name, data, out unused);
         }
     }
 }

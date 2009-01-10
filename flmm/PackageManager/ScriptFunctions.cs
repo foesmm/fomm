@@ -6,7 +6,6 @@ using System.IO;
 using System.Xml;
 using System.Windows.Forms;
 
-//Edit sdp
 //Get/set global variables
 //Block original files from being overwritten
 
@@ -367,6 +366,22 @@ namespace fomm.PackageManager {
 
         public static string GetLastError() { return LastError; }
 
+        public static string[] GetAllPlugins() {
+            permissions.Assert();
+            List<string> lfiles=new List<string>();
+            lfiles.AddRange(Directory.GetFiles("data", "*.esm"));
+            lfiles.AddRange(Directory.GetFiles("data", "*.esp"));
+            FileInfo[] files=new FileInfo[lfiles.Count];
+            for(int i=0;i<files.Length;i++) files[i]=new FileInfo(Path.Combine("data", lfiles[i]));
+            Array.Sort<FileInfo>(files, delegate(FileInfo a, FileInfo b)
+            {
+                return a.LastWriteTime.CompareTo(b.LastWriteTime);
+            });
+            string[] result=new string[files.Length];
+            for(int i=0;i<files.Length;i++) result[i]=files[i].Name;
+            return result;
+        }
+
         public static string[] GetActivePlugins() {
             permissions.Assert();
             FileInfo[] files=new FileInfo[activePlugins.Count];
@@ -381,13 +396,13 @@ namespace fomm.PackageManager {
         }
 
         public static void SetLoadOrder(int[] plugins) {
-            string[] names=GetActivePlugins();
+            string[] names=GetAllPlugins();
             if(plugins.Length!=names.Length) {
                 LastError="Length of new load order array was different to the total number of plugins";
                 return;
             }
             permissions.Assert();
-            DateTime timestamp=DateTime.Now - TimeSpan.FromMinutes(names.Length*2 + 4);
+            DateTime timestamp=new DateTime(2008, 1, 1);
             TimeSpan twomins=TimeSpan.FromMinutes(2);
 
             for(int i=0;i<names.Length;i++) {
@@ -397,10 +412,10 @@ namespace fomm.PackageManager {
             }
         }
         public static void SetLoadOrder(int[] plugins, int position) {
-            string[] names=GetActivePlugins();
+            string[] names=GetAllPlugins();
             permissions.Assert();
             Array.Sort<int>(plugins);
-            DateTime timestamp=DateTime.Now - TimeSpan.FromMinutes(names.Length*2 + 4);
+            DateTime timestamp=new DateTime(2008, 1, 1);
             TimeSpan twomins=TimeSpan.FromMinutes(2);
             
             for(int i=0;i<position;i++) {
@@ -468,10 +483,18 @@ namespace fomm.PackageManager {
         public static bool EditPrefsINI(string section, string key, string value, bool saveOld) {
             return EditINI(Program.FOPrefsIniPath, section, key, value, saveOld);
         }
-        public static bool EditShader(int package, string name, string path) {
+        public static bool EditShader(int package, string name, byte[] data) {
             permissions.Assert();
-            return false;
-            //srd.SDPEdits.Add(new SDPEditInfo(package, name, DataFiles+path));
+            byte[] oldData;
+            if(!SDPArchives.EditShader(package, name, data, out oldData)) return false;
+            InstallLog.AddShaderEdit(package, name, oldData);
+            XmlElement node=xmlDoc.CreateElement("sdp");
+            node.Attributes.Append(xmlDoc.CreateAttribute("package"));
+            node.Attributes.Append(xmlDoc.CreateAttribute("section"));
+            node.Attributes[0].Value=package.ToString();
+            node.Attributes[1].Value=name;
+            sdpEditsNode.AppendChild(node);
+            return true;
         }
 
         public static byte[] GetDataFileFromBSA(string bsa, string file) {

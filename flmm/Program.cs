@@ -188,6 +188,8 @@ namespace fomm {
         /// </summary>
         [STAThread]
         private static void Main(string[] args) {
+            System.Threading.Mutex mutex;
+            bool newMutex;
             //Style setup
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
@@ -211,7 +213,14 @@ namespace fomm {
                 } else {
                     switch(args[0]) {
                     case "-setup":
+                        mutex=new System.Threading.Mutex(true, "fommMainMutex", out newMutex);
+                        if(!newMutex) {
+                            MessageBox.Show("fomm is already running", "Error");
+                            mutex.Close();
+                            return;
+                        }
                         Application.Run(new SetupForm());
+                        mutex.Close();
                         return;
                     case "-bsa-unpacker":
                         Application.Run(new BSABrowser());
@@ -227,6 +236,13 @@ namespace fomm {
                         return;
                     }
                 }
+            }
+
+            mutex=new System.Threading.Mutex(true, "fommMainMutex", out newMutex);
+            if(!newMutex) {
+                MessageBox.Show("fomm is already running", "Error");
+                mutex.Close();
+                return;
             }
 
             //If we aren't in fallouts directory, look it up in the registry
@@ -278,6 +294,8 @@ namespace fomm {
             Application.Run(new MainForm());
 
             if(Directory.Exists(tmpPath)) Directory.Delete(tmpPath, true);
+
+            mutex.Close();
         }
 
         internal static string ReadCString(BinaryReader br) {

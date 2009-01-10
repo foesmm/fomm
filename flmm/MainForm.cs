@@ -250,7 +250,7 @@ namespace fomm {
 
         private void CommitLoadOrder(int position, int[] indicies) {
             Array.Sort<int>(indicies);
-            DateTime timestamp=DateTime.Now - TimeSpan.FromMinutes(lvEspList.Items.Count*2 + 4);
+            DateTime timestamp=new DateTime(2008, 1, 1);
             TimeSpan twomins=TimeSpan.FromMinutes(2);
             List<ListViewItem> items=new List<ListViewItem>();
             RefreshingList=true;

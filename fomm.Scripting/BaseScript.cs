@@ -29,6 +29,7 @@ namespace fomm.Scripting {
         public static string[] GetBSAFileList(string bsa) { return ScriptFunctions.GetBSAFileList(bsa); }
         public static byte[] GetDataFileFromBSA(string bsa, string file) { return ScriptFunctions.GetDataFileFromBSA(bsa, file); }
 
+        public static string[] GetAllPlugins() { return ScriptFunctions.GetAllPlugins(); }
         public static string[] GetActivePlugins() { return ScriptFunctions.GetActivePlugins(); }
         public static void SetPluginActivation(string s, bool activate) { ScriptFunctions.SetPluginActivation(s, activate); }
         public static void SetLoadOrder(int[] plugins) { ScriptFunctions.SetLoadOrder(plugins); }
@@ -42,8 +43,7 @@ namespace fomm.Scripting {
         public static int GetPrefsIniInt(string section, string value) { return ScriptFunctions.GetPrefsIniInt(section, value); }
         public static bool EditPrefsINI(string section, string key, string value, bool saveOld) { return ScriptFunctions.EditPrefsINI(section, key, value, saveOld); }
 
-        //Not implemented
-        public static bool EditShader(int package, string name, string path) { return ScriptFunctions.EditShader(package, name, path); }
+        public static bool EditShader(int package, string name, byte[] data) { return ScriptFunctions.EditShader(package, name, data); }
 
         public static string GetLastError() { return ScriptFunctions.GetLastError(); }
 

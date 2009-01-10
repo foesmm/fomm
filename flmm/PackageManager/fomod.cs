@@ -10,6 +10,8 @@ using Path=System.IO.Path;
  *   <installedFiles>
  *     <file>filepath</file>
  *   </installedFiles>
+ *   <sdpEdits>
+ *     <sdp package="1" shader=">hexcode</edit>
  * </installData>
  * 
  * Info XML structure
@@ -357,6 +359,12 @@ namespace fomm.PackageManager {
                 foreach(XmlNode node in bnode.ChildNodes) {
                     InstallLog.UndoIniEdit(node.Attributes.GetNamedItem("file").Value, node.Attributes.GetNamedItem("section").Value,
                         node.Attributes.GetNamedItem("key").Value, baseName);
+                }
+            }
+            bnode=xmlDoc.FirstChild.SelectSingleNode("sdpEdits");
+            if(bnode!=null) {
+                foreach(XmlNode node in bnode.ChildNodes) {
+                    InstallLog.UndoShaderEdit(int.Parse(node.Attributes.GetNamedItem("package").Value), node.Attributes.GetNamedItem("shader").Value);
                 }
             }
             File.Delete(xmlpath);

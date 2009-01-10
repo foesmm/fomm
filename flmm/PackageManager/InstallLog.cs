@@ -68,7 +68,7 @@ namespace fomm.PackageManager {
         }
 
         public static void AddIniEdit(string file, string section, string key, string mod, string value) {
-            XmlNode node=dataFilesNode.SelectSingleNode("ini[@file='"+file+"' and @section='"+section+"' and @key='"+key+"']");
+            XmlNode node=iniEditsNode.SelectSingleNode("ini[@file='"+file+"' and @section='"+section+"' and @key='"+key+"']");
             if(node==null) {
                 node=xmlDoc.CreateElement("ini");
                 node.Attributes.Append(xmlDoc.CreateAttribute("file"));
@@ -106,6 +106,31 @@ namespace fomm.PackageManager {
             if(node==null) return;
             Imports.WritePrivateProfileStringA(section, key, node.InnerText, file);
             iniEditsNode.RemoveChild(node);
+        }
+
+        public static void AddShaderEdit(int package, string shader, byte[] old) {
+            XmlNode node=sdpEditsNode.SelectSingleNode("sdp[@package='"+package+"' and @shader='"+shader+"']");
+            if(node==null) {
+                XmlElement el=xmlDoc.CreateElement("sdp");
+                el.Attributes.Append(xmlDoc.CreateAttribute("package"));
+                el.Attributes.Append(xmlDoc.CreateAttribute("shader"));
+                el.Attributes[0].Value=package.ToString();
+                el.Attributes[1].Value=shader;
+                System.Text.StringBuilder sb=new System.Text.StringBuilder(old.Length*2);
+                for(int i=0;i<old.Length;i++) sb.Append(old[i].ToString("x2"));
+                el.InnerText=sb.ToString();
+                sdpEditsNode.AppendChild(el);
+            }
+        }
+        public static void UndoShaderEdit(int package, string shader) {
+            XmlNode node=sdpEditsNode.SelectSingleNode("sdp[@package='"+package+"' and @shader='"+shader+"']");
+            if(node==null) return;
+            byte[] b=new byte[node.InnerText.Length/2];
+            for(int i=0;i<b.Length;i++) {
+                b[i]=byte.Parse(""+node.InnerText[i*2]+node.InnerText[i*2+1], System.Globalization.NumberStyles.AllowHexSpecifier);
+            }
+            SDPArchives.RestoreShader(package, shader, b);
+            sdpEditsNode.RemoveChild(node);
         }
     }
 }
