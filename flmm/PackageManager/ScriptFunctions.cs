@@ -35,6 +35,7 @@ namespace fomm.PackageManager {
             paths.Add(Program.exeDir);
             paths.Add(Program.Fallout3SaveDir);
             paths.Add(Program.tmpPath);
+            paths.Add(Program.LocalDataPath);
             paths.Add(Environment.CurrentDirectory);
             permissions.AddPermission(new FileIOPermission(FileIOPermissionAccess.AllAccess, paths.ToArray()));
             permissions.AddPermission(new UIPermission(UIPermissionWindow.AllWindows));
