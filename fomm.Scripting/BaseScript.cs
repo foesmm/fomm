@@ -43,6 +43,8 @@ namespace fomm.Scripting {
         public static int GetPrefsIniInt(string section, string value) { return ScriptFunctions.GetPrefsIniInt(section, value); }
         public static bool EditPrefsINI(string section, string key, string value, bool saveOld) { return ScriptFunctions.EditPrefsINI(section, key, value, saveOld); }
 
+        public static string GetRendererInfo(string value) { return ScriptFunctions.GetRendererInfo(value); }
+
         public static bool EditShader(int package, string name, byte[] data) { return ScriptFunctions.EditShader(package, name, data); }
 
         public static string GetLastError() { return ScriptFunctions.GetLastError(); }

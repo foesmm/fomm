@@ -455,6 +455,17 @@ namespace fomm.PackageManager {
             return Imports.GetPrivateProfileIntA(section, value, 0, Program.FOPrefsIniPath);
         }
 
+        public static string GetRendererInfo(string value) {
+            permissions.Assert();
+            string[] lines=File.ReadAllLines(Program.FORendererFile);
+            for(int i=1;i<lines.Length;i++) {
+                if(!lines[i].Contains(":")) continue;
+                string val=lines[i].Remove(lines[i].IndexOf(':')).Trim();
+                if(val==value) return lines[i].Substring(lines[i].IndexOf(':')+1).Trim();
+            }
+            return null;
+        }
+
         public static int[] Select(string[] items, string[] previews, string[] descs, string title, bool many) {
             permissions.Assert();
             System.Drawing.Image[] ipreviews=null;
@@ -488,10 +499,13 @@ namespace fomm.PackageManager {
             permissions.Assert();
             byte[] oldData;
             if(!SDPArchives.EditShader(package, name, data, out oldData)) return false;
+            if(sdpEditsNode==null) {
+                rootNode.AppendChild(sdpEditsNode=xmlDoc.CreateElement("sdpEdits"));
+            }
             InstallLog.AddShaderEdit(package, name, oldData);
             XmlElement node=xmlDoc.CreateElement("sdp");
             node.Attributes.Append(xmlDoc.CreateAttribute("package"));
-            node.Attributes.Append(xmlDoc.CreateAttribute("section"));
+            node.Attributes.Append(xmlDoc.CreateAttribute("shader"));
             node.Attributes[0].Value=package.ToString();
             node.Attributes[1].Value=name;
             sdpEditsNode.AppendChild(node);

@@ -260,7 +260,7 @@ namespace fomm {
                 }
             }
             bw.BaseStream.Position=sizeoffset;
-            bw.Write(bw.BaseStream.Length-12);
+            bw.Write((int)(bw.BaseStream.Length-12));
             br.Close();
             bw.Close();
             File.Delete(tempshader);
