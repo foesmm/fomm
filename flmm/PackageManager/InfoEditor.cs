@@ -91,6 +91,8 @@ namespace fomm.PackageManager {
             mod.Description=tbDescription.Text;
             mod.website=tbWebsite.Text;
             mod.email=tbEmail.Text;
+            mod.MinFommVersion=minFommVersion;
+            mod.Version=version;
 
             mod.groups=new string[clbGroups.CheckedItems.Count];
             for(int i=0;i<mod.groups.Length;i++) mod.groups[i]=((string)clbGroups.CheckedItems[i]).ToLowerInvariant();

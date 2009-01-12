@@ -373,7 +373,7 @@ namespace fomm.PackageManager {
             lfiles.AddRange(Directory.GetFiles("data", "*.esm"));
             lfiles.AddRange(Directory.GetFiles("data", "*.esp"));
             FileInfo[] files=new FileInfo[lfiles.Count];
-            for(int i=0;i<files.Length;i++) files[i]=new FileInfo(Path.Combine("data", lfiles[i]));
+            for(int i=0;i<files.Length;i++) files[i]=new FileInfo(lfiles[i]);
             Array.Sort<FileInfo>(files, delegate(FileInfo a, FileInfo b)
             {
                 return a.LastWriteTime.CompareTo(b.LastWriteTime);
@@ -402,12 +402,18 @@ namespace fomm.PackageManager {
                 LastError="Length of new load order array was different to the total number of plugins";
                 return;
             }
+            for(int i=0;i<plugins.Length;i++) {
+                if(plugins[i]<0||plugins[i]>=plugins.Length) {
+                    LastError="A plugin index was out of range";
+                    return;
+                }
+            }
             permissions.Assert();
             DateTime timestamp=new DateTime(2008, 1, 1);
             TimeSpan twomins=TimeSpan.FromMinutes(2);
 
             for(int i=0;i<names.Length;i++) {
-                if(Array.BinarySearch<int>(plugins, i)>=0) continue;
+                //if(Array.BinarySearch<int>(plugins, i)>=0) continue;
                 File.SetLastWriteTime(Path.Combine("data\\", names[plugins[i]]), timestamp);
                 timestamp+=twomins;
             }

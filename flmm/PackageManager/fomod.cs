@@ -117,6 +117,7 @@ namespace fomm.PackageManager {
                             Version v=new Version(n.InnerText);
                             if(Program.MVersion<v) throw new fomodLoadException("This fomod requires a newer version of Fallout mod manager to load\n"+
                                 "Expected "+n.InnerText);
+                            MinFommVersion=v;
                             break;
                         case "Email":
                             email=n.InnerText;

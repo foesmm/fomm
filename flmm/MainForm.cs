@@ -277,6 +277,13 @@ namespace fomm {
             }
             lvEspList.Items.Clear();
             lvEspList.Items.AddRange(items.ToArray());
+            int count=0;
+            for(int i=0;i<lvEspList.Items.Count;i++) {
+                if(lvEspList.Items[i].Checked) {
+                    lvEspList.Items[i].SubItems[1].Text=count.ToString("X2");
+                    count++;
+                } else lvEspList.Items[i].SubItems[1].Text="NA";
+            }
             lvEspList.EndUpdate();
             RefreshingList=false;
             lvEspList.EnsureVisible(position==lvEspList.Items.Count?position-1:position);

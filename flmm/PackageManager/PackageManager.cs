@@ -122,6 +122,7 @@ namespace fomm.PackageManager {
                     "Replacers/Meshes",
                     "Replacers/Textures",
                     "Replacers/Sounds",
+                    "Replacers/Shaders",
                     "Tweaks",
                     "Fixes",
                     "Cosmetic",
