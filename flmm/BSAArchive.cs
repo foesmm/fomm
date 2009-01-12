@@ -227,7 +227,7 @@ namespace fomm {
             return "data\\shaders\\shaderpackage"+package.ToString().PadLeft(3, '0')+".sdp";
         }
 
-        private static bool ReplaceShader(string file, string shader, byte[] newdata, out byte[] OldData) {
+        private static bool ReplaceShader(string file, string shader, byte[] newdata, out byte[] OldData, uint crc) {
             string tempshader=Path.Combine(Program.tmpPath, "tempshader");
 
             DateTime timeStamp=File.GetLastWriteTime(file);
@@ -246,14 +246,22 @@ namespace fomm {
                 char[] name=br.ReadChars(0x100);
                 int size=br.ReadInt32();
                 byte[] data=br.ReadBytes(size);
+                
                 bw.Write(name);
                 string sname="";
                 for(int i2=0;i2<100;i2++) { if(name[i2]=='\0') break; sname+=name[i2]; }
                 if(!found&&sname==shader) {
-                    bw.Write(newdata.Length);
-                    bw.Write(newdata);
-                    found=true;
-                    OldData=data;
+                    ICSharpCode.SharpZipLib.Checksums.Crc32 ccrc=new ICSharpCode.SharpZipLib.Checksums.Crc32();
+                    ccrc.Update(data);
+                    if(crc==0||ccrc.Value==crc) {
+                        bw.Write(newdata.Length);
+                        bw.Write(newdata);
+                        found=true;
+                        OldData=data;
+                    } else {
+                        bw.Write(size);
+                        bw.Write(data);
+                    }
                 } else {
                     bw.Write(size);
                     bw.Write(data);
@@ -271,12 +279,14 @@ namespace fomm {
         internal static bool EditShader(int package, string name, byte[] newData, out byte[] oldData) {
             string path=GetPath(package);
             if(!File.Exists(path)) { oldData=null; return false; }
-            return ReplaceShader(path, name, newData, out oldData);
+            return ReplaceShader(path, name, newData, out oldData, 0);
         }
 
-        internal static void RestoreShader(int package, string name, byte[] data) {
+        internal static bool RestoreShader(int package, string name, byte[] data, uint crc) {
             byte[] unused;
-            EditShader(package, name, data, out unused);
+            string path=GetPath(package);
+            if(!File.Exists(path)) return false;
+            return ReplaceShader(path, name, data, out unused, crc);
         }
     }
 }

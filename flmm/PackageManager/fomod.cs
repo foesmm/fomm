@@ -365,7 +365,13 @@ namespace fomm.PackageManager {
             bnode=xmlDoc.FirstChild.SelectSingleNode("sdpEdits");
             if(bnode!=null) {
                 foreach(XmlNode node in bnode.ChildNodes) {
-                    InstallLog.UndoShaderEdit(int.Parse(node.Attributes.GetNamedItem("package").Value), node.Attributes.GetNamedItem("shader").Value);
+                    //TODO: Remove this workaround for the release version
+                    if(node.Attributes.GetNamedItem("crc")==null) {
+                        InstallLog.UndoShaderEdit(int.Parse(node.Attributes.GetNamedItem("package").Value), node.Attributes.GetNamedItem("shader").Value, 0);
+                    } else {
+                        InstallLog.UndoShaderEdit(int.Parse(node.Attributes.GetNamedItem("package").Value), node.Attributes.GetNamedItem("shader").Value,
+                            uint.Parse(node.Attributes.GetNamedItem("crc").Value));
+                    }
                 }
             }
             File.Delete(xmlpath);

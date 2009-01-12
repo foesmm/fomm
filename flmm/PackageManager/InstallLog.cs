@@ -122,15 +122,18 @@ namespace fomm.PackageManager {
                 sdpEditsNode.AppendChild(el);
             }
         }
-        public static void UndoShaderEdit(int package, string shader) {
+        public static bool IsShaderEdited(int package, string shader) {
+            XmlNode node=sdpEditsNode.SelectSingleNode("sdp[@package='"+package+"' and @shader='"+shader+"']");
+            return node!=null;
+        }
+        public static void UndoShaderEdit(int package, string shader, uint crc) {
             XmlNode node=sdpEditsNode.SelectSingleNode("sdp[@package='"+package+"' and @shader='"+shader+"']");
             if(node==null) return;
             byte[] b=new byte[node.InnerText.Length/2];
             for(int i=0;i<b.Length;i++) {
                 b[i]=byte.Parse(""+node.InnerText[i*2]+node.InnerText[i*2+1], System.Globalization.NumberStyles.AllowHexSpecifier);
             }
-            SDPArchives.RestoreShader(package, shader, b);
-            sdpEditsNode.RemoveChild(node);
+            if(SDPArchives.RestoreShader(package, shader, b, crc)) sdpEditsNode.RemoveChild(node);
         }
     }
 }

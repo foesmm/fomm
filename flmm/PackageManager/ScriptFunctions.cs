@@ -503,8 +503,18 @@ namespace fomm.PackageManager {
         }
         public static bool EditShader(int package, string name, byte[] data) {
             permissions.Assert();
+            if(InstallLog.IsShaderEdited(package, name)) {
+                if(System.Windows.Forms.MessageBox.Show("Shader '"+name+"' in package '"+package+"' has already been edited by another mod\n"+
+                    "Overwrite the changes?", "", MessageBoxButtons.YesNo)!=DialogResult.Yes) {
+                    LastError="User chose not to overwrite old changes";
+                    return false;
+                }
+            }
             byte[] oldData;
-            if(!SDPArchives.EditShader(package, name, data, out oldData)) return false;
+            if(!SDPArchives.EditShader(package, name, data, out oldData)) {
+                LastError="Failed to edit the shader";
+                return false;
+            }
             if(sdpEditsNode==null) {
                 rootNode.AppendChild(sdpEditsNode=xmlDoc.CreateElement("sdpEdits"));
             }
@@ -512,8 +522,12 @@ namespace fomm.PackageManager {
             XmlElement node=xmlDoc.CreateElement("sdp");
             node.Attributes.Append(xmlDoc.CreateAttribute("package"));
             node.Attributes.Append(xmlDoc.CreateAttribute("shader"));
+            node.Attributes.Append(xmlDoc.CreateAttribute("crc"));
             node.Attributes[0].Value=package.ToString();
             node.Attributes[1].Value=name;
+            ICSharpCode.SharpZipLib.Checksums.Crc32 crc=new ICSharpCode.SharpZipLib.Checksums.Crc32();
+            crc.Update(data);
+            node.Attributes[2].Value=crc.Value.ToString();
             sdpEditsNode.AppendChild(node);
             return true;
         }
