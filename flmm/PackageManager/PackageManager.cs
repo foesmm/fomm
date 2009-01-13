@@ -4,7 +4,7 @@ using System.Windows.Forms;
 using System.IO;
 
 namespace fomm.PackageManager {
-    public partial class PackageManager : Form {
+    internal partial class PackageManager : Form {
 
         private readonly List<fomod> mods=new List<fomod>();
         private readonly List<string> groups;
@@ -256,10 +256,9 @@ namespace fomm.PackageManager {
             mf.RefreshEspList();
         }
 
-        private void bAddNew_Click(object sender, EventArgs e) {
-            if(openFileDialog1.ShowDialog()!=DialogResult.OK) return;
+        public void AddNewFomod(string oldpath) {
             bool Repack=false;
-            string oldpath=openFileDialog1.FileName, newpath, tmppath=null;
+            string newpath, tmppath=null;
             if(oldpath.EndsWith(".fomod", StringComparison.InvariantCultureIgnoreCase)) {
                 newpath=Path.Combine(Program.PackageDir, Path.GetFileName(oldpath));
             } else if(oldpath.EndsWith(".fomod.zip", StringComparison.InvariantCultureIgnoreCase)) {
@@ -353,6 +352,11 @@ namespace fomm.PackageManager {
                 }
             }
             AddFomod(newpath, true);
+        }
+
+        private void bAddNew_Click(object sender, EventArgs e) {
+            if(openFileDialog1.ShowDialog()!=DialogResult.OK) return;
+            AddNewFomod(openFileDialog1.FileName);
         }
 
         private void fomodContextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e) {

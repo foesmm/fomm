@@ -201,10 +201,17 @@ namespace fomm {
             packageDir=Settings.GetString("FomodDir");
             if(packageDir==null) packageDir=Path.Combine(exeDir, "mods");
 
+            string autoLoad=null;
+
             if(args.Length>0) {
                 if(!args[0].StartsWith("-")&&File.Exists(args[0])) {
                     switch(Path.GetExtension(args[0]).ToLowerInvariant()) {
-                    //case ".fomod":
+                    case ".zip":
+                        if(args[0].EndsWith(".fomod.zip", StringComparison.InvariantCultureIgnoreCase)) goto case ".fomod";
+                        break;
+                    case ".fomod":
+                        autoLoad=args[0];
+                        break;
                     case ".bsa":
                         Application.Run(new BSABrowser(args[0]));
                         return;
@@ -293,7 +300,7 @@ namespace fomm {
             if(!Directory.Exists(PackageDir)) Directory.CreateDirectory(PackageDir);
             if(!Directory.Exists(fommDir)) Directory.CreateDirectory(fommDir);
 
-            Application.Run(new MainForm());
+            Application.Run(new MainForm(autoLoad));
 
             if(Directory.Exists(tmpPath)) Directory.Delete(tmpPath, true);
 

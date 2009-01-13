@@ -4,12 +4,41 @@ using fomm.PackageManager;
 using DialogResult=System.Windows.Forms.DialogResult;
 
 namespace fomm.Scripting {
+    public struct SelectOption {
+        public string Item;
+        public string Preview;
+        public string Desc;
+
+        public SelectOption(string item, string preview, string desc) {
+            Item=item;
+            Preview=preview;
+            Desc=desc;
+        }
+    }
+
     public abstract class BaseScript {
 
         public static void MessageBox(string message) { ScriptFunctions.MessageBox(message); }
         public static void MessageBox(string message, string title) { ScriptFunctions.MessageBox(message, title); }
         public static DialogResult MessageBox(string message, string title, System.Windows.Forms.MessageBoxButtons buttons) { return ScriptFunctions.MessageBox(message, title, buttons); }
 
+        public static int[] Select(SelectOption[] options, string title, bool many) {
+            bool hasPreviews=false;
+            bool hasDescs=false;
+            foreach(SelectOption so in options) {
+                if(so.Preview!=null) hasPreviews=true;
+                if(so.Desc!=null) hasDescs=true;
+            }
+            string[] items=new string[options.Length];
+            string[] previews=hasPreviews?new string[options.Length]:null;
+            string[] descs=hasDescs?new string[options.Length]:null;
+            for(int i=0;i<options.Length;i++) {
+                items[i]=options[i].Item;
+                if(hasPreviews) previews[i]=options[i].Preview;
+                if(hasDescs) descs[i]=options[i].Desc;
+            }
+            return ScriptFunctions.Select(items, previews, descs, title, many);
+        }
         public static int[] Select(string[] items, string[] previews, string[] descs, string title, bool many) { return ScriptFunctions.Select(items, previews, descs, title, many); }
 
         public static Version GetFommVersion() { return ScriptFunctions.GetFommVersion(); }

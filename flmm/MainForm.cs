@@ -7,11 +7,16 @@ using fomm.TESsnip;
 namespace fomm {
     public partial class MainForm : Form {
 
-        public MainForm() {
+        public MainForm(string fomod) {
             InitializeComponent();
             Settings.GetWindowPosition("MainForm", this);
             
             Text+=" ("+Program.Version+")";
+
+            if(fomod!=null) {
+                bPackageManager_Click(null, null);
+                PackageManagerForm.AddNewFomod(fomod);
+            }
         }
 
         private void MainForm_Load(object sender, EventArgs e) {
