@@ -3,6 +3,8 @@ using ICSharpCode.SharpZipLib.Zip;
 using System.Xml;
 using File=System.IO.File;
 using Path=System.IO.Path;
+using Stream=System.IO.Stream;
+using MemoryStream=System.IO.MemoryStream;
 
 /*
  * Installed data XML Structure
@@ -23,7 +25,7 @@ using Path=System.IO.Path;
 namespace fomm.PackageManager {
     class fomod {
         private class StringDataSource : IStaticDataSource {
-            private System.IO.MemoryStream ms;
+            private Stream ms;
 
             public StringDataSource(string str) {
                 ms=new System.IO.MemoryStream(System.Text.Encoding.Default.GetBytes(str));
@@ -31,8 +33,11 @@ namespace fomm.PackageManager {
             public StringDataSource(byte[] bytes) {
                 ms=new System.IO.MemoryStream(bytes);
             }
+            public StringDataSource(Stream s) {
+                ms=s;
+            }
 
-            public System.IO.Stream GetSource() { return ms; }
+            public Stream GetSource() { return ms; }
 
             public void Close() { ms.Close(); }
         }
@@ -81,6 +86,7 @@ namespace fomm.PackageManager {
                 XmlDocument doc=new XmlDocument();
                 System.IO.Stream stream=file.GetInputStream(info);
                 try {
+                    //System.IO.TextReader tr=new System.IO.StreamReader(stream);
                     doc.Load(stream);
                     XmlNode root=null;
                     foreach(XmlNode n in doc.ChildNodes) {
@@ -238,6 +244,7 @@ namespace fomm.PackageManager {
 
         public void CommitInfo(bool SetScreenshot, byte[] screenshot) {
             XmlDocument xmlDoc=new XmlDocument();
+            xmlDoc.AppendChild(xmlDoc.CreateXmlDeclaration("1.0", "UTF-16", null));
             XmlElement el=xmlDoc.CreateElement("fomod"), el2;
             StringDataSource sds1, sds2=null;
 
@@ -279,11 +286,6 @@ namespace fomm.PackageManager {
                 el2.InnerText=website;
                 el.AppendChild(el2);
             }
-            if(Description!="") {
-                el2=xmlDoc.CreateElement("Description");
-                el2.InnerText=Description;
-                el.AppendChild(el2);
-            }
             if(MinFommVersion!=DefaultMinFommVersion) {
                 el2=xmlDoc.CreateElement("MinFommVersion");
                 el2.InnerText=MinFommVersion.ToString();
@@ -298,7 +300,11 @@ namespace fomm.PackageManager {
 
             file.BeginUpdate();
             hasInfo=true;
-            sds1=new StringDataSource(xmlDoc.OuterXml);
+
+            MemoryStream ms=new MemoryStream();
+            xmlDoc.Save(ms);
+            ms.Position=0;
+            sds1=new StringDataSource(ms);
             file.Add(sds1,"fomod/info.xml");
             if(SetScreenshot) {
                 if(screenshot==null) {
