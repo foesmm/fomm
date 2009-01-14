@@ -302,14 +302,28 @@ namespace fomm.PackageManager {
                 MessageBox.Show("Unknown file type", "Error");
                 return;
             }
-            if(File.Exists(newpath)) {
-                MessageBox.Show("A fomod with the same name is already installed", "Error");
-                return;
-            }
             string texnexusext=Path.GetFileNameWithoutExtension(newpath);
             int unused;
             if(texnexusext.Contains("-")&&int.TryParse(texnexusext.Substring(texnexusext.LastIndexOf('-'))+1, out unused)) {
                 newpath=Path.Combine(Path.GetDirectoryName(newpath), texnexusext.Remove(texnexusext.LastIndexOf('-')))+Path.GetExtension(newpath);
+            }
+            if(File.Exists(newpath)) {
+                string newpath2=null;
+                bool match=false;
+                for(int i=2;i<999;i++) {
+                    newpath2=Path.ChangeExtension(newpath, null)+"("+i+").fomod";
+                    if(!File.Exists(newpath2)) {
+                        match=true;
+                        break;
+                    }
+                }
+                if(!match) {
+                    MessageBox.Show("File '"+newpath+"' already exists.", "Error");
+                    return;
+                }
+                if(MessageBox.Show("File '"+newpath+"' already exists. Continue anyway?\n"+
+                    "A new file named '"+newpath2+"' will be created", "Warning", MessageBoxButtons.YesNo)!=DialogResult.Yes) return;
+                newpath=newpath2;
             }
             if(Repack) {
                 //Check for packing errors here
