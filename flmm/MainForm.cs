@@ -46,7 +46,7 @@ namespace fomm {
         }
 
         private void lvEspList_DragDrop(object sender, DragEventArgs e) {
-            if(DragDropIndex==1) return;
+            if(DragDropIndex==-1) return;
             int[] toswap=(int[])e.Data.GetData(typeof(int[]));
             if(toswap==null) return;
             CommitLoadOrder(DragDropIndex, toswap);

@@ -332,7 +332,7 @@ namespace fomm.PackageManager {
                 while(directories.Length==1&&Directory.GetFiles(tmppath, "*.esp").Length==0&&Directory.GetFiles(tmppath, "*.esm").Length==0&&Directory.GetFiles(tmppath, "*.bsa").Length==0) {
                     directories=directories[0].Split(Path.DirectorySeparatorChar);
                     string name=directories[directories.Length-1].ToLowerInvariant();
-                    if(name!="fomod"&&name!="textures"&&name!="meshes"&&name!="music"&&name!="shaders"&&name!="video"&&name!="facegen"&&name!="menus"&&name!="lodsettings"&&name!="lsdata") {
+                    if(name!="fomod"&&name!="textures"&&name!="meshes"&&name!="music"&&name!="shaders"&&name!="video"&&name!="facegen"&&name!="menus"&&name!="lodsettings"&&name!="lsdata"&&name!="sound") {
                         foreach(string file in Directory.GetFiles(tmppath)) {
                             string newpath2=Path.Combine(Path.Combine(Path.GetDirectoryName(file), name), Path.GetFileName(file));
                             if(!File.Exists(newpath2)) File.Move(file, newpath2);
