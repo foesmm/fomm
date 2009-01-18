@@ -206,9 +206,9 @@ namespace fomm {
             if(args.Length>0) {
                 if(!args[0].StartsWith("-")&&File.Exists(args[0])) {
                     switch(Path.GetExtension(args[0]).ToLowerInvariant()) {
+                    case ".rar":
+                    case ".7z":
                     case ".zip":
-                        if(args[0].EndsWith(".fomod.zip", StringComparison.InvariantCultureIgnoreCase)) goto case ".fomod";
-                        break;
                     case ".fomod":
                         autoLoad=args[0];
                         break;
@@ -217,6 +217,10 @@ namespace fomm {
                         return;
                     case ".sdp":
                         Application.Run(new ShaderEdit.MainForm(args[0]));
+                        return;
+                    case ".esp":
+                    case ".esm":
+                        Application.Run(new TESsnip.TESsnip(new string[] { args[0] }));
                         return;
                     }
                 } else {

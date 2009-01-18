@@ -35,6 +35,10 @@ namespace fomm {
             this.label3 = new System.Windows.Forms.Label();
             this.cbLaunch = new System.Windows.Forms.CheckBox();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
+            this.cbAssociateFomod = new System.Windows.Forms.CheckBox();
+            this.cbAssociateBsa = new System.Windows.Forms.CheckBox();
+            this.cbAssociateSdp = new System.Windows.Forms.CheckBox();
+            this.cbShellExtensions = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // cbFomod
@@ -136,9 +140,9 @@ namespace fomm {
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(12, 123);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(105, 13);
+            this.label3.Size = new System.Drawing.Size(111, 13);
             this.label3.TabIndex = 9;
-            this.label3.Text = "Lanch command line";
+            this.label3.Text = "Launch command line";
             // 
             // cbLaunch
             // 
@@ -151,11 +155,59 @@ namespace fomm {
             this.cbLaunch.UseVisualStyleBackColor = true;
             this.cbLaunch.CheckedChanged += new System.EventHandler(this.cbLaunch_CheckedChanged);
             // 
+            // cbAssociateFomod
+            // 
+            this.cbAssociateFomod.AutoSize = true;
+            this.cbAssociateFomod.Location = new System.Drawing.Point(15, 171);
+            this.cbAssociateFomod.Name = "cbAssociateFomod";
+            this.cbAssociateFomod.Size = new System.Drawing.Size(131, 17);
+            this.cbAssociateFomod.TabIndex = 14;
+            this.cbAssociateFomod.Text = "Associate with fomods";
+            this.cbAssociateFomod.UseVisualStyleBackColor = true;
+            this.cbAssociateFomod.CheckedChanged += new System.EventHandler(this.cbAssociateFomod_CheckedChanged);
+            // 
+            // cbAssociateBsa
+            // 
+            this.cbAssociateBsa.AutoSize = true;
+            this.cbAssociateBsa.Location = new System.Drawing.Point(15, 194);
+            this.cbAssociateBsa.Name = "cbAssociateBsa";
+            this.cbAssociateBsa.Size = new System.Drawing.Size(123, 17);
+            this.cbAssociateBsa.TabIndex = 15;
+            this.cbAssociateBsa.Text = "Associate with BSAs";
+            this.cbAssociateBsa.UseVisualStyleBackColor = true;
+            this.cbAssociateBsa.CheckedChanged += new System.EventHandler(this.cbAssociateBsa_CheckedChanged);
+            // 
+            // cbAssociateSdp
+            // 
+            this.cbAssociateSdp.AutoSize = true;
+            this.cbAssociateSdp.Location = new System.Drawing.Point(164, 171);
+            this.cbAssociateSdp.Name = "cbAssociateSdp";
+            this.cbAssociateSdp.Size = new System.Drawing.Size(124, 17);
+            this.cbAssociateSdp.TabIndex = 16;
+            this.cbAssociateSdp.Text = "Associate with SDPs";
+            this.cbAssociateSdp.UseVisualStyleBackColor = true;
+            this.cbAssociateSdp.CheckedChanged += new System.EventHandler(this.cbAssociateSdp_CheckedChanged);
+            // 
+            // cbShellExtensions
+            // 
+            this.cbShellExtensions.AutoSize = true;
+            this.cbShellExtensions.Location = new System.Drawing.Point(164, 194);
+            this.cbShellExtensions.Name = "cbShellExtensions";
+            this.cbShellExtensions.Size = new System.Drawing.Size(231, 17);
+            this.cbShellExtensions.TabIndex = 17;
+            this.cbShellExtensions.Text = "Add shell extensions for supported file types";
+            this.cbShellExtensions.UseVisualStyleBackColor = true;
+            this.cbShellExtensions.CheckedChanged += new System.EventHandler(this.cbShellExtensions_CheckedChanged);
+            // 
             // SetupForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(399, 218);
+            this.ClientSize = new System.Drawing.Size(399, 230);
+            this.Controls.Add(this.cbShellExtensions);
+            this.Controls.Add(this.cbAssociateSdp);
+            this.Controls.Add(this.cbAssociateBsa);
+            this.Controls.Add(this.cbAssociateFomod);
             this.Controls.Add(this.tbLaunch);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.cbLaunch);
@@ -189,5 +241,9 @@ namespace fomm {
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.CheckBox cbLaunch;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
+        private System.Windows.Forms.CheckBox cbAssociateFomod;
+        private System.Windows.Forms.CheckBox cbAssociateBsa;
+        private System.Windows.Forms.CheckBox cbAssociateSdp;
+        private System.Windows.Forms.CheckBox cbShellExtensions;
     }
 }
