@@ -192,6 +192,7 @@ namespace fomm {
         private static void Main(string[] args) {
             System.Threading.Mutex mutex;
             bool newMutex;
+            Directory.SetCurrentDirectory(exeDir);
             //Style setup
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
@@ -210,8 +211,15 @@ namespace fomm {
                     case ".7z":
                     case ".zip":
                     case ".fomod":
-                        autoLoad=args[0];
-                        break;
+                        mutex=new System.Threading.Mutex(true, "fommMainMutex", out newMutex);
+                        mutex.Close();
+                        if(!newMutex) {
+                            File.WriteAllText(Path.Combine(fommDir, "newFomod.txt"), args[0]);
+                            return;
+                        } else {
+                            autoLoad=args[0];
+                            break;
+                        }
                     case ".bsa":
                         Application.Run(new BSABrowser(args[0]));
                         return;

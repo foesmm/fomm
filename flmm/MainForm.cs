@@ -17,6 +17,8 @@ namespace fomm {
                 bPackageManager_Click(null, null);
                 PackageManagerForm.AddNewFomod(fomod);
             }
+
+            fileSystemWatcher1.Path=Program.fommDir;
         }
 
         private void MainForm_Load(object sender, EventArgs e) {
@@ -335,6 +337,12 @@ namespace fomm {
             sb.AppendLine("Total active plugins: "+lvEspList.CheckedItems.Count);
             sb.AppendLine("Total plugins: "+lvEspList.Items.Count);
             Clipboard.SetText(sb.ToString());
+        }
+
+        private void fileSystemWatcher1_Created(object sender, FileSystemEventArgs e) {
+            string mod=File.ReadAllText(Path.Combine(Program.fommDir, "newFomod.txt"));
+            if(PackageManagerForm==null) bPackageManager_Click(null, null);
+            PackageManagerForm.AddNewFomod(mod);
         }
     }
 }
