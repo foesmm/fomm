@@ -182,6 +182,7 @@ namespace fomm {
         public static readonly string fommDir=Path.Combine(exeDir, "fomm");
         public static readonly string LocalDataPath=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Fallout3");
         public static readonly string PluginsFile=Path.Combine(LocalDataPath, "plugins.txt");
+        //public static readonly string newFomodNotifyFile=Path.Combine(fommDir, "newFomod.txt");
 
         public static string PackageDir { get { return packageDir; } }
 
@@ -214,7 +215,7 @@ namespace fomm {
                         mutex=new System.Threading.Mutex(true, "fommMainMutex", out newMutex);
                         mutex.Close();
                         if(!newMutex) {
-                            File.WriteAllText(Path.Combine(fommDir, "newFomod.txt"), args[0]);
+                            Messaging.TransmitMessage(args[0]);
                             return;
                         } else {
                             autoLoad=args[0];

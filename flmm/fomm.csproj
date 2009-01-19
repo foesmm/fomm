@@ -41,6 +41,7 @@
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Drawing.Design" />
+    <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.XML" />
   </ItemGroup>
@@ -66,6 +67,7 @@
       <DependentUpon>ImageForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Imports.cs" />
+    <Compile Include="Messaging.cs" />
     <Compile Include="PackageManager\InfoEditor.cs">
       <SubType>Form</SubType>
     </Compile>

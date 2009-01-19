@@ -44,13 +44,11 @@ namespace fomm {
             this.bEnableAI = new System.Windows.Forms.Button();
             this.bSaveGames = new System.Windows.Forms.Button();
             this.bHelp = new System.Windows.Forms.Button();
-            this.fileSystemWatcher1 = new System.IO.FileSystemWatcher();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.cmsPlugins.SuspendLayout();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcher1)).BeginInit();
             this.SuspendLayout();
             // 
             // bBSAUnpack
@@ -265,14 +263,6 @@ namespace fomm {
             this.bHelp.UseVisualStyleBackColor = true;
             this.bHelp.Click += new System.EventHandler(this.bHelp_Click);
             // 
-            // fileSystemWatcher1
-            // 
-            this.fileSystemWatcher1.EnableRaisingEvents = true;
-            this.fileSystemWatcher1.Filter = "newFomod.txt";
-            this.fileSystemWatcher1.NotifyFilter = System.IO.NotifyFilters.FileName;
-            this.fileSystemWatcher1.SynchronizingObject = this;
-            this.fileSystemWatcher1.Created += new System.IO.FileSystemEventHandler(this.fileSystemWatcher1_Created);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -299,7 +289,6 @@ namespace fomm {
             this.splitContainer1.Panel2.ResumeLayout(false);
             this.splitContainer1.Panel2.PerformLayout();
             this.splitContainer1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcher1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -326,7 +315,6 @@ namespace fomm {
         private System.Windows.Forms.ToolStripMenuItem sendToTopToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem sendToBottomToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem copyLoadOrderToClipboardToolStripMenuItem;
-        private System.IO.FileSystemWatcher fileSystemWatcher1;
     }
 }
 

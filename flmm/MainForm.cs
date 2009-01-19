@@ -18,7 +18,11 @@ namespace fomm {
                 PackageManagerForm.AddNewFomod(fomod);
             }
 
-            fileSystemWatcher1.Path=Program.fommDir;
+            Timer newFommTimer=new Timer();
+            newFommTimer.Interval=100;
+            newFommTimer.Tick+=new EventHandler(newFommTimer_Tick);
+            newFommTimer.Start();
+            Messaging.ServerSetup(RecieveMessage);
         }
 
         private void MainForm_Load(object sender, EventArgs e) {
@@ -339,10 +343,16 @@ namespace fomm {
             Clipboard.SetText(sb.ToString());
         }
 
-        private void fileSystemWatcher1_Created(object sender, FileSystemEventArgs e) {
-            string mod=File.ReadAllText(Path.Combine(Program.fommDir, "newFomod.txt"));
+        private volatile string newFommMessage;
+
+        void newFommTimer_Tick(object sender, EventArgs e) {
+            string tmp=newFommMessage;
+            if(tmp==null) return;
+            newFommMessage=null;
             if(PackageManagerForm==null) bPackageManager_Click(null, null);
-            PackageManagerForm.AddNewFomod(mod);
+            PackageManagerForm.AddNewFomod(tmp);
         }
+
+        private void RecieveMessage(string msg) { newFommMessage=msg; }
     }
 }
