@@ -71,8 +71,8 @@ namespace fomm {
             DragDropInProgress=true;
             int[] indicies=new int[lvEspList.SelectedIndices.Count];
             for(int i=0;i<indicies.Length;i++) indicies[i]=lvEspList.SelectedIndices[i];
+            Array.Sort<int>(indicies);
             lvEspList.DoDragDrop(indicies, DragDropEffects.Move);
-
         }
 
         private void lvEspList_DragEnter(object sender, DragEventArgs e) {
@@ -129,7 +129,15 @@ namespace fomm {
             if(pic!=null) {
                 pictureBox1.Image=System.Drawing.Bitmap.FromStream(new MemoryStream(pic));
             } else pictureBox1.Image=null;
-            string desc2=lvEspList.SelectedItems[0].Text+Environment.NewLine+(name==null?"":("Author: "+name+Environment.NewLine))+
+            string desc2=string.Empty;
+            if((Path.GetExtension(lvEspList.SelectedItems[0].Text).CompareTo(".esp")==0)!=((((Record)p.Records[0]).Flags1&1)==0)) {
+                if((((Record)p.Records[0]).Flags1&1)==0) {
+                    desc2+="WARNING: This plugin has the file extension .esp, but its file header marks it as an esm!"+Environment.NewLine+Environment.NewLine;
+                } else {
+                    desc2+="WARNING: This plugin has the file extension .esm, but its file header marks it as an esp!"+Environment.NewLine+Environment.NewLine;
+                }
+            }
+            desc2+=lvEspList.SelectedItems[0].Text+Environment.NewLine+(name==null?"":("Author: "+name+Environment.NewLine))+
                 Environment.NewLine+(desc==null?"":("Description:"+Environment.NewLine+desc+Environment.NewLine+Environment.NewLine));
             if(masters.Count>0) {
                 desc2+="Masters:"+Environment.NewLine;
@@ -333,6 +341,7 @@ namespace fomm {
             if(lvEspList.SelectedIndices.Count==0) return;
             int[] toswap=new int[lvEspList.SelectedIndices.Count];
             for(int i=0;i<lvEspList.SelectedIndices.Count;i++) toswap[i]=lvEspList.SelectedIndices[i];
+            Array.Sort<int>(toswap);
             CommitLoadOrder(0, toswap);
         }
 
@@ -340,6 +349,7 @@ namespace fomm {
             if(lvEspList.SelectedIndices.Count==0) return;
             int[] toswap=new int[lvEspList.SelectedIndices.Count];
             for(int i=0;i<lvEspList.SelectedIndices.Count;i++) toswap[i]=lvEspList.SelectedIndices[i];
+            Array.Sort<int>(toswap);
             CommitLoadOrder(lvEspList.Items.Count, toswap);
         }
 
@@ -363,5 +373,25 @@ namespace fomm {
         }
 
         private void RecieveMessage(string msg) { newFommMessage=msg; }
+
+        private void lvEspList_KeyDown(object sender, KeyEventArgs e) {
+            if(e.Alt&&(e.KeyCode==Keys.Up||e.KeyCode==Keys.Down)) {
+                e.Handled=true;
+                if(lvEspList.SelectedItems.Count>0) {
+                    int[] indicies=new int[lvEspList.SelectedIndices.Count];
+                    for(int i=0;i<indicies.Length;i++) indicies[i]=lvEspList.SelectedIndices[i];
+                    Array.Sort<int>(indicies);
+                    if(e.KeyCode==Keys.Up) {
+                        if(indicies[0]>0) {
+                            CommitLoadOrder(indicies[0]-1, indicies);
+                        }
+                    } else {
+                        if(indicies[indicies.Length-1]<lvEspList.Items.Count-1) {
+                            CommitLoadOrder(indicies[indicies.Length-1]+2, indicies);
+                        }
+                    }
+                }
+            }
+        }
     }
 }

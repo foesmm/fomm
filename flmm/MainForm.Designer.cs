@@ -136,6 +136,7 @@ namespace fomm {
             this.lvEspList.DragDrop += new System.Windows.Forms.DragEventHandler(this.lvEspList_DragDrop);
             this.lvEspList.DragEnter += new System.Windows.Forms.DragEventHandler(this.lvEspList_DragEnter);
             this.lvEspList.GiveFeedback += new System.Windows.Forms.GiveFeedbackEventHandler(this.lvEspList_GiveFeedback);
+            this.lvEspList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lvEspList_KeyDown);
             this.lvEspList.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.lvEspList_ItemDrag);
             // 
             // columnHeader1
@@ -216,8 +217,8 @@ namespace fomm {
             this.tbPluginInfo.ReadOnly = true;
             this.tbPluginInfo.Size = new System.Drawing.Size(349, 133);
             this.tbPluginInfo.TabIndex = 0;
-            this.tbPluginInfo.Text = "Drag/Drop to modify load order\r\nMods towards the bottom override those above them" +
-    "";
+            this.tbPluginInfo.Text = "Drag/Drop to modify load order\r\nAlternatively, hold ctrl and use the arrow keys\r\n" +
+    "Mods towards the bottom override those above them";
             // 
             // bPackageManager
             // 
