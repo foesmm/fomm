@@ -1775,33 +1775,6 @@ namespace ICSharpCode.SharpZipLib.Zip
 		
 		#region Deleting Entries
 		/// <summary>
-		/// Delete an entry by name
-		/// </summary>
-		/// <param name="fileName">The filename to delete</param>
-		/// <returns>True if the entry was found and deleted; false otherwise.</returns>
-		public bool Delete(string fileName)
-		{
-			if ( fileName == null ) {
-				throw new ArgumentNullException("fileName");
-			}
-			
-			CheckUpdating();
-
-			bool result = false;
-			int index = FindExistingUpdate(fileName);
-			if ( (index >= 0) && (updates_[index] != null) ) {
-				result = true;
-				contentsEdited_ = true;
-				updates_[index] = null;
-				updateCount_ -= 1;
-			}
-			else {
-				throw new ZipException("Cannot find entry to delete");
-			}
-			return result;
-		}
-
-		/// <summary>
 		/// Delete a <see cref="ZipEntry"/> from the archive.
 		/// </summary>
 		/// <param name="entry">The entry to delete.</param>

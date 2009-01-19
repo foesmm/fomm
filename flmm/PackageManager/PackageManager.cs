@@ -41,6 +41,20 @@ namespace fomm.PackageManager {
         private void RebuildListView() {
             lvModList.SuspendLayout();
 
+            int w1, w2, w3;
+            if(lvModList.Columns.Count==0) {
+                string tmp=Settings.GetString("PackageManagerCol1Width");
+                if(tmp!=null) w1=int.Parse(tmp); else w1=200;
+                tmp=Settings.GetString("PackageManagerCol2Width");
+                if(tmp!=null) w2=int.Parse(tmp); else w2=100;
+                tmp=Settings.GetString("PackageManagerCol3Width");
+                if(tmp!=null) w3=int.Parse(tmp); else w3=100;
+            } else {
+                w1=lvModList.Columns[0].Width;
+                w2=lvModList.Columns[1].Width;
+                w3=lvModList.Columns[2].Width;
+            }
+
             lvModList.Clear();
             lvModList.Groups.Clear();
 
@@ -59,9 +73,11 @@ namespace fomm.PackageManager {
 
             if(lvModList.Columns.Count==0) {
                 lvModList.Columns.Add("Name");
-                lvModList.Columns[0].Width=200;
                 lvModList.Columns.Add("Version");
                 lvModList.Columns.Add("Author");
+                lvModList.Columns[0].Width=w1;
+                lvModList.Columns[1].Width=w2;
+                lvModList.Columns[2].Width=w3;
             }
 
             foreach(fomod mod in mods) AddFomodToList(mod);
@@ -92,6 +108,9 @@ namespace fomm.PackageManager {
             cmbSortOrder.ContextMenu=new ContextMenu();
             lvModList.ListViewItemSorter=new FomodSorter();
             Settings.GetWindowPosition("PackageManager", this);
+            string tmp=Settings.GetString("PackageManagerPanelSplit");
+            if(tmp!=null) splitContainer1.SplitterDistance=int.Parse(tmp);
+
             foreach(string modpath in Directory.GetFiles(Program.PackageDir, "*.fomod.zip")) {
                 if(!File.Exists(Path.ChangeExtension(modpath, null))) File.Move(modpath, Path.ChangeExtension(modpath, null));
             }
@@ -216,6 +235,11 @@ namespace fomm.PackageManager {
 
         private void PackageManager_FormClosing(object sender, FormClosingEventArgs e) {
             Settings.SetWindowPosition("PackageManager", this);
+            Settings.SetString("PackageManagerPanelSplit", splitContainer1.SplitterDistance.ToString());
+            Settings.SetString("PackageManagerCol1Width", lvModList.Columns[0].Width.ToString());
+            Settings.SetString("PackageManagerCol2Width", lvModList.Columns[1].Width.ToString());
+            Settings.SetString("PackageManagerCol3Width", lvModList.Columns[2].Width.ToString());
+
             foreach(ListViewItem lvi in lvModList.Items) {
                 ((fomod)lvi.Tag).Dispose();
             }

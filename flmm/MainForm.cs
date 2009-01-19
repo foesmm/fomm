@@ -10,6 +10,12 @@ namespace fomm {
         public MainForm(string fomod) {
             InitializeComponent();
             Settings.GetWindowPosition("MainForm", this);
+            string tmp=Settings.GetString("MainFormPanelSplit");
+            if(tmp!=null) splitContainer1.SplitterDistance=int.Parse(tmp);
+            tmp=Settings.GetString("MainFormCol1Width");
+            if(tmp!=null) lvEspList.Columns[0].Width=int.Parse(tmp);
+            tmp=Settings.GetString("MainFormCol2Width");
+            if(tmp!=null) lvEspList.Columns[1].Width=int.Parse(tmp);
             
             Text+=" ("+Program.Version+")";
 
@@ -83,6 +89,9 @@ namespace fomm {
             }
             
             Settings.SetWindowPosition("MainForm", this);
+            Settings.SetString("MainFormPanelSplit", splitContainer1.SplitterDistance.ToString());
+            Settings.SetString("MainFormCol1Width", lvEspList.Columns[0].Width.ToString());
+            Settings.SetString("MainFormCol2Width", lvEspList.Columns[1].Width.ToString());
         }
 
         private void lvEspList_SelectedIndexChanged(object sender, EventArgs e) {

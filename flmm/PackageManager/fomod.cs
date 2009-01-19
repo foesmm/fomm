@@ -203,7 +203,7 @@ namespace fomm.PackageManager {
             if(value==null||value=="") {
                 if(hasScript) {
                     file.BeginUpdate();
-                    file.Delete("fomod/script.cs");
+                    file.Delete(file.GetEntry("fomod/script.cs"));
                     file.CommitUpdate();
                     hasScript=false;
                 }
@@ -225,13 +225,13 @@ namespace fomm.PackageManager {
             if(value==null||value=="") {
                 if(hasReadme) {
                     file.BeginUpdate();
-                    file.Delete(readmepath);
+                    file.Delete(file.GetEntry(readmepath));
                     file.CommitUpdate();
                     hasReadme=false;
                 }
             } else {
                 file.BeginUpdate();
-                if(hasReadme&&readmeext!=".rtf") file.Delete(readmepath);
+                if(hasReadme&&readmeext!=".rtf") file.Delete(file.GetEntry(readmepath));
                 readmeext=".rtf";
                 readmepath=Path.ChangeExtension(readmepath, ".rtf");
                 StringDataSource sds=new StringDataSource(value);
@@ -309,12 +309,12 @@ namespace fomm.PackageManager {
             if(SetScreenshot) {
                 if(screenshot==null) {
                     if(hasScreenshot) {
-                        file.Delete("fomod/screenshot"+screenshotext);
+                        file.Delete(file.GetEntry("fomod/screenshot"+screenshotext));
                         hasScreenshot=false;
                     }
                 } else {
                     if(hasScreenshot&&screenshotext!=".png") {
-                        file.Delete("fomod/screenshot"+screenshotext);
+                        file.Delete(file.GetEntry("fomod/screenshot"+screenshotext));
                     }
                     hasScreenshot=true;
                     screenshotext=".png";
