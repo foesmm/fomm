@@ -10,14 +10,15 @@ namespace fomm.PackageManager {
         private static readonly CompilerParameters cParams;
         private static readonly Evidence evidence;
 
-        private static readonly string ScriptOutputPath=System.IO.Path.Combine(Program.tmpPath,"dotnetscript.dll");
+        private static readonly string ScriptOutputPath=System.IO.Path.Combine(Program.tmpPath,"dotnetscript");
+        private static uint ScriptCount;
 
         static ScriptCompiler() {
             cParams=new CompilerParameters();
             cParams.GenerateExecutable=false;
             cParams.GenerateInMemory=false;
             cParams.IncludeDebugInformation=false;
-            cParams.OutputAssembly=ScriptOutputPath;
+            //cParams.OutputAssembly=ScriptOutputPath;
             cParams.ReferencedAssemblies.Add(System.IO.Path.Combine(Program.exeDir, "fomm.Scripting.dll"));
             cParams.ReferencedAssemblies.Add("System.dll");
             cParams.ReferencedAssemblies.Add("System.Drawing.dll");
@@ -34,6 +35,7 @@ namespace fomm.PackageManager {
             return Compile(code, out errors, out warnings, out stdout);
         }
         private static byte[] Compile(string code, out string[] errors, out string[] warnings, out string stdout) {
+            cParams.OutputAssembly=ScriptOutputPath+(ScriptCount++)+".dll"; //Compatibility fix for mono, which needs a different assembly name each call
             CompilerResults results=csCompiler.CompileAssemblyFromSource(cParams, code);
             stdout="";
             for(int i=0;i<results.Output.Count;i++) stdout+=results.Output[i]+Environment.NewLine;

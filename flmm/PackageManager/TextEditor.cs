@@ -44,7 +44,7 @@ class Script : BaseScript {
                 panel1.Controls.Add(tbScript);
                 tbScript.Text=text;
                 tbScript.ShowVRuler=false;
-                tbScript.SetHighlighting("C#");
+                if(!Program.MonoMode) tbScript.SetHighlighting("C#");
                 tbScript.Dock=DockStyle.Fill;
                 tbScript.TextChanged+=textChanged;
                 tbScript.Document.FoldingManager.FoldingStrategy=new CodeFolder();

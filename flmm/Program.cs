@@ -183,6 +183,9 @@ namespace fomm {
         public static readonly string LocalDataPath=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Fallout3");
         public static readonly string PluginsFile=Path.Combine(LocalDataPath, "plugins.txt");
 
+        private static bool monoMode;
+        public static bool MonoMode { get { return monoMode; } }
+
         public static string PackageDir { get { return packageDir; } }
 
         /// <summary>
@@ -198,6 +201,8 @@ namespace fomm {
             Application.SetCompatibleTextRenderingDefault(false);
 
             Settings.Init();
+
+            if(Array.IndexOf<string>(args, "-mono")!=-1) monoMode=true;
 
             packageDir=Settings.GetString("FomodDir");
             if(packageDir==null) packageDir=Path.Combine(exeDir, "mods");

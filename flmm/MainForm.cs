@@ -36,6 +36,7 @@ namespace fomm {
         }
 
         private int DragDropIndex=-1;
+        private int[] dragDropIndicies;
         private void lvEspList_GiveFeedback(object sender, GiveFeedbackEventArgs e) {
             System.Drawing.Point p=lvEspList.PointToClient(Form.MousePosition);
             ListViewItem lvi=lvEspList.GetItemAt(p.X, p.Y);
@@ -58,9 +59,11 @@ namespace fomm {
         }
 
         private void lvEspList_DragDrop(object sender, DragEventArgs e) {
-            if(DragDropIndex==-1) return;
-            int[] toswap=(int[])e.Data.GetData(typeof(int[]));
-            if(toswap==null) return;
+            if(DragDropIndex==-1||dragDropIndicies==null) return;
+            //Compatibility fix for mono, which fails to retrieve the drag/drop data
+            //int[] toswap=(int[])e.Data.GetData(typeof(int[]));
+            int[] toswap=dragDropIndicies;
+            dragDropIndicies=null;
             CommitLoadOrder(DragDropIndex, toswap);
             DragDropIndex=-1;
         }
@@ -72,6 +75,7 @@ namespace fomm {
             int[] indicies=new int[lvEspList.SelectedIndices.Count];
             for(int i=0;i<indicies.Length;i++) indicies[i]=lvEspList.SelectedIndices[i];
             Array.Sort<int>(indicies);
+            dragDropIndicies=indicies;
             lvEspList.DoDragDrop(indicies, DragDropEffects.Move);
         }
 
@@ -132,9 +136,9 @@ namespace fomm {
             string desc2=string.Empty;
             if((Path.GetExtension(lvEspList.SelectedItems[0].Text).CompareTo(".esp")==0)!=((((Record)p.Records[0]).Flags1&1)==0)) {
                 if((((Record)p.Records[0]).Flags1&1)==0) {
-                    desc2+="WARNING: This plugin has the file extension .esp, but its file header marks it as an esm!"+Environment.NewLine+Environment.NewLine;
-                } else {
                     desc2+="WARNING: This plugin has the file extension .esm, but its file header marks it as an esp!"+Environment.NewLine+Environment.NewLine;
+                } else {
+                    desc2+="WARNING: This plugin has the file extension .esp, but its file header marks it as an esm!"+Environment.NewLine+Environment.NewLine;
                 }
             }
             desc2+=lvEspList.SelectedItems[0].Text+Environment.NewLine+(name==null?"":("Author: "+name+Environment.NewLine))+
