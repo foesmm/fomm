@@ -34,7 +34,8 @@ using fomm.Scripting;
 
 class Script : BaseScript {
 	public static bool OnActivate() {
-		//Add tasks to be performed by script here
+        //Install all files from the fomod and activate any esps
+        PerformBasicInstall();
 		return true;
 	}
 }

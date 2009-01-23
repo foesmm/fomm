@@ -18,6 +18,17 @@ namespace fomm.Scripting {
 
     public abstract class BaseScript {
 
+        public static void PerformBasicInstall() {
+            char[] seperators=new char[] { System.IO.Path.DirectorySeparatorChar, System.IO.Path.AltDirectorySeparatorChar };
+            foreach(string file in GetFomodFileList()) {
+                InstallFileFromFomod(file);
+                string ext=System.IO.Path.GetExtension(file).ToLowerInvariant();
+                if((ext==".esp"||ext==".esm")&&file.IndexOfAny(seperators)==-1) {
+                    SetPluginActivation(file, true);
+                }
+            }
+        }
+
         public static void MessageBox(string message) { ScriptFunctions.MessageBox(message); }
         public static void MessageBox(string message, string title) { ScriptFunctions.MessageBox(message, title); }
         public static DialogResult MessageBox(string message, string title, System.Windows.Forms.MessageBoxButtons buttons) { return ScriptFunctions.MessageBox(message, title, buttons); }

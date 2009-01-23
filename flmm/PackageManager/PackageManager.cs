@@ -327,10 +327,11 @@ namespace fomm.PackageManager {
                 return;
             }
             string texnexusext=Path.GetFileNameWithoutExtension(newpath);
-            int unused;
-            if(texnexusext.Contains("-")&&int.TryParse(texnexusext.Substring(texnexusext.LastIndexOf('-'))+1, out unused)) {
+            int id;
+            if(texnexusext.Contains("-")&&int.TryParse(texnexusext.Substring(texnexusext.LastIndexOf('-')+1), out id)) {
                 newpath=Path.Combine(Path.GetDirectoryName(newpath), texnexusext.Remove(texnexusext.LastIndexOf('-')))+Path.GetExtension(newpath);
-            }
+                texnexusext=@"http://www.fallout3nexus.com/downloads/file.php?id="+id;
+            } else texnexusext=null;
             if(File.Exists(newpath)) {
                 string newpath2=null;
                 bool match=false;
@@ -373,6 +374,18 @@ namespace fomm.PackageManager {
                     if(readme.Length==0) readme=Directory.GetFiles(tmppath, "*.html", SearchOption.AllDirectories);
                     if(readme.Length>0) {
                         File.Move(readme[0], Path.Combine(tmppath, "Readme - "+Path.GetFileNameWithoutExtension(newpath)+Path.GetExtension(readme[0])));
+                    }
+                }
+                if(texnexusext!=null) {
+                    if(!Directory.Exists(Path.Combine(tmppath, "fomod"))) Directory.CreateDirectory(Path.Combine(tmppath, "fomod"));
+                    if(!File.Exists(Path.Combine(tmppath, "fomod\\info.xml"))) {
+                        System.Xml.XmlDocument xmlDoc=new System.Xml.XmlDocument();
+                        xmlDoc.AppendChild(xmlDoc.CreateXmlDeclaration("1.0", "UTF-16", null));
+                        System.Xml.XmlElement el, el2;
+                        xmlDoc.AppendChild(el=xmlDoc.CreateElement("fomod"));
+                        el.AppendChild(el2=xmlDoc.CreateElement("Website"));
+                        el2.InnerText=texnexusext;
+                        xmlDoc.Save(Path.Combine(tmppath, "fomod\\info.xml"));
                     }
                 }
                 if(Directory.GetFiles(tmppath, "*.esp", SearchOption.AllDirectories).Length+Directory.GetFiles(tmppath, "*.esm", SearchOption.AllDirectories).Length>
