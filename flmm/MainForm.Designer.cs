@@ -217,8 +217,8 @@ namespace fomm {
             this.tbPluginInfo.ReadOnly = true;
             this.tbPluginInfo.Size = new System.Drawing.Size(349, 133);
             this.tbPluginInfo.TabIndex = 0;
-            this.tbPluginInfo.Text = "Drag/Drop to modify load order\r\nAlternatively, hold ctrl and use the arrow keys\r\n" +
-    "Mods towards the bottom override those above them";
+            this.tbPluginInfo.Text = "Drag/Drop to modify load order\r\nAlternatively, hold alt and use the arrow keys\r\nM" +
+    "ods towards the bottom override those above them";
             // 
             // bPackageManager
             // 
