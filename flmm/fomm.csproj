@@ -336,7 +336,6 @@
     <Compile Include="TypeConverter.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="mapper.ico" />
     <Content Include="rad2.ico" />
     <Content Include="ScriptCompiler\ScriptFunctions.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

@@ -365,6 +365,12 @@ namespace fomm.PackageManager {
             else return null;
         }
 
+        public static Version GetGeckVersion() {
+            permissions.Assert();
+            if(!File.Exists("geck.exe")) return null;
+            return new Version(System.Diagnostics.FileVersionInfo.GetVersionInfo("geck.exe").FileVersion.Replace(", ", "."));
+        }
+
         public static string GetLastError() { return LastError; }
 
         public static string[] GetAllPlugins() {
@@ -461,6 +467,26 @@ namespace fomm.PackageManager {
             return Imports.GetPrivateProfileIntA(section, value, 0, Program.FOPrefsIniPath);
         }
 
+        public static string GetGeckIniString(string section, string value) {
+            permissions.Assert();
+            return Imports.GetPrivateProfileString(section, value, null, Program.GeckIniPath);
+        }
+
+        public static int GetGeckIniInt(string section, string value) {
+            permissions.Assert();
+            return Imports.GetPrivateProfileIntA(section, value, 0, Program.GeckIniPath);
+        }
+
+        public static string GetGeckPrefsIniString(string section, string value) {
+            permissions.Assert();
+            return Imports.GetPrivateProfileString(section, value, null, Program.GeckPrefsIniPath);
+        }
+
+        public static int GetGeckPrefsIniInt(string section, string value) {
+            permissions.Assert();
+            return Imports.GetPrivateProfileIntA(section, value, 0, Program.GeckPrefsIniPath);
+        }
+
         public static string GetRendererInfo(string value) {
             permissions.Assert();
             string[] lines=File.ReadAllLines(Program.FORendererFile);
@@ -500,6 +526,12 @@ namespace fomm.PackageManager {
         }
         public static bool EditPrefsINI(string section, string key, string value, bool saveOld) {
             return EditINI(Program.FOPrefsIniPath, section, key, value, saveOld);
+        }
+        public static bool EditGeckINI(string section, string key, string value, bool saveOld) {
+            return EditINI(Program.GeckPrefsIniPath, section, key, value, saveOld);
+        }
+        public static bool EditGeckPrefsINI(string section, string key, string value, bool saveOld) {
+            return EditINI(Program.GeckPrefsIniPath, section, key, value, saveOld);
         }
         public static bool EditShader(int package, string name, byte[] data) {
             permissions.Assert();

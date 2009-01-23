@@ -45,6 +45,7 @@ namespace fomm.Scripting {
         public static bool ScriptExtenderPresent() { return ScriptFunctions.ScriptExtenderPresent(); }
         public static Version GetFoseVersion() { return ScriptFunctions.GetFoseVersion(); }
         public static Version GetFalloutVersion() { return ScriptFunctions.GetFalloutVersion(); }
+        public static Version GetGeckVersion() { return ScriptFunctions.GetGeckVersion(); }
 
         public static string[] GetFomodFileList() { return ScriptFunctions.GetFomodFileList(); }
         public static bool InstallFileFromFomod(string file) { return ScriptFunctions.InstallFileFromFomod(file); }
@@ -71,6 +72,14 @@ namespace fomm.Scripting {
         public static string GetPrefsIniString(string section, string value) { return ScriptFunctions.GetPrefsIniString(section, value); }
         public static int GetPrefsIniInt(string section, string value) { return ScriptFunctions.GetPrefsIniInt(section, value); }
         public static bool EditPrefsINI(string section, string key, string value, bool saveOld) { return ScriptFunctions.EditPrefsINI(section, key, value, saveOld); }
+
+        public static string GetGeckIniString(string section, string value) { return ScriptFunctions.GetGeckIniString(section, value); }
+        public static int GetGeckIniInt(string section, string value) { return ScriptFunctions.GetGeckIniInt(section, value); }
+        public static bool EditGeckINI(string section, string key, string value, bool saveOld) { return ScriptFunctions.EditGeckINI(section, key, value, saveOld); }
+
+        public static string GetGeckPrefsIniString(string section, string value) { return ScriptFunctions.GetGeckPrefsIniString(section, value); }
+        public static int GetGeckPrefsIniInt(string section, string value) { return ScriptFunctions.GetGeckPrefsIniInt(section, value); }
+        public static bool EditGeckPrefsINI(string section, string key, string value, bool saveOld) { return ScriptFunctions.EditGeckPrefsINI(section, key, value, saveOld); }
 
         public static string GetRendererInfo(string value) { return ScriptFunctions.GetRendererInfo(value); }
 
