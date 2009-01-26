@@ -88,7 +88,7 @@ namespace fomm {
             // 
             // OpenBSA
             // 
-            this.OpenBSA.Filter = "Oblivion BSA archives|*.bsa";
+            this.OpenBSA.Filter = "Fallout or Oblivion BSA archives|*.bsa";
             this.OpenBSA.RestoreDirectory = true;
             this.OpenBSA.Title = "Select archive to open";
             // 

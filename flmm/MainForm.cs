@@ -163,6 +163,41 @@ namespace fomm {
                 PackageManagerForm.Show();
             }
         }
+        private void RefreshIndexCounts() {
+            if(lvEspList.Items.Count==0) return;
+            bool add=lvEspList.Items[0].SubItems.Count==1;
+
+            if(File.Exists(Program.PluginsFile)) {
+                string[] lines=File.ReadAllLines(Program.PluginsFile);
+                List<Pair<FileInfo, bool>> files=new List<Pair<FileInfo, bool>>(lines.Length);
+                for(int i=0;i<lines.Length;i++) {
+                    string path=Path.Combine("Data", lines[i]);
+                    files.Add(new Pair<FileInfo, bool>(new FileInfo(path), TESsnip.Plugin.GetIsEsm(path)));
+                }
+                files.Sort(delegate(Pair<FileInfo, bool> a, Pair<FileInfo, bool> b) {
+                    if(a.b==b.b) return a.a.LastWriteTime.CompareTo(b.a.LastWriteTime);
+                    else return a.b?-1:1;
+                });
+                for(int i=0;i<lines.Length;i++) lines[i]=files[i].a.Name.Trim().ToLowerInvariant();
+                foreach(ListViewItem lvi in lvEspList.Items) {
+                    int i=Array.IndexOf<string>(lines, lvi.Text.ToLowerInvariant());
+                    if(i!=-1) {
+                        if(add) {
+                            lvi.Checked=true;
+                            lvi.SubItems.Add(i.ToString("X2"));
+                        } else lvi.SubItems[1].Text=i.ToString("X2");
+                    } else {
+                        if(add)lvi.SubItems.Add("NA");
+                        else lvi.SubItems[1].Text="NA";
+                    }
+                }
+            } else {
+                foreach(ListViewItem lvi in lvEspList.Items) {
+                    if(add) lvi.SubItems.Add("NA");
+                    else lvi.SubItems[1].Text="NA";
+                }
+            }
+        }
         public void RefreshEspList() {
             RefreshingList=true;
             lvEspList.BeginUpdate();
@@ -190,27 +225,8 @@ namespace fomm {
                 plugins.Add(new ListViewItem(fi.Name));
             }
 
-            int icount=0;
-            if(File.Exists(Program.PluginsFile)) {
-                string[] lines=File.ReadAllLines(Program.PluginsFile);
-                for(int i=0;i<lines.Length;i++) lines[i]=lines[i].Trim().ToLowerInvariant();
-                Array.Sort<string>(lines);
-                foreach(ListViewItem lvi in plugins) {
-                    if(Array.IndexOf<string>(lines, lvi.Text.ToLowerInvariant())!=-1) {
-                        lvi.Checked=true;
-                        lvi.SubItems.Add(icount.ToString("X2"));
-                        icount++;
-                    } else {
-                        lvi.SubItems.Add("NA");
-                    }
-                }
-            } else {
-                foreach(ListViewItem lvi in plugins) {
-                    lvi.SubItems.Add("NA");
-                }
-            }
-
             lvEspList.Items.AddRange(plugins.ToArray());
+            RefreshIndexCounts();
             lvEspList.EndUpdate();
             RefreshingList=false;
         }
@@ -309,13 +325,15 @@ namespace fomm {
             }
             lvEspList.Items.Clear();
             lvEspList.Items.AddRange(items.ToArray());
-            int count=0;
+            RefreshIndexCounts();
+            /*int count=0;
             for(int i=0;i<lvEspList.Items.Count;i++) {
                 if(lvEspList.Items[i].Checked) {
                     lvEspList.Items[i].SubItems[1].Text=count.ToString("X2");
                     count++;
                 } else lvEspList.Items[i].SubItems[1].Text="NA";
-            }
+            }*/
+            //RefreshEspList();
             lvEspList.EndUpdate();
             RefreshingList=false;
             lvEspList.EnsureVisible(position==lvEspList.Items.Count?position-1:position);

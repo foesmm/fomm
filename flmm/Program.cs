@@ -21,6 +21,17 @@ using System.Windows.Forms;
 using System.IO;
 
 namespace fomm {
+    struct Pair<A, B> {
+        public A a;
+        public B b;
+
+        public Pair(A a, B b) { this.a=a; this.b=b; }
+
+        public override string ToString() {
+            return a.ToString();
+        }
+    }
+
     class fommException : Exception { public fommException(string msg) : base(msg) { } }
 
     public static class Program {

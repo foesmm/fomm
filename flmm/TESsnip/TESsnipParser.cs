@@ -121,6 +121,20 @@ namespace fomm.TESsnip {
             CloseDecompressor();
         }
 
+        public static bool GetIsEsm(string FilePath) {
+            BinaryReader br=new BinaryReader(File.OpenRead(FilePath));
+            try {
+                string s=ReadRecName(br);
+                if(s!="TES4") return false;
+                br.ReadInt32();
+                return (br.ReadInt32()&1)!=0;
+            } catch {
+                return false;
+            } finally {
+                br.Close();
+            }
+        }
+
         public Plugin(string FilePath, bool headerOnly) {
             Name=Path.GetFileName(FilePath);
             FileInfo fi=new FileInfo(FilePath);
@@ -136,7 +150,7 @@ namespace fomm.TESsnip {
         }
 
         public override string GetDesc() {
-            return "[Oblivion plugin]"+Environment.NewLine+
+            return "[Fallout3 plugin]"+Environment.NewLine+
                 "Filename: "+Name+Environment.NewLine+
                 "File size: "+Size+Environment.NewLine+
                 "Records: "+Records.Count;
