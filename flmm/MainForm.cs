@@ -276,15 +276,23 @@ namespace fomm {
                 MessageBox.Show("Please close all utility windows before launching fallout");
                 return;
             }
-            Close();
             string command=Settings.GetString("LaunchCommand");
-            if(command!=null) {
-                System.Diagnostics.Process.Start(command);
-            } else {
-                if(File.Exists("fose_loader.exe")) System.Diagnostics.Process.Start("fose_loader.exe");
-                else if(File.Exists("fallout3.exe")) System.Diagnostics.Process.Start("fallout3.exe");
-                else System.Diagnostics.Process.Start("fallout3ng.exe");
+            if(command==null) {
+                if(File.Exists("fose_loader.exe")) command="fose_loader2.exe";
+                else if(File.Exists("fallout3.exe")) command="fallout3.exe";
+                else command="fallout3ng.exe";
             }
+            try {
+                if(System.Diagnostics.Process.Start(command)==null) {
+                    MessageBox.Show("Could not find launch target '"+command+"'");
+                    return;
+                }
+            } catch(Exception ex) {
+                MessageBox.Show("Failed to launch '"+command+"'\n"+ex.Message+"\n"+
+                    "If you suspect this is a vista UAC issue, either disable UAC or set fomm to run as administrator");
+                return;
+            }
+            Close();
         }
 
         private void bSaveGames_Click(object sender, EventArgs e) {
@@ -326,14 +334,6 @@ namespace fomm {
             lvEspList.Items.Clear();
             lvEspList.Items.AddRange(items.ToArray());
             RefreshIndexCounts();
-            /*int count=0;
-            for(int i=0;i<lvEspList.Items.Count;i++) {
-                if(lvEspList.Items[i].Checked) {
-                    lvEspList.Items[i].SubItems[1].Text=count.ToString("X2");
-                    count++;
-                } else lvEspList.Items[i].SubItems[1].Text="NA";
-            }*/
-            //RefreshEspList();
             lvEspList.EndUpdate();
             RefreshingList=false;
             lvEspList.EnsureVisible(position==lvEspList.Items.Count?position-1:position);

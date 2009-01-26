@@ -175,7 +175,7 @@ namespace fomm {
                 return;
             }
 
-            UpdateFileList();
+            UpdateFileList(null);
             bOpen.Text="Close";
             bExtract.Enabled=true;
             ArchiveOpen=true;
@@ -183,20 +183,21 @@ namespace fomm {
             bPreview.Enabled=true;
         }
 
-        private void UpdateFileList() {
+        private void UpdateFileList(string str) {
             if(Hidden) return;
-            lvFiles.SuspendLayout();
+            lvFiles.BeginUpdate();
             lvFiles.Items.Clear();
-            foreach(BSAFileEntry fe in Files) {
-                ListViewItem lvi=new ListViewItem(fe.Folder+"\\"+fe.FileName);
-                lvi.Tag=fe;
-                string text="File size: "+fe.Size+" bytes\nFile offset: "+fe.Offset+" bytes\n";
-                if(fe.Compressed) text+="Compressed"; else text+="Uncompressed";
-                lvi.ToolTipText=text;
-                lvFiles.Items.Add(lvi);
+            System.Collections.Generic.List<ListViewItem> lvis=new System.Collections.Generic.List<ListViewItem>(Files.Length);
+            for(int i=0;i<Files.Length;i++) {
+                ListViewItem lvi=new ListViewItem(Files[i].Folder+"\\"+Files[i].FileName);
+                if(str!=null&&!lvi.Text.Contains(str)) continue;
+                lvi.Tag=Files[i];
+                lvi.ToolTipText="File size: "+Files[i].Size+" bytes\nFile offset: "+Files[i].Offset+" bytes\n"+(Files[i].Compressed?"Compressed":"Uncompressed");
+                lvis.Add(lvi);
             }
+            lvFiles.Items.AddRange(lvis.ToArray());
             lvFiles.Columns[0].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
-            lvFiles.ResumeLayout();
+            lvFiles.EndUpdate();
         }
 
         private void bOpen_Click(object sender, EventArgs e) {
@@ -344,6 +345,10 @@ namespace fomm {
             sc.Add(path);
             obj.SetFileDropList(sc);
             lvFiles.DoDragDrop(obj, DragDropEffects.Move);
+        }
+
+        private void tbSearch_TextChanged(object sender, EventArgs e) {
+            UpdateFileList(tbSearch.Text==string.Empty?null:tbSearch.Text);
         }
     }
 }

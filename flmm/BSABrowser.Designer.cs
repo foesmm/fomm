@@ -24,7 +24,6 @@ namespace fomm {
         /// </summary>
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BSABrowser));
             this.lvFiles = new System.Windows.Forms.ListView();
             this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
             this.bOpen = new System.Windows.Forms.Button();
@@ -37,6 +36,8 @@ namespace fomm {
             this.DudMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.bSort = new System.Windows.Forms.Button();
             this.bPreview = new System.Windows.Forms.Button();
+            this.tbSearch = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // lvFiles
@@ -51,7 +52,7 @@ namespace fomm {
             this.lvFiles.Location = new System.Drawing.Point(12, 12);
             this.lvFiles.Name = "lvFiles";
             this.lvFiles.ShowItemToolTips = true;
-            this.lvFiles.Size = new System.Drawing.Size(558, 312);
+            this.lvFiles.Size = new System.Drawing.Size(558, 318);
             this.lvFiles.TabIndex = 0;
             this.lvFiles.UseCompatibleStateImageBehavior = false;
             this.lvFiles.View = System.Windows.Forms.View.Details;
@@ -66,7 +67,7 @@ namespace fomm {
             // bOpen
             // 
             this.bOpen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.bOpen.Location = new System.Drawing.Point(12, 330);
+            this.bOpen.Location = new System.Drawing.Point(12, 336);
             this.bOpen.Name = "bOpen";
             this.bOpen.Size = new System.Drawing.Size(75, 23);
             this.bOpen.TabIndex = 1;
@@ -78,7 +79,7 @@ namespace fomm {
             // 
             this.bExtractAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.bExtractAll.Enabled = false;
-            this.bExtractAll.Location = new System.Drawing.Point(273, 330);
+            this.bExtractAll.Location = new System.Drawing.Point(273, 336);
             this.bExtractAll.Name = "bExtractAll";
             this.bExtractAll.Size = new System.Drawing.Size(75, 23);
             this.bExtractAll.TabIndex = 4;
@@ -96,7 +97,7 @@ namespace fomm {
             // 
             this.bExtract.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.bExtract.Enabled = false;
-            this.bExtract.Location = new System.Drawing.Point(192, 330);
+            this.bExtract.Location = new System.Drawing.Point(192, 336);
             this.bExtract.Name = "bExtract";
             this.bExtract.Size = new System.Drawing.Size(75, 23);
             this.bExtract.TabIndex = 3;
@@ -124,7 +125,7 @@ namespace fomm {
             "File name",
             "File size",
             "Offset"});
-            this.cmbSortOrder.Location = new System.Drawing.Point(368, 332);
+            this.cmbSortOrder.Location = new System.Drawing.Point(368, 338);
             this.cmbSortOrder.Name = "cmbSortOrder";
             this.cmbSortOrder.Size = new System.Drawing.Size(121, 21);
             this.cmbSortOrder.TabIndex = 5;
@@ -140,7 +141,7 @@ namespace fomm {
             // bSort
             // 
             this.bSort.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.bSort.Location = new System.Drawing.Point(495, 330);
+            this.bSort.Location = new System.Drawing.Point(495, 336);
             this.bSort.Name = "bSort";
             this.bSort.Size = new System.Drawing.Size(75, 23);
             this.bSort.TabIndex = 6;
@@ -152,7 +153,7 @@ namespace fomm {
             // 
             this.bPreview.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.bPreview.Enabled = false;
-            this.bPreview.Location = new System.Drawing.Point(111, 330);
+            this.bPreview.Location = new System.Drawing.Point(111, 336);
             this.bPreview.Name = "bPreview";
             this.bPreview.Size = new System.Drawing.Size(75, 23);
             this.bPreview.TabIndex = 2;
@@ -160,24 +161,44 @@ namespace fomm {
             this.bPreview.UseVisualStyleBackColor = true;
             this.bPreview.Click += new System.EventHandler(this.bPreview_Click);
             // 
+            // tbSearch
+            // 
+            this.tbSearch.Location = new System.Drawing.Point(12, 368);
+            this.tbSearch.Name = "tbSearch";
+            this.tbSearch.Size = new System.Drawing.Size(336, 20);
+            this.tbSearch.TabIndex = 7;
+            this.tbSearch.TextChanged += new System.EventHandler(this.tbSearch_TextChanged);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(365, 371);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(41, 13);
+            this.label1.TabIndex = 8;
+            this.label1.Text = "Search";
+            // 
             // BSABrowser
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(582, 365);
+            this.ClientSize = new System.Drawing.Size(582, 400);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.bOpen);
+            this.Controls.Add(this.tbSearch);
             this.Controls.Add(this.bPreview);
             this.Controls.Add(this.bExtract);
             this.Controls.Add(this.bExtractAll);
-            this.Controls.Add(this.bOpen);
+            this.Controls.Add(this.lvFiles);
             this.Controls.Add(this.cmbSortOrder);
             this.Controls.Add(this.bSort);
-            this.Controls.Add(this.lvFiles);
             this.MinimumSize = new System.Drawing.Size(590, 150);
             this.Name = "BSABrowser";
             this.Text = "BSA Browser";
             this.Shown += new System.EventHandler(this.BSABrowser_Shown);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.BSABrowser_FormClosing);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -195,5 +216,7 @@ namespace fomm {
         private System.Windows.Forms.ContextMenuStrip DudMenu;
         private System.Windows.Forms.Button bSort;
         private System.Windows.Forms.Button bPreview;
+        private System.Windows.Forms.TextBox tbSearch;
+        private System.Windows.Forms.Label label1;
     }
 }
