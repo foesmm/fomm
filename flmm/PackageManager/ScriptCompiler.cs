@@ -3,12 +3,15 @@ using System.Security.Policy;
 using System.CodeDom.Compiler;
 using Assembly=System.Reflection.Assembly;
 using sList=System.Collections.Generic.List<string>;
+using StringBuilder=System.Text.StringBuilder;
 
 namespace fomm.PackageManager {
     static class ScriptCompiler {
         private static readonly Microsoft.CSharp.CSharpCodeProvider csCompiler=new Microsoft.CSharp.CSharpCodeProvider();
         private static readonly CompilerParameters cParams;
         private static readonly Evidence evidence;
+        private static Assembly fommScriptRunner;
+        private static object fommScriptObject;
 
         private static readonly string ScriptOutputPath=System.IO.Path.Combine(Program.tmpPath,"dotnetscript");
         private static uint ScriptCount;
@@ -27,6 +30,20 @@ namespace fomm.PackageManager {
 
             evidence=new Evidence();
             evidence.AddHost(new Zone(System.Security.SecurityZone.Internet));
+        }
+
+        private static void LoadFommScriptObject() {
+            byte[] data=Compile(@"
+using System;
+using fomm.Scripting;
+
+class ScriptRunner {
+    public static bool RunScript(string script) {
+        return fommScript.Execute(script);
+    }
+");
+            fommScriptRunner=AppDomain.CurrentDomain.Load(data, null, evidence);
+            fommScriptObject=fommScriptRunner.CreateInstance("ScriptRunner");
         }
 
         private static byte[] Compile(string code) {
@@ -62,22 +79,35 @@ namespace fomm.PackageManager {
             }
         }
 
-        public static string CheckSyntax(string code, out string stdout) {
-            string[] errors;
-            string[] warnings;
-            byte[] data;
-            string errout = "";
+        public static string CheckSyntax(string script, out string stdout) {
+            stdout=null;
 
-            data = Compile(code, out errors, out warnings, out stdout);
-            if(data == null) {
-                for(int i = 0;i < errors.Length;i++) {
-                    errout += errors[i] + Environment.NewLine;
+            if(script.StartsWith("#fommScript")) return "Cannot syntax check a fomm script";
+
+            string[] errors=null;
+            string[] warnings=null;
+            byte[] data;
+
+            if(errors==null) data = Compile(script, out errors, out warnings, out stdout);
+            if(errors!=null||warnings!=null) {
+                StringBuilder sb=new StringBuilder();
+                if(errors!=null) {
+                    sb.AppendLine("Errors:");
+                    for(int i = 0;i < errors.Length;i++) sb.AppendLine(errors[i]);
                 }
-                return errout;
+                if(warnings!=null) {
+                    sb.AppendLine("Warnings:");
+                    for(int i = 0;i < warnings.Length;i++) sb.AppendLine(warnings[i]);
+                }
+                return sb.ToString();
             }
             return null;
         }
         public static bool Execute(string script) {
+            if(script.StartsWith("#fommScript")) {
+                if(fommScriptObject==null) LoadFommScriptObject();
+                return (bool)fommScriptObject.GetType().GetMethod("RunScript").Invoke(fommScriptObject, new object[] { script });
+            }
             byte[] data=Compile(script);
             if(data==null) {
                 System.Windows.Forms.MessageBox.Show("C# script failed to compile", "Error");
@@ -100,8 +130,8 @@ namespace fomm.PackageManager {
                     str+=Environment.NewLine+Environment.NewLine+ex.ToString();
                 }
                 System.IO.File.WriteAllText(System.IO.Path.Combine(Program.fommDir, "ScriptException.txt"), str);
+                return true;
             }
-            return true;
         }
     }
 }
