@@ -41,7 +41,7 @@ class ScriptRunner {
     public static bool RunScript(string script) {
         return fommScript.Execute(script);
     }
-");
+}");
             fommScriptRunner=AppDomain.CurrentDomain.Load(data, null, evidence);
             fommScriptObject=fommScriptRunner.CreateInstance("ScriptRunner");
         }
