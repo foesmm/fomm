@@ -72,6 +72,7 @@ namespace fomm {
         private bool Compressed;
         private bool ContainsFileNameBlobs;
         private BSAFileEntry[] Files;
+        private ListViewItem[] lvItems;
         private int FolderCount;
         private int FileCount;
         private bool Hidden=true;
@@ -159,14 +160,15 @@ namespace fomm {
                         Files[filecount++]=new BSAFileEntry(comp, folder, br.ReadUInt32(), size);
                     }
                 }
+                System.Text.StringBuilder sb=new System.Text.StringBuilder();
                 for(int i=0;i<FileCount;i++) {
-                    string s="";
                     while(true) {
                         char c=br.ReadChar();
                         if(c=='\0') break;
-                        s+=c;
+                        sb.Append(c);
                     }
-                    Files[i].FileName=s;
+                    Files[i].FileName=sb.ToString();
+                    sb.Length=0;
                 }
                 
             } catch {
@@ -175,7 +177,7 @@ namespace fomm {
                 return;
             }
 
-            UpdateFileList(null);
+            UpdateFileList();
             bOpen.Text="Close";
             bExtract.Enabled=true;
             ArchiveOpen=true;
@@ -183,19 +185,18 @@ namespace fomm {
             bPreview.Enabled=true;
         }
 
-        private void UpdateFileList(string str) {
+        private void UpdateFileList() {
             if(Hidden) return;
             lvFiles.BeginUpdate();
             lvFiles.Items.Clear();
-            System.Collections.Generic.List<ListViewItem> lvis=new System.Collections.Generic.List<ListViewItem>(Files.Length);
+            lvItems=new ListViewItem[Files.Length];
             for(int i=0;i<Files.Length;i++) {
                 ListViewItem lvi=new ListViewItem(Files[i].Folder+"\\"+Files[i].FileName);
-                if(str!=null&&!lvi.Text.Contains(str)) continue;
                 lvi.Tag=Files[i];
                 lvi.ToolTipText="File size: "+Files[i].Size+" bytes\nFile offset: "+Files[i].Offset+" bytes\n"+(Files[i].Compressed?"Compressed":"Uncompressed");
-                lvis.Add(lvi);
+                lvItems[i]=lvi;
             }
-            lvFiles.Items.AddRange(lvis.ToArray());
+            lvFiles.Items.AddRange(lvItems);
             lvFiles.Columns[0].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
             lvFiles.EndUpdate();
         }
@@ -348,7 +349,20 @@ namespace fomm {
         }
 
         private void tbSearch_TextChanged(object sender, EventArgs e) {
-            UpdateFileList(tbSearch.Text==string.Empty?null:tbSearch.Text);
+            string str=tbSearch.Text;
+            lvFiles.BeginUpdate();
+            lvFiles.Items.Clear();
+            if(str==string.Empty) {
+                lvFiles.Items.AddRange(lvItems);
+            } else {
+                System.Collections.Generic.List<ListViewItem> lvis=new System.Collections.Generic.List<ListViewItem>(Files.Length);
+                for(int i=0;i<lvItems.Length;i++) {
+                    if(lvItems[i].Text.Contains(str)) lvis.Add(lvItems[i]);
+                }
+                lvFiles.Items.AddRange(lvis.ToArray());
+            }
+            lvFiles.Columns[0].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+            lvFiles.EndUpdate();
         }
     }
 }

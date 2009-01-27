@@ -172,12 +172,14 @@ namespace fomm {
                 List<Pair<FileInfo, bool>> files=new List<Pair<FileInfo, bool>>(lines.Length);
                 for(int i=0;i<lines.Length;i++) {
                     string path=Path.Combine("Data", lines[i]);
+                    if(!File.Exists(path)) continue;
                     files.Add(new Pair<FileInfo, bool>(new FileInfo(path), TESsnip.Plugin.GetIsEsm(path)));
                 }
                 files.Sort(delegate(Pair<FileInfo, bool> a, Pair<FileInfo, bool> b) {
                     if(a.b==b.b) return a.a.LastWriteTime.CompareTo(b.a.LastWriteTime);
                     else return a.b?-1:1;
                 });
+                if(lines.Length!=files.Count) lines=new string[files.Count];
                 for(int i=0;i<lines.Length;i++) lines[i]=files[i].a.Name.Trim().ToLowerInvariant();
                 foreach(ListViewItem lvi in lvEspList.Items) {
                     int i=Array.IndexOf<string>(lines, lvi.Text.ToLowerInvariant());
@@ -278,7 +280,7 @@ namespace fomm {
             }
             string command=Settings.GetString("LaunchCommand");
             if(command==null) {
-                if(File.Exists("fose_loader.exe")) command="fose_loader2.exe";
+                if(File.Exists("fose_loader.exe")) command="fose_loader.exe";
                 else if(File.Exists("fallout3.exe")) command="fallout3.exe";
                 else command="fallout3ng.exe";
             }
