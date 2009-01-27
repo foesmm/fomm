@@ -27,6 +27,9 @@ namespace fomm {
 
         public Pair(A a, B b) { this.a=a; this.b=b; }
 
+        public A Key { get { return a; } set { a=value; } }
+        public B Value { get { return b; } set { b=value; } }
+
         public override string ToString() {
             return a.ToString();
         }
@@ -35,7 +38,7 @@ namespace fomm {
     class fommException : Exception { public fommException(string msg) : base(msg) { } }
 
     public static class Program {
-        public const string Version="0.9.4";
+        public const string Version="0.9.5";
         public static readonly Version MVersion=new Version(Version+".0");
         /*private static string typefromint(int i, bool name) {
             switch(i) {
@@ -195,6 +198,7 @@ namespace fomm {
         public static readonly string fommDir=Path.Combine(exeDir, "fomm");
         public static readonly string LocalDataPath=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Fallout3");
         public static readonly string PluginsFile=Path.Combine(LocalDataPath, "plugins.txt");
+        public static readonly string DLCDir=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Microisoft\\xlive\\DLC");
 
         private static bool monoMode;
         public static bool MonoMode { get { return monoMode; } }
@@ -286,13 +290,17 @@ namespace fomm {
 
             //If we aren't in fallouts directory, look it up in the registry
             if(!File.Exists("Fallout3.exe")&&!File.Exists("Fallout3ng.exe")) {
-                string path=Settings.GetString("FalloutDir");
-                if(path==null) {
-                    try {
-                        path=Microsoft.Win32.Registry.GetValue(@"HKEY_LOCAL_MACHINE\Software\Bethesda Softworks\Fallout3", "Installed Path", null) as string;
-                    } catch { path=null; }
-                    if(path!=null) {
-                        Directory.SetCurrentDirectory(path);
+                if(File.Exists("..\\Fallout3.exe")||File.Exists("..\\Fallout3ng.exe")) {
+                    Directory.SetCurrentDirectory(Path.Combine(Directory.GetCurrentDirectory(), ".."));
+                } else {
+                    string path=Settings.GetString("FalloutDir");
+                    if(path==null) {
+                        try {
+                            path=Microsoft.Win32.Registry.GetValue(@"HKEY_LOCAL_MACHINE\Software\Bethesda Softworks\Fallout3", "Installed Path", null) as string;
+                        } catch { path=null; }
+                        if(path!=null) {
+                            Directory.SetCurrentDirectory(path);
+                        }
                     }
                 }
             }
@@ -329,6 +337,16 @@ namespace fomm {
             if(!Directory.Exists(tmpPath)) Directory.CreateDirectory(tmpPath);
             if(!Directory.Exists(PackageDir)) Directory.CreateDirectory(PackageDir);
             if(!Directory.Exists(fommDir)) Directory.CreateDirectory(fommDir);
+
+            /*if(Directory.Exists(DLCDir)) {
+                System.Collections.Generic.List<string> files=new System.Collections.Generic.List<string>();
+                files.AddRange(Directory.GetFiles(DLCDir, "*.bsa", SearchOption.AllDirectories));
+                files.AddRange(Directory.GetFiles(DLCDir, "*.esm", SearchOption.AllDirectories));
+                files.AddRange(Directory.GetFiles(DLCDir, "*.esp", SearchOption.AllDirectories));
+                if(files.Count>0) {
+
+                }
+            }*/
 
             Application.Run(new MainForm(autoLoad));
 

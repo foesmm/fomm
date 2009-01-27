@@ -195,7 +195,6 @@ namespace fomm {
             this.MinimumSize = new System.Drawing.Size(590, 150);
             this.Name = "BSABrowser";
             this.Text = "BSA Browser";
-            this.Shown += new System.EventHandler(this.BSABrowser_Shown);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.BSABrowser_FormClosing);
             this.ResumeLayout(false);
             this.PerformLayout();

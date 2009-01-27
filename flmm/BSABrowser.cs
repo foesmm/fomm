@@ -10,7 +10,6 @@ namespace fomm {
 
         internal BSABrowser(string BSAPath) {
             InitializeComponent();
-            Hidden=false;
             OpenArchive(BSAPath);
         }
 
@@ -75,7 +74,6 @@ namespace fomm {
         private ListViewItem[] lvItems;
         private int FolderCount;
         private int FileCount;
-        private bool Hidden=true;
 
         private enum BSASortOrder { FolderName, FileName, FileSize, Offset }
         private class BSASorter : System.Collections.IComparer {
@@ -100,19 +98,14 @@ namespace fomm {
         private void CloseArchive() {
             ArchiveOpen=false;
             bOpen.Text="Open";
-            if(!Hidden) lvFiles.Items.Clear();
+            lvFiles.Items.Clear();
             Files=null;
+            lvFiles=null;
             bExtract.Enabled=false;
             bExtractAll.Enabled=false;
             bPreview.Enabled=false;
             if(br!=null) br.Close();
             br=null;
-        }
-
-        private string ReadString(int len) {
-            string s="";
-            for(int i=0;i<len;i++) s+=(char)br.ReadByte();
-            return s;
         }
 
         private void OpenArchive(string path) {
@@ -127,40 +120,39 @@ namespace fomm {
                         return;
                     }
                 }
-                br.ReadUInt32();
+                br.BaseStream.Position+=4;
                 uint flags=br.ReadUInt32();
                 if((flags&0x004)>0) Compressed=true; else Compressed=false;
                 if((flags&0x100)>0&&version==0x68) ContainsFileNameBlobs=true; else ContainsFileNameBlobs=false;
                 FolderCount=br.ReadInt32();
                 FileCount=br.ReadInt32();
                 br.BaseStream.Position+=12;
-                //br.BaseStream.Position+=8;
-                //uint testtest=br.ReadUInt32();
                 Files=new BSAFileEntry[FileCount];
                 int[] numfiles=new int[FolderCount];
+                br.BaseStream.Position+=8;
                 for(int i=0;i<FolderCount;i++) {
-                    br.BaseStream.Position+=8;
                     numfiles[i]=br.ReadInt32();
-                    br.ReadUInt32();
+                    br.BaseStream.Position+=12;
                 }
+                br.BaseStream.Position-=8;
                 int filecount=0;
+                System.Text.StringBuilder sb=new System.Text.StringBuilder(64);
                 for(int i=0;i<FolderCount;i++) {
-                    string folder=ReadString(br.ReadByte()-1);
-
-                    br.ReadByte();
+                    sb.Append(br.ReadChars(br.ReadByte()));
+                    br.BaseStream.Position++;
+                    string folder=sb.ToString();
                     for(int j=0;j<numfiles[i];j++) {
                         br.BaseStream.Position+=8;
-
                         uint size=br.ReadUInt32();
                         bool comp=Compressed;
-                        if((size&(1<<30))>0) {
+                        if((size&(1<<30))!=0) {
                             comp=!comp;
                             size^=1<<30;
                         }
                         Files[filecount++]=new BSAFileEntry(comp, folder, br.ReadUInt32(), size);
                     }
+                    sb.Length=0;
                 }
-                System.Text.StringBuilder sb=new System.Text.StringBuilder();
                 for(int i=0;i<FileCount;i++) {
                     while(true) {
                         char c=br.ReadChar();
@@ -170,13 +162,13 @@ namespace fomm {
                     Files[i].FileName=sb.ToString();
                     sb.Length=0;
                 }
-                
             } catch {
                 if(br!=null) br.Close();
                 br=null;
                 return;
             }
 
+            tbSearch.Text="";
             UpdateFileList();
             bOpen.Text="Close";
             bExtract.Enabled=true;
@@ -186,9 +178,7 @@ namespace fomm {
         }
 
         private void UpdateFileList() {
-            if(Hidden) return;
             lvFiles.BeginUpdate();
-            lvFiles.Items.Clear();
             lvItems=new ListViewItem[Files.Length];
             for(int i=0;i<Files.Length;i++) {
                 ListViewItem lvi=new ListViewItem(Files[i].Folder+"\\"+Files[i].FileName);
@@ -297,10 +287,6 @@ namespace fomm {
             lvFiles.ListViewItemSorter=null;
         }
 
-        private void BSABrowser_Shown(object sender, EventArgs e) {
-            Hidden=false;
-        }
-
         private void BSABrowser_FormClosing(object sender, FormClosingEventArgs e) {
             if(ArchiveOpen) CloseArchive();
         }
@@ -349,6 +335,7 @@ namespace fomm {
         }
 
         private void tbSearch_TextChanged(object sender, EventArgs e) {
+            if(!ArchiveOpen) return;
             string str=tbSearch.Text;
             lvFiles.BeginUpdate();
             lvFiles.Items.Clear();

@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Security.Permissions;
 
 [assembly: AssemblyTitle("fomm")]
 [assembly: AssemblyDescription("Fallout 3 Mod Manager")]
@@ -15,3 +16,5 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyVersion(fomm.Program.Version+".0")]
 [assembly: AssemblyFileVersion(fomm.Program.Version+".0")]
+
+[assembly: PermissionSet(SecurityAction.RequestMinimum, Name="FullTrust")]

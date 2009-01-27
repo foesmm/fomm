@@ -112,7 +112,7 @@ namespace fomm.ScriptCompiler {
         private static readonly Dictionary<string, Operator> uniOps=new Dictionary<string, Operator>();
         
         private static readonly Dictionary<string, uint> globals=new Dictionary<string, uint>();
-        private static readonly Dictionary<string, KeyValuePair<uint, string>> edidList=new Dictionary<string, KeyValuePair<uint, string>>();
+        private static readonly Dictionary<string, Pair<uint, string>> edidList=new Dictionary<string, Pair<uint, string>>();
         private static readonly Dictionary<string, Dictionary<string, ushort>> farVars=new Dictionary<string, Dictionary<string, ushort>>();
 
 #if DEBUG
@@ -189,7 +189,7 @@ namespace fomm.ScriptCompiler {
             }
         }
 
-        private static void RecursePlugin(Rec r, uint mask, uint id, Dictionary<uint, Record> records, List<KeyValuePair<uint, Record>> quests, List<KeyValuePair<uint, Record>> refs) {
+        private static void RecursePlugin(Rec r, uint mask, uint id, Dictionary<uint, Record> records, List<Pair<uint, Record>> quests, List<Pair<uint, Record>> refs) {
             if(r is Record) {
                 Record r2=(Record)r;
                 if(r2.descriptiveName==null) return;
@@ -202,7 +202,7 @@ namespace fomm.ScriptCompiler {
                             byte[] bytes=sr.GetReadonlyData();
                             uint formid=(TypeConverter.h2i(bytes[0], bytes[1], bytes[2], bytes[3]));
                             if((formid&0xff000000)!=mask) return;
-                            quests.Add(new KeyValuePair<uint, Record>((formid&0xffffff)+id, r2));
+                            quests.Add(new Pair<uint, Record>((formid&0xffffff)+id, r2));
                         }
                     }
                 } else if(r2.Name=="REFR"||r2.Name=="ACHR"||r2.Name=="ACRE") {
@@ -210,14 +210,14 @@ namespace fomm.ScriptCompiler {
                         byte[] bytes=r2.SubRecords[1].GetReadonlyData();
                         uint formid=(TypeConverter.h2i(bytes[0], bytes[1], bytes[2], bytes[3]));
                         if((formid&0xff000000)!=mask) return;
-                        refs.Add(new KeyValuePair<uint, Record>((formid&0xffffff)+id, r2));
+                        refs.Add(new Pair<uint, Record>((formid&0xffffff)+id, r2));
                     }
                 }
             } else {
                 foreach(Rec r2 in ((GroupRecord)r).Records) RecursePlugin(r2, mask, id, records, quests, refs);
             }
         }
-        private static void RecursePlugin(Rec r, Dictionary<uint, Record> records, List<KeyValuePair<uint, Record>> quests, List<KeyValuePair<uint, Record>> refs) {
+        private static void RecursePlugin(Rec r, Dictionary<uint, Record> records, List<Pair<uint, Record>> quests, List<Pair<uint, Record>> refs) {
             if(r is Record) {
                 Record r2=(Record)r;
                 if(r2.descriptiveName==null) return;
@@ -228,14 +228,14 @@ namespace fomm.ScriptCompiler {
                         if(sr.Name=="SCRI") {
                             byte[] bytes=sr.GetReadonlyData();
                             uint formid=(TypeConverter.h2i(bytes[0], bytes[1], bytes[2], bytes[3]));
-                            quests.Add(new KeyValuePair<uint, Record>(formid, r2));
+                            quests.Add(new Pair<uint, Record>(formid, r2));
                         }
                     }
                 } else if(r2.Name=="REFR"||r2.Name=="ACHR"||r2.Name=="ACRE") {
                     if(r2.SubRecords.Count>0&&r2.SubRecords[1].Name=="NAME") {
                         byte[] bytes=r2.SubRecords[1].GetReadonlyData();
                         uint formid=(TypeConverter.h2i(bytes[0], bytes[1], bytes[2], bytes[3]));
-                        refs.Add(new KeyValuePair<uint, Record>(formid, r2));
+                        refs.Add(new Pair<uint, Record>(formid, r2));
                     }
                 }
             } else {
@@ -250,8 +250,8 @@ namespace fomm.ScriptCompiler {
             farVars.Clear();
             Dictionary<uint, Record> records=new Dictionary<uint,Record>();
             uint mask;
-            List<KeyValuePair<uint, Record>> quests=new List<KeyValuePair<uint, Record>>();
-            List<KeyValuePair<uint, Record>> refs=new List<KeyValuePair<uint, Record>>();
+            List<Pair<uint, Record>> quests=new List<Pair<uint, Record>>();
+            List<Pair<uint, Record>> refs=new List<Pair<uint, Record>>();
             Dictionary<uint, uint> RefLookupTable=new Dictionary<uint, uint>();
             for(uint i=0;i<plugins.Length-1;i++) {
                 if(plugins[i]==null) continue;
@@ -262,8 +262,8 @@ namespace fomm.ScriptCompiler {
                 uint id=i<<24;
                 foreach(Rec r in plugins[i].Records) RecursePlugin(r, mask, id, records, quests, refs);
 
-                foreach(KeyValuePair<uint, Record> recs in refs) {
-                    if(RefLookupTable.ContainsKey(recs.Key)&&RefLookupTable[recs.Key]!=0) quests.Add(new KeyValuePair<uint, Record>(RefLookupTable[recs.Key], recs.Value));
+                foreach(Pair<uint, Record> recs in refs) {
+                    if(RefLookupTable.ContainsKey(recs.Key)&&RefLookupTable[recs.Key]!=0) quests.Add(new Pair<uint, Record>(RefLookupTable[recs.Key], recs.Value));
                     else if(records.ContainsKey(recs.Key)) {
                         Record r=records[recs.Key];
                         uint formID=0;
@@ -274,14 +274,14 @@ namespace fomm.ScriptCompiler {
                                 if((formid&0xff000000)==mask) { formID=(formid&0xffffff)+id; break; }
                             }
                         }
-                        quests.Add(new KeyValuePair<uint, Record>(formID, recs.Value));
+                        quests.Add(new Pair<uint, Record>(formID, recs.Value));
                     }
                 }
                 RefLookupTable.Clear();
             }
             foreach(Rec r in plugins[plugins.Length-1].Records) RecursePlugin(r, records, quests, refs);
-            foreach(KeyValuePair<uint, Record> recs in refs) {
-                if(RefLookupTable.ContainsKey(recs.Key)&&RefLookupTable[recs.Key]!=0) quests.Add(new KeyValuePair<uint, Record>(RefLookupTable[recs.Key], recs.Value));
+            foreach(Pair<uint, Record> recs in refs) {
+                if(RefLookupTable.ContainsKey(recs.Key)&&RefLookupTable[recs.Key]!=0) quests.Add(new Pair<uint, Record>(RefLookupTable[recs.Key], recs.Value));
                 else if(records.ContainsKey(recs.Key)) {
                     Record r=records[recs.Key];
                     uint formID=0;
@@ -292,7 +292,7 @@ namespace fomm.ScriptCompiler {
                             break;
                         }
                     }
-                    quests.Add(new KeyValuePair<uint, Record>(formID, recs.Value));
+                    quests.Add(new Pair<uint, Record>(formID, recs.Value));
                 }
             }
 
@@ -303,16 +303,16 @@ namespace fomm.ScriptCompiler {
                     globals[edid]=recs.Key;
                 } else {
                     TokenStream.AddEdid(edid);
-                    edidList[edid]=new KeyValuePair<uint, string>(recs.Key, recs.Value.Name);
+                    edidList[edid]=new Pair<uint, string>(recs.Key, recs.Value.Name);
                 }
             }
-            edidList["player"]=new KeyValuePair<uint, string>(0x14, "NPC_");
+            edidList["player"]=new Pair<uint, string>(0x14, "NPC_");
             TokenStream.AddEdid("player");
-            edidList["playerref"]=new KeyValuePair<uint, string>(0x14, "NPC_");
+            edidList["playerref"]=new Pair<uint, string>(0x14, "NPC_");
             TokenStream.AddEdid("playerref");
 
             Dictionary<string, ushort> vars=new Dictionary<string, ushort>();
-            foreach(KeyValuePair<uint, Record> quest in quests) {
+            foreach(Pair<uint, Record> quest in quests) {
                 if(!records.ContainsKey(quest.Key)) continue;
                 Record scpt=records[quest.Key];
                 string edid=quest.Value.SubRecords[0].GetStrData();
