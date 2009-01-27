@@ -100,7 +100,7 @@ namespace fomm {
             bOpen.Text="Open";
             lvFiles.Items.Clear();
             Files=null;
-            lvFiles=null;
+            lvItems=null;
             bExtract.Enabled=false;
             bExtractAll.Enabled=false;
             bPreview.Enabled=false;
@@ -110,7 +110,7 @@ namespace fomm {
 
         private void OpenArchive(string path) {
             try {
-                br=new BinaryReader(File.OpenRead(path));
+                br=new BinaryReader(File.OpenRead(path), System.Text.Encoding.Default);
                 if(Program.ReadCString(br)!="BSA") throw new fommException("File was not a valid BSA archive");
                 int version=br.ReadInt32();
                 if(version!=0x67&&version!=0x68) {
@@ -136,9 +136,10 @@ namespace fomm {
                 }
                 br.BaseStream.Position-=8;
                 int filecount=0;
-                System.Text.StringBuilder sb=new System.Text.StringBuilder(64);
+                System.Text.StringBuilder sb=new System.Text.StringBuilder();
                 for(int i=0;i<FolderCount;i++) {
-                    sb.Append(br.ReadChars(br.ReadByte()));
+                    int k=br.ReadByte();
+                    while(--k>0) sb.Append(br.ReadChar());
                     br.BaseStream.Position++;
                     string folder=sb.ToString();
                     for(int j=0;j<numfiles[i];j++) {
@@ -162,9 +163,10 @@ namespace fomm {
                     Files[i].FileName=sb.ToString();
                     sb.Length=0;
                 }
-            } catch {
+            } catch(Exception ex) {
                 if(br!=null) br.Close();
                 br=null;
+                MessageBox.Show("An error occured trying to open the archive.\n"+ex.Message);
                 return;
             }
 

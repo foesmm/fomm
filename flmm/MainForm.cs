@@ -286,12 +286,11 @@ namespace fomm {
             }
             try {
                 if(System.Diagnostics.Process.Start(command)==null) {
-                    MessageBox.Show("Could not find launch target '"+command+"'");
+                    MessageBox.Show("Failed to launch '"+command+"'");
                     return;
                 }
             } catch(Exception ex) {
-                MessageBox.Show("Failed to launch '"+command+"'\n"+ex.Message+"\n"+
-                    "If you suspect this is a vista UAC issue, either disable UAC or set fomm to run as administrator");
+                MessageBox.Show("Failed to launch '"+command+"'\n"+ex.Message);
                 return;
             }
             Close();

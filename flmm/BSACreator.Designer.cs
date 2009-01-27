@@ -24,7 +24,6 @@ namespace fomm {
         /// </summary>
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BSACreator));
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.lvFiles = new System.Windows.Forms.ListView();
             this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
@@ -33,7 +32,6 @@ namespace fomm {
             this.cmbCompression = new System.Windows.Forms.ComboBox();
             this.bCreate = new System.Windows.Forms.Button();
             this.bAddFile = new System.Windows.Forms.Button();
-            this.bAddEsp = new System.Windows.Forms.Button();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.bAddFolder = new System.Windows.Forms.Button();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
@@ -58,7 +56,7 @@ namespace fomm {
             this.lvFiles.LabelEdit = true;
             this.lvFiles.Location = new System.Drawing.Point(12, 12);
             this.lvFiles.Name = "lvFiles";
-            this.lvFiles.Size = new System.Drawing.Size(579, 317);
+            this.lvFiles.Size = new System.Drawing.Size(507, 317);
             this.lvFiles.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.lvFiles.TabIndex = 0;
             this.lvFiles.UseCompatibleStateImageBehavior = false;
@@ -103,7 +101,7 @@ namespace fomm {
             // bCreate
             // 
             this.bCreate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.bCreate.Location = new System.Drawing.Point(516, 335);
+            this.bCreate.Location = new System.Drawing.Point(444, 335);
             this.bCreate.Name = "bCreate";
             this.bCreate.Size = new System.Drawing.Size(75, 23);
             this.bCreate.TabIndex = 3;
@@ -122,17 +120,6 @@ namespace fomm {
             this.bAddFile.UseVisualStyleBackColor = true;
             this.bAddFile.Click += new System.EventHandler(this.bAddFile_Click);
             // 
-            // bAddEsp
-            // 
-            this.bAddEsp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.bAddEsp.Location = new System.Drawing.Point(347, 335);
-            this.bAddEsp.Name = "bAddEsp";
-            this.bAddEsp.Size = new System.Drawing.Size(75, 23);
-            this.bAddEsp.TabIndex = 5;
-            this.bAddEsp.Text = "Add esp(s)";
-            this.bAddEsp.UseVisualStyleBackColor = true;
-            this.bAddEsp.Click += new System.EventHandler(this.bAddEsp_Click);
-            // 
             // openFileDialog1
             // 
             this.openFileDialog1.Multiselect = true;
@@ -141,7 +128,7 @@ namespace fomm {
             // bAddFolder
             // 
             this.bAddFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.bAddFolder.Location = new System.Drawing.Point(428, 335);
+            this.bAddFolder.Location = new System.Drawing.Point(347, 335);
             this.bAddFolder.Name = "bAddFolder";
             this.bAddFolder.Size = new System.Drawing.Size(75, 23);
             this.bAddFolder.TabIndex = 6;
@@ -174,12 +161,11 @@ namespace fomm {
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(603, 371);
+            this.ClientSize = new System.Drawing.Size(531, 371);
             this.Controls.Add(this.cmbCompLevel);
             this.Controls.Add(this.lvFiles);
-            this.Controls.Add(this.bAddFolder);
-            this.Controls.Add(this.bAddEsp);
             this.Controls.Add(this.bAddFile);
+            this.Controls.Add(this.bAddFolder);
             this.Controls.Add(this.cmbCompression);
             this.Controls.Add(this.bCreate);
             this.MinimumSize = new System.Drawing.Size(396, 338);
@@ -198,7 +184,6 @@ namespace fomm {
         private System.Windows.Forms.ComboBox cmbCompression;
         private System.Windows.Forms.Button bCreate;
         private System.Windows.Forms.Button bAddFile;
-        private System.Windows.Forms.Button bAddEsp;
         private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.Button bAddFolder;

@@ -198,7 +198,7 @@ namespace fomm {
         public static readonly string fommDir=Path.Combine(exeDir, "fomm");
         public static readonly string LocalDataPath=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Fallout3");
         public static readonly string PluginsFile=Path.Combine(LocalDataPath, "plugins.txt");
-        public static readonly string DLCDir=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Microisoft\\xlive\\DLC");
+        //public static readonly string DLCDir=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Microisoft\\xlive\\DLC");
 
         private static bool monoMode;
         public static bool MonoMode { get { return monoMode; } }
@@ -298,9 +298,10 @@ namespace fomm {
                         try {
                             path=Microsoft.Win32.Registry.GetValue(@"HKEY_LOCAL_MACHINE\Software\Bethesda Softworks\Fallout3", "Installed Path", null) as string;
                         } catch { path=null; }
-                        if(path!=null) {
-                            Directory.SetCurrentDirectory(path);
-                        }
+                        
+                    }
+                    if(path!=null) {
+                        Directory.SetCurrentDirectory(path);
                     }
                 }
             }
