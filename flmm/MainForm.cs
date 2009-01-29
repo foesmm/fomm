@@ -24,6 +24,8 @@ namespace fomm {
                 PackageManagerForm.AddNewFomod(fomod);
             }
 
+            if(Settings.GetString("LaunchCommand")==null&&File.Exists("fose_loader.exe")) bLaunch.Text="Launch FOSE";
+
             Timer newFommTimer=new Timer();
             newFommTimer.Interval=100;
             newFommTimer.Tick+=new EventHandler(newFommTimer_Tick);
