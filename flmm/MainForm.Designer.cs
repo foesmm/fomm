@@ -44,6 +44,10 @@ namespace fomm {
             this.bEnableAI = new System.Windows.Forms.Button();
             this.bSaveGames = new System.Windows.Forms.Button();
             this.bHelp = new System.Windows.Forms.Button();
+            this.exportLoadOrderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importLoadOrderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.uncheckAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.checkAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.cmsPlugins.SuspendLayout();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -127,7 +131,7 @@ namespace fomm {
             this.lvEspList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lvEspList.Location = new System.Drawing.Point(0, 0);
             this.lvEspList.Name = "lvEspList";
-            this.lvEspList.Size = new System.Drawing.Size(349, 215);
+            this.lvEspList.Size = new System.Drawing.Size(349, 253);
             this.lvEspList.TabIndex = 0;
             this.lvEspList.UseCompatibleStateImageBehavior = false;
             this.lvEspList.View = System.Windows.Forms.View.Details;
@@ -155,9 +159,13 @@ namespace fomm {
             this.openInTESsnipToolStripMenuItem,
             this.sendToTopToolStripMenuItem,
             this.sendToBottomToolStripMenuItem,
-            this.copyLoadOrderToClipboardToolStripMenuItem});
+            this.copyLoadOrderToClipboardToolStripMenuItem,
+            this.exportLoadOrderToolStripMenuItem,
+            this.importLoadOrderToolStripMenuItem,
+            this.uncheckAllToolStripMenuItem,
+            this.checkAllToolStripMenuItem});
             this.cmsPlugins.Name = "cmsPlugins";
-            this.cmsPlugins.Size = new System.Drawing.Size(211, 92);
+            this.cmsPlugins.Size = new System.Drawing.Size(211, 202);
             // 
             // openInTESsnipToolStripMenuItem
             // 
@@ -204,7 +212,7 @@ namespace fomm {
             // 
             this.splitContainer1.Panel2.Controls.Add(this.tbPluginInfo);
             this.splitContainer1.Size = new System.Drawing.Size(349, 352);
-            this.splitContainer1.SplitterDistance = 215;
+            this.splitContainer1.SplitterDistance = 253;
             this.splitContainer1.TabIndex = 6;
             // 
             // tbPluginInfo
@@ -215,7 +223,7 @@ namespace fomm {
             this.tbPluginInfo.Multiline = true;
             this.tbPluginInfo.Name = "tbPluginInfo";
             this.tbPluginInfo.ReadOnly = true;
-            this.tbPluginInfo.Size = new System.Drawing.Size(349, 133);
+            this.tbPluginInfo.Size = new System.Drawing.Size(349, 95);
             this.tbPluginInfo.TabIndex = 0;
             this.tbPluginInfo.Text = "Drag/Drop to modify load order\r\nAlternatively, hold alt and use the arrow keys\r\nM" +
     "ods towards the bottom override those above them";
@@ -263,6 +271,34 @@ namespace fomm {
             this.bHelp.Text = "Help";
             this.bHelp.UseVisualStyleBackColor = true;
             this.bHelp.Click += new System.EventHandler(this.bHelp_Click);
+            // 
+            // exportLoadOrderToolStripMenuItem
+            // 
+            this.exportLoadOrderToolStripMenuItem.Name = "exportLoadOrderToolStripMenuItem";
+            this.exportLoadOrderToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
+            this.exportLoadOrderToolStripMenuItem.Text = "Export load order";
+            this.exportLoadOrderToolStripMenuItem.Click += new System.EventHandler(this.exportLoadOrderToolStripMenuItem_Click);
+            // 
+            // importLoadOrderToolStripMenuItem
+            // 
+            this.importLoadOrderToolStripMenuItem.Name = "importLoadOrderToolStripMenuItem";
+            this.importLoadOrderToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
+            this.importLoadOrderToolStripMenuItem.Text = "Import load order";
+            this.importLoadOrderToolStripMenuItem.Click += new System.EventHandler(this.importLoadOrderToolStripMenuItem_Click);
+            // 
+            // uncheckAllToolStripMenuItem
+            // 
+            this.uncheckAllToolStripMenuItem.Name = "uncheckAllToolStripMenuItem";
+            this.uncheckAllToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
+            this.uncheckAllToolStripMenuItem.Text = "Uncheck all";
+            this.uncheckAllToolStripMenuItem.Click += new System.EventHandler(this.uncheckAllToolStripMenuItem_Click);
+            // 
+            // checkAllToolStripMenuItem
+            // 
+            this.checkAllToolStripMenuItem.Name = "checkAllToolStripMenuItem";
+            this.checkAllToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
+            this.checkAllToolStripMenuItem.Text = "Check all";
+            this.checkAllToolStripMenuItem.Click += new System.EventHandler(this.checkAllToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -316,6 +352,10 @@ namespace fomm {
         private System.Windows.Forms.ToolStripMenuItem sendToTopToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem sendToBottomToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem copyLoadOrderToClipboardToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem exportLoadOrderToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem importLoadOrderToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem uncheckAllToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem checkAllToolStripMenuItem;
     }
 }
 

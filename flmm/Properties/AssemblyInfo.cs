@@ -17,4 +17,4 @@ using System.Security.Permissions;
 [assembly: AssemblyVersion(fomm.Program.Version+".0")]
 [assembly: AssemblyFileVersion(fomm.Program.Version+".0")]
 
-[assembly: PermissionSet(SecurityAction.RequestMinimum, Name="FullTrust")]
+//[assembly: PermissionSet(SecurityAction.RequestMinimum, Name="FullTrust")]

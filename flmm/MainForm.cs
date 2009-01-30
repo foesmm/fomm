@@ -418,5 +418,73 @@ namespace fomm {
                 }
             }
         }
+
+        private void exportLoadOrderToolStripMenuItem_Click(object sender, EventArgs e) {
+            SaveFileDialog ofd=new SaveFileDialog();
+            ofd.Filter="Text file (*.txt)|*.txt";
+            ofd.AddExtension=true;
+            ofd.RestoreDirectory=true;
+            if(ofd.ShowDialog()!=DialogResult.OK) return;
+            StreamWriter sw=new StreamWriter(ofd.FileName);
+            for(int i=0;i<lvEspList.Items.Count;i++) {
+                sw.WriteLine("["+(lvEspList.Items[i].Checked?"X":" ")+"] "+lvEspList.Items[i].Text);
+            }
+            sw.Close();
+        }
+
+        private void importLoadOrderToolStripMenuItem_Click(object sender, EventArgs e) {
+            OpenFileDialog ofd=new OpenFileDialog();
+            ofd.Filter="Text file (*.txt)|*.txt";
+            ofd.AddExtension=true;
+            ofd.RestoreDirectory=true;
+            if(ofd.ShowDialog()!=DialogResult.OK) return;
+            string[] lines=File.ReadAllLines(ofd.FileName);
+            List<string> active=new List<string>();
+            for(int i=0;i<lines.Length;i++) {
+                if(lines[i].Length<5||lines[i][0]!='['||lines[i][2]!=']'||lines[i][3]!=' ') {
+                    MessageBox.Show("File does not appear to be an exported load order list", "Error");
+                    return;
+                }
+                bool bactive=lines[i][1]=='X';
+                lines[i]=lines[i].Substring(4).ToLowerInvariant();
+                if(bactive) active.Add(lines[i]);
+            }
+
+            string[] order=new string[lvEspList.Items.Count];
+            int upto=0;
+            for(int i=0;i<lines.Length;i++) {
+                if(File.Exists(Path.Combine("data", lines[i]))) order[upto++]=lines[i];
+            }
+            for(int i=0;i<lvEspList.Items.Count;i++) {
+                if(Array.IndexOf<string>(order, lvEspList.Items[i].Text.ToLowerInvariant())==-1) order[upto++]=lvEspList.Items[i].Text;
+            }
+            DateTime timestamp=new DateTime(2008, 1, 1);
+            TimeSpan twomins=TimeSpan.FromMinutes(2);
+            for(int i=0;i<order.Length;i++) {
+                File.SetLastWriteTime(Path.Combine("data\\", order[i]), timestamp);
+                timestamp+=twomins;
+            }
+
+            RefreshEspList();
+
+            RefreshingList=true;
+            for(int i=0;i<lvEspList.Items.Count;i++) lvEspList.Items[i].Checked=active.Contains(lvEspList.Items[i].Text.ToLowerInvariant());
+            RefreshingList=false;
+            lvEspList_ItemChecked(null, null);
+        }
+
+        private void uncheckAllToolStripMenuItem_Click(object sender, EventArgs e) {
+            RefreshingList=true;
+            for(int i=0;i<lvEspList.Items.Count;i++) lvEspList.Items[i].Checked=false;
+            RefreshingList=false;
+            lvEspList_ItemChecked(null, null);
+        }
+
+        private void checkAllToolStripMenuItem_Click(object sender, EventArgs e) {
+            RefreshingList=true;
+            for(int i=0;i<lvEspList.Items.Count;i++) lvEspList.Items[i].Checked=true;
+            RefreshingList=false;
+            lvEspList_ItemChecked(null, null);
+        }
     }
 }
