@@ -6,6 +6,8 @@ namespace fomm {
     internal partial class BSABrowser : Form {
         internal BSABrowser() {
             InitializeComponent();
+            string path=Settings.GetString("LastBSAUnpackPath");
+            if(path!=null) SaveAllDialog.SelectedPath=path;
         }
 
         internal BSABrowser(string BSAPath) {
@@ -291,6 +293,7 @@ namespace fomm {
 
         private void BSABrowser_FormClosing(object sender, FormClosingEventArgs e) {
             if(ArchiveOpen) CloseArchive();
+            Settings.SetString("LastBSAUnpackPath", SaveAllDialog.SelectedPath);
         }
 
         private void bPreview_Click(object sender, EventArgs e) {

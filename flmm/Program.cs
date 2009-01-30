@@ -198,7 +198,7 @@ namespace fomm {
         public static readonly string fommDir=Path.Combine(exeDir, "fomm");
         public static readonly string LocalDataPath=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Fallout3");
         public static readonly string PluginsFile=Path.Combine(LocalDataPath, "plugins.txt");
-        //public static readonly string DLCDir=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Microisoft\\xlive\\DLC");
+        public static readonly string DLCDir=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Microsoft\\xlive\\DLC");
 
         private static bool monoMode;
         public static bool MonoMode { get { return monoMode; } }
@@ -339,15 +339,31 @@ namespace fomm {
             if(!Directory.Exists(PackageDir)) Directory.CreateDirectory(PackageDir);
             if(!Directory.Exists(fommDir)) Directory.CreateDirectory(fommDir);
 
-            /*if(Directory.Exists(DLCDir)) {
-                System.Collections.Generic.List<string> files=new System.Collections.Generic.List<string>();
-                files.AddRange(Directory.GetFiles(DLCDir, "*.bsa", SearchOption.AllDirectories));
-                files.AddRange(Directory.GetFiles(DLCDir, "*.esm", SearchOption.AllDirectories));
-                files.AddRange(Directory.GetFiles(DLCDir, "*.esp", SearchOption.AllDirectories));
-                if(files.Count>0) {
-
+            if(Directory.Exists(DLCDir)&&Settings.GetString("IgnoreDLC")!="True") {
+                if(Directory.GetFiles(DLCDir, "Anchorage.esm", SearchOption.AllDirectories).Length==1) {
+                    if(!File.Exists("data\\Anchorage.esm")&&!File.Exists("data\\Anchorage - Main.bsa")&&!File.Exists("data\\Anchorage - Sounds.bsa")) {
+                        string[] f1=Directory.GetFiles(DLCDir, "Anchorage.esm", SearchOption.AllDirectories);
+                        string[] f2=Directory.GetFiles(DLCDir, "Anchorage - Main.bsa", SearchOption.AllDirectories);
+                        string[] f3=Directory.GetFiles(DLCDir, "Anchorage - Sounds.bsa", SearchOption.AllDirectories);
+                        if(f1.Length==1&&f2.Length==1&&f3.Length==1) {
+                            switch(MessageBox.Show("You seem to have bought the DLC Anchorage.\n"+
+                        "Would you like to move it to fallout's data directory to allow for offline use and fose compatibility?\n"+
+                        "Note that this may cause issues with any save games created after it was purchased but before it was moved.\n"+
+                        "Click yes to move, cancel to ignore, and no if you don't want fomm to offer to move any DLC for you again.",
+                                "Question", MessageBoxButtons.YesNoCancel)) {
+                            case DialogResult.Yes:
+                                File.Move(f1[0], "data\\Anchorage.esm");
+                                File.Move(f2[0], "data\\Anchorage - Main.bsa");
+                                File.Move(f3[0], "data\\Anchorage - Sounds.bsa");
+                                break;
+                            case DialogResult.No:
+                                Settings.SetString("IgnoreDLC", "True");
+                                break;
+                            }
+                        }
+                    }
                 }
-            }*/
+            }
 
             Application.Run(new MainForm(autoLoad));
 
