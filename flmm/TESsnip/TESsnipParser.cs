@@ -364,6 +364,7 @@ namespace fomm.TESsnip {
         }
 
         public byte[] GetData() { return  (byte[])data.Clone(); }
+        public byte[] GetReadonlyData() { return data; }
         public void SetData(byte[] data) {
             if(data.Length!=4) throw new ArgumentException("data length must be 4");
             for(int i=0;i<4;i++) this.data[i]=data[i];

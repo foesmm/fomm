@@ -265,6 +265,16 @@ namespace fomm {
                         Application.Run(new SetupForm());
                         mutex.Close();
                         return;
+                    case "-install-tweaker":
+                        mutex=new System.Threading.Mutex(true, "fommMainMutex", out newMutex);
+                        if(!newMutex) {
+                            MessageBox.Show("fomm is already running", "Error");
+                            mutex.Close();
+                            return;
+                        }
+                        Application.Run(new InstallTweaker.InstallationTweaker());
+                        mutex.Close();
+                        return;
                     case "-bsa-unpacker":
                         Application.Run(new BSABrowser());
                         return;
