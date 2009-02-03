@@ -353,6 +353,8 @@ namespace fomm.PackageManager {
             if(Repack) {
                 //Check for packing errors here
                 foreach(string aifile in Directory.GetFiles(tmppath, "ArchiveInvalidation.txt", SearchOption.AllDirectories)) File.Delete(aifile);
+                foreach(string aifile in Directory.GetFiles(tmppath, "thumbs.db", SearchOption.AllDirectories)) File.Delete(aifile);
+                foreach(string aifile in Directory.GetFiles(tmppath, "desktop.ini", SearchOption.AllDirectories)) File.Delete(aifile);
                 string[] directories=Directory.GetDirectories(tmppath);
                 while(directories.Length==1&&Directory.GetFiles(tmppath, "*.esp").Length==0&&Directory.GetFiles(tmppath, "*.esm").Length==0&&Directory.GetFiles(tmppath, "*.bsa").Length==0) {
                     directories=directories[0].Split(Path.DirectorySeparatorChar);
