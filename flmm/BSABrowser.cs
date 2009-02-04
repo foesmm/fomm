@@ -42,6 +42,14 @@ namespace fomm {
                 Size=size;
             }
 
+            internal BSAFileEntry(string path, uint offset, uint size) {
+                Compressed=false;
+                Folder=Path.GetDirectoryName(path);
+                FileName=Path.GetFileName(path);
+                Offset=offset;
+                Size=size;
+            }
+
             internal void Extract(string path, bool UseFolderName, BinaryReader br, bool SkipName) {
                 if(UseFolderName) {
                     path+="\\"+Folder+"\\"+FileName;
@@ -74,8 +82,6 @@ namespace fomm {
         private bool ContainsFileNameBlobs;
         private BSAFileEntry[] Files;
         private ListViewItem[] lvItems;
-        private int FolderCount;
-        private int FileCount;
 
         private enum BSASortOrder { FolderName, FileName, FileSize, Offset }
         private class BSASorter : System.Collections.IComparer {
@@ -113,57 +119,88 @@ namespace fomm {
         private void OpenArchive(string path) {
             try {
                 br=new BinaryReader(File.OpenRead(path), System.Text.Encoding.Default);
-                if(Program.ReadCString(br)!="BSA") throw new fommException("File was not a valid BSA archive");
-                int version=br.ReadInt32();
-                if(version!=0x67&&version!=0x68) {
-                    if(MessageBox.Show("This BSA archive has an unknown version number.\n"+
-                    "Attempt to open anyway?", "Warning", MessageBoxButtons.YesNo)!=DialogResult.Yes) {
-                        br.Close();
-                        return;
-                    }
+                //if(Program.ReadCString(br)!="BSA") throw new fommException("File was not a valid BSA archive");
+                uint type=br.ReadUInt32();
+                if(type!=0x00415342&&type!=0x00000100) {
+                    MessageBox.Show("File is not a valid bsa archive");
+                    return;
                 }
-                br.BaseStream.Position+=4;
-                uint flags=br.ReadUInt32();
-                if((flags&0x004)>0) Compressed=true; else Compressed=false;
-                if((flags&0x100)>0&&version==0x68) ContainsFileNameBlobs=true; else ContainsFileNameBlobs=false;
-                FolderCount=br.ReadInt32();
-                FileCount=br.ReadInt32();
-                br.BaseStream.Position+=12;
-                Files=new BSAFileEntry[FileCount];
-                int[] numfiles=new int[FolderCount];
-                br.BaseStream.Position+=8;
-                for(int i=0;i<FolderCount;i++) {
-                    numfiles[i]=br.ReadInt32();
-                    br.BaseStream.Position+=12;
-                }
-                br.BaseStream.Position-=8;
-                int filecount=0;
-                System.Text.StringBuilder sb=new System.Text.StringBuilder();
-                for(int i=0;i<FolderCount;i++) {
-                    int k=br.ReadByte();
-                    while(--k>0) sb.Append(br.ReadChar());
-                    br.BaseStream.Position++;
-                    string folder=sb.ToString();
-                    for(int j=0;j<numfiles[i];j++) {
-                        br.BaseStream.Position+=8;
+                System.Text.StringBuilder sb=new System.Text.StringBuilder(64);
+                if(type==0x0100) {
+                    uint hashoffset=br.ReadUInt32();
+                    uint FileCount=br.ReadUInt32();
+                    Files=new BSAFileEntry[FileCount];
+
+                    uint dataoffset=12+hashoffset+FileCount*8;
+                    uint fnameOffset1=12+FileCount*8;
+                    uint fnameOffset2=12+FileCount*12;
+
+                    for(int i=0;i<FileCount;i++) {
+                        br.BaseStream.Position=12+i*8;
                         uint size=br.ReadUInt32();
-                        bool comp=Compressed;
-                        if((size&(1<<30))!=0) {
-                            comp=!comp;
-                            size^=1<<30;
+                        uint offset=br.ReadUInt32()+dataoffset;
+                        br.BaseStream.Position=fnameOffset1+i*4;
+                        br.BaseStream.Position=br.ReadInt32()+fnameOffset2;
+
+                        sb.Length=0;
+                        while(true) {
+                            char b=br.ReadChar();
+                            if(b=='\0') break;
+                            sb.Append(b);
                         }
-                        Files[filecount++]=new BSAFileEntry(comp, folder, br.ReadUInt32(), size);
+                        Files[i]=new BSAFileEntry(sb.ToString(), offset, size);
                     }
-                    sb.Length=0;
-                }
-                for(int i=0;i<FileCount;i++) {
-                    while(true) {
-                        char c=br.ReadChar();
-                        if(c=='\0') break;
-                        sb.Append(c);
+                } else {
+                    int version=br.ReadInt32();
+                    if(version!=0x67&&version!=0x68) {
+                        if(MessageBox.Show("This BSA archive has an unknown version number.\n"+
+                    "Attempt to open anyway?", "Warning", MessageBoxButtons.YesNo)!=DialogResult.Yes) {
+                            br.Close();
+                            return;
+                        }
                     }
-                    Files[i].FileName=sb.ToString();
-                    sb.Length=0;
+                    br.BaseStream.Position+=4;
+                    uint flags=br.ReadUInt32();
+                    if((flags&0x004)>0) Compressed=true; else Compressed=false;
+                    if((flags&0x100)>0&&version==0x68) ContainsFileNameBlobs=true; else ContainsFileNameBlobs=false;
+                    int FolderCount=br.ReadInt32();
+                    int FileCount=br.ReadInt32();
+                    br.BaseStream.Position+=12;
+                    Files=new BSAFileEntry[FileCount];
+                    int[] numfiles=new int[FolderCount];
+                    br.BaseStream.Position+=8;
+                    for(int i=0;i<FolderCount;i++) {
+                        numfiles[i]=br.ReadInt32();
+                        br.BaseStream.Position+=12;
+                    }
+                    br.BaseStream.Position-=8;
+                    int filecount=0;
+                    for(int i=0;i<FolderCount;i++) {
+                        int k=br.ReadByte();
+                        while(--k>0) sb.Append(br.ReadChar());
+                        br.BaseStream.Position++;
+                        string folder=sb.ToString();
+                        for(int j=0;j<numfiles[i];j++) {
+                            br.BaseStream.Position+=8;
+                            uint size=br.ReadUInt32();
+                            bool comp=Compressed;
+                            if((size&(1<<30))!=0) {
+                                comp=!comp;
+                                size^=1<<30;
+                            }
+                            Files[filecount++]=new BSAFileEntry(comp, folder, br.ReadUInt32(), size);
+                        }
+                        sb.Length=0;
+                    }
+                    for(int i=0;i<FileCount;i++) {
+                        while(true) {
+                            char c=br.ReadChar();
+                            if(c=='\0') break;
+                            sb.Append(c);
+                        }
+                        Files[i].FileName=sb.ToString();
+                        sb.Length=0;
+                    }
                 }
             } catch(Exception ex) {
                 if(br!=null) br.Close();
@@ -259,7 +296,7 @@ namespace fomm {
             if(SaveAllDialog.ShowDialog()==DialogResult.OK) {
                 ProgressForm pf=new ProgressForm("Unpacking archive", false);
                 pf.EnableCancel("Operation cancelled");
-                pf.SetProgressRange(FileCount);
+                pf.SetProgressRange(Files.Length);
                 pf.Show();
                 int count=0;
                 try {
