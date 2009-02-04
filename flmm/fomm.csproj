@@ -67,6 +67,13 @@
       <DependentUpon>ImageForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Imports.cs" />
+    <Compile Include="InstallTweaker\EsmTrimmer.cs" />
+    <Compile Include="InstallTweaker\InstallationTweaker.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InstallTweaker\InstallationTweaker.Designer.cs">
+      <DependentUpon>InstallationTweaker.cs</DependentUpon>
+    </Compile>
     <Compile Include="Messaging.cs" />
     <Compile Include="PackageManager\InfoEditor.cs">
       <SubType>Form</SubType>
@@ -176,6 +183,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ImageForm.resx">
       <DependentUpon>ImageForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InstallTweaker\InstallationTweaker.resx">
+      <DependentUpon>InstallationTweaker.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="PackageManager\InfoEditor.resx">

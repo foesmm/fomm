@@ -390,7 +390,6 @@ namespace fomm {
                 }
                 lvFiles.Items.AddRange(lvis.ToArray());
             }
-            lvFiles.Columns[0].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
             lvFiles.EndUpdate();
         }
     }
