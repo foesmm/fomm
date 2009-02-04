@@ -287,6 +287,9 @@ namespace fomm.PackageManager {
                 newpath=Path.Combine(Program.PackageDir, Path.GetFileName(oldpath));
             } else if(oldpath.EndsWith(".fomod.zip", StringComparison.InvariantCultureIgnoreCase)) {
                 newpath=Path.Combine(Program.PackageDir, Path.GetFileNameWithoutExtension(oldpath));
+            } else if(oldpath.EndsWith(".zip", StringComparison.InvariantCultureIgnoreCase)&&oldpath.Contains("-fomod-")) {
+                string tmppath2=Path.GetFileName(oldpath);
+                newpath=Path.Combine(Program.PackageDir, Path.GetFileName(tmppath2.Substring(0, tmppath2.IndexOf("-fomod-"))))+".fomod";
             } else if(oldpath.EndsWith(".zip", StringComparison.InvariantCultureIgnoreCase)) {
                 tmppath=Program.CreateTempDirectory();
                 ICSharpCode.SharpZipLib.Zip.FastZip fastZip=new ICSharpCode.SharpZipLib.Zip.FastZip();

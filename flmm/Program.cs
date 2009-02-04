@@ -38,7 +38,7 @@ namespace fomm {
     class fommException : Exception { public fommException(string msg) : base(msg) { } }
 
     public static class Program {
-        public const string Version="0.9.6";
+        public const string Version="0.9.7";
         public static readonly Version MVersion=new Version(Version+".0");
         /*private static string typefromint(int i, bool name) {
             switch(i) {
