@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using ICSharpCode.TextEditor.Document;
 
-namespace fomm.PackageManager {
+namespace Fomm.PackageManager {
     enum TextEditorType { Text, Rtf, Script }
 
     partial class TextEditor : Form {

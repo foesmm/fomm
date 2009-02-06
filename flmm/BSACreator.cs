@@ -3,7 +3,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Collections.Generic;
 
-namespace fomm {
+namespace Fomm {
     internal partial class BSACreator : Form {
 
         internal static ulong GenHash(string s) {
@@ -172,25 +172,6 @@ namespace fomm {
                 lvFiles.ListViewItemSorter=sorter;
             }
             ValidateFiles();
-        }
-
-        private void bAddEsp_Click(object sender, EventArgs e) {
-            MessageBox.Show("Option disabled until the fallout .esm/esp format has been checked", "Error");
-            /*openFileDialog1.Title="Select plugins to add";
-            openFileDialog1.Filter="any plugins (*.esp, *.esm)|*.esp;*.esm";
-            if(openFileDialog1.ShowDialog()!=DialogResult.OK) return;
-            lvFiles.Sorting=SortOrder.None;
-            foreach(string file in openFileDialog1.FileNames) {
-                string[] files=ConflictDetector.TesFile.GetDataFileList(file);
-                foreach(string s in files) {
-                    if(!File.Exists("data\\"+s)) continue;
-                    ListViewItem lvi=new ListViewItem(new string[] { s.ToLower(), Path.GetFullPath("data\\"+s) });
-                    lvFiles.Items.Add(lvi);
-                }
-            }
-            lvFiles.Sorting=SortOrder.Ascending;
-            lvFiles.ListViewItemSorter=sorter;
-            ValidateFiles();*/
         }
 
         private void ValidateFiles() {

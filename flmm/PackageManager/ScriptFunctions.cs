@@ -9,7 +9,7 @@ using System.Windows.Forms;
 //Get/set global variables
 //Block original files from being overwritten
 
-namespace fomm.PackageManager {
+namespace Fomm.PackageManager {
     public static class ScriptFunctions {
         private static readonly System.Security.PermissionSet permissions;
 
@@ -183,7 +183,8 @@ namespace fomm.PackageManager {
             string oldmod, oldvalue=InstallLog.GetIniEdit(file, section, key, out oldmod);
             if(oldmod!=null) {
                 if(System.Windows.Forms.MessageBox.Show("Key '"+key+"' in section '"+section+"' of fallout.ini has already been overwritten by '"+oldmod+"'\n"+
-                    "Overwrite again with this mod?", "", MessageBoxButtons.YesNo)!=DialogResult.Yes) {
+                    "Overwrite again with this mod?\n"+
+                    "Current value '"+oldvalue+"', new value '"+value+"'", "", MessageBoxButtons.YesNo)!=DialogResult.Yes) {
                     LastError="User chose not to overwrite old value";
                     return false;
                 } else if(!saveOld) {
@@ -199,9 +200,9 @@ namespace fomm.PackageManager {
                 node.Attributes[1].Value=section;
                 node.Attributes[2].Value=key;
                 iniEditsNode.AppendChild(node);
-                InstallLog.AddIniEdit(file, section, key, mod.baseName, value);
+                InstallLog.AddIniEdit(file, section, key, mod.baseName);
             }
-            Imports.WritePrivateProfileStringA(section, key, value, file);
+            NativeMethods.WritePrivateProfileStringA(section, key, value, file);
             return true;
         }
 
@@ -295,7 +296,6 @@ namespace fomm.PackageManager {
         public static bool InstallFileFromFomod(string file) {
             permissions.Assert();
             string datapath=Path.GetFullPath(Path.Combine("Data", file));
-            string ldatapath=datapath.ToLowerInvariant();
             ZipEntry ze=ScriptFunctions.file.GetEntry(file.Replace('\\', '/'));
             if(ze==null) {
                 LastError="File doesn't exist in fomod";
@@ -449,42 +449,42 @@ namespace fomm.PackageManager {
 
         public static string GetFalloutIniString(string section, string value) {
             permissions.Assert();
-            return Imports.GetPrivateProfileString(section, value, null, Program.FOIniPath);
+            return NativeMethods.GetPrivateProfileString(section, value, null, Program.FOIniPath);
         }
 
         public static int GetFalloutIniInt(string section, string value) {
             permissions.Assert();
-            return Imports.GetPrivateProfileIntA(section, value, 0, Program.FOIniPath);
+            return NativeMethods.GetPrivateProfileIntA(section, value, 0, Program.FOIniPath);
         }
 
         public static string GetPrefsIniString(string section, string value) {
             permissions.Assert();
-            return Imports.GetPrivateProfileString(section, value, null, Program.FOPrefsIniPath);
+            return NativeMethods.GetPrivateProfileString(section, value, null, Program.FOPrefsIniPath);
         }
 
         public static int GetPrefsIniInt(string section, string value) {
             permissions.Assert();
-            return Imports.GetPrivateProfileIntA(section, value, 0, Program.FOPrefsIniPath);
+            return NativeMethods.GetPrivateProfileIntA(section, value, 0, Program.FOPrefsIniPath);
         }
 
         public static string GetGeckIniString(string section, string value) {
             permissions.Assert();
-            return Imports.GetPrivateProfileString(section, value, null, Program.GeckIniPath);
+            return NativeMethods.GetPrivateProfileString(section, value, null, Program.GeckIniPath);
         }
 
         public static int GetGeckIniInt(string section, string value) {
             permissions.Assert();
-            return Imports.GetPrivateProfileIntA(section, value, 0, Program.GeckIniPath);
+            return NativeMethods.GetPrivateProfileIntA(section, value, 0, Program.GeckIniPath);
         }
 
         public static string GetGeckPrefsIniString(string section, string value) {
             permissions.Assert();
-            return Imports.GetPrivateProfileString(section, value, null, Program.GeckPrefsIniPath);
+            return NativeMethods.GetPrivateProfileString(section, value, null, Program.GeckPrefsIniPath);
         }
 
         public static int GetGeckPrefsIniInt(string section, string value) {
             permissions.Assert();
-            return Imports.GetPrivateProfileIntA(section, value, 0, Program.GeckPrefsIniPath);
+            return NativeMethods.GetPrivateProfileIntA(section, value, 0, Program.GeckPrefsIniPath);
         }
 
         public static string GetRendererInfo(string value) {

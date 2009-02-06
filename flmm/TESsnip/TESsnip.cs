@@ -2,11 +2,11 @@ using System;
 using System.Windows.Forms;
 using System.Collections.Generic;
 
-namespace fomm.TESsnip {
-    public delegate string dFormIDLookupS(string id);
-    public delegate string dFormIDLookupI(uint id);
-    public delegate string[] dFormIDScan(string type);
-    public partial class TESsnip : Form {
+namespace Fomm.TESsnip {
+    internal delegate string dFormIDLookupS(string id);
+    internal delegate string dFormIDLookupI(uint id);
+    internal delegate string[] dFormIDScan(string type);
+    internal partial class TESsnip : Form {
         public static BaseRecord Clipboard;
         public static TreeNode ClipboardNode;
         private bool SelectedSubrecord;
@@ -104,7 +104,7 @@ namespace fomm.TESsnip {
                 this.value=value;
             }
         }
-        private void MatchRecordAddConditionals(Dictionary<int, Conditional> conditions, SubRecord sr, ElementStructure[] ess) {
+        private static void MatchRecordAddConditionals(Dictionary<int, Conditional> conditions, SubRecord sr, ElementStructure[] ess) {
             int offset=0;
             byte[] data=sr.GetReadonlyData();
             for(int j=0;j<ess.Length;j++) {
@@ -164,7 +164,7 @@ namespace fomm.TESsnip {
                 }
             }
         }
-        private bool MatchRecordCheckCondition(Dictionary<int, Conditional> conditions, SubrecordStructure ss) {
+        private static bool MatchRecordCheckCondition(Dictionary<int, Conditional> conditions, SubrecordStructure ss) {
             if(ss.Condition==CondType.Exists) {
                 if(conditions.ContainsKey(ss.CondID)) return true;
                 else return false;
@@ -1094,7 +1094,7 @@ namespace fomm.TESsnip {
                 System.IO.File.WriteAllText(System.IO.Path.ChangeExtension("data\\"+p.Name, ".xml"), sb1.ToString());
             } else MessageBox.Show("No compatible levelled lists found");
         }
-
+        /*
         private struct CellRecord {
             public int x;
             public int y;
@@ -1191,17 +1191,17 @@ namespace fomm.TESsnip {
                 }
             }
 
-            /*maxh=(maxh-minh)*255;
-            for(int i=0;i<pixels.Length;i++) {
-                byte b=(byte)((pixels[i]-minh)/maxh);
-                pixels[i]=b + (b<<8) + (b<<16) + (b<<24);
-            }*/
+            //maxh=(maxh-minh)*255;
+            //for(int i=0;i<pixels.Length;i++) {
+            //    byte b=(byte)((pixels[i]-minh)/maxh);
+            //    pixels[i]=b + (b<<8) + (b<<16) + (b<<24);
+            //}
 
             System.Runtime.InteropServices.Marshal.Copy(pixels, 0, bmpdata.Scan0, pixels.Length);
             bmp.UnlockBits(bmpdata);
             bmp.Save("heightmap.bmp");
         }
-
+        */
         private void makeEsmToolStripMenuItem_Click(object sender, EventArgs e) {
             if(PluginTree.SelectedNode==null) return;
 

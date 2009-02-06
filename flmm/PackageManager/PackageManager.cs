@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using System.IO;
 
-namespace fomm.PackageManager {
+namespace Fomm.PackageManager {
     internal partial class PackageManager : Form {
 
         private readonly List<fomod> mods=new List<fomod>();
@@ -215,7 +215,7 @@ namespace fomm.PackageManager {
                     wb.Dock=DockStyle.Fill;
                     wb.DocumentCompleted+=delegate(object unused1, WebBrowserDocumentCompletedEventArgs unused2)
                     {
-                        if(wb.DocumentTitle!=null&&wb.DocumentTitle!="") f.Text=wb.DocumentTitle;
+                        if(!string.IsNullOrEmpty(wb.DocumentTitle)) f.Text=wb.DocumentTitle;
                         else f.Text="Readme";
                     };
                     wb.WebBrowserShortcutsEnabled=false;
@@ -422,9 +422,9 @@ namespace fomm.PackageManager {
                 return;
             }
             fomod mod=(fomod)lvModList.SelectedItems[0].Tag;
-            if(mod.email=="") emailAuthorToolStripMenuItem.Visible=false;
+            if(mod.email.Length==0) emailAuthorToolStripMenuItem.Visible=false;
             else emailAuthorToolStripMenuItem.Visible=true;
-            if(mod.website=="") visitWebsiteToolStripMenuItem.Visible=false;
+            if(mod.website.Length==0) visitWebsiteToolStripMenuItem.Visible=false;
             else visitWebsiteToolStripMenuItem.Visible=true;
         }
 
@@ -468,7 +468,7 @@ namespace fomm.PackageManager {
             groups.Clear();
             groups.AddRange(tb.Lines);
             for(int i=0;i<groups.Count;i++) {
-                if(groups[i]=="") groups.RemoveAt(i--);
+                if(groups[i].Length==0) groups.RemoveAt(i--);
             }
             lgroups.Clear();
             for(int i=0;i<groups.Count;i++) lgroups.Add(groups[i].ToLowerInvariant());
@@ -559,7 +559,7 @@ namespace fomm.PackageManager {
         }
 
         private class FomodSorter : System.Collections.IComparer {
-            public static int Mode=0;
+            public static int Mode;
             public int Compare(object a, object b) {
                 fomod m1=(fomod)((ListViewItem)a).Tag;
                 fomod m2=(fomod)((ListViewItem)b).Tag;
@@ -603,6 +603,12 @@ namespace fomm.PackageManager {
 
         private void lvModList_ItemActivate(object sender, EventArgs e) {
             bActivate_Click(null, null);
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e) {
+            if(pictureBox1.Image!=null&&(pictureBox1.Image.Size.Width>pictureBox1.Width||pictureBox1.Image.Size.Height>pictureBox1.Height)) {
+                (new ImageForm(pictureBox1.Image)).ShowDialog();
+            }
         }
     }
 }

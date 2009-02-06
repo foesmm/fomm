@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace fomm.ScriptCompiler {
+namespace Fomm.ScriptCompiler {
     enum TokenType { Unknown, Integer, Float, Keyword, Symbol, Local, Global, Function, edid, Null }
     enum Keywords {
         If, ElseIf, Else, EndIf, ScriptName, Scn, Short, Int, Float, Ref, Begin, End, Set, To, Return, ShowMessage, NotAKeyword
@@ -121,7 +121,7 @@ namespace fomm.ScriptCompiler {
         }
 
         private readonly StringBuilder builder=new StringBuilder(32);
-        private Token FromWord(string token) {
+        private static Token FromWord(string token) {
             int i;
             string ltoken=token.ToLowerInvariant();
             if(char.IsDigit(token[0])||(token.Length>1&&(token[0]=='.'||token[0]=='-')&&char.IsDigit(token[1]))) {

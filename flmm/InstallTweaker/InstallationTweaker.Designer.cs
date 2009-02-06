@@ -1,4 +1,4 @@
-﻿namespace fomm.InstallTweaker {
+﻿namespace Fomm.InstallTweaker {
     partial class InstallationTweaker {
         /// <summary>
         /// Required designer variable.

@@ -15,7 +15,6 @@ namespace Be.Windows.Forms
     {
         const int COPY_BLOCK_SIZE = 4096;
 
-        string _fileName;
         FileStream _fileStream;
         DataMap _dataMap;
         long _totalLength;
@@ -34,8 +33,6 @@ namespace Be.Windows.Forms
         /// <param name="fileName">The name of the file from which bytes should be provided.</param>
         public DynamicFileByteProvider(string fileName, bool readOnly)
         {
-            _fileName = fileName;
-
             if (!readOnly)
             {
                 _fileStream = File.Open(fileName, FileMode.Open, FileAccess.ReadWrite, FileShare.Read);
@@ -415,7 +412,6 @@ namespace Be.Windows.Forms
                 _fileStream.Close();
                 _fileStream = null;
             }
-            _fileName = null;
             _dataMap = null;
             GC.SuppressFinalize(this);
         }
@@ -445,7 +441,7 @@ namespace Be.Windows.Forms
         {
             if (findOffset < 0 || findOffset > _totalLength)
             {
-                throw new ArgumentOutOfRangeException("index");
+                throw new ArgumentOutOfRangeException("findOffset");
             }
 
             // Iterate over the blocks until the block containing the required offset is encountered.
@@ -461,7 +457,7 @@ namespace Be.Windows.Forms
             return null;
         }
 
-        FileDataBlock GetNextFileDataBlock(DataBlock block, long dataOffset, out long nextDataOffset)
+        static FileDataBlock GetNextFileDataBlock(DataBlock block, long dataOffset, out long nextDataOffset)
         {
             // Iterate over the remaining blocks until a file block is encountered.
             nextDataOffset = dataOffset + block.Length;

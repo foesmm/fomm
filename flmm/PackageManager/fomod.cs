@@ -22,7 +22,7 @@ using MemoryStream=System.IO.MemoryStream;
  * </fomod>
  */
 
-namespace fomm.PackageManager {
+namespace Fomm.PackageManager {
     class fomod {
         private class StringDataSource : IStaticDataSource {
             private Stream ms;
@@ -60,7 +60,7 @@ namespace fomm.PackageManager {
         private bool hasReadme;
         public bool HasReadme { get { return hasReadme; } }
         private bool hasScreenshot;
-        public bool HasScreenshot { get { return hasScreenshot; } }
+        //public bool HasScreenshot { get { return hasScreenshot; } }
 
         public readonly string baseName;
         public string Name;
@@ -200,7 +200,7 @@ namespace fomm.PackageManager {
             return GetFileText(file.GetEntry("fomod/script.cs"));
         }
         public void SetScript(string value) {
-            if(value==null||value=="") {
+            if(string.IsNullOrEmpty(value)) {
                 if(hasScript) {
                     file.BeginUpdate();
                     file.Delete(file.GetEntry("fomod/script.cs"));
@@ -222,7 +222,7 @@ namespace fomm.PackageManager {
             return GetFileText(file.GetEntry(readmepath));
         }
         public void SetReadme(string value) {
-            if(value==null||value=="") {
+            if(string.IsNullOrEmpty(value)) {
                 if(hasReadme) {
                     file.BeginUpdate();
                     file.Delete(file.GetEntry(readmepath));
@@ -254,7 +254,7 @@ namespace fomm.PackageManager {
             }
 
             xmlDoc.AppendChild(el);
-            if(Name!="") {
+            if(Name.Length>0) {
                 el2=xmlDoc.CreateElement("Name");
                 el2.InnerText=Name;
                 el.AppendChild(el2);
@@ -264,24 +264,24 @@ namespace fomm.PackageManager {
                 el2.InnerText=Author;
                 el.AppendChild(el2);
             }
-            if(VersionS!=""||Version!=DefaultVersion) {
+            if(VersionS.Length>0||Version!=DefaultVersion) {
                 el2=xmlDoc.CreateElement("Version");
                 el2.InnerText=VersionS==""?Version.ToString():VersionS;
                 el2.Attributes.Append(xmlDoc.CreateAttribute("MachineVersion"));
                 el2.Attributes[0].Value=Version.ToString();
                 el.AppendChild(el2);
             }
-            if(Description!="") {
+            if(Description.Length>0) {
                 el2=xmlDoc.CreateElement("Description");
                 el2.InnerText=Description;
                 el.AppendChild(el2);
             }
-            if(email!="") {
+            if(email.Length>0) {
                 el2=xmlDoc.CreateElement("Email");
                 el2.InnerText=email;
                 el.AppendChild(el2);
             }
-            if(website!="") {
+            if(website.Length>0) {
                 el2=xmlDoc.CreateElement("Website");
                 el2.InnerText=website;
                 el.AppendChild(el2);
@@ -395,10 +395,10 @@ namespace fomm.PackageManager {
             sb.AppendLine("File name: "+baseName);
             if(Author!="DEFAULT") sb.AppendLine("Author: "+Author);
             if(VersionS!="1.0") sb.AppendLine("Version: "+VersionS);
-            if(email!="") sb.AppendLine("email: "+email);
-            if(website!="") sb.AppendLine("website: "+website);
+            if(email.Length>0) sb.AppendLine("email: "+email);
+            if(website.Length>0) sb.AppendLine("website: "+website);
             if(MinFommVersion!=new Version(0,0,0,0)) sb.AppendLine("Minimum required fomm version: "+MinFommVersion.ToString());
-            if(Description!="") sb.AppendLine("Description:"+Environment.NewLine+Description);
+            if(Description.Length>0) sb.AppendLine("Description:"+Environment.NewLine+Description);
             if(groups.Length>0) sb.AppendLine(Environment.NewLine+"Group tags: "+string.Join(", ", groups));
             sb.AppendLine();
             sb.AppendLine("Has readme: "+(hasReadme?("Yes ("+readmeext+")"):"No"));

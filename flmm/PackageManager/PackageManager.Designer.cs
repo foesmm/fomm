@@ -1,4 +1,4 @@
-namespace fomm.PackageManager {
+namespace Fomm.PackageManager {
     partial class PackageManager {
         /// <summary>
         /// Required designer variable.
@@ -152,6 +152,7 @@ namespace fomm.PackageManager {
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 16;
             this.pictureBox1.TabStop = false;
+            this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
             // 
             // bEditScript
             // 

@@ -2206,7 +2206,7 @@ namespace ICSharpCode.SharpZipLib.Zip
 		/// </summary>
 		/// <param name="update">The update to get the size for.</param>
 		/// <returns>The descriptor size, zero if there isnt one.</returns>
-		int GetDescriptorSize(ZipUpdate update)
+		static int GetDescriptorSize(ZipUpdate update)
 		{
 			int result = 0;
 			if ( (update.Entry.Flags & (int)GeneralBitFlags.Descriptor) != 0) {

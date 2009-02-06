@@ -1,4 +1,4 @@
-namespace fomm {
+namespace Fomm {
     partial class ImageForm {
         /// <summary>
         /// Required designer variable.

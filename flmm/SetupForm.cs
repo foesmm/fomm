@@ -2,7 +2,7 @@ using System;
 using System.Windows.Forms;
 using Microsoft.Win32;
 
-namespace fomm {
+namespace Fomm {
     public partial class SetupForm : Form {
         private bool FinishedSetup;
         public SetupForm() {
@@ -136,12 +136,12 @@ namespace fomm {
             }
         }
 
-        private void AddShellExtension(string key) {
+        private static void AddShellExtension(string key) {
             if(key==null) return;
             Registry.SetValue("HKEY_CLASSES_ROOT\\"+key+"\\Shell\\Convert_to_fomod", null, "Convert to fomod");
             Registry.SetValue("HKEY_CLASSES_ROOT\\"+key+"\\Shell\\Convert_to_fomod\\command", null, "\""+Application.ExecutablePath+"\" \"%1\"", RegistryValueKind.String);
         }
-        private void RemoveShellExtension(string key) {
+        private static void RemoveShellExtension(string key) {
             if(key==null) return;
             RegistryKey rk=Registry.ClassesRoot.OpenSubKey(key+"\\Shell", true);
             if(Array.IndexOf<string>(rk.GetSubKeyNames(), "Convert_to_fomod")!=-1) rk.DeleteSubKeyTree("Convert_to_fomod");

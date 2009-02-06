@@ -2,7 +2,7 @@ using System;
 using System.Windows.Forms;
 using System.Text.RegularExpressions;
 
-namespace fomm.PackageManager {
+namespace Fomm.PackageManager {
     partial class InfoEditor : Form {
         private readonly fomod mod;
         private readonly Regex email=new Regex(@"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", RegexOptions.Singleline|RegexOptions.CultureInvariant);
@@ -51,7 +51,7 @@ namespace fomm.PackageManager {
         private void bSave_Click(object sender, EventArgs e) {
             Version version=fomod.DefaultVersion;
             Version minFommVersion=fomod.DefaultMinFommVersion;
-            if(tbVersion.Text!="") {
+            if(tbVersion.Text.Length>0) {
                 try {
                     version=new Version(tbVersion.Text);
                 } catch {
@@ -59,7 +59,7 @@ namespace fomm.PackageManager {
                     return;
                 }
             }
-            if(tbMinFommVersion.Text!="") {
+            if(tbMinFommVersion.Text.Length>0) {
                 try {
                     minFommVersion=new Version(tbMinFommVersion.Text);
                 } catch {
@@ -68,11 +68,11 @@ namespace fomm.PackageManager {
                 }
             }
 
-            if(tbEmail.Text!=""&&!email.IsMatch(tbEmail.Text)) {
+            if(tbEmail.Text.Length>0&&!email.IsMatch(tbEmail.Text)) {
                 MessageBox.Show("Invalid email address specified");
                 return;
             }
-            if(tbWebsite.Text!="") {
+            if(tbWebsite.Text.Length>0) {
                 Uri uri;
                 if(!Uri.TryCreate(tbWebsite.Text, UriKind.Absolute, out uri)||uri.IsFile||(uri.Scheme!="http"&&uri.Scheme!="https")) {
                     MessageBox.Show("Invalid web address specified.\nDid you miss the 'http://'?)");

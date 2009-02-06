@@ -1,8 +1,8 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace fomm {
-    class Imports {
+namespace Fomm {
+    internal static class NativeMethods {
         [DllImport("ShaderDisasm", CharSet=CharSet.Ansi)]
         public unsafe static extern sbyte* Disasm(byte[] data, int len, byte Color);
 

@@ -2,8 +2,8 @@ using System;
 using System.Windows.Forms;
 using System.Collections.Generic;
 
-namespace fomm.TESsnip {
-    public partial class MediumLevelRecordEditor : Form {
+namespace Fomm.TESsnip {
+    internal partial class MediumLevelRecordEditor : Form {
         private SubRecord sr;
         private SubrecordStructure ss;
         private List<TextBox> boxes;
@@ -14,7 +14,7 @@ namespace fomm.TESsnip {
 
         private Dictionary<int, string> removedStrings=new Dictionary<int, string>();
 
-        private int repeatcount=0;
+        private int repeatcount;
 
         private Dictionary<string, string[]> cachedFormIDs=new Dictionary<string, string[]>();
 

@@ -1,4 +1,4 @@
-namespace fomm.PackageManager {
+namespace Fomm.PackageManager {
     partial class Overwriteform {
         /// <summary>
         /// Required designer variable.

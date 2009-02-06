@@ -1,8 +1,8 @@
 using System;
-using fomm.PackageManager;
+using Fomm.PackageManager;
 using DialogResult=System.Windows.Forms.DialogResult;
 
-namespace fomm.Scripting {
+namespace Fomm.Scripting {
     public struct SelectOption {
         public string Item;
         public string Preview;

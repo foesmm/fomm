@@ -7,8 +7,8 @@
     <ProjectGuid>{4A0302F4-DEA4-4753-98C8-3571742E4EB5}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>fomm</RootNamespace>
-    <AssemblyName>fomm</AssemblyName>
+    <RootNamespace>Fomm</RootNamespace>
+    <AssemblyName>Fomm</AssemblyName>
     <ApplicationIcon>rad2.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -369,4 +369,8 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
 </Project>

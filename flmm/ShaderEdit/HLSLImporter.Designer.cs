@@ -1,4 +1,4 @@
-namespace fomm.ShaderEdit {
+namespace Fomm.ShaderEdit {
     partial class HLSLImporter {
         /// <summary>
         /// Required designer variable.

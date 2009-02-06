@@ -5,7 +5,7 @@ using MessageBox=System.Windows.Forms.MessageBox;
 using MessageBoxButtons=System.Windows.Forms.MessageBoxButtons;
 using DialogResult=System.Windows.Forms.DialogResult;
 
-namespace fomm {
+namespace Fomm {
     static class ArchiveInvalidation {
         /*private static void GenAItext() {
             string ArchiveInvalidationFile="ArchiveInvalidation.txt";
@@ -25,7 +25,7 @@ namespace fomm {
         private const string BsaPath="data\\"+AiBsa;
 
         private static string GetBSAList() {
-            List<string> bsas=new List<string>(Imports.GetPrivateProfileString("Archive", "SArchiveList", null, Program.FOIniPath).Split(new char[] {','}, StringSplitOptions.RemoveEmptyEntries));
+            List<string> bsas=new List<string>(NativeMethods.GetPrivateProfileString("Archive", "SArchiveList", null, Program.FOIniPath).Split(new char[] {','}, StringSplitOptions.RemoveEmptyEntries));
             for(int i=0;i<bsas.Count;i++) {
                 bsas[i]=bsas[i].Trim(' ');
                 if(bsas[i]==AiBsa) bsas.RemoveAt(i--);
@@ -34,7 +34,7 @@ namespace fomm {
         }
 
         private static void ApplyAI() {
-            Imports.WritePrivateProfileIntA("Archive", "bInvalidateOlderFiles", 1, Program.FOIniPath);
+            NativeMethods.WritePrivateProfileIntA("Archive", "bInvalidateOlderFiles", 1, Program.FOIniPath);
             File.Delete("data\\archiveinvalidation.txt");
             File.WriteAllBytes(BsaPath, new byte[] {
                 0x42, 0x53, 0x41, 0x00, 0x67, 0x00, 0x00, 0x00, 0x24, 0x00, 0x00, 0x00, 0x03, 0x07, 0x00, 0x00,
@@ -43,17 +43,17 @@ namespace fomm {
                 0x36, 0x00, 0x00, 0x00, 0x01, 0x00, 0x61, 0x00, 0x01, 0x61, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                 0x00, 0x00, 0x48, 0x00, 0x00, 0x00, 0x61, 0x00
             });
-            Imports.WritePrivateProfileStringA("Archive", "SArchiveList", AiBsa+", "+GetBSAList(), Program.FOIniPath);
+            NativeMethods.WritePrivateProfileStringA("Archive", "SArchiveList", AiBsa+", "+GetBSAList(), Program.FOIniPath);
         }
 
         private static void RemoveAI() {
-            Imports.WritePrivateProfileIntA("Archive", "bInvalidateOlderFiles", 0, Program.FOIniPath);
+            NativeMethods.WritePrivateProfileIntA("Archive", "bInvalidateOlderFiles", 0, Program.FOIniPath);
             File.Delete(BsaPath);
-            Imports.WritePrivateProfileStringA("Archive", "SArchiveList", GetBSAList(), Program.FOIniPath);
+            NativeMethods.WritePrivateProfileStringA("Archive", "SArchiveList", GetBSAList(), Program.FOIniPath);
         }
 
         public static void Update() {
-            if(Imports.GetPrivateProfileIntA("Archive", "bInvalidateOlderFiles", 0, Program.FOIniPath)==0) {
+            if(NativeMethods.GetPrivateProfileIntA("Archive", "bInvalidateOlderFiles", 0, Program.FOIniPath)==0) {
                 if(MessageBox.Show("Apply archive invalidation?", "", MessageBoxButtons.YesNo)==DialogResult.Yes) ApplyAI();
             } else {
                 if(MessageBox.Show("Remove archive invalidation?", "", MessageBoxButtons.YesNo)==DialogResult.Yes) RemoveAI();

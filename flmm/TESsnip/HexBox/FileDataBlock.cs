@@ -59,7 +59,7 @@ namespace Be.Windows.Forms
         {
             if (position > _length)
             {
-                throw new ArgumentOutOfRangeException("offset");
+                throw new ArgumentOutOfRangeException("position");
             }
 
             if (position + count > _length)

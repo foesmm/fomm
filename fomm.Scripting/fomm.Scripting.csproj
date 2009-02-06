@@ -7,7 +7,7 @@
     <ProjectGuid>{580FBB3F-C7D5-42A7-A54C-F2361469C367}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>fomm.Scripting</RootNamespace>
+    <RootNamespace>Fomm.Scripting</RootNamespace>
     <AssemblyName>fomm.Scripting</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -40,9 +40,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\flmm\fomm.csproj">
+    <ProjectReference Include="..\flmm\Fomm.csproj">
       <Project>{4A0302F4-DEA4-4753-98C8-3571742E4EB5}</Project>
-      <Name>fomm</Name>
+      <Name>Fomm</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

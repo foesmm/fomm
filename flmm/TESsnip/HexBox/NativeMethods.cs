@@ -4,21 +4,23 @@ using System.Runtime.InteropServices;
 
 namespace Be.Windows.Forms
 {
-	internal sealed class NativeMethods
+	internal static class NativeMethods
 	{
-		static NativeMethods() {}
-
 		// Caret definitions
 		[DllImport("user32.dll", SetLastError=true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool CreateCaret(IntPtr hWnd, IntPtr hBitmap, int nWidth, int nHeight);
 
 		[DllImport("user32.dll", SetLastError=true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool ShowCaret(IntPtr hWnd);
 
 		[DllImport("user32.dll", SetLastError=true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool DestroyCaret();
 
 		[DllImport("user32.dll", SetLastError=true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool SetCaretPos(int X, int Y);
 
 		// Key definitions

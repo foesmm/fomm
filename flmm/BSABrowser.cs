@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Windows.Forms;
 
-namespace fomm {
+namespace Fomm {
     internal partial class BSABrowser : Form {
         internal BSABrowser() {
             InitializeComponent();
@@ -43,7 +43,6 @@ namespace fomm {
             }
 
             internal BSAFileEntry(string path, uint offset, uint size) {
-                Compressed=false;
                 Folder=Path.GetDirectoryName(path);
                 FileName=Path.GetFileName(path);
                 Offset=offset;
@@ -76,7 +75,7 @@ namespace fomm {
             }
         }
 
-        private bool ArchiveOpen=false;
+        private bool ArchiveOpen;
         private BinaryReader br;
         private bool Compressed;
         private bool ContainsFileNameBlobs;
@@ -248,17 +247,6 @@ namespace fomm {
             }
         }
 
-        private bool ExtractFileToData(string file) {
-            file=file.ToLower();
-            foreach(BSAFileEntry fe in Files) {
-                if(fe.LowerName==file) {
-                    fe.Extract("Data", true, br, ContainsFileNameBlobs);
-                    return true;
-                }
-            }
-            return false;
-        }
-
         private void bExtract_Click(object sender, EventArgs e) {
             if(lvFiles.SelectedItems.Count==0) return;
             if(lvFiles.SelectedItems.Count==1) {
@@ -270,7 +258,7 @@ namespace fomm {
             } else {
                 if(SaveAllDialog.ShowDialog()==DialogResult.OK) {
                     ProgressForm pf=new ProgressForm("Unpacking archive", false);
-                    pf.EnableCancel("Operation cancelled");
+                    pf.EnableCancel();
                     pf.SetProgressRange(lvFiles.SelectedItems.Count);
                     pf.Show();
                     int count=0;
@@ -295,7 +283,7 @@ namespace fomm {
         private void bExtractAll_Click(object sender, EventArgs e) {
             if(SaveAllDialog.ShowDialog()==DialogResult.OK) {
                 ProgressForm pf=new ProgressForm("Unpacking archive", false);
-                pf.EnableCancel("Operation cancelled");
+                pf.EnableCancel();
                 pf.SetProgressRange(Files.Length);
                 pf.Show();
                 int count=0;
@@ -381,7 +369,7 @@ namespace fomm {
             string str=tbSearch.Text;
             lvFiles.BeginUpdate();
             lvFiles.Items.Clear();
-            if(str==string.Empty) {
+            if(str.Length==0) {
                 lvFiles.Items.AddRange(lvItems);
             } else {
                 System.Collections.Generic.List<ListViewItem> lvis=new System.Collections.Generic.List<ListViewItem>(Files.Length);

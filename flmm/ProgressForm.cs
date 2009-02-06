@@ -3,7 +3,7 @@ using System.Drawing;
 using System.ComponentModel;
 using System.Windows.Forms;
 
-namespace fomm {
+namespace Fomm {
     internal class ProgressForm : Form {
         #region FormDesignerGunk
         /// <summary>
@@ -112,7 +112,6 @@ namespace fomm {
         private System.Windows.Forms.Label lRatio;
         #endregion
         private Button bCancel;
-        private string Error;
         private bool BlockClose=true;
 
         internal ProgressForm(string title,bool ShowRatio) {
@@ -132,47 +131,16 @@ namespace fomm {
             pbProgress.Maximum=high;
         }
 
-        internal void EnableCancel(string error) {
-            Error=error;
+        internal void EnableCancel() {
             bCancel.Enabled=true;
         }
 
         internal void Unblock() { BlockClose=false; }
 
-        private volatile float vProgress;
-        private volatile float vRatio;
-        internal void ThreadUpdate(float progress, float ratio) {
-            vProgress=progress;
-            vRatio=ratio;
-        }
-
-        internal void UpdateProgress() {
-            pbProgress.Value++;
-            lProgress.Text=((int)(100*(float)pbProgress.Value/(float)pbProgress.Maximum)).ToString()+"%";
-            if(!Focused) Focus();
-        }
-        internal void UpdateProgress(float fraction) {
-            if(fraction<0||fraction>1) return;
-            pbProgress.Value=((int)(fraction*10000));
-            lProgress.Text=((int)(fraction*100)).ToString()+"%";
-            if(!Focused) Focus();
-        }
         internal void UpdateProgress(int value) {
             pbProgress.Value=value;
             lProgress.Text=((int)(100*(float)value/(float)pbProgress.Maximum)).ToString()+"%";
             if(!Focused) Focus();
-        }
-
-        internal void UpdateRatio(float fraction) {
-            if(fraction<0) return;
-            if(fraction>1) {
-                pbRatio.ForeColor=Color.Red;
-                pbRatio.Value=10000;
-            } else {
-                pbRatio.ForeColor=Color.Lime;
-                pbRatio.Value=((int)(fraction*10000));
-            }
-            lRatio.Text=(((int)(fraction*100)).ToString()+"%");
         }
 
         private void ProgressForm_FormClosing(object sender, CancelEventArgs e) {

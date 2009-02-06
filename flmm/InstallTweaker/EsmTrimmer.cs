@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using fomm.TESsnip;
+using Fomm.TESsnip;
 using System.IO;
 
-namespace fomm.InstallTweaker {
+namespace Fomm.InstallTweaker {
     static class EsmTrimmer {
         private static ICSharpCode.SharpZipLib.Zip.Compression.Deflater deflater;
 

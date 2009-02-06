@@ -1,6 +1,6 @@
 using System;
 
-namespace fomm {
+namespace Fomm {
     [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Explicit)]
     struct TypeConverter {
         [System.Runtime.InteropServices.FieldOffset(0)]

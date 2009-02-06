@@ -1,8 +1,8 @@
 using System;
 using System.Windows.Forms;
 
-namespace fomm.TESsnip {
-    public partial class HeaderEditor : Form {
+namespace Fomm.TESsnip {
+    internal partial class HeaderEditor : Form {
         private uint Flags1;
         private uint Flags2;
         private uint Flags3;

@@ -1,4 +1,4 @@
-namespace fomm {
+namespace Fomm {
     partial class BSACreator {
         /// <summary>
         /// Required designer variable.

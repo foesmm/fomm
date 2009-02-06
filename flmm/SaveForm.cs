@@ -5,10 +5,8 @@ using System.Drawing.Imaging;
 using System.Windows.Forms;
 using System.IO;
 
-namespace fomm {
+namespace Fomm {
     internal partial class SaveForm : Form {
-        internal static string SaveFolder=null;
-
         private struct SaveFile {
             internal DateTime saved;
             internal string FileName;
@@ -54,8 +52,8 @@ namespace fomm {
                 case SaveSortOrder.Date:
                     return DateTime.Compare(sa.saved, sb.saved);
                 case SaveSortOrder.FileSize:
-                    long sizea=(new System.IO.FileInfo(SaveFolder+sa.FileName)).Length;
-                    long sizeb=(new System.IO.FileInfo(SaveFolder+sb.FileName)).Length;
+                    long sizea=(new System.IO.FileInfo(Program.FOSavesPath+sa.FileName)).Length;
+                    long sizeb=(new System.IO.FileInfo(Program.FOSavesPath+sb.FileName)).Length;
                     if(sizea==sizeb) return 0;
                     if(sizea>sizeb) return -1; else return 1;
                 default: return 0;
@@ -65,16 +63,11 @@ namespace fomm {
 
         private readonly List<SaveFile> saves=new List<SaveFile>();
 
-        private void FindSaveFolder() {
-            SaveFolder=Program.FOSavesPath;
-        }
-
         internal SaveForm() {
-            if(SaveFolder==null) FindSaveFolder();
             InitializeComponent();
             cmbSort.SelectedIndex=3;
             lvSaves.ListViewItemSorter=new SaveListSorter();
-            foreach(string file in Directory.GetFiles(SaveFolder)) {
+            foreach(string file in Directory.GetFiles(Program.FOSavesPath)) {
                 BinaryReader br;
                 SaveFile sf;
                 try {
@@ -155,7 +148,7 @@ namespace fomm {
         }
 
         private void UpdateSaveList() {
-            lvSaves.SuspendLayout();
+            lvSaves.BeginUpdate();
             lvSaves.Clear();
             foreach(SaveFile sf in saves) {
                 ListViewItem lvi=new ListViewItem(sf.FileName);
@@ -177,7 +170,7 @@ namespace fomm {
                 }*/
                 lvSaves.Items.Add(lvi);
             }
-            lvSaves.ResumeLayout();
+            lvSaves.EndUpdate();
         }
 
         private void UpdatePluginList(string[] plugins) {

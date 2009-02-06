@@ -1544,7 +1544,7 @@ namespace Be.Windows.Forms
 			}
 		}
 
-		int ToScrollMax(long value)
+		static int ToScrollMax(long value)
 		{
 			long max = 65535;
 			if(value > max)
@@ -1884,18 +1884,18 @@ namespace Be.Windows.Forms
 		/// <param name="m">the message to process.</param>
 		/// <returns>true, if the message was processed</returns>
 		[SecurityPermission(SecurityAction.LinkDemand, UnmanagedCode=true), SecurityPermission(SecurityAction.InheritanceDemand, UnmanagedCode=true)]
-		public override bool PreProcessMessage(ref Message m)
+		public override bool PreProcessMessage(ref Message msg)
 		{
-			switch(m.Msg)
+			switch(msg.Msg)
 			{
 				case NativeMethods.WM_KEYDOWN:
-					return _keyInterpreter.PreProcessWmKeyDown(ref m);
+					return _keyInterpreter.PreProcessWmKeyDown(ref msg);
 				case NativeMethods.WM_CHAR:
-					return _keyInterpreter.PreProcessWmChar(ref m);
+					return _keyInterpreter.PreProcessWmChar(ref msg);
 				case NativeMethods.WM_KEYUP:
-					return _keyInterpreter.PreProcessWmKeyUp(ref m);
+					return _keyInterpreter.PreProcessWmKeyUp(ref msg);
 				default:
-					return base.PreProcessMessage (ref m);
+					return base.PreProcessMessage (ref msg);
 			}
 		}
 
@@ -2120,7 +2120,7 @@ namespace Be.Windows.Forms
 		/// Paints the background.
 		/// </summary>
 		/// <param name="e">A PaintEventArgs that contains the event data.</param>
-		protected override void OnPaintBackground(PaintEventArgs e)
+		protected override void OnPaintBackground(PaintEventArgs pevent)
 		{
 			switch(_borderStyle)
 			{
@@ -2145,18 +2145,18 @@ namespace Be.Windows.Forms
                         }
 
                         VisualStyleRenderer vsr = new VisualStyleRenderer(state);
-                        vsr.DrawBackground(e.Graphics, this.ClientRectangle);
+                        vsr.DrawBackground(pevent.Graphics, this.ClientRectangle);
 
-                        Rectangle rectContent = vsr.GetBackgroundContentRectangle(e.Graphics, this.ClientRectangle);
-                        e.Graphics.FillRectangle(new SolidBrush(backColor), rectContent);
+                        Rectangle rectContent = vsr.GetBackgroundContentRectangle(pevent.Graphics, this.ClientRectangle);
+                        pevent.Graphics.FillRectangle(new SolidBrush(backColor), rectContent);
 					}
 					else
 					{
                         // draw background
-                        e.Graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
+                        pevent.Graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
 
 						// draw default border
-						ControlPaint.DrawBorder3D(e.Graphics, ClientRectangle, Border3DStyle.Sunken);
+						ControlPaint.DrawBorder3D(pevent.Graphics, ClientRectangle, Border3DStyle.Sunken);
 					}
 
 					break;
@@ -2164,10 +2164,10 @@ namespace Be.Windows.Forms
 				case BorderStyle.FixedSingle:
 				{
                     // draw background
-                    e.Graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
+                    pevent.Graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
 
                     // draw fixed single border
-					ControlPaint.DrawBorder(e.Graphics, ClientRectangle, Color.Black, ButtonBorderStyle.Solid);
+					ControlPaint.DrawBorder(pevent.Graphics, ClientRectangle, Color.Black, ButtonBorderStyle.Solid);
 					break;
 				}
 			}

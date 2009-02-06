@@ -20,7 +20,7 @@ using System;
 using System.Windows.Forms;
 using System.IO;
 
-namespace fomm {
+namespace Fomm {
     struct Pair<A, B> {
         public A a;
         public B b;
@@ -193,7 +193,7 @@ namespace fomm {
         public static readonly string GeckIniPath=Path.Combine(Fallout3SaveDir, "GECKCustom.ini");
         public static readonly string GeckPrefsIniPath=Path.Combine(Fallout3SaveDir, "GECKPrefs.ini");
         public static readonly string FORendererFile=Path.Combine(Fallout3SaveDir, "RendererInfo.txt");
-        public static readonly string FOSavesPath=Path.Combine(Fallout3SaveDir, Imports.GetPrivateProfileString("General", "SLocalSavePath", "Games", FOIniPath));
+        public static readonly string FOSavesPath=Path.Combine(Fallout3SaveDir, NativeMethods.GetPrivateProfileString("General", "SLocalSavePath", "Games", FOIniPath));
         private static string packageDir;
         public static readonly string fommDir=Path.Combine(exeDir, "fomm");
         public static readonly string LocalDataPath=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Fallout3");
@@ -382,15 +382,6 @@ namespace fomm {
             mutex.Close();
         }
 
-        internal static string ReadCString(BinaryReader br) {
-            string s="";
-            while(true) {
-                byte b=br.ReadByte();
-                if(b==0) return s;
-                s+=(char)b;
-            }
-        }
-
         internal static bool IsSafeFileName(string s) {
             s=s.Replace('/', '\\');
             if(s.IndexOfAny(Path.GetInvalidPathChars())!=-1) return false;
@@ -398,17 +389,6 @@ namespace fomm {
             if(s.StartsWith(".")||Array.IndexOf<char>(Path.GetInvalidFileNameChars(), s[0])!=-1) return false;
             if(s.Contains("\\..\\")) return false;
             if(s.EndsWith(".")||Array.IndexOf<char>(Path.GetInvalidFileNameChars(), s[s.Length-1])!=-1) return false;
-            return true;
-        }
-
-        internal static bool IsSafeFolderName(string s) {
-            if(s.Length==0) return true;
-            s=s.Replace('/', '\\');
-            if(s.IndexOfAny(Path.GetInvalidPathChars())!=-1) return false;
-            if(Path.IsPathRooted(s)) return false;
-            if(s.StartsWith(".")||Array.IndexOf<char>(Path.GetInvalidFileNameChars(), s[0])!=-1) return false;
-            if(s.Contains("\\..\\")) return false;
-            if(s.EndsWith(".")) return false;
             return true;
         }
 

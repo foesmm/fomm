@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using fomm.PackageManager;
+using Fomm.PackageManager;
 using MessageBox=System.Windows.Forms.MessageBox;
 using mbButtons=System.Windows.Forms.MessageBoxButtons;
 using DialogResult=System.Windows.Forms.DialogResult;
 using Path=System.IO.Path;
 
-namespace fomm.Scripting {
+namespace Fomm.Scripting {
     public static class fommScript {
         private class FlowControlStruct {
             public readonly int line;

@@ -1,4 +1,4 @@
-namespace fomm {
+namespace Fomm {
     partial class SaveForm {
         /// <summary>
         /// Required designer variable.

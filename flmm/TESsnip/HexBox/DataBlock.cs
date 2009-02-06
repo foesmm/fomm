@@ -13,13 +13,13 @@ namespace Be.Windows.Forms
             get;
         }
 
-        public DataMap Map
+        /*public DataMap Map
         {
             get
             {
                 return _map;
             }
-        }
+        }*/
 
         public DataBlock NextBlock
         {

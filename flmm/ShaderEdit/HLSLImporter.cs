@@ -1,7 +1,7 @@
 using System;
 using System.Windows.Forms;
 
-namespace fomm.ShaderEdit {
+namespace Fomm.ShaderEdit {
     public partial class HLSLImporter : Form {
         public HLSLImporter() { 
             InitializeComponent();

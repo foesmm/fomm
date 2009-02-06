@@ -4,7 +4,7 @@ using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Ipc;
 using System.Runtime.Remoting.Messaging;
 
-namespace fomm {
+namespace Fomm {
     delegate void RecieveMessageDelegate(string msg);
     static class Messaging {
 

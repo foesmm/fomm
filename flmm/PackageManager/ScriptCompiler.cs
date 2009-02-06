@@ -5,7 +5,7 @@ using Assembly=System.Reflection.Assembly;
 using sList=System.Collections.Generic.List<string>;
 using StringBuilder=System.Text.StringBuilder;
 
-namespace fomm.PackageManager {
+namespace Fomm.PackageManager {
     static class ScriptCompiler {
         private static readonly Microsoft.CSharp.CSharpCodeProvider csCompiler=new Microsoft.CSharp.CSharpCodeProvider();
         private static readonly CompilerParameters cParams;
@@ -86,9 +86,8 @@ class ScriptRunner {
 
             string[] errors=null;
             string[] warnings=null;
-            byte[] data;
 
-            if(errors==null) data = Compile(script, out errors, out warnings, out stdout);
+            Compile(script, out errors, out warnings, out stdout);
             if(errors!=null||warnings!=null) {
                 StringBuilder sb=new StringBuilder();
                 if(errors!=null) {

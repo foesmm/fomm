@@ -3,7 +3,7 @@ using System.Xml;
 using Path=System.IO.Path;
 using File=System.IO.File;
 
-namespace fomm.PackageManager {
+namespace Fomm.PackageManager {
     /*
      * InstallLog.xml structure
      * <installLog>
@@ -67,7 +67,7 @@ namespace fomm.PackageManager {
             } else node.Attributes.GetNamedItem("count").Value=i.ToString();
         }
 
-        public static void AddIniEdit(string file, string section, string key, string mod, string value) {
+        public static void AddIniEdit(string file, string section, string key, string mod/*, string value*/) {
             XmlNode node=iniEditsNode.SelectSingleNode("ini[@file='"+file+"' and @section='"+section+"' and @key='"+key+"']");
             if(node==null) {
                 node=xmlDoc.CreateElement("ini");
@@ -79,7 +79,7 @@ namespace fomm.PackageManager {
                 node.Attributes[1].Value=section;
                 node.Attributes[2].Value=key;
                 node.Attributes[3].Value=mod;
-                node.InnerText=Imports.GetPrivateProfileString(section, key, "", file);
+                node.InnerText=NativeMethods.GetPrivateProfileString(section, key, "", file);
                 iniEditsNode.AppendChild(node);
             } else {
                 node.Attributes.GetNamedItem("mod").Value=mod;
@@ -98,13 +98,13 @@ namespace fomm.PackageManager {
         public static void UndoIniEdit(string file, string section, string key) {
             XmlNode node=iniEditsNode.SelectSingleNode("ini[@file='"+file+"' and @section='"+section+"' and @key='"+key+"']");
             if(node==null) return;
-            Imports.WritePrivateProfileStringA(section, key, node.InnerText, file);
+            NativeMethods.WritePrivateProfileStringA(section, key, node.InnerText, file);
             iniEditsNode.RemoveChild(node);
         }
         public static void UndoIniEdit(string file, string section, string key, string mod) {
             XmlNode node=iniEditsNode.SelectSingleNode("ini[@file='"+file+"' and @section='"+section+"' and @key='"+key+"' and @mod='"+mod+"']");
             if(node==null) return;
-            Imports.WritePrivateProfileStringA(section, key, node.InnerText, file);
+            NativeMethods.WritePrivateProfileStringA(section, key, node.InnerText, file);
             iniEditsNode.RemoveChild(node);
         }
 

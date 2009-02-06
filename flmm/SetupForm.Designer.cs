@@ -1,4 +1,4 @@
-namespace fomm {
+namespace Fomm {
     partial class SetupForm {
         /// <summary>
         /// Required designer variable.

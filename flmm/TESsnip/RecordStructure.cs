@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Xml;
 
-namespace fomm.TESsnip {
+namespace Fomm.TESsnip {
 
     public class RecordXmlException : Exception { public RecordXmlException(string msg) : base(msg) { } }
     public enum ElementValueType {

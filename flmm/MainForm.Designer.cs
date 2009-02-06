@@ -1,4 +1,4 @@
-namespace fomm {
+namespace Fomm {
     partial class MainForm {
         /// <summary>
         /// Required designer variable.
@@ -38,16 +38,16 @@ namespace fomm {
             this.sendToTopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sendToBottomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.copyLoadOrderToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportLoadOrderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importLoadOrderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.uncheckAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.checkAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.tbPluginInfo = new System.Windows.Forms.TextBox();
             this.bPackageManager = new System.Windows.Forms.Button();
             this.bEnableAI = new System.Windows.Forms.Button();
             this.bSaveGames = new System.Windows.Forms.Button();
             this.bHelp = new System.Windows.Forms.Button();
-            this.exportLoadOrderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.importLoadOrderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.uncheckAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.checkAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.cmsPlugins.SuspendLayout();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -108,6 +108,7 @@ namespace fomm {
             this.pictureBox1.Size = new System.Drawing.Size(120, 90);
             this.pictureBox1.TabIndex = 4;
             this.pictureBox1.TabStop = false;
+            this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
             // 
             // bLaunch
             // 
@@ -165,7 +166,7 @@ namespace fomm {
             this.uncheckAllToolStripMenuItem,
             this.checkAllToolStripMenuItem});
             this.cmsPlugins.Name = "cmsPlugins";
-            this.cmsPlugins.Size = new System.Drawing.Size(211, 202);
+            this.cmsPlugins.Size = new System.Drawing.Size(211, 180);
             // 
             // openInTESsnipToolStripMenuItem
             // 
@@ -194,6 +195,34 @@ namespace fomm {
             this.copyLoadOrderToClipboardToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
             this.copyLoadOrderToClipboardToolStripMenuItem.Text = "Copy load order to clipboard";
             this.copyLoadOrderToClipboardToolStripMenuItem.Click += new System.EventHandler(this.copyLoadOrderToClipboardToolStripMenuItem_Click);
+            // 
+            // exportLoadOrderToolStripMenuItem
+            // 
+            this.exportLoadOrderToolStripMenuItem.Name = "exportLoadOrderToolStripMenuItem";
+            this.exportLoadOrderToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
+            this.exportLoadOrderToolStripMenuItem.Text = "Export load order";
+            this.exportLoadOrderToolStripMenuItem.Click += new System.EventHandler(this.exportLoadOrderToolStripMenuItem_Click);
+            // 
+            // importLoadOrderToolStripMenuItem
+            // 
+            this.importLoadOrderToolStripMenuItem.Name = "importLoadOrderToolStripMenuItem";
+            this.importLoadOrderToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
+            this.importLoadOrderToolStripMenuItem.Text = "Import load order";
+            this.importLoadOrderToolStripMenuItem.Click += new System.EventHandler(this.importLoadOrderToolStripMenuItem_Click);
+            // 
+            // uncheckAllToolStripMenuItem
+            // 
+            this.uncheckAllToolStripMenuItem.Name = "uncheckAllToolStripMenuItem";
+            this.uncheckAllToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
+            this.uncheckAllToolStripMenuItem.Text = "Uncheck all";
+            this.uncheckAllToolStripMenuItem.Click += new System.EventHandler(this.uncheckAllToolStripMenuItem_Click);
+            // 
+            // checkAllToolStripMenuItem
+            // 
+            this.checkAllToolStripMenuItem.Name = "checkAllToolStripMenuItem";
+            this.checkAllToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
+            this.checkAllToolStripMenuItem.Text = "Check all";
+            this.checkAllToolStripMenuItem.Click += new System.EventHandler(this.checkAllToolStripMenuItem_Click);
             // 
             // splitContainer1
             // 
@@ -271,34 +300,6 @@ namespace fomm {
             this.bHelp.Text = "Help";
             this.bHelp.UseVisualStyleBackColor = true;
             this.bHelp.Click += new System.EventHandler(this.bHelp_Click);
-            // 
-            // exportLoadOrderToolStripMenuItem
-            // 
-            this.exportLoadOrderToolStripMenuItem.Name = "exportLoadOrderToolStripMenuItem";
-            this.exportLoadOrderToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
-            this.exportLoadOrderToolStripMenuItem.Text = "Export load order";
-            this.exportLoadOrderToolStripMenuItem.Click += new System.EventHandler(this.exportLoadOrderToolStripMenuItem_Click);
-            // 
-            // importLoadOrderToolStripMenuItem
-            // 
-            this.importLoadOrderToolStripMenuItem.Name = "importLoadOrderToolStripMenuItem";
-            this.importLoadOrderToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
-            this.importLoadOrderToolStripMenuItem.Text = "Import load order";
-            this.importLoadOrderToolStripMenuItem.Click += new System.EventHandler(this.importLoadOrderToolStripMenuItem_Click);
-            // 
-            // uncheckAllToolStripMenuItem
-            // 
-            this.uncheckAllToolStripMenuItem.Name = "uncheckAllToolStripMenuItem";
-            this.uncheckAllToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
-            this.uncheckAllToolStripMenuItem.Text = "Uncheck all";
-            this.uncheckAllToolStripMenuItem.Click += new System.EventHandler(this.uncheckAllToolStripMenuItem_Click);
-            // 
-            // checkAllToolStripMenuItem
-            // 
-            this.checkAllToolStripMenuItem.Name = "checkAllToolStripMenuItem";
-            this.checkAllToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
-            this.checkAllToolStripMenuItem.Text = "Check all";
-            this.checkAllToolStripMenuItem.Click += new System.EventHandler(this.checkAllToolStripMenuItem_Click);
             // 
             // MainForm
             // 

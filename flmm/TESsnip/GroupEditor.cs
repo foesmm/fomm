@@ -1,8 +1,8 @@
 using System;
 using System.Windows.Forms;
 
-namespace fomm.TESsnip {
-    public partial class GroupEditor : Form {
+namespace Fomm.TESsnip {
+    internal partial class GroupEditor : Form {
         private GroupRecord gr;
 
 

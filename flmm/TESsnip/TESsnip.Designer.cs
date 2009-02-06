@@ -1,4 +1,4 @@
-namespace fomm.TESsnip {
+namespace Fomm.TESsnip {
     partial class TESsnip {
         /// <summary>
         /// Required designer variable.

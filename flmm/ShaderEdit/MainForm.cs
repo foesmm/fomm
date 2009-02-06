@@ -4,7 +4,7 @@ using System.Windows.Forms;
 using System.Collections.Generic;
 using Encoding=System.Text.Encoding;
 
-namespace fomm.ShaderEdit {
+namespace Fomm.ShaderEdit {
     public partial class MainForm : Form {
 
         private class Shader {
@@ -16,7 +16,7 @@ namespace fomm.ShaderEdit {
         private uint unknown;
         private readonly List<Shader> shaders=new List<Shader>();
         //private bool ChangedShader=false;
-        private bool ChangedFile=false;
+        private bool ChangedFile;
         private int Editing=-1;
         private string FileName="";
         private HLSLImporter HLSLImporterForm=new HLSLImporter();
@@ -71,7 +71,7 @@ namespace fomm.ShaderEdit {
                 }
             }
             Editing=cmbShaderSelect.SelectedIndex;
-            sbyte* ptr=Imports.Disasm(shaders[Editing].data, shaders[Editing].data.Length, 0);
+            sbyte* ptr=NativeMethods.Disasm(shaders[Editing].data, shaders[Editing].data.Length, 0);
             string text=new string(ptr);
             text=text.Replace(""+(char)10, Environment.NewLine);
             tbEdit.Text=text;
@@ -112,7 +112,7 @@ namespace fomm.ShaderEdit {
             if(Editing==-1) return true;
             byte[] b=new byte[tbEdit.Text.Length];
             for(int i=0;i<tbEdit.Text.Length;i++) b[i]=(byte)tbEdit.Text[i];
-            byte* data=Imports.Asm(b, b.Length);
+            byte* data=NativeMethods.Asm(b, b.Length);
             int size=(data[3]<<24)+(data[2]<<16)+(data[1]<<8)+data[0];
             if(size==0) {
                 string error="";
@@ -170,7 +170,7 @@ namespace fomm.ShaderEdit {
             if(openFileDialog1.ShowDialog()!=DialogResult.OK) return;
             if(HLSLImporterForm.ShowDialog()!=DialogResult.OK) return;
             string text=File.ReadAllText(openFileDialog1.FileName, Encoding.Default);
-            byte* data=Imports.Compile(text, text.Length, HLSLImporterForm.EntryPoint, HLSLImporterForm.Profile, HLSLImporterForm.Debug);
+            byte* data=NativeMethods.Compile(text, text.Length, HLSLImporterForm.EntryPoint, HLSLImporterForm.Profile, HLSLImporterForm.Debug);
             int size=(data[3]<<24)+(data[2]<<16)+(data[1]<<8)+data[0];
             if(size==0) {
                 string error="";
@@ -193,7 +193,7 @@ namespace fomm.ShaderEdit {
             openFileDialog1.Title="Select HLSL file to import";
             if(openFileDialog1.ShowDialog()!=DialogResult.OK) return;
             byte[] b=File.ReadAllBytes(openFileDialog1.FileName);
-            sbyte* result=Imports.Disasm(b, b.Length, 0);
+            sbyte* result=NativeMethods.Disasm(b, b.Length, 0);
             if(new IntPtr(result)==IntPtr.Zero) {
                 MessageBox.Show("An error occured during shader disassembly", "Error");
             } else {

@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security.Permissions;
@@ -14,7 +15,11 @@ using System.Security.Permissions;
 
 [assembly: ComVisible(false)]
 
-[assembly: AssemblyVersion(fomm.Program.Version+".0")]
-[assembly: AssemblyFileVersion(fomm.Program.Version+".0")]
+[assembly: AssemblyVersion(Fomm.Program.Version+".0")]
+[assembly: AssemblyFileVersion(Fomm.Program.Version+".0")]
+
+[assembly: CLSCompliant(true)]
+
+[assembly: System.Resources.NeutralResourcesLanguage("en")]
 
 //[assembly: PermissionSet(SecurityAction.RequestMinimum, Name="FullTrust")]

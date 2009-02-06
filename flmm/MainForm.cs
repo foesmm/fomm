@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.IO;
-using fomm.TESsnip;
+using Fomm.TESsnip;
 
-namespace fomm {
+namespace Fomm {
     public partial class MainForm : Form {
 
         public MainForm(string fomod) {
@@ -70,7 +70,7 @@ namespace fomm {
             DragDropIndex=-1;
         }
 
-        private bool DragDropInProgress=false;
+        private bool DragDropInProgress;
         private void lvEspList_ItemDrag(object sender, ItemDragEventArgs e) {
             if(lvEspList.SelectedIndices.Count==0||e.Button!=MouseButtons.Left) return;
             DragDropInProgress=true;
@@ -156,7 +156,7 @@ namespace fomm {
         private void bPackageManager_Click(object sender, EventArgs e) {
             if(PackageManagerForm!=null) PackageManagerForm.Focus();
             else {
-                PackageManagerForm=new fomm.PackageManager.PackageManager(this);
+                PackageManagerForm=new Fomm.PackageManager.PackageManager(this);
                 PackageManagerForm.FormClosed+=delegate(object sender2, FormClosedEventArgs e2)
                 {
                     RefreshEspList();
@@ -485,6 +485,12 @@ namespace fomm {
             for(int i=0;i<lvEspList.Items.Count;i++) lvEspList.Items[i].Checked=true;
             RefreshingList=false;
             lvEspList_ItemChecked(null, null);
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e) {
+            if(pictureBox1.Image!=null&&(pictureBox1.Image.Size.Width>pictureBox1.Width||pictureBox1.Image.Size.Height>pictureBox1.Height)) {
+                (new ImageForm(pictureBox1.Image)).ShowDialog();
+            }
         }
     }
 }

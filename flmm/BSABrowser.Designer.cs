@@ -1,4 +1,4 @@
-namespace fomm {
+namespace Fomm {
     partial class BSABrowser {
         /// <summary>
         /// Required designer variable.

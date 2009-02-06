@@ -1,4 +1,4 @@
-namespace fomm.PackageManager {
+namespace Fomm.PackageManager {
     partial class SelectForm {
         /// <summary>
         /// Required designer variable.

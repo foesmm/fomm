@@ -2,8 +2,8 @@ using System;
 using System.Windows.Forms;
 using System.Collections.Generic;
 
-namespace fomm.TESsnip {
-    public partial class HexDataEdit : Form {
+namespace Fomm.TESsnip {
+    internal partial class HexDataEdit : Form {
         public static bool Canceled;
         public static byte[] result;
         public static string resultName;

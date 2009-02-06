@@ -16,7 +16,7 @@ using System.Collections.Generic;
  *  some time in building your own products.
  */
 
-namespace fomm.PackageManager {
+namespace Fomm.PackageManager {
     #region Event Delegate Definitions
 
     /// <summary>
@@ -630,7 +630,7 @@ namespace fomm.PackageManager {
             }
         }
 
-        private DateTime FromMSDOSTime(uint dosTime) {
+        private static DateTime FromMSDOSTime(uint dosTime) {
             int day=0;
             int month=0;
             int year=0;
@@ -650,7 +650,7 @@ namespace fomm.PackageManager {
             return new DateTime(year, month, day, hour, minute, second);
         }
 
-        private void ProcessFileError(int result) {
+        private static void ProcessFileError(int result) {
             switch((RarError)result) {
             case RarError.UnknownFormat:
                 throw new OutOfMemoryException("Unknown archive format.");
@@ -806,7 +806,7 @@ namespace fomm.PackageManager {
 
     internal class MissingVolumeEventArgs {
         internal string VolumeName;
-        internal bool ContinueOperation=false;
+        internal bool ContinueOperation;
 
         internal MissingVolumeEventArgs(string volumeName) {
             this.VolumeName=volumeName;
@@ -844,18 +844,18 @@ namespace fomm.PackageManager {
 
     internal class RARFileInfo {
         internal string FileName;
-        internal bool ContinuedFromPrevious=false;
-        internal bool ContinuedOnNext=false;
-        internal bool IsDirectory=false;
-        internal long PackedSize=0;
-        internal long UnpackedSize=0;
-        internal int HostOS=0;
-        internal long FileCRC=0;
+        internal bool ContinuedFromPrevious;
+        internal bool ContinuedOnNext;
+        internal bool IsDirectory;
+        internal long PackedSize;
+        internal long UnpackedSize;
+        internal int HostOS;
+        internal long FileCRC;
         internal DateTime FileTime;
-        internal int VersionToUnpack=0;
-        internal int Method=0;
-        internal int FileAttributes=0;
-        internal long BytesExtracted=0;
+        internal int VersionToUnpack;
+        internal int Method;
+        internal int FileAttributes;
+        internal long BytesExtracted;
 
         internal double PercentComplete {
             get {

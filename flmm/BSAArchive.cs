@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using StringList=System.Collections.Generic.List<string>;
-using HashTable=System.Collections.Generic.Dictionary<ulong, fomm.BSAArchive.BSAFileInfo>;
+using HashTable=System.Collections.Generic.Dictionary<ulong, Fomm.BSAArchive.BSAFileInfo>;
 using System.IO;
 using System.IO.Compression;
 
-namespace fomm {
+namespace Fomm {
     class BSAArchive {
         internal class BSALoadException : Exception { }
 
@@ -55,7 +55,7 @@ namespace fomm {
             internal readonly int size;
             internal readonly uint offset;
 
-            internal BSAFileInfo4(BinaryReader br, bool defaultCompressed) {
+            internal BSAFileInfo4(BinaryReader br) {
                 path=null;
 
                 hash=br.ReadUInt64();
@@ -102,13 +102,9 @@ namespace fomm {
                 totalFileNameLength=br.ReadInt32();
                 fileFlags=(FileFlags)br.ReadInt32();
             }
-
-            internal bool ContainsMeshes { get { return (fileFlags&FileFlags.Meshes)!=0; } }
-            internal bool ContainsTextures { get { return (fileFlags&FileFlags.Textures)!=0; } }
         }
 
         private BinaryReader br;
-        private string name;
         private bool defaultCompressed;
         private bool SkipNames;
         private HashTable files;
@@ -116,7 +112,6 @@ namespace fomm {
         public string[] FileNames { get { return fileNames; } }
 
         internal BSAArchive(string path) {
-            name=Path.GetFileNameWithoutExtension(path).ToLower();
             BSAHeader4 header;
             br=new BinaryReader(File.OpenRead(path), System.Text.Encoding.Default);
             header=new BSAHeader4(br);
@@ -135,7 +130,7 @@ namespace fomm {
                 folderInfo[i].path=new string(br.ReadChars(br.ReadByte()-1));
                 br.BaseStream.Position++;
                 folderInfo[i].offset=count;
-                for(int j=0;j<folderInfo[i].count;j++) fileInfo[count+j]=new BSAFileInfo4(br, defaultCompressed);
+                for(int j=0;j<folderInfo[i].count;j++) fileInfo[count+j]=new BSAFileInfo4(br);
                 count += folderInfo[i].count;
             }
             for(uint i=0;i<header.fileCount;i++) {

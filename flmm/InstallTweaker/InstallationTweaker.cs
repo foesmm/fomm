@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace fomm.InstallTweaker {
+namespace Fomm.InstallTweaker {
     public partial class InstallationTweaker : Form {
         public InstallationTweaker() {
             InitializeComponent();

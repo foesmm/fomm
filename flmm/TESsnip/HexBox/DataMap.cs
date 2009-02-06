@@ -15,19 +15,6 @@ namespace Be.Windows.Forms
         {
         }
 
-        public DataMap(IEnumerable collection)
-        {
-            if (collection == null)
-            {
-                throw new ArgumentNullException("collection");
-            }
-
-            foreach (DataBlock item in collection)
-            {
-                AddLast(item);
-            }
-        }
-
         public DataBlock FirstBlock
         {
             get
@@ -58,40 +45,10 @@ namespace Be.Windows.Forms
             }
         }
 
-        public void AddLast(DataBlock block)
-        {
-            if (_firstBlock == null)
-            {
-                AddBlockToEmptyMap(block);
-            }
-            else
-            {
-                AddAfterInternal(GetLastBlock(), block);
-            }
-        }
-
         public void Remove(DataBlock block)
         {
             RemoveInternal(block);
         }
-
-        public void RemoveFirst()
-        {
-            if (_firstBlock == null)
-            {
-                throw new InvalidOperationException("The collection is empty.");
-            }
-            RemoveInternal(_firstBlock);
-        }
-
-        public void RemoveLast()
-        {
-            if (_firstBlock == null)
-            {
-                throw new InvalidOperationException("The collection is empty.");
-            }
-            RemoveInternal(GetLastBlock());
-		}
 
 		public DataBlock Replace(DataBlock block, DataBlock newBlock)
 		{
@@ -99,20 +56,6 @@ namespace Be.Windows.Forms
 			RemoveInternal(block);
 			return newBlock;
 		}
-
-        public void Clear()
-        {
-            DataBlock block = FirstBlock;
-            while (block != null)
-            {
-                DataBlock nextBlock = block.NextBlock;
-                InvalidateBlock(block);
-                block = nextBlock;
-            }
-            _firstBlock = null;
-            _count = 0;
-            _version++;
-        }
 
         void AddAfterInternal(DataBlock block, DataBlock newBlock)
         {
@@ -176,17 +119,7 @@ namespace Be.Windows.Forms
             _version++;
         }
 
-        DataBlock GetLastBlock()
-        {
-            DataBlock lastBlock = null;
-            for (DataBlock block = FirstBlock; block != null; block = block.NextBlock)
-            {
-                lastBlock = block;
-            }
-            return lastBlock;
-        }
-
-        void InvalidateBlock(DataBlock block)
+        static void InvalidateBlock(DataBlock block)
         {
             block._map = null;
             block._nextBlock = null;
@@ -258,7 +191,6 @@ namespace Be.Windows.Forms
             {
                 _map = map;
                 _version = map._version;
-                _current = null;
                 _index = -1;
             }
 

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Xml;
-using fomm.TESsnip;
+using Fomm.TESsnip;
 using BinaryWriter=System.IO.BinaryWriter;
 using MemoryStream=System.IO.MemoryStream;
 
@@ -11,7 +11,7 @@ using MemoryStream=System.IO.MemoryStream;
 //TODO: End function call on ')'
 //TODO: ModPCMiscStat
 
-namespace fomm.ScriptCompiler {
+namespace Fomm.ScriptCompiler {
 
     static class ScriptCompiler {
         #region Setup
@@ -554,7 +554,7 @@ namespace fomm.ScriptCompiler {
                 bw.Write(System.Text.Encoding.ASCII.GetBytes(t.token));
                 break;
             case TokenType.Function:
-                FunctionSig fs=functionList[t.token];
+                //FunctionSig fs=functionList[t.token];
                 //if(fs.requiredArgs!=fs.args.Length) throw new ExpressionParseException("functions with variable argument count cannot be used in expressions");
                 //if(fs.ret==VarType.None) throw new ExpressionParseException("Functions with no return type cannot be used in expressions");
                 //if(smt.Count<fs.args.Length) throw new ExpressionParseException("Not enough parameters to function");

@@ -2,7 +2,7 @@ using System;
 using System.Windows.Forms;
 using Image=System.Drawing.Image;
 
-namespace fomm.PackageManager {
+namespace Fomm.PackageManager {
     internal partial class SelectForm : Form {
         internal SelectForm(string[] items,string title,bool multi,Image[] previews,string[] tooltips) {
             InitializeComponent();
@@ -35,9 +35,9 @@ namespace fomm.PackageManager {
 
         private bool blockClose=true;
         internal int[] SelectedIndex={ 0 };
-        private System.Drawing.Image[] Previews=null;
+        private System.Drawing.Image[] Previews;
         private string[] toolTips;
-        private bool ShowingDesc=false;
+        private bool ShowingDesc;
         private bool Multi;
 
         private int selectedIndex;
@@ -91,7 +91,7 @@ namespace fomm.PackageManager {
         }
 
         private void bPreview_Click(object sender, EventArgs e) {
-            (new ImageForm(Previews[selectedIndex])).ShowDialog();
+            (new ImageForm(Previews[selectedIndex], (string)lbSelect.SelectedItem)).ShowDialog();
         }
 
         private void bDescription_Click(object sender, EventArgs e) {

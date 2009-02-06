@@ -1,4 +1,4 @@
-namespace fomm.TESsnip {
+namespace Fomm.TESsnip {
     partial class SearchForm {
         /// <summary>
         /// Required designer variable.

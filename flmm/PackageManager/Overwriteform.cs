@@ -1,7 +1,7 @@
 using System;
 using System.Windows.Forms;
 
-namespace fomm.PackageManager {
+namespace Fomm.PackageManager {
     enum OverwriteResult { YesToAll=1, YesToFolder=2, Yes=3, NoToAll=4, NoToFolder=5, No=6 }
 
     partial class Overwriteform : Form {

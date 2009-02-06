@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace fomm.TESsnip {
-    public class TESParserException : Exception { public TESParserException(string msg) : base(msg) { } }
+namespace Fomm.TESsnip {
+    internal class TESParserException : Exception { public TESParserException(string msg) : base(msg) { } }
 
-    public abstract class BaseRecord {
+    internal abstract class BaseRecord {
         public string Name;
 
         public abstract long Size { get; }
@@ -34,14 +34,14 @@ namespace fomm.TESsnip {
 
             return compReader;
         }
-        protected void InitDecompressor() {
+        protected static void InitDecompressor() {
             inf=new ICSharpCode.SharpZipLib.Zip.Compression.Inflater(false);
             ms=new MemoryStream();
             compReader=new BinaryReader(ms);
             input=new byte[0x1000];
             output=new byte[0x4000];
         }
-        protected void CloseDecompressor() {
+        protected static void CloseDecompressor() {
             compReader.Close();
             compReader=null;
             inf=null;
@@ -69,7 +69,7 @@ namespace fomm.TESsnip {
         public abstract BaseRecord Clone();
     }
 
-    public sealed class Plugin : BaseRecord {
+    internal sealed class Plugin : BaseRecord {
         public readonly List<Rec> Records = new List<Rec>();
 
         public override long Size {
@@ -193,12 +193,12 @@ namespace fomm.TESsnip {
         }
     }
 
-    public abstract class Rec : BaseRecord {
+    internal abstract class Rec : BaseRecord {
         public string descriptiveName;
         public string DescriptiveName { get { return descriptiveName==null?Name:(Name+descriptiveName); } }
     }
 
-    public sealed class GroupRecord : Rec {
+    internal sealed class GroupRecord : Rec {
         public readonly List<Rec> Records=new List<Rec>();
         private readonly byte[] data;
         public uint groupType;
@@ -231,8 +231,7 @@ namespace fomm.TESsnip {
             data=br.ReadBytes(4);
             groupType=br.ReadUInt32();
             dateStamp=br.ReadUInt32();
-            if(Oblivion) flags=0;
-            else flags=br.ReadUInt32();
+            if(!Oblivion) flags=br.ReadUInt32();
             uint AmountRead=0;
             while(AmountRead<Size-(Oblivion?20:24)) {
                 string s=Plugin.ReadRecName(br);
@@ -259,9 +258,6 @@ namespace fomm.TESsnip {
             Name="GRUP";
             this.data=new byte[4];
             for(int i=0;i<4;i++) this.data[i]=(byte)data[i];
-            groupType=0;
-            dateStamp=0;
-            flags=0;
             descriptiveName = " ("+data+")";
         }
 
@@ -371,7 +367,7 @@ namespace fomm.TESsnip {
         }
     }
 
-    public class Record : Rec {
+    internal class Record : Rec {
         public readonly List<SubRecord> SubRecords=new List<SubRecord>();
         public uint Flags1;
         public uint Flags2;
@@ -410,8 +406,7 @@ namespace fomm.TESsnip {
             Flags1=br.ReadUInt32();
             FormID=br.ReadUInt32();
             Flags2=br.ReadUInt32();
-            if(Oblivion) Flags3=0;
-            else Flags3=br.ReadUInt32();
+            if(!Oblivion) Flags3=br.ReadUInt32();
             if((Flags1&0x00040000)>0) {
                 Flags1^=0x00040000;
                 uint newSize=br.ReadUInt32();
@@ -452,10 +447,6 @@ namespace fomm.TESsnip {
 
         public Record() {
             Name="NEW_";
-            Flags1=0;
-            FormID=0;
-            Flags2=0;
-            Flags3=0;
         }
 
         public override BaseRecord Clone() {
@@ -518,7 +509,7 @@ namespace fomm.TESsnip {
         }
     }
 
-    public class SubRecord : BaseRecord {
+    internal class SubRecord : BaseRecord {
         private byte[] Data;
         public override long Size { get { return Data.Length; } }
         public override long Size2 { get { return 6+Data.Length+(Data.Length>ushort.MaxValue?10:0); } }
@@ -620,7 +611,7 @@ namespace fomm.TESsnip {
                                         tmp2+=ss.elements[j].flags[k];
                                     }
                                 }
-                                if(tmp2!="") s2+=" ("+tmp2+")";
+                                if(tmp2.Length>0) s2+=" ("+tmp2+")";
                             }
                         }
                         offset+=4;
@@ -720,7 +711,7 @@ namespace fomm.TESsnip {
         }
     }
 
-    public static class FlagDefs {
+    internal static class FlagDefs {
         public static readonly string[] RecFlags1 = {
             "ESM file",
             null,
