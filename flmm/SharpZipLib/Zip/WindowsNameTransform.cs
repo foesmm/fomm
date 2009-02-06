@@ -46,13 +46,17 @@ namespace ICSharpCode.SharpZipLib.Zip
 	/// </summary>
 	class WindowsNameTransform : INameTransform
 	{
-		/// <summary>
-		/// Initialise a default instance of <see cref="WindowsNameTransform"/>
-		/// </summary>
-		public WindowsNameTransform()
-		{
-			// Do nothing.
-		}
+        /// <summary>
+        /// Initialises a new instance of <see cref="WindowsNameTransform"/>
+        /// </summary>
+        /// <param name="baseDirectory"></param>
+        public WindowsNameTransform(string baseDirectory) {
+            if(baseDirectory == null) {
+                throw new ArgumentNullException("baseDirectory", "Directory name is invalid");
+            }
+
+            this.baseDirectory_ = Path.GetFullPath(baseDirectory);
+        }
 		
 		/// <summary>
 		/// Transform a Zip directory name to a windows directory name.
@@ -78,16 +82,18 @@ namespace ICSharpCode.SharpZipLib.Zip
 		/// </summary>
 		/// <param name="name">The file name to transform.</param>
 		/// <returns>The transformed name.</returns>
-		public string TransformFile(string name)
-		{
-			if (name != null) {
-				name = MakeValidName(name, replacementChar_);
-			}
-			else {
-				name = string.Empty;
-			}
-			return name;
-		}
+        public string TransformFile(string name) {
+            if(name != null) {
+                name = MakeValidName(name, replacementChar_);
+
+                if(baseDirectory_ != null) {
+                    name = Path.Combine(baseDirectory_, name);
+                }
+            } else {
+                name = string.Empty;
+            }
+            return name;
+        }
 
 		/// <summary>
 		/// Initialise static class information.
@@ -175,6 +181,7 @@ namespace ICSharpCode.SharpZipLib.Zip
 		const int MaxPath = 260;
 		
 		#region Instance Fields
+        string baseDirectory_;
 		char replacementChar_ = '_';
 		#endregion
 		

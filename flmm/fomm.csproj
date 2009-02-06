@@ -140,14 +140,11 @@
     <Compile Include="TESsnip\HexBox\DataMap.cs" />
     <Compile Include="TESsnip\HexBox\Design\HexFontEditor.cs" />
     <Compile Include="TESsnip\HexBox\DynamicByteProvider.cs" />
-    <Compile Include="TESsnip\HexBox\DynamicFileByteProvider.cs" />
     <Compile Include="TESsnip\HexBox\FileByteProvider.cs" />
-    <Compile Include="TESsnip\HexBox\FileDataBlock.cs" />
     <Compile Include="TESsnip\HexBox\HexBox.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="TESsnip\HexBox\IByteProvider.cs" />
-    <Compile Include="TESsnip\HexBox\MemoryDataBlock.cs" />
     <Compile Include="TESsnip\HexBox\NativeMethods.cs" />
     <Compile Include="TESsnip\HexDataEdit.cs">
       <SubType>Form</SubType>
@@ -289,7 +286,6 @@
     <Compile Include="SharpZipLib\Core\WindowsPathUtils.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SharpZipLib\Encryption\PkzipClassic.cs" />
     <Compile Include="SharpZipLib\SharpZipBaseException.cs" />
     <Compile Include="SharpZipLib\Zip\Compression\Deflater.cs" />
     <Compile Include="SharpZipLib\Zip\Compression\DeflaterConstants.cs" />
@@ -316,7 +312,6 @@
     <Compile Include="SharpZipLib\Zip\ZipExtraData.cs" />
     <Compile Include="SharpZipLib\Zip\ZipFile.cs" />
     <Compile Include="SharpZipLib\Zip\ZipHelperStream.cs" />
-    <Compile Include="SharpZipLib\Zip\ZipInputStream.cs" />
     <Compile Include="SharpZipLib\Zip\ZipNameTransform.cs" />
     <Compile Include="SharpZipLib\Zip\ZipOutputStream.cs" />
     <Compile Include="TESsnip\DataEdit.cs">
