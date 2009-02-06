@@ -65,8 +65,7 @@ namespace Fomm.ScriptCompiler {
                     if(n2!=null&&n2.Value=="false") allowref=false;
                     else allowref=true;
                     n2=n.Attributes.GetNamedItem("paddingbytes");
-                    if(n2==null) paddingbytes=0;
-                    else paddingbytes=byte.Parse(n2.Value);
+                    if(n2!=null) paddingbytes=byte.Parse(n2.Value);
                 }
                 args=new VarType[n.ChildNodes.Count];
                 reftypes=new string[n.ChildNodes.Count];
@@ -104,7 +103,7 @@ namespace Fomm.ScriptCompiler {
             }
         }
 
-        private static bool Inited=false;
+        private static bool Inited;
         private static readonly Dictionary<string, Dictionary<string, ushort>> enumList=new Dictionary<string, Dictionary<string, ushort>>();
         private static readonly Dictionary<string, FunctionSig> blockList=new Dictionary<string, FunctionSig>();
         private static readonly Dictionary<string, FunctionSig> functionList=new Dictionary<string, FunctionSig>();
@@ -350,7 +349,6 @@ namespace Fomm.ScriptCompiler {
                 default:
                     throw new Exception("Should never happen: Invalid type passed to local variable constructor");
                 }
-                refid=0;
             }
         }
 

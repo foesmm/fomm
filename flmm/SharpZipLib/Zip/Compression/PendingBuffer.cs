@@ -50,7 +50,7 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 	/// 
 	/// author of the original java version : Jochen Hoenicke
 	/// </summary>
-	public class PendingBuffer
+	class PendingBuffer
 	{
 		#region Instance Fields
 		/// <summary>
@@ -95,23 +95,6 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 		}
 
 		/// <summary>
-		/// Write a byte to buffer
-		/// </summary>
-		/// <param name="value">
-		/// The value to write
-		/// </param>
-		public void WriteByte(int value)
-		{
-#if DebugDeflation
-			if (DeflaterConstants.DEBUGGING && (start != 0) )
-			{
-				throw new SharpZipBaseException("Debug check: start != 0");
-			}
-#endif
-			buffer_[end++] = unchecked((byte) value);
-		}
-
-		/// <summary>
 		/// Write a short value to buffer LSB first
 		/// </summary>
 		/// <param name="value">
@@ -127,24 +110,6 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 #endif
 			buffer_[end++] = unchecked((byte) value);
 			buffer_[end++] = unchecked((byte) (value >> 8));
-		}
-
-		/// <summary>
-		/// write an integer LSB first
-		/// </summary>
-		/// <param name="value">The value to write.</param>
-		public void WriteInt(int value)
-		{
-#if DebugDeflation
-			if (DeflaterConstants.DEBUGGING && (start != 0) )
-			{
-				throw new SharpZipBaseException("Debug check: start != 0");
-			}
-#endif
-			buffer_[end++] = unchecked((byte) value);
-			buffer_[end++] = unchecked((byte) (value >> 8));
-			buffer_[end++] = unchecked((byte) (value >> 16));
-			buffer_[end++] = unchecked((byte) (value >> 24));
 		}
 		
 		/// <summary>
@@ -274,22 +239,6 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 				start += length;
 			}
 			return length;
-		}
-
-		/// <summary>
-		/// Convert internal buffer to byte array.
-		/// Buffer is empty on completion
-		/// </summary>
-		/// <returns>
-		/// The internal buffer contents converted to a byte array.
-		/// </returns>
-		public byte[] ToByteArray()
-		{
-			byte[] result = new byte[end - start];
-			System.Array.Copy(buffer_, start, result, 0, result.Length);
-			start = 0;
-			end = 0;
-			return result;
 		}
 	}
 }	

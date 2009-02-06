@@ -42,7 +42,7 @@ namespace Fomm.PackageManager {
             public void Close() { ms.Close(); }
         }
 
-        public class fomodLoadException : Exception { public fomodLoadException(string msg) : base(msg) { } }
+        class fomodLoadException : Exception { public fomodLoadException(string msg) : base(msg) { } }
         private ZipFile file;
 
         public readonly string filepath;
@@ -266,7 +266,7 @@ namespace Fomm.PackageManager {
             }
             if(VersionS.Length>0||Version!=DefaultVersion) {
                 el2=xmlDoc.CreateElement("Version");
-                el2.InnerText=VersionS==""?Version.ToString():VersionS;
+                el2.InnerText=(VersionS.Length==0)?Version.ToString():VersionS;
                 el2.Attributes.Append(xmlDoc.CreateAttribute("MachineVersion"));
                 el2.Attributes[0].Value=Version.ToString();
                 el.AppendChild(el2);

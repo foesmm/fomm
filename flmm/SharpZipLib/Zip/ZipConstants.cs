@@ -245,7 +245,7 @@ namespace ICSharpCode.SharpZipLib.Zip
 	/// <summary>
 	/// This class contains constants used for Zip format files
 	/// </summary>
-	public sealed class ZipConstants
+	static class ZipConstants
 	{
 		#region Versions
 		/// <summary>
@@ -479,9 +479,6 @@ namespace ICSharpCode.SharpZipLib.Zip
 			get {
 				return defaultCodePage; 
 			}
-			set {
-				defaultCodePage = value; 
-			}
 		}
 
 		/// <summary>
@@ -607,18 +604,6 @@ namespace ICSharpCode.SharpZipLib.Zip
 			else {
 				return ConvertToArray(str);
 			}
-		}
-
-		
-		/// <summary>
-		/// Initialise default instance of <see cref="ZipConstants">ZipConstants</see>
-		/// </summary>
-		/// <remarks>
-		/// Private to prevent instances being created.
-		/// </remarks>
-		ZipConstants()
-		{
-			// Do nothing
 		}
 	}
 }

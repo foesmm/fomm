@@ -39,65 +39,6 @@ using System.Text;
 
 namespace ICSharpCode.SharpZipLib.Zip
 {
-
-	/// <summary>
-	/// Holds data pertinent to a data descriptor.
-	/// </summary>
-	public class DescriptorData
-	{
-		/// <summary>
-		/// Get /set the compressed size of data.
-		/// </summary>
-		public long CompressedSize
-		{
-			get { return compressedSize; }
-			set { compressedSize = value; }
-		}
-
-		/// <summary>
-		/// Get / set the uncompressed size of data
-		/// </summary>
-		public long Size
-		{
-			get { return size; }
-			set { size = value; }
-		}
-
-		/// <summary>
-		/// Get /set the crc value.
-		/// </summary>
-		public long Crc
-		{
-			get { return crc; }
-			set { crc = (value & 0xffffffff); }
-		}
-
-		#region Instance Fields
-		long size;
-		long compressedSize;
-		long crc;
-		#endregion
-	}
-
-	class EntryPatchData
-	{
-		public long SizePatchOffset
-		{
-			get { return sizePatchOffset_; }
-			set { sizePatchOffset_ = value; }
-		}
-
-		public long CrcPatchOffset
-		{
-			get { return crcPatchOffset_; }
-			set { crcPatchOffset_ = value; }
-		}
-		
-		#region Instance Fields
-		long sizePatchOffset_;
-		long crcPatchOffset_;
-		#endregion
-	}
 	
 	/// <summary>
 	/// This class assists with writing/reading from Zip files.
@@ -105,16 +46,6 @@ namespace ICSharpCode.SharpZipLib.Zip
 	internal class ZipHelperStream : Stream
 	{
 		#region Constructors
-		/// <summary>
-		/// Initialise an instance of this class.
-		/// </summary>
-		/// <param name="name">The name of the file to open.</param>
-		public ZipHelperStream(string name)
-		{
-			stream_ = new FileStream(name, FileMode.Open, FileAccess.ReadWrite);
-			isOwner_ = true;
-		}
-
 		/// <summary>
 		/// Initialise a new instance of <see cref="ZipHelperStream"/>.
 		/// </summary>
@@ -124,16 +55,6 @@ namespace ICSharpCode.SharpZipLib.Zip
 			stream_ = stream;
 		}
 		#endregion
-
-		/// <summary>
-		/// Get / set a value indicating wether the the underlying stream is owned or not.
-		/// </summary>
-		/// <remarks>If the stream is owned it is closed when this instance is closed.</remarks>
-		public bool IsStreamOwner
-		{
-			get { return isOwner_; }
-			set { isOwner_ = value; }
-		}
 
 		#region Base Stream Methods
 		public override bool CanRead
@@ -212,102 +133,6 @@ namespace ICSharpCode.SharpZipLib.Zip
 		}
 		#endregion
 		
-		// Write the local file header
-		// TODO: ZipHelperStream.WriteLocalHeader is not yet used and needs checking for ZipFile and ZipOuptutStream usage
-		void WriteLocalHeader(ZipEntry entry, EntryPatchData patchData) 
-		{
-			CompressionMethod method = entry.CompressionMethod;
-			bool headerInfoAvailable = true; // How to get this?
-			bool patchEntryHeader = false;
-
-			WriteLEInt(ZipConstants.LocalHeaderSignature);
-			
-			WriteLEShort(entry.Version);
-			WriteLEShort(entry.Flags);
-			WriteLEShort((byte)method);
-			WriteLEInt((int)entry.DosTime);
-
-			if (headerInfoAvailable == true) {
-				WriteLEInt((int)entry.Crc);
-				if ( entry.LocalHeaderRequiresZip64 ) {
-					WriteLEInt(-1);
-					WriteLEInt(-1);
-				}
-				else {
-					WriteLEInt(entry.IsCrypted ? (int)entry.CompressedSize + ZipConstants.CryptoHeaderSize : (int)entry.CompressedSize);
-					WriteLEInt((int)entry.Size);
-				}
-			} else {
-				if (patchData != null) {
-					patchData.CrcPatchOffset = stream_.Position;
-				}
-				WriteLEInt(0);	// Crc
-				
-				if ( patchData != null ) {
-					patchData.SizePatchOffset = stream_.Position;
-				}
-
-				// For local header both sizes appear in Zip64 Extended Information
-				if ( entry.LocalHeaderRequiresZip64 && patchEntryHeader ) {
-					WriteLEInt(-1);
-					WriteLEInt(-1);
-				}
-				else {
-					WriteLEInt(0);	// Compressed size
-					WriteLEInt(0);	// Uncompressed size
-				}
-			}
-
-			byte[] name = ZipConstants.ConvertToArray(entry.Flags, entry.Name);
-			
-			if (name.Length > 0xFFFF) {
-				throw new ZipException("Entry name too long.");
-			}
-
-			ZipExtraData ed = new ZipExtraData(entry.ExtraData);
-
-			if (entry.LocalHeaderRequiresZip64 && (headerInfoAvailable || patchEntryHeader)) {
-				ed.StartNewEntry();
-				if (headerInfoAvailable) {
-					ed.AddLeLong(entry.Size);
-					ed.AddLeLong(entry.CompressedSize);
-				}
-				else {
-					ed.AddLeLong(-1);
-					ed.AddLeLong(-1);
-				}
-				ed.AddNewEntry(1);
-
-				if ( !ed.Find(1) ) {
-					throw new ZipException("Internal error cant find extra data");
-				}
-				
-				if ( patchData != null ) {
-					patchData.SizePatchOffset = ed.CurrentReadIndex;
-				}
-			}
-			else {
-				ed.Delete(1);
-			}
-			
-			byte[] extra = ed.GetEntryData();
-
-			WriteLEShort(name.Length);
-			WriteLEShort(extra.Length);
-
-			if ( name.Length > 0 ) {
-				stream_.Write(name, 0, name.Length);
-			}
-			
-			if ( entry.LocalHeaderRequiresZip64 && patchEntryHeader ) {
-				patchData.SizePatchOffset += stream_.Position;
-			}
-
-			if ( extra.Length > 0 ) {
-				stream_.Write(extra, 0, extra.Length);
-			}
-		}
-	
 		/// <summary>
 		/// Locates a block with the desired <paramref name="signature"/>.
 		/// </summary>
@@ -477,15 +302,6 @@ namespace ICSharpCode.SharpZipLib.Zip
 		}
 
 		/// <summary>
-		/// Read a long in little endian byte order.
-		/// </summary>
-		/// <returns>The value read.</returns>
-		public long ReadLELong()
-		{
-			return (uint)ReadLEInt() | ((long)ReadLEInt() << 32);
-		}
-
-		/// <summary>
 		/// Write an unsigned short in little endian byte order.
 		/// </summary>
 		/// <param name="value">The value to write.</param>
@@ -535,16 +351,6 @@ namespace ICSharpCode.SharpZipLib.Zip
 			WriteLEInt(( int )(value >> 32));
 		}
 
-		/// <summary>
-		/// Write a ulong in little endian byte order.
-		/// </summary>
-		/// <param name="value">The value to write.</param>
-		public void WriteLEUlong(ulong value)
-		{
-			WriteLEUint(( uint )(value & 0xffffffff));
-			WriteLEUint(( uint )(value >> 32));
-		}
-
 		#endregion
 
 		/// <summary>
@@ -585,34 +391,6 @@ namespace ICSharpCode.SharpZipLib.Zip
 			}
 
 			return result;
-		}
-
-		/// <summary>
-		/// Read data descriptor at the end of compressed data.
-		/// </summary>
-		/// <param name="zip64">if set to <c>true</c> [zip64].</param>
-		/// <param name="data">The data to fill in.</param>
-		/// <returns>Returns the number of bytes read in the descriptor.</returns>
-		public void ReadDataDescriptor(bool zip64, DescriptorData data)
-		{
-			int intValue = ReadLEInt();
-
-			// In theory this may not be a descriptor according to PKZIP appnote.
-			// In practise its always there.
-			if (intValue != ZipConstants.DataDescriptorSignature) {
-				throw new ZipException("Data descriptor signature not found");
-			}
-
-			data.Crc = ReadLEInt();
-			
-			if (zip64) {
-				data.CompressedSize = ReadLELong();
-				data.Size = ReadLELong();
-			}
-			else {
-				data.CompressedSize = ReadLEInt();
-				data.Size = ReadLEInt();
-			}
 		}
 
 		#region Instance Fields

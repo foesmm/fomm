@@ -20,29 +20,9 @@ namespace Fomm.PackageManager {
     #region Event Delegate Definitions
 
     /// <summary>
-    /// Represents the method that will handle data available events
-    /// </summary>
-    internal delegate void DataAvailableHandler(object sender, DataAvailableEventArgs e);
-    /// <summary>
     /// Represents the method that will handle extraction progress events
     /// </summary>
     internal delegate void ExtractionProgressHandler(object sender, ExtractionProgressEventArgs e);
-    /// <summary>
-    /// Represents the method that will handle missing archive volume events
-    /// </summary>
-    internal delegate void MissingVolumeHandler(object sender, MissingVolumeEventArgs e);
-    /// <summary>
-    /// Represents the method that will handle new volume events
-    /// </summary>
-    internal delegate void NewVolumeHandler(object sender, NewVolumeEventArgs e);
-    /// <summary>
-    /// Represents the method that will handle new file notifications
-    /// </summary>
-    internal delegate void NewFileHandler(object sender, NewFileEventArgs e);
-    /// <summary>
-    /// Represents the method that will handle password required events
-    /// </summary>
-    internal delegate void PasswordRequiredHandler(object sender, PasswordRequiredEventArgs e);
 
     #endregion
 
@@ -116,34 +96,6 @@ namespace Fomm.PackageManager {
         #endregion
 
         #region Unrar DLL structure definitions
-
-        [StructLayout(LayoutKind.Sequential, CharSet=CharSet.Ansi)]
-        private struct RARHeaderData {
-            [MarshalAs(UnmanagedType.ByValTStr, SizeConst=260)]
-            internal string ArcName;
-            [MarshalAs(UnmanagedType.ByValTStr, SizeConst=260)]
-            internal string FileName;
-            internal uint Flags;
-            internal uint PackSize;
-            internal uint UnpSize;
-            internal uint HostOS;
-            internal uint FileCRC;
-            internal uint FileTime;
-            internal uint UnpVer;
-            internal uint Method;
-            internal uint FileAttr;
-            [MarshalAs(UnmanagedType.LPStr)]
-            internal string CmtBuf;
-            internal uint CmtBufSize;
-            internal uint CmtSize;
-            internal uint CmtState;
-
-            internal void Initialize() {
-                this.CmtBuf=new string((char)0, 65536);
-                this.CmtBufSize=65536;
-            }
-        }
-
         [StructLayout(LayoutKind.Sequential, CharSet=CharSet.Unicode)]
         internal struct RARHeaderDataEx {
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst=512)]
@@ -179,24 +131,6 @@ namespace Fomm.PackageManager {
             }
         }
 
-        [StructLayout(LayoutKind.Sequential, CharSet=CharSet.Ansi)]
-        internal struct RAROpenArchiveData {
-            [MarshalAs(UnmanagedType.ByValTStr, SizeConst=260)]
-            internal string ArcName;
-            internal uint OpenMode;
-            internal uint OpenResult;
-            [MarshalAs(UnmanagedType.LPStr)]
-            internal string CmtBuf;
-            internal uint CmtBufSize;
-            internal uint CmtSize;
-            internal uint CmtState;
-
-            internal void Initialize() {
-                this.CmtBuf=new string((char)0, 65536);
-                this.CmtBufSize=65536;
-            }
-        }
-
         [StructLayout(LayoutKind.Sequential)]
         internal struct RAROpenArchiveDataEx {
             [MarshalAs(UnmanagedType.LPStr)]
@@ -224,18 +158,11 @@ namespace Fomm.PackageManager {
         #endregion
 
         #region Unrar function declarations
-
-        [DllImport(@"fomm\unrar.dll")]
-        private static extern IntPtr RAROpenArchive(ref RAROpenArchiveData archiveData);
-
         [DllImport(@"fomm\unrar.dll")]
         private static extern IntPtr RAROpenArchiveEx(ref RAROpenArchiveDataEx archiveData);
 
         [DllImport(@"fomm\unrar.dll")]
         private static extern int RARCloseArchive(IntPtr hArcData);
-
-        [DllImport(@"fomm\unrar.dll")]
-        private static extern int RARReadHeader(IntPtr hArcData, ref RARHeaderData headerData);
 
         [DllImport(@"fomm\unrar.dll")]
         private static extern int RARReadHeaderEx(IntPtr hArcData, ref RARHeaderDataEx headerData);
@@ -248,10 +175,6 @@ namespace Fomm.PackageManager {
         [DllImport(@"fomm\unrar.dll")]
         private static extern void RARSetCallback(IntPtr hArcData, UNRARCallback callback, int userData);
 
-        [DllImport(@"fomm\unrar.dll")]
-        private static extern void RARSetPassword(IntPtr hArcData,
-            [MarshalAs(UnmanagedType.LPStr)] string password);
-
         // Unrar callback delegate signature
         private delegate int UNRARCallback(uint msg, int UserData, IntPtr p1, int p2);
 
@@ -260,29 +183,9 @@ namespace Fomm.PackageManager {
         #region internal event declarations
 
         /// <summary>
-        /// Event that is raised when a new chunk of data has been extracted
-        /// </summary>
-        internal event DataAvailableHandler DataAvailable;
-        /// <summary>
         /// Event that is raised to indicate extraction progress
         /// </summary>
         internal event ExtractionProgressHandler ExtractionProgress;
-        /// <summary>
-        /// Event that is raised when a required archive volume is missing
-        /// </summary>
-        internal event MissingVolumeHandler MissingVolume;
-        /// <summary>
-        /// Event that is raised when a new file is encountered during processing
-        /// </summary>
-        internal event NewFileHandler NewFile;
-        /// <summary>
-        /// Event that is raised when a new archive volume is opened for processing
-        /// </summary>
-        internal event NewVolumeHandler NewVolume;
-        /// <summary>
-        /// Event that is raised when a password is required before continuing
-        /// </summary>
-        internal event PasswordRequiredHandler PasswordRequired;
 
         #endregion
 
@@ -291,13 +194,9 @@ namespace Fomm.PackageManager {
         private string archivePathName=string.Empty;
         private IntPtr archiveHandle=new IntPtr(0);
         private bool retrieveComment=true;
-        private string password=string.Empty;
-        private string comment=string.Empty;
-        private ArchiveFlags archiveFlags=0;
         private RARHeaderDataEx header=new RARHeaderDataEx();
-        private string destinationPath=string.Empty;
-        private RARFileInfo currentFile=null;
-        private UNRARCallback callback=null;
+        private RARFileInfo currentFile;
+        private UNRARCallback callback;
 
         #endregion
 
@@ -342,50 +241,6 @@ namespace Fomm.PackageManager {
             }
         }
 
-        /// <summary>
-        /// Archive comment 
-        /// </summary>
-        internal string Comment {
-            get {
-                return (this.comment);
-            }
-        }
-
-        /// <summary>
-        /// Current file being processed
-        /// </summary>
-        internal RARFileInfo CurrentFile {
-            get {
-                return (this.currentFile);
-            }
-        }
-
-        /// <summary>
-        /// Default destination path for extraction
-        /// </summary>
-        internal string DestinationPath {
-            get {
-                return this.destinationPath;
-            }
-            set {
-                this.destinationPath=value;
-            }
-        }
-
-        /// <summary>
-        /// Password for opening encrypted archive
-        /// </summary>
-        internal string Password {
-            get {
-                return (this.password);
-            }
-            set {
-                this.password=value;
-                if(this.archiveHandle!=IntPtr.Zero)
-                    RARSetPassword(this.archiveHandle, value);
-            }
-        }
-
         #endregion
 
         #region internal Methods
@@ -408,15 +263,6 @@ namespace Fomm.PackageManager {
             } else {
                 this.archiveHandle=IntPtr.Zero;
             }
-        }
-
-        /// <summary>
-        /// Opens archive specified by the ArchivePathName property for testing or extraction
-        /// </summary>
-        internal void Open() {
-            if(this.ArchivePathName.Length==0)
-                throw new IOException("Archive name has not been set.");
-            this.Open(this.ArchivePathName, OpenMode.Extract);
         }
 
         /// <summary>
@@ -478,21 +324,9 @@ namespace Fomm.PackageManager {
 
             // Save handle and flags
             this.archiveHandle=handle;
-            this.archiveFlags=(ArchiveFlags)openStruct.Flags;
 
             // Set callback
             Unrar.RARSetCallback(this.archiveHandle, this.callback, this.GetHashCode());
-
-            // If comment retrieved, save it
-            if(openStruct.CmtState==1)
-                this.comment=openStruct.CmtBuf.ToString();
-
-            // If password supplied, set it
-            if(this.password.Length!=0)
-                Unrar.RARSetPassword(this.archiveHandle, this.password);
-
-            // Fire NewVolume event for first volume
-            this.OnNewVolume(this.archivePathName);
         }
 
         /// <summary>
@@ -519,93 +353,19 @@ namespace Fomm.PackageManager {
                 throw new IOException("Archive data is corrupt.");
 
             // Determine if new file
-            if(((header.Flags & 0x01) != 0) && currentFile!=null)
-                currentFile.ContinuedFromPrevious=true;
-            else {
+            if(((header.Flags & 0x01) != 0) && currentFile!=null) {
+
+            } else {
                 // New file, prepare header
                 currentFile=new RARFileInfo();
                 currentFile.FileName=header.FileNameW.ToString();
-                if((header.Flags & 0x02) != 0)
-                    currentFile.ContinuedOnNext=true;
-                if(header.PackSizeHigh != 0)
-                    currentFile.PackedSize=(header.PackSizeHigh * 0x100000000) + header.PackSize;
-                else
-                    currentFile.PackedSize=header.PackSize;
-                if(header.UnpSizeHigh != 0)
-                    currentFile.UnpackedSize=(header.UnpSizeHigh * 0x100000000) + header.UnpSize;
-                else
-                    currentFile.UnpackedSize=header.UnpSize;
-                currentFile.HostOS=(int)header.HostOS;
-                currentFile.FileCRC=header.FileCRC;
-                currentFile.FileTime=FromMSDOSTime(header.FileTime);
-                currentFile.VersionToUnpack=(int)header.UnpVer;
-                currentFile.Method=(int)header.Method;
-                currentFile.FileAttributes=(int)header.FileAttr;
+                if(header.UnpSizeHigh != 0) currentFile.UnpackedSize=(header.UnpSizeHigh * 0x100000000) + header.UnpSize;
+                else currentFile.UnpackedSize=header.UnpSize;
                 currentFile.BytesExtracted=0;
-                if((header.Flags & 0xE0) == 0xE0)
-                    currentFile.IsDirectory=true;
-                this.OnNewFile();
             }
 
             // Return success
             return true;
-        }
-
-        /// <summary>
-        /// Returns array of file names contained in archive
-        /// </summary>
-        /// <returns></returns>
-        internal string[] ListFiles() {
-            List<string> fileNames=new List<string>();
-            while(this.ReadHeader()) {
-                if(!currentFile.IsDirectory)
-                    fileNames.Add(currentFile.FileName);
-                this.Skip();
-            }
-            return fileNames.ToArray();
-        }
-
-        /// <summary>
-        /// Moves the current archive position to the next available header
-        /// </summary>
-        /// <returns></returns>
-        internal void Skip() {
-            int result=Unrar.RARProcessFile(this.archiveHandle, (int)Operation.Skip, string.Empty, string.Empty);
-
-            // Check result
-            if(result!=0) {
-                ProcessFileError(result);
-            }
-        }
-
-        /// <summary>
-        /// Tests the ability to extract the current file without saving extracted data to disk
-        /// </summary>
-        /// <returns></returns>
-        internal void Test() {
-            int result=Unrar.RARProcessFile(this.archiveHandle, (int)Operation.Test, string.Empty, string.Empty);
-
-            // Check result
-            if(result!=0) {
-                ProcessFileError(result);
-            }
-        }
-
-        /// <summary>
-        /// Extracts the current file to the default destination path
-        /// </summary>
-        /// <returns></returns>
-        internal void Extract() {
-            this.Extract(this.destinationPath, string.Empty);
-        }
-
-        /// <summary>
-        /// Extracts the current file to a specified destination path and filename
-        /// </summary>
-        /// <param name="destinationName">Path and name of extracted file</param>
-        /// <returns></returns>
-        internal void Extract(string destinationName) {
-            this.Extract(string.Empty, destinationName);
         }
 
         /// <summary>
@@ -628,26 +388,6 @@ namespace Fomm.PackageManager {
             if(result!=0) {
                 ProcessFileError(result);
             }
-        }
-
-        private static DateTime FromMSDOSTime(uint dosTime) {
-            int day=0;
-            int month=0;
-            int year=0;
-            int second=0;
-            int hour=0;
-            int minute=0;
-            ushort hiWord;
-            ushort loWord;
-            hiWord=(ushort)((dosTime & 0xFFFF0000) >> 16);
-            loWord=(ushort)(dosTime & 0xFFFF);
-            year=((hiWord & 0xFE00) >> 9)+1980;
-            month=(hiWord & 0x01E0) >> 5;
-            day=hiWord & 0x1F;
-            hour=(loWord & 0xF800) >> 11;
-            minute=(loWord & 0x07E0) >> 5;
-            second=(loWord & 0x1F) << 1;
-            return new DateTime(year, month, day, hour, minute, second);
         }
 
         private static void ProcessFileError(int result) {
@@ -679,82 +419,30 @@ namespace Fomm.PackageManager {
         }
 
         private int RARCallback(uint msg, int UserData, IntPtr p1, int p2) {
-            string volume=string.Empty;
-            string newVolume=string.Empty;
             int result=-1;
 
             switch((CallbackMessages)msg) {
             case CallbackMessages.VolumeChange:
-                volume=Marshal.PtrToStringAnsi(p1);
                 if((VolumeMessage)p2==VolumeMessage.Notify)
-                    result=OnNewVolume(volume);
+                    result=1;
                 else if((VolumeMessage)p2==VolumeMessage.Ask) {
-                    newVolume=OnMissingVolume(volume);
-                    if(newVolume.Length==0)
-                        result=-1;
-                    else {
-                        if(newVolume!=volume) {
-                            for(int i=0;i<newVolume.Length;i++) {
-                                Marshal.WriteByte(p1, i, (byte)newVolume[i]);
-                            }
-                            Marshal.WriteByte(p1, newVolume.Length, (byte)0);
-                        }
-                        result=1;
-                    }
+                    result=-1;
                 }
                 break;
 
             case CallbackMessages.ProcessData:
-                result=OnDataAvailable(p1, p2);
+                result=OnDataAvailable(p2);
                 break;
-
             case CallbackMessages.NeedPassword:
-                result=OnPasswordRequired(p1, p2);
+                result=-1;
                 break;
             }
             return result;
         }
 
-        #endregion
-
-        #region Protected Virtual (Overridable) Methods
-
-        protected virtual void OnNewFile() {
-            if(this.NewFile!=null) {
-                NewFileEventArgs e = new NewFileEventArgs(this.currentFile);
-                this.NewFile(this, e);
-            }
-        }
-
-        protected virtual int OnPasswordRequired(IntPtr p1, int p2) {
-            int result=-1;
-            if(this.PasswordRequired!=null) {
-                PasswordRequiredEventArgs e=new PasswordRequiredEventArgs();
-                this.PasswordRequired(this, e);
-                if(e.ContinueOperation && e.Password.Length>0) {
-                    for(int i=0;(i<e.Password.Length) && (i<p2);i++)
-                        Marshal.WriteByte(p1, i, (byte)e.Password[i]);
-                    Marshal.WriteByte(p1, e.Password.Length, (byte)0);
-                    result=1;
-                }
-            } else {
-                throw new IOException("Password is required for extraction.");
-            }
-            return result;
-        }
-
-        protected virtual int OnDataAvailable(IntPtr p1, int p2) {
+        private int OnDataAvailable(int p2) {
             int result=1;
-            if(this.currentFile!=null)
-                this.currentFile.BytesExtracted+=p2;
-            if(this.DataAvailable!=null) {
-                byte[] data=new byte[p2];
-                Marshal.Copy(p1, data, 0, p2);
-                DataAvailableEventArgs e=new DataAvailableEventArgs(data);
-                this.DataAvailable(this, e);
-                if(!e.ContinueOperation)
-                    result=-1;
-            }
+            if(this.currentFile!=null) this.currentFile.BytesExtracted+=p2;
             if((this.ExtractionProgress!=null) && (this.currentFile!=null)) {
                 ExtractionProgressEventArgs e = new ExtractionProgressEventArgs();
                 e.FileName=this.currentFile.FileName;
@@ -768,71 +456,10 @@ namespace Fomm.PackageManager {
             return result;
         }
 
-        protected virtual int OnNewVolume(string volume) {
-            int result=1;
-            if(this.NewVolume!=null) {
-                NewVolumeEventArgs e=new NewVolumeEventArgs(volume);
-                this.NewVolume(this, e);
-                if(!e.ContinueOperation)
-                    result=-1;
-            }
-            return result;
-        }
-
-        protected virtual string OnMissingVolume(string volume) {
-            string result=string.Empty;
-            if(this.MissingVolume!=null) {
-                MissingVolumeEventArgs e=new MissingVolumeEventArgs(volume);
-                this.MissingVolume(this, e);
-                if(e.ContinueOperation)
-                    result=e.VolumeName;
-            }
-            return result;
-        }
-
         #endregion
     }
 
     #region Event Argument Classes
-
-    internal class NewVolumeEventArgs {
-        internal string VolumeName;
-        internal bool ContinueOperation=true;
-
-        internal NewVolumeEventArgs(string volumeName) {
-            this.VolumeName=volumeName;
-        }
-    }
-
-    internal class MissingVolumeEventArgs {
-        internal string VolumeName;
-        internal bool ContinueOperation;
-
-        internal MissingVolumeEventArgs(string volumeName) {
-            this.VolumeName=volumeName;
-        }
-    }
-
-    internal class DataAvailableEventArgs {
-        internal readonly byte[] Data;
-        internal bool ContinueOperation=true;
-
-        internal DataAvailableEventArgs(byte[] data) {
-            this.Data=data;
-        }
-    }
-
-    internal class PasswordRequiredEventArgs {
-        internal string Password=string.Empty;
-        internal bool ContinueOperation=true;
-    }
-
-    internal class NewFileEventArgs {
-        internal RARFileInfo fileInfo;
-        internal NewFileEventArgs(RARFileInfo fileInfo) {
-            this.fileInfo=fileInfo;
-        }
-    }
 
     internal class ExtractionProgressEventArgs {
         internal string FileName;
@@ -844,17 +471,7 @@ namespace Fomm.PackageManager {
 
     internal class RARFileInfo {
         internal string FileName;
-        internal bool ContinuedFromPrevious;
-        internal bool ContinuedOnNext;
-        internal bool IsDirectory;
-        internal long PackedSize;
         internal long UnpackedSize;
-        internal int HostOS;
-        internal long FileCRC;
-        internal DateTime FileTime;
-        internal int VersionToUnpack;
-        internal int Method;
-        internal int FileAttributes;
         internal long BytesExtracted;
 
         internal double PercentComplete {

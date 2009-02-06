@@ -607,7 +607,7 @@ namespace Fomm.TESsnip {
                                 string tmp2="";
                                 for(int k=0;k<ss.elements[j].flags.Length;k++) {
                                     if((val&(1<<k))!=0) {
-                                        if(tmp2!="") tmp2+=", ";
+                                        if(tmp2.Length>0) tmp2+=", ";
                                         tmp2+=ss.elements[j].flags[k];
                                     }
                                 }
@@ -630,11 +630,11 @@ namespace Fomm.TESsnip {
                                 string tmp2="";
                                 for(int k=0;k<ss.elements[j].flags.Length;k++) {
                                     if((val&(1<<k))!=0) {
-                                        if(tmp2!="") tmp2+=", ";
+                                        if(tmp2.Length>0) tmp2+=", ";
                                         tmp2+=ss.elements[j].flags[k];
                                     }
                                 }
-                                if(tmp2!="") s2+=" ("+tmp2+")";
+                                if(tmp2.Length>0) s2+=" ("+tmp2+")";
                             }
                         }
                         offset+=2;
@@ -653,11 +653,11 @@ namespace Fomm.TESsnip {
                                 string tmp2="";
                                 for(int k=0;k<ss.elements[j].flags.Length;k++) {
                                     if((val&(1<<k))!=0) {
-                                        if(tmp2!="") tmp2+=", ";
+                                        if(tmp2.Length>0) tmp2+=", ";
                                         tmp2+=ss.elements[j].flags[k];
                                     }
                                 }
-                                if(tmp2!="") s2+=" ("+tmp2+")";
+                                if(tmp2.Length>0) s2+=" ("+tmp2+")";
                             }
                         }
                         offset++;

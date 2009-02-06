@@ -7,7 +7,7 @@ namespace Be.Windows.Forms
 	/// <summary>
 	/// Byte provider for (big) files.
 	/// </summary>
-	public class FileByteProvider : IByteProvider, IDisposable
+	class FileByteProvider : IByteProvider, IDisposable
 	{
 		#region WriteCollection class
 		/// <summary>
@@ -54,45 +54,9 @@ namespace Be.Windows.Forms
 		WriteCollection _writes = new WriteCollection();
 
 		/// <summary>
-		/// Contains the file name.
-		/// </summary>
-		string _fileName;
-		/// <summary>
 		/// Contains the file stream.
 		/// </summary>
 		FileStream _fileStream;
-        /// <summary>
-        /// Read-only access.
-        /// </summary>
-        bool _readOnly;
-
-		/// <summary>
-		/// Initializes a new instance of the FileByteProvider class.
-		/// </summary>
-		/// <param name="fileName"></param>
-		public FileByteProvider(string fileName)
-		{
-			_fileName = fileName;
-
-            try
-            {
-                // try to open in write mode
-                _fileStream = File.Open(fileName, FileMode.Open, FileAccess.ReadWrite, FileShare.Read);
-            }
-            catch
-            {
-                // write mode failed, try to open in read-only and fileshare friendly mode.
-                try
-                {
-                    _fileStream = File.Open(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                    _readOnly = true;
-                }
-                catch
-                {
-                    throw;
-                }
-            }
-		}
 
 		/// <summary>
 		/// Terminates the instance of the FileByteProvider class.
@@ -113,14 +77,6 @@ namespace Be.Windows.Forms
 		}
 
 		/// <summary>
-		/// Gets the name of the file the byte provider is using.
-		/// </summary>
-		public string FileName
-		{
-			get { return _fileName; }
-		}
-
-		/// <summary>
 		/// Returns a value if there are some changes.
 		/// </summary>
 		/// <returns>true, if there are some changes</returns>
@@ -134,11 +90,6 @@ namespace Be.Windows.Forms
 		/// </summary>
 		public void ApplyChanges()
 		{
-            if (this._readOnly)
-            {
-                throw new Exception("File is in read-only mode.");
-            }
-
 			if(!HasChanges())
 				return;
 
@@ -151,14 +102,6 @@ namespace Be.Windows.Forms
 					_fileStream.Position = index;
 				_fileStream.Write(new byte[]{value}, 0, 1);
 			}
-			_writes.Clear();
-		}
-
-		/// <summary>
-		/// Clears the write buffer and reject all changes made.
-		/// </summary>
-		public void RejectChanges()
-		{
 			_writes.Clear();
 		}
 
@@ -232,7 +175,7 @@ namespace Be.Windows.Forms
 		/// </summary>
 		public bool SupportsWriteByte()
 		{
-			return !_readOnly;
+			return true;
 		}
 
 		/// <summary>
@@ -260,8 +203,6 @@ namespace Be.Windows.Forms
 		{
 			if(_fileStream != null)
 			{
-				_fileName = null;
-
 				_fileStream.Close();
 				_fileStream = null;
 			}

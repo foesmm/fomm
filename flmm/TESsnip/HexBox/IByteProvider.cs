@@ -5,7 +5,7 @@ namespace Be.Windows.Forms
 	/// <summary>
 	/// Defines a byte provider for HexBox control
 	/// </summary>
-	public interface IByteProvider
+	interface IByteProvider
 	{
 		/// <summary>
 		/// Reads a byte from the provider

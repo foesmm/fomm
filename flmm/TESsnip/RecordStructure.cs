@@ -4,14 +4,14 @@ using System.Xml;
 
 namespace Fomm.TESsnip {
 
-    public class RecordXmlException : Exception { public RecordXmlException(string msg) : base(msg) { } }
-    public enum ElementValueType {
+    class RecordXmlException : Exception { public RecordXmlException(string msg) : base(msg) { } }
+    enum ElementValueType {
         String, Float, Int, Short, Byte, FormID, fstring, Blob
     }
-    public enum CondType {
+    enum CondType {
         None, Equal, Not, Greater, Less, GreaterEqual, LessEqual, StartsWith, EndsWith, Contains, Exists, Missing
     }
-    public struct SubrecordStructure {
+    struct SubrecordStructure {
         public readonly string name;
         public readonly int repeat;
         public readonly int optional;
@@ -118,7 +118,7 @@ namespace Fomm.TESsnip {
             }
         }
     }
-    public struct ElementStructure {
+    struct ElementStructure {
         public readonly string name;
         public readonly string desc;
         public readonly int group;
@@ -211,7 +211,7 @@ namespace Fomm.TESsnip {
         }
     }
 
-    public class RecordStructure {
+    class RecordStructure {
         #region Static
         private static bool loaded;
         public static bool Loaded { get { return loaded; } }

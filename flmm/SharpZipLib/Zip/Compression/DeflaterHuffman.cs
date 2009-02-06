@@ -50,7 +50,7 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 	/// 
 	/// author of the original java version : Jochen Hoenicke
 	/// </summary>
-	public class DeflaterHuffman
+	class DeflaterHuffman
 	{
 		const  int BUFSIZE = 1 << (DeflaterConstants.DEFAULT_MEM_LEVEL + 6);
 		const  int LITERAL_NUM = 286;
@@ -146,27 +146,6 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 				//				}
 				dh.pending.WriteBits(codes[code] & 0xffff, length[code]);
 			}
-			
-			/// <summary>
-			/// Check that all frequencies are zero
-			/// </summary>
-			/// <exception cref="SharpZipBaseException">
-			/// At least one frequency is non-zero
-			/// </exception>
-			public void CheckEmpty()
-			{
-				bool empty = true;
-				for (int i = 0; i < freqs.Length; i++) {
-					if (freqs[i] != 0) {
-						//Console.WriteLine("freqs[" + i + "] == " + freqs[i]);
-						empty = false;
-					}
-				}
-				
-				if (!empty) {
-					throw new SharpZipBaseException("!Empty");
-				}
-			}
 
 			/// <summary>
 			/// Set static codes and length
@@ -184,7 +163,7 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 			/// </summary>
 			public void BuildCodes() 
 			{
-				int numSymbols = freqs.Length;
+				//int numSymbols = freqs.Length;
 				int[] nextCode = new int[maxLength];
 				int code = 0;
 
@@ -203,13 +182,7 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 					//						                  +" nextCode: "+code);
 					//					}
 				}
-
-#if DebugDeflation
-				if ( DeflaterConstants.DEBUGGING && (code != 65536) ) 
-				{
-					throw new SharpZipBaseException("Inconsistent bl_counts!");
-				}
-#endif				
+			
 				for (int i=0; i < numCodes; i++) {
 					int bits = length[i];
 					if (bits > 0) {

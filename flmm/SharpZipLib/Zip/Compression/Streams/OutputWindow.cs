@@ -48,7 +48,7 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression.Streams
 	/// to repeat stuff.<br/>
 	/// Author of the original java version : John Leuner
 	/// </summary>
-	public class OutputWindow
+	class OutputWindow
 	{
 		#region Constants
 		const int WindowSize = 1 << 15;
@@ -78,7 +78,7 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression.Streams
 		}
 		
 		
-		private void SlowRepeat(int repStart, int length, int distance)
+		private void SlowRepeat(int repStart, int length)
 		{
 			while (length-- > 0) {
 				window[windowEnd++] = window[repStart++];
@@ -114,7 +114,7 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression.Streams
 					}
 				}
 			} else {
-				SlowRepeat(repStart, length, distance);
+				SlowRepeat(repStart, length);
 			}
 		}
 		
@@ -142,33 +142,6 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression.Streams
 			windowEnd = (windowEnd + copied) & WindowMask;
 			windowFilled += copied;
 			return copied;
-		}
-		
-		/// <summary>
-		/// Copy dictionary to window
-		/// </summary>
-		/// <param name="dictionary">source dictionary</param>
-		/// <param name="offset">offset of start in source dictionary</param>
-		/// <param name="length">length of dictionary</param>
-		/// <exception cref="InvalidOperationException">
-		/// If window isnt empty
-		/// </exception>
-		public void CopyDict(byte[] dictionary, int offset, int length)
-		{
-			if ( dictionary == null ) {
-				throw new ArgumentNullException("dictionary");
-			}
-
-			if (windowFilled > 0) {
-				throw new InvalidOperationException();
-			}
-			
-			if (length > WindowSize) {
-				offset += length - WindowSize;
-				length = WindowSize;
-			}
-			System.Array.Copy(dictionary, offset, window, 0, length);
-			windowEnd = length & WindowMask;
 		}
 
 		/// <summary>

@@ -41,7 +41,7 @@ namespace ICSharpCode.SharpZipLib.Core
 	/// <summary>
 	/// Provides simple <see cref="Stream"/>" utilities.
 	/// </summary>
-	public sealed class StreamUtils
+	sealed class StreamUtils
 	{
 		/// <summary>
 		/// Read from a <see cref="Stream"/> ensuring all the required data is read.
@@ -129,109 +129,6 @@ namespace ICSharpCode.SharpZipLib.Core
 					destination.Flush();
 					copying = false;
 				}
-			}
-		}
-
-		/// <summary>
-		/// Copy the contents of one <see cref="Stream"/> to another.
-		/// </summary>
-		/// <param name="source">The stream to source data from.</param>
-		/// <param name="destination">The stream to write data to.</param>
-		/// <param name="buffer">The buffer to use during copying.</param>
-		/// <param name="progressHandler">The <see cref="ProgressHandler">progress handler delegate</see> to use.</param>
-		/// <param name="updateInterval">The minimum <see cref="TimeSpan"/> between progress updates.</param>
-		/// <param name="sender">The source for this event.</param>
-		/// <param name="name">The name to use with the event.</param>
-		/// <remarks>This form is specialised for use within #Zip to support events during archive operations.</remarks>
-		static public void Copy(Stream source, Stream destination,
-			byte[] buffer, ProgressHandler progressHandler, TimeSpan updateInterval, object sender, string name)
-		{
-			Copy(source, destination, buffer, progressHandler, updateInterval, sender, name, -1);
-		}
-
-		/// <summary>
-		/// Copy the contents of one <see cref="Stream"/> to another.
-		/// </summary>
-		/// <param name="source">The stream to source data from.</param>
-		/// <param name="destination">The stream to write data to.</param>
-		/// <param name="buffer">The buffer to use during copying.</param>
-		/// <param name="progressHandler">The <see cref="ProgressHandler">progress handler delegate</see> to use.</param>
-		/// <param name="updateInterval">The minimum <see cref="TimeSpan"/> between progress updates.</param>
-		/// <param name="sender">The source for this event.</param>
-		/// <param name="name">The name to use with the event.</param>
-		/// <param name="fixedTarget">A predetermined fixed target value to use with progress updates.
-		/// If the value is negative the target is calculated by looking at the stream.</param>
-		/// <remarks>This form is specialised for use within #Zip to support events during archive operations.</remarks>
-		static public void Copy(Stream source, Stream destination,
-			byte[] buffer, 
-			ProgressHandler progressHandler, TimeSpan updateInterval, 
-			object sender, string name, long fixedTarget)
-		{
-			if (source == null) {
-				throw new ArgumentNullException("source");
-			}
-
-			if (destination == null) {
-				throw new ArgumentNullException("destination");
-			}
-
-			if (buffer == null) {
-				throw new ArgumentNullException("buffer");
-			}
-
-			// Ensure a reasonable size of buffer is used without being prohibitive.
-			if (buffer.Length < 128) {
-				throw new ArgumentException("Buffer is too small", "buffer");
-			}
-
-			if (progressHandler == null) {
-				throw new ArgumentNullException("progressHandler");
-			}
-
-			bool copying = true;
-
-			DateTime marker = DateTime.Now;
-			long processed = 0;
-			long target = 0;
-
-			if (fixedTarget >= 0) {
-				target = fixedTarget;
-			}
-			else if (source.CanSeek) {
-				target = source.Length - source.Position;
-			}
-
-			// Always fire 0% progress..
-			ProgressEventArgs args = new ProgressEventArgs(name, processed, target);
-			progressHandler(sender, args);
-
-			bool progressFired = true;
-
-			while (copying) {
-				int bytesRead = source.Read(buffer, 0, buffer.Length);
-				if (bytesRead > 0) {
-					processed += bytesRead;
-					progressFired = false;
-					destination.Write(buffer, 0, bytesRead);
-				}
-				else {
-					destination.Flush();
-					copying = false;
-				}
-
-				if (DateTime.Now - marker > updateInterval) {
-					progressFired = true;
-					marker = DateTime.Now;
-					args = new ProgressEventArgs(name, processed, target);
-					progressHandler(sender, args);
-
-					copying = args.ContinueRunning;
-				}
-			}
-
-			if (!progressFired) {
-				args = new ProgressEventArgs(name, processed, target);
-				progressHandler(sender, args);
 			}
 		}
 

@@ -45,7 +45,7 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 	/// <summary>
 	/// Huffman tree used for inflation
 	/// </summary>
-	public class InflaterHuffmanTree
+	class InflaterHuffmanTree
 	{
 		#region Constants
 		const int MAX_BITLEN = 15;
@@ -58,42 +58,37 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 		/// <summary>
 		/// Literal length tree
 		/// </summary>
-		public static InflaterHuffmanTree defLitLenTree;
+		public static readonly InflaterHuffmanTree defLitLenTree;
 		
 		/// <summary>
 		/// Distance tree
 		/// </summary>
-		public static InflaterHuffmanTree defDistTree;
-		
-		static InflaterHuffmanTree()
-		{
-			try {
-				byte[] codeLengths = new byte[288];
-				int i = 0;
-				while (i < 144) {
-					codeLengths[i++] = 8;
-				}
-				while (i < 256) {
-					codeLengths[i++] = 9;
-				}
-				while (i < 280) {
-					codeLengths[i++] = 7;
-				}
-				while (i < 288) {
-					codeLengths[i++] = 8;
-				}
-				defLitLenTree = new InflaterHuffmanTree(codeLengths);
-				
-				codeLengths = new byte[32];
-				i = 0;
-				while (i < 32) {
-					codeLengths[i++] = 5;
-				}
-				defDistTree = new InflaterHuffmanTree(codeLengths);
-			} catch (Exception) {
-				throw new SharpZipBaseException("InflaterHuffmanTree: static tree length illegal");
-			}
-		}
+		public static readonly InflaterHuffmanTree defDistTree;
+
+        static InflaterHuffmanTree() {
+            byte[] codeLengths = new byte[288];
+            int i = 0;
+            while(i < 144) {
+                codeLengths[i++] = 8;
+            }
+            while(i < 256) {
+                codeLengths[i++] = 9;
+            }
+            while(i < 280) {
+                codeLengths[i++] = 7;
+            }
+            while(i < 288) {
+                codeLengths[i++] = 8;
+            }
+            defLitLenTree = new InflaterHuffmanTree(codeLengths);
+
+            codeLengths = new byte[32];
+            i = 0;
+            while(i < 32) {
+                codeLengths[i++] = 5;
+            }
+            defDistTree = new InflaterHuffmanTree(codeLengths);
+        }
 
 		#region Constructors
 		/// <summary>

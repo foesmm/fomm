@@ -91,7 +91,7 @@ namespace ICSharpCode.SharpZipLib.Zip
 	/// }	
 	/// </code>
 	/// </example>
-	public class ZipOutputStream : DeflaterOutputStream
+	class ZipOutputStream : DeflaterOutputStream
 	{
 		#region Constructors
 		/// <summary>
@@ -107,36 +107,6 @@ namespace ICSharpCode.SharpZipLib.Zip
 		#endregion
 		
 		/// <summary>
-		/// Gets a flag value of true if the central header has been added for this archive; false if it has not been added.
-		/// </summary>
-		/// <remarks>No further entries can be added once this has been done.</remarks>
-		public bool IsFinished 
-		{
-			get {
-				return entries == null;
-			}
-		}
-
-		/// <summary>
-		/// Set the zip file comment.
-		/// </summary>
-		/// <param name="comment">
-		/// The comment text for the entire archive.
-		/// </param>
-		/// <exception name ="ArgumentOutOfRangeException">
-		/// The converted comment is longer than 0xffff bytes.
-		/// </exception>
-		public void SetComment(string comment)
-		{
-			// TODO: Its not yet clear how to handle unicode comments here.
-			byte[] commentBytes = ZipConstants.ConvertToArray(comment);
-			if (commentBytes.Length > 0xffff) {
-				throw new ArgumentOutOfRangeException("comment");
-			}
-			zipComment = commentBytes;
-		}
-		
-		/// <summary>
 		/// Sets the compression level.  The new level will be activated
 		/// immediately.
 		/// </summary>
@@ -149,28 +119,6 @@ namespace ICSharpCode.SharpZipLib.Zip
 		{
 			deflater_.SetLevel(level);
 			defaultCompressionLevel = level;
-		}
-		
-		/// <summary>
-		/// Get the current deflater compression level
-		/// </summary>
-		/// <returns>The current compression level</returns>
-		public int GetLevel()
-		{
-			return deflater_.GetLevel();
-		}
-
-		/// <summary>
-		/// Get / set a value indicating how Zip64 Extension usage is determined when adding entries.
-		/// </summary>
-		/// <remarks>Older archivers may not understand Zip64 extensions.
-		/// If backwards compatability is an issue be careful when adding <see cref="ZipEntry.Size">entries</see> to an archive.
-		/// Setting this property to off is workable but less desirable as in those circumstances adding a file
-		/// larger then 4GB will fail.</remarks>
-		public UseZip64 UseZip64
-		{
-			get { return useZip64_; }
-			set { useZip64_ = value; }
 		}
 		
 		/// <summary>
@@ -300,16 +248,6 @@ namespace ICSharpCode.SharpZipLib.Zip
 					patchEntryHeader = true;
 				}
 			}
-			
-			if (Password != null) {
-				entry.IsCrypted = true;
-				if (entry.Crc < 0) {
-					// Need to append a data descriptor as the crc isnt available for use
-					// with encryption, the date is used instead.  Setting the flag
-					// indicates this to the decompressor.
-					entry.Flags |= 8;
-				}
-			}
 
 			entry.Offset = offset;
 			entry.CompressionMethod = (CompressionMethod)method;
@@ -337,7 +275,7 @@ namespace ICSharpCode.SharpZipLib.Zip
 					WriteLeInt(-1);
 				}
 				else {
-					WriteLeInt(entry.IsCrypted ? (int)entry.CompressedSize + ZipConstants.CryptoHeaderSize : (int)entry.CompressedSize);
+					WriteLeInt((int)entry.CompressedSize);
 					WriteLeInt((int)entry.Size);
 				}
 			} else {
@@ -420,14 +358,6 @@ namespace ICSharpCode.SharpZipLib.Zip
 				deflater_.SetLevel(compressionLevel);
 			}
 			size = 0;
-			
-			if (entry.IsCrypted == true) {
-				if (entry.Crc < 0) {			// so testing Zip will says its ok
-					WriteEncryptionHeader(entry.DosTime << 16);
-				} else {
-					WriteEncryptionHeader(entry.Crc);
-				}
-			}
 		}
 		
 		/// <summary>
@@ -477,10 +407,6 @@ namespace ICSharpCode.SharpZipLib.Zip
 			}
 			
 			offset += csize;
-
-			if (curEntry.IsCrypted == true) {
-				curEntry.CompressedSize += ZipConstants.CryptoHeaderSize;
-			}
 				
 			// Patch the header if possible
 			if (patchEntryHeader == true) {
@@ -526,21 +452,6 @@ namespace ICSharpCode.SharpZipLib.Zip
 			
 			entries.Add(curEntry);
 			curEntry = null;
-		}
-		
-		void WriteEncryptionHeader(long crcValue)
-		{
-			offset += ZipConstants.CryptoHeaderSize;
-			
-			InitializePassword(Password);
-			
-			byte[] cryptBuffer = new byte[ZipConstants.CryptoHeaderSize];
-			Random rnd = new Random();
-			rnd.NextBytes(cryptBuffer);
-			cryptBuffer[11] = (byte)(crcValue >> 24);
-			
-			EncryptBlock(cryptBuffer, 0, cryptBuffer.Length);
-			baseOutputStream_.Write(cryptBuffer, 0, cryptBuffer.Length);
 		}
 		
 		/// <summary>
@@ -590,27 +501,8 @@ namespace ICSharpCode.SharpZipLib.Zip
 					break;
 				
 				case CompressionMethod.Stored:
-					if (Password != null) {
-						CopyAndEncrypt(buffer, offset, count);
-					} else {
-						baseOutputStream_.Write(buffer, offset, count);
-					}
+					baseOutputStream_.Write(buffer, offset, count);
 					break;
-			}
-		}
-		
-		void CopyAndEncrypt(byte[] buffer, int offset, int count)
-		{
-			const int CopyBufferSize = 4096;
-			byte[] localBuffer = new byte[CopyBufferSize];
-			while ( count > 0 ) {
-				int bufferCount = (count < CopyBufferSize) ? count : CopyBufferSize;
-				
-				Array.Copy(buffer, offset, localBuffer, 0, bufferCount);
-				EncryptBlock(localBuffer, 0, bufferCount);
-				baseOutputStream_.Write(localBuffer, 0, bufferCount);
-				count -= bufferCount;
-				offset += bufferCount;
 			}
 		}
 		

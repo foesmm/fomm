@@ -43,7 +43,6 @@ using ICSharpCode.SharpZipLib.Zip.Compression;
 
 #if !NETCF_1_0
 using System.Security.Cryptography;
-using ICSharpCode.SharpZipLib.Encryption;
 #endif
 
 namespace ICSharpCode.SharpZipLib.Zip.Compression.Streams 
@@ -53,19 +52,9 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression.Streams
 	/// written to it.  It uses a Deflater to perform actual deflating.<br/>
 	/// Authors of the original java version : Tom Tromey, Jochen Hoenicke 
 	/// </summary>
-	public class DeflaterOutputStream : Stream
+	class DeflaterOutputStream : Stream
 	{
 		#region Constructors
-		/// <summary>
-		/// Creates a new DeflaterOutputStream with a default Deflater and default buffer size.
-		/// </summary>
-		/// <param name="baseOutputStream">
-		/// the output stream where deflated output should be written.
-		/// </param>
-		public DeflaterOutputStream(Stream baseOutputStream)
-			: this(baseOutputStream, new Deflater(), 512)
-		{
-		}
 		
 		/// <summary>
 		/// Creates a new DeflaterOutputStream with the given Deflater and
@@ -179,7 +168,6 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression.Streams
 		/// </summary>
 		public bool IsStreamOwner
 		{
-			get { return isStreamOwner_; }
 			set { isStreamOwner_ = value; }
 		}
 		
@@ -196,30 +184,11 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression.Streams
 		
 		#region Encryption
 		
-		string password;
-		
 #if NETCF_1_0
 		uint[] keys;
 #else
 		ICryptoTransform cryptoTransform_;
 #endif
-		
-		/// <summary>
-		/// Get/set the password used for encryption.
-		/// </summary>
-		/// <remarks>When set to null or if the password is empty no encryption is performed</remarks>
-		public string Password {
-			get { 
-				return password; 
-			}
-			set {
-				if ( (value != null) && (value.Length == 0) ) {
-					password = null;
-				} else {
-					password = value; 
-				}
-			}
-		}
 
 		/// <summary>
 		/// Encrypt a block of data
@@ -242,33 +211,7 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression.Streams
 				UpdateKeys(oldbyte);
 			}
 #else
-			cryptoTransform_.TransformBlock(buffer, 0, length, buffer, 0);
-#endif
-		}
-
-		/// <summary>
-		/// Initializes encryption keys based on given <paramref name="password"/>.
-		/// </summary>
-		/// <param name="password">The password.</param>
-		protected void InitializePassword(string password)
-		{
-#if NETCF_1_0
-			keys = new uint[] {
-				0x12345678,
-				0x23456789,
-				0x34567890
-			};
-			
-			byte[] rawPassword = ZipConstants.ConvertToArray(password);
-			
-			for (int i = 0; i < rawPassword.Length; ++i) {
-				UpdateKeys((byte)rawPassword[i]);
-			}
-			
-#else			
-			PkzipClassicManaged pkManaged = new PkzipClassicManaged();
-			byte[] key = PkzipClassic.GenerateKeys(ZipConstants.ConvertToArray(password));
-			cryptoTransform_ = pkManaged.CreateEncryptor(key, null);
+			cryptoTransform_.TransformBlock(buffer, offset, length, buffer, 0);
 #endif
 		}
 

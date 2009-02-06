@@ -44,51 +44,14 @@ namespace ICSharpCode.SharpZipLib.Zip
 	/// <summary>
 	/// WindowsNameTransform transforms ZipFile names to windows compatible ones.
 	/// </summary>
-	public class WindowsNameTransform : INameTransform
+	class WindowsNameTransform : INameTransform
 	{
-		/// <summary>
-		/// Initialises a new instance of <see cref="WindowsNameTransform"/>
-		/// </summary>
-		/// <param name="baseDirectory"></param>
-		public WindowsNameTransform(string baseDirectory)
-		{
-			if ( baseDirectory == null ) {
-				throw new ArgumentNullException("baseDirectory", "Directory name is invalid");
-			}
-
-			BaseDirectory = baseDirectory;
-		}
-		
 		/// <summary>
 		/// Initialise a default instance of <see cref="WindowsNameTransform"/>
 		/// </summary>
 		public WindowsNameTransform()
 		{
 			// Do nothing.
-		}
-		
-		/// <summary>
-		/// Gets or sets a value containing the target directory to prefix values with.
-		/// </summary>
-		public string BaseDirectory
-		{
-			get { return baseDirectory_; }
-			set {
-				if ( value == null ) {
-					throw new ArgumentNullException("value");
-				}
-
-				baseDirectory_ = Path.GetFullPath(value);
-			}
-		}
-		
-		/// <summary>
-		/// Gets or sets a value indicating wether paths on incoming values should be removed.
-		/// </summary>
-		public bool TrimIncomingPaths
-		{
-			get { return trimIncomingPaths_; }
-			set { trimIncomingPaths_ = value; }
 		}
 		
 		/// <summary>
@@ -119,38 +82,11 @@ namespace ICSharpCode.SharpZipLib.Zip
 		{
 			if (name != null) {
 				name = MakeValidName(name, replacementChar_);
-				
-				if ( trimIncomingPaths_ ) {
-					name = Path.GetFileName(name);
-				}
-				
-				// This may exceed windows length restrictions.
-				// Combine will throw a PathTooLongException in that case.
-				if ( baseDirectory_ != null ) {
-					name = Path.Combine(baseDirectory_, name);
-				}	
 			}
 			else {
 				name = string.Empty;
 			}
 			return name;
-		}
-		
-		/// <summary>
-		/// Test a name to see if it is a valid name for a windows filename as extracted from a Zip archive.
-		/// </summary>
-		/// <param name="name">The name to test.</param>
-		/// <returns>Returns true if the name is a valid zip name; false otherwise.</returns>
-		/// <remarks>The filename isnt a true windows path in some fundamental ways like no absolute paths, no rooted paths etc.</remarks>
-		public static bool IsValidName(string name)
-		{
-			bool result = 
-				(name != null) &&
-				(name.Length <= MaxPath) &&
-				(string.Compare(name, MakeValidName(name, '_')) == 0)
-				;
-
-			return result;
 		}
 
 		/// <summary>
@@ -231,27 +167,6 @@ namespace ICSharpCode.SharpZipLib.Zip
 					
 			return name;
 		}
-
-		/// <summary>
-		/// Gets or set the character to replace invalid characters during transformations.
-		/// </summary>
-		public char Replacement
-		{
-			get { return replacementChar_; }
-			set { 
-				for ( int i = 0; i < InvalidEntryChars.Length; ++i ) {
-					if ( InvalidEntryChars[i] == value ) {
-						throw new ArgumentException("invalid path character");
-					}
-				}
-
-				if ((value == '\\') || (value == '/')) {
-					throw new ArgumentException("invalid replacement character");
-				}
-				
-				replacementChar_ = value;
-			}
-		}
 		
 		/// <summary>
 		///  The maximum windows path name permitted.
@@ -260,8 +175,6 @@ namespace ICSharpCode.SharpZipLib.Zip
 		const int MaxPath = 260;
 		
 		#region Instance Fields
-		string baseDirectory_;
-		bool trimIncomingPaths_;
 		char replacementChar_ = '_';
 		#endregion
 		

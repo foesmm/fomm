@@ -47,7 +47,7 @@ namespace ICSharpCode.SharpZipLib.Zip
 	/// </summary>
 	/// <remarks>The use of absolute names is supported although its use is not valid 
 	/// according to Zip naming conventions, and should not be used if maximum compatability is desired.</remarks>
-	public class ZipNameTransform : INameTransform
+	class ZipNameTransform : INameTransform
 	{
 		#region Constructors
 		/// <summary>
@@ -164,7 +164,6 @@ namespace ICSharpCode.SharpZipLib.Zip
 		/// a windows path is done.</remarks>
 		public string TrimPrefix
 		{
-			get { return trimPrefix_; }
 			set {
 				trimPrefix_ = value;
 				if (trimPrefix_ != null) {
@@ -232,28 +231,6 @@ namespace ICSharpCode.SharpZipLib.Zip
 				}
 			}
 
-			return result;
-		}
-
-		/// <summary>
-		/// Test a name to see if it is a valid name for a zip entry.
-		/// </summary>
-		/// <param name="name">The name to test.</param>
-		/// <returns>Returns true if the name is a valid zip name; false otherwise.</returns>
-		/// <remarks>Zip path names are actually in unix format,
-		/// and should only contain relative paths if a path is present.
-		/// This means that the path stored should not contain a drive or
-		/// device letter, or a leading slash.  All slashes should forward slashes '/'.
-		/// An empty name is valid where the input comes from standard input.
-		/// A null name is not considered valid.
-		/// </remarks>
-		public static bool IsValidName(string name)
-		{
-			bool result = 
-				(name != null) &&
-				(name.IndexOfAny(InvalidEntryChars) < 0) &&
-				(name.IndexOf('/') != 0)
-				;
 			return result;
 		}
 

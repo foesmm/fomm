@@ -40,7 +40,7 @@ namespace ICSharpCode.SharpZipLib.Core
 	/// <summary>
 	/// WindowsPathUtils provides simple utilities for handling windows paths.
 	/// </summary>
-	public abstract class WindowsPathUtils
+	abstract class WindowsPathUtils
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="WindowsPathUtils"/> class.

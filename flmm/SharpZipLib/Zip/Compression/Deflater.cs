@@ -52,7 +52,7 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 	/// 
 	/// author of the original java version : Jochen Hoenicke
 	/// </summary>
-	public class Deflater
+	class Deflater
 	{
 		#region Deflater Documentation
 		/*
@@ -199,24 +199,6 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 		}
 		
 		/// <summary>
-		/// Gets the current adler checksum of the data that was processed so far.
-		/// </summary>
-		public int Adler {
-			get {
-				return engine.Adler;
-			}
-		}
-		
-		/// <summary>
-		/// Gets the number of input bytes processed so far.
-		/// </summary>
-		public long TotalIn {
-			get {
-				return engine.TotalIn;
-			}
-		}
-		
-		/// <summary>
 		/// Gets the number of output bytes so far.
 		/// </summary>
 		public long TotalOut {
@@ -336,14 +318,6 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 				this.level = level;
 				engine.SetLevel(level);
 			}
-		}
-		
-		/// <summary>
-		/// Get current compression level
-		/// </summary>
-		/// <returns>Returns the current compression level</returns>
-		public int GetLevel() {
-			return level;
 		}
 		
 		/// <summary>
@@ -475,51 +449,6 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 				}
 			}
 			return origLength - length;
-		}
-		
-		/// <summary>
-		/// Sets the dictionary which should be used in the deflate process.
-		/// This call is equivalent to <code>setDictionary(dict, 0, dict.Length)</code>.
-		/// </summary>
-		/// <param name="dictionary">
-		/// the dictionary.
-		/// </param>
-		/// <exception cref="System.InvalidOperationException">
-		/// if SetInput () or Deflate () were already called or another dictionary was already set.
-		/// </exception>
-		public void SetDictionary(byte[] dictionary)
-		{
-			SetDictionary(dictionary, 0, dictionary.Length);
-		}
-		
-		/// <summary>
-		/// Sets the dictionary which should be used in the deflate process.
-		/// The dictionary is a byte array containing strings that are
-		/// likely to occur in the data which should be compressed.  The
-		/// dictionary is not stored in the compressed output, only a
-		/// checksum.  To decompress the output you need to supply the same
-		/// dictionary again.
-		/// </summary>
-		/// <param name="dictionary">
-		/// The dictionary data
-		/// </param>
-		/// <param name="index">
-		/// The index where dictionary information commences.
-		/// </param>
-		/// <param name="count">
-		/// The number of bytes in the dictionary.
-		/// </param>
-		/// <exception cref="System.InvalidOperationException">
-		/// If SetInput () or Deflate() were already called or another dictionary was already set.
-		/// </exception>
-		public void SetDictionary(byte[] dictionary, int index, int count)
-		{
-			if (state != INIT_STATE) {
-				throw new InvalidOperationException();
-			}
-			
-			state = SETDICT_STATE;
-			engine.SetDictionary(dictionary, index, count);
 		}
 
 		#region Instance Fields

@@ -64,7 +64,7 @@ namespace ICSharpCode.SharpZipLib.Checksums
 	/// the information needed to generate CRC's on data a byte at a time for all
 	/// combinations of CRC register values and incoming bytes.
 	/// </summary>
-	public sealed class Crc32 : IChecksum
+	sealed class Crc32 : IChecksum
 	{
 		const uint CrcSeed = 0xFFFFFFFF;
 		
@@ -123,11 +123,6 @@ namespace ICSharpCode.SharpZipLib.Checksums
 			0x2D02EF8D
 		};
 		
-		internal static uint ComputeCrc32(uint oldCrc, byte value)
-		{
-			return (uint)(Crc32.CrcTable[(oldCrc ^ value) & 0xFF] ^ (oldCrc >> 8));
-		}
-		
 		/// <summary>
 		/// The crc data checksum so far.
 		/// </summary>
@@ -139,9 +134,6 @@ namespace ICSharpCode.SharpZipLib.Checksums
 		public long Value {
 			get {
 				return (long)crc;
-			}
-			set {
-				crc = (uint)value;
 			}
 		}
 		

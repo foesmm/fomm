@@ -69,7 +69,7 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 	///
 	/// author of the original java version : John Leuner, Jochen Hoenicke
 	/// </summary>
-	public class Inflater
+	class Inflater
 	{
 		#region Constants/Readonly
 		/// <summary>
@@ -559,69 +559,6 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 		}
 			
 		/// <summary>
-		/// Sets the preset dictionary.  This should only be called, if
-		/// needsDictionary() returns true and it should set the same
-		/// dictionary, that was used for deflating.  The getAdler()
-		/// function returns the checksum of the dictionary needed.
-		/// </summary>
-		/// <param name="buffer">
-		/// The dictionary.
-		/// </param>
-		public void SetDictionary(byte[] buffer)
-		{
-			SetDictionary(buffer, 0, buffer.Length);
-		}
-		
-		/// <summary>
-		/// Sets the preset dictionary.  This should only be called, if
-		/// needsDictionary() returns true and it should set the same
-		/// dictionary, that was used for deflating.  The getAdler()
-		/// function returns the checksum of the dictionary needed.
-		/// </summary>
-		/// <param name="buffer">
-		/// The dictionary.
-		/// </param>
-		/// <param name="index">
-		/// The index into buffer where the dictionary starts.
-		/// </param>
-		/// <param name="count">
-		/// The number of bytes in the dictionary.
-		/// </param>
-		/// <exception cref="System.InvalidOperationException">
-		/// No dictionary is needed.
-		/// </exception>
-		/// <exception cref="SharpZipBaseException">
-		/// The adler checksum for the buffer is invalid
-		/// </exception>
-		public void SetDictionary(byte[] buffer, int index, int count)
-		{
-			if ( buffer == null ) {
-				throw new ArgumentNullException("buffer");
-			}
-
-			if ( index < 0 ) {
-				throw new ArgumentOutOfRangeException("index");
-			}
-
-			if ( count < 0 ) {
-				throw new ArgumentOutOfRangeException("count");
-			}
-
-			if (!IsNeedingDictionary) {
-				throw new InvalidOperationException("Dictionary is not needed");
-			}
-			
-			adler.Update(buffer, index, count);
-
-			if ((int)adler.Value != readAdler) {
-				throw new SharpZipBaseException("Wrong adler checksum");
-			}
-			adler.Reset();
-			outputWindow.CopyDict(buffer, index, count);
-			mode = DECODE_BLOCKS;
-		}
-		
-		/// <summary>
 		/// Sets the input.  This should only be called, if needsInput()
 		/// returns true.
 		/// </summary>
@@ -807,58 +744,5 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 			}
 		}
 		
-		/// <summary>
-		/// Gets the adler checksum.  This is either the checksum of all
-		/// uncompressed bytes returned by inflate(), or if needsDictionary()
-		/// returns true (and thus no output was yet produced) this is the
-		/// adler checksum of the expected dictionary.
-		/// </summary>
-		/// <returns>
-		/// the adler checksum.
-		/// </returns>
-		public int Adler {
-			get {
-				return IsNeedingDictionary ? readAdler : (int) adler.Value;
-			}
-		}
-		
-		/// <summary>
-		/// Gets the total number of output bytes returned by Inflate().
-		/// </summary>
-		/// <returns>
-		/// the total number of output bytes.
-		/// </returns>
-		public long TotalOut {
-			get {
-				return totalOut;
-			}
-		}
-		
-		/// <summary>
-		/// Gets the total number of processed compressed input bytes.
-		/// </summary>
-		/// <returns>
-		/// The total number of bytes of processed input bytes.
-		/// </returns>
-		public long TotalIn {
-			get {
-				return totalIn - (long)RemainingInput;
-			}
-		}
-		
-		/// <summary>
-		/// Gets the number of unprocessed input bytes.  Useful, if the end of the
-		/// stream is reached and you want to further process the bytes after
-		/// the deflate stream.
-		/// </summary>
-		/// <returns>
-		/// The number of bytes of the input which have not been processed.
-		/// </returns>
-		public int RemainingInput {
-			// TODO: This should be a long?
-			get {
-				return input.AvailableBytes;
-			}
-		}
 	}
 }

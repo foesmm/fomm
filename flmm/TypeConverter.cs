@@ -25,14 +25,14 @@ namespace Fomm {
         private static TypeConverter tc;
         private static readonly byte[] bytes=new byte[4];
 
-        public static float i2f(uint i) {
+        /*public static float i2f(uint i) {
             tc.i=i;
             return tc.f;
-        }
-        public static uint f2i(float f) {
+        }*/
+        /*public static uint f2i(float f) {
             tc.f=f;
             return tc.i;
-        }
+        }*/
 
         public static float h2f(byte b1, byte b2, byte b3, byte b4) {
             tc.b1=b1;
@@ -90,13 +90,13 @@ namespace Fomm {
             return UpdateBytes();
         }
 
-        public static void f2h(float f, byte[] data, int offset) {
+        /*public static void f2h(float f, byte[] data, int offset) {
             tc.f=f;
             data[offset+0]=tc.b1;
             data[offset+1]=tc.b2;
             data[offset+2]=tc.b3;
             data[offset+3]=tc.b4;
-        }
+        }*/
         public static void i2h(uint i, byte[] data, int offset) {
             tc.i=i;
             data[offset+0]=tc.b1;

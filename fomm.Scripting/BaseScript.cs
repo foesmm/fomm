@@ -2,7 +2,7 @@ using System;
 using Fomm.PackageManager;
 using DialogResult=System.Windows.Forms.DialogResult;
 
-namespace Fomm.Scripting {
+namespace fomm.Scripting {
     public struct SelectOption {
         public string Item;
         public string Preview;

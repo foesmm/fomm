@@ -45,7 +45,7 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 	/// <summary>
 	/// This class contains constants used for deflation.
 	/// </summary>
-	public class DeflaterConstants 
+	static class DeflaterConstants 
 	{
 		/// <summary>
 		/// Set to true to enable debugging
@@ -140,7 +140,7 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 		/// <summary>
 		/// Internal compression engine constant
 		/// </summary>		
-		public static int MAX_BLOCK_SIZE = Math.Min(65535, PENDING_BUF_SIZE - 5);
+		public static readonly int MAX_BLOCK_SIZE = Math.Min(65535, PENDING_BUF_SIZE - 5);
 		
 		/// <summary>
 		/// Internal compression engine constant
@@ -160,27 +160,27 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 		/// <summary>
 		/// Internal compression engine constant
 		/// </summary>		
-		public static int[] GOOD_LENGTH = { 0, 4,  4,  4,  4,  8,   8,   8,   32,   32 };
+        public static readonly int[] GOOD_LENGTH = { 0, 4, 4, 4, 4, 8, 8, 8, 32, 32 };
 		
 		/// <summary>
 		/// Internal compression engine constant
 		/// </summary>		
-		public static int[] MAX_LAZY    = { 0, 4,  5,  6,  4, 16,  16,  32,  128,  258 };
+        public static readonly int[] MAX_LAZY    = { 0, 4, 5, 6, 4, 16, 16, 32, 128, 258 };
 		
 		/// <summary>
 		/// Internal compression engine constant
 		/// </summary>		
-		public static int[] NICE_LENGTH = { 0, 8, 16, 32, 16, 32, 128, 128,  258,  258 };
+        public static readonly int[] NICE_LENGTH = { 0, 8, 16, 32, 16, 32, 128, 128, 258, 258 };
 		
 		/// <summary>
 		/// Internal compression engine constant
 		/// </summary>		
-		public static int[] MAX_CHAIN   = { 0, 4,  8, 32, 16, 32, 128, 256, 1024, 4096 };
+        public static readonly int[] MAX_CHAIN   = { 0, 4, 8, 32, 16, 32, 128, 256, 1024, 4096 };
 		
 		/// <summary>
 		/// Internal compression engine constant
 		/// </summary>		
-		public static int[] COMPR_FUNC  = { 0, 1,  1,  1,  1,  2,   2,   2,    2,    2 };
+        public static readonly int[] COMPR_FUNC  = { 0, 1, 1, 1, 1, 2, 2, 2, 2, 2 };
 		
 	}
 }

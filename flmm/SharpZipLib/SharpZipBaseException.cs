@@ -50,7 +50,7 @@ namespace ICSharpCode.SharpZipLib
 #if !NETCF_1_0 && !NETCF_2_0
 	[Serializable]
 #endif
-	public class SharpZipBaseException : ApplicationException
+	class SharpZipBaseException : ApplicationException
 	{
 #if !NETCF_1_0 && !NETCF_2_0
 		/// <summary>
@@ -77,17 +77,6 @@ namespace ICSharpCode.SharpZipLib
 		/// <param name="message">A message describing the exception.</param>
 		public SharpZipBaseException(string message)
 			: base(message)
-		{
-		}
-
-		/// <summary>
-		/// Initializes a new instance of the SharpZipBaseException class with a specified
-		/// error message and a reference to the inner exception that is the cause of this exception.
-		/// </summary>
-		/// <param name="message">A message describing the exception.</param>
-		/// <param name="innerException">The inner exception</param>
-		public SharpZipBaseException(string message, Exception innerException)
-			: base(message, innerException)
 		{
 		}
 	}

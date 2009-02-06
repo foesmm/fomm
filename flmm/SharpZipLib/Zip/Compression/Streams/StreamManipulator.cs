@@ -56,7 +56,7 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression.Streams
 	///
 	/// authors of the original java version : John Leuner, Jochen Hoenicke
 	/// </summary>
-	public class StreamManipulator
+	class StreamManipulator
 	{
 		#region Constructors
 		/// <summary>
@@ -99,23 +99,6 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression.Streams
 		{
 			buffer_ >>= bitCount;
 			bitsInBuffer_ -= bitCount;
-		}
-		
-		/// <summary>
-		/// Gets the next n bits and increases input pointer.  This is equivalent
-		/// to <see cref="PeekBits"/> followed by <see cref="DropBits"/>, except for correct error handling.
-		/// </summary>
-		/// <param name="bitCount">The number of bits to retrieve.</param>
-		/// <returns>
-		/// the value of the bits, or -1 if not enough bits available.
-		/// </returns>
-		public int GetBits(int bitCount)
-		{
-			int bits = PeekBits(bitCount);
-			if (bits >= 0) {
-				DropBits(bitCount);
-			}
-			return bits;
 		}
 		
 		/// <summary>

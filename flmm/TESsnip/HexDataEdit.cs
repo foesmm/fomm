@@ -8,7 +8,6 @@ namespace Fomm.TESsnip {
         public static byte[] result;
         public static string resultName;
 
-        private System.Text.StringBuilder sb=new System.Text.StringBuilder();
         private Be.Windows.Forms.DynamicByteProvider dbytes;
         private Be.Windows.Forms.ByteCollection bytes;
 

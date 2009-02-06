@@ -46,7 +46,7 @@ namespace ICSharpCode.SharpZipLib.Zip
 	/// <summary>
 	/// Defines known values for the <see cref="HostSystemID"/> property.
 	/// </summary>
-	public enum HostSystemID
+	enum HostSystemID
 	{
 		/// <summary>
 		/// Host system = MSDOS
@@ -143,7 +143,7 @@ namespace ICSharpCode.SharpZipLib.Zip
 	/// <br/>
 	/// <br/>Author of the original java version : Jochen Hoenicke
 	/// </summary>
-	public class ZipEntry : ICloneable
+	class ZipEntry : ICloneable
 	{
 		[Flags]
 		enum Known : byte
@@ -170,27 +170,6 @@ namespace ICSharpCode.SharpZipLib.Zip
 		/// </exception>
 		public ZipEntry(string name)
 			: this(name, 0, ZipConstants.VersionMadeBy, CompressionMethod.Deflated)
-		{
-		}
-
-		/// <summary>
-		/// Creates a zip entry with the given name and version required to extract
-		/// </summary>
-		/// <param name="name">
-		/// The name for this entry. Can include directory components.
-		/// The convention for names is 'unix'  style paths with no device names and 
-		/// path elements separated by '/' characters.  This is not enforced see <see cref="CleanName(string)">CleanName</see>
-		/// on how to ensure names are valid if this is desired.
-		/// </param>
-		/// <param name="versionRequiredToExtract">
-		/// The minimum 'feature version' required this entry
-		/// </param>
-		/// <exception cref="ArgumentNullException">
-		/// The name passed is null
-		/// </exception>
-		internal ZipEntry(string name, int versionRequiredToExtract)
-			: this(name, versionRequiredToExtract, ZipConstants.VersionMadeBy,
-			CompressionMethod.Deflated)
 		{
 		}
 		
@@ -232,43 +211,6 @@ namespace ICSharpCode.SharpZipLib.Zip
 			this.versionToExtract = (ushort)versionRequiredToExtract;
 			this.method = method;
 		}
-		
-		/// <summary>
-		/// Creates a deep copy of the given zip entry.
-		/// </summary>
-		/// <param name="entry">
-		/// The entry to copy.
-		/// </param>
-		[Obsolete("Use Clone instead")]
-		public ZipEntry(ZipEntry entry)
-		{
-			if ( entry == null ) {
-				throw new ArgumentNullException("entry");
-			}
-
-			known                  = entry.known;
-			name                   = entry.name;
-			size                   = entry.size;
-			compressedSize         = entry.compressedSize;
-			crc                    = entry.crc;
-			dosTime                = entry.dosTime;
-			method                 = entry.method;
-			comment                = entry.comment;
-			versionToExtract       = entry.versionToExtract;
-			versionMadeBy          = entry.versionMadeBy;
-			externalFileAttributes = entry.externalFileAttributes;
-			flags                  = entry.flags;
-
-			zipFileIndex           = entry.zipFileIndex;
-			offset                 = entry.offset;
-
-			forceZip64_			   = entry.forceZip64_;
-
-			if ( entry.extra != null ) {
-				extra = new byte[entry.extra.Length];
-				Array.Copy(entry.extra, 0, extra, 0, entry.extra.Length);
-			}
-		}
 
 		#endregion
 		
@@ -283,35 +225,12 @@ namespace ICSharpCode.SharpZipLib.Zip
 		}
 
 		/// <summary>
-		/// Get/Set flag indicating if entry is encrypted.
-		/// A simple helper routine to aid interpretation of <see cref="Flags">flags</see>
-		/// </summary>
-		/// <remarks>This is an assistant that interprets the <see cref="Flags">flags</see> property.</remarks>
-		public bool IsCrypted 
-		{
-			get {
-				return (flags & 1) != 0; 
-			}
-			set {
-				if (value) {
-					flags |= 1;
-				} 
-				else {
-					flags &= ~1;
-				}
-			}
-		}
-
-		/// <summary>
 		/// Get / set a flag indicating wether entry name and comment text are
 		/// encoded in <a href="http://www.unicode.org">unicode UTF8</a>.
 		/// </summary>
 		/// <remarks>This is an assistant that interprets the <see cref="Flags">flags</see> property.</remarks>
 		public bool IsUnicodeText
 		{
-			get {
-				return ( flags & (int)GeneralBitFlags.UnicodeText ) != 0;
-			}
 			set {
 				if ( value ) {
 					flags |= (int)GeneralBitFlags.UnicodeText;
@@ -319,20 +238,6 @@ namespace ICSharpCode.SharpZipLib.Zip
 				else {
 					flags &= ~(int)GeneralBitFlags.UnicodeText;
 				}
-			}
-		}
-		
-		/// <summary>
-		/// Value used during password checking for PKZIP 2.0 / 'classic' encryption.
-		/// </summary>
-		internal byte CryptoCheckValue
-		{
-			get {
-				return cryptoCheckValue_;
-			}
-
-			set	{
-				cryptoCheckValue_ = value;
 			}
 		}
 
@@ -427,18 +332,6 @@ namespace ICSharpCode.SharpZipLib.Zip
 		}
 
 		/// <summary>
-		/// Get the version made by for this entry or zero if unknown.
-		/// The value / 10 indicates the major version number, and 
-		/// the value mod 10 is the minor version number
-		/// </summary>
-		public int VersionMadeBy 
-		{
-			get { 
-				return (versionMadeBy & 0xff);
-			}
-		}
-
-		/// <summary>
 		/// Get a value indicating this entry is for a DOS/Windows system.
 		/// </summary>
 		public bool IsDOSEntry
@@ -512,11 +405,6 @@ namespace ICSharpCode.SharpZipLib.Zip
 			get {
 				return (versionMadeBy >> 8) & 0xff; 
 			}
-
-			set {
-				versionMadeBy &= 0xff;
-				versionMadeBy |= (ushort)((value & 0xff) << 8);
-			}
 		}
 		
 		/// <summary>
@@ -565,9 +453,6 @@ namespace ICSharpCode.SharpZipLib.Zip
 						result = 20;
 					} 
 					else if (IsDirectory == true) {
-						result = 20;
-					} 
-					else if (IsCrypted == true) {
 						result = 20;
 					} 
 					else if (HasDosAttributes(0x08) ) {
@@ -624,10 +509,6 @@ namespace ICSharpCode.SharpZipLib.Zip
 
 				if ( !result ) {
 					ulong trueCompressedSize = compressedSize;
-
-					if ( (versionToExtract == 0) && IsCrypted ) {
-						trueCompressedSize += ZipConstants.CryptoHeaderSize;
-					}
 
 					// TODO: A better estimation of the true limit based on compression overhead should be used
 					// to determine when an entry should use Zip64.
@@ -913,8 +794,9 @@ namespace ICSharpCode.SharpZipLib.Zip
 					if ( ntfsTag == 1 ) {
 						if ( ntfsLength >= 24 ) {
 							long lastModification = extraData.ReadLong();
-							long lastAccess = extraData.ReadLong();
-							long createTime = extraData.ReadLong();
+							//long lastAccess = extraData.ReadLong();
+							//long createTime = extraData.ReadLong();
+                            extraData.Skip(16);
 
 							DateTime = System.DateTime.FromFileTime(lastModification);
 						}
@@ -1065,38 +947,6 @@ namespace ICSharpCode.SharpZipLib.Zip
 				( method == CompressionMethod.Deflated ) ||
 				( method == CompressionMethod.Stored );
 		}
-		
-		/// <summary>
-		/// Cleans a name making it conform to Zip file conventions.
-		/// Devices names ('c:\') and UNC share names ('\\server\share') are removed
-		/// and forward slashes ('\') are converted to back slashes ('/').
-		/// Names are made relative by trimming leading slashes which is compatible
-		/// with the ZIP naming convention.
-		/// </summary>
-		/// <param name="name">The name to clean</param>
-		/// <returns>The 'cleaned' name.</returns>
-		/// <remarks>
-		/// The <seealso cref="ZipNameTransform">Zip name transform</seealso> class is more flexible.
-		/// </remarks>
-		public static string CleanName(string name)
-		{
-			if (name == null) {
-				return string.Empty;
-			}
-			
-			if (Path.IsPathRooted(name) == true) {
-				// NOTE:
-				// for UNC names...  \\machine\share\zoom\beet.txt gives \zoom\beet.txt
-				name = name.Substring(Path.GetPathRoot(name).Length);
-			}
-
-			name = name.Replace(@"\", "/");
-			
-			while ( (name.Length > 0) && (name[0] == '/')) {
-				name = name.Remove(0, 1);
-			}
-			return name;
-		}
 
 		#region Instance Fields
 		Known known;
@@ -1122,7 +972,6 @@ namespace ICSharpCode.SharpZipLib.Zip
 		long offset;                           // used by ZipFile and ZipOutputStream
 		
 		bool forceZip64_;
-		byte cryptoCheckValue_;
 		#endregion
 	}
 }

@@ -43,7 +43,7 @@ namespace ICSharpCode.SharpZipLib.Core
 	/// <summary>
 	/// Event arguments for scanning.
 	/// </summary>
-	public class ScanEventArgs : EventArgs
+	class ScanEventArgs : EventArgs
 	{
 		#region Constructors
 		/// <summary>
@@ -70,7 +70,6 @@ namespace ICSharpCode.SharpZipLib.Core
 		public bool ContinueRunning
 		{
 			get { return continueRunning_; }
-			set { continueRunning_ = value; }
 		}
 		
 		#region Instance Fields
@@ -79,228 +78,32 @@ namespace ICSharpCode.SharpZipLib.Core
 		#endregion
 	}
 
-	/// <summary>
-	/// Event arguments during processing of a single file or directory.
-	/// </summary>
-	public class ProgressEventArgs : EventArgs
-	{
-		#region Constructors
-		/// <summary>
-		/// Initialise a new instance of <see cref="ScanEventArgs"/>
-		/// </summary>
-		/// <param name="name">The file or directory name if known.</param>
-		/// <param name="processed">The number of bytes processed so far</param>
-		/// <param name="target">The total number of bytes to process, 0 if not known</param>
-		public ProgressEventArgs(string name, long processed, long target)
-		{
-			name_ = name;
-			processed_ = processed;
-			target_ = target;
-		}
-		#endregion
-		
-		/// <summary>
-		/// The name for this event if known.
-		/// </summary>
-		public string Name
-		{
-			get { return name_; }
-		}
-		
-		/// <summary>
-		/// Get set a value indicating wether scanning should continue or not.
-		/// </summary>
-		public bool ContinueRunning
-		{
-			get { return continueRunning_; }
-			set { continueRunning_ = value; }
-		}
 
-		/// <summary>
-		/// Get a percentage representing how much of the <see cref="Target"></see> has been processed
-		/// </summary>
-		/// <value>0.0 to 100.0 percent; 0 if target is not known.</value>
-		public float PercentComplete
-		{
-			get
-			{
-				if (target_ <= 0)
-				{
-					return 0;
-				}
-				else
-				{
-					return ((float)processed_ / (float)target_) * 100.0f;
-				}
-			}
-		}
-		
-		/// <summary>
-		/// The number of bytes processed so far
-		/// </summary>
-		public long Processed
-		{
-			get { return processed_; }
-		}
-
-		/// <summary>
-		/// The number of bytes to process.
-		/// </summary>
-		/// <remarks>Target may be 0 or negative if the value isnt known.</remarks>
-		public long Target
-		{
-			get { return target_; }
-		}
-		
-		#region Instance Fields
-		string name_;
-		long processed_;
-		long target_;
-		bool continueRunning_ = true;
-		#endregion
-	}
-
-	/// <summary>
-	/// Event arguments for directories.
-	/// </summary>
-	public class DirectoryEventArgs : ScanEventArgs
-	{
-		#region Constructors
-		/// <summary>
-		/// Initialize an instance of <see cref="DirectoryEventArgs"></see>.
-		/// </summary>
-		/// <param name="name">The name for this directory.</param>
-		/// <param name="hasMatchingFiles">Flag value indicating if any matching files are contained in this directory.</param>
-		public DirectoryEventArgs(string name, bool hasMatchingFiles)
-			: base (name)
-		{
-			hasMatchingFiles_ = hasMatchingFiles;
-		}
-		#endregion
-		
-		/// <summary>
-		/// Get a value indicating if the directory contains any matching files or not.
-		/// </summary>
-		public bool HasMatchingFiles
-		{
-			get { return hasMatchingFiles_; }
-		}
-		
-		#region Instance Fields
-		bool hasMatchingFiles_;
-		#endregion
-	}
-	
-	/// <summary>
-	/// Arguments passed when scan failures are detected.
-	/// </summary>
-	public class ScanFailureEventArgs : EventArgs
-	{
-		#region Constructors
-		/// <summary>
-		/// Initialise a new instance of <see cref="ScanFailureEventArgs"></see>
-		/// </summary>
-		/// <param name="name">The name to apply.</param>
-		/// <param name="e">The exception to use.</param>
-		public ScanFailureEventArgs(string name, Exception e)
-		{
-			name_ = name;
-			exception_ = e;
-			continueRunning_ = true;
-		}
-		#endregion
-		
-		/// <summary>
-		/// The applicable name.
-		/// </summary>
-		public string Name
-		{
-			get { return name_; }
-		}
-		
-		/// <summary>
-		/// The applicable exception.
-		/// </summary>
-		public Exception Exception
-		{
-			get { return exception_; }
-		}
-		
-		/// <summary>
-		/// Get / set a value indicating wether scanning should continue.
-		/// </summary>
-		public bool ContinueRunning
-		{
-			get { return continueRunning_; }
-			set { continueRunning_ = value; }
-		}
-		
-		#region Instance Fields
-		string name_;
-		Exception exception_;
-		bool continueRunning_;
-		#endregion
-	}
-	
 	#endregion
 	
 	#region Delegates
-	/// <summary>
-	/// Delegate invoked before starting to process a directory.
-	/// </summary>
-	public delegate void ProcessDirectoryHandler(object sender, DirectoryEventArgs e);
-	
 	/// <summary>
 	/// Delegate invoked before starting to process a file.
 	/// </summary>
 	/// <param name="sender">The source of the event</param>
 	/// <param name="e">The event arguments.</param>
-	public delegate void ProcessFileHandler(object sender, ScanEventArgs e);
-
-	/// <summary>
-	/// Delegate invoked during processing of a file or directory
-	/// </summary>
-	/// <param name="sender">The source of the event</param>
-	/// <param name="e">The event arguments.</param>
-	public delegate void ProgressHandler(object sender, ProgressEventArgs e);
+	delegate void ProcessFileHandler(object sender, ScanEventArgs e);
 
 	/// <summary>
 	/// Delegate invoked when a file has been completely processed.
 	/// </summary>
 	/// <param name="sender">The source of the event</param>
 	/// <param name="e">The event arguments.</param>
-	public delegate void CompletedFileHandler(object sender, ScanEventArgs e);
-	
-	/// <summary>
-	/// Delegate invoked when a directory failure is detected.
-	/// </summary>
-	/// <param name="sender">The source of the event</param>
-	/// <param name="e">The event arguments.</param>
-	public delegate void DirectoryFailureHandler(object sender, ScanFailureEventArgs e);
-	
-	/// <summary>
-	/// Delegate invoked when a file failure is detected.
-	/// </summary>
-	/// <param name="sender">The source of the event</param>
-	/// <param name="e">The event arguments.</param>
-	public delegate void FileFailureHandler(object sender, ScanFailureEventArgs e);
+	delegate void CompletedFileHandler(object sender, ScanEventArgs e);
 	#endregion
 
 	/// <summary>
 	/// FileSystemScanner provides facilities scanning of files and directories.
 	/// </summary>
-	public class FileSystemScanner
+	class FileSystemScanner
 	{
 		#region Constructors
-		/// <summary>
-		/// Initialise a new instance of <see cref="FileSystemScanner"></see>
-		/// </summary>
-		/// <param name="filter">The <see cref="PathFilter">file filter</see> to apply when scanning.</param>
-		public FileSystemScanner(string filter)
-		{
-			fileFilter_ = new PathFilter(filter);
-		}
-		
+
 		/// <summary>
 		/// Initialise a new instance of <see cref="FileSystemScanner"></see>
 		/// </summary>
@@ -312,52 +115,14 @@ namespace ICSharpCode.SharpZipLib.Core
 			directoryFilter_ = new PathFilter(directoryFilter);
 		}
 		
-		/// <summary>
-		/// Initialise a new instance of <see cref="FileSystemScanner"></see>
-		/// </summary>
-		/// <param name="fileFilter">The file <see cref="IScanFilter">filter</see> to apply.</param>
-		public FileSystemScanner(IScanFilter fileFilter)
-		{
-			fileFilter_ = fileFilter;
-		}
-		
-		/// <summary>
-		/// Initialise a new instance of <see cref="FileSystemScanner"></see>
-		/// </summary>
-		/// <param name="fileFilter">The file <see cref="IScanFilter">filter</see>  to apply.</param>
-		/// <param name="directoryFilter">The directory <see cref="IScanFilter">filter</see>  to apply.</param>
-		public FileSystemScanner(IScanFilter fileFilter, IScanFilter directoryFilter)
-		{
-			fileFilter_ = fileFilter;
-			directoryFilter_ = directoryFilter;
-		}
 		#endregion
 
 		#region Delegates
-		/// <summary>
-		/// Delegate to invoke when a directory is processed.
-		/// </summary>
-		public ProcessDirectoryHandler ProcessDirectory;
 		
 		/// <summary>
 		/// Delegate to invoke when a file is processed.
 		/// </summary>
 		public ProcessFileHandler ProcessFile;
-
-		/// <summary>
-		/// Delegate to invoke when processing for a file has finished.
-		/// </summary>
-		public CompletedFileHandler CompletedFile;
-
-		/// <summary>
-		/// Delegate to invoke when a directory failure is detected.
-		/// </summary>
-		public DirectoryFailureHandler DirectoryFailure;
-		
-		/// <summary>
-		/// Delegate to invoke when a file failure is detected.
-		/// </summary>
-		public FileFailureHandler FileFailure;
 		#endregion
 
 		/// <summary>
@@ -367,14 +132,7 @@ namespace ICSharpCode.SharpZipLib.Core
 		/// <param name="e">The exception detected.</param>
 		bool OnDirectoryFailure(string directory, Exception e)
 		{
-            DirectoryFailureHandler handler = DirectoryFailure;
-            bool result = (handler != null);
-            if ( result ) {
-				ScanFailureEventArgs args = new ScanFailureEventArgs(directory, e);
-				handler(this, args);
-				alive_ = args.ContinueRunning;
-			}
-            return result;
+            return false;
 		}
 		
 		/// <summary>
@@ -384,16 +142,7 @@ namespace ICSharpCode.SharpZipLib.Core
 		/// <param name="e">The exception detected.</param>
 		bool OnFileFailure(string file, Exception e)
 		{
-            FileFailureHandler handler = FileFailure;
-
-            bool result = (handler != null);
-
-			if ( result ){
-				ScanFailureEventArgs args = new ScanFailureEventArgs(file, e);
-				FileFailure(this, args);
-				alive_ = args.ContinueRunning;
-			}
-            return result;
+            return false;
 		}
 
 		/// <summary>
@@ -412,35 +161,13 @@ namespace ICSharpCode.SharpZipLib.Core
 		}
 
 		/// <summary>
-		/// Raise the complete file event
-		/// </summary>
-		/// <param name="file">The file name</param>
-		void OnCompleteFile(string file)
-		{
-			CompletedFileHandler handler = CompletedFile;
-
-			if (handler != null)
-			{
-				ScanEventArgs args = new ScanEventArgs(file);
-				handler(this, args);
-				alive_ = args.ContinueRunning;
-			}
-		}
-
-		/// <summary>
 		/// Raise the ProcessDirectory event.
 		/// </summary>
 		/// <param name="directory">The directory name.</param>
 		/// <param name="hasMatchingFiles">Flag indicating if the directory has matching files.</param>
 		void OnProcessDirectory(string directory, bool hasMatchingFiles)
 		{
-			ProcessDirectoryHandler handler = ProcessDirectory;
 
-			if ( handler != null ) {
-				DirectoryEventArgs args = new DirectoryEventArgs(directory, hasMatchingFiles);
-				handler(this, args);
-				alive_ = args.ContinueRunning;
-			}
 		}
 
 		/// <summary>

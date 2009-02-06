@@ -55,7 +55,7 @@ namespace ICSharpCode.SharpZipLib.Core
 	/// <example>The following expression includes all name ending in '.dat' with the exception of 'dummy.dat'
 	/// "+\.dat$;-^dummy\.dat$"
 	/// </example>
-	public class NameFilter : IScanFilter
+	class NameFilter : IScanFilter
 	{
 		#region Constructors
 		/// <summary>
@@ -70,63 +70,6 @@ namespace ICSharpCode.SharpZipLib.Core
 			Compile();
 		}
 		#endregion
-
-		/// <summary>
-		/// Test a string to see if it is a valid regular expression.
-		/// </summary>
-		/// <param name="expression">The expression to test.</param>
-		/// <returns>True if expression is a valid <see cref="System.Text.RegularExpressions.Regex"/> false otherwise.</returns>
-		public static bool IsValidExpression(string expression)
-		{
-			bool result = true;
-			try {
-				Regex exp = new Regex(expression, RegexOptions.IgnoreCase | RegexOptions.Singleline);
-			}
-			catch (ArgumentException) {
-				result = false;
-			}
-			return result;
-		}
-
-		/// <summary>
-		/// Test an expression to see if it is valid as a filter.
-		/// </summary>
-		/// <param name="toTest">The filter expression to test.</param>
-		/// <returns>True if the expression is valid, false otherwise.</returns>
-		public static bool IsValidFilterExpression(string toTest)
-		{
-			if ( toTest == null ) {
-				throw new ArgumentNullException("toTest");
-			}
-
-			bool result = true;
-
-			try {
-				string[] items = SplitQuoted(toTest);
-				for (int i = 0; i < items.Length; ++i) {
-					if ((items[i] != null) && (items[i].Length > 0)) {
-						string toCompile;
-
-						if (items[i][0] == '+') {
-							toCompile = items[i].Substring(1, items[i].Length - 1);
-						}
-						else if (items[i][0] == '-') {
-							toCompile = items[i].Substring(1, items[i].Length - 1);
-						}
-						else {
-							toCompile = items[i];
-						}
-
-						Regex testRegex = new Regex(toCompile, RegexOptions.IgnoreCase | RegexOptions.Singleline);
-					}
-				}
-			}
-			catch (ArgumentException) {
-				result = false;
-			}
-
-			return result;
-		}
 
 		/// <summary>
 		/// Split a string into its component pieces

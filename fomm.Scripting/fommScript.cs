@@ -6,7 +6,7 @@ using mbButtons=System.Windows.Forms.MessageBoxButtons;
 using DialogResult=System.Windows.Forms.DialogResult;
 using Path=System.IO.Path;
 
-namespace Fomm.Scripting {
+namespace fomm.Scripting {
     public static class fommScript {
         private class FlowControlStruct {
             public readonly int line;

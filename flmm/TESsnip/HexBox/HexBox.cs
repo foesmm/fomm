@@ -54,7 +54,7 @@ namespace Be.Windows.Forms
 	/// Represents a hex box control.
 	/// </summary>
 	[ToolboxBitmap(typeof(HexBox), "HexBox.bmp")]
-	public class HexBox : Control
+	class HexBox : Control
 	{
 		#region IKeyInterpreter interface
 		/// <summary>
