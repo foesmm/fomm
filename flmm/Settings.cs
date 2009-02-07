@@ -15,8 +15,14 @@ namespace Fomm {
         public static void Init() {
             xmlDoc=new XmlDocument();
             if(File.Exists(xmlPath)) {
-                xmlDoc.Load(xmlPath);
-                rootNode=(XmlElement)xmlDoc.LastChild;
+                try {
+                    xmlDoc.Load(xmlPath);
+                    rootNode=(XmlElement)xmlDoc.LastChild;
+                } catch {
+                    System.Windows.Forms.MessageBox.Show("Unable to load settings.xml", "Error");
+                    xmlDoc=new XmlDocument();
+                    xmlDoc.AppendChild(rootNode=xmlDoc.CreateElement("settings"));
+                }
             } else {
                 xmlDoc.AppendChild(rootNode=xmlDoc.CreateElement("settings"));
             }

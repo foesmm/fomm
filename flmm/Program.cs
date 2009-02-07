@@ -217,6 +217,8 @@ namespace Fomm {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
+            AppDomain.CurrentDomain.UnhandledException+=new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+
             Settings.Init();
 
             if(Array.IndexOf<string>(args, "-mono")!=-1) monoMode=true;
@@ -380,6 +382,22 @@ namespace Fomm {
             if(Directory.Exists(tmpPath)) Directory.Delete(tmpPath, true);
 
             mutex.Close();
+        }
+
+        static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e) {
+            MessageBox.Show("Something bad seems to have happened. As long as it wasn't too bad, a crash dump will have been saved in 'fomm\\crashdump.txt'\n"+
+                "Please include the contents of that file if you want to make a bug report", "Error");
+            Exception ex=e.ExceptionObject as Exception;
+            if(ex!=null) {
+                string msg=DateTime.Now.ToLongDateString()+" - "+DateTime.Now.ToLongTimeString()+Environment.NewLine+
+                    "Fomm "+Version+(monoMode?" (Mono)":"")+Environment.NewLine+"OS version: "+Environment.OSVersion.ToString()+
+                Environment.NewLine+Environment.NewLine+ex.ToString()+Environment.NewLine;
+                while(ex.InnerException!=null) {
+                    ex=ex.InnerException;
+                    msg+=ex.ToString()+Environment.NewLine;
+                }
+                File.WriteAllText("fomm\\crashduump.txt", msg);
+            }
         }
 
         internal static bool IsSafeFileName(string s) {
