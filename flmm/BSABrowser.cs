@@ -8,10 +8,13 @@ namespace Fomm {
             InitializeComponent();
             string path=Settings.GetString("LastBSAUnpackPath");
             if(path!=null) SaveAllDialog.SelectedPath=path;
+
+            Settings.GetWindowPosition("BSABrowser", this);
+            string tmp=Settings.GetString("BSABrowserPanelSplit");
+            if(tmp!=null) splitContainer1.SplitterDistance=Math.Max(splitContainer1.Panel1MinSize+1, Math.Min(splitContainer1.Height-(splitContainer1.Panel2MinSize+1), int.Parse(tmp)));
         }
 
-        internal BSABrowser(string BSAPath) {
-            InitializeComponent();
+        internal BSABrowser(string BSAPath) : this() {
             OpenArchive(BSAPath);
         }
 
@@ -81,6 +84,7 @@ namespace Fomm {
         private bool ContainsFileNameBlobs;
         private BSAFileEntry[] Files;
         private ListViewItem[] lvItems;
+        private ListViewItem[] lvAllItems;
 
         private enum BSASortOrder { FolderName, FileName, FileSize, Offset }
         private class BSASorter : System.Collections.IComparer {
@@ -103,6 +107,8 @@ namespace Fomm {
         }
 
         private void CloseArchive() {
+            lvAllItems=null;
+            tvFolders.Nodes.Clear();
             ArchiveOpen=false;
             bOpen.Text="Open";
             lvFiles.Items.Clear();
@@ -208,6 +214,9 @@ namespace Fomm {
                 return;
             }
 
+            tvFolders.Nodes.Add(Path.GetFileNameWithoutExtension(path));
+            tvFolders.Nodes[0].Nodes.Add("empty");
+            if(tvFolders.Nodes[0].IsExpanded) tvFolders.Nodes[0].Collapse();
             tbSearch.Text="";
             UpdateFileList();
             bOpen.Text="Close";
@@ -235,15 +244,7 @@ namespace Fomm {
             if(ArchiveOpen) {
                 CloseArchive();
             } else {
-                if(OpenBSA.ShowDialog()==DialogResult.OK) {
-                    try {
-                        OpenArchive(OpenBSA.FileName);
-                    } catch (Exception ex) {
-                        MessageBox.Show("Unable to open archive\n"+ex.Message, "Error");
-                        ArchiveOpen=false;
-                        return;
-                    }
-                }
+                if(OpenBSA.ShowDialog()==DialogResult.OK) OpenArchive(OpenBSA.FileName);
             }
         }
 
@@ -318,7 +319,9 @@ namespace Fomm {
 
         private void BSABrowser_FormClosing(object sender, FormClosingEventArgs e) {
             if(ArchiveOpen) CloseArchive();
+            Settings.SetWindowPosition("BSABrowser", this);
             Settings.SetString("LastBSAUnpackPath", SaveAllDialog.SelectedPath);
+            Settings.SetString("BSABrowserPanelSplit", splitContainer1.SplitterDistance.ToString());
         }
 
         private void bPreview_Click(object sender, EventArgs e) {
@@ -379,6 +382,47 @@ namespace Fomm {
                 lvFiles.Items.AddRange(lvis.ToArray());
             }
             lvFiles.EndUpdate();
+        }
+
+        private void tvFolders_BeforeExpand(object sender, TreeViewCancelEventArgs e) {
+            if(!ArchiveOpen||lvAllItems!=null) return;
+            tvFolders.Nodes[0].Nodes.Clear();
+            System.Collections.Generic.Dictionary<string, TreeNode> nodes=new System.Collections.Generic.Dictionary<string, TreeNode>();
+            lvAllItems=(ListViewItem[])lvItems.Clone();
+            foreach(ListViewItem lvi in lvAllItems) {
+                string path=Path.GetDirectoryName(lvi.Text);
+                if(nodes.ContainsKey(path)) continue;
+                string[] dirs=path.Split('\\');
+                for(int i=0;i<dirs.Length;i++) {
+                    string newpath=string.Join("\\", dirs, 0, i+1);
+                    if(!nodes.ContainsKey(newpath)) {
+                        TreeNode tn=new TreeNode(dirs[i]);
+                        tn.Tag=newpath;
+                        if(i==0) {
+                            tvFolders.Nodes[0].Nodes.Add(tn);
+                        } else {
+                            nodes[path].Nodes.Add(tn);
+                        }
+                        nodes.Add(newpath, tn);
+                    }
+                    path=newpath;
+                }
+            }
+        }
+
+        private void tvFolders_AfterSelect(object sender, TreeViewEventArgs e) {
+            if(lvAllItems==null) return;
+            string s=e.Node.Tag as string;
+            if(s==null) {
+                lvItems=lvAllItems;
+            } else {
+                System.Collections.Generic.List<ListViewItem> lvis=new System.Collections.Generic.List<ListViewItem>(lvAllItems.Length);
+                foreach(ListViewItem lvi in lvAllItems) {
+                    if(lvi.Text.StartsWith(s)) lvis.Add(lvi);
+                }
+                lvItems=lvis.ToArray();
+            }
+            tbSearch_TextChanged(null, null);
         }
     }
 }

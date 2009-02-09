@@ -38,21 +38,26 @@ namespace Fomm {
             this.bPreview = new System.Windows.Forms.Button();
             this.tbSearch = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.tvFolders = new System.Windows.Forms.TreeView();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.splitContainer1.Panel1.SuspendLayout();
+            this.splitContainer1.Panel2.SuspendLayout();
+            this.splitContainer1.SuspendLayout();
             this.SuspendLayout();
             // 
             // lvFiles
             // 
-            this.lvFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.lvFiles.AutoArrange = false;
             this.lvFiles.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1});
+            this.lvFiles.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lvFiles.FullRowSelect = true;
             this.lvFiles.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-            this.lvFiles.Location = new System.Drawing.Point(12, 12);
+            this.lvFiles.LabelWrap = false;
+            this.lvFiles.Location = new System.Drawing.Point(0, 0);
             this.lvFiles.Name = "lvFiles";
             this.lvFiles.ShowItemToolTips = true;
-            this.lvFiles.Size = new System.Drawing.Size(558, 318);
+            this.lvFiles.Size = new System.Drawing.Size(407, 318);
             this.lvFiles.TabIndex = 0;
             this.lvFiles.UseCompatibleStateImageBehavior = false;
             this.lvFiles.View = System.Windows.Forms.View.Details;
@@ -180,24 +185,56 @@ namespace Fomm {
             this.label1.TabIndex = 8;
             this.label1.Text = "Search";
             // 
+            // tvFolders
+            // 
+            this.tvFolders.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tvFolders.Location = new System.Drawing.Point(0, 0);
+            this.tvFolders.Name = "tvFolders";
+            this.tvFolders.Size = new System.Drawing.Size(147, 318);
+            this.tvFolders.TabIndex = 9;
+            this.tvFolders.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.tvFolders_BeforeExpand);
+            this.tvFolders.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tvFolders_AfterSelect);
+            // 
+            // splitContainer1
+            // 
+            this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.splitContainer1.Location = new System.Drawing.Point(12, 12);
+            this.splitContainer1.Name = "splitContainer1";
+            // 
+            // splitContainer1.Panel1
+            // 
+            this.splitContainer1.Panel1.Controls.Add(this.tvFolders);
+            // 
+            // splitContainer1.Panel2
+            // 
+            this.splitContainer1.Panel2.Controls.Add(this.lvFiles);
+            this.splitContainer1.Size = new System.Drawing.Size(558, 318);
+            this.splitContainer1.SplitterDistance = 147;
+            this.splitContainer1.TabIndex = 10;
+            // 
             // BSABrowser
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(582, 400);
+            this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.bOpen);
             this.Controls.Add(this.tbSearch);
             this.Controls.Add(this.bPreview);
             this.Controls.Add(this.bExtract);
             this.Controls.Add(this.bExtractAll);
-            this.Controls.Add(this.lvFiles);
             this.Controls.Add(this.cmbSortOrder);
             this.Controls.Add(this.bSort);
             this.MinimumSize = new System.Drawing.Size(590, 150);
             this.Name = "BSABrowser";
             this.Text = "BSA Browser";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.BSABrowser_FormClosing);
+            this.splitContainer1.Panel1.ResumeLayout(false);
+            this.splitContainer1.Panel2.ResumeLayout(false);
+            this.splitContainer1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -219,5 +256,7 @@ namespace Fomm {
         private System.Windows.Forms.Button bPreview;
         private System.Windows.Forms.TextBox tbSearch;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TreeView tvFolders;
+        private System.Windows.Forms.SplitContainer splitContainer1;
     }
 }
