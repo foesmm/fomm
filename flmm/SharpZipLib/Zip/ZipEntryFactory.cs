@@ -52,7 +52,7 @@ namespace ICSharpCode.SharpZipLib.Zip
 		/// <summary>
 		/// Defines the possible values to be used for the <see cref="ZipEntry.DateTime"/>.
 		/// </summary>
-		public enum TimeSetting
+		enum TimeSetting
 		{
 			/// <summary>
 			/// Use the recorded LastWriteTime value for the file.

@@ -233,7 +233,7 @@ namespace Fomm {
                 return;
             }
             try {
-                GenerateBSA(bw, false);
+                GenerateBSA(bw);
             } catch(Exception ex) {
                 MessageBox.Show("An error occured during BSA generation\n"+ex.Message, "Error");
             } finally {
@@ -295,7 +295,7 @@ namespace Fomm {
             return (uint)i;
         }
 
-        private void GenerateBSA(BinaryWriter bw, bool IsRedirection) {
+        private void GenerateBSA(BinaryWriter bw) {
             bw.Write((byte)'B');
             bw.Write((byte)'S');
             bw.Write((byte)'A');
@@ -316,7 +316,7 @@ namespace Fomm {
             bw.Write((uint)lvFiles.Items.Count);
             bw.Write(GetTotalFolderNameLength());
             bw.Write(GetTotalFileNameLength());
-            bw.Write(CheckFileTypes()|(uint)(IsRedirection?2:0));
+            bw.Write(CheckFileTypes());
             //folder records
             foreach(FolderRecord fr in folders) {
                 bw.Write(fr.hash);

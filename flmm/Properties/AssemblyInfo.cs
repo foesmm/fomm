@@ -19,6 +19,7 @@ using System.Security.Permissions;
 [assembly: AssemblyFileVersion(Fomm.Program.Version+".0")]
 
 [assembly: CLSCompliant(true)]
+[assembly: ComVisible(false)]
 
 [assembly: System.Resources.NeutralResourcesLanguage("en")]
 

@@ -283,20 +283,20 @@ namespace Fomm.PackageManager {
         public void AddNewFomod(string oldpath) {
             bool Repack=false;
             string newpath, tmppath=null;
-            if(oldpath.EndsWith(".fomod", StringComparison.InvariantCultureIgnoreCase)) {
+            if(oldpath.EndsWith(".fomod", StringComparison.OrdinalIgnoreCase)) {
                 newpath=Path.Combine(Program.PackageDir, Path.GetFileName(oldpath));
-            } else if(oldpath.EndsWith(".fomod.zip", StringComparison.InvariantCultureIgnoreCase)) {
+            } else if(oldpath.EndsWith(".fomod.zip", StringComparison.OrdinalIgnoreCase)) {
                 newpath=Path.Combine(Program.PackageDir, Path.GetFileNameWithoutExtension(oldpath));
-            } else if(oldpath.EndsWith(".zip", StringComparison.InvariantCultureIgnoreCase)&&oldpath.Contains("-fomod-")) {
+            } else if(oldpath.EndsWith(".zip", StringComparison.OrdinalIgnoreCase)&&oldpath.Contains("-fomod-")) {
                 string tmppath2=Path.GetFileName(oldpath);
                 newpath=Path.Combine(Program.PackageDir, Path.GetFileName(tmppath2.Substring(0, tmppath2.IndexOf("-fomod-"))))+".fomod";
-            } else if(oldpath.EndsWith(".zip", StringComparison.InvariantCultureIgnoreCase)) {
+            } else if(oldpath.EndsWith(".zip", StringComparison.OrdinalIgnoreCase)) {
                 tmppath=Program.CreateTempDirectory();
                 ICSharpCode.SharpZipLib.Zip.FastZip fastZip=new ICSharpCode.SharpZipLib.Zip.FastZip();
                 fastZip.ExtractZip(oldpath, tmppath, null);
                 Repack=true;
                 newpath=Path.Combine(Program.PackageDir, Path.ChangeExtension(Path.GetFileName(oldpath), ".fomod"));
-            } else if(oldpath.EndsWith(".rar", StringComparison.InvariantCultureIgnoreCase)) {
+            } else if(oldpath.EndsWith(".rar", StringComparison.OrdinalIgnoreCase)) {
                 tmppath=Program.CreateTempDirectory();
                 Unrar unrar=null;
                 try {
@@ -311,7 +311,7 @@ namespace Fomm.PackageManager {
                 }
                 Repack=true;
                 newpath=Path.Combine(Program.PackageDir, Path.ChangeExtension(Path.GetFileName(oldpath), ".fomod"));
-            } else if(oldpath.EndsWith(".7z", StringComparison.InvariantCultureIgnoreCase)) {
+            } else if(oldpath.EndsWith(".7z", StringComparison.OrdinalIgnoreCase)) {
                 tmppath=Program.CreateTempDirectory();
                 System.Diagnostics.ProcessStartInfo psi=new System.Diagnostics.ProcessStartInfo(@"fomm\7za.exe",
                     "x \""+oldpath+"\" * -o\""+tmppath+"\" -aos -y  -r");

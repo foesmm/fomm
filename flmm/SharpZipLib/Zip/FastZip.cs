@@ -46,7 +46,7 @@ namespace ICSharpCode.SharpZipLib.Zip {
         /// <summary>
         /// Defines the desired handling when overwriting files during extraction.
         /// </summary>
-        public enum Overwrite {
+        enum Overwrite {
             /// <summary>
             /// Prompt the user to confirm overwriting
             /// </summary>

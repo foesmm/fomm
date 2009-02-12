@@ -31,13 +31,9 @@ namespace Fomm.PackageManager {
 
         static ScriptFunctions() {
             permissions=new System.Security.PermissionSet(PermissionState.None);
-            List<string> paths=new List<string>(4);
-            paths.Add(Program.exeDir);
-            paths.Add(Program.Fallout3SaveDir);
-            paths.Add(Program.tmpPath);
-            paths.Add(Program.LocalDataPath);
-            paths.Add(Environment.CurrentDirectory);
-            permissions.AddPermission(new FileIOPermission(FileIOPermissionAccess.AllAccess, paths.ToArray()));
+            permissions.AddPermission(new FileIOPermission(FileIOPermissionAccess.AllAccess, new string[] {
+                Program.exeDir, Program.Fallout3SaveDir, Program.tmpPath, Program.LocalDataPath, Environment.CurrentDirectory
+            }));
             permissions.AddPermission(new UIPermission(UIPermissionWindow.AllWindows));
         }
 
@@ -224,7 +220,7 @@ namespace Fomm.PackageManager {
             List<string> files=new List<string>();
             foreach(ZipEntry ze in file) {
                 if(ze.IsDirectory) continue;
-                if(!ze.Name.StartsWith("fomod", StringComparison.InvariantCultureIgnoreCase)) files.Add(ze.Name);
+                if(!ze.Name.StartsWith("fomod", StringComparison.OrdinalIgnoreCase)) files.Add(ze.Name);
             }
             return files.ToArray();
         }

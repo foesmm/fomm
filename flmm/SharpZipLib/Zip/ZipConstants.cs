@@ -53,7 +53,7 @@ namespace ICSharpCode.SharpZipLib.Zip
 	/// <summary>
 	/// Determines how entries are tested to see if they should use Zip64 extensions or not.
 	/// </summary>
-	public enum UseZip64
+	enum UseZip64
 	{
 		/// <summary>
 		/// Zip64 will not be forced on entries during processing.
@@ -73,7 +73,7 @@ namespace ICSharpCode.SharpZipLib.Zip
 	/// <summary>
 	/// The kind of compression used for an entry in an archive
 	/// </summary>
-	public enum CompressionMethod
+	enum CompressionMethod
 	{
 		/// <summary>
 		/// A direct copy of the file contents is held in the archive
@@ -102,75 +102,12 @@ namespace ICSharpCode.SharpZipLib.Zip
 		WinZipAES  = 99,
 		
 	}
-	
-	/// <summary>
-	/// Identifies the encryption algorithm used for an entry
-	/// </summary>
-	public enum EncryptionAlgorithm
-	{
-		/// <summary>
-		/// No encryption has been used.
-		/// </summary>
-		None           = 0,
-		/// <summary>
-		/// Encrypted using PKZIP 2.0 or 'classic' encryption.
-		/// </summary>
-		PkzipClassic   = 1,
-		/// <summary>
-		/// DES encryption has been used.
-		/// </summary>
-		Des            = 0x6601,
-		/// <summary>
-		/// RCS encryption has been used for encryption.
-		/// </summary>
-		RC2            = 0x6602,
-		/// <summary>
-		/// Triple DES encryption with 168 bit keys has been used for this entry.
-		/// </summary>
-		TripleDes168   = 0x6603,
-		/// <summary>
-		/// Triple DES with 112 bit keys has been used for this entry.
-		/// </summary>
-		TripleDes112   = 0x6609,
-		/// <summary>
-		/// AES 128 has been used for encryption.
-		/// </summary>
-		Aes128         = 0x660e,
-		/// <summary>
-		/// AES 192 has been used for encryption.
-		/// </summary>
-		Aes192         = 0x660f,
-		/// <summary>
-		/// AES 256 has been used for encryption.
-		/// </summary>
-		Aes256         = 0x6610,
-		/// <summary>
-		/// RC2 corrected has been used for encryption.
-		/// </summary>
-		RC2Corrected   = 0x6702,
-		/// <summary>
-		/// Blowfish has been used for encryption.
-		/// </summary>
-		Blowfish = 0x6720,
-		/// <summary>
-		/// Twofish has been used for encryption.
-		/// </summary>
-		Twofish = 0x6721,
-		/// <summary>
-		/// RC4 has been used for encryption.
-		/// </summary>
-		RC4            = 0x6801,
-		/// <summary>
-		/// An unknown algorithm has been used for encryption.
-		/// </summary>
-		Unknown        = 0xffff
-	}
 
 	/// <summary>
 	/// Defines the contents of the general bit flags field for an archive entry.
 	/// </summary>
 	[Flags]
-	public enum GeneralBitFlags : int
+	enum GeneralBitFlags : int
 	{
 		/// <summary>
 		/// Bit 0 if set indicates that the file is encrypted

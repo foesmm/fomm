@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -13,3 +14,6 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyVersion(Fomm.Program.Version+".0")]
 [assembly: AssemblyFileVersion(Fomm.Program.Version+".0")]
+
+[assembly: ComVisible(false)]
+[assembly: CLSCompliant(false)]

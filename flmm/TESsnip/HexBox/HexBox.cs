@@ -13,7 +13,7 @@ namespace Be.Windows.Forms
 	/// <summary>
 	/// Specifies the case of hex characters in the HexBox control
 	/// </summary>
-	public enum HexCasing 
+	enum HexCasing 
 	{ 
 		/// <summary>
 		/// Converts all characters to uppercase.

@@ -54,7 +54,7 @@ namespace ICSharpCode.SharpZipLib.Zip
 	/// <summary>
 	/// The possible ways of <see cref="ZipFile.CommitUpdate()">applying updates</see> to an archive.
 	/// </summary>
-	public enum FileUpdateMode
+	enum FileUpdateMode
 	{
 		/// <summary>
 		/// Perform all updates on temporary files ensuring that the original file is saved.
@@ -113,61 +113,6 @@ namespace ICSharpCode.SharpZipLib.Zip
 	/// </example>
 	class ZipFile : IEnumerable, IDisposable
 	{
-		#region KeyHandling
-		/*
-		/// <summary>
-		/// Delegate for handling keys/password setting during compresion/decompression.
-		/// </summary>
-		public delegate void KeysRequiredEventHandler(
-			object sender,
-			KeysRequiredEventArgs e
-		);
-
-		/// <summary>
-		/// Event handler for handling encryption keys.
-		/// </summary>
-		public KeysRequiredEventHandler KeysRequired;
-
-		/// <summary>
-		/// Handles getting of encryption keys when required.
-		/// </summary>
-		/// <param name="fileName">The file for which encryption keys are required.</param>
-		void OnKeysRequired(string fileName)
-		{
-			if (KeysRequired != null) {
-				KeysRequiredEventArgs krea = new KeysRequiredEventArgs(fileName, key);
-				KeysRequired(this, krea);
-				key = krea.Key;
-			}
-		}
-		
-#if !NETCF_1_0				
-		/// <summary>
-		/// Password to be used for encrypting/decrypting files.
-		/// </summary>
-		/// <remarks>Set to null if no password is required.</remarks>
-		public string Password
-		{
-			set 
-			{
-				if ( (value == null) || (value.Length == 0) ) {
-					key = null;
-				}
-				else {
-					key = PkzipClassic.GenerateKeys(ZipConstants.ConvertToArray(value));
-				}
-			}
-		}
-#endif
-
-		/// <summary>
-		/// Get a value indicating wether encryption keys are currently available.
-		/// </summary>
-		bool HaveKeys
-		{
-			get { return key != null; }
-		}*/
-		#endregion
 		
 		#region Constructors
 		/// <summary>
@@ -2122,7 +2067,7 @@ namespace ICSharpCode.SharpZipLib.Zip
 				// total number of disks 4 bytes 
 				ReadLEUint(); // startDisk64 is not currently used
 				ulong offset64 = ReadLEUlong();
-				uint totalDisks = ReadLEUint();
+				ReadLEUint();
 
 				baseStream_.Position = (long)offset64;
 				long sig64 = ReadLEUint();
@@ -2132,11 +2077,11 @@ namespace ICSharpCode.SharpZipLib.Zip
 				}
 
 				// NOTE: Record size = SizeOfFixedFields + SizeOfVariableData - 12.
-				ulong recordSize = ( ulong )ReadLEUlong();
-				int versionMadeBy = ReadLEUshort();
-				int versionToExtract = ReadLEUshort();
-				uint thisDisk = ReadLEUint();
-				uint centralDirDisk = ReadLEUint();
+				ReadLEUlong();
+				ReadLEUshort();
+				ReadLEUshort();
+				ReadLEUint();
+				ReadLEUint();
 				entriesForThisDisk = ReadLEUlong();
 				entriesForWholeCentralDir = ReadLEUlong();
 				centralDirSize = ReadLEUlong();
@@ -2179,8 +2124,8 @@ namespace ICSharpCode.SharpZipLib.Zip
 				int extraLen           = ReadLEUshort();
 				int commentLen         = ReadLEUshort();
 				
-				int diskStartNo        = ReadLEUshort();  // Not currently used
-				int internalAttributes = ReadLEUshort();  // Not currently used
+				ReadLEUshort();  // Not currently used
+				ReadLEUshort();  // Not currently used
 
 				uint externalAttributes = ReadLEUint();
 				long offset             = ReadLEUint();

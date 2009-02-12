@@ -47,7 +47,7 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 	/// <summary>
 	/// Strategies for deflater
 	/// </summary>
-	public enum DeflateStrategy 
+	enum DeflateStrategy 
 	{
 		/// <summary>
 		/// The default strategy

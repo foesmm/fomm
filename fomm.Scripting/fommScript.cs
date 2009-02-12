@@ -14,43 +14,34 @@ namespace fomm.Scripting {
             public readonly string[] values;
             public readonly string var;
             public bool active;
-            public bool hitCase=false;
-            public int forCount=0;
+            public bool hitCase;
+            public int forCount;
 
             //Inactive
             public FlowControlStruct(byte type) {
-                line=-1;
+                this.line=-1;
                 this.type=type;
-                values=null;
-                var=null;
-                active=false;
             }
 
             //If
             public FlowControlStruct(int line, bool active) {
                 this.line=line;
-                type=0;
-                values=null;
-                var=null;
                 this.active=active;
             }
 
             //Select
             public FlowControlStruct(int line, string[] values) {
                 this.line=line;
-                type=1;
+                this.type=1;
                 this.values=values;
-                var=null;
-                active=false;
             }
 
             //For
             public FlowControlStruct(string[] values, string var, int line) {
                 this.line=line;
-                type=2;
+                this.type=2;
                 this.values=values;
                 this.var=var;
-                active=false;
             }
         }
         private static Dictionary<string, string> variables;
@@ -66,7 +57,7 @@ namespace fomm.Scripting {
             string CurrentWord="";
             string CurrentVar="";
 
-            if(s=="") return new string[0];
+            if(s.Length==0) return new string[0];
             s+=" ";
             for(int i=0;i<s.Length;i++) {
                 switch(s[i]) {
