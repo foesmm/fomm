@@ -2,7 +2,7 @@ using System;
 using System.Windows.Forms;
 
 namespace Fomm.TESsnip {
-    public partial class DataEdit : Form {
+    partial class DataEdit : Form {
         public static bool Canceled;
         public static byte[] result;
         public static string resultName;

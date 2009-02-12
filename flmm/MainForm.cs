@@ -5,7 +5,7 @@ using System.IO;
 using Fomm.TESsnip;
 
 namespace Fomm {
-    public partial class MainForm : Form {
+    partial class MainForm : Form {
 
         public MainForm(string fomod) {
             InitializeComponent();

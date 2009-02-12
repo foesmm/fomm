@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using Encoding=System.Text.Encoding;
 
 namespace Fomm.ShaderEdit {
-    public partial class MainForm : Form {
+    partial class MainForm : Form {
 
         private class Shader {
             internal string name;

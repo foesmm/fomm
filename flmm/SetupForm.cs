@@ -3,7 +3,7 @@ using System.Windows.Forms;
 using Microsoft.Win32;
 
 namespace Fomm {
-    public partial class SetupForm : Form {
+    partial class SetupForm : Form {
         private bool FinishedSetup;
         public SetupForm() {
             InitializeComponent();

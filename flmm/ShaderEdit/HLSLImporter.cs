@@ -2,7 +2,7 @@ using System;
 using System.Windows.Forms;
 
 namespace Fomm.ShaderEdit {
-    public partial class HLSLImporter : Form {
+    partial class HLSLImporter : Form {
         public HLSLImporter() { 
             InitializeComponent();
             DialogResult=DialogResult.Cancel;
