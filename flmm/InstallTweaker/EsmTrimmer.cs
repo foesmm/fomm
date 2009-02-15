@@ -15,27 +15,29 @@ namespace Fomm.InstallTweaker {
 
         private static byte[] outputbuffer=new byte[ushort.MaxValue];
         private static void WriteRecord(BinaryWriter bw, Record r) {
-            if(r.Size>4096) {
+            /*if(r.Size>4096) {
                 MemoryStream ms=new MemoryStream();
                 BinaryWriter bw2=new BinaryWriter(ms);
                 foreach(SubRecord sr in r.SubRecords) sr.SaveData(bw2);
+                int len=(int)ms.Length;
                 deflater.Reset();
-                deflater.SetInput(ms.GetBuffer(), 0, (int)ms.Length);
+                deflater.SetInput(ms.GetBuffer(), 0, len);
                 deflater.Finish();
                 int i=deflater.Deflate(outputbuffer);
                 bw2.Close();
                 if(i==ushort.MaxValue) {
                     throw new Exception("Don't handle this yet!");
                 }
-                if(i<ms.Length*0.75) {
+                if(i<len*0.75) {
                     WriteString(bw, r.Name);
                     bw.Write(i+4);
                     bw.Write(r.Flags1|0x00040000);
                     bw.Write(r.FormID);
                     bw.Write(r.Flags2);
                     bw.Write(r.Flags3);
+                    return;
                 }
-            }
+            }*/
             r.SaveData(bw);
         }
 
@@ -58,33 +60,38 @@ namespace Fomm.InstallTweaker {
             bw.BaseStream.Position=bw.BaseStream.Length;
         }
 
-        internal static void Trim(bool stripEdids, bool stripRefs) {
-            Plugin p=new Plugin("data\\", false);
+        internal static void Trim(bool stripEdids, bool stripRefs, string In, string Out, ReportProgressDelegate del) {
+            Plugin p=new Plugin(In, false);
+
+            del("Editing plugin");
 
             Queue<Rec> queue=new Queue<Rec>(p.Records);
             while(queue.Count>0) {
                 if(queue.Peek() is Record) {
                     Record r=(Record)queue.Dequeue();
                     if(stripEdids) {
-                        if(r.SubRecords.Count>0&&r.SubRecords[0].Name=="EDID") r.SubRecords.RemoveAt(0);
+                        //if(r.SubRecords.Count>0&&r.SubRecords[0].Name=="EDID") r.SubRecords.RemoveAt(0);
                         for(int i=0;i<r.SubRecords.Count;i++) {
-                            if(r.SubRecords[i].Name=="SCTX") r.SubRecords.RemoveAt(i--);
+                            //if(r.SubRecords[i].Name=="SCTX") r.SubRecords.RemoveAt(i--);
                         }
                     }
                 } else {
                     GroupRecord gr=(GroupRecord)queue.Dequeue();
-                    if(gr.Name!="GMST") {
+                    if(gr.ContentsType!="GMST") {
                         foreach(Rec r in gr.Records) queue.Enqueue(r);
                     }
                 }
             }
 
-            deflater=new ICSharpCode.SharpZipLib.Zip.Compression.Deflater(9);
-            BinaryWriter bw=new BinaryWriter(File.Create(""));
-            foreach(Rec r in p.Records) {
+            del("Generating new esm");
+
+            //deflater=new ICSharpCode.SharpZipLib.Zip.Compression.Deflater(9);
+            BinaryWriter bw=new BinaryWriter(File.Create(Out));
+            p.SaveData(bw);
+            /*foreach(Rec r in p.Records) {
                 if(r is GroupRecord) WriteGroup(bw, (GroupRecord)r);
                 else WriteRecord(bw, (Record)r);
-            }
+            }*/
             bw.Close();
         }
     }

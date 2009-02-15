@@ -67,6 +67,7 @@
       <DependentUpon>ImageForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Imports.cs" />
+    <Compile Include="InstallTweaker\BsaTrimmer.cs" />
     <Compile Include="InstallTweaker\EsmTrimmer.cs" />
     <Compile Include="InstallTweaker\InstallationTweaker.cs">
       <SubType>Form</SubType>
@@ -75,6 +76,12 @@
       <DependentUpon>InstallationTweaker.cs</DependentUpon>
     </Compile>
     <Compile Include="Messaging.cs" />
+    <Compile Include="ModBrowser\ModBrowser.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ModBrowser\ModBrowser.Designer.cs">
+      <DependentUpon>ModBrowser.cs</DependentUpon>
+    </Compile>
     <Compile Include="PackageManager\InfoEditor.cs">
       <SubType>Form</SubType>
     </Compile>

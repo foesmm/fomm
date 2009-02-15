@@ -60,6 +60,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="d3d9.lib d3dx9d.lib"
 				LinkIncremental="2"
 				ModuleDefinitionFile="exports.def"
 				GenerateDebugInformation="true"
@@ -138,6 +139,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="d3d9.lib d3dx9.lib"
 				LinkIncremental="1"
 				GenerateManifest="false"
 				ModuleDefinitionFile="exports.def"
@@ -178,6 +180,10 @@
 	<References>
 	</References>
 	<Files>
+		<File
+			RelativePath=".\ddsShrinker.cpp"
+			>
+		</File>
 		<File
 			RelativePath=".\exports.def"
 			>

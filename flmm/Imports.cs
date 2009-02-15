@@ -12,6 +12,15 @@ namespace Fomm {
         [DllImport("ShaderDisasm", CharSet=CharSet.Ansi)]
         public unsafe static extern byte* Compile(string data, int len, string EntryPoint, string Profile, byte Debug);
 
+        [DllImport("ShaderDisasm", CharSet=CharSet.Ansi)]
+        public static extern void ddsInit(IntPtr hwnd);
+
+        [DllImport("ShaderDisasm", CharSet=CharSet.Ansi)]
+        public unsafe static extern byte* ddsSave(byte[] data, int len, out int oSize);
+
+        [DllImport("ShaderDisasm", CharSet=CharSet.Ansi)]
+        public static extern void ddsClose();
+
         [DllImport("kernel32", CharSet=CharSet.Ansi)]
         [System.Security.SuppressUnmanagedCodeSecurity()]
         public static extern int GetPrivateProfileIntA(string section, string value, int def, string path);

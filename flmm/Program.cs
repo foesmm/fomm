@@ -38,7 +38,7 @@ namespace Fomm {
     class fommException : Exception { public fommException(string msg) : base(msg) { } }
 
     public static class Program {
-        public const string Version="0.9.7";
+        public const string Version="0.9.8";
         public static readonly Version MVersion=new Version(Version+".0");
         /*private static string typefromint(int i, bool name) {
             switch(i) {
@@ -267,16 +267,6 @@ namespace Fomm {
                         Application.Run(new SetupForm());
                         mutex.Close();
                         return;
-                    case "-install-tweaker":
-                        mutex=new System.Threading.Mutex(true, "fommMainMutex", out newMutex);
-                        if(!newMutex) {
-                            MessageBox.Show("fomm is already running", "Error");
-                            mutex.Close();
-                            return;
-                        }
-                        Application.Run(new InstallTweaker.InstallationTweaker());
-                        mutex.Close();
-                        return;
                     case "-bsa-unpacker":
                         Application.Run(new BSABrowser());
                         return;
@@ -377,7 +367,11 @@ namespace Fomm {
                 }
             }
 
-            Application.Run(new MainForm(autoLoad));
+            if(Array.IndexOf<string>(args, "-install-tweaker")!=-1) {
+                Application.Run(new InstallTweaker.InstallationTweaker());
+            } else {
+                Application.Run(new MainForm(autoLoad));
+            }
 
             if(Directory.Exists(tmpPath)) Directory.Delete(tmpPath, true);
 

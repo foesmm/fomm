@@ -31,6 +31,8 @@
             this.cbStripGeck = new System.Windows.Forms.CheckBox();
             this.cbRemoveClutter = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.bReset = new System.Windows.Forms.Button();
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.SuspendLayout();
             // 
             // cbDisableLive
@@ -58,7 +60,7 @@
             // bApply
             // 
             this.bApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.bApply.Location = new System.Drawing.Point(205, 208);
+            this.bApply.Location = new System.Drawing.Point(221, 208);
             this.bApply.Name = "bApply";
             this.bApply.Size = new System.Drawing.Size(75, 23);
             this.bApply.TabIndex = 2;
@@ -69,11 +71,11 @@
             // bCancel
             // 
             this.bCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.bCancel.Location = new System.Drawing.Point(124, 208);
+            this.bCancel.Location = new System.Drawing.Point(140, 208);
             this.bCancel.Name = "bCancel";
             this.bCancel.Size = new System.Drawing.Size(75, 23);
             this.bCancel.TabIndex = 3;
-            this.bCancel.Text = "Cancel";
+            this.bCancel.Text = "Close";
             this.bCancel.UseVisualStyleBackColor = true;
             this.bCancel.Click += new System.EventHandler(this.bCancel_Click);
             // 
@@ -87,12 +89,13 @@
             this.tbDescription.Multiline = true;
             this.tbDescription.Name = "tbDescription";
             this.tbDescription.ReadOnly = true;
-            this.tbDescription.Size = new System.Drawing.Size(268, 109);
+            this.tbDescription.Size = new System.Drawing.Size(284, 109);
             this.tbDescription.TabIndex = 4;
             // 
             // cbStripGeck
             // 
             this.cbStripGeck.AutoSize = true;
+            this.cbStripGeck.Enabled = false;
             this.cbStripGeck.Location = new System.Drawing.Point(151, 70);
             this.cbStripGeck.Name = "cbStripGeck";
             this.cbStripGeck.Size = new System.Drawing.Size(98, 17);
@@ -104,6 +107,7 @@
             // cbRemoveClutter
             // 
             this.cbRemoveClutter.AutoSize = true;
+            this.cbRemoveClutter.Enabled = false;
             this.cbRemoveClutter.Location = new System.Drawing.Point(151, 47);
             this.cbRemoveClutter.Name = "cbRemoveClutter";
             this.cbRemoveClutter.Size = new System.Drawing.Size(98, 17);
@@ -118,15 +122,33 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.Location = new System.Drawing.Point(9, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(271, 35);
+            this.label1.Size = new System.Drawing.Size(287, 35);
             this.label1.TabIndex = 7;
-            this.label1.Text = "Always uncheck all items on this page before installing any official patches!";
+            this.label1.Text = "Always reset this utility before installing any official patches!";
+            // 
+            // bReset
+            // 
+            this.bReset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.bReset.Location = new System.Drawing.Point(12, 208);
+            this.bReset.Name = "bReset";
+            this.bReset.Size = new System.Drawing.Size(75, 23);
+            this.bReset.TabIndex = 8;
+            this.bReset.Text = "Reset";
+            this.bReset.UseVisualStyleBackColor = true;
+            this.bReset.Click += new System.EventHandler(this.bReset_Click);
+            // 
+            // backgroundWorker1
+            // 
+            this.backgroundWorker1.WorkerReportsProgress = true;
+            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
+            this.backgroundWorker1.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker1_ProgressChanged);
             // 
             // InstallationTweaker
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(292, 243);
+            this.ClientSize = new System.Drawing.Size(308, 243);
+            this.Controls.Add(this.bReset);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.cbRemoveClutter);
             this.Controls.Add(this.cbStripGeck);
@@ -137,6 +159,7 @@
             this.Controls.Add(this.cbDisableLive);
             this.Name = "InstallationTweaker";
             this.Text = "InstallationTweaker";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.InstallationTweaker_FormClosing);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -152,5 +175,7 @@
         private System.Windows.Forms.CheckBox cbStripGeck;
         private System.Windows.Forms.CheckBox cbRemoveClutter;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button bReset;
+        private System.ComponentModel.BackgroundWorker backgroundWorker1;
     }
 }

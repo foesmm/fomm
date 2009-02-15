@@ -3,3 +3,7 @@ EXPORTS
 Asm=Asm
 Disasm=Disasm
 Compile=Compile
+
+ddsInit=ddsInit
+ddsSave=ddsSave
+ddsClose=ddsClose
