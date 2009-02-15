@@ -350,16 +350,7 @@ namespace Fomm {
                 plugins[i]=lvEspList.CheckedItems[i].Text;
             }
             File.WriteAllLines(Program.PluginsFile, plugins);
-            int icount=0;
-            foreach(ListViewItem lvi in lvEspList.Items) {
-                if(lvi.Checked) {
-                    lvi.SubItems[1].Text=icount.ToString("X2");
-                    icount++;
-                } else {
-                    lvi.SubItems[1].Text="NA";
-                }
-            }
-
+            RefreshIndexCounts();
         }
 
         private void sendToTopToolStripMenuItem_Click(object sender, EventArgs e) {
