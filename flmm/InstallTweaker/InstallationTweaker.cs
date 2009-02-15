@@ -6,10 +6,10 @@ namespace Fomm.InstallTweaker {
     delegate void ReportProgressDelegate(string msg);
 
     partial class InstallationTweaker : Form {
-        private const string BackupPath="fomm\\itBackup\\";
-        private const string esmBackup=BackupPath+"fallout3.esm";
-        private const string bsaBackup=BackupPath+"Fallout - Textures.bsa";
-        private const string xlivePath="fomm\\xlive.dll";
+        private static readonly string BackupPath=Path.Combine(Program.exeDir, "fomm\\itBackup\\");
+        private static readonly string esmBackup=Path.Combine(BackupPath, "fallout3.esm");
+        private static readonly string bsaBackup=Path.Combine(BackupPath, "Fallout - Textures.bsa");
+        private static readonly string xlivePath=Path.Combine(Program.exeDir, "fomm\\xlive.dll");
 
         public InstallationTweaker() {
             InitializeComponent();
