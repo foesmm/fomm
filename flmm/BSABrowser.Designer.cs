@@ -40,6 +40,7 @@ namespace Fomm {
             this.label1 = new System.Windows.Forms.Label();
             this.tvFolders = new System.Windows.Forms.TreeView();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.cbRegex = new System.Windows.Forms.CheckBox();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
@@ -214,11 +215,22 @@ namespace Fomm {
             this.splitContainer1.SplitterDistance = 147;
             this.splitContainer1.TabIndex = 10;
             // 
+            // cbRegex
+            // 
+            this.cbRegex.AutoSize = true;
+            this.cbRegex.Location = new System.Drawing.Point(428, 370);
+            this.cbRegex.Name = "cbRegex";
+            this.cbRegex.Size = new System.Drawing.Size(74, 17);
+            this.cbRegex.TabIndex = 11;
+            this.cbRegex.Text = "Use regex";
+            this.cbRegex.UseVisualStyleBackColor = true;
+            // 
             // BSABrowser
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(582, 400);
+            this.Controls.Add(this.cbRegex);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.bOpen);
@@ -231,6 +243,7 @@ namespace Fomm {
             this.MinimumSize = new System.Drawing.Size(590, 150);
             this.Name = "BSABrowser";
             this.Text = "BSA Browser";
+            this.Load += new System.EventHandler(this.BSABrowser_Load);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.BSABrowser_FormClosing);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
@@ -258,5 +271,6 @@ namespace Fomm {
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TreeView tvFolders;
         private System.Windows.Forms.SplitContainer splitContainer1;
+        private System.Windows.Forms.CheckBox cbRegex;
     }
 }

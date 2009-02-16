@@ -108,8 +108,6 @@ namespace Fomm.PackageManager {
             cmbSortOrder.ContextMenu=new ContextMenu();
             lvModList.ListViewItemSorter=new FomodSorter();
             Settings.GetWindowPosition("PackageManager", this);
-            string tmp=Settings.GetString("PackageManagerPanelSplit");
-            if(tmp!=null) splitContainer1.SplitterDistance=Math.Max(splitContainer1.Panel1MinSize+1, Math.Min(splitContainer1.Height-(splitContainer1.Panel2MinSize+1), int.Parse(tmp))); ;
 
             foreach(string modpath in Directory.GetFiles(Program.PackageDir, "*.fomod.zip")) {
                 if(!File.Exists(Path.ChangeExtension(modpath, null))) File.Move(modpath, Path.ChangeExtension(modpath, null));
@@ -163,6 +161,11 @@ namespace Fomm.PackageManager {
             }
 
             RebuildListView();
+        }
+
+        private void PackageManager_Load(object sender, EventArgs e) {
+            string tmp=Settings.GetString("PackageManagerPanelSplit");
+            if(tmp!=null) splitContainer1.SplitterDistance=Math.Max(splitContainer1.Panel1MinSize+1, Math.Min(splitContainer1.Height-(splitContainer1.Panel2MinSize+1), int.Parse(tmp))); ;
         }
 
         private void lvModList_SelectedIndexChanged(object sender, EventArgs e) {

@@ -10,6 +10,9 @@ namespace Fomm {
             if(path!=null) SaveAllDialog.SelectedPath=path;
 
             Settings.GetWindowPosition("BSABrowser", this);
+        }
+
+        private void BSABrowser_Load(object sender, EventArgs e) {
             string tmp=Settings.GetString("BSABrowserPanelSplit");
             if(tmp!=null) splitContainer1.SplitterDistance=Math.Max(splitContainer1.Panel1MinSize+1, Math.Min(splitContainer1.Height-(splitContainer1.Panel2MinSize+1), int.Parse(tmp)));
         }
@@ -370,18 +373,33 @@ namespace Fomm {
         private void tbSearch_TextChanged(object sender, EventArgs e) {
             if(!ArchiveOpen) return;
             string str=tbSearch.Text;
-            lvFiles.BeginUpdate();
-            lvFiles.Items.Clear();
-            if(str.Length==0) {
-                lvFiles.Items.AddRange(lvItems);
-            } else {
+            if(cbRegex.Checked&&str.Length>0) {
+                System.Text.RegularExpressions.Regex regex;
+                try {
+                    regex=new System.Text.RegularExpressions.Regex(str, System.Text.RegularExpressions.RegexOptions.Singleline);
+                } catch { return; }
+                lvFiles.BeginUpdate();
+                lvFiles.Items.Clear();
                 System.Collections.Generic.List<ListViewItem> lvis=new System.Collections.Generic.List<ListViewItem>(Files.Length);
                 for(int i=0;i<lvItems.Length;i++) {
-                    if(lvItems[i].Text.Contains(str)) lvis.Add(lvItems[i]);
+                    if(regex.IsMatch(lvItems[i].Text)) lvis.Add(lvItems[i]);
                 }
                 lvFiles.Items.AddRange(lvis.ToArray());
+                lvFiles.EndUpdate();
+            } else {
+                lvFiles.BeginUpdate();
+                lvFiles.Items.Clear();
+                if(str.Length==0) {
+                    lvFiles.Items.AddRange(lvItems);
+                } else {
+                    System.Collections.Generic.List<ListViewItem> lvis=new System.Collections.Generic.List<ListViewItem>(Files.Length);
+                    for(int i=0;i<lvItems.Length;i++) {
+                        if(lvItems[i].Text.Contains(str)) lvis.Add(lvItems[i]);
+                    }
+                    lvFiles.Items.AddRange(lvis.ToArray());
+                }
+                lvFiles.EndUpdate();
             }
-            lvFiles.EndUpdate();
         }
 
         private void tvFolders_BeforeExpand(object sender, TreeViewCancelEventArgs e) {

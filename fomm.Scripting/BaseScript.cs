@@ -17,6 +17,7 @@ namespace fomm.Scripting {
 
     public abstract class BaseScript {
 
+        //Shortcut functions
         public static void PerformBasicInstall() {
             char[] seperators=new char[] { System.IO.Path.DirectorySeparatorChar, System.IO.Path.AltDirectorySeparatorChar };
             foreach(string file in GetFomodFileList()) {
@@ -26,6 +27,11 @@ namespace fomm.Scripting {
                     SetPluginActivation(file, true);
                 }
             }
+        }
+        public static bool CopyDataFile(string from, string to) {
+            byte[] bytes=GetFileFromFomod(from);
+            if(bytes==null) return false;
+            else return GenerateDataFile(to, bytes);
         }
 
         public static void MessageBox(string message) { ScriptFunctions.MessageBox(message); }

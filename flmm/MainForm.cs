@@ -10,12 +10,6 @@ namespace Fomm {
         public MainForm(string fomod) {
             InitializeComponent();
             Settings.GetWindowPosition("MainForm", this);
-            string tmp=Settings.GetString("MainFormPanelSplit");
-            if(tmp!=null) splitContainer1.SplitterDistance=Math.Max(splitContainer1.Panel1MinSize+1, Math.Min(splitContainer1.Height-(splitContainer1.Panel2MinSize+1), int.Parse(tmp)));
-            tmp=Settings.GetString("MainFormCol1Width");
-            if(tmp!=null) lvEspList.Columns[0].Width=int.Parse(tmp);
-            tmp=Settings.GetString("MainFormCol2Width");
-            if(tmp!=null) lvEspList.Columns[1].Width=int.Parse(tmp);
             
             Text+=" ("+Program.Version+")";
 
@@ -34,6 +28,12 @@ namespace Fomm {
         }
 
         private void MainForm_Load(object sender, EventArgs e) {
+            string tmp=Settings.GetString("MainFormPanelSplit");
+            if(tmp!=null) splitContainer1.SplitterDistance=Math.Max(splitContainer1.Panel1MinSize+1, Math.Min(splitContainer1.Height-(splitContainer1.Panel2MinSize+1), int.Parse(tmp)));
+            tmp=Settings.GetString("MainFormCol1Width");
+            if(tmp!=null) lvEspList.Columns[0].Width=int.Parse(tmp);
+            tmp=Settings.GetString("MainFormCol2Width");
+            if(tmp!=null) lvEspList.Columns[1].Width=int.Parse(tmp);
             RefreshEspList();
         }
 

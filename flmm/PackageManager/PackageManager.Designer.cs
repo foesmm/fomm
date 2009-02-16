@@ -308,6 +308,7 @@ namespace Fomm.PackageManager {
             this.Controls.Add(this.bEditScript);
             this.Name = "PackageManager";
             this.Text = "PackageManager";
+            this.Load += new System.EventHandler(this.PackageManager_Load);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.PackageManager_FormClosing);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
