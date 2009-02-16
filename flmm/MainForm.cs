@@ -380,7 +380,7 @@ namespace Fomm {
 
         private volatile string newFommMessage;
 
-        void newFommTimer_Tick(object sender, EventArgs e) {
+        private void newFommTimer_Tick(object sender, EventArgs e) {
             string tmp=newFommMessage;
             if(tmp==null) return;
             newFommMessage=null;
