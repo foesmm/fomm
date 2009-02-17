@@ -178,17 +178,7 @@ namespace ICSharpCode.SharpZipLib.Zip {
                             StreamUtils.Copy(zipFile_.GetInputStream(entry), outputStream, buffer_);
 
                         }
-
-#if !NETCF_1_0 && !NETCF_2_0
                         File.SetLastWriteTime(targetName, entry.DateTime);
-
-                        if(entry.IsDOSEntry && (entry.ExternalFileAttributes != -1)) {
-                            FileAttributes fileAttributes = (FileAttributes)entry.ExternalFileAttributes;
-                            // TODO: FastZip - Setting of other file attributes on extraction is a little trickier.
-                            fileAttributes &= (FileAttributes.Archive | FileAttributes.Normal | FileAttributes.ReadOnly | FileAttributes.Hidden);
-                            File.SetAttributes(targetName, fileAttributes);
-                        }
-#endif
                     } catch(Exception) {
                         continueRunning_ = false;
                         throw;
