@@ -217,6 +217,7 @@ namespace Fomm {
             // 
             // cbRegex
             // 
+            this.cbRegex.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cbRegex.AutoSize = true;
             this.cbRegex.Location = new System.Drawing.Point(428, 370);
             this.cbRegex.Name = "cbRegex";
@@ -224,6 +225,7 @@ namespace Fomm {
             this.cbRegex.TabIndex = 11;
             this.cbRegex.Text = "Use regex";
             this.cbRegex.UseVisualStyleBackColor = true;
+            this.cbRegex.CheckedChanged += new System.EventHandler(this.tbSearch_TextChanged);
             // 
             // BSABrowser
             // 

@@ -392,8 +392,13 @@ namespace fomm.Scripting {
             ScriptFunctions.InstallFileFromFomod(line[1]);
         }
 
-        private static void FunctionInstallDataFolder(string[] line) {
-            Warn("Not supported yet");
+        private static void FunctionCopyDataFile(string[] line) {
+            if(line.Length<3) {
+                Warn("Missing arguments to CopyDataFile");
+                return;
+            }
+            if(line.Length>3) Warn("Unexpected extra arguments after CopyDataFile");
+            ScriptFunctions.GenerateDataFile(line[2], ScriptFunctions.GetFileFromFomod(line[1]));
         }
 
         private static void FunctionSetPluginActivation(string[] line) {
@@ -1155,8 +1160,8 @@ namespace fomm.Scripting {
                     case "InstallDataFile":
                         FunctionInstallDataFile(line);
                         break;
-                    case "InstallDataFolder":
-                        FunctionInstallDataFolder(line);
+                    case "CopyDataFile":
+                        FunctionCopyDataFile(line);
                         break;
                     case "FatalError":
                         Break=true;

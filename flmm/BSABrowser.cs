@@ -387,6 +387,7 @@ namespace Fomm {
                 lvFiles.Items.AddRange(lvis.ToArray());
                 lvFiles.EndUpdate();
             } else {
+                str=str.ToLowerInvariant();
                 lvFiles.BeginUpdate();
                 lvFiles.Items.Clear();
                 if(str.Length==0) {
