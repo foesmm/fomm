@@ -29,7 +29,11 @@ namespace Fomm {
 
         private void MainForm_Load(object sender, EventArgs e) {
             string tmp=Settings.GetString("MainFormPanelSplit");
-            if(tmp!=null) splitContainer1.SplitterDistance=Math.Max(splitContainer1.Panel1MinSize+1, Math.Min(splitContainer1.Height-(splitContainer1.Panel2MinSize+1), int.Parse(tmp)));
+            if(tmp!=null) {
+                try {
+                    splitContainer1.SplitterDistance=Math.Max(splitContainer1.Panel1MinSize+1, Math.Min(splitContainer1.Height-(splitContainer1.Panel2MinSize+1), int.Parse(tmp)));
+                } catch { }
+            }
             tmp=Settings.GetString("MainFormCol1Width");
             if(tmp!=null) lvEspList.Columns[0].Width=int.Parse(tmp);
             tmp=Settings.GetString("MainFormCol2Width");
@@ -93,7 +97,7 @@ namespace Fomm {
                 e.Cancel=true;
                 return;
             }
-            
+
             Settings.SetWindowPosition("MainForm", this);
             Settings.SetString("MainFormPanelSplit", splitContainer1.SplitterDistance.ToString());
             Settings.SetString("MainFormCol1Width", lvEspList.Columns[0].Width.ToString());
@@ -172,7 +176,10 @@ namespace Fomm {
             if(File.Exists(Program.PluginsFile)) {
                 string[] lines=File.ReadAllLines(Program.PluginsFile);
                 List<Pair<FileInfo, bool>> files=new List<Pair<FileInfo, bool>>(lines.Length);
+                char[] invalidChars=Path.GetInvalidFileNameChars();
                 for(int i=0;i<lines.Length;i++) {
+                    lines[i]=lines[i].Trim();
+                    if(lines[i].Length==0||lines[i][0]=='#'||lines[i].IndexOfAny(invalidChars)!=-1) continue;
                     string path=Path.Combine("Data", lines[i]);
                     if(!File.Exists(path)) continue;
                     files.Add(new Pair<FileInfo, bool>(new FileInfo(path), TESsnip.Plugin.GetIsEsm(path)));

@@ -41,6 +41,7 @@ namespace Fomm {
         }
 
         public static void SetWindowPosition(string window, System.Windows.Forms.Form f) {
+            if(f.WindowState==System.Windows.Forms.FormWindowState.Minimized) return;
             Point location=f.Location;
             Size size=f.ClientSize;
             bool maximized=f.WindowState==System.Windows.Forms.FormWindowState.Maximized;

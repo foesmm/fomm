@@ -14,7 +14,11 @@ namespace Fomm {
 
         private void BSABrowser_Load(object sender, EventArgs e) {
             string tmp=Settings.GetString("BSABrowserPanelSplit");
-            if(tmp!=null) splitContainer1.SplitterDistance=Math.Max(splitContainer1.Panel1MinSize+1, Math.Min(splitContainer1.Height-(splitContainer1.Panel2MinSize+1), int.Parse(tmp)));
+            if(tmp!=null) {
+                try {
+                    splitContainer1.SplitterDistance=Math.Max(splitContainer1.Panel1MinSize+1, Math.Min(splitContainer1.Width-(splitContainer1.Panel2MinSize+1), int.Parse(tmp)));
+                } catch { }
+            }
         }
 
         internal BSABrowser(string BSAPath) : this() {

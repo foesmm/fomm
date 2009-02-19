@@ -5,7 +5,7 @@ using System.IO;
 
 namespace Fomm.InstallTweaker {
     static class EsmTrimmer {
-        private static ICSharpCode.SharpZipLib.Zip.Compression.Deflater deflater;
+        //private static ICSharpCode.SharpZipLib.Zip.Compression.Deflater deflater;
 
         private static void WriteString(BinaryWriter bw, string s) {
             byte[] b = new byte[4];
