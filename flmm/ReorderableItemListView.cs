@@ -82,7 +82,7 @@ namespace L0ki.Controls {
         /// <param name="Y">Position (Y) of the line</param>
         private void DrawInsertionLine(int X1, int X2, int Y) {
             using(Graphics g = this.CreateGraphics()) {
-                g.DrawLine(new Pen(this.LineColor), X1, Y, X2 - 1, Y);
+                g.DrawLine(new Pen(Color.Red), X1, Y, X2 - 1, Y);
 
                 Point[] leftTriangle = new Point[3] {
 					new Point(X1,      Y-4),
@@ -95,7 +95,7 @@ namespace L0ki.Controls {
 					new Point(X2,     Y+4)
 				};
 
-                Brush br = new SolidBrush(this.LineColor);
+                Brush br = new SolidBrush(Color.Red);
                 g.FillPolygon(br, leftTriangle);
                 g.FillPolygon(br, rightTriangle);
             }
@@ -147,21 +147,6 @@ namespace L0ki.Controls {
         #endregion
 
         #region Properties
-
-        /// <summary>
-        /// Gets or sets the color of the Drag and Drop indicator line
-        /// </summary>
-        [Category("Appearance")]
-        public Color LineColor {
-            get { return this._LineColor; }
-            set {
-                if(value == this._LineColor)
-                    return;
-
-                this._LineColor = value;
-            }
-        }
-
         public override bool AllowDrop {
             get { return true; }
             set { if(value!=true) throw new InvalidOperationException("AllowDrop must be true"); }
@@ -173,10 +158,9 @@ namespace L0ki.Controls {
 
         private int LineAfter = -1;
         private int LineBefore = -1;
-        private Color _LineColor = Color.Red;
 
         private List<ListViewItem> _ItemsToMove = new List<ListViewItem>();
-        private bool _PauseItemDrag = false;
+        private bool _PauseItemDrag;
         private object _DragKey = new object();
 
         #endregion
