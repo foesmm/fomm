@@ -21,7 +21,7 @@ namespace Fomm {
             if(Settings.GetString("LaunchCommand")==null&&File.Exists("fose_loader.exe")) bLaunch.Text="Launch FOSE";
 
             Timer newFommTimer=new Timer();
-            newFommTimer.Interval=100;
+            newFommTimer.Interval=1000;
             newFommTimer.Tick+=new EventHandler(newFommTimer_Tick);
             newFommTimer.Start();
             Messaging.ServerSetup(RecieveMessage);
@@ -250,7 +250,7 @@ namespace Fomm {
         private void openInTESsnipToolStripMenuItem_Click(object sender, EventArgs e) {
             if(lvEspList.SelectedItems.Count==0) return;
             string[] mods=new string[lvEspList.SelectedItems.Count];
-            for(int i=0;i<mods.Length;i++) mods[i]="data\\"+lvEspList.SelectedItems[i].Text;
+            for(int i=0;i<mods.Length;i++) mods[i]=Path.Combine("data", lvEspList.SelectedItems[i].Text);
             TESsnip.TESsnip tes=new TESsnip.TESsnip(mods);
             tes.FormClosed+=delegate(object sender2, FormClosedEventArgs e2)
                 {
@@ -357,7 +357,7 @@ namespace Fomm {
             for(int i=0;i<plugins.Length;i++) {
                 plugins[i]=lvEspList.CheckedItems[i].Text;
             }
-            File.WriteAllLines(Program.PluginsFile, plugins);
+            File.WriteAllLines(Program.PluginsFile, plugins, System.Text.Encoding.Default);
             RefreshIndexCounts();
         }
 
@@ -379,7 +379,14 @@ namespace Fomm {
 
         private void copyLoadOrderToClipboardToolStripMenuItem_Click(object sender, EventArgs e) {
             System.Text.StringBuilder sb=new System.Text.StringBuilder();
-            for(int i=0;i<lvEspList.CheckedItems.Count;i++) sb.AppendLine(lvEspList.CheckedItems[i].Text);
+            ListViewItem[] lvis=new ListViewItem[lvEspList.CheckedItems.Count];
+            for(int i=0;i<lvEspList.CheckedItems.Count;i++) lvis[i]=lvEspList.CheckedItems[i];
+            Array.Sort<ListViewItem>(lvis, delegate(ListViewItem a, ListViewItem b)
+            {
+                return int.Parse(a.SubItems[1].Text, System.Globalization.NumberStyles.AllowHexSpecifier).CompareTo(int.Parse(b.SubItems[1].Text, System.Globalization.NumberStyles.AllowHexSpecifier));
+            });
+            for(int i=0;i<lvis.Length;i++) sb.AppendLine(lvis[i].Text);
+            //for(int i=0;i<lvEspList.CheckedItems.Count;i++) sb.AppendLine(lvEspList.CheckedItems[i].Text);
             sb.AppendLine();
             sb.AppendLine("Total active plugins: "+lvEspList.CheckedItems.Count);
             sb.AppendLine("Total plugins: "+lvEspList.Items.Count);
@@ -415,6 +422,9 @@ namespace Fomm {
                         }
                     }
                 }
+            } else if(e.KeyCode==Keys.Delete) {
+                deleteToolStripMenuItem_Click(null, null);
+                e.Handled=true;
             }
         }
 
@@ -490,6 +500,25 @@ namespace Fomm {
             if(pictureBox1.Image!=null&&(pictureBox1.Image.Size.Width>pictureBox1.Width||pictureBox1.Image.Size.Height>pictureBox1.Height)) {
                 (new ImageForm(pictureBox1.Image)).ShowDialog();
             }
+        }
+
+        private void deleteToolStripMenuItem_Click(object sender, EventArgs e) {
+            if(lvEspList.SelectedIndices.Count==0) return;
+            ListViewItem[] files=new ListViewItem[lvEspList.SelectedItems.Count];
+            for(int i=0;i<lvEspList.SelectedItems.Count;i++) {
+                files[i]=lvEspList.SelectedItems[i];
+                if(files[i].Text.Equals("fallout3.esm", StringComparison.OrdinalIgnoreCase)) {
+                    MessageBox.Show("Cannot delete Fallout3.esm", "Error");
+                    return;
+                }
+            }
+            if(MessageBox.Show("Are you sure you want to delete the selected plugins?", "Warning", MessageBoxButtons.YesNo)!=DialogResult.Yes) return;
+            lvEspList.SelectedItems.Clear();
+            for(int i=0;i<files.Length;i++) {
+                File.Delete(Path.Combine("data", files[i].Text));
+                lvEspList.Items.Remove(files[i]);
+            }
+            RefreshIndexCounts();
         }
     }
 }

@@ -48,6 +48,7 @@ namespace Fomm {
             this.bEnableAI = new System.Windows.Forms.Button();
             this.bSaveGames = new System.Windows.Forms.Button();
             this.bHelp = new System.Windows.Forms.Button();
+            this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.cmsPlugins.SuspendLayout();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -164,9 +165,10 @@ namespace Fomm {
             this.exportLoadOrderToolStripMenuItem,
             this.importLoadOrderToolStripMenuItem,
             this.uncheckAllToolStripMenuItem,
-            this.checkAllToolStripMenuItem});
+            this.checkAllToolStripMenuItem,
+            this.deleteToolStripMenuItem});
             this.cmsPlugins.Name = "cmsPlugins";
-            this.cmsPlugins.Size = new System.Drawing.Size(211, 180);
+            this.cmsPlugins.Size = new System.Drawing.Size(211, 224);
             // 
             // openInTESsnipToolStripMenuItem
             // 
@@ -301,6 +303,13 @@ namespace Fomm {
             this.bHelp.UseVisualStyleBackColor = true;
             this.bHelp.Click += new System.EventHandler(this.bHelp_Click);
             // 
+            // deleteToolStripMenuItem
+            // 
+            this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
+            this.deleteToolStripMenuItem.Text = "Delete";
+            this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -357,6 +366,7 @@ namespace Fomm {
         private System.Windows.Forms.ToolStripMenuItem importLoadOrderToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem uncheckAllToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem checkAllToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
     }
 }
 
