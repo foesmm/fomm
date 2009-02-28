@@ -41,54 +41,15 @@ namespace Fomm {
             RefreshEspList();
         }
 
-        private int DragDropIndex=-1;
-        private int[] dragDropIndicies;
-        private void lvEspList_GiveFeedback(object sender, GiveFeedbackEventArgs e) {
-            System.Drawing.Point p=lvEspList.PointToClient(Form.MousePosition);
-            ListViewItem lvi=lvEspList.GetItemAt(p.X, p.Y);
-            if(lvi==null) {
-                DragDropIndex=-1;
-                return;
-            }
-            int newDragDropIndex=lvi.Index;
-            System.Drawing.Rectangle itemBounds = lvEspList.GetItemRect(newDragDropIndex);
-            if(p.Y > itemBounds.Top + (itemBounds.Height / 2)) {
-                newDragDropIndex++;
-            }
-            if(DragDropIndex==newDragDropIndex) return;
-            DragDropIndex=newDragDropIndex;
-            lvEspList.SelectedIndices.Clear();
-            if(DragDropIndex!=-1) {
-                if(DragDropIndex!=lvEspList.Items.Count) lvEspList.SelectedIndices.Add(DragDropIndex);
-                if(DragDropIndex!=0) lvEspList.SelectedIndices.Add(DragDropIndex-1);
-            }
-        }
-
         private void lvEspList_DragDrop(object sender, DragEventArgs e) {
-            if(DragDropIndex==-1||dragDropIndicies==null) return;
-            //Compatibility fix for mono, which fails to retrieve the drag/drop data
-            //int[] toswap=(int[])e.Data.GetData(typeof(int[]));
-            int[] toswap=dragDropIndicies;
-            dragDropIndicies=null;
-            CommitLoadOrder(DragDropIndex, toswap);
-            DragDropIndex=-1;
-        }
+            DateTime timestamp=new DateTime(2008, 1, 1);
+            TimeSpan twomins=TimeSpan.FromMinutes(2);
 
-        private bool DragDropInProgress;
-        private void lvEspList_ItemDrag(object sender, ItemDragEventArgs e) {
-            if(lvEspList.SelectedIndices.Count==0||e.Button!=MouseButtons.Left) return;
-            DragDropInProgress=true;
-            int[] indicies=new int[lvEspList.SelectedIndices.Count];
-            for(int i=0;i<indicies.Length;i++) indicies[i]=lvEspList.SelectedIndices[i];
-            Array.Sort<int>(indicies);
-            dragDropIndicies=indicies;
-            lvEspList.DoDragDrop(indicies, DragDropEffects.Move);
-        }
-
-        private void lvEspList_DragEnter(object sender, DragEventArgs e) {
-            if(!DragDropInProgress) return;
-            e.Effect=DragDropEffects.Move;
-            DragDropInProgress=false;
+            for(int i=0;i<lvEspList.Items.Count;i++) {
+                File.SetLastWriteTime(Path.Combine("data", lvEspList.Items[i].Text), timestamp);
+                timestamp+=twomins;
+            }
+            RefreshIndexCounts();
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e) {
@@ -386,7 +347,6 @@ namespace Fomm {
                 return int.Parse(a.SubItems[1].Text, System.Globalization.NumberStyles.AllowHexSpecifier).CompareTo(int.Parse(b.SubItems[1].Text, System.Globalization.NumberStyles.AllowHexSpecifier));
             });
             for(int i=0;i<lvis.Length;i++) sb.AppendLine(lvis[i].Text);
-            //for(int i=0;i<lvEspList.CheckedItems.Count;i++) sb.AppendLine(lvEspList.CheckedItems[i].Text);
             sb.AppendLine();
             sb.AppendLine("Total active plugins: "+lvEspList.CheckedItems.Count);
             sb.AppendLine("Total plugins: "+lvEspList.Items.Count);

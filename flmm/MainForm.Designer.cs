@@ -30,7 +30,7 @@ namespace Fomm {
             this.bShaderEdit = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.bLaunch = new System.Windows.Forms.Button();
-            this.lvEspList = new System.Windows.Forms.ListView();
+            this.lvEspList = new L0ki.Controls.ReordableItemListView();
             this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
             this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
             this.cmsPlugins = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -124,7 +124,6 @@ namespace Fomm {
             // 
             // lvEspList
             // 
-            this.lvEspList.AllowDrop = true;
             this.lvEspList.CheckBoxes = true;
             this.lvEspList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
@@ -136,14 +135,10 @@ namespace Fomm {
             this.lvEspList.Size = new System.Drawing.Size(349, 253);
             this.lvEspList.TabIndex = 0;
             this.lvEspList.UseCompatibleStateImageBehavior = false;
-            this.lvEspList.View = System.Windows.Forms.View.Details;
             this.lvEspList.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.lvEspList_ItemChecked);
             this.lvEspList.SelectedIndexChanged += new System.EventHandler(this.lvEspList_SelectedIndexChanged);
             this.lvEspList.DragDrop += new System.Windows.Forms.DragEventHandler(this.lvEspList_DragDrop);
-            this.lvEspList.DragEnter += new System.Windows.Forms.DragEventHandler(this.lvEspList_DragEnter);
-            this.lvEspList.GiveFeedback += new System.Windows.Forms.GiveFeedbackEventHandler(this.lvEspList_GiveFeedback);
             this.lvEspList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lvEspList_KeyDown);
-            this.lvEspList.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.lvEspList_ItemDrag);
             // 
             // columnHeader1
             // 
@@ -348,7 +343,7 @@ namespace Fomm {
         private System.Windows.Forms.Button bShaderEdit;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Button bLaunch;
-        private System.Windows.Forms.ListView lvEspList;
+        private L0ki.Controls.ReordableItemListView lvEspList;
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.TextBox tbPluginInfo;

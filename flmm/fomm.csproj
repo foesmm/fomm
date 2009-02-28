@@ -111,6 +111,9 @@
     </Compile>
     <Compile Include="PackageManager\ScriptCompiler.cs" />
     <Compile Include="PackageManager\unrar.cs" />
+    <Compile Include="ReorderableItemListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="SaveForm.cs">
       <SubType>Form</SubType>
     </Compile>
