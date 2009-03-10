@@ -6,7 +6,7 @@
 #include "SafeWrite.h"
 
 /*
-speed test: 1<<17 iterations
+speed test: 1<<16 iterations
 
 Vec3Normalize
 sse4: 115720
@@ -22,6 +22,27 @@ MatrixMultipleTranspose
 sse2: 312968
 real: 3642d8 (sse2)
 
+Vec4Transform
+sse2: 174f98
+real: 1be5e8 (sse2)
+
+Vec3TransformNormal
+sse2: 1741e8
+real: 199eb0
+
+PlaneNormalize
+sse4: 131bd8
+sse3: 180d08 (Side effect: Reduced accuracy)
+sse2: 1a0210 (Side effect: Doesn't handle null planes gracefully)
+real: 1fe638 (sse2)
+
+Vec4Dot
+sse4: 0dc578
+sse3: 10acc0
+real: 1c3ee8 - 0b0200 (inlined x87, depends on how well optimized the inline was)
+
+MatrixInverse
+real: 6538d8
 */
 
 static void _declspec(naked) _stdcall sse2MatrixMultiply(D3DXMATRIX*,const D3DXMATRIX*,const D3DXMATRIX*) {
@@ -203,22 +224,22 @@ static void _declspec(naked) _stdcall sse2MatrixMultiplyTranspose(D3DXMATRIX*,co
 #if _MSC_VER >= 1500
 static void _declspec(naked) _stdcall sse4Vec3Normalize(D3DXVECTOR3*, const D3DXVECTOR3*) {
 	_asm {
-		mov ecx, [esp+0x8];
-		mov eax, [esp+0x4];
-		movss xmm0,dword ptr [ecx];
-		movss xmm1,dword ptr [ecx+4];
-		movss xmm2,dword ptr [ecx+8];
+		mov      ecx,  [esp+0x8];
+		mov      eax,  [esp+0x4];
+		movss    xmm0, [ecx];
+		movss    xmm1, [ecx+4];
+		movss    xmm2, [ecx+8];
 		unpcklps xmm0, xmm1;
-		movlhps xmm0, xmm2;
-		movaps xmm1, xmm0;
-		dpps xmm0, xmm0, 0x7f;
-		rsqrtps xmm0, xmm0;
-		mulps xmm1, xmm0;
-		movss [eax], xmm1;
-		movhlps xmm0, xmm1;
-		shufps xmm1, xmm1, 0x55
-		movss [eax+8], xmm0;
-		movss [eax+4], xmm1;
+		movlhps  xmm0, xmm2;
+		movaps   xmm1, xmm0;
+		dpps     xmm0, xmm0, 0x7f;
+		rsqrtps  xmm0, xmm0;
+		mulps    xmm1, xmm0;
+		movss   [eax], xmm1;
+		movhlps  xmm0, xmm1;
+		shufps   xmm1, xmm1, 0x55
+		movss   [eax+8], xmm0;
+		movss   [eax+4], xmm1;
 		ret 8;
 	}
 }
@@ -284,74 +305,6 @@ static void _declspec(naked) _stdcall sse2Vec3Normalize(D3DXVECTOR3*, const D3DX
 	}
 }
 
-#if _MSC_VER >= 1500
-static void _declspec(naked) _stdcall sse4Vec4Transform(D3DXVECTOR4*, const D3DXVECTOR4*, const D3DXMATRIX*) {
-	_asm {
-		mov ecx, [esp+0x4];
-		mov edx, [esp+0x8];
-		mov eax, [esp+0xc];
-		movups xmm4, [edx];
-		test cl, 0xf;
-		jnz unaligned;
-		movaps xmm0, [ecx+0x00];
-		movaps xmm1, [ecx+0x10];
-		movaps xmm2, [ecx+0x20];
-		movaps xmm3, [ecx+0x30];
-		jmp loaded;
-unaligned:
-		movups xmm0, [ecx+0x00];
-		movups xmm1, [ecx+0x10];
-		movups xmm2, [ecx+0x20];
-		movups xmm3, [ecx+0x30];
-loaded:
-		dpps xmm0, xmm4, 0xff;
-		dpps xmm1, xmm4, 0xff;
-		dpps xmm2, xmm4, 0xff;
-		dpps xmm3, xmm4, 0xff;
-		movss [eax+0x0], xmm0;
-		movss [eax+0x4], xmm1;
-		movss [eax+0x8], xmm2;
-		movss [eax+0xc], xmm3;
-		ret 0xc;
-	}
-}
-#endif
-
-static void _declspec(naked) _stdcall sse3Vec4Transform(D3DXVECTOR4*, const D3DXVECTOR4*, const D3DXMATRIX*) {
-	_asm {
-		mov ecx, [esp+0xc];
-		mov edx, [esp+0x8];
-		mov eax, [esp+0x4];
-		movups xmm4, [edx];
-		test cl, 0xf;
-		jnz unaligned;
-		movaps xmm0, [ecx+0x00];
-		movaps xmm1, [ecx+0x10];
-		movaps xmm2, [ecx+0x20];
-		movaps xmm3, [ecx+0x30];
-		jmp loaded;
-unaligned:
-		movups xmm0, [ecx+0x00];
-		movups xmm1, [ecx+0x10];
-		movups xmm2, [ecx+0x20];
-		movups xmm3, [ecx+0x30];
-loaded:
-		mulps xmm0, xmm4;
-		mulps xmm1, xmm4;
-		mulps xmm2, xmm4;
-		mulps xmm3, xmm4;
-		haddps xmm0, xmm0;
-		haddps xmm1, xmm1;
-		haddps xmm2, xmm2;
-		haddps xmm3, xmm3;
-		haddps xmm0, xmm1;
-		haddps xmm2, xmm3;
-		movlps [eax+0], xmm0;
-		movlps [eax+8], xmm2;
-		ret 0xc;
-	}
-}
-
 static void _declspec(naked) _stdcall sse2Vec4Transform(D3DXVECTOR4*, const D3DXVECTOR4*, const D3DXMATRIX*) {
 	_asm {
 		mov     ecx, [esp+0xc];		//; matrix
@@ -403,80 +356,6 @@ end:
 		addps   xmm1, xmm2;
 		movups  oword ptr [eax], xmm1;
 		retn    0xC;
-	}
-}
-
-
-#if _MSC_VER >= 1500
-static void _declspec(naked) _stdcall sse4Vec3TransformNormal(D3DXVECTOR3*, const D3DXVECTOR3*, const D3DXMATRIX*) {
-	_asm {
-		mov ecx, [esp+0x4];
-		mov edx, [esp+0x8];
-		mov eax, [esp+0xc];
-		movss xmm0,dword ptr [edx+0];
-		movss xmm1,dword ptr [edx+4];
-		movss xmm2,dword ptr [edx+8];
-		unpcklps xmm0, xmm1;
-		movlhps xmm0, xmm2;
-		test cl, 0xf;
-		jnz unaligned;
-		movaps xmm0, [ecx+0x00];
-		movaps xmm1, [ecx+0x10];
-		movaps xmm2, [ecx+0x20];
-		movaps xmm3, [ecx+0x30];
-		jmp loaded;
-unaligned:
-		movups xmm0, [ecx+0x00];
-		movups xmm1, [ecx+0x10];
-		movups xmm2, [ecx+0x20];
-		movups xmm3, [ecx+0x30];
-loaded:
-		dpps xmm0, xmm4, 0xff;
-		dpps xmm1, xmm4, 0xff;
-		dpps xmm2, xmm4, 0xff;
-		movss [eax+0x0], xmm0;
-		movss [eax+0x4], xmm1;
-		movss [eax+0x8], xmm2;
-		ret 0xc;
-	}
-}
-#endif
-static void _declspec(naked) _stdcall sse3Vec3TransformNormal(D3DXVECTOR3*, const D3DXVECTOR3*, const D3DXMATRIX*) {
-	_asm {
-		mov ecx, [esp+0xc];
-		mov edx, [esp+0x8];
-		mov eax, [esp+0x4];
-		movss xmm0,dword ptr [edx];
-		movss xmm1,dword ptr [edx+4];
-		movss xmm2,dword ptr [edx+8];
-		unpcklps xmm0, xmm1;
-		movlhps xmm0, xmm2;
-		test cl, 0xf;
-		jnz unaligned;
-		movaps xmm0, [ecx+0x00];
-		movaps xmm1, [ecx+0x10];
-		movaps xmm2, [ecx+0x20];
-		movaps xmm3, [ecx+0x30];
-		jmp loaded;
-unaligned:
-		movups xmm0, [ecx+0x00];
-		movups xmm1, [ecx+0x10];
-		movups xmm2, [ecx+0x20];
-		movups xmm3, [ecx+0x30];
-loaded:
-		mulps  xmm0, xmm4;
-		mulps  xmm1, xmm4;
-		mulps  xmm2, xmm4;
-		mulps  xmm3, xmm4;
-		haddps xmm0, xmm0;
-		haddps xmm1, xmm1;
-		haddps xmm2, xmm2;
-		haddps xmm3, xmm3;
-		haddps xmm0, xmm1;
-		haddps xmm2, xmm3;
-		movlps [eax+0], xmm0;
-		movss  [eax+8], xmm2;
-		ret 0xc;
 	}
 }
 
@@ -631,6 +510,34 @@ static void _declspec(naked) _stdcall sse2PlaneNormalize(D3DXPLANE*, const D3DXP
 }
 
 
+#if _MSC_VER >= 1500
+static float _declspec(naked) _stdcall sse4Vec4Dot(const D3DXVECTOR4*,const D3DXVECTOR4*) {
+	_asm {
+		mov eax, [esp+4];
+		mov ecx, [esp+8];
+		movups xmm0, [eax];
+		movups xmm1, [ecx];
+		dpps xmm0, xmm1, 0xff;
+		movss [esp+4], xmm0;
+		fld dword ptr [esp+4]
+		retn 8;
+	}
+}
+#endif
+static float _declspec(naked) _stdcall sse3Vec4Dot(const D3DXVECTOR4*,const D3DXVECTOR4*) {
+	_asm {
+		mov eax, [esp+4];
+		mov ecx, [esp+8];
+		movups xmm0, [eax];
+		movups xmm1, [ecx];
+		mulps xmm0, xmm1;
+		haddps xmm0, xmm0;
+		haddps xmm0, xmm0;
+		movss [esp+4], xmm0;
+		fld dword ptr [esp+4]
+		retn 8;
+	}
+}
 void d3dxInit() {
 	void* MatrixMultiply;
 	void* MatrixMultiplyTranspose;
@@ -646,18 +553,18 @@ void d3dxInit() {
 		MatrixMultiply=&sse2MatrixMultiply;
 		MatrixMultiplyTranspose=&sse2MatrixMultiplyTranspose;
 		Vec3Normalize=&sse4Vec3Normalize;
-		Vec4Transform=&sse4Vec4Transform;
+		Vec4Transform=&sse2Vec4Transform;
 		PlaneNormalize=&sse4PlaneNormalize;
-		Vec3TransformNormal=&sse4Vec3TransformNormal;
+		Vec3TransformNormal=&sse2Vec3TransformNormal;
 	} else
 #endif
 	if(ver>=3) {
 		MatrixMultiply=&sse2MatrixMultiply;
 		MatrixMultiplyTranspose=&sse2MatrixMultiplyTranspose;
 		Vec3Normalize=&sse3Vec3Normalize;
-		Vec4Transform=&sse3Vec4Transform;
+		Vec4Transform=&sse2Vec4Transform;
 		PlaneNormalize=&sse3PlaneNormalize;
-		Vec3TransformNormal=&sse3Vec3TransformNormal;
+		Vec3TransformNormal=&sse2Vec3TransformNormal;
 	} else if(ver>=2) {
 		MatrixMultiply=&sse2MatrixMultiply;
 		MatrixMultiplyTranspose=&sse2MatrixMultiplyTranspose;
@@ -695,7 +602,7 @@ void d3dxInit() {
 	HookCall(0xB33726, Vec3Normalize);
 	HookCall(0xB3E5E7, Vec3Normalize);
 
-	/*HookCall(0x872500, Vec4Transform);
+	HookCall(0x872500, Vec4Transform);
 	HookCall(0x891C35, Vec4Transform);
 	HookCall(0x891C6C, Vec4Transform);
 
@@ -707,5 +614,6 @@ void d3dxInit() {
 	HookCall(0xAFEDD9, Vec3TransformNormal);
 	HookCall(0xB2CAAD, Vec3TransformNormal);
 	HookCall(0xB33717, Vec3TransformNormal);
-	HookCall(0xB3E5D8, Vec3TransformNormal);*/
+	HookCall(0xB3E5D8, Vec3TransformNormal);
 }
+
