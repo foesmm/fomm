@@ -1,0 +1,32 @@
+LIBRARY xlive
+EXPORTS
+f001=XNotifyGetNext					@651
+f002=XNotifyPositionUI				@652
+f003=XGetOverlappedExtendedError	@1082
+f004=XGetOverlappedResult			@1083
+f005=XLiveInitialize				@5000
+f006=XLiveInput						@5001
+f007=XLiveRender					@5002
+f008=XLiveGetUpdateInformation		@5022
+f009=XLiveUpdateSystem				@5024
+f010=XLivePreTranslateMessage		@5030
+f011=XShowGuideUI					@5215
+f012=XShowAchievementsUI			@5250
+f013=XShowSigninUI					@5260
+f014=XUserGetSigninState			@5262
+f015=XUserGetName					@5263
+f016=XUserGetSigninInfo				@5267
+f017=XNotifyCreateListener			@5270
+f018=f5278							@5278
+f019=XUserSetContextEx				@5292
+f020=XUserSetPropertyEx				@5293
+f021=XOnlineStartup					@5310
+
+f101=XCloseHandle						@5251
+f102=XEnumerate							@5256
+f103=XLiveInitializeEx					@5297
+f104=XLiveContentGetPath				@5355
+f105=XLiveContentGetDisplayName			@5356
+f106=XLiveContentCreateEnumerator		@5360
+f107=XLiveContentRetrieveOffersByDate	@5361
+f108=XShowMarketplaceUI					@5365

@@ -42,13 +42,13 @@ namespace Fomm {
             this.importLoadOrderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.uncheckAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.checkAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.tbPluginInfo = new System.Windows.Forms.TextBox();
             this.bPackageManager = new System.Windows.Forms.Button();
             this.bEnableAI = new System.Windows.Forms.Button();
             this.bSaveGames = new System.Windows.Forms.Button();
             this.bHelp = new System.Windows.Forms.Button();
-            this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.cmsPlugins.SuspendLayout();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -124,17 +124,21 @@ namespace Fomm {
             // 
             // lvEspList
             // 
+            this.lvEspList.AllowDrop = true;
             this.lvEspList.CheckBoxes = true;
             this.lvEspList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2});
             this.lvEspList.ContextMenuStrip = this.cmsPlugins;
             this.lvEspList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lvEspList.FullRowSelect = true;
             this.lvEspList.Location = new System.Drawing.Point(0, 0);
             this.lvEspList.Name = "lvEspList";
+            this.lvEspList.ShowGroups = false;
             this.lvEspList.Size = new System.Drawing.Size(349, 253);
             this.lvEspList.TabIndex = 0;
             this.lvEspList.UseCompatibleStateImageBehavior = false;
+            this.lvEspList.View = System.Windows.Forms.View.Details;
             this.lvEspList.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.lvEspList_ItemChecked);
             this.lvEspList.SelectedIndexChanged += new System.EventHandler(this.lvEspList_SelectedIndexChanged);
             this.lvEspList.DragDrop += new System.Windows.Forms.DragEventHandler(this.lvEspList_DragDrop);
@@ -163,7 +167,7 @@ namespace Fomm {
             this.checkAllToolStripMenuItem,
             this.deleteToolStripMenuItem});
             this.cmsPlugins.Name = "cmsPlugins";
-            this.cmsPlugins.Size = new System.Drawing.Size(211, 224);
+            this.cmsPlugins.Size = new System.Drawing.Size(211, 202);
             // 
             // openInTESsnipToolStripMenuItem
             // 
@@ -221,6 +225,13 @@ namespace Fomm {
             this.checkAllToolStripMenuItem.Text = "Check all";
             this.checkAllToolStripMenuItem.Click += new System.EventHandler(this.checkAllToolStripMenuItem_Click);
             // 
+            // deleteToolStripMenuItem
+            // 
+            this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
+            this.deleteToolStripMenuItem.Text = "Delete";
+            this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
+            // 
             // splitContainer1
             // 
             this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -252,7 +263,8 @@ namespace Fomm {
             this.tbPluginInfo.Size = new System.Drawing.Size(349, 95);
             this.tbPluginInfo.TabIndex = 0;
             this.tbPluginInfo.Text = "Drag/Drop to modify load order\r\nAlternatively, hold alt and use the arrow keys\r\nM" +
-    "ods towards the bottom override those above them";
+    "ods towards the bottom override those above them\r\nRight click in the plugins lis" +
+    "t for additional options";
             // 
             // bPackageManager
             // 
@@ -297,13 +309,6 @@ namespace Fomm {
             this.bHelp.Text = "Help";
             this.bHelp.UseVisualStyleBackColor = true;
             this.bHelp.Click += new System.EventHandler(this.bHelp_Click);
-            // 
-            // deleteToolStripMenuItem
-            // 
-            this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
-            this.deleteToolStripMenuItem.Text = "Delete";
-            this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
             // 
             // MainForm
             // 
