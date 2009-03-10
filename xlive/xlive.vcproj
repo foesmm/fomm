@@ -96,7 +96,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)\fomm"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="2"
 			CharacterSet="0"
@@ -183,7 +183,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy &quot;$(TargetPath)&quot; &quot;C:\games\fallout3\xlive.dll&quot;"
+				CommandLine="copy &quot;$(TargetPath)&quot; &quot;C:\games\fallout3\xlive.dll&quot;&#x0D;&#x0A;del &quot;$(SolutionDir)$(ConfigurationName)\fomm\xlive.exp&quot;&#x0D;&#x0A;del &quot;$(SolutionDir)$(ConfigurationName)\fomm\xlive.lib&quot;"
 			/>
 		</Configuration>
 	</Configurations>
