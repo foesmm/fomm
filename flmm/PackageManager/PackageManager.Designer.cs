@@ -45,6 +45,7 @@ namespace Fomm.PackageManager {
             this.bDeactivateGroup = new System.Windows.Forms.Button();
             this.bDeactivateAll = new System.Windows.Forms.Button();
             this.cmbSortOrder = new System.Windows.Forms.ComboBox();
+            this.bFomodFromFolder = new System.Windows.Forms.Button();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
@@ -68,8 +69,8 @@ namespace Fomm.PackageManager {
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.tbModInfo);
-            this.splitContainer1.Size = new System.Drawing.Size(453, 453);
-            this.splitContainer1.SplitterDistance = 276;
+            this.splitContainer1.Size = new System.Drawing.Size(475, 475);
+            this.splitContainer1.SplitterDistance = 289;
             this.splitContainer1.TabIndex = 18;
             // 
             // lvModList
@@ -83,7 +84,7 @@ namespace Fomm.PackageManager {
             this.lvModList.Location = new System.Drawing.Point(0, 0);
             this.lvModList.MultiSelect = false;
             this.lvModList.Name = "lvModList";
-            this.lvModList.Size = new System.Drawing.Size(453, 276);
+            this.lvModList.Size = new System.Drawing.Size(475, 289);
             this.lvModList.TabIndex = 0;
             this.lvModList.UseCompatibleStateImageBehavior = false;
             this.lvModList.View = System.Windows.Forms.View.Details;
@@ -139,14 +140,14 @@ namespace Fomm.PackageManager {
             this.tbModInfo.Multiline = true;
             this.tbModInfo.Name = "tbModInfo";
             this.tbModInfo.ReadOnly = true;
-            this.tbModInfo.Size = new System.Drawing.Size(453, 173);
+            this.tbModInfo.Size = new System.Drawing.Size(475, 182);
             this.tbModInfo.TabIndex = 0;
             // 
             // pictureBox1
             // 
             this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.pictureBox1.Location = new System.Drawing.Point(471, 12);
+            this.pictureBox1.Location = new System.Drawing.Point(493, 12);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(120, 90);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -157,7 +158,7 @@ namespace Fomm.PackageManager {
             // bEditScript
             // 
             this.bEditScript.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.bEditScript.Location = new System.Drawing.Point(471, 308);
+            this.bEditScript.Location = new System.Drawing.Point(493, 341);
             this.bEditScript.Name = "bEditScript";
             this.bEditScript.Size = new System.Drawing.Size(120, 23);
             this.bEditScript.TabIndex = 20;
@@ -168,7 +169,7 @@ namespace Fomm.PackageManager {
             // bEditReadme
             // 
             this.bEditReadme.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.bEditReadme.Location = new System.Drawing.Point(471, 279);
+            this.bEditReadme.Location = new System.Drawing.Point(493, 312);
             this.bEditReadme.Name = "bEditReadme";
             this.bEditReadme.Size = new System.Drawing.Size(120, 23);
             this.bEditReadme.TabIndex = 21;
@@ -179,7 +180,7 @@ namespace Fomm.PackageManager {
             // bEditInfo
             // 
             this.bEditInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.bEditInfo.Location = new System.Drawing.Point(471, 337);
+            this.bEditInfo.Location = new System.Drawing.Point(493, 370);
             this.bEditInfo.Name = "bEditInfo";
             this.bEditInfo.Size = new System.Drawing.Size(120, 23);
             this.bEditInfo.TabIndex = 22;
@@ -190,7 +191,7 @@ namespace Fomm.PackageManager {
             // bActivate
             // 
             this.bActivate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.bActivate.Location = new System.Drawing.Point(471, 148);
+            this.bActivate.Location = new System.Drawing.Point(493, 181);
             this.bActivate.Name = "bActivate";
             this.bActivate.Size = new System.Drawing.Size(120, 23);
             this.bActivate.TabIndex = 23;
@@ -201,7 +202,7 @@ namespace Fomm.PackageManager {
             // bAddNew
             // 
             this.bAddNew.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.bAddNew.Location = new System.Drawing.Point(471, 108);
+            this.bAddNew.Location = new System.Drawing.Point(493, 108);
             this.bAddNew.Name = "bAddNew";
             this.bAddNew.Size = new System.Drawing.Size(120, 23);
             this.bAddNew.TabIndex = 24;
@@ -218,7 +219,7 @@ namespace Fomm.PackageManager {
             // 
             this.cbGroups.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbGroups.AutoSize = true;
-            this.cbGroups.Location = new System.Drawing.Point(471, 410);
+            this.cbGroups.Location = new System.Drawing.Point(493, 443);
             this.cbGroups.Name = "cbGroups";
             this.cbGroups.Size = new System.Drawing.Size(97, 17);
             this.cbGroups.TabIndex = 25;
@@ -229,7 +230,7 @@ namespace Fomm.PackageManager {
             // bEditGroups
             // 
             this.bEditGroups.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.bEditGroups.Location = new System.Drawing.Point(471, 381);
+            this.bEditGroups.Location = new System.Drawing.Point(493, 414);
             this.bEditGroups.Name = "bEditGroups";
             this.bEditGroups.Size = new System.Drawing.Size(120, 23);
             this.bEditGroups.TabIndex = 26;
@@ -241,7 +242,7 @@ namespace Fomm.PackageManager {
             // 
             this.bActivateGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.bActivateGroup.Enabled = false;
-            this.bActivateGroup.Location = new System.Drawing.Point(471, 177);
+            this.bActivateGroup.Location = new System.Drawing.Point(493, 210);
             this.bActivateGroup.Name = "bActivateGroup";
             this.bActivateGroup.Size = new System.Drawing.Size(120, 23);
             this.bActivateGroup.TabIndex = 27;
@@ -253,7 +254,7 @@ namespace Fomm.PackageManager {
             // 
             this.bDeactivateGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.bDeactivateGroup.Enabled = false;
-            this.bDeactivateGroup.Location = new System.Drawing.Point(471, 206);
+            this.bDeactivateGroup.Location = new System.Drawing.Point(493, 239);
             this.bDeactivateGroup.Name = "bDeactivateGroup";
             this.bDeactivateGroup.Size = new System.Drawing.Size(120, 23);
             this.bDeactivateGroup.TabIndex = 28;
@@ -264,7 +265,7 @@ namespace Fomm.PackageManager {
             // bDeactivateAll
             // 
             this.bDeactivateAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.bDeactivateAll.Location = new System.Drawing.Point(471, 235);
+            this.bDeactivateAll.Location = new System.Drawing.Point(493, 268);
             this.bDeactivateAll.Name = "bDeactivateAll";
             this.bDeactivateAll.Size = new System.Drawing.Size(120, 23);
             this.bDeactivateAll.TabIndex = 29;
@@ -280,7 +281,7 @@ namespace Fomm.PackageManager {
             "File name",
             "Mod name",
             "Author"});
-            this.cmbSortOrder.Location = new System.Drawing.Point(471, 433);
+            this.cmbSortOrder.Location = new System.Drawing.Point(493, 466);
             this.cmbSortOrder.Name = "cmbSortOrder";
             this.cmbSortOrder.Size = new System.Drawing.Size(120, 21);
             this.cmbSortOrder.TabIndex = 30;
@@ -288,24 +289,36 @@ namespace Fomm.PackageManager {
             this.cmbSortOrder.SelectedIndexChanged += new System.EventHandler(this.cmbSortOrder_SelectedIndexChanged);
             this.cmbSortOrder.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.cmbSortOrder_KeyPress);
             // 
+            // bFomodFromFolder
+            // 
+            this.bFomodFromFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.bFomodFromFolder.Location = new System.Drawing.Point(493, 137);
+            this.bFomodFromFolder.Name = "bFomodFromFolder";
+            this.bFomodFromFolder.Size = new System.Drawing.Size(120, 23);
+            this.bFomodFromFolder.TabIndex = 31;
+            this.bFomodFromFolder.Text = "Create from folder";
+            this.bFomodFromFolder.UseVisualStyleBackColor = true;
+            this.bFomodFromFolder.Click += new System.EventHandler(this.bFomodFromFolder_Click);
+            // 
             // PackageManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(603, 477);
+            this.ClientSize = new System.Drawing.Size(625, 499);
+            this.Controls.Add(this.bFomodFromFolder);
+            this.Controls.Add(this.bAddNew);
+            this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.cmbSortOrder);
+            this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.bDeactivateAll);
             this.Controls.Add(this.bDeactivateGroup);
             this.Controls.Add(this.bActivateGroup);
-            this.Controls.Add(this.bAddNew);
-            this.Controls.Add(this.bActivate);
-            this.Controls.Add(this.splitContainer1);
-            this.Controls.Add(this.pictureBox1);
-            this.Controls.Add(this.bEditGroups);
-            this.Controls.Add(this.cbGroups);
             this.Controls.Add(this.bEditReadme);
+            this.Controls.Add(this.bActivate);
             this.Controls.Add(this.bEditInfo);
             this.Controls.Add(this.bEditScript);
+            this.Controls.Add(this.bEditGroups);
+            this.Controls.Add(this.cbGroups);
             this.Name = "PackageManager";
             this.Text = "PackageManager";
             this.Load += new System.EventHandler(this.PackageManager_Load);
@@ -344,5 +357,6 @@ namespace Fomm.PackageManager {
         private System.Windows.Forms.Button bDeactivateGroup;
         private System.Windows.Forms.Button bDeactivateAll;
         private System.Windows.Forms.ComboBox cmbSortOrder;
+        private System.Windows.Forms.Button bFomodFromFolder;
     }
 }

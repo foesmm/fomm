@@ -283,6 +283,86 @@ namespace Fomm.PackageManager {
             mf.RefreshEspList();
         }
 
+        private void CheckFomodFolder(ref string path, string tesnexusext, string fomodname) {
+            foreach(string aifile in Directory.GetFiles(path, "ArchiveInvalidation.txt", SearchOption.AllDirectories)) File.Delete(aifile);
+            foreach(string aifile in Directory.GetFiles(path, "thumbs.db", SearchOption.AllDirectories)) File.Delete(aifile);
+            foreach(string aifile in Directory.GetFiles(path, "desktop.ini", SearchOption.AllDirectories)) File.Delete(aifile);
+            string[] directories=Directory.GetDirectories(path);
+            while(directories.Length==1&&Directory.GetFiles(path, "*.esp").Length==0&&Directory.GetFiles(path, "*.esm").Length==0&&Directory.GetFiles(path, "*.bsa").Length==0) {
+                directories=directories[0].Split(Path.DirectorySeparatorChar);
+                string name=directories[directories.Length-1].ToLowerInvariant();
+                if(name!="fomod"&&name!="textures"&&name!="meshes"&&name!="music"&&name!="shaders"&&name!="video"&&name!="facegen"&&name!="menus"&&name!="lodsettings"&&name!="lsdata"&&name!="sound") {
+                    foreach(string file in Directory.GetFiles(path)) {
+                        string newpath2=Path.Combine(Path.Combine(Path.GetDirectoryName(file), name), Path.GetFileName(file));
+                        if(!File.Exists(newpath2)) File.Move(file, newpath2);
+                    }
+                    path=Path.Combine(path, name);
+                    directories=Directory.GetDirectories(path);
+                } else break;
+            }
+            string[] readme=Directory.GetFiles(path, "readme - "+fomodname+".*", SearchOption.TopDirectoryOnly);
+            if(readme.Length==0) {
+                readme=Directory.GetFiles(path, "*readme*.*", SearchOption.AllDirectories);
+                if(readme.Length==0) readme=Directory.GetFiles(path, "*.rtf", SearchOption.AllDirectories);
+                if(readme.Length==0) readme=Directory.GetFiles(path, "*.txt", SearchOption.AllDirectories);
+                if(readme.Length==0) readme=Directory.GetFiles(path, "*.html", SearchOption.AllDirectories);
+                if(readme.Length>0) {
+                    File.Move(readme[0], Path.Combine(path, "Readme - "+fomodname+Path.GetExtension(readme[0])));
+                }
+            }
+            if(tesnexusext!=null) {
+                if(!Directory.Exists(Path.Combine(path, "fomod"))) Directory.CreateDirectory(Path.Combine(path, "fomod"));
+                if(!File.Exists(Path.Combine(path, "fomod\\info.xml"))) {
+                    System.Xml.XmlDocument xmlDoc=new System.Xml.XmlDocument();
+                    xmlDoc.AppendChild(xmlDoc.CreateXmlDeclaration("1.0", "UTF-16", null));
+                    System.Xml.XmlElement el, el2;
+                    xmlDoc.AppendChild(el=xmlDoc.CreateElement("fomod"));
+                    el.AppendChild(el2=xmlDoc.CreateElement("Website"));
+                    el2.InnerText=tesnexusext;
+                    xmlDoc.Save(Path.Combine(path, "fomod\\info.xml"));
+                }
+            }
+            if(Directory.GetFiles(path, "*.esp", SearchOption.AllDirectories).Length+Directory.GetFiles(path, "*.esm", SearchOption.AllDirectories).Length>
+                    Directory.GetFiles(path, "*.esp", SearchOption.TopDirectoryOnly).Length+Directory.GetFiles(path, "*.esm", SearchOption.TopDirectoryOnly).Length) {
+                if(!File.Exists(Path.Combine(path, "fomod\\script.cs"))) {
+                    MessageBox.Show("This archive contains plugins in subdirectories, and will need a script attached for fomm to install it correctly.", "Warning");
+                }
+            }
+        }
+
+        private bool CheckFomodName(ref string newpath) {
+            if(File.Exists(newpath)) {
+                string newpath2=null;
+                bool match=false;
+                for(int i=2;i<999;i++) {
+                    newpath2=Path.ChangeExtension(newpath, null)+"("+i+").fomod";
+                    if(!File.Exists(newpath2)) {
+                        match=true;
+                        break;
+                    }
+                }
+                if(!match) {
+                    MessageBox.Show("File '"+newpath+"' already exists.", "Error");
+                    return false;
+                }
+                if(MessageBox.Show("File '"+newpath+"' already exists. Continue anyway?\n"+
+                    "A new file named '"+newpath2+"' will be created", "Warning", MessageBoxButtons.YesNo)!=DialogResult.Yes) return false;
+                newpath=newpath2;
+            }
+            return true;
+        }
+
+        private void BuildFomodFromFolder(string path) {
+            path.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            string name=Path.GetFileName(path);
+            string newpath=Path.Combine(Program.PackageDir, name+".fomod");
+            CheckFomodFolder(ref path, null, name);
+            if(!CheckFomodName(ref newpath)) return;
+            ICSharpCode.SharpZipLib.Zip.FastZip fastZip=new ICSharpCode.SharpZipLib.Zip.FastZip();
+            fastZip.CreateZip(newpath, path, true, null);
+            AddFomod(newpath, true);
+        }
+
         public void AddNewFomod(string oldpath) {
             bool Repack=false;
             string newpath, tmppath=null;
@@ -332,76 +412,16 @@ namespace Fomm.PackageManager {
                 MessageBox.Show("Unknown file type", "Error");
                 return;
             }
-            string texnexusext=Path.GetFileNameWithoutExtension(newpath);
+            string tesnexusext=Path.GetFileNameWithoutExtension(newpath);
             int id;
-            if(texnexusext.Contains("-")&&int.TryParse(texnexusext.Substring(texnexusext.LastIndexOf('-')+1), out id)) {
-                newpath=Path.Combine(Path.GetDirectoryName(newpath), texnexusext.Remove(texnexusext.LastIndexOf('-')))+Path.GetExtension(newpath);
-                texnexusext=@"http://www.fallout3nexus.com/downloads/file.php?id="+id;
-            } else texnexusext=null;
-            if(File.Exists(newpath)) {
-                string newpath2=null;
-                bool match=false;
-                for(int i=2;i<999;i++) {
-                    newpath2=Path.ChangeExtension(newpath, null)+"("+i+").fomod";
-                    if(!File.Exists(newpath2)) {
-                        match=true;
-                        break;
-                    }
-                }
-                if(!match) {
-                    MessageBox.Show("File '"+newpath+"' already exists.", "Error");
-                    return;
-                }
-                if(MessageBox.Show("File '"+newpath+"' already exists. Continue anyway?\n"+
-                    "A new file named '"+newpath2+"' will be created", "Warning", MessageBoxButtons.YesNo)!=DialogResult.Yes) return;
-                newpath=newpath2;
-            }
+            if(tesnexusext.Contains("-")&&int.TryParse(tesnexusext.Substring(tesnexusext.LastIndexOf('-')+1), out id)) {
+                newpath=Path.Combine(Path.GetDirectoryName(newpath), tesnexusext.Remove(tesnexusext.LastIndexOf('-')))+Path.GetExtension(newpath);
+                tesnexusext=@"http://www.fallout3nexus.com/downloads/file.php?id="+id;
+            } else tesnexusext=null;
+            if(!CheckFomodName(ref newpath)) return;
             if(Repack) {
                 //Check for packing errors here
-                foreach(string aifile in Directory.GetFiles(tmppath, "ArchiveInvalidation.txt", SearchOption.AllDirectories)) File.Delete(aifile);
-                foreach(string aifile in Directory.GetFiles(tmppath, "thumbs.db", SearchOption.AllDirectories)) File.Delete(aifile);
-                foreach(string aifile in Directory.GetFiles(tmppath, "desktop.ini", SearchOption.AllDirectories)) File.Delete(aifile);
-                string[] directories=Directory.GetDirectories(tmppath);
-                while(directories.Length==1&&Directory.GetFiles(tmppath, "*.esp").Length==0&&Directory.GetFiles(tmppath, "*.esm").Length==0&&Directory.GetFiles(tmppath, "*.bsa").Length==0) {
-                    directories=directories[0].Split(Path.DirectorySeparatorChar);
-                    string name=directories[directories.Length-1].ToLowerInvariant();
-                    if(name!="fomod"&&name!="textures"&&name!="meshes"&&name!="music"&&name!="shaders"&&name!="video"&&name!="facegen"&&name!="menus"&&name!="lodsettings"&&name!="lsdata"&&name!="sound") {
-                        foreach(string file in Directory.GetFiles(tmppath)) {
-                            string newpath2=Path.Combine(Path.Combine(Path.GetDirectoryName(file), name), Path.GetFileName(file));
-                            if(!File.Exists(newpath2)) File.Move(file, newpath2);
-                        }
-                        tmppath=Path.Combine(tmppath, name);
-                        directories=Directory.GetDirectories(tmppath);
-                    } else break;
-                }
-                string[] readme=Directory.GetFiles(tmppath, "readme - "+Path.GetFileNameWithoutExtension(newpath)+".*", SearchOption.TopDirectoryOnly);
-                if(readme.Length==0) {
-                    readme=Directory.GetFiles(tmppath, "*readme*.*", SearchOption.AllDirectories);
-                    if(readme.Length==0) readme=Directory.GetFiles(tmppath, "*.rtf", SearchOption.AllDirectories);
-                    if(readme.Length==0) readme=Directory.GetFiles(tmppath, "*.txt", SearchOption.AllDirectories);
-                    if(readme.Length==0) readme=Directory.GetFiles(tmppath, "*.html", SearchOption.AllDirectories);
-                    if(readme.Length>0) {
-                        File.Move(readme[0], Path.Combine(tmppath, "Readme - "+Path.GetFileNameWithoutExtension(newpath)+Path.GetExtension(readme[0])));
-                    }
-                }
-                if(texnexusext!=null) {
-                    if(!Directory.Exists(Path.Combine(tmppath, "fomod"))) Directory.CreateDirectory(Path.Combine(tmppath, "fomod"));
-                    if(!File.Exists(Path.Combine(tmppath, "fomod\\info.xml"))) {
-                        System.Xml.XmlDocument xmlDoc=new System.Xml.XmlDocument();
-                        xmlDoc.AppendChild(xmlDoc.CreateXmlDeclaration("1.0", "UTF-16", null));
-                        System.Xml.XmlElement el, el2;
-                        xmlDoc.AppendChild(el=xmlDoc.CreateElement("fomod"));
-                        el.AppendChild(el2=xmlDoc.CreateElement("Website"));
-                        el2.InnerText=texnexusext;
-                        xmlDoc.Save(Path.Combine(tmppath, "fomod\\info.xml"));
-                    }
-                }
-                if(Directory.GetFiles(tmppath, "*.esp", SearchOption.AllDirectories).Length+Directory.GetFiles(tmppath, "*.esm", SearchOption.AllDirectories).Length>
-                    Directory.GetFiles(tmppath, "*.esp", SearchOption.TopDirectoryOnly).Length+Directory.GetFiles(tmppath, "*.esm", SearchOption.TopDirectoryOnly).Length) {
-                    if(!File.Exists(Path.Combine(tmppath, "fomod\\script.cs"))) {
-                        MessageBox.Show("This archive contains plugins in subdirectories, and will need a script attached for fomm to install it correctly.", "Warning");
-                    }
-                }
+                CheckFomodFolder(ref tmppath, tesnexusext, Path.GetFileNameWithoutExtension(newpath));
                 ICSharpCode.SharpZipLib.Zip.FastZip fastZip=new ICSharpCode.SharpZipLib.Zip.FastZip();
                 fastZip.CreateZip(newpath, tmppath, true, null);
             } else {
@@ -417,6 +437,14 @@ namespace Fomm.PackageManager {
         private void bAddNew_Click(object sender, EventArgs e) {
             if(openFileDialog1.ShowDialog()!=DialogResult.OK) return;
             AddNewFomod(openFileDialog1.FileName);
+        }
+
+        private void bFomodFromFolder_Click(object sender, EventArgs e) {
+            FolderBrowserDialog fbd=new FolderBrowserDialog();
+            fbd.ShowNewFolderButton=false;
+            fbd.Description="Pick a folder to convert to a fomod";
+            if(fbd.ShowDialog()!=DialogResult.OK) return;
+            BuildFomodFromFolder(fbd.SelectedPath);
         }
 
         private void fomodContextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e) {

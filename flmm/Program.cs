@@ -373,7 +373,20 @@ namespace Fomm {
                 Application.Run(new MainForm(autoLoad));
             }
 
-            if(Directory.Exists(tmpPath)) Directory.Delete(tmpPath, true);
+            if(Directory.Exists(tmpPath)) {
+                try {
+                    Directory.Delete(tmpPath, true);
+                } catch(UnauthorizedAccessException) {
+                    //someone's probably stuck a readonly file in a mod again...
+                    DirectoryInfo di=new DirectoryInfo(tmpPath);
+                    FileInfo[] fis=di.GetFiles("*", SearchOption.AllDirectories);
+                    foreach(FileInfo fi in fis) {
+                        if((fi.Attributes&FileAttributes.ReadOnly)!=0) fi.Attributes^=FileAttributes.ReadOnly;
+                        fi.Delete();
+                    }
+                    Directory.Delete(tmpPath, true);
+                }
+            }
 
             mutex.Close();
         }

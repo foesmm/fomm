@@ -9,16 +9,19 @@
 speed test: 1<<16 iterations
 
 Vec3Normalize
-sse4: 115720
-sse3: 160f08 (Side effect: Reduced accuracy)
+sse4: 0e5740
+sse3: 124210 (Side effect: Reduced accuracy, requires 8 byte alignment?)
 sse2: 1732e0 (Side effect: Doesn't handle null vectors gracefully)
 real: 1b76b8 (sse2)
 
 MatrixMultiply
+477808
 sse2: 2ef788
 real: 311ee0 (sse2)
 
-MatrixMultipleTranspose
+Can optimize if left hand matrix is symettric
+
+MatrixMultiplyTranspose
 sse2: 312968
 real: 3642d8 (sse2)
 
@@ -26,13 +29,17 @@ Vec4Transform
 sse2: 174f98
 real: 1be5e8 (sse2)
 
+Can optimize if matrix is symettric
+
 Vec3TransformNormal
 sse2: 1741e8
 real: 199eb0
 
+Can optimize if matrix is symettric
+
 PlaneNormalize
-sse4: 131bd8
-sse3: 180d08 (Side effect: Reduced accuracy)
+sse4: 1113c8
+sse3: 160220 (Side effect: Reduced accuracy)
 sse2: 1a0210 (Side effect: Doesn't handle null planes gracefully)
 real: 1fe638 (sse2)
 
@@ -41,8 +48,18 @@ sse4: 0dc578
 sse3: 10acc0
 real: 1c3ee8 - 0b0200 (inlined x87, depends on how well optimized the inline was)
 
+Would have to manually insert the sse code inline for this one. Far more trouble than it's worth...
+
 MatrixInverse
 real: 6538d8
+
+MatrixTranspose
+      In place | Copy
+x86:  147e98   | 1b17d8 (Doesn't support the input and output matricies overlapping)
+sse4: 1fd1a8   | 200538
+real: 228ad8   | 284100 (x87)
+
+Why does default d3dx use x87 if plain x86 is faster?
 */
 
 static void _declspec(naked) _stdcall sse2MatrixMultiply(D3DXMATRIX*,const D3DXMATRIX*,const D3DXMATRIX*) {
@@ -226,20 +243,16 @@ static void _declspec(naked) _stdcall sse4Vec3Normalize(D3DXVECTOR3*, const D3DX
 	_asm {
 		mov      ecx,  [esp+0x8];
 		mov      eax,  [esp+0x4];
-		movss    xmm0, [ecx];
-		movss    xmm1, [ecx+4];
-		movss    xmm2, [ecx+8];
-		unpcklps xmm0, xmm1;
-		movlhps  xmm0, xmm2;
+		movss xmm0, [ecx+8];
+		movlhps xmm0, xmm0;
+		movlps xmm0, [ecx];
 		movaps   xmm1, xmm0;
 		dpps     xmm0, xmm0, 0x7f;
 		rsqrtps  xmm0, xmm0;
 		mulps    xmm1, xmm0;
-		movss   [eax], xmm1;
-		movhlps  xmm0, xmm1;
-		shufps   xmm1, xmm1, 0x55
-		movss   [eax+8], xmm0;
-		movss   [eax+4], xmm1;
+		movlps [eax], xmm1;
+		movhlps xmm1, xmm1;
+		movss [eax+8], xmm1;
 		ret 8;
 	}
 }
@@ -249,11 +262,9 @@ static void _declspec(naked) _stdcall sse3Vec3Normalize(D3DXVECTOR3*, const D3DX
 	_asm {
 		mov ecx, [esp+0x8];
 		mov eax, [esp+0x4];
-		movss xmm0,dword ptr [ecx];
-		movss xmm1,dword ptr [ecx+4];
-		movss xmm2,dword ptr [ecx+8];
-		unpcklps xmm0, xmm1;
-		movlhps xmm0, xmm2;
+		movss xmm0, [ecx+8];
+		movlhps xmm0, xmm0;
+		movlps xmm0, [ecx];
 		movaps xmm1, xmm0;
 		mulps xmm0, xmm0;
 		haddps xmm0, xmm0;
@@ -261,15 +272,12 @@ static void _declspec(naked) _stdcall sse3Vec3Normalize(D3DXVECTOR3*, const D3DX
 		rsqrtss xmm0, xmm0;
 		shufps xmm0, xmm0, 0;
 		mulps xmm1, xmm0;
-		movss [eax], xmm1;
-		movhlps xmm0, xmm1;
-		shufps xmm1, xmm1, 0x55
-		movss [eax+8], xmm0;
-		movss [eax+4], xmm1;
+		movlps [eax], xmm1;
+		movhlps xmm1, xmm1;
+		movss [eax+8], xmm1;
 		ret 8;
 	}
 }
-
 static const DWORD norm_a=0x40400000;
 static const DWORD norm_b=0x3f000000;
 static void _declspec(naked) _stdcall sse2Vec3Normalize(D3DXVECTOR3*, const D3DXVECTOR3*) {
@@ -424,23 +432,19 @@ static void _declspec(naked) _stdcall sse4PlaneNormalize(D3DXPLANE*, const D3DXP
 	_asm {
 		mov ecx, [esp+0x8];
 		mov eax, [esp+0x4];
-		movss xmm0, [ecx];
-		movss xmm1, [ecx+0x4];
-		movss xmm2, [ecx+0x8];
+		movss xmm0, [ecx+8];
 		movss xmm3, [ecx+0xc];
-		unpcklps xmm0, xmm1;
-		movlhps xmm0, xmm2;
+		movlhps xmm0, xmm0;
+		movlps xmm0, [ecx];
 		movaps xmm1, xmm0;
 		dpps xmm0, xmm0, 0x7f;
 		rsqrtps xmm0, xmm0;
 		mulps xmm1, xmm0;
 		mulss xmm3, xmm0;
-		movss [eax], xmm1;
-		movhlps xmm0, xmm1;
-		shufps xmm1, xmm1, 0x55;
+		movlps [eax], xmm1;
 		movss [eax+0xc], xmm3;
-		movss [eax+0x8], xmm0;
-		movss [eax+0x4], xmm1;
+		movhlps xmm1, xmm1;
+		movss [eax+8], xmm1;
 		ret 8;
 	}
 }
@@ -450,12 +454,10 @@ static void _declspec(naked) _stdcall sse3PlaneNormalize(D3DXPLANE*, const D3DXP
 	_asm {
 		mov ecx, [esp+0x8];
 		mov eax, [esp+0x4];
-		movss xmm0, [ecx+0x0];
-		movss xmm1, [ecx+0x4];
-		movss xmm2, [ecx+0x8];
+		movss xmm0, [ecx+8];
 		movss xmm3, [ecx+0xc];
-		unpcklps xmm0, xmm1;
-		movlhps xmm0, xmm2;
+		movlhps xmm0, xmm0;
+		movlps xmm0, [ecx];
 		movaps xmm1, xmm0;
 		mulps xmm0, xmm0;
 		haddps xmm0, xmm0;
@@ -464,16 +466,13 @@ static void _declspec(naked) _stdcall sse3PlaneNormalize(D3DXPLANE*, const D3DXP
 		shufps xmm0, xmm0, 0;
 		mulps xmm1, xmm0;
 		mulss xmm3, xmm0;
-		movss [eax], xmm1;
-		movhlps xmm0, xmm1;
-		shufps xmm1, xmm1, 0x55;
+		movlps [eax], xmm1;
 		movss [eax+0xc], xmm3;
-		movss [eax+0x8], xmm0;
-		movss [eax+0x4], xmm1;
+		movhlps xmm1, xmm1;
+		movss [eax+8], xmm1;
 		ret 8;
 	}
 }
-
 static void _declspec(naked) _stdcall sse2PlaneNormalize(D3DXPLANE*, const D3DXPLANE*) {
 	_asm {
 		mov     ecx, [esp+0x8];
@@ -509,33 +508,114 @@ static void _declspec(naked) _stdcall sse2PlaneNormalize(D3DXPLANE*, const D3DXP
 	}
 }
 
-
-#if _MSC_VER >= 1500
-static float _declspec(naked) _stdcall sse4Vec4Dot(const D3DXVECTOR4*,const D3DXVECTOR4*) {
+static void _declspec(naked) _stdcall x86MatrixTranspose(D3DXMATRIX*,const D3DXMATRIX*) {
 	_asm {
-		mov eax, [esp+4];
-		mov ecx, [esp+8];
-		movups xmm0, [eax];
-		movups xmm1, [ecx];
-		dpps xmm0, xmm1, 0xff;
-		movss [esp+4], xmm0;
-		fld dword ptr [esp+4]
-		retn 8;
+		mov eax, [esp+0x4];
+		mov ecx, [esp+0x8];
+		cmp eax, ecx;
+		je inplace;
+		mov edx, [ecx+0x00];
+		mov [eax+0x00], edx;
+		mov edx, [ecx+0x04];
+		mov [eax+0x10], edx;
+		mov edx, [ecx+0x08];
+		mov [eax+0x20], edx;
+		mov edx, [ecx+0x0c];
+		mov [eax+0x30], edx;
+		mov edx, [ecx+0x10];
+		mov [eax+0x04], edx;
+		mov edx, [ecx+0x14];
+		mov [eax+0x14], edx;
+		mov edx, [ecx+0x18];
+		mov [eax+0x24], edx;
+		mov edx, [ecx+0x1c];
+		mov [eax+0x34], edx;
+		mov edx, [ecx+0x20];
+		mov [eax+0x08], edx;
+		mov edx, [ecx+0x24];
+		mov [eax+0x18], edx;
+		mov edx, [ecx+0x28];
+		mov [eax+0x28], edx;
+		mov edx, [ecx+0x2c];
+		mov [eax+0x38], edx;
+		mov edx, [ecx+0x30];
+		mov [eax+0x0c], edx;
+		mov edx, [ecx+0x34];
+		mov [eax+0x1c], edx;
+		mov edx, [ecx+0x38];
+		mov [eax+0x2c], edx;
+		mov edx, [ecx+0x3c];
+		mov [eax+0x3c], edx;
+		ret 8;
+inplace:
+		mov eax, [esp+0x04];
+		mov edx, [eax+0x04];
+		xchg [eax+0x10], edx;
+		mov [eax+0x04], edx;
+		mov edx, [eax+0x08];
+		xchg [eax+0x20], edx;
+		mov [eax+0x08], edx;
+		mov edx, [eax+0x0c];
+		xchg [eax+0x30], edx;
+		mov [eax+0x0c], edx;
+		mov edx, [eax+0x18];
+		xchg [eax+0x24], edx;
+		mov [eax+0x18], edx;
+		mov edx, [eax+0x1c];
+		xchg [eax+0x34], edx;
+		mov [eax+0x1c], edx;
+		mov edx, [eax+0x2c];
+		xchg [eax+0x38], edx;
+		mov [eax+0x2c], edx;
+		ret 8;
 	}
 }
-#endif
-static float _declspec(naked) _stdcall sse3Vec4Dot(const D3DXVECTOR4*,const D3DXVECTOR4*) {
+static void _declspec(naked) _stdcall x86MatrixTransposeInplace(D3DXMATRIX*,const D3DXMATRIX*) {
 	_asm {
-		mov eax, [esp+4];
-		mov ecx, [esp+8];
-		movups xmm0, [eax];
-		movups xmm1, [ecx];
-		mulps xmm0, xmm1;
-		haddps xmm0, xmm0;
-		haddps xmm0, xmm0;
-		movss [esp+4], xmm0;
-		fld dword ptr [esp+4]
-		retn 8;
+		mov eax, [esp+0x04];
+		mov edx, [eax+0x04];
+		xchg [eax+0x10], edx;
+		mov [eax+0x04], edx;
+		mov edx, [eax+0x08];
+		xchg [eax+0x20], edx;
+		mov [eax+0x08], edx;
+		mov edx, [eax+0x0c];
+		xchg [eax+0x30], edx;
+		mov [eax+0x0c], edx;
+		mov edx, [eax+0x18];
+		xchg [eax+0x24], edx;
+		mov [eax+0x18], edx;
+		mov edx, [eax+0x1c];
+		xchg [eax+0x34], edx;
+		mov [eax+0x1c], edx;
+		mov edx, [eax+0x2c];
+		xchg [eax+0x38], edx;
+		mov [eax+0x2c], edx;
+		/*mov edx, [eax+0x04];
+		mov ecx, [eax+0x10];
+		mov [eax+0x04], ecx;
+		mov [eax+0x10], edx;
+		mov edx, [eax+0x08];
+		mov ecx, [eax+0x20];
+		mov [eax+0x08], ecx;
+		mov [eax+0x20], edx;
+		mov edx, [eax+0x0c];
+		mov ecx, [eax+0x30];
+		mov [eax+0x0c], ecx;
+		mov [eax+0x30], edx;
+		mov edx, [eax+0x18];
+		mov ecx, [eax+0x24];
+		mov [eax+0x18], ecx;
+		mov [eax+0x24], edx;
+		mov edx, [eax+0x1c];
+		mov ecx, [eax+0x34];
+		mov [eax+0x1c], ecx;
+		mov [eax+0x34], edx;
+		mov edx, [eax+0x2c];
+		mov ecx, [eax+0x38];
+		mov [eax+0x2c], ecx;
+		mov [eax+0x38], edx;*/
+		ret 8;
 	}
 }
 void d3dxInit() {
@@ -545,6 +625,8 @@ void d3dxInit() {
 	void* Vec4Transform;
 	void* PlaneNormalize;
 	void* Vec3TransformNormal;
+	void* MatrixTranspose;
+	void* MatrixTransposeInplace;
 
 	DWORD ver=GetPrivateProfileIntA("d3dx", "sse", 0, ".//xlive.ini");
 
@@ -556,6 +638,8 @@ void d3dxInit() {
 		Vec4Transform=&sse2Vec4Transform;
 		PlaneNormalize=&sse4PlaneNormalize;
 		Vec3TransformNormal=&sse2Vec3TransformNormal;
+		MatrixTranspose=x86MatrixTranspose;
+		MatrixTransposeInplace=x86MatrixTransposeInplace;
 	} else
 #endif
 	if(ver>=3) {
@@ -565,6 +649,8 @@ void d3dxInit() {
 		Vec4Transform=&sse2Vec4Transform;
 		PlaneNormalize=&sse3PlaneNormalize;
 		Vec3TransformNormal=&sse2Vec3TransformNormal;
+		MatrixTranspose=x86MatrixTranspose;
+		MatrixTransposeInplace=x86MatrixTransposeInplace;
 	} else if(ver>=2) {
 		MatrixMultiply=&sse2MatrixMultiply;
 		MatrixMultiplyTranspose=&sse2MatrixMultiplyTranspose;
@@ -572,6 +658,8 @@ void d3dxInit() {
 		Vec4Transform=&sse2Vec4Transform;
 		PlaneNormalize=&sse2PlaneNormalize;
 		Vec3TransformNormal=&sse2Vec3TransformNormal;
+		MatrixTranspose=x86MatrixTranspose;
+		MatrixTransposeInplace=x86MatrixTransposeInplace;
 	} else return;
 
 	HookCall(0x494B39, MatrixMultiply);
@@ -615,5 +703,93 @@ void d3dxInit() {
 	HookCall(0xB2CAAD, Vec3TransformNormal);
 	HookCall(0xB33717, Vec3TransformNormal);
 	HookCall(0xB3E5D8, Vec3TransformNormal);
+
+	HookCall(0x494B65, MatrixTranspose); //not in place
+	HookCall(0x891AC9, MatrixTransposeInplace);
+	HookCall(0x891BFA, MatrixTransposeInplace);
+	HookCall(0x891EC8, MatrixTransposeInplace);
+	HookCall(0x8924C3, MatrixTransposeInplace);
+	HookCall(0x892D48, MatrixTransposeInplace);
+	HookCall(0x892F29, MatrixTransposeInplace);
+	HookCall(0x894CB4, MatrixTransposeInplace);
+	HookCall(0x894D2C, MatrixTransposeInplace);
+	HookCall(0x894D99, MatrixTransposeInplace);
+	HookCall(0x895162, MatrixTransposeInplace);
+	HookCall(0x898E6C, MatrixTranspose); //uncertain
+	HookCall(0x898FDE, MatrixTranspose); //uncertain
+	//HookCall(0x89907B, MatrixTranspose); //The input and output matricies overlap!
+	HookCall(0x89944C, MatrixTranspose); //uncertain
+	HookCall(0x89963B, MatrixTranspose); //uncertain
+	HookCall(0x8996DB, MatrixTranspose); //uncertain
+	HookCall(0xAFDC5E, MatrixTranspose); //uncertain
+	HookCall(0xAFDEA1, MatrixTransposeInplace);
+	HookCall(0xAFDEE6, MatrixTranspose); //not in place
+	HookCall(0xAFE4F0, MatrixTranspose); //not in place
+	HookCall(0xB2C778, MatrixTransposeInplace);
+	HookCall(0xB34DC1, MatrixTransposeInplace);
+	HookCall(0xB40A7D, MatrixTransposeInplace);
+	HookCall(0xB40ABB, MatrixTransposeInplace);
+	HookCall(0xB41563, MatrixTranspose); //not in place
 }
 
+/*
+//Can't use these because the original function gets inlined
+#if _MSC_VER >= 1500
+static float _declspec(naked) _stdcall sse4Vec4Dot(const D3DXVECTOR4*,const D3DXVECTOR4*) {
+	_asm {
+		mov eax, [esp+4];
+		mov ecx, [esp+8];
+		movups xmm0, [eax];
+		movups xmm1, [ecx];
+		dpps xmm0, xmm1, 0xff;
+		movss [esp+4], xmm0;
+		fld dword ptr [esp+4]
+		retn 8;
+	}
+}
+#endif
+static float _declspec(naked) _stdcall sse3Vec4Dot(const D3DXVECTOR4*,const D3DXVECTOR4*) {
+	_asm {
+		mov eax, [esp+4];
+		mov ecx, [esp+8];
+		movups xmm0, [eax];
+		movups xmm1, [ecx];
+		mulps xmm0, xmm1;
+		haddps xmm0, xmm0;
+		haddps xmm0, xmm0;
+		movss [esp+4], xmm0;
+		fld dword ptr [esp+4]
+		retn 8;
+	}
+}
+
+
+//A bit pointless, since x86 is faster
+static void _declspec(naked) _stdcall sse4MatrixTranspose(D3DXMATRIX*,const D3DXMATRIX*) {
+	_asm {
+		mov eax, [esp+0x4];
+		mov ecx, [esp+0x8];
+		movups xmm0, [ecx+0x00];
+		movups xmm1, [ecx+0x10];
+		movups xmm2, [ecx+0x20];
+		movups xmm3, [ecx+0x30];
+		extractps [eax+0x00], xmm0, 0;
+		extractps [eax+0x04], xmm1, 0;
+		extractps [eax+0x08], xmm2, 0;
+		extractps [eax+0x0c], xmm3, 0;
+		extractps [eax+0x10], xmm0, 1;
+		extractps [eax+0x14], xmm1, 1;
+		extractps [eax+0x18], xmm2, 1;
+		extractps [eax+0x1c], xmm3, 1;
+		extractps [eax+0x20], xmm0, 2;
+		extractps [eax+0x24], xmm1, 2;
+		extractps [eax+0x28], xmm2, 2;
+		extractps [eax+0x2c], xmm3, 2;
+		extractps [eax+0x30], xmm0, 3;
+		extractps [eax+0x34], xmm1, 3;
+		extractps [eax+0x38], xmm2, 3;
+		extractps [eax+0x3c], xmm3, 3;
+		ret 8;
+	}
+}
+*/
