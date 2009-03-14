@@ -115,7 +115,7 @@ DWORD __stdcall XShowMarketplaceUI(DWORD,DWORD,DWORD,DWORD,DWORD) {
 }
 
 void xliveInit() {
-	ProfileLen=GetPrivateProfileStringA("xlive", "Profile", "", Profile, 33, ".\\xlive.ini");
+	ProfileLen=GetPrivateProfileStringA("xlive", "profile", "", Profile, 33, ".\\xlive.ini");
 	if(ProfileLen>32) ProfileLen=0;
 	else if(ProfileLen) ProfileLen++;
 }

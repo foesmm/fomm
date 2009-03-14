@@ -28,11 +28,10 @@
             this.bApply = new System.Windows.Forms.Button();
             this.bCancel = new System.Windows.Forms.Button();
             this.tbDescription = new System.Windows.Forms.TextBox();
-            this.cbStripGeck = new System.Windows.Forms.CheckBox();
-            this.cbRemoveClutter = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.bReset = new System.Windows.Forms.Button();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            this.bXliveSettings = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // cbDisableLive
@@ -49,7 +48,7 @@
             // cbShrinkTextures
             // 
             this.cbShrinkTextures.AutoSize = true;
-            this.cbShrinkTextures.Location = new System.Drawing.Point(12, 70);
+            this.cbShrinkTextures.Location = new System.Drawing.Point(158, 47);
             this.cbShrinkTextures.Name = "cbShrinkTextures";
             this.cbShrinkTextures.Size = new System.Drawing.Size(96, 17);
             this.cbShrinkTextures.TabIndex = 1;
@@ -60,7 +59,7 @@
             // bApply
             // 
             this.bApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.bApply.Location = new System.Drawing.Point(221, 208);
+            this.bApply.Location = new System.Drawing.Point(221, 233);
             this.bApply.Name = "bApply";
             this.bApply.Size = new System.Drawing.Size(75, 23);
             this.bApply.TabIndex = 2;
@@ -71,7 +70,7 @@
             // bCancel
             // 
             this.bCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.bCancel.Location = new System.Drawing.Point(140, 208);
+            this.bCancel.Location = new System.Drawing.Point(140, 233);
             this.bCancel.Name = "bCancel";
             this.bCancel.Size = new System.Drawing.Size(75, 23);
             this.bCancel.TabIndex = 3;
@@ -85,36 +84,12 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tbDescription.BackColor = System.Drawing.SystemColors.Window;
-            this.tbDescription.Location = new System.Drawing.Point(12, 93);
+            this.tbDescription.Location = new System.Drawing.Point(12, 99);
             this.tbDescription.Multiline = true;
             this.tbDescription.Name = "tbDescription";
             this.tbDescription.ReadOnly = true;
-            this.tbDescription.Size = new System.Drawing.Size(284, 109);
+            this.tbDescription.Size = new System.Drawing.Size(284, 128);
             this.tbDescription.TabIndex = 4;
-            // 
-            // cbStripGeck
-            // 
-            this.cbStripGeck.AutoSize = true;
-            this.cbStripGeck.Enabled = false;
-            this.cbStripGeck.Location = new System.Drawing.Point(151, 70);
-            this.cbStripGeck.Name = "cbStripGeck";
-            this.cbStripGeck.Size = new System.Drawing.Size(98, 17);
-            this.cbStripGeck.TabIndex = 5;
-            this.cbStripGeck.Text = "Geck data strip";
-            this.cbStripGeck.UseVisualStyleBackColor = true;
-            this.cbStripGeck.CheckedChanged += new System.EventHandler(this.cbStripGeck_CheckedChanged);
-            // 
-            // cbRemoveClutter
-            // 
-            this.cbRemoveClutter.AutoSize = true;
-            this.cbRemoveClutter.Enabled = false;
-            this.cbRemoveClutter.Location = new System.Drawing.Point(151, 47);
-            this.cbRemoveClutter.Name = "cbRemoveClutter";
-            this.cbRemoveClutter.Size = new System.Drawing.Size(98, 17);
-            this.cbRemoveClutter.TabIndex = 6;
-            this.cbRemoveClutter.Text = "Remove clutter";
-            this.cbRemoveClutter.UseVisualStyleBackColor = true;
-            this.cbRemoveClutter.CheckedChanged += new System.EventHandler(this.cbRemoveClutter_CheckedChanged);
             // 
             // label1
             // 
@@ -129,7 +104,7 @@
             // bReset
             // 
             this.bReset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.bReset.Location = new System.Drawing.Point(12, 208);
+            this.bReset.Location = new System.Drawing.Point(12, 233);
             this.bReset.Name = "bReset";
             this.bReset.Size = new System.Drawing.Size(75, 23);
             this.bReset.TabIndex = 8;
@@ -143,15 +118,25 @@
             this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
             this.backgroundWorker1.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker1_ProgressChanged);
             // 
+            // bXliveSettings
+            // 
+            this.bXliveSettings.Enabled = false;
+            this.bXliveSettings.Location = new System.Drawing.Point(12, 70);
+            this.bXliveSettings.Name = "bXliveSettings";
+            this.bXliveSettings.Size = new System.Drawing.Size(75, 23);
+            this.bXliveSettings.TabIndex = 9;
+            this.bXliveSettings.Text = "Settings";
+            this.bXliveSettings.UseVisualStyleBackColor = true;
+            this.bXliveSettings.Click += new System.EventHandler(this.bXliveSettings_Click);
+            // 
             // InstallationTweaker
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(308, 243);
+            this.ClientSize = new System.Drawing.Size(308, 268);
+            this.Controls.Add(this.bXliveSettings);
             this.Controls.Add(this.bReset);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.cbRemoveClutter);
-            this.Controls.Add(this.cbStripGeck);
             this.Controls.Add(this.tbDescription);
             this.Controls.Add(this.bCancel);
             this.Controls.Add(this.bApply);
@@ -172,10 +157,9 @@
         private System.Windows.Forms.Button bApply;
         private System.Windows.Forms.Button bCancel;
         private System.Windows.Forms.TextBox tbDescription;
-        private System.Windows.Forms.CheckBox cbStripGeck;
-        private System.Windows.Forms.CheckBox cbRemoveClutter;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button bReset;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
+        private System.Windows.Forms.Button bXliveSettings;
     }
 }

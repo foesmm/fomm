@@ -84,7 +84,6 @@ namespace ICSharpCode.SharpZipLib.Zip {
         /// <param name="directoryFilter">The <see cref="PathFilter">directory filter</see> to apply.</param>
         public void CreateZip(Stream outputStream, string sourceDirectory, bool recurse, string fileFilter, string directoryFilter) {
             entryFactory_.NameTransform = new ZipNameTransform(sourceDirectory);
-
             using(outputStream_ = new ZipOutputStream(outputStream)) {
 
                 FileSystemScanner scanner = new FileSystemScanner(fileFilter, directoryFilter);

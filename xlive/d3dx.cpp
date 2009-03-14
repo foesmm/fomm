@@ -238,7 +238,6 @@ static void _declspec(naked) _stdcall sse2MatrixMultiplyTranspose(D3DXMATRIX*,co
 	}
 }
 
-#if _MSC_VER >= 1500
 static void _declspec(naked) _stdcall sse4Vec3Normalize(D3DXVECTOR3*, const D3DXVECTOR3*) {
 	_asm {
 		mov      ecx,  [esp+0x8];
@@ -247,7 +246,16 @@ static void _declspec(naked) _stdcall sse4Vec3Normalize(D3DXVECTOR3*, const D3DX
 		movlhps xmm0, xmm0;
 		movlps xmm0, [ecx];
 		movaps   xmm1, xmm0;
+#if _MSC_VER >= 1500
 		dpps     xmm0, xmm0, 0x7f;
+#else
+		_emit 0x66;
+		_emit 0x0f;
+		_emit 0x3a;
+		_emit 0x40;
+		_emit 0xc0;
+		_emit 0x7f;
+#endif
 		rsqrtps  xmm0, xmm0;
 		mulps    xmm1, xmm0;
 		movlps [eax], xmm1;
@@ -256,7 +264,6 @@ static void _declspec(naked) _stdcall sse4Vec3Normalize(D3DXVECTOR3*, const D3DX
 		ret 8;
 	}
 }
-#endif
 
 static void _declspec(naked) _stdcall sse3Vec3Normalize(D3DXVECTOR3*, const D3DXVECTOR3*) {
 	_asm {
@@ -427,7 +434,6 @@ end:
 	}
 }
 
-#if _MSC_VER >= 1500
 static void _declspec(naked) _stdcall sse4PlaneNormalize(D3DXPLANE*, const D3DXPLANE*) {
 	_asm {
 		mov ecx, [esp+0x8];
@@ -437,7 +443,16 @@ static void _declspec(naked) _stdcall sse4PlaneNormalize(D3DXPLANE*, const D3DXP
 		movlhps xmm0, xmm0;
 		movlps xmm0, [ecx];
 		movaps xmm1, xmm0;
-		dpps xmm0, xmm0, 0x7f;
+#if _MSC_VER >= 1500
+		dpps     xmm0, xmm0, 0x7f;
+#else
+		_emit 0x66;
+		_emit 0x0f;
+		_emit 0x3a;
+		_emit 0x40;
+		_emit 0xc0;
+		_emit 0x7f;
+#endif
 		rsqrtps xmm0, xmm0;
 		mulps xmm1, xmm0;
 		mulss xmm3, xmm0;
@@ -448,7 +463,6 @@ static void _declspec(naked) _stdcall sse4PlaneNormalize(D3DXPLANE*, const D3DXP
 		ret 8;
 	}
 }
-#endif
 
 static void _declspec(naked) _stdcall sse3PlaneNormalize(D3DXPLANE*, const D3DXPLANE*) {
 	_asm {
@@ -548,50 +562,7 @@ static void _declspec(naked) _stdcall x86MatrixTranspose(D3DXMATRIX*,const D3DXM
 		mov [eax+0x3c], edx;
 		ret 8;
 inplace:
-		mov eax, [esp+0x04];
 		mov edx, [eax+0x04];
-		xchg [eax+0x10], edx;
-		mov [eax+0x04], edx;
-		mov edx, [eax+0x08];
-		xchg [eax+0x20], edx;
-		mov [eax+0x08], edx;
-		mov edx, [eax+0x0c];
-		xchg [eax+0x30], edx;
-		mov [eax+0x0c], edx;
-		mov edx, [eax+0x18];
-		xchg [eax+0x24], edx;
-		mov [eax+0x18], edx;
-		mov edx, [eax+0x1c];
-		xchg [eax+0x34], edx;
-		mov [eax+0x1c], edx;
-		mov edx, [eax+0x2c];
-		xchg [eax+0x38], edx;
-		mov [eax+0x2c], edx;
-		ret 8;
-	}
-}
-static void _declspec(naked) _stdcall x86MatrixTransposeInplace(D3DXMATRIX*,const D3DXMATRIX*) {
-	_asm {
-		mov eax, [esp+0x04];
-		mov edx, [eax+0x04];
-		xchg [eax+0x10], edx;
-		mov [eax+0x04], edx;
-		mov edx, [eax+0x08];
-		xchg [eax+0x20], edx;
-		mov [eax+0x08], edx;
-		mov edx, [eax+0x0c];
-		xchg [eax+0x30], edx;
-		mov [eax+0x0c], edx;
-		mov edx, [eax+0x18];
-		xchg [eax+0x24], edx;
-		mov [eax+0x18], edx;
-		mov edx, [eax+0x1c];
-		xchg [eax+0x34], edx;
-		mov [eax+0x1c], edx;
-		mov edx, [eax+0x2c];
-		xchg [eax+0x38], edx;
-		mov [eax+0x2c], edx;
-		/*mov edx, [eax+0x04];
 		mov ecx, [eax+0x10];
 		mov [eax+0x04], ecx;
 		mov [eax+0x10], edx;
@@ -614,7 +585,36 @@ static void _declspec(naked) _stdcall x86MatrixTransposeInplace(D3DXMATRIX*,cons
 		mov edx, [eax+0x2c];
 		mov ecx, [eax+0x38];
 		mov [eax+0x2c], ecx;
-		mov [eax+0x38], edx;*/
+		mov [eax+0x38], edx;
+		ret 8;
+	}
+}
+static void _declspec(naked) _stdcall x86MatrixTransposeInplace(D3DXMATRIX*,const D3DXMATRIX*) {
+	_asm {
+		mov edx, [eax+0x04];
+		mov ecx, [eax+0x10];
+		mov [eax+0x04], ecx;
+		mov [eax+0x10], edx;
+		mov edx, [eax+0x08];
+		mov ecx, [eax+0x20];
+		mov [eax+0x08], ecx;
+		mov [eax+0x20], edx;
+		mov edx, [eax+0x0c];
+		mov ecx, [eax+0x30];
+		mov [eax+0x0c], ecx;
+		mov [eax+0x30], edx;
+		mov edx, [eax+0x18];
+		mov ecx, [eax+0x24];
+		mov [eax+0x18], ecx;
+		mov [eax+0x24], edx;
+		mov edx, [eax+0x1c];
+		mov ecx, [eax+0x34];
+		mov [eax+0x1c], ecx;
+		mov [eax+0x34], edx;
+		mov edx, [eax+0x2c];
+		mov ecx, [eax+0x38];
+		mov [eax+0x2c], ecx;
+		mov [eax+0x38], edx;
 		ret 8;
 	}
 }
@@ -630,7 +630,6 @@ void d3dxInit() {
 
 	DWORD ver=GetPrivateProfileIntA("d3dx", "sse", 0, ".//xlive.ini");
 
-#if _MSC_VER >= 1500
 	if(ver>=4) {
 		MatrixMultiply=&sse2MatrixMultiply;
 		MatrixMultiplyTranspose=&sse2MatrixMultiplyTranspose;
@@ -641,7 +640,6 @@ void d3dxInit() {
 		MatrixTranspose=x86MatrixTranspose;
 		MatrixTransposeInplace=x86MatrixTransposeInplace;
 	} else
-#endif
 	if(ver>=3) {
 		MatrixMultiply=&sse2MatrixMultiply;
 		MatrixMultiplyTranspose=&sse2MatrixMultiplyTranspose;
@@ -790,6 +788,31 @@ static void _declspec(naked) _stdcall sse4MatrixTranspose(D3DXMATRIX*,const D3DX
 		extractps [eax+0x38], xmm2, 3;
 		extractps [eax+0x3c], xmm3, 3;
 		ret 8;
+	}
+}
+
+//Runs about 1/5 of the speed of standard mov's
+static void _declspec(naked) _stdcall x86MatrixTransposeInplace(D3DXMATRIX*,const D3DXMATRIX*) {
+	_asm {
+		mov eax, [esp+0x04];
+		mov edx, [eax+0x04];
+		xchg [eax+0x10], edx;
+		mov [eax+0x04], edx;
+		mov edx, [eax+0x08];
+		xchg [eax+0x20], edx;
+		mov [eax+0x08], edx;
+		mov edx, [eax+0x0c];
+		xchg [eax+0x30], edx;
+		mov [eax+0x0c], edx;
+		mov edx, [eax+0x18];
+		xchg [eax+0x24], edx;
+		mov [eax+0x18], edx;
+		mov edx, [eax+0x1c];
+		xchg [eax+0x34], edx;
+		mov [eax+0x1c], edx;
+		mov edx, [eax+0x2c];
+		xchg [eax+0x38], edx;
+		mov [eax+0x2c], edx;
 	}
 }
 */

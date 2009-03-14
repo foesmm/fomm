@@ -11,26 +11,35 @@ namespace Fomm.InstallTweaker {
         private static readonly string bsaBackup=Path.Combine(BackupPath, "Fallout - Textures.bsa");
         private static readonly string xlivePath=Path.Combine(Program.exeDir, "fomm\\xlive.dll");
 
+        private readonly bool Initing=true;
+
         public InstallationTweaker() {
             InitializeComponent();
-            if(Directory.Exists(BackupPath)) bApply.Enabled=false;
-            else bReset.Enabled=false;
+            if(Directory.Exists(BackupPath)) {
+                if(File.Exists("xlive.dll")) {
+                    cbDisableLive.Checked=true;
+                    bXliveSettings.Enabled=true;
+                }
+                if(File.Exists(bsaBackup)) cbShrinkTextures.Checked=true;
+                bApply.Enabled=false;
+            } else bReset.Enabled=false;
+            Initing=false;
         }
 
         private void cbDisableLive_CheckedChanged(object sender, EventArgs e) {
-            if(backgroundWorker1.IsBusy) return;
+            if(backgroundWorker1.IsBusy||Initing) return;
             tbDescription.Text="Disable windows live"+Environment.NewLine+"Prevents fallout from loading xlive.dll at all"+Environment.NewLine+
                 "Improves program startup time"+Environment.NewLine+"Do not use if you use any of the windows live features";
         }
 
         private void cbShrinkTextures_CheckedChanged(object sender, EventArgs e) {
-            if(backgroundWorker1.IsBusy) return;
+            if(backgroundWorker1.IsBusy||Initing) return;
             tbDescription.Text="Repacks the textures bsa after stripping the top mipmap from all non-interface textures"+Environment.NewLine+
                 "Improves loading times"+Environment.NewLine+"Do not use if you normally have texture size set to large"+Environment.NewLine+
                 "After checking this, change textures to medium if you normally use small or large if you normally use medium to keep the same visual quality.";
         }
 
-        private void cbRemoveClutter_CheckedChanged(object sender, EventArgs e) {
+        /*private void cbRemoveClutter_CheckedChanged(object sender, EventArgs e) {
             if(backgroundWorker1.IsBusy) return;
             tbDescription.Text="Removes all references to some types of useless clutter from fallout3.esm"+Environment.NewLine+
                 "Improves loading times and fps in any affected cells";
@@ -42,17 +51,18 @@ namespace Fomm.InstallTweaker {
                 "Slightly improves startup time and loading times"+Environment.NewLine+
                 "Do not check this option if you plan to use the geck or other tools to create your own mods"+Environment.NewLine+
                 "Does not effect your use of any third party mods";
-        }
+        }*/
 
         private void bCancel_Click(object sender, EventArgs e) {
             Close();
         }
 
         private void bApply_Click(object sender, EventArgs e) {
+            if(cbDisableLive.Checked) bXliveSettings.Enabled=true;
             WorkerArgs args=new WorkerArgs();
             args.xlive=cbDisableLive.Checked;
-            args.stripedids=cbStripGeck.Checked;
-            args.striprefs=cbRemoveClutter.Checked;
+            //args.stripedids=cbStripGeck.Checked;
+            //args.striprefs=cbRemoveClutter.Checked;
             args.trimbsa=cbShrinkTextures.Checked;
             args.hwnd=this.Handle;
             tbDescription.Text="";
@@ -70,6 +80,7 @@ namespace Fomm.InstallTweaker {
                 return;
             }
             File.Delete("xlive.dll");
+            File.Delete("xlive.ini");
             if(File.Exists(esmBackup)) {
                 File.Delete("data\\fallout3.esm");
                 File.Move(esmBackup, "data\\fallout3.esm");
@@ -81,12 +92,13 @@ namespace Fomm.InstallTweaker {
             Directory.Delete(BackupPath, true);
             bReset.Enabled=false;
             bApply.Enabled=true;
+            bXliveSettings.Enabled=false;
         }
 
         private struct WorkerArgs {
             public bool xlive;
-            public bool stripedids;
-            public bool striprefs;
+            //public bool stripedids;
+            //public bool striprefs;
             public bool trimbsa;
             public IntPtr hwnd;
         }
@@ -102,11 +114,11 @@ namespace Fomm.InstallTweaker {
                 backgroundWorker1.ReportProgress(0, "Copying fake xlive.dll");
                 File.Copy(xlivePath, "xlive.dll");
             }
-            if(cbRemoveClutter.Checked||cbStripGeck.Checked) {
+            /*if(cbRemoveClutter.Checked||cbStripGeck.Checked) {
                 backgroundWorker1.ReportProgress(0, "Parsing fallout3.esm");
                 File.Move("data\\fallout3.esm", esmBackup);
                 EsmTrimmer.Trim(cbStripGeck.Checked, cbRemoveClutter.Checked, esmBackup, "data\\fallout3.esm", ReportProgress);
-            }
+            }*/
             if(cbShrinkTextures.Checked) {
                 backgroundWorker1.ReportProgress(0, "Parsing Fallout - Textures.bsa");
                 File.Move("data\\Fallout - Textures.bsa", bsaBackup);
@@ -133,6 +145,10 @@ namespace Fomm.InstallTweaker {
                 MessageBox.Show("Wait until tweaker has finished running before closing the form", "Error");
                 e.Cancel=true;
             }
+        }
+
+        private void bXliveSettings_Click(object sender, EventArgs e) {
+            (new xliveSettings()).ShowDialog();
         }
     }
 }

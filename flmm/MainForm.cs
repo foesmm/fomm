@@ -480,5 +480,13 @@ namespace Fomm {
             }
             RefreshIndexCounts();
         }
+
+        private void bInstallTweaker_Click(object sender, EventArgs e) {
+            if(PackageManagerForm!=null) {
+                MessageBox.Show("Please close the package manager before running the install tweaker");
+                return;
+            }
+            (new InstallTweaker.InstallationTweaker()).ShowDialog();
+        }
     }
 }
