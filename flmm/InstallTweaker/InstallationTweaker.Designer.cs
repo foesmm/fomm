@@ -39,11 +39,11 @@
             this.cbDisableLive.AutoSize = true;
             this.cbDisableLive.Location = new System.Drawing.Point(12, 47);
             this.cbDisableLive.Name = "cbDisableLive";
-            this.cbDisableLive.Size = new System.Drawing.Size(84, 17);
+            this.cbDisableLive.Size = new System.Drawing.Size(106, 17);
             this.cbDisableLive.TabIndex = 0;
-            this.cbDisableLive.Text = "Disable Live";
+            this.cbDisableLive.Text = "Use fake xlive dll";
             this.cbDisableLive.UseVisualStyleBackColor = true;
-            this.cbDisableLive.CheckedChanged += new System.EventHandler(this.cbDisableLive_CheckedChanged);
+            this.cbDisableLive.MouseEnter += new System.EventHandler(this.cbDisableLive_MouseEnter);
             // 
             // cbShrinkTextures
             // 
@@ -54,7 +54,7 @@
             this.cbShrinkTextures.TabIndex = 1;
             this.cbShrinkTextures.Text = "Shrink textures";
             this.cbShrinkTextures.UseVisualStyleBackColor = true;
-            this.cbShrinkTextures.CheckedChanged += new System.EventHandler(this.cbShrinkTextures_CheckedChanged);
+            this.cbShrinkTextures.MouseEnter += new System.EventHandler(this.cbShrinkTextures_MouseEnter);
             // 
             // bApply
             // 

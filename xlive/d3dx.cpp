@@ -19,8 +19,6 @@ MatrixMultiply
 sse2: 2ef788
 real: 311ee0 (sse2)
 
-Can optimize if left hand matrix is symettric
-
 MatrixMultiplyTranspose
 sse2: 312968
 real: 3642d8 (sse2)
@@ -55,6 +53,7 @@ real: 6538d8
 
 MatrixTranspose
       In place | Copy
+x86b: 13fdd8   | NA     (Only used where we know beforehand both arguments are the same)
 x86:  147e98   | 1b17d8 (Doesn't support the input and output matricies overlapping)
 sse4: 1fd1a8   | 200538
 real: 228ad8   | 284100 (x87)
@@ -628,37 +627,44 @@ void d3dxInit() {
 	void* MatrixTranspose;
 	void* MatrixTransposeInplace;
 
+	if(*(DWORD*)0xAFDEE6 != 0x121f1fe8) return;
+
 	DWORD ver=GetPrivateProfileIntA("d3dx", "sse", 0, ".//xlive.ini");
 
-	if(ver>=4) {
-		MatrixMultiply=&sse2MatrixMultiply;
-		MatrixMultiplyTranspose=&sse2MatrixMultiplyTranspose;
-		Vec3Normalize=&sse4Vec3Normalize;
-		Vec4Transform=&sse2Vec4Transform;
-		PlaneNormalize=&sse4PlaneNormalize;
-		Vec3TransformNormal=&sse2Vec3TransformNormal;
-		MatrixTranspose=x86MatrixTranspose;
-		MatrixTransposeInplace=x86MatrixTransposeInplace;
-	} else
-	if(ver>=3) {
-		MatrixMultiply=&sse2MatrixMultiply;
-		MatrixMultiplyTranspose=&sse2MatrixMultiplyTranspose;
-		Vec3Normalize=&sse3Vec3Normalize;
-		Vec4Transform=&sse2Vec4Transform;
-		PlaneNormalize=&sse3PlaneNormalize;
-		Vec3TransformNormal=&sse2Vec3TransformNormal;
-		MatrixTranspose=x86MatrixTranspose;
-		MatrixTransposeInplace=x86MatrixTransposeInplace;
-	} else if(ver>=2) {
-		MatrixMultiply=&sse2MatrixMultiply;
-		MatrixMultiplyTranspose=&sse2MatrixMultiplyTranspose;
-		Vec3Normalize=&sse2Vec3Normalize;
-		Vec4Transform=&sse2Vec4Transform;
-		PlaneNormalize=&sse2PlaneNormalize;
-		Vec3TransformNormal=&sse2Vec3TransformNormal;
-		MatrixTranspose=x86MatrixTranspose;
-		MatrixTransposeInplace=x86MatrixTransposeInplace;
-	} else return;
+	switch(ver) {
+		case 4:
+			MatrixMultiply=&sse2MatrixMultiply;
+			MatrixMultiplyTranspose=&sse2MatrixMultiplyTranspose;
+			Vec3Normalize=&sse4Vec3Normalize;
+			Vec4Transform=&sse2Vec4Transform;
+			PlaneNormalize=&sse4PlaneNormalize;
+			Vec3TransformNormal=&sse2Vec3TransformNormal;
+			MatrixTranspose=x86MatrixTranspose;
+			MatrixTransposeInplace=x86MatrixTransposeInplace;
+			break;
+		case 3:
+			MatrixMultiply=&sse2MatrixMultiply;
+			MatrixMultiplyTranspose=&sse2MatrixMultiplyTranspose;
+			Vec3Normalize=&sse3Vec3Normalize;
+			Vec4Transform=&sse2Vec4Transform;
+			PlaneNormalize=&sse3PlaneNormalize;
+			Vec3TransformNormal=&sse2Vec3TransformNormal;
+			MatrixTranspose=x86MatrixTranspose;
+			MatrixTransposeInplace=x86MatrixTransposeInplace;
+			break;
+		case 2:
+			MatrixMultiply=&sse2MatrixMultiply;
+			MatrixMultiplyTranspose=&sse2MatrixMultiplyTranspose;
+			Vec3Normalize=&sse2Vec3Normalize;
+			Vec4Transform=&sse2Vec4Transform;
+			PlaneNormalize=&sse2PlaneNormalize;
+			Vec3TransformNormal=&sse2Vec3TransformNormal;
+			MatrixTranspose=x86MatrixTranspose;
+			MatrixTransposeInplace=x86MatrixTransposeInplace;
+			break;
+		default:
+			return;
+	}
 
 	HookCall(0x494B39, MatrixMultiply);
 	HookCall(0x8727D4, MatrixMultiply);

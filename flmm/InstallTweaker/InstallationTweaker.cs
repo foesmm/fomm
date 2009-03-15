@@ -26,20 +26,16 @@ namespace Fomm.InstallTweaker {
             Initing=false;
         }
 
-        private void cbDisableLive_CheckedChanged(object sender, EventArgs e) {
+        /*private void cbDisableLive_CheckedChanged(object sender, EventArgs e) {
             if(backgroundWorker1.IsBusy||Initing) return;
-            tbDescription.Text="Disable windows live"+Environment.NewLine+"Prevents fallout from loading xlive.dll at all"+Environment.NewLine+
-                "Improves program startup time"+Environment.NewLine+"Do not use if you use any of the windows live features";
         }
 
         private void cbShrinkTextures_CheckedChanged(object sender, EventArgs e) {
             if(backgroundWorker1.IsBusy||Initing) return;
-            tbDescription.Text="Repacks the textures bsa after stripping the top mipmap from all non-interface textures"+Environment.NewLine+
-                "Improves loading times"+Environment.NewLine+"Do not use if you normally have texture size set to large"+Environment.NewLine+
-                "After checking this, change textures to medium if you normally use small or large if you normally use medium to keep the same visual quality.";
+            
         }
 
-        /*private void cbRemoveClutter_CheckedChanged(object sender, EventArgs e) {
+        private void cbRemoveClutter_CheckedChanged(object sender, EventArgs e) {
             if(backgroundWorker1.IsBusy) return;
             tbDescription.Text="Removes all references to some types of useless clutter from fallout3.esm"+Environment.NewLine+
                 "Improves loading times and fps in any affected cells";
@@ -112,6 +108,7 @@ namespace Fomm.InstallTweaker {
             Directory.CreateDirectory(BackupPath);
             if(cbDisableLive.Checked) {
                 backgroundWorker1.ReportProgress(0, "Copying fake xlive.dll");
+                if(File.Exists("xlive.dll")) File.Delete("xlive.dll"); //In case people are using Quarn's mod
                 File.Copy(xlivePath, "xlive.dll");
             }
             /*if(cbRemoveClutter.Checked||cbStripGeck.Checked) {
@@ -149,6 +146,19 @@ namespace Fomm.InstallTweaker {
 
         private void bXliveSettings_Click(object sender, EventArgs e) {
             (new xliveSettings()).ShowDialog();
+        }
+
+        private void cbDisableLive_MouseEnter(object sender, EventArgs e) {
+            tbDescription.Text="Installs a fake version of the games for windows live dll"+Environment.NewLine+"Prevents fallout from loading the real xlive.dll at all, and enables some extra code patching options that require disabling g4wl's hash checking"+Environment.NewLine+
+                "Improves program startup time, and possibly fps"+Environment.NewLine+"Do not use if you use DLC or want achievements"+Environment.NewLine+
+                "Additional code patching options can be accessed by clicking 'settings'"+Environment.NewLine+
+                "The save games associated with g4wl profiles can still be accessed by clicking settings and using an offline profile";
+        }
+
+        private void cbShrinkTextures_MouseEnter(object sender, EventArgs e) {
+            tbDescription.Text="Repacks the textures bsa after stripping the top mipmap from all non-interface textures"+Environment.NewLine+
+                "Improves loading times"+Environment.NewLine+"Do not use if you normally have texture size set to large"+Environment.NewLine+
+                "After checking this, change textures to medium if you normally use small or large if you normally use medium to keep the same visual quality.";
         }
     }
 }
