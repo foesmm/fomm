@@ -37,6 +37,7 @@
   <ItemGroup>
     <Compile Include="BaseScript.cs" />
     <Compile Include="fommScript.cs" />
+    <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

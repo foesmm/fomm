@@ -104,5 +104,23 @@ namespace fomm.Scripting {
         public static string GetLastError() { return ScriptFunctions.GetLastError(); }
 
         public static System.Windows.Forms.Form CreateCustomForm() { return ScriptFunctions.CreateCustomForm(); }
+
+        public static void SetupScriptCompiler(Plugin[] plugins) {
+            Fomm.TESsnip.Plugin[] bplugins=new Fomm.TESsnip.Plugin[plugins.Length];
+            for(int i=0;i<plugins.Length;i++) bplugins[i]=plugins[i].Base;
+            ScriptFunctions.SetupScriptCompiler(bplugins);
+        }
+        public static void CompileResultScript(SubRecord sr, out Record r2, out string msg) {
+            Fomm.TESsnip.Record r;
+            ScriptFunctions.CompileResultScript(sr.Base, out r, out msg);
+            if(r!=null) {
+                r2=new Record(r);
+            } else r2=null;
+        }
+        public static void CompileScript(Record r2, out string msg) {
+            ScriptFunctions.CompileScript(r2.Base, out msg);
+            r2.SubRecords.Clear();
+            for(int i=0;i<r2.Base.SubRecords.Count;i++) r2.SubRecords.Add(new SubRecord(r2.Base.SubRecords[i]));
+        }
     }
 }

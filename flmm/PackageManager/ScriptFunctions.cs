@@ -599,5 +599,16 @@ namespace Fomm.PackageManager {
             permissions.Assert();
             return new Form();
         }
+
+        public static void SetupScriptCompiler(Fomm.TESsnip.Plugin[] plugins) {
+            permissions.Assert();
+            Fomm.ScriptCompiler.ScriptCompiler.Setup(plugins);
+        }
+        public static void CompileResultScript(Fomm.TESsnip.SubRecord sr, out Fomm.TESsnip.Record r2, out string msg) {
+            Fomm.ScriptCompiler.ScriptCompiler.CompileResultScript(sr, out r2, out msg);
+        }
+        public static void CompileScript(Fomm.TESsnip.Record r2, out string msg) {
+            Fomm.ScriptCompiler.ScriptCompiler.Compile(r2, out msg);
+        }
     }
 }

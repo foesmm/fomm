@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 
 namespace Fomm.TESsnip {
-    internal class TESParserException : Exception { public TESParserException(string msg) : base(msg) { } }
+    public class TESParserException : Exception { public TESParserException(string msg) : base(msg) { } }
 
-    internal abstract class BaseRecord {
+    public abstract class BaseRecord {
         public string Name;
 
         public abstract long Size { get; }
@@ -52,8 +52,8 @@ namespace Fomm.TESsnip {
         public abstract string GetDesc();
         public abstract void DeleteRecord(BaseRecord br);
         public abstract void AddRecord(BaseRecord br);
-        public abstract List<string> GetIDs(bool lower);
-        public abstract void SaveData(BinaryWriter bw);
+        internal abstract List<string> GetIDs(bool lower);
+        internal abstract void SaveData(BinaryWriter bw);
 
         private static readonly byte[] RecByte=new byte[4];
         protected static string ReadRecName(BinaryReader br) {
@@ -69,7 +69,7 @@ namespace Fomm.TESsnip {
         public abstract BaseRecord Clone();
     }
 
-    internal sealed class Plugin : BaseRecord {
+    public sealed class Plugin : BaseRecord {
         public readonly List<Rec> Records = new List<Rec>();
 
         public override long Size {
@@ -135,7 +135,16 @@ namespace Fomm.TESsnip {
             }
         }
 
-        public Plugin(string FilePath, bool headerOnly) {
+        public Plugin(byte[] data, string name) {
+            Name=name;
+            BinaryReader br=new BinaryReader(new MemoryStream(data));
+            try {
+                LoadPlugin(br, false);
+            } finally {
+                br.Close();
+            }
+        }
+        internal Plugin(string FilePath, bool headerOnly) {
             Name=Path.GetFileName(FilePath);
             FileInfo fi=new FileInfo(FilePath);
             BinaryReader br=new BinaryReader(fi.OpenRead());
@@ -156,7 +165,16 @@ namespace Fomm.TESsnip {
                 "Records: "+Records.Count;
         }
 
-        public void Save(string FilePath) {
+        public byte[] Save() {
+            MemoryStream ms=new MemoryStream();
+            BinaryWriter bw=new BinaryWriter(ms);
+            SaveData(bw);
+            byte[] b=ms.ToArray();
+            bw.Close();
+            return b;
+        }
+
+        internal void Save(string FilePath) {
             bool existed=false;
             DateTime timestamp=DateTime.Now;
             if(File.Exists(FilePath)) {
@@ -178,27 +196,27 @@ namespace Fomm.TESsnip {
             } catch { }
         }
 
-        public override void SaveData(BinaryWriter bw) {
+        internal override void SaveData(BinaryWriter bw) {
             foreach(Rec r in Records) r.SaveData(bw);
         }
 
-        public override List<string> GetIDs(bool lower) {
+        internal override List<string> GetIDs(bool lower) {
             List<string> list= new List<string>();
             foreach(Rec r in Records) list.AddRange(r.GetIDs(lower));
             return list;
         }
 
         public override BaseRecord Clone() {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException("The method or operation is not implemented.");
         }
     }
 
-    internal abstract class Rec : BaseRecord {
+    public abstract class Rec : BaseRecord {
         public string descriptiveName;
         public string DescriptiveName { get { return descriptiveName==null?Name:(Name+descriptiveName); } }
     }
 
-    internal sealed class GroupRecord : Rec {
+    public sealed class GroupRecord : Rec {
         public readonly List<Rec> Records=new List<Rec>();
         private readonly byte[] data;
         public uint groupType;
@@ -226,7 +244,7 @@ namespace Fomm.TESsnip {
             Records.Add(r);
         }
 
-        public GroupRecord(uint Size, BinaryReader br, bool Oblivion) {
+        internal GroupRecord(uint Size, BinaryReader br, bool Oblivion) {
             Name="GRUP";
             data=br.ReadBytes(4);
             groupType=br.ReadUInt32();
@@ -339,7 +357,7 @@ namespace Fomm.TESsnip {
                 "Size: "+Size.ToString()+" bytes (including header)";
         }
 
-        public override void SaveData(BinaryWriter bw) {
+        internal override void SaveData(BinaryWriter bw) {
             WriteString(bw, "GRUP");
             bw.Write((uint)Size);
             bw.Write(data);
@@ -349,7 +367,7 @@ namespace Fomm.TESsnip {
             foreach(Rec r in Records) r.SaveData(bw);
         }
 
-        public override List<string> GetIDs(bool lower) {
+        internal override List<string> GetIDs(bool lower) {
             List<string> list= new List<string>();
             foreach(Record r in Records) list.AddRange(r.GetIDs(lower));
             return list;
@@ -360,14 +378,14 @@ namespace Fomm.TESsnip {
         }
 
         public byte[] GetData() { return  (byte[])data.Clone(); }
-        public byte[] GetReadonlyData() { return data; }
+        internal byte[] GetReadonlyData() { return data; }
         public void SetData(byte[] data) {
             if(data.Length!=4) throw new ArgumentException("data length must be 4");
             for(int i=0;i<4;i++) this.data[i]=data[i];
         }
     }
 
-    internal class Record : Rec {
+    public sealed class Record : Rec {
         public readonly List<SubRecord> SubRecords=new List<SubRecord>();
         public uint Flags1;
         public uint Flags2;
@@ -401,7 +419,7 @@ namespace Fomm.TESsnip {
             SubRecords.Add(sr);
         }
 
-        public Record(string name, uint Size, BinaryReader br, bool Oblivion) {
+        internal Record(string name, uint Size, BinaryReader br, bool Oblivion) {
             Name=name;
             Flags1=br.ReadUInt32();
             FormID=br.ReadUInt32();
@@ -480,7 +498,7 @@ namespace Fomm.TESsnip {
             return "[Record]"+Environment.NewLine+GetBaseDesc();
         }
 
-        public string GetDesc(SubrecordStructure[] sss, dFormIDLookupI formIDLookup) {
+        internal string GetDesc(SubrecordStructure[] sss, dFormIDLookupI formIDLookup) {
             string start="[Record]"+Environment.NewLine+GetBaseDesc();
             string end;
             try {
@@ -492,7 +510,7 @@ namespace Fomm.TESsnip {
             else return start+Environment.NewLine+Environment.NewLine+"[Formatted information]"+Environment.NewLine+end;
         }
 
-        public override void SaveData(BinaryWriter bw) {
+        internal override void SaveData(BinaryWriter bw) {
             WriteString(bw, Name);
             bw.Write((uint)Size);
             bw.Write(Flags1);
@@ -502,14 +520,14 @@ namespace Fomm.TESsnip {
             foreach(SubRecord sr in SubRecords) sr.SaveData(bw);
         }
 
-        public override List<string> GetIDs(bool lower) {
+        internal override List<string> GetIDs(bool lower) {
             List<string> list= new List<string>();
             foreach(SubRecord sr in SubRecords) list.AddRange(sr.GetIDs(lower));
             return list;
         }
     }
 
-    internal class SubRecord : BaseRecord {
+    public sealed class SubRecord : BaseRecord {
         private byte[] Data;
         public override long Size { get { return Data.Length; } }
         public override long Size2 { get { return 6+Data.Length+(Data.Length>ushort.MaxValue?10:0); } }
@@ -526,7 +544,7 @@ namespace Fomm.TESsnip {
             Data=System.Text.Encoding.Default.GetBytes(s);
         }
 
-        public SubRecord(string name, BinaryReader br, uint size) {
+        internal SubRecord(string name, BinaryReader br, uint size) {
             Name=name;
             if(size==0) size=br.ReadUInt16(); else br.BaseStream.Position+=2;
             Data=new byte[size];
@@ -547,7 +565,7 @@ namespace Fomm.TESsnip {
             Data=new byte[0];
         }
 
-        public override void SaveData(BinaryWriter bw) {
+        internal override void SaveData(BinaryWriter bw) {
             if(Data.Length>ushort.MaxValue) {
                 WriteString(bw, "XXXX");
                 bw.Write((ushort)4);
@@ -584,7 +602,7 @@ namespace Fomm.TESsnip {
             foreach(byte b in Data) s+=b.ToString("X").PadLeft(2, '0')+" ";
             return s;
         }
-        public string GetFormattedData(SubrecordStructure ss, dFormIDLookupI formIDLookup) {
+        internal string GetFormattedData(SubrecordStructure ss, dFormIDLookupI formIDLookup) {
             int offset=0;
             string s=ss.name+" ("+ss.desc+")"+Environment.NewLine;
             try {
@@ -698,7 +716,7 @@ namespace Fomm.TESsnip {
             }
             return s;
         }
-        public override List<string> GetIDs(bool lower) {
+        internal override List<string> GetIDs(bool lower) {
             List<string> list= new List<string>();
             if(Name=="EDID") {
                 if(lower) {

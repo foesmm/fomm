@@ -11,8 +11,6 @@ namespace Fomm.InstallTweaker {
         private static readonly string bsaBackup=Path.Combine(BackupPath, "Fallout - Textures.bsa");
         private static readonly string xlivePath=Path.Combine(Program.exeDir, "fomm\\xlive.dll");
 
-        private readonly bool Initing=true;
-
         public InstallationTweaker() {
             InitializeComponent();
             if(Directory.Exists(BackupPath)) {
@@ -23,7 +21,6 @@ namespace Fomm.InstallTweaker {
                 if(File.Exists(bsaBackup)) cbShrinkTextures.Checked=true;
                 bApply.Enabled=false;
             } else bReset.Enabled=false;
-            Initing=false;
         }
 
         /*private void cbDisableLive_CheckedChanged(object sender, EventArgs e) {
