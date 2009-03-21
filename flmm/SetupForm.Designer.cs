@@ -39,6 +39,7 @@ namespace Fomm {
             this.cbAssociateBsa = new System.Windows.Forms.CheckBox();
             this.cbAssociateSdp = new System.Windows.Forms.CheckBox();
             this.cbShellExtensions = new System.Windows.Forms.CheckBox();
+            this.cbEsmShow = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // cbFomod
@@ -199,11 +200,23 @@ namespace Fomm {
             this.cbShellExtensions.UseVisualStyleBackColor = true;
             this.cbShellExtensions.CheckedChanged += new System.EventHandler(this.cbShellExtensions_CheckedChanged);
             // 
+            // cbEsmShow
+            // 
+            this.cbEsmShow.AutoSize = true;
+            this.cbEsmShow.Location = new System.Drawing.Point(12, 227);
+            this.cbEsmShow.Name = "cbEsmShow";
+            this.cbEsmShow.Size = new System.Drawing.Size(118, 17);
+            this.cbEsmShow.TabIndex = 18;
+            this.cbEsmShow.Text = "Show ESMs in bold";
+            this.cbEsmShow.UseVisualStyleBackColor = true;
+            this.cbEsmShow.CheckedChanged += new System.EventHandler(this.bEsmShow_CheckedChanged);
+            // 
             // SetupForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(399, 230);
+            this.ClientSize = new System.Drawing.Size(399, 267);
+            this.Controls.Add(this.cbEsmShow);
             this.Controls.Add(this.cbShellExtensions);
             this.Controls.Add(this.cbAssociateSdp);
             this.Controls.Add(this.cbAssociateBsa);
@@ -245,5 +258,6 @@ namespace Fomm {
         private System.Windows.Forms.CheckBox cbAssociateBsa;
         private System.Windows.Forms.CheckBox cbAssociateSdp;
         private System.Windows.Forms.CheckBox cbShellExtensions;
+        private System.Windows.Forms.CheckBox cbEsmShow;
     }
 }

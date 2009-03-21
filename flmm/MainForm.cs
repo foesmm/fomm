@@ -133,6 +133,11 @@ namespace Fomm {
         private void RefreshIndexCounts() {
             if(lvEspList.Items.Count==0) return;
             bool add=lvEspList.Items[0].SubItems.Count==1;
+            bool boldify=false;
+
+            if(add) {
+                boldify=Settings.GetBool("ShowEsmInBold");
+            }
 
             if(File.Exists(Program.PluginsFile)) {
                 string[] lines=File.ReadAllLines(Program.PluginsFile);
@@ -155,12 +160,15 @@ namespace Fomm {
                     int i=Array.IndexOf<string>(lines, lvi.Text.ToLowerInvariant());
                     if(i!=-1) {
                         if(add) {
+                            if(boldify&&files[i].b) lvi.Font=new System.Drawing.Font(lvi.Font, System.Drawing.FontStyle.Bold);
                             lvi.Checked=true;
                             lvi.SubItems.Add(i.ToString("X2"));
                         } else lvi.SubItems[1].Text=i.ToString("X2");
                     } else {
-                        if(add)lvi.SubItems.Add("NA");
-                        else lvi.SubItems[1].Text="NA";
+                        if(add) {
+                            if(boldify&&TESsnip.Plugin.GetIsEsm(Path.Combine("Data", lvi.Text))) lvi.Font=new System.Drawing.Font(lvi.Font, System.Drawing.FontStyle.Bold);
+                            lvi.SubItems.Add("NA");
+                        } else lvi.SubItems[1].Text="NA";
                     }
                 }
             } else {

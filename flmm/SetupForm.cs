@@ -22,6 +22,7 @@ namespace Fomm {
                 cbLaunch.Checked=true;
                 tbLaunch.Text=tmp;
             }
+            cbEsmShow.Checked=Settings.GetBool("ShowEsmInBold");
             string key=Registry.GetValue(@"HKEY_CLASSES_ROOT\.bsa", null, null) as string;
             switch(key) {
             case "BethesdaSoftworks_Archive":
@@ -158,6 +159,10 @@ namespace Fomm {
                 RemoveShellExtension(Registry.GetValue(@"HKEY_CLASSES_ROOT\.rar", null, null) as string);
                 RemoveShellExtension(Registry.GetValue(@"HKEY_CLASSES_ROOT\.7z", null, null) as string);
             }
+        }
+
+        private void bEsmShow_CheckedChanged(object sender, EventArgs e) {
+            Settings.SetBool("ShowEsmInBold", cbEsmShow.Checked);
         }
     }
 }

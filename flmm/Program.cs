@@ -340,6 +340,7 @@ namespace Fomm {
             if(!Directory.Exists(tmpPath)) Directory.CreateDirectory(tmpPath);
             if(!Directory.Exists(PackageDir)) Directory.CreateDirectory(PackageDir);
             if(!Directory.Exists(fommDir)) Directory.CreateDirectory(fommDir);
+            if(!Directory.Exists(LocalDataPath)) Directory.CreateDirectory(LocalDataPath);
 
             if(Directory.Exists(DLCDir)&&Settings.GetString("IgnoreDLC")!="True") {
                 if(Directory.GetFiles(DLCDir, "Anchorage.esm", SearchOption.AllDirectories).Length==1) {
