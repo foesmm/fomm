@@ -20,23 +20,87 @@ void _stdcall ddsInit(HWND window) {
 	d3d9->CreateDevice(0, D3DDEVTYPE_NULLREF, 0, D3DCREATE_MULTITHREADED|D3DCREATE_SOFTWARE_VERTEXPROCESSING|D3DCREATE_FPU_PRESERVE, &params, &device);
 }
 
-void* ddsLoad(BYTE* file, int length) {
-	IDirect3DTexture9 *tex;
+void* _stdcall ddsLoad(BYTE* file, int length) {
+	IDirect3DTexture9 *tex=0;
 	D3DXIMAGE_INFO info;
-	HRESULT hr=D3DXCreateTextureFromFileInMemoryEx(device, file, length, 0, 0, 1, 0, D3DFMT_UNKNOWN, D3DPOOL_SCRATCH, D3DX_FILTER_NONE, D3DX_DEFAULT,
+	D3DXCreateTextureFromFileInMemoryEx(device, file, length, 0, 0, 1, 0, D3DFMT_A8R8G8B8, D3DPOOL_SCRATCH, D3DX_FILTER_NONE, D3DX_DEFAULT,
 		0, &info, 0,  &tex);
 	return tex;
 }
+void* _stdcall ddsCreate(int width, int height) {
+	IDirect3DTexture9 *tex=0;
+	device->CreateTexture(width, height, 1, 0, D3DFMT_A8R8G8B8, D3DPOOL_SCRATCH, &tex, 0);
+	return tex;
+}
 
-void ddsRelease(IDirect3DTexture9* tex) {
+void _stdcall ddsBlt(IDirect3DTexture9* source, DWORD sL, DWORD sT, DWORD sW, DWORD sH, IDirect3DTexture9* dest, DWORD dL, DWORD dT, DWORD dW, DWORD dH) {
+	IDirect3DSurface9 *sourceSurf, *destSurf;
+	source->GetSurfaceLevel(0, &sourceSurf);
+	dest->GetSurfaceLevel(0, &destSurf);
+	RECT sourceRect = { sL, sT, sL+sW, sT+sH };
+	RECT destRect = { dL, dT, dL+dW, dT+dH };
+	D3DXLoadSurfaceFromSurface(destSurf, 0, &destRect, sourceSurf, 0, &sourceRect, D3DX_DEFAULT, 0);
+	sourceSurf->Release();
+	destSurf->Release();
+}
+
+void* _stdcall ddsSave(IDirect3DTexture9* tex, DWORD format, DWORD mipmaps, DWORD* length) {
+	if(buffer) { buffer->Release(); buffer=0; }
+	D3DSURFACE_DESC desc;
+	tex->GetLevelDesc(0, &desc);
+	IDirect3DTexture9* tex2;
+	IDirect3DSurface9 *sourceSurf, *destSurf;
+	D3DXCreateTexture(device, desc.Width, desc.Height, mipmaps?0:1, 0, (D3DFORMAT)format, D3DPOOL_SCRATCH, &tex2);
+	tex->GetSurfaceLevel(0, &sourceSurf);
+	tex2->GetSurfaceLevel(0, &destSurf);
+	D3DXLoadSurfaceFromSurface(destSurf, 0, 0, sourceSurf, 0, 0, D3DX_DEFAULT, 0);
+	sourceSurf->Release();
+	destSurf->Release();
+	if(mipmaps)	D3DXFilterTexture(tex2, 0, 0, D3DX_DEFAULT);
+	D3DXSaveTextureToFileInMemory(&buffer, D3DXIFF_DDS, tex2, 0);
+	tex2->Release();
+	*length=buffer->GetBufferSize();
+	return buffer->GetBufferPointer();
+}
+
+void _stdcall ddsRelease(IDirect3DTexture9* tex) {
 	tex->Release();
+}
+
+void _stdcall ddsGetSize(IDirect3DTexture9* tex, DWORD* width, DWORD* height) {
+	D3DSURFACE_DESC desc;
+	tex->GetLevelDesc(0, &desc);
+	*width=desc.Width;
+	*height=desc.Height;
+}
+
+void* _stdcall ddsLock(IDirect3DTexture9* tex, DWORD* length, DWORD* pitch) {
+	D3DSURFACE_DESC desc;
+	tex->GetLevelDesc(0, &desc);
+	D3DLOCKED_RECT rect;
+	tex->LockRect(0, &rect, 0, D3DLOCK_READONLY);
+	*length=rect.Pitch*desc.Height;
+	*pitch=rect.Pitch;
+	return rect.pBits;
+}
+
+void _stdcall ddsUnlock(IDirect3DTexture9* tex) {
+	tex->UnlockRect(0);
+}
+
+void _stdcall ddsSetData(IDirect3DTexture9* tex, BYTE* data, int length) {
+	D3DLOCKED_RECT rect;
+	tex->LockRect(0, &rect, 0, 0);
+	BYTE* dest=(BYTE*)rect.pBits;
+	for(int i=0;i<length;i++) dest[i]=data[i];
+	tex->UnlockRect(0);
 }
 
 static bool IsPowOfTwo(int i) {
 	return i==32||i==64||i==128||i==256||i==512||i==1024||i==2048||i==4086;
 }
 
-void* _stdcall ddsSave(BYTE* file, int length, int* oLength) {
+void* _stdcall ddsShrink(BYTE* file, int length, int* oLength) {
 	if(buffer) { buffer->Release(); buffer=0; }
 	IDirect3DTexture9 *tex1, *tex2;
 	IDirect3DSurface9 *surf1, *surf2;

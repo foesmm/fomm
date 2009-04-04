@@ -331,7 +331,7 @@ namespace Fomm {
 
 
             //Check that we're in fallout's directory and that we have write access
-            bool limitedmode=true;
+            bool cancellaunch=true;
             if(File.Exists("fallout3.exe")||File.Exists("fallout3ng.exe")) {
                 if(!Settings.GetBool("NoUACCheck")||Array.IndexOf<string>(args, "-no-uac-check")==-1) {
                     try {
@@ -348,15 +348,15 @@ namespace Fomm {
                             File.Delete("limited");
                         } else {
                             File.Delete("limited");
-                            limitedmode=false;
+                            cancellaunch=false;
                         }
                     } catch {
                         MessageBox.Show("Unable to get write permissions for fallout's installation directory", "Error");
                     }
-                }
+                } else cancellaunch=false;
             } else MessageBox.Show("Could not find fallout 3 directory\nFallout's registry entry appear to be missing or incorrect. Install fomm into fallout's base directory instead.", "Error");
 
-            if(limitedmode) return;
+            if(cancellaunch) return;
 
             if(!Directory.Exists(tmpPath)) Directory.CreateDirectory(tmpPath);
             if(!Directory.Exists(PackageDir)) Directory.CreateDirectory(PackageDir);

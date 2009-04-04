@@ -5,19 +5,18 @@ namespace Fomm.InstallTweaker {
     static class BsaTrimmer {
         static int shrunkcount=0;
 
-        private unsafe static void Commit(BinaryWriter bw, long offset, byte[] data, long offset2, int add, bool parse) {
+        private static void Commit(BinaryWriter bw, long offset, byte[] data, long offset2, int add, bool parse) {
             int newsize=0;
-            byte* pdata;
-            if(parse) {
-                pdata=NativeMethods.ddsSave(data, data.Length, out newsize);
-            } else pdata=null;
+            IntPtr pdata;
+            if(parse) pdata=NativeMethods.ddsShrink(data, data.Length, out newsize);
+            else pdata=IntPtr.Zero;
             byte[] newdata;
-            if(pdata==null) {
+            if(pdata==IntPtr.Zero) {
                 newdata=data;
             } else {
                 shrunkcount++;
                 newdata=new byte[newsize];
-                for(int i=0;i<newsize;i++) newdata[i]=pdata[i];
+                System.Runtime.InteropServices.Marshal.Copy(pdata, newdata, 0, newsize);
             }
             bw.Write(newdata);
             bw.BaseStream.Position=offset;

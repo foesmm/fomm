@@ -87,6 +87,7 @@ namespace Fomm.PackageManager {
                 for(int i=0;i<textures.Count;i++) NativeMethods.ddsRelease(textures[i]);
                 textures=null;
                 NativeMethods.ddsClose();
+                ddsParserInited=false;
             }
         }
 
@@ -624,10 +625,69 @@ namespace Fomm.PackageManager {
 
         public static IntPtr LoadTexture(byte[] bytes) {
             permissions.Assert();
-            if(!ddsParserInited) NativeMethods.ddsInit(Application.OpenForms[0].Handle);
+            if(!ddsParserInited) {
+                NativeMethods.ddsInit(Application.OpenForms[0].Handle);
+                ddsParserInited=true;
+            }
             IntPtr ptr=NativeMethods.ddsLoad(bytes, bytes.Length);
             if(ptr!=IntPtr.Zero) textures.Add(ptr);
             return ptr;
+        }
+        public static IntPtr CreateTexture(int width, int height) {
+            permissions.Assert();
+            if(!ddsParserInited) {
+                NativeMethods.ddsInit(Application.OpenForms[0].Handle);
+                ddsParserInited=true;
+            }
+            IntPtr ptr=NativeMethods.ddsCreate(width, height);
+            if(ptr!=IntPtr.Zero) textures.Add(ptr);
+            return ptr;
+        }
+        public static byte[] SaveTexture(IntPtr tex, int format, bool mipmaps) {
+            if(!ddsParserInited||!textures.Contains(tex)) return null;
+            permissions.Assert();
+            int length;
+            IntPtr data=NativeMethods.ddsSave(tex, format, mipmaps?1:0, out length);
+            if(data==IntPtr.Zero) return null;
+            byte[] result=new byte[length];
+            System.Runtime.InteropServices.Marshal.Copy(data, result, 0, length);
+            return result;
+        }
+        public static void CopyTexture(IntPtr source, System.Drawing.Rectangle sourceRect, IntPtr dest, System.Drawing.Rectangle destRect) {
+            if(!ddsParserInited||!textures.Contains(source)||!textures.Contains(dest)) return;
+            permissions.Assert();
+            NativeMethods.ddsBlt(source, sourceRect.Left, sourceRect.Top, sourceRect.Width, sourceRect.Height, dest, destRect.Left,
+                destRect.Top, destRect.Width, destRect.Height);
+        }
+        public static void GetTextureSize(IntPtr tex, out int width, out int height) {
+            width=0;
+            height=0;
+            if(!ddsParserInited||!textures.Contains(tex)) return;
+            permissions.Assert();
+            NativeMethods.ddsGetSize(tex, out width, out height);
+        }
+        public static byte[] GetTextureData(IntPtr tex, out int pitch) {
+            pitch=0;
+            if(!ddsParserInited||!textures.Contains(tex)) return null;
+            permissions.Assert();
+            int length;
+            IntPtr ptr=NativeMethods.ddsLock(tex, out length, out pitch);
+            if(ptr==IntPtr.Zero) return null;
+            byte[] result=new byte[length];
+            System.Runtime.InteropServices.Marshal.Copy(ptr, result, 0, length);
+            NativeMethods.ddsUnlock(tex);
+            return result;
+        }
+        public static void SetTextureData(IntPtr tex, byte[] data) {
+            if(!ddsParserInited||!textures.Contains(tex)) return;
+            permissions.Assert();
+            NativeMethods.ddsSetData(tex, data, data.Length);
+        }
+        public static void ReleaseTexture(IntPtr tex) {
+            if(!ddsParserInited||!textures.Contains(tex)) return;
+            permissions.Assert();
+            NativeMethods.ddsRelease(tex);
+            textures.Remove(tex);
         }
     }
 }

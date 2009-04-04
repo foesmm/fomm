@@ -15,6 +15,15 @@ namespace fomm.Scripting {
         }
     }
 
+    public enum TextureFormat {
+        R8G8B8=20,
+        A8R8G8B8=21,
+        X8R8G8B8=22,
+        DXT1=('D'<<0) | ('X'<<8) | ('T'<<16) | ('1'<<24),
+        DXT3=('D'<<0) | ('X'<<8) | ('T'<<16) | ('3'<<24),
+        DXT5=('D'<<0) | ('X'<<8) | ('T'<<16) | ('5'<<24),
+    }
+
     public abstract class BaseScript {
 
         //Shortcut functions
@@ -124,5 +133,14 @@ namespace fomm.Scripting {
         }
 
         public static bool IsAIActive() { return ScriptFunctions.IsAIActive(); }
+
+        public static IntPtr LoadTexture(byte[] bytes) { return ScriptFunctions.LoadTexture(bytes); }
+        public static IntPtr CreateTexture(int width, int height) { return ScriptFunctions.CreateTexture(width, height); }
+        public static byte[] SaveTexture(IntPtr tex, TextureFormat format, bool mipmaps) { return ScriptFunctions.SaveTexture(tex, (int)format, mipmaps); }
+        public static void CopyTexture(IntPtr source, System.Drawing.Rectangle sourceRect, IntPtr dest, System.Drawing.Rectangle destRect) { ScriptFunctions.CopyTexture(source, sourceRect, dest, destRect); }
+        public static void GetTextureSize(IntPtr tex, out int width, out int height) { ScriptFunctions.GetTextureSize(tex, out width, out height); }
+        public static byte[] GetTextureData(IntPtr tex, out int pitch) { return ScriptFunctions.GetTextureData(tex, out pitch); }
+        public static void SetTextureData(IntPtr tex, byte[] data) { ScriptFunctions.SetTextureData(tex, data); }
+        public static void ReleaseTexture(IntPtr tex) { ScriptFunctions.ReleaseTexture(tex); }
     }
 }
