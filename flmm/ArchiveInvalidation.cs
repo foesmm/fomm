@@ -35,6 +35,8 @@ namespace Fomm {
 
         private static void ApplyAI() {
             NativeMethods.WritePrivateProfileIntA("Archive", "bInvalidateOlderFiles", 1, Program.FOIniPath);
+            NativeMethods.WritePrivateProfileIntA("General", "bLoadFaceGenHeadEGTFiles", 1, Program.FOIniPath);
+            NativeMethods.WritePrivateProfileStringA("Archive", "SInvalidationFile", "", Program.FOIniPath);
             File.Delete("data\\archiveinvalidation.txt");
             File.WriteAllBytes(BsaPath, new byte[] {
                 0x42, 0x53, 0x41, 0x00, 0x67, 0x00, 0x00, 0x00, 0x24, 0x00, 0x00, 0x00, 0x03, 0x07, 0x00, 0x00,
@@ -48,6 +50,8 @@ namespace Fomm {
 
         private static void RemoveAI() {
             NativeMethods.WritePrivateProfileIntA("Archive", "bInvalidateOlderFiles", 0, Program.FOIniPath);
+            NativeMethods.WritePrivateProfileIntA("General", "bLoadFaceGenHeadEGTFiles", 0, Program.FOIniPath);
+            NativeMethods.WritePrivateProfileStringA("Archive", "SInvalidationFile", "ArchiveInvalidation.txt", Program.FOIniPath);
             File.Delete(BsaPath);
             NativeMethods.WritePrivateProfileStringA("Archive", "SArchiveList", GetBSAList(), Program.FOIniPath);
         }
