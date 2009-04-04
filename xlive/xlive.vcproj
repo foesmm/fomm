@@ -183,7 +183,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy &quot;$(TargetPath)&quot; &quot;C:\games\fallout3\xlive.dll&quot;&#x0D;&#x0A;del &quot;$(SolutionDir)$(ConfigurationName)\fomm\xlive.exp&quot;&#x0D;&#x0A;del &quot;$(SolutionDir)$(ConfigurationName)\fomm\xlive.lib&quot;"
+				CommandLine="copy &quot;$(TargetPath)&quot; &quot;C:\games\fallout3\xlive.dll&quot;&#x0D;&#x0A;del &quot;$(SolutionDir)$(ConfigurationName)\fomm\xlive.exp&quot;&#x0D;&#x0A;del &quot;$(SolutionDir)$(ConfigurationName)\fomm\xlive.lib&quot;&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -193,6 +193,10 @@
 		<Filter
 			Name="Source"
 			>
+			<File
+				RelativePath=".\codepatches.cpp"
+				>
+			</File>
 			<File
 				RelativePath=".\d3dx.cpp"
 				>
@@ -209,6 +213,10 @@
 		<Filter
 			Name="Headers"
 			>
+			<File
+				RelativePath=".\codepatches.h"
+				>
+			</File>
 			<File
 				RelativePath=".\d3dx.h"
 				>

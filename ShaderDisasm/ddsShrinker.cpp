@@ -20,9 +20,22 @@ void _stdcall ddsInit(HWND window) {
 	d3d9->CreateDevice(0, D3DDEVTYPE_NULLREF, 0, D3DCREATE_MULTITHREADED|D3DCREATE_SOFTWARE_VERTEXPROCESSING|D3DCREATE_FPU_PRESERVE, &params, &device);
 }
 
+void* ddsLoad(BYTE* file, int length) {
+	IDirect3DTexture9 *tex;
+	D3DXIMAGE_INFO info;
+	HRESULT hr=D3DXCreateTextureFromFileInMemoryEx(device, file, length, 0, 0, 1, 0, D3DFMT_UNKNOWN, D3DPOOL_SCRATCH, D3DX_FILTER_NONE, D3DX_DEFAULT,
+		0, &info, 0,  &tex);
+	return tex;
+}
+
+void ddsRelease(IDirect3DTexture9* tex) {
+	tex->Release();
+}
+
 static bool IsPowOfTwo(int i) {
 	return i==32||i==64||i==128||i==256||i==512||i==1024||i==2048||i==4086;
 }
+
 void* _stdcall ddsSave(BYTE* file, int length, int* oLength) {
 	if(buffer) { buffer->Release(); buffer=0; }
 	IDirect3DTexture9 *tex1, *tex2;
@@ -50,6 +63,7 @@ void* _stdcall ddsSave(BYTE* file, int length, int* oLength) {
 }
 
 void _stdcall ddsClose() {
+	if(buffer) { buffer->Release(); buffer=0; }
 	device->Release();
 	d3d9->Release();
 }

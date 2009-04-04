@@ -38,7 +38,7 @@ namespace Fomm {
     class fommException : Exception { public fommException(string msg) : base(msg) { } }
 
     public static class Program {
-        public const string Version="0.9.12";
+        public const string Version="0.9.13";
         public static readonly Version MVersion=new Version(Version+".0");
         /*private static string typefromint(int i, bool name) {
             switch(i) {
@@ -264,7 +264,7 @@ namespace Fomm {
                             mutex.Close();
                             return;
                         }
-                        Application.Run(new SetupForm());
+                        Application.Run(new SetupForm(false));
                         mutex.Close();
                         return;
                     case "-bsa-unpacker":
@@ -371,18 +371,21 @@ namespace Fomm {
             if(Array.IndexOf<string>(args, "-install-tweaker")!=-1) {
                 Application.Run(new InstallTweaker.InstallationTweaker());
             } else {
+                if(autoLoad==null&&Array.IndexOf<string>(args, "-package-manager")!=-1) autoLoad=string.Empty;
                 Application.Run(new MainForm(autoLoad));
             }
 
             if(Directory.Exists(tmpPath)) {
                 try {
                     Directory.Delete(tmpPath, true);
-                } catch(IOException) {
+                } catch(Exception e) {
+                    if(!(e is IOException || e is UnauthorizedAccessException)) throw;
                     //someone's probably stuck a readonly file in a mod again...
                     DirectoryInfo di=new DirectoryInfo(tmpPath);
                     FileInfo[] fis=di.GetFiles("*", SearchOption.AllDirectories);
                     foreach(FileInfo fi in fis) {
                         if((fi.Attributes&FileAttributes.ReadOnly)!=0) fi.Attributes^=FileAttributes.ReadOnly;
+                        if((fi.Attributes&FileAttributes.System)!=0) fi.Attributes^=FileAttributes.System;
                         fi.Delete();
                     }
                     DirectoryInfo[] dis=di.GetDirectories("*", SearchOption.AllDirectories);
@@ -390,7 +393,7 @@ namespace Fomm {
                         if((di2.Attributes&FileAttributes.ReadOnly)!=0) di2.Attributes^=FileAttributes.ReadOnly;
                     }
                     if((di.Attributes&FileAttributes.ReadOnly)!=0) di.Attributes^=FileAttributes.ReadOnly;
-                    Directory.Delete(tmpPath, true);
+                    di.Delete(true);
                 }
             }
 

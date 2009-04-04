@@ -5,17 +5,25 @@ using Microsoft.Win32;
 namespace Fomm {
     partial class SetupForm : Form {
         private bool FinishedSetup;
-        public SetupForm() {
+        public SetupForm(bool Internal) {
             InitializeComponent();
-            string tmp=Settings.GetString("FomodDir");
-            if(tmp!=null) {
-                cbFomod.Checked=true;
-                tbFomod.Text=tmp;
-            }
-            tmp=Settings.GetString("FalloutDir");
-            if(tmp!=null) {
-                cbFallout.Checked=true;
-                tbFallout.Text=tmp;
+            string tmp;
+            if(Internal) {
+                cbFomod.Enabled=false;
+                tbFomod.Text="Cannot change this option while fomm is running";
+                cbFallout.Enabled=false;
+                tbFallout.Text="Cannot change this option while fomm is running";
+            } else {
+                tmp=Settings.GetString("FomodDir");
+                if(tmp!=null) {
+                    cbFomod.Checked=true;
+                    tbFomod.Text=tmp;
+                }
+                tmp=Settings.GetString("FalloutDir");
+                if(tmp!=null) {
+                    cbFallout.Checked=true;
+                    tbFallout.Text=tmp;
+                }
             }
             tmp=Settings.GetString("LaunchCommand");
             if(tmp!=null) {

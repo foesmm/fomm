@@ -49,8 +49,9 @@ namespace Fomm.PackageManager {
             rootNode=xmlDoc.CreateElement("installData");
             xmlDoc.AppendChild(rootNode);
             activePlugins=null;
-
             dataFileNode=null;
+            ddsParserInited=false;
+            textures=new List<IntPtr>();
         }
 
         internal static XmlDocument BasicInstallScript() {
@@ -82,6 +83,11 @@ namespace Fomm.PackageManager {
             DontOverwriteFolders.Clear();
             foreach(BSAArchive ba in bsas.Values) ba.Dispose();
             bsas.Clear();
+            if(ddsParserInited) {
+                for(int i=0;i<textures.Count;i++) NativeMethods.ddsRelease(textures[i]);
+                textures=null;
+                NativeMethods.ddsClose();
+            }
         }
 
         private static void CommitActivePlugins() {
@@ -609,6 +615,19 @@ namespace Fomm.PackageManager {
         }
         public static void CompileScript(Fomm.TESsnip.Record r2, out string msg) {
             Fomm.ScriptCompiler.ScriptCompiler.Compile(r2, out msg);
+        }
+
+        public static bool IsAIActive() { return ArchiveInvalidation.IsActive(); }
+
+        private static bool ddsParserInited;
+        private static List<IntPtr> textures;
+
+        public static IntPtr LoadTexture(byte[] bytes) {
+            permissions.Assert();
+            if(!ddsParserInited) NativeMethods.ddsInit(Application.OpenForms[0].Handle);
+            IntPtr ptr=NativeMethods.ddsLoad(bytes, bytes.Length);
+            if(ptr!=IntPtr.Zero) textures.Add(ptr);
+            return ptr;
         }
     }
 }

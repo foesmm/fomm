@@ -15,7 +15,7 @@ namespace Fomm {
 
             if(fomod!=null) {
                 bPackageManager_Click(null, null);
-                PackageManagerForm.AddNewFomod(fomod);
+                if(fomod.Length>0) PackageManagerForm.AddNewFomod(fomod);
             }
 
             if(Settings.GetString("LaunchCommand")==null&&File.Exists("fose_loader.exe")) bLaunch.Text="Launch FOSE";
@@ -495,6 +495,15 @@ namespace Fomm {
                 return;
             }
             (new InstallTweaker.InstallationTweaker()).ShowDialog();
+        }
+
+        private void bSettings_Click(object sender, EventArgs e) {
+            if(Application.OpenForms.Count>1) {
+                MessageBox.Show("Please close all utility windows before changing the settings");
+                return;
+            }
+            (new SetupForm(true)).ShowDialog();
+            RefreshEspList();
         }
     }
 }

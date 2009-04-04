@@ -231,9 +231,11 @@ namespace Fomm.PackageManager {
                 }
             } else {
                 file.BeginUpdate();
-                if(hasReadme&&readmeext!=".rtf") file.Delete(file.GetEntry(readmepath));
-                readmeext=".rtf";
-                readmepath=Path.ChangeExtension(readmepath, ".rtf");
+                if(hasReadme) file.Delete(file.GetEntry(readmepath));
+                if(readmeext!=".rtf") {
+                    readmeext=".rtf";
+                    readmepath=Path.ChangeExtension(readmepath, ".rtf");
+                }
                 StringDataSource sds=new StringDataSource(value);
                 file.Add(sds, readmepath);
                 file.CommitUpdate();

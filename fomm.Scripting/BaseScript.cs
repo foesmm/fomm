@@ -122,5 +122,7 @@ namespace fomm.Scripting {
             r2.SubRecords.Clear();
             for(int i=0;i<r2.Base.SubRecords.Count;i++) r2.SubRecords.Add(new SubRecord(r2.Base.SubRecords[i]));
         }
+
+        public static bool IsAIActive() { return ScriptFunctions.IsAIActive(); }
     }
 }

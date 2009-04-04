@@ -59,5 +59,9 @@ namespace Fomm {
                 if(MessageBox.Show("Remove archive invalidation?", "", MessageBoxButtons.YesNo)==DialogResult.Yes) RemoveAI();
             }
         }
+
+        public static bool IsActive() {
+            return NativeMethods.GetPrivateProfileIntA("Archive", "bInvalidateOlderFiles", 0, Program.FOIniPath)!=0;
+        }
     }
 }
