@@ -205,11 +205,32 @@ namespace Fomm {
 
         public static string PackageDir { get { return packageDir; } }
 
+        private static void WriteHelp() {
+            Console.WriteLine("Command line options:");
+            Console.WriteLine();
+            Console.WriteLine("*.fomod, *.rar, *.7z, *.zip, *.bsa, *.esm, *.esp, *.sdp");
+            Console.WriteLine("Open the specified file in the relevent utility");
+            Console.WriteLine();
+            Console.WriteLine("-setup, -bsa-unpacker, -bsa-creator, -tessnip, -sdp-editor, -package-manager, -install-tweaker");
+            Console.WriteLine("Open the specified utility window, without opening the main form where appropriate");
+            Console.WriteLine();
+            Console.WriteLine("-mono");
+            Console.WriteLine("Run in mono compatibility mode. Disables some features which are known to be broken under mono");
+            Console.WriteLine();
+            Console.WriteLine("-no-uac-check");
+            Console.WriteLine("Don't check for vista UAC issues");
+        }
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
         private static void Main(string[] args) {
+            if(args.Length>0&&(args[0]=="-?"||args[0]=="/?"||args[0]=="-help")) {
+                WriteHelp();
+                return;
+            }
+
             System.Threading.Mutex mutex;
             bool newMutex;
             Directory.SetCurrentDirectory(exeDir);
@@ -312,7 +333,7 @@ namespace Fomm {
             //Check that we're in fallout's directory and that we have write access
             bool limitedmode=true;
             if(File.Exists("fallout3.exe")||File.Exists("fallout3ng.exe")) {
-                if(Array.IndexOf<string>(args, "-no-uac-check")==-1) {
+                if(!Settings.GetBool("NoUACCheck")||Array.IndexOf<string>(args, "-no-uac-check")==-1) {
                     try {
                         File.Delete("limited");
                         string VistaVirtualStore=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "VirtualStore\\");

@@ -4,7 +4,7 @@ using Microsoft.Win32;
 
 namespace Fomm {
     partial class SetupForm : Form {
-        private bool FinishedSetup;
+        private readonly bool FinishedSetup;
         public SetupForm(bool Internal) {
             InitializeComponent();
             string tmp;
@@ -31,6 +31,8 @@ namespace Fomm {
                 tbLaunch.Text=tmp;
             }
             cbEsmShow.Checked=Settings.GetBool("ShowEsmInBold");
+            cbDisableUAC.Checked=Settings.GetBool("NoUACCheck");
+            cbDisableIPC.Checked=Settings.GetBool("DisableIPC");
             string key=Registry.GetValue(@"HKEY_CLASSES_ROOT\.bsa", null, null) as string;
             switch(key) {
             case "BethesdaSoftworks_Archive":
@@ -170,7 +172,18 @@ namespace Fomm {
         }
 
         private void bEsmShow_CheckedChanged(object sender, EventArgs e) {
+            if(!FinishedSetup) return;
             Settings.SetBool("ShowEsmInBold", cbEsmShow.Checked);
+        }
+
+        private void cbDisableIPC_CheckedChanged(object sender, EventArgs e) {
+            if(!FinishedSetup) return;
+            Settings.SetBool("DisableIPC", cbDisableIPC.Checked);
+        }
+
+        private void cbDisableUAC_CheckedChanged(object sender, EventArgs e) {
+            if(!FinishedSetup) return;
+            Settings.SetBool("NoUACCheck", cbDisableUAC.Checked);
         }
     }
 }

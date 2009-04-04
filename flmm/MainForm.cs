@@ -20,11 +20,13 @@ namespace Fomm {
 
             if(Settings.GetString("LaunchCommand")==null&&File.Exists("fose_loader.exe")) bLaunch.Text="Launch FOSE";
 
-            Timer newFommTimer=new Timer();
-            newFommTimer.Interval=1000;
-            newFommTimer.Tick+=new EventHandler(newFommTimer_Tick);
-            newFommTimer.Start();
-            Messaging.ServerSetup(RecieveMessage);
+            if(!Settings.GetBool("DisableIPC")) {
+                Timer newFommTimer=new Timer();
+                newFommTimer.Interval=1000;
+                newFommTimer.Tick+=new EventHandler(newFommTimer_Tick);
+                newFommTimer.Start();
+                Messaging.ServerSetup(RecieveMessage);
+            }
         }
 
         private void MainForm_Load(object sender, EventArgs e) {

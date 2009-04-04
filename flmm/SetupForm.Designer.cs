@@ -40,6 +40,8 @@ namespace Fomm {
             this.cbAssociateSdp = new System.Windows.Forms.CheckBox();
             this.cbShellExtensions = new System.Windows.Forms.CheckBox();
             this.cbEsmShow = new System.Windows.Forms.CheckBox();
+            this.cbDisableIPC = new System.Windows.Forms.CheckBox();
+            this.cbDisableUAC = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // cbFomod
@@ -203,7 +205,7 @@ namespace Fomm {
             // cbEsmShow
             // 
             this.cbEsmShow.AutoSize = true;
-            this.cbEsmShow.Location = new System.Drawing.Point(12, 227);
+            this.cbEsmShow.Location = new System.Drawing.Point(15, 228);
             this.cbEsmShow.Name = "cbEsmShow";
             this.cbEsmShow.Size = new System.Drawing.Size(118, 17);
             this.cbEsmShow.TabIndex = 18;
@@ -211,11 +213,35 @@ namespace Fomm {
             this.cbEsmShow.UseVisualStyleBackColor = true;
             this.cbEsmShow.CheckedChanged += new System.EventHandler(this.bEsmShow_CheckedChanged);
             // 
+            // cbDisableIPC
+            // 
+            this.cbDisableIPC.AutoSize = true;
+            this.cbDisableIPC.Location = new System.Drawing.Point(164, 228);
+            this.cbDisableIPC.Name = "cbDisableIPC";
+            this.cbDisableIPC.Size = new System.Drawing.Size(135, 17);
+            this.cbDisableIPC.TabIndex = 19;
+            this.cbDisableIPC.Text = "Disable IPC Messaging";
+            this.cbDisableIPC.UseVisualStyleBackColor = true;
+            this.cbDisableIPC.CheckedChanged += new System.EventHandler(this.cbDisableIPC_CheckedChanged);
+            // 
+            // cbDisableUAC
+            // 
+            this.cbDisableUAC.AutoSize = true;
+            this.cbDisableUAC.Location = new System.Drawing.Point(15, 251);
+            this.cbDisableUAC.Name = "cbDisableUAC";
+            this.cbDisableUAC.Size = new System.Drawing.Size(124, 17);
+            this.cbDisableUAC.TabIndex = 20;
+            this.cbDisableUAC.Text = "Disable UAC checks";
+            this.cbDisableUAC.UseVisualStyleBackColor = true;
+            this.cbDisableUAC.CheckedChanged += new System.EventHandler(this.cbDisableUAC_CheckedChanged);
+            // 
             // SetupForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(399, 267);
+            this.ClientSize = new System.Drawing.Size(399, 276);
+            this.Controls.Add(this.cbDisableUAC);
+            this.Controls.Add(this.cbDisableIPC);
             this.Controls.Add(this.cbEsmShow);
             this.Controls.Add(this.cbShellExtensions);
             this.Controls.Add(this.cbAssociateSdp);
@@ -259,5 +285,7 @@ namespace Fomm {
         private System.Windows.Forms.CheckBox cbAssociateSdp;
         private System.Windows.Forms.CheckBox cbShellExtensions;
         private System.Windows.Forms.CheckBox cbEsmShow;
+        private System.Windows.Forms.CheckBox cbDisableIPC;
+        private System.Windows.Forms.CheckBox cbDisableUAC;
     }
 }
