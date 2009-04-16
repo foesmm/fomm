@@ -364,7 +364,7 @@ namespace Fomm {
             if(!Directory.Exists(LocalDataPath)) Directory.CreateDirectory(LocalDataPath);
 
             if(Directory.Exists(DLCDir)&&Settings.GetString("IgnoreDLC")!="True") {
-                if(Directory.GetFiles(DLCDir, "Anchorage.esm", SearchOption.AllDirectories).Length==1) {
+                if(GetFiles(DLCDir, "Anchorage.esm", SearchOption.AllDirectories).Length==1) {
                     if(!File.Exists("data\\Anchorage.esm")&&!File.Exists("data\\Anchorage - Main.bsa")&&!File.Exists("data\\Anchorage - Sounds.bsa")) {
                         string[] f1=Directory.GetFiles(DLCDir, "Anchorage.esm", SearchOption.AllDirectories);
                         string[] f2=Directory.GetFiles(DLCDir, "Anchorage - Main.bsa", SearchOption.AllDirectories);
@@ -387,7 +387,7 @@ namespace Fomm {
                         }
                     }
                 }
-                if(Directory.GetFiles(DLCDir, "ThePitt.esm", SearchOption.AllDirectories).Length==1) {
+                if(GetFiles(DLCDir, "ThePitt.esm", SearchOption.AllDirectories).Length==1) {
                     if(!File.Exists("data\\ThePitt.esm")&&!File.Exists("data\\ThePitt - Main.bsa")&&!File.Exists("data\\ThePitt - Sounds.bsa")) {
                         string[] f1=Directory.GetFiles(DLCDir, "ThePitt.esm", SearchOption.AllDirectories);
                         string[] f2=Directory.GetFiles(DLCDir, "ThePitt - Main.bsa", SearchOption.AllDirectories);
@@ -480,6 +480,23 @@ namespace Fomm {
                 }
             }
             throw new fommException("Could not create temp folder because directory is full");
+        }
+
+        internal static string[] GetFiles(string path, string pattern) { return GetFiles(path, pattern, SearchOption.TopDirectoryOnly); }
+        internal static string[] GetFiles(string path, string pattern, SearchOption option) {
+            try {
+                return Directory.GetFiles(path, pattern, option);
+            } catch(IOException) {
+                return new string[0];
+            }
+        }
+        internal static FileInfo[] GetFiles(DirectoryInfo info, string pattern) { return GetFiles(info, pattern, SearchOption.TopDirectoryOnly); }
+        internal static FileInfo[] GetFiles(DirectoryInfo info, string pattern, SearchOption option) {
+            try {
+                return info.GetFiles(pattern, option);
+            } catch(IOException) {
+                return new FileInfo[0];
+            }
         }
     }
 }

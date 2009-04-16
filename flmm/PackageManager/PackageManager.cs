@@ -109,7 +109,7 @@ namespace Fomm.PackageManager {
             lvModList.ListViewItemSorter=new FomodSorter();
             Settings.GetWindowPosition("PackageManager", this);
 
-            foreach(string modpath in Directory.GetFiles(Program.PackageDir, "*.fomod.zip")) {
+            foreach(string modpath in Program.GetFiles(Program.PackageDir, "*.fomod.zip")) {
                 if(!File.Exists(Path.ChangeExtension(modpath, null))) File.Move(modpath, Path.ChangeExtension(modpath, null));
             }
 
@@ -156,7 +156,7 @@ namespace Fomm.PackageManager {
             if(Settings.GetBool("PackageManagerShowsGroups")) {
                 cbGroups.Checked=true;
             }
-            foreach(string modpath in Directory.GetFiles(Program.PackageDir, "*.fomod")) {
+            foreach(string modpath in Program.GetFiles(Program.PackageDir, "*.fomod")) {
                 AddFomod(modpath, false);
             }
 
@@ -284,11 +284,11 @@ namespace Fomm.PackageManager {
         }
 
         private void CheckFomodFolder(ref string path, string tesnexusext, string fomodname) {
-            foreach(string aifile in Directory.GetFiles(path, "ArchiveInvalidation.txt", SearchOption.AllDirectories)) File.Delete(aifile);
-            foreach(string aifile in Directory.GetFiles(path, "thumbs.db", SearchOption.AllDirectories)) File.Delete(aifile);
-            foreach(string aifile in Directory.GetFiles(path, "desktop.ini", SearchOption.AllDirectories)) File.Delete(aifile);
+            foreach(string aifile in Program.GetFiles(path, "ArchiveInvalidation.txt", SearchOption.AllDirectories)) File.Delete(aifile);
+            foreach(string aifile in Program.GetFiles(path, "thumbs.db", SearchOption.AllDirectories)) File.Delete(aifile);
+            foreach(string aifile in Program.GetFiles(path, "desktop.ini", SearchOption.AllDirectories)) File.Delete(aifile);
             string[] directories=Directory.GetDirectories(path);
-            while(directories.Length==1&&Directory.GetFiles(path, "*.esp").Length==0&&Directory.GetFiles(path, "*.esm").Length==0&&Directory.GetFiles(path, "*.bsa").Length==0) {
+            while(directories.Length==1&&Program.GetFiles(path, "*.esp").Length==0&&Program.GetFiles(path, "*.esm").Length==0&&Program.GetFiles(path, "*.bsa").Length==0) {
                 directories=directories[0].Split(Path.DirectorySeparatorChar);
                 string name=directories[directories.Length-1].ToLowerInvariant();
                 if(name!="fomod"&&name!="textures"&&name!="meshes"&&name!="music"&&name!="shaders"&&name!="video"&&name!="facegen"&&name!="menus"&&name!="lodsettings"&&name!="lsdata"&&name!="sound") {
@@ -303,9 +303,9 @@ namespace Fomm.PackageManager {
             string[] readme=Directory.GetFiles(path, "readme - "+fomodname+".*", SearchOption.TopDirectoryOnly);
             if(readme.Length==0) {
                 readme=Directory.GetFiles(path, "*readme*.*", SearchOption.AllDirectories);
-                if(readme.Length==0) readme=Directory.GetFiles(path, "*.rtf", SearchOption.AllDirectories);
-                if(readme.Length==0) readme=Directory.GetFiles(path, "*.txt", SearchOption.AllDirectories);
-                if(readme.Length==0) readme=Directory.GetFiles(path, "*.html", SearchOption.AllDirectories);
+                if(readme.Length==0) readme=Program.GetFiles(path, "*.rtf", SearchOption.AllDirectories);
+                if(readme.Length==0) readme=Program.GetFiles(path, "*.txt", SearchOption.AllDirectories);
+                if(readme.Length==0) readme=Program.GetFiles(path, "*.html", SearchOption.AllDirectories);
                 if(readme.Length>0) {
                     File.Move(readme[0], Path.Combine(path, "Readme - "+fomodname+Path.GetExtension(readme[0])));
                 }
@@ -322,8 +322,8 @@ namespace Fomm.PackageManager {
                     xmlDoc.Save(Path.Combine(path, "fomod\\info.xml"));
                 }
             }
-            if(Directory.GetFiles(path, "*.esp", SearchOption.AllDirectories).Length+Directory.GetFiles(path, "*.esm", SearchOption.AllDirectories).Length>
-                    Directory.GetFiles(path, "*.esp", SearchOption.TopDirectoryOnly).Length+Directory.GetFiles(path, "*.esm", SearchOption.TopDirectoryOnly).Length) {
+            if(Program.GetFiles(path, "*.esp", SearchOption.AllDirectories).Length+Program.GetFiles(path, "*.esm", SearchOption.AllDirectories).Length>
+                    Program.GetFiles(path, "*.esp", SearchOption.TopDirectoryOnly).Length+Program.GetFiles(path, "*.esm", SearchOption.TopDirectoryOnly).Length) {
                 if(!File.Exists(Path.Combine(path, "fomod\\script.cs"))) {
                     MessageBox.Show("This archive contains plugins in subdirectories, and will need a script attached for fomm to install it correctly.", "Warning");
                 }

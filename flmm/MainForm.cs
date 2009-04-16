@@ -187,8 +187,8 @@ namespace Fomm {
 
             List<ListViewItem> plugins=new List<ListViewItem>();
             DirectoryInfo di=new DirectoryInfo("data");
-            List<FileInfo> files=new List<FileInfo>(di.GetFiles("*.esp"));
-            files.AddRange(di.GetFiles("*.esm"));
+            List<FileInfo> files=new List<FileInfo>(Program.GetFiles(di, "*.esp"));
+            files.AddRange(Program.GetFiles(di, "*.esm"));
             int count=0;
             for(int i=0;i<files.Count;i++) {
                 try {
