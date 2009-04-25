@@ -157,7 +157,7 @@ namespace Fomm.PackageManager {
             if(dataFileNode==null) {
                 rootNode.AppendChild(dataFileNode=xmlDoc.CreateElement("installedFiles"));
             }
-            if(dataFileNode.SelectSingleNode("descendant::file[.=\""+ldatapath.Replace("&", "&amp;")+"\"]")==null) {
+            if(dataFileNode.SelectSingleNode("descendant::file[.=\""+ldatapath+"\"]")==null) {
                 dataFileNode.AppendChild(xmlDoc.CreateElement("file"));
                 dataFileNode.LastChild.InnerText=ldatapath;
                 InstallLog.InstallDataFile(ldatapath);

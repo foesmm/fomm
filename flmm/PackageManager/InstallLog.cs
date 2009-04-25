@@ -44,7 +44,7 @@ namespace Fomm.PackageManager {
 
         public static void InstallDataFile(string path) {
             path=path.ToLowerInvariant();
-            XmlNode node=dataFilesNode.SelectSingleNode("file[.=\""+path.Replace("&", "&amp;")+"\"]");
+            XmlNode node=dataFilesNode.SelectSingleNode("file[.=\""+path+"\"]");
             if(node==null) {
                 XmlElement el=xmlDoc.CreateElement("file");
                 el.Attributes.Append(xmlDoc.CreateAttribute("count"));
@@ -58,7 +58,7 @@ namespace Fomm.PackageManager {
 
         public static void UninstallDataFile(string path) {
             path=path.ToLowerInvariant();
-            XmlNode node=dataFilesNode.SelectSingleNode("file[.=\""+path.Replace("&", "&amp;")+"\"]");
+            XmlNode node=dataFilesNode.SelectSingleNode("file[.=\""+path+"\"]");
             if(node==null) return;
             int i=int.Parse(node.Attributes.GetNamedItem("count").Value)-1;
             if(i==0) {
