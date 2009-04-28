@@ -394,6 +394,7 @@ namespace Fomm.PackageManager {
 
         public static string[] GetActivePlugins() {
             permissions.Assert();
+            if(activePlugins==null) LoadActivePlugins();
             FileInfo[] files=new FileInfo[activePlugins.Count];
             for(int i=0;i<files.Length;i++) files[i]=new FileInfo(Path.Combine("data", activePlugins[i]));
             Array.Sort<FileInfo>(files, delegate(FileInfo a, FileInfo b)
