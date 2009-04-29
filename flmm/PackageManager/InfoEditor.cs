@@ -53,7 +53,7 @@ namespace Fomm.PackageManager {
             Version minFommVersion=fomod.DefaultMinFommVersion;
             if(tbVersion.Text.Length>0) {
                 try {
-                    version=new Version(tbVersion.Text);
+                    version=new Version(tbMVersion.Text);
                 } catch {
                     MessageBox.Show("Invalid version specified", "Error");
                     return;
