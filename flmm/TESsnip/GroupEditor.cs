@@ -9,6 +9,7 @@ namespace Fomm.TESsnip {
         public GroupEditor(GroupRecord gr) {
             this.gr=gr;
             InitializeComponent();
+            this.Icon=Fomm.Properties.Resources.fomm02;
             cmbGroupType.ContextMenu=new ContextMenu();
             cmbGroupType.SelectedIndex=(int)gr.groupType;
             tbRecType.Text=gr.ContentsType;

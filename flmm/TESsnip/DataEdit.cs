@@ -9,6 +9,7 @@ namespace Fomm.TESsnip {
 
         public DataEdit(string RecName, byte[] data) {
             InitializeComponent();
+            this.Icon=Fomm.Properties.Resources.fomm02;
             Text+=RecName;
             tbName.Text=RecName;
             Text+=" (string mode)";

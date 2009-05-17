@@ -21,10 +21,9 @@ namespace Fomm.ShaderEdit {
         private string FileName="";
         private HLSLImporter HLSLImporterForm=new HLSLImporter();
 
-        public MainForm() { InitializeComponent(); }
+        public MainForm() { InitializeComponent(); this.Icon=Fomm.Properties.Resources.fomm02; }
 
-        public MainForm(string path) {
-            InitializeComponent();
+        public MainForm(string path) : this() {
             Open(path);
         }
 

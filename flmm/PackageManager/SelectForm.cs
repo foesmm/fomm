@@ -6,6 +6,7 @@ namespace Fomm.PackageManager {
     internal partial class SelectForm : Form {
         internal SelectForm(string[] items,string title,bool multi,Image[] previews,string[] tooltips) {
             InitializeComponent();
+            this.Icon=Fomm.Properties.Resources.fomm02;
             Settings.GetWindowPosition("PackageManagerSelectForm", this);
             Text=title;
             toolTips=tooltips;

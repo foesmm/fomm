@@ -15,6 +15,7 @@ namespace Fomm.TESsnip {
 
         public HexDataEdit(string RecName, byte[] data, dFormIDLookupS formIDLookup) {
             InitializeComponent();
+            this.Icon=Fomm.Properties.Resources.fomm02;
             this.formIDLookup=formIDLookup;
             Text+=RecName;
             tbName.Text=RecName;

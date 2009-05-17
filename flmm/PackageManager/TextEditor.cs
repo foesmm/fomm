@@ -14,6 +14,7 @@ namespace Fomm.PackageManager {
 
         private TextEditor(string text, TextEditorType type) {
             InitializeComponent();
+            this.Icon=Fomm.Properties.Resources.fomm02;
             Settings.GetWindowPosition("TextEditor", this);
             switch(type) {
             case TextEditorType.Text:

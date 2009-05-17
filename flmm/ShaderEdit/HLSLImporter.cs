@@ -5,6 +5,7 @@ namespace Fomm.ShaderEdit {
     partial class HLSLImporter : Form {
         public HLSLImporter() { 
             InitializeComponent();
+            this.Icon=Fomm.Properties.Resources.fomm02;
             DialogResult=DialogResult.Cancel;
         }
 

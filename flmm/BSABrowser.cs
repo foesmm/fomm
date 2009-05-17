@@ -6,6 +6,7 @@ namespace Fomm {
     internal partial class BSABrowser : Form {
         internal BSABrowser() {
             InitializeComponent();
+            this.Icon=Fomm.Properties.Resources.fomm02;
             string path=Settings.GetString("LastBSAUnpackPath");
             if(path!=null) SaveAllDialog.SelectedPath=path;
 

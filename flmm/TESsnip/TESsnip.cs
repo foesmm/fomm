@@ -25,6 +25,7 @@ namespace Fomm.TESsnip {
                 }
             }
             InitializeComponent();
+            this.Icon=Fomm.Properties.Resources.fomm02;
             Settings.GetWindowPosition("TESsnip", this);
         }
         public TESsnip(string[] mods) {
@@ -36,6 +37,7 @@ namespace Fomm.TESsnip {
                 }
             }
             InitializeComponent();
+            this.Icon=Fomm.Properties.Resources.fomm02;
             Settings.GetWindowPosition("TESsnip", this);
             for(int i=0;i<mods.Length;i++) LoadPlugin(mods[i]);
         }

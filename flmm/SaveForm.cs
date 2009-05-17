@@ -65,6 +65,7 @@ namespace Fomm {
 
         internal SaveForm() {
             InitializeComponent();
+            this.Icon=Fomm.Properties.Resources.fomm02;
             cmbSort.SelectedIndex=3;
             lvSaves.ListViewItemSorter=new SaveListSorter();
             foreach(string file in Directory.GetFiles(Program.FOSavesPath)) {

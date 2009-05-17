@@ -13,6 +13,7 @@ namespace Fomm.InstallTweaker {
 
         public InstallationTweaker() {
             InitializeComponent();
+            this.Icon=Fomm.Properties.Resources.fomm02;
             if(Directory.Exists(BackupPath)) {
                 if(File.Exists("xlive.dll")) {
                     cbDisableLive.Checked=true;

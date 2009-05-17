@@ -9,6 +9,7 @@ namespace Fomm {
 
         public MainForm(string fomod) {
             InitializeComponent();
+            this.Icon=Fomm.Properties.Resources.fomm02;
             Settings.GetWindowPosition("MainForm", this);
             
             Text+=" ("+Program.Version+")";

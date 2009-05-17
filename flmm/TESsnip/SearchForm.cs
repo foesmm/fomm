@@ -14,6 +14,7 @@ namespace Fomm.TESsnip {
 
         public SearchForm(TreeView list) {
             InitializeComponent();
+            this.Icon=Fomm.Properties.Resources.fomm02;
             bReset.Enabled=false;
             tv=list;
         }

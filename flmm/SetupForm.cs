@@ -7,6 +7,7 @@ namespace Fomm {
         private readonly bool FinishedSetup;
         public SetupForm(bool Internal) {
             InitializeComponent();
+            this.Icon=Fomm.Properties.Resources.fomm02;
             string tmp;
             if(Internal) {
                 cbFomod.Enabled=false;

@@ -10,6 +10,7 @@ namespace Fomm.PackageManager {
         public InfoEditor(fomod mod) {
             this.mod=mod;
             InitializeComponent();
+            this.Icon=Fomm.Properties.Resources.fomm02;
             Settings.GetWindowPosition("InfoEditor", this);
             tbName.Text=mod.Name;
             tbAuthor.Text=mod.Author;

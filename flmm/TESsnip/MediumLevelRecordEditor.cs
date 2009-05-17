@@ -208,6 +208,7 @@ namespace Fomm.TESsnip {
 
         public MediumLevelRecordEditor(SubRecord sr, SubrecordStructure ss, dFormIDLookupS formIDLookup, dFormIDScan formIDScan) {
             InitializeComponent();
+            this.Icon=Fomm.Properties.Resources.fomm02;
             SuspendLayout();
             this.sr=sr;
             this.ss=ss;

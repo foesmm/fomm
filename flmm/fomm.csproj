@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Fomm</RootNamespace>
     <AssemblyName>Fomm</AssemblyName>
-    <ApplicationIcon>rad2.ico</ApplicationIcon>
+    <ApplicationIcon>fomm01.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -117,6 +117,11 @@
     </Compile>
     <Compile Include="PackageManager\ScriptCompiler.cs" />
     <Compile Include="PackageManager\unrar.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="ReorderableItemListView.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -219,6 +224,11 @@
     <EmbeddedResource Include="PackageManager\PackageManager.resx">
       <SubType>Designer</SubType>
       <DependentUpon>PackageManager.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="SaveForm.resx">
       <DependentUpon>SaveForm.cs</DependentUpon>
@@ -356,7 +366,10 @@
     <Compile Include="TypeConverter.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="fomm01.ico" />
+    <Content Include="fomm02.ico" />
     <Content Include="rad2.ico" />
+    <None Include="Resources\fomm02.ico" />
     <Content Include="ScriptCompiler\ScriptFunctions.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

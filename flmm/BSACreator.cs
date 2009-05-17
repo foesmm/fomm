@@ -143,6 +143,7 @@ namespace Fomm {
 
         internal BSACreator() {
             InitializeComponent();
+            this.Icon=Fomm.Properties.Resources.fomm02;
             lvFiles.ListViewItemSorter=sorter;
         }
 

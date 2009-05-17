@@ -7,6 +7,7 @@ namespace Fomm.PackageManager {
     partial class Overwriteform : Form {
         private Overwriteform(string msg, bool allowFolder) {
             InitializeComponent();
+            this.Icon=Fomm.Properties.Resources.fomm02;
             Settings.GetWindowPosition("OverwriteForm", this);
             label1.Text=msg;
             if(!allowFolder) {

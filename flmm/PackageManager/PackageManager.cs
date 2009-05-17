@@ -105,6 +105,7 @@ namespace Fomm.PackageManager {
         public PackageManager(MainForm mf) {
             this.mf=mf;
             InitializeComponent();
+            this.Icon=Fomm.Properties.Resources.fomm02;
             cmbSortOrder.ContextMenu=new ContextMenu();
             lvModList.ListViewItemSorter=new FomodSorter();
             Settings.GetWindowPosition("PackageManager", this);

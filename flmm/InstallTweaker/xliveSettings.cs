@@ -6,6 +6,7 @@ namespace Fomm.InstallTweaker {
     public partial class xliveSettings : Form {
         public xliveSettings() {
             InitializeComponent();
+            this.Icon=Fomm.Properties.Resources.fomm02;
             if(!File.Exists("xlive.ini")) {
                 File.WriteAllLines("xlive.ini", new string[] { "[d3dx]", "sse=0", "", "[xlive]", "profile=" });
             }

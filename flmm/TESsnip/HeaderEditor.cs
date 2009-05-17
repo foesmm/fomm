@@ -15,6 +15,7 @@ namespace Fomm.TESsnip {
 
         private HeaderEditor(Record r) {
             InitializeComponent();
+            this.Icon=Fomm.Properties.Resources.fomm02;
             R=r;
             tbName.Text=r.Name;
             Flags1=r.Flags1;

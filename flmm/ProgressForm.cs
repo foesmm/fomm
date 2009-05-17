@@ -116,6 +116,7 @@ namespace Fomm {
 
         internal ProgressForm(string title,bool ShowRatio) {
             InitializeComponent();
+            this.Icon=Fomm.Properties.Resources.fomm02;
         	Application.UseWaitCursor=true;
             Text=title;
             if(!ShowRatio) {
