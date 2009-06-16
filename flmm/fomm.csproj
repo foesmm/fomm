@@ -367,8 +367,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="fomm01.ico" />
-    <Content Include="fomm02.ico" />
-    <Content Include="rad2.ico" />
     <None Include="Resources\fomm02.ico" />
     <Content Include="ScriptCompiler\ScriptFunctions.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

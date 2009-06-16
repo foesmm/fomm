@@ -410,6 +410,56 @@ namespace Fomm {
                         }
                     }
                 }
+                if(GetFiles(DLCDir, "BrokenSteel.esm", SearchOption.AllDirectories).Length==1) {
+                    if(!File.Exists("Data\\BrokenSteel.esm")) {
+                        string[][] files=new string[8][];
+                        files[0]=Directory.GetFiles(DLCDir, "BrokenSteel.esm", SearchOption.AllDirectories);
+                        files[1]=Directory.GetFiles(DLCDir, "BrokenSteel - Main.bsa", SearchOption.AllDirectories);
+                        files[2]=Directory.GetFiles(DLCDir, "BrokenSteel - Sounds.bsa", SearchOption.AllDirectories);
+                        files[3]=Directory.GetFiles(DLCDir, "2 weeks later.bik", SearchOption.AllDirectories);
+                        files[4]=Directory.GetFiles(DLCDir, "B09.bik", SearchOption.AllDirectories);
+                        files[5]=Directory.GetFiles(DLCDir, "B27.bik", SearchOption.AllDirectories);
+                        files[6]=Directory.GetFiles(DLCDir, "B28.bik", SearchOption.AllDirectories);
+                        files[7]=Directory.GetFiles(DLCDir, "B29.bik", SearchOption.AllDirectories);
+                        bool missing=false;
+                        for(int i=0;i<8;i++) {
+                            if(files[i].Length!=1) {
+                                missing=true;
+                                break;
+                            }
+                            if((i<3&&File.Exists(Path.Combine("Data", Path.GetFileName(files[i][0]))))||
+                            (i>4&&File.Exists(Path.Combine("Data\\Video", Path.GetFileName(files[i][0]))))) {
+                                missing=true;
+                                break;
+                            }
+                        }
+                        if(!missing) {
+                            switch(MessageBox.Show("You seem to have bought the DLC Broken Steel.\n"+
+                                "Would you like to move it to fallout's data directory to allow for offline use and fose compatibility?\n"+
+                                "Note that this may cause issues with any save games created after it was purchased but before it was moved.\n"+
+                                "Click yes to move, cancel to ignore, and no if you don't want fomm to offer to move any DLC for you again.",
+                                "Question", MessageBoxButtons.YesNoCancel)) {
+                            case DialogResult.Yes:
+                                if(File.Exists("data\\video\\2 weeks later.bik")) {
+                                    File.Move("data\\video\\2 weeks later.bik", "data\\Video\\2 weeks later.bik.old");
+                                }
+                                if(File.Exists("data\\video\\b09.bik")) {
+                                    File.Move("data\\video\\b09.bik", "data\\Video\\b09.bik.old");
+                                }
+                                for(int i=0;i<3;i++) {
+                                    File.Move(files[i][0], Path.Combine("Data", Path.GetFileName(files[i][0])));
+                                }
+                                for(int i=3;i<8;i++) {
+                                    File.Move(files[i][0], Path.Combine("Data\\Video", Path.GetFileName(files[i][0])));
+                                }
+                                break;
+                            case DialogResult.No:
+                                Settings.SetString("IgnoreDLC", "True");
+                                break;
+                            }
+                        }
+                    }
+                }
             }
 
             if(Array.IndexOf<string>(args, "-install-tweaker")!=-1) {
