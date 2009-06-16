@@ -6,6 +6,7 @@ using Fomm.TESsnip;
 
 namespace Fomm {
     partial class MainForm : Form {
+        private bool AlphaSortMode=false;
 
         public MainForm(string fomod) {
             InitializeComponent();
@@ -45,6 +46,10 @@ namespace Fomm {
         }
 
         private void lvEspList_DragDrop(object sender, DragEventArgs e) {
+            if(AlphaSortMode) {
+                MessageBox.Show("Cannot change load order when sorting by file name", "Error");
+                return;
+            }
             DateTime timestamp=new DateTime(2008, 1, 1);
             TimeSpan twomins=TimeSpan.FromMinutes(2);
 
@@ -200,10 +205,17 @@ namespace Fomm {
                     files[i].LastWriteTime=DateTime.Now;
                 }
             }
-            files.Sort(delegate(FileInfo a, FileInfo b)
-            {
-                return a.LastWriteTime.CompareTo(b.LastWriteTime);
-            });
+            if(AlphaSortMode) {
+                files.Sort(delegate(FileInfo a, FileInfo b)
+                {
+                    return a.Name.CompareTo(b.Name);
+                });
+            } else {
+                files.Sort(delegate(FileInfo a, FileInfo b)
+                {
+                    return a.LastWriteTime.CompareTo(b.LastWriteTime);
+                });
+            }
             foreach(FileInfo fi in files) {
                 plugins.Add(new ListViewItem(fi.Name));
             }
@@ -288,6 +300,10 @@ namespace Fomm {
         #endregion
 
         private void CommitLoadOrder(int position, int[] indicies) {
+            if(AlphaSortMode) {
+                MessageBox.Show("Cannot change load order when sorting by file name", "Error");
+                return;
+            }
             Array.Sort<int>(indicies);
             DateTime timestamp=new DateTime(2008, 1, 1);
             TimeSpan twomins=TimeSpan.FromMinutes(2);
@@ -506,6 +522,13 @@ namespace Fomm {
                 return;
             }
             (new SetupForm(true)).ShowDialog();
+            RefreshEspList();
+        }
+
+        private void lvEspList_ColumnClick(object sender, ColumnClickEventArgs e) {
+            AlphaSortMode=e.Column==0;
+            if(AlphaSortMode) lvEspList.AllowDrop=false;
+            else lvEspList.AllowDrop=true;
             RefreshEspList();
         }
     }

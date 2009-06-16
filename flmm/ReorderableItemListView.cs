@@ -147,9 +147,10 @@ namespace L0ki.Controls {
         #endregion
 
         #region Properties
+        private bool allowDrop=true;
         public override bool AllowDrop {
-            get { return true; }
-            set { if(value!=true) throw new InvalidOperationException("AllowDrop must be true"); }
+            get { return allowDrop; }
+            set { allowDrop=value; }
         }
 
         #endregion
@@ -173,7 +174,7 @@ namespace L0ki.Controls {
         }
 
         protected override void OnItemDrag(ItemDragEventArgs e) {
-            if((this.SelectedItems.Count == 0) || (e.Button != MouseButtons.Left))
+            if((this.SelectedItems.Count == 0) || (e.Button != MouseButtons.Left) ||!allowDrop)
                 return;
 
             ResetDragIndicator();
