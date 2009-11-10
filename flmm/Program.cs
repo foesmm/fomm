@@ -38,7 +38,7 @@ namespace Fomm {
     class fommException : Exception { public fommException(string msg) : base(msg) { } }
 
     public static class Program {
-        public const string Version="0.9.15";
+        public const string Version="0.9.16";
         public static readonly Version MVersion=new Version(Version+".0");
         /*private static string typefromint(int i, bool name) {
             switch(i) {
@@ -475,6 +475,29 @@ namespace Fomm {
                                 File.Move(f1[0], "data\\PointLookout.esm");
                                 File.Move(f2[0], "data\\PointLookout - Main.bsa");
                                 File.Move(f3[0], "data\\PointLookout - Sounds.bsa");
+                                break;
+                            case DialogResult.No:
+                                Settings.SetString("IgnoreDLC", "True");
+                                break;
+                            }
+                        }
+                    }
+                }
+                if(GetFiles(DLCDir, "Zeta.esm ", SearchOption.AllDirectories).Length==1) {
+                    if(!File.Exists("data\\Zeta.esm ")&&!File.Exists("data\\Zeta - Main.bsa")&&!File.Exists("data\\Zeta - Sounds.bsa")) {
+                        string[] f1=Directory.GetFiles(DLCDir, "Zeta.esm", SearchOption.AllDirectories);
+                        string[] f2=Directory.GetFiles(DLCDir, "Zeta - Main.bsa", SearchOption.AllDirectories);
+                        string[] f3=Directory.GetFiles(DLCDir, "Zeta - Sounds.bsa", SearchOption.AllDirectories);
+                        if(f1.Length==1&&f2.Length==1&&f3.Length==1) {
+                            switch(MessageBox.Show("You seem to have bought the DLC Mothership Zeta.\n"+
+                                "Would you like to move it to fallout's data directory to allow for offline use and fose compatibility?\n"+
+                                "Note that this may cause issues with any save games created after it was purchased but before it was moved.\n"+
+                                "Click yes to move, cancel to ignore, and no if you don't want fomm to offer to move any DLC for you again.",
+                                "Question", MessageBoxButtons.YesNoCancel)) {
+                            case DialogResult.Yes:
+                                File.Move(f1[0], "data\\Zeta.esm");
+                                File.Move(f2[0], "data\\Zeta - Main.bsa");
+                                File.Move(f3[0], "data\\Zeta - Sounds.bsa");
                                 break;
                             case DialogResult.No:
                                 Settings.SetString("IgnoreDLC", "True");
