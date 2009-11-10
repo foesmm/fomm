@@ -294,8 +294,8 @@ namespace Fomm {
         }
 
         private void bHelp_Click(object sender, EventArgs e) {
-            //System.Diagnostics.Process.Start(Path.Combine(Program.fommDir, "fomm.chm"));
-            System.Diagnostics.Process.Start(@"http://fomm.wiki.sourceforge.net/");
+            System.Diagnostics.Process.Start(Path.Combine(Program.fommDir, "fomm.chm"));
+            //System.Diagnostics.Process.Start(@"http://fomm.wiki.sourceforge.net/");
         }
         #endregion
 

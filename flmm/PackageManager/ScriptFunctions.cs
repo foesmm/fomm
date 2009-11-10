@@ -532,7 +532,7 @@ namespace Fomm.PackageManager {
             return EditINI(Program.FOPrefsIniPath, section, key, value, saveOld);
         }
         public static bool EditGeckINI(string section, string key, string value, bool saveOld) {
-            return EditINI(Program.GeckPrefsIniPath, section, key, value, saveOld);
+            return EditINI(Program.GeckIniPath, section, key, value, saveOld);
         }
         public static bool EditGeckPrefsINI(string section, string key, string value, bool saveOld) {
             return EditINI(Program.GeckPrefsIniPath, section, key, value, saveOld);
