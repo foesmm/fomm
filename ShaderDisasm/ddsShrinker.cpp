@@ -7,11 +7,28 @@ static IDirect3DDevice9* device;
 static IDirect3D9* d3d9;
 static ID3DXBuffer* buffer;
 
+#define SAFERELEASE(a) if(a) { a->Release(); a=0; }
+
+//If we're not going to import the standard runtime library, we don't have memset
+//this is the easiest implementation that makes sure the compiler doesn't optimize it back to a memset
+//Not very efficient, but it's only used on a tiny structure
+static void memset2(void* _ptr, int _size) {
+	_asm {
+		mov ecx, _size;
+		mov ebx, _ptr;
+		xor eax, eax;
+startloop:
+		mov [ebx], al;
+		inc ebx;
+		loop startloop;
+	}
+}
+
 void _stdcall ddsInit(HWND window) {
 	buffer=0;
 	d3d9=Direct3DCreate9(D3D_SDK_VERSION);
 	D3DPRESENT_PARAMETERS params;
-	memset(&params, 0, sizeof(params));
+	memset2(&params, sizeof(params));
 	params.Windowed=true;
 	params.hDeviceWindow=window;
 	params.BackBufferHeight=128;
@@ -45,7 +62,7 @@ void _stdcall ddsBlt(IDirect3DTexture9* source, DWORD sL, DWORD sT, DWORD sW, DW
 }
 
 void* _stdcall ddsSave(IDirect3DTexture9* tex, DWORD format, DWORD mipmaps, DWORD* length) {
-	if(buffer) { buffer->Release(); buffer=0; }
+	SAFERELEASE(buffer);
 	D3DSURFACE_DESC desc;
 	tex->GetLevelDesc(0, &desc);
 	IDirect3DTexture9* tex2;
@@ -101,7 +118,7 @@ static bool IsPowOfTwo(int i) {
 }
 
 void* _stdcall ddsShrink(BYTE* file, int length, int* oLength) {
-	if(buffer) { buffer->Release(); buffer=0; }
+	SAFERELEASE(buffer);
 	IDirect3DTexture9 *tex1, *tex2;
 	IDirect3DSurface9 *surf1, *surf2;
 	D3DXIMAGE_INFO info;
@@ -127,7 +144,7 @@ void* _stdcall ddsShrink(BYTE* file, int length, int* oLength) {
 }
 
 void _stdcall ddsClose() {
-	if(buffer) { buffer->Release(); buffer=0; }
-	device->Release();
-	d3d9->Release();
+	SAFERELEASE(buffer);
+	SAFERELEASE(device);
+	SAFERELEASE(d3d9);
 }
