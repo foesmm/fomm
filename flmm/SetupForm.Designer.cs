@@ -42,6 +42,8 @@ namespace Fomm {
             this.cbEsmShow = new System.Windows.Forms.CheckBox();
             this.cbDisableIPC = new System.Windows.Forms.CheckBox();
             this.cbDisableUAC = new System.Windows.Forms.CheckBox();
+            this.tbLaunchArgs = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // cbFomod
@@ -161,7 +163,7 @@ namespace Fomm {
             // cbAssociateFomod
             // 
             this.cbAssociateFomod.AutoSize = true;
-            this.cbAssociateFomod.Location = new System.Drawing.Point(15, 171);
+            this.cbAssociateFomod.Location = new System.Drawing.Point(15, 210);
             this.cbAssociateFomod.Name = "cbAssociateFomod";
             this.cbAssociateFomod.Size = new System.Drawing.Size(131, 17);
             this.cbAssociateFomod.TabIndex = 14;
@@ -172,7 +174,7 @@ namespace Fomm {
             // cbAssociateBsa
             // 
             this.cbAssociateBsa.AutoSize = true;
-            this.cbAssociateBsa.Location = new System.Drawing.Point(15, 194);
+            this.cbAssociateBsa.Location = new System.Drawing.Point(15, 233);
             this.cbAssociateBsa.Name = "cbAssociateBsa";
             this.cbAssociateBsa.Size = new System.Drawing.Size(123, 17);
             this.cbAssociateBsa.TabIndex = 15;
@@ -183,7 +185,7 @@ namespace Fomm {
             // cbAssociateSdp
             // 
             this.cbAssociateSdp.AutoSize = true;
-            this.cbAssociateSdp.Location = new System.Drawing.Point(164, 171);
+            this.cbAssociateSdp.Location = new System.Drawing.Point(164, 210);
             this.cbAssociateSdp.Name = "cbAssociateSdp";
             this.cbAssociateSdp.Size = new System.Drawing.Size(124, 17);
             this.cbAssociateSdp.TabIndex = 16;
@@ -194,7 +196,7 @@ namespace Fomm {
             // cbShellExtensions
             // 
             this.cbShellExtensions.AutoSize = true;
-            this.cbShellExtensions.Location = new System.Drawing.Point(164, 194);
+            this.cbShellExtensions.Location = new System.Drawing.Point(164, 233);
             this.cbShellExtensions.Name = "cbShellExtensions";
             this.cbShellExtensions.Size = new System.Drawing.Size(231, 17);
             this.cbShellExtensions.TabIndex = 17;
@@ -205,7 +207,7 @@ namespace Fomm {
             // cbEsmShow
             // 
             this.cbEsmShow.AutoSize = true;
-            this.cbEsmShow.Location = new System.Drawing.Point(15, 228);
+            this.cbEsmShow.Location = new System.Drawing.Point(15, 267);
             this.cbEsmShow.Name = "cbEsmShow";
             this.cbEsmShow.Size = new System.Drawing.Size(118, 17);
             this.cbEsmShow.TabIndex = 18;
@@ -216,7 +218,7 @@ namespace Fomm {
             // cbDisableIPC
             // 
             this.cbDisableIPC.AutoSize = true;
-            this.cbDisableIPC.Location = new System.Drawing.Point(164, 228);
+            this.cbDisableIPC.Location = new System.Drawing.Point(164, 267);
             this.cbDisableIPC.Name = "cbDisableIPC";
             this.cbDisableIPC.Size = new System.Drawing.Size(135, 17);
             this.cbDisableIPC.TabIndex = 19;
@@ -227,7 +229,7 @@ namespace Fomm {
             // cbDisableUAC
             // 
             this.cbDisableUAC.AutoSize = true;
-            this.cbDisableUAC.Location = new System.Drawing.Point(15, 251);
+            this.cbDisableUAC.Location = new System.Drawing.Point(15, 290);
             this.cbDisableUAC.Name = "cbDisableUAC";
             this.cbDisableUAC.Size = new System.Drawing.Size(124, 17);
             this.cbDisableUAC.TabIndex = 20;
@@ -235,11 +237,32 @@ namespace Fomm {
             this.cbDisableUAC.UseVisualStyleBackColor = true;
             this.cbDisableUAC.CheckedChanged += new System.EventHandler(this.cbDisableUAC_CheckedChanged);
             // 
+            // tbLaunchArgs
+            // 
+            this.tbLaunchArgs.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbLaunchArgs.Location = new System.Drawing.Point(12, 184);
+            this.tbLaunchArgs.Name = "tbLaunchArgs";
+            this.tbLaunchArgs.ReadOnly = true;
+            this.tbLaunchArgs.Size = new System.Drawing.Size(375, 20);
+            this.tbLaunchArgs.TabIndex = 21;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(12, 168);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(144, 13);
+            this.label4.TabIndex = 22;
+            this.label4.Text = "Launch command arguments";
+            // 
             // SetupForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(399, 276);
+            this.ClientSize = new System.Drawing.Size(399, 319);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.tbLaunchArgs);
             this.Controls.Add(this.cbDisableUAC);
             this.Controls.Add(this.cbDisableIPC);
             this.Controls.Add(this.cbEsmShow);
@@ -287,5 +310,7 @@ namespace Fomm {
         private System.Windows.Forms.CheckBox cbEsmShow;
         private System.Windows.Forms.CheckBox cbDisableIPC;
         private System.Windows.Forms.CheckBox cbDisableUAC;
+        private System.Windows.Forms.TextBox tbLaunchArgs;
+        private System.Windows.Forms.Label label4;
     }
 }

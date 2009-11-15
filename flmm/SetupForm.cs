@@ -30,6 +30,8 @@ namespace Fomm {
             if(tmp!=null) {
                 cbLaunch.Checked=true;
                 tbLaunch.Text=tmp;
+                tmp=Settings.GetString("LaunchCommandArgs");
+                if(tmp!=null) tbLaunchArgs.Text=tmp;
             }
             cbEsmShow.Checked=Settings.GetBool("ShowEsmInBold");
             cbDisableUAC.Checked=Settings.GetBool("NoUACCheck");
@@ -81,8 +83,13 @@ namespace Fomm {
             else Settings.RemoveString("FomodDir");
             if(cbFallout.Checked) Settings.SetString("FalloutDir", tbFallout.Text);
             else Settings.RemoveString("FalloutDir");
-            if(cbLaunch.Checked) Settings.SetString("LaunchCommand", tbLaunch.Text);
-            else Settings.RemoveString("LaunchCommand");
+            if(cbLaunch.Checked) {
+                Settings.SetString("LaunchCommand", tbLaunch.Text);
+                Settings.SetString("LaunchCommandArgs", tbLaunchArgs.Text);
+            } else {
+                Settings.RemoveString("LaunchCommand");
+                Settings.RemoveString("LaunchCommandArgs");
+            }
         }
 
         private void cbFomod_CheckedChanged(object sender, EventArgs e) {
@@ -97,6 +104,7 @@ namespace Fomm {
 
         private void cbLaunch_CheckedChanged(object sender, EventArgs e) {
             tbLaunch.ReadOnly=!cbLaunch.Checked;
+            tbLaunchArgs.ReadOnly=!cbLaunch.Checked;
         }
 
         private void bBrowseFomod_Click(object sender, EventArgs e) {

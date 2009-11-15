@@ -272,13 +272,19 @@ namespace Fomm {
                 return;
             }
             string command=Settings.GetString("LaunchCommand");
+            string args=Settings.GetString("LaunchCommandArgs");
             if(command==null) {
                 if(File.Exists("fose_loader.exe")) command="fose_loader.exe";
                 else if(File.Exists("fallout3.exe")) command="fallout3.exe";
                 else command="fallout3ng.exe";
+                args=null;
             }
             try {
-                if(System.Diagnostics.Process.Start(command)==null) {
+                System.Diagnostics.ProcessStartInfo psi=new System.Diagnostics.ProcessStartInfo();
+                psi.Arguments=args;
+                psi.FileName=command;
+                psi.WorkingDirectory=Path.GetDirectoryName(Path.GetFullPath(command));
+                if(System.Diagnostics.Process.Start(psi)==null) {
                     MessageBox.Show("Failed to launch '"+command+"'");
                     return;
                 }
