@@ -30,9 +30,6 @@ namespace Fomm {
             this.bShaderEdit = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.bLaunch = new System.Windows.Forms.Button();
-            this.lvEspList = new L0ki.Controls.ReordableItemListView();
-            this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
-            this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
             this.cmsPlugins = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.openInTESsnipToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sendToTopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -51,6 +48,9 @@ namespace Fomm {
             this.bHelp = new System.Windows.Forms.Button();
             this.bInstallTweaker = new System.Windows.Forms.Button();
             this.bSettings = new System.Windows.Forms.Button();
+            this.lvEspList = new L0ki.Controls.ReordableItemListView();
+            this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
+            this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.cmsPlugins.SuspendLayout();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -64,7 +64,7 @@ namespace Fomm {
             this.bBSAUnpack.Location = new System.Drawing.Point(417, 166);
             this.bBSAUnpack.Name = "bBSAUnpack";
             this.bBSAUnpack.Size = new System.Drawing.Size(120, 23);
-            this.bBSAUnpack.TabIndex = 0;
+            this.bBSAUnpack.TabIndex = 2;
             this.bBSAUnpack.Text = "BSA unpacker";
             this.bBSAUnpack.UseVisualStyleBackColor = true;
             this.bBSAUnpack.Click += new System.EventHandler(this.bBSAUnpack_Click);
@@ -75,7 +75,7 @@ namespace Fomm {
             this.cBSACreator.Location = new System.Drawing.Point(417, 195);
             this.cBSACreator.Name = "cBSACreator";
             this.cBSACreator.Size = new System.Drawing.Size(120, 23);
-            this.cBSACreator.TabIndex = 1;
+            this.cBSACreator.TabIndex = 3;
             this.cBSACreator.Text = "BSA creator";
             this.cBSACreator.UseVisualStyleBackColor = true;
             this.cBSACreator.Click += new System.EventHandler(this.cBSACreator_Click);
@@ -86,7 +86,7 @@ namespace Fomm {
             this.bTESsnip.Location = new System.Drawing.Point(417, 224);
             this.bTESsnip.Name = "bTESsnip";
             this.bTESsnip.Size = new System.Drawing.Size(120, 23);
-            this.bTESsnip.TabIndex = 2;
+            this.bTESsnip.TabIndex = 4;
             this.bTESsnip.Text = "Plugin editor";
             this.bTESsnip.UseVisualStyleBackColor = true;
             this.bTESsnip.Click += new System.EventHandler(this.bTESsnip_Click);
@@ -97,7 +97,7 @@ namespace Fomm {
             this.bShaderEdit.Location = new System.Drawing.Point(417, 253);
             this.bShaderEdit.Name = "bShaderEdit";
             this.bShaderEdit.Size = new System.Drawing.Size(120, 23);
-            this.bShaderEdit.TabIndex = 3;
+            this.bShaderEdit.TabIndex = 5;
             this.bShaderEdit.Text = "Shader editor";
             this.bShaderEdit.UseVisualStyleBackColor = true;
             this.bShaderEdit.Click += new System.EventHandler(this.bShaderEdit_Click);
@@ -119,43 +119,10 @@ namespace Fomm {
             this.bLaunch.Location = new System.Drawing.Point(417, 108);
             this.bLaunch.Name = "bLaunch";
             this.bLaunch.Size = new System.Drawing.Size(120, 23);
-            this.bLaunch.TabIndex = 5;
+            this.bLaunch.TabIndex = 0;
             this.bLaunch.Text = "Launch Fallout";
             this.bLaunch.UseVisualStyleBackColor = true;
             this.bLaunch.Click += new System.EventHandler(this.bLaunch_Click);
-            // 
-            // lvEspList
-            // 
-            this.lvEspList.AllowDrop = true;
-            this.lvEspList.CheckBoxes = true;
-            this.lvEspList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1,
-            this.columnHeader2});
-            this.lvEspList.ContextMenuStrip = this.cmsPlugins;
-            this.lvEspList.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lvEspList.FullRowSelect = true;
-            this.lvEspList.Location = new System.Drawing.Point(0, 0);
-            this.lvEspList.Name = "lvEspList";
-            this.lvEspList.ShowGroups = false;
-            this.lvEspList.Size = new System.Drawing.Size(399, 292);
-            this.lvEspList.TabIndex = 0;
-            this.lvEspList.UseCompatibleStateImageBehavior = false;
-            this.lvEspList.View = System.Windows.Forms.View.Details;
-            this.lvEspList.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.lvEspList_ItemChecked);
-            this.lvEspList.SelectedIndexChanged += new System.EventHandler(this.lvEspList_SelectedIndexChanged);
-            this.lvEspList.DragDrop += new System.Windows.Forms.DragEventHandler(this.lvEspList_DragDrop);
-            this.lvEspList.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.lvEspList_ColumnClick);
-            this.lvEspList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lvEspList_KeyDown);
-            // 
-            // columnHeader1
-            // 
-            this.columnHeader1.Text = "File";
-            this.columnHeader1.Width = 219;
-            // 
-            // columnHeader2
-            // 
-            this.columnHeader2.Text = "Mod index";
-            this.columnHeader2.Width = 87;
             // 
             // cmsPlugins
             // 
@@ -253,7 +220,7 @@ namespace Fomm {
             this.splitContainer1.Panel2.Controls.Add(this.tbPluginInfo);
             this.splitContainer1.Size = new System.Drawing.Size(399, 407);
             this.splitContainer1.SplitterDistance = 292;
-            this.splitContainer1.TabIndex = 6;
+            this.splitContainer1.TabIndex = 11;
             // 
             // tbPluginInfo
             // 
@@ -275,7 +242,7 @@ namespace Fomm {
             this.bPackageManager.Location = new System.Drawing.Point(417, 282);
             this.bPackageManager.Name = "bPackageManager";
             this.bPackageManager.Size = new System.Drawing.Size(120, 23);
-            this.bPackageManager.TabIndex = 9;
+            this.bPackageManager.TabIndex = 6;
             this.bPackageManager.Text = "Package manager";
             this.bPackageManager.UseVisualStyleBackColor = true;
             this.bPackageManager.Click += new System.EventHandler(this.bPackageManager_Click);
@@ -286,7 +253,7 @@ namespace Fomm {
             this.bEnableAI.Location = new System.Drawing.Point(417, 311);
             this.bEnableAI.Name = "bEnableAI";
             this.bEnableAI.Size = new System.Drawing.Size(120, 23);
-            this.bEnableAI.TabIndex = 10;
+            this.bEnableAI.TabIndex = 7;
             this.bEnableAI.Text = "Toggle invalidation";
             this.bEnableAI.UseVisualStyleBackColor = true;
             this.bEnableAI.Click += new System.EventHandler(this.bEnableAI_Click);
@@ -297,7 +264,7 @@ namespace Fomm {
             this.bSaveGames.Location = new System.Drawing.Point(417, 340);
             this.bSaveGames.Name = "bSaveGames";
             this.bSaveGames.Size = new System.Drawing.Size(120, 23);
-            this.bSaveGames.TabIndex = 11;
+            this.bSaveGames.TabIndex = 8;
             this.bSaveGames.Text = "Save game list";
             this.bSaveGames.UseVisualStyleBackColor = true;
             this.bSaveGames.Click += new System.EventHandler(this.bSaveGames_Click);
@@ -308,7 +275,7 @@ namespace Fomm {
             this.bHelp.Location = new System.Drawing.Point(417, 137);
             this.bHelp.Name = "bHelp";
             this.bHelp.Size = new System.Drawing.Size(120, 23);
-            this.bHelp.TabIndex = 12;
+            this.bHelp.TabIndex = 1;
             this.bHelp.Text = "Help";
             this.bHelp.UseVisualStyleBackColor = true;
             this.bHelp.Click += new System.EventHandler(this.bHelp_Click);
@@ -319,7 +286,7 @@ namespace Fomm {
             this.bInstallTweaker.Location = new System.Drawing.Point(417, 369);
             this.bInstallTweaker.Name = "bInstallTweaker";
             this.bInstallTweaker.Size = new System.Drawing.Size(120, 23);
-            this.bInstallTweaker.TabIndex = 13;
+            this.bInstallTweaker.TabIndex = 9;
             this.bInstallTweaker.Text = "Install tweaker";
             this.bInstallTweaker.UseVisualStyleBackColor = true;
             this.bInstallTweaker.Click += new System.EventHandler(this.bInstallTweaker_Click);
@@ -330,10 +297,43 @@ namespace Fomm {
             this.bSettings.Location = new System.Drawing.Point(417, 398);
             this.bSettings.Name = "bSettings";
             this.bSettings.Size = new System.Drawing.Size(120, 23);
-            this.bSettings.TabIndex = 14;
+            this.bSettings.TabIndex = 10;
             this.bSettings.Text = "Settings";
             this.bSettings.UseVisualStyleBackColor = true;
             this.bSettings.Click += new System.EventHandler(this.bSettings_Click);
+            // 
+            // lvEspList
+            // 
+            this.lvEspList.AllowDrop = true;
+            this.lvEspList.CheckBoxes = true;
+            this.lvEspList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1,
+            this.columnHeader2});
+            this.lvEspList.ContextMenuStrip = this.cmsPlugins;
+            this.lvEspList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lvEspList.FullRowSelect = true;
+            this.lvEspList.Location = new System.Drawing.Point(0, 0);
+            this.lvEspList.Name = "lvEspList";
+            this.lvEspList.ShowGroups = false;
+            this.lvEspList.Size = new System.Drawing.Size(399, 292);
+            this.lvEspList.TabIndex = 0;
+            this.lvEspList.UseCompatibleStateImageBehavior = false;
+            this.lvEspList.View = System.Windows.Forms.View.Details;
+            this.lvEspList.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.lvEspList_ItemChecked);
+            this.lvEspList.SelectedIndexChanged += new System.EventHandler(this.lvEspList_SelectedIndexChanged);
+            this.lvEspList.DragDrop += new System.Windows.Forms.DragEventHandler(this.lvEspList_DragDrop);
+            this.lvEspList.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.lvEspList_ColumnClick);
+            this.lvEspList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lvEspList_KeyDown);
+            // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Text = "File";
+            this.columnHeader1.Width = 219;
+            // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Text = "Mod index";
+            this.columnHeader2.Width = 87;
             // 
             // MainForm
             // 

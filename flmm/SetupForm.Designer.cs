@@ -52,7 +52,7 @@ namespace Fomm {
             this.cbFomod.Location = new System.Drawing.Point(205, 12);
             this.cbFomod.Name = "cbFomod";
             this.cbFomod.Size = new System.Drawing.Size(101, 17);
-            this.cbFomod.TabIndex = 0;
+            this.cbFomod.TabIndex = 1;
             this.cbFomod.Text = "Override default";
             this.cbFomod.UseVisualStyleBackColor = true;
             this.cbFomod.CheckedChanged += new System.EventHandler(this.cbFomod_CheckedChanged);
@@ -63,7 +63,7 @@ namespace Fomm {
             this.label1.Location = new System.Drawing.Point(12, 13);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(81, 13);
-            this.label1.TabIndex = 1;
+            this.label1.TabIndex = 0;
             this.label1.Text = "fomod Directory";
             // 
             // tbFomod
@@ -116,7 +116,7 @@ namespace Fomm {
             this.label2.Location = new System.Drawing.Point(12, 68);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(83, 13);
-            this.label2.TabIndex = 5;
+            this.label2.TabIndex = 4;
             this.label2.Text = "Fallout Directory";
             // 
             // cbFallout
@@ -125,7 +125,7 @@ namespace Fomm {
             this.cbFallout.Location = new System.Drawing.Point(205, 67);
             this.cbFallout.Name = "cbFallout";
             this.cbFallout.Size = new System.Drawing.Size(101, 17);
-            this.cbFallout.TabIndex = 4;
+            this.cbFallout.TabIndex = 5;
             this.cbFallout.Text = "Override default";
             this.cbFallout.UseVisualStyleBackColor = true;
             this.cbFallout.CheckedChanged += new System.EventHandler(this.cbFallout_CheckedChanged);
@@ -146,7 +146,7 @@ namespace Fomm {
             this.label3.Location = new System.Drawing.Point(12, 123);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(111, 13);
-            this.label3.TabIndex = 9;
+            this.label3.TabIndex = 8;
             this.label3.Text = "Launch command line";
             // 
             // cbLaunch
@@ -155,7 +155,7 @@ namespace Fomm {
             this.cbLaunch.Location = new System.Drawing.Point(205, 122);
             this.cbLaunch.Name = "cbLaunch";
             this.cbLaunch.Size = new System.Drawing.Size(101, 17);
-            this.cbLaunch.TabIndex = 8;
+            this.cbLaunch.TabIndex = 9;
             this.cbLaunch.Text = "Override default";
             this.cbLaunch.UseVisualStyleBackColor = true;
             this.cbLaunch.CheckedChanged += new System.EventHandler(this.cbLaunch_CheckedChanged);
@@ -166,7 +166,7 @@ namespace Fomm {
             this.cbAssociateFomod.Location = new System.Drawing.Point(15, 210);
             this.cbAssociateFomod.Name = "cbAssociateFomod";
             this.cbAssociateFomod.Size = new System.Drawing.Size(131, 17);
-            this.cbAssociateFomod.TabIndex = 14;
+            this.cbAssociateFomod.TabIndex = 13;
             this.cbAssociateFomod.Text = "Associate with fomods";
             this.cbAssociateFomod.UseVisualStyleBackColor = true;
             this.cbAssociateFomod.CheckedChanged += new System.EventHandler(this.cbAssociateFomod_CheckedChanged);
@@ -188,7 +188,7 @@ namespace Fomm {
             this.cbAssociateSdp.Location = new System.Drawing.Point(164, 210);
             this.cbAssociateSdp.Name = "cbAssociateSdp";
             this.cbAssociateSdp.Size = new System.Drawing.Size(124, 17);
-            this.cbAssociateSdp.TabIndex = 16;
+            this.cbAssociateSdp.TabIndex = 14;
             this.cbAssociateSdp.Text = "Associate with SDPs";
             this.cbAssociateSdp.UseVisualStyleBackColor = true;
             this.cbAssociateSdp.CheckedChanged += new System.EventHandler(this.cbAssociateSdp_CheckedChanged);
@@ -199,7 +199,7 @@ namespace Fomm {
             this.cbShellExtensions.Location = new System.Drawing.Point(164, 233);
             this.cbShellExtensions.Name = "cbShellExtensions";
             this.cbShellExtensions.Size = new System.Drawing.Size(231, 17);
-            this.cbShellExtensions.TabIndex = 17;
+            this.cbShellExtensions.TabIndex = 16;
             this.cbShellExtensions.Text = "Add shell extensions for supported file types";
             this.cbShellExtensions.UseVisualStyleBackColor = true;
             this.cbShellExtensions.CheckedChanged += new System.EventHandler(this.cbShellExtensions_CheckedChanged);
@@ -210,7 +210,7 @@ namespace Fomm {
             this.cbEsmShow.Location = new System.Drawing.Point(15, 267);
             this.cbEsmShow.Name = "cbEsmShow";
             this.cbEsmShow.Size = new System.Drawing.Size(118, 17);
-            this.cbEsmShow.TabIndex = 18;
+            this.cbEsmShow.TabIndex = 17;
             this.cbEsmShow.Text = "Show ESMs in bold";
             this.cbEsmShow.UseVisualStyleBackColor = true;
             this.cbEsmShow.CheckedChanged += new System.EventHandler(this.bEsmShow_CheckedChanged);
@@ -221,7 +221,7 @@ namespace Fomm {
             this.cbDisableIPC.Location = new System.Drawing.Point(164, 267);
             this.cbDisableIPC.Name = "cbDisableIPC";
             this.cbDisableIPC.Size = new System.Drawing.Size(135, 17);
-            this.cbDisableIPC.TabIndex = 19;
+            this.cbDisableIPC.TabIndex = 18;
             this.cbDisableIPC.Text = "Disable IPC Messaging";
             this.cbDisableIPC.UseVisualStyleBackColor = true;
             this.cbDisableIPC.CheckedChanged += new System.EventHandler(this.cbDisableIPC_CheckedChanged);
@@ -232,7 +232,7 @@ namespace Fomm {
             this.cbDisableUAC.Location = new System.Drawing.Point(15, 290);
             this.cbDisableUAC.Name = "cbDisableUAC";
             this.cbDisableUAC.Size = new System.Drawing.Size(124, 17);
-            this.cbDisableUAC.TabIndex = 20;
+            this.cbDisableUAC.TabIndex = 19;
             this.cbDisableUAC.Text = "Disable UAC checks";
             this.cbDisableUAC.UseVisualStyleBackColor = true;
             this.cbDisableUAC.CheckedChanged += new System.EventHandler(this.cbDisableUAC_CheckedChanged);
@@ -245,7 +245,7 @@ namespace Fomm {
             this.tbLaunchArgs.Name = "tbLaunchArgs";
             this.tbLaunchArgs.ReadOnly = true;
             this.tbLaunchArgs.Size = new System.Drawing.Size(375, 20);
-            this.tbLaunchArgs.TabIndex = 21;
+            this.tbLaunchArgs.TabIndex = 12;
             // 
             // label4
             // 
@@ -253,7 +253,7 @@ namespace Fomm {
             this.label4.Location = new System.Drawing.Point(12, 168);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(144, 13);
-            this.label4.TabIndex = 22;
+            this.label4.TabIndex = 11;
             this.label4.Text = "Launch command arguments";
             // 
             // SetupForm

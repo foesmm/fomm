@@ -57,7 +57,7 @@ namespace Fomm {
             this.lName.Location = new System.Drawing.Point(12, 255);
             this.lName.Name = "lName";
             this.lName.Size = new System.Drawing.Size(71, 13);
-            this.lName.TabIndex = 1;
+            this.lName.TabIndex = 0;
             this.lName.Text = "Player name: ";
             // 
             // lLocation
@@ -66,7 +66,7 @@ namespace Fomm {
             this.lLocation.Location = new System.Drawing.Point(12, 268);
             this.lLocation.Name = "lLocation";
             this.lLocation.Size = new System.Drawing.Size(82, 13);
-            this.lLocation.TabIndex = 2;
+            this.lLocation.TabIndex = 1;
             this.lLocation.Text = "Player location: ";
             // 
             // lDate
@@ -75,7 +75,7 @@ namespace Fomm {
             this.lDate.Location = new System.Drawing.Point(12, 281);
             this.lDate.Name = "lDate";
             this.lDate.Size = new System.Drawing.Size(68, 13);
-            this.lDate.TabIndex = 4;
+            this.lDate.TabIndex = 2;
             this.lDate.Text = "Date saved: ";
             // 
             // splitContainer1
@@ -146,7 +146,7 @@ namespace Fomm {
             this.cmbSort.Location = new System.Drawing.Point(15, 567);
             this.cmbSort.Name = "cmbSort";
             this.cmbSort.Size = new System.Drawing.Size(121, 21);
-            this.cmbSort.TabIndex = 7;
+            this.cmbSort.TabIndex = 3;
             this.cmbSort.Text = "File name";
             this.cmbSort.SelectedIndexChanged += new System.EventHandler(this.cmbSort_SelectedIndexChanged);
             this.cmbSort.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.cmbSort_KeyPress);

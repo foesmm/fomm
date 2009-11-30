@@ -37,7 +37,7 @@ namespace Fomm.PackageManager {
             this.bYesToAll.Location = new System.Drawing.Point(12, 73);
             this.bYesToAll.Name = "bYesToAll";
             this.bYesToAll.Size = new System.Drawing.Size(75, 23);
-            this.bYesToAll.TabIndex = 0;
+            this.bYesToAll.TabIndex = 1;
             this.bYesToAll.Text = "Yes to all";
             this.bYesToAll.UseVisualStyleBackColor = true;
             this.bYesToAll.Click += new System.EventHandler(this.bYesToAll_Click);
@@ -47,7 +47,7 @@ namespace Fomm.PackageManager {
             this.bYesToFolder.Location = new System.Drawing.Point(93, 73);
             this.bYesToFolder.Name = "bYesToFolder";
             this.bYesToFolder.Size = new System.Drawing.Size(75, 23);
-            this.bYesToFolder.TabIndex = 1;
+            this.bYesToFolder.TabIndex = 2;
             this.bYesToFolder.Text = "Yes to folder";
             this.bYesToFolder.UseVisualStyleBackColor = true;
             this.bYesToFolder.Click += new System.EventHandler(this.bYesToFolder_Click);
@@ -57,7 +57,7 @@ namespace Fomm.PackageManager {
             this.bYes.Location = new System.Drawing.Point(174, 73);
             this.bYes.Name = "bYes";
             this.bYes.Size = new System.Drawing.Size(75, 23);
-            this.bYes.TabIndex = 2;
+            this.bYes.TabIndex = 3;
             this.bYes.Text = "Yes";
             this.bYes.UseVisualStyleBackColor = true;
             this.bYes.Click += new System.EventHandler(this.bYes_Click);
@@ -67,7 +67,7 @@ namespace Fomm.PackageManager {
             this.bNoToAll.Location = new System.Drawing.Point(255, 73);
             this.bNoToAll.Name = "bNoToAll";
             this.bNoToAll.Size = new System.Drawing.Size(75, 23);
-            this.bNoToAll.TabIndex = 3;
+            this.bNoToAll.TabIndex = 4;
             this.bNoToAll.Text = "No to all";
             this.bNoToAll.UseVisualStyleBackColor = true;
             this.bNoToAll.Click += new System.EventHandler(this.bNoToAll_Click);
@@ -77,7 +77,7 @@ namespace Fomm.PackageManager {
             this.bNoToFolder.Location = new System.Drawing.Point(336, 73);
             this.bNoToFolder.Name = "bNoToFolder";
             this.bNoToFolder.Size = new System.Drawing.Size(75, 23);
-            this.bNoToFolder.TabIndex = 4;
+            this.bNoToFolder.TabIndex = 5;
             this.bNoToFolder.Text = "No to folder";
             this.bNoToFolder.UseVisualStyleBackColor = true;
             this.bNoToFolder.Click += new System.EventHandler(this.bNoToFolder_Click);
@@ -87,7 +87,7 @@ namespace Fomm.PackageManager {
             this.bNo.Location = new System.Drawing.Point(417, 73);
             this.bNo.Name = "bNo";
             this.bNo.Size = new System.Drawing.Size(75, 23);
-            this.bNo.TabIndex = 5;
+            this.bNo.TabIndex = 6;
             this.bNo.Text = "No";
             this.bNo.UseVisualStyleBackColor = true;
             this.bNo.Click += new System.EventHandler(this.bNo_Click);
@@ -98,7 +98,7 @@ namespace Fomm.PackageManager {
             this.label1.Location = new System.Drawing.Point(21, 9);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(35, 13);
-            this.label1.TabIndex = 6;
+            this.label1.TabIndex = 0;
             this.label1.Text = "label1";
             // 
             // Overwriteform

@@ -53,7 +53,7 @@ namespace Fomm.PackageManager {
             this.bOK.Location = new System.Drawing.Point(175, 177);
             this.bOK.Name = "bOK";
             this.bOK.Size = new System.Drawing.Size(75, 23);
-            this.bOK.TabIndex = 1;
+            this.bOK.TabIndex = 4;
             this.bOK.Text = "OK";
             this.bOK.UseVisualStyleBackColor = true;
             this.bOK.Click += new System.EventHandler(this.bOK_Click);
@@ -64,7 +64,7 @@ namespace Fomm.PackageManager {
             this.label1.Location = new System.Drawing.Point(12, 9);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(90, 13);
-            this.label1.TabIndex = 2;
+            this.label1.TabIndex = 0;
             this.label1.Text = "Select one option";
             // 
             // bPreview
@@ -86,7 +86,7 @@ namespace Fomm.PackageManager {
             this.bDescription.Location = new System.Drawing.Point(12, 177);
             this.bDescription.Name = "bDescription";
             this.bDescription.Size = new System.Drawing.Size(75, 23);
-            this.bDescription.TabIndex = 4;
+            this.bDescription.TabIndex = 2;
             this.bDescription.Text = "Description";
             this.bDescription.UseVisualStyleBackColor = true;
             this.bDescription.Click += new System.EventHandler(this.bDescription_Click);
@@ -102,7 +102,7 @@ namespace Fomm.PackageManager {
             this.tbDesc.Name = "tbDesc";
             this.tbDesc.ReadOnly = true;
             this.tbDesc.Size = new System.Drawing.Size(238, 139);
-            this.tbDesc.TabIndex = 5;
+            this.tbDesc.TabIndex = 1;
             this.tbDesc.Text = "";
             this.tbDesc.Visible = false;
             // 

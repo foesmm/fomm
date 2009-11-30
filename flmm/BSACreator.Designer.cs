@@ -93,7 +93,7 @@ namespace Fomm {
             this.cmbCompression.Location = new System.Drawing.Point(12, 337);
             this.cmbCompression.Name = "cmbCompression";
             this.cmbCompression.Size = new System.Drawing.Size(121, 21);
-            this.cmbCompression.TabIndex = 2;
+            this.cmbCompression.TabIndex = 1;
             this.cmbCompression.Text = "No compression";
             this.cmbCompression.SelectedIndexChanged += new System.EventHandler(this.cmbCompression_SelectedIndexChanged);
             this.cmbCompression.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.comboBox1_KeyPress);
@@ -104,7 +104,7 @@ namespace Fomm {
             this.bCreate.Location = new System.Drawing.Point(444, 335);
             this.bCreate.Name = "bCreate";
             this.bCreate.Size = new System.Drawing.Size(75, 23);
-            this.bCreate.TabIndex = 3;
+            this.bCreate.TabIndex = 5;
             this.bCreate.Text = "Create";
             this.bCreate.UseVisualStyleBackColor = true;
             this.bCreate.Click += new System.EventHandler(this.bCreate_Click);
@@ -115,7 +115,7 @@ namespace Fomm {
             this.bAddFile.Location = new System.Drawing.Point(266, 335);
             this.bAddFile.Name = "bAddFile";
             this.bAddFile.Size = new System.Drawing.Size(75, 23);
-            this.bAddFile.TabIndex = 4;
+            this.bAddFile.TabIndex = 3;
             this.bAddFile.Text = "Add File(s)";
             this.bAddFile.UseVisualStyleBackColor = true;
             this.bAddFile.Click += new System.EventHandler(this.bAddFile_Click);
@@ -131,7 +131,7 @@ namespace Fomm {
             this.bAddFolder.Location = new System.Drawing.Point(347, 335);
             this.bAddFolder.Name = "bAddFolder";
             this.bAddFolder.Size = new System.Drawing.Size(75, 23);
-            this.bAddFolder.TabIndex = 6;
+            this.bAddFolder.TabIndex = 4;
             this.bAddFolder.Text = "Add folder(s)";
             this.bAddFolder.UseVisualStyleBackColor = true;
             this.bAddFolder.Click += new System.EventHandler(this.bAddFolder_Click);
@@ -155,7 +155,7 @@ namespace Fomm {
             this.cmbCompLevel.Location = new System.Drawing.Point(139, 337);
             this.cmbCompLevel.Name = "cmbCompLevel";
             this.cmbCompLevel.Size = new System.Drawing.Size(121, 21);
-            this.cmbCompLevel.TabIndex = 8;
+            this.cmbCompLevel.TabIndex = 2;
             // 
             // BSACreator
             // 

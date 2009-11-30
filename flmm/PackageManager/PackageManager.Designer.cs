@@ -161,7 +161,7 @@ namespace Fomm.PackageManager {
             this.bEditScript.Location = new System.Drawing.Point(493, 341);
             this.bEditScript.Name = "bEditScript";
             this.bEditScript.Size = new System.Drawing.Size(120, 23);
-            this.bEditScript.TabIndex = 20;
+            this.bEditScript.TabIndex = 7;
             this.bEditScript.Text = "Edit script";
             this.bEditScript.UseVisualStyleBackColor = true;
             this.bEditScript.Click += new System.EventHandler(this.bEditScript_Click);
@@ -172,7 +172,7 @@ namespace Fomm.PackageManager {
             this.bEditReadme.Location = new System.Drawing.Point(493, 312);
             this.bEditReadme.Name = "bEditReadme";
             this.bEditReadme.Size = new System.Drawing.Size(120, 23);
-            this.bEditReadme.TabIndex = 21;
+            this.bEditReadme.TabIndex = 6;
             this.bEditReadme.Text = "View readme";
             this.bEditReadme.UseVisualStyleBackColor = true;
             this.bEditReadme.Click += new System.EventHandler(this.bEditReadme_Click);
@@ -183,7 +183,7 @@ namespace Fomm.PackageManager {
             this.bEditInfo.Location = new System.Drawing.Point(493, 370);
             this.bEditInfo.Name = "bEditInfo";
             this.bEditInfo.Size = new System.Drawing.Size(120, 23);
-            this.bEditInfo.TabIndex = 22;
+            this.bEditInfo.TabIndex = 8;
             this.bEditInfo.Text = "Edit info";
             this.bEditInfo.UseVisualStyleBackColor = true;
             this.bEditInfo.Click += new System.EventHandler(this.bEditInfo_Click);
@@ -194,7 +194,7 @@ namespace Fomm.PackageManager {
             this.bActivate.Location = new System.Drawing.Point(493, 181);
             this.bActivate.Name = "bActivate";
             this.bActivate.Size = new System.Drawing.Size(120, 23);
-            this.bActivate.TabIndex = 23;
+            this.bActivate.TabIndex = 2;
             this.bActivate.Text = "Activate";
             this.bActivate.UseVisualStyleBackColor = true;
             this.bActivate.Click += new System.EventHandler(this.bActivate_Click);
@@ -205,7 +205,7 @@ namespace Fomm.PackageManager {
             this.bAddNew.Location = new System.Drawing.Point(493, 108);
             this.bAddNew.Name = "bAddNew";
             this.bAddNew.Size = new System.Drawing.Size(120, 23);
-            this.bAddNew.TabIndex = 24;
+            this.bAddNew.TabIndex = 0;
             this.bAddNew.Text = "Add new";
             this.bAddNew.UseVisualStyleBackColor = true;
             this.bAddNew.Click += new System.EventHandler(this.bAddNew_Click);
@@ -222,7 +222,7 @@ namespace Fomm.PackageManager {
             this.cbGroups.Location = new System.Drawing.Point(493, 443);
             this.cbGroups.Name = "cbGroups";
             this.cbGroups.Size = new System.Drawing.Size(97, 17);
-            this.cbGroups.TabIndex = 25;
+            this.cbGroups.TabIndex = 10;
             this.cbGroups.Text = "Display Groups";
             this.cbGroups.UseVisualStyleBackColor = true;
             this.cbGroups.CheckedChanged += new System.EventHandler(this.cbGroups_CheckedChanged);
@@ -233,7 +233,7 @@ namespace Fomm.PackageManager {
             this.bEditGroups.Location = new System.Drawing.Point(493, 414);
             this.bEditGroups.Name = "bEditGroups";
             this.bEditGroups.Size = new System.Drawing.Size(120, 23);
-            this.bEditGroups.TabIndex = 26;
+            this.bEditGroups.TabIndex = 9;
             this.bEditGroups.Text = "Edit groups";
             this.bEditGroups.UseVisualStyleBackColor = true;
             this.bEditGroups.Click += new System.EventHandler(this.bEditGroups_Click);
@@ -245,7 +245,7 @@ namespace Fomm.PackageManager {
             this.bActivateGroup.Location = new System.Drawing.Point(493, 210);
             this.bActivateGroup.Name = "bActivateGroup";
             this.bActivateGroup.Size = new System.Drawing.Size(120, 23);
-            this.bActivateGroup.TabIndex = 27;
+            this.bActivateGroup.TabIndex = 3;
             this.bActivateGroup.Text = "Activate group";
             this.bActivateGroup.UseVisualStyleBackColor = true;
             this.bActivateGroup.Click += new System.EventHandler(this.bActivateGroup_Click);
@@ -257,7 +257,7 @@ namespace Fomm.PackageManager {
             this.bDeactivateGroup.Location = new System.Drawing.Point(493, 239);
             this.bDeactivateGroup.Name = "bDeactivateGroup";
             this.bDeactivateGroup.Size = new System.Drawing.Size(120, 23);
-            this.bDeactivateGroup.TabIndex = 28;
+            this.bDeactivateGroup.TabIndex = 4;
             this.bDeactivateGroup.Text = "Deactivate group";
             this.bDeactivateGroup.UseVisualStyleBackColor = true;
             this.bDeactivateGroup.Click += new System.EventHandler(this.bDeactivateGroup_Click);
@@ -268,7 +268,7 @@ namespace Fomm.PackageManager {
             this.bDeactivateAll.Location = new System.Drawing.Point(493, 268);
             this.bDeactivateAll.Name = "bDeactivateAll";
             this.bDeactivateAll.Size = new System.Drawing.Size(120, 23);
-            this.bDeactivateAll.TabIndex = 29;
+            this.bDeactivateAll.TabIndex = 5;
             this.bDeactivateAll.Text = "Deactivate all";
             this.bDeactivateAll.UseVisualStyleBackColor = true;
             this.bDeactivateAll.Click += new System.EventHandler(this.bDeactivateAll_Click);
@@ -284,7 +284,7 @@ namespace Fomm.PackageManager {
             this.cmbSortOrder.Location = new System.Drawing.Point(493, 466);
             this.cmbSortOrder.Name = "cmbSortOrder";
             this.cmbSortOrder.Size = new System.Drawing.Size(120, 21);
-            this.cmbSortOrder.TabIndex = 30;
+            this.cmbSortOrder.TabIndex = 11;
             this.cmbSortOrder.Text = "Sort order";
             this.cmbSortOrder.SelectedIndexChanged += new System.EventHandler(this.cmbSortOrder_SelectedIndexChanged);
             this.cmbSortOrder.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.cmbSortOrder_KeyPress);
@@ -295,7 +295,7 @@ namespace Fomm.PackageManager {
             this.bFomodFromFolder.Location = new System.Drawing.Point(493, 137);
             this.bFomodFromFolder.Name = "bFomodFromFolder";
             this.bFomodFromFolder.Size = new System.Drawing.Size(120, 23);
-            this.bFomodFromFolder.TabIndex = 31;
+            this.bFomodFromFolder.TabIndex = 1;
             this.bFomodFromFolder.Text = "Create from folder";
             this.bFomodFromFolder.UseVisualStyleBackColor = true;
             this.bFomodFromFolder.Click += new System.EventHandler(this.bFomodFromFolder_Click);

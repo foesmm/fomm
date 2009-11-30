@@ -76,7 +76,7 @@ namespace Fomm {
             this.bOpen.Location = new System.Drawing.Point(12, 336);
             this.bOpen.Name = "bOpen";
             this.bOpen.Size = new System.Drawing.Size(75, 23);
-            this.bOpen.TabIndex = 1;
+            this.bOpen.TabIndex = 0;
             this.bOpen.Text = "Open";
             this.bOpen.UseVisualStyleBackColor = true;
             this.bOpen.Click += new System.EventHandler(this.bOpen_Click);
@@ -88,7 +88,7 @@ namespace Fomm {
             this.bExtractAll.Location = new System.Drawing.Point(273, 336);
             this.bExtractAll.Name = "bExtractAll";
             this.bExtractAll.Size = new System.Drawing.Size(75, 23);
-            this.bExtractAll.TabIndex = 4;
+            this.bExtractAll.TabIndex = 3;
             this.bExtractAll.Text = "Extract all";
             this.bExtractAll.UseVisualStyleBackColor = true;
             this.bExtractAll.Click += new System.EventHandler(this.bExtractAll_Click);
@@ -106,7 +106,7 @@ namespace Fomm {
             this.bExtract.Location = new System.Drawing.Point(192, 336);
             this.bExtract.Name = "bExtract";
             this.bExtract.Size = new System.Drawing.Size(75, 23);
-            this.bExtract.TabIndex = 3;
+            this.bExtract.TabIndex = 2;
             this.bExtract.Text = "Extract";
             this.bExtract.UseVisualStyleBackColor = true;
             this.bExtract.Click += new System.EventHandler(this.bExtract_Click);
@@ -162,7 +162,7 @@ namespace Fomm {
             this.bPreview.Location = new System.Drawing.Point(111, 336);
             this.bPreview.Name = "bPreview";
             this.bPreview.Size = new System.Drawing.Size(75, 23);
-            this.bPreview.TabIndex = 2;
+            this.bPreview.TabIndex = 1;
             this.bPreview.Text = "Preview";
             this.bPreview.UseVisualStyleBackColor = true;
             this.bPreview.Click += new System.EventHandler(this.bPreview_Click);
@@ -173,7 +173,7 @@ namespace Fomm {
             this.tbSearch.Location = new System.Drawing.Point(12, 368);
             this.tbSearch.Name = "tbSearch";
             this.tbSearch.Size = new System.Drawing.Size(336, 20);
-            this.tbSearch.TabIndex = 7;
+            this.tbSearch.TabIndex = 4;
             this.tbSearch.TextChanged += new System.EventHandler(this.tbSearch_TextChanged);
             // 
             // label1
@@ -183,7 +183,7 @@ namespace Fomm {
             this.label1.Location = new System.Drawing.Point(365, 371);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(41, 13);
-            this.label1.TabIndex = 8;
+            this.label1.TabIndex = 7;
             this.label1.Text = "Search";
             // 
             // tvFolders
@@ -192,7 +192,7 @@ namespace Fomm {
             this.tvFolders.Location = new System.Drawing.Point(0, 0);
             this.tvFolders.Name = "tvFolders";
             this.tvFolders.Size = new System.Drawing.Size(147, 318);
-            this.tvFolders.TabIndex = 9;
+            this.tvFolders.TabIndex = 0;
             this.tvFolders.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.tvFolders_BeforeExpand);
             this.tvFolders.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tvFolders_AfterSelect);
             // 
@@ -222,7 +222,7 @@ namespace Fomm {
             this.cbRegex.Location = new System.Drawing.Point(428, 370);
             this.cbRegex.Name = "cbRegex";
             this.cbRegex.Size = new System.Drawing.Size(74, 17);
-            this.cbRegex.TabIndex = 11;
+            this.cbRegex.TabIndex = 8;
             this.cbRegex.Text = "Use regex";
             this.cbRegex.UseVisualStyleBackColor = true;
             this.cbRegex.CheckedChanged += new System.EventHandler(this.tbSearch_TextChanged);
