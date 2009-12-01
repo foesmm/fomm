@@ -43,6 +43,7 @@ namespace Fomm {
             tmp=Settings.GetString("MainFormCol2Width");
             if(tmp!=null) lvEspList.Columns[1].Width=int.Parse(tmp);
             RefreshEspList();
+            exportLoadOrder(Path.Combine(Program.fommDir, "load order backup.txt"));
         }
 
         private void lvEspList_DragDrop(object sender, DragEventArgs e) {
@@ -495,17 +496,21 @@ namespace Fomm {
             }
         }
 
+        private void exportLoadOrder(string path) {
+            StreamWriter sw=new StreamWriter(path);
+            for(int i=0;i<lvEspList.Items.Count;i++) {
+                sw.WriteLine("["+(lvEspList.Items[i].Checked?"X":" ")+"] "+lvEspList.Items[i].Text);
+            }
+            sw.Close();
+        }
+
         private void exportLoadOrderToolStripMenuItem_Click(object sender, EventArgs e) {
             SaveFileDialog ofd=new SaveFileDialog();
             ofd.Filter="Text file (*.txt)|*.txt";
             ofd.AddExtension=true;
             ofd.RestoreDirectory=true;
             if(ofd.ShowDialog()!=DialogResult.OK) return;
-            StreamWriter sw=new StreamWriter(ofd.FileName);
-            for(int i=0;i<lvEspList.Items.Count;i++) {
-                sw.WriteLine("["+(lvEspList.Items[i].Checked?"X":" ")+"] "+lvEspList.Items[i].Text);
-            }
-            sw.Close();
+            exportLoadOrder(ofd.FileName);
         }
 
         private void importLoadOrderToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -627,6 +632,15 @@ namespace Fomm {
                 timestamp+=twomins;
             }
             RefreshEspList();
+        }
+
+        private void bReport_Click(object sender, EventArgs e) {
+            string[] plugins=new string[lvEspList.CheckedItems.Count];
+            for(int i=0;i<plugins.Length;i++) {
+                plugins[i]=lvEspList.CheckedItems[i].Text;
+            }
+            string s=LoadOrderSorter.GenerateReport(plugins);
+            PackageManager.TextEditor.ShowEditor(s, Fomm.PackageManager.TextEditorType.Text);
         }
     }
 }

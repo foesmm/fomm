@@ -4,7 +4,7 @@ using System.Windows.Forms;
 using ICSharpCode.TextEditor.Document;
 
 namespace Fomm.PackageManager {
-    enum TextEditorType { Text, Rtf, Script }
+    enum TextEditorType { Text, Rtf, Script, FixedFontText }
 
     partial class TextEditor : Form {
         private string saved;
@@ -17,10 +17,12 @@ namespace Fomm.PackageManager {
             this.Icon=Fomm.Properties.Resources.fomm02;
             Settings.GetWindowPosition("TextEditor", this);
             switch(type) {
+            case TextEditorType.FixedFontText:
             case TextEditorType.Text:
             case TextEditorType.Rtf:
                 rtbEdit=new RichTextBox();
                 panel1.Controls.Add(rtbEdit);
+                if(type==TextEditorType.FixedFontText) rtbEdit.Font=new System.Drawing.Font("Courier new", 10);
                 if(type==TextEditorType.Rtf) rtbEdit.Rtf=text;
                 else rtbEdit.Text=text;
                 rtbEdit.Dock=DockStyle.Fill;

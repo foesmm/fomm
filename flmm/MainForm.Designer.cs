@@ -34,6 +34,9 @@ namespace Fomm {
             this.checkAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.lvEspList = new L0ki.Controls.ReordableItemListView();
+            this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
+            this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
             this.tbPluginInfo = new System.Windows.Forms.TextBox();
             this.bPackageManager = new System.Windows.Forms.Button();
             this.bEnableAI = new System.Windows.Forms.Button();
@@ -57,9 +60,7 @@ namespace Fomm {
             this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.copyToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.lvEspList = new L0ki.Controls.ReordableItemListView();
-            this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
-            this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
+            this.bReport = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.cmsPlugins.SuspendLayout();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -164,6 +165,39 @@ namespace Fomm {
             this.splitContainer1.SplitterDistance = 281;
             this.splitContainer1.TabIndex = 11;
             // 
+            // lvEspList
+            // 
+            this.lvEspList.AllowDrop = true;
+            this.lvEspList.CheckBoxes = true;
+            this.lvEspList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1,
+            this.columnHeader2});
+            this.lvEspList.ContextMenuStrip = this.cmsPlugins;
+            this.lvEspList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lvEspList.FullRowSelect = true;
+            this.lvEspList.Location = new System.Drawing.Point(0, 0);
+            this.lvEspList.Name = "lvEspList";
+            this.lvEspList.ShowGroups = false;
+            this.lvEspList.Size = new System.Drawing.Size(399, 281);
+            this.lvEspList.TabIndex = 0;
+            this.lvEspList.UseCompatibleStateImageBehavior = false;
+            this.lvEspList.View = System.Windows.Forms.View.Details;
+            this.lvEspList.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.lvEspList_ItemChecked);
+            this.lvEspList.SelectedIndexChanged += new System.EventHandler(this.lvEspList_SelectedIndexChanged);
+            this.lvEspList.DragDrop += new System.Windows.Forms.DragEventHandler(this.lvEspList_DragDrop);
+            this.lvEspList.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.lvEspList_ColumnClick);
+            this.lvEspList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lvEspList_KeyDown);
+            // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Text = "File";
+            this.columnHeader1.Width = 219;
+            // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Text = "Mod index";
+            this.columnHeader2.Width = 87;
+            // 
             // tbPluginInfo
             // 
             this.tbPluginInfo.BackColor = System.Drawing.SystemColors.Window;
@@ -192,10 +226,10 @@ namespace Fomm {
             // bEnableAI
             // 
             this.bEnableAI.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.bEnableAI.Location = new System.Drawing.Point(417, 265);
+            this.bEnableAI.Location = new System.Drawing.Point(417, 288);
             this.bEnableAI.Name = "bEnableAI";
             this.bEnableAI.Size = new System.Drawing.Size(120, 23);
-            this.bEnableAI.TabIndex = 4;
+            this.bEnableAI.TabIndex = 5;
             this.bEnableAI.Text = "Toggle invalidation";
             this.bEnableAI.UseVisualStyleBackColor = true;
             this.bEnableAI.Click += new System.EventHandler(this.bEnableAI_Click);
@@ -214,10 +248,10 @@ namespace Fomm {
             // bHelp
             // 
             this.bHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.bHelp.Location = new System.Drawing.Point(417, 370);
+            this.bHelp.Location = new System.Drawing.Point(417, 395);
             this.bHelp.Name = "bHelp";
             this.bHelp.Size = new System.Drawing.Size(120, 23);
-            this.bHelp.TabIndex = 7;
+            this.bHelp.TabIndex = 8;
             this.bHelp.Text = "Help";
             this.bHelp.UseVisualStyleBackColor = true;
             this.bHelp.Click += new System.EventHandler(this.bHelp_Click);
@@ -225,10 +259,10 @@ namespace Fomm {
             // bInstallTweaker
             // 
             this.bInstallTweaker.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.bInstallTweaker.Location = new System.Drawing.Point(417, 312);
+            this.bInstallTweaker.Location = new System.Drawing.Point(417, 337);
             this.bInstallTweaker.Name = "bInstallTweaker";
             this.bInstallTweaker.Size = new System.Drawing.Size(120, 23);
-            this.bInstallTweaker.TabIndex = 5;
+            this.bInstallTweaker.TabIndex = 6;
             this.bInstallTweaker.Text = "Install tweaker";
             this.bInstallTweaker.UseVisualStyleBackColor = true;
             this.bInstallTweaker.Click += new System.EventHandler(this.bInstallTweaker_Click);
@@ -236,10 +270,10 @@ namespace Fomm {
             // bSettings
             // 
             this.bSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.bSettings.Location = new System.Drawing.Point(417, 341);
+            this.bSettings.Location = new System.Drawing.Point(417, 366);
             this.bSettings.Name = "bSettings";
             this.bSettings.Size = new System.Drawing.Size(120, 23);
-            this.bSettings.TabIndex = 6;
+            this.bSettings.TabIndex = 7;
             this.bSettings.Text = "Settings";
             this.bSettings.UseVisualStyleBackColor = true;
             this.bSettings.Click += new System.EventHandler(this.bSettings_Click);
@@ -247,10 +281,10 @@ namespace Fomm {
             // bSort
             // 
             this.bSort.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.bSort.Location = new System.Drawing.Point(417, 236);
+            this.bSort.Location = new System.Drawing.Point(417, 259);
             this.bSort.Name = "bSort";
             this.bSort.Size = new System.Drawing.Size(120, 23);
-            this.bSort.TabIndex = 3;
+            this.bSort.TabIndex = 4;
             this.bSort.Text = "Auto sort";
             this.bSort.UseVisualStyleBackColor = true;
             this.bSort.Click += new System.EventHandler(this.bSort_Click);
@@ -264,7 +298,7 @@ namespace Fomm {
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(549, 24);
-            this.menuStrip1.TabIndex = 8;
+            this.menuStrip1.TabIndex = 9;
             this.menuStrip1.Text = "menuStrip1";
             // 
             // fileToolStripMenuItem
@@ -376,53 +410,32 @@ namespace Fomm {
             this.copyToClipboardToolStripMenuItem.Text = "Copy to clipboard";
             this.copyToClipboardToolStripMenuItem.Click += new System.EventHandler(this.copyLoadOrderToClipboardToolStripMenuItem_Click);
             // 
-            // lvEspList
+            // bReport
             // 
-            this.lvEspList.AllowDrop = true;
-            this.lvEspList.CheckBoxes = true;
-            this.lvEspList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1,
-            this.columnHeader2});
-            this.lvEspList.ContextMenuStrip = this.cmsPlugins;
-            this.lvEspList.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lvEspList.FullRowSelect = true;
-            this.lvEspList.Location = new System.Drawing.Point(0, 0);
-            this.lvEspList.Name = "lvEspList";
-            this.lvEspList.ShowGroups = false;
-            this.lvEspList.Size = new System.Drawing.Size(399, 281);
-            this.lvEspList.TabIndex = 0;
-            this.lvEspList.UseCompatibleStateImageBehavior = false;
-            this.lvEspList.View = System.Windows.Forms.View.Details;
-            this.lvEspList.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.lvEspList_ItemChecked);
-            this.lvEspList.SelectedIndexChanged += new System.EventHandler(this.lvEspList_SelectedIndexChanged);
-            this.lvEspList.DragDrop += new System.Windows.Forms.DragEventHandler(this.lvEspList_DragDrop);
-            this.lvEspList.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.lvEspList_ColumnClick);
-            this.lvEspList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lvEspList_KeyDown);
-            // 
-            // columnHeader1
-            // 
-            this.columnHeader1.Text = "File";
-            this.columnHeader1.Width = 219;
-            // 
-            // columnHeader2
-            // 
-            this.columnHeader2.Text = "Mod index";
-            this.columnHeader2.Width = 87;
+            this.bReport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.bReport.Location = new System.Drawing.Point(417, 230);
+            this.bReport.Name = "bReport";
+            this.bReport.Size = new System.Drawing.Size(120, 23);
+            this.bReport.TabIndex = 3;
+            this.bReport.Text = "Mod report";
+            this.bReport.UseVisualStyleBackColor = true;
+            this.bReport.Click += new System.EventHandler(this.bReport_Click);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(549, 430);
+            this.Controls.Add(this.bReport);
             this.Controls.Add(this.menuStrip1);
-            this.Controls.Add(this.bSort);
             this.Controls.Add(this.splitContainer1);
+            this.Controls.Add(this.bSort);
             this.Controls.Add(this.pictureBox1);
-            this.Controls.Add(this.bInstallTweaker);
-            this.Controls.Add(this.bSettings);
             this.Controls.Add(this.bPackageManager);
+            this.Controls.Add(this.bInstallTweaker);
             this.Controls.Add(this.bEnableAI);
             this.Controls.Add(this.bLaunch);
+            this.Controls.Add(this.bSettings);
             this.Controls.Add(this.bSaveGames);
             this.Controls.Add(this.bHelp);
             this.MainMenuStrip = this.menuStrip1;
@@ -482,6 +495,7 @@ namespace Fomm {
         private System.Windows.Forms.ToolStripMenuItem importToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exportToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem copyToClipboardToolStripMenuItem;
+        private System.Windows.Forms.Button bReport;
     }
 }
 
