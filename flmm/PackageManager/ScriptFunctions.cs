@@ -450,6 +450,18 @@ namespace Fomm.PackageManager {
                 timestamp+=twomins;
             }
         }
+        public static bool IsLoadOrderAutoSorted() {
+            permissions.Assert();
+            return LoadOrderSorter.CheckList(GetAllPlugins());
+        }
+        public static int GetAutoInsertionPoint(string plugin) {
+            permissions.Assert();
+            return LoadOrderSorter.GetInsertionPos(GetAllPlugins(), plugin);
+        }
+        public static void AutoSortPlugins(string[] plugins) {
+            permissions.Assert();
+            LoadOrderSorter.SortList(plugins);
+        }
 
         public static string GetFalloutIniString(string section, string value) {
             permissions.Assert();

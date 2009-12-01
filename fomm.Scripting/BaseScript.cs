@@ -89,6 +89,9 @@ namespace fomm.Scripting {
         public static void SetPluginActivation(string s, bool activate) { ScriptFunctions.SetPluginActivation(s, activate); }
         public static void SetLoadOrder(int[] plugins) { ScriptFunctions.SetLoadOrder(plugins); }
         public static void SetLoadOrder(int[] plugins, int position) { ScriptFunctions.SetLoadOrder(plugins, position); }
+        public static bool IsLoadOrderAutoSorted() { return ScriptFunctions.IsLoadOrderAutoSorted(); }
+        public static int GetAutoInsertionPoint(string plugin) { return ScriptFunctions.GetAutoInsertionPoint(plugin); }
+        public static void AutoSortPlugins(string[] plugins) { ScriptFunctions.AutoSortPlugins(plugins); }
 
         public static string GetFalloutIniString(string section, string value) { return ScriptFunctions.GetFalloutIniString(section, value); }
         public static int GetFalloutIniInt(string section, string value) { return ScriptFunctions.GetFalloutIniInt(section, value); }

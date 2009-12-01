@@ -73,18 +73,14 @@ namespace Fomm {
             return true;
         }
 
-        public static int GetInsertionPos(string[] plugins, string tag, bool after) {
+        public static int GetInsertionPos(string[] plugins, string plugin) {
             if(order==null) LoadList();
-            tag=tag.ToLowerInvariant();
-            if(!order.ContainsKey(tag)) return plugins.Length;
+            plugin=plugin.ToLowerInvariant();
+            if(!order.ContainsKey(plugin)) return plugins.Length;
             ModInfo[] mi=BuildModInfo(plugins);
-            int target=order[tag];
+            int target=order[plugin];
             for(int i=0;i<mi.Length;i++) {
-                if(mi[i].id==-1) continue;
-                else if(mi[i].id>=target) {
-                    if(after) return i+1;
-                    else return i;
-                }
+                if(mi[i].id>=target) return i;
             }
             return plugins.Length;
         }
