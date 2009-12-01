@@ -295,6 +295,80 @@ namespace Fomm {
             Close();
         }
 
+        private void runFalloutToolStripMenuItem_Click(object sender, EventArgs e) {
+            if(Application.OpenForms.Count>1) {
+                MessageBox.Show("Please close all utility windows before launching fallout");
+                return;
+            }
+            string command;
+            if(File.Exists("fallout3.exe")) command="fallout3.exe";
+            else command="fallout3ng.exe";
+            try {
+                System.Diagnostics.ProcessStartInfo psi=new System.Diagnostics.ProcessStartInfo();
+                psi.FileName=command;
+                psi.WorkingDirectory=Path.GetDirectoryName(Path.GetFullPath(command));
+                if(System.Diagnostics.Process.Start(psi)==null) {
+                    MessageBox.Show("Failed to launch '"+command+"'");
+                    return;
+                }
+            } catch(Exception ex) {
+                MessageBox.Show("Failed to launch '"+command+"'\n"+ex.Message);
+                return;
+            }
+            Close();
+        }
+
+        private void runFoseToolStripMenuItem_Click(object sender, EventArgs e) {
+            if(!File.Exists("fose_loader.exe")) {
+                MessageBox.Show("fose does not appear to be installed");
+                return;
+            }
+            if(Application.OpenForms.Count>1) {
+                MessageBox.Show("Please close all utility windows before launching fallout");
+                return;
+            }
+            try {
+                System.Diagnostics.ProcessStartInfo psi=new System.Diagnostics.ProcessStartInfo();
+                psi.FileName="fose_loader.exe";
+                psi.WorkingDirectory=Path.GetDirectoryName(Path.GetFullPath("fose_loader.exe"));
+                if(System.Diagnostics.Process.Start(psi)==null) {
+                    MessageBox.Show("Failed to launch 'fose_loader.exe'");
+                    return;
+                }
+            } catch(Exception ex) {
+                MessageBox.Show("Failed to launch 'fose_loader.exe'\n"+ex.Message);
+                return;
+            }
+            Close();
+        }
+
+        private void runCustomToolStripMenuItem_Click(object sender, EventArgs e) {
+            if(Application.OpenForms.Count>1) {
+                MessageBox.Show("Please close all utility windows before launching fallout");
+                return;
+            }
+            string command=Settings.GetString("LaunchCommand");
+            string args=Settings.GetString("LaunchCommandArgs");
+            if(command==null) {
+                MessageBox.Show("No custom launch command has been set", "Error");
+                return;
+            }
+            try {
+                System.Diagnostics.ProcessStartInfo psi=new System.Diagnostics.ProcessStartInfo();
+                psi.Arguments=args;
+                psi.FileName=command;
+                psi.WorkingDirectory=Path.GetDirectoryName(Path.GetFullPath(command));
+                if(System.Diagnostics.Process.Start(psi)==null) {
+                    MessageBox.Show("Failed to launch '"+command+"'");
+                    return;
+                }
+            } catch(Exception ex) {
+                MessageBox.Show("Failed to launch '"+command+"'\n"+ex.Message);
+                return;
+            }
+            Close();
+        }
+
         private void bSaveGames_Click(object sender, EventArgs e) {
             (new SaveForm()).Show();
         }
@@ -535,6 +609,23 @@ namespace Fomm {
             AlphaSortMode=e.Column==0;
             if(AlphaSortMode) lvEspList.AllowDrop=false;
             else lvEspList.AllowDrop=true;
+            RefreshEspList();
+        }
+
+        private void closeToolStripMenuItem_Click(object sender, EventArgs e) {
+            Close();
+        }
+
+        private void bSort_Click(object sender, EventArgs e) {
+            string[] plugins=new string[lvEspList.Items.Count];
+            for(int i=0;i<plugins.Length;i++) plugins[i]=lvEspList.Items[i].Text;
+            LoadOrderSorter.SortList(plugins);
+            DateTime timestamp=new DateTime(2008, 1, 1);
+            TimeSpan twomins=TimeSpan.FromMinutes(2);
+            for(int i=0;i<plugins.Length;i++) {
+                File.SetLastWriteTime(Path.Combine("data\\", plugins[i]), timestamp);
+                timestamp+=twomins;
+            }
             RefreshEspList();
         }
     }

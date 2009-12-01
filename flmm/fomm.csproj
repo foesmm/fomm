@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{4A0302F4-DEA4-4753-98C8-3571742E4EB5}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -86,6 +86,7 @@
     <Compile Include="InstallTweaker\xliveSettings.Designer.cs">
       <DependentUpon>xliveSettings.cs</DependentUpon>
     </Compile>
+    <Compile Include="LoadOrderSorter.cs" />
     <Compile Include="Messaging.cs" />
     <Compile Include="PackageManager\InfoEditor.cs">
       <SubType>Form</SubType>
