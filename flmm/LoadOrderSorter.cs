@@ -31,6 +31,7 @@ namespace Fomm {
 
         private static readonly string localDataPath=Path.Combine(Program.fommDir, "FOLOT.ini");
         private static Dictionary<string, RecordInfo> order;
+        private static int duplicateCount;
 
         private static string[] GetDataFile() {
             return File.ReadAllLines(localDataPath);
@@ -84,7 +85,9 @@ namespace Fomm {
                         comments.Clear();
                     }
                     //order.Add(fileLines[i].ToLowerInvariant(), ri);
-                    order[fileLines[i].ToLowerInvariant()]=ri;
+                    fileLines[i]=fileLines[i].ToLowerInvariant();
+                    if(order.ContainsKey(fileLines[i])) duplicateCount++;
+                    order[fileLines[i]]=ri;
                     i+=skiplines;
                 }
             }
@@ -115,14 +118,18 @@ namespace Fomm {
             for(int i=0;i<plugins.Length;i++) lplugins[i]=plugins[i].ToLowerInvariant();
             double latestPosition=0;
             sb.AppendLine("Mod load order report");
+            if(duplicateCount>0) sb.AppendLine("! Warning: current load order template contains "+duplicateCount+" duplicate entries");
             sb.AppendLine();
+            bool LoadOrderWrong=false;
             for(int i=0;i<plugins.Length;i++) {
                 sb.AppendLine(plugins[i]);
                 plugins[i]=plugins[i].ToLowerInvariant();
                 if(order.ContainsKey(plugins[i])) {
                     RecordInfo ri=order[plugins[i]];
-                    if(ri.id<latestPosition) sb.AppendLine("! The current load order of this mod does not match the current list");
-                    else latestPosition=ri.id;
+                    if(ri.id<latestPosition) {
+                        sb.AppendLine("! The current load order of this mod does not match the current template");
+                        LoadOrderWrong=true;
+                    } else latestPosition=ri.id;
                     if(ri.requires!=null) {
                         for(int k=0;k<ri.requires.Length;k++) {
                             bool found=false;
@@ -153,8 +160,15 @@ namespace Fomm {
                         }
                     }
                 } else {
-                    sb.AppendLine("! This mod does not exist in the current list");
+                    sb.AppendLine("! This mod does not exist in the current template");
                 }
+                sb.AppendLine();
+            }
+            if(LoadOrderWrong) {
+                string[] dup=(string[])plugins.Clone();
+                SortList(dup);
+                sb.AppendLine("The order that the current template suggests is as follows:");
+                for(int i=0;i<dup.Length;i++) sb.AppendLine(dup[i]);
             }
             return sb.ToString();
         }
