@@ -44,6 +44,7 @@ namespace Fomm {
             this.cbDisableUAC = new System.Windows.Forms.CheckBox();
             this.tbLaunchArgs = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
+            this.cbUseDocs = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // cbFomod
@@ -256,11 +257,23 @@ namespace Fomm {
             this.label4.TabIndex = 11;
             this.label4.Text = "Launch command arguments";
             // 
+            // cbUseDocs
+            // 
+            this.cbUseDocs.AutoSize = true;
+            this.cbUseDocs.Location = new System.Drawing.Point(164, 290);
+            this.cbUseDocs.Name = "cbUseDocs";
+            this.cbUseDocs.Size = new System.Drawing.Size(175, 17);
+            this.cbUseDocs.TabIndex = 20;
+            this.cbUseDocs.Text = "Use docs folder for new fomods";
+            this.cbUseDocs.UseVisualStyleBackColor = true;
+            this.cbUseDocs.CheckedChanged += new System.EventHandler(this.cbUseDocs_CheckedChanged);
+            // 
             // SetupForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(399, 319);
+            this.Controls.Add(this.cbUseDocs);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.tbLaunchArgs);
             this.Controls.Add(this.cbDisableUAC);
@@ -312,5 +325,6 @@ namespace Fomm {
         private System.Windows.Forms.CheckBox cbDisableUAC;
         private System.Windows.Forms.TextBox tbLaunchArgs;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.CheckBox cbUseDocs;
     }
 }

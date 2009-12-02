@@ -308,7 +308,12 @@ namespace Fomm.PackageManager {
                 if(readme.Length==0) readme=Program.GetFiles(path, "*.txt", SearchOption.AllDirectories);
                 if(readme.Length==0) readme=Program.GetFiles(path, "*.html", SearchOption.AllDirectories);
                 if(readme.Length>0) {
-                    File.Move(readme[0], Path.Combine(path, "Readme - "+fomodname+Path.GetExtension(readme[0])));
+                    if(Settings.GetBool("UseDocsFolder")) {
+                        Directory.CreateDirectory(Path.Combine(path, "docs"));
+                        File.Move(readme[0], Path.Combine(path, "docs\\Readme - "+fomodname+Path.GetExtension(readme[0])));
+                    } else {
+                        File.Move(readme[0], Path.Combine(path, "Readme - "+fomodname+Path.GetExtension(readme[0])));
+                    }
                 }
             }
             if(tesnexusext!=null) {

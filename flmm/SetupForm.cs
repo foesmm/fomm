@@ -36,6 +36,7 @@ namespace Fomm {
             cbEsmShow.Checked=Settings.GetBool("ShowEsmInBold");
             cbDisableUAC.Checked=Settings.GetBool("NoUACCheck");
             cbDisableIPC.Checked=Settings.GetBool("DisableIPC");
+            cbUseDocs.Checked=Settings.GetBool("UseDocsFolder");
             string key=Registry.GetValue(@"HKEY_CLASSES_ROOT\.bsa", null, null) as string;
             switch(key) {
             case "BethesdaSoftworks_Archive":
@@ -193,6 +194,11 @@ namespace Fomm {
         private void cbDisableUAC_CheckedChanged(object sender, EventArgs e) {
             if(!FinishedSetup) return;
             Settings.SetBool("NoUACCheck", cbDisableUAC.Checked);
+        }
+
+        private void cbUseDocs_CheckedChanged(object sender, EventArgs e) {
+            if(!FinishedSetup) return;
+            Settings.SetBool("UseDocsFolder", cbUseDocs.Checked);
         }
     }
 }

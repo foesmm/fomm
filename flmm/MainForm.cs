@@ -121,7 +121,7 @@ namespace Fomm {
                 Environment.NewLine+(desc==null?"":("Description:"+Environment.NewLine+desc+Environment.NewLine+Environment.NewLine));
             if(masters.Count>0) {
                 desc2+="Masters:"+Environment.NewLine;
-                for(int i=0;i<masters.Count;i++) desc2+=masters[i];
+                for(int i=0;i<masters.Count;i++) desc2+=masters[i]+Environment.NewLine;
             }
             tbPluginInfo.Text=desc2;
         }

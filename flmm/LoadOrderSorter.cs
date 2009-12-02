@@ -195,7 +195,7 @@ namespace Fomm {
                         }
                     }
                 } else {
-                    sb.AppendLine("! This mod does not exist in the current template");
+                    sb.AppendLine("* This mod does not exist in the current template");
                 }
                 sb.AppendLine();
             }

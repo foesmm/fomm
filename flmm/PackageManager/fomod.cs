@@ -173,6 +173,17 @@ namespace Fomm.PackageManager {
                     break;
                 }
             }
+            if(!hasReadme) {
+                readmepath="docs/"+readmepath;
+                for(int i=0;i<extensions.Length;i++) {
+                    if(file.GetEntry("docs/readme - "+baseName+extensions[i])!=null) {
+                        hasReadme=true;
+                        readmeext=extensions[i];
+                        readmepath="docs/readme - "+baseName+extensions[i];
+                        break;
+                    }
+                }
+            }
             extensions=new string[] { ".png", ".jpg", ".bmp" };
             for(int i=0;i<extensions.Length;i++) {
                 if(file.GetEntry("fomod/screenshot"+extensions[i])!=null) {
