@@ -6,7 +6,7 @@ namespace Fomm {
     static class LoadOrderSorter {
         private struct ModInfo {
             public readonly string name;
-            public readonly double id;
+            public double id;
             public readonly bool hadEntry;
 
             public ModInfo(string s, double id, bool hadEntry) {
@@ -97,16 +97,25 @@ namespace Fomm {
             ModInfo[] mi=new ModInfo[plugins.Length];
             int addcount=1;
             int lastPos=-1;
+            int maxPos=0;
             for(int i=0;i<mi.Length;i++) {
                 string lplugin=plugins[i].ToLowerInvariant();
                 if(order.ContainsKey(lplugin)) {
                     lastPos=order[lplugin].id;
+                    if(lastPos>maxPos) maxPos=lastPos;
                     mi[i]=new ModInfo(plugins[i], lastPos, true);
                     addcount=1;
                 } else {
                     mi[i]=new ModInfo(plugins[i], lastPos + addcount*0.001, false);
                     addcount++;
                 }
+            }
+            addcount=1;
+            maxPos++;
+            for(int i=mi.Length-1;i>=0;i--) {
+                if(mi[i].hadEntry) break;
+                mi[i].id=maxPos - addcount*0.001;
+                addcount++;
             }
             return mi;
         }
