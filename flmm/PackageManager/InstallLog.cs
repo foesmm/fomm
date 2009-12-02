@@ -102,7 +102,7 @@ namespace Fomm.PackageManager {
             iniEditsNode.RemoveChild(node);
         }
         public static void UndoIniEdit(string file, string section, string key, string mod) {
-            XmlNode node=iniEditsNode.SelectSingleNode("ini[@file='"+file+"' and @section='"+section+"' and @key='"+key+"' and @mod='"+mod+"']");
+            XmlNode node=iniEditsNode.SelectSingleNode("ini[@file='"+file+"' and @section='"+section+"' and @key='"+key+"' and @mod=\""+mod+"\"]");
             if(node==null) return;
             NativeMethods.WritePrivateProfileStringA(section, key, node.InnerText, file);
             iniEditsNode.RemoveChild(node);
