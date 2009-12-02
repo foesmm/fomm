@@ -120,7 +120,7 @@ namespace Fomm {
             return mi;
         }
 
-        public static string GenerateReport(string[] plugins, bool[] active) {
+        public static string GenerateReport(string[] plugins, bool[] active, bool[] corrupt, string[][] masters) {
             if(order==null) LoadList();
             System.Text.StringBuilder sb=new System.Text.StringBuilder(plugins.Length*32);
             string[] lplugins=new string[plugins.Length];
@@ -135,8 +135,34 @@ namespace Fomm {
                 plugins[i]=plugins[i].ToLowerInvariant();
                 if(order.ContainsKey(plugins[i])) {
                     RecordInfo ri=order[plugins[i]];
+                    if(corrupt[i]) {
+                        sb.AppendLine("! This plugin is unreadable, and probably corrupt");
+                    }
+                    if(active[i]&&masters[i]!=null) {
+                        for(int k=0;k<masters[i].Length;k++) {
+                            bool found=false;
+                            for(int j=0;j<i;j++) {
+                                if(active[j]&&lplugins[j]==masters[i][k]) {
+                                    found=true;
+                                    break;
+                                }
+                            }
+                            if(!found) {
+                                for(int j=i+1;j<plugins.Length;j++) {
+                                    if(active[j]&&lplugins[j]==masters[i][k]) {
+                                        sb.AppendLine("! This plugin depends on master '"+masters[i][k]+"', which is loading after it in the load order");
+                                        found=true;
+                                        break;
+                                    }
+                                }
+                                if(!found) {
+                                    sb.AppendLine("! This plugin depends on master '"+masters[i][k]+"', which is not loading");
+                                }
+                            }
+                        }
+                    }
                     if(ri.id<latestPosition) {
-                        sb.AppendLine("! The current load order of this mod does not match the current template");
+                        sb.AppendLine("* The current load order of this mod does not match the current template");
                         LoadOrderWrong=true;
                     } else latestPosition=ri.id;
                     if(active[i]&&ri.requires!=null) {

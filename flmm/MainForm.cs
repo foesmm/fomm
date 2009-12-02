@@ -637,11 +637,31 @@ namespace Fomm {
         private void bReport_Click(object sender, EventArgs e) {
             string[] plugins=new string[lvEspList.Items.Count];
             bool[] active=new bool[lvEspList.Items.Count];
+            bool[] corrupt=new bool[lvEspList.Items.Count];
+            string[][] masters=new string[lvEspList.Items.Count][];
+            Plugin p;
+            List<string> mlist=new List<string>();
             for(int i=0;i<plugins.Length;i++) {
                 plugins[i]=lvEspList.Items[i].Text;
                 active[i]=lvEspList.Items[i].Checked;
+                try {
+                    p=new Plugin(Path.Combine("data", plugins[i]), true);
+                } catch {
+                    p=null;
+                    corrupt[i]=true;
+                }
+                if(p!=null) {
+                    foreach(SubRecord sr in ((Record)p.Records[0]).SubRecords) {
+                        if(sr.Name!="MAST") continue;
+                        mlist.Add(sr.GetStrData().ToLowerInvariant());
+                    }
+                    if(mlist.Count>0) {
+                        masters[i]=mlist.ToArray();
+                        mlist.Clear();
+                    }
+                }
             }
-            string s=LoadOrderSorter.GenerateReport(plugins, active);
+            string s=LoadOrderSorter.GenerateReport(plugins, active, corrupt, masters);
             PackageManager.TextEditor.ShowEditor(s, Fomm.PackageManager.TextEditorType.Text);
         }
     }
