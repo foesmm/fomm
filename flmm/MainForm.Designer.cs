@@ -417,7 +417,7 @@ namespace Fomm {
             this.bReport.Name = "bReport";
             this.bReport.Size = new System.Drawing.Size(120, 23);
             this.bReport.TabIndex = 3;
-            this.bReport.Text = "Mod report";
+            this.bReport.Text = "Load order report";
             this.bReport.UseVisualStyleBackColor = true;
             this.bReport.Click += new System.EventHandler(this.bReport_Click);
             // 

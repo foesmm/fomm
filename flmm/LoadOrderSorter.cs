@@ -120,7 +120,7 @@ namespace Fomm {
             return mi;
         }
 
-        public static string GenerateReport(string[] plugins) {
+        public static string GenerateReport(string[] plugins, bool[] active) {
             if(order==null) LoadList();
             System.Text.StringBuilder sb=new System.Text.StringBuilder(plugins.Length*32);
             string[] lplugins=new string[plugins.Length];
@@ -131,7 +131,7 @@ namespace Fomm {
             sb.AppendLine();
             bool LoadOrderWrong=false;
             for(int i=0;i<plugins.Length;i++) {
-                sb.AppendLine(plugins[i]);
+                sb.AppendLine(plugins[i]+(active[i]?string.Empty:" (Inactive)"));
                 plugins[i]=plugins[i].ToLowerInvariant();
                 if(order.ContainsKey(plugins[i])) {
                     RecordInfo ri=order[plugins[i]];
@@ -139,12 +139,12 @@ namespace Fomm {
                         sb.AppendLine("! The current load order of this mod does not match the current template");
                         LoadOrderWrong=true;
                     } else latestPosition=ri.id;
-                    if(ri.requires!=null) {
+                    if(active[i]&&ri.requires!=null) {
                         for(int k=0;k<ri.requires.Length;k++) {
                             bool found=false;
                             for(int j=0;j<lplugins.Length;j++) {
                                 if(lplugins[j]==ri.requires[k]) {
-                                    found=true;
+                                    if(active[j]) found=true;
                                     break;
                                 }
                             }
@@ -153,11 +153,11 @@ namespace Fomm {
                             }
                         }
                     }
-                    if(ri.conflicts!=null) {
+                    if(active[i]&&ri.conflicts!=null) {
                         for(int k=0;k<ri.conflicts.Length;k++) {
                             for(int j=0;j<lplugins.Length;j++) {
                                 if(lplugins[j]==ri.conflicts[k]) {
-                                    sb.AppendLine("! This plugin conflicts with '"+ri.conflicts[k]+"'");
+                                    if(active[j]) sb.AppendLine("! This plugin conflicts with '"+ri.conflicts[k]+"'");
                                     break;
                                 }
                             }

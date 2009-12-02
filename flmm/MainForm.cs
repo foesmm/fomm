@@ -635,11 +635,13 @@ namespace Fomm {
         }
 
         private void bReport_Click(object sender, EventArgs e) {
-            string[] plugins=new string[lvEspList.CheckedItems.Count];
+            string[] plugins=new string[lvEspList.Items.Count];
+            bool[] active=new bool[lvEspList.Items.Count];
             for(int i=0;i<plugins.Length;i++) {
-                plugins[i]=lvEspList.CheckedItems[i].Text;
+                plugins[i]=lvEspList.Items[i].Text;
+                active[i]=lvEspList.Items[i].Checked;
             }
-            string s=LoadOrderSorter.GenerateReport(plugins);
+            string s=LoadOrderSorter.GenerateReport(plugins, active);
             PackageManager.TextEditor.ShowEditor(s, Fomm.PackageManager.TextEditorType.Text);
         }
     }
