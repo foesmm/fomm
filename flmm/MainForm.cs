@@ -664,5 +664,58 @@ namespace Fomm {
             string s=LoadOrderSorter.GenerateReport(plugins, active, corrupt, masters);
             PackageManager.TextEditor.ShowEditor(s, Fomm.PackageManager.TextEditorType.Text);
         }
+
+        private void visitForumsToolStripMenuItem_Click(object sender, EventArgs e) {
+            System.Diagnostics.Process.Start("http://sourceforge.net/projects/fomm/forums");
+        }
+
+        private void checkForUpdateToolStripMenuItem_Click(object sender, EventArgs e) {
+            {
+                string s=Settings.GetString("LastUpdateCheck");
+                if(s!=null) {
+                    DateTime dt;
+                    if(DateTime.TryParse(s, out dt)) {
+                        if(dt+TimeSpan.FromHours(2) > DateTime.Now) {
+                            MessageBox.Show("No newer updates available");
+                            return;
+                        }
+                    }
+                }
+            }
+            System.Net.WebRequest request=System.Net.HttpWebRequest.Create("http://fomm.sourceforge.net/update/version.txt");
+            System.Net.WebResponse response=request.GetResponse();
+            StreamReader sw=new StreamReader(response.GetResponseStream());
+            string pversion=sw.ReadLine();
+            int loversion=int.Parse(sw.ReadLine());
+            sw.Close();
+            response.Close();
+            bool wasUpdate=false;
+            if(new Version(pversion+".0")>Program.MVersion) {
+                MessageBox.Show("A new version of fomm is available: "+pversion, "Message");
+                wasUpdate=true;
+            }
+            if(loversion>LoadOrderSorter.GetFileVersion()) {
+                if(MessageBox.Show("A new version of the load order template is available: "+loversion+
+                    "\nDo you wish to download?", "Message", MessageBoxButtons.YesNo)==DialogResult.Yes) {
+
+                    request=System.Net.HttpWebRequest.Create("http://fomm.sourceforge.net/update/lotemplate.zip");
+                    response=request.GetResponse();
+                    byte[] buf=new byte[response.ContentLength];
+                    Stream s=response.GetResponseStream();
+                    int upto=0;
+                    while(upto<buf.Length) {
+                        upto+=s.Read(buf, upto, buf.Length-upto);
+                    }
+                    s.Close();
+                    response.Close();
+                    LoadOrderSorter.ReplaceFile(buf);
+                }
+                wasUpdate=true;
+            }
+            if(!wasUpdate) {
+                MessageBox.Show("No newer updates available");
+            }
+            Settings.SetString("LastUpdateCheck", DateTime.Now.ToString());
+        }
     }
 }

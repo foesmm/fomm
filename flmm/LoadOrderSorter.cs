@@ -29,21 +29,23 @@ namespace Fomm {
             }
         }
 
-        private static readonly string localDataPath=Path.Combine(Program.fommDir, "FOLOT.ini");
+        private static readonly string localDataPath=Path.Combine(Program.fommDir, "lotemplate.txt");
+        private static readonly string localZipPath=Path.Combine(Program.fommDir, "lotemplate.zip");
         private static Dictionary<string, RecordInfo> order;
         private static int duplicateCount;
-
-        private static string[] GetDataFile() {
-            return File.ReadAllLines(localDataPath);
-        }
+        private static int fileVersion;
 
         private static void LoadList() {
-            string[] fileLines=GetDataFile();
+            string[] fileLines=File.ReadAllLines(localDataPath);
+            order=new Dictionary<string, RecordInfo>(fileLines.Length);
+            if(!int.TryParse(fileLines[0], out fileVersion)) {
+                System.Windows.Forms.MessageBox.Show("Could not read load order template", "Error");
+                return;
+            }
             int upto=0;
             List<string> requires=new List<string>();
             List<string> conflicts=new List<string>();
             List<string> comments=new List<string>();
-            order=new Dictionary<string, RecordInfo>(fileLines.Length);
             for(int i=0;i<fileLines.Length;i++) {
                 int comment=fileLines[i].IndexOf('\\');
                 if(comment!=-1) fileLines[i]=fileLines[i].Remove(comment);
@@ -63,6 +65,7 @@ namespace Fomm {
                                 conflicts.Add(fileLines[j].Substring(1).ToLowerInvariant());
                                 skiplines++;
                                 continue;
+                            case '*':
                             case '?':
                                 comments.Add(fileLines[j].Substring(1));
                                 skiplines++;
@@ -236,6 +239,23 @@ namespace Fomm {
                 if(mi[i].id>=target) return i;
             }
             return plugins.Length;
+        }
+
+        public static int GetFileVersion() {
+            if(order==null) LoadList();
+            return fileVersion;
+        }
+
+        public static void ReplaceFile(byte[] buf) {
+            //if(File.Exists(localZipPath)) File.Delete(localZipPath);
+            File.WriteAllBytes(localZipPath, buf);
+            ICSharpCode.SharpZipLib.Zip.ZipFile zf=new ICSharpCode.SharpZipLib.Zip.ZipFile(localZipPath);
+            ICSharpCode.SharpZipLib.Zip.ZipEntry ze=zf.GetEntry("lotemplate.txt");
+            StreamReader sr=new StreamReader(zf.GetInputStream(ze));
+            File.WriteAllText(localDataPath, sr.ReadToEnd());
+            sr.Close();
+            zf.Close();
+            LoadList();
         }
     }
 }

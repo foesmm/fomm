@@ -159,7 +159,7 @@ namespace Fomm.PackageManager {
             VersionS="1.0";
             Version=DefaultVersion;
             MinFommVersion=DefaultMinFommVersion;
-            readmepath="readme - "+baseName+".rtf";
+            readmepath=Settings.GetBool("UseDocsFolder")?"docs/readme - "+baseName+".rtf":"readme - "+baseName+".rtf";
             groups=new string[0];
 
             LoadInfo();
@@ -174,7 +174,6 @@ namespace Fomm.PackageManager {
                 }
             }
             if(!hasReadme) {
-                readmepath="docs/"+readmepath;
                 for(int i=0;i<extensions.Length;i++) {
                     if(file.GetEntry("docs/readme - "+baseName+extensions[i])!=null) {
                         hasReadme=true;
