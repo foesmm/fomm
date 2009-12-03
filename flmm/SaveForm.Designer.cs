@@ -35,6 +35,7 @@ namespace Fomm {
             this.lvSaves = new System.Windows.Forms.ListView();
             this.cmbSort = new System.Windows.Forms.ComboBox();
             this.DudMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.bExport = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -156,11 +157,22 @@ namespace Fomm {
             this.DudMenu.Name = "DudMenu";
             this.DudMenu.Size = new System.Drawing.Size(61, 4);
             // 
+            // bExport
+            // 
+            this.bExport.Location = new System.Drawing.Point(204, 567);
+            this.bExport.Name = "bExport";
+            this.bExport.Size = new System.Drawing.Size(118, 23);
+            this.bExport.TabIndex = 7;
+            this.bExport.Text = "Export load order";
+            this.bExport.UseVisualStyleBackColor = true;
+            this.bExport.Click += new System.EventHandler(this.bExport_Click);
+            // 
             // SaveForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(413, 596);
+            this.Controls.Add(this.bExport);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.cmbSort);
             this.Controls.Add(this.splitContainer1);
@@ -191,5 +203,6 @@ namespace Fomm {
         private System.Windows.Forms.ImageList SaveImageList;
         private System.Windows.Forms.ComboBox cmbSort;
         private System.Windows.Forms.ContextMenuStrip DudMenu;
+        private System.Windows.Forms.Button bExport;
     }
 }

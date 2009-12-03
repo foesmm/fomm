@@ -212,5 +212,20 @@ namespace Fomm {
             SaveListSorter.order=(SaveSortOrder)cmbSort.SelectedIndex;
             lvSaves.Sort();
         }
+
+        private void bExport_Click(object sender, EventArgs e) {
+            if(lvSaves.SelectedItems.Count!=1) return;
+            SaveFile sf=(SaveFile)lvSaves.SelectedItems[0].Tag;
+            SaveFileDialog ofd=new SaveFileDialog();
+            ofd.Filter="Text file (*.txt)|*.txt";
+            ofd.AddExtension=true;
+            ofd.RestoreDirectory=true;
+            if(ofd.ShowDialog()!=DialogResult.OK) return;
+            StreamWriter sw=new StreamWriter(ofd.FileName);
+            for(int i=0;i<sf.plugins.Length;i++) {
+                sw.WriteLine("[X] "+sf.plugins[i]);
+            }
+            sw.Close();
+        }
     }
 }

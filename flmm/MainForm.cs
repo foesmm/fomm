@@ -695,7 +695,7 @@ namespace Fomm {
                 wasUpdate=true;
             }
             if(loversion>LoadOrderSorter.GetFileVersion()) {
-                if(MessageBox.Show("A new version of the load order template is available: "+loversion+
+                if(MessageBox.Show("A new version of the load order template is available: Release "+loversion+
                     "\nDo you wish to download?", "Message", MessageBoxButtons.YesNo)==DialogResult.Yes) {
 
                     request=System.Net.HttpWebRequest.Create("http://fomm.sourceforge.net/update/lotemplate.zip");
@@ -714,8 +714,8 @@ namespace Fomm {
             }
             if(!wasUpdate) {
                 MessageBox.Show("No newer updates available");
+                Settings.SetString("LastUpdateCheck", DateTime.Now.ToString());
             }
-            Settings.SetString("LastUpdateCheck", DateTime.Now.ToString());
         }
     }
 }
