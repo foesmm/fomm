@@ -1,6 +1,6 @@
 /*
  *    Fallout Mod Manager
- *    Copyright (C) 2008  Timeslip
+ *    Copyright (C) 2008, 2009  Timeslip
  *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -38,7 +38,7 @@ namespace Fomm {
     class fommException : Exception { public fommException(string msg) : base(msg) { } }
 
     public static class Program {
-        public const string Version="0.10.1";
+        public const string Version="0.10.2";
         public static readonly Version MVersion=new Version(Version+".0");
         /*private static string typefromint(int i, bool name) {
             switch(i) {
@@ -265,6 +265,7 @@ namespace Fomm {
                             autoLoad=args[0];
                             break;
                         }
+                    case ".dat":
                     case ".bsa":
                         Application.Run(new BSABrowser(args[0]));
                         return;

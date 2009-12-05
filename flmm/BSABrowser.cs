@@ -36,7 +36,8 @@ namespace Fomm {
                 set {
                     if(value==null) return;
                     fileName=value;
-                    lowername=Folder.ToLower()+"\\"+fileName.ToLower();
+                    //lowername=Folder.ToLower()+"\\"+fileName.ToLower();
+                    lowername=Path.Combine(Folder.ToLower(), fileName.ToLower());
                 }
             }
             internal string LowerName {
@@ -45,6 +46,7 @@ namespace Fomm {
             internal readonly string Folder;
             internal readonly uint Offset;
             internal readonly uint Size;
+            internal readonly uint RealSize;
 
             internal BSAFileEntry(bool compressed, string folder, uint offset,uint size) {
                 Compressed=compressed;
@@ -58,6 +60,18 @@ namespace Fomm {
                 FileName=Path.GetFileName(path);
                 Offset=offset;
                 Size=size;
+            }
+
+            internal BSAFileEntry(string path, uint offset, uint size, uint realSize) {
+                Folder=Path.GetDirectoryName(path);
+                if(path.EndsWith("color.pal")) {
+                    int iii=0;
+                }
+                FileName=Path.GetFileName(path);
+                Offset=offset;
+                Size=size;
+                RealSize=realSize;
+                Compressed=realSize!=0;
             }
 
             internal void Extract(string path, bool UseFolderName, BinaryReader br, bool SkipName) {
@@ -74,7 +88,9 @@ namespace Fomm {
                     br.Read(bytes, 0, (int)Size);
                     fs.Write(bytes, 0, (int)Size);
                 } else {
-                    byte[] uncompressed=new byte[br.ReadUInt32()];
+                    byte[] uncompressed;
+                    if(RealSize==0) uncompressed=new byte[br.ReadUInt32()];
+                    else uncompressed=new byte[RealSize];
                     byte[] compressed=new byte[Size-4];
                     br.Read(compressed, 0, (int)(Size-4));
                     inf.Reset();
@@ -134,12 +150,32 @@ namespace Fomm {
                 br=new BinaryReader(File.OpenRead(path), System.Text.Encoding.Default);
                 //if(Program.ReadCString(br)!="BSA") throw new fommException("File was not a valid BSA archive");
                 uint type=br.ReadUInt32();
-                if(type!=0x00415342&&type!=0x00000100) {
-                    MessageBox.Show("File is not a valid bsa archive");
-                    return;
-                }
                 System.Text.StringBuilder sb=new System.Text.StringBuilder(64);
-                if(type==0x0100) {
+                if(type!=0x00415342&&type!=0x00000100) {
+                    //Might be a fallout 2 dat
+                    br.BaseStream.Position=br.BaseStream.Length-8;
+                    uint TreeSize=br.ReadUInt32();
+                    uint DataSize=br.ReadUInt32();
+                    if(DataSize!=br.BaseStream.Length) {
+                        MessageBox.Show("File is not a valid bsa archive");
+                        br.Close();
+                        return;
+                    }
+                    br.BaseStream.Position=DataSize - TreeSize - 8;
+                    int FileCount=br.ReadInt32();
+                    Files=new BSAFileEntry[FileCount];
+                    for(int i=0;i<FileCount;i++) {
+                        int fileLen=br.ReadInt32();
+                        for(int j=0;j<fileLen;j++) sb.Append(br.ReadChar());
+                        byte comp=br.ReadByte();
+                        uint realSize=br.ReadUInt32();
+                        uint compSize=br.ReadUInt32();
+                        uint offset=br.ReadUInt32();
+                        if(sb[0]=='\\') sb.Remove(0,1);
+                        Files[i]=new BSAFileEntry(sb.ToString(), offset, compSize, comp==0?0:realSize);
+                        sb.Length=0;
+                    }
+                } else if(type==0x0100) {
                     uint hashoffset=br.ReadUInt32();
                     uint FileCount=br.ReadUInt32();
                     Files=new BSAFileEntry[FileCount];
@@ -238,7 +274,8 @@ namespace Fomm {
             lvFiles.BeginUpdate();
             lvItems=new ListViewItem[Files.Length];
             for(int i=0;i<Files.Length;i++) {
-                ListViewItem lvi=new ListViewItem(Files[i].Folder+"\\"+Files[i].FileName);
+                //ListViewItem lvi=new ListViewItem(Files[i].Folder+"\\"+Files[i].FileName);
+                ListViewItem lvi=new ListViewItem(Path.Combine(Files[i].Folder, Files[i].FileName));
                 lvi.Tag=Files[i];
                 lvi.ToolTipText="File size: "+Files[i].Size+" bytes\nFile offset: "+Files[i].Offset+" bytes\n"+(Files[i].Compressed?"Compressed":"Uncompressed");
                 lvItems[i]=lvi;
@@ -346,6 +383,7 @@ namespace Fomm {
                 case ".jpg":
                     System.Diagnostics.Process.Start("obmm\\NifViewer.exe", fe.LowerName);
                     break;*/
+                case ".lst":
                 case ".txt":
                 case ".xml":
                     string path=Program.CreateTempDirectory();
@@ -415,7 +453,7 @@ namespace Fomm {
             lvAllItems=(ListViewItem[])lvItems.Clone();
             foreach(ListViewItem lvi in lvAllItems) {
                 string path=Path.GetDirectoryName(lvi.Text);
-                if(nodes.ContainsKey(path)) continue;
+                if(path==string.Empty||nodes.ContainsKey(path)) continue;
                 string[] dirs=path.Split('\\');
                 for(int i=0;i<dirs.Length;i++) {
                     string newpath=string.Join("\\", dirs, 0, i+1);

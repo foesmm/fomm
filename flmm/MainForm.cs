@@ -622,6 +622,9 @@ namespace Fomm {
         }
 
         private void bSort_Click(object sender, EventArgs e) {
+            if(MessageBox.Show("This is currently a beta feature, and the load order template may not be optimal.\n"+
+                "Ensure you have a backup of your load order before running this tool.\n"+
+                "War you sure you wish to continue?", "Warning", MessageBoxButtons.YesNo)!=DialogResult.Yes) return;
             string[] plugins=new string[lvEspList.Items.Count];
             for(int i=0;i<plugins.Length;i++) plugins[i]=lvEspList.Items[i].Text;
             LoadOrderSorter.SortList(plugins);

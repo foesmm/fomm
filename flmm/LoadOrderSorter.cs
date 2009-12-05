@@ -39,8 +39,7 @@ namespace Fomm {
             string[] fileLines=File.ReadAllLines(localDataPath);
             order=new Dictionary<string, RecordInfo>(fileLines.Length);
             if(!int.TryParse(fileLines[0], out fileVersion)) {
-                System.Windows.Forms.MessageBox.Show("Could not read load order template", "Error");
-                return;
+                fileVersion=0;
             }
             int upto=0;
             List<string> requires=new List<string>();
@@ -87,7 +86,6 @@ namespace Fomm {
                         ri.comments=comments.ToArray();
                         comments.Clear();
                     }
-                    //order.Add(fileLines[i].ToLowerInvariant(), ri);
                     fileLines[i]=fileLines[i].ToLowerInvariant();
                     if(order.ContainsKey(fileLines[i])) duplicateCount++;
                     order[fileLines[i]]=ri;
