@@ -110,7 +110,7 @@ namespace Fomm {
         private ListViewItem[] lvItems;
         private ListViewItem[] lvAllItems;
 
-        private enum BSASortOrder { FolderName, FileName, FileSize, Offset }
+        private enum BSASortOrder { FolderName, FileName, FileSize, Offset, FileType }
         private class BSASorter : System.Collections.IComparer {
             internal static BSASortOrder order=0;
             public int Compare(object a, object b) {
@@ -119,12 +119,9 @@ namespace Fomm {
                 switch(order) {
                 case BSASortOrder.FolderName: return string.Compare(fa.LowerName,fb.LowerName);
                 case BSASortOrder.FileName: return string.Compare(fa.FileName, fb.FileName);
-                case BSASortOrder.FileSize:
-                    if(fa.Size==fb.Size) return 0;
-                    if(fa.Size>fb.Size) return -1; else return 1;
-                case BSASortOrder.Offset:
-                    if(fa.Offset==fb.Offset) return 0;
-                    if(fa.Offset>fb.Offset) return -1; else return 1;
+                case BSASortOrder.FileSize: return fa.Size.CompareTo(fb.Size);
+                case BSASortOrder.Offset: return fa.Offset.CompareTo(fb.Offset);
+                case BSASortOrder.FileType: return string.Compare(Path.GetExtension(fa.FileName), Path.GetExtension(fb.FileName));
                 default: return 0;
                 }
             }

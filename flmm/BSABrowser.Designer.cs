@@ -95,7 +95,7 @@ namespace Fomm {
             // 
             // OpenBSA
             // 
-            this.OpenBSA.Filter = "Fallout or Oblivion BSA archives|*.bsa";
+            this.OpenBSA.Filter = "Fallout or Oblivion BSA archives|*.bsa|Fallout 2 dat archive|*.dat";
             this.OpenBSA.RestoreDirectory = true;
             this.OpenBSA.Title = "Select archive to open";
             // 
@@ -130,7 +130,8 @@ namespace Fomm {
             "Folder name",
             "File name",
             "File size",
-            "Offset"});
+            "Offset",
+            "File extension"});
             this.cmbSortOrder.Location = new System.Drawing.Point(368, 338);
             this.cmbSortOrder.Name = "cmbSortOrder";
             this.cmbSortOrder.Size = new System.Drawing.Size(121, 21);
