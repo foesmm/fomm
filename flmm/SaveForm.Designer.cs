@@ -24,7 +24,6 @@ namespace Fomm {
         /// </summary>
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SaveForm));
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.lName = new System.Windows.Forms.Label();
             this.lLocation = new System.Windows.Forms.Label();
@@ -112,12 +111,9 @@ namespace Fomm {
             // 
             // SaveImageList
             // 
-            this.SaveImageList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("SaveImageList.ImageStream")));
+            this.SaveImageList.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
+            this.SaveImageList.ImageSize = new System.Drawing.Size(16, 16);
             this.SaveImageList.TransparentColor = System.Drawing.Color.Transparent;
-            this.SaveImageList.Images.SetKeyName(0, "black.bmp");
-            this.SaveImageList.Images.SetKeyName(1, "red.bmp");
-            this.SaveImageList.Images.SetKeyName(2, "orange.bmp");
-            this.SaveImageList.Images.SetKeyName(3, "green.bmp");
             // 
             // lvSaves
             // 

@@ -61,10 +61,18 @@ namespace Fomm {
             }
         }
 
+        private readonly string[] aPlugins;
+        private readonly string[] iPlugins;
         private readonly List<SaveFile> saves=new List<SaveFile>();
 
-        internal SaveForm() {
+        internal SaveForm(string[] ActivePlugins, string[] InactivePlugins) {
             InitializeComponent();
+            Array.Sort<string>(ActivePlugins);
+            Array.Sort<string>(InactivePlugins);
+            aPlugins=ActivePlugins;
+            iPlugins=InactivePlugins;
+            SaveImageList.Images.AddRange(new Image[] { Fomm.Properties.Resources.GreenSquare, 
+                Fomm.Properties.Resources.YellowSquare, Fomm.Properties.Resources.YellowSquare });
             this.Icon=Fomm.Properties.Resources.fomm02;
             cmbSort.SelectedIndex=3;
             lvSaves.ListViewItemSorter=new SaveListSorter();
@@ -156,19 +164,16 @@ namespace Fomm {
                 lvi.ToolTipText="Player: "+sf.Player+"\nLevel: "+sf.Level+" ("+sf.Karma+")\nLocation: "+sf.Location+"\nPlay time: "+sf.Playtime+
                     "\nDate saved: "+sf.saved.ToString()+"\nNumber of plugins: "+sf.plugins.Length.ToString();
                 lvi.Tag=sf;
-                /*bool match=false;
-                for(int i=0;i<sf.plugins.Length;i++) {
-                    EspInfo ei=Program.Data.GetEsp(sf.plugins[i]);
-                    if(ei==null||!ei.Active) {
-                        lvi.ImageIndex=1;
-                        match=true;
-                        break;
+                int worst=0;
+                foreach(string s in sf.plugins) {
+                    if(Array.BinarySearch<string>(aPlugins, s)<0) {
+                        if(Array.BinarySearch<string>(iPlugins, s)<0) {
+                            worst=2;
+                            break;
+                        } else worst=1;
                     }
                 }
-                if(!match) {
-                    if(ActiveEsps>sf.plugins.Length) lvi.ImageIndex=2;
-                    else lvi.ImageIndex=3;
-                }*/
+                lvi.ImageIndex=worst;
                 lvSaves.Items.Add(lvi);
             }
             lvSaves.EndUpdate();
@@ -179,16 +184,9 @@ namespace Fomm {
             lvPlugins.Items.Clear();
             foreach(string s in plugins) {
                 ListViewItem lvi=new ListViewItem(s);
-                /*EspInfo ei=Program.Data.GetEsp(s);
-                if(ei==null) {
-                    lvi.ImageIndex=0;
-                    lvi.ToolTipText="File not found";
-                } else {
-                    if(ei.Active) lvi.ImageIndex=3;
-                    else lvi.ImageIndex=1;
-                    lvi.Tag=ei;
-                    lvi.ToolTipText=ei.FileName+"\nAuthor: "+ei.header.Author+"\n\n"+ei.header.Description;
-                }*/
+                if(Array.BinarySearch<string>(aPlugins, s)>=0) lvi.ImageIndex=0;
+                else if(Array.BinarySearch<string>(iPlugins, s)>=0) lvi.ImageIndex=1;
+                else lvi.ImageIndex=2;
                 lvPlugins.Items.Add(lvi);
             }
             lvPlugins.ResumeLayout();

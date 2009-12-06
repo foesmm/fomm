@@ -64,9 +64,6 @@ namespace Fomm {
 
             internal BSAFileEntry(string path, uint offset, uint size, uint realSize) {
                 Folder=Path.GetDirectoryName(path);
-                if(path.EndsWith("color.pal")) {
-                    int iii=0;
-                }
                 FileName=Path.GetFileName(path);
                 Offset=offset;
                 Size=size;

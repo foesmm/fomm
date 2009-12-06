@@ -371,7 +371,12 @@ namespace Fomm {
         }
 
         private void bSaveGames_Click(object sender, EventArgs e) {
-            (new SaveForm()).Show();
+            string[] active=new string[lvEspList.CheckedItems.Count];
+            for(int i=0;i<active.Length;i++) active[i]=lvEspList.CheckedItems[i].Text;
+            //ok, so this includes active mods as well as inactive ones, but it still works the same
+            string[] inactive=new string[lvEspList.Items.Count];
+            for(int i=0;i<inactive.Length;i++) inactive[i]=lvEspList.Items[i].Text;
+            (new SaveForm(active, inactive)).Show();
         }
 
         private void bHelp_Click(object sender, EventArgs e) {

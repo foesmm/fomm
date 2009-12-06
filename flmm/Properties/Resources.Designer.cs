@@ -66,5 +66,26 @@ namespace Fomm.Properties {
                 return ((System.Drawing.Icon)(obj));
             }
         }
+        
+        internal static System.Drawing.Bitmap GreenSquare {
+            get {
+                object obj = ResourceManager.GetObject("GreenSquare", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap RedSquare {
+            get {
+                object obj = ResourceManager.GetObject("RedSquare", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap YellowSquare {
+            get {
+                object obj = ResourceManager.GetObject("YellowSquare", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }
