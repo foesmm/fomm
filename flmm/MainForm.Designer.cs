@@ -34,12 +34,14 @@ namespace Fomm {
             this.checkAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.lvEspList = new L0ki.Controls.ReordableItemListView();
+            this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
+            this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
             this.tbPluginInfo = new System.Windows.Forms.TextBox();
             this.bPackageManager = new System.Windows.Forms.Button();
             this.bEnableAI = new System.Windows.Forms.Button();
             this.bSaveGames = new System.Windows.Forms.Button();
             this.bHelp = new System.Windows.Forms.Button();
-            this.bInstallTweaker = new System.Windows.Forms.Button();
             this.bSettings = new System.Windows.Forms.Button();
             this.bSort = new System.Windows.Forms.Button();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -62,9 +64,7 @@ namespace Fomm {
             this.visitForumsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.checkForUpdateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.bReport = new System.Windows.Forms.Button();
-            this.lvEspList = new L0ki.Controls.ReordableItemListView();
-            this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
-            this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
+            this.installTweakerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.cmsPlugins.SuspendLayout();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -169,6 +169,39 @@ namespace Fomm {
             this.splitContainer1.SplitterDistance = 281;
             this.splitContainer1.TabIndex = 11;
             // 
+            // lvEspList
+            // 
+            this.lvEspList.AllowDrop = true;
+            this.lvEspList.CheckBoxes = true;
+            this.lvEspList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1,
+            this.columnHeader2});
+            this.lvEspList.ContextMenuStrip = this.cmsPlugins;
+            this.lvEspList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lvEspList.FullRowSelect = true;
+            this.lvEspList.Location = new System.Drawing.Point(0, 0);
+            this.lvEspList.Name = "lvEspList";
+            this.lvEspList.ShowGroups = false;
+            this.lvEspList.Size = new System.Drawing.Size(399, 281);
+            this.lvEspList.TabIndex = 0;
+            this.lvEspList.UseCompatibleStateImageBehavior = false;
+            this.lvEspList.View = System.Windows.Forms.View.Details;
+            this.lvEspList.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.lvEspList_ItemChecked);
+            this.lvEspList.SelectedIndexChanged += new System.EventHandler(this.lvEspList_SelectedIndexChanged);
+            this.lvEspList.DragDrop += new System.Windows.Forms.DragEventHandler(this.lvEspList_DragDrop);
+            this.lvEspList.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.lvEspList_ColumnClick);
+            this.lvEspList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lvEspList_KeyDown);
+            // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Text = "File";
+            this.columnHeader1.Width = 219;
+            // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Text = "Mod index";
+            this.columnHeader2.Width = 87;
+            // 
             // tbPluginInfo
             // 
             this.tbPluginInfo.BackColor = System.Drawing.SystemColors.Window;
@@ -226,17 +259,6 @@ namespace Fomm {
             this.bHelp.Text = "Open readme";
             this.bHelp.UseVisualStyleBackColor = true;
             this.bHelp.Click += new System.EventHandler(this.bHelp_Click);
-            // 
-            // bInstallTweaker
-            // 
-            this.bInstallTweaker.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.bInstallTweaker.Location = new System.Drawing.Point(417, 337);
-            this.bInstallTweaker.Name = "bInstallTweaker";
-            this.bInstallTweaker.Size = new System.Drawing.Size(120, 23);
-            this.bInstallTweaker.TabIndex = 6;
-            this.bInstallTweaker.Text = "Install tweaker";
-            this.bInstallTweaker.UseVisualStyleBackColor = true;
-            this.bInstallTweaker.Click += new System.EventHandler(this.bInstallTweaker_Click);
             // 
             // bSettings
             // 
@@ -318,7 +340,8 @@ namespace Fomm {
             this.bSAUnpackerToolStripMenuItem,
             this.bSACreatorToolStripMenuItem,
             this.tESsnipToolStripMenuItem,
-            this.sDPEditorToolStripMenuItem});
+            this.sDPEditorToolStripMenuItem,
+            this.installTweakerToolStripMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
             this.toolsToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.toolsToolStripMenuItem.Text = "Tools";
@@ -326,28 +349,28 @@ namespace Fomm {
             // bSAUnpackerToolStripMenuItem
             // 
             this.bSAUnpackerToolStripMenuItem.Name = "bSAUnpackerToolStripMenuItem";
-            this.bSAUnpackerToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
+            this.bSAUnpackerToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.bSAUnpackerToolStripMenuItem.Text = "BSA unpacker";
             this.bSAUnpackerToolStripMenuItem.Click += new System.EventHandler(this.bBSAUnpack_Click);
             // 
             // bSACreatorToolStripMenuItem
             // 
             this.bSACreatorToolStripMenuItem.Name = "bSACreatorToolStripMenuItem";
-            this.bSACreatorToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
+            this.bSACreatorToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.bSACreatorToolStripMenuItem.Text = "BSA creator";
             this.bSACreatorToolStripMenuItem.Click += new System.EventHandler(this.cBSACreator_Click);
             // 
             // tESsnipToolStripMenuItem
             // 
             this.tESsnipToolStripMenuItem.Name = "tESsnipToolStripMenuItem";
-            this.tESsnipToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
+            this.tESsnipToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.tESsnipToolStripMenuItem.Text = "TESsnip";
             this.tESsnipToolStripMenuItem.Click += new System.EventHandler(this.bTESsnip_Click);
             // 
             // sDPEditorToolStripMenuItem
             // 
             this.sDPEditorToolStripMenuItem.Name = "sDPEditorToolStripMenuItem";
-            this.sDPEditorToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
+            this.sDPEditorToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.sDPEditorToolStripMenuItem.Text = "SDP editor";
             this.sDPEditorToolStripMenuItem.Click += new System.EventHandler(this.bShaderEdit_Click);
             // 
@@ -424,38 +447,12 @@ namespace Fomm {
             this.bReport.UseVisualStyleBackColor = true;
             this.bReport.Click += new System.EventHandler(this.bReport_Click);
             // 
-            // lvEspList
+            // installTweakerToolStripMenuItem
             // 
-            this.lvEspList.AllowDrop = true;
-            this.lvEspList.CheckBoxes = true;
-            this.lvEspList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1,
-            this.columnHeader2});
-            this.lvEspList.ContextMenuStrip = this.cmsPlugins;
-            this.lvEspList.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lvEspList.FullRowSelect = true;
-            this.lvEspList.Location = new System.Drawing.Point(0, 0);
-            this.lvEspList.Name = "lvEspList";
-            this.lvEspList.ShowGroups = false;
-            this.lvEspList.Size = new System.Drawing.Size(399, 281);
-            this.lvEspList.TabIndex = 0;
-            this.lvEspList.UseCompatibleStateImageBehavior = false;
-            this.lvEspList.View = System.Windows.Forms.View.Details;
-            this.lvEspList.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.lvEspList_ItemChecked);
-            this.lvEspList.SelectedIndexChanged += new System.EventHandler(this.lvEspList_SelectedIndexChanged);
-            this.lvEspList.DragDrop += new System.Windows.Forms.DragEventHandler(this.lvEspList_DragDrop);
-            this.lvEspList.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.lvEspList_ColumnClick);
-            this.lvEspList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lvEspList_KeyDown);
-            // 
-            // columnHeader1
-            // 
-            this.columnHeader1.Text = "File";
-            this.columnHeader1.Width = 219;
-            // 
-            // columnHeader2
-            // 
-            this.columnHeader2.Text = "Mod index";
-            this.columnHeader2.Width = 87;
+            this.installTweakerToolStripMenuItem.Name = "installTweakerToolStripMenuItem";
+            this.installTweakerToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.installTweakerToolStripMenuItem.Text = "Install tweaker";
+            this.installTweakerToolStripMenuItem.Click += new System.EventHandler(this.bInstallTweaker_Click);
             // 
             // MainForm
             // 
@@ -468,7 +465,6 @@ namespace Fomm {
             this.Controls.Add(this.bSort);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.bPackageManager);
-            this.Controls.Add(this.bInstallTweaker);
             this.Controls.Add(this.bEnableAI);
             this.Controls.Add(this.bLaunch);
             this.Controls.Add(this.bSettings);
@@ -513,7 +509,6 @@ namespace Fomm {
         private System.Windows.Forms.ToolStripMenuItem uncheckAllToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem checkAllToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
-        private System.Windows.Forms.Button bInstallTweaker;
         private System.Windows.Forms.Button bSettings;
         private System.Windows.Forms.Button bSort;
         private System.Windows.Forms.MenuStrip menuStrip1;
@@ -536,6 +531,7 @@ namespace Fomm {
         private System.Windows.Forms.ToolStripMenuItem viewReadmeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem visitForumsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem checkForUpdateToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem installTweakerToolStripMenuItem;
     }
 }
 

@@ -670,7 +670,7 @@ namespace Fomm {
                 }
             }
             string s=LoadOrderSorter.GenerateReport(plugins, active, corrupt, masters);
-            PackageManager.TextEditor.ShowEditor(s, Fomm.PackageManager.TextEditorType.Text);
+            PackageManager.TextEditor.ShowEditor(s, Fomm.PackageManager.TextEditorType.Text, false);
         }
 
         private void visitForumsToolStripMenuItem_Click(object sender, EventArgs e) {

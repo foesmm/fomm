@@ -192,7 +192,7 @@ namespace Fomm.PackageManager {
         private void bEditScript_Click(object sender, EventArgs e) {
             if(lvModList.SelectedItems.Count!=1) return;
             fomod mod=(fomod)lvModList.SelectedItems[0].Tag;
-            string result=TextEditor.ShowEditor(mod.GetScript(), TextEditorType.Script);
+            string result=TextEditor.ShowEditor(mod.GetScript(), TextEditorType.Script, true);
             if(result!=null) mod.SetScript(result);
         }
 
@@ -201,15 +201,15 @@ namespace Fomm.PackageManager {
             fomod mod=(fomod)lvModList.SelectedItems[0].Tag;
             string result=null;
             if(!mod.HasReadme) {
-                result=TextEditor.ShowEditor("", TextEditorType.Text);
+                result=TextEditor.ShowEditor("", TextEditorType.Text, true);
             } else {
                 string readme=mod.GetReadme();
                 switch(mod.ReadmeExt) {
                 case ".txt":
-                    result=TextEditor.ShowEditor(readme, TextEditorType.Text);
+                    result=TextEditor.ShowEditor(readme, TextEditorType.Text, true);
                     break;
                 case ".rtf":
-                    result=TextEditor.ShowEditor(readme, TextEditorType.Rtf);
+                    result=TextEditor.ShowEditor(readme, TextEditorType.Rtf, true);
                     break;
                 case ".htm":
                 case ".html":

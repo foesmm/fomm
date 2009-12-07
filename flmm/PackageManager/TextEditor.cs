@@ -80,7 +80,7 @@ class Script : BaseScript {
         private Timer timer;
 
         private bool changed;
-        void textChanged(object sender, EventArgs e) {
+        private void textChanged(object sender, EventArgs e) {
             changed=true;
             if(UsingScript) {
                 TimerNext=DateTime.Now+TimeSpan.FromSeconds(1);
@@ -88,9 +88,10 @@ class Script : BaseScript {
             } else rtbEdit.TextChanged-=textChanged;
         }
 
-        public static string ShowEditor(string initial, TextEditorType type) {
+        public static string ShowEditor(string initial, TextEditorType type, bool dialog) {
             TextEditor se=new TextEditor(initial, type);
-            se.ShowDialog();
+            if(dialog) se.ShowDialog();
+            else se.Show();
             return se.saved;
         }
 
