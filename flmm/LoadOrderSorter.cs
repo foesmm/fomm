@@ -134,34 +134,34 @@ namespace Fomm {
             for(int i=0;i<plugins.Length;i++) {
                 sb.AppendLine(plugins[i]+(active[i]?string.Empty:" (Inactive)"));
                 plugins[i]=plugins[i].ToLowerInvariant();
-                if(order.ContainsKey(plugins[i])) {
-                    RecordInfo ri=order[plugins[i]];
-                    if(corrupt[i]) {
-                        sb.AppendLine("! This plugin is unreadable, and probably corrupt");
-                    }
-                    if(active[i]&&masters[i]!=null) {
-                        for(int k=0;k<masters[i].Length;k++) {
-                            bool found=false;
-                            for(int j=0;j<i;j++) {
+                if(corrupt[i]) {
+                    sb.AppendLine("! This plugin is unreadable, and probably corrupt");
+                }
+                if(active[i]&&masters[i]!=null) {
+                    for(int k=0;k<masters[i].Length;k++) {
+                        bool found=false;
+                        for(int j=0;j<i;j++) {
+                            if(active[j]&&lplugins[j]==masters[i][k]) {
+                                found=true;
+                                break;
+                            }
+                        }
+                        if(!found) {
+                            for(int j=i+1;j<plugins.Length;j++) {
                                 if(active[j]&&lplugins[j]==masters[i][k]) {
+                                    sb.AppendLine("! This plugin depends on master '"+masters[i][k]+"', which is loading after it in the load order");
                                     found=true;
                                     break;
                                 }
                             }
                             if(!found) {
-                                for(int j=i+1;j<plugins.Length;j++) {
-                                    if(active[j]&&lplugins[j]==masters[i][k]) {
-                                        sb.AppendLine("! This plugin depends on master '"+masters[i][k]+"', which is loading after it in the load order");
-                                        found=true;
-                                        break;
-                                    }
-                                }
-                                if(!found) {
-                                    sb.AppendLine("! This plugin depends on master '"+masters[i][k]+"', which is not loading");
-                                }
+                                sb.AppendLine("! This plugin depends on master '"+masters[i][k]+"', which is not loading");
                             }
                         }
                     }
+                }
+                if(order.ContainsKey(plugins[i])) {
+                    RecordInfo ri=order[plugins[i]];
                     if(ri.id<latestPosition) {
                         sb.AppendLine("* The current load order of this mod does not match the current template");
                         LoadOrderWrong=true;
