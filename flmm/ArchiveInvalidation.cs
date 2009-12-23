@@ -34,6 +34,13 @@ namespace Fomm {
         }
 
         private static void ApplyAI() {
+            foreach(FileInfo fi in new DirectoryInfo("data").GetFiles("Fallout - *.bsa")) fi.LastWriteTime=new DateTime(2008, 10, 1);
+            foreach(FileInfo fi in new DirectoryInfo("data").GetFiles("Anchorage - *.bsa")) fi.LastWriteTime=new DateTime(2008, 10, 2);
+            foreach(FileInfo fi in new DirectoryInfo("data").GetFiles("ThePitt - *.bsa")) fi.LastWriteTime=new DateTime(2008, 10, 3);
+            foreach(FileInfo fi in new DirectoryInfo("data").GetFiles("BrokenSteel - *.bsa")) fi.LastWriteTime=new DateTime(2008, 10, 4);
+            foreach(FileInfo fi in new DirectoryInfo("data").GetFiles("PointLookout - *.bsa")) fi.LastWriteTime=new DateTime(2008, 10, 5);
+            foreach(FileInfo fi in new DirectoryInfo("data").GetFiles("Zeta - *.bsa")) fi.LastWriteTime=new DateTime(2008, 10, 6);
+
             NativeMethods.WritePrivateProfileIntA("Archive", "bInvalidateOlderFiles", 1, Program.FOIniPath);
             NativeMethods.WritePrivateProfileIntA("General", "bLoadFaceGenHeadEGTFiles", 1, Program.FOIniPath);
             NativeMethods.WritePrivateProfileStringA("Archive", "SInvalidationFile", "", Program.FOIniPath);
