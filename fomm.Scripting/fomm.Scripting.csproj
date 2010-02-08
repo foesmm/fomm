@@ -52,9 +52,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\flmm\qfomm.csproj">
+    <ProjectReference Include="..\flmm\fomm.csproj">
       <Project>{4A0302F4-DEA4-4753-98C8-3571742E4EB5}</Project>
-      <Name>qfomm</Name>
+      <Name>fomm</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

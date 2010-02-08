@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "qfomm", "flmm\qfomm.csproj", "{4A0302F4-DEA4-4753-98C8-3571742E4EB5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fomm", "flmm\fomm.csproj", "{4A0302F4-DEA4-4753-98C8-3571742E4EB5}"
 	ProjectSection(ProjectDependencies) = postProject
 		{399F987B-6F9B-44A9-8AC8-BF5711AE8894} = {399F987B-6F9B-44A9-8AC8-BF5711AE8894}
 		{F2AC5DA0-5CE0-4C54-A4D1-6B368F81275A} = {F2AC5DA0-5CE0-4C54-A4D1-6B368F81275A}

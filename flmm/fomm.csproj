@@ -8,7 +8,7 @@
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Fomm</RootNamespace>
-    <AssemblyName>qFomm</AssemblyName>
+    <AssemblyName>fomm</AssemblyName>
     <ApplicationIcon>Resources\fomm02.ico</ApplicationIcon>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
