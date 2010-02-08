@@ -1,7 +1,7 @@
 Name: Fallout Mod Manager
-Version: 0.10
+Version: 0.11.0
 Category: Utilities
-Author: Timeslip
+Author: Timeslip, Q
 Source: http://sourceforge.net/project/showfiles.php?group_id=247976
 Forum: http://sourceforge.net/forum/?group_id=247976
 Homepage: http://sourceforge.net/projects/fomm/

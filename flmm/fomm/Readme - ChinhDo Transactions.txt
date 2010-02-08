@@ -1,10 +1,3 @@
-This program is a modification of the original Fallout Mod Manager, available at:
-https://sourceforge.net/projects/fomm/
-
-This derivative work is base on versions 0.10.3 of the above programme.
-
-Please read the included LICENSE.txt
-
 The following pertains to:
 ChinhDo.Transactions.dll
 
