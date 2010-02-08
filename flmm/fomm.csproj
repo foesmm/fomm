@@ -8,13 +8,31 @@
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Fomm</RootNamespace>
-    <AssemblyName>Fomm</AssemblyName>
-    <ApplicationIcon>fomm01.ico</ApplicationIcon>
+    <AssemblyName>qFomm</AssemblyName>
+    <ApplicationIcon>Resources\fomm02.ico</ApplicationIcon>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>2.0</OldToolsVersion>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkSubset>
+    </TargetFrameworkSubset>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -39,14 +57,16 @@
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ICSharpCode.TextEditor, Version=3.0.0.3683, Culture=neutral, PublicKeyToken=4d61825e8dd49f1a, processorArchitecture=MSIL">
+    <Reference Include="ICSharpCode.TextEditor, Version=3.0.0.3437, Culture=neutral, PublicKeyToken=4d61825e8dd49f1a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ICSharpCode.TextEditor.dll</HintPath>
+      <HintPath>..\lib\ICSharpCode.TextEditor.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Drawing.Design" />
     <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.XML" />
   </ItemGroup>
@@ -65,6 +85,13 @@
     <Compile Include="BSACreator.Designer.cs">
       <DependentUpon>BSACreator.cs</DependentUpon>
     </Compile>
+    <Compile Include="FileManager\FileManager.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FileManager\FileManager.Designer.cs">
+      <DependentUpon>FileManager.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FileManager\ModInstallReorderer.cs" />
     <Compile Include="ImageForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -88,25 +115,36 @@
     </Compile>
     <Compile Include="LoadOrderSorter.cs" />
     <Compile Include="Messaging.cs" />
+    <Compile Include="PackageManager\BsaManager.cs" />
+    <Compile Include="PackageManager\DecompressionException.cs" />
+    <Compile Include="PackageManager\FileManagement.cs" />
+    <Compile Include="PackageManager\IllegalFilePathException.cs" />
     <Compile Include="PackageManager\InfoEditor.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="PackageManager\InfoEditor.Designer.cs">
       <DependentUpon>InfoEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="PackageManager\InstallLogBase.cs" />
+    <Compile Include="PackageManager\ModInstaller.cs" />
+    <Compile Include="PackageManager\InstallLogMergeModule.cs" />
+    <Compile Include="PackageManager\ModInstallScript.cs" />
+    <Compile Include="PackageManager\ModScript.cs" />
+    <Compile Include="PackageManager\ModUninstaller.cs" />
+    <Compile Include="PackageManager\PermissionsManager.cs" />
     <Compile Include="PackageManager\SelectForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="PackageManager\SelectForm.Designer.cs">
       <DependentUpon>SelectForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="PackageManager\ShaderException.cs" />
     <Compile Include="PackageManager\TextEditor.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="PackageManager\TextEditor.Designer.cs">
       <DependentUpon>TextEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="PackageManager\ScriptFunctions.cs" />
     <Compile Include="PackageManager\fomod.cs" />
     <Compile Include="PackageManager\InstallLog.cs" />
     <Compile Include="PackageManager\Overwriteform.cs">
@@ -122,6 +160,7 @@
       <DependentUpon>PackageManager.cs</DependentUpon>
     </Compile>
     <Compile Include="PackageManager\ScriptCompiler.cs" />
+    <Compile Include="PackageManager\TextureManager.cs" />
     <Compile Include="PackageManager\unrar.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -198,6 +237,9 @@
     <EmbeddedResource Include="BSACreator.resx">
       <DependentUpon>BSACreator.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FileManager\FileManager.resx">
+      <DependentUpon>FileManager.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ImageForm.resx">
       <DependentUpon>ImageForm.cs</DependentUpon>
@@ -372,15 +414,36 @@
     <Compile Include="TypeConverter.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="fomm01.ico" />
+    <Content Include="fomm\fomm.chm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="app.config" />
     <None Include="Resources\fomm02.ico" />
     <None Include="Resources\RedSquare.png" />
     <None Include="Resources\YellowSquare.png" />
     <None Include="Resources\GreenSquare.png" />
+    <Content Include="fomm\7za.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="fomm\lotemplate.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="fomm\Readme - fomm.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="fomm\unrar.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="fomm\xlive.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="ScriptCompiler\ScriptFunctions.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="ScriptCompiler\ScriptFunctionsFormat.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ShaderDisasm.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="TESsnip\RecordStructure.xml">
@@ -389,6 +452,44 @@
     <Content Include="TESsnip\RecordStructureFormat.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ChinhDo.Transactions.FileManager\ChinhDo.Transactions.FileManager.csproj">
+      <Project>{E824ACBB-90C8-4C60-9D52-9C8020E98E3E}</Project>
+      <Name>ChinhDo.Transactions.FileManager</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ModBrowser\" />

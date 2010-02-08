@@ -139,6 +139,31 @@ namespace Fomm {
                 PackageManagerForm.Show();
             }
         }
+
+		private FileManager.FileManager m_fmgFileManagerForm = null;
+		/// <summary>
+		/// Handles the <see cref="Button.Click"/> event of the file manager button.
+		/// </summary>
+		/// <remarks>
+		/// Displays the file manager.
+		/// </remarks>
+		/// <param name="sender">The object that trigger the event.</param>
+		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+		private void butFileManager_Click(object sender, EventArgs e)
+		{
+			if (m_fmgFileManagerForm != null)
+				m_fmgFileManagerForm.Focus();
+			else
+			{
+				m_fmgFileManagerForm = new Fomm.FileManager.FileManager();
+				m_fmgFileManagerForm.FormClosed += delegate(object sender2, FormClosedEventArgs e2)
+				{
+					m_fmgFileManagerForm = null;
+				};
+				m_fmgFileManagerForm.Show();
+			}
+		}
+
         private void RefreshIndexCounts() {
             if(lvEspList.Items.Count==0) return;
             bool add=lvEspList.Items[0].SubItems.Count==1;
@@ -398,20 +423,20 @@ namespace Fomm {
             lvEspList.BeginUpdate();
             for(int i=0;i<position;i++) {
                 if(Array.BinarySearch<int>(indicies, i)>=0) continue;
-                File.SetLastWriteTime(Path.Combine("data\\",lvEspList.Items[i].Text), timestamp);
+                File.SetLastWriteTime(Path.Combine("data",lvEspList.Items[i].Text), timestamp);
                 timestamp+=twomins;
                 items.Add(lvEspList.Items[i]);
                 items[items.Count-1].Selected=false;
             }
             for(int i=0;i<indicies.Length;i++) {
-                File.SetLastWriteTime(Path.Combine("data\\",lvEspList.Items[indicies[i]].Text), timestamp);
+                File.SetLastWriteTime(Path.Combine("data",lvEspList.Items[indicies[i]].Text), timestamp);
                 timestamp+=twomins;
                 items.Add(lvEspList.Items[indicies[i]]);
                 items[items.Count-1].Selected=true;
             }
             for(int i=position;i<lvEspList.Items.Count;i++) {
                 if(Array.BinarySearch<int>(indicies, i)>=0) continue;
-                File.SetLastWriteTime(Path.Combine("data\\",lvEspList.Items[i].Text), timestamp);
+                File.SetLastWriteTime(Path.Combine("data",lvEspList.Items[i].Text), timestamp);
                 timestamp+=twomins;
                 items.Add(lvEspList.Items[i]);
                 items[items.Count-1].Selected=false;
@@ -547,7 +572,7 @@ namespace Fomm {
             DateTime timestamp=new DateTime(2008, 1, 1);
             TimeSpan twomins=TimeSpan.FromMinutes(2);
             for(int i=0;i<order.Length;i++) {
-                File.SetLastWriteTime(Path.Combine("data\\", order[i]), timestamp);
+                File.SetLastWriteTime(Path.Combine("data", order[i]), timestamp);
                 timestamp+=twomins;
             }
 
@@ -636,7 +661,7 @@ namespace Fomm {
             DateTime timestamp=new DateTime(2008, 1, 1);
             TimeSpan twomins=TimeSpan.FromMinutes(2);
             for(int i=0;i<plugins.Length;i++) {
-                File.SetLastWriteTime(Path.Combine("data\\", plugins[i]), timestamp);
+                File.SetLastWriteTime(Path.Combine("data", plugins[i]), timestamp);
                 timestamp+=twomins;
             }
             RefreshEspList();
