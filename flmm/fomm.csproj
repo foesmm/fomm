@@ -126,6 +126,7 @@
       <DependentUpon>InfoEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="PackageManager\InstallLogBase.cs" />
+    <Compile Include="PackageManager\InstallLogUpgrader.cs" />
     <Compile Include="PackageManager\ModInstaller.cs" />
     <Compile Include="PackageManager\InstallLogMergeModule.cs" />
     <Compile Include="PackageManager\ModInstallScript.cs" />

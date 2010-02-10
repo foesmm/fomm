@@ -283,5 +283,36 @@ namespace Fomm {
             if(!File.Exists(path)) return false;
             return ReplaceShader(path, name, data, out unused, crc);
         }
+
+		internal static byte[] GetShader(int package, string shader)
+		{
+			string file = GetPath(package);
+			if (!File.Exists(file))
+				return null;
+
+			BinaryReader br = new BinaryReader(File.OpenRead(file), System.Text.Encoding.Default);
+			br.ReadInt32();
+			int num = br.ReadInt32();
+			long sizeoffset = br.BaseStream.Position;
+			br.ReadInt32();
+			bool found = false;
+			byte[] OldData = null;
+			for (int i = 0; i < num; i++)
+			{
+				char[] name = br.ReadChars(0x100);
+				int size = br.ReadInt32();
+				byte[] data = br.ReadBytes(size);
+
+				string sname = "";
+				for (int i2 = 0; i2 < 100; i2++) { if (name[i2] == '\0') break; sname += name[i2]; }
+				if (!found && sname == shader)
+				{
+					found = true;
+					OldData = data;
+				}
+			}
+			br.Close();
+			return OldData;
+		}
     }
 }

@@ -40,7 +40,7 @@ namespace Fomm.PackageManager
 	 */
 	internal class InstallLog : InstallLogBase
 	{
-		private const string ORIGINAL_VALUES = "ORIGINAL_VALUES";
+		protected const string ORIGINAL_VALUES = "ORIGINAL_VALUES";
 		private static readonly InstallLog m_ilgCurrent = new InstallLog();
 
 		public static InstallLog Current
@@ -86,6 +86,42 @@ namespace Fomm.PackageManager
 			}
 		}
 
+		/// <summary>
+		/// Gets the <see cref="XmlDocument"/> used to interact with the xml install log.
+		/// </summary>
+		/// <value>The <see cref="XmlDocument"/> used to interact with the xml install log.</value>
+		protected XmlDocument Document
+		{
+			get
+			{
+				return xmlDoc;
+			}
+		}
+
+		/// <summary>
+		/// Gets the node that lists the installed data files.
+		/// </summary>
+		/// <value>The node that lists the installed data files.</value>
+		protected XmlElement DataFilesNode
+		{
+			get
+			{
+				return dataFilesNode;
+			}
+		}
+
+		/// <summary>
+		/// Sets whether or not the install log watches for external changes to the xml file.
+		/// </summary>
+		/// <value>Whether or not the install log watches for external changes to the xml file.</value>
+		protected bool EnableLogFileRefresh
+		{
+			set
+			{
+				m_fswLogWatcher.EnableRaisingEvents = value;
+			}
+		}
+
 		#endregion
 
 		#region Constructors
@@ -93,7 +129,7 @@ namespace Fomm.PackageManager
 		/// <summary>
 		/// The default constructor.
 		/// </summary>
-		private InstallLog()
+		protected InstallLog()
 		{
 			Load();
 			m_fswLogWatcher = new FileSystemWatcher(Path.GetDirectoryName(xmlpath));
@@ -103,6 +139,8 @@ namespace Fomm.PackageManager
 		}
 
 		#endregion
+
+		#region Initialization
 
 		/// <summary>
 		/// Handles the <see cref="FileSystemWatcher.Changed"/> event of the Install Log watcher.
@@ -148,22 +186,32 @@ namespace Fomm.PackageManager
 				dataFilesNode = (XmlElement)xmlDoc.SelectSingleNode("installLog/dataFiles");
 				iniEditsNode = (XmlElement)xmlDoc.SelectSingleNode("installLog/iniEdits");
 				sdpEditsNode = (XmlElement)xmlDoc.SelectSingleNode("installLog/sdpEdits");
+				if (m_xelModListNode == null)
+				{
+					XmlNode root = (XmlNode)xmlDoc.SelectSingleNode("installLog");
+					root.InsertBefore(m_xelModListNode = xmlDoc.CreateElement("modList"), dataFilesNode);
+				}
+				InitMods();
 			}
 			else
-			{
-				XmlNode root = xmlDoc.AppendChild(xmlDoc.CreateElement("installLog"));
-				root.AppendChild(dataFilesNode = xmlDoc.CreateElement("dataFiles"));
-				root.AppendChild(iniEditsNode = xmlDoc.CreateElement("iniEdits"));
-				root.AppendChild(sdpEditsNode = xmlDoc.CreateElement("sdpEdits"));
-			}
-			//we create this node separately in case we are upgrading an existing
-			// install log that has all the nodes except the mod list node
-			if (m_xelModListNode == null)
-			{
-				XmlNode root = (XmlNode)xmlDoc.SelectSingleNode("installLog");
-				root.InsertBefore(m_xelModListNode = xmlDoc.CreateElement("modList"), dataFilesNode);
-			}
+				Reset();
 
+			
+		}
+
+		protected void Reset()
+		{
+			xmlDoc.RemoveAll();
+			XmlNode root = xmlDoc.AppendChild(xmlDoc.CreateElement("installLog"));
+			root.AppendChild(m_xelModListNode = xmlDoc.CreateElement("modList"));
+			root.AppendChild(dataFilesNode = xmlDoc.CreateElement("dataFiles"));
+			root.AppendChild(iniEditsNode = xmlDoc.CreateElement("iniEdits"));
+			root.AppendChild(sdpEditsNode = xmlDoc.CreateElement("sdpEdits"));
+			InitMods();
+		}
+
+		protected void InitMods()
+		{
 			XmlNodeList xnlMods = m_xelModListNode.ChildNodes;
 			m_dicModList = new Dictionary<string, string>();
 			foreach (XmlNode xndMod in xnlMods)
@@ -172,10 +220,12 @@ namespace Fomm.PackageManager
 			AddMod(ORIGINAL_VALUES);
 		}
 
+		#endregion
+
 		/// <summary>
 		/// Saves the Install Log.
 		/// </summary>
-		private void Save()
+		protected void Save()
 		{
 			m_fswLogWatcher.EnableRaisingEvents = false;
 			xmlDoc.Save(xmlpath);
@@ -381,34 +431,62 @@ namespace Fomm.PackageManager
 			return xndInstallingMod.Attributes["key"].InnerText;
 		}
 
-		protected void AddDataFile(string modName, string path)
+		/// <summary>
+		/// Creates a node representing that the specified mod installed the specified file.
+		/// </summary>
+		/// <param name="p_strModKey">The key of the mod that installed the file.</param>
+		/// <param name="p_strPath">The path of the file that was installed.</param>
+		/// <param name="p_xndModList">An out pramater returning the node containing the list of mods that
+		/// have installed the specified file. This is useful for inserting the created node.</param>
+		/// <returns>A node representing that the specified mod installed the specified file. The out
+		/// parameter <paramref name="p_xndModList"/> returns the node containing the list of mods that
+		/// have installed the specified file.</returns>
+		protected XmlNode CreateDataFileNode(string p_strModKey, string p_strPath, out XmlNode p_xndModList)
 		{
-			path = NormalizePath(path.ToLowerInvariant());
-			XmlNode xndModList = null;
+			p_strPath = NormalizePath(p_strPath.ToLowerInvariant());
 			XmlNode xndInstallingMod = null;
 			lock (dataFilesNode)
 			{
-				XmlNode xndFile = dataFilesNode.SelectSingleNode("file[@path=\"" + path + "\"]");
+				XmlNode xndFile = dataFilesNode.SelectSingleNode("file[@path=\"" + p_strPath + "\"]");
 				if (xndFile == null)
 				{
 					xndFile = dataFilesNode.AppendChild(xmlDoc.CreateElement("file"));
 					xndFile.Attributes.Append(xmlDoc.CreateAttribute("path"));
-					xndFile.Attributes[0].Value = path;
-					xndModList = xndFile.AppendChild(xmlDoc.CreateElement("installingMods"));
+					xndFile.Attributes[0].Value = p_strPath;
+					p_xndModList = xndFile.AppendChild(xmlDoc.CreateElement("installingMods"));
 				}
 				else
 				{
-					xndModList = xndFile.SelectSingleNode("installingMods");
-					xndInstallingMod = xndModList.SelectSingleNode("mod[@key='" + m_dicModList[modName] + "']");
+					p_xndModList = xndFile.SelectSingleNode("installingMods");
+					xndInstallingMod = p_xndModList.SelectSingleNode("mod[@key='" + p_strModKey + "']");
 					if (xndInstallingMod != null)
-						xndModList.RemoveChild(xndInstallingMod);
+						p_xndModList.RemoveChild(xndInstallingMod);
 				}
 				if (xndInstallingMod == null)
 				{
 					xndInstallingMod = xmlDoc.CreateElement("mod");
 					xndInstallingMod.Attributes.Append(xmlDoc.CreateAttribute("key"));
-					xndInstallingMod.Attributes["key"].InnerText = m_dicModList[modName];
+					xndInstallingMod.Attributes["key"].InnerText = p_strModKey;
 				}
+			}
+			return xndInstallingMod;
+		}
+
+		/// <summary>
+		/// Adds a node representing that the specified mod installed the specified file.
+		/// </summary>
+		/// <remarks>
+		/// This method appends the node to the end of the list of installing mods, indicating
+		/// that the specified mod is the latest mod to install the specified file.
+		/// </remarks>
+		/// <param name="p_strModName">The base name of the mod that installed the file.</param>
+		/// <param name="p_strPath">The path of the file that was installed.</param>
+		protected void AddDataFile(string p_strModName, string p_strPath)
+		{
+			XmlNode xndModList = null;
+			XmlNode xndInstallingMod = CreateDataFileNode(m_dicModList[p_strModName], p_strPath, out xndModList);
+			lock (dataFilesNode)
+			{
 				xndModList.AppendChild(xndInstallingMod);
 			}
 		}
@@ -454,41 +532,75 @@ namespace Fomm.PackageManager
 			return xndInstallingMod.InnerText;
 		}
 
-		protected void AddIniEdit(string file, string section, string key, string mod, string value)
+		/// <summary>
+		/// Creates a node representing that the specified mod made the specified Ini edit.
+		/// </summary>
+		/// <param name="p_strModKey">The key of the mod that made the edit.</param>
+		/// <param name="p_strFile">The Ini file that was edited.</param>
+		/// <param name="p_strSection">The section in the Ini file that was edited.</param>
+		/// <param name="p_strKey">The key in the Ini file that was edited.</param>
+		/// <param name="p_strValue">The value to which to the key was set.</param>
+		/// <param name="p_xndModList">An out pramater returning the node containing the list of mods that
+		/// have edited the specified key. This is useful for inserting the created node.</param>
+		/// <returns>A node representing that the specified mod made the specified Ini edit. The out
+		/// parameter <paramref name="p_xndModList"/> returns the node containing the list of mods that
+		/// have edited the specified key.</returns>
+		protected XmlNode CreateIniEditNode(string p_strModKey, string p_strFile, string p_strSection, string p_strKey, string p_strValue, out XmlNode p_xndModList)
 		{
-			file = file.ToLowerInvariant();
-			section = section.ToLowerInvariant();
-			key = key.ToLowerInvariant();
-			XmlNode xndModList = null;
+			p_strFile = p_strFile.ToLowerInvariant();
+			p_strSection = p_strSection.ToLowerInvariant();
+			p_strKey = p_strKey.ToLowerInvariant();
 			XmlNode xndInstallingMod = null;
 			lock (iniEditsNode)
 			{
-				XmlNode xndIni = iniEditsNode.SelectSingleNode("ini[@file='" + file + "' and @section='" + section + "' and @key='" + key + "']");
+				XmlNode xndIni = iniEditsNode.SelectSingleNode("ini[@file='" + p_strFile + "' and @section='" + p_strSection + "' and @key='" + p_strKey + "']");
 				if (xndIni == null)
 				{
 					xndIni = iniEditsNode.AppendChild(xmlDoc.CreateElement("ini"));
 					xndIni.Attributes.Append(xmlDoc.CreateAttribute("file"));
 					xndIni.Attributes.Append(xmlDoc.CreateAttribute("section"));
 					xndIni.Attributes.Append(xmlDoc.CreateAttribute("key"));
-					xndIni.Attributes[0].Value = file;
-					xndIni.Attributes[1].Value = section;
-					xndIni.Attributes[2].Value = key;
-					xndModList = xndIni.AppendChild(xmlDoc.CreateElement("installingMods"));
+					xndIni.Attributes[0].Value = p_strFile;
+					xndIni.Attributes[1].Value = p_strSection;
+					xndIni.Attributes[2].Value = p_strKey;
+					p_xndModList = xndIni.AppendChild(xmlDoc.CreateElement("installingMods"));
 				}
 				else
 				{
-					xndModList = xndIni.SelectSingleNode("installingMods");
-					xndInstallingMod = xndModList.SelectSingleNode("mod[@key='" + m_dicModList[mod] + "']");
+					p_xndModList = xndIni.SelectSingleNode("installingMods");
+					xndInstallingMod = p_xndModList.SelectSingleNode("mod[@key='" + p_strModKey + "']");
 					if (xndInstallingMod != null)
-						xndModList.RemoveChild(xndInstallingMod);
+						p_xndModList.RemoveChild(xndInstallingMod);
 				}
 				if (xndInstallingMod == null)
 				{
 					xndInstallingMod = xmlDoc.CreateElement("mod");
 					xndInstallingMod.Attributes.Append(xmlDoc.CreateAttribute("key"));
-					xndInstallingMod.Attributes["key"].InnerText = m_dicModList[mod];
+					xndInstallingMod.Attributes["key"].InnerText = p_strModKey;
 				}
-				xndInstallingMod.InnerText = value;
+				xndInstallingMod.InnerText = p_strValue;
+			}
+			return xndInstallingMod;
+		}
+
+		/// <summary>
+		/// Adds a node representing that the specified mod made the specified Ini edit.
+		/// </summary>
+		/// <remarks>
+		/// This method appends the node to the end of the list of installing mods, indicating
+		/// that the specified mod is the latest mod to edit the specified Ini value.
+		/// </remarks>
+		/// <param name="p_strFile">The Ini file that was edited.</param>
+		/// <param name="p_strSection">The section in the Ini file that was edited.</param>
+		/// <param name="p_strKey">The key in the Ini file that was edited.</param>
+		/// <param name="p_strModName">The base name of the mod that made the edit.</param>
+		/// <param name="p_strValue">The value to which to the key was set.</param>
+		protected void AddIniEdit(string p_strFile, string p_strSection, string p_strKey, string p_strModName, string p_strValue)
+		{
+			XmlNode xndModList = null;
+			XmlNode xndInstallingMod = CreateIniEditNode(m_dicModList[p_strModName], p_strFile, p_strSection, p_strKey, p_strValue, out xndModList);
+			lock (iniEditsNode)
+			{
 				xndModList.AppendChild(xndInstallingMod);
 			}
 		}
@@ -537,10 +649,21 @@ namespace Fomm.PackageManager
 			return bteData;
 		}
 
-		protected void AddShaderEdit(string modName, int p_intPackage, string p_strShader, byte[] p_bteOldData)
+		/// <summary>
+		/// Creates a node representing that the specified mod made the specified sdp edit.
+		/// </summary>
+		/// <param name="p_strModKey">The key of the mod that made the edit.</param>
+		/// <param name="p_intPackage">The package containing the shader that was edited.</param>
+		/// <param name="p_strShaderName">The shader that was edited.</param>
+		/// <param name="p_bteData">The value to which to the shader was set.</param>
+		/// <param name="p_xndModList">An out pramater returning the node containing the list of mods that
+		/// have edited the specified shader. This is useful for inserting the created node.</param>
+		/// <returns>A node representing that the specified mod made the specified sdp edit. The out
+		/// parameter <paramref name="p_xndModList"/> returns the node containing the list of mods that
+		/// have edited the specified shader.</returns>
+		protected XmlNode CreateSdpEditNode(string p_strModKey, int p_intPackage, string p_strShader, byte[] p_bteData, out XmlNode p_xndModList)
 		{
 			string strLoweredShader = p_strShader.ToLowerInvariant();
-			XmlNode xndModList = null;
 			XmlNode xndInstallingMod = null;
 			lock (sdpEditsNode)
 			{
@@ -552,26 +675,47 @@ namespace Fomm.PackageManager
 					xndSpd.Attributes.Append(xmlDoc.CreateAttribute("shader"));
 					xndSpd.Attributes[0].Value = p_intPackage.ToString();
 					xndSpd.Attributes[1].Value = strLoweredShader;
-					xndModList = xndSpd.AppendChild(xmlDoc.CreateElement("installingMods"));
+					p_xndModList = xndSpd.AppendChild(xmlDoc.CreateElement("installingMods"));
 
 				}
 				else
 				{
-					xndModList = xndSpd.SelectSingleNode("installingMods");
-					xndInstallingMod = xndModList.SelectSingleNode("mod[@key='" + m_dicModList[modName] + "']");
+					p_xndModList = xndSpd.SelectSingleNode("installingMods");
+					xndInstallingMod = p_xndModList.SelectSingleNode("mod[@key='" + p_strModKey + "']");
 					if (xndInstallingMod != null)
-						xndModList.RemoveChild(xndInstallingMod);
+						p_xndModList.RemoveChild(xndInstallingMod);
 				}
 				if (xndInstallingMod == null)
 				{
 					xndInstallingMod = xmlDoc.CreateElement("mod");
 					xndInstallingMod.Attributes.Append(xmlDoc.CreateAttribute("key"));
-					xndInstallingMod.Attributes["key"].InnerText = m_dicModList[modName];
+					xndInstallingMod.Attributes["key"].InnerText = p_strModKey;
 				}
-				StringBuilder stbOldData = new StringBuilder(p_bteOldData.Length * 2);
-				for (int i = 0; i < p_bteOldData.Length; i++)
-					stbOldData.Append(p_bteOldData[i].ToString("x2"));
-				xndInstallingMod.InnerText = stbOldData.ToString();
+				StringBuilder stbData = new StringBuilder(p_bteData.Length * 2);
+				for (int i = 0; i < p_bteData.Length; i++)
+					stbData.Append(p_bteData[i].ToString("x2"));
+				xndInstallingMod.InnerText = stbData.ToString();
+			}
+			return xndInstallingMod;
+		}
+
+		/// <summary>
+		/// Adds a node representing that the specified mod made the specified sdp edit.
+		/// </summary>
+		/// <remarks>
+		/// This method appends the node to the end of the list of installing mods, indicating
+		/// that the specified mod is the latest mod to edit the specified shader.
+		/// </remarks>
+		/// <param name="p_strModName">The base name of the mod that made the edit.</param>
+		/// <param name="p_intPackage">The package containing the shader that was edited.</param>
+		/// <param name="p_strShaderName">The shader that was edited.</param>
+		/// <param name="p_bteData">The value to which to the shader was set.</param>
+		protected void AddShaderEdit(string p_strModName, int p_intPackage, string p_strShader, byte[] p_bteData)
+		{
+			XmlNode xndModList = null;
+			XmlNode xndInstallingMod = CreateSdpEditNode(GetModKey(p_strModName), p_intPackage, p_strShader, p_bteData, out xndModList);
+			lock (sdpEditsNode)
+			{
 				xndModList.AppendChild(xndInstallingMod);
 			}
 		}
