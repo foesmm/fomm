@@ -47,7 +47,9 @@ namespace Fomm.PackageManager
 						UpgradeInstalledFiles(xmlModInstallLog, strModInstallLog, strModBaseName);
 						UpgradeIniEdits(xmlModInstallLog, strModBaseName);
 						UpgradeSdpEdits(xmlModInstallLog, strModBaseName);
+						m_tfmFileManager.Move(strModInstallLog, strModInstallLog + ".bak");
 					}
+					SetInstallLogVersion(new Version("0.1.0.0"));
 					Save();
 					tsTransaction.Complete();
 					m_tfmFileManager = null;

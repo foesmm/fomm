@@ -585,24 +585,21 @@ namespace Fomm
 				}
 
 				//check to see if we need to upgrade the install log format
-				if (InstallLog.Current.GetModList().Count == 1)
+				if (InstallLog.Current.GetInstallLogVersion() < new Version("0.1.0.0"))
 				{
 					string[] strModInstallFiles = Directory.GetFiles(Program.PackageDir, "*.XMl", SearchOption.TopDirectoryOnly);
-					if (strModInstallFiles.Length > 0)
+					InstallLogUpgrader iluUgrader = new InstallLogUpgrader();
+					try
 					{
-						InstallLogUpgrader iluUgrader = new InstallLogUpgrader();
-						try
-						{
-							MessageBox.Show("FOMM needs to upgrade some of its files. This could take a few minutes, depending on how many mods are installed.", "Upgrade Required");
-							iluUgrader.UpgradeInstallLog();
-						}
-						catch (Exception e)
-						{
-							MessageBox.Show("An error occurred while upgrading your log file. A crash dump will have been saved in 'fomm\\crashdump.txt'" + Environment.NewLine +
-											"Please make a bug report and include the contents of that file.", "Upgrade Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-							HandleException(e);
-							return;
-						}
+						MessageBox.Show("FOMM needs to upgrade some of its files. This could take a few minutes, depending on how many mods are installed.", "Upgrade Required");
+						iluUgrader.UpgradeInstallLog();
+					}
+					catch (Exception e)
+					{
+						MessageBox.Show("An error occurred while upgrading your log file. A crash dump will have been saved in 'fomm\\crashdump.txt'" + Environment.NewLine +
+										"Please make a bug report and include the contents of that file.", "Upgrade Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+						HandleException(e);
+						return;
 					}
 				}
 

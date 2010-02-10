@@ -232,6 +232,22 @@ namespace Fomm.PackageManager
 			m_fswLogWatcher.EnableRaisingEvents = true;
 		}
 
+		internal Version GetInstallLogVersion()
+		{
+			XmlAttribute xndVersion = xmlDoc.FirstChild.Attributes["fileVersion"];
+			if (xndVersion == null)
+				return new Version("0.0.0.0");
+			return new Version(xndVersion.InnerText);
+		}
+
+		internal void SetInstallLogVersion(Version p_verFileVersion)
+		{
+			XmlAttribute xndVersion = xmlDoc.FirstChild.Attributes["fileVersion"];
+			if (xndVersion == null)
+				xndVersion = xmlDoc.FirstChild.Attributes.Append(xmlDoc.CreateAttribute("fileVersion"));
+			xndVersion.InnerText = p_verFileVersion.ToString();
+		}
+
 		#region Mod Tracking
 
 		/// <summary>
