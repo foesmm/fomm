@@ -44,7 +44,7 @@ namespace Fomm
 
 	public static class Program
 	{
-		public const string Version = "0.11.0";
+		public const string Version = "0.11.1";
 		public static readonly Version MVersion = new Version(Version + ".0");
 		/*private static string typefromint(int i, bool name) {
 			switch(i) {
@@ -593,7 +593,7 @@ namespace Fomm
 						InstallLogUpgrader iluUgrader = new InstallLogUpgrader();
 						try
 						{
-							MessageBox.Show("FOMM needs to upgrade some of its file. This could take a few minutes, depending on how many mods are installed.", "Upgrade Required");
+							MessageBox.Show("FOMM needs to upgrade some of its files. This could take a few minutes, depending on how many mods are installed.", "Upgrade Required");
 							iluUgrader.UpgradeInstallLog();
 						}
 						catch (Exception e)
