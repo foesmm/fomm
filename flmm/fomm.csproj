@@ -190,6 +190,12 @@
     <Compile Include="SetupForm.Designer.cs">
       <DependentUpon>SetupForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="TESsnip\AddMasterForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TESsnip\AddMasterForm.Designer.cs">
+      <DependentUpon>AddMasterForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="TESsnip\GroupEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -286,6 +292,9 @@
     <EmbeddedResource Include="SetupForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>SetupForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TESsnip\AddMasterForm.resx">
+      <DependentUpon>AddMasterForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TESsnip\GroupEditor.resx">
       <SubType>Designer</SubType>
