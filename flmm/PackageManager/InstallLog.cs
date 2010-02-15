@@ -41,6 +41,7 @@ namespace Fomm.PackageManager
 	internal class InstallLog : InstallLogBase
 	{
 		protected const string ORIGINAL_VALUES = "ORIGINAL_VALUES";
+		protected const string CURRENT_VERSION = "0.1.0.0";
 		private static readonly InstallLog m_ilgCurrent = new InstallLog();
 
 		public static InstallLog Current
@@ -131,11 +132,11 @@ namespace Fomm.PackageManager
 		/// </summary>
 		protected InstallLog()
 		{
-			Load();
 			m_fswLogWatcher = new FileSystemWatcher(Path.GetDirectoryName(xmlpath));
 			m_fswLogWatcher.Filter = Path.GetFileName(xmlpath);
 			m_fswLogWatcher.Changed += new FileSystemEventHandler(InstallLogWatcher_Changed);
 			m_fswLogWatcher.EnableRaisingEvents = true;
+			Load();			
 		}
 
 		#endregion
@@ -194,9 +195,11 @@ namespace Fomm.PackageManager
 				InitMods();
 			}
 			else
+			{
 				Reset();
-
-			
+				SetInstallLogVersion(new Version(CURRENT_VERSION));
+				Save();
+			}
 		}
 
 		protected void Reset()
@@ -504,6 +507,28 @@ namespace Fomm.PackageManager
 			lock (dataFilesNode)
 			{
 				xndModList.AppendChild(xndInstallingMod);
+			}
+		}
+
+		/// <summary>
+		/// Removes the node representing that the specified mod installed the specified file.
+		/// </summary>
+		/// <param name="p_strModName">The base name of the mod that installed the file.</param>
+		/// <param name="p_strPath">The path of the file that was installed.</param>
+		protected void RemoveDataFile(string p_strModName, string p_strPath)
+		{
+			p_strPath = NormalizePath(p_strPath.ToLowerInvariant());
+			lock (dataFilesNode)
+			{
+				XmlNode xndInstallingMod = dataFilesNode.SelectSingleNode("file[@path=\"" + p_strPath + "\"]/installingMods/mod[@key='" + GetModKey(p_strModName) + "']");
+				if (xndInstallingMod != null)
+				{
+					XmlNode xndInstallingMods = xndInstallingMod.ParentNode;
+					XmlNode xndFile = xndInstallingMods.ParentNode;
+					xndInstallingMods.RemoveChild(xndInstallingMod);
+					if ((xndInstallingMods.ChildNodes.Count == 0) || (xndInstallingMods.LastChild.Attributes["key"].InnerText.Equals(GetModKey(ORIGINAL_VALUES))))
+						xndFile.ParentNode.RemoveChild(xndFile);
+				}
 			}
 		}
 

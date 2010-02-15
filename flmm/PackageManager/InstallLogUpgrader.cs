@@ -13,6 +13,7 @@ namespace Fomm.PackageManager
 		private static object m_objLock = new object();
 		private TxFileManager m_tfmFileManager = null;
 		private XmlDocument m_xmlOldInstallLog = null;
+		private Dictionary<string, string> m_dicDefaultFileOwners = null;
 
 		internal InstallLogUpgrader()
 			: base()
@@ -37,6 +38,7 @@ namespace Fomm.PackageManager
 				EnableLogFileRefresh = false;
 				using (TransactionScope tsTransaction = new TransactionScope())
 				{
+					m_dicDefaultFileOwners = new Dictionary<string, string>();
 					string[] strModInstallFiles = Directory.GetFiles(Program.PackageDir, "*.XMl", SearchOption.TopDirectoryOnly);
 					XmlDocument xmlModInstallLog = null;
 					string strModBaseName = null;
@@ -54,8 +56,15 @@ namespace Fomm.PackageManager
 						xmlModInstallLog.Load(strModInstallLog);
 
 						UpgradeInstalledFiles(xmlModInstallLog, strModInstallLog, strModBaseName);
+						//we now have to tell all the remaining default owners that are are indeed
+						// the owners
+						foreach (KeyValuePair<string, string> kvpOwner in m_dicDefaultFileOwners)
+							MakeOverwrittenModOwner(kvpOwner.Value, kvpOwner.Key);
+
 						UpgradeIniEdits(xmlModInstallLog, strModBaseName);
 						UpgradeSdpEdits(xmlModInstallLog, strModBaseName);
+						if (File.Exists(strModInstallLog + ".bak"))
+							m_tfmFileManager.Delete(strModInstallLog + ".bak");
 						m_tfmFileManager.Move(strModInstallLog, strModInstallLog + ".bak");
 					}
 					SetInstallLogVersion(new Version("0.1.0.0"));
@@ -73,10 +82,11 @@ namespace Fomm.PackageManager
 			XmlNode node = m_xmlOldInstallLog.SelectSingleNode("descendant::sdp[@package='" + p_intPackage + "' and @shader='" + p_strShader + "']");
 			if (node == null)
 				return null;
-			byte[] b=new byte[node.InnerText.Length/2];
-            for(int i=0;i<b.Length;i++) {
-                b[i]=byte.Parse(""+node.InnerText[i*2]+node.InnerText[i*2+1], System.Globalization.NumberStyles.AllowHexSpecifier);
-            }
+			byte[] b = new byte[node.InnerText.Length / 2];
+			for (int i = 0; i < b.Length; i++)
+			{
+				b[i] = byte.Parse("" + node.InnerText[i * 2] + node.InnerText[i * 2 + 1], System.Globalization.NumberStyles.AllowHexSpecifier);
+			}
 			return b;
 		}
 
@@ -203,6 +213,65 @@ namespace Fomm.PackageManager
 
 		#region Installed Files Upgrade
 
+		/// <summary>
+		/// Makes the specified mod the owner of the specified file.
+		/// </summary>
+		/// <remarks>
+		/// Moves the node representing that the specified mod installed the specified file to the end,
+		/// indicating in was the last mod to install the file. It also deletes the mod's backup of the file
+		/// from the overwrites folder.
+		/// </remarks>
+		/// <param name="p_strModName">The base name of the mod that is being made the file owner.</param>
+		/// <param name="p_strDataRealtivePath">The path of the file whose owner is changing..</param>
+		private void MakeOverwrittenModOwner(string p_strMadBaseName, string p_strDataRealtivePath)
+		{
+			string strModKey = GetModKey(p_strMadBaseName);
+			string strDirectory = Path.GetDirectoryName(p_strDataRealtivePath);
+			string strBackupPath = Path.GetFullPath(Path.Combine(Program.overwriteDir, strDirectory));
+			strBackupPath = Path.Combine(strBackupPath, strModKey + "_" + Path.GetFileName(p_strDataRealtivePath));
+			m_tfmFileManager.Delete(strBackupPath);
+			RemoveDataFile(p_strMadBaseName, p_strDataRealtivePath);
+			AddDataFile(p_strMadBaseName, p_strDataRealtivePath);
+		}
+
+		private void PrependModWithMissingFomodFile(string p_strDataRelativePath, string p_strModBaseName)
+		{
+			//another mod owns the file
+			//put this mod's file into the overwrites directory.
+			// we can't get the original file from the fomod,
+			// so we'll use the existing file instead. this isn't
+			// strictly correct, but it is inline with the behaviour
+			// of the fomm version we are upgrading from
+			string strDirectory = Path.GetDirectoryName(p_strDataRelativePath);
+			string strBackupPath = Path.GetFullPath(Path.Combine(Program.overwriteDir, strDirectory));
+			string strModKey = GetModKey(p_strModBaseName);
+			if (!Directory.Exists(strBackupPath))
+				m_tfmFileManager.CreateDirectory(strBackupPath);
+			strBackupPath = Path.Combine(strBackupPath, strModKey + "_" + Path.GetFileName(p_strDataRelativePath));
+			m_tfmFileManager.Copy(Path.Combine(Path.GetFullPath("data"), p_strDataRelativePath), strBackupPath, true);
+			PrependDataFile(p_strModBaseName, p_strDataRelativePath);
+		}
+
+		/// <summary>
+		/// Determines if we already know who owns the specified file.
+		/// </summary>
+		/// <remarks>
+		/// We know who owns a specified file if the file has at least one installing mod, and
+		/// the last installing mod doesn't have a corresponding file in the overwrites folder.
+		/// </remarks>
+		/// <param name="p_strDataRelativePath">The file for which it is to be determined if the owner is known.</param>
+		/// <returns><lang cref="true"/> if the owner is known; <lang cref="false"/> otherwise.</returns>
+		private bool FileOwnerIsKnown(string p_strDataRelativePath)
+		{
+			string strModKey = GetCurrentFileOwnerKey(p_strDataRelativePath);
+			if (strModKey == null)
+				return false;
+			string strDirectory = Path.GetDirectoryName(p_strDataRelativePath);
+			string strBackupPath = Path.GetFullPath(Path.Combine(Program.overwriteDir, strDirectory));
+			strBackupPath = Path.Combine(strBackupPath, strModKey + "_" + Path.GetFileName(p_strDataRelativePath));
+			return !m_tfmFileManager.FileExists(strBackupPath);
+		}
+
 		private void UpgradeInstalledFiles(XmlDocument p_xmlModInstallLog, string p_strModInstallLogPath, string p_strModBaseName)
 		{
 			Int32 intDataPathStartPos = Path.GetFullPath("data").Length + 1;
@@ -219,6 +288,18 @@ namespace Fomm.PackageManager
 				Crc32 crcDiskFile = new Crc32();
 				Crc32 crcFomodFile = new Crc32();
 				crcDiskFile.Update(File.ReadAllBytes(strFile));
+				if (!fomodMod.FileExists(strDataRelativePath))
+				{
+					//we don't know if this mod owns the file, so let's assume
+					// it doesn't
+					PrependModWithMissingFomodFile(strDataRelativePath, p_strModBaseName);
+
+					//however, it may own the file, so let's make it the default owner for now
+					// unless we already know who the owner is
+					if (!FileOwnerIsKnown(strDataRelativePath))
+						m_dicDefaultFileOwners[strDataRelativePath] = p_strModBaseName;
+					continue;
+				}
 				byte[] bteFomodFile = fomodMod.GetFile(strDataRelativePath);
 				crcFomodFile.Update(bteFomodFile);
 				if (!crcDiskFile.Value.Equals(crcFomodFile.Value))
@@ -238,6 +319,10 @@ namespace Fomm.PackageManager
 				{
 					//this mod owns the file, so append it to the list of installing mods
 					AddDataFile(p_strModBaseName, strDataRelativePath);
+
+					//we also have to displace the mod that is currently the default owner
+					if (m_dicDefaultFileOwners.ContainsKey(strDataRelativePath))
+						m_dicDefaultFileOwners.Remove(strDataRelativePath);
 				}
 			}
 		}
