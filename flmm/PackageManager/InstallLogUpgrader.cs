@@ -21,6 +21,15 @@ namespace Fomm.PackageManager
 
 		public void UpgradeInstallLog()
 		{
+			//this is to handle the few people who already installed a version that used
+			// the new-style install log, but before it had a version
+			if (Document.SelectNodes("descendant::installingMods").Count > 0)
+			{
+				SetInstallLogVersion(new Version("0.1.0.0"));
+				Save();
+				return;
+			}
+
 			//we only want one upgrade at a time happening to minimize the chances of
 			// messed up install logs.
 			lock (m_objLock)
