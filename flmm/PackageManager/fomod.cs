@@ -566,6 +566,18 @@ namespace Fomm.PackageManager
 		}
 
 		/// <summary>
+		/// Determines if the specified file is in the fomod.
+		/// </summary>
+		/// <param name="p_strFile">The file whose existence is to be determined.</param>
+		/// <returns><lang cref="true"/> if the file is in the fomod; <lang dref="false"/> otherwise.</returns>
+		public bool FileExists(string p_strFile)
+		{
+			PermissionsManager.CurrentPermissions.Assert();
+			ZipEntry zpeFile = m_zipFile.GetEntry(p_strFile.Replace('\\', '/'));
+			return (zpeFile != null);
+		}
+
+		/// <summary>
 		/// Retrieves the specified file from the fomod.
 		/// </summary>
 		/// <param name="p_strFile">The file to retrieve.</param>
