@@ -36,7 +36,7 @@ namespace Fomm.PackageManager
 			lock (m_objLock)
 			{
 				EnableLogFileRefresh = false;
-				using (TransactionScope tsTransaction = new TransactionScope())
+				using (TransactionScope tsTransaction = new TransactionScope(TransactionScopeOption.Required, new TimeSpan(0)))
 				{
 					m_dicDefaultFileOwners = new Dictionary<string, string>();
 					string[] strModInstallFiles = Directory.GetFiles(Program.PackageDir, "*.XMl", SearchOption.TopDirectoryOnly);
