@@ -342,19 +342,27 @@ namespace Fomm.PackageManager
 			foreach (string aifile in Program.GetFiles(path, "ArchiveInvalidation.txt", SearchOption.AllDirectories)) File.Delete(aifile);
 			foreach (string aifile in Program.GetFiles(path, "thumbs.db", SearchOption.AllDirectories)) File.Delete(aifile);
 			foreach (string aifile in Program.GetFiles(path, "desktop.ini", SearchOption.AllDirectories)) File.Delete(aifile);
+
+			//this code removes any top-level folders until it finds esp/esm/bsa, or the top-level folder
+			// is a fomod/textures/meshes/music/shaders/video/facegen/menus/lodsettings/lsdata/sound folder.
 			string[] directories = Directory.GetDirectories(path);
-			/* while(directories.Length==1&&Program.GetFiles(path, "*.esp").Length==0&&Program.GetFiles(path, "*.esm").Length==0&&Program.GetFiles(path, "*.bsa").Length==0) {
-				 directories=directories[0].Split(Path.DirectorySeparatorChar);
-				 string name=directories[directories.Length-1].ToLowerInvariant();
-				 if(name!="fomod"&&name!="textures"&&name!="meshes"&&name!="music"&&name!="shaders"&&name!="video"&&name!="facegen"&&name!="menus"&&name!="lodsettings"&&name!="lsdata"&&name!="sound") {
-					 foreach(string file in Directory.GetFiles(path)) {
-						 string newpath2=Path.Combine(Path.Combine(Path.GetDirectoryName(file), name), Path.GetFileName(file));
-						 if(!File.Exists(newpath2)) File.Move(file, newpath2);
-					 }
-					 path=Path.Combine(path, name);
-					 directories=Directory.GetDirectories(path);
-				 } else break;
-			 }*/
+			while (directories.Length == 1 && Program.GetFiles(path, "*.esp").Length == 0 && Program.GetFiles(path, "*.esm").Length == 0 && Program.GetFiles(path, "*.bsa").Length == 0)
+			{
+				directories = directories[0].Split(Path.DirectorySeparatorChar);
+				string name = directories[directories.Length - 1].ToLowerInvariant();
+				if (name != "fomod" && name != "textures" && name != "meshes" && name != "music" && name != "shaders" && name != "video" && name != "facegen" && name != "menus" && name != "lodsettings" && name != "lsdata" && name != "sound")
+				{
+					foreach (string file in Directory.GetFiles(path))
+					{
+						string newpath2 = Path.Combine(Path.Combine(Path.GetDirectoryName(file), name), Path.GetFileName(file));
+						if (!File.Exists(newpath2)) File.Move(file, newpath2);
+					}
+					path = Path.Combine(path, name);
+					directories = Directory.GetDirectories(path);
+				}
+				else break;
+			}
+
 			string[] readme = Directory.GetFiles(path, "readme - " + fomodname + ".*", SearchOption.TopDirectoryOnly);
 			if (readme.Length == 0)
 			{
