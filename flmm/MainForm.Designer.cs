@@ -60,6 +60,7 @@ namespace Fomm
 			this.bSACreatorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.tESsnipToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.sDPEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.installTweakerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.loadOrderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -69,8 +70,8 @@ namespace Fomm
 			this.visitForumsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.checkForUpdateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.bReport = new System.Windows.Forms.Button();
-			this.installTweakerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.butFileManager = new System.Windows.Forms.Button();
+			this.gameSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.cmsPlugins.SuspendLayout();
 			this.splitContainer1.Panel1.SuspendLayout();
@@ -315,28 +316,28 @@ namespace Fomm
 			// runFalloutToolStripMenuItem
 			// 
 			this.runFalloutToolStripMenuItem.Name = "runFalloutToolStripMenuItem";
-			this.runFalloutToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+			this.runFalloutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.runFalloutToolStripMenuItem.Text = "Run fallout";
 			this.runFalloutToolStripMenuItem.Click += new System.EventHandler(this.runFalloutToolStripMenuItem_Click);
 			// 
 			// runFoseToolStripMenuItem
 			// 
 			this.runFoseToolStripMenuItem.Name = "runFoseToolStripMenuItem";
-			this.runFoseToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+			this.runFoseToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.runFoseToolStripMenuItem.Text = "Run fose";
 			this.runFoseToolStripMenuItem.Click += new System.EventHandler(this.runFoseToolStripMenuItem_Click);
 			// 
 			// runCustomToolStripMenuItem
 			// 
 			this.runCustomToolStripMenuItem.Name = "runCustomToolStripMenuItem";
-			this.runCustomToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+			this.runCustomToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.runCustomToolStripMenuItem.Text = "Run custom";
 			this.runCustomToolStripMenuItem.Click += new System.EventHandler(this.runCustomToolStripMenuItem_Click);
 			// 
 			// closeToolStripMenuItem
 			// 
 			this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-			this.closeToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+			this.closeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.closeToolStripMenuItem.Text = "Close";
 			this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
 			// 
@@ -347,7 +348,8 @@ namespace Fomm
             this.bSACreatorToolStripMenuItem,
             this.tESsnipToolStripMenuItem,
             this.sDPEditorToolStripMenuItem,
-            this.installTweakerToolStripMenuItem});
+            this.installTweakerToolStripMenuItem,
+            this.gameSettingsToolStripMenuItem});
 			this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
 			this.toolsToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
 			this.toolsToolStripMenuItem.Text = "Tools";
@@ -355,30 +357,37 @@ namespace Fomm
 			// bSAUnpackerToolStripMenuItem
 			// 
 			this.bSAUnpackerToolStripMenuItem.Name = "bSAUnpackerToolStripMenuItem";
-			this.bSAUnpackerToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+			this.bSAUnpackerToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
 			this.bSAUnpackerToolStripMenuItem.Text = "BSA unpacker";
 			this.bSAUnpackerToolStripMenuItem.Click += new System.EventHandler(this.bBSAUnpack_Click);
 			// 
 			// bSACreatorToolStripMenuItem
 			// 
 			this.bSACreatorToolStripMenuItem.Name = "bSACreatorToolStripMenuItem";
-			this.bSACreatorToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+			this.bSACreatorToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
 			this.bSACreatorToolStripMenuItem.Text = "BSA creator";
 			this.bSACreatorToolStripMenuItem.Click += new System.EventHandler(this.cBSACreator_Click);
 			// 
 			// tESsnipToolStripMenuItem
 			// 
 			this.tESsnipToolStripMenuItem.Name = "tESsnipToolStripMenuItem";
-			this.tESsnipToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+			this.tESsnipToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
 			this.tESsnipToolStripMenuItem.Text = "TESsnip";
 			this.tESsnipToolStripMenuItem.Click += new System.EventHandler(this.bTESsnip_Click);
 			// 
 			// sDPEditorToolStripMenuItem
 			// 
 			this.sDPEditorToolStripMenuItem.Name = "sDPEditorToolStripMenuItem";
-			this.sDPEditorToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+			this.sDPEditorToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
 			this.sDPEditorToolStripMenuItem.Text = "SDP editor";
 			this.sDPEditorToolStripMenuItem.Click += new System.EventHandler(this.bShaderEdit_Click);
+			// 
+			// installTweakerToolStripMenuItem
+			// 
+			this.installTweakerToolStripMenuItem.Name = "installTweakerToolStripMenuItem";
+			this.installTweakerToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
+			this.installTweakerToolStripMenuItem.Text = "Install tweaker";
+			this.installTweakerToolStripMenuItem.Click += new System.EventHandler(this.bInstallTweaker_Click);
 			// 
 			// loadOrderToolStripMenuItem
 			// 
@@ -453,13 +462,6 @@ namespace Fomm
 			this.bReport.UseVisualStyleBackColor = true;
 			this.bReport.Click += new System.EventHandler(this.bReport_Click);
 			// 
-			// installTweakerToolStripMenuItem
-			// 
-			this.installTweakerToolStripMenuItem.Name = "installTweakerToolStripMenuItem";
-			this.installTweakerToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
-			this.installTweakerToolStripMenuItem.Text = "Install tweaker";
-			this.installTweakerToolStripMenuItem.Click += new System.EventHandler(this.bInstallTweaker_Click);
-			// 
 			// butFileManager
 			// 
 			this.butFileManager.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -470,6 +472,13 @@ namespace Fomm
 			this.butFileManager.Text = "File manager";
 			this.butFileManager.UseVisualStyleBackColor = true;
 			this.butFileManager.Click += new System.EventHandler(this.butFileManager_Click);
+			// 
+			// gameSettingsToolStripMenuItem
+			// 
+			this.gameSettingsToolStripMenuItem.Name = "gameSettingsToolStripMenuItem";
+			this.gameSettingsToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
+			this.gameSettingsToolStripMenuItem.Text = "Game Settings...";
+			this.gameSettingsToolStripMenuItem.Click += new System.EventHandler(this.gameSettingsToolStripMenuItem_Click);
 			// 
 			// MainForm
 			// 
@@ -551,6 +560,7 @@ namespace Fomm
 		private System.Windows.Forms.ToolStripMenuItem checkForUpdateToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem installTweakerToolStripMenuItem;
 		private System.Windows.Forms.Button butFileManager;
+		private System.Windows.Forms.ToolStripMenuItem gameSettingsToolStripMenuItem;
 	}
 }
 

@@ -41,6 +41,7 @@ namespace Fomm.PackageManager
 	internal class InstallLog : InstallLogBase
 	{
 		protected const string ORIGINAL_VALUES = "ORIGINAL_VALUES";
+		internal const string FOMM = "FOMM";
 		protected const string CURRENT_VERSION = "0.1.0.0";
 		private static readonly InstallLog m_ilgCurrent = new InstallLog();
 
@@ -221,6 +222,7 @@ namespace Fomm.PackageManager
 				m_dicModList[xndMod.Attributes["name"].InnerText] = xndMod.Attributes["key"].InnerText;
 
 			AddMod(ORIGINAL_VALUES);
+			AddMod(FOMM);
 		}
 
 		#endregion

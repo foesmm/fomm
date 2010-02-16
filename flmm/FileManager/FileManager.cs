@@ -199,7 +199,7 @@ namespace Fomm.FileManager
 				lstOrderedMods.Add(lviMod.Text);
 
 			string strFile = (string)lvwFiles.SelectedItems[0].Tag;
-			ModInstallReorderer mirReorderer = new ModInstallReorderer(null);
+			ModInstallReorderer mirReorderer = new ModInstallReorderer();
 			if (!mirReorderer.ReorderFileInstallers(strFile, lstOrderedMods))
 				loadInstallingMods();
 			else

@@ -92,6 +92,18 @@
       <DependentUpon>FileManager.cs</DependentUpon>
     </Compile>
     <Compile Include="FileManager\ModInstallReorderer.cs" />
+    <Compile Include="GraphicsSettings\GraphicsSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GraphicsSettings\GraphicsSettings.Designer.cs">
+      <DependentUpon>GraphicsSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GraphicsSettings\OverrideSlider.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GraphicsSettings\OverrideSlider.Designer.cs">
+      <DependentUpon>OverrideSlider.cs</DependentUpon>
+    </Compile>
     <Compile Include="ImageForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -247,6 +259,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FileManager\FileManager.resx">
       <DependentUpon>FileManager.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GraphicsSettings\GraphicsSettings.resx">
+      <DependentUpon>GraphicsSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GraphicsSettings\OverrideSlider.resx">
+      <DependentUpon>OverrideSlider.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ImageForm.resx">
       <DependentUpon>ImageForm.cs</DependentUpon>

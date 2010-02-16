@@ -14,9 +14,8 @@ namespace Fomm.FileManager
 		/// <summary>
 		/// A simple constructor that initializes the object.
 		/// </summary>
-		/// <param name="p_fomodMod">The <see cref="fomod"/> to be installed.</param>
-		internal ModInstallReorderer(fomod p_fomodMod)
-			: base(p_fomodMod)
+		internal ModInstallReorderer()
+			: base(null)
 		{
 		}
 

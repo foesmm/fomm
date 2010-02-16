@@ -750,5 +750,29 @@ namespace Fomm {
                 Settings.SetString("LastUpdateCheck", DateTime.Now.ToString());
             }
         }
+
+		private GraphicsSettings.GraphicsSettings m_gsfGraphicsSettingsForm = null;
+		/// <summary>
+		/// Handles the <see cref="Button.Click"/> event of the gameSettingsToolStripMenuItem.
+		/// </summary>
+		/// <remarks>
+		/// Displays the graphics setting dialog.
+		/// </remarks>
+		/// <param name="sender">The object that trigger the event.</param>
+		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+		private void gameSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (m_gsfGraphicsSettingsForm != null)
+				m_gsfGraphicsSettingsForm.Focus();
+			else
+			{
+				m_gsfGraphicsSettingsForm = new Fomm.GraphicsSettings.GraphicsSettings();
+				m_gsfGraphicsSettingsForm.FormClosed += delegate(object sender2, FormClosedEventArgs e2)
+				{
+					m_gsfGraphicsSettingsForm = null;
+				};
+				m_gsfGraphicsSettingsForm.ShowDialog(this);
+			}
+		}
     }
 }

@@ -8,8 +8,6 @@ namespace Fomm.PackageManager
 {
 	class ModUninstaller : ModInstallScript
 	{
-		private InstallLogMergeModule m_ilmModInstallLog = null;
-
 		#region Constructors
 
 		/// <summary>
@@ -64,7 +62,7 @@ namespace Fomm.PackageManager
 						TransactionalFileManager.Snapshot(Program.GeckPrefsIniPath);
 						TransactionalFileManager.Snapshot(InstallLog.Current.InstallLogPath);
 
-						m_ilmModInstallLog = InstallLog.Current.GetMergeModule(Fomod.baseName);
+						MergeModule = InstallLog.Current.GetMergeModule(Fomod.baseName);
 						if (Fomod.HasUninstallScript)
 							Fomod.IsActive = !RunCustomUninstallScript();
 						else
@@ -86,7 +84,7 @@ namespace Fomm.PackageManager
 					System.Windows.Forms.MessageBox.Show(strMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				}
 				if (Fomod.IsActive)
-					m_ilmModInstallLog = null;
+					MergeModule = null;
 				else if (!p_booSuppressSuccessMessage)
 					MessageBox("The mod was successfully uninstalled.", "Success");
 				ReleaseTransactionalFileManager();
@@ -128,11 +126,11 @@ namespace Fomm.PackageManager
 		/// </remarks>
 		protected void PerformBasicUninstall()
 		{
-			foreach (string strFile in m_ilmModInstallLog.DataFiles)
+			foreach (string strFile in MergeModule.DataFiles)
 				UninstallDataFile(strFile);
-			foreach (InstallLogMergeModule.IniEdit iniEdit in m_ilmModInstallLog.IniEdits)
+			foreach (InstallLogMergeModule.IniEdit iniEdit in MergeModule.IniEdits)
 				UneditIni(iniEdit.File, iniEdit.Section, iniEdit.Key);
-			foreach (InstallLogMergeModule.SdpEdit sdpEdit in m_ilmModInstallLog.SdpEdits)
+			foreach (InstallLogMergeModule.SdpEdit sdpEdit in MergeModule.SdpEdits)
 				UneditShader(sdpEdit.Package, sdpEdit.ShaderName);
 		}
 
