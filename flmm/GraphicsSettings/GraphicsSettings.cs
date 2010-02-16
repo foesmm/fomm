@@ -12,6 +12,9 @@ using Fomm.PackageManager;
 
 namespace Fomm.GraphicsSettings
 {
+	/// <summary>
+	/// The form used to change graphics settings.
+	/// </summary>
 	public partial class GraphicsSettings : Form
 	{
 		#region InterOp
@@ -94,7 +97,7 @@ namespace Fomm.GraphicsSettings
 			{
 				get
 				{
-					return Value as string;
+					return Value.ToString();
 				}
 			}
 
@@ -189,8 +192,9 @@ namespace Fomm.GraphicsSettings
 			/// Compares this item to the given ComboBoxItem.
 			/// </summary>
 			/// <remarks>Items' equality is determined by their names.</remarks>
-			/// <param name="other"><lang cref="true"/> if this item's name is equal to the given
-			/// ComboBoxItem's name; <lang cref="false"/> otherwise.</param></returns>
+			/// <param name="other">The item to which to compare this item.</param>
+			/// <returns><lang cref="true"/> if this item's name is equal to the given
+			/// ComboBoxItem's name; <lang cref="false"/> otherwise.</returns>
 			public bool Equals(ComboBoxItem other)
 			{
 				return Name.Equals(other.Name);
@@ -204,8 +208,9 @@ namespace Fomm.GraphicsSettings
 			/// Compares this item to the given string.
 			/// </summary>
 			/// <remarks>Items' equality is determined by their names.</remarks>
-			/// <param name="other"><lang cref="true"/> if this item's name is equal to the given
-			/// string; <lang cref="false"/> otherwise.</param></returns>
+			/// <param name="other">The item to which to compare this item.</param>
+			/// <returns><lang cref="true"/> if this item's name is equal to the given
+			/// ComboBoxItem's name; <lang cref="false"/> otherwise.</returns>
 			public bool Equals(string other)
 			{
 				return Name.Equals(other);
@@ -214,10 +219,15 @@ namespace Fomm.GraphicsSettings
 			#endregion
 
 			/// <summary>
-			/// 
+			/// Handles equation checking against objects.
 			/// </summary>
-			/// <param name="obj"></param>
-			/// <returns></returns>
+			/// <remarks>
+			/// If the given object is of a recognized type this method delegates to one
+			/// of the types Equals methods.
+			/// </remarks>
+			/// <param name="obj">The item to which to compare this item.</param>
+			/// <returns><lang cref="true"/> if this item's name is equal to the given
+			/// ComboBoxItem's name; <lang cref="false"/> otherwise.</returns>
 			public override bool Equals(object obj)
 			{
 				if (obj is string)
@@ -227,6 +237,8 @@ namespace Fomm.GraphicsSettings
 				return base.Equals(obj);
 			}
 		}
+
+		#region DropDown Items
 
 		private static ComboBoxItem[] m_cbiAspectRatios = new ComboBoxItem[] {
 													new ComboBoxItem("Standard (4:3 or 5:4)", 1, 4.0/3.0),
@@ -256,6 +268,8 @@ namespace Fomm.GraphicsSettings
 													new ComboBoxItem("Low", 0),
 													new ComboBoxItem("Medium", 1),
 													new ComboBoxItem("High", 2) };
+
+		#endregion
 
 		public GraphicsSettings()
 		{
@@ -482,7 +496,7 @@ namespace Fomm.GraphicsSettings
 			oslItemFade.Value = dcmValue;
 
 			//shadow fade
-			oslLightFade.Value = NativeMethods.GetPrivateProfileIntA("Display", "fShadowLODStartFade", 0, Program.FOPrefsIniPath) / 100;
+			oslShadowFade.Value = NativeMethods.GetPrivateProfileIntA("Display", "fShadowLODStartFade", 0, Program.FOPrefsIniPath) / 100;
 		}
 
 		/// <summary>
@@ -504,6 +518,15 @@ namespace Fomm.GraphicsSettings
 
 		#endregion
 
+		/// <summary>
+		/// Loads the available resolutions.
+		/// </summary>
+		/// <remarks>
+		/// This queries the system for supported resolutions at the given aspect ratio, and populates
+		/// the resolution dropdown with the results.
+		/// </remarks>
+		/// <param name="p_dblSelectedRatio">The aspect ratio to which to limit the available resolutions.</param>
+		/// <param name="p_strCurrentRes">The current resolution.</param>
 		protected void LoadResolutions(double p_dblSelectedRatio, string p_strCurrentRes)
 		{
 			cbxResolution.Items.Clear();
@@ -525,6 +548,17 @@ namespace Fomm.GraphicsSettings
 			}
 		}
 
+		#region Event Handling
+
+		/// <summary>
+		/// Handles the <see cref="ComboBox.SelectedIndexChanged"/> event of the aspect ratio
+		/// dropdown box.
+		/// </summary>
+		/// <remarks>
+		/// This causes the resolution dropdown to refresh.
+		/// </remarks>
+		/// <param name="sender">The object that triggered the event.</param>
+		/// <param name="e">An <see cref="EventArgs"/> describing the event's arguments.</param>
 		private void cbxAspectRatio_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			Int32 intScreenWidth = NativeMethods.GetPrivateProfileIntA("Display", "iSize W", 0, Program.FOPrefsIniPath);
@@ -535,30 +569,64 @@ namespace Fomm.GraphicsSettings
 				cbxResolution.SelectedIndex = 0;
 		}
 
-
-
+		/// <summary>
+		/// Handles the <see cref="CheckBox.CheckedChanged"/> event of the water reflections
+		/// checkbox.
+		/// </summary>
+		/// <remarks>
+		/// This enables/disables the controls having to to with water reflections, as appropriate.
+		/// </remarks>
+		/// <param name="sender">The object that triggered the event.</param>
+		/// <param name="e">An <see cref="EventArgs"/> describing the event's arguments.</param>
 		private void ckbWaterReflections_CheckedChanged(object sender, EventArgs e)
 		{
 			foreach (Control ctlControl in gbxWaterReflections.Controls)
 				ctlControl.Enabled = ckbWaterReflections.Checked;
 		}
 
+		/// <summary>
+		/// Handles the <see cref="CheckBox.CheckedChanged"/> event of the enable shadows
+		/// checkbox.
+		/// </summary>
+		/// <remarks>
+		/// This enables/disables the controls having to to with shadows, as appropriate.
+		/// </remarks>
+		/// <param name="sender">The object that triggered the event.</param>
+		/// <param name="e">An <see cref="EventArgs"/> describing the event's arguments.</param>
 		private void ckbEnableShadows_CheckedChanged(object sender, EventArgs e)
 		{
 			foreach (Control ctlControl in gbxShadows.Controls)
 				ctlControl.Enabled = ckbEnableShadows.Checked;
 		}
 
+		/// <summary>
+		/// Handles the <see cref="Button.Click"/> event of the OK button.
+		/// </summary>
+		/// <remarks>
+		/// This saves any setting that have changed.
+		/// </remarks>
+		/// <param name="sender">The object that triggered the event.</param>
+		/// <param name="e">An <see cref="EventArgs"/> describing the event's arguments.</param>
 		private void butOK_Click(object sender, EventArgs e)
 		{
-
 			SettingsInstaller sinSaver = new SettingsInstaller();
 			sinSaver.SaveSettings(this);
 			DialogResult = DialogResult.OK;
 		}
 
+		#endregion
+
+		/// <summary>
+		/// The installer used to change the settings.
+		/// </summary>
+		/// <remarks>
+		/// This installer treats FOMM as a mod. The advantage of this is that changes that are
+		/// made to the settings are recorded in the install log.
+		/// </remarks>
 		private class SettingsInstaller : ModInstallScript
 		{
+			private bool m_booChanged = false;
+
 			#region Constructors
 
 			/// <summary>
@@ -574,83 +642,212 @@ namespace Fomm.GraphicsSettings
 			#region Value Saving
 
 			/// <summary>
+			/// Sets the specified Ini key to the given value if it differs
+			/// from the current value.
+			/// </summary>
+			/// <param name="p_strSection">The section of the file containing the key to change.</param>
+			/// <param name="p_strKey">The key to change.</param>
+			/// <param name="p_strValue">The value to which to set the key.</param>
+			/// <returns><lang cref="true"/> if the value differed and so was changed;
+			/// <lang cref="false"/> otherwise.</returns>
+			private bool SaveValue(string p_strSection, string p_strKey, string p_strValue)
+			{
+				if (!GetPrefsIniString(p_strSection, p_strKey).Equals(p_strValue))
+				{
+					EditPrefsINI(p_strSection, p_strKey, p_strValue,true);
+					m_booChanged = true;
+					return true;
+				}
+				return false;
+			}
+
+			/// <summary>
 			/// Saves the general display settings.
 			/// </summary>
+			/// <param name="p_gstSettings">The form used to gather the new settings.</param>
 			private void SaveGeneralValues(GraphicsSettings p_gstSettings)
 			{
 				//aspect ratios
-				EditPrefsINI("Launcher", "uLastAspectRatio", ((ComboBoxItem)p_gstSettings.cbxAspectRatio.SelectedItem).ValueAsString, true);
+				SaveValue("Launcher", "uLastAspectRatio", ((ComboBoxItem)p_gstSettings.cbxAspectRatio.SelectedItem).ValueAsString);
 
 				//screen resolutions
-				Int32[] intResolution = (Int32[])((ComboBoxItem)(p_gstSettings.cbxResolution.SelectedItem)).Value;
-				EditPrefsINI("Display", "iSize W", intResolution[0].ToString(), true);
-				EditPrefsINI("Display", "iSize H", intResolution[1].ToString(), true);
+				if (p_gstSettings.cbxResolution.SelectedItem != null)
+				{
+					Int32[] intResolution = (Int32[])((ComboBoxItem)(p_gstSettings.cbxResolution.SelectedItem)).Value;
+					SaveValue("Display", "iSize W", intResolution[0].ToString());
+					SaveValue("Display", "iSize H", intResolution[1].ToString());
+				}
 
 				//antialiasing
-				EditPrefsINI("Display", "iMultiSample", ((ComboBoxItem)(p_gstSettings.cbxAntialiasing.SelectedItem)).ValueAsString, true);
+				SaveValue("Display", "iMultiSample", ((ComboBoxItem)(p_gstSettings.cbxAntialiasing.SelectedItem)).ValueAsString);
 
 				//ansio
-				EditPrefsINI("Display", "iMaxAnisotropy", ((ComboBoxItem)(p_gstSettings.cbxAnisotropic.SelectedItem)).ValueAsString, true);
+				SaveValue("Display", "iMaxAnisotropy", ((ComboBoxItem)(p_gstSettings.cbxAnisotropic.SelectedItem)).ValueAsString);
 
 				//windowed
-				EditPrefsINI("Display", "bFull Screen", (p_gstSettings.ckbWindowed.Checked ? "0" : "1"), true);
+				SaveValue("Display", "bFull Screen", (p_gstSettings.ckbWindowed.Checked ? "0" : "1"));
 
 				//vsync
-				EditPrefsINI("Display", "iPresentInterval", (p_gstSettings.ckbVSync.Checked ? "1" : "0"), true);
+				SaveValue("Display", "iPresentInterval", (p_gstSettings.ckbVSync.Checked ? "1" : "0"));
 
 				//screen effects
 				if (p_gstSettings.radNone.Checked)
 				{
-					EditPrefsINI("BlurShaderHDR", "bDoHighDynamicRange", "0", true);
-					EditPrefsINI("BlurShader", "bUseBlurShader", "0", true);
+					SaveValue("BlurShaderHDR", "bDoHighDynamicRange", "0");
+					SaveValue("BlurShader", "bUseBlurShader", "0");
 				}
 				else if (p_gstSettings.radBloom.Checked)
 				{
-					EditPrefsINI("BlurShaderHDR", "bDoHighDynamicRange", "0", true);
-					EditPrefsINI("BlurShader", "bUseBlurShader", "1", true);
+					SaveValue("BlurShaderHDR", "bDoHighDynamicRange", "0");
+					SaveValue("BlurShader", "bUseBlurShader", "1");
 				}
 				else
 				{
-					EditPrefsINI("BlurShaderHDR", "bDoHighDynamicRange", "1", true);
-					EditPrefsINI("BlurShader", "bUseBlurShader", "0", true);
+					SaveValue("BlurShaderHDR", "bDoHighDynamicRange", "1");
+					SaveValue("BlurShader", "bUseBlurShader", "0");
 				}
 			}
 
 			/// <summary>
 			/// Saves the details settings.
 			/// </summary>
-			private void SaveDetailValues()
+			/// <param name="p_gstSettings">The form used to gather the new settings.</param>
+			private void SaveDetailValues(GraphicsSettings p_gstSettings)
 			{
 				//texture quality
-				Int32 intTextureQuality = NativeMethods.GetPrivateProfileIntA("Display", "iTexMipMapSkip", 0, Program.FOPrefsIniPath);
-				for (Int32 i = 0; i < m_cbiTextureQulities.Length; i++)
-				{
-					cbxTextureQuality.Items.Add(m_cbiTextureQulities[i]);
-					if (intTextureQuality.Equals(m_cbiTextureQulities[i].Value))
-						cbxTextureQuality.SelectedIndex = i;
-				}
+				SaveValue("Display", "iTexMipMapSkip", ((ComboBoxItem)p_gstSettings.cbxTextureQuality.SelectedItem).ValueAsString);
 
 				//radial blur quality
-				Int32 intRadialBlurQuality = NativeMethods.GetPrivateProfileIntA("Imagespace", "iRadialBlurLevel", 0, Program.FOPrefsIniPath);
-				for (Int32 i = 0; i < m_cbiRadialBlurQualities.Length; i++)
-				{
-					cbxRadialBlurQuality.Items.Add(m_cbiRadialBlurQualities[i]);
-					if (intRadialBlurQuality.Equals(m_cbiRadialBlurQualities[i].Value))
-						cbxRadialBlurQuality.SelectedIndex = i;
-				}
+				SaveValue("Imagespace", "iRadialBlurLevel", ((ComboBoxItem)p_gstSettings.cbxRadialBlurQuality.SelectedItem).ValueAsString);
 
 				//depth of field
-				ckbDepthOfField.Checked = (NativeMethods.GetPrivateProfileIntA("Imagespace", "bDoDepthOfField", 0, Program.FOPrefsIniPath) == 1);
+				SaveValue("Imagespace", "bDoDepthOfField", (p_gstSettings.ckbDepthOfField.Checked ? "1" : "0"));
 
 				//transparency multisampling
-				ckbTransparencyMultisampling.Checked = (NativeMethods.GetPrivateProfileIntA("Display", "bTransparencyMultisampling", 0, Program.FOPrefsIniPath) == 1);
+				SaveValue("Display", "bTransparencyMultisampling", (p_gstSettings.ckbTransparencyMultisampling.Checked ? "1" : "0"));
 
 				//decal cap
-				oslDecalCap.Value = NativeMethods.GetPrivateProfileIntA("Display", "iMaxDecalsPerFrame", 0, Program.FOPrefsIniPath);
+				SaveValue("Display", "iMaxDecalsPerFrame", p_gstSettings.oslDecalCap.Value.ToString("f0"));
+			}
+
+			/// <summary>
+			/// Saves the water settings.
+			/// </summary>
+			/// <param name="p_gstSettings">The form used to gather the new settings.</param>
+			private void SaveWaterValues(GraphicsSettings p_gstSettings)
+			{
+				//refractions
+				SaveValue("Water", "bUseWaterRefractions", (p_gstSettings.ckbWaterRefractions.Checked ? "1" : "0"));
+
+				//reflections
+				SaveValue("Water", "bUseWaterReflections", (p_gstSettings.ckbWaterReflections.Checked ? "1" : "0"));
+
+				//reflection quality
+				// iWaterReflectWidth
+				// iWaterReflectHeight
+				// the above values should always be the same
+				if (SaveValue("Water", "iWaterReflectWidth", ((ComboBoxItem)p_gstSettings.cbxReflectionQuality.SelectedItem).ValueAsString))
+					EditPrefsINI("Water", "iWaterReflectHeight", ((ComboBoxItem)p_gstSettings.cbxReflectionQuality.SelectedItem).ValueAsString, true);
+
+				//soft reflections
+				// iWaterBlurAmount=2
+				// sometimes the above is 1, but it should always be 2
+				// as it is ignored if bUseWaterReflectionBlur is 0
+				if (SaveValue("Water", "bUseWaterReflectionBlur", (p_gstSettings.ckbSoftReflections.Checked ? "1" : "0")))
+					EditPrefsINI("Water", "iWaterBlurAmount", "2", true);
+
+				//full scene
+				SaveValue("Water", "bForceHighDetailReflections", (p_gstSettings.ckbFullSceneReflections.Checked ? "1" : "0"));
+
+				//full detail
+				SaveValue("Water", "bAutoWaterSilhouetteReflections", (p_gstSettings.ckbFullDetailReflections.Checked ? "0" : "1"));
+
+				//water displacements
+				SaveValue("Water", "bUseWaterDisplacements", (p_gstSettings.ckbWaterDisplacement.Checked ? "1" : "0"));
+
+				//depth fog
+				SaveValue("Water", "bUseWaterDepth", (p_gstSettings.ckbDepthFog.Checked ? "1" : "0"));
+
+				//water multisamples
+				SaveValue("Display", "iWaterMultisamples", ((ComboBoxItem)p_gstSettings.cbxWaterMultisampling.SelectedItem).ValueAsString);
+			}
+
+			/// <summary>
+			/// Saves the shadow settings.
+			/// </summary>
+			/// <param name="p_gstSettings">The form used to gather the new settings.</param>
+			private void SaveShadowValues(GraphicsSettings p_gstSettings)
+			{
+				//enable shadows
+				SaveValue("Display", "bDrawShadows", (p_gstSettings.ckbEnableShadows.Checked ? "1" : "0"));
+
+				//shadow quality
+				SaveValue("Display", "iShadowMapResolution", ((ComboBoxItem)p_gstSettings.cbxShadowQuality.SelectedItem).ValueAsString);
+
+				//shadow filtering
+				SaveValue("Display", "iShadowFilter", ((ComboBoxItem)p_gstSettings.cbxShadowFiltering.SelectedItem).ValueAsString);
+
+				//interior shadows
+				SaveValue("Display", "iActorShadowCountInt", p_gstSettings.oslMaxInteriorShadows.Value.ToString("f0"));
+
+				//exterior shadows
+				SaveValue("Display", "iActorShadowCountExt", p_gstSettings.oslMaxExteriorShadows.Value.ToString("f0"));
+			}
+
+			/// <summary>
+			/// Saves the view distance settings.
+			/// </summary>
+			/// <param name="p_gstSettings">The form used to gather the new settings.</param>
+			private void SaveViewDistanceValues(GraphicsSettings p_gstSettings)
+			{
+				//object fade
+				SaveValue("LOD", "fLODFadeOutMultObjects", p_gstSettings.oslObjectFade.Value.ToString("f0"));
+
+				//actor fade
+				SaveValue("LOD", "fLODFadeOutMultActors", p_gstSettings.oslActorFade.Value.ToString("f0"));
+
+				//grass fade
+				SaveValue("Grass", "fGrassStartFadeDistance", (p_gstSettings.oslGrassFade.Value * 1000).ToString("f0"));
+
+				//specularity fade
+				SaveValue("Display", "fSpecularLODStartFade", (p_gstSettings.oslSpecularityFade.Value * 100).ToString("f0"));
+
+				//light fade
+				SaveValue("Display", "fLightLODStartFade", (p_gstSettings.oslLightFade.Value * 100).ToString("f0"));
+
+				//item fade
+				SaveValue("LOD", "fLODFadeOutMultItems", (p_gstSettings.oslItemFade.Value).ToString("#0.#"));
+
+				//shadow fade
+				SaveValue("Display", "fShadowLODStartFade", (p_gstSettings.oslShadowFade.Value * 100).ToString("f0"));
+			}
+
+			/// <summary>
+			/// Saves the view distant lod settings.
+			/// </summary>
+			/// <param name="p_gstSettings">The form used to gather the new settings.</param>
+			private void SaveDistantLODValues(GraphicsSettings p_gstSettings)
+			{
+				//tree lod fade
+				SaveValue("TerrainManager", "fTreeLoadDistance", (p_gstSettings.oslTreeLODFade.Value * 1000).ToString("f0"));
+
+				//object lod fade
+				SaveValue("TerrainManager", "fBlockLoadDistanceLow", (p_gstSettings.oslObjectLODFade.Value * 1000).ToString("f0"));
+
+				//land quality
+				SaveValue("TerrainManager", "fSplitDistanceMult", (p_gstSettings.oslLandQuality.Value / 100m).ToString("#0.##"));
 			}
 
 			#endregion
 
+			/// <summary>
+			/// Saves the changed settings.
+			/// </summary>
+			/// <remarks>
+			/// This uses transactions to support rollback in case of a problem. This also
+			/// modifies teh install log to track any changes that were made.
+			/// </remarks>
+			/// <param name="p_gstSettings">The form used to gather the new settings.</param>
 			public void SaveSettings(GraphicsSettings p_gstSettings)
 			{
 				try
@@ -664,15 +861,19 @@ namespace Fomm.GraphicsSettings
 							OverwriteAllIni = true;
 							MergeModule = new InstallLogMergeModule();
 
+							m_booChanged = false;
 							SaveGeneralValues(p_gstSettings);
-							//LoadDetailValues();
-							//LoadWaterValues();
-							//LoadShadowValues();
-							//LoadViewDistanceValues();
-							//LoadDistantLODValues();
+							SaveDetailValues(p_gstSettings);
+							SaveWaterValues(p_gstSettings);
+							SaveShadowValues(p_gstSettings);
+							SaveViewDistanceValues(p_gstSettings);
+							SaveDistantLODValues(p_gstSettings);
 
-							InstallLog.Current.Merge(InstallLog.FOMM, MergeModule);
-							tsTransaction.Complete();
+							if (m_booChanged)
+							{
+								InstallLog.Current.Merge(InstallLog.FOMM, MergeModule);
+								tsTransaction.Complete();
+							}
 						}
 					}
 				}

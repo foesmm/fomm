@@ -468,6 +468,7 @@
 			// 
 			// cbxReflectionQuality
 			// 
+			this.cbxReflectionQuality.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cbxReflectionQuality.FormattingEnabled = true;
 			this.cbxReflectionQuality.Location = new System.Drawing.Point(117, 19);
 			this.cbxReflectionQuality.Name = "cbxReflectionQuality";
@@ -515,6 +516,7 @@
 			// 
 			// cbxWaterMultisampling
 			// 
+			this.cbxWaterMultisampling.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cbxWaterMultisampling.FormattingEnabled = true;
 			this.cbxWaterMultisampling.Location = new System.Drawing.Point(194, 240);
 			this.cbxWaterMultisampling.Name = "cbxWaterMultisampling";
@@ -652,6 +654,7 @@
 			// 
 			// cbxShadowFiltering
 			// 
+			this.cbxShadowFiltering.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cbxShadowFiltering.FormattingEnabled = true;
 			this.cbxShadowFiltering.Location = new System.Drawing.Point(132, 46);
 			this.cbxShadowFiltering.Name = "cbxShadowFiltering";
@@ -669,6 +672,7 @@
 			// 
 			// cbxShadowQuality
 			// 
+			this.cbxShadowQuality.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cbxShadowQuality.FormattingEnabled = true;
 			this.cbxShadowQuality.Location = new System.Drawing.Point(132, 19);
 			this.cbxShadowQuality.Name = "cbxShadowQuality";
