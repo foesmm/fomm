@@ -6,9 +6,9 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
-using System.Transactions;
 using ChinhDo.Transactions;
 using Fomm.PackageManager;
+using fomm.Transactions;
 
 namespace Fomm.GraphicsSettings
 {
@@ -854,7 +854,7 @@ namespace Fomm.GraphicsSettings
 				{
 					lock (ModInstallScript.objInstallLock)
 					{
-						using (TransactionScope tsTransaction = new TransactionScope(TransactionScopeOption.Required, new TimeSpan(0)))
+						using (TransactionScope tsTransaction = new TransactionScope())
 						{
 							InitTransactionalFileManager();
 							TransactionalFileManager.Snapshot(Program.FOPrefsIniPath);
