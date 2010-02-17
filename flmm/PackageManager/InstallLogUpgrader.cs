@@ -77,6 +77,7 @@ namespace Fomm.PackageManager
 				m_dicDefaultFileOwners = new Dictionary<string, string>();
 				XmlDocument xmlModInstallLog = null;
 				string strModBaseName = null;
+				fomod fomodMod = null;
 												
 				m_tfmFileManager = new TxFileManager();
 				m_tfmFileManager.Snapshot(InstallLogPath);
@@ -89,7 +90,6 @@ namespace Fomm.PackageManager
 					if (m_pgdProgress.Cancelled())
 						return;
 
-					strModBaseName = Path.GetFileNameWithoutExtension(strModInstallLog);
 					xmlModInstallLog = new XmlDocument();
 					xmlModInstallLog.Load(strModInstallLog);
 
@@ -98,11 +98,14 @@ namespace Fomm.PackageManager
 					XmlNodeList xnlIniEdits = xmlModInstallLog.SelectNodes("descendant::iniEdits/*");
 					XmlNodeList xnlSdpEdits = xmlModInstallLog.SelectNodes("descendant::sdpEdits/*");
 					Int32 intItemCount = xnlFiles.Count + xnlIniEdits.Count + xnlSdpEdits.Count;
-					m_pgdProgress.ItemMessage = strModBaseName;
+					m_pgdProgress.ItemMessage = Path.GetFileNameWithoutExtension(strModInstallLog);
 					m_pgdProgress.ItemProgress = 0;
 					m_pgdProgress.ItemProgressMaximum = intItemCount;
 
-					UpgradeInstalledFiles(xmlModInstallLog, strModInstallLog, strModBaseName);
+					fomodMod = new fomod(strModInstallLog.ToLowerInvariant().Replace(".xml", ".fomod"));
+					strModBaseName = fomodMod.baseName;
+
+					UpgradeInstalledFiles(xmlModInstallLog, fomodMod, strModBaseName);
 					//we now have to tell all the remaining default owners that are are indeed
 					// the owners
 					foreach (KeyValuePair<string, string> kvpOwner in m_dicDefaultFileOwners)
@@ -368,7 +371,7 @@ namespace Fomm.PackageManager
 		/// <param name="p_xmlModInstallLog">The current mod install log we are parsing to upgrade.</param>
 		/// <param name="p_strModInstallLogPath">The path to the current mod install log.</param>
 		/// <param name="p_strModBaseName">The base name of the mod whose install log is being parsed.</param>
-		private void UpgradeInstalledFiles(XmlDocument p_xmlModInstallLog, string p_strModInstallLogPath, string p_strModBaseName)
+		private void UpgradeInstalledFiles(XmlDocument p_xmlModInstallLog, fomod p_fomodMod, string p_strModBaseName)
 		{
 			Int32 intDataPathStartPos = Path.GetFullPath("data").Length + 1;
 			XmlNodeList xnlFiles = p_xmlModInstallLog.SelectNodes("descendant::installedFiles/*");
@@ -378,13 +381,12 @@ namespace Fomm.PackageManager
 				string strFile = xndFile.InnerText;
 				if (!File.Exists(strFile))
 					continue;
-				fomod fomodMod = new fomod(p_strModInstallLogPath.ToLowerInvariant().Replace(".xml", ".fomod"));
 				string strDataRelativePath = strFile.Substring(intDataPathStartPos);
 
 				Crc32 crcDiskFile = new Crc32();
 				Crc32 crcFomodFile = new Crc32();
 				crcDiskFile.Update(File.ReadAllBytes(strFile));
-				if (!fomodMod.FileExists(strDataRelativePath))
+				if (!p_fomodMod.FileExists(strDataRelativePath))
 				{
 					//we don't know if this mod owns the file, so let's assume
 					// it doesn't
@@ -396,7 +398,7 @@ namespace Fomm.PackageManager
 						m_dicDefaultFileOwners[strDataRelativePath] = p_strModBaseName;
 					continue;
 				}
-				byte[] bteFomodFile = fomodMod.GetFile(strDataRelativePath);
+				byte[] bteFomodFile = p_fomodMod.GetFile(strDataRelativePath);
 				crcFomodFile.Update(bteFomodFile);
 				if (!crcDiskFile.Value.Equals(crcFomodFile.Value))
 				{
