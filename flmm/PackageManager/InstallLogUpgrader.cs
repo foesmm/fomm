@@ -4,24 +4,39 @@ using System.Xml;
 using ICSharpCode.SharpZipLib.Checksums;
 using ChinhDo.Transactions;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Windows.Forms;
 using fomm.Transactions;
+using System.ComponentModel;
 
 namespace Fomm.PackageManager
 {
+	/// <summary>
+	/// Upgrades the install log.
+	/// </summary>
 	class InstallLogUpgrader : InstallLog
 	{
 		private static object m_objLock = new object();
 		private TxFileManager m_tfmFileManager = null;
 		private XmlDocument m_xmlOldInstallLog = null;
 		private Dictionary<string, string> m_dicDefaultFileOwners = null;
+		private BackgroundWorkerProgressDialog m_pgdProgress = null;
 
+		/// <summary>
+		/// The default constructor.
+		/// </summary>
 		internal InstallLogUpgrader()
 			: base()
 		{
 		}
 
+		/// <summary>
+		/// Upgrades the install log.
+		/// </summary>
+		/// <remarks>
+		/// This creates a <see cref="BackgroundWorkerProgressDialog"/> to do the work
+		/// and display progress.
+		/// </remarks>
+		/// <returns><lang cref="false"/> if the user cancelled the upgrade; <lang cref="true"/> otherwise.</returns>
 		public bool UpgradeInstallLog()
 		{
 			//this is to handle the few people who already installed a version that used
@@ -39,53 +54,53 @@ namespace Fomm.PackageManager
 			{
 				EnableLogFileRefresh = false;
 
-				BackgroundWorker bgwUpgrader = new BackgroundWorker();
-				bgwUpgrader.DoWork += new DoWorkEventHandler(bgwUpgrader_DoWork);
-				bgwUpgrader.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bgwUpgrader_RunWorkerCompleted);
-				
-				ProgressDialog pgdProgress = new ProgressDialog();
-				string[] strModInstallFiles = Directory.GetFiles(Program.PackageDir, "*.XMl", SearchOption.TopDirectoryOnly);
-				pgdProgress.MaxProgress = strModInstallFiles.Length;
-				pgdProgress.Worker = bgwUpgrader;
-				if (pgdProgress.ShowDialog() == DialogResult.Cancel)
+				m_pgdProgress = new BackgroundWorkerProgressDialog(PerformUpgrade);
+				m_pgdProgress.OverallMessage = "Upgrading Files";
+				m_pgdProgress.ItemProgressStep = 1;
+				m_pgdProgress.OverallProgressStep = 1;
+				if (m_pgdProgress.ShowDialog() == DialogResult.Cancel)
 					return false;
 			}
 			return true;
 		}
 
-		void bgwUpgrader_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-		{
-			if (e.Error != null)
-				throw e.Error;
-
-		}		
-
-		void bgwUpgrader_DoWork(object sender, DoWorkEventArgs e)
-		{
+		/// <summary>
+		/// This method is called by a background worker to perform the actual upgrade.
+		/// </summary>
+		protected void PerformUpgrade()
+		{			
 			using (TransactionScope tsTransaction = new TransactionScope())
 			{
-				m_dicDefaultFileOwners = new Dictionary<string, string>();
 				string[] strModInstallFiles = Directory.GetFiles(Program.PackageDir, "*.XMl", SearchOption.TopDirectoryOnly);
+				m_pgdProgress.OverallProgressMaximum = strModInstallFiles.Length;
+				
+				m_dicDefaultFileOwners = new Dictionary<string, string>();
 				XmlDocument xmlModInstallLog = null;
 				string strModBaseName = null;
-
+												
 				m_tfmFileManager = new TxFileManager();
 				m_tfmFileManager.Snapshot(InstallLogPath);
 				m_xmlOldInstallLog = new XmlDocument();
 				m_xmlOldInstallLog.Load(InstallLogPath);
 				Reset();
 
-				string strModInstallLog = null;
-				BackgroundWorker bgwWorker = ((BackgroundWorker)sender);
-				for (Int32 i=0; i< strModInstallFiles.Length;i++)
+				foreach (string strModInstallLog in strModInstallFiles)
 				{
-					if (bgwWorker.CancellationPending)
+					if (m_pgdProgress.Cancelled())
 						return;
 
-					strModInstallLog = strModInstallFiles[i];
 					strModBaseName = Path.GetFileNameWithoutExtension(strModInstallLog);
 					xmlModInstallLog = new XmlDocument();
 					xmlModInstallLog.Load(strModInstallLog);
+
+					//figure out how much work we need to do for this mod
+					XmlNodeList xnlFiles = xmlModInstallLog.SelectNodes("descendant::installedFiles/*");
+					XmlNodeList xnlIniEdits = xmlModInstallLog.SelectNodes("descendant::iniEdits/*");
+					XmlNodeList xnlSdpEdits = xmlModInstallLog.SelectNodes("descendant::sdpEdits/*");
+					Int32 intItemCount = xnlFiles.Count + xnlIniEdits.Count + xnlSdpEdits.Count;
+					m_pgdProgress.ItemMessage = strModBaseName;
+					m_pgdProgress.ItemProgress = 0;
+					m_pgdProgress.ItemProgressMaximum = intItemCount;
 
 					UpgradeInstalledFiles(xmlModInstallLog, strModInstallLog, strModBaseName);
 					//we now have to tell all the remaining default owners that are are indeed
@@ -93,24 +108,24 @@ namespace Fomm.PackageManager
 					foreach (KeyValuePair<string, string> kvpOwner in m_dicDefaultFileOwners)
 						MakeOverwrittenModOwner(kvpOwner.Value, kvpOwner.Key);
 
-					if (bgwWorker.CancellationPending)
+					if (m_pgdProgress.Cancelled())
 						return;
 
 					UpgradeIniEdits(xmlModInstallLog, strModBaseName);
 
-					if (bgwWorker.CancellationPending)
+					if (m_pgdProgress.Cancelled())
 						return;
 
 					UpgradeSdpEdits(xmlModInstallLog, strModBaseName);
 
-					if (bgwWorker.CancellationPending)
+					if (m_pgdProgress.Cancelled())
 						return;
 
 					if (File.Exists(strModInstallLog + ".bak"))
 						m_tfmFileManager.Delete(strModInstallLog + ".bak");
 					m_tfmFileManager.Move(strModInstallLog, strModInstallLog + ".bak");
 
-					bgwWorker.ReportProgress(i / strModInstallFiles.Length);
+					m_pgdProgress.StepOverallProgress();
 				}
 				SetInstallLogVersion(new Version("0.1.0.0"));
 				Save();
@@ -135,13 +150,22 @@ namespace Fomm.PackageManager
 		}
 
 		private List<string> m_lstSeenShader = new List<string>();
+		/// <summary>
+		/// Upgrades the sdp edits log entries.
+		/// </summary>
+		/// <remarks>
+		/// This analyses the mods and determines, as best as possible, who edited which shaders, and attempts
+		/// to reconstruct the install order. The resulting information is then put in the new install log.
+		/// </remarks>
+		/// <param name="p_xmlModInstallLog">The current mod install log we are parsing to upgrade.</param>
+		/// <param name="p_strModBaseName">The base name of the mod whose install log is being parsed.</param>
 		private void UpgradeSdpEdits(XmlDocument p_xmlModInstallLog, string p_strModBaseName)
 		{
-			XmlNodeList xnlIniEdits = p_xmlModInstallLog.SelectNodes("descendant::sdpEdits/*");
-			foreach (XmlNode xndIniEdit in xnlIniEdits)
+			XmlNodeList xnlSdpEdits = p_xmlModInstallLog.SelectNodes("descendant::sdpEdits/*");
+			foreach (XmlNode xndSdpEdit in xnlSdpEdits)
 			{
-				Int32 intPackage = Int32.Parse(xndIniEdit.Attributes.GetNamedItem("package").Value);
-				string strShader = xndIniEdit.Attributes.GetNamedItem("shader").Value;
+				Int32 intPackage = Int32.Parse(xndSdpEdit.Attributes.GetNamedItem("package").Value);
+				string strShader = xndSdpEdit.Attributes.GetNamedItem("shader").Value;
 				byte[] bteOldValue = GetOldSdpValue(intPackage, strShader);
 				//we have no way of knowing who last edited the shader - that information
 				// was not tracked
@@ -162,6 +186,10 @@ namespace Fomm.PackageManager
 					// which is the old value
 					PrependAfterOriginalShaderEdit(p_strModBaseName, intPackage, strShader, bteOldValue);
 				}
+
+				if (m_pgdProgress.Cancelled())
+					return;
+				m_pgdProgress.StepItemProgress();
 			}
 		}
 
@@ -203,6 +231,15 @@ namespace Fomm.PackageManager
 			return node.InnerText;
 		}
 
+		/// <summary>
+		/// Upgrades the ini edits log entries.
+		/// </summary>
+		/// <remarks>
+		/// This analyses the mods and determines, as best as possible, who edited which keys, and attempts
+		/// to reconstruct the install order. The resulting information is then put in the new install log.
+		/// </remarks>
+		/// <param name="p_xmlModInstallLog">The current mod install log we are parsing to upgrade.</param>
+		/// <param name="p_strModBaseName">The base name of the mod whose install log is being parsed.</param>
 		private void UpgradeIniEdits(XmlDocument p_xmlModInstallLog, string p_strModBaseName)
 		{
 			XmlNodeList xnlIniEdits = p_xmlModInstallLog.SelectNodes("descendant::iniEdits/*");
@@ -227,6 +264,10 @@ namespace Fomm.PackageManager
 					// which is the old value stored in the old install log
 					PrependAfterOriginalIniEdit(strFile, strSection, strKey, p_strModBaseName, strOldValue);
 				}
+
+				if (m_pgdProgress.Cancelled())
+					return;
+				m_pgdProgress.StepItemProgress();
 			}
 		}
 
@@ -316,6 +357,17 @@ namespace Fomm.PackageManager
 			return !m_tfmFileManager.FileExists(strBackupPath);
 		}
 
+		/// <summary>
+		/// Upgrades the installed files log entries.
+		/// </summary>
+		/// <remarks>
+		/// This analyses the mods and determines, as best as possible, who owns which files, and attempts
+		/// to reconstruct the install order. It populates the overwrites folder with the files that, as far
+		/// as can be determined, belong there. This resulting information is then put in the new install log.
+		/// </remarks>
+		/// <param name="p_xmlModInstallLog">The current mod install log we are parsing to upgrade.</param>
+		/// <param name="p_strModInstallLogPath">The path to the current mod install log.</param>
+		/// <param name="p_strModBaseName">The base name of the mod whose install log is being parsed.</param>
 		private void UpgradeInstalledFiles(XmlDocument p_xmlModInstallLog, string p_strModInstallLogPath, string p_strModBaseName)
 		{
 			Int32 intDataPathStartPos = Path.GetFullPath("data").Length + 1;
@@ -368,6 +420,10 @@ namespace Fomm.PackageManager
 					if (m_dicDefaultFileOwners.ContainsKey(strDataRelativePath))
 						m_dicDefaultFileOwners.Remove(strDataRelativePath);
 				}
+
+				if (m_pgdProgress.Cancelled())
+					return;
+				m_pgdProgress.StepItemProgress();
 			}
 		}
 
