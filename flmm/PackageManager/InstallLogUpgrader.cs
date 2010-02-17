@@ -3,8 +3,10 @@ using System.IO;
 using System.Xml;
 using ICSharpCode.SharpZipLib.Checksums;
 using ChinhDo.Transactions;
-using System.Transactions;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Windows.Forms;
+using fomm.Transactions;
 
 namespace Fomm.PackageManager
 {
@@ -20,7 +22,7 @@ namespace Fomm.PackageManager
 		{
 		}
 
-		public void UpgradeInstallLog()
+		public bool UpgradeInstallLog()
 		{
 			//this is to handle the few people who already installed a version that used
 			// the new-style install log, but before it had a version
@@ -28,7 +30,7 @@ namespace Fomm.PackageManager
 			{
 				SetInstallLogVersion(new Version("0.1.0.0"));
 				Save();
-				return;
+				return true;
 			}
 
 			//we only want one upgrade at a time happening to minimize the chances of
@@ -36,42 +38,84 @@ namespace Fomm.PackageManager
 			lock (m_objLock)
 			{
 				EnableLogFileRefresh = false;
-				using (TransactionScope tsTransaction = new TransactionScope(TransactionScopeOption.Required, new TimeSpan(0)))
+
+				BackgroundWorker bgwUpgrader = new BackgroundWorker();
+				bgwUpgrader.DoWork += new DoWorkEventHandler(bgwUpgrader_DoWork);
+				bgwUpgrader.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bgwUpgrader_RunWorkerCompleted);
+				
+				ProgressDialog pgdProgress = new ProgressDialog();
+				string[] strModInstallFiles = Directory.GetFiles(Program.PackageDir, "*.XMl", SearchOption.TopDirectoryOnly);
+				pgdProgress.MaxProgress = strModInstallFiles.Length;
+				pgdProgress.Worker = bgwUpgrader;
+				if (pgdProgress.ShowDialog() == DialogResult.Cancel)
+					return false;
+			}
+			return true;
+		}
+
+		void bgwUpgrader_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+		{
+			if (e.Error != null)
+				throw e.Error;
+
+		}		
+
+		void bgwUpgrader_DoWork(object sender, DoWorkEventArgs e)
+		{
+			using (TransactionScope tsTransaction = new TransactionScope())
+			{
+				m_dicDefaultFileOwners = new Dictionary<string, string>();
+				string[] strModInstallFiles = Directory.GetFiles(Program.PackageDir, "*.XMl", SearchOption.TopDirectoryOnly);
+				XmlDocument xmlModInstallLog = null;
+				string strModBaseName = null;
+
+				m_tfmFileManager = new TxFileManager();
+				m_tfmFileManager.Snapshot(InstallLogPath);
+				m_xmlOldInstallLog = new XmlDocument();
+				m_xmlOldInstallLog.Load(InstallLogPath);
+				Reset();
+
+				string strModInstallLog = null;
+				BackgroundWorker bgwWorker = ((BackgroundWorker)sender);
+				for (Int32 i=0; i< strModInstallFiles.Length;i++)
 				{
-					m_dicDefaultFileOwners = new Dictionary<string, string>();
-					string[] strModInstallFiles = Directory.GetFiles(Program.PackageDir, "*.XMl", SearchOption.TopDirectoryOnly);
-					XmlDocument xmlModInstallLog = null;
-					string strModBaseName = null;
+					if (bgwWorker.CancellationPending)
+						return;
 
-					m_tfmFileManager = new TxFileManager();
-					m_tfmFileManager.Snapshot(InstallLogPath);
-					m_xmlOldInstallLog = new XmlDocument();
-					m_xmlOldInstallLog.Load(InstallLogPath);
-					Reset();
+					strModInstallLog = strModInstallFiles[i];
+					strModBaseName = Path.GetFileNameWithoutExtension(strModInstallLog);
+					xmlModInstallLog = new XmlDocument();
+					xmlModInstallLog.Load(strModInstallLog);
 
-					foreach (string strModInstallLog in strModInstallFiles)
-					{
-						strModBaseName = Path.GetFileNameWithoutExtension(strModInstallLog);
-						xmlModInstallLog = new XmlDocument();
-						xmlModInstallLog.Load(strModInstallLog);
+					UpgradeInstalledFiles(xmlModInstallLog, strModInstallLog, strModBaseName);
+					//we now have to tell all the remaining default owners that are are indeed
+					// the owners
+					foreach (KeyValuePair<string, string> kvpOwner in m_dicDefaultFileOwners)
+						MakeOverwrittenModOwner(kvpOwner.Value, kvpOwner.Key);
 
-						UpgradeInstalledFiles(xmlModInstallLog, strModInstallLog, strModBaseName);
-						//we now have to tell all the remaining default owners that are are indeed
-						// the owners
-						foreach (KeyValuePair<string, string> kvpOwner in m_dicDefaultFileOwners)
-							MakeOverwrittenModOwner(kvpOwner.Value, kvpOwner.Key);
+					if (bgwWorker.CancellationPending)
+						return;
 
-						UpgradeIniEdits(xmlModInstallLog, strModBaseName);
-						UpgradeSdpEdits(xmlModInstallLog, strModBaseName);
-						if (File.Exists(strModInstallLog + ".bak"))
-							m_tfmFileManager.Delete(strModInstallLog + ".bak");
-						m_tfmFileManager.Move(strModInstallLog, strModInstallLog + ".bak");
-					}
-					SetInstallLogVersion(new Version("0.1.0.0"));
-					Save();
-					tsTransaction.Complete();
-					m_tfmFileManager = null;
+					UpgradeIniEdits(xmlModInstallLog, strModBaseName);
+
+					if (bgwWorker.CancellationPending)
+						return;
+
+					UpgradeSdpEdits(xmlModInstallLog, strModBaseName);
+
+					if (bgwWorker.CancellationPending)
+						return;
+
+					if (File.Exists(strModInstallLog + ".bak"))
+						m_tfmFileManager.Delete(strModInstallLog + ".bak");
+					m_tfmFileManager.Move(strModInstallLog, strModInstallLog + ".bak");
+
+					bgwWorker.ReportProgress(i / strModInstallFiles.Length);
 				}
+				SetInstallLogVersion(new Version("0.1.0.0"));
+				Save();
+				tsTransaction.Complete();
+				m_tfmFileManager = null;
 			}
 		}
 

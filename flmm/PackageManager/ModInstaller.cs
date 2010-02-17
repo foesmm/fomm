@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Transactions;
 using ChinhDo.Transactions;
 using System.Xml;
 using System.Security;
@@ -7,6 +6,7 @@ using System.Security.Permissions;
 using System.IO;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using fomm.Transactions;
 
 namespace Fomm.PackageManager
 {
@@ -53,7 +53,7 @@ namespace Fomm.PackageManager
 					return;
 				try
 				{
-					using (TransactionScope tsTransaction = new TransactionScope(TransactionScopeOption.Required, new TimeSpan(0)))
+					using (TransactionScope tsTransaction = new TransactionScope())
 					{
 						InitTransactionalFileManager();
 						TransactionalFileManager.Snapshot(Program.FOIniPath);
