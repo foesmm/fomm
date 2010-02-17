@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Fomm.PackageManager;
-using System.Transactions;
 using System.IO;
 using System.Windows.Forms;
+using fomm.Transactions;
 
 namespace Fomm.FileManager
 {
@@ -38,7 +38,7 @@ namespace Fomm.FileManager
 			{
 				lock (ModInstallScript.objInstallLock)
 				{
-					using (TransactionScope tsTransaction = new TransactionScope(TransactionScopeOption.Required, new TimeSpan(0)))
+					using (TransactionScope tsTransaction = new TransactionScope())
 					{
 						TransactionalFileManager.Snapshot(InstallLog.Current.InstallLogPath);
 

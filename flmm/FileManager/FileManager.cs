@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using Fomm.PackageManager;
 using System.IO;
-using System.Transactions;
 using ChinhDo.Transactions;
 using System.Drawing;
 
