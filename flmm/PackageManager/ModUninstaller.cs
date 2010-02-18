@@ -80,7 +80,7 @@ namespace Fomm.PackageManager
 					string strMessage = "A problem occurred during uninstall: " + Environment.NewLine + e.Message;
 					if (e.InnerException != null)
 						strMessage += Environment.NewLine + e.InnerException.Message;
-					strMessage += Environment.NewLine + "The mod was not uninstall.";
+					strMessage += Environment.NewLine + "The mod was not uninstalled.";
 					System.Windows.Forms.MessageBox.Show(strMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				}
 				if (Fomod.IsActive)
