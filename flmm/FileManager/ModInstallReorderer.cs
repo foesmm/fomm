@@ -4,6 +4,7 @@ using Fomm.PackageManager;
 using System.IO;
 using System.Windows.Forms;
 using fomm.Transactions;
+using System.Text;
 
 namespace Fomm.FileManager
 {
@@ -34,6 +35,8 @@ namespace Fomm.FileManager
 		internal bool ReorderFileInstallers(string p_strFile, List<string> p_lstOrderedMods)
 		{
 			InitTransactionalFileManager();
+			string strErrorMsg = null;
+			string strErrorCaption = null;
 			try
 			{
 				lock (ModInstallScript.objInstallLock)
@@ -55,9 +58,23 @@ namespace Fomm.FileManager
 							string strOldBackupFile = strNewOwner + "_" + Path.GetFileName(p_strFile);
 							//the old owner is becoming the new backup file
 							string strNewBackupFile = strOldOwner + "_" + Path.GetFileName(p_strFile);
-							TransactionalFileManager.Copy(strDataPath, Path.Combine(strBackupPath, strNewBackupFile), true);
-							strBackupPath = Path.Combine(strBackupPath, strOldBackupFile);
-							TransactionalFileManager.Copy(strBackupPath, strDataPath, true);
+
+							string strNewBackupPath = Path.Combine(strBackupPath, strNewBackupFile);
+							string strOldBackupPath = Path.Combine(strBackupPath, strOldBackupFile);
+							if (!TransactionalFileManager.FileExists(strOldBackupPath))
+							{
+								//we set an error string that is displayed later as showing dialogs during
+								// the transaction and the lock is not good form and can cause anomalies.
+								//note that the anomalies are not serious, rather they are merely UI
+								// misrepresentations (basically the UI gets out of sync with the
+								// Install Log - this can't cause any corruption, but it looks odd to
+								// the user).
+								strErrorMsg = "The version of the file for " + InstallLog.Current.GetModName(strNewOwner) + " does not exist. This is likely because files in the data folder have been altered manually.";
+								strErrorCaption = "Missing Version";
+								return false;
+							}
+							TransactionalFileManager.Copy(strDataPath, strNewBackupPath, true);
+							TransactionalFileManager.Copy(strOldBackupPath, strDataPath, true);
 							TransactionalFileManager.Delete(strBackupPath);
 						}
 						tsTransaction.Complete();
@@ -66,10 +83,29 @@ namespace Fomm.FileManager
 			}
 			catch (Exception e)
 			{
-				System.Windows.Forms.MessageBox.Show("A problem occurred during reorder: " + e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				StringBuilder stbError = new StringBuilder("A problem occurred during reorder: ");
+				stbError.AppendLine().AppendLine(e.Message);
+				if (e.InnerException != null)
+					stbError.AppendLine(e.InnerException.Message);
+				if (e is RollbackException)
+				{
+					foreach (RollbackException.ExceptedResourceManager erm in ((RollbackException)e).ExceptedResourceManagers)
+					{
+						stbError.AppendLine(erm.ResourceManager.ToString());
+						stbError.AppendLine(erm.Exception.Message);
+						if (erm.Exception.InnerException != null)
+							stbError.AppendLine(erm.Exception.InnerException.Message);
+					}
+				}
+				System.Windows.Forms.MessageBox.Show(stbError.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return false;
 			}
-			ReleaseTransactionalFileManager();
+			finally
+			{
+				ReleaseTransactionalFileManager();
+				if (strErrorMsg != null)
+					System.Windows.Forms.MessageBox.Show(strErrorMsg, strErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
 			return true;
 		}
 	}

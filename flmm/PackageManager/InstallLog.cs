@@ -289,7 +289,7 @@ namespace Fomm.PackageManager
 		/// </summary>
 		/// <param name="p_strModKey">The key of the <see cref="fomod"/> whose name is to be retrieved.</param>
 		/// <returns>The base name of the <see cref="fomod"/> which was assigned the given key.</returns>
-		protected string GetModName(string p_strModKey)
+		internal string GetModName(string p_strModKey)
 		{
 			foreach (KeyValuePair<string, string> kvpMod in m_dicModList)
 				if (kvpMod.Value.Equals(p_strModKey))
