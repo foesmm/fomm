@@ -161,21 +161,36 @@ namespace Fomm.PackageManager
 					// if we didn't overwrite a file, then just delete it
 					TransactionalFileManager.Delete(strDataPath);
 
-					string strPreviousOwnerKey = InstallLog.Current.GetPreviousFileOwnerKey(p_strFile);
-					if (strPreviousOwnerKey != null)
+					while (true)
 					{
-						string strFile = strPreviousOwnerKey + "_" + Path.GetFileName(p_strFile);
-						string strRestoreFromPath = Path.Combine(strBackupDirectory, strFile);
-						TransactionalFileManager.Copy(strRestoreFromPath, strDataPath, true);
-						TransactionalFileManager.Delete(strRestoreFromPath);
+						string strPreviousOwnerKey = InstallLog.Current.GetPreviousFileOwnerKey(p_strFile);
+						if (strPreviousOwnerKey != null)
+						{
+							string strFile = strPreviousOwnerKey + "_" + Path.GetFileName(p_strFile);
+							string strRestoreFromPath = Path.Combine(strBackupDirectory, strFile);
+							//if the backup file is not there the user has been playing with files in the data directory.
+							// there's not much we can do about that, so we'll discard the install log
+							// entry for the current owner of this file and try again
+							/*if (!File.Exists(strRestoreFromPath))
+							{
+								InstallLog.Current.RemoveDataFile(strPreviousOwnerKey, p_strFile);
+								continue;
+							}*/
+							if (File.Exists(strRestoreFromPath))
+							{
+								TransactionalFileManager.Copy(strRestoreFromPath, strDataPath, true);
+								TransactionalFileManager.Delete(strRestoreFromPath);
+							}
 
-						//remove anny empty directories from the overwrite folder we may have created
-						TrimEmptyDirectories(strRestoreFromPath, Program.overwriteDir);
-					}
-					else
-					{
-						//remove any empty directories from the data folder we may have created
-						TrimEmptyDirectories(strDataPath, "data");
+							//remove anny empty directories from the overwrite folder we may have created
+							TrimEmptyDirectories(strRestoreFromPath, Program.overwriteDir);
+						}
+						else
+						{
+							//remove any empty directories from the data folder we may have created
+							TrimEmptyDirectories(strDataPath, "data");
+						}
+						break;
 					}
 				}
 			}
@@ -199,6 +214,8 @@ namespace Fomm.PackageManager
 		protected void TrimEmptyDirectories(string p_strStartPath, string p_strStopDirectory)
 		{
 			string strEmptyDirectory = Path.GetDirectoryName(p_strStartPath).ToLowerInvariant();
+			if (!Directory.Exists(strEmptyDirectory))
+				return;
 			while (true)
 			{
 				if ((Directory.GetFiles(strEmptyDirectory).Length + Directory.GetDirectories(strEmptyDirectory).Length == 0) &&
