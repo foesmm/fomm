@@ -215,7 +215,7 @@ namespace fomm.Scripting
 		/// Gets the speified file from the user's Data directory.
 		/// </summary>
 		/// <param name="p_strPath">The path of the file to retrieve.</param>
-		/// <returns>The specified file.</returns>
+		/// <returns>The specified file, or <lang cref="null"/> if the file does not exist.</returns>
 		/// <see cref="FileManagement.GetExistingDataFile(string p_strPath)"/>
 		public static byte[] GetExistingDataFile(string p_strPath)
 		{
