@@ -286,7 +286,8 @@ namespace ChinhDo.Transactions
 					}
 					else
 					{
-						File.Delete(_originalFileName);
+						if (File.Exists(_originalFileName))
+							File.Delete(_originalFileName);
 					}
 				}
 
