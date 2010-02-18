@@ -19,6 +19,7 @@ namespace Fomm.PackageManager
 		private List<string> m_lstDontOverwriteFolders = new List<string>();
 		private bool m_booDontOverwriteAll = false;
 		private bool m_booOverwriteAll = false;
+		private BackgroundWorkerProgressDialog m_bwdProgress = null;
 
 		#region Constructors
 
@@ -126,7 +127,19 @@ namespace Fomm.PackageManager
 		/// <lang cref="false"/> otherwise.</returns>
 		protected bool RunBasicInstallScript()
 		{
-			PerformBasicInstall();
+			try
+			{
+				m_bwdProgress = new BackgroundWorkerProgressDialog(PerformBasicInstall);
+				m_bwdProgress.OverallMessage = "Installing Fomod";
+				m_bwdProgress.ShowItemProgress = false;
+				m_bwdProgress.OverallProgressStep = 1;
+				if (m_bwdProgress.ShowDialog() == DialogResult.Cancel)
+					return false;
+			}
+			finally
+			{
+				m_bwdProgress = null;
+			}
 			return true;
 		}
 
@@ -140,12 +153,18 @@ namespace Fomm.PackageManager
 		public void PerformBasicInstall()
 		{
 			char[] chrDirectorySeperators = new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar };
-			foreach (string strFile in Fomod.GetFileList())
+			List<string> lstFiles = Fomod.GetFileList();
+			m_bwdProgress.OverallProgressMaximum = lstFiles.Count;
+			foreach (string strFile in lstFiles)
 			{
+				if (m_bwdProgress.Cancelled())
+					return;
+
 				InstallFileFromFomod(strFile);
 				string strExt = Path.GetExtension(strFile).ToLowerInvariant();
 				if ((strExt == ".esp" || strExt == ".esm") && strFile.IndexOfAny(chrDirectorySeperators) == -1)
 					SetPluginActivation(strFile, true);
+				m_bwdProgress.StepOverallProgress();
 			}
 		}
 
