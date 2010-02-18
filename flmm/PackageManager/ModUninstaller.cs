@@ -3,11 +3,14 @@ using ChinhDo.Transactions;
 using System.Windows.Forms;
 using System.IO;
 using fomm.Transactions;
+using System.Collections.Generic;
 
 namespace Fomm.PackageManager
 {
 	class ModUninstaller : ModInstallScript
 	{
+		private BackgroundWorkerProgressDialog m_bwdProgress = null;
+
 		#region Constructors
 
 		/// <summary>
@@ -113,7 +116,19 @@ namespace Fomm.PackageManager
 		/// <lang cref="false"/> otherwise.</returns>
 		protected bool RunBasicUninstallScript()
 		{
-			PerformBasicUninstall();
+			try
+			{
+				m_bwdProgress = new BackgroundWorkerProgressDialog(PerformBasicUninstall);
+				m_bwdProgress.OverallMessage = "Uninstalling Fomod";
+				m_bwdProgress.ItemProgressStep = 1;
+				m_bwdProgress.OverallProgressStep = 1;
+				if (m_bwdProgress.ShowDialog() == DialogResult.Cancel)
+					return false;
+			}
+			finally
+			{
+				m_bwdProgress = null;
+			}
 			return true;
 		}
 
@@ -126,12 +141,43 @@ namespace Fomm.PackageManager
 		/// </remarks>
 		protected void PerformBasicUninstall()
 		{
-			foreach (string strFile in MergeModule.DataFiles)
+			List<string> lstFiles = MergeModule.DataFiles;
+			List<InstallLogMergeModule.IniEdit> lstIniEdits = MergeModule.IniEdits;
+			List<InstallLogMergeModule.SdpEdit> lstSdpEdits = MergeModule.SdpEdits;
+			m_bwdProgress.OverallProgressMaximum = lstFiles.Count + lstIniEdits.Count + lstSdpEdits.Count;
+
+			m_bwdProgress.ItemProgressMaximum = lstFiles.Count;
+			m_bwdProgress.ItemMessage = "Uninstalling Files";
+			foreach (string strFile in lstFiles)
+			{
+				if (m_bwdProgress.Cancelled())
+					return;
 				UninstallDataFile(strFile);
-			foreach (InstallLogMergeModule.IniEdit iniEdit in MergeModule.IniEdits)
+				m_bwdProgress.StepItemProgress();
+				m_bwdProgress.StepOverallProgress();
+			}
+
+			m_bwdProgress.ItemProgressMaximum = lstIniEdits.Count;
+			m_bwdProgress.ItemMessage = "Undoing Ini Edits";
+			foreach (InstallLogMergeModule.IniEdit iniEdit in lstIniEdits)
+			{
+				if (m_bwdProgress.Cancelled())
+					return;
 				UneditIni(iniEdit.File, iniEdit.Section, iniEdit.Key);
-			foreach (InstallLogMergeModule.SdpEdit sdpEdit in MergeModule.SdpEdits)
+				m_bwdProgress.StepItemProgress();
+				m_bwdProgress.StepOverallProgress();
+			}
+
+			m_bwdProgress.ItemProgressMaximum = lstSdpEdits.Count;
+			m_bwdProgress.ItemMessage = "Undoing Shader Edits";
+			foreach (InstallLogMergeModule.SdpEdit sdpEdit in lstSdpEdits)
+			{
+				if (m_bwdProgress.Cancelled())
+					return;
 				UneditShader(sdpEdit.Package, sdpEdit.ShaderName);
+				m_bwdProgress.StepItemProgress();
+				m_bwdProgress.StepOverallProgress();
+			}
 		}
 
 		/// <summary>
