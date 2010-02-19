@@ -401,7 +401,7 @@ namespace Fomm.PackageManager
 			return lstInstallers;
 		}
 
-		internal void SetInstallingModsOrder(string p_strPath, List<string> p_lstOrderedMods)
+		internal void SetInstallingModsOrder(string p_strPath, IList<string> p_lstOrderedMods)
 		{
 			lock (dataFilesNode)
 			{

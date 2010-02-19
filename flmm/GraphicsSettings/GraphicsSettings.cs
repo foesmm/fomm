@@ -626,6 +626,38 @@ namespace Fomm.GraphicsSettings
 		private class SettingsInstaller : ModInstallScript
 		{
 			private bool m_booChanged = false;
+			private GraphicsSettings m_gstSettings = null;
+
+			#region Properties
+
+			/// <seealso cref="ModInstallScript.ExceptionMessage"/>
+			protected override string ExceptionMessage
+			{
+				get
+				{
+					return "A problem occurred while saving settings: " + Environment.NewLine + "{0}" + Environment.NewLine + "The settings were not changed.";
+				}
+			}
+
+			/// <seealso cref="ModInstallScript.SuccessMessage"/>
+			protected override string SuccessMessage
+			{
+				get
+				{
+					return null;
+				}
+			}
+
+			/// <seealso cref="ModInstallScript.FailMessage"/>
+			protected override string FailMessage
+			{
+				get
+				{
+					return null;
+				}
+			}
+
+			#endregion
 
 			#region Constructors
 
@@ -654,7 +686,7 @@ namespace Fomm.GraphicsSettings
 			{
 				if (!GetPrefsIniString(p_strSection, p_strKey).Equals(p_strValue))
 				{
-					EditPrefsINI(p_strSection, p_strKey, p_strValue,true);
+					EditPrefsINI(p_strSection, p_strKey, p_strValue, true);
 					m_booChanged = true;
 					return true;
 				}
@@ -850,45 +882,41 @@ namespace Fomm.GraphicsSettings
 			/// <param name="p_gstSettings">The form used to gather the new settings.</param>
 			public void SaveSettings(GraphicsSettings p_gstSettings)
 			{
-				try
-				{
-					lock (ModInstallScript.objInstallLock)
-					{
-						using (TransactionScope tsTransaction = new TransactionScope())
-						{
-							InitTransactionalFileManager();
-							TransactionalFileManager.Snapshot(Program.FOPrefsIniPath);
-							OverwriteAllIni = true;
-							MergeModule = new InstallLogMergeModule();
+				m_gstSettings = p_gstSettings;
+				Run();
+			}
 
-							m_booChanged = false;
-							SaveGeneralValues(p_gstSettings);
-							SaveDetailValues(p_gstSettings);
-							SaveWaterValues(p_gstSettings);
-							SaveShadowValues(p_gstSettings);
-							SaveViewDistanceValues(p_gstSettings);
-							SaveDistantLODValues(p_gstSettings);
+			/// <summary>
+			/// This does the actual changing of settings.
+			/// </summary>
+			/// <returns><lang cref="true"/> if the script work was completed successfully and needs to
+			/// be committed; <lang cref="false"/> otherwise.</returns>
+			/// <exception cref="InvalidOperationException">Thrown if m_gstSettings is
+			/// <lang cref="null"/>.</exception>
+			/// <seealso cref="ModInstallScript.DoScript"/>
+			protected override bool DoScript()
+			{
+				if (m_gstSettings == null)
+					throw new InvalidOperationException("The SettingsForm property must be set before calling Run(); or Run(GraphicsSettings) can be used instead.");
 
-							if (m_booChanged)
-							{
-								InstallLog.Current.Merge(InstallLog.FOMM, MergeModule);
-								tsTransaction.Complete();
-							}
-						}
-					}
-				}
-				catch (Exception e)
+				TransactionalFileManager.Snapshot(Program.FOPrefsIniPath);
+				OverwriteAllIni = true;
+					
+				m_booChanged = false;
+				MergeModule = new InstallLogMergeModule();
+				SaveGeneralValues(m_gstSettings);
+				SaveDetailValues(m_gstSettings);
+				SaveWaterValues(m_gstSettings);
+				SaveShadowValues(m_gstSettings);
+				SaveViewDistanceValues(m_gstSettings);
+				SaveDistantLODValues(m_gstSettings);
+
+				if (m_booChanged)
 				{
-					string strMessage = "A problem occurred while saving settings: " + Environment.NewLine + e.Message;
-					if (e.InnerException != null)
-						strMessage += Environment.NewLine + e.InnerException.Message;
-					strMessage += Environment.NewLine + "The settings were not changed.";
-					System.Windows.Forms.MessageBox.Show(strMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					InstallLog.Current.Merge(InstallLog.FOMM, MergeModule);
+					return true;
 				}
-				finally
-				{
-					ReleaseTransactionalFileManager();
-				}
+				return false;
 			}
 		}
 	}

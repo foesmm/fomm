@@ -54,12 +54,14 @@ namespace Fomm.PackageManager
 			{
 				EnableLogFileRefresh = false;
 
-				m_pgdProgress = new BackgroundWorkerProgressDialog(PerformUpgrade);
-				m_pgdProgress.OverallMessage = "Upgrading Files";
-				m_pgdProgress.ItemProgressStep = 1;
-				m_pgdProgress.OverallProgressStep = 1;
-				if (m_pgdProgress.ShowDialog() == DialogResult.Cancel)
-					return false;
+				using (m_pgdProgress = new BackgroundWorkerProgressDialog(PerformUpgrade))
+				{
+					m_pgdProgress.OverallMessage = "Upgrading Files";
+					m_pgdProgress.ItemProgressStep = 1;
+					m_pgdProgress.OverallProgressStep = 1;
+					if (m_pgdProgress.ShowDialog() == DialogResult.Cancel)
+						return false;
+				}
 			}
 			return true;
 		}
@@ -68,23 +70,23 @@ namespace Fomm.PackageManager
 		/// This method is called by a background worker to perform the actual upgrade.
 		/// </summary>
 		protected void PerformUpgrade()
-		{			
+		{
 			using (TransactionScope tsTransaction = new TransactionScope())
 			{
 				string[] strModInstallFiles = Directory.GetFiles(Program.PackageDir, "*.XMl", SearchOption.TopDirectoryOnly);
 				m_pgdProgress.OverallProgressMaximum = strModInstallFiles.Length;
-				
+
 				m_dicDefaultFileOwners = new Dictionary<string, string>();
 				XmlDocument xmlModInstallLog = null;
 				string strModBaseName = null;
 				fomod fomodMod = null;
-												
+
 				m_tfmFileManager = new TxFileManager();
 				m_tfmFileManager.Snapshot(InstallLogPath);
 				m_xmlOldInstallLog = new XmlDocument();
 				m_xmlOldInstallLog.Load(InstallLogPath);
 				Reset();
-
+			
 				foreach (string strModInstallLog in strModInstallFiles)
 				{
 					if (m_pgdProgress.Cancelled())

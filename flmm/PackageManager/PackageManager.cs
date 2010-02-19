@@ -697,7 +697,7 @@ namespace Fomm.PackageManager
 				fomod mod = (fomod)lvi.Tag;
 				if (!mod.IsActive) continue;
 				ModUninstaller mduUninstaller = new ModUninstaller(mod);
-				mduUninstaller.Uninstall();
+				mduUninstaller.Uninstall(true);
 				if (cbGroups.Checked)
 				{
 					foreach (ListViewItem lvi2 in lvModList.Items)

@@ -10,6 +10,41 @@ namespace Fomm.FileManager
 {
 	public class ModInstallReorderer : ModInstallScript
 	{
+		private string m_strFailMessage = null;
+		private string m_strFile = null;
+		private IList<string> m_lstOrderedMods = null;
+			
+		#region Properties
+
+		/// <seealso cref="ModInstallScript.ExceptionMessage"/>
+		protected override string ExceptionMessage
+		{
+			get
+			{
+				return "A problem occurred during reorder: " + Environment.NewLine + "{0}";
+			}
+		}
+
+		/// <seealso cref="ModInstallScript.SuccessMessage"/>
+		protected override string SuccessMessage
+		{
+			get
+			{
+				return "The mod was successfully installed.";
+			}
+		}
+
+		/// <seealso cref="ModInstallScript.FailMessage"/>
+		protected override string FailMessage
+		{
+			get
+			{
+				return m_strFailMessage;
+			}
+		}
+
+		#endregion
+
 		#region Constructors
 
 		/// <summary>
@@ -34,77 +69,50 @@ namespace Fomm.FileManager
 		/// <lang cref="false"/> otherwise.</returns>
 		internal bool ReorderFileInstallers(string p_strFile, List<string> p_lstOrderedMods)
 		{
-			InitTransactionalFileManager();
-			string strErrorMsg = null;
-			string strErrorCaption = null;
-			try
+			m_strFile = p_strFile;
+			m_lstOrderedMods = p_lstOrderedMods;
+			return Run();
+		}
+
+		/// <summary>
+		/// This does the moving of files and log alteration.
+		/// </summary>
+		/// <returns><lang cref="true"/> if the script work was completed successfully and needs to
+		/// be committed; <lang cref="false"/> otherwise.</returns>
+		/// <exception cref="InvalidOperationException">Thrown if m_strFile or m_lstOrderedMods are
+		/// <lang cref="null"/>.</exception>
+		/// <seealso cref="ModInstallScript.DoScript"/>
+		protected override bool DoScript()
+		{
+			if ((m_strFile == null) || (m_lstOrderedMods == null))
+				throw new InvalidOperationException("The File and OrderedMods properties must be set before calling Run(); or Run(string, IList<string>) can be used instead.");
+
+			TransactionalFileManager.Snapshot(InstallLog.Current.InstallLogPath);
+
+			string strOldOwner = InstallLog.Current.GetCurrentFileOwnerKey(m_strFile);
+			InstallLog.Current.SetInstallingModsOrder(m_strFile, m_lstOrderedMods);
+			string strNewOwner = InstallLog.Current.GetCurrentFileOwnerKey(m_strFile);
+
+			if (!strNewOwner.Equals(strOldOwner))
 			{
-				lock (ModInstallScript.objInstallLock)
+				string strDataPath = Path.GetFullPath(Path.Combine("data", m_strFile));
+				string strDirectory = Path.GetDirectoryName(m_strFile);
+				string strBackupPath = Path.GetFullPath(Path.Combine(Program.overwriteDir, strDirectory));
+				//the old backup file is becoming the new file
+				string strOldBackupFile = strNewOwner + "_" + Path.GetFileName(m_strFile);
+				//the old owner is becoming the new backup file
+				string strNewBackupFile = strOldOwner + "_" + Path.GetFileName(m_strFile);
+
+				string strNewBackupPath = Path.Combine(strBackupPath, strNewBackupFile);
+				string strOldBackupPath = Path.Combine(strBackupPath, strOldBackupFile);
+				if (!TransactionalFileManager.FileExists(strOldBackupPath))
 				{
-					using (TransactionScope tsTransaction = new TransactionScope())
-					{
-						TransactionalFileManager.Snapshot(InstallLog.Current.InstallLogPath);
-
-						string strOldOwner = InstallLog.Current.GetCurrentFileOwnerKey(p_strFile);
-						InstallLog.Current.SetInstallingModsOrder(p_strFile, p_lstOrderedMods);
-						string strNewOwner = InstallLog.Current.GetCurrentFileOwnerKey(p_strFile);
-
-						if (!strNewOwner.Equals(strOldOwner))
-						{
-							string strDataPath = Path.GetFullPath(Path.Combine("data", p_strFile));
-							string strDirectory = Path.GetDirectoryName(p_strFile);
-							string strBackupPath = Path.GetFullPath(Path.Combine(Program.overwriteDir, strDirectory));
-							//the old backup file is becoming the new file
-							string strOldBackupFile = strNewOwner + "_" + Path.GetFileName(p_strFile);
-							//the old owner is becoming the new backup file
-							string strNewBackupFile = strOldOwner + "_" + Path.GetFileName(p_strFile);
-
-							string strNewBackupPath = Path.Combine(strBackupPath, strNewBackupFile);
-							string strOldBackupPath = Path.Combine(strBackupPath, strOldBackupFile);
-							if (!TransactionalFileManager.FileExists(strOldBackupPath))
-							{
-								//we set an error string that is displayed later as showing dialogs during
-								// the transaction and the lock is not good form and can cause anomalies.
-								//note that the anomalies are not serious, rather they are merely UI
-								// misrepresentations (basically the UI gets out of sync with the
-								// Install Log - this can't cause any corruption, but it looks odd to
-								// the user).
-								strErrorMsg = "The version of the file for " + InstallLog.Current.GetModName(strNewOwner) + " does not exist. This is likely because files in the data folder have been altered manually.";
-								strErrorCaption = "Missing Version";
-								return false;
-							}
-							TransactionalFileManager.Copy(strDataPath, strNewBackupPath, true);
-							TransactionalFileManager.Copy(strOldBackupPath, strDataPath, true);
-							TransactionalFileManager.Delete(strBackupPath);
-						}
-						tsTransaction.Complete();
-					}
+					m_strFailMessage = "The version of the file for " + InstallLog.Current.GetModName(strNewOwner) + " does not exist. This is likely because files in the data folder have been altered manually.";
+					return false;
 				}
-			}
-			catch (Exception e)
-			{
-				StringBuilder stbError = new StringBuilder("A problem occurred during reorder: ");
-				stbError.AppendLine().AppendLine(e.Message);
-				if (e.InnerException != null)
-					stbError.AppendLine(e.InnerException.Message);
-				if (e is RollbackException)
-				{
-					foreach (RollbackException.ExceptedResourceManager erm in ((RollbackException)e).ExceptedResourceManagers)
-					{
-						stbError.AppendLine(erm.ResourceManager.ToString());
-						stbError.AppendLine(erm.Exception.Message);
-						if (erm.Exception.InnerException != null)
-							stbError.AppendLine(erm.Exception.InnerException.Message);
-					}
-				}
-				System.Windows.Forms.MessageBox.Show(stbError.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return false;
-			}
-			finally
-			{
-				ReleaseTransactionalFileManager();
-				if (strErrorMsg != null)
-					System.Windows.Forms.MessageBox.Show(strErrorMsg, strErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+				TransactionalFileManager.Copy(strDataPath, strNewBackupPath, true);
+				TransactionalFileManager.Copy(strOldBackupPath, strDataPath, true);
+				TransactionalFileManager.Delete(strBackupPath);
 			}
 			return true;
 		}
