@@ -7,11 +7,31 @@ namespace Fomm
 	/// <summary>
 	/// Performs work in the background and provides a UI to report progress.
 	/// </summary>
-	public partial class BackgroundWorkerProgressDialog : Form
+	public partial class BackgroundWorkerProgressDialog : Form, IDisposable
 	{
+		public delegate void WorkerMethod();
+		public delegate void ParamWorkerMethod(object p_objArgument);
+
+		private WorkerMethod m_wkmWorkMethod = null;
+		private ParamWorkerMethod m_pwmWorkerMethod = null;
+		private DoWorkEventArgs m_weaDoWorkEventArgs = null;
 		private BackgroundWorker m_bgwWorker = null;
+		private Exception m_exError = null;
 
 		#region Properties
+
+		/// <summary>
+		/// Gets the exception that was thrown during the execution of the background work.
+		/// </summary>
+		/// <value>The exception that was thrown during the execution of the background work,
+		/// or <lang cref="null"/> if now exception was thrown.</value>
+		public Exception Error
+		{
+			get
+			{
+				return m_exError;
+			}
+		}
 
 		/// <summary>
 		/// Gets or sets whether the item progress is visible.
@@ -151,13 +171,6 @@ namespace Fomm
 		}
 
 		#endregion
-
-		public delegate void WorkerMethod();
-		public delegate void ParamWorkerMethod(object p_objArgument);
-		
-		private WorkerMethod m_wkmWorkMethod = null;
-		private ParamWorkerMethod m_pwmWorkerMethod = null;
-		private DoWorkEventArgs m_weaDoWorkEventArgs = null;
 
 		/// <summary>
 		/// The default constructor.
@@ -339,8 +352,7 @@ namespace Fomm
 				DialogResult = DialogResult.Cancel;
 			else
 				DialogResult = DialogResult.OK;
-			if (e.Error != null)
-				throw e.Error;
+			m_exError = e.Error;
 			this.Close();
 		}
 
@@ -369,6 +381,20 @@ namespace Fomm
 				else
 					pbrItemProgress.Value = (Int32)(e.ProgressPercentage / 100m * (pbrItemProgress.Maximum - pbrItemProgress.Minimum));
 			}
+		}
+
+		#endregion
+
+		#region IDisposable Members
+
+		/// <summary>
+		/// Throws any exceptions that were raised during the background worker process.
+		/// </summary>
+		void IDisposable.Dispose()
+		{
+			base.Dispose();
+			if (Error != null)
+				throw Error;
 		}
 
 		#endregion

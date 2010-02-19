@@ -249,7 +249,7 @@ namespace Fomm
 			Application.SetCompatibleTextRenderingDefault(false);
 
 			AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
-
+			
 			Settings.Init();
 
 			if (Array.IndexOf<string>(args, "-mono") != -1) monoMode = true;
