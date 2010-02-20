@@ -15,11 +15,18 @@ namespace Fomm.PackageManager
 	/// </summary>
 	class InstallLogUpgrader : InstallLog
 	{
+		private class UpgradeStage
+		{
+			public Version Version { get; internal set; }
+			public BackgroundWorkerProgressDialog.WorkerMethod UpgradeMethod { get; internal set; }
+		}
+
 		private static object m_objLock = new object();
 		private TxFileManager m_tfmFileManager = null;
 		private XmlDocument m_xmlOldInstallLog = null;
 		private Dictionary<string, string> m_dicDefaultFileOwners = null;
 		private BackgroundWorkerProgressDialog m_pgdProgress = null;
+		private List<UpgradeStage> m_lstUpgradeStages = null;
 
 		/// <summary>
 		/// The default constructor.
@@ -27,6 +34,11 @@ namespace Fomm.PackageManager
 		internal InstallLogUpgrader()
 			: base()
 		{
+			m_lstUpgradeStages = new List<UpgradeStage>()
+				{
+					new UpgradeStage() { Version=new Version("0.1.0.0"), UpgradeMethod=PerformUpgradeTo0100 },
+					new UpgradeStage() { Version=new Version("0.1.1.0"), UpgradeMethod=PerformUpgradeTo0110 }
+				};
 		}
 
 		/// <summary>
@@ -45,31 +57,63 @@ namespace Fomm.PackageManager
 			{
 				SetInstallLogVersion(new Version("0.1.0.0"));
 				Save();
-				return true;
 			}
+
+			Int32 intUpgradeStageCount = 0;
+			foreach (UpgradeStage upsStage in m_lstUpgradeStages)
+				if (GetInstallLogVersion() < upsStage.Version)
+					intUpgradeStageCount++;
+				else
+					break;
 
 			//we only want one upgrade at a time happening to minimize the chances of
 			// messed up install logs.
 			lock (m_objLock)
 			{
 				EnableLogFileRefresh = false;
-
-				using (m_pgdProgress = new BackgroundWorkerProgressDialog(PerformUpgrade))
+				UpgradeStage upsStage = null;
+				for (Int32 i = 0; i < m_lstUpgradeStages.Count; i++)
 				{
-					m_pgdProgress.OverallMessage = "Upgrading Files";
-					m_pgdProgress.ItemProgressStep = 1;
-					m_pgdProgress.OverallProgressStep = 1;
-					if (m_pgdProgress.ShowDialog() == DialogResult.Cancel)
-						return false;
+					upsStage = m_lstUpgradeStages[i];
+					if (GetInstallLogVersion() < upsStage.Version)
+					{
+						using (m_pgdProgress = new BackgroundWorkerProgressDialog(upsStage.UpgradeMethod))
+						{
+							m_pgdProgress.OverallMessage = String.Format("Upgrading Files - Stage {0}/{1}", i, intUpgradeStageCount);
+							m_pgdProgress.ItemProgressStep = 1;
+							m_pgdProgress.OverallProgressStep = 1;
+							if (m_pgdProgress.ShowDialog() == DialogResult.Cancel)
+								return false;
+						}
+					}
+					else
+						break;
 				}
 			}
 			return true;
 		}
 
 		/// <summary>
-		/// This method is called by a background worker to perform the actual upgrade.
+		/// Upgrades the Install Log to version 0.1.1.0 from version 0.1.0.0;
 		/// </summary>
-		protected void PerformUpgrade()
+		/// <remarks>
+		/// This method is called by a background worker to perform the actual upgrade.
+		/// </remarks>
+		/// <exception cref="InvalidOperationException">Thrown if the install log is not
+		/// version 0.1.0.0 when this method is called.</exception>
+		protected void PerformUpgradeTo0110()
+		{
+			if (GetInstallLogVersion() != new Version("0.1.0.0"))
+				throw new InvalidOperationException("This method can only upgrade version 0.1.0.0 Install Logs.");
+		}
+
+		/// <summary>
+		/// Upgrades the Install Log to version 0.1.0.0 from version 0.0.0.0.
+		/// </summary>
+		/// <remarks>
+		/// This method is called by a background worker to perform the actual upgrade.
+		/// </remarks>
+		protected void PerformUpgradeTo0100()
 		{
 			using (TransactionScope tsTransaction = new TransactionScope())
 			{
@@ -86,7 +130,7 @@ namespace Fomm.PackageManager
 				m_xmlOldInstallLog = new XmlDocument();
 				m_xmlOldInstallLog.Load(InstallLogPath);
 				Reset();
-			
+
 				foreach (string strModInstallLog in strModInstallFiles)
 				{
 					if (m_pgdProgress.Cancelled())

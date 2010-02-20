@@ -40,9 +40,9 @@ namespace Fomm.PackageManager
 	 */
 	internal class InstallLog : InstallLogBase
 	{
+		protected static readonly Version CURRENT_VERSION = new Version("0.1.0.0");
 		protected const string ORIGINAL_VALUES = "ORIGINAL_VALUES";
 		internal const string FOMM = "FOMM";
-		protected const string CURRENT_VERSION = "0.1.0.0";
 		private static readonly InstallLog m_ilgCurrent = new InstallLog();
 
 		public static InstallLog Current
@@ -198,7 +198,7 @@ namespace Fomm.PackageManager
 			else
 			{
 				Reset();
-				SetInstallLogVersion(new Version(CURRENT_VERSION));
+				SetInstallLogVersion(CURRENT_VERSION);
 				Save();
 			}
 		}
