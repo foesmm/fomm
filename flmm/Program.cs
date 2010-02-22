@@ -21,6 +21,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Diagnostics;
 using Fomm.PackageManager;
+using Fomm.InstallLogUpgraders;
 
 namespace Fomm
 {
@@ -585,9 +586,8 @@ namespace Fomm
 				}
 
 				//check to see if we need to upgrade the install log format
-				if (InstallLog.Current.GetInstallLogVersion() < new Version("0.1.0.0"))
+				if (InstallLog.Current.GetInstallLogVersion() < InstallLog.CURRENT_VERSION)
 				{
-					string[] strModInstallFiles = Directory.GetFiles(Program.PackageDir, "*.XMl", SearchOption.TopDirectoryOnly);
 					InstallLogUpgrader iluUgrader = new InstallLogUpgrader();
 					try
 					{

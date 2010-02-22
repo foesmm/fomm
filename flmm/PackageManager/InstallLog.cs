@@ -40,9 +40,9 @@ namespace Fomm.PackageManager
 	 */
 	internal class InstallLog : InstallLogBase
 	{
-		protected static readonly Version CURRENT_VERSION = new Version("0.1.0.0");
-		protected const string ORIGINAL_VALUES = "ORIGINAL_VALUES";
-		internal const string FOMM = "FOMM";
+		public static readonly Version CURRENT_VERSION = new Version("0.1.0.0");
+		internal protected const string ORIGINAL_VALUES = "ORIGINAL_VALUES";
+		internal protected const string FOMM = "FOMM";
 		private static readonly InstallLog m_ilgCurrent = new InstallLog();
 
 		public static InstallLog Current
@@ -116,7 +116,7 @@ namespace Fomm.PackageManager
 		/// Sets whether or not the install log watches for external changes to the xml file.
 		/// </summary>
 		/// <value>Whether or not the install log watches for external changes to the xml file.</value>
-		protected bool EnableLogFileRefresh
+		internal protected bool EnableLogFileRefresh
 		{
 			set
 			{
@@ -230,11 +230,12 @@ namespace Fomm.PackageManager
 		/// <summary>
 		/// Saves the Install Log.
 		/// </summary>
-		protected void Save()
+		internal protected void Save()
 		{
+			bool boolWasWatching = m_fswLogWatcher.EnableRaisingEvents;
 			m_fswLogWatcher.EnableRaisingEvents = false;
 			xmlDoc.Save(xmlpath);
-			m_fswLogWatcher.EnableRaisingEvents = true;
+			m_fswLogWatcher.EnableRaisingEvents = boolWasWatching;
 		}
 
 		internal Version GetInstallLogVersion()
@@ -245,7 +246,7 @@ namespace Fomm.PackageManager
 			return new Version(xndVersion.InnerText);
 		}
 
-		internal void SetInstallLogVersion(Version p_verFileVersion)
+		internal protected void SetInstallLogVersion(Version p_verFileVersion)
 		{
 			XmlAttribute xndVersion = xmlDoc.FirstChild.Attributes["fileVersion"];
 			if (xndVersion == null)
@@ -305,7 +306,7 @@ namespace Fomm.PackageManager
 		/// edit versions.
 		/// </remarks>
 		/// <param name="p_strModName">The base name of the <see cref="fomod"/> being added.</param>
-		protected void AddMod(string p_strModName)
+		internal void AddMod(string p_strModName)
 		{
 			if (!m_dicModList.ContainsKey(p_strModName))
 			{
@@ -502,7 +503,7 @@ namespace Fomm.PackageManager
 		/// </remarks>
 		/// <param name="p_strModName">The base name of the mod that installed the file.</param>
 		/// <param name="p_strPath">The path of the file that was installed.</param>
-		protected void AddDataFile(string p_strModName, string p_strPath)
+		internal protected void AddDataFile(string p_strModName, string p_strPath)
 		{
 			XmlNode xndModList = null;
 			XmlNode xndInstallingMod = CreateDataFileNode(m_dicModList[p_strModName], p_strPath, out xndModList);
@@ -513,11 +514,27 @@ namespace Fomm.PackageManager
 		}
 
 		/// <summary>
+		/// Adds a node representing that the specified mod installed the specified file.
+		/// </summary>
+		/// <remarks>
+		/// This method prepends the node to the beginning of the list of installing mods, indicating
+		/// that the specified mod is not the latest mod to install the specified file.
+		/// </remarks>
+		/// <param name="p_strModName">The base name of the mod that installed the file.</param>
+		/// <param name="p_strPath">The path of the file that was installed.</param>
+		internal protected void PrependDataFile(string p_strModName, string p_strPath)
+		{
+			XmlNode xndModList = null;
+			XmlNode xndInstallingMod = CreateDataFileNode(GetModKey(p_strModName), p_strPath, out xndModList);
+			xndModList.PrependChild(xndInstallingMod);
+		}
+
+		/// <summary>
 		/// Removes the node representing that the specified mod installed the specified file.
 		/// </summary>
 		/// <param name="p_strModName">The base name of the mod that installed the file.</param>
 		/// <param name="p_strPath">The path of the file that was installed.</param>
-		protected void RemoveDataFile(string p_strModName, string p_strPath)
+		internal protected void RemoveDataFile(string p_strModName, string p_strPath)
 		{
 			p_strPath = NormalizePath(p_strPath.ToLowerInvariant());
 			lock (dataFilesNode)
@@ -638,7 +655,7 @@ namespace Fomm.PackageManager
 		/// <param name="p_strKey">The key in the Ini file that was edited.</param>
 		/// <param name="p_strModName">The base name of the mod that made the edit.</param>
 		/// <param name="p_strValue">The value to which to the key was set.</param>
-		protected void AddIniEdit(string p_strFile, string p_strSection, string p_strKey, string p_strModName, string p_strValue)
+		internal protected void AddIniEdit(string p_strFile, string p_strSection, string p_strKey, string p_strModName, string p_strValue)
 		{
 			XmlNode xndModList = null;
 			XmlNode xndInstallingMod = CreateIniEditNode(m_dicModList[p_strModName], p_strFile, p_strSection, p_strKey, p_strValue, out xndModList);
@@ -646,6 +663,29 @@ namespace Fomm.PackageManager
 			{
 				xndModList.AppendChild(xndInstallingMod);
 			}
+		}
+
+		/// <summary>
+		/// Adds a node representing that the specified mod made the specified Ini edit.
+		/// </summary>
+		/// <remarks>
+		/// This method prepends the node to the beginning of the list of installing mods, but
+		/// after the ORIGINAL_VALUES node if it exists, indicating that the specified mod is not
+		/// the latest mod to edit the specified Ini value.
+		/// </remarks>
+		/// <param name="p_strFile">The Ini file that was edited.</param>
+		/// <param name="p_strSection">The section in the Ini file that was edited.</param>
+		/// <param name="p_strKey">The key in the Ini file that was edited.</param>
+		/// <param name="p_strModName">The base name of the mod that made the edit.</param>
+		/// <param name="p_strValue">The value to which to the key was set.</param>
+		internal protected void PrependAfterOriginalIniEdit(string p_strFile, string p_strSection, string p_strKey, string p_strModName, string p_strValue)
+		{
+			XmlNode xndModList = null;
+			XmlNode xndInstallingMod = CreateIniEditNode(GetModKey(p_strModName), p_strFile, p_strSection, p_strKey, p_strValue, out xndModList);
+			if ((xndModList.FirstChild != null) && (xndModList.FirstChild.Attributes["key"].InnerText.Equals(OriginalValuesKey)))
+				xndModList.InsertAfter(xndInstallingMod, xndModList.FirstChild);
+			else
+				xndModList.PrependChild(xndInstallingMod);
 		}
 
 		#endregion
@@ -753,7 +793,7 @@ namespace Fomm.PackageManager
 		/// <param name="p_intPackage">The package containing the shader that was edited.</param>
 		/// <param name="p_strShaderName">The shader that was edited.</param>
 		/// <param name="p_bteData">The value to which to the shader was set.</param>
-		protected void AddShaderEdit(string p_strModName, int p_intPackage, string p_strShader, byte[] p_bteData)
+		internal protected void AddShaderEdit(string p_strModName, int p_intPackage, string p_strShader, byte[] p_bteData)
 		{
 			XmlNode xndModList = null;
 			XmlNode xndInstallingMod = CreateSdpEditNode(GetModKey(p_strModName), p_intPackage, p_strShader, p_bteData, out xndModList);
@@ -761,6 +801,28 @@ namespace Fomm.PackageManager
 			{
 				xndModList.AppendChild(xndInstallingMod);
 			}
+		}
+
+		/// <summary>
+		/// Adds a node representing that the specified mod made the specified sdp edit.
+		/// </summary>
+		/// <remarks>
+		/// This method prepends the node to the beginning of the list of installing mods, but
+		/// after the ORIGINAL_VALUES node if it exists, indicating that the specified mod is not
+		/// the latest mod to edit the specified shader.
+		/// </remarks>
+		/// <param name="p_strModName">The base name of the mod that made the edit.</param>
+		/// <param name="p_intPackage">The package containing the shader that was edited.</param>
+		/// <param name="p_strShaderName">The shader that was edited.</param>
+		/// <param name="p_bteData">The value to which to the shader was set.</param>
+		internal protected void PrependAfterOriginalShaderEdit(string p_strModName, int p_intPackage, string p_strShader, byte[] p_bteData)
+		{
+			XmlNode xndModList = null;
+			XmlNode xndInstallingMod = CreateSdpEditNode(GetModKey(p_strModName), p_intPackage, p_strShader, p_bteData, out xndModList);
+			if ((xndModList.FirstChild != null) && (xndModList.FirstChild.Attributes["key"].InnerText.Equals(OriginalValuesKey)))
+				xndModList.InsertAfter(xndInstallingMod, xndModList.FirstChild);
+			else
+				xndModList.PrependChild(xndInstallingMod);
 		}
 
 		#endregion
