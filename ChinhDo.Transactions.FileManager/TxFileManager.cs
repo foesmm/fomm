@@ -114,7 +114,8 @@ namespace ChinhDo.Transactions
         }
 
 		/// <summary>
-		/// Creates a file, write the specified <paramref name="contents"/> to the file.
+		/// Creates a file, and writes the specified <paramref name="contents"/> to the file. If the file
+		/// already exists, it is overwritten.
 		/// </summary>
 		/// <param name="path">The file to write to.</param>
 		/// <param name="contents">The bytes to write to the file.</param>
