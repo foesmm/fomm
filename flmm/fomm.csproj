@@ -112,6 +112,7 @@
     <Compile Include="Imports.cs" />
     <Compile Include="InstallLogUpgraders\Upgrader.cs" />
     <Compile Include="InstallLogUpgraders\Upgrader0000.cs" />
+    <Compile Include="InstallLogUpgraders\Upgrader0100.cs" />
     <Compile Include="InstallTweaker\BsaTrimmer.cs" />
     <Compile Include="InstallTweaker\EsmTrimmer.cs" />
     <Compile Include="InstallTweaker\InstallationTweaker.cs">

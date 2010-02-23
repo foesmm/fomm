@@ -55,7 +55,7 @@ namespace Fomm.PackageManager
 
 		#endregion
 
-		#region Install Methods
+		#region Uninstall Methods
 
 		/// <summary>
 		/// Indicates that this script's work has already been completed if

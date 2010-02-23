@@ -8,29 +8,42 @@ using System.Text.RegularExpressions;
 
 namespace Fomm.InstallLogUpgraders
 {
+	/// <summary>
+	/// Upgrades the Install Log to the current version from version 0.0.0.0.
+	/// </summary>
 	internal class Upgrader0000 : Upgrader
 	{
 		private Dictionary<string, string> m_dicDefaultFileOwners = null;
 		private XmlDocument m_xmlOldInstallLog = null;
-		
+
+		#region Constructors
+
+		/// <summary>
+		/// The default constructor.
+		/// </summary>
 		public Upgrader0000()
 		{
 			m_xmlOldInstallLog = new XmlDocument();
 			m_xmlOldInstallLog.Load(InstallLog.Current.InstallLogPath);
 		}
 
+		#endregion
+
 		/// <summary>
-		/// Upgrades the Install Log to version 0.1.0.0 from version 0.0.0.0.
+		/// Upgrades the Install Log to the current version from version 0.0.0.0.
 		/// </summary>
 		/// <remarks>
 		/// This method is called by a background worker to perform the actual upgrade.
 		/// </remarks>
 		protected override void DoUpgrade()
 		{
-			string[] strModInstallFiles = Directory.GetFiles(Program.PackageDir, "*.XMl", SearchOption.TopDirectoryOnly);
-			ProgressWorker.OverallProgressMaximum = strModInstallFiles.Length;
+			InstallLog.Current.Reset();
 
-			m_dicDefaultFileOwners = new Dictionary<string, string>();
+			string[] strModInstallFiles = Directory.GetFiles(Program.PackageDir, "*.XMl", SearchOption.TopDirectoryOnly);
+			ProgressWorker.OverallProgressStep = 1;
+			ProgressWorker.OverallProgressMaximum = strModInstallFiles.Length;
+			ProgressWorker.ItemProgressStep = 1;
+
 			XmlDocument xmlModInstallLog = null;
 			string strModBaseName = null;
 			fomod fomodMod = null;
@@ -53,8 +66,9 @@ namespace Fomm.InstallLogUpgraders
 
 				fomodMod = new fomod(strModInstallLog.ToLowerInvariant().Replace(".xml", ".fomod"));
 				strModBaseName = fomodMod.baseName;
-				InstallLog.Current.AddMod(strModBaseName);
+				InstallLog.Current.AddMod(fomodMod);
 
+				m_dicDefaultFileOwners = new Dictionary<string, string>();
 				UpgradeInstalledFiles(xmlModInstallLog, fomodMod, strModBaseName);
 				//we now have to tell all the remaining default owners that are are indeed
 				// the owners
@@ -88,7 +102,7 @@ namespace Fomm.InstallLogUpgraders
 
 		private byte[] GetOldSdpValue(Int32 p_intPackage, string p_strShader)
 		{
-			XmlNode node = m_xmlOldInstallLog.SelectSingleNode("descendant::sdp[@package='" + p_intPackage + "' and @shader='" + p_strShader + "']");
+			XmlNode node = m_xmlOldInstallLog.SelectSingleNode("descendant::sdp[@package=\"" + p_intPackage + "\" and @shader=\"" + p_strShader + "\"]");
 			if (node == null)
 				return null;
 			byte[] b = new byte[node.InnerText.Length / 2];
@@ -150,7 +164,7 @@ namespace Fomm.InstallLogUpgraders
 		private string GetOldIniValue(string p_strFile, string p_strSection, string p_strKey, out string p_strModName)
 		{
 			p_strModName = null;
-			XmlNode node = m_xmlOldInstallLog.SelectSingleNode("descendant::ini[@file='" + p_strFile + "' and @section='" + p_strSection + "' and @key='" + p_strKey + "']");
+			XmlNode node = m_xmlOldInstallLog.SelectSingleNode("descendant::ini[@file=\"" + p_strFile + "\" and @section=\"" + p_strSection + "\" and @key=\"" + p_strKey + "\"]");
 			if (node == null)
 				return null;
 			XmlNode modnode = node.Attributes.GetNamedItem("mod");

@@ -104,7 +104,7 @@ namespace Fomm.PackageManager
 					Fomod.IsActive = RunBasicInstallScript();
 				if (Fomod.IsActive)
 				{
-					InstallLog.Current.Merge(Fomod.baseName, MergeModule);
+					InstallLog.Current.Merge(Fomod, MergeModule);
 					CommitActivePlugins();
 				}
 			}

@@ -913,7 +913,7 @@ namespace Fomm.GraphicsSettings
 
 				if (m_booChanged)
 				{
-					InstallLog.Current.Merge(InstallLog.FOMM, MergeModule);
+					InstallLog.Current.UnversionedFomodMerge(InstallLog.FOMM, MergeModule);
 					return true;
 				}
 				return false;

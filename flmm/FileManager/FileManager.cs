@@ -20,6 +20,7 @@ namespace Fomm.FileManager
 		{
 			InitializeComponent();
 			LoadFiles();
+			//highlightMissing(tvwFolders.Nodes[0]);
 			rlvOverwrites.Columns[0].Width = rlvOverwrites.ClientSize.Width - 3;
 			string strFalloutEsm = Path.Combine("data", "fallout3.esm");
 			imlFolders.Images.Add("mod", System.Drawing.Icon.ExtractAssociatedIcon(strFalloutEsm));
@@ -135,8 +136,48 @@ namespace Fomm.FileManager
 				lviMod = rlvOverwrites.Items.Add(strMod);
 				lviMod.Name = lviMod.Text;
 			}
+
 			rlvOverwrites.Items[rlvOverwrites.Items.Count - 1].BackColor = Color.LightGreen;
 			rlvOverwrites.Items[rlvOverwrites.Items.Count - 1].Selected = true;
+		}
+
+		private void highlightMissing(TreeNode thisRoot)
+		{
+			foreach (TreeNode tndHere in thisRoot.Nodes)
+			{
+				highlightMissing(tndHere);
+			}
+
+			TreeNode tndDirectory = thisRoot;
+			List<string> lstDirectoryFiles = (List<string>)tndDirectory.Tag;
+			if ((lstDirectoryFiles == null) || (lstDirectoryFiles.Count == 0))
+				return;
+			foreach (string strFile in lstDirectoryFiles)
+			{
+				List<string> lstInstallers = InstallLog.Current.GetInstallingMods(strFile);
+				bool booMissing = false;
+				string currentOwner = InstallLog.Current.GetCurrentFileOwnerKey(strFile);					
+				foreach (string strMod in lstInstallers)
+				{
+					string strModKey = InstallLog.Current.GetModKey(strMod);
+					string strDirectory = Path.GetDirectoryName(strFile);
+					string strBackupPath = Path.GetFullPath(Path.Combine(Program.overwriteDir, strDirectory));
+					strBackupPath = Path.Combine(strBackupPath, strModKey + "_" + Path.GetFileName(strFile));
+					if (!File.Exists(strBackupPath) && !currentOwner.Equals(strModKey))
+						booMissing = true;
+					else if (File.Exists(strBackupPath) && currentOwner.Equals(strModKey))
+						booMissing = true;
+				}
+				if (booMissing)
+				{
+					TreeNode upwego = tndDirectory;
+					do
+					{
+						upwego.BackColor = Color.Red;
+						upwego = upwego.Parent;
+					} while (upwego != null);
+				}
+			}
 		}
 
 		/// <summary>

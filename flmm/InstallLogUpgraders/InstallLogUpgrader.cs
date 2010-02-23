@@ -25,6 +25,7 @@ namespace Fomm.InstallLogUpgraders
 		{
 			m_dicUpgraders = new Dictionary<Version, Upgrader>();
 			m_dicUpgraders[new Version("0.0.0.0")] = new Upgrader0000();
+			m_dicUpgraders[new Version("0.1.0.0")] = new Upgrader0100();
 		}
 
 		/// <summary>
@@ -39,15 +40,15 @@ namespace Fomm.InstallLogUpgraders
 		{
 			//this is to handle the few people who already installed a version that used
 			// the new-style install log, but before it had a version
-			XmlDocument xmlOldInstallLog = new XmlDocument();
-			xmlOldInstallLog.Load(InstallLog.Current.InstallLogPath);
-			if (xmlOldInstallLog.SelectNodes("descendant::installingMods").Count > 0)
+			if (InstallLog.Current.GetInstallLogVersion().ToString().Equals("0.0.0.0"))
 			{
-				XmlAttribute xndVersion = xmlOldInstallLog.FirstChild.Attributes["fileVersion"];
-				if (xndVersion == null)
-					xndVersion = xmlOldInstallLog.FirstChild.Attributes.Append(xmlOldInstallLog.CreateAttribute("fileVersion"));
-				xndVersion.InnerText = "0.1.0.0";
-				xmlOldInstallLog.Save(InstallLog.Current.InstallLogPath);
+				XmlDocument xmlOldInstallLog = new XmlDocument();
+				xmlOldInstallLog.Load(InstallLog.Current.InstallLogPath);
+				if (xmlOldInstallLog.SelectNodes("descendant::installingMods").Count > 0)
+				{
+					InstallLog.Current.SetInstallLogVersion(new Version("0.1.0.0"));
+					InstallLog.Current.Save();
+				}
 			}
 
 			Version verOldVersion = InstallLog.Current.GetInstallLogVersion();
