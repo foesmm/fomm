@@ -234,7 +234,6 @@ namespace Fomm.InstallLogUpgraders
 			string strBackupPath = Path.GetFullPath(Path.Combine(Program.overwriteDir, strDirectory));
 			strBackupPath = Path.Combine(strBackupPath, strModKey + "_" + Path.GetFileName(p_strDataRealtivePath));
 			FileManager.Delete(strBackupPath);
-			InstallLog.Current.RemoveDataFile(p_strMadBaseName, p_strDataRealtivePath);
 			InstallLog.Current.AddDataFile(p_strMadBaseName, p_strDataRealtivePath);
 		}
 
