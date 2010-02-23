@@ -44,7 +44,7 @@ namespace Fomm.FileManager
 			}
 			else
 			{
-				List<string> lstInstalledMods = InstallLog.Current.GetModList();
+				IList<string> lstInstalledMods = InstallLog.Current.GetModList();
 				TreeNode tndCurrentDirectory = null;
 				List<string> lstInstalledFiles = null;
 				foreach (string strMod in lstInstalledMods)
@@ -129,7 +129,7 @@ namespace Fomm.FileManager
 				return;
 			rlvOverwrites.Items.Clear();
 			string strFile = (string)lvwFiles.SelectedItems[0].Tag;
-			List<string> lstInstallers = InstallLog.Current.GetInstallingMods(strFile);
+			IList<string> lstInstallers = InstallLog.Current.GetInstallingMods(strFile);
 			ListViewItem lviMod = null;
 			foreach (string strMod in lstInstallers)
 			{
@@ -154,7 +154,7 @@ namespace Fomm.FileManager
 				return;
 			foreach (string strFile in lstDirectoryFiles)
 			{
-				List<string> lstInstallers = InstallLog.Current.GetInstallingMods(strFile);
+				IList<string> lstInstallers = InstallLog.Current.GetInstallingMods(strFile);
 				bool booMissing = false;
 				string currentOwner = InstallLog.Current.GetCurrentFileOwnerKey(strFile);					
 				foreach (string strMod in lstInstallers)
