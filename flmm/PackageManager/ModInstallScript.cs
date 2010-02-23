@@ -58,6 +58,24 @@ namespace Fomm.PackageManager
 		}
 
 		/// <summary>
+		/// Gets or sets a value indicating whether to overwrite
+		/// all files.
+		/// </summary>
+		/// <value>A value indicating whether to overwrite
+		/// all files.</value>
+		protected bool OverwriteAllFiles
+		{
+			get
+			{
+				return m_booOverwriteAll;
+			}
+			set
+			{
+				m_booOverwriteAll = value;
+			}
+		}
+
+		/// <summary>
 		/// Gets or sets the merge module we are using.
 		/// </summary>
 		/// <value>The merge module we are using.</value>
@@ -392,7 +410,7 @@ namespace Fomm.PackageManager
 		/// not to overwrite an existing file.</returns>
 		/// <exception cref="IllegalFilePathException">Thrown if <paramref name="p_strPath"/> is
 		/// not safe.</exception>
-		public bool GenerateDataFile(string p_strPath, byte[] p_bteData)
+		public virtual bool GenerateDataFile(string p_strPath, byte[] p_bteData)
 		{
 			PermissionsManager.CurrentPermissions.Assert();
 			FileManagement.AssertFilePathIsSafe(p_strPath);
@@ -446,8 +464,9 @@ namespace Fomm.PackageManager
 		/// Uninstalls the specified file.
 		/// </summary>
 		/// <remarks>
-		/// If the mod we are uninstalling nothing is done. If the mod we are uninstalling overwrote
-		/// a file when it installed the specified file then the overwritten file is restored. Otherwise
+		/// If the mod we are uninstalling doesn't own the file, then its version is removed
+		/// from the overwrites directory. If the mod we are uninstalling overwrote a file when it
+		/// installed the specified file, then the overwritten file is restored. Otherwise
 		/// the file is deleted.
 		/// </remarks>
 		/// <param name="p_strPath">The path to the file that is to be uninstalled.</param>
@@ -544,7 +563,7 @@ namespace Fomm.PackageManager
 		/// <param name="p_strValue">The value to which to set the key.</param>
 		/// <returns><lang cref="true"/> if the value was set; <lang cref="false"/>
 		/// if the user chose not to overwrite the existing value.</returns>
-		protected bool EditINI(string p_strFile, string p_strSection, string p_strKey, string p_strValue)
+		protected virtual bool EditINI(string p_strFile, string p_strSection, string p_strKey, string p_strValue)
 		{
 			if (m_booDontOverwriteAllIni)
 				return false;
@@ -701,7 +720,7 @@ namespace Fomm.PackageManager
 		/// <returns><lang cref="true"/> if the value was set; <lang cref="false"/>
 		/// if the user chose not to overwrite the existing value.</returns>
 		/// <exception cref="ShaderException">Thrown if the shader could not be edited.</exception>
-		public bool EditShader(int p_intPackage, string p_strShaderName, byte[] p_bteData)
+		public virtual bool EditShader(int p_intPackage, string p_strShaderName, byte[] p_bteData)
 		{
 			string strOldMod = InstallLog.Current.GetCurrentShaderEditorModName(p_intPackage, p_strShaderName);
 			string strMessage = null;

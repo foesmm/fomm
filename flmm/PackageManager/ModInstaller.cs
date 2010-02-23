@@ -101,7 +101,7 @@ namespace Fomm.PackageManager
 				if (Fomod.HasInstallScript)
 					Fomod.IsActive = RunCustomInstallScript();
 				else
-					Fomod.IsActive = RunBasicInstallScript();
+					Fomod.IsActive = RunBasicInstallScript("Installing Fomod");
 				if (Fomod.IsActive)
 				{
 					InstallLog.Current.Merge(Fomod, MergeModule);
@@ -132,15 +132,16 @@ namespace Fomm.PackageManager
 		/// <summary>
 		/// Runs the basic install script.
 		/// </summary>
+		/// <param name="p_strMessage">The message to display in the progress dialog.</param>
 		/// <returns><lang cref="true"/> if the installation was successful;
 		/// <lang cref="false"/> otherwise.</returns>
-		protected bool RunBasicInstallScript()
+		protected bool RunBasicInstallScript(string p_strMessage)
 		{
 			try
 			{
 				using (m_bwdProgress = new BackgroundWorkerProgressDialog(PerformBasicInstall))
 				{
-					m_bwdProgress.OverallMessage = "Installing Fomod";
+					m_bwdProgress.OverallMessage = p_strMessage;
 					m_bwdProgress.ShowItemProgress = false;
 					m_bwdProgress.OverallProgressStep = 1;
 					if (m_bwdProgress.ShowDialog() == DialogResult.Cancel)

@@ -183,6 +183,8 @@
     <Compile Include="BackgroundWorkerProgressDialog.Designer.cs">
       <DependentUpon>BackgroundWorkerProgressDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="PackageManager\Upgrade\ModUpgrader.cs" />
+    <Compile Include="PackageManager\Upgrade\UpgradeScanner.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

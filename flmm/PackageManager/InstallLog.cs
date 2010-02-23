@@ -42,6 +42,70 @@ namespace Fomm.PackageManager
 	 */
 	internal class InstallLog : InstallLogBase
 	{
+		/// <summary>
+		/// A summary of an installed fomod's info.
+		/// </summary>
+		public class FomodInfo : IComparable<FomodInfo>
+		{
+			#region Properties
+
+			/// <summary>
+			/// Gets or sets the base name of the fomod.
+			/// </summary>
+			/// <value>The base name of the fomod.</value>
+			public string BaseName { get; protected set; }
+
+			/// <summary>
+			/// Gets or sets the human-readable version of the fomod.
+			/// </summary>
+			/// <value>The human-readable version of the fomod.</value>
+			public string Version { get; protected set; }
+
+			/// <summary>
+			/// Gets or set the machine-readable version of the fomod.
+			/// </summary>
+			/// <value>The machine-readable version of the fomod.</value>
+			public Version MachineVersion { get; protected set; }
+
+			#endregion
+
+			#region Constructors
+
+			/// <summary>
+			/// A simple constructor that initializes the object with the specified values.
+			/// </summary>
+			/// <param name="p_strBaseName">The base name of the fomod.</param>
+			/// <param name="p_strVersion">The human-readable version of the fomod.</param>
+			/// <param name="p_verMachineVersion">The machine-readable version of the fomod.</param>
+			public FomodInfo(string p_strBaseName, string p_strVersion, Version p_verMachineVersion)
+			{
+				BaseName = p_strBaseName;
+				Version = p_strVersion;
+				MachineVersion = p_verMachineVersion;
+			}
+
+			#endregion
+
+			#region IComparable<FomodInfo> Members
+
+			/// <summary>
+			/// Compares this fomod info to the given fomod info.
+			/// </summary>
+			/// <param name="other">The fomod info to which to compare this fomod info.</param>
+			/// <returns>A value less than 0 if this fomod info is less than the given fomod info;
+			/// or, a value of 0 if this fomod info is equal to the given fomod info;
+			/// or, a value greater than 0 if this fomod is greater then the given fomod info.</returns>
+			public int CompareTo(FomodInfo other)
+			{
+				Int32 intResult = BaseName.CompareTo(other.BaseName);
+				if (intResult == 0)
+					intResult = MachineVersion.CompareTo(other.MachineVersion);
+				return intResult;
+			}
+
+			#endregion
+		}
+
 		public static readonly Version CURRENT_VERSION = new Version("0.1.1.0");
 		internal protected const string ORIGINAL_VALUES = "ORIGINAL_VALUES";
 		internal protected const string FOMM = "FOMM";
@@ -139,7 +203,7 @@ namespace Fomm.PackageManager
 			m_fswLogWatcher.Filter = Path.GetFileName(xmlpath);
 			m_fswLogWatcher.Changed += new FileSystemEventHandler(InstallLogWatcher_Changed);
 			m_fswLogWatcher.EnableRaisingEvents = true;
-			Load();			
+			Load();
 		}
 
 		#endregion
@@ -273,13 +337,54 @@ namespace Fomm.PackageManager
 		/// The return list is ordered alphabetically.
 		/// </remarks>
 		/// <returns>The list of mods that have been installed.</returns>
-		internal List<string> GetModList()
+		internal IList<string> GetModList()
 		{
 			List<string> lstMods = new List<string>();
 			foreach (string strMod in m_dicModList.Keys)
 				lstMods.Add(strMod);
 			lstMods.Sort();
 			return lstMods;
+		}
+
+		/// <summary>
+		/// Returns the list of mods that have been installed, with their
+		/// versions.
+		/// </summary>
+		/// <remarks>
+		/// The return list is ordered alphabetically.
+		/// </remarks>
+		/// <returns>The list of mods that have been installed, with their
+		/// versions.</returns>
+		internal IList<FomodInfo> GetVersionedModList()
+		{
+			List<FomodInfo> lstMods = new List<FomodInfo>();
+			XmlNodeList xnlMods = m_xelModListNode.ChildNodes;
+			XmlNode xndVersion = null;
+			string strBaseName = null;
+			foreach (XmlNode xndMod in xnlMods)
+			{
+				strBaseName = xndMod.Attributes["name"].InnerText;
+				if (strBaseName.Equals(ORIGINAL_VALUES) || strBaseName.Equals(FOMM))
+					continue;
+				xndVersion = xndMod.SelectSingleNode("version");
+				lstMods.Add(new FomodInfo(strBaseName, xndVersion.InnerText, new Version(xndVersion.Attributes["machineVersion"].InnerText)));
+			}
+			lstMods.Sort();
+			return lstMods;
+		}
+
+		/// <summary>
+		/// Returns install information about the specified <see cref="fomod"/>.
+		/// </summary>
+		/// <param name="p_strBaseName">The base name of the <see cref="fomod"/> for which to return information.</param>
+		/// <returns>Install information about the specified <see cref="fomod"/>, or <lang cref="null"/> if the
+		/// specified fomod is not installed.</returns>
+		internal FomodInfo GetModInfo(string p_strBaseName)
+		{
+			XmlNode xndVersion = m_xelModListNode.SelectSingleNode("mod[@name=\"" + p_strBaseName + "\"]/version");
+			if (xndVersion == null)
+				return null;
+			return new FomodInfo(p_strBaseName, xndVersion.InnerText, new Version(xndVersion.Attributes["machineVersion"].InnerText));
 		}
 
 		/// <summary>
@@ -352,7 +457,7 @@ namespace Fomm.PackageManager
 				XmlNode xndMod = AddMod(p_fomodMod.baseName);
 				if (xndMod == null)
 					return;
-				
+
 				XmlNode xndVersion = xndMod.AppendChild(xmlDoc.CreateElement("version"));
 				xndVersion.Attributes.Append(xmlDoc.CreateAttribute("machineVersion"));
 				xndVersion.Attributes["machineVersion"].InnerText = p_fomodMod.Version.ToString();
@@ -465,7 +570,7 @@ namespace Fomm.PackageManager
 		{
 			lock (dataFilesNode)
 			{
-				List<string> lstCurrentOrder = GetInstallingMods(p_strPath);
+				IList<string> lstCurrentOrder = GetInstallingMods(p_strPath);
 				if (lstCurrentOrder.Count != p_lstOrderedMods.Count)
 					throw new ArgumentException("The given list mods order must include all installing mods.", "p_lstOrderedMods");
 				foreach (string strMod in p_lstOrderedMods)
@@ -478,10 +583,6 @@ namespace Fomm.PackageManager
 				Save();
 			}
 		}
-
-		#endregion
-
-		#region File Install Logging
 
 		public string GetCurrentFileOwnerKey(string p_strPath)
 		{
@@ -511,6 +612,10 @@ namespace Fomm.PackageManager
 				return null;
 			return xndInstallingMod.Attributes["key"].InnerText;
 		}
+
+		#endregion
+
+		#region File Install Logging
 
 		/// <summary>
 		/// Creates a node representing that the specified mod installed the specified file.
@@ -559,6 +664,9 @@ namespace Fomm.PackageManager
 		/// <remarks>
 		/// This method appends the node to the end of the list of installing mods, indicating
 		/// that the specified mod is the latest mod to install the specified file.
+		/// 
+		/// If the specified mod has already installed the specified file, it is moved to the end of the
+		/// list, making if the current owner.
 		/// </remarks>
 		/// <param name="p_strModName">The base name of the mod that installed the file.</param>
 		/// <param name="p_strPath">The path of the file that was installed.</param>
@@ -570,6 +678,25 @@ namespace Fomm.PackageManager
 			{
 				xndModList.AppendChild(xndInstallingMod);
 			}
+		}
+
+		/// <summary>
+		/// Replaces a node representing that the specified mod installed the specified file.
+		/// </summary>
+		/// <remarks>
+		/// If the specified mod already installed the specified file, nothing is done. Otherwise,
+		/// this method appends the node to the end of the list of installing mods, indicating
+		/// that the specified mod is the latest mod to install the specified file.
+		/// </remarks>
+		/// <param name="p_strModName">The base name of the mod that installed the file.</param>
+		/// <param name="p_strPath">The path of the file that was installed.</param>
+		/// <seealso cref="AddDataFile(string p_strModName, string p_strPath)"/>
+		protected void ReplaceDataFile(string p_strModName, string p_strPath)
+		{
+			p_strPath = NormalizePath(p_strPath.ToLowerInvariant());
+			XmlNode xndInstallingMod = dataFilesNode.SelectSingleNode("file[@path=\"" + p_strPath + "\"]/installingMods/mod[@key=\"" + GetModKey(p_strModName) + "\"]");
+			if (xndInstallingMod == null)
+				AddDataFile(p_strModName, p_strPath);
 		}
 
 		/// <summary>
@@ -593,7 +720,7 @@ namespace Fomm.PackageManager
 		/// </summary>
 		/// <param name="p_strModName">The base name of the mod that installed the file.</param>
 		/// <param name="p_strPath">The path of the file that was installed.</param>
-		internal protected void RemoveDataFile(string p_strModName, string p_strPath)
+		protected void RemoveDataFile(string p_strModName, string p_strPath)
 		{
 			p_strPath = NormalizePath(p_strPath.ToLowerInvariant());
 			lock (dataFilesNode)
@@ -612,7 +739,29 @@ namespace Fomm.PackageManager
 
 		#endregion
 
-		#region Ini File Edit Logging
+		#region Ini Edit Version Management
+
+		/// <summary>
+		/// Returns the list of mods that have edited the spcified Ini value.
+		/// </summary>
+		/// <remarks>
+		/// The returned list is ordered by install date. In other words, the first
+		/// mod in the list was the first to edit the value, and the last mod in
+		/// the list was the most recent. This implies that the current version of
+		/// the specified edit was installed by the last mod in the list. 
+		/// </remarks>
+		/// <param name="p_strFile">The Ini file containing the key whose editors are to be retrieved.</param>
+		/// <param name="p_strSection">The section containing the key whose editors are to be retrieved.</param>
+		/// <param name="p_strKey">The key whose editors are to be retrieved.</param>
+		/// <returns>The list of mods that have edited the specified Ini value.</returns>
+		internal List<string> GetInstallingMods(string p_strFile, string p_strSection, string p_strKey)
+		{
+			List<string> lstInstallers = new List<string>();
+			XmlNodeList xnlInstallingMods = iniEditsNode.SelectNodes("ini[@file=\"" + p_strFile.ToLowerInvariant() + "\" and @section=\"" + p_strSection.ToLowerInvariant() + "\" and @key=\"" + p_strKey.ToLowerInvariant() + "\"]/installingMods/*");
+			foreach (XmlNode xndInallingMod in xnlInstallingMods)
+				lstInstallers.Add(GetModName(xndInallingMod.Attributes["key"].InnerText));
+			return lstInstallers;
+		}
 
 		public string GetCurrentIniEditorModName(string file, string section, string key)
 		{
@@ -650,6 +799,10 @@ namespace Fomm.PackageManager
 				return null;
 			return xndInstallingMod.InnerText;
 		}
+
+		#endregion
+
+		#region Ini Edit Logging
 
 		/// <summary>
 		/// Creates a node representing that the specified mod made the specified Ini edit.
@@ -725,6 +878,33 @@ namespace Fomm.PackageManager
 		}
 
 		/// <summary>
+		/// Replaces a node representing that the specified mod made the specified Ini edit.
+		/// </summary>
+		/// <remarks>
+		/// If the specified mod already edited the specified file, the value of the edit is updated,
+		/// but the install order is not changed. Otherwise, this method appends the node to the end of the
+		/// list of installing mods, indicating that the specified mod is the latest mod to edit the
+		/// specified Ini value.
+		/// </remarks>
+		/// <param name="p_strFile">The Ini file that was edited.</param>
+		/// <param name="p_strSection">The section in the Ini file that was edited.</param>
+		/// <param name="p_strKey">The key in the Ini file that was edited.</param>
+		/// <param name="p_strModName">The base name of the mod that made the edit.</param>
+		/// <param name="p_strValue">The value to which to the key was set.</param>
+		/// <seealso cref="AddIniEdit(string p_strFile, string p_strSection, string p_strKey, string p_strModName, string p_strValue)"/>
+		internal protected void ReplaceIniEdit(string p_strFile, string p_strSection, string p_strKey, string p_strModName, string p_strValue)
+		{
+			p_strFile = p_strFile.ToLowerInvariant();
+			p_strSection = p_strSection.ToLowerInvariant();
+			p_strKey = p_strKey.ToLowerInvariant();
+			XmlNode xndInstallingMod = iniEditsNode.SelectSingleNode("ini[@file=\"" + p_strFile + "\" and @section=\"" + p_strSection + "\" and @key=\"" + p_strKey + "\"]/installingMods/mod[@key=\"" + GetModKey(p_strModName) + "\"]");
+			if (xndInstallingMod != null)
+				xndInstallingMod.InnerText = p_strValue;
+			else
+				AddIniEdit(p_strFile, p_strSection, p_strKey, p_strModName, p_strValue);
+		}
+
+		/// <summary>
 		/// Adds a node representing that the specified mod made the specified Ini edit.
 		/// </summary>
 		/// <remarks>
@@ -747,9 +927,56 @@ namespace Fomm.PackageManager
 				xndModList.PrependChild(xndInstallingMod);
 		}
 
+		/// <summary>
+		/// Removes the node representing that the specified mod edited the specified Ini value.
+		/// </summary>
+		/// <param name="p_strModName">The base name of the mod that edited the value.</param>
+		/// <param name="p_strFile">The Ini file that was edited.</param>
+		/// <param name="p_strSection">The section in the Ini file that was edited.</param>
+		/// <param name="p_strKey">The key in the Ini file that was edited.</param>
+		protected void RemoveIniEdit(string p_strModName, string p_strFile, string p_strSection, string p_strKey)
+		{
+			p_strFile = p_strFile.ToLowerInvariant();
+			p_strSection = p_strSection.ToLowerInvariant();
+			p_strKey = p_strKey.ToLowerInvariant();
+			lock (iniEditsNode)
+			{
+				XmlNode xndInstallingMod = iniEditsNode.SelectSingleNode("ini[@file=\"" + p_strFile + "\" and @section=\"" + p_strSection + "\" and @key=\"" + p_strKey + "\"]/installingMods/mod[@key=\"" + GetModKey(p_strModName) + "\"]");
+				if (xndInstallingMod != null)
+				{
+					XmlNode xndInstallingMods = xndInstallingMod.ParentNode;
+					XmlNode xndIniEdit = xndInstallingMods.ParentNode;
+					xndInstallingMods.RemoveChild(xndInstallingMod);
+					if ((xndInstallingMods.ChildNodes.Count == 0) || (xndInstallingMods.LastChild.Attributes["key"].InnerText.Equals(GetModKey(ORIGINAL_VALUES))))
+						xndIniEdit.ParentNode.RemoveChild(xndIniEdit);
+				}
+			}
+		}
+
 		#endregion
 
-		#region Shader Edit Logging
+		#region Shader Edit Version Management
+
+		/// <summary>
+		/// Returns the list of mods that have edited the spcified Ini value.
+		/// </summary>
+		/// <remarks>
+		/// The returned list is ordered by install date. In other words, the first
+		/// mod in the list was the first to edit the shader, and the last mod in
+		/// the list was the most recent. This implies that the current version of
+		/// the specified edit was installed by the last mod in the list. 
+		/// </remarks>
+		/// <param name="p_intPackage">The package containing the shader whose editors are to be retrieved.</param>
+		/// <param name="p_strShaderName">The shader whose whose editors are to be retrieved.</param>
+		/// <returns>The list of mods that have edited the specified shader.</returns>
+		internal List<string> GetInstallingMods(int p_intPackage, string p_strShaderName)
+		{
+			List<string> lstInstallers = new List<string>();
+			XmlNodeList xnlInstallingMods = sdpEditsNode.SelectNodes("sdp[@package=\"" + p_intPackage + "\" and @shader=\"" + p_strShaderName.ToLowerInvariant() + "\"]/installingMods/*");
+			foreach (XmlNode xndInallingMod in xnlInstallingMods)
+				lstInstallers.Add(GetModName(xndInallingMod.Attributes["key"].InnerText));
+			return lstInstallers;
+		}
 
 		public string GetCurrentShaderEditorModName(int p_intPackage, string p_strName)
 		{
@@ -790,6 +1017,10 @@ namespace Fomm.PackageManager
 				bteData[i] = byte.Parse("" + strData[i * 2] + strData[i * 2 + 1], System.Globalization.NumberStyles.AllowHexSpecifier);
 			return bteData;
 		}
+
+		#endregion
+
+		#region Shader Edit Logging
 
 		/// <summary>
 		/// Creates a node representing that the specified mod made the specified sdp edit.
@@ -863,6 +1094,35 @@ namespace Fomm.PackageManager
 		}
 
 		/// <summary>
+		/// Replaces a node representing that the specified mod made the specified sdp edit.
+		/// </summary>
+		/// <remarks>
+		/// If the specified mod already edited the specified shader, the value of the edit is updated,
+		/// but the install order is not changed. Otherwise, this method appends the node to the end of the
+		/// list of installing mods, indicating that the specified mod is the latest mod to edit the
+		/// specified shader.
+		/// </remarks>
+		/// <param name="p_strModName">The base name of the mod that made the edit.</param>
+		/// <param name="p_intPackage">The package containing the shader that was edited.</param>
+		/// <param name="p_strShaderName">The shader that was edited.</param>
+		/// <param name="p_bteData">The value to which to the shader was set.</param>
+		/// <seealso cref="AddShaderEdit(string p_strModName, int p_intPackage, string p_strShader, byte[] p_bteData)"/>
+		internal protected void ReplaceShaderEdit(string p_strModName, int p_intPackage, string p_strShader, byte[] p_bteData)
+		{
+			string strLoweredShader = p_strShader.ToLowerInvariant();
+			XmlNode xndInstallingMod = sdpEditsNode.SelectSingleNode("sdp[@package=\"" + p_intPackage + "\" and @shader=\"" + strLoweredShader + "\"]/installingMods/mod[@key=\"" + GetModKey(p_strModName) + "\"]");
+			if (xndInstallingMod != null)
+			{
+				StringBuilder stbData = new StringBuilder(p_bteData.Length * 2);
+				for (int i = 0; i < p_bteData.Length; i++)
+					stbData.Append(p_bteData[i].ToString("x2"));
+				xndInstallingMod.InnerText = stbData.ToString();
+			}
+			else
+				AddShaderEdit(p_strModName, p_intPackage, p_strShader, p_bteData);
+		}
+
+		/// <summary>
 		/// Adds a node representing that the specified mod made the specified sdp edit.
 		/// </summary>
 		/// <remarks>
@@ -882,6 +1142,29 @@ namespace Fomm.PackageManager
 				xndModList.InsertAfter(xndInstallingMod, xndModList.FirstChild);
 			else
 				xndModList.PrependChild(xndInstallingMod);
+		}
+
+		/// <summary>
+		/// Removes the node representing that the specified mod edited the specified shader.
+		/// </summary>
+		/// <param name="p_strModName">The base name of the mod that edited the shader.</param>
+		/// <param name="p_intPackage">The package containing the shader that was edited.</param>
+		/// <param name="p_strShaderName">The shader that was edited.</param>
+		protected void RemoveShaderEdit(string p_strModName, int p_intPackage, string p_strShader)
+		{
+			string strLoweredShader = p_strShader.ToLowerInvariant();
+			lock (sdpEditsNode)
+			{
+				XmlNode xndInstallingMod = sdpEditsNode.SelectSingleNode("sdp[@package=\"" + p_intPackage + "\" and @shader=\"" + strLoweredShader + "\"]/installingMods/mod[@key=\"" + GetModKey(p_strModName) + "\"]");
+				if (xndInstallingMod != null)
+				{
+					XmlNode xndInstallingMods = xndInstallingMod.ParentNode;
+					XmlNode xndSdpEdit = xndInstallingMods.ParentNode;
+					xndInstallingMods.RemoveChild(xndInstallingMod);
+					if ((xndInstallingMods.ChildNodes.Count == 0) || (xndInstallingMods.LastChild.Attributes["key"].InnerText.Equals(GetModKey(ORIGINAL_VALUES))))
+						xndSdpEdit.ParentNode.RemoveChild(xndSdpEdit);
+				}
+			}
 		}
 
 		#endregion
@@ -904,13 +1187,65 @@ namespace Fomm.PackageManager
 
 		/// <summary>
 		/// Merges the installed and edited components in the given <see cref="InstallLogMergeModule"/>
+		/// into the install log for the specified mod, as an in-place upgrade.
+		/// </summary>
+		/// <remarks>
+		/// When a <see cref="InstallLogMergeModule"/> is merged as an in-place upgrade, any files/changes
+		/// that exist in the install log for the given fomod are replaced where they are in the install
+		/// order, rather than being made the file/change owner (unless they already where the file/change
+		/// owner). Note, however, that if the merge module contains new files/changes that the previous fomod
+		/// version did not contain the fomods will become the owner of the new files/changes.
+		/// 
+		/// Also, changes that are logged for the speicifed fomod that are not in the given
+		/// <see cref="InstallLogMergeModule"/> are removed from the install log.
+		/// </remarks>
+		/// <param name="p_fomodMod">The <see cref="fomod"/> for which the
+		/// installs and edits where made.</param>
+		/// <param name="p_ilmMergeModule">The installs and edits that where made as part of the
+		/// <see cref="fomod"/>'s upgrade.</param>
+		public void MergeUpgrade(fomod p_fomodMod, InstallLogMergeModule p_ilmMergeModule)
+		{
+			AddMod(p_fomodMod);
+			UpdateMod(p_fomodMod);
+
+			//remove changes that were not made in the upgrade
+			InstallLogMergeModule ilmPreviousChanges = GetMergeModule(p_fomodMod.baseName);
+			foreach (string strFile in ilmPreviousChanges.DataFiles)
+				if (!p_ilmMergeModule.ContainsFile(strFile))
+					RemoveDataFile(p_fomodMod.baseName, strFile);
+			foreach (InstallLogMergeModule.IniEdit iniEdit in ilmPreviousChanges.IniEdits)
+				if (!p_ilmMergeModule.IniEdits.Contains(iniEdit))
+					RemoveIniEdit(p_fomodMod.baseName, iniEdit.File, iniEdit.Section, iniEdit.Key);
+			foreach (InstallLogMergeModule.SdpEdit sdpEdit in ilmPreviousChanges.SdpEdits)
+				if (!p_ilmMergeModule.SdpEdits.Contains(sdpEdit))
+					RemoveShaderEdit(p_fomodMod.baseName, sdpEdit.Package, sdpEdit.ShaderName);
+
+			//add/replace changes
+			foreach (string strFile in p_ilmMergeModule.ReplacedOriginalDataFiles)
+				AddDataFile(ORIGINAL_VALUES, strFile);
+			foreach (string strFile in p_ilmMergeModule.DataFiles)
+				ReplaceDataFile(p_fomodMod.baseName, strFile);
+			foreach (InstallLogMergeModule.IniEdit iniEdit in p_ilmMergeModule.ReplacedOriginalIniValues)
+				AddIniEdit(iniEdit.File, iniEdit.Section, iniEdit.Key, ORIGINAL_VALUES, iniEdit.Value);
+			foreach (InstallLogMergeModule.IniEdit iniEdit in p_ilmMergeModule.IniEdits)
+				ReplaceIniEdit(iniEdit.File, iniEdit.Section, iniEdit.Key, p_fomodMod.baseName, iniEdit.Value);
+			foreach (InstallLogMergeModule.SdpEdit spdEdit in p_ilmMergeModule.ReplacedOriginalSdpData)
+				AddShaderEdit(ORIGINAL_VALUES, spdEdit.Package, spdEdit.ShaderName, spdEdit.Data);
+			foreach (InstallLogMergeModule.SdpEdit spdEdit in p_ilmMergeModule.SdpEdits)
+				ReplaceShaderEdit(p_fomodMod.baseName, spdEdit.Package, spdEdit.ShaderName, spdEdit.Data);
+
+			Save();
+		}
+
+		/// <summary>
+		/// Merges the installed and edited components in the given <see cref="InstallLogMergeModule"/>
 		/// into the install log for the specified mod.
 		/// </summary>
 		/// <param name="p_strModName">The base name of the unversioned <see cref="fomod"/> for which the
 		/// installs and edits where made.</param>
 		/// <param name="p_ilmMergeModule">The installs and edits that where made as part of the
 		/// <see cref="fomod"/>'s installation.</param>
-		public void UnversionedFomodMerge(string p_strModName, InstallLogMergeModule p_ilmMergeModule)
+		internal void UnversionedFomodMerge(string p_strModName, InstallLogMergeModule p_ilmMergeModule)
 		{
 			AddMod(p_strModName);
 			processMergeModule(p_strModName, p_ilmMergeModule);

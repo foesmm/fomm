@@ -335,6 +335,8 @@ namespace Fomm.PackageManager
 			return false;
 		}
 
+		#region File Management
+
 		/// <summary>
 		/// Determins if this merge module contains the specified file. 
 		/// </summary>
@@ -374,6 +376,10 @@ namespace Fomm.PackageManager
 			if (!ListContains(m_lstReplacedDataFiles, p_strDataPath))
 				m_lstReplacedDataFiles.Add(p_strDataPath);
 		}
+
+		#endregion
+
+		#region Ini Management
 
 		/// <summary>
 		/// Adds the given Ini edit to the mod install log.
@@ -424,6 +430,10 @@ namespace Fomm.PackageManager
 			iniEdit.Value = p_strValue;
 		}
 
+		#endregion
+
+		#region Shader Management
+
 		/// <summary>
 		/// Adds the given Shader edit to the mod install log.
 		/// </summary>
@@ -466,5 +476,7 @@ namespace Fomm.PackageManager
 				spdEdit = m_lstReplacedSdpData[intIndex];
 			spdEdit.Data = p_bteData;
 		}
+
+		#endregion
 	}
 }

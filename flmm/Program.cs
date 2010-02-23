@@ -22,6 +22,7 @@ using System.IO;
 using System.Diagnostics;
 using Fomm.PackageManager;
 using Fomm.InstallLogUpgraders;
+using Fomm.PackageManager.Upgrade;
 
 namespace Fomm
 {
@@ -606,6 +607,10 @@ namespace Fomm
 						return;
 					}
 				}
+
+				//check to see if any fomod versions have changed, and whether to upgrade them
+				UpgradeScanner upsScanner = new UpgradeScanner();
+				upsScanner.Scan();
 
 				if (Array.IndexOf<string>(args, "-install-tweaker") != -1)
 				{
