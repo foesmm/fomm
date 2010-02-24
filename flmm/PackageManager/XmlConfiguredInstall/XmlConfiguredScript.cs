@@ -190,11 +190,11 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		{
 			string strSource = plfFile.Source;
 			string strDest = plfFile.Destination;
-			m_bwdProgress.ItemMessage = "Installing " + strDest;
+			m_bwdProgress.ItemMessage = "Installing " + (String.IsNullOrEmpty(strDest) ? strSource : strDest);
 			if (plfFile.IsFolder)
 			{
-				if (!CopyDataFolder(strSource, plfFile.Destination))
-					throw new ApplicationException("Could not install " + strSource + " to " + plfFile.Destination);
+				if (!CopyDataFolder(strSource, strDest))
+					throw new ApplicationException("Could not install " + strSource + " to " + strDest);
 
 				if (m_bwdProgress.Cancelled())
 					return false;
@@ -202,10 +202,10 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 				//if the destination length is greater than 0, then nothing in
 				// this folder is directly in the Data folder as so cannot be
 				// activated
-				if (plfFile.Destination.Length == 0)
+				if (strDest.Length == 0)
 				{
 					List<string> lstFiles = GetFomodFolderFileList(strSource);
-					m_bwdProgress.ItemMessage = "Activating " + plfFile.Destination;
+					m_bwdProgress.ItemMessage = "Activating " + (String.IsNullOrEmpty(strDest) ? strSource : strDest);
 					m_bwdProgress.ItemProgress = 0;
 					m_bwdProgress.ItemProgressMaximum = lstFiles.Count;
 

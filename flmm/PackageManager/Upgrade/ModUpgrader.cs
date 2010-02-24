@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using System.Windows.Forms;
 
 namespace Fomm.PackageManager.Upgrade
 {
@@ -21,6 +22,7 @@ namespace Fomm.PackageManager.Upgrade
 	public class ModUpgrader : ModInstaller
 	{
 		private fomod m_fomodOriginalMod = null;
+		private BackgroundWorkerProgressDialog m_bwdProgress = null;
 
 		#region Properties
 
@@ -138,8 +140,14 @@ namespace Fomm.PackageManager.Upgrade
 					booUpgraded = RunBasicInstallScript(ProgressMessage);
 				if (booUpgraded)
 				{
-					InstallLogMergeModule ilmPreviousChanges = InstallLog.Current.GetMergeModule(Fomod.BaseName);
-					ReconcileDifferences(ilmPreviousChanges, MergeModule);
+					using (m_bwdProgress = new BackgroundWorkerProgressDialog(ReconcileDifferences))
+					{
+						m_bwdProgress.OverallMessage = "Finalizing Upgrade";
+						m_bwdProgress.ItemProgressStep = 1;
+						m_bwdProgress.OverallProgressStep = 1;
+						if (m_bwdProgress.ShowDialog() == DialogResult.Cancel)
+							return false;
+					}
 					string strOldBaseName = Fomod.BaseName;
 					((UpgradeFomod)Fomod).SetBaseName(((UpgradeFomod)Fomod).OriginalBaseName);
 					InstallLog.Current.MergeUpgrade(Fomod, strOldBaseName, MergeModule);
@@ -174,19 +182,48 @@ namespace Fomm.PackageManager.Upgrade
 		/// This undoes any changes that were made by the previous version of the fomod being upgraded, but
 		/// were not made by the current version.
 		/// </summary>
-		/// <param name="p_ilmPreviousChanges">The changes made by the version of the fomod that is being replacecd.</param>
-		/// <param name="p_ilmNewChanges">The changes made by the version of the fomod that is being installed.</param>
-		private void ReconcileDifferences(InstallLogMergeModule p_ilmPreviousChanges, InstallLogMergeModule p_ilmNewChanges)
+		/// <remarks>
+		/// This method is used for the background worker.
+		/// </remarks>
+		private void ReconcileDifferences()
 		{
-			foreach (string strFile in p_ilmPreviousChanges.DataFiles)
-				if (!p_ilmNewChanges.ContainsFile(strFile))
+			m_bwdProgress.OverallProgressMaximum = 3;
+			m_bwdProgress.ItemMessage = "Synchronizing Files";
+			InstallLogMergeModule ilmPreviousChanges = InstallLog.Current.GetMergeModule(Fomod.BaseName);
+			m_bwdProgress.ItemProgressMaximum = ilmPreviousChanges.DataFiles.Count;
+			foreach (string strFile in ilmPreviousChanges.DataFiles)
+			{
+				if (!MergeModule.ContainsFile(strFile))
 					UninstallDataFile(strFile);
-			foreach (InstallLogMergeModule.IniEdit iniEdit in p_ilmPreviousChanges.IniEdits)
-				if (!p_ilmNewChanges.IniEdits.Contains(iniEdit))
+				if (m_bwdProgress.Cancelled())
+					return;
+				m_bwdProgress.StepItemProgress();
+			}
+			m_bwdProgress.StepOverallProgress();
+
+			m_bwdProgress.ItemMessage = "Synchronizing Ini Edits";
+			m_bwdProgress.ItemProgressMaximum = ilmPreviousChanges.IniEdits.Count;
+			foreach (InstallLogMergeModule.IniEdit iniEdit in ilmPreviousChanges.IniEdits)
+			{
+				if (!MergeModule.IniEdits.Contains(iniEdit))
 					UneditIni(iniEdit.File, iniEdit.Section, iniEdit.Key);
-			foreach (InstallLogMergeModule.SdpEdit sdpEdit in p_ilmPreviousChanges.SdpEdits)
-				if (!p_ilmNewChanges.SdpEdits.Contains(sdpEdit))
+				if (m_bwdProgress.Cancelled())
+					return;
+				m_bwdProgress.StepItemProgress();
+			}
+			m_bwdProgress.StepOverallProgress();
+
+			m_bwdProgress.ItemMessage = "Synchronizing Shader Edits";
+			m_bwdProgress.ItemProgressMaximum = ilmPreviousChanges.SdpEdits.Count;
+			foreach (InstallLogMergeModule.SdpEdit sdpEdit in ilmPreviousChanges.SdpEdits)
+			{
+				if (!MergeModule.SdpEdits.Contains(sdpEdit))
 					UneditShader(sdpEdit.Package, sdpEdit.ShaderName);
+				if (m_bwdProgress.Cancelled())
+					return;
+				m_bwdProgress.StepItemProgress();
+			}
+			m_bwdProgress.StepOverallProgress();
 		}
 
 		#region File Creation
