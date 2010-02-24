@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using fomm.Transactions;
+using System.Text.RegularExpressions;
 
 namespace ChinhDo.Transactions
 {
@@ -77,16 +78,39 @@ namespace ChinhDo.Transactions
 				File.Copy(sourceFileName, destFileName, overwrite);
 			}
 
+			private static readonly Regex m_rgxCleanPath = new Regex("[" + Path.DirectorySeparatorChar + Path.AltDirectorySeparatorChar + "]{2,}");
 			/// <summary>
 			/// Creates all directories in the specified path.
 			/// </summary>
 			/// <param name="path">The directory path to create.</param>
 			public void CreateDirectory(string path)
 			{
+				//because a call to this method can actually create multiple diretories,
+				// we need to find out explicitly which are being created, and add a
+				// journal entry for each.
+
+				string strNormalizedPath = m_rgxCleanPath.Replace(path, Path.DirectorySeparatorChar.ToString());
+				strNormalizedPath = strNormalizedPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+				string[] strPaths = strNormalizedPath.Split(Path.DirectorySeparatorChar);
+
 				if (_tx != null)
 				{
-					_journal.Add(new RollbackDirectory(path));
-					Enlist();
+					Int32 i = 0;
+					string strPath = "";
+					if (strPaths[0].EndsWith(Path.VolumeSeparatorChar.ToString()))
+					{
+						strPath = strPaths[0] + Path.DirectorySeparatorChar;
+						i++;
+					}
+					for (; i < strPaths.Length; i++)
+					{
+						strPath = Path.Combine(strPath, strPaths[i]);
+						if (!Directory.Exists(strPath))
+						{
+							_journal.Add(new RollbackDirectory(strPath));
+							Enlist();
+						}
+					}
 				}
 
 				Directory.CreateDirectory(path);
@@ -333,7 +357,8 @@ namespace ChinhDo.Transactions
 						}
 						else
 						{
-							EventLog.WriteEntry(GetType().FullName, "Failed to delete directory " + _path + ". Directory was not empty.", EventLogEntryType.Warning);
+							//EventLog.WriteEntry(GetType().FullName, "Failed to delete directory " + _path + ". Directory was not empty.", EventLogEntryType.Warning);
+							throw new TransactionException("Failed to delete directory " + _path + ". Directory was not empty.");
 						}
 					}
 				}
