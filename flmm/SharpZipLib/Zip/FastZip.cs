@@ -38,6 +38,43 @@ using System.IO;
 using ICSharpCode.SharpZipLib.Core;
 
 namespace ICSharpCode.SharpZipLib.Zip {
+
+	/// <summary>
+	/// Describes the arguments for the <see cref="FastZip.EntryExtracted"/> event.
+	/// </summary>
+	public class ZipEventArgs : EventArgs
+	{
+		#region Properties
+
+		/// <summary>
+		/// Gets the name of the entry that was operated on.
+		/// </summary>
+		/// <value>The name of the entry that was operated on.</value>
+		public string Entry { get; protected set; }
+
+		/// <summary>
+		/// Gets or sets whether the zip operation should be cancelled.
+		/// </summary>
+		/// <value>Whether the zip operation should be cancelled.</value>
+		public bool Cancel { get; set; }
+
+		#endregion
+
+		#region Constructors
+
+		/// <summary>
+		/// A simple constructor that initializes the object with the given values.
+		/// </summary>
+		/// <param name="p_strEntry">The name of the entry that was operated on.</param>
+		public ZipEventArgs(string p_strEntry)
+		{
+			Entry = p_strEntry;
+			Cancel = false;
+		}
+
+		#endregion
+	}
+
     /// <summary>
     /// FastZip provides facilities for creating and extracting zip files.
     /// </summary>
@@ -62,8 +99,50 @@ namespace ICSharpCode.SharpZipLib.Zip {
         }
         #endregion
 
-        #region CreateZip
-        /// <summary>
+		#region Events
+
+		/// <summary>
+		/// Raised when a <see cref="ZipEntry"/> has been extracted.
+		/// </summary>
+		public event EventHandler<ZipEventArgs> EntryExtracted;
+
+		/// <summary>
+		/// Raised when a <see cref="ZipEntry"/> has been added to an archive.
+		/// </summary>
+		//public event EventHandler<ZipEventArgs> EntryAdded;
+
+		/// <summary>
+		/// Raises the <see cref="EntryExtracted"/> event.
+		/// </summary>
+		/// <param name="p_zeEntry">The <see cref="ZipEntry"/> that was extracted.</param>
+		protected void OnEntryExtracted(ZipEntry p_zeEntry)
+		{
+			if (EntryExtracted != null)
+			{
+				ZipEventArgs zeaArgs = new ZipEventArgs(p_zeEntry.Name);
+				EntryExtracted(this, zeaArgs);
+				continueRunning_ &= !zeaArgs.Cancel;
+			}
+		}
+
+		/// <summary>
+		/// Raises the <see cref="EntryAdded"/> event.
+		/// </summary>
+		/// <param name="p_zeEntry">The <see cref="ZipEntry"/> that was added.</param>
+		/*protected void OnEntryAdded(ZipEntry p_zeEntry)
+		{
+			if (EntryAdded != null)
+			{
+				ZipEventArgs zeaArgs = new ZipEventArgs(p_zeEntry.Name);
+				EntryAdded(this, zeaArgs);
+				continueRunning_ &= !zeaArgs.Cancel;
+			}
+		}*/
+
+		#endregion
+
+		#region CreateZip
+		/// <summary>
         /// Create a zip file/archive.
         /// </summary>
         /// <param name="zipFileName">The name of the zip file to create.</param>
@@ -227,6 +306,7 @@ namespace ICSharpCode.SharpZipLib.Zip {
             if(doExtraction && entry.IsFile) {
                 ExtractFileEntry(entry, targetName);
             }
+			OnEntryExtracted(entry);
         }
 
         #endregion
