@@ -144,6 +144,7 @@
     <Compile Include="PackageManager\ModInstaller.cs" />
     <Compile Include="PackageManager\InstallLogMergeModule.cs" />
     <Compile Include="PackageManager\ModInstallScript.cs" />
+    <Compile Include="PackageManager\ModReactivator.cs" />
     <Compile Include="PackageManager\ModScript.cs" />
     <Compile Include="PackageManager\ModUninstaller.cs" />
     <Compile Include="PackageManager\PermissionsManager.cs" />

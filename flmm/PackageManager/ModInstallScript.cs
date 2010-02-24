@@ -189,60 +189,63 @@ namespace Fomm.PackageManager
 		/// <seealso cref="DoScript()"/>
 		protected bool Run(bool p_booSuppressSuccessMessage)
 		{
-			if (CheckAlreadyDone())
-				return true;
-
 			bool booSuccess = false;
-			try
+			if (CheckAlreadyDone())
+				booSuccess = true;
+
+			if (!booSuccess)
 			{
-				//the install process modifies INI and config files.
-				// if multiple sources (i.e., installs) try to modify
-				// these files simultaneously the outcome is not well known
-				// (e.g., one install changes SETTING1 in a config file to valueA
-				// while simultaneously another install changes SETTING1 in the
-				// file to value2 - after each install commits its changes it is
-				// not clear what the value of SETTING1 will be).
-				// as a result, we only allow one mod to be installed at a time,
-				// hence the lock.
-				lock (ModInstallScript.objInstallLock)
+				try
 				{
-					using (TransactionScope tsTransaction = new TransactionScope())
+					//the install process modifies INI and config files.
+					// if multiple sources (i.e., installs) try to modify
+					// these files simultaneously the outcome is not well known
+					// (e.g., one install changes SETTING1 in a config file to valueA
+					// while simultaneously another install changes SETTING1 in the
+					// file to value2 - after each install commits its changes it is
+					// not clear what the value of SETTING1 will be).
+					// as a result, we only allow one mod to be installed at a time,
+					// hence the lock.
+					lock (ModInstallScript.objInstallLock)
 					{
-						m_tfmFileManager = new TxFileManager();
-						booSuccess = DoScript();
-						if (booSuccess)
-							tsTransaction.Complete();
+						using (TransactionScope tsTransaction = new TransactionScope())
+						{
+							m_tfmFileManager = new TxFileManager();
+							booSuccess = DoScript();
+							if (booSuccess)
+								tsTransaction.Complete();
+						}
 					}
 				}
-			}
-			catch (Exception e)
-			{
-				StringBuilder stbError = new StringBuilder(e.Message);
-				if (e.InnerException != null)
-					stbError.AppendLine().AppendLine(e.InnerException.Message);
-				if (e is RollbackException)
-					foreach (RollbackException.ExceptedResourceManager erm in ((RollbackException)e).ExceptedResourceManagers)
-					{
-						stbError.AppendLine(erm.ResourceManager.ToString());
-						stbError.AppendLine(erm.Exception.Message);
-						if (erm.Exception.InnerException != null)
-							stbError.AppendLine(erm.Exception.InnerException.Message);
-					}
-				string strMessage = String.Format(ExceptionMessage, stbError.ToString());
-				System.Windows.Forms.MessageBox.Show(strMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return false;
-			}
-			finally
-			{
-				m_lstOverwriteFolders.Clear();
-				m_lstDontOverwriteFolders.Clear();
-				m_tfmFileManager = null;
-				m_booDontOverwriteAll = false;
-				m_booOverwriteAll = false;
-				m_booDontOverwriteAllIni = false;
-				m_booOverwriteAllIni = false;
-				ActivePlugins = null;
-				m_ilmModInstallLog = null;
+				catch (Exception e)
+				{
+					StringBuilder stbError = new StringBuilder(e.Message);
+					if (e.InnerException != null)
+						stbError.AppendLine().AppendLine(e.InnerException.Message);
+					if (e is RollbackException)
+						foreach (RollbackException.ExceptedResourceManager erm in ((RollbackException)e).ExceptedResourceManagers)
+						{
+							stbError.AppendLine(erm.ResourceManager.ToString());
+							stbError.AppendLine(erm.Exception.Message);
+							if (erm.Exception.InnerException != null)
+								stbError.AppendLine(erm.Exception.InnerException.Message);
+						}
+					string strMessage = String.Format(ExceptionMessage, stbError.ToString());
+					System.Windows.Forms.MessageBox.Show(strMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					return false;
+				}
+				finally
+				{
+					m_lstOverwriteFolders.Clear();
+					m_lstDontOverwriteFolders.Clear();
+					m_tfmFileManager = null;
+					m_booDontOverwriteAll = false;
+					m_booOverwriteAll = false;
+					m_booDontOverwriteAllIni = false;
+					m_booOverwriteAllIni = false;
+					ActivePlugins = null;
+					m_ilmModInstallLog = null;
+				}
 			}
 			if (booSuccess && !p_booSuppressSuccessMessage && !String.IsNullOrEmpty(SuccessMessage))
 				MessageBox(SuccessMessage, "Success");

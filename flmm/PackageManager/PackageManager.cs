@@ -204,8 +204,9 @@ namespace Fomm.PackageManager
 			if (mod.HasInfo) tbModInfo.Text = mod.Description;
 			else tbModInfo.Text = "No description is associaited with this fomod. Click 'edit info' if you want to add one.";
 
+			butDeactivate.Enabled = mod.IsActive;
 			if (!mod.IsActive) bActivate.Text = "Activate";
-			else bActivate.Text = "Deactivate";
+			else bActivate.Text = "Reactivate";
 
 			if (mod.HasInstallScript) bEditScript.Text = "Edit script";
 			else bEditScript.Text = "Create script";
@@ -307,12 +308,18 @@ namespace Fomm.PackageManager
 
 		}
 
+		/// <summary>
+		/// Activates the given fomod.
+		/// </summary>
+		/// <remarks>
+		/// This method checks to see if the given fomod could be an upgrade for another fomod.
+		/// </remarks>
+		/// <param name="mod">The fomod to activate.</param>
 		private void ActivateFomod(fomod mod)
 		{
 			bool booFound = false;
 			fomod fomodMod = null;
 			foreach (ListViewItem lviFomod in lvModList.Items)
-			//foreach (fomod fomodMod in mods)
 			{
 				fomodMod = (fomod)lviFomod.Tag;
 				if (fomodMod.Name.Equals(mod.Name) && fomodMod.IsActive && !fomodMod.BaseName.Equals(mod.BaseName))
@@ -342,13 +349,21 @@ namespace Fomm.PackageManager
 			mdiInstaller.Install();
 		}
 
-		private void bActivate_Click(object sender, EventArgs e)
+		/// <summary>
+		/// Activates, Reactivates, or Deactivates the selected mod as appropriate.
+		/// </summary>
+		/// <param name="mod">The mod to act upon.</param>
+		/// <param name="p_booReactivate">If this is a reativation request.</param>
+		private void ToggleActivation(fomod mod, bool p_booReactivate)
 		{
-			if (lvModList.SelectedItems.Count != 1) return;
-			fomod mod = (fomod)lvModList.SelectedItems[0].Tag;
 			if (!mod.IsActive)
 			{
 				ActivateFomod(mod);
+			}
+			else if (p_booReactivate)
+			{
+				ModReactivator mraReactivator = new ModReactivator(mod);
+				mraReactivator.Upgrade();
 			}
 			else
 			{
@@ -366,10 +381,28 @@ namespace Fomm.PackageManager
 			{
 				lvModList.SelectedItems[0].Checked = mod.IsActive;
 			}
+			butDeactivate.Enabled = mod.IsActive;
 			if (!mod.IsActive) bActivate.Text = "Activate";
-			else bActivate.Text = "Deactivate";
+			else bActivate.Text = "Reactivate";
 
 			mf.RefreshEspList();
+		}
+
+		private void bActivate_Click(object sender, EventArgs e)
+		{
+			if (lvModList.SelectedItems.Count != 1) return;
+			fomod mod = (fomod)lvModList.SelectedItems[0].Tag;
+			if (!mod.IsActive)
+				ToggleActivation(mod, false);
+			else
+				ToggleActivation(mod, true);
+		}
+
+		private void butDeactivate_Click(object sender, EventArgs e)
+		{
+			if (lvModList.SelectedItems.Count != 1) return;
+			fomod mod = (fomod)lvModList.SelectedItems[0].Tag;
+			ToggleActivation(mod, false);
 		}
 
 		private void CheckFomodFolder(ref string path, string tesnexusext, string fomodname)
@@ -816,7 +849,9 @@ namespace Fomm.PackageManager
 
 		private void lvModList_ItemActivate(object sender, EventArgs e)
 		{
-			bActivate_Click(null, null);
+			if (lvModList.SelectedItems.Count != 1) return;
+			fomod mod = (fomod)lvModList.SelectedItems[0].Tag;
+			ToggleActivation(mod, false);
 		}
 
 		private void pictureBox1_Click(object sender, EventArgs e)

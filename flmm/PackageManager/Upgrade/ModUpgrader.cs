@@ -51,6 +51,18 @@ namespace Fomm.PackageManager.Upgrade
 			}
 		}
 
+		/// <summary>
+		/// Gets the message to display inthe progress dialog.
+		/// </summary>
+		/// <value>The message to display inthe progress dialog.</value>
+		protected virtual string ProgressMessage
+		{
+			get
+			{
+				return "Upgrading Fomod";
+			}
+		}
+
 		#endregion
 
 		#region Constructors
@@ -121,7 +133,7 @@ namespace Fomm.PackageManager.Upgrade
 				if (Fomod.HasInstallScript)
 					booUpgraded = RunCustomInstallScript();
 				else
-					booUpgraded = RunBasicInstallScript("Upgrading Fomod");
+					booUpgraded = RunBasicInstallScript(ProgressMessage);
 				if (booUpgraded)
 				{
 					InstallLogMergeModule ilmPreviousChanges = InstallLog.Current.GetMergeModule(Fomod.BaseName);
@@ -138,8 +150,20 @@ namespace Fomm.PackageManager.Upgrade
 				booUpgraded = false;
 				throw e;
 			}
-			m_fomodOriginalMod.IsActive = booUpgraded;
+			m_fomodOriginalMod.IsActive = DetermineFomodActiveStatus(booUpgraded);
 			return booUpgraded;
+		}
+
+		/// <summary>
+		/// Determines whether or not the fomod should be activated, based on whether
+		/// or not the script was successful.
+		/// </summary>
+		/// <param name="p_booSucceeded">Whether or not the script was successful.</param>
+		/// <returns><lang cref="true"/> if the script was successful;
+		/// <lang cref="false"/> otherwise.</returns>
+		protected virtual bool DetermineFomodActiveStatus(bool p_booSucceeded)
+		{
+			return p_booSucceeded;
 		}
 
 		#endregion
