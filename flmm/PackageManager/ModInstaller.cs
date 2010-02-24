@@ -121,6 +121,11 @@ namespace Fomm.PackageManager
 			return true;
 		}
 
+		/// <summary>
+		/// Runs the XML configured install script.
+		/// </summary>
+		/// <returns><lang cref="true"/> if the installation was successful;
+		/// <lang cref="false"/> otherwise.</returns>
 		protected bool RunXmlInstallScript()
 		{
 			XmlConfiguredScript xmlScript = new XmlConfiguredScript(this);
