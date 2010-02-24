@@ -147,6 +147,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 			private string m_strDest = null;
 			private bool m_booIsFolder = false;
 			private bool m_booAlwaysInstall = false;
+			private bool m_booInstallIfUsable = false;
 			private Int32 m_intPriority = 0;
 
 			#region Properties
@@ -200,6 +201,18 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 			}
 
 			/// <summary>
+			/// Gets whether this item should be installed if the plugins is usable, regardless of whether or not the plugin is selected.
+			/// </summary>
+			/// <value>Whether this item should be installed if the plugins is usable, regardless of whether or not the plugin is selected.</value>
+			public bool InstallIfUsable
+			{
+				get
+				{
+					return m_booInstallIfUsable;
+				}
+			}
+
+			/// <summary>
 			/// Gets the priority of this item.
 			/// </summary>
 			/// <remarks>
@@ -227,12 +240,14 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 			/// <param name="p_booIsFolder">Whether this item is a folder.</param>
 			/// <param name="p_intPriority">The priority of the item.</param>
 			/// <param name="p_booAlwaysInstall">Whether this item should always be installed, regardless of whether or not the plugin is selected.</param>
-			public PluginFile(string p_strSource, string p_strDest, bool p_booIsFolder, Int32 p_intPriority, bool p_booAlwaysInstall)
+			/// <param name="p_booInstallIfUsable">Whether this item should be installed when the plugin is not <see cref="PluginType.NotUsable"/>, regardless of whether or not the plugin is selected.</param>
+			public PluginFile(string p_strSource, string p_strDest, bool p_booIsFolder, Int32 p_intPriority, bool p_booAlwaysInstall, bool p_booInstallIfUsable)
 			{
 				m_strSource = p_strSource;
 				m_strDest = p_strDest;
 				m_booIsFolder = p_booIsFolder;
 				m_booAlwaysInstall = p_booAlwaysInstall;
+				m_booInstallIfUsable = p_booInstallIfUsable;
 				m_intPriority = p_intPriority;
 			}
 
@@ -387,7 +402,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 						lstInstall.AddRange(pifPlugin.Files);
 					else
 						foreach (PluginFile pflFile in pifPlugin.Files)
-							if (pflFile.AlwaysInstall)
+							if (pflFile.AlwaysInstall || (pflFile.InstallIfUsable && (pifPlugin.Type != PluginType.NotUsable)))
 								lstInstall.Add(pflFile);
 				}
 				lstInstall.Sort();
@@ -575,14 +590,15 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 				string strSource = xndFile.Attributes["source"].InnerText;
 				string strDest = (xndFile.Attributes["destination"] == null) ? strSource : xndFile.Attributes["destination"].InnerText;
 				bool booAlwaysInstall = Boolean.Parse(xndFile.Attributes["alwaysInstall"].InnerText);
+				bool booInstallIfUsable = Boolean.Parse(xndFile.Attributes["installIfUsable"].InnerText);
 				Int32 intPriority = Int32.Parse(xndFile.Attributes["priority"].InnerText);
 				switch (xndFile.Name)
 				{
 					case "file":
-						lstFiles.Add(new PluginFile(strSource, strDest, false, intPriority, booAlwaysInstall));
+						lstFiles.Add(new PluginFile(strSource, strDest, false, intPriority, booAlwaysInstall, booInstallIfUsable));
 						break;
 					case "folder":
-						lstFiles.Add(new PluginFile(strSource, strDest, true, intPriority, booAlwaysInstall));
+						lstFiles.Add(new PluginFile(strSource, strDest, true, intPriority, booAlwaysInstall, booInstallIfUsable));
 						break;
 				}
 			}

@@ -326,6 +326,11 @@
 				<xs:documentation>Indicates that the file or folder should always be installed, regardless of whether or not the plugin has been selected.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
+		<xs:attribute name="installIfUsable" type="xs:boolean" default="false">
+			<xs:annotation>
+				<xs:documentation>Indicates that the file or folder should always be installed if the plugin is not NotUsable, regardless of whether or not the plugin has been selected.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
 		<xs:attribute name="priority" type="xs:integer" default="0">
 			<xs:annotation>
 				<xs:documentation>A number describing the relative priority of the file or folder. A higher number indicates the file or folder should be installed after the items with lower numbers. This value does not have to be unique.</xs:documentation>
