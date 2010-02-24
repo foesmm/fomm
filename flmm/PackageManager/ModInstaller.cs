@@ -7,6 +7,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using fomm.Transactions;
+using Fomm.PackageManager.XmlConfiguredInstall;
 
 namespace Fomm.PackageManager
 {
@@ -100,6 +101,8 @@ namespace Fomm.PackageManager
 				MergeModule = new InstallLogMergeModule();
 				if (Fomod.HasInstallScript)
 					Fomod.IsActive = RunCustomInstallScript();
+				else if (Fomod.FileExists("fomod/ModuleConfig.xml"))
+					Fomod.IsActive = RunXmlInstallScript();
 				else
 					Fomod.IsActive = RunBasicInstallScript("Installing Fomod");
 				if (Fomod.IsActive)
@@ -116,6 +119,12 @@ namespace Fomm.PackageManager
 			if (!Fomod.IsActive)
 				return false;
 			return true;
+		}
+
+		protected bool RunXmlInstallScript()
+		{
+			XmlConfiguredScript xmlScript = new XmlConfiguredScript(this);
+			return xmlScript.Install();
 		}
 
 		/// <summary>

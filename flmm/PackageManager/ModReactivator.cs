@@ -44,7 +44,7 @@ namespace Fomm.PackageManager
 		}
 
 		/// <seealso cref="ModUpgrader.ProgressMessage"/>
-		protected virtual string ProgressMessage
+		protected override string ProgressMessage
 		{
 			get
 			{
