@@ -13,6 +13,7 @@ namespace Fomm.PackageManager
 		private readonly List<string> groups;
 		private readonly List<string> lgroups;
 		private readonly MainForm mf;
+		private BackgroundWorkerProgressDialog m_bwdProgress = null;
 
 		private void AddFomodToList(fomod mod)
 		{
@@ -861,5 +862,78 @@ namespace Fomm.PackageManager
 				(new ImageForm(pictureBox1.Image)).ShowDialog();
 			}
 		}
+
+		#region Fomod Extraction
+
+		/// <summary>
+		/// Handles the <see cref="Button.Click"/> event of the extract button.
+		/// </summary>
+		/// <remarks>
+		/// This queries the user for the destinations directory, and then launches the
+		/// background process to extract the fomod.
+		/// </remarks>
+		/// <param name="sender">The object that raised the event.</param>
+		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+		private void butExtractFomod_Click(object sender, EventArgs e)
+		{
+			if (lvModList.SelectedItems.Count != 1)
+				return;
+			fomod fomodMod = (fomod)lvModList.SelectedItems[0].Tag;
+
+			if (fbdExtractFomod.ShowDialog(this) == DialogResult.OK)
+			{
+				using (m_bwdProgress = new BackgroundWorkerProgressDialog(UnpackFomod))
+				{
+					string strOutput = Path.Combine(fbdExtractFomod.SelectedPath, fomodMod.BaseName);
+					if (!Directory.Exists(strOutput))
+						Directory.CreateDirectory(strOutput);
+					m_bwdProgress.WorkMethodArguments = new Pair<fomod, string>(fomodMod, strOutput);
+					m_bwdProgress.ShowDialog();
+				}
+				m_bwdProgress = null;
+			}
+		}
+
+		/// <summary>
+		/// Unpacks the given fomod to the specified directory.
+		/// </summary>
+		/// <remarks>
+		/// This method is used by the background worker.
+		/// </remarks>
+		/// <param name="p_objArgs">A <see cref="Pair{fomod, string}"/> containing the fomod to extract
+		/// and the direcotry to which to extract it.</param>
+		private void UnpackFomod(object p_objArgs)
+		{
+			if (!(p_objArgs is Pair<fomod, string>))
+				throw new ArgumentException("Given argument is not a Pair<fomod,string>.", "p_objArgs");
+			fomod fomodMod = ((Pair<fomod, string>)p_objArgs).Key;
+			string strOutput = ((Pair<fomod, string>)p_objArgs).Value;
+			List<string> lstFiles = fomodMod.GetFileList();
+
+			m_bwdProgress.ShowItemProgress = false;
+			m_bwdProgress.OverallMessage = "Extracting";
+			m_bwdProgress.OverallProgressMaximum = lstFiles.Count;
+			m_bwdProgress.OverallProgressStep = 1;
+
+			ICSharpCode.SharpZipLib.Zip.FastZip zipExtractor = new ICSharpCode.SharpZipLib.Zip.FastZip();
+			zipExtractor.EntryExtracted += new EventHandler<ICSharpCode.SharpZipLib.Zip.ZipEventArgs>(zipExtractor_EntryExtracted);
+			zipExtractor.ExtractZip(fomodMod.filepath, strOutput, null);
+		}
+
+		/// <summary>
+		/// Handles the <see cref="FastZip.EntryExtracted"/> event of the zip extractor.
+		/// </summary>
+		/// <remarks>
+		/// This updates the progress dialog, and checks for operation cancellation.
+		/// </remarks>
+		/// <param name="sender">The object that raised the event.</param>
+		/// <param name="e">An <see cref="ICSharpCode.SharpZipLib.Zip.ZipEventArgs"/> describing the event arguments.</param>
+		private void zipExtractor_EntryExtracted(object sender, ICSharpCode.SharpZipLib.Zip.ZipEventArgs e)
+		{
+			m_bwdProgress.StepOverallProgress();
+			e.Cancel = m_bwdProgress.Cancelled();
+		}
+
+		#endregion
 	}
 }
