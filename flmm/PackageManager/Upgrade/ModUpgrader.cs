@@ -20,6 +20,8 @@ namespace Fomm.PackageManager.Upgrade
 	/// </remarks>
 	public class ModUpgrader : ModInstaller
 	{
+		private fomod m_fomodOriginalMod = null;
+
 		#region Properties
 
 		/// <seealso cref="ModInstallScript.ExceptionMessage"/>
@@ -58,8 +60,19 @@ namespace Fomm.PackageManager.Upgrade
 		/// </summary>
 		/// <param name="p_fomodMod">The <see cref="fomod"/> to be upgraded.</param>
 		internal ModUpgrader(fomod p_fomodMod)
-			: base(p_fomodMod)
+			: this(p_fomodMod, p_fomodMod.BaseName)
 		{
+		}
+
+		/// <summary>
+		/// A simple constructor that initializes the object.
+		/// </summary>
+		/// <param name="p_fomodMod">The <see cref="fomod"/> to be upgraded.</param>
+		internal ModUpgrader(fomod p_fomodMod, string p_strOldBaseName)
+			: base(new UpgradeFomod(p_fomodMod.filepath))
+		{
+			m_fomodOriginalMod = p_fomodMod;
+			((UpgradeFomod)Fomod).SetBaseName(p_strOldBaseName);
 		}
 
 		#endregion
@@ -76,7 +89,9 @@ namespace Fomm.PackageManager.Upgrade
 		/// <seealso cref="ModInstallScript.CheckAlreadyDone()"/>
 		protected override bool CheckAlreadyDone()
 		{
-			return InstallLog.Current.GetModInfo(Fomod.baseName).Version.Equals(Fomod.VersionS);
+			InstallLog.FomodInfo fifInfo = InstallLog.Current.GetModInfo(Fomod.BaseName);
+			string strCurrentVersion =  (fifInfo == null) ? null : fifInfo.Version;
+			return Fomod.VersionS.Equals(strCurrentVersion);
 		}
 
 		/// <summary>
@@ -109,9 +124,12 @@ namespace Fomm.PackageManager.Upgrade
 					booUpgraded = RunBasicInstallScript("Upgrading Fomod");
 				if (booUpgraded)
 				{
-					InstallLogMergeModule ilmPreviousChanges = InstallLog.Current.GetMergeModule(Fomod.baseName);
+					InstallLogMergeModule ilmPreviousChanges = InstallLog.Current.GetMergeModule(Fomod.BaseName);
 					ReconcileDifferences(ilmPreviousChanges, MergeModule);
-					InstallLog.Current.MergeUpgrade(Fomod, MergeModule);
+					string strOldBaseName = Fomod.BaseName;
+					((UpgradeFomod)Fomod).SetBaseName(((UpgradeFomod)Fomod).OriginalBaseName);
+					InstallLog.Current.MergeUpgrade(Fomod, strOldBaseName, MergeModule);
+					((UpgradeFomod)Fomod).SetBaseName(strOldBaseName);
 					CommitActivePlugins();
 				}
 			}
@@ -120,6 +138,7 @@ namespace Fomm.PackageManager.Upgrade
 				booUpgraded = false;
 				throw e;
 			}
+			m_fomodOriginalMod.IsActive = booUpgraded;
 			return booUpgraded;
 		}
 
@@ -169,14 +188,14 @@ namespace Fomm.PackageManager.Upgrade
 			FileManagement.AssertFilePathIsSafe(p_strPath);
 
 			IList<string> lstInstallers = InstallLog.Current.GetInstallingMods(p_strPath);
-			if (lstInstallers.Contains(Fomod.baseName))
+			if (lstInstallers.Contains(Fomod.BaseName))
 			{
 				string strWritePath = null;
-				if (!lstInstallers[lstInstallers.Count - 1].Equals(Fomod.baseName))
+				if (!lstInstallers[lstInstallers.Count - 1].Equals(Fomod.BaseName))
 				{
 					string strDirectory = Path.GetDirectoryName(p_strPath);
 					string strBackupPath = Path.GetFullPath(Path.Combine(Program.overwriteDir, strDirectory));
-					string strOldModKey = InstallLog.Current.GetModKey(Fomod.baseName);
+					string strOldModKey = InstallLog.Current.GetModKey(Fomod.BaseName);
 					string strFile = strOldModKey + "_" + Path.GetFileName(p_strPath);
 					strWritePath = Path.Combine(strBackupPath, strFile);
 				}
@@ -217,12 +236,12 @@ namespace Fomm.PackageManager.Upgrade
 			PermissionsManager.CurrentPermissions.Assert();
 
 			IList<string> lstInstallers = InstallLog.Current.GetInstallingMods(p_strFile, p_strSection, p_strKey);
-			if (lstInstallers.Contains(Fomod.baseName))
+			if (lstInstallers.Contains(Fomod.BaseName))
 			{
 				string strLoweredFile = p_strFile.ToLowerInvariant();
 				string strLoweredSection = p_strSection.ToLowerInvariant();
 				string strLoweredKey = p_strKey.ToLowerInvariant();
-				if (lstInstallers[lstInstallers.Count - 1].Equals(Fomod.baseName))
+				if (lstInstallers[lstInstallers.Count - 1].Equals(Fomod.BaseName))
 					NativeMethods.WritePrivateProfileStringA(strLoweredSection, strLoweredKey, p_strValue, strLoweredFile);
 				MergeModule.AddIniEdit(strLoweredFile, strLoweredSection, strLoweredKey, p_strValue);
 				return true;
@@ -258,9 +277,9 @@ namespace Fomm.PackageManager.Upgrade
 			PermissionsManager.CurrentPermissions.Assert();
 
 			IList<string> lstInstallers = InstallLog.Current.GetInstallingMods(p_intPackage, p_strShaderName);
-			if (lstInstallers.Contains(Fomod.baseName))
+			if (lstInstallers.Contains(Fomod.BaseName))
 			{
-				if (lstInstallers[lstInstallers.Count - 1].Equals(Fomod.baseName))
+				if (lstInstallers[lstInstallers.Count - 1].Equals(Fomod.BaseName))
 				{
 					byte[] oldData;
 					if (!SDPArchives.EditShader(p_intPackage, p_strShaderName, p_bteData, out oldData))

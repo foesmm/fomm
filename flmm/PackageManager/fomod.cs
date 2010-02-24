@@ -65,7 +65,7 @@ namespace Fomm.PackageManager
 		private bool hasReadme;
 		private bool hasScreenshot;
 
-		internal readonly string baseName;
+		private readonly string baseName;
 		internal string Name;
 		internal string Author;
 		internal string Description;
@@ -82,6 +82,18 @@ namespace Fomm.PackageManager
 		private string readmepath;
 
 		#region Properties
+
+		/// <summary>
+		/// Gets the base name of the fomod.
+		/// </summary>
+		/// <value>The base name of the fomod.</value>
+		internal virtual string BaseName
+		{
+			get
+			{
+				return baseName;
+			}
+		}
 
 		/// <summary>
 		/// Gets the fomod file.

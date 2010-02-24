@@ -65,7 +65,7 @@ namespace Fomm.InstallLogUpgraders
 				ProgressWorker.ItemProgressMaximum = intItemCount;
 
 				fomodMod = new fomod(strModInstallLog.ToLowerInvariant().Replace(".xml", ".fomod"));
-				strModBaseName = fomodMod.baseName;
+				strModBaseName = fomodMod.BaseName;
 				InstallLog.Current.AddMod(fomodMod);
 
 				m_dicDefaultFileOwners = new Dictionary<string, string>();

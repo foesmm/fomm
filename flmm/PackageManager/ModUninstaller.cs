@@ -106,13 +106,13 @@ namespace Fomm.PackageManager
 
 			try
 			{
-				MergeModule = InstallLog.Current.GetMergeModule(Fomod.baseName);
+				MergeModule = InstallLog.Current.GetMergeModule(Fomod.BaseName);
 				if (Fomod.HasUninstallScript)
 					Fomod.IsActive = !RunCustomUninstallScript();
 				else
 					Fomod.IsActive = !RunBasicUninstallScript();
 				if (!Fomod.IsActive)
-					InstallLog.Current.UnmergeModule(Fomod.baseName);
+					InstallLog.Current.UnmergeModule(Fomod.BaseName);
 			}
 			catch (Exception e)
 			{

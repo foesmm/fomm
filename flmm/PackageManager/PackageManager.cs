@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.IO;
+using Fomm.PackageManager.Upgrade;
 
 namespace Fomm.PackageManager
 {
@@ -306,14 +307,48 @@ namespace Fomm.PackageManager
 
 		}
 
+		private void ActivateFomod(fomod mod)
+		{
+			bool booFound = false;
+			fomod fomodMod = null;
+			foreach (ListViewItem lviFomod in lvModList.Items)
+			//foreach (fomod fomodMod in mods)
+			{
+				fomodMod = (fomod)lviFomod.Tag;
+				if (fomodMod.Name.Equals(mod.Name) && fomodMod.IsActive && !fomodMod.BaseName.Equals(mod.BaseName))
+				{
+					//ask to do upgrade
+					string strUpgradeMessage = "A different verion of {0} has been detected. The installed verion is {1}, the new verion is {2}. Would you like to upgrade?" + Environment.NewLine + "Selecting No will install the new FOMOD normally.";
+					switch (MessageBox.Show(String.Format(strUpgradeMessage, fomodMod.Name, fomodMod.VersionS, mod.VersionS), "Upgrade", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+					{
+						case DialogResult.Yes:
+							ModUpgrader mduUpgrader = new ModUpgrader(mod, fomodMod.BaseName);
+							mduUpgrader.Upgrade();
+							if (mod.IsActive)
+							{
+								fomodMod.IsActive = false;
+								lviFomod.Checked = false;
+							}
+							return;
+						case DialogResult.No:
+							booFound = true;
+							break;
+					}
+				}
+				if (booFound)
+					break;
+			}
+			ModInstaller mdiInstaller = new ModInstaller(mod);
+			mdiInstaller.Install();
+		}
+
 		private void bActivate_Click(object sender, EventArgs e)
 		{
 			if (lvModList.SelectedItems.Count != 1) return;
 			fomod mod = (fomod)lvModList.SelectedItems[0].Tag;
 			if (!mod.IsActive)
 			{
-				ModInstaller mdiInstaller = new ModInstaller(mod);
-				mdiInstaller.Install();
+				ActivateFomod(mod);
 			}
 			else
 			{
@@ -670,8 +705,7 @@ namespace Fomm.PackageManager
 			{
 				fomod mod = (fomod)lvi.Tag;
 				if (mod.IsActive) continue;
-				ModInstaller mdiInstaller = new ModInstaller(mod);
-				mdiInstaller.Install();
+				ActivateFomod(mod);
 				if (cbGroups.Checked)
 				{
 					foreach (ListViewItem lvi2 in lvModList.Items)
@@ -743,7 +777,7 @@ namespace Fomm.PackageManager
 					case 0:
 						return 0;
 					case 1:
-						return m1.baseName.CompareTo(m2.baseName);
+						return m1.BaseName.CompareTo(m2.BaseName);
 					case 2:
 						return m1.Name.CompareTo(m2.Name);
 					case 3:

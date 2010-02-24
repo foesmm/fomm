@@ -452,9 +452,9 @@ namespace Fomm.PackageManager
 		/// <param name="p_fomodMod">The <see cref="fomod"/> being added.</param>
 		internal protected void AddMod(fomod p_fomodMod)
 		{
-			if (!m_dicModList.ContainsKey(p_fomodMod.baseName))
+			if (!m_dicModList.ContainsKey(p_fomodMod.BaseName))
 			{
-				XmlNode xndMod = AddMod(p_fomodMod.baseName);
+				XmlNode xndMod = AddMod(p_fomodMod.BaseName);
 				if (xndMod == null)
 					return;
 
@@ -466,17 +466,19 @@ namespace Fomm.PackageManager
 		}
 
 		/// <summary>
-		/// Updates a mod's information in the isntall log.
+		/// Updates a mod's information in the install log.
 		/// </summary>
 		/// <remarks>
 		/// This updates the given mod's version in the install log without changing its key.
 		/// </remarks>
 		/// <param name="p_fomodMod">The <see cref="fomod"/> being updated.</param>
-		internal protected void UpdateMod(fomod p_fomodMod)
+		/// <returns><lang cref="true"/> if the given fomod was found and it's information updated;
+		/// <lang cref="false"/> otherwise.</returns>
+		internal protected bool UpdateMod(fomod p_fomodMod)
 		{
-			if (m_dicModList.ContainsKey(p_fomodMod.baseName))
+			if (m_dicModList.ContainsKey(p_fomodMod.BaseName))
 			{
-				XmlNode xndMod = m_xelModListNode.SelectSingleNode("mod[@key=\"" + GetModKey(p_fomodMod.baseName) + "\"]");
+				XmlNode xndMod = m_xelModListNode.SelectSingleNode("mod[@key=\"" + GetModKey(p_fomodMod.BaseName) + "\"]");
 				XmlNode xndVersion = xndMod.SelectSingleNode("version");
 				if (xndVersion == null)
 				{
@@ -485,7 +487,35 @@ namespace Fomm.PackageManager
 				}
 				xndVersion.Attributes["machineVersion"].InnerText = p_fomodMod.Version.ToString();
 				xndVersion.InnerText = p_fomodMod.VersionS;
+				return true;
 			}
+			return false;
+		}
+
+		/// <summary>
+		/// Updates a mod's information in the install log.
+		/// </summary>
+		/// <remarks>
+		/// This updates the given mod's version and base name in the install log without changing its key.
+		/// </remarks>
+		/// <param name="p_strOldBaseName">The old base name of the mod whose information is to be updated.</param>
+		/// <param name="p_fomodMod">The <see cref="fomod"/> containing the new information.</param>
+		/// <returns><lang cref="true"/> if the given fomod was found and it's information updated;
+		/// <lang cref="false"/> otherwise.</returns>
+		protected bool UpdateMod(string p_strOldBaseName, fomod p_fomodMod)
+		{
+			if (p_fomodMod.BaseName.Equals(p_strOldBaseName))
+				return UpdateMod(p_fomodMod);
+			if (m_dicModList.ContainsKey(p_strOldBaseName))
+			{
+				string strKey = GetModKey(p_strOldBaseName);
+				XmlNode xndMod = m_xelModListNode.SelectSingleNode("mod[@key=\"" + strKey + "\"]");
+				xndMod.Attributes["name"].InnerText = p_fomodMod.BaseName;
+				m_dicModList.Remove(p_strOldBaseName);
+				m_dicModList.Add(p_fomodMod.BaseName, strKey);
+				return UpdateMod(p_fomodMod);
+			}
+			return false;
 		}
 
 		/// <summary>
@@ -1182,7 +1212,7 @@ namespace Fomm.PackageManager
 		public void Merge(fomod p_fomodMod, InstallLogMergeModule p_ilmMergeModule)
 		{
 			AddMod(p_fomodMod);
-			processMergeModule(p_fomodMod.baseName, p_ilmMergeModule);
+			processMergeModule(p_fomodMod.BaseName, p_ilmMergeModule);
 		}
 
 		/// <summary>
@@ -1201,38 +1231,40 @@ namespace Fomm.PackageManager
 		/// </remarks>
 		/// <param name="p_fomodMod">The <see cref="fomod"/> for which the
 		/// installs and edits where made.</param>
+		/// <param name="p_strOldBaseName">The old base name of the fomod that is being upgraded. This is the
+		/// base name that will be replaced with the base name of the given fomod.</param>
 		/// <param name="p_ilmMergeModule">The installs and edits that where made as part of the
 		/// <see cref="fomod"/>'s upgrade.</param>
-		public void MergeUpgrade(fomod p_fomodMod, InstallLogMergeModule p_ilmMergeModule)
+		public void MergeUpgrade(fomod p_fomodMod, string p_strOldBaseName, InstallLogMergeModule p_ilmMergeModule)
 		{
-			AddMod(p_fomodMod);
-			UpdateMod(p_fomodMod);
+			if (!UpdateMod(p_strOldBaseName, p_fomodMod))
+				AddMod(p_fomodMod);
 
 			//remove changes that were not made in the upgrade
-			InstallLogMergeModule ilmPreviousChanges = GetMergeModule(p_fomodMod.baseName);
+			InstallLogMergeModule ilmPreviousChanges = GetMergeModule(p_fomodMod.BaseName);
 			foreach (string strFile in ilmPreviousChanges.DataFiles)
 				if (!p_ilmMergeModule.ContainsFile(strFile))
-					RemoveDataFile(p_fomodMod.baseName, strFile);
+					RemoveDataFile(p_fomodMod.BaseName, strFile);
 			foreach (InstallLogMergeModule.IniEdit iniEdit in ilmPreviousChanges.IniEdits)
 				if (!p_ilmMergeModule.IniEdits.Contains(iniEdit))
-					RemoveIniEdit(p_fomodMod.baseName, iniEdit.File, iniEdit.Section, iniEdit.Key);
+					RemoveIniEdit(p_fomodMod.BaseName, iniEdit.File, iniEdit.Section, iniEdit.Key);
 			foreach (InstallLogMergeModule.SdpEdit sdpEdit in ilmPreviousChanges.SdpEdits)
 				if (!p_ilmMergeModule.SdpEdits.Contains(sdpEdit))
-					RemoveShaderEdit(p_fomodMod.baseName, sdpEdit.Package, sdpEdit.ShaderName);
+					RemoveShaderEdit(p_fomodMod.BaseName, sdpEdit.Package, sdpEdit.ShaderName);
 
 			//add/replace changes
 			foreach (string strFile in p_ilmMergeModule.ReplacedOriginalDataFiles)
 				AddDataFile(ORIGINAL_VALUES, strFile);
 			foreach (string strFile in p_ilmMergeModule.DataFiles)
-				ReplaceDataFile(p_fomodMod.baseName, strFile);
+				ReplaceDataFile(p_fomodMod.BaseName, strFile);
 			foreach (InstallLogMergeModule.IniEdit iniEdit in p_ilmMergeModule.ReplacedOriginalIniValues)
 				AddIniEdit(iniEdit.File, iniEdit.Section, iniEdit.Key, ORIGINAL_VALUES, iniEdit.Value);
 			foreach (InstallLogMergeModule.IniEdit iniEdit in p_ilmMergeModule.IniEdits)
-				ReplaceIniEdit(iniEdit.File, iniEdit.Section, iniEdit.Key, p_fomodMod.baseName, iniEdit.Value);
+				ReplaceIniEdit(iniEdit.File, iniEdit.Section, iniEdit.Key, p_fomodMod.BaseName, iniEdit.Value);
 			foreach (InstallLogMergeModule.SdpEdit spdEdit in p_ilmMergeModule.ReplacedOriginalSdpData)
 				AddShaderEdit(ORIGINAL_VALUES, spdEdit.Package, spdEdit.ShaderName, spdEdit.Data);
 			foreach (InstallLogMergeModule.SdpEdit spdEdit in p_ilmMergeModule.SdpEdits)
-				ReplaceShaderEdit(p_fomodMod.baseName, spdEdit.Package, spdEdit.ShaderName, spdEdit.Data);
+				ReplaceShaderEdit(p_fomodMod.BaseName, spdEdit.Package, spdEdit.ShaderName, spdEdit.Data);
 
 			Save();
 		}

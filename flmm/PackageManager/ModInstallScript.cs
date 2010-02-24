@@ -475,7 +475,7 @@ namespace Fomm.PackageManager
 			PermissionsManager.CurrentPermissions.Assert();
 			FileManagement.AssertFilePathIsSafe(p_strFile);
 			string strDataPath = Path.GetFullPath(Path.Combine("data", p_strFile));
-			string strKey = InstallLog.Current.GetModKey(Fomod.baseName);
+			string strKey = InstallLog.Current.GetModKey(Fomod.BaseName);
 			string strDirectory = Path.GetDirectoryName(p_strFile);
 			string strBackupDirectory = Path.GetFullPath(Path.Combine(Program.overwriteDir, strDirectory));
 			if (File.Exists(strDataPath))
@@ -685,7 +685,7 @@ namespace Fomm.PackageManager
 			string strLoweredSection = p_strSection.ToLowerInvariant();
 			string strLoweredKey = p_strKey.ToLowerInvariant();
 
-			string strKey = InstallLog.Current.GetModKey(Fomod.baseName);
+			string strKey = InstallLog.Current.GetModKey(Fomod.BaseName);
 			string strCurrentOwnerKey = InstallLog.Current.GetCurrentIniEditorModKey(strLoweredFile, strLoweredSection, strLoweredKey);
 			//if we didn't edit the value, then leave it alone
 			if (!strKey.Equals(strCurrentOwnerKey))
@@ -759,7 +759,7 @@ namespace Fomm.PackageManager
 		{
 			string strLoweredShaderName = p_strShaderName.ToLowerInvariant();
 
-			string strKey = InstallLog.Current.GetModKey(Fomod.baseName);
+			string strKey = InstallLog.Current.GetModKey(Fomod.BaseName);
 			string strCurrentOwnerKey = InstallLog.Current.GetCurrentShaderEditorModKey(p_intPackage, strLoweredShaderName);
 			//if we didn't edit the shader, then leave it alone
 			if (!strKey.Equals(strCurrentOwnerKey))
