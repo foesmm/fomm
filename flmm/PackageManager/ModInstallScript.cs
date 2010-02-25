@@ -220,6 +220,8 @@ namespace Fomm.PackageManager
 				catch (Exception e)
 				{
 					StringBuilder stbError = new StringBuilder(e.Message);
+					if (e is FileNotFoundException)
+						stbError.Append(" (" + ((FileNotFoundException)e).FileName + ")");
 					if (e.InnerException != null)
 						stbError.AppendLine().AppendLine(e.InnerException.Message);
 					if (e is RollbackException)

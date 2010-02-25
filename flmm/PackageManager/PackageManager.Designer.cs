@@ -306,6 +306,7 @@ namespace Fomm.PackageManager {
 			// 
 			// butDeactivate
 			// 
+			this.butDeactivate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.butDeactivate.Location = new System.Drawing.Point(493, 239);
 			this.butDeactivate.Name = "butDeactivate";
 			this.butDeactivate.Size = new System.Drawing.Size(120, 23);
@@ -316,6 +317,7 @@ namespace Fomm.PackageManager {
 			// 
 			// butExtractFomod
 			// 
+			this.butExtractFomod.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.butExtractFomod.Location = new System.Drawing.Point(493, 166);
 			this.butExtractFomod.Name = "butExtractFomod";
 			this.butExtractFomod.Size = new System.Drawing.Size(120, 23);
