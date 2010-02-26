@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using System.IO;
 using Fomm.PackageManager.Upgrade;
+using ICSharpCode.SharpZipLib.Zip;
 
 namespace Fomm.PackageManager
 {
@@ -14,6 +15,7 @@ namespace Fomm.PackageManager
 		private readonly List<string> lgroups;
 		private readonly MainForm mf;
 		private BackgroundWorkerProgressDialog m_bwdProgress = null;
+		private string m_strLastFromFolderPath = null;
 
 		private void AddFomodToList(fomod mod)
 		{
@@ -534,11 +536,21 @@ namespace Fomm.PackageManager
 			}
 			else if (oldpath.EndsWith(".zip", StringComparison.OrdinalIgnoreCase))
 			{
-				tmppath = Program.CreateTempDirectory();
-				ICSharpCode.SharpZipLib.Zip.FastZip fastZip = new ICSharpCode.SharpZipLib.Zip.FastZip();
-				fastZip.ExtractZip(oldpath, tmppath, null);
-				Repack = true;
-				newpath = Path.Combine(Program.PackageDir, Path.ChangeExtension(Path.GetFileName(oldpath), ".fomod"));
+				try
+				{
+					tmppath = Program.CreateTempDirectory();
+					ICSharpCode.SharpZipLib.Zip.FastZip fastZip = new ICSharpCode.SharpZipLib.Zip.FastZip();
+					fastZip.ExtractZip(oldpath, tmppath, null);
+					Repack = true;
+					newpath = Path.Combine(Program.PackageDir, Path.ChangeExtension(Path.GetFileName(oldpath), ".fomod"));
+				}
+				catch (ZipException e)
+				{
+					if (MessageBox.Show(this, "Unable to extract contents of " + oldpath + ". Are you sure it is a ZIP file?", "Zip Error", MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.Yes)
+						throw e;
+					else
+						return;
+				}
 			}
 			else if (oldpath.EndsWith(".rar", StringComparison.OrdinalIgnoreCase))
 			{
@@ -623,6 +635,7 @@ namespace Fomm.PackageManager
 		private void bFomodFromFolder_Click(object sender, EventArgs e)
 		{
 			FolderBrowserDialog fbd = new FolderBrowserDialog();
+			fbd.SelectedPath = m_strLastFromFolderPath;
 			fbd.ShowNewFolderButton = false;
 			fbd.Description = "Pick a folder to convert to a fomod";
 			if (fbd.ShowDialog() != DialogResult.OK) return;
