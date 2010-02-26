@@ -20,6 +20,14 @@ namespace Fomm.PackageManager
 
 		#region Properties
 
+		protected BackgroundWorkerProgressDialog ProgressDialog
+		{
+			get
+			{
+				return m_bwdProgress;
+			}
+		}
+
 		/// <seealso cref="ModInstallScript.ExceptionMessage"/>
 		protected override string ExceptionMessage
 		{
@@ -180,16 +188,18 @@ namespace Fomm.PackageManager
 		{
 			char[] chrDirectorySeperators = new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar };
 			List<string> lstFiles = Fomod.GetFileList();
-			m_bwdProgress.OverallProgressMaximum = lstFiles.Count;
+			if (m_bwdProgress != null)
+				m_bwdProgress.OverallProgressMaximum = lstFiles.Count;
 			foreach (string strFile in lstFiles)
 			{
-				if (m_bwdProgress.Cancelled())
+				if ((m_bwdProgress != null) && m_bwdProgress.Cancelled())
 					return;
 				InstallFileFromFomod(strFile);
 				string strExt = Path.GetExtension(strFile).ToLowerInvariant();
 				if ((strExt == ".esp" || strExt == ".esm") && strFile.IndexOfAny(chrDirectorySeperators) == -1)
 					SetPluginActivation(strFile, true);
-				m_bwdProgress.StepOverallProgress();
+				if (m_bwdProgress != null)
+					m_bwdProgress.StepOverallProgress();
 			}
 		}
 
