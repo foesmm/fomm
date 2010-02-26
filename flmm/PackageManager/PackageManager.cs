@@ -639,6 +639,7 @@ namespace Fomm.PackageManager
 			fbd.ShowNewFolderButton = false;
 			fbd.Description = "Pick a folder to convert to a fomod";
 			if (fbd.ShowDialog() != DialogResult.OK) return;
+			m_strLastFromFolderPath = fbd.SelectedPath;
 			BuildFomodFromFolder(fbd.SelectedPath);
 		}
 
