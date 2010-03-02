@@ -46,7 +46,7 @@ namespace Fomm
 
 	public static class Program
 	{
-		public const string Version = "0.11.4";
+		public const string Version = "0.11.5";
 		public static readonly Version MVersion = new Version(Version + ".0");
 		/*private static string typefromint(int i, bool name) {
 			switch(i) {
@@ -192,6 +192,10 @@ namespace Fomm
 			sw.Close();
 		 }
 		 */
+
+#if TRACE
+		public static string TRACE_FILE = "fomm\\TraceLog" + DateTime.Now.ToString("yyyyMMddHHmm") + ".txt";
+#endif
 
 		public static readonly string tmpPath = Path.Combine(Path.GetTempPath(), "fomm");
 		public static readonly string exeDir = Path.GetDirectoryName(Application.ExecutablePath);
@@ -404,6 +408,13 @@ namespace Fomm
 					else cancellaunch = false;
 				}
 				else MessageBox.Show("Could not find fallout 3 directory\nFallout's registry entry appear to be missing or incorrect. Install fomm into fallout's base directory instead.", "Error");
+#if TRACE
+				string msg = DateTime.Now.ToLongDateString() + " - " + DateTime.Now.ToLongTimeString() + Environment.NewLine +
+					"Fomm " + Version + (monoMode ? " (Mono)" : "") + Environment.NewLine + "OS version: " + Environment.OSVersion.ToString() +
+				Environment.NewLine + Environment.NewLine;
+				File.AppendAllText(TRACE_FILE, msg + Environment.NewLine);
+				File.AppendAllText(TRACE_FILE, "We know where Fallout lives: " + Path.GetFullPath("") + Environment.NewLine);
+#endif
 
 				if (cancellaunch) return;
 
@@ -413,8 +424,15 @@ namespace Fomm
 				if (!Directory.Exists(LocalDataPath)) Directory.CreateDirectory(LocalDataPath);
 				if (!Directory.Exists(overwriteDir)) Directory.CreateDirectory(overwriteDir);
 
+#if TRACE
+				File.AppendAllText(TRACE_FILE, "Checking DLC location." + Environment.NewLine);
+#endif
+
 				if (Directory.Exists(DLCDir) && Settings.GetString("IgnoreDLC") != "True")
 				{
+#if TRACE
+					File.AppendAllText(TRACE_FILE, "\tAnchorage...");
+#endif
 					if (GetFiles(DLCDir, "Anchorage.esm", SearchOption.AllDirectories).Length == 1)
 					{
 						if (!File.Exists("data\\Anchorage.esm") && !File.Exists("data\\Anchorage - Main.bsa") && !File.Exists("data\\Anchorage - Sounds.bsa"))
@@ -442,6 +460,9 @@ namespace Fomm
 							}
 						}
 					}
+#if TRACE
+					File.AppendAllText(TRACE_FILE, "Done." + Environment.NewLine + "\tThe Pitt...");
+#endif
 					if (GetFiles(DLCDir, "ThePitt.esm", SearchOption.AllDirectories).Length == 1)
 					{
 						if (!File.Exists("data\\ThePitt.esm") && !File.Exists("data\\ThePitt - Main.bsa") && !File.Exists("data\\ThePitt - Sounds.bsa"))
@@ -469,6 +490,9 @@ namespace Fomm
 							}
 						}
 					}
+#if TRACE
+					File.AppendAllText(TRACE_FILE, "Done." + Environment.NewLine + "\tBroken Steel...");
+#endif
 					if (GetFiles(DLCDir, "BrokenSteel.esm", SearchOption.AllDirectories).Length == 1)
 					{
 						if (!File.Exists("Data\\BrokenSteel.esm"))
@@ -530,6 +554,9 @@ namespace Fomm
 							}
 						}
 					}
+#if TRACE
+					File.AppendAllText(TRACE_FILE, "Done." + Environment.NewLine + "\tPoint Lookout...");
+#endif
 					if (GetFiles(DLCDir, "PointLookout.esm ", SearchOption.AllDirectories).Length == 1)
 					{
 						if (!File.Exists("data\\PointLookout.esm ") && !File.Exists("data\\PointLookout - Main.bsa") && !File.Exists("data\\PointLookout - Sounds.bsa"))
@@ -557,6 +584,9 @@ namespace Fomm
 							}
 						}
 					}
+#if TRACE
+					File.AppendAllText(TRACE_FILE, "Done." + Environment.NewLine + "\tZeta...");
+#endif
 					if (GetFiles(DLCDir, "Zeta.esm ", SearchOption.AllDirectories).Length == 1)
 					{
 						if (!File.Exists("data\\Zeta.esm ") && !File.Exists("data\\Zeta - Main.bsa") && !File.Exists("data\\Zeta - Sounds.bsa"))
@@ -585,10 +615,17 @@ namespace Fomm
 						}
 					}
 				}
+#if TRACE
+				File.AppendAllText(TRACE_FILE, "Done." + Environment.NewLine);
+				File.AppendAllText(TRACE_FILE, "Install Log Version: " + InstallLog.Current.GetInstallLogVersion() + Environment.NewLine);
+#endif
 
 				//check to see if we need to upgrade the install log format
 				if (InstallLog.Current.GetInstallLogVersion() < InstallLog.CURRENT_VERSION)
 				{
+#if TRACE
+					File.AppendAllText(TRACE_FILE, "\tUpgrade to " + InstallLog.CURRENT_VERSION + " required...");
+#endif
 					InstallLogUpgrader iluUgrader = new InstallLogUpgrader();
 					try
 					{
@@ -598,19 +635,61 @@ namespace Fomm
 							MessageBox.Show("FOMM needs to upgrade its files before it can run. Please allow the upgrade to complete, or install an older version of FOMM.", "Upgrade Cancelled", MessageBoxButtons.OK, MessageBoxIcon.Information);
 							return;
 						}
+#if TRACE
+						File.AppendAllText(TRACE_FILE, "Refused." + Environment.NewLine);
+#endif
 					}
 					catch (Exception e)
 					{
+#if TRACE
+						File.AppendAllText(TRACE_FILE, "Error: " + Environment.NewLine);
+						File.AppendAllText(TRACE_FILE, e.Message + Environment.NewLine + e.ToString() + Environment.NewLine);
+						if (e.InnerException != null)
+						{
+							File.AppendAllText(TRACE_FILE, "Inner Exception: " + Environment.NewLine);
+							File.AppendAllText(TRACE_FILE, e.InnerException.Message + Environment.NewLine + e.InnerException.ToString() + Environment.NewLine);
+						}
+#endif
 						MessageBox.Show("An error occurred while upgrading your log file. A crash dump will have been saved in 'fomm\\crashdump.txt'" + Environment.NewLine +
 										"Please make a bug report and include the contents of that file.", "Upgrade Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 						HandleException(e);
 						return;
 					}
+#if TRACE
+					File.AppendAllText(TRACE_FILE, "Done." + Environment.NewLine);
+#endif
+				}
+				
+				try
+				{
+#if TRACE
+					File.AppendAllText(TRACE_FILE, "Scanning for upgraded FOMODs...");
+#endif
+					//check to see if any fomod versions have changed, and whether to upgrade them
+					UpgradeScanner upsScanner = new UpgradeScanner();
+					upsScanner.Scan();
+				}
+				catch (Exception e)
+				{
+#if TRACE
+					File.AppendAllText(TRACE_FILE, "Error: " + Environment.NewLine);
+					File.AppendAllText(TRACE_FILE, e.Message + Environment.NewLine + e.ToString() + Environment.NewLine);
+					if (e.InnerException != null)
+					{
+						File.AppendAllText(TRACE_FILE, "Inner Exception: " + Environment.NewLine);
+						File.AppendAllText(TRACE_FILE, e.InnerException.Message + Environment.NewLine + e.InnerException.ToString() + Environment.NewLine);
+					}
+#endif
+					MessageBox.Show("An error occurred while scanning your fomods for new versions. A crash dump will have been saved in 'fomm\\crashdump.txt'" + Environment.NewLine +
+										"Please make a bug report and include the contents of that file.", "Scan Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					HandleException(e);
+					return;
 				}
 
-				//check to see if any fomod versions have changed, and whether to upgrade them
-				UpgradeScanner upsScanner = new UpgradeScanner();
-				upsScanner.Scan();
+#if TRACE
+				File.AppendAllText(TRACE_FILE, "Done." + Environment.NewLine);
+				File.AppendAllText(TRACE_FILE, "Running Application." + Environment.NewLine);
+#endif
 
 				if (Array.IndexOf<string>(args, "-install-tweaker") != -1)
 				{
@@ -659,6 +738,23 @@ namespace Fomm
 
 		static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
 		{
+#if TRACE
+			File.AppendAllText(TRACE_FILE, "Unhandled Excaption Occurred:" + Environment.NewLine);
+			Exception ex = e.ExceptionObject as Exception;
+			if (ex != null)
+			{
+				File.AppendAllText(TRACE_FILE, ex.Message + Environment.NewLine + ex.ToString() + Environment.NewLine);
+				if (ex.InnerException != null)
+				{
+					File.AppendAllText(TRACE_FILE, "Inner Exception: " + Environment.NewLine);
+					File.AppendAllText(TRACE_FILE, ex.InnerException.Message + Environment.NewLine + ex.InnerException.ToString() + Environment.NewLine);
+				}
+			}
+			else if (e.ExceptionObject != null)
+				File.AppendAllText(TRACE_FILE, "\tNOT AN EXCEPTION. Error Type: " + e.ExceptionObject.GetType() + Environment.NewLine);
+			else
+				File.AppendAllText(TRACE_FILE, "\tNO EXCEPTION." + Environment.NewLine);
+#endif
 			MessageBox.Show("Something bad seems to have happened. As long as it wasn't too bad, a crash dump will have been saved in 'fomm\\crashdump.txt'\n" +
 				"Please include the contents of that file if you want to make a bug report", "Error");
 			HandleException(e.ExceptionObject as Exception);
@@ -666,6 +762,20 @@ namespace Fomm
 
 		static void HandleException(Exception ex)
 		{
+#if TRACE
+			File.AppendAllText(TRACE_FILE, "Crashdumping an Exception:" + Environment.NewLine);
+			if (ex != null)
+			{
+				File.AppendAllText(TRACE_FILE, ex.Message + Environment.NewLine + ex.ToString() + Environment.NewLine);
+				if (ex.InnerException != null)
+				{
+					File.AppendAllText(TRACE_FILE, "Inner Exception: " + Environment.NewLine);
+					File.AppendAllText(TRACE_FILE, ex.InnerException.Message + Environment.NewLine + ex.InnerException.ToString() + Environment.NewLine);
+				}
+			}
+			else
+				File.AppendAllText(TRACE_FILE, "\tNO EXCEPTION." + Environment.NewLine);
+#endif
 			if (ex != null)
 			{
 				string msg = DateTime.Now.ToLongDateString() + " - " + DateTime.Now.ToLongTimeString() + Environment.NewLine +

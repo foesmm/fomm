@@ -4,6 +4,7 @@ using System.Xml;
 using Fomm.TESsnip;
 using BinaryWriter=System.IO.BinaryWriter;
 using MemoryStream=System.IO.MemoryStream;
+using System.Windows.Forms;
 
 //TODO: ret value and paramter validation
 //TODO: ref.local needs to emit 66 if the var type is float/ref?
@@ -42,7 +43,7 @@ namespace Fomm.ScriptCompiler {
                 case "axis": return VarType.Axis;
                 case "enum": return VarType.Enum;
                 case "short": return VarType.Short;
-                default: throw new RecordXmlException("Invalid variable type");
+                default: throw new RecordXmlException("Invalid variable type: " + s);
                 }
             }
             public FunctionSig(XmlNode n, bool block) {
@@ -121,10 +122,14 @@ namespace Fomm.ScriptCompiler {
 //#endif
         private static void AddFunction(string name, string sname, FunctionSig sig) {
             name=name.ToLowerInvariant();
+			if (functionList.ContainsKey(name))
+				MessageBox.Show("Function " + name + " has already been added.");
             functionList.Add(name, sig);
             TokenStream.AddFunction(name);
             if(sname!=null) {
-                sname=sname.ToLowerInvariant();
+				sname = sname.ToLowerInvariant();
+				if (functionList.ContainsKey(sname))
+					MessageBox.Show("Function short name " + sname + " has already been added.");
                 functionList.Add(sname, sig);
                 TokenStream.AddFunction(sname);
             }
@@ -184,7 +189,7 @@ namespace Fomm.ScriptCompiler {
                     }
                 }
             } catch(Exception ex) {
-                System.Windows.Forms.MessageBox.Show("An error occured while parsing ScriptFunctions.xml.\n"+ex.Message);
+                System.Windows.Forms.MessageBox.Show("An error occured while parsing ScriptFunctions.xml.\n"+ex);
             }
         }
 

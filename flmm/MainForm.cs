@@ -18,6 +18,9 @@ namespace Fomm
 			Settings.GetWindowPosition("MainForm", this);
 
 			Text += " (" + Program.Version + ")";
+#if TRACE
+			Text += " TRACE";
+#endif
 
 			if (fomod != null)
 			{
