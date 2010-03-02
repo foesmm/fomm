@@ -194,7 +194,7 @@ namespace Fomm
 		 */
 
 #if TRACE
-		public static string TRACE_FILE = "fomm\\TraceLog" + DateTime.Now.ToString("yyyyMMddHHmm") + ".txt";
+		public static string TRACE_FILE = "TraceLog" + DateTime.Now.ToString("yyyyMMddHHmm") + ".txt";
 #endif
 
 		public static readonly string tmpPath = Path.Combine(Path.GetTempPath(), "fomm");
@@ -241,6 +241,15 @@ namespace Fomm
 		[STAThread]
 		private static void Main(string[] args)
 		{
+			AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+#if TRACE
+			string msg = DateTime.Now.ToLongDateString() + " - " + DateTime.Now.ToLongTimeString() + Environment.NewLine +
+				"Fomm " + Version + (monoMode ? " (Mono)" : "") + Environment.NewLine + "OS version: " + Environment.OSVersion.ToString() +
+			Environment.NewLine + Environment.NewLine;
+			File.AppendAllText(TRACE_FILE, msg + Environment.NewLine);
+			File.AppendAllText(TRACE_FILE, "Where we currently are: " + Path.GetFullPath(".") + Environment.NewLine);
+			File.AppendAllText(TRACE_FILE, "We know where FOMM lives: " + Application.ExecutablePath + Environment.NewLine);
+#endif
 			if (args.Length > 0 && (args[0] == "-?" || args[0] == "/?" || args[0] == "-help"))
 			{
 				WriteHelp();
@@ -254,8 +263,6 @@ namespace Fomm
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 
-			AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
-			
 			Settings.Init();
 
 			if (Array.IndexOf<string>(args, "-mono") != -1) monoMode = true;
@@ -409,11 +416,8 @@ namespace Fomm
 				}
 				else MessageBox.Show("Could not find fallout 3 directory\nFallout's registry entry appear to be missing or incorrect. Install fomm into fallout's base directory instead.", "Error");
 #if TRACE
-				string msg = DateTime.Now.ToLongDateString() + " - " + DateTime.Now.ToLongTimeString() + Environment.NewLine +
-					"Fomm " + Version + (monoMode ? " (Mono)" : "") + Environment.NewLine + "OS version: " + Environment.OSVersion.ToString() +
-				Environment.NewLine + Environment.NewLine;
-				File.AppendAllText(TRACE_FILE, msg + Environment.NewLine);
-				File.AppendAllText(TRACE_FILE, "We know where Fallout lives: " + Path.GetFullPath("") + Environment.NewLine);
+				TRACE_FILE = "fomm\\" + TRACE_FILE;
+				File.AppendAllText(TRACE_FILE, "We know where Fallout lives: " + Path.GetFullPath(".") + Environment.NewLine);
 #endif
 
 				if (cancellaunch) return;
