@@ -367,6 +367,8 @@ namespace Fomm.PackageManager
 				if (strBaseName.Equals(ORIGINAL_VALUES) || strBaseName.Equals(FOMM))
 					continue;
 				xndVersion = xndMod.SelectSingleNode("version");
+				if ((xndVersion == null) || (xndVersion.Attributes["machineVersion"] == null))
+					throw new InstallLogException("Cannot find version for mod '" + strBaseName + "'. Install Log Version: " + GetInstallLogVersion());
 				lstMods.Add(new FomodInfo(strBaseName, xndVersion.InnerText, new Version(xndVersion.Attributes["machineVersion"].InnerText)));
 			}
 			lstMods.Sort();
