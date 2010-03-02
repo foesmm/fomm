@@ -242,12 +242,14 @@ namespace Fomm
 		private static void Main(string[] args)
 		{
 			AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+			if (Array.IndexOf<string>(args, "-mono") != -1) monoMode = true;
 #if TRACE
+			TRACE_FILE = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), TRACE_FILE);
 			string msg = DateTime.Now.ToLongDateString() + " - " + DateTime.Now.ToLongTimeString() + Environment.NewLine +
 				"Fomm " + Version + (monoMode ? " (Mono)" : "") + Environment.NewLine + "OS version: " + Environment.OSVersion.ToString() +
-			Environment.NewLine + Environment.NewLine;
+				Environment.NewLine + Environment.NewLine;
 			File.AppendAllText(TRACE_FILE, msg + Environment.NewLine);
-			File.AppendAllText(TRACE_FILE, "Where we currently are: " + Path.GetFullPath(".") + Environment.NewLine);
+			File.AppendAllText(TRACE_FILE, "Where we currently are (1): " + Path.GetFullPath(".") + Environment.NewLine);
 			File.AppendAllText(TRACE_FILE, "We know where FOMM lives: " + Application.ExecutablePath + Environment.NewLine);
 #endif
 			if (args.Length > 0 && (args[0] == "-?" || args[0] == "/?" || args[0] == "-help"))
@@ -264,12 +266,12 @@ namespace Fomm
 			Application.SetCompatibleTextRenderingDefault(false);
 
 			Settings.Init();
-
-			if (Array.IndexOf<string>(args, "-mono") != -1) monoMode = true;
-
+			
 			packageDir = Settings.GetString("FomodDir");
 			if (packageDir == null) packageDir = Path.Combine(exeDir, "mods");
-
+#if TRACE
+			File.AppendAllText(TRACE_FILE, "We know where the mods live: " + packageDir + Environment.NewLine);
+#endif
 			string autoLoad = null;
 
 			if (args.Length > 0)
@@ -343,16 +345,25 @@ namespace Fomm
 					}
 				}
 			}
+#if TRACE
+			File.AppendAllText(TRACE_FILE, "Creating mutex." + Environment.NewLine);
+#endif
 
 			mutex = new System.Threading.Mutex(true, "fommMainMutex", out newMutex);
 			if (!newMutex)
 			{
+#if TRACE
+				File.AppendAllText(TRACE_FILE, "FOMM is already running." + Environment.NewLine);
+#endif
 				MessageBox.Show("fomm is already running", "Error");
 				mutex.Close();
 				return;
 			}
 			try
 			{
+#if TRACE
+				File.AppendAllText(TRACE_FILE, "Looking for Fallout 3." + Environment.NewLine);
+#endif
 				//If we aren't in fallouts directory, look it up in the registry
 				if (!File.Exists("Fallout3.exe") && !File.Exists("Fallout3ng.exe"))
 				{
@@ -378,12 +389,16 @@ namespace Fomm
 						}
 					}
 				}
-
-
+#if TRACE
+				File.AppendAllText(TRACE_FILE, "Where we currently are (2): " + Path.GetFullPath(".") + Environment.NewLine);
+#endif
 				//Check that we're in fallout's directory and that we have write access
 				bool cancellaunch = true;
 				if (File.Exists("fallout3.exe") || File.Exists("fallout3ng.exe"))
 				{
+#if TRACE
+					File.AppendAllText(TRACE_FILE, "Check for UAC." + Environment.NewLine);
+#endif
 					if (!Settings.GetBool("NoUACCheck") || Array.IndexOf<string>(args, "-no-uac-check") == -1)
 					{
 						try
@@ -409,14 +424,22 @@ namespace Fomm
 						}
 						catch
 						{
+#if TRACE
+							File.AppendAllText(TRACE_FILE, "Can't write to Fallout's directory." + Environment.NewLine);
+#endif
 							MessageBox.Show("Unable to get write permissions for fallout's installation directory", "Error");
 						}
 					}
 					else cancellaunch = false;
 				}
-				else MessageBox.Show("Could not find fallout 3 directory\nFallout's registry entry appear to be missing or incorrect. Install fomm into fallout's base directory instead.", "Error");
+				else
+				{
 #if TRACE
-				TRACE_FILE = "fomm\\" + TRACE_FILE;
+					File.AppendAllText(TRACE_FILE, "Could not find Fallout." + Environment.NewLine);
+#endif
+					MessageBox.Show("Could not find fallout 3 directory\nFallout's registry entry appear to be missing or incorrect. Install fomm into fallout's base directory instead.", "Error");
+				}
+#if TRACE
 				File.AppendAllText(TRACE_FILE, "We know where Fallout lives: " + Path.GetFullPath(".") + Environment.NewLine);
 #endif
 
@@ -790,7 +813,8 @@ namespace Fomm
 					ex = ex.InnerException;
 					msg += ex.ToString() + Environment.NewLine;
 				}
-				File.WriteAllText("fomm\\crashdump.txt", msg);
+				string strDumpFile = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "crashdump.txt");
+				File.WriteAllText(strDumpFile, msg);
 			}
 		}
 
