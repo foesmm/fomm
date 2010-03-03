@@ -58,6 +58,19 @@ namespace Fomm.FileManager
 		#endregion
 
 		/// <summary>
+		/// Checks to see if the script work has already been done.
+		/// </summary>
+		/// <remarks>
+		/// This always returns <lang cref="false"/>.
+		/// </remarks>
+		/// <returns><lang cref="true"/> if the script work has already been done and the script
+		/// doesn't need to execute; <lang cref="false"/> otherwise.</returns>
+		protected override bool CheckAlreadyDone()
+		{
+			return false;
+		}
+
+		/// <summary>
 		/// Reorders the installers of the specified file.
 		/// </summary>
 		/// <remarks>
@@ -71,7 +84,7 @@ namespace Fomm.FileManager
 		{
 			m_strFile = p_strFile;
 			m_lstOrderedMods = p_lstOrderedMods;
-			return Run();
+			return Run(true);
 		}
 
 		/// <summary>
@@ -112,7 +125,7 @@ namespace Fomm.FileManager
 				}
 				TransactionalFileManager.Copy(strDataPath, strNewBackupPath, true);
 				TransactionalFileManager.Copy(strOldBackupPath, strDataPath, true);
-				TransactionalFileManager.Delete(strBackupPath);
+				TransactionalFileManager.Delete(strOldBackupPath);
 			}
 			return true;
 		}

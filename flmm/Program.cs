@@ -689,12 +689,12 @@ namespace Fomm
 							MessageBox.Show("FOMM needs to upgrade some of its files. This could take a few minutes, depending on how many mods are installed.", "Upgrade Required");
 							if (!iluUgrader.UpgradeInstallLog())
 							{
+#if TRACE
+								Trace.WriteLine("Refused.");
+#endif
 								MessageBox.Show("FOMM needs to upgrade its files before it can run. Please allow the upgrade to complete, or install an older version of FOMM.", "Upgrade Cancelled", MessageBoxButtons.OK, MessageBoxIcon.Information);
 								return;
 							}
-#if TRACE
-							Trace.WriteLine("Refused.");
-#endif
 						}
 						catch (Exception e)
 						{
