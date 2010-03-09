@@ -447,7 +447,8 @@ namespace Fomm.PackageManager
 							MergeModule.BackupOriginalDataFile(p_strPath);
 							strOldModKey = InstallLog.Current.OriginalValuesKey;
 						}
-						string strFile = strOldModKey + "_" + Path.GetFileName(p_strPath);
+						string strFile = Path.GetFileName(Directory.GetFiles(Path.GetDirectoryName(strDataPath), Path.GetFileName(strDataPath))[0]);
+						strFile = strOldModKey + "_" + strFile;
 
 						strBackupPath = Path.Combine(strBackupPath, strFile);
 						TransactionalFileManager.Copy(strDataPath, strBackupPath, true);
@@ -493,28 +494,27 @@ namespace Fomm.PackageManager
 					// if we didn't overwrite a file, then just delete it
 					TransactionalFileManager.Delete(strDataPath);
 
-					while (true)
+					string strPreviousOwnerKey = InstallLog.Current.GetPreviousFileOwnerKey(p_strFile);
+					if (strPreviousOwnerKey != null)
 					{
-						string strPreviousOwnerKey = InstallLog.Current.GetPreviousFileOwnerKey(p_strFile);
-						if (strPreviousOwnerKey != null)
+						string strFile = strPreviousOwnerKey + "_" + Path.GetFileName(p_strFile);
+						string strRestoreFromPath = Path.Combine(strBackupDirectory, strFile);
+						if (File.Exists(strRestoreFromPath))
 						{
-							string strFile = strPreviousOwnerKey + "_" + Path.GetFileName(p_strFile);
-							string strRestoreFromPath = Path.Combine(strBackupDirectory, strFile);
-							if (File.Exists(strRestoreFromPath))
-							{
-								TransactionalFileManager.Copy(strRestoreFromPath, strDataPath, true);
-								TransactionalFileManager.Delete(strRestoreFromPath);
-							}
+							string strBackupFileName = Path.GetFileName(Directory.GetFiles(Path.GetDirectoryName(strRestoreFromPath), Path.GetFileName(strRestoreFromPath))[0]);
+							string strCasedFileName = strBackupFileName.Substring(strBackupFileName.IndexOf('_') + 1);
+							string strNewDataPath = Path.Combine(Path.GetDirectoryName(strDataPath), strCasedFileName);
+							TransactionalFileManager.Copy(strRestoreFromPath, strNewDataPath, true);
+							TransactionalFileManager.Delete(strRestoreFromPath);
+						}
 
-							//remove anny empty directories from the overwrite folder we may have created
-							TrimEmptyDirectories(strRestoreFromPath, Program.overwriteDir);
-						}
-						else
-						{
-							//remove any empty directories from the data folder we may have created
-							TrimEmptyDirectories(strDataPath, "data");
-						}
-						break;
+						//remove anny empty directories from the overwrite folder we may have created
+						TrimEmptyDirectories(strRestoreFromPath, Program.overwriteDir);
+					}
+					else
+					{
+						//remove any empty directories from the data folder we may have created
+						TrimEmptyDirectories(strDataPath, "data");
 					}
 				}
 			}
