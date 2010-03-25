@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using System.IO;
 using Fomm.TESsnip;
+using System.Runtime.Remoting;
 
 namespace Fomm
 {
@@ -33,10 +34,19 @@ namespace Fomm
 			if (!Settings.GetBool("DisableIPC"))
 			{
 				Timer newFommTimer = new Timer();
-				newFommTimer.Interval = 1000;
-				newFommTimer.Tick += new EventHandler(newFommTimer_Tick);
-				newFommTimer.Start();
-				Messaging.ServerSetup(RecieveMessage);
+				try
+				{
+					newFommTimer.Interval = 1000;
+					newFommTimer.Tick += new EventHandler(newFommTimer_Tick);
+					newFommTimer.Start();
+					Messaging.ServerSetup(RecieveMessage);
+				}
+				catch (RemotingException)
+				{
+					newFommTimer.Stop();
+					newFommTimer.Enabled = false;
+					Settings.SetBool("DisableIPC", true);
+				}
 			}
 		}
 
@@ -68,7 +78,7 @@ namespace Fomm
 			}
 			DateTime timestamp = new DateTime(2008, 1, 1);
 			TimeSpan twomins = TimeSpan.FromMinutes(2);
-						
+
 			for (int i = 0; i < lvEspList.Items.Count; i++)
 			{
 				File.SetLastWriteTime(Path.Combine("data", lvEspList.Items[i].Text), timestamp);
