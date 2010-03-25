@@ -671,6 +671,19 @@ namespace Fomm.GraphicsSettings
 
 			#endregion
 
+			/// <summary>
+			/// Determines if the settings have already been saved.
+			/// </summary>
+			/// <remarks>
+			/// This always returns <lang cref="false"/>.
+			/// </remarks>
+			/// <returns><lang cref="false"/></returns>
+			/// <seealso cref="ModInstallScript.CheckAlreadyDone()"/>
+			protected override bool CheckAlreadyDone()
+			{
+				return false;
+			}
+
 			#region Value Saving
 
 			/// <summary>
