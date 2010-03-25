@@ -135,6 +135,7 @@ namespace Fomm.PackageManager
 			cmbSortOrder.ContextMenu = new ContextMenu();
 			lvModList.ListViewItemSorter = new FomodSorter();
 			Settings.GetWindowPosition("PackageManager", this);
+			m_strLastFromFolderPath = Settings.GetString("LastBuildFOMODFromFolderPath");
 
 			foreach (string modpath in Program.GetFiles(Program.PackageDir, "*.fomod.zip"))
 			{
@@ -640,6 +641,7 @@ namespace Fomm.PackageManager
 			fbd.Description = "Pick a folder to convert to a fomod";
 			if (fbd.ShowDialog() != DialogResult.OK) return;
 			m_strLastFromFolderPath = fbd.SelectedPath;
+			Settings.SetString("LastBuildFOMODFromFolderPath", Path.GetDirectoryName(m_strLastFromFolderPath));
 			BuildFomodFromFolder(fbd.SelectedPath);
 		}
 
