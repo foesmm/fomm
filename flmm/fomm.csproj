@@ -139,6 +139,12 @@
     <Compile Include="LoadOrderSorter.cs" />
     <Compile Include="Messaging.cs" />
     <Compile Include="PackageManager\BsaManager.cs" />
+    <Compile Include="PackageManager\CriticalRecordsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PackageManager\CriticalRecordsForm.Designer.cs">
+      <DependentUpon>CriticalRecordsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="PackageManager\DecompressionException.cs" />
     <Compile Include="PackageManager\FileManagement.cs" />
     <Compile Include="PackageManager\IllegalFilePathException.cs" />
@@ -307,6 +313,9 @@
     <EmbeddedResource Include="InstallTweaker\xliveSettings.resx">
       <SubType>Designer</SubType>
       <DependentUpon>xliveSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PackageManager\CriticalRecordsForm.resx">
+      <DependentUpon>CriticalRecordsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PackageManager\InfoEditor.resx">
       <SubType>Designer</SubType>
