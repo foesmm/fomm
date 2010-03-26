@@ -209,6 +209,61 @@ namespace Fomm.TESsnip {
         public override BaseRecord Clone() {
             throw new NotImplementedException("The method or operation is not implemented.");
         }
+
+		public bool ContainsFormId(UInt32 p_uintFormId)
+		{
+			return ContainsFormId(p_uintFormId, Records);
+		}
+
+		private bool ContainsFormId(uint p_uintFormId, List<Rec> p_lstRecords)
+		{
+			foreach (Rec rec in p_lstRecords)
+			{
+				if (rec is GroupRecord)
+				{
+					if (ContainsFormId(p_uintFormId, ((GroupRecord)rec).Records))
+						return true;
+				}
+				else if (rec is Record)
+				{
+					if (((Record)rec).FormID == p_uintFormId)
+						return true;
+				}
+			}
+			return false;
+		}
+
+		public Int32 GetMasterIndex(string p_strPluginName)
+		{
+			List<string> lstMasters = new List<string>();
+			foreach (SubRecord sr in ((Record)Records[0]).SubRecords)
+			{
+				switch (sr.Name)
+				{
+					case "MAST":
+						lstMasters.Add(sr.GetStrData().ToLowerInvariant());
+						break;
+				}
+			}
+			return lstMasters.IndexOf(p_strPluginName.ToLowerInvariant());
+		}
+
+		public string GetMaster(Int32 p_intIndex)
+		{
+			List<string> lstMasters = new List<string>();
+			foreach (SubRecord sr in ((Record)Records[0]).SubRecords)
+			{
+				switch (sr.Name)
+				{
+					case "MAST":
+						lstMasters.Add(sr.GetStrData().ToLowerInvariant());
+						break;
+				}
+			}
+			if ((p_intIndex < 0) || (p_intIndex >= lstMasters.Count))
+				return null;
+			return lstMasters[p_intIndex];
+		}
     }
 
     public abstract class Rec : BaseRecord {
