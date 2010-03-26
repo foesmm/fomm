@@ -4,13 +4,19 @@ using System.Windows.Forms;
 using System.IO;
 using Fomm.TESsnip;
 using System.Runtime.Remoting;
+using Fomm.PackageManager;
+using System.Drawing;
+using System.Text;
 
 namespace Fomm
 {
 	partial class MainForm : Form
 	{
+		private const string EXTRA_INFO_CRITICAL_RECORDS = "CriticalRecords";
 		private bool AlphaSortMode = false;
 		private List<string> m_lstIgnoreReadOnly = new List<string>();
+		private Dictionary<string, Dictionary<string, List<string>>> m_dicExtraInfo = new Dictionary<string, Dictionary<string, List<string>>>();
+		private BackgroundWorkerProgressDialog m_bwdProgress = null;
 
 		public MainForm(string fomod)
 		{
@@ -117,9 +123,13 @@ namespace Fomm
 			}
 			if (p == null || p.Records.Count == 0 || p.Records[0].Name != "TES4")
 			{
-				tbPluginInfo.Text = lvEspList.SelectedItems[0].Text + Environment.NewLine + "Warning: Plugin appears corrupt";
+				rtbPluginInfo.Text = lvEspList.SelectedItems[0].Text + Environment.NewLine + "Warning: Plugin appears corrupt";
 				pictureBox1.Image = null;
+				return;
 			}
+
+			StringBuilder stbDescription = new StringBuilder(@"{\rtf1\ansi\ansicpg1252\deff0\deflang4105{\fonttbl{\f0\fnil\fcharset0 MS Sans Serif;}{\f1\fnil\fcharset2 Symbol;}}");
+			stbDescription.AppendLine().Append(@"{\*\generator Msftedit 5.41.21.2509;}\viewkind4\uc1\pard\sl240\slmult1\lang9\f0\fs17 ");
 			string name = null;
 			string desc = null;
 			byte[] pic = null;
@@ -147,26 +157,41 @@ namespace Fomm
 				pictureBox1.Image = System.Drawing.Bitmap.FromStream(new MemoryStream(pic));
 			}
 			else pictureBox1.Image = null;
-			string desc2 = string.Empty;
 			if ((Path.GetExtension(lvEspList.SelectedItems[0].Text).CompareTo(".esp") == 0) != ((((Record)p.Records[0]).Flags1 & 1) == 0))
 			{
 				if ((((Record)p.Records[0]).Flags1 & 1) == 0)
-				{
-					desc2 += "WARNING: This plugin has the file extension .esm, but its file header marks it as an esp!" + Environment.NewLine + Environment.NewLine;
-				}
+					stbDescription.Append(@"\cf6 \b WARNING: This plugin has the file extension .esm, but its file header marks it as an esp! \b0 \cf6 \line \line ");
 				else
-				{
-					desc2 += "WARNING: This plugin has the file extension .esp, but its file header marks it as an esm!" + Environment.NewLine + Environment.NewLine;
-				}
+					stbDescription.Append(@"\cf6 \b WARNING: This plugin has the file extension .esp, but its file header marks it as an esm! \b0 \cf6 \line \line ");
 			}
-			desc2 += lvEspList.SelectedItems[0].Text + Environment.NewLine + (name == null ? "" : ("Author: " + name + Environment.NewLine)) +
-				Environment.NewLine + (desc == null ? "" : ("Description:" + Environment.NewLine + desc + Environment.NewLine + Environment.NewLine));
+			stbDescription.AppendFormat(@"\b \ul {0} \ulnone \b0 \line ", lvEspList.SelectedItems[0].Text);
+			if (name != null)
+				stbDescription.AppendFormat(@"\b Author: \b0 {0} \line ", name);
+			if (desc != null)
+				stbDescription.AppendFormat(@"\b Description: \b0 \line {0} \line ", desc);
 			if (masters.Count > 0)
 			{
-				desc2 += "Masters:" + Environment.NewLine;
-				for (int i = 0; i < masters.Count; i++) desc2 += masters[i] + Environment.NewLine;
+				stbDescription.Append(@"\b Masters: \b0 \par \pard{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\sl240\slmult1 ");
+				for (int i = 0; i < masters.Count; i++)
+				{
+					stbDescription.AppendFormat("{{\\pntext\\f1\\'B7\\tab}}{0}\\par ", masters[i]);
+					stbDescription.AppendLine();
+				}
+				stbDescription.Append(@"\pard\sl240\slmult1 ");
 			}
-			tbPluginInfo.Text = desc2;
+			foreach (string strInfoOwner in m_dicExtraInfo.Keys)
+			{
+				if (m_dicExtraInfo[strInfoOwner].ContainsKey(lvEspList.SelectedItems[0].Text))
+				{
+					foreach (string strExtraInfo in m_dicExtraInfo[strInfoOwner][lvEspList.SelectedItems[0].Text])
+					{
+						stbDescription.Append(@"\par ");
+						stbDescription.Append(strExtraInfo);
+					}
+				}
+			}
+			stbDescription.AppendLine().Append("}");
+			rtbPluginInfo.Rtf = stbDescription.ToString();
 		}
 
 		private PackageManager.PackageManager PackageManagerForm;
@@ -949,6 +974,138 @@ namespace Fomm
 				};
 				m_gsfGraphicsSettingsForm.ShowDialog(this);
 			}
+		}
+
+		/// <summary>
+		/// Handles the <see cref="Button.Click"/> event of the check for conflicts button.
+		/// </summary>
+		/// <remarks>
+		/// Checks for conflicts with mod-author specified critical records.
+		/// </remarks>
+		/// <param name="sender">The object that trigger the event.</param>
+		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+		private void butCheckCriticalRecords_Click(object sender, EventArgs e)
+		{
+			string strMessage = "This is an experimental feature that relies on fomod authors specifying which parts of their plugins are critical." + Environment.NewLine + "Using this feature will not hurt anything, but it is not guaranteed to find any or all conflicts.";
+			if (MessageBox.Show(this, strMessage, "Warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Information) == DialogResult.Cancel)
+				return;
+			using (m_bwdProgress = new BackgroundWorkerProgressDialog(CheckForCriticalRecordConflicts))
+			{
+				m_bwdProgress.ShowItemProgress = false;
+				m_bwdProgress.OverallProgressMaximum = lvEspList.Items.Count;
+				m_bwdProgress.OverallProgressStep = 1;
+				m_bwdProgress.OverallMessage = "Checking for conflicts...";
+				if (m_bwdProgress.ShowDialog() == DialogResult.Cancel)
+				{
+					m_dicExtraInfo.Remove(EXTRA_INFO_CRITICAL_RECORDS);
+					foreach (ListViewItem lviItem in lvEspList.Items)
+						lviItem.BackColor = Color.Transparent;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Checks for conflicts with mod-author specified critical records. Used by background worker dialog.
+		/// </summary>
+		private void CheckForCriticalRecordConflicts()
+		{
+			m_dicExtraInfo.Remove(EXTRA_INFO_CRITICAL_RECORDS);
+			m_dicExtraInfo[EXTRA_INFO_CRITICAL_RECORDS] = new Dictionary<string, List<string>>();
+
+			List<ListViewItem> lstPlugins = new List<ListViewItem>();
+			foreach (ListViewItem lviItem in lvEspList.Items)
+				lstPlugins.Add(lviItem);
+			lstPlugins.Sort((a, b) =>
+			{
+				Int32 intIndexA = 0;
+				Int32 intIndexB = 0;
+				if (a == null)
+				{
+					if (b == null)
+						return 0;
+					return -1;
+				}
+				if (Int32.TryParse(a.SubItems[1].Text, System.Globalization.NumberStyles.HexNumber, null, out intIndexA))
+				{
+					if ((b != null) && Int32.TryParse(b.SubItems[1].Text, System.Globalization.NumberStyles.HexNumber, null, out intIndexB))
+						return intIndexA.CompareTo(intIndexB);
+					return 1;
+				}
+				if (!Int32.TryParse(b.SubItems[1].Text, System.Globalization.NumberStyles.HexNumber, null, out intIndexB))
+					return 0;
+				return -1;
+			});
+			
+			Int32 intIndex = 0;
+			for (Int32 i = lstPlugins.Count - 1; i >= 0; i--)
+				if (!Int32.TryParse(lstPlugins[i].SubItems[1].Text, System.Globalization.NumberStyles.HexNumber, null, out intIndex))
+					lstPlugins.RemoveAt(i);
+
+			fomod fomodCurrent = null;
+			fomod fomodMod = null;
+			Plugin plgPlugin = null;
+			Plugin plgBasePlugin = null;
+			string strBasePlugin = null;
+			string strMasterPlugin = null;
+			string strPlugin = null;
+			string strMessage = null;
+			UInt32 uintAdjustedFormId = 0;
+			foreach (ListViewItem lviPlugin in lstPlugins)
+			{
+				m_bwdProgress.StepOverallProgress();
+				if (m_bwdProgress.Cancelled())
+					return;
+
+				lviPlugin.BackColor = Color.Transparent;
+				strBasePlugin = lviPlugin.Text;
+				if (InstallLog.Current.GetCurrentFileOwnerName(strBasePlugin) == null)
+					continue;
+				fomodCurrent = new fomod(Path.Combine(Program.PackageDir, InstallLog.Current.GetCurrentFileOwnerName(strBasePlugin) + ".fomod"));
+				plgBasePlugin = new Plugin(Path.Combine("data", strBasePlugin), false);
+				strBasePlugin = strBasePlugin.ToLowerInvariant();
+				if (!fomodCurrent.CriticalRecords.ContainsKey(strBasePlugin))
+					continue;
+				for (Int32 i = intIndex + 1; i < lstPlugins.Count; i++)
+				{
+					strPlugin = lstPlugins[i].Text;
+					plgPlugin = new Plugin(Path.Combine("data", strPlugin), false);
+					foreach (UInt32 uintFormId in fomodCurrent.CriticalRecords[strBasePlugin].Keys)
+					{
+						strMasterPlugin = plgBasePlugin.GetMaster((Int32)uintFormId >> 24) ?? strBasePlugin;
+						if (plgPlugin.GetMasterIndex(strMasterPlugin) < 0)
+							continue;
+						uintAdjustedFormId = ((UInt32)plgPlugin.GetMasterIndex(strMasterPlugin) << 24);
+						uintAdjustedFormId = uintAdjustedFormId + ((uintFormId << 8) >> 8);
+						if (plgPlugin.ContainsFormId(uintAdjustedFormId))
+						{
+							if (!m_dicExtraInfo[EXTRA_INFO_CRITICAL_RECORDS].ContainsKey(lviPlugin.Text))
+								m_dicExtraInfo[EXTRA_INFO_CRITICAL_RECORDS][lviPlugin.Text] = new List<string>();
+							if (InstallLog.Current.GetCurrentFileOwnerName(strPlugin) == null)
+								strMessage = String.Format("Form Id \\b {0:x8}\\b0  is overridden by \\b {1}\\b0 .\\par \\pard\\li720\\sl240\\slmult1 {2}\\par \\pard\\sl240\\slmult1 ", uintFormId, strPlugin, fomodCurrent.GetCriticalRecordReason(strBasePlugin, uintFormId));
+							else
+							{
+								fomodMod = new fomod(Path.Combine(Program.PackageDir, InstallLog.Current.GetCurrentFileOwnerName(strPlugin) + ".fomod"));
+								strMessage = String.Format("Form Id \\b {0:x8}\\b0  is overridden by \\b {1}\\b0  in \\b {2}\\b0 .\\par \\pard\\li720\\sl240\\slmult1 {3}\\par \\pard\\sl240\\slmult1 ", uintFormId, strPlugin, fomodMod.Name, fomodCurrent.GetCriticalRecordReason(strBasePlugin, uintFormId));
+							}
+							m_dicExtraInfo[EXTRA_INFO_CRITICAL_RECORDS][lviPlugin.Text].Add(strMessage);
+							lviPlugin.BackColor = Color.Red;
+						}
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Handles the <see cref="RichTextBox.LinkClicked"/> event of the plugin info text box..
+		/// </summary>
+		/// <remarks>
+		/// Launches clicked links using the default browser.
+		/// </remarks>
+		/// <param name="sender">The object that trigger the event.</param>
+		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+		private void rtbPluginInfo_LinkClicked(object sender, LinkClickedEventArgs e)
+		{
+			System.Diagnostics.Process.Start(e.LinkText);
 		}
 	}
 }

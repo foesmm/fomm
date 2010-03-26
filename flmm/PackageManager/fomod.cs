@@ -758,6 +758,29 @@ namespace Fomm.PackageManager
 		}
 
 		/// <summary>
+		/// Gets the original names of the specified plugin installed name.
+		/// </summary>
+		/// <remarks>
+		/// The installed name of a plugin is the file name of the plugin once installed on a
+		/// user's machine. The orignal names are the names of the files in the fomod.
+		/// </remarks>
+		/// <param name="p_strPluginInstalledName">The installed name of the plugin for which to
+		/// retrieve the original names.</param>
+		/// <returns>The original names of the specified plugin.</returns>
+		public IList<string> GetCriticalRecordPluginNames(string p_strPluginInstalledName)
+		{
+			string strLowered = p_strPluginInstalledName.ToLowerInvariant();
+			List<string> lstNames = new List<string>();
+			foreach (KeyValuePair<string, string> kvpNames in m_dicCriticalRecordPluginInstalledNames)
+			{
+				if (kvpNames.Value.ToLowerInvariant().Equals(p_strPluginInstalledName))
+					if (!lstNames.Contains(kvpNames.Key))
+						lstNames.Add(kvpNames.Key);
+			}
+			return lstNames;
+		}
+
+		/// <summary>
 		/// Sets the installed name of the specified plugin.
 		/// </summary>
 		/// <remarks>
@@ -771,16 +794,18 @@ namespace Fomm.PackageManager
 			string strOldInstalledName = null;
 			m_dicCriticalRecordPluginInstalledNames.TryGetValue(p_strPluginName.ToLowerInvariant(), out strOldInstalledName);
 			m_dicCriticalRecordPluginInstalledNames[p_strPluginName.ToLowerInvariant()] = p_strPluginInstalledName;
-			if (strOldInstalledName != null)
+			if ((strOldInstalledName != null) && !p_strPluginInstalledName.Equals(strOldInstalledName))
+			{
 				strOldInstalledName = strOldInstalledName.ToLowerInvariant();
-			if (m_dicCriticalRecords.ContainsKey(strOldInstalledName))
-			{				
-				string strLoweredNew = p_strPluginInstalledName.ToLowerInvariant();
-				if (!m_dicCriticalRecords.ContainsKey(strLoweredNew))
-					m_dicCriticalRecords[strLoweredNew] = new Dictionary<UInt32, string>();
-				foreach (KeyValuePair<UInt32, string> kvpRecord in m_dicCriticalRecords[strOldInstalledName])
-					m_dicCriticalRecords[strLoweredNew][kvpRecord.Key] = kvpRecord.Value;
-				m_dicCriticalRecords.Remove(strOldInstalledName);
+				if (m_dicCriticalRecords.ContainsKey(strOldInstalledName))
+				{
+					string strLoweredNew = p_strPluginInstalledName.ToLowerInvariant();
+					if (!m_dicCriticalRecords.ContainsKey(strLoweredNew))
+						m_dicCriticalRecords[strLoweredNew] = new Dictionary<UInt32, string>();
+					foreach (KeyValuePair<UInt32, string> kvpRecord in m_dicCriticalRecords[strOldInstalledName])
+						m_dicCriticalRecords[strLoweredNew][kvpRecord.Key] = kvpRecord.Value;
+					m_dicCriticalRecords.Remove(strOldInstalledName);
+				}
 			}
 		}
 

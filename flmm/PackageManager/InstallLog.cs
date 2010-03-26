@@ -626,6 +626,14 @@ namespace Fomm.PackageManager
 			return xndInstallingMod.Attributes["key"].InnerText;
 		}
 
+		public string GetCurrentFileOwnerName(string p_strPath)
+		{
+			string strKey = GetCurrentFileOwnerKey(p_strPath);
+			if (strKey == null)
+				return null;
+			return GetModName(strKey);
+		}
+
 		/// <summary>
 		/// Gets the key of the mod that owned the specified file prior to the current owner.
 		/// </summary>

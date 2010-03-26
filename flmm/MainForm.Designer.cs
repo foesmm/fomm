@@ -42,7 +42,7 @@ namespace Fomm
 			this.lvEspList = new L0ki.Controls.ReordableItemListView();
 			this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
 			this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
-			this.tbPluginInfo = new System.Windows.Forms.TextBox();
+			this.rtbPluginInfo = new System.Windows.Forms.RichTextBox();
 			this.bPackageManager = new System.Windows.Forms.Button();
 			this.bEnableAI = new System.Windows.Forms.Button();
 			this.bSaveGames = new System.Windows.Forms.Button();
@@ -65,14 +65,15 @@ namespace Fomm
 			this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.copyToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.gameSettingsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.gameSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.viewReadmeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.visitForumsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.checkForUpdateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.gameSettingsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-			this.gameSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.bReport = new System.Windows.Forms.Button();
 			this.butFileManager = new System.Windows.Forms.Button();
+			this.butCheckCriticalRecords = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.cmsPlugins.SuspendLayout();
 			this.splitContainer1.Panel1.SuspendLayout();
@@ -172,9 +173,9 @@ namespace Fomm
 			// 
 			// splitContainer1.Panel2
 			// 
-			this.splitContainer1.Panel2.Controls.Add(this.tbPluginInfo);
-			this.splitContainer1.Size = new System.Drawing.Size(399, 392);
-			this.splitContainer1.SplitterDistance = 281;
+			this.splitContainer1.Panel2.Controls.Add(this.rtbPluginInfo);
+			this.splitContainer1.Size = new System.Drawing.Size(399, 562);
+			this.splitContainer1.SplitterDistance = 402;
 			this.splitContainer1.TabIndex = 11;
 			// 
 			// lvEspList
@@ -190,7 +191,7 @@ namespace Fomm
 			this.lvEspList.Location = new System.Drawing.Point(0, 0);
 			this.lvEspList.Name = "lvEspList";
 			this.lvEspList.ShowGroups = false;
-			this.lvEspList.Size = new System.Drawing.Size(399, 281);
+			this.lvEspList.Size = new System.Drawing.Size(399, 402);
 			this.lvEspList.TabIndex = 0;
 			this.lvEspList.UseCompatibleStateImageBehavior = false;
 			this.lvEspList.View = System.Windows.Forms.View.Details;
@@ -210,19 +211,20 @@ namespace Fomm
 			this.columnHeader2.Text = "Mod index";
 			this.columnHeader2.Width = 87;
 			// 
-			// tbPluginInfo
+			// rtbPluginInfo
 			// 
-			this.tbPluginInfo.BackColor = System.Drawing.SystemColors.Window;
-			this.tbPluginInfo.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tbPluginInfo.Location = new System.Drawing.Point(0, 0);
-			this.tbPluginInfo.Multiline = true;
-			this.tbPluginInfo.Name = "tbPluginInfo";
-			this.tbPluginInfo.ReadOnly = true;
-			this.tbPluginInfo.Size = new System.Drawing.Size(399, 107);
-			this.tbPluginInfo.TabIndex = 0;
-			this.tbPluginInfo.Text = "Drag/Drop to modify load order\r\nAlternatively, hold alt and use the arrow keys\r\nM" +
-				"ods towards the bottom override those above them\r\nRight click in the plugins lis" +
-				"t for additional options";
+			this.rtbPluginInfo.BackColor = System.Drawing.SystemColors.Window;
+			this.rtbPluginInfo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.rtbPluginInfo.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.rtbPluginInfo.Location = new System.Drawing.Point(0, 0);
+			this.rtbPluginInfo.Name = "rtbPluginInfo";
+			this.rtbPluginInfo.ReadOnly = true;
+			this.rtbPluginInfo.Size = new System.Drawing.Size(399, 156);
+			this.rtbPluginInfo.TabIndex = 0;
+			this.rtbPluginInfo.Text = "Drag/Drop to modify load order\nAlternatively, hold alt and use the arrow keys\nMod" +
+				"s towards the bottom override those above them\nRight click in the plugins list f" +
+				"or additional options";
+			this.rtbPluginInfo.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.rtbPluginInfo_LinkClicked);
 			// 
 			// bPackageManager
 			// 
@@ -260,7 +262,7 @@ namespace Fomm
 			// bHelp
 			// 
 			this.bHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.bHelp.Location = new System.Drawing.Point(417, 395);
+			this.bHelp.Location = new System.Drawing.Point(417, 424);
 			this.bHelp.Name = "bHelp";
 			this.bHelp.Size = new System.Drawing.Size(120, 23);
 			this.bHelp.TabIndex = 8;
@@ -271,7 +273,7 @@ namespace Fomm
 			// bSettings
 			// 
 			this.bSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.bSettings.Location = new System.Drawing.Point(417, 366);
+			this.bSettings.Location = new System.Drawing.Point(417, 395);
 			this.bSettings.Name = "bSettings";
 			this.bSettings.Size = new System.Drawing.Size(120, 23);
 			this.bSettings.TabIndex = 7;
@@ -421,6 +423,21 @@ namespace Fomm
 			this.copyToClipboardToolStripMenuItem.Text = "Copy to clipboard";
 			this.copyToClipboardToolStripMenuItem.Click += new System.EventHandler(this.copyLoadOrderToClipboardToolStripMenuItem_Click);
 			// 
+			// gameSettingsToolStripMenuItem1
+			// 
+			this.gameSettingsToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.gameSettingsToolStripMenuItem});
+			this.gameSettingsToolStripMenuItem1.Name = "gameSettingsToolStripMenuItem1";
+			this.gameSettingsToolStripMenuItem1.Size = new System.Drawing.Size(95, 20);
+			this.gameSettingsToolStripMenuItem1.Text = "Game Settings";
+			// 
+			// gameSettingsToolStripMenuItem
+			// 
+			this.gameSettingsToolStripMenuItem.Name = "gameSettingsToolStripMenuItem";
+			this.gameSettingsToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
+			this.gameSettingsToolStripMenuItem.Text = "Game Settings...";
+			this.gameSettingsToolStripMenuItem.Click += new System.EventHandler(this.gameSettingsToolStripMenuItem_Click);
+			// 
 			// helpToolStripMenuItem
 			// 
 			this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -452,21 +469,6 @@ namespace Fomm
 			this.checkForUpdateToolStripMenuItem.Text = "Check for update";
 			this.checkForUpdateToolStripMenuItem.Click += new System.EventHandler(this.checkForUpdateToolStripMenuItem_Click);
 			// 
-			// gameSettingsToolStripMenuItem1
-			// 
-			this.gameSettingsToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.gameSettingsToolStripMenuItem});
-			this.gameSettingsToolStripMenuItem1.Name = "gameSettingsToolStripMenuItem1";
-			this.gameSettingsToolStripMenuItem1.Size = new System.Drawing.Size(95, 20);
-			this.gameSettingsToolStripMenuItem1.Text = "Game Settings";
-			// 
-			// gameSettingsToolStripMenuItem
-			// 
-			this.gameSettingsToolStripMenuItem.Name = "gameSettingsToolStripMenuItem";
-			this.gameSettingsToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
-			this.gameSettingsToolStripMenuItem.Text = "Game Settings...";
-			this.gameSettingsToolStripMenuItem.Click += new System.EventHandler(this.gameSettingsToolStripMenuItem_Click);
-			// 
 			// bReport
 			// 
 			this.bReport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -489,11 +491,23 @@ namespace Fomm
 			this.butFileManager.UseVisualStyleBackColor = true;
 			this.butFileManager.Click += new System.EventHandler(this.butFileManager_Click);
 			// 
+			// butCheckCriticalRecords
+			// 
+			this.butCheckCriticalRecords.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.butCheckCriticalRecords.Location = new System.Drawing.Point(417, 346);
+			this.butCheckCriticalRecords.Name = "butCheckCriticalRecords";
+			this.butCheckCriticalRecords.Size = new System.Drawing.Size(120, 23);
+			this.butCheckCriticalRecords.TabIndex = 6;
+			this.butCheckCriticalRecords.Text = "Check for Conflicts";
+			this.butCheckCriticalRecords.UseVisualStyleBackColor = true;
+			this.butCheckCriticalRecords.Click += new System.EventHandler(this.butCheckCriticalRecords_Click);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(549, 430);
+			this.ClientSize = new System.Drawing.Size(549, 600);
+			this.Controls.Add(this.butCheckCriticalRecords);
 			this.Controls.Add(this.butFileManager);
 			this.Controls.Add(this.bReport);
 			this.Controls.Add(this.menuStrip1);
@@ -503,8 +517,8 @@ namespace Fomm
 			this.Controls.Add(this.bPackageManager);
 			this.Controls.Add(this.bEnableAI);
 			this.Controls.Add(this.bLaunch);
-			this.Controls.Add(this.bSettings);
 			this.Controls.Add(this.bSaveGames);
+			this.Controls.Add(this.bSettings);
 			this.Controls.Add(this.bHelp);
 			this.MainMenuStrip = this.menuStrip1;
 			this.MinimumSize = new System.Drawing.Size(300, 457);
@@ -516,7 +530,6 @@ namespace Fomm
 			this.cmsPlugins.ResumeLayout(false);
 			this.splitContainer1.Panel1.ResumeLayout(false);
 			this.splitContainer1.Panel2.ResumeLayout(false);
-			this.splitContainer1.Panel2.PerformLayout();
 			this.splitContainer1.ResumeLayout(false);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
@@ -532,7 +545,7 @@ namespace Fomm
 		private L0ki.Controls.ReordableItemListView lvEspList;
 		private System.Windows.Forms.ColumnHeader columnHeader1;
 		private System.Windows.Forms.SplitContainer splitContainer1;
-		private System.Windows.Forms.TextBox tbPluginInfo;
+		private System.Windows.Forms.RichTextBox rtbPluginInfo;
 		private System.Windows.Forms.Button bPackageManager;
 		private System.Windows.Forms.Button bEnableAI;
 		private System.Windows.Forms.Button bSaveGames;
@@ -571,6 +584,7 @@ namespace Fomm
 		private System.Windows.Forms.Button butFileManager;
 		private System.Windows.Forms.ToolStripMenuItem gameSettingsToolStripMenuItem1;
 		private System.Windows.Forms.ToolStripMenuItem gameSettingsToolStripMenuItem;
+		private System.Windows.Forms.Button butCheckCriticalRecords;
 	}
 }
 
