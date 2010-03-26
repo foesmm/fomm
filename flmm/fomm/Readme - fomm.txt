@@ -41,3 +41,14 @@ Licensing/Legal
 ===============
 This mod is released under the GNU General Public License.
 The GPL can be found here: http://www.gnu.org/licenses/gpl.txt
+
+Troubleshooting
+===============
+Q. I get the "Unable to get write permissions for fallout's installation directory" error. How do I fix it?
+A. This happens when you are running Vista or Windows 7 and have installed Fallout 3 in the Program Files folder. You need to do one of the following:
+1) Disable UAC (not recommended).
+2) Move Fallout 3 outside of the Program Files folder (e.g., C:\Games\Bethesda\Fallout 3). This may require a reinstall. I know with Oblivion you could just copy the game folder to a new location, run the game, and all would be well. I'm not sure if that works with Fallout 3.
+3) In theory you should also be able to run FOMM as administrator. You can try this by right-clicking on the FOMM shortcut and selecting "Run as administrator." Alternatively, right-click on the shortcut, select Properties->Compatibility and check "Run this program as an administrator."
+
+The best thing to do in order to avoid other problems, and the generally recommended solution, is to install Fallout outside of the Program Files folder.
+
