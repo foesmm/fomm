@@ -38,6 +38,7 @@ namespace Fomm
 			this.uncheckAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.checkAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.openInCREditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
 			this.lvEspList = new L0ki.Controls.ReordableItemListView();
 			this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
@@ -74,6 +75,7 @@ namespace Fomm
 			this.bReport = new System.Windows.Forms.Button();
 			this.butFileManager = new System.Windows.Forms.Button();
 			this.butCheckCriticalRecords = new System.Windows.Forms.Button();
+			this.cREditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.cmsPlugins.SuspendLayout();
 			this.splitContainer1.Panel1.SuspendLayout();
@@ -108,55 +110,63 @@ namespace Fomm
 			// 
 			this.cmsPlugins.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openInTESsnipToolStripMenuItem,
+            this.openInCREditorToolStripMenuItem,
             this.sendToTopToolStripMenuItem,
             this.sendToBottomToolStripMenuItem,
             this.uncheckAllToolStripMenuItem,
             this.checkAllToolStripMenuItem,
             this.deleteToolStripMenuItem});
 			this.cmsPlugins.Name = "cmsPlugins";
-			this.cmsPlugins.Size = new System.Drawing.Size(161, 136);
+			this.cmsPlugins.Size = new System.Drawing.Size(166, 158);
 			// 
 			// openInTESsnipToolStripMenuItem
 			// 
 			this.openInTESsnipToolStripMenuItem.Name = "openInTESsnipToolStripMenuItem";
-			this.openInTESsnipToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+			this.openInTESsnipToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
 			this.openInTESsnipToolStripMenuItem.Text = "Open in TESsnip";
 			this.openInTESsnipToolStripMenuItem.Click += new System.EventHandler(this.openInTESsnipToolStripMenuItem_Click);
 			// 
 			// sendToTopToolStripMenuItem
 			// 
 			this.sendToTopToolStripMenuItem.Name = "sendToTopToolStripMenuItem";
-			this.sendToTopToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+			this.sendToTopToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
 			this.sendToTopToolStripMenuItem.Text = "Load first";
 			this.sendToTopToolStripMenuItem.Click += new System.EventHandler(this.sendToTopToolStripMenuItem_Click);
 			// 
 			// sendToBottomToolStripMenuItem
 			// 
 			this.sendToBottomToolStripMenuItem.Name = "sendToBottomToolStripMenuItem";
-			this.sendToBottomToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+			this.sendToBottomToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
 			this.sendToBottomToolStripMenuItem.Text = "Load last";
 			this.sendToBottomToolStripMenuItem.Click += new System.EventHandler(this.sendToBottomToolStripMenuItem_Click);
 			// 
 			// uncheckAllToolStripMenuItem
 			// 
 			this.uncheckAllToolStripMenuItem.Name = "uncheckAllToolStripMenuItem";
-			this.uncheckAllToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+			this.uncheckAllToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
 			this.uncheckAllToolStripMenuItem.Text = "Uncheck all";
 			this.uncheckAllToolStripMenuItem.Click += new System.EventHandler(this.uncheckAllToolStripMenuItem_Click);
 			// 
 			// checkAllToolStripMenuItem
 			// 
 			this.checkAllToolStripMenuItem.Name = "checkAllToolStripMenuItem";
-			this.checkAllToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+			this.checkAllToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
 			this.checkAllToolStripMenuItem.Text = "Check all";
 			this.checkAllToolStripMenuItem.Click += new System.EventHandler(this.checkAllToolStripMenuItem_Click);
 			// 
 			// deleteToolStripMenuItem
 			// 
 			this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-			this.deleteToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+			this.deleteToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
 			this.deleteToolStripMenuItem.Text = "Delete";
 			this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
+			// 
+			// openInCREditorToolStripMenuItem
+			// 
+			this.openInCREditorToolStripMenuItem.Name = "openInCREditorToolStripMenuItem";
+			this.openInCREditorToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+			this.openInCREditorToolStripMenuItem.Text = "Open in CREditor";
+			this.openInCREditorToolStripMenuItem.Click += new System.EventHandler(this.openInCREditorToolStripMenuItem_Click);
 			// 
 			// splitContainer1
 			// 
@@ -351,6 +361,7 @@ namespace Fomm
             this.bSAUnpackerToolStripMenuItem,
             this.bSACreatorToolStripMenuItem,
             this.tESsnipToolStripMenuItem,
+            this.cREditorToolStripMenuItem,
             this.sDPEditorToolStripMenuItem,
             this.installTweakerToolStripMenuItem});
 			this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
@@ -360,35 +371,35 @@ namespace Fomm
 			// bSAUnpackerToolStripMenuItem
 			// 
 			this.bSAUnpackerToolStripMenuItem.Name = "bSAUnpackerToolStripMenuItem";
-			this.bSAUnpackerToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+			this.bSAUnpackerToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.bSAUnpackerToolStripMenuItem.Text = "BSA unpacker";
 			this.bSAUnpackerToolStripMenuItem.Click += new System.EventHandler(this.bBSAUnpack_Click);
 			// 
 			// bSACreatorToolStripMenuItem
 			// 
 			this.bSACreatorToolStripMenuItem.Name = "bSACreatorToolStripMenuItem";
-			this.bSACreatorToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+			this.bSACreatorToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.bSACreatorToolStripMenuItem.Text = "BSA creator";
 			this.bSACreatorToolStripMenuItem.Click += new System.EventHandler(this.cBSACreator_Click);
 			// 
 			// tESsnipToolStripMenuItem
 			// 
 			this.tESsnipToolStripMenuItem.Name = "tESsnipToolStripMenuItem";
-			this.tESsnipToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+			this.tESsnipToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.tESsnipToolStripMenuItem.Text = "TESsnip";
 			this.tESsnipToolStripMenuItem.Click += new System.EventHandler(this.bTESsnip_Click);
 			// 
 			// sDPEditorToolStripMenuItem
 			// 
 			this.sDPEditorToolStripMenuItem.Name = "sDPEditorToolStripMenuItem";
-			this.sDPEditorToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+			this.sDPEditorToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.sDPEditorToolStripMenuItem.Text = "SDP editor";
 			this.sDPEditorToolStripMenuItem.Click += new System.EventHandler(this.bShaderEdit_Click);
 			// 
 			// installTweakerToolStripMenuItem
 			// 
 			this.installTweakerToolStripMenuItem.Name = "installTweakerToolStripMenuItem";
-			this.installTweakerToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+			this.installTweakerToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.installTweakerToolStripMenuItem.Text = "Install tweaker";
 			this.installTweakerToolStripMenuItem.Click += new System.EventHandler(this.bInstallTweaker_Click);
 			// 
@@ -502,6 +513,13 @@ namespace Fomm
 			this.butCheckCriticalRecords.UseVisualStyleBackColor = true;
 			this.butCheckCriticalRecords.Click += new System.EventHandler(this.butCheckCriticalRecords_Click);
 			// 
+			// cREditorToolStripMenuItem
+			// 
+			this.cREditorToolStripMenuItem.Name = "cREditorToolStripMenuItem";
+			this.cREditorToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.cREditorToolStripMenuItem.Text = "CREditor";
+			this.cREditorToolStripMenuItem.Click += new System.EventHandler(this.cREditorToolStripMenuItem_Click);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -585,6 +603,8 @@ namespace Fomm
 		private System.Windows.Forms.ToolStripMenuItem gameSettingsToolStripMenuItem1;
 		private System.Windows.Forms.ToolStripMenuItem gameSettingsToolStripMenuItem;
 		private System.Windows.Forms.Button butCheckCriticalRecords;
+		private System.Windows.Forms.ToolStripMenuItem openInCREditorToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem cREditorToolStripMenuItem;
 	}
 }
 

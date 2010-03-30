@@ -7,6 +7,7 @@ using System.Runtime.Remoting;
 using Fomm.PackageManager;
 using System.Drawing;
 using System.Text;
+using Fomm.CriticalRecords;
 
 namespace Fomm
 {
@@ -17,6 +18,8 @@ namespace Fomm
 		private List<string> m_lstIgnoreReadOnly = new List<string>();
 		private Dictionary<string, Dictionary<string, List<string>>> m_dicExtraInfo = new Dictionary<string, Dictionary<string, List<string>>>();
 		private BackgroundWorkerProgressDialog m_bwdProgress = null;
+
+		#region Constructors
 
 		public MainForm(string fomod)
 		{
@@ -55,6 +58,8 @@ namespace Fomm
 				}
 			}
 		}
+
+		#endregion
 
 		private void MainForm_Load(object sender, EventArgs e)
 		{
@@ -109,19 +114,19 @@ namespace Fomm
 			Settings.SetString("MainFormCol2Width", lvEspList.Columns[1].Width.ToString());
 		}
 
-		private void lvEspList_SelectedIndexChanged(object sender, EventArgs e)
+		protected void LoadPluginInfo()
 		{
 			if (lvEspList.SelectedItems.Count != 1) return;
-			Plugin p;
+			Plugin plgPlugin;
 			try
 			{
-				p = new Plugin(Path.Combine("data", lvEspList.SelectedItems[0].Text), true);
+				plgPlugin = new Plugin(Path.Combine("data", lvEspList.SelectedItems[0].Text), true);
 			}
 			catch
 			{
-				p = null;
+				plgPlugin = null;
 			}
-			if (p == null || p.Records.Count == 0 || p.Records[0].Name != "TES4")
+			if (plgPlugin == null || plgPlugin.Records.Count == 0 || plgPlugin.Records[0].Name != "TES4")
 			{
 				rtbPluginInfo.Text = lvEspList.SelectedItems[0].Text + Environment.NewLine + "Warning: Plugin appears corrupt";
 				pictureBox1.Image = null;
@@ -129,12 +134,13 @@ namespace Fomm
 			}
 
 			StringBuilder stbDescription = new StringBuilder(@"{\rtf1\ansi\ansicpg1252\deff0\deflang4105{\fonttbl{\f0\fnil\fcharset0 MS Sans Serif;}{\f1\fnil\fcharset2 Symbol;}}");
+			stbDescription.AppendLine().AppendLine(@"{\colortbl ;\red255\green0\blue0;\red255\green215\blue0;\red51\green153\blue255;}");
 			stbDescription.AppendLine().Append(@"{\*\generator Msftedit 5.41.21.2509;}\viewkind4\uc1\pard\sl240\slmult1\lang9\f0\fs17 ");
 			string name = null;
 			string desc = null;
 			byte[] pic = null;
 			List<string> masters = new List<string>();
-			foreach (SubRecord sr in ((Record)p.Records[0]).SubRecords)
+			foreach (SubRecord sr in ((Record)plgPlugin.Records[0]).SubRecords)
 			{
 				switch (sr.Name)
 				{
@@ -157,18 +163,21 @@ namespace Fomm
 				pictureBox1.Image = System.Drawing.Bitmap.FromStream(new MemoryStream(pic));
 			}
 			else pictureBox1.Image = null;
-			if ((Path.GetExtension(lvEspList.SelectedItems[0].Text).CompareTo(".esp") == 0) != ((((Record)p.Records[0]).Flags1 & 1) == 0))
+			if ((Path.GetExtension(lvEspList.SelectedItems[0].Text).CompareTo(".esp") == 0) != ((((Record)plgPlugin.Records[0]).Flags1 & 1) == 0))
 			{
-				if ((((Record)p.Records[0]).Flags1 & 1) == 0)
-					stbDescription.Append(@"\cf6 \b WARNING: This plugin has the file extension .esm, but its file header marks it as an esp! \b0 \cf6 \line \line ");
+				if ((((Record)plgPlugin.Records[0]).Flags1 & 1) == 0)
+					stbDescription.Append(@"\cf1 \b WARNING: This plugin has the file extension .esm, but its file header marks it as an esp! \b0 \cf0 \line \line ");
 				else
-					stbDescription.Append(@"\cf6 \b WARNING: This plugin has the file extension .esp, but its file header marks it as an esm! \b0 \cf6 \line \line ");
+					stbDescription.Append(@"\cf1 \b WARNING: This plugin has the file extension .esp, but its file header marks it as an esm! \b0 \cf0 \line \line ");
 			}
 			stbDescription.AppendFormat(@"\b \ul {0} \ulnone \b0 \line ", lvEspList.SelectedItems[0].Text);
 			if (name != null)
 				stbDescription.AppendFormat(@"\b Author: \b0 {0} \line ", name);
 			if (desc != null)
+			{
+				desc = desc.Replace("\r\n", "\n").Replace("\n\r", "\n").Replace("\n", "\\line ");
 				stbDescription.AppendFormat(@"\b Description: \b0 \line {0} \line ", desc);
+			}
 			if (masters.Count > 0)
 			{
 				stbDescription.Append(@"\b Masters: \b0 \par \pard{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\sl240\slmult1 ");
@@ -192,6 +201,11 @@ namespace Fomm
 			}
 			stbDescription.AppendLine().Append("}");
 			rtbPluginInfo.Rtf = stbDescription.ToString();
+		}
+
+		private void lvEspList_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			LoadPluginInfo();
 		}
 
 		private PackageManager.PackageManager PackageManagerForm;
@@ -360,6 +374,7 @@ namespace Fomm
 		}
 
 		#region toolbuttons
+
 		private void openInTESsnipToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			if (lvEspList.SelectedItems.Count == 0) return;
@@ -371,6 +386,40 @@ namespace Fomm
 					RefreshEspList();
 				};
 			tes.Show();
+			GC.Collect();
+		}
+
+		/// <summary>
+		/// Handles the <see cref="ToolStripMenuItem.Click"/> event of the open in CREditor context menu item.
+		/// </summary>
+		/// <remarks>
+		/// Launches the critical records editor, passing it the selected plugins.
+		/// </remarks>
+		/// <param name="sender">The object that trigger the event.</param>
+		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+		private void openInCREditorToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (lvEspList.SelectedItems.Count == 0) return;
+			string[] strPlugins = new string[lvEspList.SelectedItems.Count];
+			for (int i = 0; i < strPlugins.Length; i++)
+				strPlugins[i] = Path.Combine("data", lvEspList.SelectedItems[i].Text);
+			CriticalRecordsForm crfEditor = new CriticalRecordsForm(strPlugins);
+			crfEditor.Show();
+			GC.Collect();
+		}
+
+		/// <summary>
+		/// Handles the <see cref="ToolStripMenuItem.Click"/> event of the CREditor menu item.
+		/// </summary>
+		/// <remarks>
+		/// Launches the critical records editor.
+		/// </remarks>
+		/// <param name="sender">The object that trigger the event.</param>
+		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+		private void cREditorToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			CriticalRecordsForm crfEditor = new CriticalRecordsForm();
+			crfEditor.Show();
 			GC.Collect();
 		}
 
@@ -976,6 +1025,8 @@ namespace Fomm
 			}
 		}
 
+		#region Conflict Detection
+
 		/// <summary>
 		/// Handles the <see cref="Button.Click"/> event of the check for conflicts button.
 		/// </summary>
@@ -992,7 +1043,6 @@ namespace Fomm
 			using (m_bwdProgress = new BackgroundWorkerProgressDialog(CheckForCriticalRecordConflicts))
 			{
 				m_bwdProgress.ShowItemProgress = false;
-				m_bwdProgress.OverallProgressMaximum = lvEspList.Items.Count;
 				m_bwdProgress.OverallProgressStep = 1;
 				m_bwdProgress.OverallMessage = "Checking for conflicts...";
 				if (m_bwdProgress.ShowDialog() == DialogResult.Cancel)
@@ -1002,20 +1052,28 @@ namespace Fomm
 						lviItem.BackColor = Color.Transparent;
 				}
 			}
+			LoadPluginInfo();
 		}
 
 		/// <summary>
-		/// Checks for conflicts with mod-author specified critical records. Used by background worker dialog.
+		/// Launches the conflict detector.
 		/// </summary>
+		/// <remarks>
+		///  This method is called by a <see cref="BackgroundWorkerProgressDialog"/>.
+		/// </remarks>
 		private void CheckForCriticalRecordConflicts()
 		{
-			m_dicExtraInfo.Remove(EXTRA_INFO_CRITICAL_RECORDS);
+			if (!m_dicExtraInfo.ContainsKey(EXTRA_INFO_CRITICAL_RECORDS))
+				m_dicExtraInfo.Remove(EXTRA_INFO_CRITICAL_RECORDS);
 			m_dicExtraInfo[EXTRA_INFO_CRITICAL_RECORDS] = new Dictionary<string, List<string>>();
 
-			List<ListViewItem> lstPlugins = new List<ListViewItem>();
+			List<ListViewItem> lstItems = new List<ListViewItem>();
 			foreach (ListViewItem lviItem in lvEspList.Items)
-				lstPlugins.Add(lviItem);
-			lstPlugins.Sort((a, b) =>
+			{
+				lstItems.Add(lviItem);
+				lviItem.BackColor = Color.Transparent;
+			}
+			lstItems.Sort((a, b) =>
 			{
 				Int32 intIndexA = 0;
 				Int32 intIndexB = 0;
@@ -1035,65 +1093,89 @@ namespace Fomm
 					return 0;
 				return -1;
 			});
-			
+
 			Int32 intIndex = 0;
-			for (Int32 i = lstPlugins.Count - 1; i >= 0; i--)
-				if (!Int32.TryParse(lstPlugins[i].SubItems[1].Text, System.Globalization.NumberStyles.HexNumber, null, out intIndex))
-					lstPlugins.RemoveAt(i);
+			for (Int32 i = lstItems.Count - 1; i >= 0; i--)
+				if (!Int32.TryParse(lstItems[i].SubItems[1].Text, System.Globalization.NumberStyles.HexNumber, null, out intIndex))
+					lstItems.RemoveAt(i);
 
-			fomod fomodCurrent = null;
-			fomod fomodMod = null;
-			Plugin plgPlugin = null;
-			Plugin plgBasePlugin = null;
-			string strBasePlugin = null;
-			string strMasterPlugin = null;
-			string strPlugin = null;
-			string strMessage = null;
-			UInt32 uintAdjustedFormId = 0;
-			foreach (ListViewItem lviPlugin in lstPlugins)
+			List<string> lstPlugins = new List<string>();
+			foreach (ListViewItem lviItem in lstItems)
+				lstPlugins.Add(lviItem.Text);
+
+			m_bwdProgress.OverallProgressMaximum = lstPlugins.Count;
+			ConflictDetector cdrDetector = new ConflictDetector();
+			cdrDetector.ConflictDetected += new EventHandler<ConflictDetectedEventArgs>(cdrDetector_ConflictDetected);
+			cdrDetector.PluginProcessed += new EventHandler<PluginProcessedEventArgs>(cdrDetector_PluginProcessed);
+			cdrDetector.DetectConflicts(lstPlugins);
+		}
+
+		/// <summary>
+		/// Called when the conflict detector has processed a plugin.
+		/// </summary>
+		/// <remarks>
+		/// This updates the detector progress bar.
+		/// </remarks>
+		/// <param name="sender">The object that trigger the event.</param>
+		/// <param name="e">A <see cref="PluginProcessedEventArgs"/> describing the event arguments.</param>
+		private void cdrDetector_PluginProcessed(object sender, PluginProcessedEventArgs e)
+		{
+			m_bwdProgress.StepOverallProgress();
+			e.Cancel = m_bwdProgress.Cancelled();
+		}
+
+		/// <summary>
+		/// Called when the conflict detector has found a conflict.
+		/// </summary>
+		/// <remarks>
+		/// This adds a message to the appropriate plugin's info box, and changes the plugin's
+		/// node's background colour as appropriate.
+		/// </remarks>
+		/// <param name="sender">The object that trigger the event.</param>
+		/// <param name="e">A <see cref="ConflictDetectedEventArgs"/> describing the event arguments.</param>
+		private void cdrDetector_ConflictDetected(object sender, ConflictDetectedEventArgs e)
+		{
+			StringBuilder stbMessage = new StringBuilder();
+			List<Color> lstBackgroundColours = new List<Color> { Color.LightSkyBlue, Color.Yellow, Color.Red };
+			Int32 intColourIndex = 0;
+			switch (e.ConflictInfo.Severity)
 			{
-				m_bwdProgress.StepOverallProgress();
-				if (m_bwdProgress.Cancelled())
-					return;
-
-				lviPlugin.BackColor = Color.Transparent;
-				strBasePlugin = lviPlugin.Text;
-				if (InstallLog.Current.GetCurrentFileOwnerName(strBasePlugin) == null)
-					continue;
-				fomodCurrent = new fomod(Path.Combine(Program.PackageDir, InstallLog.Current.GetCurrentFileOwnerName(strBasePlugin) + ".fomod"));
-				plgBasePlugin = new Plugin(Path.Combine("data", strBasePlugin), false);
-				strBasePlugin = strBasePlugin.ToLowerInvariant();
-				if (!fomodCurrent.CriticalRecords.ContainsKey(strBasePlugin))
-					continue;
-				for (Int32 i = intIndex + 1; i < lstPlugins.Count; i++)
+				case CriticalRecordInfo.ConflictSeverity.Conflict:
+					stbMessage.Append(@"\b \cf1 CONFLICT\cf0 :\b0  ");
+					intColourIndex = 2;
+					break;
+				case CriticalRecordInfo.ConflictSeverity.Warning:
+					stbMessage.Append(@"\b \cf2 WARNING\cf0 :\b0  ");
+					intColourIndex = 1;
+					break;
+				case CriticalRecordInfo.ConflictSeverity.Info:
+					stbMessage.Append(@"\b \cf3 INFO\cf0 :\b0  ");
+					intColourIndex = 0;
+					break;
+			}
+			foreach (ListViewItem lviItem in lvEspList.Items)
+			{
+				if (lviItem.Text.Equals(e.ConflictedPlugin.Name))
 				{
-					strPlugin = lstPlugins[i].Text;
-					plgPlugin = new Plugin(Path.Combine("data", strPlugin), false);
-					foreach (UInt32 uintFormId in fomodCurrent.CriticalRecords[strBasePlugin].Keys)
-					{
-						strMasterPlugin = plgBasePlugin.GetMaster((Int32)uintFormId >> 24) ?? strBasePlugin;
-						if (plgPlugin.GetMasterIndex(strMasterPlugin) < 0)
-							continue;
-						uintAdjustedFormId = ((UInt32)plgPlugin.GetMasterIndex(strMasterPlugin) << 24);
-						uintAdjustedFormId = uintAdjustedFormId + ((uintFormId << 8) >> 8);
-						if (plgPlugin.ContainsFormId(uintAdjustedFormId))
-						{
-							if (!m_dicExtraInfo[EXTRA_INFO_CRITICAL_RECORDS].ContainsKey(lviPlugin.Text))
-								m_dicExtraInfo[EXTRA_INFO_CRITICAL_RECORDS][lviPlugin.Text] = new List<string>();
-							if (InstallLog.Current.GetCurrentFileOwnerName(strPlugin) == null)
-								strMessage = String.Format("Form Id \\b {0:x8}\\b0  is overridden by \\b {1}\\b0 .\\par \\pard\\li720\\sl240\\slmult1 {2}\\par \\pard\\sl240\\slmult1 ", uintFormId, strPlugin, fomodCurrent.GetCriticalRecordReason(strBasePlugin, uintFormId));
-							else
-							{
-								fomodMod = new fomod(Path.Combine(Program.PackageDir, InstallLog.Current.GetCurrentFileOwnerName(strPlugin) + ".fomod"));
-								strMessage = String.Format("Form Id \\b {0:x8}\\b0  is overridden by \\b {1}\\b0  in \\b {2}\\b0 .\\par \\pard\\li720\\sl240\\slmult1 {3}\\par \\pard\\sl240\\slmult1 ", uintFormId, strPlugin, fomodMod.Name, fomodCurrent.GetCriticalRecordReason(strBasePlugin, uintFormId));
-							}
-							m_dicExtraInfo[EXTRA_INFO_CRITICAL_RECORDS][lviPlugin.Text].Add(strMessage);
-							lviPlugin.BackColor = Color.Red;
-						}
-					}
+					if (lstBackgroundColours.IndexOf(lviItem.BackColor) < intColourIndex)
+						lviItem.BackColor = lstBackgroundColours[intColourIndex];
+					break;
 				}
 			}
+
+			if (InstallLog.Current.GetCurrentFileOwnerName(e.ConflictingPlugin.Name) == null)
+				stbMessage.AppendFormat("Form Id \\b {0:x8}\\b0  is overridden by \\b {1}\\b0 .\\par \\pard\\li720\\sl240\\slmult1 {2}\\par \\pard\\sl240\\slmult1 ", e.FormId, e.ConflictingPlugin.Name, e.ConflictInfo.Reason);
+			else
+			{
+				fomod fomodMod = new fomod(Path.Combine(Program.PackageDir, InstallLog.Current.GetCurrentFileOwnerName(e.ConflictingPlugin.Name) + ".fomod"));
+				stbMessage.AppendFormat("Form Id \\b {0:x8}\\b0  is overridden by \\b {1}\\b0  in \\b {2}\\b0 .\\par \\pard\\li720\\sl240\\slmult1 {3}\\par \\pard\\sl240\\slmult1 ", e.FormId, e.ConflictingPlugin.Name, fomodMod.Name, e.ConflictInfo.Reason);
+			}
+			if (!m_dicExtraInfo[EXTRA_INFO_CRITICAL_RECORDS].ContainsKey(e.ConflictedPlugin.Name))
+				m_dicExtraInfo[EXTRA_INFO_CRITICAL_RECORDS][e.ConflictedPlugin.Name] = new List<string>();
+			m_dicExtraInfo[EXTRA_INFO_CRITICAL_RECORDS][e.ConflictedPlugin.Name].Add(stbMessage.ToString());
 		}
+
+		#endregion
 
 		/// <summary>
 		/// Handles the <see cref="RichTextBox.LinkClicked"/> event of the plugin info text box..

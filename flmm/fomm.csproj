@@ -93,6 +93,10 @@
     <Compile Include="BSACreator.Designer.cs">
       <DependentUpon>BSACreator.cs</DependentUpon>
     </Compile>
+    <Compile Include="CriticalRecords\ConflictDetector.cs" />
+    <Compile Include="CriticalRecords\CriticalRecordInfo.cs" />
+    <Compile Include="CriticalRecords\CriticalRecordPlugin.cs" />
+    <Compile Include="CriticalRecords\PluginFullException.cs" />
     <Compile Include="FileManager\FileManager.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -139,10 +143,10 @@
     <Compile Include="LoadOrderSorter.cs" />
     <Compile Include="Messaging.cs" />
     <Compile Include="PackageManager\BsaManager.cs" />
-    <Compile Include="PackageManager\CriticalRecordsForm.cs">
+    <Compile Include="CriticalRecords\CriticalRecordsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PackageManager\CriticalRecordsForm.Designer.cs">
+    <Compile Include="CriticalRecords\CriticalRecordsForm.Designer.cs">
       <DependentUpon>CriticalRecordsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="PackageManager\DecompressionException.cs" />
@@ -314,7 +318,7 @@
       <SubType>Designer</SubType>
       <DependentUpon>xliveSettings.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PackageManager\CriticalRecordsForm.resx">
+    <EmbeddedResource Include="CriticalRecords\CriticalRecordsForm.resx">
       <DependentUpon>CriticalRecordsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PackageManager\InfoEditor.resx">
