@@ -82,11 +82,6 @@ namespace Fomm.PackageManager
 		private string screenshotext;
 		private string readmepath;
 
-		[Obsolete("Critical records are now handled directly by plugins.")]
-		private Dictionary<string, string> m_dicCriticalRecordPluginInstalledNames = null;
-		[Obsolete("Critical records are now handled directly by plugins.")]
-		private Dictionary<string, Dictionary<UInt32, CriticalRecordInfo>> m_dicCriticalRecords = null;
-
 		#region Properties
 
 		/// <summary>
@@ -156,44 +151,6 @@ namespace Fomm.PackageManager
 		/// <value>The extension of the mod's readme file.</value>
 		public string ReadmeExt { get { return readmeext; } }
 
-		/// <summary>
-		/// Gets the mod's critical records.
-		/// </summary>
-		/// <remarks>
-		/// Critical recrods are plugin records that the author is marking as recrods that should
-		/// not be overridden.
-		/// </remarks>
-		/// <value>The mod's critical records.</value>
-		[Obsolete("Critical records are now handled directly by plugins.")]
-		internal Dictionary<string, Dictionary<UInt32, CriticalRecordInfo>> CriticalRecords
-		{
-			get
-			{
-				return m_dicCriticalRecords;
-			}
-			set
-			{
-				m_dicCriticalRecords = value;
-			}
-		}
-
-		/// <summary>
-		/// Gets the installed names of the mod's plugins, as used for critical records.
-		/// </summary>
-		/// <value>The installed names of the mod's plugins, as used for critical records.</value>
-		[Obsolete("Critical records are now handled directly by plugins.")]
-		internal Dictionary<string, string> CriticalRecordPluginInstalledNames
-		{
-			get
-			{
-				return m_dicCriticalRecordPluginInstalledNames;
-			}
-			set
-			{
-				m_dicCriticalRecordPluginInstalledNames = value;
-			}
-		}
-
 		#endregion
 
 		#region Constructors
@@ -218,8 +175,6 @@ namespace Fomm.PackageManager
 			groups = new string[0];
 			isActive = (InstallLog.Current.GetModKey(this.baseName) != null);
 
-			m_dicCriticalRecords = new Dictionary<string, Dictionary<UInt32, CriticalRecordInfo>>();
-			m_dicCriticalRecordPluginInstalledNames = new Dictionary<string, string>();
 			LoadInfo();
 
 			hasScript = (m_zipFile.GetEntry("fomod/script.cs") != null);
@@ -325,37 +280,6 @@ namespace Fomm.PackageManager
 							case "Groups":
 								groups = new string[n.ChildNodes.Count];
 								for (int i = 0; i < n.ChildNodes.Count; i++) groups[i] = n.ChildNodes[i].InnerText;
-								break;
-							case "CriticalRecords":
-								string strPluginName = null;
-								UInt32 uintFormId = 0;
-								foreach (XmlNode xndPlugin in n.ChildNodes[0])
-								{
-									if ((xndPlugin.Attributes["name"] == null) || (String.IsNullOrEmpty(xndPlugin.Attributes["name"].InnerText)))
-										throw new fomodLoadException("The 'name' attribute is required for the CriticalRecords/installedNames/plugin nodes.");
-									if ((xndPlugin.Attributes["installedName"] == null) || (String.IsNullOrEmpty(xndPlugin.Attributes["installedName"].InnerText)))
-										throw new fomodLoadException("The 'installedName' attribute is required for the CriticalRecords/installedNames/plugin nodes.");
-									m_dicCriticalRecordPluginInstalledNames[xndPlugin.Attributes["name"].InnerText.ToLowerInvariant()] = xndPlugin.Attributes["installedName"].InnerText;
-								}
-								foreach (XmlNode xndPlugin in n.ChildNodes[1])
-								{
-									if ((xndPlugin.Attributes["name"] == null) || (String.IsNullOrEmpty(xndPlugin.Attributes["name"].InnerText)))
-										throw new fomodLoadException("The 'name' attribute is required for the CriticalRecords/records/plugin nodes.");
-									strPluginName = xndPlugin.Attributes["name"].InnerText.ToLowerInvariant();
-									if (!m_dicCriticalRecords.ContainsKey(strPluginName))
-										m_dicCriticalRecords[strPluginName] = new Dictionary<UInt32, CriticalRecordInfo>();
-									foreach (XmlNode xndRecord in xndPlugin.ChildNodes)
-									{
-										if ((xndRecord.Attributes["formId"] == null) || (String.IsNullOrEmpty(xndRecord.Attributes["formId"].InnerText)))
-											throw new fomodLoadException("The 'formId' attribute is required for the CriticalRecords/plugin/record nodes.");
-										uintFormId = UInt32.Parse(xndRecord.Attributes["formId"].InnerText, System.Globalization.NumberStyles.HexNumber);
-										
-										CriticalRecordInfo criInfo = new CriticalRecordInfo();
-										criInfo.Severity = CriticalRecordInfo.ConflictSeverity.Conflict;
-										criInfo.Reason = xndRecord.InnerText;
-										m_dicCriticalRecords[strPluginName][uintFormId] = criInfo;
-									}
-								}
 								break;
 							default:
 								throw new fomodLoadException("Unexpected node type '" + n.Name + "' in info.xml");
@@ -555,21 +479,7 @@ namespace Fomm.PackageManager
 				for (int i = 0; i < groups.Length; i++) el2.ChildNodes[i].InnerText = groups[i];
 				el.AppendChild(el2);
 			}
-			if (m_dicCriticalRecords.Count > 0)
-			{
-				Dictionary<string, CriticalRecordPlugin> dicPlugins = new Dictionary<string, CriticalRecordPlugin>();
-				foreach (KeyValuePair<string, string> kvpNames in m_dicCriticalRecordPluginInstalledNames)
-					dicPlugins[kvpNames.Value.ToLowerInvariant()] = new CriticalRecordPlugin(GetFile(kvpNames.Key), kvpNames.Key);
-
-				foreach (string strPlugin in m_dicCriticalRecords.Keys)
-				{
-					CriticalRecordPlugin crpPlugin = dicPlugins[strPlugin];
-					foreach (UInt32 uintFormId in m_dicCriticalRecords[strPlugin].Keys)
-						crpPlugin.SetCriticalRecord(uintFormId, m_dicCriticalRecords[strPlugin][uintFormId].Severity, m_dicCriticalRecords[strPlugin][uintFormId].Reason);
-					ReplaceFile(crpPlugin.Name, crpPlugin.Save());
-				}
-			}
-
+			
 			m_zipFile.BeginUpdate();
 			hasInfo = true;
 
