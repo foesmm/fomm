@@ -76,6 +76,23 @@ namespace Fomm.TESsnip {
             get { long size=0; foreach(Rec rec in Records) size+=rec.Size2; return size; }
         }
         public override long Size2 { get { return Size; } }
+		public IList<string> Masters
+		{
+			get
+			{
+				List<string> lstMasters = new List<string>();
+				foreach (SubRecord sr in ((Record)Records[0]).SubRecords)
+				{
+					switch (sr.Name)
+					{
+						case "MAST":
+							lstMasters.Add(sr.GetStrData());
+							break;
+					}
+				}
+				return lstMasters;
+			}
+		}
 
         public override void DeleteRecord(BaseRecord br) {
             Rec r = br as Rec;
@@ -235,31 +252,16 @@ namespace Fomm.TESsnip {
 
 		public Int32 GetMasterIndex(string p_strPluginName)
 		{
-			List<string> lstMasters = new List<string>();
-			foreach (SubRecord sr in ((Record)Records[0]).SubRecords)
-			{
-				switch (sr.Name)
-				{
-					case "MAST":
-						lstMasters.Add(sr.GetStrData().ToLowerInvariant());
-						break;
-				}
-			}
-			return lstMasters.IndexOf(p_strPluginName.ToLowerInvariant());
+			IList<string> lstMaster = Masters;
+			for (Int32 i = 0; i < lstMaster.Count; i++)
+				if (lstMaster[i].ToLowerInvariant().Equals(p_strPluginName.ToLowerInvariant()))
+					return i;
+			return -1;
 		}
 
 		public string GetMaster(Int32 p_intIndex)
 		{
-			List<string> lstMasters = new List<string>();
-			foreach (SubRecord sr in ((Record)Records[0]).SubRecords)
-			{
-				switch (sr.Name)
-				{
-					case "MAST":
-						lstMasters.Add(sr.GetStrData().ToLowerInvariant());
-						break;
-				}
-			}
+			IList<string> lstMasters = Masters;
 			if ((p_intIndex < 0) || (p_intIndex >= lstMasters.Count))
 				return null;
 			return lstMasters[p_intIndex];
