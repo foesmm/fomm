@@ -110,11 +110,5 @@ namespace Fomm.PackageManager {
         private void clbGroups_ItemCheck(object sender, ItemCheckEventArgs e) {
 
 		}
-
-		private void butSetCriticalRecords_Click(object sender, EventArgs e)
-		{
-			CriticalRecordsForm crfForm = new CriticalRecordsForm(mod);
-			crfForm.ShowDialog();
-		}
     }
 }

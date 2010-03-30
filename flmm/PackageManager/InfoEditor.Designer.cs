@@ -46,7 +46,6 @@ namespace Fomm.PackageManager {
 			this.tbEmail = new System.Windows.Forms.TextBox();
 			this.label9 = new System.Windows.Forms.Label();
 			this.clbGroups = new System.Windows.Forms.CheckedListBox();
-			this.butSetCriticalRecords = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// tbName
@@ -254,23 +253,11 @@ namespace Fomm.PackageManager {
 			this.clbGroups.TabIndex = 17;
 			this.clbGroups.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.clbGroups_ItemCheck);
 			// 
-			// butSetCriticalRecords
-			// 
-			this.butSetCriticalRecords.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.butSetCriticalRecords.Location = new System.Drawing.Point(133, 453);
-			this.butSetCriticalRecords.Name = "butSetCriticalRecords";
-			this.butSetCriticalRecords.Size = new System.Drawing.Size(115, 23);
-			this.butSetCriticalRecords.TabIndex = 20;
-			this.butSetCriticalRecords.Text = "Set Critical Records";
-			this.butSetCriticalRecords.UseVisualStyleBackColor = true;
-			this.butSetCriticalRecords.Click += new System.EventHandler(this.butSetCriticalRecords_Click);
-			// 
 			// InfoEditor
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(347, 486);
-			this.Controls.Add(this.butSetCriticalRecords);
 			this.Controls.Add(this.clbGroups);
 			this.Controls.Add(this.label9);
 			this.Controls.Add(this.label8);
@@ -325,7 +312,6 @@ namespace Fomm.PackageManager {
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TextBox tbEmail;
         private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.CheckedListBox clbGroups;
-		private System.Windows.Forms.Button butSetCriticalRecords;
+		private System.Windows.Forms.CheckedListBox clbGroups;
     }
 }
