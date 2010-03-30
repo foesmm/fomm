@@ -8,6 +8,7 @@ using MemoryStream = System.IO.MemoryStream;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using Fomm.CriticalRecords;
 
 /*
  * Installed data XML Structure
@@ -29,19 +30,19 @@ namespace Fomm.PackageManager
 {
 	public class fomod
 	{
-		private class StringDataSource : IStaticDataSource
+		private class DataSource : IStaticDataSource
 		{
 			private Stream ms;
 
-			public StringDataSource(string str)
+			public DataSource(string str)
 			{
 				ms = new System.IO.MemoryStream(System.Text.Encoding.Default.GetBytes(str));
 			}
-			public StringDataSource(byte[] bytes)
+			public DataSource(byte[] bytes)
 			{
 				ms = new System.IO.MemoryStream(bytes);
 			}
-			public StringDataSource(Stream s)
+			public DataSource(Stream s)
 			{
 				ms = s;
 			}
@@ -81,8 +82,10 @@ namespace Fomm.PackageManager
 		private string screenshotext;
 		private string readmepath;
 
+		[Obsolete("Critical records are now handled directly by plugins.")]
 		private Dictionary<string, string> m_dicCriticalRecordPluginInstalledNames = null;
-		private Dictionary<string, Dictionary<UInt32, string>> m_dicCriticalRecords = null;
+		[Obsolete("Critical records are now handled directly by plugins.")]
+		private Dictionary<string, Dictionary<UInt32, CriticalRecordInfo>> m_dicCriticalRecords = null;
 
 		#region Properties
 
@@ -161,7 +164,8 @@ namespace Fomm.PackageManager
 		/// not be overridden.
 		/// </remarks>
 		/// <value>The mod's critical records.</value>
-		internal Dictionary<string, Dictionary<UInt32, string>> CriticalRecords
+		[Obsolete("Critical records are now handled directly by plugins.")]
+		internal Dictionary<string, Dictionary<UInt32, CriticalRecordInfo>> CriticalRecords
 		{
 			get
 			{
@@ -177,6 +181,7 @@ namespace Fomm.PackageManager
 		/// Gets the installed names of the mod's plugins, as used for critical records.
 		/// </summary>
 		/// <value>The installed names of the mod's plugins, as used for critical records.</value>
+		[Obsolete("Critical records are now handled directly by plugins.")]
 		internal Dictionary<string, string> CriticalRecordPluginInstalledNames
 		{
 			get
@@ -213,7 +218,7 @@ namespace Fomm.PackageManager
 			groups = new string[0];
 			isActive = (InstallLog.Current.GetModKey(this.baseName) != null);
 
-			m_dicCriticalRecords = new Dictionary<string, Dictionary<uint, string>>();
+			m_dicCriticalRecords = new Dictionary<string, Dictionary<UInt32, CriticalRecordInfo>>();
 			m_dicCriticalRecordPluginInstalledNames = new Dictionary<string, string>();
 			LoadInfo();
 
@@ -338,13 +343,17 @@ namespace Fomm.PackageManager
 										throw new fomodLoadException("The 'name' attribute is required for the CriticalRecords/records/plugin nodes.");
 									strPluginName = xndPlugin.Attributes["name"].InnerText.ToLowerInvariant();
 									if (!m_dicCriticalRecords.ContainsKey(strPluginName))
-										m_dicCriticalRecords[strPluginName] = new Dictionary<UInt32, string>();
+										m_dicCriticalRecords[strPluginName] = new Dictionary<UInt32, CriticalRecordInfo>();
 									foreach (XmlNode xndRecord in xndPlugin.ChildNodes)
 									{
 										if ((xndRecord.Attributes["formId"] == null) || (String.IsNullOrEmpty(xndRecord.Attributes["formId"].InnerText)))
 											throw new fomodLoadException("The 'formId' attribute is required for the CriticalRecords/plugin/record nodes.");
 										uintFormId = UInt32.Parse(xndRecord.Attributes["formId"].InnerText, System.Globalization.NumberStyles.HexNumber);
-										m_dicCriticalRecords[strPluginName][uintFormId] = xndRecord.InnerText;
+										
+										CriticalRecordInfo criInfo = new CriticalRecordInfo();
+										criInfo.Severity = CriticalRecordInfo.ConflictSeverity.Conflict;
+										criInfo.Reason = xndRecord.InnerText;
+										m_dicCriticalRecords[strPluginName][uintFormId] = criInfo;
 									}
 								}
 								break;
@@ -416,7 +425,7 @@ namespace Fomm.PackageManager
 			}
 			else
 			{
-				StringDataSource sds = new StringDataSource(value);
+				DataSource sds = new DataSource(value);
 				m_zipFile.BeginUpdate();
 				m_zipFile.Add(sds, "fomod/script.cs");
 				m_zipFile.CommitUpdate();
@@ -429,6 +438,27 @@ namespace Fomm.PackageManager
 		{
 			if (!HasReadme) return null;
 			return GetFileText(m_zipFile.GetEntry(readmepath));
+		}
+
+		/// <summary>
+		/// Replaces the specified file with the given data.
+		/// </summary>
+		/// <remarks>
+		/// If the file does not exist in the fomod, it is added.
+		/// </remarks>
+		/// <param name="p_strFile">The name of the file to replace.</param>
+		/// <param name="p_bteData">The data with which to replace to file.</param>
+		protected void ReplaceFile(string p_strFile, byte[] p_bteData)
+		{
+			m_zipFile.BeginUpdate();
+			ZipEntry zpeFile = m_zipFile.GetEntry(p_strFile.Replace('\\', '/'));
+			if (zpeFile != null)
+				m_zipFile.Delete(zpeFile);
+
+			DataSource sds = new DataSource(p_bteData);
+			m_zipFile.Add(sds, p_strFile);
+			m_zipFile.CommitUpdate();
+			sds.Close();
 		}
 
 		internal void SetReadme(string value)
@@ -452,7 +482,7 @@ namespace Fomm.PackageManager
 					readmeext = ".rtf";
 					readmepath = Path.ChangeExtension(readmepath, ".rtf");
 				}
-				StringDataSource sds = new StringDataSource(value);
+				DataSource sds = new DataSource(value);
 				m_zipFile.Add(sds, readmepath);
 				m_zipFile.CommitUpdate();
 				sds.Close();
@@ -465,7 +495,7 @@ namespace Fomm.PackageManager
 			XmlDocument xmlDoc = new XmlDocument();
 			xmlDoc.AppendChild(xmlDoc.CreateXmlDeclaration("1.0", "UTF-16", null));
 			XmlElement el = xmlDoc.CreateElement("fomod"), el2;
-			StringDataSource sds1, sds2 = null;
+			DataSource sds1, sds2 = null;
 
 			if (SetScreenshot && this.screenshot != null)
 			{
@@ -527,35 +557,17 @@ namespace Fomm.PackageManager
 			}
 			if (m_dicCriticalRecords.Count > 0)
 			{
-				el2 = xmlDoc.CreateElement("CriticalRecords");
-				XmlNode xndInstalledName = el2.AppendChild(xmlDoc.CreateElement("installedNames"));
-				XmlNode xndPluginName = null;
+				Dictionary<string, CriticalRecordPlugin> dicPlugins = new Dictionary<string, CriticalRecordPlugin>();
 				foreach (KeyValuePair<string, string> kvpNames in m_dicCriticalRecordPluginInstalledNames)
-				{
-					xndPluginName = xndInstalledName.AppendChild(xmlDoc.CreateElement("plugin"));
-					xndPluginName.Attributes.Append(xmlDoc.CreateAttribute("name"));
-					xndPluginName.Attributes.Append(xmlDoc.CreateAttribute("installedName"));
-					xndPluginName.Attributes["name"].InnerText = kvpNames.Key;
-					xndPluginName.Attributes["installedName"].InnerText = kvpNames.Value;
-				}
+					dicPlugins[kvpNames.Value.ToLowerInvariant()] = new CriticalRecordPlugin(GetFile(kvpNames.Key), kvpNames.Key);
 
-				XmlNode xndRecords = el2.AppendChild(xmlDoc.CreateElement("records"));
-				XmlNode xndPlugin = null;
-				XmlNode xndRecord = null;
 				foreach (string strPlugin in m_dicCriticalRecords.Keys)
 				{
-					xndPlugin = xndRecords.AppendChild(xmlDoc.CreateElement("plugin"));
-					xndPlugin.Attributes.Append(xmlDoc.CreateAttribute("name"));
-					xndPlugin.Attributes["name"].InnerText = strPlugin;
+					CriticalRecordPlugin crpPlugin = dicPlugins[strPlugin];
 					foreach (UInt32 uintFormId in m_dicCriticalRecords[strPlugin].Keys)
-					{
-						xndRecord = xndPlugin.AppendChild(xmlDoc.CreateElement("record"));
-						xndRecord.Attributes.Append(xmlDoc.CreateAttribute("formId"));
-						xndRecord.Attributes["formId"].InnerText = uintFormId.ToString("x8");
-						xndRecord.InnerText = m_dicCriticalRecords[strPlugin][uintFormId];
-					}
+						crpPlugin.SetCriticalRecord(uintFormId, m_dicCriticalRecords[strPlugin][uintFormId].Severity, m_dicCriticalRecords[strPlugin][uintFormId].Reason);
+					ReplaceFile(crpPlugin.Name, crpPlugin.Save());
 				}
-				el.AppendChild(el2);
 			}
 
 			m_zipFile.BeginUpdate();
@@ -564,7 +576,7 @@ namespace Fomm.PackageManager
 			MemoryStream ms = new MemoryStream();
 			xmlDoc.Save(ms);
 			ms.Position = 0;
-			sds1 = new StringDataSource(ms);
+			sds1 = new DataSource(ms);
 			m_zipFile.Add(sds1, "fomod/info.xml");
 			if (SetScreenshot)
 			{
@@ -584,7 +596,7 @@ namespace Fomm.PackageManager
 					}
 					hasScreenshot = true;
 					screenshotext = ".png";
-					sds2 = new StringDataSource(screenshot);
+					sds2 = new DataSource(screenshot);
 					m_zipFile.Add(sds2, "fomod/screenshot.png");
 				}
 			}
@@ -737,141 +749,5 @@ namespace Fomm.PackageManager
 			}
 			return imgImage;
 		}
-
-		#region Critical Records
-
-		/// <summary>
-		/// Gets the installed name of the specified plugin.
-		/// </summary>
-		/// <remarks>
-		/// The installed name of a plugin is the file name of the plugin once installed on a
-		/// user's machine.
-		/// </remarks>
-		/// <param name="p_strPluginName">The name of the plugin for which to retrieve the installed name.</param>
-		/// <returns>The installed name of the specified plugin.</returns>
-		public string GetCriticalRecordPluginInstalledName(string p_strPluginName)
-		{
-			string strLowered = p_strPluginName.ToLowerInvariant();
-			if (!m_dicCriticalRecordPluginInstalledNames.ContainsKey(strLowered))
-				return null;
-			return m_dicCriticalRecordPluginInstalledNames[strLowered];
-		}
-
-		/// <summary>
-		/// Gets the original names of the specified plugin installed name.
-		/// </summary>
-		/// <remarks>
-		/// The installed name of a plugin is the file name of the plugin once installed on a
-		/// user's machine. The orignal names are the names of the files in the fomod.
-		/// </remarks>
-		/// <param name="p_strPluginInstalledName">The installed name of the plugin for which to
-		/// retrieve the original names.</param>
-		/// <returns>The original names of the specified plugin.</returns>
-		public IList<string> GetCriticalRecordPluginNames(string p_strPluginInstalledName)
-		{
-			string strLowered = p_strPluginInstalledName.ToLowerInvariant();
-			List<string> lstNames = new List<string>();
-			foreach (KeyValuePair<string, string> kvpNames in m_dicCriticalRecordPluginInstalledNames)
-			{
-				if (kvpNames.Value.ToLowerInvariant().Equals(p_strPluginInstalledName))
-					if (!lstNames.Contains(kvpNames.Key))
-						lstNames.Add(kvpNames.Key);
-			}
-			return lstNames;
-		}
-
-		/// <summary>
-		/// Sets the installed name of the specified plugin.
-		/// </summary>
-		/// <remarks>
-		/// The installed name of a plugin is the file name of the plugin once installed on a
-		/// user's machine.
-		/// </remarks>
-		/// <param name="p_strPluginName">The name of the plugin for which to set the installed name.</param>
-		/// <param name="p_strPluginInstalledName">The installed name of the specified plugin.</param>
-		public void SetCriticalRecordPluginInstalledName(string p_strPluginName, string p_strPluginInstalledName)
-		{
-			string strOldInstalledName = null;
-			m_dicCriticalRecordPluginInstalledNames.TryGetValue(p_strPluginName.ToLowerInvariant(), out strOldInstalledName);
-			m_dicCriticalRecordPluginInstalledNames[p_strPluginName.ToLowerInvariant()] = p_strPluginInstalledName;
-			if ((strOldInstalledName != null) && !p_strPluginInstalledName.Equals(strOldInstalledName))
-			{
-				strOldInstalledName = strOldInstalledName.ToLowerInvariant();
-				if (m_dicCriticalRecords.ContainsKey(strOldInstalledName))
-				{
-					string strLoweredNew = p_strPluginInstalledName.ToLowerInvariant();
-					if (!m_dicCriticalRecords.ContainsKey(strLoweredNew))
-						m_dicCriticalRecords[strLoweredNew] = new Dictionary<UInt32, string>();
-					foreach (KeyValuePair<UInt32, string> kvpRecord in m_dicCriticalRecords[strOldInstalledName])
-						m_dicCriticalRecords[strLoweredNew][kvpRecord.Key] = kvpRecord.Value;
-					m_dicCriticalRecords.Remove(strOldInstalledName);
-				}
-			}
-		}
-
-		/// <summary>
-		/// Determines if the specified record is marked as critical for the specifid plugin.
-		/// </summary>
-		/// <param name="p_strPluginInstalledName">The installed name of the plugin for which it is to
-		/// be determined if the specified record is critical.</param>
-		/// <param name="p_uintFormId">The record for which it is to be determined whether it is
-		/// critical.</param>
-		/// <returns><lang cref="true"/> if the specified record is critical for the specified plugin;
-		/// <lang cref="false"/> otherwise.</returns>
-		public bool IsRecordCritical(string p_strPluginInstalledName, UInt32 p_uintFormId)
-		{
-			if (!m_dicCriticalRecords.ContainsKey(p_strPluginInstalledName.ToLowerInvariant()))
-				return false;
-			return m_dicCriticalRecords[p_strPluginInstalledName.ToLowerInvariant()].ContainsKey(p_uintFormId);
-		}
-
-		/// <summary>
-		/// Gets the reason the the specified record has been marked as critical.
-		/// </summary>
-		/// <param name="p_strPluginInstalledName">The installed name of the plugin for whose record we are
-		/// to retrieve the critical record reason.</param>
-		/// <param name="p_uintFormId">The record for which  to retrieve the critical record reason.</param>
-		/// <returns>The reason the the specified record has been marked as critical.</returns>
-		public string GetCriticalRecordReason(string p_strPluginInstalledName, UInt32 p_uintFormId)
-		{
-			if (!IsRecordCritical(p_strPluginInstalledName, p_uintFormId))
-				return null;
-			return m_dicCriticalRecords[p_strPluginInstalledName.ToLowerInvariant()][p_uintFormId];
-		}
-
-		/// <summary>
-		/// Marks a record as critical, supplying a reason to the critical marking.
-		/// </summary>
-		/// <param name="p_strPluginInstalledName">The installed name of the plugin whose record is being
-		/// marked as critical.</param>
-		/// <param name="p_uintFormId">The form id that is being marked as critical.</param>
-		/// <param name="p_strReason">The reasonthe record is being marked as critical.</param>
-		public void SetCriticalRecord(string p_strPluginInstalledName, UInt32 p_uintFormId, string p_strReason)
-		{
-			if (!m_dicCriticalRecordPluginInstalledNames.ContainsValue(p_strPluginInstalledName))
-				throw new ArgumentException("The given installed plugin name is not known. Call SetCriticalRecordPluginInstalledName(string p_strPluginName, string p_strPluginInstalledName) first.", "p_strPluginInstalledName");
-			string strLowered = p_strPluginInstalledName.ToLowerInvariant();
-			if (!m_dicCriticalRecords.ContainsKey(strLowered))
-				m_dicCriticalRecords[strLowered] = new Dictionary<UInt32, string>();
-			m_dicCriticalRecords[strLowered][p_uintFormId] = p_strReason;
-		}
-
-		/// <summary>
-		/// Unsets the sepecifed record as critical.
-		/// </summary>
-		/// <param name="p_strPluginInstalledName">The installed name of the plugin whose record is being
-		/// unmarked as critical.</param>
-		/// <param name="p_uintFormId">The form id that is being unmarked as critical.</param>
-		public void UnsetCriticalRecord(string p_strPluginInstalledName, UInt32 p_uintFormId)
-		{
-			string strLowered = p_strPluginInstalledName.ToLowerInvariant();
-			if (!m_dicCriticalRecords.ContainsKey(strLowered))
-				return;
-			m_dicCriticalRecords[strLowered].Remove(p_uintFormId);
-			if (m_dicCriticalRecords[strLowered].Count == 0)
-				m_dicCriticalRecords.Remove(strLowered);
-		}
-
-		#endregion
 	}
 }
