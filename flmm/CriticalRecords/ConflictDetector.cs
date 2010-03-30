@@ -158,11 +158,9 @@ namespace Fomm.CriticalRecords
 			string strMasterPlugin = null;
 			string strPlugin = null;
 			UInt32 uintAdjustedFormId = 0;
-			Dictionary<UInt32, CriticalRecordInfo> dicCriticalRecords = null;
 			string strBasePlugin = null;
 			for (Int32 intIndex = 0; intIndex < p_lstOrderedPlugins.Count; intIndex++)
 			{
-				dicCriticalRecords = null;
 				strBasePlugin = p_lstOrderedPlugins[intIndex];
 				if (m_booCancelled)
 					return;
@@ -173,27 +171,13 @@ namespace Fomm.CriticalRecords
 					continue;
 
 				crpBasePlugin = new CriticalRecordPlugin(Path.Combine("data", strBasePlugin), false);
-				if (InstallLog.Current.GetCurrentFileOwnerName(strBasePlugin) != null)
-				{
-					string strLoweredPlugin = strBasePlugin.ToLowerInvariant();
-					//storing critical record data in the fomod is deprecated. we only check so we
-					// don't break backwards compatibility
-					fomod fomodCurrent = new fomod(Path.Combine(Program.PackageDir, InstallLog.Current.GetCurrentFileOwnerName(strLoweredPlugin) + ".fomod"));
-					if (fomodCurrent.CriticalRecords.ContainsKey(strLoweredPlugin))
-						dicCriticalRecords = fomodCurrent.CriticalRecords[strLoweredPlugin];
-				}
-				//if the plugins isn't part of a fomod, or the fomod does not contain any critical record info,
-				// get the critical record data from the plugin itself.
-				//this is the preferred and supported way of storing critical record data.
-				if (dicCriticalRecords == null)
-					dicCriticalRecords = crpBasePlugin.CriticalRecordData;
-				if (dicCriticalRecords.Count == 0)
+				if (!crpBasePlugin.HasCriticalRecordData)
 					continue;
 				for (Int32 i = intIndex + 1; i < p_lstOrderedPlugins.Count; i++)
 				{
 					strPlugin = p_lstOrderedPlugins[i];
 					plgPlugin = new Plugin(Path.Combine("data", strPlugin), false);
-					foreach (UInt32 uintFormId in dicCriticalRecords.Keys)
+					foreach (UInt32 uintFormId in crpBasePlugin.CriticalRecordFormIds)
 					{
 						strMasterPlugin = crpBasePlugin.GetMaster((Int32)uintFormId >> 24) ?? strBasePlugin;
 						if (plgPlugin.GetMasterIndex(strMasterPlugin) < 0)
@@ -201,10 +185,7 @@ namespace Fomm.CriticalRecords
 						uintAdjustedFormId = ((UInt32)plgPlugin.GetMasterIndex(strMasterPlugin) << 24);
 						uintAdjustedFormId = uintAdjustedFormId + (uintFormId & 0x00ffffff);
 						if (plgPlugin.ContainsFormId(uintAdjustedFormId))
-						{
-							OnConflictDetected(crpBasePlugin, plgPlugin, uintFormId, dicCriticalRecords[uintFormId]);
-
-						}
+							OnConflictDetected(crpBasePlugin, plgPlugin, uintFormId, crpBasePlugin.GetCriticalRecordInfo(uintFormId));
 					}
 				}
 			}

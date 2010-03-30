@@ -25,14 +25,22 @@ namespace Fomm.CriticalRecords
 		#region Properties
 
 		/// <summary>
-		/// Gets the critical record data.
+		/// Gets whether the plugin has any critical record data.
 		/// </summary>
-		/// <value>The critical record data.</value>
-		internal Dictionary<UInt32, CriticalRecordInfo> CriticalRecordData
+		/// <value>Whether the plugin has any critical record data.</value>
+		internal bool HasCriticalRecordData
 		{
 			get
 			{
-				return m_dicCriticalRecords;
+				return m_dicCriticalRecords.Count > 0;
+			}
+		}
+
+		internal IList<UInt32> CriticalRecordFormIds
+		{
+			get
+			{
+				return new List<UInt32>(m_dicCriticalRecords.Keys);
 			}
 		}
 
