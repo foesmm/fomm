@@ -69,7 +69,7 @@ namespace Fomm.TESsnip {
         public abstract BaseRecord Clone();
     }
 
-    public sealed class Plugin : BaseRecord {
+    public class Plugin : BaseRecord {
         public readonly List<Rec> Records = new List<Rec>();
 
         public override long Size {
