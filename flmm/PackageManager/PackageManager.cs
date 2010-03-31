@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using System.IO;
 using Fomm.PackageManager.Upgrade;
-using ICSharpCode.SharpZipLib.Zip;
+using SevenZip;
 
 namespace Fomm.PackageManager
 {
@@ -506,126 +506,255 @@ namespace Fomm.PackageManager
 			return true;
 		}
 
-		private void BuildFomodFromFolder(string path)
+		#region Create fomod from Folder
+
+		/// <summary>
+		/// Creates a fomod from a source folder.
+		/// </summary>
+		/// <param name="p_strPath">The path to the folder from which to create the fomod.</param>
+		private void BuildFomodFromFolder(string p_strPath)
 		{
-			path.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-			string name = Path.GetFileName(path);
-			string newpath = Path.Combine(Program.PackageDir, name + ".fomod");
-			CheckFomodFolder(ref path, null, name);
-			if (!CheckFomodName(ref newpath)) return;
-			ICSharpCode.SharpZipLib.Zip.FastZip fastZip = new ICSharpCode.SharpZipLib.Zip.FastZip();
-			fastZip.CreateZip(newpath, path, true, null);
-			AddFomod(newpath, true);
+			p_strPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+			string strName = Path.GetFileName(p_strPath);
+			string strFomodPath = Path.Combine(Program.PackageDir, strName + ".fomod");
+			CheckFomodFolder(ref strFomodPath, null, strName);
+			if (!CheckFomodName(ref strFomodPath))
+				return;
+
+			using (m_bwdProgress = new BackgroundWorkerProgressDialog(CompressFomodFromFolder))
+			{
+				m_bwdProgress.OverallMessage = "Creating Fomod...";
+				m_bwdProgress.ShowItemProgress = false;
+				m_bwdProgress.OverallProgressMaximum = Directory.GetFiles(p_strPath, "*", SearchOption.AllDirectories).Length;
+				m_bwdProgress.OverallProgressStep = 1;
+				m_bwdProgress.WorkMethodArguments = new string[] { p_strPath, strFomodPath };
+				if (m_bwdProgress.ShowDialog() == DialogResult.Cancel)
+				{
+					if (File.Exists(strFomodPath))
+						File.Delete(strFomodPath);
+					return;
+				}
+			}
+			AddFomod(strFomodPath, true);
 		}
 
-		public void AddNewFomod(string oldpath)
+		/// <summary>
+		/// Compress a folder to a fomod.
+		/// </summary>
+		/// <remarks>
+		/// This method is called by a <see cref="BackgroundWorkerProgressDialog"/> and so displays progress.
+		/// </remarks>
+		/// <param name="p_objArgs">An array of strings. Index 0 is the path to the folder to compress. Index 1 is
+		/// the path to the new fomod.</param>
+		protected void CompressFomodFromFolder(object p_objArgs)
 		{
-			bool Repack = false;
-			string newpath, tmppath = null;
-			if (oldpath.EndsWith(".fomod", StringComparison.OrdinalIgnoreCase))
+			string strFolderPath = ((string[])p_objArgs)[0];
+			string strFomodPath = ((string[])p_objArgs)[1];
+
+			SevenZipCompressor szcCompressor = new SevenZipCompressor();
+			szcCompressor.CompressionLevel = CompressionLevel.Ultra;
+			szcCompressor.CompressionMethod = CompressionMethod.Default;
+			szcCompressor.ArchiveFormat = OutArchiveFormat.Zip;
+			szcCompressor.FileCompressionStarted += new EventHandler<FileNameEventArgs>(CompressFomodFromFolder_FileCompressionStarted);
+			szcCompressor.FileCompressionFinished += new EventHandler(CompressFomodFromFolder_FileCompressionFinished);
+			szcCompressor.CompressDirectory(strFolderPath, strFomodPath);
+		}
+
+		/// <summary>
+		/// Called when a file has been added to a new fomod.
+		/// </summary>
+		/// <remarks>
+		/// This steps the progress of the create fomod from folder progress dialog.
+		/// </remarks>
+		/// <param name="sender">The object that raised the event.</param>
+		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+		private void CompressFomodFromFolder_FileCompressionFinished(object sender, EventArgs e)
+		{
+			m_bwdProgress.StepOverallProgress();
+		}
+
+		/// <summary>
+		/// Called when a file is about to be added to a new fomod.
+		/// </summary>
+		/// <remarks>
+		/// This cancels the compression if the user has clicked the cancel button of the progress dialog.
+		/// </remarks>
+		/// <param name="sender">The object that raised the event.</param>
+		/// <param name="e">A <see cref="FileNameEventArgs"/> describing the event arguments.</param>
+		private void CompressFomodFromFolder_FileCompressionStarted(object sender, FileNameEventArgs e)
+		{
+			if (m_bwdProgress.Cancelled())
+				e.Cancel = true;
+		}
+
+		#endregion
+
+		#region Repacking Archive to Fomod
+
+		/// <summary>
+		/// Repacks an archive into a fomod.
+		/// </summary>
+		/// <remarks>
+		/// This method is called by a <see cref="BackgroundWorkerProgressDialog"/> and so displays progress.
+		/// </remarks>
+		/// <param name="p_objArgs">An array of strings. Index 0 is the path to the archive to repack. Index 1 is
+		/// the path to the new fomod. Index 2 is the URL to the mod on tes nexus.</param>
+		protected void RepackToFomod(object p_objArgs)
+		{
+			string strArchivePath = (string)((object[])p_objArgs)[0];
+			string strFomodPath = (string)((object[])p_objArgs)[1];
+			string strTesNexusUrl = (string)((object[])p_objArgs)[2];
+			string strTmpPath = Program.CreateTempDirectory();
+
+			SevenZipExtractor szeExtractor = new SevenZipExtractor(strArchivePath);
+			szeExtractor.FileExtractionFinished += new EventHandler(RepackToFomod_FileExtractionFinished);
+			szeExtractor.FileExtractionStarted += new EventHandler<FileInfoEventArgs>(RepackToFomod_FileExtractionStarted);
+			m_bwdProgress.ItemProgressMaximum = (Int32)szeExtractor.FilesCount;
+			m_bwdProgress.ItemProgressStep = 1;
+			m_bwdProgress.ItemMessage = "Extracting Files...";
+			szeExtractor.ExtractArchive(strTmpPath);
+
+			m_bwdProgress.StepOverallProgress();
+
+			//Check for packing errors here
+			CheckFomodFolder(ref strTmpPath, strTesNexusUrl, Path.GetFileNameWithoutExtension(strFomodPath));
+
+			m_bwdProgress.StepOverallProgress();
+
+			SevenZipCompressor szcCompressor = new SevenZipCompressor();
+			szcCompressor.CompressionLevel = CompressionLevel.Ultra;
+			szcCompressor.CompressionMethod = CompressionMethod.Default;
+			szcCompressor.ArchiveFormat = OutArchiveFormat.Zip;
+			szcCompressor.FileCompressionStarted += new EventHandler<FileNameEventArgs>(RepackToFomod_FileCompressionStarted);
+			szcCompressor.FileCompressionFinished += new EventHandler(RepackToFomod_FileCompressionFinished);
+			m_bwdProgress.ItemProgress = 0;
+			m_bwdProgress.ItemMessage = "Compressing Files...";
+			szcCompressor.CompressDirectory(strTmpPath, strFomodPath);
+
+			m_bwdProgress.StepOverallProgress();
+		}
+
+		/// <summary>
+		/// Called when a file has been added to a new fomod.
+		/// </summary>
+		/// <remarks>
+		/// This steps the progress of the create fomod from archive progress dialog.
+		/// </remarks>
+		/// <param name="sender">The object that raised the event.</param>
+		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+		void RepackToFomod_FileCompressionFinished(object sender, EventArgs e)
+		{
+			m_bwdProgress.StepItemProgress();
+		}
+
+		/// <summary>
+		/// Called when a file is about to be added to a new fomod.
+		/// </summary>
+		/// <remarks>
+		/// This cancels the compression if the user has clicked the cancel button of the progress dialog.
+		/// </remarks>
+		/// <param name="sender">The object that raised the event.</param>
+		/// <param name="e">A <see cref="FileNameEventArgs"/> describing the event arguments.</param>
+		void RepackToFomod_FileCompressionStarted(object sender, FileNameEventArgs e)
+		{
+			e.Cancel = m_bwdProgress.Cancelled();
+		}
+
+		/// <summary>
+		/// Called when a file has been extracted from a source archive.
+		/// </summary>
+		/// <remarks>
+		/// This steps the progress of the create fomod from archive progress dialog.
+		/// </remarks>
+		/// <param name="sender">The object that raised the event.</param>
+		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+		void RepackToFomod_FileExtractionFinished(object sender, EventArgs e)
+		{
+			m_bwdProgress.StepItemProgress();
+		}
+
+		/// <summary>
+		/// Called when a file is about to be extracted from a source archive.
+		/// </summary>
+		/// <remarks>
+		/// This cancels the compression if the user has clicked the cancel button of the progress dialog.
+		/// </remarks>
+		/// <param name="sender">The object that raised the event.</param>
+		/// <param name="e">A <see cref="FileNameEventArgs"/> describing the event arguments.</param>
+		void RepackToFomod_FileExtractionStarted(object sender, FileInfoEventArgs e)
+		{
+			e.Cancel = m_bwdProgress.Cancelled();
+		}
+
+		/// <summary>
+		/// Creates a fomod from a source archive.
+		/// </summary>
+		/// <param name="p_strPath">The path to the archive from which to create the fomod.</param>
+		public void AddNewFomod(string p_strPath)
+		{
+			bool booRepack = false;
+			string strFomodPath = null;
+			if (p_strPath.EndsWith(".fomod", StringComparison.OrdinalIgnoreCase))
+				strFomodPath = Path.Combine(Program.PackageDir, Path.GetFileName(p_strPath));
+			else if (p_strPath.EndsWith(".fomod.zip", StringComparison.OrdinalIgnoreCase))
+				strFomodPath = Path.Combine(Program.PackageDir, Path.GetFileNameWithoutExtension(p_strPath));
+			else if (p_strPath.EndsWith(".zip", StringComparison.OrdinalIgnoreCase) && p_strPath.Contains("-fomod-"))
 			{
-				newpath = Path.Combine(Program.PackageDir, Path.GetFileName(oldpath));
-			}
-			else if (oldpath.EndsWith(".fomod.zip", StringComparison.OrdinalIgnoreCase))
-			{
-				newpath = Path.Combine(Program.PackageDir, Path.GetFileNameWithoutExtension(oldpath));
-			}
-			else if (oldpath.EndsWith(".zip", StringComparison.OrdinalIgnoreCase) && oldpath.Contains("-fomod-"))
-			{
-				string tmppath2 = Path.GetFileName(oldpath);
-				newpath = Path.Combine(Program.PackageDir, Path.GetFileName(tmppath2.Substring(0, tmppath2.IndexOf("-fomod-")))) + ".fomod";
-			}
-			else if (oldpath.EndsWith(".zip", StringComparison.OrdinalIgnoreCase))
-			{
-				try
-				{
-					tmppath = Program.CreateTempDirectory();
-					ICSharpCode.SharpZipLib.Zip.FastZip fastZip = new ICSharpCode.SharpZipLib.Zip.FastZip();
-					fastZip.ExtractZip(oldpath, tmppath, null);
-					Repack = true;
-					newpath = Path.Combine(Program.PackageDir, Path.ChangeExtension(Path.GetFileName(oldpath), ".fomod"));
-				}
-				catch (ZipException e)
-				{
-					if (MessageBox.Show(this, "Unable to extract contents of " + oldpath + ". Are you sure it is a ZIP file?", "Zip Error", MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.Yes)
-						throw e;
-					else
-						return;
-				}
-			}
-			else if (oldpath.EndsWith(".rar", StringComparison.OrdinalIgnoreCase))
-			{
-				tmppath = Program.CreateTempDirectory();
-				Unrar unrar = null;
-				try
-				{
-					unrar = new Unrar(oldpath);
-					unrar.Open(Unrar.OpenMode.Extract);
-					while (unrar.ReadHeader()) unrar.ExtractToDirectory(tmppath);
-				}
-				catch
-				{
-					MessageBox.Show("The file was password protected, or was not a valid rar file.", "Error");
-					return;
-				}
-				finally
-				{
-					if (unrar != null) unrar.Close();
-				}
-				Repack = true;
-				newpath = Path.Combine(Program.PackageDir, Path.ChangeExtension(Path.GetFileName(oldpath), ".fomod"));
-			}
-			else if (oldpath.EndsWith(".7z", StringComparison.OrdinalIgnoreCase))
-			{
-				tmppath = Program.CreateTempDirectory();
-				System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo(@"fomm\7za.exe",
-					"x \"" + oldpath + "\" * -o\"" + tmppath + "\" -aos -y  -r");
-				psi.CreateNoWindow = true;
-				psi.UseShellExecute = false;
-				System.Diagnostics.Process p = System.Diagnostics.Process.Start(psi);
-				p.WaitForExit();
-				if (Directory.GetFileSystemEntries(tmppath).Length == 0)
-				{
-					MessageBox.Show("Failed to extract anything from 7-zip archive", "Error");
-					return;
-				}
-				Repack = true;
-				newpath = Path.Combine(Program.PackageDir, Path.ChangeExtension(Path.GetFileName(oldpath), ".fomod"));
+				string tmppath2 = Path.GetFileName(p_strPath);
+				strFomodPath = Path.Combine(Program.PackageDir, Path.GetFileName(tmppath2.Substring(0, tmppath2.IndexOf("-fomod-")))) + ".fomod";
 			}
 			else
 			{
-				MessageBox.Show("Unknown file type", "Error");
+				strFomodPath = Path.Combine(Program.PackageDir, Path.ChangeExtension(Path.GetFileName(p_strPath), ".fomod"));
+				booRepack = true;
+			}
+
+			string strTesNexusUrl = Path.GetFileNameWithoutExtension(strFomodPath);
+			Int32 intFileId;
+			if (strTesNexusUrl.Contains("-") && int.TryParse(strTesNexusUrl.Substring(strTesNexusUrl.LastIndexOf('-') + 1), out intFileId))
+			{
+				strFomodPath = Path.Combine(Path.GetDirectoryName(strFomodPath), strTesNexusUrl.Remove(strTesNexusUrl.LastIndexOf('-'))) + Path.GetExtension(strFomodPath);
+				strTesNexusUrl = @"http://www.fallout3nexus.com/downloads/file.php?id=" + intFileId;
+			}
+			else
+				strTesNexusUrl = null;
+			if (!CheckFomodName(ref strFomodPath))
 				return;
-			}
-			string tesnexusext = Path.GetFileNameWithoutExtension(newpath);
-			int id;
-			if (tesnexusext.Contains("-") && int.TryParse(tesnexusext.Substring(tesnexusext.LastIndexOf('-') + 1), out id))
+			if (booRepack)
 			{
-				newpath = Path.Combine(Path.GetDirectoryName(newpath), tesnexusext.Remove(tesnexusext.LastIndexOf('-'))) + Path.GetExtension(newpath);
-				tesnexusext = @"http://www.fallout3nexus.com/downloads/file.php?id=" + id;
-			}
-			else tesnexusext = null;
-			if (!CheckFomodName(ref newpath)) return;
-			if (Repack)
-			{
-				//Check for packing errors here
-				CheckFomodFolder(ref tmppath, tesnexusext, Path.GetFileNameWithoutExtension(newpath));
-				ICSharpCode.SharpZipLib.Zip.FastZip fastZip = new ICSharpCode.SharpZipLib.Zip.FastZip();
-				fastZip.CreateZip(newpath, tmppath, true, null);
+				try
+				{
+					using (m_bwdProgress = new BackgroundWorkerProgressDialog(RepackToFomod))
+					{
+						m_bwdProgress.OverallMessage = "Creating Fomod...";
+						m_bwdProgress.OverallProgressMaximum = 3;
+						m_bwdProgress.OverallProgressStep = 1;
+						m_bwdProgress.WorkMethodArguments = new object[] { p_strPath, strFomodPath, strTesNexusUrl };
+						if (m_bwdProgress.ShowDialog() == DialogResult.Cancel)
+						{
+							if (File.Exists(strFomodPath))
+								File.Delete(strFomodPath);
+							return;
+						}
+					}
+				}
+				catch
+				{
+					MessageBox.Show("Unknown file type, or corrupt archive.", "Error");
+					return;
+				}
 			}
 			else
 			{
 				if (MessageBox.Show("Make a copy of the original file?", "", MessageBoxButtons.YesNo) != DialogResult.Yes)
-				{
-					File.Move(oldpath, newpath);
-				}
+					File.Move(p_strPath, strFomodPath);
 				else
-				{
-					File.Copy(oldpath, newpath);
-				}
+					File.Copy(p_strPath, strFomodPath);
 			}
-			AddFomod(newpath, true);
+			AddFomod(strFomodPath, true);
 		}
+
+		#endregion
 
 		private void bAddNew_Click(object sender, EventArgs e)
 		{
@@ -900,7 +1029,7 @@ namespace Fomm.PackageManager
 			{
 				using (m_bwdProgress = new BackgroundWorkerProgressDialog(UnpackFomod))
 				{
-					string strOutput = Path.Combine(fbdExtractFomod.SelectedPath, fomodMod.BaseName);
+					string strOutput = Path.Combine(fbdExtractFomod.SelectedPath, Path.GetFileNameWithoutExtension(fomodMod.filepath));
 					if (!Directory.Exists(strOutput))
 						Directory.CreateDirectory(strOutput);
 					m_bwdProgress.WorkMethodArguments = new Pair<fomod, string>(fomodMod, strOutput);
@@ -927,26 +1056,39 @@ namespace Fomm.PackageManager
 			List<string> lstFiles = fomodMod.GetFileList();
 
 			m_bwdProgress.ShowItemProgress = false;
-			m_bwdProgress.OverallMessage = "Extracting";
+			m_bwdProgress.OverallMessage = "Extracting Files...";
 			m_bwdProgress.OverallProgressMaximum = lstFiles.Count;
 			m_bwdProgress.OverallProgressStep = 1;
 
-			ICSharpCode.SharpZipLib.Zip.FastZip zipExtractor = new ICSharpCode.SharpZipLib.Zip.FastZip();
-			zipExtractor.EntryExtracted += new EventHandler<ICSharpCode.SharpZipLib.Zip.ZipEventArgs>(zipExtractor_EntryExtracted);
-			zipExtractor.ExtractZip(fomodMod.filepath, strOutput, null);
+			SevenZipExtractor szeExtractor = new SevenZipExtractor(fomodMod.filepath);
+			szeExtractor.FileExtractionFinished += new EventHandler(UnpackFomod_FileExtractionFinished);
+			szeExtractor.FileExtractionStarted += new EventHandler<FileInfoEventArgs>(UnpackFomod_FileExtractionStarted);
+			szeExtractor.ExtractArchive(strOutput);
 		}
 
 		/// <summary>
-		/// Handles the <see cref="FastZip.EntryExtracted"/> event of the zip extractor.
+		/// Called when a file has been extracted from a fomod.
 		/// </summary>
 		/// <remarks>
-		/// This updates the progress dialog, and checks for operation cancellation.
+		/// This steps the progress of the create fomod from archive progress dialog.
 		/// </remarks>
 		/// <param name="sender">The object that raised the event.</param>
-		/// <param name="e">An <see cref="ICSharpCode.SharpZipLib.Zip.ZipEventArgs"/> describing the event arguments.</param>
-		private void zipExtractor_EntryExtracted(object sender, ICSharpCode.SharpZipLib.Zip.ZipEventArgs e)
+		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+		void UnpackFomod_FileExtractionFinished(object sender, EventArgs e)
 		{
-			m_bwdProgress.StepOverallProgress();
+			m_bwdProgress.StepItemProgress();
+		}
+
+		/// <summary>
+		/// Called when a file is about to be extracted from a fomod.
+		/// </summary>
+		/// <remarks>
+		/// This cancels the compression if the user has clicked the cancel button of the progress dialog.
+		/// </remarks>
+		/// <param name="sender">The object that raised the event.</param>
+		/// <param name="e">A <see cref="FileNameEventArgs"/> describing the event arguments.</param>
+		void UnpackFomod_FileExtractionStarted(object sender, FileInfoEventArgs e)
+		{
 			e.Cancel = m_bwdProgress.Cancelled();
 		}
 
