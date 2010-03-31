@@ -42,6 +42,28 @@ Licensing/Legal
 This mod is released under the GNU General Public License.
 The GPL can be found here: http://www.gnu.org/licenses/gpl.txt
 
+This mod uses the library SevenZipSharp, which is released under the GNU Lesser General Public License.
+The LGPL can be found here: http://www.gnu.org/licenses/lgpl.txt
+
+This mod uses the 7zip library, which is released under the GNU Lesser General Public License, version 2.1, with an unRAR restriction (see below).
+The LGPL can be found here: http://www.gnu.org/licenses/lgpl.txt
+7-Zip Copyright (C) 1999-2010 Igor Pavlov.
+
+unRAR restriction
+-----------------
+    The decompression engine for RAR archives was developed using source 
+    code of unRAR program.
+    All copyrights to original unRAR code are owned by Alexander Roshal.
+
+    The license for original unRAR code has the following restriction:
+
+      The unRAR sources cannot be used to re-create the RAR compression algorithm, 
+      which is proprietary. Distribution of modified unRAR sources in separate form 
+      or as a part of other software is permitted, provided that it is clearly
+      stated in the documentation and source comments that the code may
+      not be used to develop a RAR (WinRAR) compatible archiver.
+
+
 Troubleshooting
 ===============
 Q. I get the "Unable to get write permissions for fallout's installation directory" error. How do I fix it?
