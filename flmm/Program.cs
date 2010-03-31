@@ -23,6 +23,7 @@ using System.Diagnostics;
 using Fomm.PackageManager;
 using Fomm.InstallLogUpgraders;
 using Fomm.PackageManager.Upgrade;
+using SevenZip;
 
 namespace Fomm
 {
@@ -738,7 +739,7 @@ namespace Fomm
 					Trace.WriteLine("Running Application.");
 					Trace.Flush();
 #endif
-
+				SevenZipCompressor.SetLibraryPath(Path.Combine(Program.fommDir, "7z-32bit.dll"));
 				if (Array.IndexOf<string>(args, "-install-tweaker") != -1)
 				{
 					Application.Run(new InstallTweaker.InstallationTweaker());

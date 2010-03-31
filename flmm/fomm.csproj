@@ -70,6 +70,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\ICSharpCode.TextEditor.dll</HintPath>
     </Reference>
+    <Reference Include="SevenZipSharp, Version=0.60.3695.26174, Culture=neutral, PublicKeyToken=20de82c62b055c88, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\SevenZipSharp.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -488,6 +492,9 @@
     <Compile Include="TypeConverter.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="fomm\7z-32bit.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="fomm\fomm.chm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
