@@ -25,10 +25,10 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 			#region Properties
 
 			/// <summary>
-			/// Gets or sets the xml configuration file.
+			/// Gets or sets the xml configuration parser.
 			/// </summary>
-			/// <value>The xml configuration file.</value>
-			public XmlDocument Config { get; protected set; }
+			/// <value>The xml configuration parser.</value>
+			public Parser Parser { get; protected set; }
 
 			/// <summary>
 			/// Gets or sets the options form used to selected what needs to be installed.
@@ -45,9 +45,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 			/// </summary>
 			/// <param name="p_xmlConfig">The xml configuration file.</param>
 			/// <param name="p_ofmForm">The options form used to selected what needs to be installed.</param>
-			public InstallFilesArguments(XmlDocument p_xmlConfig, OptionsForm p_ofmForm)
+			public InstallFilesArguments(Parser p_psrParser, OptionsForm p_ofmForm)
 			{
-				Config = p_xmlConfig;
+				Parser = p_psrParser;
 				Form = p_ofmForm;
 			}
 
@@ -56,7 +56,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 
 		private ModInstallScript m_misInstallScript = null;
 		private BackgroundWorkerProgressDialog m_bwdProgress = null;
-
+		
 		#region Constructors
 
 		/// <summary>
@@ -78,37 +78,16 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		/// <returns><lang cref="true"/> if the mod installed correctly; <lang cref="false"/> otherwise.</returns>
 		public bool Install()
 		{
-			XmlDocument xmlConfig = loadModuleConfig("fomod/ModuleConfig.xml");
-			XmlNodeList xnlDependancies = xmlConfig.SelectNodes("/config/moduleDependancies/*");
-			foreach (XmlNode xndDependancy in xnlDependancies)
+			XmlDocument xmlConfig = new XmlDocument();
+			byte[] bteConfig = m_misInstallScript.Fomod.GetFile("fomod/ModuleConfig.xml");
+			using (MemoryStream stmConfig = new MemoryStream(bteConfig))
 			{
-				switch (xndDependancy.Name)
+				using (StreamReader srdConfigReader = new StreamReader(stmConfig, true))
 				{
-					case "foseDependancy":
-						Version verFOSE = new Version(xndDependancy.Attributes["version"].InnerText);
-						RequireFoseVersion(verFOSE);
-						break;
-					case "falloutDependancy":
-						Version verGame = new Version(xndDependancy.Attributes["version"].InnerText);
-						RequireGameVersion(verGame);
-						break;
-					case "fommDependancy":
-						Version verFOMM = new Version(xndDependancy.Attributes["version"].InnerText);
-						RequireFommVersion(verFOMM);
-						break;
-					case "fileDependancy":
-						string strFile = xndDependancy.Attributes["file"].InnerText.ToLowerInvariant();
-						if (!FileManagement.DataFileExists(strFile))
-						{
-							m_misInstallScript.MessageBox("The following required file is missing: " + strFile);
-							return false;
-						}
-						if ((strFile.EndsWith(".esm") || strFile.EndsWith(".esp")) &&
-							(!IsPluginActive(strFile)) &&
-							(m_misInstallScript.MessageBox("The following required file is installed but not active: " + strFile + System.Environment.NewLine + "Would you like to active it?", "Required File", MessageBoxButtons.YesNo) == DialogResult.No))
-							return false;
-						break;
+					xmlConfig.LoadXml(srdConfigReader.ReadToEnd());
+					srdConfigReader.Close();
 				}
+				stmConfig.Close();
 			}
 
 			Dictionary<string, bool> dicPlugins = new Dictionary<string, bool>();
@@ -116,10 +95,42 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 			foreach (string strPlugin in strPlugins)
 				dicPlugins.Add(strPlugin.ToLowerInvariant(), IsPluginActive(strPlugin));
 
-			XmlNode xndGroups = xmlConfig.SelectSingleNode("/config/optionalFileGroups");
-			OptionsForm ofmOptions = new OptionsForm(this, dicPlugins, xmlConfig);
+			Parser prsParser = Parser.GetParser(xmlConfig, m_misInstallScript.Fomod, dicPlugins);
+			ModDependencies mdpModDependencies = prsParser.GetModDependencies();
+			foreach (KeyValuePair<string, Version> kvpDependencies in mdpModDependencies.ProgrameDependencies)
+			{
+				switch (kvpDependencies.Key)
+				{
+					case "foseDependency":
+						RequireFoseVersion(kvpDependencies.Value);
+						break;
+					case "falloutDependency":
+						RequireGameVersion(kvpDependencies.Value);
+						break;
+					case "fommDependency":
+						RequireFommVersion(kvpDependencies.Value);
+						break;
+					default:
+						throw new VersionException(kvpDependencies.Value, null, kvpDependencies.Key);
+				}
+			}
+			foreach (string strFile in mdpModDependencies.FileDependencies)
+			{
+				if (!FileManagement.DataFileExists(strFile))
+				{
+					m_misInstallScript.MessageBox("The following required file is missing: " + strFile);
+					return false;
+				}
+				if ((strFile.EndsWith(".esm") || strFile.EndsWith(".esp")) &&
+					(!IsPluginActive(strFile)) &&
+					(m_misInstallScript.MessageBox("The following required file is installed but not active: " + strFile + System.Environment.NewLine + "Would you like to active it?", "Required File", MessageBoxButtons.YesNo) == DialogResult.No))
+					return false;
+			}
+
+			IList<PluginGroup> lstGroups = prsParser.GetGroupedPlugins();
+			OptionsForm ofmOptions = new OptionsForm(this, prsParser.ModName, dicPlugins, lstGroups);
 			bool booPerformInstall = false;
-			if ((xndGroups == null) || (xndGroups.ChildNodes.Count == 0))
+			if (lstGroups.Count == 0)
 				booPerformInstall = true;
 			else
 				booPerformInstall = (ofmOptions.ShowDialog() == DialogResult.OK);
@@ -128,8 +139,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 			{
 				using (m_bwdProgress = new BackgroundWorkerProgressDialog(InstallFiles))
 				{
-					m_bwdProgress.WorkMethodArguments = new InstallFilesArguments(xmlConfig, ofmOptions);
-					m_bwdProgress.OverallMessage = "Installing " + xmlConfig.SelectSingleNode("/config/moduleName").InnerText;
+					m_bwdProgress.WorkMethodArguments = new InstallFilesArguments(prsParser, ofmOptions);
+					m_bwdProgress.OverallMessage = "Installing " + prsParser.ModName;
 					m_bwdProgress.OverallProgressStep = 1;
 					m_bwdProgress.ItemProgressStep = 1;
 					if (m_bwdProgress.ShowDialog() == DialogResult.Cancel)
@@ -150,15 +161,14 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 			if (!(p_ifaArgs is InstallFilesArguments))
 				throw new ArgumentException("The given argument obejct is not of type InstallFilesArguments.", "p_ifaArgs");
 
-			XmlDocument xmlConfig = ((InstallFilesArguments)p_ifaArgs).Config;
+			Parser prsParser = ((InstallFilesArguments)p_ifaArgs).Parser;
 			OptionsForm ofmOptions = ((InstallFilesArguments)p_ifaArgs).Form;
 
-			XmlNodeList xnlRequiredInstallFiles = xmlConfig.SelectNodes("/config/requiredInstallFiles/*");
-			List<OptionsForm.PluginFile> lstRequiredFiles = OptionsForm.readFileInfo(xnlRequiredInstallFiles);
-			List<OptionsForm.PluginFile> lstInstallFiles = ofmOptions.FilesToInstall;
+			IList<PluginFile> lstRequiredFiles = prsParser.GetRequiredInstallFiles();
+			List<PluginFile> lstInstallFiles = ofmOptions.FilesToInstall;
 			m_bwdProgress.OverallProgressMaximum = lstRequiredFiles.Count + lstInstallFiles.Count;
 
-			foreach (OptionsForm.PluginFile pflRequiredFile in lstRequiredFiles)
+			foreach (PluginFile pflRequiredFile in lstRequiredFiles)
 			{
 				if (m_bwdProgress.Cancelled())
 					return;
@@ -167,8 +177,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 				m_bwdProgress.StepOverallProgress();
 			}
 
-			List<OptionsForm.PluginFile> lstActivateFiles = ofmOptions.PluginsToActivate;
-			foreach (OptionsForm.PluginFile plfFile in lstInstallFiles)
+			List<PluginFile> lstActivateFiles = ofmOptions.PluginsToActivate;
+			foreach (PluginFile plfFile in lstInstallFiles)
 			{
 				if (m_bwdProgress.Cancelled())
 					return;
@@ -186,7 +196,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		/// <param name="booActivate">Whether or not to activate any esp/esm files.</param>
 		/// <returns><lang cref="false"/> if the user cancelled the install;
 		/// <lang cref="true"/> otherwise.</returns>
-		protected bool InstallPluginFile(OptionsForm.PluginFile plfFile, bool booActivate)
+		protected bool InstallPluginFile(PluginFile plfFile, bool booActivate)
 		{
 			string strSource = plfFile.Source;
 			string strDest = plfFile.Destination;
@@ -245,56 +255,6 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 				m_bwdProgress.StepItemProgress();
 			}
 			return true;
-		}
-
-		#endregion
-
-		#region Xml Helper Methods
-
-		/// <summary>
-		/// Loads the module configuration schema from the FOMOD.
-		/// </summary>
-		/// <returns>The module configuration schema.</returns>
-		private XmlSchema loadModuleConfigSchema()
-		{
-			string strSchemaPath = Path.Combine(Program.fommDir, "ModConfig.xsd");
-			byte[] bteSchema = File.ReadAllBytes(strSchemaPath);
-			XmlSchema xscSchema = null;
-			using (MemoryStream stmSchema = new MemoryStream(bteSchema))
-			{
-				using (StreamReader srdSchemaReader = new StreamReader(stmSchema, true))
-				{
-					xscSchema = XmlSchema.Read(srdSchemaReader, delegate(object sender, ValidationEventArgs e) { throw e.Exception; });
-					srdSchemaReader.Close();
-				}
-				stmSchema.Close();
-			}
-			return xscSchema;
-		}
-
-		/// <summary>
-		/// Loads the module configuration file from the FOMOD.
-		/// </summary>
-		/// <param name="p_strConfigPath">The path to the configuration file.</param>
-		/// <param name="p_strSchemaPath">The path to the configuration file schema.</param>
-		/// <returns>The module configuration file.</returns>
-		public XmlDocument loadModuleConfig(string p_strConfigPath)
-		{
-			XmlSchema xscSchema = loadModuleConfigSchema();
-			XmlDocument xmlConfig = new XmlDocument();
-			byte[] bteConfig = m_misInstallScript.Fomod.GetFile(p_strConfigPath);
-			using (MemoryStream stmConfig = new MemoryStream(bteConfig))
-			{
-				using (StreamReader srdConfigReader = new StreamReader(stmConfig, true))
-				{
-					xmlConfig.LoadXml(srdConfigReader.ReadToEnd());
-					xmlConfig.Schemas.Add(xscSchema);
-					xmlConfig.Validate(new ValidationEventHandler(delegate(object s, ValidationEventArgs e) { throw e.Exception; }));
-					srdConfigReader.Close();
-				}
-				stmConfig.Close();
-			}
-			return xmlConfig;
 		}
 
 		#endregion
@@ -404,20 +364,6 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 				}
 			}
 			return true;
-		}
-
-		/// <summary>
-		/// Gets the specified image from the FOMOD.
-		/// </summary>
-		/// <param name="p_strFilename">The filename of the image to get.</param>
-		/// <returns>The specified image</returns>
-		public Image GetImageFromFomod(string p_strFilename)
-		{
-			byte[] bteImageData = m_misInstallScript.Fomod.GetFile(p_strFilename);
-			MemoryStream stmImageData = new MemoryStream(bteImageData);
-			Image imgImage = Image.FromStream(stmImageData);
-			stmImageData.Close();
-			return imgImage;
 		}
 
 		/// <summary>
