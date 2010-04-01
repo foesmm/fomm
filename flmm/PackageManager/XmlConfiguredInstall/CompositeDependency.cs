@@ -105,6 +105,10 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 
 		#endregion
 
+		/// <summary>
+		/// Generates a text representation of the dependency.
+		/// </summary>
+		/// <returns>A text representation of the dependency.</returns>
 		public override string ToString()
 		{
 			StringBuilder stbString = new StringBuilder("(");
