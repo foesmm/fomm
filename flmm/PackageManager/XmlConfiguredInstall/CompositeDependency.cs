@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace Fomm.PackageManager.XmlConfiguredInstall
 {
@@ -103,5 +104,20 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		}
 
 		#endregion
+
+		public override string ToString()
+		{
+			StringBuilder stbString = new StringBuilder("(");
+			IDependency dpdDependency = null;
+			for (Int32 i = 0; i < m_lstDependencies.Count; i++)
+			{
+				dpdDependency = m_lstDependencies[i];
+				stbString.Append(dpdDependency);
+				if (i < m_lstDependencies.Count - 1)
+					stbString.Append(" ").AppendLine(m_dopOperator.ToString());
+			}
+			stbString.Append(") => ").Append(IsFufilled);
+			return stbString.ToString();
+		}
 	}
 }

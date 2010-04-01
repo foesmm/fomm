@@ -17,6 +17,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		private Image m_imgImage = null;
 		private IPluginType m_ptpType = null;
 		private List<PluginFile> m_lstFiles = null;
+		private List<ConditionalFlag> m_lstFlags = null;
 
 		#region Properties
 
@@ -80,6 +81,18 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 			}
 		}
 
+		/// <summary>
+		/// Gets the list of flags that should be set to the specifid value if the plugin is in the specified state.
+		/// </summary>
+		/// <value>The list of flags that should be set to the specifid value if the plugin is in the specified state.</value>
+		public List<ConditionalFlag> Flags
+		{
+			get
+			{
+				return m_lstFlags;
+			}
+		}
+
 		#endregion
 
 		#region Constructors
@@ -95,6 +108,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		{
 			m_strName = p_strName;
 			m_lstFiles = new List<PluginFile>();
+			m_lstFlags = new List<ConditionalFlag>();
 			m_ptpType = p_ptpType;
 			m_strDesc = p_strDesc;
 			m_imgImage = p_imgImage;

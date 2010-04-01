@@ -7,6 +7,9 @@ using System.Drawing;
 
 namespace Fomm.PackageManager.XmlConfiguredInstall
 {
+	/// <summary>
+	/// Parses version 1.0 mod configuration files.
+	/// </summary>
 	public class Parser10 : Parser
 	{
 		#region Properties
@@ -38,9 +41,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		/// </summary>
 		/// <param name="p_xmlConfig">The modules configuration file.</param>
 		/// <param name="p_fomodMod">The mod whose configuration file we are parsing.</param>
-		/// <param name="p_dicUsersPlugins">A list of the user's installed plugins and their states.</param>
-		public Parser10(XmlDocument p_xmlConfig, fomod p_fomodMod, Dictionary<string, bool> p_dicUsersPlugins)
-			: base(p_xmlConfig, p_fomodMod, p_dicUsersPlugins)
+		/// <param name="p_dsmSate">The state of the install.</param>
+		public Parser10(XmlDocument p_xmlConfig, fomod p_fomodMod, DependencyStateManager p_dsmSate)
+			: base(p_xmlConfig, p_fomodMod, p_dsmSate)
 		{
 		}
 
@@ -90,6 +93,12 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		{
 			XmlNodeList xnlRequiredInstallFiles = XmlConfig.SelectNodes("/config/requiredInstallFiles/*");
 			return readFileInfo(xnlRequiredInstallFiles);
+		}
+
+		/// <seealso cref="Parser.GetConditionalFileInstallPatterns()"/>
+		public override IList<ConditionalFileInstallPattern> GetConditionalFileInstallPatterns()
+		{
+			return new List<ConditionalFileInstallPattern>();
 		}
 
 		#endregion
@@ -179,7 +188,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 					case "dependancy":
 						string strDependency = xndDependency.Attributes["file"].InnerText.ToLower();
 						ModFileState mfsModState = (ModFileState)Enum.Parse(typeof(ModFileState), xndDependency.Attributes["state"].InnerText);
-						cpdDependency.Dependencies.Add(new FileDependency(strDependency, mfsModState, UsersPlugins));
+						cpdDependency.Dependencies.Add(new FileDependency(strDependency, mfsModState, StateManager));
 						break;
 				}
 			}

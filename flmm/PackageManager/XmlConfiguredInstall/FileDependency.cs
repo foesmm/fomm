@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Fomm.PackageManager.XmlConfiguredInstall
 {
@@ -31,7 +30,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 	{
 		private string m_strFile = null;
 		private ModFileState m_mfsState = ModFileState.Active;
-		private Dictionary<string, bool> m_dicUserPlugins = null;
+		private DependencyStateManager m_dsmStateManager = null;
 
 		#region Properties
 
@@ -75,11 +74,11 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 				switch (m_mfsState)
 				{
 					case ModFileState.Active:
-						return (m_dicUserPlugins.ContainsKey(m_strFile) && m_dicUserPlugins[m_strFile]);
+						return (m_dsmStateManager.InstalledPlugins.ContainsKey(m_strFile) && m_dsmStateManager.InstalledPlugins[m_strFile]);
 					case ModFileState.Inactive:
-						return (m_dicUserPlugins.ContainsKey(m_strFile) && !m_dicUserPlugins[m_strFile]);
+						return (m_dsmStateManager.InstalledPlugins.ContainsKey(m_strFile) && !m_dsmStateManager.InstalledPlugins[m_strFile]);
 					case ModFileState.Missing:
-						return (!m_dicUserPlugins.ContainsKey(m_strFile));
+						return (!m_dsmStateManager.InstalledPlugins.ContainsKey(m_strFile));
 				}
 				return false;
 			}
@@ -94,15 +93,19 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		/// </summary>
 		/// <param name="p_strFile">The file that must be is the specified state.</param>
 		/// <param name="p_mfsState">The state in which the specified file must be.</param>
-		/// <param name="p_dicUserPlugins">The user's plugins and their states. Used to determine if this
-		/// dependency is fufilled.</param>
-		public FileDependency(string p_strFile, ModFileState p_mfsState, Dictionary<string, bool> p_dicUserPlugins)
+		/// <param name="p_dsmStateManager">The manager that reports the currect install state.</param>
+		public FileDependency(string p_strFile, ModFileState p_mfsState, DependencyStateManager p_dsmStateManager)
 		{
 			m_mfsState = p_mfsState;
 			m_strFile = p_strFile;
-			m_dicUserPlugins = p_dicUserPlugins;
+			m_dsmStateManager = p_dsmStateManager;
 		}
 
 		#endregion
+
+		public override string ToString()
+		{
+			return m_strFile + " (" + m_mfsState.ToString() + ") : " + IsFufilled;
+		}
 	}
 }

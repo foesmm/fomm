@@ -472,7 +472,7 @@ namespace Fomm.PackageManager
 			if (Program.GetFiles(path, "*.esp", SearchOption.AllDirectories).Length + Program.GetFiles(path, "*.esm", SearchOption.AllDirectories).Length >
 					Program.GetFiles(path, "*.esp", SearchOption.TopDirectoryOnly).Length + Program.GetFiles(path, "*.esm", SearchOption.TopDirectoryOnly).Length)
 			{
-				if (!File.Exists(Path.Combine(path, "fomod\\script.cs")))
+				if (!File.Exists(Path.Combine(path, "fomod\\script.cs")) && !File.Exists(Path.Combine(path, "fomod\\ModuleConfig.xml")))
 				{
 					MessageBox.Show("This archive contains plugins in subdirectories, and will need a script attached for fomm to install it correctly.", "Warning");
 				}
@@ -517,7 +517,7 @@ namespace Fomm.PackageManager
 			p_strPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
 			string strName = Path.GetFileName(p_strPath);
 			string strFomodPath = Path.Combine(Program.PackageDir, strName + ".fomod");
-			CheckFomodFolder(ref strFomodPath, null, strName);
+			CheckFomodFolder(ref p_strPath, null, strName);
 			if (!CheckFomodName(ref strFomodPath))
 				return;
 
@@ -583,8 +583,7 @@ namespace Fomm.PackageManager
 		/// <param name="e">A <see cref="FileNameEventArgs"/> describing the event arguments.</param>
 		private void CompressFomodFromFolder_FileCompressionStarted(object sender, FileNameEventArgs e)
 		{
-			if (m_bwdProgress.Cancelled())
-				e.Cancel = true;
+			e.Cancel = m_bwdProgress.Cancelled();
 		}
 
 		#endregion

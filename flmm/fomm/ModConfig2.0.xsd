@@ -231,6 +231,11 @@
 					<xs:documentation>A description of the plugin.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
+			<xs:element name="image" type="image" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The optional image associated with a plugin.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
 			<xs:choice>
 				<xs:sequence>
 					<xs:element name="files" type="fileList">
@@ -257,11 +262,6 @@
 					</xs:element>
 				</xs:sequence>
 			</xs:choice>
-			<xs:element name="image" type="image" minOccurs="0">
-				<xs:annotation>
-					<xs:documentation>The optional image associated with a plugin.</xs:documentation>
-				</xs:annotation>
-			</xs:element>
 			<xs:element name="typeDescriptor" type="pluginTypeDescriptor">
 				<xs:annotation>
 					<xs:documentation>Describes the type of the plugin.</xs:documentation>
@@ -406,18 +406,13 @@
 
 	<xs:complexType name="setConditionFlag">
 		<xs:annotation>
-			<xs:documentation>A condition flag to set if a plugin is in the appropriate state.</xs:documentation>
+			<xs:documentation>A condition flag to set if a plugin is selected.</xs:documentation>
 		</xs:annotation>
 		<xs:simpleContent>
 			<xs:extension base="xs:string">
 				<xs:attribute name="name" type="xs:string" use="required">
 					<xs:annotation>
 						<xs:documentation>The identifying name of the condition flag.</xs:documentation>
-					</xs:annotation>
-				</xs:attribute>
-				<xs:attribute name="pluginType" type="pluginTypeEnum" use="required">
-					<xs:annotation>
-						<xs:documentation>The type of the plugin state the plugin must be in for the condition flag to be set.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 			</xs:extension>
@@ -431,7 +426,7 @@
 		<xs:sequence>
 			<xs:element name="flag" type="setConditionFlag" maxOccurs="unbounded">
 				<xs:annotation>
-					<xs:documentation>A condition flag to set if the plugin is in the appropriate state.</xs:documentation>
+					<xs:documentation>A condition flag to set if the plugin is selected.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
 		</xs:sequence>
@@ -518,7 +513,7 @@
 		</xs:sequence>
 	</xs:complexType>
 
-	<xs:complexType name="conditionalInstallFileList">
+	<xs:complexType name="conditionalFileInstallList">
 		<xs:annotation>
 			<xs:documentation>A list of optional files that may optionally be installed for this module, base on condition flags.</xs:documentation>
 		</xs:annotation>
@@ -556,7 +551,7 @@
 					<xs:documentation>The list of optional files (or plugins) that may optionally be installed for this module.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:element name="conditionalInstallFiles" type="conditionalInstallFileList" minOccurs="0">
+			<xs:element name="conditionalFileInstalls" type="conditionalFileInstallList" minOccurs="0">
 				<xs:annotation>
 					<xs:documentation>The list of optional files that may optionally be installed for this module, base on condition flags.</xs:documentation>
 				</xs:annotation>

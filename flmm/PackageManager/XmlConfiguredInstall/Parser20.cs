@@ -7,6 +7,9 @@ using System.Drawing;
 
 namespace Fomm.PackageManager.XmlConfiguredInstall
 {
+	/// <summary>
+	/// Parses version 2.0 mod configuration files.
+	/// </summary>
 	public class Parser20 : Parser
 	{
 		#region Properties
@@ -38,9 +41,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		/// </summary>
 		/// <param name="p_xmlConfig">The modules configuration file.</param>
 		/// <param name="p_fomodMod">The mod whose configuration file we are parsing.</param>
-		/// <param name="p_dicUsersPlugins">A list of the user's installed plugins and their states.</param>
-		public Parser20(XmlDocument p_xmlConfig, fomod p_fomodMod, Dictionary<string, bool> p_dicUsersPlugins)
-			: base(p_xmlConfig, p_fomodMod, p_dicUsersPlugins)
+		/// <param name="p_dsmSate">The state of the install.</param>
+		public Parser20(XmlDocument p_xmlConfig, fomod p_fomodMod, DependencyStateManager p_dsmSate)
+			: base(p_xmlConfig, p_fomodMod, p_dsmSate)
 		{
 		}
 
@@ -92,6 +95,13 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		{
 			XmlNodeList xnlRequiredInstallFiles = XmlConfig.SelectNodes("/config/requiredInstallFiles/*");
 			return readFileInfo(xnlRequiredInstallFiles);
+		}
+
+		/// <seealso cref="Parser.GetConditionalFileInstallPatterns()"/>
+		public override IList<ConditionalFileInstallPattern> GetConditionalFileInstallPatterns()
+		{
+			XmlNodeList xnlRequiredInstallFiles = XmlConfig.SelectNodes("/config/conditionalFileInstalls/patterns/*");
+			return readConditionalFileInstallInfo(xnlRequiredInstallFiles);
 		}
 
 		#endregion
@@ -160,6 +170,10 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 
 			XmlNodeList xnlPluginFiles = p_xndPlugin.SelectNodes("files/*");
 			pifPlugin.Files.AddRange(readFileInfo(xnlPluginFiles));
+
+			XmlNodeList xnlPluginFlags = p_xndPlugin.SelectNodes("conditionFlags/*");
+			pifPlugin.Flags.AddRange(readFlagInfo(xnlPluginFlags));
+
 			return pifPlugin;
 		}
 
@@ -183,10 +197,13 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 					case "fileDependency":
 						string strDependency = xndDependency.Attributes["file"].InnerText.ToLower();
 						ModFileState mfsModState = (ModFileState)Enum.Parse(typeof(ModFileState), xndDependency.Attributes["state"].InnerText);
-						cpdDependency.Dependencies.Add(new FileDependency(strDependency, mfsModState, UsersPlugins));
+						cpdDependency.Dependencies.Add(new FileDependency(strDependency, mfsModState, StateManager));
 						break;
 					case "flagDependency":
-						throw new NotImplementedException("flagDependency");
+						string strFlagName = xndDependency.Attributes["flag"].InnerText;
+						string strValue = xndDependency.Attributes["value"].InnerText;
+						cpdDependency.Dependencies.Add(new FlagDependency(strFlagName, strValue, StateManager));
+						break;
 					default:
 						throw new ParserException("Invalid plugin dependency node: " + xndDependency.Name + ". At this point the config file has been validated against the schema, so there's something wrong with the parser.");
 				}
@@ -223,6 +240,42 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 			}
 			lstFiles.Sort();
 			return lstFiles;
+		}
+
+		/// <summary>
+		/// Reads the condtition flag info from the given XML nodes.
+		/// </summary>
+		/// <param name="p_xnlFlags">The list of XML nodes containing the condition flag info to read.</param>
+		/// <returns>An ordered list of <see cref="PluginFile"/>s representing the data in the given list.</returns>
+		private List<ConditionalFlag> readFlagInfo(XmlNodeList p_xnlFlags)
+		{
+			List<ConditionalFlag> lstFlags = new List<ConditionalFlag>();
+			foreach (XmlNode xndFlag in p_xnlFlags)
+			{
+				string strName = xndFlag.Attributes["name"].InnerText;
+				string strValue = xndFlag.InnerXml;
+				lstFlags.Add(new ConditionalFlag(strName, strValue));
+			}
+			return lstFlags;
+		}
+
+		/// <summary>
+		/// Reads the conditional file install info from the given XML nodes.
+		/// </summary>
+		/// <param name="p_xnlConditionalFileInstalls">The list of XML nodes containing the conditional file
+		/// install info to read.</param>
+		/// <returns>An ordered list of <see cref="ConditionalFileInstallPattern"/>s representing the
+		/// data in the given list.</returns>
+		private IList<ConditionalFileInstallPattern> readConditionalFileInstallInfo(XmlNodeList p_xnlConditionalFileInstalls)
+		{
+			List<ConditionalFileInstallPattern> lstPatterns = new List<ConditionalFileInstallPattern>();
+			foreach (XmlNode xndPattern in p_xnlConditionalFileInstalls)
+			{
+				CompositeDependency cdpDependency = loadDependency(xndPattern.SelectSingleNode("dependencies"));
+				IList<PluginFile> lstFiles = readFileInfo(xndPattern.SelectNodes("files/*"));
+				lstPatterns.Add(new ConditionalFileInstallPattern(cdpDependency, lstFiles));
+			}
+			return lstPatterns;
 		}
 
 		#endregion

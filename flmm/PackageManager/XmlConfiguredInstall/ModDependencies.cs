@@ -15,7 +15,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		/// Gets or sets the programme versions that the mod depends on.
 		/// </summary>
 		/// <value>The programme versions that the mod depends on.</value>
-		public IDictionary<string, Version> ProgrameDependencies { get; protected set; }
+		public IDictionary<string, Version> ProgrammeDependencies { get; protected set; }
 
 		/// <summary>
 		/// Gets or sets the files that the mod depends on.
@@ -34,7 +34,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		/// <param name="p_lstFileDependencies">The files that the mod depends on.</param>
 		public ModDependencies(IDictionary<string, Version> p_dicProgrameDependencies, IList<string> p_lstFileDependencies)
 		{
-			ProgrameDependencies = p_dicProgrameDependencies;
+			ProgrammeDependencies = p_dicProgrameDependencies;
 			FileDependencies = p_lstFileDependencies;
 		}
 

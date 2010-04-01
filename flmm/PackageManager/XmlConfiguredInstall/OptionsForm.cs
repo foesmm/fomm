@@ -11,12 +11,12 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 	public partial class OptionsForm : Form
 	{
 		private XmlConfiguredScript m_xcsScript = null;
-		private Dictionary<string, bool> m_dicUserPlugins = null;
+		private DependencyStateManager m_dsmStateManager = null;
 
-		public OptionsForm(XmlConfiguredScript p_xcsScript, string p_strModName, Dictionary<string, bool> p_dicPlugins, IList<PluginGroup> p_lstGroups)
+		public OptionsForm(XmlConfiguredScript p_xcsScript, string p_strModName, DependencyStateManager p_dsmStateManager, IList<PluginGroup> p_lstGroups)
 		{
 			m_xcsScript = p_xcsScript;
-			m_dicUserPlugins = p_dicPlugins;
+			m_dsmStateManager = p_dsmStateManager;
 			InitializeComponent();
 			lblTitle.Text = p_strModName;
 			loadPlugins(p_lstGroups);
@@ -209,7 +209,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 					break;
 			}
 			return lvgGroup;
-		}		
+		}
 
 		/// <summary>
 		/// Adds a plugin to the list of plugins.
@@ -386,6 +386,14 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 								lviGroupItem.Checked = false;
 					break;
 			}
+			PluginInfo pifPlugin = (PluginInfo)e.Item.Tag;
+			if (lviItem.Checked)
+			{
+				foreach (ConditionalFlag cfgFlag in pifPlugin.Flags)
+					m_dsmStateManager.SetFlagValue(cfgFlag.Name, cfgFlag.ConditionalValue, pifPlugin);
+			}
+			else
+				m_dsmStateManager.RemoveFlags(pifPlugin);				
 		}
 
 		/// <summary>

@@ -56,6 +56,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 
 		private ModInstallScript m_misInstallScript = null;
 		private BackgroundWorkerProgressDialog m_bwdProgress = null;
+		private DependencyStateManager m_dsmStateManager = null;
 		
 		#region Constructors
 
@@ -95,9 +96,11 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 			foreach (string strPlugin in strPlugins)
 				dicPlugins.Add(strPlugin.ToLowerInvariant(), IsPluginActive(strPlugin));
 
-			Parser prsParser = Parser.GetParser(xmlConfig, m_misInstallScript.Fomod, dicPlugins);
+			m_dsmStateManager = new DependencyStateManager(dicPlugins);
+
+			Parser prsParser = Parser.GetParser(xmlConfig, m_misInstallScript.Fomod, m_dsmStateManager);
 			ModDependencies mdpModDependencies = prsParser.GetModDependencies();
-			foreach (KeyValuePair<string, Version> kvpDependencies in mdpModDependencies.ProgrameDependencies)
+			foreach (KeyValuePair<string, Version> kvpDependencies in mdpModDependencies.ProgrammeDependencies)
 			{
 				switch (kvpDependencies.Key)
 				{
@@ -128,7 +131,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 			}
 
 			IList<PluginGroup> lstGroups = prsParser.GetGroupedPlugins();
-			OptionsForm ofmOptions = new OptionsForm(this, prsParser.ModName, dicPlugins, lstGroups);
+			OptionsForm ofmOptions = new OptionsForm(this, prsParser.ModName, m_dsmStateManager, lstGroups);
 			bool booPerformInstall = false;
 			if (lstGroups.Count == 0)
 				booPerformInstall = true;
@@ -185,6 +188,20 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 				if (!InstallPluginFile(plfFile, lstActivateFiles.Contains(plfFile)))
 					return;
 				m_bwdProgress.StepOverallProgress();
+			}
+
+			IList<ConditionalFileInstallPattern> lstConditionInstallPatterns = prsParser.GetConditionalFileInstallPatterns();
+			foreach (ConditionalFileInstallPattern cipPattern in lstConditionInstallPatterns)
+			{
+				if (cipPattern.Dependency.IsFufilled)
+					foreach (PluginFile plfFile in cipPattern.Files)
+					{
+						if (m_bwdProgress.Cancelled())
+							return;
+						if (!InstallPluginFile(plfFile, true))
+							return;
+						m_bwdProgress.StepOverallProgress();
+					}
 			}
 		}
 
@@ -340,28 +357,6 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 					return false;
 
 				m_bwdProgress.StepItemProgress();
-			}
-			return true;
-		}
-
-		/// <summary>
-		/// Recursively installs all files in the specified folder.
-		/// </summary>
-		/// <param name="p_strFolder">The folder containing the files to install.</param>
-		/// <returns>true if the install succeeded; false otherwise.</returns>
-		protected bool InstallFolderFromFomod(string p_strFolder)
-		{
-			List<string> lstFOMODFiles = m_misInstallScript.Fomod.GetFileList();
-			String strFrom = p_strFolder.Replace('\\', '/');
-			String strFOMODFile = null;
-			for (Int32 i = 0; i < lstFOMODFiles.Count; i++)
-			{
-				strFOMODFile = lstFOMODFiles[i];
-				if (strFOMODFile.StartsWith(strFrom))
-				{
-					if (!m_misInstallScript.InstallFileFromFomod(strFOMODFile))
-						return false;
-				}
 			}
 			return true;
 		}

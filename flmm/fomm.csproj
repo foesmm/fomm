@@ -212,6 +212,10 @@
     <Compile Include="PackageManager\Upgrade\UpgradeFomod.cs" />
     <Compile Include="PackageManager\Upgrade\UpgradeScanner.cs" />
     <Compile Include="PackageManager\XmlConfiguredInstall\CompositeDependency.cs" />
+    <Compile Include="PackageManager\XmlConfiguredInstall\ConditionalFlag.cs" />
+    <Compile Include="PackageManager\XmlConfiguredInstall\ConditionalFileInstallPattern.cs" />
+    <Compile Include="PackageManager\XmlConfiguredInstall\DependencyStateManager.cs" />
+    <Compile Include="PackageManager\XmlConfiguredInstall\FlagDependency.cs" />
     <Compile Include="PackageManager\XmlConfiguredInstall\Parser20.cs" />
     <Compile Include="PackageManager\XmlConfiguredInstall\DependencyPluginType.cs" />
     <Compile Include="PackageManager\XmlConfiguredInstall\FileDependency.cs" />
