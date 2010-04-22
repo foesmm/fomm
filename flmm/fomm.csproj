@@ -595,6 +595,10 @@
       <Project>{E824ACBB-90C8-4C60-9D52-9C8020E98E3E}</Project>
       <Name>ChinhDo.Transactions.FileManager</Name>
     </ProjectReference>
+    <ProjectReference Include="..\NexusAPI\NexusAPI.csproj">
+      <Project>{F5B65130-F540-4216-A8C8-DE2FD10EF927}</Project>
+      <Name>NexusAPI</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Transactions\Transactions.csproj">
       <Project>{1C72A5C2-0BA6-44AD-A4ED-0F3FAB9C1E54}</Project>
       <Name>Transactions</Name>

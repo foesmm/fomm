@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using System.IO;
 using Fomm.PackageManager.Upgrade;
 using SevenZip;
+using NexusAPI;
 
 namespace Fomm.PackageManager
 {
@@ -16,12 +17,16 @@ namespace Fomm.PackageManager
 		private readonly MainForm mf;
 		private BackgroundWorkerProgressDialog m_bwdProgress = null;
 		private string m_strLastFromFolderPath = null;
+		private Dictionary<fomod, string> m_dicWebVersions = new Dictionary<fomod, string>();
 
 		private void AddFomodToList(fomod mod)
 		{
+			string strWebVersion = "NA";
+			m_dicWebVersions.TryGetValue(mod, out strWebVersion);
+
 			if (!cbGroups.Checked)
 			{
-				ListViewItem lvi = new ListViewItem(new string[] { mod.Name, mod.VersionS, mod.Author });
+				ListViewItem lvi = new ListViewItem(new string[] { mod.Name, mod.VersionS, strWebVersion, mod.Author });
 				lvi.Tag = mod;
 				lvi.Checked = mod.IsActive;
 				lvModList.Items.Add(lvi);
@@ -33,7 +38,7 @@ namespace Fomm.PackageManager
 				if (Array.IndexOf<string>(mod.groups, lgroups[i]) != -1)
 				{
 					added = true;
-					ListViewItem lvi = new ListViewItem(new string[] { mod.Name, mod.VersionS, mod.Author });
+					ListViewItem lvi = new ListViewItem(new string[] { mod.Name, mod.VersionS, strWebVersion, mod.Author });
 					lvi.Tag = mod;
 					lvi.Checked = mod.IsActive;
 					lvModList.Items.Add(lvi);
@@ -42,7 +47,7 @@ namespace Fomm.PackageManager
 			}
 			if (!added)
 			{
-				ListViewItem lvi = new ListViewItem(new string[] { mod.Name, mod.VersionS, mod.Author });
+				ListViewItem lvi = new ListViewItem(new string[] { mod.Name, mod.VersionS, strWebVersion, mod.Author });
 				lvi.Tag = mod;
 				lvi.Checked = mod.IsActive;
 				lvModList.Items.Add(lvi);
@@ -53,21 +58,13 @@ namespace Fomm.PackageManager
 		{
 			lvModList.SuspendLayout();
 
-			int w1, w2, w3;
-			if (lvModList.Columns.Count == 0)
+			Int32[] intColumnWidths = {200, 100, 100, 100};
+			for (Int32 i = 0; i < intColumnWidths.Length; i++)
 			{
-				string tmp = Settings.GetString("PackageManagerCol1Width");
-				if (tmp != null) w1 = int.Parse(tmp); else w1 = 200;
-				tmp = Settings.GetString("PackageManagerCol2Width");
-				if (tmp != null) w2 = int.Parse(tmp); else w2 = 100;
-				tmp = Settings.GetString("PackageManagerCol3Width");
-				if (tmp != null) w3 = int.Parse(tmp); else w3 = 100;
-			}
-			else
-			{
-				w1 = lvModList.Columns[0].Width;
-				w2 = lvModList.Columns[1].Width;
-				w3 = lvModList.Columns[2].Width;
+				Int32 intWidth = -1;
+				string strWidth = Settings.GetString("PackageManagerCol" + i + "Width");
+				if (Int32.TryParse(strWidth, out intWidth))
+					intColumnWidths[i] = intWidth;
 			}
 
 			lvModList.Clear();
@@ -94,10 +91,10 @@ namespace Fomm.PackageManager
 			{
 				lvModList.Columns.Add("Name");
 				lvModList.Columns.Add("Version");
+				lvModList.Columns.Add("Web Version");
 				lvModList.Columns.Add("Author");
-				lvModList.Columns[0].Width = w1;
-				lvModList.Columns[1].Width = w2;
-				lvModList.Columns[2].Width = w3;
+				for (Int32 i = 0; i < intColumnWidths.Length; i++)
+					lvModList.Columns[i].Width = intColumnWidths[i];
 			}
 
 			foreach (fomod mod in mods) AddFomodToList(mod);
@@ -192,7 +189,17 @@ namespace Fomm.PackageManager
 				AddFomod(modpath, false);
 			}
 
+			Timer tmrG = new Timer();
+			tmrG.Tick += new EventHandler(tmrG_Tick);
+			NexusAPI.NexusAPI
+
 			RebuildListView();
+		}
+
+		int inte = 0;
+		void tmrG_Tick(object sender, EventArgs e)
+		{
+			m_dicWebVersions[(fomod)lvModList.Items[inte].Tag] = "3.0";
 		}
 
 		private void PackageManager_Load(object sender, EventArgs e)
@@ -282,9 +289,8 @@ namespace Fomm.PackageManager
 		{
 			Settings.SetWindowPosition("PackageManager", this);
 			Settings.SetString("PackageManagerPanelSplit", splitContainer1.SplitterDistance.ToString());
-			Settings.SetString("PackageManagerCol1Width", lvModList.Columns[0].Width.ToString());
-			Settings.SetString("PackageManagerCol2Width", lvModList.Columns[1].Width.ToString());
-			Settings.SetString("PackageManagerCol3Width", lvModList.Columns[2].Width.ToString());
+			for (Int32 i = 0; i < lvModList.Columns.Count; i++)
+				Settings.SetString("PackageManagerCol" + i + "Width", lvModList.Columns[i].Width.ToString());
 
 			foreach (ListViewItem lvi in lvModList.Items)
 			{
