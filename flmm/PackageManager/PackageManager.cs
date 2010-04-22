@@ -4,6 +4,9 @@ using System.Windows.Forms;
 using System.IO;
 using Fomm.PackageManager.Upgrade;
 using SevenZip;
+using WebsiteAPIs;
+using System.Text.RegularExpressions;
+using System.Drawing;
 
 namespace Fomm.PackageManager
 {
@@ -16,18 +19,49 @@ namespace Fomm.PackageManager
 		private readonly MainForm mf;
 		private BackgroundWorkerProgressDialog m_bwdProgress = null;
 		private string m_strLastFromFolderPath = null;
-		private Dictionary<fomod, string> m_dicWebVersions = new Dictionary<fomod, string>();
+		private NexusAPI m_nxaNexus = null;
+		private Regex m_rgxNexusFileId = new Regex(@"fallout3nexus\.com/downloads/file\.php\?id=(\d+)");
+		private Dictionary<string, string> m_dicWebVersions = new Dictionary<string, string>();
+
+		/// <summary>
+		/// The callback method for the call to retrieve a mod version from the Nexus website.
+		/// </summary>
+		/// <param name="p_objState">The base name of the mod whose version has been retrieved.</param>
+		/// <param name="p_strWebVersion">The version of the mod on the Nexus website.</param>
+		private void Nexus_GotFileVersion(object p_objState, string p_strWebVersion)
+		{
+			m_dicWebVersions[(string)p_objState] = p_strWebVersion;
+			ListViewItem lviMod = lvModList.Items[(string)p_objState];
+			if (!String.IsNullOrEmpty(p_strWebVersion) && !p_strWebVersion.Equals(lviMod.SubItems["WebVersion"].Text))
+			{
+				lviMod.SubItems["WebVersion"].Text = p_strWebVersion;
+				lviMod.BackColor = Color.LightSalmon;
+			}
+		}
 
 		private void AddFomodToList(fomod mod)
 		{
+			if ((m_nxaNexus != null) && !String.IsNullOrEmpty(mod.website) && m_rgxNexusFileId.IsMatch(mod.website))
+			{
+				if (!m_dicWebVersions.ContainsKey(mod.BaseName))
+				{
+					string strFileId = m_rgxNexusFileId.Match(mod.website).Groups[1].Value.Trim();
+					Int32 intFileId = -1;
+					if (Int32.TryParse(strFileId, out intFileId))
+						m_nxaNexus.GetFileVersionAsync(intFileId, Nexus_GotFileVersion, mod.BaseName);
+				}
+			}
+
 			string strWebVersion = "NA";
-			m_dicWebVersions.TryGetValue(mod, out strWebVersion);
+			m_dicWebVersions.TryGetValue(mod.BaseName, out strWebVersion);
 
 			if (!cbGroups.Checked)
 			{
 				ListViewItem lvi = new ListViewItem(new string[] { mod.Name, mod.VersionS, strWebVersion, mod.Author });
 				lvi.Tag = mod;
+				lvi.Name = mod.BaseName;
 				lvi.Checked = mod.IsActive;
+				lvi.SubItems[2].Name = "WebVersion";
 				lvModList.Items.Add(lvi);
 				return;
 			}
@@ -39,7 +73,9 @@ namespace Fomm.PackageManager
 					added = true;
 					ListViewItem lvi = new ListViewItem(new string[] { mod.Name, mod.VersionS, strWebVersion, mod.Author });
 					lvi.Tag = mod;
+					lvi.Name = mod.BaseName;
 					lvi.Checked = mod.IsActive;
+					lvi.SubItems[2].Name = "WebVersion";
 					lvModList.Items.Add(lvi);
 					lvModList.Groups[i + 1].Items.Add(lvi);
 				}
@@ -48,16 +84,19 @@ namespace Fomm.PackageManager
 			{
 				ListViewItem lvi = new ListViewItem(new string[] { mod.Name, mod.VersionS, strWebVersion, mod.Author });
 				lvi.Tag = mod;
+				lvi.Name = mod.BaseName;
 				lvi.Checked = mod.IsActive;
+				lvi.SubItems[2].Name = "WebVersion";
 				lvModList.Items.Add(lvi);
 				lvModList.Groups[0].Items.Add(lvi);
 			}
 		}
+
 		private void RebuildListView()
 		{
 			lvModList.SuspendLayout();
 
-			Int32[] intColumnWidths = {200, 100, 100, 100};
+			Int32[] intColumnWidths = { 200, 100, 100, 100 };
 			for (Int32 i = 0; i < intColumnWidths.Length; i++)
 			{
 				Int32 intWidth = -1;
@@ -123,6 +162,7 @@ namespace Fomm.PackageManager
 			mods.Add(mod);
 			if (addToList) AddFomodToList(mod);
 		}
+
 		public PackageManager(MainForm mf)
 		{
 			this.mf = mf;
@@ -183,22 +223,54 @@ namespace Fomm.PackageManager
 			{
 				cbGroups.Checked = true;
 			}
+
+			WebsiteLogin();
+
 			foreach (string modpath in Program.GetFiles(Program.PackageDir, "*.fomod"))
 			{
 				AddFomod(modpath, false);
 			}
 
-			Timer tmrG = new Timer();
-			tmrG.Tick += new EventHandler(tmrG_Tick);
-			//NexusAPI.NexusAPI
-
 			RebuildListView();
 		}
 
-		int inte = 0;
-		void tmrG_Tick(object sender, EventArgs e)
+		/// <summary>
+		/// Logins into the websites.
+		/// </summary>
+		/// <remarks>
+		/// If needed, credentials are gathered from the user.
+		/// </remarks>
+		private void WebsiteLogin()
 		{
-			m_dicWebVersions[(fomod)lvModList.Items[inte].Tag] = "3.0";
+			if (Settings.GetString("checkForNewModVersions") == null)
+				Settings.SetBool("checkForNewModVersions", true);
+			if (Settings.GetBool("checkForNewModVersions"))
+			{
+				string strNexusLoginKey = Settings.GetString("nexusLoginKey");
+				if (String.IsNullOrEmpty(strNexusLoginKey))
+				{
+					string strMessage = "You must log into the Nexus website.";
+					LoginForm lgfLogin = new LoginForm(strMessage, Settings.GetString("nexusUsername"));
+					while (lgfLogin.ShowDialog() != DialogResult.Cancel)
+					{
+						Settings.SetString("nexusUsername", lgfLogin.Username);
+						m_nxaNexus = new NexusAPI(NexusSite.Fallout3, lgfLogin.Username, lgfLogin.Password);
+						if (!m_nxaNexus.Login())
+						{
+							lgfLogin.ErrorMessage = "The given login information is invalid.";
+							continue;
+						}
+						if (lgfLogin.StayLoggedIn)
+						{
+							strNexusLoginKey = m_nxaNexus.LoginKey;
+							Settings.SetString("nexusLoginKey", strNexusLoginKey);
+						}
+						break;
+					}
+					return;
+				}
+				m_nxaNexus = new NexusAPI(NexusSite.Fallout3, strNexusLoginKey);
+			}
 		}
 
 		private void PackageManager_Load(object sender, EventArgs e)

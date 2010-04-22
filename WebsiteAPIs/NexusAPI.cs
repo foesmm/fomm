@@ -141,9 +141,38 @@ namespace WebsiteAPIs
 		private static Regex m_rgxVersion = new Regex("Version</div>.*?<div [^>]+>([^<]+)<", RegexOptions.Singleline);
 
 		private CookieContainer m_ckcCookies = new CookieContainer();
+		private NexusSite m_nxsSite = NexusSite.Fallout3;
 		private string m_strSite = null;
 		private string m_strUsername = null;
 		private string m_strPassword = null;
+		private bool m_booLoggedIn = false;
+
+		#region Properties
+
+		/// <summary>
+		/// Gets the login key used by the site to track logins.
+		/// </summary>
+		/// <value>The login key used by the site to track logins.</value>
+		public string LoginKey
+		{
+			get
+			{
+				AssertLoggedIn();
+				CookieCollection cclCookies = m_ckcCookies.GetCookies(new Uri("http://" + m_strSite));
+				switch (m_nxsSite)
+				{
+					case NexusSite.DragonAge:
+						return cclCookies["DANEX_Member"].Value;
+					case NexusSite.Fallout3:
+						return cclCookies["FO3Nexus_Member"].Value;
+					case NexusSite.TES:
+						return cclCookies["TESNEX_Member"].Value;
+				}
+				return null;
+			}
+		}
+
+		#endregion
 
 		#region Constructors
 
@@ -151,11 +180,9 @@ namespace WebsiteAPIs
 		/// A simple constructor that initilaizes the object.
 		/// </summary>
 		/// <param name="p_nxsSite">The nexus site with which to interect.</param>
-		/// <param name="p_strUsername">The username with which to log into the site.</param>
-		/// <param name="p_strPassword">The password with which to log into the site.</param>
-		/// <exception cref="SiteLoginException">Thrown if the given username or password is invalid.</exception>
-		public NexusAPI(NexusSite p_nxsSite, string p_strUsername, string p_strPassword)
+		public NexusAPI(NexusSite p_nxsSite)
 		{
+			m_nxsSite = p_nxsSite;
 			switch (p_nxsSite)
 			{
 				case NexusSite.DragonAge:
@@ -168,28 +195,83 @@ namespace WebsiteAPIs
 					m_strSite = "www.tesnexus.com";
 					break;
 			}
+		}
+
+		/// <summary>
+		/// A simple constructor that initilaizes the object.
+		/// </summary>
+		/// <param name="p_nxsSite">The nexus site with which to interect.</param>
+		/// <param name="p_strUsername">The username with which to log into the site.</param>
+		/// <param name="p_strPassword">The password with which to log into the site.</param>
+		public NexusAPI(NexusSite p_nxsSite, string p_strUsername, string p_strPassword)
+			: this(p_nxsSite)
+		{
 			m_strUsername = p_strUsername;
 			m_strPassword = p_strPassword;
+		}
 
-			if (!Login())
-				throw new SiteLoginException("The given credentials where not valid.");
+		/// <summary>
+		/// A simple constructor that initilaizes the object.
+		/// </summary>
+		/// <param name="p_nxsSite">The nexus site with which to interect.</param>
+		/// <param name="p_strLoginKey">The login key used by the site to track logins.</param>
+		public NexusAPI(NexusSite p_nxsSite, string p_strLoginKey)
+			: this(p_nxsSite)
+		{
+			Cookie ckeLoginCookie = null;
+			switch (p_nxsSite)
+			{
+				case NexusSite.DragonAge:
+					ckeLoginCookie = new Cookie("DANEX_Member", p_strLoginKey, "/", m_strSite);
+					break;
+				case NexusSite.Fallout3:
+					ckeLoginCookie = new Cookie("FO3Nexus_Member", p_strLoginKey, "/", m_strSite);
+					break;
+				case NexusSite.TES:
+					ckeLoginCookie = new Cookie("TESNEX_Member", p_strLoginKey, "/", m_strSite);
+					break;
+			}
+			m_ckcCookies.Add(ckeLoginCookie);
+			m_booLoggedIn = true;
 		}
 
 		#endregion
 
 		/// <summary>
-		/// Logs into the site.
+		/// Ensures that the API is logged in to the site.
+		/// </summary>
+		/// <exception cref="SiteLoginException">Thrown if the API can't login to the site.</exception>
+		protected void AssertLoggedIn()
+		{
+			if (!m_booLoggedIn && !Login(m_strUsername, m_strPassword))
+				throw new InvalidOperationException("You must be logged in to call this method; the given credentials are invalid.");
+		}
+
+		/// <summary>
+		/// Logs into the site with the credentials passed to the constructor.
 		/// </summary>
 		/// <returns><lang cref="true"/> if the login succeeded; <lang cref="false"/> otherwise.</returns>
 		/// <exception cref="HttpException">Thrown if the login page can't be accessed.</exception>
-		protected bool Login()
+		public bool Login()
+		{
+			return Login(m_strUsername, m_strPassword);
+		}
+
+		/// <summary>
+		/// Logs into the site.
+		/// </summary>
+		/// <param name="p_strUsername">The username with which to log into the site.</param>
+		/// <param name="p_strPassword">The password with which to log into the site.</param>
+		/// <returns><lang cref="true"/> if the login succeeded; <lang cref="false"/> otherwise.</returns>
+		/// <exception cref="HttpException">Thrown if the login page can't be accessed.</exception>
+		public bool Login(string p_strUsername, string p_strPassword)
 		{
 			HttpWebRequest hwrLogin = (HttpWebRequest)WebRequest.Create(String.Format("http://{0}/modules/login/do_login.php?server=&redirect=", m_strSite));
 			hwrLogin.CookieContainer = m_ckcCookies;
 			hwrLogin.Method = "POST";
 			hwrLogin.ContentType = "application/x-www-form-urlencoded";
 
-			string strFields = String.Format("user={0}&pass={1}&submit=Login", m_strUsername, m_strPassword);
+			string strFields = String.Format("user={0}&pass={1}&submit=Login", p_strUsername, p_strPassword);
 			byte[] bteFields = System.Text.Encoding.UTF8.GetBytes(strFields);
 			hwrLogin.ContentLength = bteFields.Length;
 			hwrLogin.GetRequestStream().Write(bteFields, 0, bteFields.Length);
@@ -208,8 +290,8 @@ namespace WebsiteAPIs
 				}
 				wrpLoginResultPage.Close();
 			}
-			bool booSucceeded = !strLoginResultPage.Contains("error.php?");
-			return booSucceeded;
+			m_booLoggedIn = !strLoginResultPage.Contains("error.php?");
+			return m_booLoggedIn;
 		}
 
 		/// <summary>
@@ -218,8 +300,10 @@ namespace WebsiteAPIs
 		/// <returns>The file upload page of the specified mod.</returns>
 		/// <param name="p_intModKey">The key of the mod to manage.</param>
 		/// <exception cref="HttpException">Thrown if the upload page can't be accessed.</exception>
+		/// <exception cref="InvalidOperationException">Thrown if the API can't log in to the site.</exception>
 		protected string GetUploadPage(Int32 p_intModKey)
 		{
+			AssertLoggedIn();
 			HttpWebRequest hwrFileUploadPage = (HttpWebRequest)WebRequest.Create(String.Format("http://{0}/members/addfile.php?id={1}", m_strSite, p_intModKey));
 			hwrFileUploadPage.CookieContainer = m_ckcCookies;
 			hwrFileUploadPage.Method = "GET";
@@ -330,8 +414,10 @@ namespace WebsiteAPIs
 		/// <param name="p_booOverwrite">Whether or not to overwrite any existing file with the given title.</param>
 		/// <returns><lang cref="true"/> if the file uploaded; <lang cref="false"/> otherwise.</returns>
 		/// <exception cref="FileNotFoundException">If the specified file does not exist.</exception>
+		/// <exception cref="InvalidOperationException">Thrown if the API can't log in to the site.</exception>
 		public bool UploadFile(Int32 p_intModKey, string p_strFileTitle, FileCategory p_fctCategory, string p_strDescription, string p_strFilePath, bool p_booOverwrite)
 		{
+			AssertLoggedIn();
 			if (!isFileTitleValid(p_strFileTitle))
 				throw new ArgumentException("The file title can only contain letters, numbers, spaces, hypens and underscores.", "p_strFileTitle");
 
@@ -435,8 +521,10 @@ namespace WebsiteAPIs
 		/// </summary>
 		/// <param name="p_intFileId">The id of the file whose version is to be retrieved.</param>
 		/// <returns>The current verison of the specified file.</returns>
+		/// <exception cref="InvalidOperationException">Thrown if the API can't log in to the site.</exception>
 		public string GetFileVersion(Int32 p_intFileId)
 		{
+			AssertLoggedIn();
 			string strURL = String.Format("http://{0}/downloads/file.php?id={1}", m_strSite, p_intFileId);
 
 			HttpWebRequest hwrFilePage = (HttpWebRequest)WebRequest.Create(strURL);
@@ -484,8 +572,10 @@ namespace WebsiteAPIs
 		/// <param name="p_intFileId">The id of the file whose version is to be retrieved.</param>
 		/// <param name="p_actCallback">The method to call upon completion of the request.</param>
 		/// <param name="p_objState">User supplied state.</param>
+		/// <exception cref="InvalidOperationException">Thrown if the API can't log in to the site.</exception>
 		public void GetFileVersionAsync(Int32 p_intFileId, Action<object, string> p_actCallback, object p_objState)
 		{
+			AssertLoggedIn();
 			string strURL = String.Format("http://{0}/downloads/file.php?id={1}", m_strSite, p_intFileId);
 
 			HttpWebRequest hwrFilePage = (HttpWebRequest)WebRequest.Create(strURL);

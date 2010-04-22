@@ -165,6 +165,12 @@
     <Compile Include="PackageManager\InstallLogBase.cs" />
     <Compile Include="InstallLogUpgraders\InstallLogUpgrader.cs" />
     <Compile Include="PackageManager\InstallLogException.cs" />
+    <Compile Include="PackageManager\LoginForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PackageManager\LoginForm.Designer.cs">
+      <DependentUpon>LoginForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="PackageManager\ModInstaller.cs" />
     <Compile Include="PackageManager\InstallLogMergeModule.cs" />
     <Compile Include="PackageManager\ModInstallScript.cs" />
@@ -346,6 +352,9 @@
     <EmbeddedResource Include="PackageManager\InfoEditor.resx">
       <SubType>Designer</SubType>
       <DependentUpon>InfoEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PackageManager\LoginForm.resx">
+      <DependentUpon>LoginForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PackageManager\SelectForm.resx">
       <DependentUpon>SelectForm.cs</DependentUpon>
@@ -598,6 +607,10 @@
     <ProjectReference Include="..\Transactions\Transactions.csproj">
       <Project>{1C72A5C2-0BA6-44AD-A4ED-0F3FAB9C1E54}</Project>
       <Name>Transactions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WebsiteAPIs\WebsiteAPIs.csproj">
+      <Project>{C972F01F-2D05-4587-8E3B-53A18B9E1705}</Project>
+      <Name>WebsiteAPIs</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
