@@ -749,6 +749,9 @@ namespace Fomm
 					if (autoLoad == null && Array.IndexOf<string>(args, "-package-manager") != -1) autoLoad = string.Empty;
 					Application.Run(new MainForm(autoLoad));
 				}
+#if TRACE
+				Trace.Flush();
+#endif
 
 				//backup the install log
 				if (File.Exists(InstallLog.Current.InstallLogPath))
@@ -858,7 +861,7 @@ namespace Fomm
 		}
 
 #if TRACE
-		static void TraceException(Exception e)
+		public static void TraceException(Exception e)
 		{
 			Trace.WriteLine("Error: ");
 			Trace.WriteLine(e.Message);
