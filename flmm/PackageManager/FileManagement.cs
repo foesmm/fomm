@@ -22,7 +22,9 @@ namespace Fomm.PackageManager
 				return false;
 			if (Path.IsPathRooted(p_strPath))
 				return false;
-			if (p_strPath.Contains(".."))
+			if (p_strPath.Contains(".." + Path.AltDirectorySeparatorChar))
+				return false;
+			if (p_strPath.Contains(".." + Path.DirectorySeparatorChar))
 				return false;
 			return true;
 		}
