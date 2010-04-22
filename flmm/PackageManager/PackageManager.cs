@@ -30,6 +30,8 @@ namespace Fomm.PackageManager
 		/// <param name="p_strWebVersion">The version of the mod on the Nexus website.</param>
 		private void Nexus_GotFileVersion(object p_objState, string p_strWebVersion)
 		{
+			if (!this.Visible)
+				return;
 			m_dicWebVersions[(string)p_objState] = p_strWebVersion;
 			ListViewItem lviMod = lvModList.Items[(string)p_objState];
 			if (!String.IsNullOrEmpty(p_strWebVersion) && !p_strWebVersion.Equals(lviMod.SubItems["WebVersion"].Text))
@@ -244,7 +246,7 @@ namespace Fomm.PackageManager
 		/// </remarks>
 		private void WebsiteLogin()
 		{
-			if (Settings.GetString("checkForNewModVersions") == null)
+			if (!Settings.HasSetting("checkForNewModVersions"))
 				Settings.SetBool("checkForNewModVersions", true);
 			if (Settings.GetBool("checkForNewModVersions"))
 			{

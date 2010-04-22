@@ -37,6 +37,7 @@ namespace Fomm {
             cbDisableUAC.Checked=Settings.GetBool("NoUACCheck");
             cbDisableIPC.Checked=Settings.GetBool("DisableIPC");
             cbUseDocs.Checked=Settings.GetBool("UseDocsFolder");
+			ckbCheckFomodVersions.Checked = Settings.GetBool("checkForNewModVersions");
             string key=Registry.GetValue(@"HKEY_CLASSES_ROOT\.bsa", null, null) as string;
             switch(key) {
             case "BethesdaSoftworks_Archive":
@@ -200,5 +201,16 @@ namespace Fomm {
             if(!FinishedSetup) return;
             Settings.SetBool("UseDocsFolder", cbUseDocs.Checked);
         }
+
+		/// <summary>
+		/// Handles the <see cref="CheckBox.CheckedChanged"/> event of the check for new fomod version checkbox.
+		/// </summary>
+		/// <param name="sender">The object that triggered the event.</param>
+		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+		private void ckbCheckFomodVersions_CheckedChanged(object sender, EventArgs e)
+		{
+			if (!FinishedSetup) return;
+			Settings.SetBool("checkForNewModVersions", ckbCheckFomodVersions.Checked);
+		}
     }
 }

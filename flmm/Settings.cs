@@ -28,6 +28,17 @@ namespace Fomm {
             }
         }
 
+		/// <summary>
+		/// Determines if the specified setting exists in the settings file.
+		/// </summary>
+		/// <param name="p_strName">The name of the setting whose existence is to be determined.</param>
+		/// <returns><lang cref="true"/> if the specified setting exists; <lang cref="false"/> otherwise.</returns>
+		public static bool HasSetting(string p_strName)
+		{
+			XmlNodeList xnlNodes = rootNode.SelectNodes("*[@name='" + p_strName + "']");
+			return xnlNodes.Count > 0;
+		}
+
         public static void GetWindowPosition(string window, System.Windows.Forms.Form f) {
             XmlElement xe=rootNode.SelectSingleNode("descendant::window[@name='"+window+"']") as XmlElement;
             if(xe==null) return;
