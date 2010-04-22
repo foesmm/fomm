@@ -35,6 +35,8 @@ namespace Fomm.PackageManager
 			if (!String.IsNullOrEmpty(p_strWebVersion) && !p_strWebVersion.Equals(lviMod.SubItems["WebVersion"].Text))
 			{
 				lviMod.SubItems["WebVersion"].Text = p_strWebVersion;
+				if (p_strWebVersion.Equals(lviMod.SubItems["WebVersion"].Text.Replace(".", "")))
+					return;
 				lviMod.BackColor = Color.LightSalmon;
 			}
 		}
