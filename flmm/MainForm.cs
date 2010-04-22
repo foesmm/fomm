@@ -8,11 +8,17 @@ using Fomm.PackageManager;
 using System.Drawing;
 using System.Text;
 using Fomm.CriticalRecords;
+#if TRACE
+using System.Diagnostics;
+#endif
 
 namespace Fomm
 {
 	partial class MainForm : Form
 	{
+#if TRACE
+		private bool m_booListedPlugins = false;
+#endif
 		private const string EXTRA_INFO_CRITICAL_RECORDS = "CriticalRecords";
 		private bool AlphaSortMode = false;
 		private List<string> m_lstIgnoreReadOnly = new List<string>();
@@ -314,6 +320,14 @@ namespace Fomm
 		}
 		public void RefreshEspList()
 		{
+#if TRACE
+			if (!m_booListedPlugins)
+			{
+				Trace.WriteLine("");
+				Trace.WriteLine("Refreshing Plugin List: ");
+				Trace.Indent();
+			}
+#endif
 			RefreshingList = true;
 			lvEspList.BeginUpdate();
 			lvEspList.Items.Clear();
@@ -359,6 +373,10 @@ namespace Fomm
 					else
 						m_lstIgnoreReadOnly.Add(fi.Name);
 				}
+#if TRACE
+				if (!m_booListedPlugins)
+					Trace.WriteLine(fi.Name);
+#endif
 				plugins.Add(new ListViewItem(fi.Name));
 			}
 
@@ -366,6 +384,14 @@ namespace Fomm
 			RefreshIndexCounts();
 			lvEspList.EndUpdate();
 			RefreshingList = false;
+#if TRACE
+			if (!m_booListedPlugins)
+			{
+				m_booListedPlugins = true;
+				Trace.Unindent();
+				Trace.Flush();
+			}
+#endif
 		}
 
 		private void bEnableAI_Click(object sender, EventArgs e)
