@@ -10,6 +10,18 @@ namespace Fomm.PackageManager
 		private string m_strPath = null;
 
 		/// <summary>
+		/// Gets the illegal path.
+		/// </summary>
+		/// <value>The illegal path.</value>
+		public string Path
+		{
+			get
+			{
+				return m_strPath;
+			}
+		}
+
+		/// <summary>
 		/// The default constructor.
 		/// </summary>
 		/// <param name="p_strPath">The illegal path.</param>
