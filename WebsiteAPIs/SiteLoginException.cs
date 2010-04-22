@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NexusAPI
+namespace WebsiteAPIs
 {
 	/// <summary>
 	/// The exception that is thrown if an API can't log into a site.

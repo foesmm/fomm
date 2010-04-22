@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Collections.Specialized;
 
-namespace NexusAPI
+namespace WebsiteAPIs
 {
 	/// <summary>
 	/// The file categories.

@@ -4,7 +4,6 @@ using System.Windows.Forms;
 using System.IO;
 using Fomm.PackageManager.Upgrade;
 using SevenZip;
-using NexusAPI;
 
 namespace Fomm.PackageManager
 {
@@ -191,7 +190,7 @@ namespace Fomm.PackageManager
 
 			Timer tmrG = new Timer();
 			tmrG.Tick += new EventHandler(tmrG_Tick);
-			NexusAPI.NexusAPI
+			//NexusAPI.NexusAPI
 
 			RebuildListView();
 		}

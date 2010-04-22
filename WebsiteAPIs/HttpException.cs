@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NexusAPI
+namespace WebsiteAPIs
 {
 	/// <summary>
 	/// The exception that is thrown if an API doesn't receive the expected response to a request.
