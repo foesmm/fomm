@@ -219,9 +219,14 @@ namespace Fomm.PackageManager
 				}
 				catch (Exception e)
 				{
+#if TRACE
+					Program.TraceException(e);
+#endif
 					StringBuilder stbError = new StringBuilder(e.Message);
 					if (e is FileNotFoundException)
 						stbError.Append(" (" + ((FileNotFoundException)e).FileName + ")");
+					if (e is IllegalFilePathException)
+						stbError.Append(" (" + ((IllegalFilePathException)e).Path + ")");
 					if (e.InnerException != null)
 						stbError.AppendLine().AppendLine(e.InnerException.Message);
 					if (e is RollbackException)
