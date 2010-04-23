@@ -101,6 +101,9 @@
     <Compile Include="CriticalRecords\CriticalRecordInfo.cs" />
     <Compile Include="CriticalRecords\CriticalRecordPlugin.cs" />
     <Compile Include="CriticalRecords\PluginFullException.cs" />
+    <Compile Include="DoubleBufferedListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="FileManager\FileManager.cs">
       <SubType>Form</SubType>
     </Compile>

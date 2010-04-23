@@ -37,9 +37,22 @@ namespace Fomm.PackageManager
 			if (!String.IsNullOrEmpty(p_strWebVersion) && !p_strWebVersion.Equals(lviMod.SubItems["WebVersion"].Text))
 			{
 				lviMod.SubItems["WebVersion"].Text = p_strWebVersion;
-				if (p_strWebVersion.Equals(lviMod.SubItems["WebVersion"].Text.Replace(".", "")))
-					return;
-				lviMod.BackColor = Color.LightSalmon;
+				string strWebVersion = p_strWebVersion;
+				string strVersion = ((fomod)lviMod.Tag).VersionS;
+				if (!strWebVersion.Equals(strVersion) && !strWebVersion.Equals(strVersion.Replace(".", "")))
+				{
+					if (strVersion.StartsWith("0.") && !strWebVersion.StartsWith("0."))
+						strVersion = strVersion.Substring(2);
+					if (strWebVersion.StartsWith("0.") && !strVersion.StartsWith("0."))
+						strWebVersion = strWebVersion.Substring(2);
+					if (strVersion.EndsWith(".0") && !strWebVersion.EndsWith(".0"))
+						strVersion = strVersion.Substring(0, strVersion.Length - 2);
+					if (strWebVersion.EndsWith(".0") && !strVersion.EndsWith(".0"))
+						strWebVersion = strWebVersion.Substring(0, strWebVersion.Length - 2);
+
+					if (!strWebVersion.Equals(strVersion))
+						lviMod.BackColor = Color.LightSalmon;
+				}
 			}
 		}
 
@@ -171,6 +184,7 @@ namespace Fomm.PackageManager
 		{
 			this.mf = mf;
 			InitializeComponent();
+
 			this.Icon = Fomm.Properties.Resources.fomm02;
 			cmbSortOrder.ContextMenu = new ContextMenu();
 			lvModList.ListViewItemSorter = new FomodSorter();

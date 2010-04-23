@@ -25,7 +25,7 @@ namespace Fomm.PackageManager {
         private void InitializeComponent() {
 			this.components = new System.ComponentModel.Container();
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-			this.lvModList = new System.Windows.Forms.ListView();
+			this.lvModList = new DoubleBufferedListView();
 			this.fomodContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.visitWebsiteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.emailAuthorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -365,7 +365,7 @@ namespace Fomm.PackageManager {
         #endregion
 
         private System.Windows.Forms.SplitContainer splitContainer1;
-        private System.Windows.Forms.ListView lvModList;
+       	private DoubleBufferedListView lvModList;
         private System.Windows.Forms.TextBox tbModInfo;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Button bEditScript;
