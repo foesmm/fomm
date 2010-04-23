@@ -295,9 +295,14 @@
 			<xs:documentation>The possible orders of items.</xs:documentation>
 		</xs:annotation>
 		<xs:restriction base="xs:string">
-			<xs:enumeration value="Alphabetical">
+			<xs:enumeration value="Ascending">
 				<xs:annotation>
-					<xs:documentation>Indicates the items are to be ordered alphabetically.</xs:documentation>
+					<xs:documentation>Indicates the items are to be ordered ascending alphabetically.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="Descending">
+				<xs:annotation>
+					<xs:documentation>Indicates the items are to be ordered descending alphabetically.</xs:documentation>
 				</xs:annotation>
 			</xs:enumeration>
 			<xs:enumeration value="Explicit">
@@ -319,7 +324,7 @@
 				</xs:annotation>
 			</xs:element>
 		</xs:sequence>
-		<xs:attribute name="order" type="orderEnum" use="optional" default="Alphabetical">
+		<xs:attribute name="order" type="orderEnum" use="optional" default="Ascending">
 			<xs:annotation>
 				<xs:documentation>The order by which to list the plugins.</xs:documentation>
 			</xs:annotation>
@@ -389,7 +394,7 @@
 				</xs:annotation>
 			</xs:element>
 		</xs:sequence>
-		<xs:attribute name="order" type="orderEnum" use="optional" default="Alphabetical">
+		<xs:attribute name="order" type="orderEnum" use="optional" default="Ascending">
 			<xs:annotation>
 				<xs:documentation>The order by which to list the groups.</xs:documentation>
 			</xs:annotation>

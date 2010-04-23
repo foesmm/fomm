@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows.Forms;
 
 namespace Fomm.PackageManager.XmlConfiguredInstall
 {
@@ -45,6 +46,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 	public class PluginGroup
 	{
 		private List<PluginInfo> m_lstPlugins = new List<PluginInfo>();
+		private SortOrder m_srtPluginOrder = SortOrder.Ascending;
 
 		#region Properties
 
@@ -68,6 +70,32 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		{
 			get
 			{
+				if (m_srtPluginOrder != SortOrder.None)
+				{
+					m_lstPlugins.Sort((x, y) =>
+					{
+						switch (m_srtPluginOrder)
+						{
+							case SortOrder.Ascending:
+								if (String.IsNullOrEmpty(x.Name))
+								{
+									if (String.IsNullOrEmpty(y.Name))
+										return 0;
+									return -1;
+								}
+								return x.Name.CompareTo(y.Name);
+							case SortOrder.Descending:
+								if (String.IsNullOrEmpty(y.Name))
+								{
+									if (String.IsNullOrEmpty(x.Name))
+										return 0;
+									return -1;
+								}
+								return y.Name.CompareTo(x.Name);							
+						}
+						return 0;
+					});
+				}
 				return m_lstPlugins;
 			}
 		}
@@ -81,10 +109,12 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		/// </summary>
 		/// <param name="p_strName">The name of the group.</param>
 		/// <param name="p_gtpType">The plugins that are part of this group.</param>
-		public PluginGroup(string p_strName, GroupType p_gtpType)
+		/// <param name="p_srtPluginOrder">the order by which to sort the plugins in this group.</param>
+		public PluginGroup(string p_strName, GroupType p_gtpType, SortOrder p_srtPluginOrder)
 		{
 			Name = p_strName;
 			Type = p_gtpType;
+			m_srtPluginOrder = p_srtPluginOrder;
 		}
 
 		#endregion

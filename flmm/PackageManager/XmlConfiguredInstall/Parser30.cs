@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Xml.Schema;
 using System.IO;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace Fomm.PackageManager.XmlConfiguredInstall
 {
@@ -52,9 +53,75 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 			return loadDependency(xndModDependencies);
 		}
 
+		/// <seealso cref="Parser.GetGroupedPlugins()"/>
+		public override IList<PluginGroup> GetGroupedPlugins()
+		{
+			List<PluginGroup> lstGroups = new List<PluginGroup>();
+			XmlNode xndGroups = XmlConfig.SelectSingleNode("/config/optionalFileGroups");
+			foreach (XmlNode xndGroup in xndGroups.ChildNodes)
+				lstGroups.Add(parseGroup(xndGroup));
+			switch (xndGroups.Attributes["order"].InnerText)
+			{
+				case "Ascending":
+					lstGroups.Sort((x, y) =>
+					{
+						if (String.IsNullOrEmpty(x.Name))
+						{
+							if (String.IsNullOrEmpty(y.Name))
+								return 0;
+							return -1;
+						}
+						return x.Name.CompareTo(y.Name);
+					});
+					break;
+				case "Descending":
+					lstGroups.Sort((x, y) =>
+					{
+						if (String.IsNullOrEmpty(y.Name))
+						{
+							if (String.IsNullOrEmpty(x.Name))
+								return 0;
+							return -1;
+						}
+						return y.Name.CompareTo(x.Name);
+					});
+					break;
+			}
+			return lstGroups;
+		}
+
 		#endregion
 
 		#region Parsing Methods
+
+		/// <summary>
+		/// Creates a plugin group based on the given info.
+		/// </summary>
+		/// <param name="p_xndGroup">The configuration file node corresponding to the group to add.</param>
+		/// <returns>The added group.</returns>
+		protected override PluginGroup parseGroup(XmlNode p_xndGroup)
+		{
+			string strName = p_xndGroup.Attributes["name"].InnerText;
+			GroupType gtpType = (GroupType)Enum.Parse(typeof(GroupType), p_xndGroup.Attributes["type"].InnerText);
+			SortOrder strPluginOrder = SortOrder.None;
+			switch (p_xndGroup.Attributes["order"].InnerText)
+			{
+				case "Ascending":
+					strPluginOrder = SortOrder.Ascending;
+					break;
+				case "Descending":
+					strPluginOrder = SortOrder.Descending;
+					break;
+			}
+			PluginGroup pgpGroup = new PluginGroup(strName, gtpType, strPluginOrder);
+			XmlNodeList xnlPlugins = p_xndGroup.FirstChild.ChildNodes;
+			foreach (XmlNode xndPlugin in xnlPlugins)
+			{
+				PluginInfo pifPlugin = parsePlugin(xndPlugin);
+				pgpGroup.addPlugin(pifPlugin);
+			}
+			return pgpGroup;
+		}
 
 		/// <summary>
 		/// Reads the dependency information from the given node.

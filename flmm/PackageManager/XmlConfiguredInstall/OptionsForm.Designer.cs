@@ -136,7 +136,6 @@
 			this.lvwPlugins.MultiSelect = false;
 			this.lvwPlugins.Name = "lvwPlugins";
 			this.lvwPlugins.Size = new System.Drawing.Size(195, 406);
-			this.lvwPlugins.Sorting = System.Windows.Forms.SortOrder.Ascending;
 			this.lvwPlugins.TabIndex = 0;
 			this.lvwPlugins.UseCompatibleStateImageBehavior = false;
 			this.lvwPlugins.View = System.Windows.Forms.View.Details;
@@ -203,7 +202,7 @@
 			this.pbxImage.TabIndex = 0;
 			this.pbxImage.TabStop = false;
 			// 
-			// GenericOptionsForm
+			// OptionsForm
 			// 
 			this.AcceptButton = this.butOK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -213,7 +212,7 @@
 			this.Controls.Add(this.sptPlugins);
 			this.Controls.Add(this.pnlTop);
 			this.Controls.Add(this.pnlBottom);
-			this.Name = "GenericOptionsForm";
+			this.Name = "OptionsForm";
 			this.Text = "Options Form";
 			this.pnlTop.ResumeLayout(false);
 			this.pnlTop.PerformLayout();

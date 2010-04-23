@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Xml.Schema;
 using System.IO;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace Fomm.PackageManager.XmlConfiguredInstall
 {
@@ -115,11 +116,11 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		/// </summary>
 		/// <param name="p_xndGroup">The configuration file node corresponding to the group to add.</param>
 		/// <returns>The added group.</returns>
-		private PluginGroup parseGroup(XmlNode p_xndGroup)
+		protected virtual PluginGroup parseGroup(XmlNode p_xndGroup)
 		{
 			string strName = p_xndGroup.Attributes["name"].InnerText;
 			GroupType gtpType = (GroupType)Enum.Parse(typeof(GroupType), p_xndGroup.Attributes["type"].InnerText);
-			PluginGroup pgpGroup = new PluginGroup(strName, gtpType);
+			PluginGroup pgpGroup = new PluginGroup(strName, gtpType, SortOrder.Ascending);
 			XmlNodeList xnlPlugins = p_xndGroup.FirstChild.ChildNodes;
 			foreach (XmlNode xndPlugin in xnlPlugins)
 			{
