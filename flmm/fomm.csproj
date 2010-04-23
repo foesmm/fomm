@@ -539,9 +539,6 @@
     <None Include="Resources\RedSquare.png" />
     <None Include="Resources\YellowSquare.png" />
     <None Include="Resources\GreenSquare.png" />
-    <Content Include="fomm\7za.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="fomm\Readme - ChinhDo Transactions.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
