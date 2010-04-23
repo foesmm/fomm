@@ -44,6 +44,26 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 			}
 		}
 
+		/// <summary>
+		/// Gets a message describing whether or not the dependency is fufilled.
+		/// </summary>
+		/// <remarks>
+		/// If the dependency is fufilled the message is "Passed." If the dependency is not fufilled the
+		/// message uses the pattern:
+		///		Flag '&lt;flag>' is not &lt;value>.
+		/// </remarks>
+		/// <value>A message describing whether or not the dependency is fufilled.</value>
+		/// <seealso cref="IDependency.Message"/>
+		public string Message
+		{
+			get
+			{
+				if (IsFufilled)
+					return "Passed";
+				return String.Format("Flag '{0}' is not {1}.", FlagName, Value);
+			}
+		}
+
 		#endregion
 
 		#region Constructors

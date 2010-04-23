@@ -52,30 +52,35 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		#region Abstract Method Implementations
 
 		/// <seealso cref="Parser.GetModDependencies()"/>
-		public override ModDependencies GetModDependencies()
+		public override CompositeDependency GetModDependencies()
 		{
-			Dictionary<string, Version> dicDependencies = new Dictionary<string, Version>();
-			List<string> lstDependencies = new List<string>();
+			CompositeDependency cpdDependency = new CompositeDependency(DependencyOperator.And);
 			XmlNodeList xnlDependencies = XmlConfig.SelectNodes("/config/moduleDependancies/*");
 			foreach (XmlNode xndDependency in xnlDependencies)
 			{
 				switch (xndDependency.Name)
 				{
 					case "foseDependancy":
-						dicDependencies["foseDependency"] = new Version(xndDependency.Attributes["version"].InnerText);
+						Version verMinFoseVersion = new Version(xndDependency.Attributes["version"].InnerText);
+						cpdDependency.Dependencies.Add(new FoseDependency(StateManager, verMinFoseVersion));
 						break;
 					case "falloutDependancy":
-						dicDependencies["falloutDependency"] = new Version(xndDependency.Attributes["version"].InnerText);
+						Version verMinFalloutVersion = new Version(xndDependency.Attributes["version"].InnerText);
+						cpdDependency.Dependencies.Add(new FalloutDependency(StateManager, verMinFalloutVersion));
 						break;
 					case "fommDependancy":
-						dicDependencies["fommDependency"] = new Version(xndDependency.Attributes["version"].InnerText);
+						Version verMinFommVersion = new Version(xndDependency.Attributes["version"].InnerText);
+						cpdDependency.Dependencies.Add(new FommDependency(StateManager, verMinFommVersion));
 						break;
 					case "fileDependancy":
-						lstDependencies.Add(xndDependency.Attributes["file"].InnerText.ToLowerInvariant());
+						string strDependency = xndDependency.Attributes["file"].InnerText.ToLower();
+						cpdDependency.Dependencies.Add(new FileDependency(strDependency, ModFileState.Active, StateManager));
 						break;
+					default:
+						throw new ParserException("Invalid dependency node: " + xndDependency.Name + ". At this point the config file has been validated against the schema, so there's something wrong with the parser.");
 				}
 			}
-			return new ModDependencies(dicDependencies, lstDependencies);
+			return cpdDependency;
 		}
 
 		/// <seealso cref="Parser.GetGroupedPlugins()"/>
@@ -129,7 +134,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		/// </summary>
 		/// <param name="p_xndPlugin">The configuration file node corresponding to the plugin to read.</param>
 		/// <returns>The plugin information.</returns>
-		private PluginInfo parsePlugin(XmlNode p_xndPlugin)
+		protected virtual PluginInfo parsePlugin(XmlNode p_xndPlugin)
 		{
 			string strName = p_xndPlugin.Attributes["name"].InnerText;
 			string strDesc = p_xndPlugin.SelectSingleNode("description").InnerText.Trim();
@@ -173,7 +178,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		/// </summary>
 		/// <param name="p_xndCompositeDependency">The node from which to load the dependency information.</param>
 		/// <returns>A <see cref="CompositeDependency"/> representing the dependency described in the given node.</returns>
-		private CompositeDependency loadDependency(XmlNode p_xndCompositeDependency)
+		protected virtual CompositeDependency loadDependency(XmlNode p_xndCompositeDependency)
 		{
 			DependencyOperator dopOperator = (DependencyOperator)Enum.Parse(typeof(DependencyOperator), p_xndCompositeDependency.Attributes["operator"].InnerText);
 			CompositeDependency cpdDependency = new CompositeDependency(dopOperator);
@@ -200,7 +205,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		/// </summary>
 		/// <param name="p_xnlFiles">The list of XML nodes containing the file info to read.</param>
 		/// <returns>An ordered list of <see cref="PluginFile"/>s representing the data in the given list.</returns>
-		private List<PluginFile> readFileInfo(XmlNodeList p_xnlFiles)
+		protected List<PluginFile> readFileInfo(XmlNodeList p_xnlFiles)
 		{
 			List<PluginFile> lstFiles = new List<PluginFile>();
 			foreach (XmlNode xndFile in p_xnlFiles)
@@ -218,6 +223,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 					case "folder":
 						lstFiles.Add(new PluginFile(strSource, strDest, true, intPriority, booAlwaysInstall, booInstallIfUsable));
 						break;
+					default:
+						throw new ParserException("Invalid file node: " + xndFile.Name + ". At this point the config file has been validated against the schema, so there's something wrong with the parser.");
 				}
 			}
 			lstFiles.Sort();

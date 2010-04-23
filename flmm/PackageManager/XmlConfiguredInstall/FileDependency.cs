@@ -84,6 +84,26 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 			}
 		}
 
+		/// <summary>
+		/// Gets a message describing whether or not the dependency is fufilled.
+		/// </summary>
+		/// <remarks>
+		/// If the dependency is fufilled the message is "Passed." If the dependency is not fufilled the
+		/// message uses the pattern:
+		///		File '&lt;file>' is not &lt;state>.
+		/// </remarks>
+		/// <value>A message describing whether or not the dependency is fufilled.</value>
+		/// <seealso cref="IDependency.Message"/>
+		public string Message
+		{
+			get
+			{
+				if (IsFufilled)
+					return "Passed";
+				return String.Format("File '{0}' is not {1}.", File, State.ToString());
+			}
+		}
+
 		#endregion
 
 		#region Constructors

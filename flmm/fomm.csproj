@@ -223,6 +223,10 @@
     <Compile Include="PackageManager\XmlConfiguredInstall\CompositeDependency.cs" />
     <Compile Include="PackageManager\XmlConfiguredInstall\ConditionalFlag.cs" />
     <Compile Include="PackageManager\XmlConfiguredInstall\ConditionalFileInstallPattern.cs" />
+    <Compile Include="PackageManager\XmlConfiguredInstall\FommDependency.cs" />
+    <Compile Include="PackageManager\XmlConfiguredInstall\FalloutDependency.cs" />
+    <Compile Include="PackageManager\XmlConfiguredInstall\FoseDependency.cs" />
+    <Compile Include="PackageManager\XmlConfiguredInstall\Parser30.cs" />
     <Compile Include="PackageManager\XmlConfiguredInstall\DependencyStateManager.cs" />
     <Compile Include="PackageManager\XmlConfiguredInstall\FlagDependency.cs" />
     <Compile Include="PackageManager\XmlConfiguredInstall\Parser20.cs" />
@@ -244,7 +248,7 @@
     <Compile Include="PackageManager\XmlConfiguredInstall\PluginGroup.cs" />
     <Compile Include="PackageManager\XmlConfiguredInstall\PluginInfo.cs" />
     <Compile Include="PackageManager\XmlConfiguredInstall\StaticPluginType.cs" />
-    <Compile Include="PackageManager\XmlConfiguredInstall\VersionException.cs" />
+    <Compile Include="PackageManager\XmlConfiguredInstall\DependencyException.cs" />
     <Compile Include="PackageManager\XmlConfiguredInstall\XmlConfiguredScript.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -533,6 +537,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="fomm\ModConfig2.0.xsd">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="fomm\ModConfig3.0.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="Resources\fomm02.ico" />

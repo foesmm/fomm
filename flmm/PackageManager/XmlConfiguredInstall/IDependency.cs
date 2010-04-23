@@ -8,9 +8,15 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 	public interface IDependency
 	{
 		/// <summary>
-		/// Gets whether or not the dependency is fufilled, base on the given state.
+		/// Gets whether or not the dependency is fufilled.
 		/// </summary>
-		/// <value>Whether or not the dependency is fufilled, base on the given state.</value>
+		/// <value>Whether or not the dependency is fufilled.</value>
 		bool IsFufilled { get; }
+
+		/// <summary>
+		/// Gets a message describing whether or not the dependency is fufilled.
+		/// </summary>
+		/// <value>A message describing whether or not the dependency is fufilled.</value>
+		string Message { get; }
 	}
 }

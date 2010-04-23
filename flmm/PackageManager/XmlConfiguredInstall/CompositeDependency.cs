@@ -89,6 +89,52 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 			}
 		}
 
+		/// <summary>
+		/// Gets a message describing whether or not the dependency is fufilled.
+		/// </summary>
+		/// <remarks>
+		/// If the dependency is fufilled the message is "Passed." If the dependency is not fufilled the
+		/// message is a list of the sub-dependecies' messages.
+		/// </remarks>
+		/// <value>A message describing whether or not the dependency is fufilled.</value>
+		/// <seealso cref="IDependency.Message"/>
+		public string Message
+		{
+			get
+			{
+				StringBuilder stbMessage = new StringBuilder();
+				if (m_dopOperator == DependencyOperator.Or)
+					stbMessage.Append("(");
+
+				bool booAllFufilled = (m_dopOperator == DependencyOperator.And) ? true : false;
+				bool booThisFufilled = true;
+				IDependency dpnDependency = null;
+				for (Int32 i = 0; i < m_lstDependencies.Count; i++)
+				{
+					dpnDependency = m_lstDependencies[i];
+					booThisFufilled = dpnDependency.IsFufilled;
+					if (!booThisFufilled)
+						stbMessage.Append(dpnDependency.Message);
+					switch (m_dopOperator)
+					{
+						case DependencyOperator.And:
+							if (i < m_lstDependencies.Count - 1)
+								stbMessage.AppendLine();
+							booAllFufilled &= booThisFufilled;
+							break;
+						case DependencyOperator.Or:
+							if (i < m_lstDependencies.Count - 1)
+								stbMessage.AppendLine(" OR");
+							booAllFufilled |= booThisFufilled;
+							break;
+					}
+				}
+				if (m_dopOperator == DependencyOperator.Or)
+					stbMessage.Append(")");
+				return booAllFufilled ? "Passed" : stbMessage.ToString();
+			}
+		}
+
 		#endregion
 
 		#region Constructors

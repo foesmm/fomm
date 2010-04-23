@@ -12,7 +12,10 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 			public PluginInfo Owner;
 		}
 
+		private ModInstallScript m_misInstallScript = null;
 		private Dictionary<string, FlagValue> m_dicFlags = new Dictionary<string, FlagValue>();
+
+		#region Properties
 
 		public Dictionary<string, bool> InstalledPlugins { get; protected set; }
 
@@ -31,10 +34,100 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 			}
 		}
 
-		public DependencyStateManager(Dictionary<string, bool> p_dicInstalledPlugins)
+		/// <summary>
+		/// Gets the installed version of FOSE.
+		/// </summary>
+		/// <remarks>
+		/// <lang cref="null"/> is returned if FOSE is not installed.
+		/// </remarks>
+		/// <value>The installed version of FOSE.</value>
+		public Version FoseVersion
 		{
-			InstalledPlugins = p_dicInstalledPlugins;
+			get
+			{
+			return m_misInstallScript.GetFoseVersion();
+			}
 		}
+
+		/// <summary>
+		/// Gets the installed version of Fallout 3.
+		/// </summary>
+		/// <remarks>
+		/// <lang cref="null"/> is returned if Fallout 3 is not installed.
+		/// </remarks>
+		/// <value>The installed version of Fallout 3.</value>
+		public Version FalloutVersion
+		{
+			get
+			{
+				return m_misInstallScript.GetFalloutVersion();
+			}
+		}
+
+		/// <summary>
+		/// Gets the installed version of FOMM.
+		/// </summary>
+		/// <remarks>
+		/// <lang cref="null"/> is returned if FOMM is not installed.
+		/// </remarks>
+		/// <value>The installed version of FOMM.</value>
+		public Version FommVersion
+		{
+			get
+			{
+				return m_misInstallScript.GetFommVersion();
+			}
+		}
+
+		#endregion
+
+		#region Constructors
+
+		public DependencyStateManager(ModInstallScript p_misInstallScript)
+		{
+			m_misInstallScript = p_misInstallScript;
+
+			Dictionary<string, bool> dicPlugins = new Dictionary<string, bool>();
+			string[] strPlugins = m_misInstallScript.GetAllPlugins();
+			foreach (string strPlugin in strPlugins)
+				dicPlugins.Add(strPlugin.ToLowerInvariant(), IsPluginActive(strPlugin));
+			InstalledPlugins = dicPlugins;
+		}
+
+		#endregion
+
+		/// <summary>
+		/// Determins if the specified plugin is active.
+		/// </summary>
+		/// <param name="p_strFile">The plugin whose state is to be dtermined.</param>
+		/// <returns>true if the specified plugin is active; false otherwise.</returns>
+		protected bool IsPluginActive(string p_strFile)
+		{
+			string[] strAtiveInstalledPlugins = GetActiveInstalledPlugins();
+			foreach (string strActivePlugin in strAtiveInstalledPlugins)
+				if (strActivePlugin.Equals(p_strFile.ToLowerInvariant()))
+					return true;
+			return false;
+		}
+
+		/// <summary>
+		/// Gets a list of all active installed plugins.
+		/// </summary>
+		/// <returns>A list of all active installed plugins.</returns>
+		protected string[] GetActiveInstalledPlugins()
+		{
+			if (m_strActiveInstalledPlugins == null)
+			{
+				string[] strActivePlugins = m_misInstallScript.GetActivePlugins();
+				List<string> lstActiveInstalled = new List<string>();
+				foreach (string strActivePlugin in strActivePlugins)
+					if (FileManagement.DataFileExists(strActivePlugin))
+						lstActiveInstalled.Add(strActivePlugin.ToLowerInvariant());
+				m_strActiveInstalledPlugins = lstActiveInstalled.ToArray();
+			}
+			return m_strActiveInstalledPlugins;
+		}
+		string[] m_strActiveInstalledPlugins = null;
 
 		public void SetFlagValue(string p_strFlagName, string p_strValue, PluginInfo p_pifPlugin)
 		{

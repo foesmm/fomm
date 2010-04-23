@@ -91,44 +91,12 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 				stmConfig.Close();
 			}
 
-			Dictionary<string, bool> dicPlugins = new Dictionary<string, bool>();
-			string[] strPlugins = m_misInstallScript.GetAllPlugins();
-			foreach (string strPlugin in strPlugins)
-				dicPlugins.Add(strPlugin.ToLowerInvariant(), IsPluginActive(strPlugin));
-
-			m_dsmStateManager = new DependencyStateManager(dicPlugins);
+			m_dsmStateManager = new DependencyStateManager(m_misInstallScript);
 
 			Parser prsParser = Parser.GetParser(xmlConfig, m_misInstallScript.Fomod, m_dsmStateManager);
-			ModDependencies mdpModDependencies = prsParser.GetModDependencies();
-			foreach (KeyValuePair<string, Version> kvpDependencies in mdpModDependencies.ProgrammeDependencies)
-			{
-				switch (kvpDependencies.Key)
-				{
-					case "foseDependency":
-						RequireFoseVersion(kvpDependencies.Value);
-						break;
-					case "falloutDependency":
-						RequireGameVersion(kvpDependencies.Value);
-						break;
-					case "fommDependency":
-						RequireFommVersion(kvpDependencies.Value);
-						break;
-					default:
-						throw new VersionException(kvpDependencies.Value, null, kvpDependencies.Key);
-				}
-			}
-			foreach (string strFile in mdpModDependencies.FileDependencies)
-			{
-				if (!FileManagement.DataFileExists(strFile))
-				{
-					m_misInstallScript.MessageBox("The following required file is missing: " + strFile);
-					return false;
-				}
-				if ((strFile.EndsWith(".esm") || strFile.EndsWith(".esp")) &&
-					(!IsPluginActive(strFile)) &&
-					(m_misInstallScript.MessageBox("The following required file is installed but not active: " + strFile + System.Environment.NewLine + "Would you like to active it?", "Required File", MessageBoxButtons.YesNo) == DialogResult.No))
-					return false;
-			}
+			CompositeDependency cpdModDependencies = prsParser.GetModDependencies();
+			if (!cpdModDependencies.IsFufilled)
+				throw new DependencyException(cpdModDependencies.Message);
 
 			IList<PluginGroup> lstGroups = prsParser.GetGroupedPlugins();
 			OptionsForm ofmOptions = new OptionsForm(this, prsParser.ModName, m_dsmStateManager, lstGroups);
@@ -279,55 +247,6 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		#region Helper Methods
 
 		/// <summary>
-		/// Ensures the the specified minimum version of FOSE is installed.
-		/// </summary>
-		/// <param name="p_verMinVersion">The mimum required version of FOSE.</param>
-		/// <exception cref="VersionException">Thrown if the installed version of FOSE is less than the required version.</exception>
-		protected void RequireFoseVersion(Version p_verMinVersion)
-		{
-			Version verFoseVersion = m_misInstallScript.GetFoseVersion();
-			if (verFoseVersion == null)
-				m_misInstallScript.MessageBox("This mod requires FOSE v " + p_verMinVersion + " or higher. Please download from http://silverlock.org");
-			else if (verFoseVersion < p_verMinVersion)
-				m_misInstallScript.MessageBox("This mod requires FOSE v " + p_verMinVersion + " or higher. You have " + verFoseVersion + ". Please update from http://silverlock.org");
-			else
-				return;
-			throw new VersionException(p_verMinVersion, verFoseVersion, "FOSE");
-		}
-
-		/// <summary>
-		/// Ensures the the specified minimum version of Fallout 3 is installed.
-		/// </summary>
-		/// <param name="p_verMinVersion">The mimum required version of Fallout 3.</param>
-		/// <exception cref="VersionException">Thrown if the installed version of Fallout 3 is less than the required version.</exception>
-		protected void RequireGameVersion(Version p_verMinVersion)
-		{
-			Version verGameVersion = m_misInstallScript.GetFalloutVersion();
-			if (verGameVersion < p_verMinVersion)
-			{
-				m_misInstallScript.MessageBox("This mod requires Fallout 3 v" + p_verMinVersion + " or higher. You have " + verGameVersion + ". Please update your game.");
-				throw new VersionException(p_verMinVersion, verGameVersion, "Fallout 3");
-			}
-			return;
-		}
-
-		/// <summary>
-		/// Ensures the the specified minimum version of FOMM is installed.
-		/// </summary>
-		/// <param name="p_verMinVersion">The mimum required version of FOMM.</param>
-		/// <exception cref="VersionException">Thrown if the installed version of FOMM is less than the required version.</exception>
-		protected void RequireFommVersion(Version p_verMinVersion)
-		{
-			Version verFommVersion = m_misInstallScript.GetFommVersion();
-			if (verFommVersion < p_verMinVersion)
-			{
-				m_misInstallScript.MessageBox("This mod requires FOMM v" + p_verMinVersion + " or higher. You have " + verFommVersion + ". Please update from https://sourceforge.net/projects/fomm");
-				throw new VersionException(p_verMinVersion, verFommVersion, "FOMM");
-			}
-			return;
-		}
-
-		/// <summary>
 		/// Recursively copies all files and folders from one location to another.
 		/// </summary>
 		/// <param name="p_strFrom">The source from whence to copy the files.</param>
@@ -378,39 +297,6 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 			return lstFiles;
 		}
 		string[] m_strFomodFiles = null;
-
-		/// <summary>
-		/// Gets a list of all active installed plugins.
-		/// </summary>
-		/// <returns>A list of all active installed plugins.</returns>
-		protected string[] GetActiveInstalledPlugins()
-		{
-			if (m_strActiveInstalledPlugins == null)
-			{
-				string[] strActivePlugins = m_misInstallScript.GetActivePlugins();
-				List<string> lstActiveInstalled = new List<string>();
-				foreach (string strActivePlugin in strActivePlugins)
-					if (FileManagement.DataFileExists(strActivePlugin))
-						lstActiveInstalled.Add(strActivePlugin.ToLowerInvariant());
-				m_strActiveInstalledPlugins = lstActiveInstalled.ToArray();
-			}
-			return m_strActiveInstalledPlugins;
-		}
-		string[] m_strActiveInstalledPlugins = null;
-
-		/// <summary>
-		/// Determins if the specified plugin is active.
-		/// </summary>
-		/// <param name="p_strFile">The plugin whose state is to be dtermined.</param>
-		/// <returns>true if the specified plugin is active; false otherwise.</returns>
-		protected bool IsPluginActive(string p_strFile)
-		{
-			string[] strAtiveInstalledPlugins = GetActiveInstalledPlugins();
-			foreach (string strActivePlugin in strAtiveInstalledPlugins)
-				if (strActivePlugin.Equals(p_strFile.ToLowerInvariant()))
-					return true;
-			return false;
-		}
 
 		#endregion
 	}

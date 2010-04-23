@@ -145,7 +145,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		/// Gets the mod level dependencies of the mod.
 		/// </summary>
 		/// <returns>The mod level dependencies of the mod.</returns>
-		public abstract ModDependencies GetModDependencies();
+		public abstract CompositeDependency GetModDependencies();
 
 		/// <summary>
 		/// Gets the mod plugins, organized into their groups.
