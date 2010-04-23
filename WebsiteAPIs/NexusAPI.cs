@@ -616,16 +616,17 @@ namespace WebsiteAPIs
 				wrpFilePage.Close();
 			}
 
-			string strWebVersion = m_rgxVersion.Match(strFilePage).Groups[1].Value.Trim();
-			if (strWebVersion.StartsWith("ver. "))
+			string strWebVersion = m_rgxVersion.Match(strFilePage).Groups[1].Value.Trim().Trim(new char[]{'.'});
+			string strLoweredWebVersion = strWebVersion.ToLowerInvariant();
+			if (strLoweredWebVersion.StartsWith("ver. "))
 				strWebVersion = strWebVersion.Substring(5);
-			else if (strWebVersion.StartsWith("ver."))
+			else if (strLoweredWebVersion.StartsWith("ver."))
 				strWebVersion = strWebVersion.Substring(4);
-			else if (strWebVersion.StartsWith("v. "))
+			else if (strLoweredWebVersion.StartsWith("v. "))
 				strWebVersion = strWebVersion.Substring(3);
-			else if (strWebVersion.StartsWith("v."))
+			else if (strLoweredWebVersion.StartsWith("v."))
 				strWebVersion = strWebVersion.Substring(2);
-			else if (strWebVersion.StartsWith("v"))
+			else if (strLoweredWebVersion.StartsWith("v"))
 				strWebVersion = strWebVersion.Substring(1);
 
 			aopOperation.PostOperationCompleted((p_WebVersion) => { CallGetFileVersionAsyncCallback((KeyValuePair<Action<object, string>, object>)aopOperation.UserSuppliedState, (string)p_WebVersion); }, strWebVersion);
