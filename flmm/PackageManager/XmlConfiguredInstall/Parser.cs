@@ -33,6 +33,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 					return new Parser10(p_xmlConfig, p_fomodMod, p_dsmSate);
 				case "2.0":
 					return new Parser20(p_xmlConfig, p_fomodMod, p_dsmSate);
+				case "3.0":
+					return new Parser30(p_xmlConfig, p_fomodMod, p_dsmSate);
 			}
 			throw new ParserException("Unrecognized Module Configuration version (" + strConfigVersion + "). Perhaps a newer version of FOMM is required.");
 		}
