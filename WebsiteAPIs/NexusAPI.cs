@@ -5,6 +5,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Collections.Specialized;
+using System.Diagnostics;
 
 namespace WebsiteAPIs
 {
@@ -602,18 +603,39 @@ namespace WebsiteAPIs
 			AsyncOperation aopOperation = (AsyncOperation)objState[1];
 
 			string strFilePage = null;
-			using (WebResponse wrpFilePage = hwrFilePage.EndGetResponse(p_asrResult))
+			try
 			{
-				if (((HttpWebResponse)wrpFilePage).StatusCode != HttpStatusCode.OK)
-					throw new HttpException("Request to the file page failed with HTTP error: " + ((HttpWebResponse)wrpFilePage).StatusCode);
-
-				Stream stmFilePage = wrpFilePage.GetResponseStream();
-				using (StreamReader srdFilePage = new StreamReader(stmFilePage))
+				using (WebResponse wrpFilePage = hwrFilePage.EndGetResponse(p_asrResult))
 				{
-					strFilePage = srdFilePage.ReadToEnd();
-					srdFilePage.Close();
+					if (((HttpWebResponse)wrpFilePage).StatusCode != HttpStatusCode.OK)
+						throw new HttpException("Request to the file page failed with HTTP error: " + ((HttpWebResponse)wrpFilePage).StatusCode);
+
+					Stream stmFilePage = wrpFilePage.GetResponseStream();
+					using (StreamReader srdFilePage = new StreamReader(stmFilePage))
+					{
+						strFilePage = srdFilePage.ReadToEnd();
+						srdFilePage.Close();
+					}
+					wrpFilePage.Close();
 				}
-				wrpFilePage.Close();
+			}
+			catch (Exception e)
+			{
+#if TRACE
+				Trace.WriteLine("Couldn't get version from " + hwrFilePage.Address);
+				Trace.Indent();
+				Trace.WriteLine("Exception: ");
+				Trace.WriteLine(e.Message);
+				Trace.WriteLine(e.ToString());
+				if (e.InnerException != null)
+				{
+					Trace.WriteLine("Inner Exception: ");
+					Trace.WriteLine(e.InnerException.Message);
+					Trace.WriteLine(e.InnerException.ToString());
+				}
+				Trace.Unindent();
+				Trace.Flush();
+#endif
 			}
 
 			string strWebVersion = m_rgxVersion.Match(strFilePage).Groups[1].Value.Trim().Trim(new char[]{'.'});
