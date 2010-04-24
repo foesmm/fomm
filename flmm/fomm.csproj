@@ -226,6 +226,9 @@
     <Compile Include="PackageManager\XmlConfiguredInstall\FommDependency.cs" />
     <Compile Include="PackageManager\XmlConfiguredInstall\FalloutDependency.cs" />
     <Compile Include="PackageManager\XmlConfiguredInstall\FoseDependency.cs" />
+    <Compile Include="PackageManager\XmlConfiguredInstall\HeaderPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="PackageManager\XmlConfiguredInstall\Parser30.cs" />
     <Compile Include="PackageManager\XmlConfiguredInstall\DependencyStateManager.cs" />
     <Compile Include="PackageManager\XmlConfiguredInstall\FlagDependency.cs" />
@@ -249,6 +252,7 @@
     <Compile Include="PackageManager\XmlConfiguredInstall\PluginInfo.cs" />
     <Compile Include="PackageManager\XmlConfiguredInstall\StaticPluginType.cs" />
     <Compile Include="PackageManager\XmlConfiguredInstall\DependencyException.cs" />
+    <Compile Include="PackageManager\XmlConfiguredInstall\HeaderInfo.cs" />
     <Compile Include="PackageManager\XmlConfiguredInstall\XmlConfiguredScript.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -381,6 +385,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="BackgroundWorkerProgressDialog.resx">
       <DependentUpon>BackgroundWorkerProgressDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PackageManager\XmlConfiguredInstall\OptionsForm.resx">
+      <DependentUpon>OptionsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <SubType>Designer</SubType>

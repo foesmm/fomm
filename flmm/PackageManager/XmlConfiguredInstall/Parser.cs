@@ -52,12 +52,6 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		protected abstract string SchemaFileName { get; }
 
 		/// <summary>
-		/// Gets the name of the mod whose configuration file is being parsed.
-		/// </summary>
-		/// <value>The name of the mod whose configuration file is being parsed.</value>
-		public abstract string ModName { get; }
-
-		/// <summary>
 		/// Gets the xml configuration file.
 		/// </summary>
 		/// <value>The xml configuration file.</value>
@@ -142,6 +136,12 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		}
 
 		#endregion
+
+		/// <summary>
+		/// Gets the header info of the mod.
+		/// </summary>
+		/// <returns>The header info of the mod.</returns>
+		public abstract HeaderInfo GetHeaderInfo();
 
 		/// <summary>
 		/// Gets the mod level dependencies of the mod.

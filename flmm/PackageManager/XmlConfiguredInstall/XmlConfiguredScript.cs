@@ -95,11 +95,12 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 
 			Parser prsParser = Parser.GetParser(xmlConfig, m_misInstallScript.Fomod, m_dsmStateManager);
 			CompositeDependency cpdModDependencies = prsParser.GetModDependencies();
-			if (!cpdModDependencies.IsFufilled)
+			if ((cpdModDependencies != null) && !cpdModDependencies.IsFufilled)
 				throw new DependencyException(cpdModDependencies.Message);
 
 			IList<PluginGroup> lstGroups = prsParser.GetGroupedPlugins();
-			OptionsForm ofmOptions = new OptionsForm(this, prsParser.ModName, m_dsmStateManager, lstGroups);
+			HeaderInfo hifHeaderInfo = prsParser.GetHeaderInfo();
+			OptionsForm ofmOptions = new OptionsForm(this, hifHeaderInfo, m_dsmStateManager, lstGroups);
 			bool booPerformInstall = false;
 			if (lstGroups.Count == 0)
 				booPerformInstall = true;
@@ -111,7 +112,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 				using (m_bwdProgress = new BackgroundWorkerProgressDialog(InstallFiles))
 				{
 					m_bwdProgress.WorkMethodArguments = new InstallFilesArguments(prsParser, ofmOptions);
-					m_bwdProgress.OverallMessage = "Installing " + prsParser.ModName;
+					m_bwdProgress.OverallMessage = "Installing " + hifHeaderInfo.Title;
 					m_bwdProgress.OverallProgressStep = 1;
 					m_bwdProgress.ItemProgressStep = 1;
 					if (m_bwdProgress.ShowDialog() == DialogResult.Cancel)

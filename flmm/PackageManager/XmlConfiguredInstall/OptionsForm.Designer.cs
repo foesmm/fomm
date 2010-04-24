@@ -28,8 +28,6 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.pnlTop = new System.Windows.Forms.Panel();
-			this.lblTitle = new System.Windows.Forms.Label();
 			this.pnlBottom = new System.Windows.Forms.Panel();
 			this.butCancel = new System.Windows.Forms.Button();
 			this.butOK = new System.Windows.Forms.Button();
@@ -40,7 +38,7 @@
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.tbxDescription = new System.Windows.Forms.TextBox();
 			this.pbxImage = new System.Windows.Forms.PictureBox();
-			this.pnlTop.SuspendLayout();
+			this.hplTitle = new Fomm.PackageManager.XmlConfiguredInstall.HeaderPanel();
 			this.pnlBottom.SuspendLayout();
 			this.sptPlugins.Panel1.SuspendLayout();
 			this.sptPlugins.Panel2.SuspendLayout();
@@ -51,25 +49,6 @@
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pbxImage)).BeginInit();
 			this.SuspendLayout();
-			// 
-			// pnlTop
-			// 
-			this.pnlTop.Controls.Add(this.lblTitle);
-			this.pnlTop.Dock = System.Windows.Forms.DockStyle.Top;
-			this.pnlTop.Location = new System.Drawing.Point(0, 0);
-			this.pnlTop.Name = "pnlTop";
-			this.pnlTop.Size = new System.Drawing.Size(587, 37);
-			this.pnlTop.TabIndex = 100;
-			// 
-			// lblTitle
-			// 
-			this.lblTitle.AutoSize = true;
-			this.lblTitle.Font = new System.Drawing.Font("Arial", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.lblTitle.Location = new System.Drawing.Point(7, 9);
-			this.lblTitle.Name = "lblTitle";
-			this.lblTitle.Size = new System.Drawing.Size(215, 22);
-			this.lblTitle.TabIndex = 20;
-			this.lblTitle.Text = "Generic Options Form";
 			// 
 			// pnlBottom
 			// 
@@ -108,7 +87,7 @@
 			// 
 			this.sptPlugins.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.sptPlugins.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
-			this.sptPlugins.Location = new System.Drawing.Point(0, 37);
+			this.sptPlugins.Location = new System.Drawing.Point(0, 47);
 			this.sptPlugins.Name = "sptPlugins";
 			// 
 			// sptPlugins.Panel1
@@ -118,7 +97,7 @@
 			// sptPlugins.Panel2
 			// 
 			this.sptPlugins.Panel2.Controls.Add(this.sptImage);
-			this.sptPlugins.Size = new System.Drawing.Size(587, 406);
+			this.sptPlugins.Size = new System.Drawing.Size(587, 396);
 			this.sptPlugins.SplitterDistance = 195;
 			this.sptPlugins.TabIndex = 0;
 			this.sptPlugins.TabStop = false;
@@ -135,7 +114,7 @@
 			this.lvwPlugins.Location = new System.Drawing.Point(0, 0);
 			this.lvwPlugins.MultiSelect = false;
 			this.lvwPlugins.Name = "lvwPlugins";
-			this.lvwPlugins.Size = new System.Drawing.Size(195, 406);
+			this.lvwPlugins.Size = new System.Drawing.Size(195, 396);
 			this.lvwPlugins.TabIndex = 0;
 			this.lvwPlugins.UseCompatibleStateImageBehavior = false;
 			this.lvwPlugins.View = System.Windows.Forms.View.Details;
@@ -163,7 +142,7 @@
 			// sptImage.Panel2
 			// 
 			this.sptImage.Panel2.Controls.Add(this.pbxImage);
-			this.sptImage.Size = new System.Drawing.Size(388, 406);
+			this.sptImage.Size = new System.Drawing.Size(388, 396);
 			this.sptImage.SplitterDistance = 129;
 			this.sptImage.TabIndex = 101;
 			this.sptImage.TabStop = false;
@@ -197,10 +176,23 @@
 			this.pbxImage.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.pbxImage.Location = new System.Drawing.Point(0, 0);
 			this.pbxImage.Name = "pbxImage";
-			this.pbxImage.Size = new System.Drawing.Size(388, 273);
+			this.pbxImage.Size = new System.Drawing.Size(388, 263);
 			this.pbxImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
 			this.pbxImage.TabIndex = 0;
 			this.pbxImage.TabStop = false;
+			// 
+			// hplTitle
+			// 
+			this.hplTitle.Dock = System.Windows.Forms.DockStyle.Top;
+			this.hplTitle.Font = new System.Drawing.Font("Arial", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.hplTitle.ImageLocation = null;
+			this.hplTitle.Location = new System.Drawing.Point(0, 0);
+			this.hplTitle.Name = "hplTitle";
+			this.hplTitle.ShowFade = false;
+			this.hplTitle.Size = new System.Drawing.Size(587, 47);
+			this.hplTitle.TabIndex = 21;
+			this.hplTitle.Text = "Generic Options Form";
+			this.hplTitle.TextPosition = Fomm.PackageManager.XmlConfiguredInstall.TextPosition.Left;
 			// 
 			// OptionsForm
 			// 
@@ -210,12 +202,10 @@
 			this.CancelButton = this.butCancel;
 			this.ClientSize = new System.Drawing.Size(587, 482);
 			this.Controls.Add(this.sptPlugins);
-			this.Controls.Add(this.pnlTop);
+			this.Controls.Add(this.hplTitle);
 			this.Controls.Add(this.pnlBottom);
 			this.Name = "OptionsForm";
 			this.Text = "Options Form";
-			this.pnlTop.ResumeLayout(false);
-			this.pnlTop.PerformLayout();
 			this.pnlBottom.ResumeLayout(false);
 			this.sptPlugins.Panel1.ResumeLayout(false);
 			this.sptPlugins.Panel2.ResumeLayout(false);
@@ -232,9 +222,7 @@
 
 		#endregion
 
-		private System.Windows.Forms.Panel pnlTop;
 		private System.Windows.Forms.Panel pnlBottom;
-		private System.Windows.Forms.Label lblTitle;
 		private System.Windows.Forms.Button butCancel;
 		private System.Windows.Forms.Button butOK;
 		private System.Windows.Forms.SplitContainer sptPlugins;
@@ -244,5 +232,6 @@
 		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.SplitContainer sptImage;
 		private System.Windows.Forms.PictureBox pbxImage;
+		private HeaderPanel hplTitle;
 	}
 }

@@ -236,6 +236,32 @@
 		</xs:attribute>
 	</xs:complexType>
 
+	<xs:complexType name="headerImage">
+		<xs:annotation>
+			<xs:documentation>An image.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="path" use="optional" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>The path to the image in the FOMOD. If omitted the FOMOD's screenshot is used.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="showImage" type="xs:boolean" default="true" use="optional">
+			<xs:annotation>
+				<xs:documentation>Whether or not the image should be displayed.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="showFade" type="xs:boolean" default="true" use="optional">
+			<xs:annotation>
+				<xs:documentation>Whether or not the fade effect should be displayed. This value is ignored if showImage is false.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="height" type="xs:int" default="-1" use="optional">
+			<xs:annotation>
+				<xs:documentation>The height to use for the image. Note that there is a minimum height that is enforced based on the user's settings.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+
 	<xs:complexType name="plugin">
 		<xs:annotation>
 			<xs:documentation>A plugin.</xs:documentation>
@@ -535,14 +561,61 @@
 		</xs:sequence>
 	</xs:complexType>
 
+	<xs:complexType name="moduleTitle">
+		<xs:annotation>
+			<xs:documentation>Describes the display properties of the module title.</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="position" use="optional" default="Left">
+					<xs:annotation>
+						<xs:documentation>The identifying name of the condition flag.</xs:documentation>
+					</xs:annotation>
+					<xs:simpleType>
+						<xs:annotation>
+							<xs:documentation>The possible title positions.</xs:documentation>
+						</xs:annotation>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="Left">
+								<xs:annotation>
+									<xs:documentation>Positions the title on the left side of the form header.</xs:documentation>
+								</xs:annotation>
+							</xs:enumeration>
+							<xs:enumeration value="Right">
+								<xs:annotation>
+									<xs:documentation>Positions the title on the right side of the form header.</xs:documentation>
+								</xs:annotation>
+							</xs:enumeration>
+							<xs:enumeration value="RightOfImage">
+								<xs:annotation>
+									<xs:documentation>Positions the title on the right side of the image in the form header.</xs:documentation>
+								</xs:annotation>
+							</xs:enumeration>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:attribute>
+				<xs:attribute name="colour" use="optional" default="000000" type="xs:hexBinary">
+					<xs:annotation>
+						<xs:documentation>The colour to use for the title.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
 	<xs:complexType name="moduleConfiguration">
 		<xs:annotation>
 			<xs:documentation>Describes the configuration of a module.</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
-			<xs:element name="moduleName" type="xs:string">
+			<xs:element name="moduleName" type="moduleTitle">
 				<xs:annotation>
 					<xs:documentation>The name of the module.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="moduleImage" type="headerImage" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The module logo.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
 			<xs:element name="moduleDependencies" type="compositeDependency" minOccurs="0">

@@ -5,6 +5,7 @@ using System.Xml.Schema;
 using System.IO;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Globalization;
 
 namespace Fomm.PackageManager.XmlConfiguredInstall
 {
@@ -23,7 +24,6 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 				return "ModConfig3.0.xsd";
 			}
 		}
-
 
 		#endregion
 
@@ -90,6 +90,30 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 			return lstGroups;
 		}
 
+		/// <seealso cref="Parser.GetHeaderInfo()"/>
+		public override HeaderInfo GetHeaderInfo()
+		{
+			XmlNode xndTitle = XmlConfig.SelectSingleNode("/config/moduleName");
+			string strTitle = xndTitle.InnerText;
+			Color clrColour = Color.FromArgb((Int32)(UInt32.Parse(xndTitle.Attributes["colour"].Value, NumberStyles.HexNumber, null) | 0xff000000));
+			TextPosition tpsPosition = (TextPosition)Enum.Parse(typeof(TextPosition), xndTitle.Attributes["position"].Value);
+
+			XmlNode xndImage = XmlConfig.SelectSingleNode("/config/moduleImage");
+			if (xndImage != null)
+			{
+				string strImagePath = xndImage.Attributes["path"].Value;
+				Bitmap bmpImage = String.IsNullOrEmpty(strImagePath) ? Fomod.GetScreenshot() : new Bitmap(Fomod.GetImage(strImagePath));
+				bool booShowImage = Boolean.Parse(xndImage.Attributes["showImage"].Value) && (bmpImage != null);
+				bool booShowFade = Boolean.Parse(xndImage.Attributes["showFade"].Value);
+				Int32 intHeight = Int32.Parse(xndImage.Attributes["height"].Value);
+				if ((intHeight == -1) && booShowImage)
+					intHeight = 75;
+				return new HeaderInfo(strTitle, clrColour, tpsPosition, bmpImage, booShowImage, booShowFade, intHeight);
+			}
+			Bitmap bmpScreenshot = Fomod.GetScreenshot();
+			return new HeaderInfo(strTitle, clrColour, tpsPosition, bmpScreenshot, bmpScreenshot != null, true, (bmpScreenshot != null) ? 75 : -1);
+		}
+
 		#endregion
 
 		#region Parsing Methods
@@ -104,7 +128,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 			string strName = p_xndGroup.Attributes["name"].InnerText;
 			GroupType gtpType = (GroupType)Enum.Parse(typeof(GroupType), p_xndGroup.Attributes["type"].InnerText);
 			SortOrder strPluginOrder = SortOrder.None;
-			switch (p_xndGroup.Attributes["order"].InnerText)
+			switch (p_xndGroup.FirstChild.Attributes["order"].InnerText)
 			{
 				case "Ascending":
 					strPluginOrder = SortOrder.Ascending;

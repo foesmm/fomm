@@ -8,17 +8,33 @@ using System.Drawing;
 
 namespace Fomm.PackageManager.XmlConfiguredInstall
 {
+	/// <summary>
+	/// The form that displays the options that were specified in the XML configuration file.
+	/// </summary>
 	public partial class OptionsForm : Form
 	{
 		private XmlConfiguredScript m_xcsScript = null;
 		private DependencyStateManager m_dsmStateManager = null;
 
-		public OptionsForm(XmlConfiguredScript p_xcsScript, string p_strModName, DependencyStateManager p_dsmStateManager, IList<PluginGroup> p_lstGroups)
+		/// <summary>
+		/// A simple constructor that initializes the object with the given values.
+		/// </summary>
+		/// <param name="p_xcsScript">The install script.</param>
+		/// <param name="p_hifHeaderInfo">Information describing the form header.</param>
+		/// <param name="p_dsmStateManager">The install state manager.</param>
+		/// <param name="p_lstGroups">The grouped plugins.</param>
+		public OptionsForm(XmlConfiguredScript p_xcsScript, HeaderInfo p_hifHeaderInfo, DependencyStateManager p_dsmStateManager, IList<PluginGroup> p_lstGroups)
 		{
 			m_xcsScript = p_xcsScript;
 			m_dsmStateManager = p_dsmStateManager;
 			InitializeComponent();
-			lblTitle.Text = p_strModName;
+			hplTitle.Text = p_hifHeaderInfo.Title;
+			hplTitle.Image = p_hifHeaderInfo.ShowImage ? p_hifHeaderInfo.Image : null;
+			hplTitle.ShowFade = p_hifHeaderInfo.ShowFade;
+			hplTitle.ForeColor = p_hifHeaderInfo.TextColour;
+			hplTitle.TextPosition = p_hifHeaderInfo.TextPosition;
+			if (p_hifHeaderInfo.Height > hplTitle.Height)
+				hplTitle.Height = p_hifHeaderInfo.Height;
 			loadPlugins(p_lstGroups);
 			if (lvwPlugins.Items.Count > 0)
 				lvwPlugins.Items[0].Selected = true;
@@ -393,7 +409,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 					m_dsmStateManager.SetFlagValue(cfgFlag.Name, cfgFlag.ConditionalValue, pifPlugin);
 			}
 			else
-				m_dsmStateManager.RemoveFlags(pifPlugin);				
+				m_dsmStateManager.RemoveFlags(pifPlugin);
 		}
 
 		/// <summary>

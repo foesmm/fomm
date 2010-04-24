@@ -24,15 +24,6 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 			}
 		}
 
-		/// <seealso cref="Parser.ModName"/>
-		public override string ModName
-		{
-			get
-			{
-				return XmlConfig.SelectSingleNode("/config/moduleName").InnerText;
-			}
-		}
-
 		#endregion
 
 		#region Constructors
@@ -105,6 +96,13 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		public override IList<ConditionalFileInstallPattern> GetConditionalFileInstallPatterns()
 		{
 			return new List<ConditionalFileInstallPattern>();
+		}
+
+		/// <seealso cref="Parser.GetHeaderInfo()"/>
+		public override HeaderInfo GetHeaderInfo()
+		{
+			Bitmap bmpScreenshot = Fomod.GetScreenshot();
+			return new HeaderInfo(XmlConfig.SelectSingleNode("/config/moduleName").InnerText, Color.FromKnownColor(KnownColor.ControlText), TextPosition.Left, bmpScreenshot, bmpScreenshot != null, true, (bmpScreenshot != null) ? 75 : -1);
 		}
 
 		#endregion

@@ -7,6 +7,7 @@ using SevenZip;
 using WebsiteAPIs;
 using System.Text.RegularExpressions;
 using System.Drawing;
+using System.Diagnostics;
 
 namespace Fomm.PackageManager
 {
@@ -64,8 +65,19 @@ namespace Fomm.PackageManager
 				{
 					string strFileId = m_rgxNexusFileId.Match(mod.website).Groups[1].Value.Trim();
 					Int32 intFileId = -1;
-					if (Int32.TryParse(strFileId, out intFileId))
-						m_nxaNexus.GetFileVersionAsync(intFileId, Nexus_GotFileVersion, mod.BaseName);
+					try
+					{
+						if (Int32.TryParse(strFileId, out intFileId))
+							m_nxaNexus.GetFileVersionAsync(intFileId, Nexus_GotFileVersion, mod.BaseName);
+					}
+					catch (Exception e)
+					{
+#if TRACE
+						Trace.WriteLine("Couldn't get version from " + mod.website);
+						Program.TraceException(e);
+						Trace.Flush();
+#endif
+					}
 				}
 			}
 
