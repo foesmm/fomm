@@ -603,6 +603,7 @@ namespace WebsiteAPIs
 			AsyncOperation aopOperation = (AsyncOperation)objState[1];
 
 			string strFilePage = null;
+			string strWebVersion = null;
 			try
 			{
 				using (WebResponse wrpFilePage = hwrFilePage.EndGetResponse(p_asrResult))
@@ -621,6 +622,7 @@ namespace WebsiteAPIs
 			}
 			catch (Exception e)
 			{
+				strWebVersion = "Error";				
 #if TRACE
 				Trace.WriteLine("Couldn't get version from " + hwrFilePage.Address);
 				Trace.Indent();
@@ -637,19 +639,22 @@ namespace WebsiteAPIs
 				Trace.Flush();
 #endif
 			}
-
-			string strWebVersion = m_rgxVersion.Match(strFilePage).Groups[1].Value.Trim().Trim(new char[]{'.'});
-			string strLoweredWebVersion = strWebVersion.ToLowerInvariant();
-			if (strLoweredWebVersion.StartsWith("ver. "))
-				strWebVersion = strWebVersion.Substring(5);
-			else if (strLoweredWebVersion.StartsWith("ver."))
-				strWebVersion = strWebVersion.Substring(4);
-			else if (strLoweredWebVersion.StartsWith("v. "))
-				strWebVersion = strWebVersion.Substring(3);
-			else if (strLoweredWebVersion.StartsWith("v."))
-				strWebVersion = strWebVersion.Substring(2);
-			else if (strLoweredWebVersion.StartsWith("v"))
-				strWebVersion = strWebVersion.Substring(1);
+			
+			if (!strWebVersion.Equals("Error"))
+			{
+				strWebVersion = m_rgxVersion.Match(strFilePage).Groups[1].Value.Trim().Trim(new char[] { '.' });
+				string strLoweredWebVersion = strWebVersion.ToLowerInvariant();
+				if (strLoweredWebVersion.StartsWith("ver. "))
+					strWebVersion = strWebVersion.Substring(5);
+				else if (strLoweredWebVersion.StartsWith("ver."))
+					strWebVersion = strWebVersion.Substring(4);
+				else if (strLoweredWebVersion.StartsWith("v. "))
+					strWebVersion = strWebVersion.Substring(3);
+				else if (strLoweredWebVersion.StartsWith("v."))
+					strWebVersion = strWebVersion.Substring(2);
+				else if (strLoweredWebVersion.StartsWith("v"))
+					strWebVersion = strWebVersion.Substring(1);
+			}
 
 			aopOperation.PostOperationCompleted((p_WebVersion) => { CallGetFileVersionAsyncCallback((KeyValuePair<Action<object, string>, object>)aopOperation.UserSuppliedState, (string)p_WebVersion); }, strWebVersion);
 		}

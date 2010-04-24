@@ -126,8 +126,8 @@ Global
 		{C972F01F-2D05-4587-8E3B-53A18B9E1705}.Release|Win32.ActiveCfg = Release|Any CPU
 		{C972F01F-2D05-4587-8E3B-53A18B9E1705}.Trace|Any CPU.ActiveCfg = Release|Any CPU
 		{C972F01F-2D05-4587-8E3B-53A18B9E1705}.Trace|Any CPU.Build.0 = Release|Any CPU
-		{C972F01F-2D05-4587-8E3B-53A18B9E1705}.Trace|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{C972F01F-2D05-4587-8E3B-53A18B9E1705}.Trace|Mixed Platforms.Build.0 = Release|Any CPU
+		{C972F01F-2D05-4587-8E3B-53A18B9E1705}.Trace|Mixed Platforms.ActiveCfg = Trace|Any CPU
+		{C972F01F-2D05-4587-8E3B-53A18B9E1705}.Trace|Mixed Platforms.Build.0 = Trace|Any CPU
 		{C972F01F-2D05-4587-8E3B-53A18B9E1705}.Trace|Win32.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
