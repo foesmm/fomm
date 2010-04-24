@@ -27,13 +27,24 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 
 		private ModInstallScript m_misInstallScript = null;
 		private Dictionary<string, FlagValue> m_dicFlags = new Dictionary<string, FlagValue>();
+		private Dictionary<string, bool> m_dicInstalledPlugins = null;
 
 		#region Properties
 
 		/// <summary>
 		/// A dictionary listed all installed plugins, and indicating which are active.
 		/// </summary>
-		public Dictionary<string, bool> InstalledPlugins { get; protected set; }
+		public Dictionary<string, bool> InstalledPlugins
+		{
+			get
+			{
+				return m_dicInstalledPlugins;
+			}
+			protected set
+			{
+				m_dicInstalledPlugins = value;
+			}
+		}
 
 		/// <summary>
 		/// Gets the current values of the flags that have been set.

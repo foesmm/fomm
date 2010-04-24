@@ -9,6 +9,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 	public class FlagDependency : IDependency
 	{
 		private DependencyStateManager m_dsmStateManager = null;
+		private string m_strFlagName = null;
+		private string m_strValue = null;
 
 		#region Properties
 
@@ -16,13 +18,33 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		/// Gets or sets the name of the flag that must have a specific value.
 		/// </summary>
 		/// <value>The name of the flag that must have a specific value.</value>
-		public string FlagName { get; protected set; }
+		public string FlagName
+		{
+			get
+			{
+				return m_strFlagName;
+			}
+			protected set
+			{
+				m_strFlagName = value;
+			}
+		}
 
 		/// <summary>
 		/// Gets or sets the value the flag that must have.
 		/// </summary>
 		/// <value>The value the flag that must have.</value>
-		public string Value { get; protected set; }
+		public string Value
+		{
+			get
+			{
+				return m_strValue;
+			}
+			protected set
+			{
+				m_strValue = value;
+			}
+		}
 
 		/// <summary>
 		/// Gets whether or not the dependency is fufilled.

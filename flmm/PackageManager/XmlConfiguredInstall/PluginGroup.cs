@@ -46,6 +46,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 	public class PluginGroup
 	{
 		private List<PluginInfo> m_lstPlugins = new List<PluginInfo>();
+		private string m_strName = null;
+		private GroupType p_gtpType = GroupType.Inavlid;
 		private SortOrder m_srtPluginOrder = SortOrder.Ascending;
 
 		#region Properties
@@ -54,13 +56,33 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		/// Gets or sets the name of the group.
 		/// </summary>
 		/// <value>The name of the group.</value>
-		public string Name { get; protected set; }
+		public string Name
+		{
+			get
+			{
+				return m_strName;
+			}
+			protected set
+			{
+				m_strName = value;
+			}
+		}
 
 		/// <summary>
 		/// Gets or sets the type of the group.
 		/// </summary>
 		/// <value>The type of the group.</value>
-		public GroupType Type { get; protected set; }
+		public GroupType Type
+		{
+			get
+			{
+				return p_gtpType;
+			}
+			protected set
+			{
+				p_gtpType = value;
+			}
+		}
 
 		/// <summary>
 		/// Gets the plugins that are part of this group.
