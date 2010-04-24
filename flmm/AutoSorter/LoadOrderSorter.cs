@@ -30,10 +30,17 @@ namespace Fomm.AutoSorter {
         }
 
         private static readonly string localDataPath=Path.Combine(Program.fommDir, "lotemplate.txt");
-        private static readonly string localZipPath=Path.Combine(Program.fommDir, "lotemplate.zip");
         private static Dictionary<string, RecordInfo> order;
         private static int duplicateCount;
         private static int fileVersion;
+
+		public static string LoadOrderTemplatePath
+		{
+			get
+			{
+				return localDataPath;
+			}
+		}
 
         private static void LoadList() {
             string[] fileLines=File.ReadAllLines(localDataPath);
@@ -242,18 +249,6 @@ namespace Fomm.AutoSorter {
         public static int GetFileVersion() {
             if(order==null) LoadList();
             return fileVersion;
-        }
-
-        public static void ReplaceFile(byte[] buf) {
-            //if(File.Exists(localZipPath)) File.Delete(localZipPath);
-            File.WriteAllBytes(localZipPath, buf);
-            ICSharpCode.SharpZipLib.Zip.ZipFile zf=new ICSharpCode.SharpZipLib.Zip.ZipFile(localZipPath);
-            ICSharpCode.SharpZipLib.Zip.ZipEntry ze=zf.GetEntry("lotemplate.txt");
-            StreamReader sr=new StreamReader(zf.GetInputStream(ze));
-            File.WriteAllText(localDataPath, sr.ReadToEnd());
-            sr.Close();
-            zf.Close();
-            LoadList();
         }
     }
 }

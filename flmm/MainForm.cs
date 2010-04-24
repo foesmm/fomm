@@ -991,7 +991,6 @@ namespace Fomm
 			System.Net.WebResponse response = request.GetResponse();
 			StreamReader sw = new StreamReader(response.GetResponseStream());
 			string pversion = sw.ReadLine();
-			int loversion = int.Parse(sw.ReadLine());
 			sw.Close();
 			response.Close();
 			bool wasUpdate = false;
@@ -1000,24 +999,13 @@ namespace Fomm
 				MessageBox.Show("A new version of fomm is available: " + pversion, "Message");
 				wasUpdate = true;
 			}
+			int loversion = BOSSUpdater.GetMasterlistVersion();
 			if (loversion > LoadOrderSorter.GetFileVersion())
 			{
 				if (MessageBox.Show("A new version of the load order template is available: Release " + loversion +
 					"\nDo you wish to download?", "Message", MessageBoxButtons.YesNo) == DialogResult.Yes)
 				{
-
-					request = System.Net.HttpWebRequest.Create("http://fomm.sourceforge.net/update/lotemplate.zip");
-					response = request.GetResponse();
-					byte[] buf = new byte[response.ContentLength];
-					Stream s = response.GetResponseStream();
-					int upto = 0;
-					while (upto < buf.Length)
-					{
-						upto += s.Read(buf, upto, buf.Length - upto);
-					}
-					s.Close();
-					response.Close();
-					LoadOrderSorter.ReplaceFile(buf);
+					BOSSUpdater.UpdateMasterlist(LoadOrderSorter.LoadOrderTemplatePath);
 				}
 				wasUpdate = true;
 			}
