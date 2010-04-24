@@ -25,7 +25,7 @@ namespace Fomm.PackageManager {
         private void InitializeComponent() {
 			this.components = new System.ComponentModel.Container();
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-			this.lvModList = new DoubleBufferedListView();
+			this.lvModList = new Fomm.DoubleBufferedListView();
 			this.fomodContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.visitWebsiteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.emailAuthorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -154,7 +154,7 @@ namespace Fomm.PackageManager {
 			this.pictureBox1.Location = new System.Drawing.Point(493, 12);
 			this.pictureBox1.Name = "pictureBox1";
 			this.pictureBox1.Size = new System.Drawing.Size(120, 90);
-			this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+			this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
 			this.pictureBox1.TabIndex = 16;
 			this.pictureBox1.TabStop = false;
 			this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
