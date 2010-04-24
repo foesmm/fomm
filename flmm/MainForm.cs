@@ -9,6 +9,7 @@ using System.Drawing;
 using System.Text;
 using Fomm.CriticalRecords;
 using Fomm.AutoSorter;
+using System.Text.RegularExpressions;
 #if TRACE
 using System.Diagnostics;
 #endif
@@ -972,44 +973,47 @@ namespace Fomm
 
 		private void checkForUpdateToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			bool booWasUpdate = false;
+			string strLastUpdateCheck = Settings.GetString("LastUpdateCheck");
+			if (strLastUpdateCheck != null)
 			{
-				string s = Settings.GetString("LastUpdateCheck");
-				if (s != null)
+				DateTime dteLastUpdateCheck;
+				if (DateTime.TryParse(strLastUpdateCheck, out dteLastUpdateCheck))
 				{
-					DateTime dt;
-					if (DateTime.TryParse(s, out dt))
+					if (dteLastUpdateCheck + TimeSpan.FromHours(2) > DateTime.Now)
 					{
-						if (dt + TimeSpan.FromHours(2) > DateTime.Now)
-						{
-							MessageBox.Show("No newer updates available");
-							return;
-						}
+						MessageBox.Show("No newer updates available");
+						return;
 					}
 				}
 			}
-			System.Net.WebRequest request = System.Net.HttpWebRequest.Create("http://fomm.sourceforge.net/update/version.txt");
-			System.Net.WebResponse response = request.GetResponse();
-			StreamReader sw = new StreamReader(response.GetResponseStream());
-			string pversion = sw.ReadLine();
-			sw.Close();
-			response.Close();
-			bool wasUpdate = false;
-			if (new Version(pversion + ".0") > Program.MVersion)
+
+			//check for new FOMM
+			Regex rgxVersion = new Regex(@"Download Now!</strong>\s+fomm([\d\.]+)\.exe", System.Text.RegularExpressions.RegexOptions.Singleline);
+			string strVersionPage = null;
+			using (System.Net.WebClient wclGetter = new System.Net.WebClient())
 			{
-				MessageBox.Show("A new version of fomm is available: " + pversion, "Message");
-				wasUpdate = true;
+				strVersionPage = wclGetter.DownloadString("http://sf.net/projects/fomm");
 			}
-			int loversion = BOSSUpdater.GetMasterlistVersion();
-			if (loversion > LoadOrderSorter.GetFileVersion())
+			string strWebVersion = rgxVersion.Match(strVersionPage).Groups[1].Value.Trim();
+			if (new Version(strWebVersion + ".0") > Program.MVersion)
 			{
-				if (MessageBox.Show("A new version of the load order template is available: Release " + loversion +
+				MessageBox.Show("A new version of fomm is available: " + strWebVersion, "Message");
+				booWasUpdate = true;
+			}
+
+			//check for new load order tepmlate
+			Int32 intLOVersion = BOSSUpdater.GetMasterlistVersion();
+			if (intLOVersion > LoadOrderSorter.GetFileVersion())
+			{
+				if (MessageBox.Show("A new version of the load order template is available: Release " + intLOVersion +
 					"\nDo you wish to download?", "Message", MessageBoxButtons.YesNo) == DialogResult.Yes)
 				{
 					BOSSUpdater.UpdateMasterlist(LoadOrderSorter.LoadOrderTemplatePath);
 				}
-				wasUpdate = true;
+				booWasUpdate = true;
 			}
-			if (!wasUpdate)
+			if (!booWasUpdate)
 			{
 				MessageBox.Show("No newer updates available");
 				Settings.SetString("LastUpdateCheck", DateTime.Now.ToString());
