@@ -4,6 +4,7 @@ using System.IO;
 using System.Windows.Forms;
 using System.Drawing;
 using Fomm.TESsnip;
+using Fomm.AutoSorter;
 
 namespace Fomm.PackageManager
 {

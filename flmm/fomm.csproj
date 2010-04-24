@@ -147,7 +147,7 @@
     <Compile Include="InstallTweaker\xliveSettings.Designer.cs">
       <DependentUpon>xliveSettings.cs</DependentUpon>
     </Compile>
-    <Compile Include="LoadOrderSorter.cs" />
+    <Compile Include="AutoSorter\LoadOrderSorter.cs" />
     <Compile Include="Messaging.cs" />
     <Compile Include="PackageManager\BsaManager.cs" />
     <Compile Include="CriticalRecords\CriticalRecordsForm.cs">

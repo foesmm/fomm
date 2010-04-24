@@ -8,6 +8,7 @@ using Fomm.PackageManager;
 using System.Drawing;
 using System.Text;
 using Fomm.CriticalRecords;
+using Fomm.AutoSorter;
 #if TRACE
 using System.Diagnostics;
 #endif

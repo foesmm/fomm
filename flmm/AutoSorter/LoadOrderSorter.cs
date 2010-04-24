@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace Fomm {
+namespace Fomm.AutoSorter {
     static class LoadOrderSorter {
         private struct ModInfo {
             public readonly string name;
