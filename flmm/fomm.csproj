@@ -237,7 +237,6 @@
     <Compile Include="PackageManager\XmlConfiguredInstall\FileDependency.cs" />
     <Compile Include="PackageManager\XmlConfiguredInstall\IDependency.cs" />
     <Compile Include="PackageManager\XmlConfiguredInstall\IPluginType.cs" />
-    <Compile Include="PackageManager\XmlConfiguredInstall\ModDependencies.cs" />
     <Compile Include="PackageManager\XmlConfiguredInstall\OptionsForm.cs">
       <SubType>Form</SubType>
     </Compile>
