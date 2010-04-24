@@ -624,7 +624,7 @@ namespace WebsiteAPIs
 			{
 				strWebVersion = "Error";				
 #if TRACE
-				Trace.WriteLine("Couldn't get version from " + hwrFilePage.Address);
+				Trace.WriteLine("Problem parsing the version HTTP response from " + hwrFilePage.Address);
 				Trace.Indent();
 				Trace.WriteLine("Exception: ");
 				Trace.WriteLine(e.Message);
@@ -639,8 +639,8 @@ namespace WebsiteAPIs
 				Trace.Flush();
 #endif
 			}
-			
-			if (!strWebVersion.Equals("Error"))
+
+			if (!"Error".Equals(strWebVersion))
 			{
 				strWebVersion = m_rgxVersion.Match(strFilePage).Groups[1].Value.Trim().Trim(new char[] { '.' });
 				string strLoweredWebVersion = strWebVersion.ToLowerInvariant();
