@@ -4,11 +4,24 @@ using System.Text;
 
 namespace Fomm.PackageManager.XmlConfiguredInstall
 {
+	/// <summary>
+	/// This class manages the state of the installation.
+	/// </summary>
 	public class DependencyStateManager
 	{
+		/// <summary>
+		/// Describe the owner and value of a condition flag.
+		/// </summary>
 		private class FlagValue
 		{
+			/// <summary>
+			/// The value of the flag.
+			/// </summary>
 			public string Value;
+
+			/// <summary>
+			/// The owner of the flag.
+			/// </summary>
 			public PluginInfo Owner;
 		}
 
@@ -17,6 +30,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 
 		#region Properties
 
+		/// <summary>
+		/// A dictionary listed all installed plugins, and indicating which are active.
+		/// </summary>
 		public Dictionary<string, bool> InstalledPlugins { get; protected set; }
 
 		/// <summary>
@@ -83,6 +99,10 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 
 		#region Constructors
 
+		/// <summary>
+		/// A simple constructor that initializes the object with the given values.
+		/// </summary>
+		/// <param name="p_misInstallScript">The install script.</param>
 		public DependencyStateManager(ModInstallScript p_misInstallScript)
 		{
 			m_misInstallScript = p_misInstallScript;
@@ -129,6 +149,12 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		}
 		string[] m_strActiveInstalledPlugins = null;
 
+		/// <summary>
+		/// Sets the value of a conditional flag.
+		/// </summary>
+		/// <param name="p_strFlagName">The name of the falg whose value is to be set.</param>
+		/// <param name="p_strValue">The value to which to set the flag.</param>
+		/// <param name="p_pifPlugin">The plugin that is responsible for setting the flag's value.</param>
 		public void SetFlagValue(string p_strFlagName, string p_strValue, PluginInfo p_pifPlugin)
 		{
 			if (!m_dicFlags.ContainsKey(p_strFlagName))
