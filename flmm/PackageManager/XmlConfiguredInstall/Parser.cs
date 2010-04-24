@@ -6,6 +6,9 @@ using System.Collections.Generic;
 
 namespace Fomm.PackageManager.XmlConfiguredInstall
 {
+	/// <summary>
+	/// Provides a contract and base functionality for XML configuration file parsers.
+	/// </summary>
 	public abstract class Parser
 	{
 		/// <summary>
@@ -63,6 +66,10 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 			}
 		}
 
+		/// <summary>
+		/// Gets the fomod being installed.
+		/// </summary>
+		/// <value>The fomod being installed.</value>
 		protected fomod Fomod
 		{
 			get
@@ -71,6 +78,10 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 			}
 		}
 
+		/// <summary>
+		/// Gets the dependency state manager.
+		/// </summary>
+		/// <value>The dependency state manager.</value>
 		protected DependencyStateManager StateManager
 		{
 			get
