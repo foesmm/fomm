@@ -48,7 +48,7 @@ namespace Fomm.AutoSorter
 			}
 		}
 
-		private static void LoadList()
+		internal static void LoadList()
 		{
 			string[] fileLines = File.ReadAllLines(localDataPath);
 			order = new Dictionary<string, RecordInfo>(fileLines.Length);

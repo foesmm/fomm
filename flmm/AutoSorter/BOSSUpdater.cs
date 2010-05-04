@@ -43,6 +43,7 @@ namespace Fomm.AutoSorter
 				strMasterlist = wclGetter.DownloadString(MASTERLIST_URL).Substring(3);
 			}
 			File.WriteAllText(p_strPath, GetMasterlistVersion().ToString() + strMasterlist);
+			LoadOrderSorter.LoadList();
 		}
 	}
 }
