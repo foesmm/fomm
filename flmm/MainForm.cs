@@ -1010,6 +1010,7 @@ namespace Fomm
 					"\nDo you wish to download?", "Message", MessageBoxButtons.YesNo) == DialogResult.Yes)
 				{
 					BOSSUpdater.UpdateMasterlist(LoadOrderSorter.LoadOrderTemplatePath);
+					MessageBox.Show(this, "The load order template was updated.", "Update Complete.", MessageBoxButtons.OK, MessageBoxIcon.Information);
 				}
 				booWasUpdate = true;
 			}
