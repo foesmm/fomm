@@ -2,6 +2,9 @@
 using System.Security;
 using System.Security.Permissions;
 using System.IO;
+#if TRACE
+using System.Diagnostics;
+#endif
 
 namespace Fomm.PackageManager
 {
@@ -23,6 +26,27 @@ namespace Fomm.PackageManager
 		/// </remarks>
 		static PermissionsManager()
 		{
+#if TRACE
+			Trace.WriteLine("");
+			Trace.WriteLine("Setting up File IO Permissions for: ");
+			Trace.Indent();
+			Trace.Write("       Exe Dir: ");
+			Trace.WriteLine(Program.exeDir);
+			Trace.Write("      Save Dir: ");
+			Trace.WriteLine(Program.Fallout3SaveDir);
+			Trace.Write("  FOMM tmp Dir: ");
+			Trace.WriteLine(Program.tmpPath);
+			Trace.Write("Local Data Dir: ");
+			Trace.WriteLine(Program.LocalDataPath);
+			Trace.Write("   Current Dir: ");
+			Trace.WriteLine(Environment.CurrentDirectory);
+			Trace.Write(" Overwrite Dir: ");
+			Trace.WriteLine(Program.overwriteDir);
+			Trace.Write("System tmp Dir: ");
+			Trace.WriteLine(Path.GetTempPath());
+			Trace.Unindent();
+			Trace.Flush();
+#endif
 			permissions = new PermissionSet(PermissionState.None);
 			permissions.AddPermission(new FileIOPermission(FileIOPermissionAccess.AllAccess, new string[] {
                 Program.exeDir, Program.Fallout3SaveDir, Program.tmpPath, Program.LocalDataPath, Environment.CurrentDirectory,

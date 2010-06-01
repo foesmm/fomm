@@ -844,6 +844,7 @@ namespace Fomm
 				TraceException(ex);
 			else
 				Trace.WriteLine("\tNO EXCEPTION.");
+			Trace.Flush();
 #endif
 			if (ex != null)
 			{
