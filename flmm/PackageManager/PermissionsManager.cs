@@ -6,7 +6,7 @@ using System.IO;
 using System.Diagnostics;
 #endif
 
-namespace Fomm.PackageManager
+namespace Fomm
 {
 	/// <summary>
 	/// Manages the permissions required by the application to install a mod.
