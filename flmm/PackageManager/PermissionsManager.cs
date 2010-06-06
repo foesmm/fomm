@@ -4,9 +4,10 @@ using System.Security.Permissions;
 using System.IO;
 #if TRACE
 using System.Diagnostics;
+using Microsoft.Win32;
 #endif
 
-namespace Fomm
+namespace Fomm.PackageManager
 {
 	/// <summary>
 	/// Manages the permissions required by the application to install a mod.
@@ -34,6 +35,10 @@ namespace Fomm
 			Trace.WriteLine(Program.exeDir);
 			Trace.Write("      Save Dir: ");
 			Trace.WriteLine(Program.Fallout3SaveDir);
+			Trace.Indent();
+			Trace.Write("      Registry says profile lives here: ");
+			Trace.WriteLine(Registry.GetValue(@"HKEY_CURRENT_USER\software\microsoft\windows\currentversion\explorer\user shell folders", "Personal", "Not Found").ToString());
+			Trace.Unindent();
 			Trace.Write("  FOMM tmp Dir: ");
 			Trace.WriteLine(Program.tmpPath);
 			Trace.Write("Local Data Dir: ");
