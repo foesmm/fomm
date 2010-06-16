@@ -188,7 +188,7 @@ namespace L0ki.Controls {
 
         protected override void OnDragOver(DragEventArgs drgevent) {
             if(_ItemsToMove.Count == 0) {
-                drgevent.Effect = DragDropEffects.None;
+				base.OnDragOver(drgevent);
                 return;
             }
 
@@ -225,6 +225,7 @@ namespace L0ki.Controls {
 
             if(_ItemsToMove.Count == 0) {
                 ResetDragItems();
+				base.OnDragDrop(drgevent);
                 return;
             }
 
@@ -261,11 +262,17 @@ namespace L0ki.Controls {
         }
 
         protected override void OnDragEnter(DragEventArgs drgevent) {
-            if((this._ItemsToMove.Count > 0) && _PauseItemDrag) {
-                ResetDragIndicator();
-                drgevent.Effect=DragDropEffects.Move;
-                _PauseItemDrag = false;
-            } else drgevent.Effect=DragDropEffects.None;
+			if ((this._ItemsToMove.Count > 0) && _PauseItemDrag)
+			{
+				ResetDragIndicator();
+				drgevent.Effect = DragDropEffects.Move;
+				_PauseItemDrag = false;
+			}
+			else
+			{
+				base.OnDragEnter(drgevent);
+				return;
+			}
         }
 
         #endregion
