@@ -60,6 +60,34 @@ namespace Fomm.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap arrow_down_black_small {
+            get {
+                object obj = ResourceManager.GetObject("arrow_down_black_small", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap arrow_up_black_small {
+            get {
+                object obj = ResourceManager.GetObject("arrow_up_black_small", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap boldhs {
+            get {
+                object obj = ResourceManager.GetObject("boldhs", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap EnumItem {
+            get {
+                object obj = ResourceManager.GetObject("EnumItem", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Icon fomm02 {
             get {
                 object obj = ResourceManager.GetObject("fomm02", resourceCulture);
@@ -74,9 +102,65 @@ namespace Fomm.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap ItalicHS {
+            get {
+                object obj = ResourceManager.GetObject("ItalicHS", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap justify_centre {
+            get {
+                object obj = ResourceManager.GetObject("justify_centre", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap justify_left {
+            get {
+                object obj = ResourceManager.GetObject("justify_left", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap justify_right {
+            get {
+                object obj = ResourceManager.GetObject("justify_right", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap Properties {
+            get {
+                object obj = ResourceManager.GetObject("Properties", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap RedSquare {
             get {
                 object obj = ResourceManager.GetObject("RedSquare", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap strikeout {
+            get {
+                object obj = ResourceManager.GetObject("strikeout", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap underline {
+            get {
+                object obj = ResourceManager.GetObject("underline", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap xml {
+            get {
+                object obj = ResourceManager.GetObject("xml", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
