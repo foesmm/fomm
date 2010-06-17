@@ -7,6 +7,7 @@ using System.Text;
 using System.IO;
 using System.Drawing;
 using Fomm.Controls;
+using System.Text.RegularExpressions;
 
 namespace Fomm.PackageManager.FomodBuilder
 {
@@ -507,33 +508,43 @@ Remeber, you can customize the FOMOD file structure by doing any of the followin
 		#region Find Fomod Files
 
 		/// <summary>
-		/// Finds all files in the fomod file structure with the given extension.
+		/// Finds all files in the fomod file structure matching the given pattern.
 		/// </summary>
-		/// <param name="p_strExtension">The extension of the files to find.</param>
+		/// <param name="p_strPattern">The pattern of the files to find.</param>
 		/// <returns>Returns pairs of values representing the found files. The key of the pair is the fomod file path,
 		/// and the value is the source path for the file.</returns>
-		public List<KeyValuePair<string, string>> FindFomodFiles(string p_strExtension)
+		public List<KeyValuePair<string, string>> FindFomodFiles(string p_strPattern)
 		{
+			string[] strPatterns = p_strPattern.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).Split(Path.DirectorySeparatorChar);
+			Queue<string> queDirectories = new Queue<string>();
+			for (Int32 i = 0; i < strPatterns.Length - 1; i++)
+				queDirectories.Enqueue(strPatterns[i]);
+			string strFileNamePattern = (strPatterns.Length > 0) ? strPatterns[strPatterns.Length - 1] : "*";
+			strFileNamePattern = strFileNamePattern.Replace(".", @"\.").Replace("*", @"\.*");
+			Regex rgxFileNamePattern = new Regex(strFileNamePattern, RegexOptions.IgnoreCase);
 			List<KeyValuePair<string, string>> lstMatches = new List<KeyValuePair<string, string>>();
 			foreach (FileSystemTreeNode tndFolder in tvwFomod.Nodes)
-				lstMatches.AddRange(FindFomodFiles(tndFolder, p_strExtension.ToLowerInvariant()));
+				lstMatches.AddRange(FindFomodFiles(tndFolder, queDirectories, rgxFileNamePattern));
 			return lstMatches;
 		}
 
 		/// <summary>
-		/// The recursive method that searches the fomod file structure for files with the given extension.
+		/// The recursive method that searches the fomod file structure for files in the specified directory
+		/// matching the given pattern.
 		/// </summary>
 		/// <param name="p_tndRoot">The node from which to being searching.</param>
-		/// <param name="p_strExtension">The extension of the files to find.</param>
+		/// <param name="p_queDirectories">The path to the directory in which to search.</param>
+		/// <param name="p_rgxFileNamePattern">The pattern of the files to find.</param>
 		/// <returns>Returns pairs of values representing the found files. The key of the pair is the fomod file path,
 		/// and the value is the source path for the file.</returns>
-		private List<KeyValuePair<string, string>> FindFomodFiles(FileSystemTreeNode p_tndRoot, string p_strExtension)
+		private List<KeyValuePair<string, string>> FindFomodFiles(FileSystemTreeNode p_tndRoot, Queue<string> p_queDirectories, Regex p_rgxFileNamePattern)
 		{
 			List<KeyValuePair<string, string>> lstMatches = new List<KeyValuePair<string, string>>();
 			List<string> lstFolders = new List<string>();
 			List<string> lstFiles = new List<string>();
-			if (p_tndRoot.IsDirectory)
+			if (p_tndRoot.IsDirectory && p_tndRoot.Name.Equals(p_queDirectories.Peek()))
 			{
+				p_queDirectories.Dequeue();
 				if (p_tndRoot.Nodes.Count == 0)
 				{
 					foreach (string strSource in p_tndRoot.Sources)
@@ -564,9 +575,9 @@ Remeber, you can customize the FOMOD file structure by doing any of the followin
 						addFomodFile(p_tndRoot, strfile);
 				}
 				foreach (FileSystemTreeNode tndNode in p_tndRoot.Nodes)
-					lstMatches.AddRange(FindFomodFiles(tndNode, p_strExtension));
+					lstMatches.AddRange(FindFomodFiles(tndNode, p_queDirectories, p_rgxFileNamePattern));
 			}
-			else if (p_tndRoot.Name.EndsWith(p_strExtension, StringComparison.InvariantCultureIgnoreCase))
+			else if ((p_queDirectories.Count == 0) && p_rgxFileNamePattern.IsMatch(p_tndRoot.Name))
 				lstMatches.Add(new KeyValuePair<string, string>(p_tndRoot.FullPath, p_tndRoot.Sources[0]));
 			return lstMatches;
 		}
