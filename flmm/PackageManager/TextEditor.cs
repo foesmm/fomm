@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using ICSharpCode.TextEditor.Document;
+using Fomm.Controls;
 
 namespace Fomm.PackageManager {
     enum TextEditorType { Text, Rtf, Script, FixedFontText }
@@ -51,7 +52,7 @@ class Script : BaseScript {
                 if(!Program.MonoMode) tbScript.SetHighlighting("C#");
                 tbScript.Dock=DockStyle.Fill;
                 tbScript.TextChanged+=textChanged;
-                tbScript.Document.FoldingManager.FoldingStrategy=new CodeFolder();
+                tbScript.Document.FoldingManager.FoldingStrategy=new CodeFoldingStrategy();
                 tbScript.Document.FoldingManager.UpdateFoldings(null, null);
                 UsingScript=true;
                 ToolStripButton bSyntaxCheck = new ToolStripButton();
@@ -130,28 +131,6 @@ class Script : BaseScript {
             } else {
                 MessageBox.Show("No errors found");
             }
-        }
-    }
-
-    class CodeFolder : IFoldingStrategy {
-        public List<FoldMarker> GenerateFoldMarkers(IDocument document, string fileName, object parseInformation) {
-            List<FoldMarker> list = new List<FoldMarker>();
-
-            Stack<int> stack=new Stack<int>();
-            //bool InComment;
-
-            for(int i = 0;i < document.TotalNumberOfLines;i++) {
-                string text = document.GetText(document.GetLineSegment(i)).Trim();
-                if(text.StartsWith("}")&&stack.Count>0) {
-                    int pos=stack.Pop();
-                    list.Add(new FoldMarker(document, pos, document.GetLineSegment(pos).Length, i, 1));
-                }
-                if(text.EndsWith("{")) {
-                    stack.Push(i);
-                }
-            }
-
-            return list;
         }
     }
 }
