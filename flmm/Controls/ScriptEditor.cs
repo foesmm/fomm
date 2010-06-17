@@ -13,6 +13,26 @@ namespace Fomm.Controls
 	/// </summary>
 	public partial class ScriptEditor : UserControl
 	{
+		#region Properties
+
+		/// <summary>
+		/// Gets or sets the text of the editor.
+		/// </summary>
+		/// <value>The text of the editor.</value>
+		public override string Text
+		{
+			get
+			{
+				return cedEditor.Text;
+			}
+			set
+			{
+				cedEditor.Text = value;
+			}
+		}
+
+		#endregion
+
 		#region Constructors
 
 		/// <summary>
