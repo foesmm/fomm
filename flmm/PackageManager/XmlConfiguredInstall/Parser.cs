@@ -3,6 +3,7 @@ using System.Xml;
 using System.Xml.Schema;
 using System.IO;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace Fomm.PackageManager.XmlConfiguredInstall
 {
@@ -11,6 +12,27 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 	/// </summary>
 	public abstract class Parser
 	{
+		/// <summary>
+		/// Extracts the config version from a XML configuration file.
+		/// </summary>
+		protected readonly static Regex m_rgxVersion = new Regex("xsi:noNamespaceSchemaLocation=\"[^\"]*ModConfig(.*?).xsd", RegexOptions.Singleline);
+
+		/// <summary>
+		/// Gets the config version used by the given XML configuration file.
+		/// </summary>
+		/// <param name="p_strXml">The XML files who version is to be determined.</param>
+		/// <returns>The config version used the given XML configuration file, or <lang cref="null"/>
+		/// if the given file is not recognized as a configuration file.</returns>
+		public static string GetConfigVersion(string p_strXml)
+		{
+			if (!m_rgxVersion.IsMatch(p_strXml))
+				return null;
+			string strConfigVersion = m_rgxVersion.Match(p_strXml).Groups[1].Value;
+			if (String.IsNullOrEmpty(strConfigVersion))
+				strConfigVersion = "1.0";
+			return strConfigVersion;
+		}
+
 		/// <summary>
 		/// The factory method that returns the appropriate parser for the given configuration file.
 		/// </summary>
