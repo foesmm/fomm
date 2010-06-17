@@ -17,6 +17,22 @@ namespace Fomm.Controls
 	public class DropDownTabControl : ScrollableControl
 	{
 		/// <summary>
+		/// Raised when the selected tab page index has changed.
+		/// </summary>
+		[Category("Action")]
+		public event EventHandler SelectedIndexChanged
+		{
+			add
+			{
+				m_cbxSelector.SelectedIndexChanged += value;
+			}
+			remove
+			{
+				m_cbxSelector.SelectedIndexChanged -= value;
+			}
+		}
+
+		/// <summary>
 		/// The event arguments for when a tab page is added or removed from the control.
 		/// </summary>
 		public class TabPageEventArgs : EventArgs
