@@ -46,6 +46,17 @@ namespace Fomm.Controls
 		#endregion
 
 		/// <summary>
+		/// Validates the syntax of the script.
+		/// </summary>
+		/// <returns><lang cref="true"/> if the script syntax is valid; <lang cref="false"/> otherwise.</returns>
+		public bool ValidateSyntax()
+		{
+			string stdout;
+			string errors = Fomm.PackageManager.ScriptCompiler.CheckSyntax(cedEditor.Text, out stdout);
+			return (errors == null);
+		}
+
+		/// <summary>
 		/// Checks the syntax of the script.
 		/// </summary>
 		protected void CheckSyntax()
