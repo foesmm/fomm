@@ -212,7 +212,8 @@ namespace Fomm.Controls
 		/// <summary>
 		/// Validates the XML against the schema.
 		/// </summary>
-		public void ValidateXml()
+		/// <returns><lang cref="true"/> if the XML is valid; <lang cref="false"/> otherwise.</returns>
+		public bool ValidateXml()
 		{
 			m_tmrValidator.Stop();
 
@@ -221,7 +222,7 @@ namespace Fomm.Controls
 			m_booMalformedXml = false;
 
 			if (docDocument.TextLength == 0)
-				return;
+				return true;
 
 			XmlParser.TagStack stkBadTags = XmlParser.ParseTags(docDocument, docDocument.TotalNumberOfLines - 1, null, HighlightMalformedTag);
 			//this deals with extra tags at beginning of file
@@ -234,7 +235,7 @@ namespace Fomm.Controls
 					TextLocation tlcEnd = new TextLocation(tpsTag.Column + tpsTag.Name.Length, tpsTag.LineNumber);
 					HighlightMalformedTag(docDocument, tpsTag.Name, tlcStart, tlcEnd);
 				}
-				return;
+				return false;
 			}
 
 			Int32 intBadLineNum = Int32.MaxValue;
@@ -288,6 +289,7 @@ namespace Fomm.Controls
 						HighlightValidationErrors("Invalid tag.", new TextLocation(mtcTag.Groups[1].Index, i));
 				}
 			}
+			return (intBadLineNum == Int32.MaxValue);
 		}
 
 		/// <summary>
