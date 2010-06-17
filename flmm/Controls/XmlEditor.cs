@@ -220,6 +220,9 @@ namespace Fomm.Controls
 			docDocument.MarkerStrategy.RemoveAll(x => { return (x.TextMarkerType == TextMarkerType.WaveLine); });
 			m_booMalformedXml = false;
 
+			if (docDocument.TextLength == 0)
+				return;
+
 			XmlParser.TagStack stkBadTags = XmlParser.ParseTags(docDocument, docDocument.TotalNumberOfLines - 1, null, HighlightMalformedTag);
 			//this deals with extra tags at beginning of file
 			if ((stkBadTags.Count > 0) || m_booMalformedXml)
