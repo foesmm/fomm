@@ -518,13 +518,18 @@ Remeber, you can customize the FOMOD file structure by doing any of the followin
 			string[] strPatterns = p_strPattern.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).Split(Path.DirectorySeparatorChar);
 			Queue<string> queDirectories = new Queue<string>();
 			for (Int32 i = 0; i < strPatterns.Length - 1; i++)
-				queDirectories.Enqueue(strPatterns[i]);
+				queDirectories.Enqueue(strPatterns[i].ToLowerInvariant());
 			string strFileNamePattern = (strPatterns.Length > 0) ? strPatterns[strPatterns.Length - 1] : "*";
-			strFileNamePattern = strFileNamePattern.Replace(".", @"\.").Replace("*", @"\.*");
-			Regex rgxFileNamePattern = new Regex(strFileNamePattern, RegexOptions.IgnoreCase);
+			strFileNamePattern = strFileNamePattern.Replace(".", @"\.").Replace("*", @".*");
+			Regex rgxFileNamePattern = new Regex("^" + strFileNamePattern + "$", RegexOptions.IgnoreCase);
 			List<KeyValuePair<string, string>> lstMatches = new List<KeyValuePair<string, string>>();
+			Int32 intOriginalDepth = queDirectories.Count;
 			foreach (FileSystemTreeNode tndFolder in tvwFomod.Nodes)
+			{
 				lstMatches.AddRange(FindFomodFiles(tndFolder, queDirectories, rgxFileNamePattern));
+				if (intOriginalDepth != queDirectories.Count)
+					break;
+			}
 			return lstMatches;
 		}
 
@@ -542,7 +547,7 @@ Remeber, you can customize the FOMOD file structure by doing any of the followin
 			List<KeyValuePair<string, string>> lstMatches = new List<KeyValuePair<string, string>>();
 			List<string> lstFolders = new List<string>();
 			List<string> lstFiles = new List<string>();
-			if (p_tndRoot.IsDirectory && p_tndRoot.Name.Equals(p_queDirectories.Peek()))
+			if (p_tndRoot.IsDirectory && ((p_queDirectories.Count > 0) && p_tndRoot.Name.Equals(p_queDirectories.Peek())))
 			{
 				p_queDirectories.Dequeue();
 				if (p_tndRoot.Nodes.Count == 0)
@@ -574,8 +579,13 @@ Remeber, you can customize the FOMOD file structure by doing any of the followin
 					foreach (string strfile in lstFiles)
 						addFomodFile(p_tndRoot, strfile);
 				}
+				Int32 intOriginalDepth = p_queDirectories.Count;
 				foreach (FileSystemTreeNode tndNode in p_tndRoot.Nodes)
+				{
 					lstMatches.AddRange(FindFomodFiles(tndNode, p_queDirectories, p_rgxFileNamePattern));
+					if (intOriginalDepth != p_queDirectories.Count)
+						break;
+				}
 			}
 			else if ((p_queDirectories.Count == 0) && p_rgxFileNamePattern.IsMatch(p_tndRoot.Name))
 				lstMatches.Add(new KeyValuePair<string, string>(p_tndRoot.FullPath, p_tndRoot.Sources[0]));
