@@ -53,6 +53,7 @@ namespace Fomm.PackageManager
 		}
 
 		class fomodLoadException : Exception { public fomodLoadException(string msg) : base(msg) { } }
+
 		private ZipFile m_zipFile;
 
 		internal readonly string filepath;
@@ -360,24 +361,13 @@ namespace Fomm.PackageManager
 
 		#endregion
 
-		protected void LoadInfo()
-		{
-			ZipEntry info = m_zipFile.GetEntry("fomod/info.xml");
-			if (info != null)
-			{
-				hasInfo = true;
-				XmlDocument doc = new XmlDocument();
-				using (System.IO.Stream stream = m_zipFile.GetInputStream(info))
-				{
-					doc.Load(stream);
-					stream.Close();
-				}
-				LoadInfo(doc, this);
-				if (Program.MVersion < MachineVersion)
-					throw new fomodLoadException("This fomod requires a newer version of Fallout mod manager to load\nExpected " + MachineVersion);
-			}
-		}
+		#region Fomod Info Persistence
 
+		/// <summary>
+		/// Loads the fomod info from the given info file into the given fomod info object.
+		/// </summary>
+		/// <param name="p_xmlInfo">The XML info file from which to read the info.</param>
+		/// <param name="p_finFomodInfo">The fomod info object to populate with the info.</param>
 		public static void LoadInfo(XmlDocument p_xmlInfo, IFomodInfo p_finFomodInfo)
 		{
 			XmlNode xndRoot = null;
@@ -428,6 +418,94 @@ namespace Fomm.PackageManager
 					default:
 						throw new fomodLoadException("Unexpected node type '" + xndNode.Name + "' in info.xml");
 				}
+			}
+		}
+
+		/// <summary>
+		/// Serializes the fomod info contained in the given fomod info object into an XML document.
+		/// </summary>
+		/// <param name="p_finFomodInfo">The fomod info object to serialize.</param>
+		/// <returns>An XML file containing the fomod info.</returns>
+		public static XmlDocument SaveInfo(IFomodInfo p_finFomodInfo)
+		{
+			XmlDocument xmlInfo = new XmlDocument();
+			xmlInfo.AppendChild(xmlInfo.CreateXmlDeclaration("1.0", "UTF-16", null));
+			XmlElement xelRoot = xmlInfo.CreateElement("fomod");
+			XmlElement xelTemp = null;
+
+			xmlInfo.AppendChild(xelRoot);
+			if (!String.IsNullOrEmpty(p_finFomodInfo.Name))
+			{
+				xelTemp = xmlInfo.CreateElement("Name");
+				xelTemp.InnerText = p_finFomodInfo.Name;
+				xelRoot.AppendChild(xelTemp);
+			}
+			if (!String.IsNullOrEmpty(p_finFomodInfo.Author) && !p_finFomodInfo.Author.Equals("DEFAULT"))
+			{
+				xelTemp = xmlInfo.CreateElement("Author");
+				xelTemp.InnerText = p_finFomodInfo.Author;
+				xelRoot.AppendChild(xelTemp);
+			}
+			if (!String.IsNullOrEmpty(p_finFomodInfo.HumanReadableVersion) || (p_finFomodInfo.MachineVersion != DefaultVersion))
+			{
+				xelTemp = xmlInfo.CreateElement("Version");
+				xelTemp.InnerText = String.IsNullOrEmpty(p_finFomodInfo.HumanReadableVersion) ? p_finFomodInfo.MachineVersion.ToString() : p_finFomodInfo.HumanReadableVersion;
+				xelTemp.Attributes.Append(xmlInfo.CreateAttribute("MachineVersion"));
+				xelTemp.Attributes[0].Value = p_finFomodInfo.MachineVersion.ToString();
+				xelRoot.AppendChild(xelTemp);
+			}
+			if (!String.IsNullOrEmpty(p_finFomodInfo.Description))
+			{
+				xelTemp = xmlInfo.CreateElement("Description");
+				xelTemp.InnerText = p_finFomodInfo.Description;
+				xelRoot.AppendChild(xelTemp);
+			}
+			if (!String.IsNullOrEmpty(p_finFomodInfo.Email))
+			{
+				xelTemp = xmlInfo.CreateElement("Email");
+				xelTemp.InnerText = p_finFomodInfo.Email;
+				xelRoot.AppendChild(xelTemp);
+			}
+			if (!String.IsNullOrEmpty(p_finFomodInfo.Website))
+			{
+				xelTemp = xmlInfo.CreateElement("Website");
+				xelTemp.InnerText = p_finFomodInfo.Website;
+				xelRoot.AppendChild(xelTemp);
+			}
+			if (p_finFomodInfo.MinFommVersion != DefaultMinFommVersion)
+			{
+				xelTemp = xmlInfo.CreateElement("MinFommVersion");
+				xelTemp.InnerText = p_finFomodInfo.MinFommVersion.ToString();
+				xelRoot.AppendChild(xelTemp);
+			}
+			if ((p_finFomodInfo.Groups != null) && (p_finFomodInfo.Groups.Length > 0))
+			{
+				xelTemp = xmlInfo.CreateElement("Groups");
+				for (int i = 0; i < p_finFomodInfo.Groups.Length; i++)
+					xelTemp.AppendChild(xmlInfo.CreateElement("element")).InnerText = p_finFomodInfo.Groups[i];
+				xelRoot.AppendChild(xelTemp);
+			}
+
+			return xmlInfo;
+		}
+
+		#endregion
+
+		protected void LoadInfo()
+		{
+			ZipEntry info = m_zipFile.GetEntry("fomod/info.xml");
+			if (info != null)
+			{
+				hasInfo = true;
+				XmlDocument doc = new XmlDocument();
+				using (System.IO.Stream stream = m_zipFile.GetInputStream(info))
+				{
+					doc.Load(stream);
+					stream.Close();
+				}
+				LoadInfo(doc, this);
+				if (Program.MVersion < MachineVersion)
+					throw new fomodLoadException("This fomod requires a newer version of Fallout mod manager to load\nExpected " + MachineVersion);
 			}
 		}
 
@@ -554,9 +632,7 @@ namespace Fomm.PackageManager
 
 		internal void CommitInfo(bool SetScreenshot, byte[] screenshot)
 		{
-			XmlDocument xmlDoc = new XmlDocument();
-			xmlDoc.AppendChild(xmlDoc.CreateXmlDeclaration("1.0", "UTF-16", null));
-			XmlElement el = xmlDoc.CreateElement("fomod"), el2;
+			XmlDocument xmlInfo = SaveInfo(this);
 			DataSource sds1, sds2 = null;
 
 			if (SetScreenshot && this.screenshot != null)
@@ -565,64 +641,11 @@ namespace Fomm.PackageManager
 				this.screenshot = null;
 			}
 
-			xmlDoc.AppendChild(el);
-			if (Name.Length > 0)
-			{
-				el2 = xmlDoc.CreateElement("Name");
-				el2.InnerText = Name;
-				el.AppendChild(el2);
-			}
-			if (Author != "DEFAULT")
-			{
-				el2 = xmlDoc.CreateElement("Author");
-				el2.InnerText = Author;
-				el.AppendChild(el2);
-			}
-			if (HumanReadableVersion.Length > 0 || MachineVersion != DefaultVersion)
-			{
-				el2 = xmlDoc.CreateElement("Version");
-				el2.InnerText = (HumanReadableVersion.Length == 0) ? MachineVersion.ToString() : HumanReadableVersion;
-				el2.Attributes.Append(xmlDoc.CreateAttribute("MachineVersion"));
-				el2.Attributes[0].Value = MachineVersion.ToString();
-				el.AppendChild(el2);
-			}
-			if (Description.Length > 0)
-			{
-				el2 = xmlDoc.CreateElement("Description");
-				el2.InnerText = Description;
-				el.AppendChild(el2);
-			}
-			if (Email.Length > 0)
-			{
-				el2 = xmlDoc.CreateElement("Email");
-				el2.InnerText = Email;
-				el.AppendChild(el2);
-			}
-			if (Website.Length > 0)
-			{
-				el2 = xmlDoc.CreateElement("Website");
-				el2.InnerText = Website;
-				el.AppendChild(el2);
-			}
-			if (MinFommVersion != DefaultMinFommVersion)
-			{
-				el2 = xmlDoc.CreateElement("MinFommVersion");
-				el2.InnerText = MinFommVersion.ToString();
-				el.AppendChild(el2);
-			}
-			if (Groups.Length > 0)
-			{
-				el2 = xmlDoc.CreateElement("Groups");
-				for (int i = 0; i < Groups.Length; i++) el2.AppendChild(xmlDoc.CreateElement("element"));
-				for (int i = 0; i < Groups.Length; i++) el2.ChildNodes[i].InnerText = Groups[i];
-				el.AppendChild(el2);
-			}
-
 			m_zipFile.BeginUpdate();
 			hasInfo = true;
 
 			MemoryStream ms = new MemoryStream();
-			xmlDoc.Save(ms);
+			xmlInfo.Save(ms);
 			ms.Position = 0;
 			sds1 = new DataSource(ms);
 			m_zipFile.Add(sds1, "fomod/info.xml");
