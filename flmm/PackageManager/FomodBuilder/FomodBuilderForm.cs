@@ -9,6 +9,7 @@ using Fomm.Controls;
 using System.Text.RegularExpressions;
 using System.IO;
 using System.Xml.Schema;
+using Fomm.PackageManager.XmlConfiguredInstall;
 
 namespace Fomm.PackageManager.FomodBuilder
 {
@@ -17,6 +18,17 @@ namespace Fomm.PackageManager.FomodBuilder
 	/// </summary>
 	public partial class FomodBuilderForm : Form
 	{
+		protected const string DEFAULT_CSHARP_SCRIPT = @"using System;
+using fomm.Scripting;
+
+class Script : BaseScript {
+	public static bool OnActivate() {
+        //Install all files from the fomod and activate any esps
+        PerformBasicInstall();
+		return true;
+	}
+}
+";
 		/// <summary>
 		/// The possible validation states of the form.
 		/// </summary>
@@ -78,6 +90,8 @@ namespace Fomm.PackageManager.FomodBuilder
 				UpdateDownloadLocationsList();
 			else if (e.TabPage == vtpReadme)
 				SetReadmeDefault();
+			else if (e.TabPage == vtpScript)
+				SetScriptDefault();
 		}
 
 		/// <summary>
@@ -164,6 +178,23 @@ namespace Fomm.PackageManager.FomodBuilder
 				booHasWarnings |= true;
 			}
 
+			//script validation
+			if (cbxUseScript.Checked)
+			{
+				if (((ddtScript.SelectedTabPage == dtpCSharp) && String.IsNullOrEmpty(sedScript.Text)) ||
+					((ddtScript.SelectedTabPage == dtpXML) && String.IsNullOrEmpty(xedScript.Text)))
+				{
+					sspWarning.SetStatus(vtpScript, "Missing script.");
+					booHasWarnings |= true;
+				}
+				else if (((ddtScript.SelectedTabPage == dtpCSharp) && !sedScript.ValidateSyntax()) ||
+					((ddtScript.SelectedTabPage == dtpXML) && !xedScript.ValidateXml()))
+				{
+					sspError.SetStatus(vtpScript, "Invalid script.");
+					booHasErrors |= true;
+				}
+			}
+				
 			if (booHasErrors)
 				return ValidationState.Errors;
 			if (booHasWarnings)
@@ -378,6 +409,85 @@ namespace Fomm.PackageManager.FomodBuilder
 		#region Script
 
 		/// <summary>
+		/// Handles the <see cref="CheckBox.CheckChanged"/> event of the use script check box.
+		/// </summary>
+		/// <param name="sender">The object that raised the event.</param>
+		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+		private void cbxUseScript_CheckedChanged(object sender, EventArgs e)
+		{
+			if (cbxUseScript.Checked)
+				SetScriptDefault();
+			ddtScript.Enabled = cbxUseScript.Checked;
+		}
+
+		/// <summary>
+		/// If no script has been entered, this method looks for a script file in the selected
+		/// files, and, if one is found, uses it to populate the script editor. If one is not found,
+		/// the script is populated with the default value.
+		/// </summary>
+		protected void SetScriptDefault()
+		{
+			if (cbxUseScript.Checked &&
+				(((ddtScript.SelectedTabPage == dtpCSharp) && String.IsNullOrEmpty(sedScript.Text)) ||
+				((ddtScript.SelectedTabPage == dtpXML) && String.IsNullOrEmpty(xedScript.Text))))
+			{
+				string strScriptName = "fomod" + Path.DirectorySeparatorChar + "script.cs";
+				IList<KeyValuePair<string, string>> lstFiles = ffsFileStructure.FindFomodFiles(strScriptName);
+				if (lstFiles.Count == 0)
+				{
+					strScriptName = "fomod" + Path.DirectorySeparatorChar + "ModuleConfig.xml";
+					lstFiles = ffsFileStructure.FindFomodFiles(strScriptName);
+				}
+				if (lstFiles.Count == 0)
+				{
+					ddtScript.SelectedTabPage = dtpCSharp;
+					sedScript.Text = DEFAULT_CSHARP_SCRIPT;
+					return;
+				}
+
+				string strScript = null;
+				KeyValuePair<string, string> kvpScript = lstFiles[0];
+				if (kvpScript.Value.StartsWith(Archive.ARCHIVE_PREFIX))
+				{
+					KeyValuePair<string, string> kvpArchiveInfo = Archive.ParseArchive(kvpScript.Value);
+					Archive arcArchive = new Archive(kvpArchiveInfo.Key);
+					strScript = Encoding.UTF8.GetString(arcArchive.GetFileContents(kvpArchiveInfo.Value));
+				}
+				else if (File.Exists(kvpScript.Value))
+					strScript = File.ReadAllText(kvpScript.Value);
+
+				if (strScriptName.EndsWith("ModuleConfig.xml"))
+				{
+					switch (Parser.GetConfigVersion(strScript))
+					{
+						case "1.0":
+							cbxVersion.SelectedIndex = 0;
+							break;
+						case "2.0":
+							cbxVersion.SelectedIndex = 1;
+							break;
+						case "3.0":
+							cbxVersion.SelectedIndex = 2;
+							break;
+						default:
+							ddtScript.SelectedTabPage = dtpCSharp;
+							sedScript.Text = DEFAULT_CSHARP_SCRIPT;
+							return;
+					}
+					Regex rgxXMLConfigCleanup = new Regex(@"<\?xml[^>]+\?>.*?<config[^>]*>", RegexOptions.Singleline);
+					strScript = rgxXMLConfigCleanup.Replace(strScript, "<config>");
+					ddtScript.SelectedTabPage = dtpXML;
+					xedScript.Text = strScript;
+				}
+				else
+				{
+					ddtScript.SelectedTabPage = dtpCSharp;
+					sedScript.Text = strScript;
+				}
+			}
+		}
+
+		/// <summary>
 		/// Handles the <see cref="ComboBox.SelectedIndexChanged"/> event of the XML config version drop down list.
 		/// </summary>
 		/// <param name="sender">The object the raised the event.</param>
@@ -404,5 +514,18 @@ namespace Fomm.PackageManager.FomodBuilder
 		}
 
 		#endregion
+
+		private void xedScript_GotAutoCompleteList(object sender, RecapturableAutoCompleteListEventArgs e)
+		{
+			if (!String.IsNullOrEmpty(e.ElementPath) && Path.GetFileName(e.ElementPath).Equals("file") && (e.AutoCompleteType == AutoCompleteType.AttributeValues) && (e.Siblings[e.Siblings.Length - 1].Equals("source")))
+			{
+				string strPrefix = e.LastWord.EndsWith("=") ? "" : e.LastWord;
+				List<KeyValuePair<string,string>> lstFiles = ffsFileStructure.FindFomodFiles(strPrefix + "*");
+				foreach (KeyValuePair<string,string> kvpFile in lstFiles)
+					e.AutoCompleteList.Add(new XmlCompletionData(AutoCompleteType.AttributeValues, kvpFile.Key, null));
+				e.CaptureNextKey = true;
+				e.ExtraCompletionCharacters.Add(Path.DirectorySeparatorChar);
+			}
+		}
 	}
 }
