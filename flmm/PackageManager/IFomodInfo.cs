@@ -11,7 +11,7 @@ namespace Fomm.PackageManager
 		/// Gets or sets the name of the fomod.
 		/// </summary>
 		/// <value>The name of the fomod.</value>
-		string Name { get; set; }
+		string ModName { get; set; }
 
 		/// <summary>
 		/// Gets or sets the human readable form of the fomod's version.

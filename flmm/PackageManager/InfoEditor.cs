@@ -12,7 +12,7 @@ namespace Fomm.PackageManager {
             InitializeComponent();
             this.Icon=Fomm.Properties.Resources.fomm02;
             Settings.GetWindowPosition("InfoEditor", this);
-            tbName.Text=mod.Name;
+			tbName.Text = mod.ModName;
             tbAuthor.Text=mod.Author;
             tbVersion.Text=mod.HumanReadableVersion;
             tbMVersion.Text=mod.MachineVersion.ToString();
@@ -86,7 +86,7 @@ namespace Fomm.PackageManager {
                 return;
             }
 
-            mod.Name=tbName.Text;
+			mod.ModName = tbName.Text;
             mod.Author=tbAuthor.Text;
             mod.HumanReadableVersion=tbVersion.Text;
             mod.Description=tbDescription.Text;

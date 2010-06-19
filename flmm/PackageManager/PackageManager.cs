@@ -87,7 +87,7 @@ namespace Fomm.PackageManager
 
 			if (!cbGroups.Checked)
 			{
-				ListViewItem lvi = new ListViewItem(new string[] { mod.Name, mod.HumanReadableVersion, strWebVersion, mod.Author });
+				ListViewItem lvi = new ListViewItem(new string[] { mod.ModName, mod.HumanReadableVersion, strWebVersion, mod.Author });
 				lvi.Tag = mod;
 				lvi.Name = mod.BaseName;
 				lvi.Checked = mod.IsActive;
@@ -101,7 +101,7 @@ namespace Fomm.PackageManager
 				if (Array.IndexOf<string>(mod.Groups, lgroups[i]) != -1)
 				{
 					added = true;
-					ListViewItem lvi = new ListViewItem(new string[] { mod.Name, mod.HumanReadableVersion, strWebVersion, mod.Author });
+					ListViewItem lvi = new ListViewItem(new string[] { mod.ModName, mod.HumanReadableVersion, strWebVersion, mod.Author });
 					lvi.Tag = mod;
 					lvi.Name = mod.BaseName;
 					lvi.Checked = mod.IsActive;
@@ -112,7 +112,7 @@ namespace Fomm.PackageManager
 			}
 			if (!added)
 			{
-				ListViewItem lvi = new ListViewItem(new string[] { mod.Name, mod.HumanReadableVersion, strWebVersion, mod.Author });
+				ListViewItem lvi = new ListViewItem(new string[] { mod.ModName, mod.HumanReadableVersion, strWebVersion, mod.Author });
 				lvi.Tag = mod;
 				lvi.Name = mod.BaseName;
 				lvi.Checked = mod.IsActive;
@@ -410,7 +410,7 @@ namespace Fomm.PackageManager
 				else
 				{
 					ListViewItem lvi = lvModList.SelectedItems[0];
-					lvi.SubItems[0].Text = mod.Name;
+					lvi.SubItems[0].Text = mod.ModName;
 					lvi.SubItems[1].Text = mod.HumanReadableVersion;
 					lvi.SubItems[2].Text = mod.Author;
 					tbModInfo.Text = mod.Description;
@@ -434,11 +434,11 @@ namespace Fomm.PackageManager
 			foreach (ListViewItem lviFomod in lvModList.Items)
 			{
 				fomodMod = (fomod)lviFomod.Tag;
-				if (fomodMod.Name.Equals(mod.Name) && fomodMod.IsActive && !fomodMod.BaseName.Equals(mod.BaseName))
+				if (fomodMod.ModName.Equals(mod.ModName) && fomodMod.IsActive && !fomodMod.BaseName.Equals(mod.BaseName))
 				{
 					//ask to do upgrade
 					string strUpgradeMessage = "A different verion of {0} has been detected. The installed verion is {1}, the new verion is {2}. Would you like to upgrade?" + Environment.NewLine + "Selecting No will install the new FOMOD normally.";
-					switch (MessageBox.Show(String.Format(strUpgradeMessage, fomodMod.Name, fomodMod.HumanReadableVersion, mod.HumanReadableVersion), "Upgrade", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+					switch (MessageBox.Show(String.Format(strUpgradeMessage, fomodMod.ModName, fomodMod.HumanReadableVersion, mod.HumanReadableVersion), "Upgrade", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
 					{
 						case DialogResult.Yes:
 							ModUpgrader mduUpgrader = new ModUpgrader(mod, fomodMod.BaseName);
@@ -1065,7 +1065,7 @@ namespace Fomm.PackageManager
 					case 1:
 						return m1.BaseName.CompareTo(m2.BaseName);
 					case 2:
-						return m1.Name.CompareTo(m2.Name);
+						return m1.ModName.CompareTo(m2.ModName);
 					case 3:
 						return m1.Author.CompareTo(m2.Author);
 				}

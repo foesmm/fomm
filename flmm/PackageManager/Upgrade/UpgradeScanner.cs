@@ -32,7 +32,7 @@ namespace Fomm.PackageManager.Upgrade
 				fomodMod = new fomod(Path.Combine(Program.PackageDir, fifMod.BaseName + ".fomod"));
 				if (!fomodMod.HumanReadableVersion.Equals(fifMod.Version))
 				{
-					switch (MessageBox.Show(String.Format(m_strUpgradeMessage, fomodMod.Name, fifMod.Version, fomodMod.HumanReadableVersion), "Upgrade", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+					switch (MessageBox.Show(String.Format(m_strUpgradeMessage, fomodMod.ModName, fifMod.Version, fomodMod.HumanReadableVersion), "Upgrade", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
 					{
 						case DialogResult.Yes:
 							lstModsToUpgrade.Add(fomodMod);

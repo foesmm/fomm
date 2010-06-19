@@ -89,7 +89,7 @@ namespace Fomm.PackageManager
 		/// Gets or sets the name of the fomod.
 		/// </summary>
 		/// <value>The name of the fomod.</value>
-		public string Name
+		public string ModName
 		{
 			get
 			{
@@ -309,8 +309,8 @@ namespace Fomm.PackageManager
 			this.filepath = path;
 
 			m_zipFile = new ZipFile(path);
-			Name = System.IO.Path.GetFileNameWithoutExtension(path);
-			baseName = Name.ToLowerInvariant();
+			ModName = System.IO.Path.GetFileNameWithoutExtension(path);
+			baseName = ModName.ToLowerInvariant();
 			Author = "DEFAULT";
 			Description = Email = Website = string.Empty;
 			HumanReadableVersion = "1.0";
@@ -387,7 +387,7 @@ namespace Fomm.PackageManager
 				switch (xndNode.Name)
 				{
 					case "Name":
-						p_finFomodInfo.Name = xndNode.InnerText;
+						p_finFomodInfo.ModName = xndNode.InnerText;
 						break;
 					case "Version":
 						p_finFomodInfo.HumanReadableVersion = xndNode.InnerText;
@@ -411,9 +411,10 @@ namespace Fomm.PackageManager
 						p_finFomodInfo.Website = xndNode.InnerText;
 						break;
 					case "Groups":
-						p_finFomodInfo.Groups = new string[xndNode.ChildNodes.Count];
+						string[] strGroups = new string[xndNode.ChildNodes.Count];
 						for (int i = 0; i < xndNode.ChildNodes.Count; i++)
-							p_finFomodInfo.Groups[i] = xndNode.ChildNodes[i].InnerText;
+							strGroups[i] = xndNode.ChildNodes[i].InnerText;
+						p_finFomodInfo.Groups = strGroups;
 						break;
 					default:
 						throw new fomodLoadException("Unexpected node type '" + xndNode.Name + "' in info.xml");
@@ -434,10 +435,10 @@ namespace Fomm.PackageManager
 			XmlElement xelTemp = null;
 
 			xmlInfo.AppendChild(xelRoot);
-			if (!String.IsNullOrEmpty(p_finFomodInfo.Name))
+			if (!String.IsNullOrEmpty(p_finFomodInfo.ModName))
 			{
 				xelTemp = xmlInfo.CreateElement("Name");
-				xelTemp.InnerText = p_finFomodInfo.Name;
+				xelTemp.InnerText = p_finFomodInfo.ModName;
 				xelRoot.AppendChild(xelTemp);
 			}
 			if (!String.IsNullOrEmpty(p_finFomodInfo.Author) && !p_finFomodInfo.Author.Equals("DEFAULT"))
@@ -504,8 +505,8 @@ namespace Fomm.PackageManager
 					stream.Close();
 				}
 				LoadInfo(doc, this);
-				if (Program.MVersion < MachineVersion)
-					throw new fomodLoadException("This fomod requires a newer version of Fallout mod manager to load\nExpected " + MachineVersion);
+				if (Program.MVersion < MinFommVersion)
+					throw new fomodLoadException("This fomod requires a newer version of Fallout mod manager to load." + Environment.NewLine + "Expected " + MachineVersion);
 			}
 		}
 
@@ -695,7 +696,7 @@ namespace Fomm.PackageManager
 		internal string GetStatusString()
 		{
 			System.Text.StringBuilder sb = new System.Text.StringBuilder();
-			sb.AppendLine("Mod name: " + Name);
+			sb.AppendLine("Mod name: " + ModName);
 			sb.AppendLine("File name: " + baseName);
 			if (Author != "DEFAULT") sb.AppendLine("Author: " + Author);
 			if (HumanReadableVersion != "1.0") sb.AppendLine("Version: " + HumanReadableVersion);
