@@ -22,6 +22,26 @@ namespace Fomm.PackageManager
 		#region Properties
 
 		/// <summary>
+		/// Gets or sets the screenshot used by the fomod.
+		/// </summary>
+		/// <value>The screenshot used by the fomod.</value>
+		public byte[] Screenshot
+		{
+			get
+			{
+				return m_bteScreenshot;
+			}
+			set
+			{
+				using (MemoryStream msmImage = new MemoryStream(value))
+				{
+					m_bteScreenshot = value;
+					pbxScreenshot.Image = Bitmap.FromStream(msmImage);
+				}				
+			}
+		}
+
+		/// <summary>
 		/// Sets the fomod whose information is being edited.
 		/// </summary>
 		/// <value>The fomod whose information is being edited.</value>
