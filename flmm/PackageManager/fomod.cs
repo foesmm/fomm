@@ -370,6 +370,18 @@ namespace Fomm.PackageManager
 		/// <param name="p_finFomodInfo">The fomod info object to populate with the info.</param>
 		public static void LoadInfo(XmlDocument p_xmlInfo, IFomodInfo p_finFomodInfo)
 		{
+			LoadInfo(p_xmlInfo, p_finFomodInfo, true);
+		}
+
+		/// <summary>
+		/// Loads the fomod info from the given info file into the given fomod info object.
+		/// </summary>
+		/// <param name="p_xmlInfo">The XML info file from which to read the info.</param>
+		/// <param name="p_finFomodInfo">The fomod info object to populate with the info.</param>
+		/// <param name="p_booOverwriteExisitngValues">Whether or not to overwrite any existing values
+		/// in the given <see cref="IFomodInfo"/>.</param>
+		public static void LoadInfo(XmlDocument p_xmlInfo, IFomodInfo p_finFomodInfo, bool p_booOverwriteExisitngValues)
+		{
 			XmlNode xndRoot = null;
 			foreach (XmlNode xndNode in p_xmlInfo.ChildNodes)
 				if (xndNode.NodeType == XmlNodeType.Element)
@@ -387,34 +399,47 @@ namespace Fomm.PackageManager
 				switch (xndNode.Name)
 				{
 					case "Name":
-						p_finFomodInfo.ModName = xndNode.InnerText;
+						if (p_booOverwriteExisitngValues || String.IsNullOrEmpty(p_finFomodInfo.ModName))
+							p_finFomodInfo.ModName = xndNode.InnerText;
 						break;
 					case "Version":
-						p_finFomodInfo.HumanReadableVersion = xndNode.InnerText;
-						XmlNode xndMachineVersion = xndNode.Attributes.GetNamedItem("MachineVersion");
-						if (xndMachineVersion != null)
-							p_finFomodInfo.MachineVersion = new Version(xndMachineVersion.Value);
+						if (p_booOverwriteExisitngValues || String.IsNullOrEmpty(p_finFomodInfo.HumanReadableVersion))
+							p_finFomodInfo.HumanReadableVersion = xndNode.InnerText;
+						if (p_booOverwriteExisitngValues || (p_finFomodInfo.MachineVersion == DefaultVersion))
+						{
+							XmlNode xndMachineVersion = xndNode.Attributes.GetNamedItem("MachineVersion");
+							if (xndMachineVersion != null)
+								p_finFomodInfo.MachineVersion = new Version(xndMachineVersion.Value);
+						}
 						break;
 					case "Author":
-						p_finFomodInfo.Author = xndNode.InnerText;
+						if (p_booOverwriteExisitngValues || String.IsNullOrEmpty(p_finFomodInfo.Author))
+							p_finFomodInfo.Author = xndNode.InnerText;
 						break;
 					case "Description":
-						p_finFomodInfo.Description = xndNode.InnerText;
+						if (p_booOverwriteExisitngValues || String.IsNullOrEmpty(p_finFomodInfo.Description))
+							p_finFomodInfo.Description = xndNode.InnerText;
 						break;
 					case "MinFommVersion":
-						p_finFomodInfo.MinFommVersion = new Version(xndNode.InnerText);
+						if (p_booOverwriteExisitngValues || (p_finFomodInfo.MachineVersion == DefaultMinFommVersion))
+							p_finFomodInfo.MinFommVersion = new Version(xndNode.InnerText);
 						break;
 					case "Email":
+						if (p_booOverwriteExisitngValues || String.IsNullOrEmpty(p_finFomodInfo.Email))
 						p_finFomodInfo.Email = xndNode.InnerText;
 						break;
 					case "Website":
+						if (p_booOverwriteExisitngValues || String.IsNullOrEmpty(p_finFomodInfo.Website))
 						p_finFomodInfo.Website = xndNode.InnerText;
 						break;
 					case "Groups":
-						string[] strGroups = new string[xndNode.ChildNodes.Count];
-						for (int i = 0; i < xndNode.ChildNodes.Count; i++)
-							strGroups[i] = xndNode.ChildNodes[i].InnerText;
-						p_finFomodInfo.Groups = strGroups;
+						if (p_booOverwriteExisitngValues || (p_finFomodInfo.Groups.Length == 0))
+						{
+							string[] strGroups = new string[xndNode.ChildNodes.Count];
+							for (int i = 0; i < xndNode.ChildNodes.Count; i++)
+								strGroups[i] = xndNode.ChildNodes[i].InnerText;
+							p_finFomodInfo.Groups = strGroups;
+						}
 						break;
 					default:
 						throw new fomodLoadException("Unexpected node type '" + xndNode.Name + "' in info.xml");
