@@ -262,8 +262,14 @@ namespace Fomm.Controls
 		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
 		private void UpdateFolds(object sender, EventArgs e)
 		{
-			Document.FoldingManager.UpdateFoldings(null, null);
-			Document.FoldingManager.NotifyFoldingsChanged(null);
+			try
+			{
+				Document.FoldingManager.UpdateFoldings(null, null);
+				Document.FoldingManager.NotifyFoldingsChanged(null);
+			}
+			catch
+			{
+			}
 			m_tmrFoldUpdater.Stop();
 		}
 
