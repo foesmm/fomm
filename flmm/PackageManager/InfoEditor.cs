@@ -14,18 +14,18 @@ namespace Fomm.PackageManager {
             Settings.GetWindowPosition("InfoEditor", this);
             tbName.Text=mod.Name;
             tbAuthor.Text=mod.Author;
-            tbVersion.Text=mod.VersionS;
-            tbMVersion.Text=mod.Version.ToString();
+            tbVersion.Text=mod.HumanReadableVersion;
+            tbMVersion.Text=mod.MachineVersion.ToString();
             tbDescription.Text=mod.Description;
-            tbWebsite.Text=mod.website;
-            tbEmail.Text=mod.email;
+            tbWebsite.Text=mod.Website;
+            tbEmail.Text=mod.Email;
             if(mod.MinFommVersion==new Version(0, 0, 0, 0)) tbMinFommVersion.Text="";
             else tbMinFommVersion.Text=mod.MinFommVersion.ToString();
 
             string[] groups=Settings.GetStringArray("fomodGroups");
             clbGroups.SuspendLayout();
             for(int i=0;i<groups.Length;i++) {
-                clbGroups.Items.Add(groups[i], Array.IndexOf<string>(mod.groups, groups[i].ToLowerInvariant())!=-1);
+                clbGroups.Items.Add(groups[i], Array.IndexOf<string>(mod.Groups, groups[i].ToLowerInvariant())!=-1);
             }
             clbGroups.ResumeLayout();
         }
@@ -88,15 +88,15 @@ namespace Fomm.PackageManager {
 
             mod.Name=tbName.Text;
             mod.Author=tbAuthor.Text;
-            mod.VersionS=tbVersion.Text;
+            mod.HumanReadableVersion=tbVersion.Text;
             mod.Description=tbDescription.Text;
-            mod.website=tbWebsite.Text;
-            mod.email=tbEmail.Text;
+            mod.Website=tbWebsite.Text;
+            mod.Email=tbEmail.Text;
             mod.MinFommVersion=minFommVersion;
-            mod.Version=version;
+            mod.MachineVersion=version;
 
-            mod.groups=new string[clbGroups.CheckedItems.Count];
-            for(int i=0;i<mod.groups.Length;i++) mod.groups[i]=((string)clbGroups.CheckedItems[i]).ToLowerInvariant();
+            mod.Groups=new string[clbGroups.CheckedItems.Count];
+			for (int i = 0; i < mod.Groups.Length; i++) mod.Groups[i] = ((string)clbGroups.CheckedItems[i]).ToLowerInvariant();
 
             mod.CommitInfo(setScreenshot, screenshot);
             DialogResult=DialogResult.OK;

@@ -105,7 +105,7 @@ namespace Fomm.PackageManager.Upgrade
 		{
 			InstallLog.FomodInfo fifInfo = InstallLog.Current.GetModInfo(Fomod.BaseName);
 			string strCurrentVersion =  (fifInfo == null) ? null : fifInfo.Version;
-			return Fomod.VersionS.Equals(strCurrentVersion);
+			return Fomod.HumanReadableVersion.Equals(strCurrentVersion);
 		}
 
 		/// <summary>

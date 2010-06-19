@@ -8,6 +8,7 @@ using WebsiteAPIs;
 using System.Text.RegularExpressions;
 using System.Drawing;
 using System.Diagnostics;
+using Fomm.PackageManager.FomodBuilder;
 
 namespace Fomm.PackageManager
 {
@@ -39,7 +40,7 @@ namespace Fomm.PackageManager
 			{
 				lviMod.SubItems["WebVersion"].Text = p_strWebVersion;
 				string strWebVersion = p_strWebVersion;
-				string strVersion = ((fomod)lviMod.Tag).VersionS;
+				string strVersion = ((fomod)lviMod.Tag).HumanReadableVersion;
 				if (!strWebVersion.Equals(strVersion) && !strWebVersion.Equals(strVersion.Replace(".", "")))
 				{
 					if (strVersion.StartsWith("0.") && !strWebVersion.StartsWith("0."))
@@ -59,11 +60,11 @@ namespace Fomm.PackageManager
 
 		private void AddFomodToList(fomod mod)
 		{
-			if ((m_nxaNexus != null) && !String.IsNullOrEmpty(mod.website) && m_rgxNexusFileId.IsMatch(mod.website))
+			if ((m_nxaNexus != null) && !String.IsNullOrEmpty(mod.Website) && m_rgxNexusFileId.IsMatch(mod.Website))
 			{
 				if (!m_dicWebVersions.ContainsKey(mod.BaseName))
 				{
-					string strFileId = m_rgxNexusFileId.Match(mod.website).Groups[1].Value.Trim();
+					string strFileId = m_rgxNexusFileId.Match(mod.Website).Groups[1].Value.Trim();
 					Int32 intFileId = -1;
 					try
 					{
@@ -86,7 +87,7 @@ namespace Fomm.PackageManager
 
 			if (!cbGroups.Checked)
 			{
-				ListViewItem lvi = new ListViewItem(new string[] { mod.Name, mod.VersionS, strWebVersion, mod.Author });
+				ListViewItem lvi = new ListViewItem(new string[] { mod.Name, mod.HumanReadableVersion, strWebVersion, mod.Author });
 				lvi.Tag = mod;
 				lvi.Name = mod.BaseName;
 				lvi.Checked = mod.IsActive;
@@ -97,10 +98,10 @@ namespace Fomm.PackageManager
 			bool added = false;
 			for (int i = 0; i < groups.Count; i++)
 			{
-				if (Array.IndexOf<string>(mod.groups, lgroups[i]) != -1)
+				if (Array.IndexOf<string>(mod.Groups, lgroups[i]) != -1)
 				{
 					added = true;
-					ListViewItem lvi = new ListViewItem(new string[] { mod.Name, mod.VersionS, strWebVersion, mod.Author });
+					ListViewItem lvi = new ListViewItem(new string[] { mod.Name, mod.HumanReadableVersion, strWebVersion, mod.Author });
 					lvi.Tag = mod;
 					lvi.Name = mod.BaseName;
 					lvi.Checked = mod.IsActive;
@@ -111,7 +112,7 @@ namespace Fomm.PackageManager
 			}
 			if (!added)
 			{
-				ListViewItem lvi = new ListViewItem(new string[] { mod.Name, mod.VersionS, strWebVersion, mod.Author });
+				ListViewItem lvi = new ListViewItem(new string[] { mod.Name, mod.HumanReadableVersion, strWebVersion, mod.Author });
 				lvi.Tag = mod;
 				lvi.Name = mod.BaseName;
 				lvi.Checked = mod.IsActive;
@@ -410,7 +411,7 @@ namespace Fomm.PackageManager
 				{
 					ListViewItem lvi = lvModList.SelectedItems[0];
 					lvi.SubItems[0].Text = mod.Name;
-					lvi.SubItems[1].Text = mod.VersionS;
+					lvi.SubItems[1].Text = mod.HumanReadableVersion;
 					lvi.SubItems[2].Text = mod.Author;
 					tbModInfo.Text = mod.Description;
 					pictureBox1.Image = mod.GetScreenshot();
@@ -437,7 +438,7 @@ namespace Fomm.PackageManager
 				{
 					//ask to do upgrade
 					string strUpgradeMessage = "A different verion of {0} has been detected. The installed verion is {1}, the new verion is {2}. Would you like to upgrade?" + Environment.NewLine + "Selecting No will install the new FOMOD normally.";
-					switch (MessageBox.Show(String.Format(strUpgradeMessage, fomodMod.Name, fomodMod.VersionS, mod.VersionS), "Upgrade", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+					switch (MessageBox.Show(String.Format(strUpgradeMessage, fomodMod.Name, fomodMod.HumanReadableVersion, mod.HumanReadableVersion), "Upgrade", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
 					{
 						case DialogResult.Yes:
 							ModUpgrader mduUpgrader = new ModUpgrader(mod, fomodMod.BaseName);
@@ -888,9 +889,9 @@ namespace Fomm.PackageManager
 				return;
 			}
 			fomod mod = (fomod)lvModList.SelectedItems[0].Tag;
-			if (mod.email.Length == 0) emailAuthorToolStripMenuItem.Visible = false;
+			if (mod.Email.Length == 0) emailAuthorToolStripMenuItem.Visible = false;
 			else emailAuthorToolStripMenuItem.Visible = true;
-			if (mod.website.Length == 0) visitWebsiteToolStripMenuItem.Visible = false;
+			if (mod.Website.Length == 0) visitWebsiteToolStripMenuItem.Visible = false;
 			else visitWebsiteToolStripMenuItem.Visible = true;
 		}
 
@@ -898,14 +899,14 @@ namespace Fomm.PackageManager
 		{
 			if (lvModList.SelectedItems.Count != 1) return;
 			fomod mod = (fomod)lvModList.SelectedItems[0].Tag;
-			System.Diagnostics.Process.Start(mod.website, "");
+			System.Diagnostics.Process.Start(mod.Website, "");
 		}
 
 		private void emailAuthorToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			if (lvModList.SelectedItems.Count != 1) return;
 			fomod mod = (fomod)lvModList.SelectedItems[0].Tag;
-			System.Diagnostics.Process.Start("mailto://" + mod.email, "");
+			System.Diagnostics.Process.Start("mailto://" + mod.Email, "");
 		}
 
 		private void cbGroups_CheckedChanged(object sender, EventArgs e)
@@ -1199,5 +1200,11 @@ namespace Fomm.PackageManager
 		}
 
 		#endregion
+
+		private void butCreateFomod_Click(object sender, EventArgs e)
+		{
+			FomodBuilderForm fbfBuilder = new FomodBuilderForm();
+			fbfBuilder.ShowDialog(this);
+		}
 	}
 }

@@ -462,8 +462,8 @@ namespace Fomm.PackageManager
 
 				XmlNode xndVersion = xndMod.AppendChild(xmlDoc.CreateElement("version"));
 				xndVersion.Attributes.Append(xmlDoc.CreateAttribute("machineVersion"));
-				xndVersion.Attributes["machineVersion"].InnerText = p_fomodMod.Version.ToString();
-				xndVersion.InnerText = p_fomodMod.VersionS;
+				xndVersion.Attributes["machineVersion"].InnerText = p_fomodMod.MachineVersion.ToString();
+				xndVersion.InnerText = p_fomodMod.HumanReadableVersion;
 			}
 		}
 
@@ -487,8 +487,8 @@ namespace Fomm.PackageManager
 					xndVersion = xndMod.AppendChild(xmlDoc.CreateElement("version"));
 					xndVersion.Attributes.Append(xmlDoc.CreateAttribute("machineVersion"));
 				}
-				xndVersion.Attributes["machineVersion"].InnerText = p_fomodMod.Version.ToString();
-				xndVersion.InnerText = p_fomodMod.VersionS;
+				xndVersion.Attributes["machineVersion"].InnerText = p_fomodMod.MachineVersion.ToString();
+				xndVersion.InnerText = p_fomodMod.HumanReadableVersion;
 				return true;
 			}
 			return false;

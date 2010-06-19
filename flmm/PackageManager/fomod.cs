@@ -28,7 +28,7 @@ using Fomm.CriticalRecords;
 
 namespace Fomm.PackageManager
 {
-	public class fomod
+	public class fomod : IFomodInfo
 	{
 		private class DataSource : IStaticDataSource
 		{
@@ -67,22 +67,166 @@ namespace Fomm.PackageManager
 		private bool hasScreenshot;
 
 		private readonly string baseName;
-		internal string Name;
-		internal string Author;
-		internal string Description;
-		internal Version Version;
-		internal string VersionS;
-		internal string email;
-		internal string website;
+		private string m_strName;
+		private string m_strAuthor;
+		private string m_strDescription;
+		private Version m_verVersion;
+		private string m_strHumanVersion;
+		private string m_strEmail;
+		private string m_strWebsite;
 		private System.Drawing.Bitmap screenshot;
-		internal Version MinFommVersion;
-		internal string[] groups;
+		private Version m_verMinFommVersion;
+		private string[] m_strGroups;
 
 		private string readmeext;
 		private string screenshotext;
 		private string readmepath;
 
 		#region Properties
+
+		/// <summary>
+		/// Gets or sets the name of the fomod.
+		/// </summary>
+		/// <value>The name of the fomod.</value>
+		public string Name
+		{
+			get
+			{
+				return m_strName;
+			}
+			set
+			{
+				m_strName = value;
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the human readable form of the fomod's version.
+		/// </summary>
+		/// <value>The human readable form of the fomod's version.</value>
+		public string HumanReadableVersion
+		{
+			get
+			{
+				return m_strHumanVersion;
+			}
+			set
+			{
+				m_strHumanVersion = value;
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the version of the fomod.
+		/// </summary>
+		/// <value>The version of the fomod.</value>
+		public Version MachineVersion
+		{
+			get
+			{
+				return m_verVersion;
+			}
+			set
+			{
+				m_verVersion = value;
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the author of the fomod.
+		/// </summary>
+		/// <value>The author of the fomod.</value>
+		public string Author
+		{
+			get
+			{
+				return m_strAuthor;
+			}
+			set
+			{
+				m_strAuthor = value;
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the description of the fomod.
+		/// </summary>
+		/// <value>The description of the fomod.</value>
+		public string Description
+		{
+			get
+			{
+				return m_strDescription;
+			}
+			set
+			{
+				m_strDescription = value;
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the minimum version of FOMM required to load the fomod.
+		/// </summary>
+		/// <value>The minimum version of FOMM required to load the fomod.</value>
+		public Version MinFommVersion
+		{
+			get
+			{
+				return m_verMinFommVersion;
+			}
+			set
+			{
+				m_verMinFommVersion = value;
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the contact email of the fomod.
+		/// </summary>
+		/// <value>The contact email of the fomod.</value>
+		public string Email
+		{
+			get
+			{
+				return m_strEmail;
+			}
+			set
+			{
+				m_strEmail = value;
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the website of the fomod.
+		/// </summary>
+		/// <value>The website of the fomod.</value>
+		public string Website
+		{
+			get
+			{
+				return m_strWebsite;
+			}
+			set
+			{
+				m_strWebsite = value;
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the FOMM groups to which the fomod belongs.
+		/// </summary>
+		/// <value>The FOMM groups to which the fomod belongs.</value>
+		public string[] Groups
+		{
+			get
+			{
+				return m_strGroups;
+			}
+			set
+			{
+				m_strGroups = value;
+			}
+		}
 
 		/// <summary>
 		/// Gets the base name of the fomod.
@@ -167,12 +311,12 @@ namespace Fomm.PackageManager
 			Name = System.IO.Path.GetFileNameWithoutExtension(path);
 			baseName = Name.ToLowerInvariant();
 			Author = "DEFAULT";
-			Description = email = website = string.Empty;
-			VersionS = "1.0";
-			Version = DefaultVersion;
+			Description = Email = Website = string.Empty;
+			HumanReadableVersion = "1.0";
+			MachineVersion = DefaultVersion;
 			MinFommVersion = DefaultMinFommVersion;
 			readmepath = Settings.GetBool("UseDocsFolder") ? "docs/readme - " + baseName + ".rtf" : "readme - " + baseName + ".rtf";
-			groups = new string[0];
+			Groups = new string[0];
 			isActive = (InstallLog.Current.GetModKey(this.baseName) != null);
 
 			LoadInfo();
@@ -216,79 +360,73 @@ namespace Fomm.PackageManager
 
 		#endregion
 
-		private void LoadInfo()
+		protected void LoadInfo()
 		{
 			ZipEntry info = m_zipFile.GetEntry("fomod/info.xml");
 			if (info != null)
 			{
 				hasInfo = true;
 				XmlDocument doc = new XmlDocument();
-				System.IO.Stream stream = m_zipFile.GetInputStream(info);
-				try
+				using (System.IO.Stream stream = m_zipFile.GetInputStream(info))
 				{
-					//System.IO.TextReader tr=new System.IO.StreamReader(stream);
 					doc.Load(stream);
-					XmlNode root = null;
-					foreach (XmlNode n in doc.ChildNodes)
-					{
-						if (n.NodeType == XmlNodeType.Element)
-						{
-							root = n;
-							break;
-						}
-					}
-					if (root == null)
-					{
-						throw new fomodLoadException("Root node was missing from fomod info.xml");
-					}
-					if (root.Name != "fomod")
-					{
-						throw new fomodLoadException("Unexpected root node type in info.xml");
-					}
-					XmlNode n2;
-					foreach (XmlNode n in root.ChildNodes)
-					{
-						if (n.NodeType == XmlNodeType.Comment) continue;
-						switch (n.Name)
-						{
-							case "Name":
-								Name = n.InnerText;
-								break;
-							case "Version":
-								VersionS = n.InnerText;
-								n2 = n.Attributes.GetNamedItem("MachineVersion");
-								if (n2 != null) Version = new Version(n2.Value);
-								break;
-							case "Author":
-								Author = n.InnerText;
-								break;
-							case "Description":
-								Description = n.InnerText;
-								break;
-							case "MinFommVersion":
-								Version v = new Version(n.InnerText);
-								if (Program.MVersion < v) throw new fomodLoadException("This fomod requires a newer version of Fallout mod manager to load\n" +
-									   "Expected " + n.InnerText);
-								MinFommVersion = v;
-								break;
-							case "Email":
-								email = n.InnerText;
-								break;
-							case "Website":
-								website = n.InnerText;
-								break;
-							case "Groups":
-								groups = new string[n.ChildNodes.Count];
-								for (int i = 0; i < n.ChildNodes.Count; i++) groups[i] = n.ChildNodes[i].InnerText;
-								break;
-							default:
-								throw new fomodLoadException("Unexpected node type '" + n.Name + "' in info.xml");
-						}
-					}
-				}
-				finally
-				{
 					stream.Close();
+				}
+				LoadInfo(doc, this);
+				if (Program.MVersion < MachineVersion)
+					throw new fomodLoadException("This fomod requires a newer version of Fallout mod manager to load\nExpected " + MachineVersion);
+			}
+		}
+
+		public static void LoadInfo(XmlDocument p_xmlInfo, IFomodInfo p_finFomodInfo)
+		{
+			XmlNode xndRoot = null;
+			foreach (XmlNode xndNode in p_xmlInfo.ChildNodes)
+				if (xndNode.NodeType == XmlNodeType.Element)
+				{
+					xndRoot = xndNode;
+					break;
+				}
+			if (xndRoot == null)
+				throw new fomodLoadException("Root node was missing from fomod info.xml");
+			if (xndRoot.Name != "fomod")
+				throw new fomodLoadException("Unexpected root node type in info.xml");
+			foreach (XmlNode xndNode in xndRoot.ChildNodes)
+			{
+				if (xndNode.NodeType == XmlNodeType.Comment) continue;
+				switch (xndNode.Name)
+				{
+					case "Name":
+						p_finFomodInfo.Name = xndNode.InnerText;
+						break;
+					case "Version":
+						p_finFomodInfo.HumanReadableVersion = xndNode.InnerText;
+						XmlNode xndMachineVersion = xndNode.Attributes.GetNamedItem("MachineVersion");
+						if (xndMachineVersion != null)
+							p_finFomodInfo.MachineVersion = new Version(xndMachineVersion.Value);
+						break;
+					case "Author":
+						p_finFomodInfo.Author = xndNode.InnerText;
+						break;
+					case "Description":
+						p_finFomodInfo.Description = xndNode.InnerText;
+						break;
+					case "MinFommVersion":
+						p_finFomodInfo.MinFommVersion = new Version(xndNode.InnerText);
+						break;
+					case "Email":
+						p_finFomodInfo.Email = xndNode.InnerText;
+						break;
+					case "Website":
+						p_finFomodInfo.Website = xndNode.InnerText;
+						break;
+					case "Groups":
+						p_finFomodInfo.Groups = new string[xndNode.ChildNodes.Count];
+						for (int i = 0; i < xndNode.ChildNodes.Count; i++)
+							p_finFomodInfo.Groups[i] = xndNode.ChildNodes[i].InnerText;
+						break;
+					default:
+						throw new fomodLoadException("Unexpected node type '" + xndNode.Name + "' in info.xml");
 				}
 			}
 		}
@@ -440,12 +578,12 @@ namespace Fomm.PackageManager
 				el2.InnerText = Author;
 				el.AppendChild(el2);
 			}
-			if (VersionS.Length > 0 || Version != DefaultVersion)
+			if (HumanReadableVersion.Length > 0 || MachineVersion != DefaultVersion)
 			{
 				el2 = xmlDoc.CreateElement("Version");
-				el2.InnerText = (VersionS.Length == 0) ? Version.ToString() : VersionS;
+				el2.InnerText = (HumanReadableVersion.Length == 0) ? MachineVersion.ToString() : HumanReadableVersion;
 				el2.Attributes.Append(xmlDoc.CreateAttribute("MachineVersion"));
-				el2.Attributes[0].Value = Version.ToString();
+				el2.Attributes[0].Value = MachineVersion.ToString();
 				el.AppendChild(el2);
 			}
 			if (Description.Length > 0)
@@ -454,16 +592,16 @@ namespace Fomm.PackageManager
 				el2.InnerText = Description;
 				el.AppendChild(el2);
 			}
-			if (email.Length > 0)
+			if (Email.Length > 0)
 			{
 				el2 = xmlDoc.CreateElement("Email");
-				el2.InnerText = email;
+				el2.InnerText = Email;
 				el.AppendChild(el2);
 			}
-			if (website.Length > 0)
+			if (Website.Length > 0)
 			{
 				el2 = xmlDoc.CreateElement("Website");
-				el2.InnerText = website;
+				el2.InnerText = Website;
 				el.AppendChild(el2);
 			}
 			if (MinFommVersion != DefaultMinFommVersion)
@@ -472,14 +610,14 @@ namespace Fomm.PackageManager
 				el2.InnerText = MinFommVersion.ToString();
 				el.AppendChild(el2);
 			}
-			if (groups.Length > 0)
+			if (Groups.Length > 0)
 			{
 				el2 = xmlDoc.CreateElement("Groups");
-				for (int i = 0; i < groups.Length; i++) el2.AppendChild(xmlDoc.CreateElement("element"));
-				for (int i = 0; i < groups.Length; i++) el2.ChildNodes[i].InnerText = groups[i];
+				for (int i = 0; i < Groups.Length; i++) el2.AppendChild(xmlDoc.CreateElement("element"));
+				for (int i = 0; i < Groups.Length; i++) el2.ChildNodes[i].InnerText = Groups[i];
 				el.AppendChild(el2);
 			}
-			
+
 			m_zipFile.BeginUpdate();
 			hasInfo = true;
 
@@ -537,12 +675,12 @@ namespace Fomm.PackageManager
 			sb.AppendLine("Mod name: " + Name);
 			sb.AppendLine("File name: " + baseName);
 			if (Author != "DEFAULT") sb.AppendLine("Author: " + Author);
-			if (VersionS != "1.0") sb.AppendLine("Version: " + VersionS);
-			if (email.Length > 0) sb.AppendLine("email: " + email);
-			if (website.Length > 0) sb.AppendLine("website: " + website);
+			if (HumanReadableVersion != "1.0") sb.AppendLine("Version: " + HumanReadableVersion);
+			if (Email.Length > 0) sb.AppendLine("email: " + Email);
+			if (Website.Length > 0) sb.AppendLine("website: " + Website);
 			if (MinFommVersion != new Version(0, 0, 0, 0)) sb.AppendLine("Minimum required fomm version: " + MinFommVersion.ToString());
 			if (Description.Length > 0) sb.AppendLine("Description:" + Environment.NewLine + Description);
-			if (groups.Length > 0) sb.AppendLine(Environment.NewLine + "Group tags: " + string.Join(", ", groups));
+			if (Groups.Length > 0) sb.AppendLine(Environment.NewLine + "Group tags: " + string.Join(", ", Groups));
 			sb.AppendLine();
 			sb.AppendLine("Has readme: " + (hasReadme ? ("Yes (" + readmeext + ")") : "No"));
 			sb.AppendLine("Has script: " + (hasScript ? "Yes" : "No"));

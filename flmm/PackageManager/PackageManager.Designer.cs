@@ -49,6 +49,7 @@ namespace Fomm.PackageManager {
 			this.butDeactivate = new System.Windows.Forms.Button();
 			this.butExtractFomod = new System.Windows.Forms.Button();
 			this.fbdExtractFomod = new System.Windows.Forms.FolderBrowserDialog();
+			this.butCreateFomod = new System.Windows.Forms.Button();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
 			this.splitContainer1.SuspendLayout();
@@ -326,11 +327,22 @@ namespace Fomm.PackageManager {
 			this.butExtractFomod.UseVisualStyleBackColor = true;
 			this.butExtractFomod.Click += new System.EventHandler(this.butExtractFomod_Click);
 			// 
+			// butCreateFomod
+			// 
+			this.butCreateFomod.Location = new System.Drawing.Point(518, 181);
+			this.butCreateFomod.Name = "butCreateFomod";
+			this.butCreateFomod.Size = new System.Drawing.Size(75, 23);
+			this.butCreateFomod.TabIndex = 19;
+			this.butCreateFomod.Text = "button1";
+			this.butCreateFomod.UseVisualStyleBackColor = true;
+			this.butCreateFomod.Click += new System.EventHandler(this.butCreateFomod_Click);
+			// 
 			// PackageManager
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(625, 557);
+			this.Controls.Add(this.butCreateFomod);
 			this.Controls.Add(this.butExtractFomod);
 			this.Controls.Add(this.butDeactivate);
 			this.Controls.Add(this.bFomodFromFolder);
@@ -389,5 +401,6 @@ namespace Fomm.PackageManager {
 		private System.Windows.Forms.Button butDeactivate;
 		private System.Windows.Forms.Button butExtractFomod;
 		private System.Windows.Forms.FolderBrowserDialog fbdExtractFomod;
+		private System.Windows.Forms.Button butCreateFomod;
     }
 }

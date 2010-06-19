@@ -34,11 +34,11 @@ namespace Fomm.PackageManager
 				m_fomodMod = value;
 				tbName.Text = value.Name;
 				tbAuthor.Text = value.Author;
-				tbVersion.Text = value.VersionS;
-				tbMVersion.Text = value.Version.ToString();
+				tbVersion.Text = value.HumanReadableVersion;
+				tbMVersion.Text = value.HumanReadableVersion.ToString();
 				tbDescription.Text = value.Description;
-				tbWebsite.Text = value.website;
-				tbEmail.Text = value.email;
+				tbWebsite.Text = value.Website;
+				tbEmail.Text = value.Email;
 				if (value.MinFommVersion == new Version(0, 0, 0, 0))
 					tbMinFommVersion.Text = "";
 				else tbMinFommVersion.Text = value.MinFommVersion.ToString();
@@ -46,7 +46,7 @@ namespace Fomm.PackageManager
 				string[] strGroups = Settings.GetStringArray("fomodGroups");
 				clbGroups.SuspendLayout();
 				foreach (string strGroup in strGroups)
-					clbGroups.Items.Add(strGroup, Array.IndexOf<string>(value.groups, strGroup.ToLowerInvariant()) != -1);
+					clbGroups.Items.Add(strGroup, Array.IndexOf<string>(value.Groups, strGroup.ToLowerInvariant()) != -1);
 				clbGroups.ResumeLayout();
 
 				pbxScreenshot.Image = value.GetScreenshot();
@@ -364,18 +364,18 @@ namespace Fomm.PackageManager
 
 			m_fomodMod.Name = tbName.Text;
 			m_fomodMod.Author = tbAuthor.Text;
-			m_fomodMod.VersionS = tbVersion.Text;
+			m_fomodMod.HumanReadableVersion = tbVersion.Text;
 			m_fomodMod.Description = tbDescription.Text;
-			m_fomodMod.website = tbWebsite.Text;
-			m_fomodMod.email = tbEmail.Text;
+			m_fomodMod.Website = tbWebsite.Text;
+			m_fomodMod.Email = tbEmail.Text;
 			if (!String.IsNullOrEmpty(tbMinFommVersion.Text))
 				m_fomodMod.MinFommVersion = new Version(tbMinFommVersion.Text);
 			if (!String.IsNullOrEmpty(tbMVersion.Text))
-				m_fomodMod.Version = new Version(tbMVersion.Text);
+				m_fomodMod.MachineVersion = new Version(tbMVersion.Text);
 
-			m_fomodMod.groups = new string[clbGroups.CheckedItems.Count];
-			for (Int32 i = 0; i < m_fomodMod.groups.Length; i++)
-				m_fomodMod.groups[i] = ((string)clbGroups.CheckedItems[i]).ToLowerInvariant();
+			m_fomodMod.Groups = new string[clbGroups.CheckedItems.Count];
+			for (Int32 i = 0; i < m_fomodMod.Groups.Length; i++)
+				m_fomodMod.Groups[i] = ((string)clbGroups.CheckedItems[i]).ToLowerInvariant();
 
 			m_fomodMod.CommitInfo(pbxScreenshot.Image != null, m_bteScreenshot);
 
