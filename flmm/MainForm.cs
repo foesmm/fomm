@@ -1188,7 +1188,7 @@ namespace Fomm
 			else
 			{
 				fomod fomodMod = new fomod(Path.Combine(Program.PackageDir, InstallLog.Current.GetCurrentFileOwnerName(e.ConflictingPlugin.Name) + ".fomod"));
-				stbMessage.AppendFormat("Form Id \\b {0:x8}\\b0  is overridden by \\b {1}\\b0  in \\b {2}\\b0 .\\par \\pard\\li720\\sl240\\slmult1 {3}\\par \\pard\\sl240\\slmult1 ", e.FormId, e.ConflictingPlugin.Name, fomodMod.Name, e.ConflictInfo.Reason);
+				stbMessage.AppendFormat("Form Id \\b {0:x8}\\b0  is overridden by \\b {1}\\b0  in \\b {2}\\b0 .\\par \\pard\\li720\\sl240\\slmult1 {3}\\par \\pard\\sl240\\slmult1 ", e.FormId, e.ConflictingPlugin.Name, fomodMod.ModName, e.ConflictInfo.Reason);
 			}
 			if (!m_dicExtraInfo[EXTRA_INFO_CRITICAL_RECORDS].ContainsKey(e.ConflictedPlugin.Name))
 				m_dicExtraInfo[EXTRA_INFO_CRITICAL_RECORDS][e.ConflictedPlugin.Name] = new List<string>();
