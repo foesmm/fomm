@@ -12,6 +12,32 @@ using System.Collections.Generic;
 
 namespace Fomm.Controls
 {
+	public class RecapturableAutoCompleteListEventArgs : AutoCompleteListEventArgs
+	{
+		private bool m_booCaptureNextKey = false;
+
+		#region Properties
+
+		public bool CaptureNextKey
+		{
+			get
+			{
+				return m_booCaptureNextKey;
+			}
+			set
+			{
+				m_booCaptureNextKey = value;
+			}
+		}
+
+		#endregion
+
+		public RecapturableAutoCompleteListEventArgs(AutoCompleteListEventArgs p_acaArgs)
+			: base(p_acaArgs.AutoCompleteList, p_acaArgs.ElementPath, p_acaArgs.Siblings, p_acaArgs.AutoCompleteType, p_acaArgs.LastWord)
+		{
+		}
+	}
+
 	/// <summary>
 	/// An XML text editor.
 	/// </summary>
@@ -20,21 +46,16 @@ namespace Fomm.Controls
 	/// </remarks>
 	public class XmlEditor : TextEditorControl
 	{
-		public event EventHandler<AutoCompleteListEventArgs> GotAutoCompleteList
-		{
-			add
-			{
-				m_cdpXmlCompletionProvider.GotAutoCompleteList += value;
-			}
-			remove
-			{
-				m_cdpXmlCompletionProvider.GotAutoCompleteList -= value;
-			}
-		}
+		/// <summary>
+		/// Raised when the code completion option6s have been retrieved.
+		/// </summary>
+		/// <remarks>
+		/// Handling this event allows the addition/removal of code completion items.
+		/// </remarks>
+		public event EventHandler<RecapturableAutoCompleteListEventArgs> GotAutoCompleteList;
 
 		private static Regex rgxTagContents = new Regex("<([^!>][^>]*)>?", RegexOptions.Singleline);
 
-		private readonly List<char> COMPLETION_CHARS = new List<char> { '<', ' ', '=' };
 		private Timer m_tmrFoldUpdater = new Timer();
 		private Timer m_tmrValidator = new Timer();
 		private XmlCompletionProvider m_cdpXmlCompletionProvider = null;
@@ -42,7 +63,9 @@ namespace Fomm.Controls
 		private XmlSchema m_xshSchema = null;
 		private bool m_booMalformedXml = false;
 		private XmlReaderSettings m_xrsSettings = null;
-		bool m_booFormatOnce = false;
+		private bool m_booFormatOnce = false;
+		private bool m_booCaptureNextKey = false;
+		private char m_chrLastChar = '\0';
 
 		#region Properties
 
@@ -82,7 +105,7 @@ namespace Fomm.Controls
 		/// </summary>
 		public XmlEditor()
 		{
-			m_cdpXmlCompletionProvider = new XmlCompletionProvider();
+			m_cdpXmlCompletionProvider = new XmlCompletionProvider(this);
 
 			SetHighlighting("XML");
 			ActiveTextAreaControl.TextArea.KeyEventHandler += new ICSharpCode.TextEditor.KeyEventHandler(TextArea_KeyEventHandler);
@@ -96,23 +119,32 @@ namespace Fomm.Controls
 
 			m_tmrValidator.Tick += ValidateOnTimer;
 			m_tmrValidator.Interval = 2000;
+
+			m_cdpXmlCompletionProvider.GotAutoCompleteList += new EventHandler<AutoCompleteListEventArgs>(m_cdpXmlCompletionProvider_GotAutoCompleteList);
 		}
 
 		#endregion
 
+		#region Code Completion
+
 		/// <summary>
-		/// Raises the <see cref="Control.Load"/> event.
+		/// Handles the <see cref="XmlCompletionProvider.GotAutoCompleteList"/> event of the
+		/// completion provider.
 		/// </summary>
 		/// <remarks>
-		/// This sets the synchronizing object on the timers to our form. Doing so allows the timers
-		/// to update the UI.
+		/// This raises the editor's <see cref="GotAutoCompleteList"/> event.
 		/// </remarks>
-		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
-		protected override void OnLoad(EventArgs e)
+		/// <param name="sender">The object that raised the event.</param>
+		/// <param name="e">An <see cref="AutoCompleteListEventArgs"/> describing the event arguments.</param>
+		void m_cdpXmlCompletionProvider_GotAutoCompleteList(object sender, AutoCompleteListEventArgs e)
 		{
-			/*m_tmrFoldUpdater.SynchronizingObject = this.FindForm();
-			m_tmrValidator.SynchronizingObject = this.FindForm();*/
-			base.OnLoad(e);
+			if (GotAutoCompleteList != null)
+			{
+				RecapturableAutoCompleteListEventArgs raaArgs = new RecapturableAutoCompleteListEventArgs(e);
+				GotAutoCompleteList(this, raaArgs);
+				m_booCaptureNextKey = raaArgs.CaptureNextKey;
+				e.ExtraCompletionCharacters.AddRange(raaArgs.ExtraCompletionCharacters);
+			}
 		}
 
 		/// <summary>
@@ -124,15 +156,25 @@ namespace Fomm.Controls
 		{
 			if ((m_ccwCodeCompletionWindow != null) && m_ccwCodeCompletionWindow.ProcessKeyEvent(p_chrChar))
 				return true;
-			if (COMPLETION_CHARS.Contains(p_chrChar))
+			m_chrLastChar = p_chrChar;
+			if (p_chrChar.Equals('<') || p_chrChar.Equals(' ') || m_booCaptureNextKey)
 			{
-				m_ccwCodeCompletionWindow = CodeCompletionWindow.ShowCompletionWindow(this.FindForm(), this, null, m_cdpXmlCompletionProvider, p_chrChar);
-				//m_ccwCodeCompletionWindow is null if there are no valid completions
-				if (m_ccwCodeCompletionWindow != null)
-					m_ccwCodeCompletionWindow.Closed += new EventHandler(DisposeCodeCompletionWindow);
+				m_booCaptureNextKey = false;
+				ShowCodeCompletionWindow(p_chrChar);
 			}
-
 			return false;
+		}
+
+		/// <summary>
+		/// Displays the code completion window.
+		/// </summary>
+		/// <param name="p_chrChar">The character that was typed that caused the code window to display.</param>
+		public void ShowCodeCompletionWindow(char p_chrChar)
+		{
+			m_ccwCodeCompletionWindow = CodeCompletionWindow.ShowCompletionWindow(this.FindForm(), this, null, m_cdpXmlCompletionProvider, p_chrChar, true, false);
+			//m_ccwCodeCompletionWindow is null if there are no valid completions
+			if (m_ccwCodeCompletionWindow != null)
+				m_ccwCodeCompletionWindow.Closed += new EventHandler(DisposeCodeCompletionWindow);
 		}
 
 		/// <summary>
@@ -148,21 +190,6 @@ namespace Fomm.Controls
 				m_ccwCodeCompletionWindow.Dispose();
 				m_ccwCodeCompletionWindow = null;
 			}
-		}
-
-		/// <summary>
-		/// Updates the code folds.
-		/// </summary>
-		/// <remarks>
-		/// This method is called by a timer after a set span after the text in the editor was last changed.
-		/// </remarks>
-		/// <param name="sender">The object that triggered the event.</param>
-		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
-		private void UpdateFolds(object sender, EventArgs e)
-		{
-			Document.FoldingManager.UpdateFoldings(null, null);
-			Document.FoldingManager.NotifyFoldingsChanged(null);
-			m_tmrFoldUpdater.Stop();
 		}
 
 		/// <summary>
@@ -191,6 +218,32 @@ namespace Fomm.Controls
 			m_booFormatOnce = false;
 
 			base.OnTextChanged(e);
+
+			if (m_chrLastChar.Equals('=') && XmlParser.IsInsideTag(ActiveTextAreaControl.TextArea))
+			{
+				m_chrLastChar = '"';
+				Caret caret = ActiveTextAreaControl.Caret;
+				Document.Insert(caret.Offset + 1, "\"\"");
+				caret.Position = Document.OffsetToPosition(caret.Offset + 1);
+				ShowCodeCompletionWindow('=');
+			}
+		}
+
+		#endregion
+
+		/// <summary>
+		/// Updates the code folds.
+		/// </summary>
+		/// <remarks>
+		/// This method is called by a timer after a set span after the text in the editor was last changed.
+		/// </remarks>
+		/// <param name="sender">The object that triggered the event.</param>
+		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+		private void UpdateFolds(object sender, EventArgs e)
+		{
+			Document.FoldingManager.UpdateFoldings(null, null);
+			Document.FoldingManager.NotifyFoldingsChanged(null);
+			m_tmrFoldUpdater.Stop();
 		}
 
 		#region Validation

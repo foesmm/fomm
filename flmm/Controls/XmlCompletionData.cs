@@ -54,8 +54,9 @@ namespace Fomm.Controls
 		{
 			switch (m_actCompletionType)
 			{
+				case AutoCompleteType.Attribute:
 				case AutoCompleteType.AttributeValues:
-					textArea.InsertString(String.Concat("\"", Text, "\""));
+					textArea.InsertString(Text);
 					return false;
 				case AutoCompleteType.Element:
 					if (Text.EndsWith("["))

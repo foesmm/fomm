@@ -9,6 +9,7 @@ using System.Text;
 using System.Xml;
 using System.Drawing;
 using System.IO;
+using ICSharpCode.TextEditor.Document;
 
 namespace Fomm.Controls
 {
@@ -39,6 +40,8 @@ namespace Fomm.Controls
 		private string m_strElementPath = null;
 		private string[] m_strSiblings = null;
 		private AutoCompleteType m_actType = AutoCompleteType.Element;
+		private string m_strLastWord = null;
+		private List<char> m_lstExtraCompletionCharacters = new List<char>();
 
 		#region Properties
 
@@ -74,14 +77,31 @@ namespace Fomm.Controls
 			}
 		}
 
+		public string LastWord
+		{
+			get
+			{
+				return m_strLastWord;
+			}
+		}
+		
+		public List<char> ExtraCompletionCharacters
+		{
+			get
+			{
+				return m_lstExtraCompletionCharacters;
+			}
+		}
+
 		#endregion
 
-		public AutoCompleteListEventArgs(List<XmlCompletionData> p_lstAutoCompleteList, string p_strElementPath, string[] p_strSiblings, AutoCompleteType p_actType)
+		public AutoCompleteListEventArgs(List<XmlCompletionData> p_lstAutoCompleteList, string p_strElementPath, string[] p_strSiblings, AutoCompleteType p_actType, string p_strLastWord)
 		{
 			m_lstAutoCompleteList = p_lstAutoCompleteList;
 			m_strElementPath = p_strElementPath;
 			m_strSiblings = p_strSiblings;
 			m_actType = p_actType;
+			m_strLastWord = p_strLastWord;
 		}
 	}
 
@@ -94,12 +114,16 @@ namespace Fomm.Controls
 
 		Regex rgxTagContents = new Regex("<([^!>][^>]*)>?", RegexOptions.Singleline);
 		Regex rgxTagName = new Regex(@"([^!/\s][^/\s]*)");
-		Regex rgxLastAttribute = new Regex(".*\\s(\\S+)\\s*", RegexOptions.Singleline);
+		Regex rgxLastAttribute = new Regex(".*\\s([^=]+)=?", RegexOptions.Singleline);
 		Regex rgxAttribute = new Regex(@"(\S+)=");
 
 		private XmlSchemaSet m_xstSchema = null;
 		private XmlSchema m_xshSchema = null;
 		private ImageList m_imlImages = null;
+		private string m_strPreSelection = null;
+		private AutoCompleteType m_actCompleteType = AutoCompleteType.Element;
+		private XmlEditor m_xedEditor = null;
+		private Dictionary<AutoCompleteType, List<char>> m_dicExtraCompletionCharacters = new Dictionary<AutoCompleteType, List<char>>();
 
 		#region Properties
 
@@ -502,13 +526,14 @@ namespace Fomm.Controls
 		/// <summary>
 		/// The default constructor.
 		/// </summary>
-		public XmlCompletionProvider()
+		public XmlCompletionProvider(XmlEditor p_xedEditor)
 		{
 			m_imlImages = new ImageList();
 			m_imlImages.TransparentColor = Color.Magenta;
 			m_imlImages.Images.Add(Properties.Resources.xml);
 			m_imlImages.Images.Add(Properties.Resources.Properties);
 			m_imlImages.Images.Add(Properties.Resources.EnumItem);
+			m_xedEditor = p_xedEditor;
 		}
 
 		#endregion
@@ -549,7 +574,7 @@ namespace Fomm.Controls
 		{
 			get
 			{
-				return null;
+				return m_strPreSelection;
 			}
 		}
 
@@ -566,10 +591,21 @@ namespace Fomm.Controls
 		public ICompletionData[] GenerateCompletionData(string p_strFileName, TextArea p_txaTextArea, char p_chrCharTyped)
 		{
 			string strText = p_txaTextArea.Document.TextContent.Substring(0, p_txaTextArea.Caret.Offset);
-			bool booInsideTag = strText.LastIndexOf('<') > strText.LastIndexOf('>');
+			Int32 intOpenTagPos = strText.LastIndexOf('<');
+			bool booInsideTag = intOpenTagPos > strText.LastIndexOf('>');
+			bool booInsideValue = false;
 
 			if (!booInsideTag && (p_chrCharTyped != '<'))
 				return null;
+
+			if (booInsideTag)
+			{
+				Int32 intQuoteCount = 0;
+				for (Int32 intStartPos = intOpenTagPos; (intStartPos = strText.IndexOf('"', intStartPos + 1)) > -1; intQuoteCount++) ;
+				booInsideValue = (intQuoteCount % 2 == 1);
+			}
+
+			m_strPreSelection = null;
 
 			//parse the buffer
 			MatchCollection mclTags = rgxTagContents.Matches(strText);
@@ -593,10 +629,7 @@ namespace Fomm.Controls
 					if (intLastIndex > -1)
 					{
 						while ((lstTagAncestors.Last != null) && !lstTagAncestors.Last.Value.Key.Equals(strTagName))
-						{
-							intLastIndex--;
 							lstTagAncestors.RemoveLast();
-						}
 						lstTagAncestors.RemoveLast();
 						Int32 intOldDepth = intDepth;
 						intDepth -= intAcestorCount - intLastIndex;
@@ -626,31 +659,38 @@ namespace Fomm.Controls
 
 			List<KeyValuePair<string, string>> lstComplete = null;
 			List<string> lstSiblings = dicSiblings[intDepth];
-			AutoCompleteType actCompleteType = AutoCompleteType.Element;
-			switch (p_chrCharTyped)
-			{
-				case ' ':
-					string strTagContents = lstTagAncestors.Last.Value.Value;
-					lstSiblings = new List<string>();
-					foreach (Match mtcAttribute in rgxAttribute.Matches(strTagContents))
-						lstSiblings.Add(mtcAttribute.Groups[1].Value);
-					actCompleteType = AutoCompleteType.Attribute;
-					break;
-				case '=':
-					lstSiblings = new List<string>();
-					if (rgxLastAttribute.IsMatch(strText))
-						lstSiblings.Add(rgxLastAttribute.Match(strText).Groups[1].Value);
+			m_actCompleteType = AutoCompleteType.Element;
 
-					actCompleteType = AutoCompleteType.AttributeValues;
-					break;
+			if (booInsideValue || (booInsideTag && p_chrCharTyped.Equals('=')))
+			{
+				string strOutsideText = strText;
+				if (booInsideValue)
+				{
+					Int32 intValueStart = strText.LastIndexOf('"');
+					strOutsideText = strText.Substring(0, intValueStart);
+				}
+				lstSiblings = new List<string>();
+				if (rgxLastAttribute.IsMatch(strOutsideText))
+					lstSiblings.Add(rgxLastAttribute.Match(strOutsideText).Groups[1].Value);
+
+				m_actCompleteType = AutoCompleteType.AttributeValues;
 			}
-			lstComplete = ParseSchema(stkAncestors, lstSiblings, actCompleteType);
+			else if (booInsideTag && p_chrCharTyped.Equals(' '))
+			{
+				string strTagContents = lstTagAncestors.Last.Value.Value;
+				lstSiblings = new List<string>();
+				foreach (Match mtcAttribute in rgxAttribute.Matches(strTagContents))
+					lstSiblings.Add(mtcAttribute.Groups[1].Value);
+				m_actCompleteType = AutoCompleteType.Attribute;
+			}
+			lstComplete = ParseSchema(stkAncestors, lstSiblings, m_actCompleteType);
 
 			List<XmlCompletionData> k = new List<XmlCompletionData>();
 			if (lstComplete.Count > 0)
 				foreach (KeyValuePair<string, string> kvpCompletion in lstComplete)
-					k.Add(new XmlCompletionData(actCompleteType, kvpCompletion.Key, kvpCompletion.Value));
+					k.Add(new XmlCompletionData(m_actCompleteType, kvpCompletion.Key, kvpCompletion.Value));
 
+			m_dicExtraCompletionCharacters.Clear();
 			if (GotAutoCompleteList != null)
 			{
 				StringBuilder stbPath = new StringBuilder();
@@ -660,7 +700,34 @@ namespace Fomm.Controls
 					if (llnFirst.Next != null)
 						stbPath.Append(Path.DirectorySeparatorChar);
 				}
-				GotAutoCompleteList(this, new AutoCompleteListEventArgs(k, stbPath.ToString(), lstSiblings.ToArray(), actCompleteType));
+
+				string strLastWord = "";
+				if (ProcessKey(p_chrCharTyped) == CompletionDataProviderKeyResult.NormalKey)
+				{
+					TextWord twdLastWord = p_txaTextArea.Document.GetLineSegment(p_txaTextArea.Caret.Line).GetWord(p_txaTextArea.Caret.Column - 1);
+					if (booInsideValue)
+					{
+						Int32 intValueStart = strText.LastIndexOf('"') + 1;
+						if (intValueStart < strText.Length)
+							strLastWord = strText.Substring(intValueStart) + p_chrCharTyped;
+						else
+							strLastWord = p_chrCharTyped.ToString();
+					}
+					else
+					{
+						if (!twdLastWord.Word.Equals("\""))
+						{
+							if (!twdLastWord.Word.Equals("="))
+								strLastWord = twdLastWord.Word + p_chrCharTyped;
+						}
+						else
+							strLastWord = p_chrCharTyped.ToString();
+					}
+					m_strPreSelection = String.IsNullOrEmpty(strLastWord) ? null : strLastWord.Substring(0, strLastWord.Length - 1);
+				}
+				AutoCompleteListEventArgs aclArgs = new AutoCompleteListEventArgs(k, stbPath.ToString(), lstSiblings.ToArray(), m_actCompleteType, strLastWord);
+				GotAutoCompleteList(this, aclArgs);
+				m_dicExtraCompletionCharacters[m_actCompleteType] = aclArgs.ExtraCompletionCharacters;
 			}
 
 			return k.ToArray();
@@ -682,6 +749,7 @@ namespace Fomm.Controls
 		{
 			p_txaTextArea.Caret.Position = p_txaTextArea.Document.OffsetToPosition(p_intInsertionOffset);
 			bool booInserted = p_cdtData.InsertAction(p_txaTextArea, p_chrKey);
+
 			if (p_cdtData.Text.StartsWith("/"))
 			{
 				p_txaTextArea.Document.FormattingStrategy.IndentLine(p_txaTextArea, p_txaTextArea.Caret.Position.Line);
@@ -700,12 +768,30 @@ namespace Fomm.Controls
 		/// <returns>The type of key for the given character.</returns>
 		public CompletionDataProviderKeyResult ProcessKey(char p_chrKey)
 		{
-			if (char.IsLetterOrDigit(p_chrKey) || p_chrKey == '_')
+			List<char> lstExtraChars = null;
+			if (!m_dicExtraCompletionCharacters.TryGetValue(m_actCompleteType, out lstExtraChars))
+				lstExtraChars = new List<char>();
+			switch (m_actCompleteType)
 			{
-				return CompletionDataProviderKeyResult.NormalKey;
+				case AutoCompleteType.Attribute:
+					if (lstExtraChars.Contains(p_chrKey) || p_chrKey.Equals('=') || p_chrKey.Equals('\n') || p_chrKey.Equals('\t'))
+						return CompletionDataProviderKeyResult.InsertionKey;
+					if (p_chrKey.Equals(' '))
+						return CompletionDataProviderKeyResult.BeforeStartKey;
+					return CompletionDataProviderKeyResult.NormalKey;
+				case AutoCompleteType.AttributeValues:
+					if (lstExtraChars.Contains(p_chrKey) || p_chrKey.Equals('\n') || p_chrKey.Equals('\t'))
+						return CompletionDataProviderKeyResult.InsertionKey;
+					return CompletionDataProviderKeyResult.NormalKey;
+				case AutoCompleteType.Element:
+					if (lstExtraChars.Contains(p_chrKey))
+						return CompletionDataProviderKeyResult.InsertionKey;
+					if (char.IsLetterOrDigit(p_chrKey) || p_chrKey == '_')
+						return CompletionDataProviderKeyResult.NormalKey;
+					return CompletionDataProviderKeyResult.InsertionKey;
+				default:
+					throw new InvalidOperationException("Unrecognized value for AutoCompleteType enum.");
 			}
-			else
-				return CompletionDataProviderKeyResult.InsertionKey;
 		}
 
 		#endregion
