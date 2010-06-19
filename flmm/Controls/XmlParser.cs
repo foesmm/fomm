@@ -260,6 +260,11 @@ namespace Fomm.Controls
 			return stkTags;
 		}
 
+		/// <summary>
+		/// Determins if the caret is inside a tag.
+		/// </summary>
+		/// <param name="p_txaTextArea">The text area containing the caret.</param>
+		/// <returns><lang cref="true"/> if the caret is inside a tag; <lang cref="false"/> otherwise.</returns>
 		public static bool IsInsideTag(TextArea p_txaTextArea)
 		{
 			string strText = p_txaTextArea.Document.TextContent.Substring(0, p_txaTextArea.Caret.Offset);

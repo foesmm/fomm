@@ -34,6 +34,9 @@ namespace Fomm.Controls
 		AttributeValues
 	}
 
+	/// <summary>
+	/// The event arguments for events that allow extending the code completion list.
+	/// </summary>
 	public class AutoCompleteListEventArgs : EventArgs
 	{
 		private List<XmlCompletionData> m_lstAutoCompleteList = null;
@@ -41,10 +44,17 @@ namespace Fomm.Controls
 		private string[] m_strSiblings = null;
 		private AutoCompleteType m_actType = AutoCompleteType.Element;
 		private string m_strLastWord = null;
-		private List<char> m_lstExtraCompletionCharacters = new List<char>();
+		private List<char> m_lstExtraInsertionCharacters = new List<char>();
 
 		#region Properties
 
+		/// <summary>
+		/// Gets the list of code completions.
+		/// </summary>
+		/// <remarks>
+		/// This property can be used to add or remove code completions.
+		/// </remarks>
+		/// <value>The list of code completions.</value>
 		public List<XmlCompletionData> AutoCompleteList
 		{
 			get
@@ -53,6 +63,10 @@ namespace Fomm.Controls
 			}
 		}
 
+		/// <summary>
+		/// Gets the path to the current element in the XML.
+		/// </summary>
+		/// <value>The path to the current element in the XML.</value>
 		public string ElementPath
 		{
 			get
@@ -61,6 +75,16 @@ namespace Fomm.Controls
 			}
 		}
 
+		/// <summary>
+		/// Gets the siblings of the current XML object being completed.
+		/// </summary>
+		/// <remarks>
+		/// If the current object being completed is an element, than the siblings are sibling elements.
+		/// If the current object is an attribute, than the siblings are the other attributes in the current tag.
+		/// If the current object is an attribute value, there is only one sibling: to attribute whose value
+		/// is being completed.
+		/// </remarks>
+		/// <value>The siblings of the current XML object being completed.</value>
 		public string[] Siblings
 		{
 			get
@@ -69,6 +93,10 @@ namespace Fomm.Controls
 			}
 		}
 
+		/// <summary>
+		/// Gets the type of object being completed.
+		/// </summary>
+		/// <value>The type of object being completed.</value>
 		public AutoCompleteType AutoCompleteType
 		{
 			get
@@ -77,6 +105,10 @@ namespace Fomm.Controls
 			}
 		}
 
+		/// <summary>
+		/// Gets the word that has been entered thus far for the autocompletion string.
+		/// </summary>
+		/// <value>The word that has been entered thus far for the autocompletion string.</value>
 		public string LastWord
 		{
 			get
@@ -85,16 +117,30 @@ namespace Fomm.Controls
 			}
 		}
 		
-		public List<char> ExtraCompletionCharacters
+		/// <summary>
+		/// Gets a list of extra characters that should be treated as insertion characters.
+		/// </summary>
+		/// <value>A list of extra characters that should be treated as insertion characters.</value>
+		public List<char> ExtraInsertionCharacters
 		{
 			get
 			{
-				return m_lstExtraCompletionCharacters;
+				return m_lstExtraInsertionCharacters;
 			}
 		}
 
 		#endregion
 
+		#region Constructors
+
+		/// <summary>
+		/// A simple constructor that initializes the object with the given values.
+		/// </summary>
+		/// <param name="p_lstAutoCompleteList">The list of code completions.</param>
+		/// <param name="p_strElementPath">The path to the current element in the XML.</param>
+		/// <param name="p_strSiblings">The siblings of the current XML object being completed.</param>
+		/// <param name="p_actType">The type of object being completed.</param>
+		/// <param name="p_strLastWord">The word that has been entered thus far for the autocompletion string.</param>
 		public AutoCompleteListEventArgs(List<XmlCompletionData> p_lstAutoCompleteList, string p_strElementPath, string[] p_strSiblings, AutoCompleteType p_actType, string p_strLastWord)
 		{
 			m_lstAutoCompleteList = p_lstAutoCompleteList;
@@ -103,6 +149,8 @@ namespace Fomm.Controls
 			m_actType = p_actType;
 			m_strLastWord = p_strLastWord;
 		}
+
+		#endregion
 	}
 
 	/// <summary>
@@ -110,6 +158,12 @@ namespace Fomm.Controls
 	/// </summary>
 	public class XmlCompletionProvider : ICompletionDataProvider
 	{
+		/// <summary>
+		/// Raised when the code completion option6s have been retrieved.
+		/// </summary>
+		/// <remarks>
+		/// Handling this event allows the addition/removal of code completion items.
+		/// </remarks>
 		public event EventHandler<AutoCompleteListEventArgs> GotAutoCompleteList;
 
 		Regex rgxTagContents = new Regex("<([^!>][^>]*)>?", RegexOptions.Singleline);
@@ -727,7 +781,7 @@ namespace Fomm.Controls
 				}
 				AutoCompleteListEventArgs aclArgs = new AutoCompleteListEventArgs(k, stbPath.ToString(), lstSiblings.ToArray(), m_actCompleteType, strLastWord);
 				GotAutoCompleteList(this, aclArgs);
-				m_dicExtraCompletionCharacters[m_actCompleteType] = aclArgs.ExtraCompletionCharacters;
+				m_dicExtraCompletionCharacters[m_actCompleteType] = aclArgs.ExtraInsertionCharacters;
 			}
 
 			return k.ToArray();

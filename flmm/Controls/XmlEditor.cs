@@ -12,30 +12,51 @@ using System.Collections.Generic;
 
 namespace Fomm.Controls
 {
-	public class RecapturableAutoCompleteListEventArgs : AutoCompleteListEventArgs
+	/// <summary>
+	/// The event arguments for events that allow extending the code completion list, on regenerating
+	/// the list on the next key press.
+	/// </summary>
+	public class RegeneratableAutoCompleteListEventArgs : AutoCompleteListEventArgs
 	{
-		private bool m_booCaptureNextKey = false;
+		private bool m_booGenerateOnNextKey = false;
 
 		#region Properties
 
-		public bool CaptureNextKey
+		/// <summary>
+		/// Gets or sets whether the next keys press should cause the code completion list to regenerate.
+		/// </summary>
+		/// <value>Whether the next keys press should cause the code completion list to regenerate.</value>
+		public bool GenerateOnNextKey
 		{
 			get
 			{
-				return m_booCaptureNextKey;
+				return m_booGenerateOnNextKey;
 			}
 			set
 			{
-				m_booCaptureNextKey = value;
+				m_booGenerateOnNextKey = value;
 			}
 		}
 
 		#endregion
 
-		public RecapturableAutoCompleteListEventArgs(AutoCompleteListEventArgs p_acaArgs)
+		#region Constructors
+
+		/// <summary>
+		/// A copy constructor.
+		/// </summary>
+		/// <remarks>
+		/// This constructor creates a <see cref="RegeneratableAutoCompleteListEventArgs"/> based on the given
+		/// <see cref="AutoCompleteListEventArgs"/>.
+		/// </remarks>
+		/// <param name="p_acaArgs">The <see cref="AutoCompleteListEventArgs"/> on which to base
+		/// this object.</param>
+		public RegeneratableAutoCompleteListEventArgs(AutoCompleteListEventArgs p_acaArgs)
 			: base(p_acaArgs.AutoCompleteList, p_acaArgs.ElementPath, p_acaArgs.Siblings, p_acaArgs.AutoCompleteType, p_acaArgs.LastWord)
 		{
 		}
+
+		#endregion
 	}
 
 	/// <summary>
@@ -52,7 +73,7 @@ namespace Fomm.Controls
 		/// <remarks>
 		/// Handling this event allows the addition/removal of code completion items.
 		/// </remarks>
-		public event EventHandler<RecapturableAutoCompleteListEventArgs> GotAutoCompleteList;
+		public event EventHandler<RegeneratableAutoCompleteListEventArgs> GotAutoCompleteList;
 
 		private static Regex rgxTagContents = new Regex("<([^!>][^>]*)>?", RegexOptions.Singleline);
 
@@ -64,7 +85,7 @@ namespace Fomm.Controls
 		private bool m_booMalformedXml = false;
 		private XmlReaderSettings m_xrsSettings = null;
 		private bool m_booFormatOnce = false;
-		private bool m_booCaptureNextKey = false;
+		private bool m_booGenerateOnNextKey = false;
 		private char m_chrLastChar = '\0';
 
 		#region Properties
@@ -140,10 +161,10 @@ namespace Fomm.Controls
 		{
 			if (GotAutoCompleteList != null)
 			{
-				RecapturableAutoCompleteListEventArgs raaArgs = new RecapturableAutoCompleteListEventArgs(e);
+				RegeneratableAutoCompleteListEventArgs raaArgs = new RegeneratableAutoCompleteListEventArgs(e);
 				GotAutoCompleteList(this, raaArgs);
-				m_booCaptureNextKey = raaArgs.CaptureNextKey;
-				e.ExtraCompletionCharacters.AddRange(raaArgs.ExtraCompletionCharacters);
+				m_booGenerateOnNextKey = raaArgs.GenerateOnNextKey;
+				e.ExtraInsertionCharacters.AddRange(raaArgs.ExtraInsertionCharacters);
 			}
 		}
 
@@ -157,9 +178,9 @@ namespace Fomm.Controls
 			if ((m_ccwCodeCompletionWindow != null) && m_ccwCodeCompletionWindow.ProcessKeyEvent(p_chrChar))
 				return true;
 			m_chrLastChar = p_chrChar;
-			if (p_chrChar.Equals('<') || p_chrChar.Equals(' ') || m_booCaptureNextKey)
+			if (p_chrChar.Equals('<') || p_chrChar.Equals(' ') || m_booGenerateOnNextKey)
 			{
-				m_booCaptureNextKey = false;
+				m_booGenerateOnNextKey = false;
 				ShowCodeCompletionWindow(p_chrChar);
 			}
 			return false;
