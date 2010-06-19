@@ -35,7 +35,14 @@
 			this.butOK = new System.Windows.Forms.Button();
 			this.butCancel = new System.Windows.Forms.Button();
 			this.vtcFomodData = new Fomm.Controls.VerticalTabControl();
+			this.vtpInfo = new Fomm.Controls.VerticalTabPage();
+			this.finInfo = new Fomm.PackageManager.FomodInfo();
 			this.vtpOutput = new Fomm.Controls.VerticalTabPage();
+			this.label10 = new System.Windows.Forms.Label();
+			this.butSelectPFPFolder = new System.Windows.Forms.Button();
+			this.tbxPFPPath = new System.Windows.Forms.TextBox();
+			this.cbxPFP = new System.Windows.Forms.CheckBox();
+			this.cbxFomod = new System.Windows.Forms.CheckBox();
 			this.vtpScript = new Fomm.Controls.VerticalTabPage();
 			this.ddtScript = new Fomm.Controls.DropDownTabControl();
 			this.dtpCSharp = new Fomm.Controls.DropDownTabPage();
@@ -60,8 +67,6 @@
 			this.butGenerateReadme = new System.Windows.Forms.Button();
 			this.label7 = new System.Windows.Forms.Label();
 			this.label6 = new System.Windows.Forms.Label();
-			this.vtpInfo = new Fomm.Controls.VerticalTabPage();
-			this.finInfo = new Fomm.PackageManager.FomodInfo();
 			this.vtpDownloadLocations = new Fomm.Controls.VerticalTabPage();
 			this.sdsDownloadLocations = new Fomm.PackageManager.FomodBuilder.SourceDownloadSelector();
 			this.label5 = new System.Windows.Forms.Label();
@@ -77,6 +82,8 @@
 			this.pnlHeader.SuspendLayout();
 			this.pnlButtons.SuspendLayout();
 			this.vtcFomodData.SuspendLayout();
+			this.vtpInfo.SuspendLayout();
+			this.vtpOutput.SuspendLayout();
 			this.vtpScript.SuspendLayout();
 			this.ddtScript.SuspendLayout();
 			this.dtpCSharp.SuspendLayout();
@@ -89,7 +96,6 @@
 			this.ddpHTML.SuspendLayout();
 			this.ddpRichText.SuspendLayout();
 			this.panel2.SuspendLayout();
-			this.vtpInfo.SuspendLayout();
 			this.vtpDownloadLocations.SuspendLayout();
 			this.vtpSources.SuspendLayout();
 			this.panel1.SuspendLayout();
@@ -151,25 +157,60 @@
 			// vtcFomodData
 			// 
 			this.vtcFomodData.BackColor = System.Drawing.SystemColors.Window;
-			this.vtcFomodData.Controls.Add(this.vtpScript);
 			this.vtcFomodData.Controls.Add(this.vtpOutput);
-			this.vtcFomodData.Controls.Add(this.vtpReadme);
 			this.vtcFomodData.Controls.Add(this.vtpInfo);
+			this.vtcFomodData.Controls.Add(this.vtpReadme);
+			this.vtcFomodData.Controls.Add(this.vtpScript);
 			this.vtcFomodData.Controls.Add(this.vtpDownloadLocations);
 			this.vtcFomodData.Controls.Add(this.vtpSources);
 			this.vtcFomodData.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.vtcFomodData.Location = new System.Drawing.Point(0, 36);
 			this.vtcFomodData.Name = "vtcFomodData";
 			this.vtcFomodData.SelectedIndex = 1;
-			this.vtcFomodData.SelectedTabPage = this.vtpScript;
+			this.vtcFomodData.SelectedTabPage = this.vtpOutput;
 			this.vtcFomodData.Size = new System.Drawing.Size(595, 367);
 			this.vtcFomodData.TabIndex = 2;
 			this.vtcFomodData.Text = "verticalTabControl1";
 			this.vtcFomodData.SelectedTabPageChanged += new System.EventHandler<Fomm.Controls.VerticalTabControl.TabPageEventArgs>(this.vtcFomodData_SelectedTabPageChanged);
 			// 
+			// vtpInfo
+			// 
+			this.vtpInfo.BackColor = System.Drawing.SystemColors.Control;
+			this.vtpInfo.Controls.Add(this.finInfo);
+			this.vtpInfo.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.vtpInfo.Location = new System.Drawing.Point(150, 0);
+			this.vtpInfo.Name = "vtpInfo";
+			this.vtpInfo.PageIndex = 3;
+			this.vtpInfo.Size = new System.Drawing.Size(445, 367);
+			this.vtpInfo.TabIndex = 4;
+			this.vtpInfo.Text = "FOMOD Info";
+			// 
+			// finInfo
+			// 
+			this.finInfo.Author = "";
+			this.finInfo.AutoScroll = true;
+			this.finInfo.Description = "";
+			this.finInfo.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.finInfo.Email = "";
+			this.finInfo.Groups = new string[0];
+			this.finInfo.HumanReadableVersion = "";
+			this.finInfo.Location = new System.Drawing.Point(0, 0);
+			this.finInfo.MachineVersion = ((System.Version)(resources.GetObject("finInfo.MachineVersion")));
+			this.finInfo.MinFommVersion = ((System.Version)(resources.GetObject("finInfo.MinFommVersion")));
+			this.finInfo.ModName = "";
+			this.finInfo.Name = "finInfo";
+			this.finInfo.Size = new System.Drawing.Size(445, 367);
+			this.finInfo.TabIndex = 0;
+			this.finInfo.Website = "";
+			// 
 			// vtpOutput
 			// 
 			this.vtpOutput.BackColor = System.Drawing.SystemColors.Control;
+			this.vtpOutput.Controls.Add(this.label10);
+			this.vtpOutput.Controls.Add(this.butSelectPFPFolder);
+			this.vtpOutput.Controls.Add(this.tbxPFPPath);
+			this.vtpOutput.Controls.Add(this.cbxPFP);
+			this.vtpOutput.Controls.Add(this.cbxFomod);
 			this.vtpOutput.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.vtpOutput.Location = new System.Drawing.Point(150, 0);
 			this.vtpOutput.Name = "vtpOutput";
@@ -178,31 +219,82 @@
 			this.vtpOutput.TabIndex = 5;
 			this.vtpOutput.Text = "Save Locations";
 			// 
+			// label10
+			// 
+			this.label10.AutoSize = true;
+			this.label10.Location = new System.Drawing.Point(3, 3);
+			this.label10.Name = "label10";
+			this.label10.Size = new System.Drawing.Size(191, 13);
+			this.label10.TabIndex = 4;
+			this.label10.Text = "Select the out you would like to create.";
+			// 
+			// butSelectPFPFolder
+			// 
+			this.butSelectPFPFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.butSelectPFPFolder.AutoSize = true;
+			this.butSelectPFPFolder.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.butSelectPFPFolder.Location = new System.Drawing.Point(407, 84);
+			this.butSelectPFPFolder.Name = "butSelectPFPFolder";
+			this.butSelectPFPFolder.Size = new System.Drawing.Size(26, 23);
+			this.butSelectPFPFolder.TabIndex = 3;
+			this.butSelectPFPFolder.Text = "...";
+			this.butSelectPFPFolder.UseVisualStyleBackColor = true;
+			// 
+			// tbxPFPPath
+			// 
+			this.tbxPFPPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.tbxPFPPath.Location = new System.Drawing.Point(34, 86);
+			this.tbxPFPPath.Name = "tbxPFPPath";
+			this.tbxPFPPath.Size = new System.Drawing.Size(367, 20);
+			this.tbxPFPPath.TabIndex = 2;
+			this.tbxPFPPath.Validating += new System.ComponentModel.CancelEventHandler(this.tbxPFPPath_Validating);
+			// 
+			// cbxPFP
+			// 
+			this.cbxPFP.AutoSize = true;
+			this.cbxPFP.Location = new System.Drawing.Point(16, 63);
+			this.cbxPFP.Name = "cbxPFP";
+			this.cbxPFP.Size = new System.Drawing.Size(172, 17);
+			this.cbxPFP.TabIndex = 1;
+			this.cbxPFP.Text = "Create Premade FOMOD Pack";
+			this.cbxPFP.UseVisualStyleBackColor = true;
+			// 
+			// cbxFomod
+			// 
+			this.cbxFomod.AutoSize = true;
+			this.cbxFomod.Location = new System.Drawing.Point(16, 40);
+			this.cbxFomod.Name = "cbxFomod";
+			this.cbxFomod.Size = new System.Drawing.Size(99, 17);
+			this.cbxFomod.TabIndex = 0;
+			this.cbxFomod.Text = "Create FOMOD";
+			this.cbxFomod.UseVisualStyleBackColor = true;
+			// 
 			// vtpScript
 			// 
 			this.vtpScript.BackColor = System.Drawing.SystemColors.Control;
 			this.vtpScript.Controls.Add(this.ddtScript);
 			this.vtpScript.Controls.Add(this.panel3);
 			this.vtpScript.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.vtpScript.Location = new System.Drawing.Point(150, 0);
+			this.vtpScript.Location = new System.Drawing.Point(0, 0);
 			this.vtpScript.Name = "vtpScript";
 			this.vtpScript.PageIndex = 4;
-			this.vtpScript.Size = new System.Drawing.Size(445, 367);
+			this.vtpScript.Size = new System.Drawing.Size(595, 367);
 			this.vtpScript.TabIndex = 6;
 			this.vtpScript.Text = "Script";
 			// 
 			// ddtScript
 			// 
 			this.ddtScript.BackColor = System.Drawing.SystemColors.Control;
-			this.ddtScript.Controls.Add(this.dtpXML);
 			this.ddtScript.Controls.Add(this.dtpCSharp);
+			this.ddtScript.Controls.Add(this.dtpXML);
 			this.ddtScript.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.ddtScript.Enabled = false;
 			this.ddtScript.Location = new System.Drawing.Point(0, 40);
 			this.ddtScript.Name = "ddtScript";
-			this.ddtScript.SelectedIndex = 1;
-			this.ddtScript.SelectedTabPage = this.dtpXML;
-			this.ddtScript.Size = new System.Drawing.Size(445, 327);
+			this.ddtScript.SelectedIndex = 0;
+			this.ddtScript.SelectedTabPage = this.dtpCSharp;
+			this.ddtScript.Size = new System.Drawing.Size(595, 327);
 			this.ddtScript.TabIndex = 1;
 			this.ddtScript.TabWidth = 121;
 			this.ddtScript.Text = "Script Type:";
@@ -216,7 +308,7 @@
 			this.dtpCSharp.Name = "dtpCSharp";
 			this.dtpCSharp.Padding = new System.Windows.Forms.Padding(3);
 			this.dtpCSharp.PageIndex = 0;
-			this.dtpCSharp.Size = new System.Drawing.Size(445, 282);
+			this.dtpCSharp.Size = new System.Drawing.Size(595, 282);
 			this.dtpCSharp.TabIndex = 1;
 			this.dtpCSharp.Text = "C#";
 			// 
@@ -225,7 +317,7 @@
 			this.sedScript.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.sedScript.Location = new System.Drawing.Point(3, 3);
 			this.sedScript.Name = "sedScript";
-			this.sedScript.Size = new System.Drawing.Size(439, 276);
+			this.sedScript.Size = new System.Drawing.Size(589, 276);
 			this.sedScript.TabIndex = 0;
 			// 
 			// dtpXML
@@ -238,7 +330,7 @@
 			this.dtpXML.Name = "dtpXML";
 			this.dtpXML.Padding = new System.Windows.Forms.Padding(3);
 			this.dtpXML.PageIndex = 1;
-			this.dtpXML.Size = new System.Drawing.Size(445, 282);
+			this.dtpXML.Size = new System.Drawing.Size(595, 282);
 			this.dtpXML.TabIndex = 2;
 			this.dtpXML.Text = "XML Config";
 			// 
@@ -248,9 +340,9 @@
 			this.xedScript.IsReadOnly = false;
 			this.xedScript.Location = new System.Drawing.Point(3, 37);
 			this.xedScript.Name = "xedScript";
-			this.xedScript.Size = new System.Drawing.Size(439, 242);
+			this.xedScript.Size = new System.Drawing.Size(589, 242);
 			this.xedScript.TabIndex = 1;
-			this.xedScript.GotAutoCompleteList += new System.EventHandler<Fomm.Controls.RecapturableAutoCompleteListEventArgs>(this.xedScript_GotAutoCompleteList);
+			this.xedScript.GotAutoCompleteList += new System.EventHandler<Fomm.Controls.RegeneratableAutoCompleteListEventArgs>(this.xedScript_GotAutoCompleteList);
 			// 
 			// panel4
 			// 
@@ -259,7 +351,7 @@
 			this.panel4.Dock = System.Windows.Forms.DockStyle.Top;
 			this.panel4.Location = new System.Drawing.Point(3, 3);
 			this.panel4.Name = "panel4";
-			this.panel4.Size = new System.Drawing.Size(439, 34);
+			this.panel4.Size = new System.Drawing.Size(589, 34);
 			this.panel4.TabIndex = 0;
 			// 
 			// cbxVersion
@@ -288,7 +380,7 @@
 			this.panel3.Dock = System.Windows.Forms.DockStyle.Top;
 			this.panel3.Location = new System.Drawing.Point(0, 0);
 			this.panel3.Name = "panel3";
-			this.panel3.Size = new System.Drawing.Size(445, 40);
+			this.panel3.Size = new System.Drawing.Size(595, 40);
 			this.panel3.TabIndex = 0;
 			// 
 			// cbxUseScript
@@ -317,10 +409,10 @@
 			this.vtpReadme.Controls.Add(this.ddtReadme);
 			this.vtpReadme.Controls.Add(this.panel2);
 			this.vtpReadme.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.vtpReadme.Location = new System.Drawing.Point(0, 0);
+			this.vtpReadme.Location = new System.Drawing.Point(150, 0);
 			this.vtpReadme.Name = "vtpReadme";
 			this.vtpReadme.PageIndex = 2;
-			this.vtpReadme.Size = new System.Drawing.Size(595, 367);
+			this.vtpReadme.Size = new System.Drawing.Size(445, 367);
 			this.vtpReadme.TabIndex = 3;
 			this.vtpReadme.Text = "Readme";
 			// 
@@ -335,7 +427,7 @@
 			this.ddtReadme.Name = "ddtReadme";
 			this.ddtReadme.SelectedIndex = 0;
 			this.ddtReadme.SelectedTabPage = this.ddpPlainText;
-			this.ddtReadme.Size = new System.Drawing.Size(595, 292);
+			this.ddtReadme.Size = new System.Drawing.Size(445, 292);
 			this.ddtReadme.TabIndex = 1;
 			this.ddtReadme.TabWidth = 121;
 			this.ddtReadme.Text = "Readme Format:";
@@ -349,7 +441,7 @@
 			this.ddpPlainText.Name = "ddpPlainText";
 			this.ddpPlainText.Padding = new System.Windows.Forms.Padding(3);
 			this.ddpPlainText.PageIndex = 0;
-			this.ddpPlainText.Size = new System.Drawing.Size(595, 247);
+			this.ddpPlainText.Size = new System.Drawing.Size(445, 247);
 			this.ddpPlainText.TabIndex = 1;
 			this.ddpPlainText.Text = "Plain Text";
 			// 
@@ -360,7 +452,7 @@
 			this.tbxReadme.Multiline = true;
 			this.tbxReadme.Name = "tbxReadme";
 			this.tbxReadme.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.tbxReadme.Size = new System.Drawing.Size(589, 241);
+			this.tbxReadme.Size = new System.Drawing.Size(439, 241);
 			this.tbxReadme.TabIndex = 0;
 			// 
 			// ddpHTML
@@ -371,7 +463,7 @@
 			this.ddpHTML.Name = "ddpHTML";
 			this.ddpHTML.Padding = new System.Windows.Forms.Padding(3);
 			this.ddpHTML.PageIndex = 2;
-			this.ddpHTML.Size = new System.Drawing.Size(595, 247);
+			this.ddpHTML.Size = new System.Drawing.Size(445, 247);
 			this.ddpHTML.TabIndex = 3;
 			this.ddpHTML.Text = "HTML";
 			// 
@@ -381,7 +473,7 @@
 			this.xedReadme.IsReadOnly = false;
 			this.xedReadme.Location = new System.Drawing.Point(3, 3);
 			this.xedReadme.Name = "xedReadme";
-			this.xedReadme.Size = new System.Drawing.Size(589, 241);
+			this.xedReadme.Size = new System.Drawing.Size(439, 241);
 			this.xedReadme.TabIndex = 0;
 			// 
 			// ddpRichText
@@ -393,7 +485,7 @@
 			this.ddpRichText.Name = "ddpRichText";
 			this.ddpRichText.Padding = new System.Windows.Forms.Padding(3);
 			this.ddpRichText.PageIndex = 1;
-			this.ddpRichText.Size = new System.Drawing.Size(595, 247);
+			this.ddpRichText.Size = new System.Drawing.Size(445, 247);
 			this.ddpRichText.TabIndex = 2;
 			this.ddpRichText.Text = "Rich Text";
 			// 
@@ -404,7 +496,7 @@
 			this.rteReadme.Name = "rteReadme";
 			this.rteReadme.Rtf = "{\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang4105{\\fonttbl{\\f0\\fnil\\fcharset0 Microsoft S" +
 				"ans Serif;}}\r\n\\viewkind4\\uc1\\pard\\f0\\fs17\\par\r\n}\r\n";
-			this.rteReadme.Size = new System.Drawing.Size(589, 241);
+			this.rteReadme.Size = new System.Drawing.Size(439, 241);
 			this.rteReadme.TabIndex = 0;
 			// 
 			// panel2
@@ -415,13 +507,13 @@
 			this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
 			this.panel2.Location = new System.Drawing.Point(0, 0);
 			this.panel2.Name = "panel2";
-			this.panel2.Size = new System.Drawing.Size(595, 75);
+			this.panel2.Size = new System.Drawing.Size(445, 75);
 			this.panel2.TabIndex = 0;
 			// 
 			// butGenerateReadme
 			// 
 			this.butGenerateReadme.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.butGenerateReadme.Location = new System.Drawing.Point(358, 46);
+			this.butGenerateReadme.Location = new System.Drawing.Point(208, 46);
 			this.butGenerateReadme.Name = "butGenerateReadme";
 			this.butGenerateReadme.Size = new System.Drawing.Size(75, 23);
 			this.butGenerateReadme.TabIndex = 2;
@@ -446,35 +538,6 @@
 			this.label6.Size = new System.Drawing.Size(171, 13);
 			this.label6.TabIndex = 0;
 			this.label6.Text = "Provide the text for the readme file.";
-			// 
-			// vtpInfo
-			// 
-			this.vtpInfo.BackColor = System.Drawing.SystemColors.Control;
-			this.vtpInfo.Controls.Add(this.finInfo);
-			this.vtpInfo.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.vtpInfo.Location = new System.Drawing.Point(0, 0);
-			this.vtpInfo.Name = "vtpInfo";
-			this.vtpInfo.PageIndex = 3;
-			this.vtpInfo.Size = new System.Drawing.Size(595, 367);
-			this.vtpInfo.TabIndex = 4;
-			this.vtpInfo.Text = "FOMOD Info";
-			// 
-			// finInfo
-			// 
-			this.finInfo.Author = "";
-			this.finInfo.AutoScroll = true;
-			this.finInfo.Description = "";
-			this.finInfo.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.finInfo.Email = "";
-			this.finInfo.Location = new System.Drawing.Point(0, 0);
-			this.finInfo.MachineVersion = "";
-			this.finInfo.ModName = "";
-			this.finInfo.Name = "finInfo";
-			this.finInfo.RequiredFOMMVersion = "";
-			this.finInfo.Size = new System.Drawing.Size(595, 367);
-			this.finInfo.TabIndex = 0;
-			this.finInfo.Version = "";
-			this.finInfo.Website = "";
 			// 
 			// vtpDownloadLocations
 			// 
@@ -604,6 +667,9 @@
 			this.pnlHeader.PerformLayout();
 			this.pnlButtons.ResumeLayout(false);
 			this.vtcFomodData.ResumeLayout(false);
+			this.vtpInfo.ResumeLayout(false);
+			this.vtpOutput.ResumeLayout(false);
+			this.vtpOutput.PerformLayout();
 			this.vtpScript.ResumeLayout(false);
 			this.ddtScript.ResumeLayout(false);
 			this.dtpCSharp.ResumeLayout(false);
@@ -620,7 +686,6 @@
 			this.ddpRichText.ResumeLayout(false);
 			this.panel2.ResumeLayout(false);
 			this.panel2.PerformLayout();
-			this.vtpInfo.ResumeLayout(false);
 			this.vtpDownloadLocations.ResumeLayout(false);
 			this.vtpDownloadLocations.PerformLayout();
 			this.vtpSources.ResumeLayout(false);
@@ -679,5 +744,10 @@
 		private System.Windows.Forms.ComboBox cbxVersion;
 		private System.Windows.Forms.Label label9;
 		private System.Windows.Forms.CheckBox cbxUseScript;
+		private System.Windows.Forms.Label label10;
+		private System.Windows.Forms.Button butSelectPFPFolder;
+		private System.Windows.Forms.TextBox tbxPFPPath;
+		private System.Windows.Forms.CheckBox cbxPFP;
+		private System.Windows.Forms.CheckBox cbxFomod;
 	}
 }

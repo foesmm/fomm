@@ -117,6 +117,18 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="finInfo.MachineVersion" mimetype="application/x-microsoft.net.object.binary.base64">
+    <value>
+        AAEAAAD/////AQAAAAAAAAAEAQAAAA5TeXN0ZW0uVmVyc2lvbgQAAAAGX01ham9yBl9NaW5vcgZfQnVp
+        bGQJX1JldmlzaW9uAAAAAAgICAgBAAAAAAAAAP//////////Cw==
+</value>
+  </data>
+  <data name="finInfo.MinFommVersion" mimetype="application/x-microsoft.net.object.binary.base64">
+    <value>
+        AAEAAAD/////AQAAAAAAAAAEAQAAAA5TeXN0ZW0uVmVyc2lvbgQAAAAGX01ham9yBl9NaW5vcgZfQnVp
+        bGQJX1JldmlzaW9uAAAAAAgICAgAAAAAAAAAAAAAAAAAAAAACw==
+</value>
+  </data>
   <data name="label5.Text" xml:space="preserve">
     <value>This information is used primarily by Premade FOMOD Packs. If you want to include the source files in the Premade FOMOD Pack, check the "Included" checkbox instead of specifying a download location. If you aren't making a Premade FOMOD Pack, you can safely leave this empty.</value>
   </data>

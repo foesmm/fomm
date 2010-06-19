@@ -1,15 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 using Fomm.Controls;
+using System.ComponentModel;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.IO;
-using System.Xml.Schema;
+using Fomm.Util;
 using Fomm.PackageManager.XmlConfiguredInstall;
+using System.Xml.Schema;
+using System.Xml;
 
 namespace Fomm.PackageManager.FomodBuilder
 {
@@ -63,15 +62,35 @@ class Script : BaseScript {
 		public FomodBuilderForm()
 		{
 			InitializeComponent();
+
+			Icon = Fomm.Properties.Resources.fomm02;
+			Settings.GetWindowPosition("FomodBuilderForm", this);
+
 			xedReadme.SetHighlighting("HTML");
 			cbxVersion.Items.Add("1.0");
 			cbxVersion.Items.Add("2.0");
 			cbxVersion.Items.Add("3.0");
 			cbxVersion.SelectedIndex = 2;
 			LoadConfigSchema();
+
+			tbxPFPPath.DataBindings.Add("Enabled", cbxPFP, "Checked");
+			butSelectPFPFolder.DataBindings.Add("Enabled", cbxPFP, "Checked");
 		}
 
 		#endregion
+
+		/// <summary>
+		/// Raises the <see cref="Form.Closing"/> event.
+		/// </summary>
+		/// <remarks>
+		/// Saves the window's position.
+		/// </remarks>
+		/// <param name="e">A <see cref="CancelEventArgs"/> describing the event arguments.</param>
+		protected override void OnClosing(CancelEventArgs e)
+		{
+			Settings.SetWindowPosition("FomodBuilderForm", this);
+			base.OnClosing(e);
+		}
 
 		#region Navigation
 
@@ -92,6 +111,8 @@ class Script : BaseScript {
 				SetReadmeDefault();
 			else if (e.TabPage == vtpScript)
 				SetScriptDefault();
+			else if (e.TabPage == vtpInfo)
+				SetInfoDefault();
 		}
 
 		/// <summary>
@@ -107,8 +128,11 @@ class Script : BaseScript {
 			switch (PerformValidation())
 			{
 				case ValidationState.Errors:
-					break;
+					MessageBox.Show(this, "You must correct the errors before saving.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					return;
 				case ValidationState.Warnings:
+					if (MessageBox.Show(this, "There are warnings." + Environment.NewLine + "Warnings can be ignored, but they can indicate missing information that you meant to enter." + Environment.NewLine + "Would you like to continue?", "Warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.Cancel)
+						return;
 					break;
 				case ValidationState.Passed:
 					break;
@@ -139,7 +163,7 @@ class Script : BaseScript {
 			if (!ValidateSources())
 			{
 				sspError.SetStatus(vtpSources, "Missing required information.");
-				booHasErrors |= true;
+				booHasErrors = true;
 			}
 
 			//download locations tab validation
@@ -148,8 +172,16 @@ class Script : BaseScript {
 			foreach (SourceDownloadSelector.SourceDownloadLocation sdlLocation in lstLocations)
 				if (String.IsNullOrEmpty(sdlLocation.URL) && !sdlLocation.Included)
 				{
-					sspWarning.SetStatus(vtpDownloadLocations, "Download locations not specified for all sources.");
-					booHasWarnings |= true;
+					if (cbxPFP.Checked)
+					{
+						sspError.SetStatus(vtpDownloadLocations, "Download locations not specified for all sources.");
+						booHasErrors = true;
+					}
+					else
+					{
+						sspWarning.SetStatus(vtpDownloadLocations, "Download locations not specified for all sources.");
+						booHasWarnings = true;
+					}
 					break;
 				}
 
@@ -159,23 +191,23 @@ class Script : BaseScript {
 				((ddtReadme.SelectedTabPage == ddpHTML) && String.IsNullOrEmpty(xedReadme.Text)))
 			{
 				sspWarning.SetStatus(vtpReadme, "No Readme file present.");
-				booHasWarnings |= true;
+				booHasWarnings = true;
 			}
 
 			//fomod info Validation
 			if (!finInfo.PerformValidation())
 			{
 				sspError.SetStatus(vtpInfo, "Invalid information.");
-				booHasErrors |= true;
+				booHasErrors = true;
 			}
 			else if (String.IsNullOrEmpty(finInfo.Name) ||
 				String.IsNullOrEmpty(finInfo.Author) ||
-				String.IsNullOrEmpty(finInfo.Version) ||
+				String.IsNullOrEmpty(finInfo.HumanReadableVersion) ||
 				String.IsNullOrEmpty(finInfo.Website) ||
 				String.IsNullOrEmpty(finInfo.Description))
 			{
 				sspWarning.SetStatus(vtpInfo, "Missing information.");
-				booHasWarnings |= true;
+				booHasWarnings = true;
 			}
 
 			//script validation
@@ -185,16 +217,22 @@ class Script : BaseScript {
 					((ddtScript.SelectedTabPage == dtpXML) && String.IsNullOrEmpty(xedScript.Text)))
 				{
 					sspWarning.SetStatus(vtpScript, "Missing script.");
-					booHasWarnings |= true;
+					booHasWarnings = true;
 				}
 				else if (((ddtScript.SelectedTabPage == dtpCSharp) && !sedScript.ValidateSyntax()) ||
 					((ddtScript.SelectedTabPage == dtpXML) && !xedScript.ValidateXml()))
 				{
 					sspError.SetStatus(vtpScript, "Invalid script.");
-					booHasErrors |= true;
+					booHasErrors = true;
 				}
 			}
-				
+
+			//save location validation
+			if (!cbxFomod.Checked && !cbxPFP.Checked)
+				sspError.SetError(vtpOutput, "No items selected for creation.");
+			else if (!ValidatePFPSavePath())
+				sspError.SetError(vtpOutput, "Premade FOMOD Pack save location is required.");
+
 			if (booHasErrors)
 				return ValidationState.Errors;
 			if (booHasWarnings)
@@ -258,6 +296,39 @@ class Script : BaseScript {
 		private void tbxFomodFileName_Validating(object sender, CancelEventArgs e)
 		{
 			ValidateFomodFileName();
+		}
+
+		#endregion
+
+		#region Save Locations Tab
+
+		/// <summary>
+		/// Ensures that the user has entered a Premade FOMOD Pack save path, if a PFP is being created.
+		/// </summary>
+		/// <returns><lang cref="true"/> if the user has entered a path and a Premade FOMOD Pack is being created;
+		/// <lang cref="false"/> otherwise.</returns>
+		protected bool ValidatePFPSavePath()
+		{
+			sspError.SetError(cbxPFP, null);
+			if (String.IsNullOrEmpty(tbxPFPPath.Text) && cbxPFP.Checked)
+			{
+				sspError.SetError(cbxPFP, "Premade FOMOD Pack save location is required.");
+				return false;
+			}
+			return true;
+		}
+
+		/// <summary>
+		/// Handles the <see cref="Control.Validating"/> event of the Premade FOMOD Pack save path textbox.
+		/// </summary>
+		/// <remarks>
+		/// This validates the Premade FOMOD Pack save path.
+		/// </remarks>
+		/// <param name="sender">The object that raised the event.</param>
+		/// <param name="e">A <see cref="CancelEventArgs"/> describing the event arguments.</param>
+		private void tbxPFPPath_Validating(object sender, CancelEventArgs e)
+		{
+			ValidatePFPSavePath();
 		}
 
 		#endregion
@@ -368,7 +439,7 @@ class Script : BaseScript {
 						{
 							KeyValuePair<string, string> kvpArchiveInfo = Archive.ParseArchive(kvpFile.Key);
 							Archive arcArchive = new Archive(kvpArchiveInfo.Key);
-							strReadme = Encoding.UTF8.GetString(arcArchive.GetFileContents(kvpArchiveInfo.Value));
+							strReadme = TextUtil.ByteToString(arcArchive.GetFileContents(kvpArchiveInfo.Value));
 						}
 						else if (File.Exists(kvpFile.Key))
 						{
@@ -451,7 +522,7 @@ class Script : BaseScript {
 				{
 					KeyValuePair<string, string> kvpArchiveInfo = Archive.ParseArchive(kvpScript.Value);
 					Archive arcArchive = new Archive(kvpArchiveInfo.Key);
-					strScript = Encoding.UTF8.GetString(arcArchive.GetFileContents(kvpArchiveInfo.Value));
+					strScript = TextUtil.ByteToString(arcArchive.GetFileContents(kvpArchiveInfo.Value));
 				}
 				else if (File.Exists(kvpScript.Value))
 					strScript = File.ReadAllText(kvpScript.Value);
@@ -515,16 +586,72 @@ class Script : BaseScript {
 
 		#endregion
 
-		private void xedScript_GotAutoCompleteList(object sender, RecapturableAutoCompleteListEventArgs e)
+		#region Info
+
+		/// <summary>
+		/// If no info has been entered, this method looks for an info file in the selected
+		/// files, and, if one is found, uses it to populate the info editor. If one is not found,
+		/// the editor is populated with default values.
+		/// </summary>
+		protected void SetInfoDefault()
+		{
+			string strInfoFileName = "fomod" + Path.DirectorySeparatorChar + "info.xml";
+			IList<KeyValuePair<string, string>> lstFiles = ffsFileStructure.FindFomodFiles(strInfoFileName);
+			if (lstFiles.Count > 0)
+			{
+				XmlDocument xmlInfo = new XmlDocument();
+				KeyValuePair<string, string> kvpScript = lstFiles[0];
+				if (kvpScript.Value.StartsWith(Archive.ARCHIVE_PREFIX))
+				{
+					KeyValuePair<string, string> kvpArchiveInfo = Archive.ParseArchive(kvpScript.Value);
+					Archive arcArchive = new Archive(kvpArchiveInfo.Key);
+					string strInfo = TextUtil.ByteToString(arcArchive.GetFileContents(kvpArchiveInfo.Value));
+					xmlInfo.LoadXml(strInfo);
+				}
+				else if (File.Exists(kvpScript.Value))
+					xmlInfo.Load(File.ReadAllText(kvpScript.Value));
+
+				fomod.LoadInfo(xmlInfo, finInfo, false);
+			}
+
+			string strScreenshotFileName = "fomod" + Path.DirectorySeparatorChar + "screenshot.*";
+			lstFiles = ffsFileStructure.FindFomodFiles(strScreenshotFileName);
+			if (lstFiles.Count > 0)
+			{
+				KeyValuePair<string, string> kvpScreenshot = lstFiles[0];
+				if (kvpScreenshot.Value.StartsWith(Archive.ARCHIVE_PREFIX))
+				{
+					KeyValuePair<string, string> kvpArchiveInfo = Archive.ParseArchive(kvpScreenshot.Value);
+					Archive arcArchive = new Archive(kvpArchiveInfo.Key);
+					finInfo.Screenshot = arcArchive.GetFileContents(kvpArchiveInfo.Value);
+				}
+				else if (File.Exists(kvpScreenshot.Value))
+					finInfo.Screenshot = File.ReadAllBytes(kvpScreenshot.Value);
+			}
+		}
+
+		#endregion
+
+		/// <summary>
+		/// Handles the <see cref="XmlEditor.GotAutoCompleteList"/> event of the XML configration script
+		/// editor.
+		/// </summary>
+		/// <remarks>
+		/// This methods populates the code completion list with the file paths in the FOMOD file structure
+		/// when the value being completed is the source value of a file tag.
+		/// </remarks>
+		/// <param name="sender">The object that raised the event.</param>
+		/// <param name="e">A <see cref="RegeneratableAutoCompleteListEventArgs"/> decribing the event arguments.</param>
+		private void xedScript_GotAutoCompleteList(object sender, RegeneratableAutoCompleteListEventArgs e)
 		{
 			if (!String.IsNullOrEmpty(e.ElementPath) && Path.GetFileName(e.ElementPath).Equals("file") && (e.AutoCompleteType == AutoCompleteType.AttributeValues) && (e.Siblings[e.Siblings.Length - 1].Equals("source")))
 			{
 				string strPrefix = e.LastWord.EndsWith("=") ? "" : e.LastWord;
-				List<KeyValuePair<string,string>> lstFiles = ffsFileStructure.FindFomodFiles(strPrefix + "*");
-				foreach (KeyValuePair<string,string> kvpFile in lstFiles)
+				List<KeyValuePair<string, string>> lstFiles = ffsFileStructure.FindFomodFiles(strPrefix + "*");
+				foreach (KeyValuePair<string, string> kvpFile in lstFiles)
 					e.AutoCompleteList.Add(new XmlCompletionData(AutoCompleteType.AttributeValues, kvpFile.Key, null));
-				e.CaptureNextKey = true;
-				e.ExtraCompletionCharacters.Add(Path.DirectorySeparatorChar);
+				e.GenerateOnNextKey = true;
+				e.ExtraInsertionCharacters.Add(Path.DirectorySeparatorChar);
 			}
 		}
 	}
