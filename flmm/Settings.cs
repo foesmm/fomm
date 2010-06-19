@@ -82,6 +82,8 @@ namespace Fomm {
         }
 
         public static string[] GetStringArray(string name) {
+			if (rootNode == null)
+				return null;
             XmlElement xe=rootNode.SelectSingleNode("descendant::strArray[@name='"+name+"']") as XmlElement;
             if(xe==null) return null;
             string[] result=new string[xe.ChildNodes.Count];
