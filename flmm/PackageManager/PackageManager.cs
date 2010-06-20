@@ -1191,12 +1191,28 @@ namespace Fomm.PackageManager
 			fbfBuilder.ShowDialog(this);
 		}
 
+		/// <summary>
+		/// Handles the <see cref="Control.Click"/> event of the add fomod button.
+		/// </summary>
+		/// <remarks>
+		/// Adds a fomod to the package manager.
+		/// </remarks>
+		/// <param name="sender">The object that raised the event.</param>
+		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
 		private void addFOMODToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			if (openFileDialog1.ShowDialog() != DialogResult.OK) return;
 			AddNewFomod(openFileDialog1.FileName);
 		}
 
+		/// <summary>
+		/// Handles the <see cref="Control.Click"/> event of the create fomod from folder button.
+		/// </summary>
+		/// <remarks>
+		/// Creates a fomod from a folder.
+		/// </remarks>
+		/// <param name="sender">The object that raised the event.</param>
+		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
 		private void createFromFolderToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			FolderBrowserDialog fbd = new FolderBrowserDialog();
@@ -1209,6 +1225,14 @@ namespace Fomm.PackageManager
 			BuildFomodFromFolder(fbd.SelectedPath);
 		}
 
+		/// <summary>
+		/// Handles the <see cref="Control.Click"/> event of the create fomod button.
+		/// </summary>
+		/// <remarks>
+		/// Creates a fomod using the fomod builder.
+		/// </remarks>
+		/// <param name="sender">The object that raised the event.</param>
+		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
 		private void createFOMODToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			FomodBuilderForm fbfBuilder = new FomodBuilderForm();
