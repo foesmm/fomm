@@ -9,6 +9,7 @@ using Fomm.Util;
 using Fomm.PackageManager.XmlConfiguredInstall;
 using System.Xml.Schema;
 using System.Xml;
+using System.Drawing;
 
 namespace Fomm.PackageManager.FomodBuilder
 {
@@ -53,6 +54,7 @@ class Script : BaseScript {
 		}
 
 		private ReadmeGeneratorForm m_rgdGenerator = new ReadmeGeneratorForm();
+		private bool m_booInfoEntered = false;
 
 		#region Constructors
 
@@ -112,7 +114,10 @@ class Script : BaseScript {
 			else if (e.TabPage == vtpScript)
 				SetScriptDefault();
 			else if (e.TabPage == vtpInfo)
+			{
+				m_booInfoEntered = true;
 				SetInfoDefault();
+			}
 		}
 
 		/// <summary>
@@ -139,6 +144,44 @@ class Script : BaseScript {
 				default:
 					throw new InvalidEnumArgumentException("Unexpected value for ValidationState enum.");
 			}
+
+			Readme rmeReadme = new Readme(ReadmeFormat.PlainText, null);
+			if (ddtReadme.SelectedTabPage == ddpPlainText)
+			{
+				rmeReadme.Format = ReadmeFormat.PlainText;
+				rmeReadme.Text = tbxReadme.Text;
+			}
+			else if (ddtReadme.SelectedTabPage == ddpRichText)
+			{
+				rmeReadme.Format = ReadmeFormat.RichText;
+				rmeReadme.Text = rteReadme.Rtf;
+			}
+			else if (ddtReadme.SelectedTabPage == ddpHTML)
+			{
+				rmeReadme.Format = ReadmeFormat.HTML;
+				rmeReadme.Text = xedReadme.Text;
+			}
+
+			FomodScript fscScript = new FomodScript(FomodScriptType.CSharp, null);
+			if (ddtScript.SelectedTabPage == dtpCSharp)
+			{
+				fscScript.Type = FomodScriptType.CSharp;
+				fscScript.Text = sedScript.Text;
+			}
+			else
+			{
+				fscScript.Type = FomodScriptType.XMLConfig;
+				string strHeader = "<?xml version=\"1.0\" encoding=\"UTF-16\" ?>" + Environment.NewLine +
+									"<config xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"http://qconsulting.ca/fo3/ModConfig{0}.xsd\">";
+				strHeader = String.Format(strHeader, cbxVersion.SelectedItem.ToString());
+				fscScript.Text = xedScript.Text.Replace("<config>", strHeader);
+			}
+
+			XmlDocument xmlInfo = m_booInfoEntered ? fomod.SaveInfo(finInfo) : null;
+
+			FomodGenerator fgnGenerator = new FomodGenerator();
+			if (fgnGenerator.BuildFomod(tbxFomodFileName.Text, ffsFileStructure.GetCopyPaths(), rmeReadme, xmlInfo, m_booInfoEntered, finInfo.Screenshot, fscScript))
+				DialogResult = DialogResult.OK;
 		}
 
 		#endregion
@@ -186,6 +229,7 @@ class Script : BaseScript {
 				}
 
 			//readme tab validation
+			SetReadmeDefault();
 			if (((ddtReadme.SelectedTabPage == ddpPlainText) && String.IsNullOrEmpty(tbxReadme.Text)) ||
 				((ddtReadme.SelectedTabPage == ddpRichText) && String.IsNullOrEmpty(rteReadme.Text)) ||
 				((ddtReadme.SelectedTabPage == ddpHTML) && String.IsNullOrEmpty(xedReadme.Text)))
@@ -195,6 +239,7 @@ class Script : BaseScript {
 			}
 
 			//fomod info Validation
+			SetInfoDefault();
 			if (!finInfo.PerformValidation())
 			{
 				sspError.SetStatus(vtpInfo, "Invalid information.");
@@ -211,6 +256,7 @@ class Script : BaseScript {
 			}
 
 			//script validation
+			SetScriptDefault();
 			if (cbxUseScript.Checked)
 			{
 				if (((ddtScript.SelectedTabPage == dtpCSharp) && String.IsNullOrEmpty(sedScript.Text)) ||
@@ -229,9 +275,15 @@ class Script : BaseScript {
 
 			//save location validation
 			if (!cbxFomod.Checked && !cbxPFP.Checked)
+			{
 				sspError.SetError(vtpOutput, "No items selected for creation.");
+				booHasErrors = true;
+			}
 			else if (!ValidatePFPSavePath())
+			{
 				sspError.SetError(vtpOutput, "Premade FOMOD Pack save location is required.");
+				booHasErrors = true;
+			}
 
 			if (booHasErrors)
 				return ValidationState.Errors;
@@ -382,11 +434,11 @@ class Script : BaseScript {
 			{
 				switch (m_rgdGenerator.Format)
 				{
-					case ReadmeFileSelector.ReadmeFormat.PlainText:
+					case ReadmeFormat.PlainText:
 						ddtReadme.SelectedTabPage = ddpPlainText;
 						tbxReadme.Text = m_rgdGenerator.GeneratedReadme;
 						break;
-					case ReadmeFileSelector.ReadmeFormat.RichText:
+					case ReadmeFormat.RichText:
 						ddtReadme.SelectedTabPage = ddpRichText;
 						try
 						{
@@ -397,7 +449,7 @@ class Script : BaseScript {
 							rteReadme.Text = m_rgdGenerator.GeneratedReadme;
 						}
 						break;
-					case ReadmeFileSelector.ReadmeFormat.HTML:
+					case ReadmeFormat.HTML:
 						ddtReadme.SelectedTabPage = ddpHTML;
 						xedReadme.Text = m_rgdGenerator.GeneratedReadme;
 						break;
@@ -417,7 +469,7 @@ class Script : BaseScript {
 				((ddtReadme.SelectedTabPage == ddpRichText) && String.IsNullOrEmpty(rteReadme.Text)) ||
 				((ddtReadme.SelectedTabPage == ddpHTML) && String.IsNullOrEmpty(xedReadme.Text)))
 			{
-				ReadmeFileSelector.ReadmeFormat fmtReadmeFormat = ReadmeFileSelector.ReadmeFormat.PlainText;
+				ReadmeFormat fmtReadmeFormat = ReadmeFormat.PlainText;
 				string strReadme = null;
 				string strReadmeName = "readme - " + tbxFomodFileName.Text.ToLowerInvariant();
 				Regex rgxReadme = new Regex(strReadmeName + @"\.\w\w\w\w?$", RegexOptions.IgnoreCase);
@@ -428,11 +480,11 @@ class Script : BaseScript {
 					{
 						string strExtension = Path.GetExtension(kvpFile.Value).ToLowerInvariant();
 						if (strExtension.Equals(".txt"))
-							fmtReadmeFormat = ReadmeFileSelector.ReadmeFormat.PlainText;
+							fmtReadmeFormat = ReadmeFormat.PlainText;
 						else if (strExtension.Equals(".rtf"))
-							fmtReadmeFormat = ReadmeFileSelector.ReadmeFormat.RichText;
+							fmtReadmeFormat = ReadmeFormat.RichText;
 						else if (strExtension.Equals(".html") || strExtension.Equals(".htm"))
-							fmtReadmeFormat = ReadmeFileSelector.ReadmeFormat.HTML;
+							fmtReadmeFormat = ReadmeFormat.HTML;
 						else
 							continue;
 						if (kvpFile.Key.StartsWith(Archive.ARCHIVE_PREFIX))
@@ -450,11 +502,11 @@ class Script : BaseScript {
 				}
 				switch (fmtReadmeFormat)
 				{
-					case ReadmeFileSelector.ReadmeFormat.PlainText:
+					case ReadmeFormat.PlainText:
 						ddtReadme.SelectedTabPage = ddpPlainText;
 						tbxReadme.Text = strReadme;
 						break;
-					case ReadmeFileSelector.ReadmeFormat.RichText:
+					case ReadmeFormat.RichText:
 						ddtReadme.SelectedTabPage = ddpRichText;
 						try
 						{
@@ -465,12 +517,12 @@ class Script : BaseScript {
 							rteReadme.Text = strReadme;
 						}
 						break;
-					case ReadmeFileSelector.ReadmeFormat.HTML:
+					case ReadmeFormat.HTML:
 						ddtReadme.SelectedTabPage = ddpHTML;
 						xedReadme.Text = strReadme;
 						break;
 					default:
-						throw new InvalidEnumArgumentException("Unrecognized value for ReadmeFileSelector.ReadmeFormat.");
+						throw new InvalidEnumArgumentException("Unrecognized value for ReadmeFormat enum.");
 				}
 			}
 		}
@@ -502,58 +554,65 @@ class Script : BaseScript {
 				(((ddtScript.SelectedTabPage == dtpCSharp) && String.IsNullOrEmpty(sedScript.Text)) ||
 				((ddtScript.SelectedTabPage == dtpXML) && String.IsNullOrEmpty(xedScript.Text))))
 			{
-				string strScriptName = "fomod" + Path.DirectorySeparatorChar + "script.cs";
-				IList<KeyValuePair<string, string>> lstFiles = ffsFileStructure.FindFomodFiles(strScriptName);
-				if (lstFiles.Count == 0)
+				FomodScript fscInstallScript = null;
+				string strScriptPath = null;
+				foreach (string strScriptName in FomodScript.ScriptNames)
 				{
-					strScriptName = "fomod" + Path.DirectorySeparatorChar + "ModuleConfig.xml";
-					lstFiles = ffsFileStructure.FindFomodFiles(strScriptName);
+					strScriptPath = Path.Combine("fomod", strScriptName);
+					IList<KeyValuePair<string, string>> lstFiles = ffsFileStructure.FindFomodFiles(strScriptPath);
+					if (lstFiles.Count > 0)
+					{
+						fscInstallScript = new FomodScript(strScriptName, null);
+						strScriptPath = lstFiles[0].Value;
+						break;
+					}
 				}
-				if (lstFiles.Count == 0)
+
+				if (fscInstallScript == null)
 				{
 					ddtScript.SelectedTabPage = dtpCSharp;
 					sedScript.Text = DEFAULT_CSHARP_SCRIPT;
 					return;
 				}
 
-				string strScript = null;
-				KeyValuePair<string, string> kvpScript = lstFiles[0];
-				if (kvpScript.Value.StartsWith(Archive.ARCHIVE_PREFIX))
+				if (strScriptPath.StartsWith(Archive.ARCHIVE_PREFIX))
 				{
-					KeyValuePair<string, string> kvpArchiveInfo = Archive.ParseArchive(kvpScript.Value);
+					KeyValuePair<string, string> kvpArchiveInfo = Archive.ParseArchive(strScriptPath);
 					Archive arcArchive = new Archive(kvpArchiveInfo.Key);
-					strScript = TextUtil.ByteToString(arcArchive.GetFileContents(kvpArchiveInfo.Value));
+					fscInstallScript.Text = TextUtil.ByteToString(arcArchive.GetFileContents(kvpArchiveInfo.Value));
 				}
-				else if (File.Exists(kvpScript.Value))
-					strScript = File.ReadAllText(kvpScript.Value);
+				else if (File.Exists(strScriptPath))
+					fscInstallScript.Text = File.ReadAllText(strScriptPath);
 
-				if (strScriptName.EndsWith("ModuleConfig.xml"))
+				switch (fscInstallScript.Type)
 				{
-					switch (Parser.GetConfigVersion(strScript))
-					{
-						case "1.0":
-							cbxVersion.SelectedIndex = 0;
-							break;
-						case "2.0":
-							cbxVersion.SelectedIndex = 1;
-							break;
-						case "3.0":
-							cbxVersion.SelectedIndex = 2;
-							break;
-						default:
-							ddtScript.SelectedTabPage = dtpCSharp;
-							sedScript.Text = DEFAULT_CSHARP_SCRIPT;
-							return;
-					}
-					Regex rgxXMLConfigCleanup = new Regex(@"<\?xml[^>]+\?>.*?<config[^>]*>", RegexOptions.Singleline);
-					strScript = rgxXMLConfigCleanup.Replace(strScript, "<config>");
-					ddtScript.SelectedTabPage = dtpXML;
-					xedScript.Text = strScript;
-				}
-				else
-				{
-					ddtScript.SelectedTabPage = dtpCSharp;
-					sedScript.Text = strScript;
+					case FomodScriptType.XMLConfig:
+						switch (Parser.GetConfigVersion(fscInstallScript.Text))
+						{
+							case "1.0":
+								cbxVersion.SelectedIndex = 0;
+								break;
+							case "2.0":
+								cbxVersion.SelectedIndex = 1;
+								break;
+							case "3.0":
+								cbxVersion.SelectedIndex = 2;
+								break;
+							default:
+								ddtScript.SelectedTabPage = dtpCSharp;
+								sedScript.Text = DEFAULT_CSHARP_SCRIPT;
+								return;
+						}
+						Regex rgxXMLConfigCleanup = new Regex(@"<\?xml[^>]+\?>.*?<config[^>]*>", RegexOptions.Singleline);
+						ddtScript.SelectedTabPage = dtpXML;
+						xedScript.Text = rgxXMLConfigCleanup.Replace(fscInstallScript.Text, "<config>");
+						break;
+					case FomodScriptType.CSharp:
+						ddtScript.SelectedTabPage = dtpCSharp;
+						sedScript.Text = fscInstallScript.Text;
+						break;
+					default:
+						throw new Exception("Unrecognized value for FomodScriptType enum.");
 				}
 			}
 		}
@@ -623,10 +682,11 @@ class Script : BaseScript {
 				{
 					KeyValuePair<string, string> kvpArchiveInfo = Archive.ParseArchive(kvpScreenshot.Value);
 					Archive arcArchive = new Archive(kvpArchiveInfo.Key);
-					finInfo.Screenshot = arcArchive.GetFileContents(kvpArchiveInfo.Value);
+					byte[] bteScreenshot = arcArchive.GetFileContents(kvpArchiveInfo.Value);
+					finInfo.Screenshot = new Screenshot(kvpArchiveInfo.Value, bteScreenshot);
 				}
 				else if (File.Exists(kvpScreenshot.Value))
-					finInfo.Screenshot = File.ReadAllBytes(kvpScreenshot.Value);
+					finInfo.Screenshot = new Screenshot(kvpScreenshot.Value, File.ReadAllBytes(kvpScreenshot.Value));
 			}
 		}
 
