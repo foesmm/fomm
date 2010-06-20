@@ -63,8 +63,8 @@ namespace Fomm.PackageManager
 
 		private bool hasInfo;
 		private bool isActive;
-		private bool hasScreenshot;
 
+		private string m_strScreenshotPath = null;
 		private string m_strScriptPath = null;
 		private string m_strReadmePath = null;
 
@@ -76,11 +76,11 @@ namespace Fomm.PackageManager
 		private string m_strHumanVersion;
 		private string m_strEmail;
 		private string m_strWebsite;
-		private System.Drawing.Bitmap screenshot;
+		//private System.Drawing.Bitmap screenshot;
 		private Version m_verMinFommVersion;
 		private string[] m_strGroups;
 
-		private string screenshotext;
+		//private string screenshotext;
 
 		#region Properties
 
@@ -284,6 +284,18 @@ namespace Fomm.PackageManager
 		}
 
 		/// <summary>
+		/// Gets whether the mod has a screenshot.
+		/// </summary>
+		/// <value>Whether the mod has a screenshot.</value>
+		public bool HasScreenshot
+		{
+			get
+			{
+				return String.IsNullOrEmpty(m_strScreenshotPath);
+			}
+		}
+
+		/// <summary>
 		/// Gets whether the mod has a custom uninstall script.
 		/// </summary>
 		/// <value>Whether the mod has a custom uninstall script.</value>
@@ -354,13 +366,13 @@ namespace Fomm.PackageManager
 					}
 				}
 			}
+
 			string[] extensions = new string[] { ".png", ".jpg", ".bmp" };
 			for (int i = 0; i < extensions.Length; i++)
 			{
 				if (m_zipFile.GetEntry("fomod/screenshot" + extensions[i]) != null)
 				{
-					hasScreenshot = true;
-					screenshotext = extensions[i];
+					m_strScreenshotPath = "fomod/screenshot" + extensions[i];
 					break;
 				}
 			}
@@ -675,16 +687,10 @@ namespace Fomm.PackageManager
 			}
 		}
 
-		internal void CommitInfo(bool SetScreenshot, byte[] screenshot)
+		internal void CommitInfo(bool SetScreenshot, Screenshot p_shtScreenshot)
 		{
 			XmlDocument xmlInfo = SaveInfo(this);
 			DataSource sds1, sds2 = null;
-
-			if (SetScreenshot && this.screenshot != null)
-			{
-				this.screenshot.Dispose();
-				this.screenshot = null;
-			}
 
 			m_zipFile.BeginUpdate();
 			hasInfo = true;
@@ -696,24 +702,21 @@ namespace Fomm.PackageManager
 			m_zipFile.Add(sds1, "fomod/info.xml");
 			if (SetScreenshot)
 			{
-				if (screenshot == null)
+				if (p_shtScreenshot == null)
 				{
-					if (hasScreenshot)
+					if (HasScreenshot)
 					{
-						m_zipFile.Delete(m_zipFile.GetEntry("fomod/screenshot" + screenshotext));
-						hasScreenshot = false;
+						m_zipFile.Delete(m_zipFile.GetEntry(m_strScreenshotPath));
+						m_strScreenshotPath = null;
 					}
 				}
 				else
 				{
-					if (hasScreenshot && screenshotext != ".png")
-					{
-						m_zipFile.Delete(m_zipFile.GetEntry("fomod/screenshot" + screenshotext));
-					}
-					hasScreenshot = true;
-					screenshotext = ".png";
-					sds2 = new DataSource(screenshot);
-					m_zipFile.Add(sds2, "fomod/screenshot.png");
+					if (HasScreenshot)
+						m_zipFile.Delete(m_zipFile.GetEntry(m_strScreenshotPath));
+					m_strScreenshotPath = Path.ChangeExtension(m_strScreenshotPath, p_shtScreenshot.Extension);
+					sds2 = new DataSource(p_shtScreenshot.Data);
+					m_zipFile.Add(sds2, m_strScreenshotPath);
 				}
 			}
 			m_zipFile.CommitUpdate();
@@ -721,19 +724,17 @@ namespace Fomm.PackageManager
 			if (sds2 != null) sds2.Close();
 		}
 
-		public System.Drawing.Bitmap GetScreenshot()
+		public Screenshot GetScreenshot()
 		{
-			if (!hasScreenshot) return null;
-			if (screenshot == null)
-			{
-				screenshot = new System.Drawing.Bitmap(m_zipFile.GetInputStream(m_zipFile.GetEntry("fomod/screenshot" + screenshotext)));
-			}
-			return screenshot;
+			if (!HasScreenshot)
+				return null;
+
+			Screenshot shtScreenshot = new Screenshot(m_strScreenshotPath, GetFile(m_strScreenshotPath));
+			return shtScreenshot;
 		}
 
 		internal void Dispose()
 		{
-			if (screenshot != null) screenshot.Dispose();
 			m_zipFile.Close();
 		}
 
@@ -752,7 +753,7 @@ namespace Fomm.PackageManager
 			sb.AppendLine();
 			sb.AppendLine("Has readme: " + (HasReadme ? ("Yes (" + GetReadme().Format + ")") : "No"));
 			sb.AppendLine("Has script: " + (HasInstallScript ? "Yes" : "No"));
-			sb.AppendLine("Has screenshot: " + (hasScreenshot ? ("Yes (" + screenshotext + ")") : "No"));
+			sb.AppendLine("Has screenshot: " + (HasScreenshot ? ("Yes (" + GetScreenshot().Extension + ")") : "No"));
 			sb.AppendLine("Is active: " + (isActive ? "Yes" : "No"));
 			sb.AppendLine();
 			sb.AppendLine("-- fomod contents list:");

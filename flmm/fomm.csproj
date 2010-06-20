@@ -231,6 +231,7 @@
     <Compile Include="PackageManager\FomodBuilder\FomodFileSelector.Designer.cs">
       <DependentUpon>FomodFileSelector.cs</DependentUpon>
     </Compile>
+    <Compile Include="PackageManager\FomodBuilder\FomodGenerator.cs" />
     <Compile Include="PackageManager\FomodBuilder\ReadmeFileSelector.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -261,6 +262,7 @@
     <Compile Include="PackageManager\FomodInfo.Designer.cs">
       <DependentUpon>FomodInfo.cs</DependentUpon>
     </Compile>
+    <Compile Include="PackageManager\FomodScript.cs" />
     <Compile Include="PackageManager\IFomodInfo.cs" />
     <Compile Include="PackageManager\IllegalFilePathException.cs" />
     <Compile Include="PackageManager\InfoEditor.cs">
@@ -285,6 +287,8 @@
     <Compile Include="PackageManager\ModScript.cs" />
     <Compile Include="PackageManager\ModUninstaller.cs" />
     <Compile Include="PackageManager\PermissionsManager.cs" />
+    <Compile Include="PackageManager\Readme.cs" />
+    <Compile Include="PackageManager\Screenshot.cs" />
     <Compile Include="PackageManager\SelectForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -661,6 +665,7 @@
     </Compile>
     <Compile Include="TESsnip\TESsnipParser.cs" />
     <Compile Include="TypeConverter.cs" />
+    <Compile Include="Util\FileUtil.cs" />
     <Compile Include="Util\Set.cs" />
     <Compile Include="Util\SortedList.cs" />
     <Compile Include="Util\TextUtil.cs" />

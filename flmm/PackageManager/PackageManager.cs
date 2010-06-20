@@ -325,7 +325,7 @@ namespace Fomm.PackageManager
 			if (mod.HasInstallScript) bEditScript.Text = "Edit script";
 			else bEditScript.Text = "Create script";
 
-			pictureBox1.Image = mod.GetScreenshot();
+			pictureBox1.Image = mod.GetScreenshot().Image;
 		}
 
 		private void lvModList_ItemCheck(object sender, ItemCheckEventArgs e)
@@ -414,7 +414,7 @@ namespace Fomm.PackageManager
 					lvi.SubItems[1].Text = mod.HumanReadableVersion;
 					lvi.SubItems[2].Text = mod.Author;
 					tbModInfo.Text = mod.Description;
-					pictureBox1.Image = mod.GetScreenshot();
+					pictureBox1.Image = mod.GetScreenshot().Image;
 				}
 			}
 

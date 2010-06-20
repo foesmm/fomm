@@ -101,8 +101,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		/// <seealso cref="Parser.GetHeaderInfo()"/>
 		public override HeaderInfo GetHeaderInfo()
 		{
-			Bitmap bmpScreenshot = Fomod.GetScreenshot();
-			return new HeaderInfo(XmlConfig.SelectSingleNode("/config/moduleName").InnerText, Color.FromKnownColor(KnownColor.ControlText), TextPosition.Left, bmpScreenshot, bmpScreenshot != null, true, (bmpScreenshot != null) ? 75 : -1);
+			Image imgScreenshot = Fomod.GetScreenshot().Image;
+			return new HeaderInfo(XmlConfig.SelectSingleNode("/config/moduleName").InnerText, Color.FromKnownColor(KnownColor.ControlText), TextPosition.Left, imgScreenshot, imgScreenshot != null, true, (imgScreenshot != null) ? 75 : -1);
 		}
 
 		#endregion

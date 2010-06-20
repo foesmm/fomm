@@ -11,7 +11,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		private string m_strTitle = null;
 		private Color m_clrColour = SystemColors.ControlText;
 		private TextPosition m_tpsTitlePosition = TextPosition.Right;
-		private Bitmap m_bmpImage = null;
+		private Image m_imgImage = null;
 		private bool m_booShowImage = true;
 		private bool m_booShowFade = true;
 		private Int32 m_intHeight = -1;
@@ -46,11 +46,11 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		/// Gets the image to display in the header.
 		/// </summary>
 		/// <value>The image to display in the header.</value>
-		public Bitmap Image
+		public Image Image
 		{
 			get
 			{
-				return m_bmpImage;
+				return m_imgImage;
 			}
 		}
 
@@ -112,15 +112,15 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		/// <param name="p_strTitle">The title of the form.</param>
 		/// <param name="p_clrColour">The colour of the title of the form.</param>
 		/// <param name="p_tpsTitlePosition">The position of the title in the header.</param>
-		/// <param name="p_bmpImage">The image to display in the header.</param>
+		/// <param name="p_imgImage">The image to display in the header.</param>
 		/// <param name="p_booShowImage">Whether or not to display the image in the header.</param>
 		/// <param name="p_booShowFade">Whether or not to display the fade effect in the header.</param>
 		/// <param name="p_intHeight">The desired height of the header.</param>
-		public HeaderInfo(string p_strTitle, Color p_clrColour, TextPosition p_tpsTitlePosition, Bitmap p_bmpImage, bool p_booShowImage, bool p_booShowFade, Int32 p_intHeight)
+		public HeaderInfo(string p_strTitle, Color p_clrColour, TextPosition p_tpsTitlePosition, Image p_imgImage, bool p_booShowImage, bool p_booShowFade, Int32 p_intHeight)
 		{
 			m_strTitle = p_strTitle;
 			m_clrColour = p_clrColour;
-			m_bmpImage = p_bmpImage;
+			m_imgImage = p_imgImage;
 			m_tpsTitlePosition = p_tpsTitlePosition;
 			m_booShowImage = p_booShowImage;
 			m_booShowFade = p_booShowFade;

@@ -102,16 +102,16 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 			if (xndImage != null)
 			{
 				string strImagePath = xndImage.Attributes["path"].Value;
-				Bitmap bmpImage = String.IsNullOrEmpty(strImagePath) ? Fomod.GetScreenshot() : new Bitmap(Fomod.GetImage(strImagePath));
-				bool booShowImage = Boolean.Parse(xndImage.Attributes["showImage"].Value) && (bmpImage != null);
+				Image imgImage = String.IsNullOrEmpty(strImagePath) ? Fomod.GetScreenshot().Image : new Bitmap(Fomod.GetImage(strImagePath));
+				bool booShowImage = Boolean.Parse(xndImage.Attributes["showImage"].Value) && (imgImage != null);
 				bool booShowFade = Boolean.Parse(xndImage.Attributes["showFade"].Value);
 				Int32 intHeight = Int32.Parse(xndImage.Attributes["height"].Value);
 				if ((intHeight == -1) && booShowImage)
 					intHeight = 75;
-				return new HeaderInfo(strTitle, clrColour, tpsPosition, bmpImage, booShowImage, booShowFade, intHeight);
+				return new HeaderInfo(strTitle, clrColour, tpsPosition, imgImage, booShowImage, booShowFade, intHeight);
 			}
-			Bitmap bmpScreenshot = Fomod.GetScreenshot();
-			return new HeaderInfo(strTitle, clrColour, tpsPosition, bmpScreenshot, bmpScreenshot != null, true, (bmpScreenshot != null) ? 75 : -1);
+			Image imgScreenshot = Fomod.GetScreenshot().Image;
+			return new HeaderInfo(strTitle, clrColour, tpsPosition, imgScreenshot, imgScreenshot != null, true, (imgScreenshot != null) ? 75 : -1);
 		}
 
 		#endregion
