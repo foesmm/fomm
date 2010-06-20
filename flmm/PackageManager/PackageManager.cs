@@ -662,9 +662,9 @@ namespace Fomm.PackageManager
 			string strFomodPath = ((string[])p_objArgs)[1];
 
 			SevenZipCompressor szcCompressor = new SevenZipCompressor();
-			szcCompressor.CompressionLevel = CompressionLevel.Ultra;
+			szcCompressor.CompressionLevel = (CompressionLevel)Settings.GetInt("fomodCompressionLevel", (Int32)CompressionLevel.Ultra);
+			szcCompressor.ArchiveFormat = (OutArchiveFormat)Settings.GetInt("fomodCompressionFormat", (Int32)OutArchiveFormat.Zip);
 			szcCompressor.CompressionMethod = CompressionMethod.Default;
-			szcCompressor.ArchiveFormat = OutArchiveFormat.Zip;
 			szcCompressor.FileCompressionStarted += new EventHandler<FileNameEventArgs>(CompressFomodFromFolder_FileCompressionStarted);
 			szcCompressor.FileCompressionFinished += new EventHandler(CompressFomodFromFolder_FileCompressionFinished);
 			szcCompressor.CompressDirectory(strFolderPath, strFomodPath);
@@ -731,9 +731,9 @@ namespace Fomm.PackageManager
 			m_bwdProgress.StepOverallProgress();
 
 			SevenZipCompressor szcCompressor = new SevenZipCompressor();
-			szcCompressor.CompressionLevel = CompressionLevel.Ultra;
+			szcCompressor.CompressionLevel = (CompressionLevel)Settings.GetInt("fomodCompressionLevel", (Int32)CompressionLevel.Ultra);
+			szcCompressor.ArchiveFormat = (OutArchiveFormat)Settings.GetInt("fomodCompressionFormat", (Int32)OutArchiveFormat.Zip);
 			szcCompressor.CompressionMethod = CompressionMethod.Default;
-			szcCompressor.ArchiveFormat = OutArchiveFormat.Zip;
 			szcCompressor.FileCompressionStarted += new EventHandler<FileNameEventArgs>(RepackToFomod_FileCompressionStarted);
 			szcCompressor.FileCompressionFinished += new EventHandler(RepackToFomod_FileCompressionFinished);
 			m_bwdProgress.ItemProgress = 0;

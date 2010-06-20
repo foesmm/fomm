@@ -46,12 +46,22 @@ namespace Fomm {
 			this.label4 = new System.Windows.Forms.Label();
 			this.cbUseDocs = new System.Windows.Forms.CheckBox();
 			this.ckbCheckFomodVersions = new System.Windows.Forms.CheckBox();
+			this.tabControl1 = new System.Windows.Forms.TabControl();
+			this.tabPage1 = new System.Windows.Forms.TabPage();
+			this.tabPage2 = new System.Windows.Forms.TabPage();
+			this.label5 = new System.Windows.Forms.Label();
+			this.cbxFomodFormat = new System.Windows.Forms.ComboBox();
+			this.label6 = new System.Windows.Forms.Label();
+			this.cbxCompression = new System.Windows.Forms.ComboBox();
+			this.tabControl1.SuspendLayout();
+			this.tabPage1.SuspendLayout();
+			this.tabPage2.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// cbFomod
 			// 
 			this.cbFomod.AutoSize = true;
-			this.cbFomod.Location = new System.Drawing.Point(205, 12);
+			this.cbFomod.Location = new System.Drawing.Point(200, 4);
 			this.cbFomod.Name = "cbFomod";
 			this.cbFomod.Size = new System.Drawing.Size(101, 17);
 			this.cbFomod.TabIndex = 1;
@@ -62,7 +72,7 @@ namespace Fomm {
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(12, 13);
+			this.label1.Location = new System.Drawing.Point(7, 5);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(81, 13);
 			this.label1.TabIndex = 0;
@@ -72,17 +82,17 @@ namespace Fomm {
 			// 
 			this.tbFomod.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.tbFomod.Location = new System.Drawing.Point(12, 35);
+			this.tbFomod.Location = new System.Drawing.Point(7, 27);
 			this.tbFomod.Name = "tbFomod";
 			this.tbFomod.ReadOnly = true;
-			this.tbFomod.Size = new System.Drawing.Size(294, 20);
+			this.tbFomod.Size = new System.Drawing.Size(301, 20);
 			this.tbFomod.TabIndex = 2;
 			// 
 			// bBrowseFomod
 			// 
 			this.bBrowseFomod.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.bBrowseFomod.Enabled = false;
-			this.bBrowseFomod.Location = new System.Drawing.Point(312, 33);
+			this.bBrowseFomod.Location = new System.Drawing.Point(314, 25);
 			this.bBrowseFomod.Name = "bBrowseFomod";
 			this.bBrowseFomod.Size = new System.Drawing.Size(75, 23);
 			this.bBrowseFomod.TabIndex = 3;
@@ -94,7 +104,7 @@ namespace Fomm {
 			// 
 			this.bBrowseFallout.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.bBrowseFallout.Enabled = false;
-			this.bBrowseFallout.Location = new System.Drawing.Point(312, 88);
+			this.bBrowseFallout.Location = new System.Drawing.Point(314, 80);
 			this.bBrowseFallout.Name = "bBrowseFallout";
 			this.bBrowseFallout.Size = new System.Drawing.Size(75, 23);
 			this.bBrowseFallout.TabIndex = 7;
@@ -106,16 +116,16 @@ namespace Fomm {
 			// 
 			this.tbFallout.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.tbFallout.Location = new System.Drawing.Point(12, 90);
+			this.tbFallout.Location = new System.Drawing.Point(7, 82);
 			this.tbFallout.Name = "tbFallout";
 			this.tbFallout.ReadOnly = true;
-			this.tbFallout.Size = new System.Drawing.Size(294, 20);
+			this.tbFallout.Size = new System.Drawing.Size(301, 20);
 			this.tbFallout.TabIndex = 6;
 			// 
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(12, 68);
+			this.label2.Location = new System.Drawing.Point(7, 60);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(83, 13);
 			this.label2.TabIndex = 4;
@@ -124,7 +134,7 @@ namespace Fomm {
 			// cbFallout
 			// 
 			this.cbFallout.AutoSize = true;
-			this.cbFallout.Location = new System.Drawing.Point(205, 67);
+			this.cbFallout.Location = new System.Drawing.Point(200, 59);
 			this.cbFallout.Name = "cbFallout";
 			this.cbFallout.Size = new System.Drawing.Size(101, 17);
 			this.cbFallout.TabIndex = 5;
@@ -136,16 +146,16 @@ namespace Fomm {
 			// 
 			this.tbLaunch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.tbLaunch.Location = new System.Drawing.Point(12, 145);
+			this.tbLaunch.Location = new System.Drawing.Point(7, 137);
 			this.tbLaunch.Name = "tbLaunch";
 			this.tbLaunch.ReadOnly = true;
-			this.tbLaunch.Size = new System.Drawing.Size(375, 20);
+			this.tbLaunch.Size = new System.Drawing.Size(382, 20);
 			this.tbLaunch.TabIndex = 10;
 			// 
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(12, 123);
+			this.label3.Location = new System.Drawing.Point(7, 115);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(111, 13);
 			this.label3.TabIndex = 8;
@@ -154,7 +164,7 @@ namespace Fomm {
 			// cbLaunch
 			// 
 			this.cbLaunch.AutoSize = true;
-			this.cbLaunch.Location = new System.Drawing.Point(205, 122);
+			this.cbLaunch.Location = new System.Drawing.Point(200, 114);
 			this.cbLaunch.Name = "cbLaunch";
 			this.cbLaunch.Size = new System.Drawing.Size(101, 17);
 			this.cbLaunch.TabIndex = 9;
@@ -165,7 +175,7 @@ namespace Fomm {
 			// cbAssociateFomod
 			// 
 			this.cbAssociateFomod.AutoSize = true;
-			this.cbAssociateFomod.Location = new System.Drawing.Point(15, 210);
+			this.cbAssociateFomod.Location = new System.Drawing.Point(10, 202);
 			this.cbAssociateFomod.Name = "cbAssociateFomod";
 			this.cbAssociateFomod.Size = new System.Drawing.Size(131, 17);
 			this.cbAssociateFomod.TabIndex = 13;
@@ -176,7 +186,7 @@ namespace Fomm {
 			// cbAssociateBsa
 			// 
 			this.cbAssociateBsa.AutoSize = true;
-			this.cbAssociateBsa.Location = new System.Drawing.Point(15, 233);
+			this.cbAssociateBsa.Location = new System.Drawing.Point(10, 225);
 			this.cbAssociateBsa.Name = "cbAssociateBsa";
 			this.cbAssociateBsa.Size = new System.Drawing.Size(123, 17);
 			this.cbAssociateBsa.TabIndex = 15;
@@ -187,7 +197,7 @@ namespace Fomm {
 			// cbAssociateSdp
 			// 
 			this.cbAssociateSdp.AutoSize = true;
-			this.cbAssociateSdp.Location = new System.Drawing.Point(164, 210);
+			this.cbAssociateSdp.Location = new System.Drawing.Point(159, 202);
 			this.cbAssociateSdp.Name = "cbAssociateSdp";
 			this.cbAssociateSdp.Size = new System.Drawing.Size(124, 17);
 			this.cbAssociateSdp.TabIndex = 14;
@@ -198,7 +208,7 @@ namespace Fomm {
 			// cbShellExtensions
 			// 
 			this.cbShellExtensions.AutoSize = true;
-			this.cbShellExtensions.Location = new System.Drawing.Point(164, 233);
+			this.cbShellExtensions.Location = new System.Drawing.Point(159, 225);
 			this.cbShellExtensions.Name = "cbShellExtensions";
 			this.cbShellExtensions.Size = new System.Drawing.Size(231, 17);
 			this.cbShellExtensions.TabIndex = 16;
@@ -209,7 +219,7 @@ namespace Fomm {
 			// cbEsmShow
 			// 
 			this.cbEsmShow.AutoSize = true;
-			this.cbEsmShow.Location = new System.Drawing.Point(15, 267);
+			this.cbEsmShow.Location = new System.Drawing.Point(10, 259);
 			this.cbEsmShow.Name = "cbEsmShow";
 			this.cbEsmShow.Size = new System.Drawing.Size(118, 17);
 			this.cbEsmShow.TabIndex = 17;
@@ -220,7 +230,7 @@ namespace Fomm {
 			// cbDisableIPC
 			// 
 			this.cbDisableIPC.AutoSize = true;
-			this.cbDisableIPC.Location = new System.Drawing.Point(164, 267);
+			this.cbDisableIPC.Location = new System.Drawing.Point(159, 259);
 			this.cbDisableIPC.Name = "cbDisableIPC";
 			this.cbDisableIPC.Size = new System.Drawing.Size(135, 17);
 			this.cbDisableIPC.TabIndex = 18;
@@ -231,7 +241,7 @@ namespace Fomm {
 			// cbDisableUAC
 			// 
 			this.cbDisableUAC.AutoSize = true;
-			this.cbDisableUAC.Location = new System.Drawing.Point(15, 290);
+			this.cbDisableUAC.Location = new System.Drawing.Point(10, 282);
 			this.cbDisableUAC.Name = "cbDisableUAC";
 			this.cbDisableUAC.Size = new System.Drawing.Size(124, 17);
 			this.cbDisableUAC.TabIndex = 19;
@@ -243,16 +253,16 @@ namespace Fomm {
 			// 
 			this.tbLaunchArgs.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.tbLaunchArgs.Location = new System.Drawing.Point(12, 184);
+			this.tbLaunchArgs.Location = new System.Drawing.Point(7, 176);
 			this.tbLaunchArgs.Name = "tbLaunchArgs";
 			this.tbLaunchArgs.ReadOnly = true;
-			this.tbLaunchArgs.Size = new System.Drawing.Size(375, 20);
+			this.tbLaunchArgs.Size = new System.Drawing.Size(382, 20);
 			this.tbLaunchArgs.TabIndex = 12;
 			// 
 			// label4
 			// 
 			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(12, 168);
+			this.label4.Location = new System.Drawing.Point(7, 160);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(144, 13);
 			this.label4.TabIndex = 11;
@@ -261,7 +271,7 @@ namespace Fomm {
 			// cbUseDocs
 			// 
 			this.cbUseDocs.AutoSize = true;
-			this.cbUseDocs.Location = new System.Drawing.Point(164, 290);
+			this.cbUseDocs.Location = new System.Drawing.Point(159, 282);
 			this.cbUseDocs.Name = "cbUseDocs";
 			this.cbUseDocs.Size = new System.Drawing.Size(175, 17);
 			this.cbUseDocs.TabIndex = 20;
@@ -272,7 +282,7 @@ namespace Fomm {
 			// ckbCheckFomodVersions
 			// 
 			this.ckbCheckFomodVersions.AutoSize = true;
-			this.ckbCheckFomodVersions.Location = new System.Drawing.Point(15, 324);
+			this.ckbCheckFomodVersions.Location = new System.Drawing.Point(10, 316);
 			this.ckbCheckFomodVersions.Name = "ckbCheckFomodVersions";
 			this.ckbCheckFomodVersions.Size = new System.Drawing.Size(182, 17);
 			this.ckbCheckFomodVersions.TabIndex = 21;
@@ -280,38 +290,114 @@ namespace Fomm {
 			this.ckbCheckFomodVersions.UseVisualStyleBackColor = true;
 			this.ckbCheckFomodVersions.CheckedChanged += new System.EventHandler(this.ckbCheckFomodVersions_CheckedChanged);
 			// 
+			// tabControl1
+			// 
+			this.tabControl1.Controls.Add(this.tabPage1);
+			this.tabControl1.Controls.Add(this.tabPage2);
+			this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tabControl1.Location = new System.Drawing.Point(0, 0);
+			this.tabControl1.Name = "tabControl1";
+			this.tabControl1.SelectedIndex = 0;
+			this.tabControl1.Size = new System.Drawing.Size(406, 367);
+			this.tabControl1.TabIndex = 22;
+			// 
+			// tabPage1
+			// 
+			this.tabPage1.Controls.Add(this.label1);
+			this.tabPage1.Controls.Add(this.ckbCheckFomodVersions);
+			this.tabPage1.Controls.Add(this.cbFomod);
+			this.tabPage1.Controls.Add(this.cbUseDocs);
+			this.tabPage1.Controls.Add(this.tbFomod);
+			this.tabPage1.Controls.Add(this.label4);
+			this.tabPage1.Controls.Add(this.bBrowseFomod);
+			this.tabPage1.Controls.Add(this.tbLaunchArgs);
+			this.tabPage1.Controls.Add(this.cbFallout);
+			this.tabPage1.Controls.Add(this.cbDisableUAC);
+			this.tabPage1.Controls.Add(this.label2);
+			this.tabPage1.Controls.Add(this.cbDisableIPC);
+			this.tabPage1.Controls.Add(this.tbFallout);
+			this.tabPage1.Controls.Add(this.cbEsmShow);
+			this.tabPage1.Controls.Add(this.bBrowseFallout);
+			this.tabPage1.Controls.Add(this.cbShellExtensions);
+			this.tabPage1.Controls.Add(this.cbLaunch);
+			this.tabPage1.Controls.Add(this.cbAssociateSdp);
+			this.tabPage1.Controls.Add(this.label3);
+			this.tabPage1.Controls.Add(this.cbAssociateBsa);
+			this.tabPage1.Controls.Add(this.tbLaunch);
+			this.tabPage1.Controls.Add(this.cbAssociateFomod);
+			this.tabPage1.Location = new System.Drawing.Point(4, 22);
+			this.tabPage1.Name = "tabPage1";
+			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage1.Size = new System.Drawing.Size(398, 341);
+			this.tabPage1.TabIndex = 0;
+			this.tabPage1.Text = "General";
+			this.tabPage1.UseVisualStyleBackColor = true;
+			// 
+			// tabPage2
+			// 
+			this.tabPage2.Controls.Add(this.cbxCompression);
+			this.tabPage2.Controls.Add(this.label6);
+			this.tabPage2.Controls.Add(this.cbxFomodFormat);
+			this.tabPage2.Controls.Add(this.label5);
+			this.tabPage2.Location = new System.Drawing.Point(4, 22);
+			this.tabPage2.Name = "tabPage2";
+			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage2.Size = new System.Drawing.Size(398, 341);
+			this.tabPage2.TabIndex = 1;
+			this.tabPage2.Text = "FOMOD Options";
+			this.tabPage2.UseVisualStyleBackColor = true;
+			// 
+			// label5
+			// 
+			this.label5.AutoSize = true;
+			this.label5.Location = new System.Drawing.Point(64, 9);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(42, 13);
+			this.label5.TabIndex = 0;
+			this.label5.Text = "Format:";
+			// 
+			// cbxFomodFormat
+			// 
+			this.cbxFomodFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cbxFomodFormat.FormattingEnabled = true;
+			this.cbxFomodFormat.Location = new System.Drawing.Point(112, 6);
+			this.cbxFomodFormat.Name = "cbxFomodFormat";
+			this.cbxFomodFormat.Size = new System.Drawing.Size(186, 21);
+			this.cbxFomodFormat.TabIndex = 1;
+			// 
+			// label6
+			// 
+			this.label6.AutoSize = true;
+			this.label6.Location = new System.Drawing.Point(7, 36);
+			this.label6.Name = "label6";
+			this.label6.Size = new System.Drawing.Size(99, 13);
+			this.label6.TabIndex = 2;
+			this.label6.Text = "Compression Level:";
+			// 
+			// cbxCompression
+			// 
+			this.cbxCompression.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cbxCompression.FormattingEnabled = true;
+			this.cbxCompression.Location = new System.Drawing.Point(112, 33);
+			this.cbxCompression.Name = "cbxCompression";
+			this.cbxCompression.Size = new System.Drawing.Size(186, 21);
+			this.cbxCompression.TabIndex = 3;
+			// 
 			// SetupForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(399, 352);
-			this.Controls.Add(this.ckbCheckFomodVersions);
-			this.Controls.Add(this.cbUseDocs);
-			this.Controls.Add(this.label4);
-			this.Controls.Add(this.tbLaunchArgs);
-			this.Controls.Add(this.cbDisableUAC);
-			this.Controls.Add(this.cbDisableIPC);
-			this.Controls.Add(this.cbEsmShow);
-			this.Controls.Add(this.cbShellExtensions);
-			this.Controls.Add(this.cbAssociateSdp);
-			this.Controls.Add(this.cbAssociateBsa);
-			this.Controls.Add(this.cbAssociateFomod);
-			this.Controls.Add(this.tbLaunch);
-			this.Controls.Add(this.label3);
-			this.Controls.Add(this.cbLaunch);
-			this.Controls.Add(this.bBrowseFallout);
-			this.Controls.Add(this.tbFallout);
-			this.Controls.Add(this.label2);
-			this.Controls.Add(this.cbFallout);
-			this.Controls.Add(this.bBrowseFomod);
-			this.Controls.Add(this.tbFomod);
-			this.Controls.Add(this.label1);
-			this.Controls.Add(this.cbFomod);
+			this.ClientSize = new System.Drawing.Size(406, 367);
+			this.Controls.Add(this.tabControl1);
 			this.Name = "SetupForm";
 			this.Text = "SetupForm";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SetupForm_FormClosing);
+			this.tabControl1.ResumeLayout(false);
+			this.tabPage1.ResumeLayout(false);
+			this.tabPage1.PerformLayout();
+			this.tabPage2.ResumeLayout(false);
+			this.tabPage2.PerformLayout();
 			this.ResumeLayout(false);
-			this.PerformLayout();
 
         }
 
@@ -340,5 +426,12 @@ namespace Fomm {
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.CheckBox cbUseDocs;
 		private System.Windows.Forms.CheckBox ckbCheckFomodVersions;
+		private System.Windows.Forms.TabControl tabControl1;
+		private System.Windows.Forms.TabPage tabPage1;
+		private System.Windows.Forms.TabPage tabPage2;
+		private System.Windows.Forms.Label label5;
+		private System.Windows.Forms.ComboBox cbxCompression;
+		private System.Windows.Forms.Label label6;
+		private System.Windows.Forms.ComboBox cbxFomodFormat;
     }
 }

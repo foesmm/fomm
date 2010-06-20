@@ -133,6 +133,9 @@
     <Compile Include="Controls\SiteStatusProvider.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\SplitButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\StatusButton.cs">
       <SubType>Component</SubType>
     </Compile>
