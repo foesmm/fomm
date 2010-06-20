@@ -15,27 +15,6 @@ namespace Fomm.PackageManager.FomodBuilder
 	public partial class ReadmeFileSelector : UserControl
 	{
 		/// <summary>
-		/// The possible formats for the readme file.
-		/// </summary>
-		public enum ReadmeFormat
-		{
-			/// <summary>
-			/// Plain text.
-			/// </summary>
-			PlainText,
-
-			/// <summary>
-			/// Rich text format.
-			/// </summary>
-			RichText,
-
-			/// <summary>
-			/// HTML
-			/// </summary>
-			HTML
-		}
-
-		/// <summary>
 		/// The rich-text formated content of the help box.
 		/// </summary>
 		private const string HELP_STRING = @"{\rtf1\ansi\ansicpg1252\deff0\deflang4105{\fonttbl{\f0\fnil\fcharset0 Arial;}}
