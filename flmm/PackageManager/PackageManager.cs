@@ -338,54 +338,52 @@ namespace Fomm.PackageManager
 		{
 			if (lvModList.SelectedItems.Count != 1) return;
 			fomod mod = (fomod)lvModList.SelectedItems[0].Tag;
-			string result = TextEditor.ShowEditor(mod.GetInstallScript(), TextEditorType.Script, true);
-			if (result != null) mod.SetScript(result);
+			FomodScript fscScript = mod.GetInstallScript();
+			fscScript.Text = TextEditor.ShowEditor(fscScript.Text, TextEditorType.Script, true);
+			if (fscScript.Text != null)
+				mod.SetScript(fscScript);
 		}
 
 		private void bEditReadme_Click(object sender, EventArgs e)
 		{
 			if (lvModList.SelectedItems.Count != 1) return;
 			fomod mod = (fomod)lvModList.SelectedItems[0].Tag;
-			string result = null;
+			Readme rmeReadme = null;
 			if (!mod.HasReadme)
-			{
-				result = TextEditor.ShowEditor("", TextEditorType.Text, true);
-			}
+				rmeReadme = new Readme(ReadmeFormat.PlainText, "");
 			else
+				rmeReadme = mod.GetReadme();
+			switch (rmeReadme.Format)
 			{
-				string readme = mod.GetReadme();
-				switch (mod.ReadmeExt)
-				{
-					case ".txt":
-						result = TextEditor.ShowEditor(readme, TextEditorType.Text, true);
-						break;
-					case ".rtf":
-						result = TextEditor.ShowEditor(readme, TextEditorType.Rtf, true);
-						break;
-					case ".htm":
-					case ".html":
-						Form f = new Form();
-						WebBrowser wb = new WebBrowser();
-						f.Controls.Add(wb);
-						wb.Dock = DockStyle.Fill;
-						wb.DocumentCompleted += delegate(object unused1, WebBrowserDocumentCompletedEventArgs unused2)
-						{
-							if (!string.IsNullOrEmpty(wb.DocumentTitle)) f.Text = wb.DocumentTitle;
-							else f.Text = "Readme";
-						};
-						wb.WebBrowserShortcutsEnabled = false;
-						wb.AllowWebBrowserDrop = false;
-						wb.AllowNavigation = false;
-						wb.DocumentText = readme;
-						f.ShowDialog();
-						break;
-					default:
-						MessageBox.Show("fomod had an unrecognised readme type", "Error");
-						return;
-				}
+				case ReadmeFormat.PlainText:
+					rmeReadme.Text = TextEditor.ShowEditor(rmeReadme.Text, TextEditorType.Text, true);
+					break;
+				case ReadmeFormat.RichText:
+					rmeReadme.Text = TextEditor.ShowEditor(rmeReadme.Text, TextEditorType.Rtf, true);
+					break;
+				case ReadmeFormat.HTML:
+					Form f = new Form();
+					WebBrowser wb = new WebBrowser();
+					f.Controls.Add(wb);
+					wb.Dock = DockStyle.Fill;
+					wb.DocumentCompleted += delegate(object unused1, WebBrowserDocumentCompletedEventArgs unused2)
+					{
+						if (!string.IsNullOrEmpty(wb.DocumentTitle)) f.Text = wb.DocumentTitle;
+						else f.Text = "Readme";
+					};
+					wb.WebBrowserShortcutsEnabled = false;
+					wb.AllowWebBrowserDrop = false;
+					wb.AllowNavigation = false;
+					wb.DocumentText = rmeReadme.Text;
+					f.ShowDialog();
+					break;
+				default:
+					MessageBox.Show("fomod had an unrecognised readme type", "Error");
+					return;
 			}
 
-			if (result != null) mod.SetReadme(result);
+			if (rmeReadme.Text != null)
+				mod.SetReadme(rmeReadme);
 		}
 
 		private void PackageManager_FormClosing(object sender, FormClosingEventArgs e)
@@ -589,33 +587,6 @@ namespace Fomm.PackageManager
 			}
 		}
 
-		private bool CheckFomodName(ref string newpath)
-		{
-			if (File.Exists(newpath))
-			{
-				string newpath2 = null;
-				bool match = false;
-				for (int i = 2; i < 999; i++)
-				{
-					newpath2 = Path.ChangeExtension(newpath, null) + "(" + i + ").fomod";
-					if (!File.Exists(newpath2))
-					{
-						match = true;
-						break;
-					}
-				}
-				if (!match)
-				{
-					MessageBox.Show("File '" + newpath + "' already exists.", "Error");
-					return false;
-				}
-				if (MessageBox.Show("File '" + newpath + "' already exists. Continue anyway?\n" +
-					"A new file named '" + newpath2 + "' will be created", "Warning", MessageBoxButtons.YesNo) != DialogResult.Yes) return false;
-				newpath = newpath2;
-			}
-			return true;
-		}
-
 		#region Create fomod from Folder
 
 		/// <summary>
@@ -628,7 +599,7 @@ namespace Fomm.PackageManager
 			string strName = Path.GetFileName(p_strPath);
 			string strFomodPath = Path.Combine(Program.PackageDir, strName + ".fomod");
 			CheckFomodFolder(ref p_strPath, null, strName);
-			if (!CheckFomodName(ref strFomodPath))
+			if (!FomodGenerator.CheckFomodName(ref strFomodPath))
 				return;
 
 			using (m_bwdProgress = new BackgroundWorkerProgressDialog(CompressFomodFromFolder))
@@ -827,7 +798,7 @@ namespace Fomm.PackageManager
 			}
 			else
 				strTesNexusUrl = null;
-			if (!CheckFomodName(ref strFomodPath))
+			if (!FomodGenerator.CheckFomodName(ref strFomodPath))
 				return;
 			if (booRepack)
 			{
