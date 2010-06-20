@@ -412,7 +412,10 @@ Remeber, you can customize the FOMOD file structure by doing any of the followin
 		/// <param name="e">A <see cref="TreeViewCancelEventArgs"/> that describes the event arguments.</param>
 		private void tvwFomod_AfterLabelEdit(object sender, NodeLabelEditEventArgs e)
 		{
-			e.Node.Name = e.Label.ToLowerInvariant();
+			if (e.Label == null)
+				e.CancelEdit = true;
+			else
+				e.Node.Name = e.Label.ToLowerInvariant();
 		}
 
 		#endregion
