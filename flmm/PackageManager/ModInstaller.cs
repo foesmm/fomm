@@ -108,9 +108,18 @@ namespace Fomm.PackageManager
 			{
 				MergeModule = new InstallLogMergeModule();
 				if (Fomod.HasInstallScript)
-					Fomod.IsActive = RunCustomInstallScript();
-				else if (Fomod.FileExists("fomod/ModuleConfig.xml"))
-					Fomod.IsActive = RunXmlInstallScript();
+				{
+					FomodScript fscInstallScript = Fomod.GetInstallScript();
+					switch (fscInstallScript.Type)
+					{
+						case FomodScriptType.CSharp:
+							Fomod.IsActive = RunCustomInstallScript();
+							break;
+						case FomodScriptType.XMLConfig:
+							Fomod.IsActive = RunXmlInstallScript();
+							break;
+					}
+				}
 				else
 					Fomod.IsActive = RunBasicInstallScript("Installing Fomod");
 				if (Fomod.IsActive)
@@ -147,7 +156,7 @@ namespace Fomm.PackageManager
 		/// <lang cref="false"/> otherwise.</returns>
 		protected bool RunCustomInstallScript()
 		{
-			string strScript = Fomod.GetInstallScript();
+			string strScript = Fomod.GetInstallScript().Text;
 			return ScriptCompiler.Execute(strScript, this);
 		}
 
