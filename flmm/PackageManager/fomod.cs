@@ -63,9 +63,10 @@ namespace Fomm.PackageManager
 
 		private bool hasInfo;
 		private bool isActive;
-		private bool hasScript;
-		private bool hasReadme;
 		private bool hasScreenshot;
+
+		private string m_strScriptPath = null;
+		private string m_strReadmePath = null;
 
 		private readonly string baseName;
 		private string m_strName;
@@ -80,7 +81,6 @@ namespace Fomm.PackageManager
 		private string[] m_strGroups;
 
 		private string screenshotext;
-		private string readmepath;
 
 		#region Properties
 
@@ -275,7 +275,13 @@ namespace Fomm.PackageManager
 		/// Gets whether the mod has a custom install script.
 		/// </summary>
 		/// <value>Whether the mod has a custom install script.</value>
-		public bool HasInstallScript { get { return hasScript; } }
+		public bool HasInstallScript
+		{
+			get
+			{
+				return String.IsNullOrEmpty(m_strScriptPath);
+			}
+		}
 
 		/// <summary>
 		/// Gets whether the mod has a custom uninstall script.
@@ -287,7 +293,13 @@ namespace Fomm.PackageManager
 		/// Gets whether the mod has a readme file.
 		/// </summary>
 		/// <value>Whether the mod has a readme file.</value>
-		public bool HasReadme { get { return hasReadme; } }
+		public bool HasReadme
+		{
+			get
+			{
+				return String.IsNullOrEmpty(m_strReadmePath);
+			}
+		}
 
 		#endregion
 
@@ -309,30 +321,35 @@ namespace Fomm.PackageManager
 			HumanReadableVersion = "1.0";
 			MachineVersion = DefaultVersion;
 			MinFommVersion = DefaultMinFommVersion;
-			readmepath = Settings.GetBool("UseDocsFolder") ? "docs/readme - " + baseName + ".rtf" : "readme - " + baseName + ".rtf";
 			Groups = new string[0];
 			isActive = (InstallLog.Current.GetModKey(this.baseName) != null);
 
 			LoadInfo();
 
-			hasScript = (m_zipFile.GetEntry("fomod/script.cs") != null);
+			for (int i = 0; i < FomodScript.ScriptNames.Length; i++)
+			{
+				if (m_zipFile.GetEntry("fomod/" + FomodScript.ScriptNames[i]) != null)
+				{
+					m_strScriptPath = "fomod/" + FomodScript.ScriptNames[i];
+					break;
+				}
+			}
+
 			for (int i = 0; i < Readme.ValidExtensions.Length; i++)
 			{
 				if (m_zipFile.GetEntry("readme - " + baseName + Readme.ValidExtensions[i]) != null)
 				{
-					hasReadme = true;
-					readmepath = "readme - " + baseName + Readme.ValidExtensions[i];
+					m_strReadmePath = "readme - " + baseName + Readme.ValidExtensions[i];
 					break;
 				}
 			}
-			if (!hasReadme)
+			if (String.IsNullOrEmpty(m_strReadmePath))
 			{
 				for (int i = 0; i < Readme.ValidExtensions.Length; i++)
 				{
 					if (m_zipFile.GetEntry("docs/readme - " + baseName + Readme.ValidExtensions[i]) != null)
 					{
-						hasReadme = true;
-						readmepath = "docs/readme - " + baseName + Readme.ValidExtensions[i];
+						m_strReadmePath = "docs/readme - " + baseName + Readme.ValidExtensions[i];
 						break;
 					}
 				}
@@ -416,11 +433,11 @@ namespace Fomm.PackageManager
 						break;
 					case "Email":
 						if (p_booOverwriteExisitngValues || String.IsNullOrEmpty(p_finFomodInfo.Email))
-						p_finFomodInfo.Email = xndNode.InnerText;
+							p_finFomodInfo.Email = xndNode.InnerText;
 						break;
 					case "Website":
 						if (p_booOverwriteExisitngValues || String.IsNullOrEmpty(p_finFomodInfo.Website))
-						p_finFomodInfo.Website = xndNode.InnerText;
+							p_finFomodInfo.Website = xndNode.InnerText;
 						break;
 					case "Groups":
 						if (p_booOverwriteExisitngValues || (p_finFomodInfo.Groups.Length == 0))
@@ -539,10 +556,11 @@ namespace Fomm.PackageManager
 			return sb.ToString();
 		}
 
-		internal string GetInstallScript()
+		internal FomodScript GetInstallScript()
 		{
-			if (!HasInstallScript) return null;
-			return GetFileText(m_zipFile.GetEntry("fomod/script.cs"));
+			if (!HasInstallScript)
+				return null;
+			return new FomodScript(m_strScriptPath, GetFileText(m_zipFile.GetEntry(m_strScriptPath)));
 		}
 
 		/// <summary>
@@ -567,34 +585,31 @@ namespace Fomm.PackageManager
 			return null;
 		}
 
-		internal void SetScript(string value)
+		internal void SetScript(FomodScript p_fscScript)
 		{
-			if (string.IsNullOrEmpty(value))
+			if (p_fscScript == null)
 			{
-				if (hasScript)
+				if (HasInstallScript)
 				{
 					m_zipFile.BeginUpdate();
-					m_zipFile.Delete(m_zipFile.GetEntry("fomod/script.cs"));
+					m_zipFile.Delete(m_zipFile.GetEntry(m_strScriptPath));
 					m_zipFile.CommitUpdate();
-					hasScript = false;
+					m_strScriptPath = null;
 				}
 			}
 			else
 			{
-				DataSource sds = new DataSource(value);
-				m_zipFile.BeginUpdate();
-				m_zipFile.Add(sds, "fomod/script.cs");
-				m_zipFile.CommitUpdate();
-				sds.Close();
-				hasScript = true;
+				if (m_strScriptPath == null)
+					m_strScriptPath = Path.Combine("fomod", p_fscScript.FileName);
+				ReplaceFile(m_strScriptPath, p_fscScript.Text);
 			}
 		}
 
 		public Readme GetReadme()
 		{
-			if (!HasReadme || !Readme.IsValidReadme(readmepath))
+			if (String.IsNullOrEmpty(m_strReadmePath) || !Readme.IsValidReadme(m_strReadmePath))
 				return null;
-			return new Readme(readmepath, GetFileText(m_zipFile.GetEntry(readmepath)));
+			return new Readme(m_strReadmePath, GetFileText(m_zipFile.GetEntry(m_strReadmePath)));
 		}
 
 		/// <summary>
@@ -618,29 +633,45 @@ namespace Fomm.PackageManager
 			sds.Close();
 		}
 
+		/// <summary>
+		/// Replaces the specified file with the given data.
+		/// </summary>
+		/// <remarks>
+		/// If the file does not exist in the fomod, it is added.
+		/// </remarks>
+		/// <param name="p_strFile">The name of the file to replace.</param>
+		/// <param name="p_strData">The data with which to replace to file.</param>
+		protected void ReplaceFile(string p_strFile, string p_strData)
+		{
+			m_zipFile.BeginUpdate();
+			ZipEntry zpeFile = m_zipFile.GetEntry(p_strFile.Replace('\\', '/'));
+			if (zpeFile != null)
+				m_zipFile.Delete(zpeFile);
+
+			DataSource sds = new DataSource(p_strData);
+			m_zipFile.Add(sds, p_strFile);
+			m_zipFile.CommitUpdate();
+			sds.Close();
+		}
+
 		internal void SetReadme(Readme p_rmeReadme)
 		{
 			if (p_rmeReadme == null)
 			{
-				if (hasReadme)
+				if (HasReadme)
 				{
 					m_zipFile.BeginUpdate();
-					m_zipFile.Delete(m_zipFile.GetEntry(readmepath));
+					m_zipFile.Delete(m_zipFile.GetEntry(m_strReadmePath));
 					m_zipFile.CommitUpdate();
-					hasReadme = false;
+					m_strReadmePath = null;
 				}
 			}
 			else
 			{
-				m_zipFile.BeginUpdate();
-				if (hasReadme)
-					m_zipFile.Delete(m_zipFile.GetEntry(readmepath));
-				readmepath = Path.ChangeExtension(readmepath, p_rmeReadme.Extension);
-				DataSource sds = new DataSource(p_rmeReadme.Text);
-				m_zipFile.Add(sds, readmepath);
-				m_zipFile.CommitUpdate();
-				sds.Close();
-				hasReadme = true;
+				if (m_strReadmePath == null)
+					m_strReadmePath = (Settings.GetBool("UseDocsFolder") ? "docs/" : "") + "Readme - " + baseName + ".rtf";
+				m_strReadmePath = Path.ChangeExtension(m_strReadmePath, p_rmeReadme.Extension);
+				ReplaceFile(m_strReadmePath, p_rmeReadme.Text);
 			}
 		}
 
@@ -719,8 +750,8 @@ namespace Fomm.PackageManager
 			if (Description.Length > 0) sb.AppendLine("Description:" + Environment.NewLine + Description);
 			if (Groups.Length > 0) sb.AppendLine(Environment.NewLine + "Group tags: " + string.Join(", ", Groups));
 			sb.AppendLine();
-			sb.AppendLine("Has readme: " + (hasReadme ? ("Yes (" + GetReadme().Format + ")") : "No"));
-			sb.AppendLine("Has script: " + (hasScript ? "Yes" : "No"));
+			sb.AppendLine("Has readme: " + (HasReadme ? ("Yes (" + GetReadme().Format + ")") : "No"));
+			sb.AppendLine("Has script: " + (HasInstallScript ? "Yes" : "No"));
 			sb.AppendLine("Has screenshot: " + (hasScreenshot ? ("Yes (" + screenshotext + ")") : "No"));
 			sb.AppendLine("Is active: " + (isActive ? "Yes" : "No"));
 			sb.AppendLine();
