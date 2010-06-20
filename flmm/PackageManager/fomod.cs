@@ -79,7 +79,6 @@ namespace Fomm.PackageManager
 		private Version m_verMinFommVersion;
 		private string[] m_strGroups;
 
-		private string readmeext;
 		private string screenshotext;
 		private string readmepath;
 
@@ -290,12 +289,6 @@ namespace Fomm.PackageManager
 		/// <value>Whether the mod has a readme file.</value>
 		public bool HasReadme { get { return hasReadme; } }
 
-		/// <summary>
-		/// Gets the extension of the mod's readme file.
-		/// </summary>
-		/// <value>The extension of the mod's readme file.</value>
-		public string ReadmeExt { get { return readmeext; } }
-
 		#endregion
 
 		#region Constructors
@@ -323,31 +316,28 @@ namespace Fomm.PackageManager
 			LoadInfo();
 
 			hasScript = (m_zipFile.GetEntry("fomod/script.cs") != null);
-			string[] extensions = new string[] { ".txt", ".rtf", ".htm", ".html" };
-			for (int i = 0; i < extensions.Length; i++)
+			for (int i = 0; i < Readme.ValidExtensions.Length; i++)
 			{
-				if (m_zipFile.GetEntry("readme - " + baseName + extensions[i]) != null)
+				if (m_zipFile.GetEntry("readme - " + baseName + Readme.ValidExtensions[i]) != null)
 				{
 					hasReadme = true;
-					readmeext = extensions[i];
-					readmepath = "readme - " + baseName + extensions[i];
+					readmepath = "readme - " + baseName + Readme.ValidExtensions[i];
 					break;
 				}
 			}
 			if (!hasReadme)
 			{
-				for (int i = 0; i < extensions.Length; i++)
+				for (int i = 0; i < Readme.ValidExtensions.Length; i++)
 				{
-					if (m_zipFile.GetEntry("docs/readme - " + baseName + extensions[i]) != null)
+					if (m_zipFile.GetEntry("docs/readme - " + baseName + Readme.ValidExtensions[i]) != null)
 					{
 						hasReadme = true;
-						readmeext = extensions[i];
-						readmepath = "docs/readme - " + baseName + extensions[i];
+						readmepath = "docs/readme - " + baseName + Readme.ValidExtensions[i];
 						break;
 					}
 				}
 			}
-			extensions = new string[] { ".png", ".jpg", ".bmp" };
+			string[] extensions = new string[] { ".png", ".jpg", ".bmp" };
 			for (int i = 0; i < extensions.Length; i++)
 			{
 				if (m_zipFile.GetEntry("fomod/screenshot" + extensions[i]) != null)
@@ -600,10 +590,11 @@ namespace Fomm.PackageManager
 			}
 		}
 
-		public string GetReadme()
+		public Readme GetReadme()
 		{
-			if (!HasReadme) return null;
-			return GetFileText(m_zipFile.GetEntry(readmepath));
+			if (!HasReadme || !Readme.IsValidReadme(readmepath))
+				return null;
+			return new Readme(readmepath, GetFileText(m_zipFile.GetEntry(readmepath)));
 		}
 
 		/// <summary>
@@ -627,9 +618,9 @@ namespace Fomm.PackageManager
 			sds.Close();
 		}
 
-		internal void SetReadme(string value)
+		internal void SetReadme(Readme p_rmeReadme)
 		{
-			if (string.IsNullOrEmpty(value))
+			if (p_rmeReadme == null)
 			{
 				if (hasReadme)
 				{
@@ -642,13 +633,10 @@ namespace Fomm.PackageManager
 			else
 			{
 				m_zipFile.BeginUpdate();
-				if (hasReadme) m_zipFile.Delete(m_zipFile.GetEntry(readmepath));
-				if (readmeext != ".rtf")
-				{
-					readmeext = ".rtf";
-					readmepath = Path.ChangeExtension(readmepath, ".rtf");
-				}
-				DataSource sds = new DataSource(value);
+				if (hasReadme)
+					m_zipFile.Delete(m_zipFile.GetEntry(readmepath));
+				readmepath = Path.ChangeExtension(readmepath, p_rmeReadme.Extension);
+				DataSource sds = new DataSource(p_rmeReadme.Text);
 				m_zipFile.Add(sds, readmepath);
 				m_zipFile.CommitUpdate();
 				sds.Close();
@@ -731,7 +719,7 @@ namespace Fomm.PackageManager
 			if (Description.Length > 0) sb.AppendLine("Description:" + Environment.NewLine + Description);
 			if (Groups.Length > 0) sb.AppendLine(Environment.NewLine + "Group tags: " + string.Join(", ", Groups));
 			sb.AppendLine();
-			sb.AppendLine("Has readme: " + (hasReadme ? ("Yes (" + readmeext + ")") : "No"));
+			sb.AppendLine("Has readme: " + (hasReadme ? ("Yes (" + GetReadme().Format + ")") : "No"));
 			sb.AppendLine("Has script: " + (hasScript ? "Yes" : "No"));
 			sb.AppendLine("Has screenshot: " + (hasScreenshot ? ("Yes (" + screenshotext + ")") : "No"));
 			sb.AppendLine("Is active: " + (isActive ? "Yes" : "No"));
