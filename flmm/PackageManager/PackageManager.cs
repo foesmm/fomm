@@ -580,10 +580,15 @@ namespace Fomm.PackageManager
 			if (Program.GetFiles(path, "*.esp", SearchOption.AllDirectories).Length + Program.GetFiles(path, "*.esm", SearchOption.AllDirectories).Length >
 					Program.GetFiles(path, "*.esp", SearchOption.TopDirectoryOnly).Length + Program.GetFiles(path, "*.esm", SearchOption.TopDirectoryOnly).Length)
 			{
-				if (!File.Exists(Path.Combine(path, "fomod\\script.cs")) && !File.Exists(Path.Combine(path, "fomod\\ModuleConfig.xml")))
-				{
+				bool booHasScript = false;
+				foreach (string strScriptName in FomodScript.ScriptNames)
+					if (File.Exists(Path.Combine(path, "fomod\\" + strScriptName)))
+					{
+						booHasScript = true;
+						break;
+					}
+				if (!booHasScript)
 					MessageBox.Show("This archive contains plugins in subdirectories, and will need a script attached for fomm to install it correctly.", "Warning");
-				}
 			}
 		}
 
