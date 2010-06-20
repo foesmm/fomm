@@ -31,7 +31,7 @@ namespace Fomm.PackageManager.FomodBuilder
 		/// Gets the selected format for the readme.
 		/// </summary>
 		/// <value>The selected format for the readme.</value>
-		public ReadmeFileSelector.ReadmeFormat Format
+		public ReadmeFormat Format
 		{
 			get
 			{
