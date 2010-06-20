@@ -61,5 +61,76 @@ namespace Fomm.Util
 			}
 			return true;
 		}
+
+		/// <summary>
+		/// Forces deletion of the given path.
+		/// </summary>
+		/// <remarks>
+		/// This method is recursive if the given path is a directory. This method will clear read only/system
+		/// attributes if required to delete the path.
+		/// </remarks>
+		/// <param name="p_strPath">The path to delete.</param>
+		public static void ForceDelete(string p_strPath)
+		{
+			try
+			{
+				if (File.Exists(p_strPath))
+					File.Delete(p_strPath);
+				else if (Directory.Exists(p_strPath))
+					Directory.Delete(p_strPath, true);
+			}
+			catch (Exception e)
+			{
+				if (!(e is IOException || e is UnauthorizedAccessException))
+					throw;
+				ClearAttributes(p_strPath, true);
+				if (File.Exists(p_strPath))
+					File.Delete(p_strPath);
+				else if (Directory.Exists(p_strPath))
+					Directory.Delete(p_strPath, true);
+			}
+		}
+
+		/// <summary>
+		/// Clears the attributes of the given path.
+		/// </summary>
+		/// <remarks>
+		/// This sets the path's attributes to <see cref="FileAttributes.Normal"/>. This operation is
+		/// optionally recursive.
+		/// </remarks>
+		/// <param name="p_strPath">The path whose attributes are to be cleared.</param>
+		/// <param name="p_booRecurse">Whether or not to clear the attributes on all children files and folers.</param>
+		public static void ClearAttributes(string p_strPath, bool p_booRecurse)
+		{
+			if (File.Exists(p_strPath))
+			{
+				FileInfo fifFile = new FileInfo(p_strPath);
+				fifFile.Attributes = FileAttributes.Normal;
+			}
+			else if (Directory.Exists(p_strPath))
+				ClearAttributes(new DirectoryInfo(p_strPath), p_booRecurse);
+			
+		}
+
+		/// <summary>
+		/// Clears the attributes of the given directory.
+		/// </summary>
+		/// <remarks>
+		/// This sets the directory's attributes to <see cref="FileAttributes.Normal"/>. This operation is
+		/// optionally recursive.
+		/// </remarks>
+		/// <param name="p_difPath">The directory whose attributes are to be cleared.</param>
+		/// <param name="p_booRecurse">Whether or not to clear the attributes on all children files and folers.</param>
+		public static void ClearAttributes(DirectoryInfo p_difPath, bool p_booRecurse)
+		{
+			p_difPath.Attributes = FileAttributes.Normal;
+			if (p_booRecurse)
+			{
+				foreach (DirectoryInfo difDirectory in p_difPath.GetDirectories())
+					ClearAttributes(difDirectory, p_booRecurse);
+				foreach (FileInfo fifFile in p_difPath.GetFiles())
+					fifFile.Attributes = FileAttributes.Normal;
+			}
+		}
 	}
 }
