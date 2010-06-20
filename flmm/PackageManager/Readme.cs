@@ -130,6 +130,11 @@ namespace Fomm.PackageManager
 			Text = p_strText;
 		}
 
+		/// <summary>
+		/// A simple constructor that initializes the object with the given values.
+		/// </summary>
+		/// <param name="p_strPath">The path of the readme file. This is used to determine the <see cref="Format"/>.</param>
+		/// <param name="p_strText">The readme text.</param>
 		public Readme(string p_strPath, string p_strText)
 		{
 			Extension = Path.GetExtension(p_strPath);
