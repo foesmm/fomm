@@ -279,7 +279,7 @@ namespace Fomm.PackageManager
 		{
 			get
 			{
-				return String.IsNullOrEmpty(m_strScriptPath);
+				return !String.IsNullOrEmpty(m_strScriptPath);
 			}
 		}
 
@@ -291,7 +291,7 @@ namespace Fomm.PackageManager
 		{
 			get
 			{
-				return String.IsNullOrEmpty(m_strScreenshotPath);
+				return !String.IsNullOrEmpty(m_strScreenshotPath);
 			}
 		}
 
@@ -309,7 +309,7 @@ namespace Fomm.PackageManager
 		{
 			get
 			{
-				return String.IsNullOrEmpty(m_strReadmePath);
+				return !String.IsNullOrEmpty(m_strReadmePath);
 			}
 		}
 
