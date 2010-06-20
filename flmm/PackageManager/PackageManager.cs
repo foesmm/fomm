@@ -202,6 +202,7 @@ namespace Fomm.PackageManager
 			cmbSortOrder.ContextMenu = new ContextMenu();
 			lvModList.ListViewItemSorter = new FomodSorter();
 			Settings.GetWindowPosition("PackageManager", this);
+			sbtAddFomod.SelectedItemIndex = Settings.GetInt("SelectedAddFomodAction", 0);
 			m_strLastFromFolderPath = Settings.GetString("LastBuildFOMODFromFolderPath");
 
 			foreach (string modpath in Program.GetFiles(Program.PackageDir, "*.fomod.zip"))
@@ -390,6 +391,7 @@ namespace Fomm.PackageManager
 		private void PackageManager_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			Settings.SetWindowPosition("PackageManager", this);
+			Settings.SetInt("SelectedAddFomodAction", sbtAddFomod.SelectedItemIndex);
 			Settings.SetString("PackageManagerPanelSplit", splitContainer1.SplitterDistance.ToString());
 			for (Int32 i = 0; i < lvModList.Columns.Count; i++)
 				Settings.SetString("PackageManagerCol" + i + "Width", lvModList.Columns[i].Width.ToString());
@@ -863,24 +865,6 @@ namespace Fomm.PackageManager
 
 		#endregion
 
-		private void bAddNew_Click(object sender, EventArgs e)
-		{
-			if (openFileDialog1.ShowDialog() != DialogResult.OK) return;
-			AddNewFomod(openFileDialog1.FileName);
-		}
-
-		private void bFomodFromFolder_Click(object sender, EventArgs e)
-		{
-			FolderBrowserDialog fbd = new FolderBrowserDialog();
-			fbd.SelectedPath = m_strLastFromFolderPath;
-			fbd.ShowNewFolderButton = false;
-			fbd.Description = "Pick a folder to convert to a fomod";
-			if (fbd.ShowDialog() != DialogResult.OK) return;
-			m_strLastFromFolderPath = fbd.SelectedPath;
-			Settings.SetString("LastBuildFOMODFromFolderPath", Path.GetDirectoryName(m_strLastFromFolderPath));
-			BuildFomodFromFolder(fbd.SelectedPath);
-		}
-
 		private void fomodContextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
 		{
 			if (lvModList.SelectedItems.Count != 1)
@@ -1205,6 +1189,32 @@ namespace Fomm.PackageManager
 		{
 			FomodBuilderForm fbfBuilder = new FomodBuilderForm();
 			fbfBuilder.ShowDialog(this);
+		}
+
+		private void addFOMODToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (openFileDialog1.ShowDialog() != DialogResult.OK) return;
+			AddNewFomod(openFileDialog1.FileName);
+		}
+
+		private void createFromFolderToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			FolderBrowserDialog fbd = new FolderBrowserDialog();
+			fbd.SelectedPath = m_strLastFromFolderPath;
+			fbd.ShowNewFolderButton = false;
+			fbd.Description = "Pick a folder to convert to a fomod";
+			if (fbd.ShowDialog() != DialogResult.OK) return;
+			m_strLastFromFolderPath = fbd.SelectedPath;
+			Settings.SetString("LastBuildFOMODFromFolderPath", Path.GetDirectoryName(m_strLastFromFolderPath));
+			BuildFomodFromFolder(fbd.SelectedPath);
+		}
+
+		private void createFOMODToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			FomodBuilderForm fbfBuilder = new FomodBuilderForm();
+			if (fbfBuilder.ShowDialog(this) == DialogResult.OK)
+			{
+			}
 		}
 	}
 }
