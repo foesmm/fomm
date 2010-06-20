@@ -80,16 +80,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		public bool Install()
 		{
 			XmlDocument xmlConfig = new XmlDocument();
-			byte[] bteConfig = m_misInstallScript.Fomod.GetFile("fomod/ModuleConfig.xml");
-			using (MemoryStream stmConfig = new MemoryStream(bteConfig))
-			{
-				using (StreamReader srdConfigReader = new StreamReader(stmConfig, true))
-				{
-					xmlConfig.LoadXml(srdConfigReader.ReadToEnd());
-					srdConfigReader.Close();
-				}
-				stmConfig.Close();
-			}
+			string strConfig = m_misInstallScript.Fomod.GetInstallScript().Text;
+			xmlConfig.LoadXml(strConfig);
 
 			m_dsmStateManager = new DependencyStateManager(m_misInstallScript);
 
