@@ -133,9 +133,18 @@ namespace Fomm.PackageManager.Upgrade
 			{
 				MergeModule = new InstallLogMergeModule();
 				if (Fomod.HasInstallScript)
-					booUpgraded = RunCustomInstallScript();
-				else if (Fomod.FileExists("fomod/ModuleConfig.xml"))
-					booUpgraded = RunXmlInstallScript();
+				{
+					FomodScript fscInstallScript = Fomod.GetInstallScript();
+					switch (fscInstallScript.Type)
+					{
+						case FomodScriptType.CSharp:
+							booUpgraded = RunCustomInstallScript();
+							break;
+						case FomodScriptType.XMLConfig:
+							booUpgraded = RunXmlInstallScript();
+							break;
+					}
+				}
 				else
 					booUpgraded = RunBasicInstallScript(ProgressMessage);
 				if (booUpgraded)
