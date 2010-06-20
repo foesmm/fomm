@@ -101,7 +101,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		/// <seealso cref="Parser.GetHeaderInfo()"/>
 		public override HeaderInfo GetHeaderInfo()
 		{
-			Image imgScreenshot = Fomod.GetScreenshot().Image;
+			Image imgScreenshot = Fomod.GetScreenshotImage();
 			return new HeaderInfo(XmlConfig.SelectSingleNode("/config/moduleName").InnerText, Color.FromKnownColor(KnownColor.ControlText), TextPosition.Left, imgScreenshot, imgScreenshot != null, true, (imgScreenshot != null) ? 75 : -1);
 		}
 

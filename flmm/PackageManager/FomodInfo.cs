@@ -17,7 +17,7 @@ namespace Fomm.PackageManager
 	{
 		protected static readonly Regex m_rgxEmail = new Regex(@"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", RegexOptions.Singleline | RegexOptions.CultureInvariant);
 
-		//private byte[] m_bteScreenshot = null;
+		private Screenshot m_shtScreenshot = null;
 
 		#region Properties
 
@@ -25,15 +25,16 @@ namespace Fomm.PackageManager
 		/// Gets or sets the screenshot used by the fomod.
 		/// </summary>
 		/// <value>The screenshot used by the fomod.</value>
-		public Image Screenshot
+		public Screenshot Screenshot
 		{
 			get
 			{
-				return pbxScreenshot.Image;
+				return m_shtScreenshot;
 			}
 			set
 			{
-				pbxScreenshot.Image = value;			
+				m_shtScreenshot = value;
+				pbxScreenshot.Image = (m_shtScreenshot != null) ? m_shtScreenshot.Image : null;
 			}
 		}
 
@@ -103,7 +104,10 @@ namespace Fomm.PackageManager
 		private void butSetScreenshot_Click(object sender, EventArgs e)
 		{
 			if (ofdScreenshot.ShowDialog() == DialogResult.OK)
-				pbxScreenshot.Image = Bitmap.FromFile(ofdScreenshot.FileName);
+			{
+				m_shtScreenshot = new Screenshot(ofdScreenshot.FileName, File.ReadAllBytes(ofdScreenshot.FileName));
+				pbxScreenshot.Image = m_shtScreenshot.Image;
+			}
 		}
 
 		/// <summary>
@@ -117,6 +121,7 @@ namespace Fomm.PackageManager
 		private void butClearScreenshot_Click(object sender, EventArgs e)
 		{
 			pbxScreenshot.Image = null;
+			m_shtScreenshot = null;
 		}
 
 		#endregion

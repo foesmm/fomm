@@ -724,6 +724,11 @@ namespace Fomm.PackageManager
 			if (sds2 != null) sds2.Close();
 		}
 
+		public Image GetScreenshotImage()
+		{
+			return HasScreenshot ? GetScreenshot().Image : null;
+		}
+
 		public Screenshot GetScreenshot()
 		{
 			if (!HasScreenshot)

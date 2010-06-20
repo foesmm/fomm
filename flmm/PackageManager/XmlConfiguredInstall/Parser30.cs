@@ -102,7 +102,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 			if (xndImage != null)
 			{
 				string strImagePath = xndImage.Attributes["path"].Value;
-				Image imgImage = String.IsNullOrEmpty(strImagePath) ? Fomod.GetScreenshot().Image : new Bitmap(Fomod.GetImage(strImagePath));
+				Image imgImage = String.IsNullOrEmpty(strImagePath) ? Fomod.GetScreenshotImage() : new Bitmap(Fomod.GetImage(strImagePath));
 				bool booShowImage = Boolean.Parse(xndImage.Attributes["showImage"].Value) && (imgImage != null);
 				bool booShowFade = Boolean.Parse(xndImage.Attributes["showFade"].Value);
 				Int32 intHeight = Int32.Parse(xndImage.Attributes["height"].Value);
@@ -110,7 +110,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 					intHeight = 75;
 				return new HeaderInfo(strTitle, clrColour, tpsPosition, imgImage, booShowImage, booShowFade, intHeight);
 			}
-			Image imgScreenshot = Fomod.GetScreenshot().Image;
+			Image imgScreenshot = Fomod.GetScreenshotImage();
 			return new HeaderInfo(strTitle, clrColour, tpsPosition, imgScreenshot, imgScreenshot != null, true, (imgScreenshot != null) ? 75 : -1);
 		}
 
