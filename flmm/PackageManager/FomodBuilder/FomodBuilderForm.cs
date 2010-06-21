@@ -55,6 +55,26 @@ class Script : BaseScript {
 
 		private ReadmeGeneratorForm m_rgdGenerator = new ReadmeGeneratorForm();
 		private bool m_booInfoEntered = false;
+		private string m_strNewFomodPath = null;
+
+		#region Properties
+
+		/// <summary>
+		/// Gets the path of the fomod that was built.
+		/// </summary>
+		/// <remarks>
+		/// This value will be <lang cref="null"/> if the fomod was not successfully built.
+		/// </remarks>
+		/// <value>The path of the fomod that was built.</value>
+		public string FomodPath
+		{
+			get
+			{
+				return m_strNewFomodPath;
+			}
+		}
+
+		#endregion
 
 		#region Constructors
 
@@ -179,8 +199,9 @@ class Script : BaseScript {
 
 			XmlDocument xmlInfo = m_booInfoEntered ? fomod.SaveInfo(finInfo) : null;
 
-			FomodGenerator fgnGenerator = new FomodGenerator();
-			if (fgnGenerator.BuildFomod(tbxFomodFileName.Text, ffsFileStructure.GetCopyPaths(), rmeReadme, xmlInfo, m_booInfoEntered, finInfo.Screenshot, fscScript))
+			NewFomodBuilder fgnGenerator = new NewFomodBuilder();
+			m_strNewFomodPath = fgnGenerator.BuildFomod(tbxFomodFileName.Text, ffsFileStructure.GetCopyPaths(), rmeReadme, xmlInfo, m_booInfoEntered, finInfo.Screenshot, fscScript);
+			if (!String.IsNullOrEmpty(m_strNewFomodPath))
 				DialogResult = DialogResult.OK;
 		}
 

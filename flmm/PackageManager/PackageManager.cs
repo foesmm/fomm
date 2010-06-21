@@ -517,112 +517,7 @@ namespace Fomm.PackageManager
 			ToggleActivation(mod, false);
 		}
 
-		private void CheckFomodFolder(ref string path, string tesnexusext, string fomodname)
-		{
-			foreach (string aifile in Program.GetFiles(path, "ArchiveInvalidation.txt", SearchOption.AllDirectories)) File.Delete(aifile);
-			foreach (string aifile in Program.GetFiles(path, "thumbs.db", SearchOption.AllDirectories)) File.Delete(aifile);
-			foreach (string aifile in Program.GetFiles(path, "desktop.ini", SearchOption.AllDirectories)) File.Delete(aifile);
-
-			//this code removes any top-level folders until it finds esp/esm/bsa, or the top-level folder
-			// is a fomod/textures/meshes/music/shaders/video/facegen/menus/lodsettings/lsdata/sound folder.
-			string[] directories = Directory.GetDirectories(path);
-			while (directories.Length == 1 && Program.GetFiles(path, "*.esp").Length == 0 && Program.GetFiles(path, "*.esm").Length == 0 && Program.GetFiles(path, "*.bsa").Length == 0)
-			{
-				directories = directories[0].Split(Path.DirectorySeparatorChar);
-				string name = directories[directories.Length - 1].ToLowerInvariant();
-				if (name != "fomod" && name != "textures" && name != "meshes" && name != "music" && name != "shaders" && name != "video" && name != "facegen" && name != "menus" && name != "lodsettings" && name != "lsdata" && name != "sound")
-				{
-					foreach (string file in Directory.GetFiles(path))
-					{
-						string newpath2 = Path.Combine(Path.Combine(Path.GetDirectoryName(file), name), Path.GetFileName(file));
-						if (!File.Exists(newpath2)) File.Move(file, newpath2);
-					}
-					path = Path.Combine(path, name);
-					directories = Directory.GetDirectories(path);
-				}
-				else break;
-			}
-
-			string[] readme = Directory.GetFiles(path, "readme - " + fomodname + ".*", SearchOption.TopDirectoryOnly);
-			if (readme.Length == 0)
-			{
-				readme = Directory.GetFiles(path, "*readme*.*", SearchOption.AllDirectories);
-				if (readme.Length == 0) readme = Program.GetFiles(path, "*.rtf", SearchOption.AllDirectories);
-				if (readme.Length == 0) readme = Program.GetFiles(path, "*.txt", SearchOption.AllDirectories);
-				if (readme.Length == 0) readme = Program.GetFiles(path, "*.html", SearchOption.AllDirectories);
-				if (readme.Length > 0)
-				{
-					if (Settings.GetBool("UseDocsFolder"))
-					{
-						Directory.CreateDirectory(Path.Combine(path, "docs"));
-						File.Move(readme[0], Path.Combine(path, "docs\\Readme - " + fomodname + Path.GetExtension(readme[0])));
-					}
-					else
-					{
-						File.Move(readme[0], Path.Combine(path, "Readme - " + fomodname + Path.GetExtension(readme[0])));
-					}
-				}
-			}
-			if (tesnexusext != null)
-			{
-				if (!Directory.Exists(Path.Combine(path, "fomod"))) Directory.CreateDirectory(Path.Combine(path, "fomod"));
-				if (!File.Exists(Path.Combine(path, "fomod\\info.xml")))
-				{
-					System.Xml.XmlDocument xmlDoc = new System.Xml.XmlDocument();
-					xmlDoc.AppendChild(xmlDoc.CreateXmlDeclaration("1.0", "UTF-16", null));
-					System.Xml.XmlElement el, el2;
-					xmlDoc.AppendChild(el = xmlDoc.CreateElement("fomod"));
-					el.AppendChild(el2 = xmlDoc.CreateElement("Website"));
-					el2.InnerText = tesnexusext;
-					xmlDoc.Save(Path.Combine(path, "fomod\\info.xml"));
-				}
-			}
-			if (Program.GetFiles(path, "*.esp", SearchOption.AllDirectories).Length + Program.GetFiles(path, "*.esm", SearchOption.AllDirectories).Length >
-					Program.GetFiles(path, "*.esp", SearchOption.TopDirectoryOnly).Length + Program.GetFiles(path, "*.esm", SearchOption.TopDirectoryOnly).Length)
-			{
-				bool booHasScript = false;
-				foreach (string strScriptName in FomodScript.ScriptNames)
-					if (File.Exists(Path.Combine(path, "fomod\\" + strScriptName)))
-					{
-						booHasScript = true;
-						break;
-					}
-				if (!booHasScript)
-					MessageBox.Show("This archive contains plugins in subdirectories, and will need a script attached for fomm to install it correctly.", "Warning");
-			}
-		}
-
 		#region Create fomod from Folder
-
-		/// <summary>
-		/// Creates a fomod from a source folder.
-		/// </summary>
-		/// <param name="p_strPath">The path to the folder from which to create the fomod.</param>
-		private void BuildFomodFromFolder(string p_strPath)
-		{
-			p_strPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-			string strName = Path.GetFileName(p_strPath);
-			string strFomodPath = Path.Combine(Program.PackageDir, strName + ".fomod");
-			CheckFomodFolder(ref p_strPath, null, strName);
-			if (!FomodGenerator.CheckFomodName(ref strFomodPath))
-				return;
-
-			using (m_bwdProgress = new BackgroundWorkerProgressDialog(CompressFomodFromFolder))
-			{
-				m_bwdProgress.OverallMessage = "Creating Fomod...";
-				m_bwdProgress.ShowItemProgress = false;
-				m_bwdProgress.OverallProgressMaximum = Directory.GetFiles(p_strPath, "*", SearchOption.AllDirectories).Length;
-				m_bwdProgress.OverallProgressStep = 1;
-				m_bwdProgress.WorkMethodArguments = new string[] { p_strPath, strFomodPath };
-				if (m_bwdProgress.ShowDialog() == DialogResult.Cancel)
-				{
-					if (File.Exists(strFomodPath))
-						File.Delete(strFomodPath);
-					return;
-				}
-			}
-			AddFomod(strFomodPath, true);
-		}
 
 		/// <summary>
 		/// Compress a folder to a fomod.
@@ -702,7 +597,7 @@ namespace Fomm.PackageManager
 			m_bwdProgress.StepOverallProgress();
 
 			//Check for packing errors here
-			CheckFomodFolder(ref strTmpPath, strTesNexusUrl, Path.GetFileNameWithoutExtension(strFomodPath));
+			//CheckFomodFolder(ref strTmpPath, strTesNexusUrl, Path.GetFileNameWithoutExtension(strFomodPath));
 
 			m_bwdProgress.StepOverallProgress();
 
@@ -777,66 +672,10 @@ namespace Fomm.PackageManager
 		/// <param name="p_strPath">The path to the archive from which to create the fomod.</param>
 		public void AddNewFomod(string p_strPath)
 		{
-			bool booRepack = false;
-			string strFomodPath = null;
-			if (p_strPath.EndsWith(".fomod", StringComparison.OrdinalIgnoreCase))
-				strFomodPath = Path.Combine(Program.PackageDir, Path.GetFileName(p_strPath));
-			else if (p_strPath.EndsWith(".fomod.zip", StringComparison.OrdinalIgnoreCase))
-				strFomodPath = Path.Combine(Program.PackageDir, Path.GetFileNameWithoutExtension(p_strPath));
-			else if (p_strPath.EndsWith(".zip", StringComparison.OrdinalIgnoreCase) && p_strPath.Contains("-fomod-"))
-			{
-				string tmppath2 = Path.GetFileName(p_strPath);
-				strFomodPath = Path.Combine(Program.PackageDir, Path.GetFileName(tmppath2.Substring(0, tmppath2.IndexOf("-fomod-")))) + ".fomod";
-			}
-			else
-			{
-				strFomodPath = Path.Combine(Program.PackageDir, Path.ChangeExtension(Path.GetFileName(p_strPath), ".fomod"));
-				booRepack = true;
-			}
-
-			string strTesNexusUrl = Path.GetFileNameWithoutExtension(strFomodPath);
-			Int32 intFileId;
-			if (strTesNexusUrl.Contains("-") && int.TryParse(strTesNexusUrl.Substring(strTesNexusUrl.LastIndexOf('-') + 1), out intFileId))
-			{
-				strFomodPath = Path.Combine(Path.GetDirectoryName(strFomodPath), strTesNexusUrl.Remove(strTesNexusUrl.LastIndexOf('-'))) + Path.GetExtension(strFomodPath);
-				strTesNexusUrl = @"http://www.fallout3nexus.com/downloads/file.php?id=" + intFileId;
-			}
-			else
-				strTesNexusUrl = null;
-			if (!FomodGenerator.CheckFomodName(ref strFomodPath))
-				return;
-			if (booRepack)
-			{
-				try
-				{
-					using (m_bwdProgress = new BackgroundWorkerProgressDialog(RepackToFomod))
-					{
-						m_bwdProgress.OverallMessage = "Creating Fomod...";
-						m_bwdProgress.OverallProgressMaximum = 3;
-						m_bwdProgress.OverallProgressStep = 1;
-						m_bwdProgress.WorkMethodArguments = new object[] { p_strPath, strFomodPath, strTesNexusUrl };
-						if (m_bwdProgress.ShowDialog() == DialogResult.Cancel)
-						{
-							if (File.Exists(strFomodPath))
-								File.Delete(strFomodPath);
-							return;
-						}
-					}
-				}
-				catch
-				{
-					MessageBox.Show("Unknown file type, or corrupt archive.", "Error");
-					return;
-				}
-			}
-			else
-			{
-				if (MessageBox.Show("Make a copy of the original file?", "", MessageBoxButtons.YesNo) != DialogResult.Yes)
-					File.Move(p_strPath, strFomodPath);
-				else
-					File.Copy(p_strPath, strFomodPath);
-			}
-			AddFomod(strFomodPath, true);
+			FomodFromSourceBuilder ffbBuilder = new FomodFromSourceBuilder();
+			string strFomodPath = ffbBuilder.BuildFomodFromSource(p_strPath);
+			if (!String.IsNullOrEmpty(strFomodPath))
+				AddFomod(strFomodPath, true);
 		}
 
 		#endregion
@@ -1198,7 +1037,7 @@ namespace Fomm.PackageManager
 			if (fbd.ShowDialog() != DialogResult.OK) return;
 			m_strLastFromFolderPath = fbd.SelectedPath;
 			Settings.SetString("LastBuildFOMODFromFolderPath", Path.GetDirectoryName(m_strLastFromFolderPath));
-			BuildFomodFromFolder(fbd.SelectedPath);
+			AddNewFomod(fbd.SelectedPath);
 		}
 
 		/// <summary>
@@ -1213,8 +1052,7 @@ namespace Fomm.PackageManager
 		{
 			FomodBuilderForm fbfBuilder = new FomodBuilderForm();
 			if (fbfBuilder.ShowDialog(this) == DialogResult.OK)
-			{
-			}
+				AddFomod(fbfBuilder.FomodPath, true);
 		}
 	}
 }
