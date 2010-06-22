@@ -14,7 +14,6 @@ namespace Fomm.PackageManager
 {
 	internal partial class PackageManager : Form
 	{
-
 		private readonly List<fomod> mods = new List<fomod>();
 		private readonly List<string> groups;
 		private readonly List<string> lgroups;
@@ -517,155 +516,6 @@ namespace Fomm.PackageManager
 			ToggleActivation(mod, false);
 		}
 
-		#region Create fomod from Folder
-
-		/// <summary>
-		/// Compress a folder to a fomod.
-		/// </summary>
-		/// <remarks>
-		/// This method is called by a <see cref="BackgroundWorkerProgressDialog"/> and so displays progress.
-		/// </remarks>
-		/// <param name="p_objArgs">An array of strings. Index 0 is the path to the folder to compress. Index 1 is
-		/// the path to the new fomod.</param>
-		protected void CompressFomodFromFolder(object p_objArgs)
-		{
-			string strFolderPath = ((string[])p_objArgs)[0];
-			string strFomodPath = ((string[])p_objArgs)[1];
-
-			SevenZipCompressor szcCompressor = new SevenZipCompressor();
-			szcCompressor.CompressionLevel = (CompressionLevel)Settings.GetInt("fomodCompressionLevel", (Int32)CompressionLevel.Ultra);
-			szcCompressor.ArchiveFormat = (OutArchiveFormat)Settings.GetInt("fomodCompressionFormat", (Int32)OutArchiveFormat.Zip);
-			szcCompressor.CompressionMethod = CompressionMethod.Default;
-			szcCompressor.FileCompressionStarted += new EventHandler<FileNameEventArgs>(CompressFomodFromFolder_FileCompressionStarted);
-			szcCompressor.FileCompressionFinished += new EventHandler(CompressFomodFromFolder_FileCompressionFinished);
-			szcCompressor.CompressDirectory(strFolderPath, strFomodPath);
-		}
-
-		/// <summary>
-		/// Called when a file has been added to a new fomod.
-		/// </summary>
-		/// <remarks>
-		/// This steps the progress of the create fomod from folder progress dialog.
-		/// </remarks>
-		/// <param name="sender">The object that raised the event.</param>
-		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
-		private void CompressFomodFromFolder_FileCompressionFinished(object sender, EventArgs e)
-		{
-			m_bwdProgress.StepOverallProgress();
-		}
-
-		/// <summary>
-		/// Called when a file is about to be added to a new fomod.
-		/// </summary>
-		/// <remarks>
-		/// This cancels the compression if the user has clicked the cancel button of the progress dialog.
-		/// </remarks>
-		/// <param name="sender">The object that raised the event.</param>
-		/// <param name="e">A <see cref="FileNameEventArgs"/> describing the event arguments.</param>
-		private void CompressFomodFromFolder_FileCompressionStarted(object sender, FileNameEventArgs e)
-		{
-			e.Cancel = m_bwdProgress.Cancelled();
-		}
-
-		#endregion
-
-		#region Repacking Archive to Fomod
-
-		/// <summary>
-		/// Repacks an archive into a fomod.
-		/// </summary>
-		/// <remarks>
-		/// This method is called by a <see cref="BackgroundWorkerProgressDialog"/> and so displays progress.
-		/// </remarks>
-		/// <param name="p_objArgs">An array of strings. Index 0 is the path to the archive to repack. Index 1 is
-		/// the path to the new fomod. Index 2 is the URL to the mod on tes nexus.</param>
-		protected void RepackToFomod(object p_objArgs)
-		{
-			string strArchivePath = (string)((object[])p_objArgs)[0];
-			string strFomodPath = (string)((object[])p_objArgs)[1];
-			string strTesNexusUrl = (string)((object[])p_objArgs)[2];
-			string strTmpPath = Program.CreateTempDirectory();
-
-			SevenZipExtractor szeExtractor = new SevenZipExtractor(strArchivePath);
-			szeExtractor.FileExtractionFinished += new EventHandler(RepackToFomod_FileExtractionFinished);
-			szeExtractor.FileExtractionStarted += new EventHandler<FileInfoEventArgs>(RepackToFomod_FileExtractionStarted);
-			m_bwdProgress.ItemProgressMaximum = (Int32)szeExtractor.FilesCount;
-			m_bwdProgress.ItemProgressStep = 1;
-			m_bwdProgress.ItemMessage = "Extracting Files...";
-			szeExtractor.ExtractArchive(strTmpPath);
-
-			m_bwdProgress.StepOverallProgress();
-
-			//Check for packing errors here
-			//CheckFomodFolder(ref strTmpPath, strTesNexusUrl, Path.GetFileNameWithoutExtension(strFomodPath));
-
-			m_bwdProgress.StepOverallProgress();
-
-			SevenZipCompressor szcCompressor = new SevenZipCompressor();
-			szcCompressor.CompressionLevel = (CompressionLevel)Settings.GetInt("fomodCompressionLevel", (Int32)CompressionLevel.Ultra);
-			szcCompressor.ArchiveFormat = (OutArchiveFormat)Settings.GetInt("fomodCompressionFormat", (Int32)OutArchiveFormat.Zip);
-			szcCompressor.CompressionMethod = CompressionMethod.Default;
-			szcCompressor.FileCompressionStarted += new EventHandler<FileNameEventArgs>(RepackToFomod_FileCompressionStarted);
-			szcCompressor.FileCompressionFinished += new EventHandler(RepackToFomod_FileCompressionFinished);
-			m_bwdProgress.ItemProgress = 0;
-			m_bwdProgress.ItemMessage = "Compressing Files...";
-			szcCompressor.CompressDirectory(strTmpPath, strFomodPath);
-
-			m_bwdProgress.StepOverallProgress();
-		}
-
-		/// <summary>
-		/// Called when a file has been added to a new fomod.
-		/// </summary>
-		/// <remarks>
-		/// This steps the progress of the create fomod from archive progress dialog.
-		/// </remarks>
-		/// <param name="sender">The object that raised the event.</param>
-		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
-		void RepackToFomod_FileCompressionFinished(object sender, EventArgs e)
-		{
-			m_bwdProgress.StepItemProgress();
-		}
-
-		/// <summary>
-		/// Called when a file is about to be added to a new fomod.
-		/// </summary>
-		/// <remarks>
-		/// This cancels the compression if the user has clicked the cancel button of the progress dialog.
-		/// </remarks>
-		/// <param name="sender">The object that raised the event.</param>
-		/// <param name="e">A <see cref="FileNameEventArgs"/> describing the event arguments.</param>
-		void RepackToFomod_FileCompressionStarted(object sender, FileNameEventArgs e)
-		{
-			e.Cancel = m_bwdProgress.Cancelled();
-		}
-
-		/// <summary>
-		/// Called when a file has been extracted from a source archive.
-		/// </summary>
-		/// <remarks>
-		/// This steps the progress of the create fomod from archive progress dialog.
-		/// </remarks>
-		/// <param name="sender">The object that raised the event.</param>
-		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
-		void RepackToFomod_FileExtractionFinished(object sender, EventArgs e)
-		{
-			m_bwdProgress.StepItemProgress();
-		}
-
-		/// <summary>
-		/// Called when a file is about to be extracted from a source archive.
-		/// </summary>
-		/// <remarks>
-		/// This cancels the compression if the user has clicked the cancel button of the progress dialog.
-		/// </remarks>
-		/// <param name="sender">The object that raised the event.</param>
-		/// <param name="e">A <see cref="FileNameEventArgs"/> describing the event arguments.</param>
-		void RepackToFomod_FileExtractionStarted(object sender, FileInfoEventArgs e)
-		{
-			e.Cancel = m_bwdProgress.Cancelled();
-		}
-
 		/// <summary>
 		/// Creates a fomod from a source archive.
 		/// </summary>
@@ -677,8 +527,6 @@ namespace Fomm.PackageManager
 			if (!String.IsNullOrEmpty(strFomodPath))
 				AddFomod(strFomodPath, true);
 		}
-
-		#endregion
 
 		private void fomodContextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
 		{
@@ -999,12 +847,6 @@ namespace Fomm.PackageManager
 		}
 
 		#endregion
-
-		private void butCreateFomod_Click(object sender, EventArgs e)
-		{
-			FomodBuilderForm fbfBuilder = new FomodBuilderForm();
-			fbfBuilder.ShowDialog(this);
-		}
 
 		/// <summary>
 		/// Handles the <see cref="Control.Click"/> event of the add fomod button.
