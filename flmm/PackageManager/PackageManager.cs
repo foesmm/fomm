@@ -411,7 +411,7 @@ namespace Fomm.PackageManager
 					ListViewItem lvi = lvModList.SelectedItems[0];
 					lvi.SubItems[0].Text = mod.ModName;
 					lvi.SubItems[1].Text = mod.HumanReadableVersion;
-					lvi.SubItems[2].Text = mod.Author;
+					lvi.SubItems[3].Text = mod.Author;
 					tbModInfo.Text = mod.Description;
 					pictureBox1.Image = mod.GetScreenshotImage();
 				}

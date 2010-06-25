@@ -38,36 +38,6 @@ namespace Fomm.PackageManager
 			}
 		}
 
-		/// <summary>
-		/// Sets the fomod whose information is being edited.
-		/// </summary>
-		/// <value>The fomod whose information is being edited.</value>
-		/*public fomod Fomod
-		{
-			set
-			{
-				m_fomodMod = value;
-				tbName.Text = value.Name;
-				tbAuthor.Text = value.Author;
-				tbVersion.Text = value.HumanReadableVersion;
-				tbMVersion.Text = value.HumanReadableVersion.ToString();
-				tbDescription.Text = value.Description;
-				tbWebsite.Text = value.Website;
-				tbEmail.Text = value.Email;
-				if (value.MinFommVersion == new Version(0, 0, 0, 0))
-					tbMinFommVersion.Text = "";
-				else tbMinFommVersion.Text = value.MinFommVersion.ToString();
-
-				string[] strGroups = Settings.GetStringArray("fomodGroups");
-				clbGroups.SuspendLayout();
-				foreach (string strGroup in strGroups)
-					clbGroups.Items.Add(strGroup, Array.IndexOf<string>(value.Groups, strGroup.ToLowerInvariant()) != -1);
-				clbGroups.ResumeLayout();
-
-				pbxScreenshot.Image = value.GetScreenshot();
-			}
-		}*/
-
 		#endregion
 
 		#region Constructors
@@ -281,16 +251,31 @@ namespace Fomm.PackageManager
 		#endregion
 
 		/// <summary>
-		/// Saves the edited info to the fomod being edited.
+		/// Loads the info from the given <see cref="fomod"/> into the edit form.
 		/// </summary>
+		/// <param name="p_fomodMod">The <see cref="fomod"/> whose info is to be edited.</param>
+		public void LoadFomod(fomod p_fomodMod)
+		{
+			ModName = p_fomodMod.ModName;
+			Author = p_fomodMod.Author;
+			HumanReadableVersion = String.IsNullOrEmpty(p_fomodMod.HumanReadableVersion) ? p_fomodMod.MachineVersion.ToString() : p_fomodMod.HumanReadableVersion;
+			MachineVersion = p_fomodMod.MachineVersion;
+			Description = p_fomodMod.Description;
+			Website = p_fomodMod.Website;
+			Email = p_fomodMod.Email;
+			MinFommVersion = p_fomodMod.MinFommVersion;
+			Groups = p_fomodMod.Groups;
+			Screenshot = p_fomodMod.GetScreenshot();
+		}
+
+		/// <summary>
+		/// Saves the edited info to the given fomod.
+		/// </summary>
+		/// <param name="p_fomodMod">The <see cref="fomod"/> to which to save the info.</param>
 		/// <returns><lang cref="false"/> if the info failed validation and was not saved;
 		/// <lang cref="true"/> otherwise.</returns>
-		/// <exception cref="InvalidOperationException">Thrown if the method is called before <see cref="Fomod"/> is set.</exception>
-		/*public bool SaveInfo()
+		public bool SaveFomod(fomod p_fomodMod)
 		{
-			if (m_fomodMod == null)
-				throw new InvalidOperationException("Save() cannot be called before setting the Fomod being edited.");
-
 			if (!this.ValidateChildren())
 				return false;
 
@@ -300,25 +285,19 @@ namespace Fomm.PackageManager
 				return false;
 			}
 
-			m_fomodMod.Name = tbName.Text;
-			m_fomodMod.Author = tbAuthor.Text;
-			m_fomodMod.HumanReadableVersion = tbVersion.Text;
-			m_fomodMod.Description = tbDescription.Text;
-			m_fomodMod.Website = tbWebsite.Text;
-			m_fomodMod.Email = tbEmail.Text;
-			if (!String.IsNullOrEmpty(tbMinFommVersion.Text))
-				m_fomodMod.MinFommVersion = new Version(tbMinFommVersion.Text);
-			if (!String.IsNullOrEmpty(tbMVersion.Text))
-				m_fomodMod.MachineVersion = new Version(tbMVersion.Text);
-
-			m_fomodMod.Groups = new string[clbGroups.CheckedItems.Count];
-			for (Int32 i = 0; i < m_fomodMod.Groups.Length; i++)
-				m_fomodMod.Groups[i] = ((string)clbGroups.CheckedItems[i]).ToLowerInvariant();
-
-			m_fomodMod.CommitInfo(pbxScreenshot.Image != null, m_bteScreenshot);
+			p_fomodMod.ModName = ModName;
+			p_fomodMod.Author = Author;
+			p_fomodMod.HumanReadableVersion = String.IsNullOrEmpty(HumanReadableVersion) ? MachineVersion.ToString() : HumanReadableVersion;
+			p_fomodMod.MachineVersion = MachineVersion;
+			p_fomodMod.Description = Description;
+			p_fomodMod.Website = Website;
+			p_fomodMod.Email = Email;
+			p_fomodMod.MinFommVersion = MinFommVersion;
+			p_fomodMod.Groups = Groups;
+			p_fomodMod.CommitInfo(true, Screenshot);
 
 			return true;
-		}*/
+		}
 
 		/// <summary>
 		/// Raises the <see cref="Control.Resize"/> event.

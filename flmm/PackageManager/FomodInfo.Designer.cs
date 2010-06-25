@@ -263,7 +263,6 @@
 			// 
 			// ofdScreenshot
 			// 
-			this.ofdScreenshot.FileName = "openFileDialog1";
 			this.ofdScreenshot.Filter = "Image files|*.png;*.jpg;*.bmp";
 			this.ofdScreenshot.RestoreDirectory = true;
 			// 
