@@ -258,7 +258,7 @@ namespace Fomm.PackageManager.FomodBuilder
 		protected void UnpackArchive(string p_strArchivePath, string p_strExtractionPath)
 		{
 			SevenZipExtractor szeExtractor = new SevenZipExtractor(p_strArchivePath);
-			szeExtractor.FileExtractionFinished += new EventHandler(FileExtractionFinished);
+			szeExtractor.FileExtractionFinished += new EventHandler<FileInfoEventArgs>(FileExtractionFinished);
 			szeExtractor.FileExtractionStarted += new EventHandler<FileInfoEventArgs>(FileExtractionStarted);
 			ProgressDialog.ItemProgress = 0;
 			ProgressDialog.ItemProgressMaximum = (Int32)szeExtractor.FilesCount;
@@ -294,7 +294,7 @@ namespace Fomm.PackageManager.FomodBuilder
 		/// </remarks>
 		/// <param name="sender">The object that raised the event.</param>
 		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
-		private void FileExtractionFinished(object sender, EventArgs e)
+		private void FileExtractionFinished(object sender, FileInfoEventArgs e)
 		{
 			ProgressDialog.StepItemProgress();
 		}

@@ -815,7 +815,7 @@ namespace Fomm.PackageManager
 			m_bwdProgress.OverallProgressStep = 1;
 
 			SevenZipExtractor szeExtractor = new SevenZipExtractor(fomodMod.filepath);
-			szeExtractor.FileExtractionFinished += new EventHandler(UnpackFomod_FileExtractionFinished);
+			szeExtractor.FileExtractionFinished += new EventHandler<FileInfoEventArgs>(UnpackFomod_FileExtractionFinished);
 			szeExtractor.FileExtractionStarted += new EventHandler<FileInfoEventArgs>(UnpackFomod_FileExtractionStarted);
 			szeExtractor.ExtractArchive(strOutput);
 		}
@@ -828,7 +828,7 @@ namespace Fomm.PackageManager
 		/// </remarks>
 		/// <param name="sender">The object that raised the event.</param>
 		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
-		void UnpackFomod_FileExtractionFinished(object sender, EventArgs e)
+		void UnpackFomod_FileExtractionFinished(object sender, FileInfoEventArgs e)
 		{
 			m_bwdProgress.StepItemProgress();
 		}
