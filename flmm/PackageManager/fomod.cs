@@ -1,14 +1,9 @@
 using System;
-using ICSharpCode.SharpZipLib.Zip;
 using System.Xml;
-using File = System.IO.File;
-using Path = System.IO.Path;
-using Stream = System.IO.Stream;
-using MemoryStream = System.IO.MemoryStream;
-using System.Collections.Generic;
 using System.Drawing;
+using System.Collections.Generic;
+using Fomm.Util;
 using System.IO;
-using Fomm.CriticalRecords;
 
 /*
  * Installed data XML Structure
@@ -30,31 +25,9 @@ namespace Fomm.PackageManager
 {
 	public class fomod : IFomodInfo
 	{
-		private class DataSource : IStaticDataSource
-		{
-			private Stream ms;
-
-			public DataSource(string str)
-			{
-				ms = new System.IO.MemoryStream(System.Text.Encoding.Default.GetBytes(str));
-			}
-			public DataSource(byte[] bytes)
-			{
-				ms = new System.IO.MemoryStream(bytes);
-			}
-			public DataSource(Stream s)
-			{
-				ms = s;
-			}
-
-			public Stream GetSource() { return ms; }
-
-			public void Close() { ms.Close(); }
-		}
-
 		class fomodLoadException : Exception { public fomodLoadException(string msg) : base(msg) { } }
 
-		private ZipFile m_zipFile;
+		private Archive m_arcFile;
 
 		internal readonly string filepath;
 
@@ -76,11 +49,8 @@ namespace Fomm.PackageManager
 		private string m_strHumanVersion;
 		private string m_strEmail;
 		private string m_strWebsite;
-		//private System.Drawing.Bitmap screenshot;
 		private Version m_verMinFommVersion;
 		private string[] m_strGroups;
-
-		//private string screenshotext;
 
 		#region Properties
 
@@ -247,7 +217,13 @@ namespace Fomm.PackageManager
 		/// The fomod file is a compressed file.
 		/// </remarks>
 		/// <value>The fomod file.</value>
-		internal ZipFile FomodFile { get { return m_zipFile; } }
+		internal Archive FomodFile
+		{
+			get
+			{
+				return m_arcFile;
+			}
+		}
 
 		/// <summary>
 		/// Gets whether the mod has metadata.
@@ -325,7 +301,7 @@ namespace Fomm.PackageManager
 		{
 			this.filepath = path;
 
-			m_zipFile = new ZipFile(path);
+			m_arcFile = new Archive(path);
 			ModName = System.IO.Path.GetFileNameWithoutExtension(path);
 			baseName = ModName.ToLowerInvariant();
 			Author = "DEFAULT";
@@ -339,43 +315,33 @@ namespace Fomm.PackageManager
 			LoadInfo();
 
 			for (int i = 0; i < FomodScript.ScriptNames.Length; i++)
-			{
-				if (m_zipFile.GetEntry("fomod/" + FomodScript.ScriptNames[i]) != null)
+				if (m_arcFile.ContainsFile("fomod/" + FomodScript.ScriptNames[i]))
 				{
 					m_strScriptPath = "fomod/" + FomodScript.ScriptNames[i];
 					break;
 				}
-			}
-
+		
 			for (int i = 0; i < Readme.ValidExtensions.Length; i++)
-			{
-				if (m_zipFile.GetEntry("readme - " + baseName + Readme.ValidExtensions[i]) != null)
+				if (m_arcFile.ContainsFile("readme - " + baseName + Readme.ValidExtensions[i]))
 				{
 					m_strReadmePath = "readme - " + baseName + Readme.ValidExtensions[i];
 					break;
 				}
-			}
 			if (String.IsNullOrEmpty(m_strReadmePath))
-			{
 				for (int i = 0; i < Readme.ValidExtensions.Length; i++)
-				{
-					if (m_zipFile.GetEntry("docs/readme - " + baseName + Readme.ValidExtensions[i]) != null)
+					if (m_arcFile.ContainsFile("docs/readme - " + baseName + Readme.ValidExtensions[i]))
 					{
 						m_strReadmePath = "docs/readme - " + baseName + Readme.ValidExtensions[i];
 						break;
 					}
-				}
-			}
 
 			string[] extensions = new string[] { ".png", ".jpg", ".bmp" };
 			for (int i = 0; i < extensions.Length; i++)
-			{
-				if (m_zipFile.GetEntry("fomod/screenshot" + extensions[i]) != null)
+				if (m_arcFile.ContainsFile("fomod/screenshot" + extensions[i]))
 				{
 					m_strScreenshotPath = "fomod/screenshot" + extensions[i];
 					break;
 				}
-			}
 		}
 
 		#endregion
@@ -538,41 +504,22 @@ namespace Fomm.PackageManager
 
 		protected void LoadInfo()
 		{
-			ZipEntry info = m_zipFile.GetEntry("fomod/info.xml");
-			if (info != null)
+			if (m_arcFile.ContainsFile("fomod/info.xml"))
 			{
 				hasInfo = true;
 				XmlDocument doc = new XmlDocument();
-				using (System.IO.Stream stream = m_zipFile.GetInputStream(info))
-				{
-					doc.Load(stream);
-					stream.Close();
-				}
+				doc.LoadXml(TextUtil.ByteToString(m_arcFile.GetFileContents("fomod/info.xml")));
 				LoadInfo(doc, this);
 				if (Program.MVersion < MinFommVersion)
 					throw new fomodLoadException("This fomod requires a newer version of Fallout mod manager to load." + Environment.NewLine + "Expected " + MachineVersion);
 			}
 		}
 
-		private string GetFileText(ZipEntry ze)
-		{
-			System.IO.Stream s = m_zipFile.GetInputStream(ze);
-			System.Text.StringBuilder sb = new System.Text.StringBuilder();
-			byte[] buffer = new byte[4096];
-			int count;
-			while ((count = s.Read(buffer, 0, 4096)) > 0)
-			{
-				sb.Append(System.Text.Encoding.Default.GetString(buffer, 0, count));
-			}
-			s.Close();
-			return sb.ToString();
-		}
-
 		internal FomodScript GetInstallScript()
 		{
 			if (!HasInstallScript)
 				return null;
-			return new FomodScript(m_strScriptPath, GetFileText(m_zipFile.GetEntry(m_strScriptPath)));
+			return new FomodScript(m_strScriptPath, TextUtil.ByteToString(m_arcFile.GetFileContents(m_strScriptPath)));
 		}
 
 		/// <summary>
@@ -603,9 +550,7 @@ namespace Fomm.PackageManager
 			{
 				if (HasInstallScript)
 				{
-					m_zipFile.BeginUpdate();
-					m_zipFile.Delete(m_zipFile.GetEntry(m_strScriptPath));
-					m_zipFile.CommitUpdate();
+					m_arcFile.DeleteFile(m_strScriptPath);
 					m_strScriptPath = null;
 				}
 			}
@@ -613,7 +558,7 @@ namespace Fomm.PackageManager
 			{
 				if (m_strScriptPath == null)
 					m_strScriptPath = Path.Combine("fomod", p_fscScript.FileName);
-				ReplaceFile(m_strScriptPath, p_fscScript.Text);
+				m_arcFile.ReplaceFile(m_strScriptPath, p_fscScript.Text);
 			}
 		}
 
@@ -621,49 +566,7 @@ namespace Fomm.PackageManager
 		{
 			if (String.IsNullOrEmpty(m_strReadmePath) || !Readme.IsValidReadme(m_strReadmePath))
 				return null;
-			return new Readme(m_strReadmePath, GetFileText(m_zipFile.GetEntry(m_strReadmePath)));
-		}
-
-		/// <summary>
-		/// Replaces the specified file with the given data.
-		/// </summary>
-		/// <remarks>
-		/// If the file does not exist in the fomod, it is added.
-		/// </remarks>
-		/// <param name="p_strFile">The name of the file to replace.</param>
-		/// <param name="p_bteData">The data with which to replace to file.</param>
-		protected void ReplaceFile(string p_strFile, byte[] p_bteData)
-		{
-			m_zipFile.BeginUpdate();
-			ZipEntry zpeFile = m_zipFile.GetEntry(p_strFile.Replace('\\', '/'));
-			if (zpeFile != null)
-				m_zipFile.Delete(zpeFile);
-
-			DataSource sds = new DataSource(p_bteData);
-			m_zipFile.Add(sds, p_strFile);
-			m_zipFile.CommitUpdate();
-			sds.Close();
-		}
-
-		/// <summary>
-		/// Replaces the specified file with the given data.
-		/// </summary>
-		/// <remarks>
-		/// If the file does not exist in the fomod, it is added.
-		/// </remarks>
-		/// <param name="p_strFile">The name of the file to replace.</param>
-		/// <param name="p_strData">The data with which to replace to file.</param>
-		protected void ReplaceFile(string p_strFile, string p_strData)
-		{
-			m_zipFile.BeginUpdate();
-			ZipEntry zpeFile = m_zipFile.GetEntry(p_strFile.Replace('\\', '/'));
-			if (zpeFile != null)
-				m_zipFile.Delete(zpeFile);
-
-			DataSource sds = new DataSource(p_strData);
-			m_zipFile.Add(sds, p_strFile);
-			m_zipFile.CommitUpdate();
-			sds.Close();
+			return new Readme(m_strReadmePath, TextUtil.ByteToString(m_arcFile.GetFileContents(m_strReadmePath)));
 		}
 
 		internal void SetReadme(Readme p_rmeReadme)
@@ -672,9 +575,7 @@ namespace Fomm.PackageManager
 			{
 				if (HasReadme)
 				{
-					m_zipFile.BeginUpdate();
-					m_zipFile.Delete(m_zipFile.GetEntry(m_strReadmePath));
-					m_zipFile.CommitUpdate();
+					m_arcFile.DeleteFile(m_strReadmePath);
 					m_strReadmePath = null;
 				}
 			}
@@ -683,45 +584,36 @@ namespace Fomm.PackageManager
 				if (m_strReadmePath == null)
 					m_strReadmePath = (Settings.GetBool("UseDocsFolder") ? "docs/" : "") + "Readme - " + baseName + ".rtf";
 				m_strReadmePath = Path.ChangeExtension(m_strReadmePath, p_rmeReadme.Extension);
-				ReplaceFile(m_strReadmePath, p_rmeReadme.Text);
+				m_arcFile.ReplaceFile(m_strReadmePath, p_rmeReadme.Text);
 			}
 		}
 
 		internal void CommitInfo(bool SetScreenshot, Screenshot p_shtScreenshot)
 		{
 			XmlDocument xmlInfo = SaveInfo(this);
-			DataSource sds1, sds2 = null;
-
-			m_zipFile.BeginUpdate();
 			hasInfo = true;
 
 			MemoryStream ms = new MemoryStream();
 			xmlInfo.Save(ms);
-			ms.Position = 0;
-			sds1 = new DataSource(ms);
-			m_zipFile.Add(sds1, "fomod/info.xml");
+			m_arcFile.ReplaceFile("fomod/info.xml", ms.ToArray());
 			if (SetScreenshot)
 			{
 				if (p_shtScreenshot == null)
 				{
 					if (HasScreenshot)
 					{
-						m_zipFile.Delete(m_zipFile.GetEntry(m_strScreenshotPath));
+						m_arcFile.DeleteFile(m_strScreenshotPath);
 						m_strScreenshotPath = null;
 					}
 				}
 				else
 				{
-					if (HasScreenshot)
-						m_zipFile.Delete(m_zipFile.GetEntry(m_strScreenshotPath));
+					if (!HasScreenshot)
+						m_strScreenshotPath = "screenshot.jpg";
 					m_strScreenshotPath = Path.ChangeExtension(m_strScreenshotPath, p_shtScreenshot.Extension);
-					sds2 = new DataSource(p_shtScreenshot.Data);
-					m_zipFile.Add(sds2, m_strScreenshotPath);
+					m_arcFile.ReplaceFile(m_strScreenshotPath, p_shtScreenshot.Data);
 				}
 			}
-			m_zipFile.CommitUpdate();
-			sds1.Close();
-			if (sds2 != null) sds2.Close();
 		}
 
 		public Image GetScreenshotImage()
@@ -740,7 +632,7 @@ namespace Fomm.PackageManager
 
 		internal void Dispose()
 		{
-			m_zipFile.Close();
+			m_arcFile.Dispose();
 		}
 
 		internal string GetStatusString()
@@ -762,11 +654,7 @@ namespace Fomm.PackageManager
 			sb.AppendLine("Is active: " + (isActive ? "Yes" : "No"));
 			sb.AppendLine();
 			sb.AppendLine("-- fomod contents list:");
-			foreach (ZipEntry ze in m_zipFile)
-			{
-				if (!ze.IsFile) continue;
-				sb.AppendLine(ze.Name);
-			}
+			sb.AppendLine(String.Join(Environment.NewLine, m_arcFile.GetFiles(null)));
 			if (isActive)
 			{
 				sb.AppendLine();
@@ -803,11 +691,9 @@ namespace Fomm.PackageManager
 		{
 			PermissionsManager.CurrentPermissions.Assert();
 			List<string> lstFiles = new List<string>();
-			foreach (ZipEntry ze in m_zipFile)
-			{
-				if (ze.IsDirectory) continue;
-				if (!ze.Name.StartsWith("fomod", StringComparison.OrdinalIgnoreCase)) lstFiles.Add(ze.Name);
-			}
+			foreach (string strFile in m_arcFile.GetFiles(null))
+				if (!strFile.StartsWith("fomod", StringComparison.OrdinalIgnoreCase))
+					lstFiles.Add(strFile);
 			return lstFiles;
 		}
 
@@ -819,8 +705,7 @@ namespace Fomm.PackageManager
 		public bool FileExists(string p_strFile)
 		{
 			PermissionsManager.CurrentPermissions.Assert();
-			ZipEntry zpeFile = m_zipFile.GetEntry(p_strFile.Replace('\\', '/'));
-			return (zpeFile != null);
+			return m_arcFile.ContainsFile(p_strFile);
 		}
 
 		/// <summary>
@@ -835,39 +720,30 @@ namespace Fomm.PackageManager
 		public byte[] GetFile(string p_strFile)
 		{
 			PermissionsManager.CurrentPermissions.Assert();
-			ZipEntry zpeFile = m_zipFile.GetEntry(p_strFile.Replace('\\', '/'));
-			if (zpeFile == null)
+			if (!m_arcFile.ContainsFile(p_strFile))
 				throw new FileNotFoundException("File doesn't exist in fomod", p_strFile);
-			if (!zpeFile.CanDecompress)
-				throw new DecompressionException("Can't extract file from fomod");
-			Stream stmInput = m_zipFile.GetInputStream(zpeFile);
-			byte[] bteBuffer = new byte[zpeFile.Size];
-			int intUpto = 0, intSize;
-			while ((intSize = stmInput.Read(bteBuffer, 0, (int)zpeFile.Size - intUpto)) > 0) intUpto += intSize;
-			return bteBuffer;
+			return m_arcFile.GetFileContents(p_strFile);
 		}
 
 		/// <summary>
 		/// Retrieves the specified image from the fomod.
 		/// </summary>
-		/// <param name="file">The path of the image to extract.</param>
+		/// <param name="p_strFile">The path of the image to extract.</param>
 		/// <returns>The request image.</returns>
 		/// <exception cref="FileNotFoundException">Thrown if the specified file
 		/// is not in the fomod.</exception>
 		/// <exception cref="DecompressionException">Thrown if the specified file
 		/// cannot be extracted from the zip.</exception>
-		public Image GetImage(string file)
+		public Image GetImage(string p_strFile)
 		{
 			PermissionsManager.CurrentPermissions.Assert();
-			ZipEntry zpeFile = m_zipFile.GetEntry(file.Replace('\\', '/'));
-			if (zpeFile == null)
-				throw new FileNotFoundException("File doesn't exist in fomod", file);
-			if (!zpeFile.CanDecompress)
-				throw new DecompressionException("Can't extract file from fomod");
+			if (!m_arcFile.ContainsFile(p_strFile))
+				throw new FileNotFoundException("File doesn't exist in fomod", p_strFile);
 			Image imgImage = null;
-			using (Stream stmInput = m_zipFile.GetInputStream(zpeFile))
+			using (MemoryStream msmImage = new MemoryStream(m_arcFile.GetFileContents(p_strFile)))
 			{
-				imgImage = Image.FromStream(stmInput);
+				imgImage = Image.FromStream(msmImage);
+				msmImage.Close();
 			}
 			return imgImage;
 		}

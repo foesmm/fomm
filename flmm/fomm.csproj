@@ -217,7 +217,7 @@
     </Compile>
     <Compile Include="PackageManager\DecompressionException.cs" />
     <Compile Include="PackageManager\FileManagement.cs" />
-    <Compile Include="PackageManager\FomodBuilder\Archive.cs" />
+    <Compile Include="PackageManager\Archive.cs" />
     <Compile Include="PackageManager\FomodBuilder\FomodFromSourceBuilder.cs" />
     <Compile Include="PackageManager\FomodBuilder\NewFomodBuilder.cs" />
     <Compile Include="PackageManager\FomodBuilder\FileSystemTreeNode.cs" />
