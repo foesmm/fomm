@@ -178,7 +178,7 @@ namespace Fomm.PackageManager
 			byte[] bteFile = new byte[afiFile.Size];
 			using (MemoryStream msmFile = new MemoryStream())
 			{
-				m_szeExtractor.ExtractFile(p_strPath, msmFile);
+				m_szeExtractor.ExtractFile(afiFile.Index, msmFile);
 				msmFile.Position = 0;
 				for (Int32 intOffset = 0, intRead = 0; intOffset < bteFile.Length && ((intRead = msmFile.Read(bteFile, intOffset, bteFile.Length - intOffset)) >= 0); intOffset += intRead) ;
 				msmFile.Close();
