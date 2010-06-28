@@ -18,7 +18,7 @@ namespace Fomm.PackageManager
 		public const string ARCHIVE_PREFIX = "arch:";
 
 		private string m_strPath = null;
-		private SevenZipExtractor m_szeExtractor = null;
+		//private SevenZipExtractor m_szeExtractor = null;
 		private SevenZipCompressor m_szcCompressor = null;
 		private List<string> m_strFiles = new List<string>();
 		private Dictionary<string, Int32> m_dicFileIndex = new Dictionary<string, int>();
@@ -33,23 +33,38 @@ namespace Fomm.PackageManager
 		public Archive(string p_strPath)
 		{
 			m_strPath = p_strPath;
-			m_szeExtractor = new SevenZipExtractor(m_strPath);
-			if (Enum.IsDefined(typeof(OutArchiveFormat), m_szeExtractor.Format.ToString()))
+			using (SevenZipExtractor szeExtractor = new SevenZipExtractor(m_strPath))
 			{
-				m_szcCompressor = new SevenZipCompressor();
-				m_szcCompressor.CompressionMode = CompressionMode.Append;
-				m_szcCompressor.ArchiveFormat = (OutArchiveFormat)Enum.Parse(typeof(OutArchiveFormat), m_szeExtractor.Format.ToString());
-				m_booCanEdit = true;
-			}
-			foreach (ArchiveFileInfo afiFile in m_szeExtractor.ArchiveFileData)
-				if (!afiFile.IsDirectory)
+				if (Enum.IsDefined(typeof(OutArchiveFormat), szeExtractor.Format.ToString()))
 				{
-					m_dicFileIndex[afiFile.FileName.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).ToLowerInvariant()] = afiFile.Index;
-					m_strFiles.Add(afiFile.FileName.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar));
+					m_szcCompressor = new SevenZipCompressor();
+					m_szcCompressor.CompressionMode = CompressionMode.Append;
+					m_szcCompressor.ArchiveFormat = (OutArchiveFormat)Enum.Parse(typeof(OutArchiveFormat), szeExtractor.Format.ToString());
+					m_booCanEdit = true;
 				}
+			}
+			LoadFileIndices();
 		}
 
 		#endregion
+
+		/// <summary>
+		/// Caches information about the files in the archive.
+		/// </summary>
+		protected void LoadFileIndices()
+		{
+			m_dicFileIndex.Clear();
+			m_strFiles.Clear();
+			using (SevenZipExtractor szeExtractor = new SevenZipExtractor(m_strPath))
+			{
+				foreach (ArchiveFileInfo afiFile in szeExtractor.ArchiveFileData)
+					if (!afiFile.IsDirectory)
+					{
+						m_dicFileIndex[afiFile.FileName.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).ToLowerInvariant()] = afiFile.Index;
+						m_strFiles.Add(afiFile.FileName.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar));
+					}
+			}
+		}
 
 		/// <summary>
 		/// Parses the given path to extract the path to the archive file, and the path to
@@ -82,14 +97,17 @@ namespace Fomm.PackageManager
 			strPathWithSep += Path.DirectorySeparatorChar;
 
 			ArchiveFileInfo afiFile = default(ArchiveFileInfo);
-			foreach (ArchiveFileInfo afiTmp in m_szeExtractor.ArchiveFileData)
-				if (afiTmp.FileName.Equals(p_strPath, StringComparison.InvariantCultureIgnoreCase))
-				{
-					afiFile = afiTmp;
-					break;
-				}
-				else if (afiTmp.FileName.StartsWith(strPathWithSep, StringComparison.InvariantCultureIgnoreCase) || afiTmp.FileName.StartsWith(strPathWithAltSep, StringComparison.InvariantCultureIgnoreCase))
-					return true;
+			using (SevenZipExtractor szeExtractor = new SevenZipExtractor(m_strPath))
+			{
+				foreach (ArchiveFileInfo afiTmp in szeExtractor.ArchiveFileData)
+					if (afiTmp.FileName.Equals(p_strPath, StringComparison.InvariantCultureIgnoreCase))
+					{
+						afiFile = afiTmp;
+						break;
+					}
+					else if (afiTmp.FileName.StartsWith(strPathWithSep, StringComparison.InvariantCultureIgnoreCase) || afiTmp.FileName.StartsWith(strPathWithAltSep, StringComparison.InvariantCultureIgnoreCase))
+						return true;
+			}
 			return (afiFile == null) ? false : afiFile.IsDirectory;
 		}
 
@@ -173,15 +191,19 @@ namespace Fomm.PackageManager
 			string strPath = p_strPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).ToLowerInvariant();
 			if (!m_dicFileIndex.ContainsKey(strPath))
 				throw new FileNotFoundException("The requested file does not exist in the archive.", p_strPath);
-			
-			ArchiveFileInfo afiFile = m_szeExtractor.ArchiveFileData[m_dicFileIndex[strPath]];
-			byte[] bteFile = new byte[afiFile.Size];
-			using (MemoryStream msmFile = new MemoryStream())
+
+			byte[] bteFile = null;
+			using (SevenZipExtractor szeExtractor = new SevenZipExtractor(m_strPath))
 			{
-				m_szeExtractor.ExtractFile(afiFile.Index, msmFile);
-				msmFile.Position = 0;
-				for (Int32 intOffset = 0, intRead = 0; intOffset < bteFile.Length && ((intRead = msmFile.Read(bteFile, intOffset, bteFile.Length - intOffset)) >= 0); intOffset += intRead) ;
-				msmFile.Close();
+				ArchiveFileInfo afiFile = szeExtractor.ArchiveFileData[m_dicFileIndex[strPath]];
+				bteFile = new byte[afiFile.Size];
+				using (MemoryStream msmFile = new MemoryStream())
+				{
+					szeExtractor.ExtractFile(afiFile.Index, msmFile);
+					msmFile.Position = 0;
+					for (Int32 intOffset = 0, intRead = 0; intOffset < bteFile.Length && ((intRead = msmFile.Read(bteFile, intOffset, bteFile.Length - intOffset)) >= 0); intOffset += intRead) ;
+					msmFile.Close();
+				}
 			}
 			return bteFile;
 		}
@@ -212,7 +234,8 @@ namespace Fomm.PackageManager
 		public void ReplaceFile(string p_strFileName, byte[] p_bteData)
 		{
 			if (!m_booCanEdit)
-				throw new InvalidOperationException("Cannot modify archive of type: " + m_szeExtractor.Format);
+				using (SevenZipExtractor szeExtractor = new SevenZipExtractor(m_strPath))
+					throw new InvalidOperationException("Cannot modify archive of type: " + szeExtractor.Format);
 			string strPath = p_strFileName.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).ToLowerInvariant();
 			if (m_dicFileIndex.ContainsKey(strPath))
 			{
@@ -221,9 +244,10 @@ namespace Fomm.PackageManager
 			}
 			using (MemoryStream msmData = new MemoryStream(p_bteData))
 			{
-				m_szcCompressor.CompressStreamDictionary(new Dictionary<string, Stream>() { { strPath, msmData } }, m_strPath);
+				m_szcCompressor.CompressStreamDictionary(new Dictionary<string, Stream>() { { p_strFileName, msmData } }, m_strPath);
 				msmData.Close();
 			}
+			LoadFileIndices();
 		}
 
 		/// <summary>
@@ -238,13 +262,15 @@ namespace Fomm.PackageManager
 		public void DeleteFile(string p_strFileName)
 		{
 			if (!m_booCanEdit)
-				throw new InvalidOperationException("Cannot modify archive of type: " + m_szeExtractor.Format);
+				using (SevenZipExtractor szeExtractor = new SevenZipExtractor(m_strPath))
+					throw new InvalidOperationException("Cannot modify archive of type: " + szeExtractor.Format);
 			string strPath = p_strFileName.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).ToLowerInvariant();
 			if (m_dicFileIndex.ContainsKey(strPath))
 			{
 				Dictionary<int, string> dicDelete = new Dictionary<int, string>() { { m_dicFileIndex[strPath], null } };
 				m_szcCompressor.ModifyArchive(m_strPath, dicDelete);
 			}
+			LoadFileIndices();
 		}
 
 		#region IDisposable Members
@@ -254,7 +280,6 @@ namespace Fomm.PackageManager
 		/// </summary>
 		public void Dispose()
 		{
-			m_szeExtractor.Dispose();
 		}
 
 		#endregion
