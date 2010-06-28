@@ -714,8 +714,11 @@ namespace Fomm
 #endif
 				}
 #if TRACE
-					Trace.Unindent();
+				Trace.Unindent();
+				Trace.WriteLine("7z Path: " + Path.Combine(Program.fommDir, "7z-32bit.dll"));
+				Trace.Flush();
 #endif
+				SevenZipCompressor.SetLibraryPath(Path.Combine(Program.fommDir, "7z-32bit.dll"));
 				try
 				{
 #if TRACE
@@ -737,11 +740,10 @@ namespace Fomm
 				}
 
 #if TRACE
-					Trace.WriteLine("Done.");
-					Trace.WriteLine("Running Application.");
-					Trace.Flush();
+				Trace.WriteLine("Done.");
+				Trace.WriteLine("Running Application.");
+				Trace.Flush();
 #endif
-				SevenZipCompressor.SetLibraryPath(Path.Combine(Program.fommDir, "7z-32bit.dll"));
 				if (Array.IndexOf<string>(args, "-install-tweaker") != -1)
 				{
 					Application.Run(new InstallTweaker.InstallationTweaker());
