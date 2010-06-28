@@ -215,7 +215,19 @@
     <Compile Include="CriticalRecords\CriticalRecordsForm.Designer.cs">
       <DependentUpon>CriticalRecordsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="PackageManager\Controls\ReadmeEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PackageManager\Controls\ReadmeEditor.Designer.cs">
+      <DependentUpon>ReadmeEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="PackageManager\DecompressionException.cs" />
+    <Compile Include="PackageManager\EditReadmeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PackageManager\EditReadmeForm.Designer.cs">
+      <DependentUpon>EditReadmeForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="PackageManager\FileManagement.cs" />
     <Compile Include="PackageManager\Archive.cs" />
     <Compile Include="PackageManager\FomodBuilder\FomodFromSourceBuilder.cs" />
@@ -474,6 +486,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CriticalRecords\CriticalRecordsForm.resx">
       <DependentUpon>CriticalRecordsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PackageManager\Controls\ReadmeEditor.resx">
+      <DependentUpon>ReadmeEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PackageManager\EditReadmeForm.resx">
+      <DependentUpon>EditReadmeForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PackageManager\FomodBuilder\FomodBuilderForm.resx">
       <DependentUpon>FomodBuilderForm.cs</DependentUpon>

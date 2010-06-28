@@ -88,7 +88,6 @@ class Script : BaseScript {
 			Icon = Fomm.Properties.Resources.fomm02;
 			Settings.GetWindowPosition("FomodBuilderForm", this);
 
-			xedReadme.SetHighlighting("HTML");
 			cbxVersion.Items.Add("1.0");
 			cbxVersion.Items.Add("2.0");
 			cbxVersion.Items.Add("3.0");
@@ -165,22 +164,7 @@ class Script : BaseScript {
 					throw new InvalidEnumArgumentException("Unexpected value for ValidationState enum.");
 			}
 
-			Readme rmeReadme = new Readme(ReadmeFormat.PlainText, null);
-			if (ddtReadme.SelectedTabPage == ddpPlainText)
-			{
-				rmeReadme.Format = ReadmeFormat.PlainText;
-				rmeReadme.Text = tbxReadme.Text;
-			}
-			else if (ddtReadme.SelectedTabPage == ddpRichText)
-			{
-				rmeReadme.Format = ReadmeFormat.RichText;
-				rmeReadme.Text = rteReadme.Rtf;
-			}
-			else if (ddtReadme.SelectedTabPage == ddpHTML)
-			{
-				rmeReadme.Format = ReadmeFormat.HTML;
-				rmeReadme.Text = xedReadme.Text;
-			}
+			Readme rmeReadme = redReadmeEditor.Readme;
 
 			FomodScript fscScript = new FomodScript(FomodScriptType.CSharp, null);
 			if (ddtScript.SelectedTabPage == dtpCSharp)
@@ -251,9 +235,7 @@ class Script : BaseScript {
 
 			//readme tab validation
 			SetReadmeDefault();
-			if (((ddtReadme.SelectedTabPage == ddpPlainText) && String.IsNullOrEmpty(tbxReadme.Text)) ||
-				((ddtReadme.SelectedTabPage == ddpRichText) && String.IsNullOrEmpty(rteReadme.Text)) ||
-				((ddtReadme.SelectedTabPage == ddpHTML) && String.IsNullOrEmpty(xedReadme.Text)))
+			if (String.IsNullOrEmpty(redReadmeEditor.Readme.Text))
 			{
 				sspWarning.SetStatus(vtpReadme, "No Readme file present.");
 				booHasWarnings = true;
@@ -452,32 +434,7 @@ class Script : BaseScript {
 		{
 			m_rgdGenerator.Sources = ffsFileStructure.Sources;
 			if (m_rgdGenerator.ShowDialog(this) == DialogResult.OK)
-			{
-				switch (m_rgdGenerator.Format)
-				{
-					case ReadmeFormat.PlainText:
-						ddtReadme.SelectedTabPage = ddpPlainText;
-						tbxReadme.Text = m_rgdGenerator.GeneratedReadme;
-						break;
-					case ReadmeFormat.RichText:
-						ddtReadme.SelectedTabPage = ddpRichText;
-						try
-						{
-							rteReadme.Rtf = m_rgdGenerator.GeneratedReadme;
-						}
-						catch
-						{
-							rteReadme.Text = m_rgdGenerator.GeneratedReadme;
-						}
-						break;
-					case ReadmeFormat.HTML:
-						ddtReadme.SelectedTabPage = ddpHTML;
-						xedReadme.Text = m_rgdGenerator.GeneratedReadme;
-						break;
-					default:
-						throw new InvalidEnumArgumentException("Unrecognized value for ReadmeFileSelector.ReadmeFormat enum.");
-				}
-			}
+				redReadmeEditor.Readme = new Readme(m_rgdGenerator.Format, m_rgdGenerator.GeneratedReadme);
 		}
 
 		/// <summary>
@@ -486,9 +443,7 @@ class Script : BaseScript {
 		/// </summary>
 		protected void SetReadmeDefault()
 		{
-			if (((ddtReadme.SelectedTabPage == ddpPlainText) && String.IsNullOrEmpty(tbxReadme.Text)) ||
-				((ddtReadme.SelectedTabPage == ddpRichText) && String.IsNullOrEmpty(rteReadme.Text)) ||
-				((ddtReadme.SelectedTabPage == ddpHTML) && String.IsNullOrEmpty(xedReadme.Text)))
+			if (String.IsNullOrEmpty(redReadmeEditor.Readme.Text))
 			{
 				ReadmeFormat fmtReadmeFormat = ReadmeFormat.PlainText;
 				string strReadme = null;
@@ -521,30 +476,7 @@ class Script : BaseScript {
 						}
 					}
 				}
-				switch (fmtReadmeFormat)
-				{
-					case ReadmeFormat.PlainText:
-						ddtReadme.SelectedTabPage = ddpPlainText;
-						tbxReadme.Text = strReadme;
-						break;
-					case ReadmeFormat.RichText:
-						ddtReadme.SelectedTabPage = ddpRichText;
-						try
-						{
-							rteReadme.Rtf = strReadme;
-						}
-						catch (Exception)
-						{
-							rteReadme.Text = strReadme;
-						}
-						break;
-					case ReadmeFormat.HTML:
-						ddtReadme.SelectedTabPage = ddpHTML;
-						xedReadme.Text = strReadme;
-						break;
-					default:
-						throw new InvalidEnumArgumentException("Unrecognized value for ReadmeFormat enum.");
-				}
+				redReadmeEditor.Readme = new Readme(fmtReadmeFormat, strReadme);
 			}
 		}
 

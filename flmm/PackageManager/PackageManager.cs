@@ -73,7 +73,7 @@ namespace Fomm.PackageManager
 					catch (Exception e)
 					{
 #if TRACE
-						Trace.WriteLine("Couldn't get version from " + mod.website);
+						Trace.WriteLine("Couldn't get version from " + mod.Website);
 						Program.TraceException(e);
 						Trace.Flush();
 #endif
@@ -345,44 +345,16 @@ namespace Fomm.PackageManager
 
 		private void bEditReadme_Click(object sender, EventArgs e)
 		{
-			if (lvModList.SelectedItems.Count != 1) return;
+			if (lvModList.SelectedItems.Count != 1)
+				return;
 			fomod mod = (fomod)lvModList.SelectedItems[0].Tag;
-			Readme rmeReadme = null;
+			EditReadmeForm erfEditor = new EditReadmeForm();
 			if (!mod.HasReadme)
-				rmeReadme = new Readme(ReadmeFormat.PlainText, "");
+				erfEditor.Readme = new Readme(ReadmeFormat.PlainText, "");
 			else
-				rmeReadme = mod.GetReadme();
-			switch (rmeReadme.Format)
-			{
-				case ReadmeFormat.PlainText:
-					rmeReadme.Text = TextEditor.ShowEditor(rmeReadme.Text, TextEditorType.Text, true);
-					break;
-				case ReadmeFormat.RichText:
-					rmeReadme.Text = TextEditor.ShowEditor(rmeReadme.Text, TextEditorType.Rtf, true);
-					break;
-				case ReadmeFormat.HTML:
-					Form f = new Form();
-					WebBrowser wb = new WebBrowser();
-					f.Controls.Add(wb);
-					wb.Dock = DockStyle.Fill;
-					wb.DocumentCompleted += delegate(object unused1, WebBrowserDocumentCompletedEventArgs unused2)
-					{
-						if (!string.IsNullOrEmpty(wb.DocumentTitle)) f.Text = wb.DocumentTitle;
-						else f.Text = "Readme";
-					};
-					wb.WebBrowserShortcutsEnabled = false;
-					wb.AllowWebBrowserDrop = false;
-					wb.AllowNavigation = false;
-					wb.DocumentText = rmeReadme.Text;
-					f.ShowDialog();
-					break;
-				default:
-					MessageBox.Show("fomod had an unrecognised readme type", "Error");
-					return;
-			}
-
-			if (rmeReadme.Text != null)
-				mod.SetReadme(rmeReadme);
+				erfEditor.Readme = mod.GetReadme();
+			if (erfEditor.ShowDialog(this) == DialogResult.OK)
+				mod.SetReadme(erfEditor.Readme);
 		}
 
 		private void PackageManager_FormClosing(object sender, FormClosingEventArgs e)
@@ -403,6 +375,7 @@ namespace Fomm.PackageManager
 		{
 			if (lvModList.SelectedItems.Count != 1) return;
 			fomod mod = (fomod)lvModList.SelectedItems[0].Tag;
+			mod = new fomod(Path.Combine(Program.PackageDir, "DanWessonPPC357_v1_6.fomod"));
 			if ((new InfoEditor(mod)).ShowDialog() == DialogResult.OK)
 			{
 				if (cbGroups.Checked) ReaddFomodToList(mod);
