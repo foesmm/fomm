@@ -324,14 +324,14 @@ namespace Fomm.PackageManager
 			for (int i = 0; i < Readme.ValidExtensions.Length; i++)
 				if (m_arcFile.ContainsFile("readme - " + baseName + Readme.ValidExtensions[i]))
 				{
-					m_strReadmePath = "readme - " + baseName + Readme.ValidExtensions[i];
+					m_strReadmePath = "Readme - " + ModName + Readme.ValidExtensions[i];
 					break;
 				}
 			if (String.IsNullOrEmpty(m_strReadmePath))
 				for (int i = 0; i < Readme.ValidExtensions.Length; i++)
 					if (m_arcFile.ContainsFile("docs/readme - " + baseName + Readme.ValidExtensions[i]))
 					{
-						m_strReadmePath = "docs/readme - " + baseName + Readme.ValidExtensions[i];
+						m_strReadmePath = "docs/Readme - " + ModName + Readme.ValidExtensions[i];
 						break;
 					}
 
@@ -571,14 +571,10 @@ namespace Fomm.PackageManager
 
 		internal void SetReadme(Readme p_rmeReadme)
 		{
+			if (HasReadme)
+				m_arcFile.DeleteFile(m_strReadmePath);
 			if (p_rmeReadme == null)
-			{
-				if (HasReadme)
-				{
-					m_arcFile.DeleteFile(m_strReadmePath);
-					m_strReadmePath = null;
-				}
-			}
+				m_strReadmePath = null;
 			else
 			{
 				if (m_strReadmePath == null)
