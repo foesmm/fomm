@@ -49,8 +49,8 @@
 			// 
 			this.ddtReadme.BackColor = System.Drawing.SystemColors.Control;
 			this.ddtReadme.Controls.Add(this.ddpPlainText);
-			this.ddtReadme.Controls.Add(this.ddpHTML);
 			this.ddtReadme.Controls.Add(this.ddpRichText);
+			this.ddtReadme.Controls.Add(this.ddpHTML);
 			this.ddtReadme.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.ddtReadme.Location = new System.Drawing.Point(0, 0);
 			this.ddtReadme.Name = "ddtReadme";
@@ -83,7 +83,7 @@
 			this.tbxReadme.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
 			this.tbxReadme.Size = new System.Drawing.Size(381, 215);
 			this.tbxReadme.TabIndex = 0;
-			this.tbxReadme.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbxReadme_KeyDown);
+			this.tbxReadme.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbxReadme_KeyPress);
 			// 
 			// ddpHTML
 			// 

@@ -39,7 +39,7 @@ namespace Fomm.PackageManager.Controls
 					rmeReadme.Format = ReadmeFormat.HTML;
 					rmeReadme.Text = xedReadme.Text;
 				}
-				return rmeReadme;
+				return String.IsNullOrEmpty(rmeReadme.Text) ? null : rmeReadme;
 			}
 			set
 			{
@@ -125,16 +125,17 @@ namespace Fomm.PackageManager.Controls
 		}
 
 		/// <summary>
-		/// Handles the <see cref="Control.KeyDown"/> event of the plain text readme textbox.
+		/// Handles the <see cref="Control.KeyPress"/> event of the plain text readme textbox.
 		/// </summary>
 		/// <remarks>
 		/// This selects all text when Ctrl-A is pressed.
 		/// </remarks>
 		/// <param name="sender">The object that raised the event.</param>
-		/// <param name="e">An <see cref="KeyEventArgs"/> describing the event arguments.</param>
-		private void tbxReadme_KeyDown(object sender, KeyEventArgs e)
+		/// <param name="e">An <see cref="KeyPressEventArgs"/> describing the event arguments.</param>
+		private void tbxReadme_KeyPress(object sender, KeyPressEventArgs e)
 		{
-			if (e.Control && (e.KeyCode == Keys.A))
+			//character 1 is equivalent to Ctrl-A
+			if (e.KeyChar=='\x01')
 			{
 				((TextBox)sender).SelectAll();
 				e.Handled = true;
