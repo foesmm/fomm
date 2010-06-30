@@ -29,10 +29,10 @@ namespace Fomm.PackageManager
 		/// <summary>
 		/// The mapping of valid script names to their respective script formats.
 		/// </summary>
-		private static Dictionary<string, FomodScriptType> m_dicFormats = new Dictionary<string, FomodScriptType>()
+		private static Dictionary<string, FomodScriptType> m_dicFormats = new Dictionary<string, FomodScriptType>(StringComparer.InvariantCultureIgnoreCase)
 																		{
 																			{"script.cs", FomodScriptType.CSharp},
-																			{"moduleconfig.xml", FomodScriptType.XMLConfig}
+																			{"ModuleConfig.xml", FomodScriptType.XMLConfig}
 																		};
 
 		/// <summary>
