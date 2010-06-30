@@ -324,13 +324,18 @@ namespace Fomm.Controls
 				try
 				{
 					while (xrdValidator.Read()) ;
+					if (m_booMalformedXml)
+						return false;
 				}
 				catch (XmlException err2)
 				{
 					intBadLineNum = err2.LineNumber;
 					HighlightValidationErrors(err2.Message, new TextLocation(err2.LinePosition - 1, err2.LineNumber - 1));
 				}
-				xrdValidator.Close();
+				finally
+				{
+					xrdValidator.Close();
+				}
 			}
 			for (Int32 i = intBadLineNum; i < docDocument.TotalNumberOfLines; i++)
 			{
@@ -392,6 +397,7 @@ namespace Fomm.Controls
 		/// <param name="e">A <see cref="ValidationEventArgs"/> describing the event arguments.</param>
 		private void HighlightValidationErrors(object sender, ValidationEventArgs e)
 		{
+			m_booMalformedXml = true;
 			HighlightValidationErrors(e.Message, new TextLocation(e.Exception.LinePosition - 1, e.Exception.LineNumber - 1));
 		}
 
