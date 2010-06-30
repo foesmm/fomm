@@ -324,14 +324,14 @@ namespace Fomm.PackageManager
 			for (int i = 0; i < Readme.ValidExtensions.Length; i++)
 				if (m_arcFile.ContainsFile("readme - " + baseName + Readme.ValidExtensions[i]))
 				{
-					m_strReadmePath = "Readme - " + ModName + Readme.ValidExtensions[i];
+					m_strReadmePath = "Readme - " + Path.GetFileNameWithoutExtension(path) + Readme.ValidExtensions[i];
 					break;
 				}
 			if (String.IsNullOrEmpty(m_strReadmePath))
 				for (int i = 0; i < Readme.ValidExtensions.Length; i++)
 					if (m_arcFile.ContainsFile("docs/readme - " + baseName + Readme.ValidExtensions[i]))
 					{
-						m_strReadmePath = "docs/Readme - " + ModName + Readme.ValidExtensions[i];
+						m_strReadmePath = "docs/Readme - " + Path.GetFileNameWithoutExtension(path) + Readme.ValidExtensions[i];
 						break;
 					}
 
@@ -578,7 +578,7 @@ namespace Fomm.PackageManager
 			else
 			{
 				if (m_strReadmePath == null)
-					m_strReadmePath = (Settings.GetBool("UseDocsFolder") ? "docs/" : "") + "Readme - " + baseName + ".rtf";
+					m_strReadmePath = (Settings.GetBool("UseDocsFolder") ? "docs/" : "") + "Readme - " + Path.GetFileNameWithoutExtension(filepath) + ".rtf";
 				m_strReadmePath = Path.ChangeExtension(m_strReadmePath, p_rmeReadme.Extension);
 				m_arcFile.ReplaceFile(m_strReadmePath, p_rmeReadme.Text);
 			}
