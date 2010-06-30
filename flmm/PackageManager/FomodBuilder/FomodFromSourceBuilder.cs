@@ -111,7 +111,7 @@ namespace Fomm.PackageManager.FomodBuilder
 		public string BuildFomodFromSource(string p_strPath)
 		{
 			string strSource = p_strPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-			string strFomodName = Path.GetFileName(strSource);
+			string strFomodName = Path.GetFileNameWithoutExtension(strSource);
 
 			bool booRepack = false;
 			string strTesNexusUrl = null;
@@ -137,6 +137,7 @@ namespace Fomm.PackageManager.FomodBuilder
 				Int32 intFileId;
 				if (strTesNexusUrl.Contains("-") && int.TryParse(strTesNexusUrl.Substring(strTesNexusUrl.LastIndexOf('-') + 1), out intFileId))
 				{
+					strFomodName = strTesNexusUrl.Remove(strTesNexusUrl.LastIndexOf('-'));
 					strPackedFomodPath = Path.Combine(Path.GetDirectoryName(strPackedFomodPath), strTesNexusUrl.Remove(strTesNexusUrl.LastIndexOf('-'))) + Path.GetExtension(strPackedFomodPath);
 					strTesNexusUrl = @"http://www.fallout3nexus.com/downloads/file.php?id=" + intFileId;
 				}
