@@ -10,6 +10,7 @@ using Fomm.PackageManager.XmlConfiguredInstall;
 using System.Xml.Schema;
 using System.Xml;
 using System.Drawing;
+using Fomm.PackageManager.Controls;
 
 namespace Fomm.PackageManager.FomodBuilder
 {
@@ -18,17 +19,6 @@ namespace Fomm.PackageManager.FomodBuilder
 	/// </summary>
 	public partial class FomodBuilderForm : Form
 	{
-		protected const string DEFAULT_CSHARP_SCRIPT = @"using System;
-using fomm.Scripting;
-
-class Script : BaseScript {
-	public static bool OnActivate() {
-        //Install all files from the fomod and activate any esps
-        PerformBasicInstall();
-		return true;
-	}
-}
-";
 		/// <summary>
 		/// The possible validation states of the form.
 		/// </summary>
@@ -87,12 +77,6 @@ class Script : BaseScript {
 
 			Icon = Fomm.Properties.Resources.fomm02;
 			Settings.GetWindowPosition("FomodBuilderForm", this);
-
-			cbxVersion.Items.Add("1.0");
-			cbxVersion.Items.Add("2.0");
-			cbxVersion.Items.Add("3.0");
-			cbxVersion.SelectedIndex = 2;
-			LoadConfigSchema();
 
 			tbxPFPPath.DataBindings.Add("Enabled", cbxPFP, "Checked");
 			butSelectPFPFolder.DataBindings.Add("Enabled", cbxPFP, "Checked");
@@ -165,24 +149,8 @@ class Script : BaseScript {
 			}
 
 			Readme rmeReadme = redReadmeEditor.Readme;
-
-			FomodScript fscScript = new FomodScript(FomodScriptType.CSharp, null);
-			if (ddtScript.SelectedTabPage == dtpCSharp)
-			{
-				fscScript.Type = FomodScriptType.CSharp;
-				fscScript.Text = sedScript.Text;
-			}
-			else
-			{
-				fscScript.Type = FomodScriptType.XMLConfig;
-				string strHeader = "<?xml version=\"1.0\" encoding=\"UTF-16\" ?>" + Environment.NewLine +
-									"<config xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"http://qconsulting.ca/fo3/ModConfig{0}.xsd\">";
-				strHeader = String.Format(strHeader, cbxVersion.SelectedItem.ToString());
-				fscScript.Text = xedScript.Text.Replace("<config>", strHeader);
-			}
-
+			FomodScript fscScript = fseScriptEditor.Script;
 			XmlDocument xmlInfo = m_booInfoEntered ? fomod.SaveInfo(finInfo) : null;
-
 			NewFomodBuilder fgnGenerator = new NewFomodBuilder();
 			m_strNewFomodPath = fgnGenerator.BuildFomod(tbxFomodFileName.Text, ffsFileStructure.GetCopyPaths(), rmeReadme, xmlInfo, m_booInfoEntered, finInfo.Screenshot, fscScript);
 			if (!String.IsNullOrEmpty(m_strNewFomodPath))
@@ -235,7 +203,7 @@ class Script : BaseScript {
 
 			//readme tab validation
 			SetReadmeDefault();
-			if (String.IsNullOrEmpty(redReadmeEditor.Readme.Text))
+			if (redReadmeEditor.Readme == null)
 			{
 				sspWarning.SetStatus(vtpReadme, "No Readme file present.");
 				booHasWarnings = true;
@@ -262,14 +230,12 @@ class Script : BaseScript {
 			SetScriptDefault();
 			if (cbxUseScript.Checked)
 			{
-				if (((ddtScript.SelectedTabPage == dtpCSharp) && String.IsNullOrEmpty(sedScript.Text)) ||
-					((ddtScript.SelectedTabPage == dtpXML) && String.IsNullOrEmpty(xedScript.Text)))
+				if (fseScriptEditor.Script == null)
 				{
 					sspWarning.SetStatus(vtpScript, "Missing script.");
 					booHasWarnings = true;
 				}
-				else if (((ddtScript.SelectedTabPage == dtpCSharp) && !sedScript.ValidateSyntax()) ||
-					((ddtScript.SelectedTabPage == dtpXML) && !xedScript.ValidateXml()))
+				else if (!fseScriptEditor.IsValid)
 				{
 					sspError.SetStatus(vtpScript, "Invalid script.");
 					booHasErrors = true;
@@ -443,7 +409,7 @@ class Script : BaseScript {
 		/// </summary>
 		protected void SetReadmeDefault()
 		{
-			if (String.IsNullOrEmpty(redReadmeEditor.Readme.Text))
+			if (redReadmeEditor.Readme == null)
 			{
 				ReadmeFormat fmtReadmeFormat = ReadmeFormat.PlainText;
 				string strReadme = null;
@@ -493,7 +459,7 @@ class Script : BaseScript {
 		{
 			if (cbxUseScript.Checked)
 				SetScriptDefault();
-			ddtScript.Enabled = cbxUseScript.Checked;
+			fseScriptEditor.Enabled = cbxUseScript.Checked;
 		}
 
 		/// <summary>
@@ -503,9 +469,7 @@ class Script : BaseScript {
 		/// </summary>
 		protected void SetScriptDefault()
 		{
-			if (cbxUseScript.Checked &&
-				(((ddtScript.SelectedTabPage == dtpCSharp) && String.IsNullOrEmpty(sedScript.Text)) ||
-				((ddtScript.SelectedTabPage == dtpXML) && String.IsNullOrEmpty(xedScript.Text))))
+			if (cbxUseScript.Checked && (fseScriptEditor.Script == null))
 			{
 				FomodScript fscInstallScript = null;
 				string strScriptPath = null;
@@ -522,77 +486,20 @@ class Script : BaseScript {
 				}
 
 				if (fscInstallScript == null)
+					fscInstallScript = new FomodScript(FomodScriptType.CSharp, FomodScriptEditor.DEFAULT_CSHARP_SCRIPT);
+				else
 				{
-					ddtScript.SelectedTabPage = dtpCSharp;
-					sedScript.Text = DEFAULT_CSHARP_SCRIPT;
-					return;
+					if (strScriptPath.StartsWith(Archive.ARCHIVE_PREFIX))
+					{
+						KeyValuePair<string, string> kvpArchiveInfo = Archive.ParseArchive(strScriptPath);
+						Archive arcArchive = new Archive(kvpArchiveInfo.Key);
+						fscInstallScript.Text = TextUtil.ByteToString(arcArchive.GetFileContents(kvpArchiveInfo.Value));
+					}
+					else if (File.Exists(strScriptPath))
+						fscInstallScript.Text = File.ReadAllText(strScriptPath);
 				}
 
-				if (strScriptPath.StartsWith(Archive.ARCHIVE_PREFIX))
-				{
-					KeyValuePair<string, string> kvpArchiveInfo = Archive.ParseArchive(strScriptPath);
-					Archive arcArchive = new Archive(kvpArchiveInfo.Key);
-					fscInstallScript.Text = TextUtil.ByteToString(arcArchive.GetFileContents(kvpArchiveInfo.Value));
-				}
-				else if (File.Exists(strScriptPath))
-					fscInstallScript.Text = File.ReadAllText(strScriptPath);
-
-				switch (fscInstallScript.Type)
-				{
-					case FomodScriptType.XMLConfig:
-						switch (Parser.GetConfigVersion(fscInstallScript.Text))
-						{
-							case "1.0":
-								cbxVersion.SelectedIndex = 0;
-								break;
-							case "2.0":
-								cbxVersion.SelectedIndex = 1;
-								break;
-							case "3.0":
-								cbxVersion.SelectedIndex = 2;
-								break;
-							default:
-								ddtScript.SelectedTabPage = dtpCSharp;
-								sedScript.Text = DEFAULT_CSHARP_SCRIPT;
-								return;
-						}
-						Regex rgxXMLConfigCleanup = new Regex(@"<\?xml[^>]+\?>.*?<config[^>]*>", RegexOptions.Singleline);
-						ddtScript.SelectedTabPage = dtpXML;
-						xedScript.Text = rgxXMLConfigCleanup.Replace(fscInstallScript.Text, "<config>");
-						break;
-					case FomodScriptType.CSharp:
-						ddtScript.SelectedTabPage = dtpCSharp;
-						sedScript.Text = fscInstallScript.Text;
-						break;
-					default:
-						throw new Exception("Unrecognized value for FomodScriptType enum.");
-				}
-			}
-		}
-
-		/// <summary>
-		/// Handles the <see cref="ComboBox.SelectedIndexChanged"/> event of the XML config version drop down list.
-		/// </summary>
-		/// <param name="sender">The object the raised the event.</param>
-		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
-		private void cbxVersion_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			LoadConfigSchema();
-		}
-
-		/// <summary>
-		/// This loads the selected version of the XML configuration script's schema into the XML editor.
-		/// </summary>
-		/// <remarks>
-		/// Loading the schema into the editor allows for validation and auto-completion.
-		/// </remarks>
-		protected void LoadConfigSchema()
-		{
-			string strSchemaPath = Path.Combine(Program.exeDir, String.Format(@"fomm\ModConfig{0}.xsd", cbxVersion.SelectedItem.ToString()));
-			using (FileStream fsmSchema = new FileStream(strSchemaPath, FileMode.Open))
-			{
-				xedScript.Schema = XmlSchema.Read(fsmSchema, null);
-				fsmSchema.Close();
+				fseScriptEditor.Script = fscInstallScript;
 			}
 		}
 

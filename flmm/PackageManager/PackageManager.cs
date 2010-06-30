@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Drawing;
 using System.Diagnostics;
 using Fomm.PackageManager.FomodBuilder;
+using Fomm.PackageManager.Controls;
 
 namespace Fomm.PackageManager
 {
@@ -312,18 +313,25 @@ namespace Fomm.PackageManager
 
 		private void lvModList_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (lvModList.SelectedItems.Count == 0) return;
+			UpdateModStateText();
+		}
+
+		/// <summary>
+		/// Updates the UI elements to reflect the current mod's state.
+		/// </summary>
+		/// <remarks>
+		/// This updates elements such as button text and the displayed description.
+		/// </remarks>
+		protected void UpdateModStateText()
+		{
+			if (lvModList.SelectedItems.Count == 0)
+				return;
 			fomod mod = (fomod)lvModList.SelectedItems[0].Tag;
-			if (mod.HasInfo) tbModInfo.Text = mod.Description;
-			else tbModInfo.Text = "No description is associaited with this fomod. Click 'edit info' if you want to add one.";
+			tbModInfo.Text = mod.HasInfo ? mod.Description : "No description is associaited with this fomod. Click 'edit info' if you want to add one.";
 
 			butDeactivate.Enabled = mod.IsActive;
-			if (!mod.IsActive) bActivate.Text = "Activate";
-			else bActivate.Text = "Reactivate";
-
-			if (mod.HasInstallScript) bEditScript.Text = "Edit script";
-			else bEditScript.Text = "Create script";
-
+			bActivate.Text = mod.IsActive ? "Reactivate" : "Activate";
+			bEditScript.Text = mod.HasInstallScript? "Edit script": "Create script";
 			pictureBox1.Image = mod.GetScreenshotImage();
 		}
 
@@ -335,12 +343,17 @@ namespace Fomm.PackageManager
 
 		private void bEditScript_Click(object sender, EventArgs e)
 		{
-			if (lvModList.SelectedItems.Count != 1) return;
+			if (lvModList.SelectedItems.Count != 1)
+				return;
 			fomod mod = (fomod)lvModList.SelectedItems[0].Tag;
-			FomodScript fscScript = mod.GetInstallScript();
-			fscScript.Text = TextEditor.ShowEditor(fscScript.Text, TextEditorType.Script, true);
-			if (fscScript.Text != null)
-				mod.SetScript(fscScript);
+			EditScriptForm esfEditor = new EditScriptForm();
+			if (!mod.HasInstallScript)
+				esfEditor.Script = new FomodScript(FomodScriptType.CSharp, FomodScriptEditor.DEFAULT_CSHARP_SCRIPT);
+			else
+				esfEditor.Script = mod.GetInstallScript();
+			if (esfEditor.ShowDialog(this) == DialogResult.OK)
+				mod.SetScript(esfEditor.Script);
+			UpdateModStateText();
 		}
 
 		private void bEditReadme_Click(object sender, EventArgs e)
@@ -355,6 +368,7 @@ namespace Fomm.PackageManager
 				erfEditor.Readme = mod.GetReadme();
 			if (erfEditor.ShowDialog(this) == DialogResult.OK)
 				mod.SetReadme(erfEditor.Readme);
+			UpdateModStateText();
 		}
 
 		private void PackageManager_FormClosing(object sender, FormClosingEventArgs e)
@@ -375,7 +389,6 @@ namespace Fomm.PackageManager
 		{
 			if (lvModList.SelectedItems.Count != 1) return;
 			fomod mod = (fomod)lvModList.SelectedItems[0].Tag;
-			mod = new fomod(Path.Combine(Program.PackageDir, "DanWessonPPC357_v1_6.fomod"));
 			if ((new InfoEditor(mod)).ShowDialog() == DialogResult.OK)
 			{
 				if (cbGroups.Checked) ReaddFomodToList(mod);
@@ -388,8 +401,8 @@ namespace Fomm.PackageManager
 					tbModInfo.Text = mod.Description;
 					pictureBox1.Image = mod.GetScreenshotImage();
 				}
+				UpdateModStateText();
 			}
-
 		}
 
 		/// <summary>
