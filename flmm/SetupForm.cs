@@ -106,10 +106,15 @@ namespace Fomm
 
 		protected void LoadFOMODOptions()
 		{	
-			cbxCompression.DataSource = Enum.GetValues(typeof(CompressionLevel));
+			cbxFomodCompression.DataSource = Enum.GetValues(typeof(CompressionLevel));
 			cbxFomodFormat.DataSource = Enum.GetValues(typeof(OutArchiveFormat));
-			cbxCompression.SelectedItem = (CompressionLevel)Settings.GetInt("fomodCompressionLevel", (Int32)CompressionLevel.Ultra);
+			cbxFomodCompression.SelectedItem = (CompressionLevel)Settings.GetInt("fomodCompressionLevel", (Int32)CompressionLevel.Ultra);
 			cbxFomodFormat.SelectedItem = (OutArchiveFormat)Settings.GetInt("fomodCompressionFormat", (Int32)OutArchiveFormat.Zip);
+
+			cbxPFPCompression.DataSource = Enum.GetValues(typeof(CompressionLevel));
+			cbxPFPFormat.DataSource = Enum.GetValues(typeof(OutArchiveFormat));
+			cbxPFPCompression.SelectedItem = (CompressionLevel)Settings.GetInt("pfpCompressionLevel", (Int32)CompressionLevel.Ultra);
+			cbxPFPFormat.SelectedItem = (OutArchiveFormat)Settings.GetInt("pfpCompressionFormat", (Int32)OutArchiveFormat.Zip);
 		}
 
 		private void SetupForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -129,7 +134,9 @@ namespace Fomm
 				Settings.RemoveString("LaunchCommandArgs");
 			}
 			Settings.SetInt("fomodCompressionFormat", (Int32)cbxFomodFormat.SelectedItem);
-			Settings.SetInt("fomodCompressionLevel", (Int32)cbxCompression.SelectedItem);
+			Settings.SetInt("fomodCompressionLevel", (Int32)cbxFomodCompression.SelectedItem);
+			Settings.SetInt("pfpCompressionFormat", (Int32)cbxPFPFormat.SelectedItem);
+			Settings.SetInt("pfpCompressionLevel", (Int32)cbxPFPCompression.SelectedItem);
 		}
 
 		private void cbFomod_CheckedChanged(object sender, EventArgs e)
