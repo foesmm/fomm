@@ -27,7 +27,7 @@ namespace Fomm.PackageManager.FomodBuilder
 			private bool m_booSetScreenshot = false;
 			private Screenshot m_shtScreenshot = null;
 			private FomodScript m_fscScript = null;
-			private string m_strPackedFomodPath = null;
+			private string m_strPackedPath = null;
 
 			#region Properties
 
@@ -116,14 +116,14 @@ namespace Fomm.PackageManager.FomodBuilder
 			}
 
 			/// <summary>
-			/// Gets the packedFomodPath.
+			/// Gets the path where the packed file will be created.
 			/// </summary>
-			/// <value>The packedFomodPath.</value>
-			public string PackedFomodPath
+			/// <value>The path where the packed file will be created.</value>
+			public string PackedPath
 			{
 				get
 				{
-					return m_strPackedFomodPath;
+					return m_strPackedPath;
 				}
 			}
 
@@ -141,8 +141,8 @@ namespace Fomm.PackageManager.FomodBuilder
 			/// <param name="p_booSetScreenshot">The value with which to initialize the <see cref="SetScreenshot"/> property.</param>
 			/// <param name="p_shtScreenshot">The value with which to initialize the <see cref="Screenshot"/> property.</param>
 			/// <param name="p_fscScript">The value with which to initialize the <see cref="Script"/> property.</param>
-			/// <param name="p_strPackedFomodPath">The value with which to initialize the <see cref="PackedFomodPath"/> property.</param>
-			public BuildFomodArgs(string p_strFomodName, IList<KeyValuePair<string, string>> p_lstCopyPaths, Readme p_rmeReadme, XmlDocument p_xmlInfo, bool p_booSetScreenshot, Screenshot p_shtScreenshot, FomodScript p_fscScript, string p_strPackedFomodPath)
+			/// <param name="p_strPackedPath">The value with which to initialize the <see cref="PackedPath"/> property.</param>
+			public BuildFomodArgs(string p_strFomodName, IList<KeyValuePair<string, string>> p_lstCopyPaths, Readme p_rmeReadme, XmlDocument p_xmlInfo, bool p_booSetScreenshot, Screenshot p_shtScreenshot, FomodScript p_fscScript, string p_strPackedPath)
 			{
 				m_strFomodName = p_strFomodName;
 				m_lstCopyInstructions = p_lstCopyPaths;
@@ -151,7 +151,7 @@ namespace Fomm.PackageManager.FomodBuilder
 				m_booSetScreenshot = p_booSetScreenshot;
 				m_shtScreenshot = p_shtScreenshot;
 				m_fscScript = p_fscScript;
-				m_strPackedFomodPath = p_strPackedFomodPath;
+				m_strPackedPath = p_strPackedPath;
 			}
 
 			#endregion
@@ -277,7 +277,7 @@ namespace Fomm.PackageManager.FomodBuilder
 			ProgressDialog.StepOverallProgress();
 
 			// 9) Pack fomod
-			PackFomod(strTempFomodFolder, bfaArgs.PackedFomodPath);
+			PackFomod(strTempFomodFolder, bfaArgs.PackedPath);
 			ProgressDialog.StepOverallProgress();
 		}
 
