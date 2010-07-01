@@ -58,7 +58,7 @@ namespace Fomm.PackageManager.FomodBuilder
 		protected string GenerateFomod(string p_strPackedFomodPath, object p_objArgs)
 		{
 			string strPackedFomodPath = p_strPackedFomodPath;
-			if (!CheckFomodName(ref strPackedFomodPath))
+			if (!CheckFileName(ref strPackedFomodPath))
 				return null;
 
 			try
@@ -111,37 +111,32 @@ namespace Fomm.PackageManager.FomodBuilder
 		}
 
 		/// <summary>
-		/// Determines if the file specified by the given fomod path exists. If so, it
+		/// Determines if the file specified by the given path exists. If so, it
 		/// prompts the user if they would like to use a different path.
 		/// </summary>
 		/// <param name="newpath">The path for which it is to be detemined if a file exists.
 		/// It is updated with the new path if the given path was already in use.</param>
 		/// <returns><lang cref="true"/> if the returned value of <see cref="newpath"/> does not
 		/// specify an existing file; <lang cref="false"/> otherwise.</returns>
-		public bool CheckFomodName(ref string newpath)
+		protected bool CheckFileName(ref string newpath)
 		{
-			if (File.Exists(newpath))
+			string strNewPath = newpath;
+			string strExtension = Path.GetExtension(newpath);
+			for (Int32 i = 2; i < 999 && File.Exists(strNewPath); i++)
 			{
-				string newpath2 = null;
-				bool match = false;
-				for (int i = 2; i < 999; i++)
-				{
-					newpath2 = Path.ChangeExtension(newpath, null) + "(" + i + ").fomod";
-					if (!File.Exists(newpath2))
-					{
-						match = true;
-						break;
-					}
-				}
-				if (!match)
-				{
-					MessageBox.Show("File '" + newpath + "' already exists.", "Error");
-					return false;
-				}
-				if (MessageBox.Show("File '" + newpath + "' already exists. Continue anyway?\nA new file named '" + newpath2 + "' will be created", "Warning", MessageBoxButtons.YesNo) != DialogResult.Yes)
-					return false;
-				newpath = newpath2;
+				strNewPath = String.Format("{0} ({1}){2}", Path.ChangeExtension(strNewPath, null), i, strExtension);
 			}
+			if (File.Exists(strNewPath))
+			{
+				MessageBox.Show("File '" + newpath + "' already exists.", "Error");
+				return false;
+			}
+			if (!newpath.Equals(strNewPath))
+			{
+				if (MessageBox.Show("File '" + newpath + "' already exists. Continue anyway?\nA new file named '" + strNewPath + "' will be created", "Warning", MessageBoxButtons.YesNo) != DialogResult.Yes)
+					return false;
+			}
+			newpath = strNewPath;
 			return true;
 		}
 
@@ -320,7 +315,7 @@ namespace Fomm.PackageManager.FomodBuilder
 		/// </remarks>
 		/// <param name="sender">The object that raised the event.</param>
 		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
-		private void FileCompressionFinished(object sender, EventArgs e)
+		protected void FileCompressionFinished(object sender, EventArgs e)
 		{
 			ProgressDialog.StepOverallProgress();
 		}
@@ -333,7 +328,7 @@ namespace Fomm.PackageManager.FomodBuilder
 		/// </remarks>
 		/// <param name="sender">The object that raised the event.</param>
 		/// <param name="e">A <see cref="FileNameEventArgs"/> describing the event arguments.</param>
-		private void FileCompressionStarted(object sender, FileNameEventArgs e)
+		protected void FileCompressionStarted(object sender, FileNameEventArgs e)
 		{
 			e.Cancel = ProgressDialog.Cancelled();
 		}

@@ -204,14 +204,14 @@ namespace Fomm.PackageManager.FomodBuilder
 				{
 					if (p_strFile.StartsWith(Archive.ARCHIVE_PREFIX))
 					{
-						KeyValuePair<string, string> kvpPath = Archive.ParseArchive(p_strFile);
+						KeyValuePair<string, string> kvpPath = Archive.ParseArchivePath(p_strFile);
 						Archive arcArchive = new Archive(kvpPath.Key);
 						string[] strFolders = arcArchive.GetDirectories(kvpPath.Value);
 						foreach (string strSubFolder in strFolders)
-							addSourceFile(tndFile, String.Format("{0}{1}//{2}", Archive.ARCHIVE_PREFIX, kvpPath.Key, strSubFolder));
+							addSourceFile(tndFile, Archive.GenerateArchivePath(kvpPath.Key, strSubFolder));
 						string[] strFiles = arcArchive.GetFiles(kvpPath.Value);
 						foreach (string strfile in strFiles)
-							addSourceFile(tndFile, String.Format("{0}{1}//{2}", Archive.ARCHIVE_PREFIX, kvpPath.Key, strfile));
+							addSourceFile(tndFile, Archive.GenerateArchivePath(kvpPath.Key, strfile));
 					}
 					else if (!p_strFile.StartsWith(FileSystemTreeNode.NEW_PREFIX))
 					{
@@ -238,10 +238,10 @@ namespace Fomm.PackageManager.FomodBuilder
 					Archive arcArchive = new Archive(p_strFile);
 					string[] strFolders = arcArchive.GetDirectories("/");
 					foreach (string strSubFolder in strFolders)
-						addSourceFile(tndFile, String.Format("{0}{1}//{2}", Archive.ARCHIVE_PREFIX, p_strFile, strSubFolder));
+						addSourceFile(tndFile, Archive.GenerateArchivePath(p_strFile, strSubFolder));
 					string[] strFiles = arcArchive.GetFiles("/");
 					foreach (string strfile in strFiles)
-						addSourceFile(tndFile, String.Format("{0}{1}//{2}", Archive.ARCHIVE_PREFIX, p_strFile, strfile));
+						addSourceFile(tndFile, Archive.GenerateArchivePath(p_strFile, strfile));
 				}
 			}
 		}
@@ -297,14 +297,14 @@ namespace Fomm.PackageManager.FomodBuilder
 					strPath = tndFolder.Sources[0];
 					if (strPath.StartsWith(Archive.ARCHIVE_PREFIX))
 					{
-						KeyValuePair<string, string> kvpPath = Archive.ParseArchive(strPath);
+						KeyValuePair<string, string> kvpPath = Archive.ParseArchivePath(strPath);
 						Archive arcArchive = new Archive(kvpPath.Key);
 						string[] strFolders = arcArchive.GetDirectories(kvpPath.Value);
 						foreach (string strSubFolder in strFolders)
-							addSourceFile(tndFolder, String.Format("{0}{1}//{2}", Archive.ARCHIVE_PREFIX, kvpPath.Key, strSubFolder));
+							addSourceFile(tndFolder, Archive.GenerateArchivePath(kvpPath.Key, strSubFolder));
 						string[] strFiles = arcArchive.GetFiles(kvpPath.Value);
 						foreach (string strfile in strFiles)
-							addSourceFile(tndFolder, String.Format("{0}{1}//{2}", Archive.ARCHIVE_PREFIX, kvpPath.Key, strfile));
+							addSourceFile(tndFolder, Archive.GenerateArchivePath(kvpPath.Key, strfile));
 					}
 					else if (!strPath.StartsWith(FileSystemTreeNode.NEW_PREFIX))
 					{

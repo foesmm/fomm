@@ -72,7 +72,7 @@ namespace Fomm.PackageManager
 		/// </summary>
 		/// <param name="p_strPath">The file path to parse.</param>
 		/// <returns>The path to an archive file, and the path to a file within said archive.</returns>
-		public static KeyValuePair<string, string> ParseArchive(string p_strPath)
+		public static KeyValuePair<string, string> ParseArchivePath(string p_strPath)
 		{
 			if (!p_strPath.StartsWith(ARCHIVE_PREFIX))
 				return new KeyValuePair<string, string>(null, null);
@@ -82,6 +82,17 @@ namespace Fomm.PackageManager
 			string strArchive = p_strPath.Substring(ARCHIVE_PREFIX.Length, intEndIndex - ARCHIVE_PREFIX.Length);
 			string strPath = p_strPath.Substring(intEndIndex + 2);
 			return new KeyValuePair<string, string>(strArchive, strPath);
+		}
+
+		/// <summary>
+		/// Generates a path to a file in an archive.
+		/// </summary>
+		/// <param name="p_strArchivePath">The path of the archive file.</param>
+		/// <param name="p_strInternalPath">The path of the file in the archive.</param>
+		/// <returns></returns>
+		public static string GenerateArchivePath(string p_strArchivePath, string p_strInternalPath)
+		{
+			return String.Format("{0}{1}//{2}", Archive.ARCHIVE_PREFIX, p_strArchivePath, p_strInternalPath);
 		}
 
 		/// <summary>

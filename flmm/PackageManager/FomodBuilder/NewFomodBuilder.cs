@@ -11,7 +11,7 @@ using System.Drawing.Imaging;
 namespace Fomm.PackageManager.FomodBuilder
 {
 	/// <summary>
-	/// This class builds fomods and premade fomod packs.
+	/// This class builds fomods.
 	/// </summary>
 	public class NewFomodBuilder : FomodGenerator
 	{
@@ -32,7 +32,7 @@ namespace Fomm.PackageManager.FomodBuilder
 			#region Properties
 
 			/// <summary>
-			/// Gets or sets the fomodName.
+			/// Gets the fomodName.
 			/// </summary>
 			/// <value>The fomodName.</value>
 			public string FomodName
@@ -44,7 +44,7 @@ namespace Fomm.PackageManager.FomodBuilder
 			}
 
 			/// <summary>
-			/// Gets or sets the copy instructions that need to be executed to create the fomod.
+			/// Gets the copy instructions that need to be executed to create the fomod.
 			/// </summary>
 			/// <value>The copy instructions that need to be executed to create the fomod.</value>
 			public IList<KeyValuePair<string, string>> CopyInstructions
@@ -56,7 +56,7 @@ namespace Fomm.PackageManager.FomodBuilder
 			}
 
 			/// <summary>
-			/// Gets or sets the readme.
+			/// Gets the readme.
 			/// </summary>
 			/// <value>The readme.</value>
 			public Readme Readme
@@ -68,7 +68,7 @@ namespace Fomm.PackageManager.FomodBuilder
 			}
 
 			/// <summary>
-			/// Gets or sets the info file.
+			/// Gets the info file.
 			/// </summary>
 			/// <value>The info file.</value>
 			public XmlDocument InfoFile
@@ -80,7 +80,7 @@ namespace Fomm.PackageManager.FomodBuilder
 			}
 
 			/// <summary>
-			/// Gets or sets the setScreenshot.
+			/// Gets the setScreenshot.
 			/// </summary>
 			/// <value>The setScreenshot.</value>
 			public bool SetScreenshot
@@ -92,7 +92,7 @@ namespace Fomm.PackageManager.FomodBuilder
 			}
 
 			/// <summary>
-			/// Gets or sets the screenshot.
+			/// Gets the screenshot.
 			/// </summary>
 			/// <value>The screenshot.</value>
 			public Screenshot Screenshot
@@ -104,7 +104,7 @@ namespace Fomm.PackageManager.FomodBuilder
 			}
 
 			/// <summary>
-			/// Gets or sets the script.
+			/// Gets the script.
 			/// </summary>
 			/// <value>The script.</value>
 			public FomodScript Script
@@ -116,7 +116,7 @@ namespace Fomm.PackageManager.FomodBuilder
 			}
 
 			/// <summary>
-			/// Gets or sets the packedFomodPath.
+			/// Gets the packedFomodPath.
 			/// </summary>
 			/// <value>The packedFomodPath.</value>
 			public string PackedFomodPath
@@ -305,7 +305,7 @@ namespace Fomm.PackageManager.FomodBuilder
 			{
 				if (kvpCopyPath.Key.StartsWith(Archive.ARCHIVE_PREFIX))
 				{
-					KeyValuePair<string, string> kvpArchive = Archive.ParseArchive(kvpCopyPath.Key);
+					KeyValuePair<string, string> kvpArchive = Archive.ParseArchivePath(kvpCopyPath.Key);
 					if (!dicSources.ContainsKey(kvpArchive.Key))
 						dicSources[kvpArchive.Key] = CreateTemporaryDirectory();
 				}
@@ -343,7 +343,7 @@ namespace Fomm.PackageManager.FomodBuilder
 			string strSource = p_kvpCopyInstruction.Key;
 			if (strSource.StartsWith(Archive.ARCHIVE_PREFIX))
 			{
-				KeyValuePair<string, string> kvpArchive = Archive.ParseArchive(strSource);
+				KeyValuePair<string, string> kvpArchive = Archive.ParseArchivePath(strSource);
 				strSource = Path.Combine(p_dicSources[kvpArchive.Key], kvpArchive.Value);
 			}
 			ProgressDialog.ItemMessage = String.Format("Copying Source Files {0}...", Path.GetFileName(strSource));

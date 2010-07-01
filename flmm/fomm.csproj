@@ -258,6 +258,7 @@
       <DependentUpon>FomodFileSelector.cs</DependentUpon>
     </Compile>
     <Compile Include="PackageManager\FomodBuilder\FomodGenerator.cs" />
+    <Compile Include="PackageManager\FomodBuilder\PremadeFomodPackBuilder.cs" />
     <Compile Include="PackageManager\FomodBuilder\ReadmeFileSelector.cs">
       <SubType>UserControl</SubType>
     </Compile>

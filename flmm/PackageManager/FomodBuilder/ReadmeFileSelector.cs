@@ -157,7 +157,7 @@ namespace Fomm.PackageManager.FomodBuilder
 				strFileName=lviFile.Name;
 				if (strFileName.StartsWith(Archive.ARCHIVE_PREFIX))
 				{
-					KeyValuePair<string, string> kvpPath = Archive.ParseArchive(strFileName);
+					KeyValuePair<string, string> kvpPath = Archive.ParseArchivePath(strFileName);
 					Archive arcArchive = new Archive(kvpPath.Key);
 					string strFile = Encoding.UTF8.GetString(arcArchive.GetFileContents(kvpPath.Value));
 					stbReadme.Append(strFile).AppendLine().AppendLine();

@@ -168,12 +168,12 @@ Remeber, you can customize the FOMOD file structure by doing any of the followin
 				lstSubPaths.Clear();
 				if (strSource.StartsWith(Archive.ARCHIVE_PREFIX))
 				{
-					KeyValuePair<string, string> kvpPath = Archive.ParseArchive(strSource);
+					KeyValuePair<string, string> kvpPath = Archive.ParseArchivePath(strSource);
 					Archive arcArchive = new Archive(kvpPath.Key);
 					foreach (string strPath in arcArchive.GetDirectories(kvpPath.Value))
-						lstSubPaths.Add(String.Format("{0}{1}//{2}", Archive.ARCHIVE_PREFIX, kvpPath.Key, strPath));
+						lstSubPaths.Add(Archive.GenerateArchivePath(kvpPath.Key, strPath));
 					foreach (string strPath in arcArchive.GetFiles(kvpPath.Value))
-						lstSubPaths.Add(String.Format("{0}{1}//{2}", Archive.ARCHIVE_PREFIX, kvpPath.Key, strPath));
+						lstSubPaths.Add(Archive.GenerateArchivePath(kvpPath.Key, strPath));
 				}
 				else if (strSource.StartsWith(FileSystemTreeNode.NEW_PREFIX))
 				{
@@ -323,14 +323,14 @@ Remeber, you can customize the FOMOD file structure by doing any of the followin
 				{
 					if (p_strFile.StartsWith(Archive.ARCHIVE_PREFIX))
 					{
-						KeyValuePair<string, string> kvpPath = Archive.ParseArchive(p_strFile);
+						KeyValuePair<string, string> kvpPath = Archive.ParseArchivePath(p_strFile);
 						Archive arcArchive = new Archive(kvpPath.Key);
 						string[] strFolders = arcArchive.GetDirectories(kvpPath.Value);
 						foreach (string strSubFolder in strFolders)
-							addFomodFile(tndFile, String.Format("{0}{1}//{2}", Archive.ARCHIVE_PREFIX, kvpPath.Key, strSubFolder));
+							addFomodFile(tndFile, Archive.GenerateArchivePath(kvpPath.Key, strSubFolder));
 						string[] strFiles = arcArchive.GetFiles(kvpPath.Value);
 						foreach (string strfile in strFiles)
-							addFomodFile(tndFile, String.Format("{0}{1}//{2}", Archive.ARCHIVE_PREFIX, kvpPath.Key, strfile));
+							addFomodFile(tndFile, Archive.GenerateArchivePath(kvpPath.Key, strfile));
 					}
 					else if (!p_strFile.StartsWith(FileSystemTreeNode.NEW_PREFIX))
 					{
@@ -380,14 +380,14 @@ Remeber, you can customize the FOMOD file structure by doing any of the followin
 				{
 					if (strSource.StartsWith(Archive.ARCHIVE_PREFIX))
 					{
-						KeyValuePair<string, string> kvpPath = Archive.ParseArchive(strSource);
+						KeyValuePair<string, string> kvpPath = Archive.ParseArchivePath(strSource);
 						Archive arcArchive = new Archive(kvpPath.Key);
 						string[] strFolders = arcArchive.GetDirectories(kvpPath.Value);
 						foreach (string strSubFolder in strFolders)
-							lstFolders.Add(String.Format("{0}{1}//{2}", Archive.ARCHIVE_PREFIX, kvpPath.Key, strSubFolder));
+							lstFolders.Add(Archive.GenerateArchivePath(kvpPath.Key, strSubFolder));
 						string[] strFiles = arcArchive.GetFiles(kvpPath.Value);
 						foreach (string strfile in strFiles)
-							lstFiles.Add(String.Format("{0}{1}//{2}", Archive.ARCHIVE_PREFIX, kvpPath.Key, strfile));
+							lstFiles.Add(Archive.GenerateArchivePath(kvpPath.Key, strfile));
 					}
 					else if (!strSource.StartsWith(FileSystemTreeNode.NEW_PREFIX))
 					{
@@ -559,14 +559,14 @@ Remeber, you can customize the FOMOD file structure by doing any of the followin
 					{
 						if (strSource.StartsWith(Archive.ARCHIVE_PREFIX))
 						{
-							KeyValuePair<string, string> kvpPath = Archive.ParseArchive(strSource);
+							KeyValuePair<string, string> kvpPath = Archive.ParseArchivePath(strSource);
 							Archive arcArchive = new Archive(kvpPath.Key);
 							string[] strFolders = arcArchive.GetDirectories(kvpPath.Value);
 							foreach (string strSubFolder in strFolders)
-								lstFolders.Add(String.Format("{0}{1}//{2}", Archive.ARCHIVE_PREFIX, kvpPath.Key, strSubFolder));
+								lstFolders.Add(Archive.GenerateArchivePath(kvpPath.Key, strSubFolder));
 							string[] strFiles = arcArchive.GetFiles(kvpPath.Value);
 							foreach (string strFile in strFiles)
-								lstFiles.Add(String.Format("{0}{1}//{2}", Archive.ARCHIVE_PREFIX, kvpPath.Key, strFile));
+								lstFiles.Add(Archive.GenerateArchivePath(kvpPath.Key, strFile));
 						}
 						else if (!strSource.StartsWith(FileSystemTreeNode.NEW_PREFIX))
 						{

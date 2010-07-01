@@ -431,7 +431,7 @@ namespace Fomm.PackageManager.FomodBuilder
 							continue;
 						if (kvpFile.Key.StartsWith(Archive.ARCHIVE_PREFIX))
 						{
-							KeyValuePair<string, string> kvpArchiveInfo = Archive.ParseArchive(kvpFile.Key);
+							KeyValuePair<string, string> kvpArchiveInfo = Archive.ParseArchivePath(kvpFile.Key);
 							Archive arcArchive = new Archive(kvpArchiveInfo.Key);
 							strReadme = TextUtil.ByteToString(arcArchive.GetFileContents(kvpArchiveInfo.Value));
 						}
@@ -491,7 +491,7 @@ namespace Fomm.PackageManager.FomodBuilder
 				{
 					if (strScriptPath.StartsWith(Archive.ARCHIVE_PREFIX))
 					{
-						KeyValuePair<string, string> kvpArchiveInfo = Archive.ParseArchive(strScriptPath);
+						KeyValuePair<string, string> kvpArchiveInfo = Archive.ParseArchivePath(strScriptPath);
 						Archive arcArchive = new Archive(kvpArchiveInfo.Key);
 						fscInstallScript.Text = TextUtil.ByteToString(arcArchive.GetFileContents(kvpArchiveInfo.Value));
 					}
@@ -522,7 +522,7 @@ namespace Fomm.PackageManager.FomodBuilder
 				KeyValuePair<string, string> kvpScript = lstFiles[0];
 				if (kvpScript.Value.StartsWith(Archive.ARCHIVE_PREFIX))
 				{
-					KeyValuePair<string, string> kvpArchiveInfo = Archive.ParseArchive(kvpScript.Value);
+					KeyValuePair<string, string> kvpArchiveInfo = Archive.ParseArchivePath(kvpScript.Value);
 					Archive arcArchive = new Archive(kvpArchiveInfo.Key);
 					string strInfo = TextUtil.ByteToString(arcArchive.GetFileContents(kvpArchiveInfo.Value));
 					xmlInfo.LoadXml(strInfo);
@@ -540,7 +540,7 @@ namespace Fomm.PackageManager.FomodBuilder
 				KeyValuePair<string, string> kvpScreenshot = lstFiles[0];
 				if (kvpScreenshot.Value.StartsWith(Archive.ARCHIVE_PREFIX))
 				{
-					KeyValuePair<string, string> kvpArchiveInfo = Archive.ParseArchive(kvpScreenshot.Value);
+					KeyValuePair<string, string> kvpArchiveInfo = Archive.ParseArchivePath(kvpScreenshot.Value);
 					Archive arcArchive = new Archive(kvpArchiveInfo.Key);
 					byte[] bteScreenshot = arcArchive.GetFileContents(kvpArchiveInfo.Value);
 					finInfo.Screenshot = new Screenshot(kvpArchiveInfo.Value, bteScreenshot);

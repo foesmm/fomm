@@ -52,7 +52,7 @@ namespace Fomm.PackageManager.FomodBuilder
 					return true;
 				if (m_lstSources[0].StartsWith(Archive.ARCHIVE_PREFIX))
 				{
-					KeyValuePair<string, string> kvpArchive = Archive.ParseArchive(m_lstSources[0]);
+					KeyValuePair<string, string> kvpArchive = Archive.ParseArchivePath(m_lstSources[0]);
 					Archive arcArchive = new Archive(kvpArchive.Key);
 					return arcArchive.IsDirectory(kvpArchive.Value);
 				}
