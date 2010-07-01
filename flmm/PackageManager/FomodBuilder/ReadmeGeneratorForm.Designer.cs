@@ -86,6 +86,7 @@
 			this.Controls.Add(this.panel1);
 			this.Name = "ReadmeGeneratorForm";
 			this.ShowInTaskbar = false;
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Readme Generator";
 			this.panel1.ResumeLayout(false);
 			this.ResumeLayout(false);

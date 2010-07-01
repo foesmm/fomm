@@ -61,9 +61,25 @@ namespace Fomm.PackageManager.FomodBuilder
 		public ReadmeGeneratorForm()
 		{
 			InitializeComponent();
+
+			Icon = Fomm.Properties.Resources.fomm02;
+			Settings.GetWindowPosition("ReadmeGeneratorForm", this);
 		}
 
 		#endregion
+
+		/// <summary>
+		/// Raises the <see cref="Form.Closing"/> event.
+		/// </summary>
+		/// <remarks>
+		/// Saves the window's position.
+		/// </remarks>
+		/// <param name="e">A <see cref="CancelEventArgs"/> describing the event arguments.</param>
+		protected override void OnClosing(CancelEventArgs e)
+		{
+			Settings.SetWindowPosition("ReadmeGeneratorForm", this);
+			base.OnClosing(e);
+		}
 
 		/// <summary>
 		/// Handles the <see cref="Control.Click"/> event of the OK button.
