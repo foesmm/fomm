@@ -18,7 +18,7 @@ namespace Fomm.PackageManager.FomodBuilder
 		/// <summary>
 		/// The arguments object to pass to the background worker when building a fomod.
 		/// </summary>
-		protected class BuildFomodArgs
+		protected class BuildFomodArgs : GenerateFomodArgs
 		{
 			private string m_strFomodName = null;
 			private IList<KeyValuePair<string, string>> m_lstCopyInstructions = null;
@@ -27,7 +27,6 @@ namespace Fomm.PackageManager.FomodBuilder
 			private bool m_booSetScreenshot = false;
 			private Screenshot m_shtScreenshot = null;
 			private FomodScript m_fscScript = null;
-			private string m_strPackedPath = null;
 
 			#region Properties
 
@@ -115,18 +114,6 @@ namespace Fomm.PackageManager.FomodBuilder
 				}
 			}
 
-			/// <summary>
-			/// Gets the path where the packed file will be created.
-			/// </summary>
-			/// <value>The path where the packed file will be created.</value>
-			public string PackedPath
-			{
-				get
-				{
-					return m_strPackedPath;
-				}
-			}
-
 			#endregion
 
 			#region Constructors
@@ -143,6 +130,7 @@ namespace Fomm.PackageManager.FomodBuilder
 			/// <param name="p_fscScript">The value with which to initialize the <see cref="Script"/> property.</param>
 			/// <param name="p_strPackedPath">The value with which to initialize the <see cref="PackedPath"/> property.</param>
 			public BuildFomodArgs(string p_strFomodName, IList<KeyValuePair<string, string>> p_lstCopyPaths, Readme p_rmeReadme, XmlDocument p_xmlInfo, bool p_booSetScreenshot, Screenshot p_shtScreenshot, FomodScript p_fscScript, string p_strPackedPath)
+				: base(p_strPackedPath)
 			{
 				m_strFomodName = p_strFomodName;
 				m_lstCopyInstructions = p_lstCopyPaths;
@@ -151,7 +139,6 @@ namespace Fomm.PackageManager.FomodBuilder
 				m_booSetScreenshot = p_booSetScreenshot;
 				m_shtScreenshot = p_shtScreenshot;
 				m_fscScript = p_fscScript;
-				m_strPackedPath = p_strPackedPath;
 			}
 
 			#endregion
@@ -177,7 +164,7 @@ namespace Fomm.PackageManager.FomodBuilder
 		public string BuildFomod(string p_strFileName, IList<KeyValuePair<string, string>> p_lstCopyInstructions, Readme p_rmeReadme, XmlDocument p_xmlInfo, bool p_booSetScreenshot, Screenshot p_shtScreenshot, FomodScript p_fscScript)
 		{
 			string strFomodPath = Path.Combine(Program.PackageDir, p_strFileName + ".fomod");
-			strFomodPath = GenerateFomod(strFomodPath, new BuildFomodArgs(p_strFileName,
+			strFomodPath = GenerateFomod(new BuildFomodArgs(p_strFileName,
 																p_lstCopyInstructions,
 																p_rmeReadme,
 																p_xmlInfo,
@@ -346,7 +333,7 @@ namespace Fomm.PackageManager.FomodBuilder
 				KeyValuePair<string, string> kvpArchive = Archive.ParseArchivePath(strSource);
 				strSource = Path.Combine(p_dicSources[kvpArchive.Key], kvpArchive.Value);
 			}
-			ProgressDialog.ItemMessage = String.Format("Copying Source Files {0}...", Path.GetFileName(strSource));
+			ProgressDialog.ItemMessage = String.Format("Copying Source Files: {0}...", Path.GetFileName(strSource));
 			ProgressDialog.ItemProgressMaximum = File.Exists(strSource) ? 1 : Directory.GetFiles(strSource, "*", SearchOption.AllDirectories).Length;
 
 			string strDestination = Path.Combine(p_strFomodFolder, p_kvpCopyInstruction.Value);

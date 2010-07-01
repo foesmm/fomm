@@ -19,11 +19,10 @@ namespace Fomm.PackageManager.FomodBuilder
 		/// <summary>
 		/// The arguments object to pass to the background worker when building a fomod.
 		/// </summary>
-		private class BuildFomodArgs
+		protected class BuildFomodArgs : GenerateFomodArgs
 		{
 			private string m_strFomodName = null;
 			private string m_strSource = null;
-			private string m_strPackedFomodPath = null;
 			private string m_strUrl = null;
 
 			#region Properties
@@ -53,18 +52,6 @@ namespace Fomm.PackageManager.FomodBuilder
 			}
 
 			/// <summary>
-			/// Gets or sets the packedFomodPath.
-			/// </summary>
-			/// <value>The packedFomodPath.</value>
-			public string PackedFomodPath
-			{
-				get
-				{
-					return m_strPackedFomodPath;
-				}
-			}
-
-			/// <summary>
 			/// Gets the URL of the mod's website.
 			/// </summary>
 			/// <value>The URL of the mod's website.</value>
@@ -88,10 +75,10 @@ namespace Fomm.PackageManager.FomodBuilder
 			/// <param name="p_strUrl">The value with which to initialize the <see cref="Url"/> property.</param>
 			/// <param name="p_strPackedFomodPath">The value with which to initialize the <see cref="PackedFomodPath"/> property.</param>
 			public BuildFomodArgs(string p_strFomodName, string p_strSourcePath, string p_strUrl, string p_strPackedFomodPath)
+				: base(p_strPackedFomodPath)
 			{
 				m_strFomodName = p_strFomodName;
 				m_strSource = p_strSourcePath;
-				m_strPackedFomodPath = p_strPackedFomodPath;
 				m_strUrl = p_strUrl;
 			}
 
@@ -158,7 +145,7 @@ namespace Fomm.PackageManager.FomodBuilder
 					File.Copy(strSource, strPackedFomodPath);
 			}
 			else
-				strPackedFomodPath = GenerateFomod(strPackedFomodPath, new BuildFomodArgs(strFomodName, strSource, strTesNexusUrl, strPackedFomodPath));
+				strPackedFomodPath = GenerateFomod(new BuildFomodArgs(strFomodName, strSource, strTesNexusUrl, strPackedFomodPath));
 			return strPackedFomodPath;
 		}
 
@@ -269,13 +256,13 @@ namespace Fomm.PackageManager.FomodBuilder
 					xndWebsite.InnerText = bfaArgs.Url;
 					CreateInfoFile(strFomodFomodPath, xmlInfo);
 				}
-			}			
+			}
 			if (ProgressDialog.Cancelled())
 				return;
 			ProgressDialog.StepOverallProgress();
 
 			// 6) Pack fomod
-			PackFomod(strSource, bfaArgs.PackedFomodPath);
+			PackFomod(strSource, bfaArgs.PackedPath);
 			ProgressDialog.StepOverallProgress();
 		}
 

@@ -35,48 +35,49 @@
 			this.butOK = new System.Windows.Forms.Button();
 			this.butCancel = new System.Windows.Forms.Button();
 			this.vtcFomodData = new Fomm.Controls.VerticalTabControl();
-			this.vtpScript = new Fomm.Controls.VerticalTabPage();
-			this.fseScriptEditor = new Fomm.PackageManager.Controls.FomodScriptEditor();
-			this.panel3 = new System.Windows.Forms.Panel();
-			this.cbxUseScript = new System.Windows.Forms.CheckBox();
-			this.label8 = new System.Windows.Forms.Label();
 			this.vtpOutput = new Fomm.Controls.VerticalTabPage();
 			this.label10 = new System.Windows.Forms.Label();
 			this.butSelectPFPFolder = new System.Windows.Forms.Button();
 			this.tbxPFPPath = new System.Windows.Forms.TextBox();
 			this.cbxPFP = new System.Windows.Forms.CheckBox();
 			this.cbxFomod = new System.Windows.Forms.CheckBox();
-			this.vtpReadme = new Fomm.Controls.VerticalTabPage();
-			this.redReadmeEditor = new Fomm.PackageManager.Controls.ReadmeEditor();
-			this.panel2 = new System.Windows.Forms.Panel();
-			this.butGenerateReadme = new System.Windows.Forms.Button();
-			this.label7 = new System.Windows.Forms.Label();
-			this.label6 = new System.Windows.Forms.Label();
-			this.vtpInfo = new Fomm.Controls.VerticalTabPage();
-			this.finInfo = new Fomm.PackageManager.FomodInfo();
 			this.vtpSources = new Fomm.Controls.VerticalTabPage();
 			this.ffsFileStructure = new Fomm.PackageManager.FomodBuilder.FomodFileSelector();
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.label3 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.tbxFomodFileName = new System.Windows.Forms.TextBox();
+			this.vtpInfo = new Fomm.Controls.VerticalTabPage();
+			this.finInfo = new Fomm.PackageManager.FomodInfo();
+			this.vtpScript = new Fomm.Controls.VerticalTabPage();
+			this.fseScriptEditor = new Fomm.PackageManager.Controls.FomodScriptEditor();
+			this.panel3 = new System.Windows.Forms.Panel();
+			this.cbxUseScript = new System.Windows.Forms.CheckBox();
+			this.label8 = new System.Windows.Forms.Label();
+			this.vtpReadme = new Fomm.Controls.VerticalTabPage();
+			this.redReadmeEditor = new Fomm.PackageManager.Controls.ReadmeEditor();
+			this.panel2 = new System.Windows.Forms.Panel();
+			this.butGenerateReadme = new System.Windows.Forms.Button();
+			this.label7 = new System.Windows.Forms.Label();
+			this.label6 = new System.Windows.Forms.Label();
 			this.vtpDownloadLocations = new Fomm.Controls.VerticalTabPage();
 			this.sdsDownloadLocations = new Fomm.PackageManager.FomodBuilder.SourceDownloadSelector();
 			this.label5 = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
 			this.sspError = new Fomm.Controls.SiteStatusProvider();
 			this.sspWarning = new Fomm.Controls.SiteStatusProvider();
+			this.fbdPFPPath = new System.Windows.Forms.FolderBrowserDialog();
 			this.pnlHeader.SuspendLayout();
 			this.pnlButtons.SuspendLayout();
 			this.vtcFomodData.SuspendLayout();
-			this.vtpScript.SuspendLayout();
-			this.panel3.SuspendLayout();
 			this.vtpOutput.SuspendLayout();
-			this.vtpReadme.SuspendLayout();
-			this.panel2.SuspendLayout();
-			this.vtpInfo.SuspendLayout();
 			this.vtpSources.SuspendLayout();
 			this.panel1.SuspendLayout();
+			this.vtpInfo.SuspendLayout();
+			this.vtpScript.SuspendLayout();
+			this.panel3.SuspendLayout();
+			this.vtpReadme.SuspendLayout();
+			this.panel2.SuspendLayout();
 			this.vtpDownloadLocations.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.sspError)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.sspWarning)).BeginInit();
@@ -137,71 +138,20 @@
 			// 
 			this.vtcFomodData.BackColor = System.Drawing.SystemColors.Window;
 			this.vtcFomodData.Controls.Add(this.vtpSources);
-			this.vtcFomodData.Controls.Add(this.vtpScript);
 			this.vtcFomodData.Controls.Add(this.vtpOutput);
-			this.vtcFomodData.Controls.Add(this.vtpReadme);
 			this.vtcFomodData.Controls.Add(this.vtpInfo);
+			this.vtcFomodData.Controls.Add(this.vtpScript);
+			this.vtcFomodData.Controls.Add(this.vtpReadme);
 			this.vtcFomodData.Controls.Add(this.vtpDownloadLocations);
 			this.vtcFomodData.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.vtcFomodData.Location = new System.Drawing.Point(0, 36);
 			this.vtcFomodData.Name = "vtcFomodData";
-			this.vtcFomodData.SelectedIndex = 4;
+			this.vtcFomodData.SelectedIndex = 1;
 			this.vtcFomodData.SelectedTabPage = this.vtpSources;
 			this.vtcFomodData.Size = new System.Drawing.Size(595, 367);
 			this.vtcFomodData.TabIndex = 2;
 			this.vtcFomodData.Text = "verticalTabControl1";
 			this.vtcFomodData.SelectedTabPageChanged += new System.EventHandler<Fomm.Controls.VerticalTabControl.TabPageEventArgs>(this.vtcFomodData_SelectedTabPageChanged);
-			// 
-			// vtpScript
-			// 
-			this.vtpScript.BackColor = System.Drawing.SystemColors.Control;
-			this.vtpScript.Controls.Add(this.fseScriptEditor);
-			this.vtpScript.Controls.Add(this.panel3);
-			this.vtpScript.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.vtpScript.Location = new System.Drawing.Point(150, 0);
-			this.vtpScript.Name = "vtpScript";
-			this.vtpScript.PageIndex = 4;
-			this.vtpScript.Size = new System.Drawing.Size(445, 367);
-			this.vtpScript.TabIndex = 6;
-			this.vtpScript.Text = "Script";
-			// 
-			// fseScriptEditor
-			// 
-			this.fseScriptEditor.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.fseScriptEditor.Location = new System.Drawing.Point(0, 40);
-			this.fseScriptEditor.Name = "fseScriptEditor";
-			this.fseScriptEditor.Size = new System.Drawing.Size(445, 327);
-			this.fseScriptEditor.TabIndex = 1;
-			// 
-			// panel3
-			// 
-			this.panel3.Controls.Add(this.cbxUseScript);
-			this.panel3.Controls.Add(this.label8);
-			this.panel3.Dock = System.Windows.Forms.DockStyle.Top;
-			this.panel3.Location = new System.Drawing.Point(0, 0);
-			this.panel3.Name = "panel3";
-			this.panel3.Size = new System.Drawing.Size(445, 40);
-			this.panel3.TabIndex = 0;
-			// 
-			// cbxUseScript
-			// 
-			this.cbxUseScript.AutoSize = true;
-			this.cbxUseScript.Location = new System.Drawing.Point(16, 20);
-			this.cbxUseScript.Name = "cbxUseScript";
-			this.cbxUseScript.Size = new System.Drawing.Size(91, 17);
-			this.cbxUseScript.TabIndex = 1;
-			this.cbxUseScript.Text = "Include Script";
-			this.cbxUseScript.UseVisualStyleBackColor = true;
-			this.cbxUseScript.CheckedChanged += new System.EventHandler(this.cbxUseScript_CheckedChanged);
-			// 
-			// label8
-			// 
-			this.label8.AutoSize = true;
-			this.label8.Location = new System.Drawing.Point(3, 3);
-			this.label8.Name = "label8";
-			this.label8.Size = new System.Drawing.Size(215, 13);
-			this.label8.TabIndex = 0;
-			this.label8.Text = "Provide the script for the FOMOD, if desired.";
 			// 
 			// vtpOutput
 			// 
@@ -212,10 +162,10 @@
 			this.vtpOutput.Controls.Add(this.cbxPFP);
 			this.vtpOutput.Controls.Add(this.cbxFomod);
 			this.vtpOutput.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.vtpOutput.Location = new System.Drawing.Point(0, 0);
+			this.vtpOutput.Location = new System.Drawing.Point(150, 0);
 			this.vtpOutput.Name = "vtpOutput";
 			this.vtpOutput.PageIndex = 5;
-			this.vtpOutput.Size = new System.Drawing.Size(595, 367);
+			this.vtpOutput.Size = new System.Drawing.Size(445, 367);
 			this.vtpOutput.TabIndex = 5;
 			this.vtpOutput.Text = "Save Locations";
 			// 
@@ -233,12 +183,13 @@
 			this.butSelectPFPFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.butSelectPFPFolder.AutoSize = true;
 			this.butSelectPFPFolder.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-			this.butSelectPFPFolder.Location = new System.Drawing.Point(557, 84);
+			this.butSelectPFPFolder.Location = new System.Drawing.Point(407, 84);
 			this.butSelectPFPFolder.Name = "butSelectPFPFolder";
 			this.butSelectPFPFolder.Size = new System.Drawing.Size(26, 23);
 			this.butSelectPFPFolder.TabIndex = 3;
 			this.butSelectPFPFolder.Text = "...";
 			this.butSelectPFPFolder.UseVisualStyleBackColor = true;
+			this.butSelectPFPFolder.Click += new System.EventHandler(this.butSelectPFPFolder_Click);
 			// 
 			// tbxPFPPath
 			// 
@@ -246,7 +197,7 @@
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.tbxPFPPath.Location = new System.Drawing.Point(34, 86);
 			this.tbxPFPPath.Name = "tbxPFPPath";
-			this.tbxPFPPath.Size = new System.Drawing.Size(517, 20);
+			this.tbxPFPPath.Size = new System.Drawing.Size(367, 20);
 			this.tbxPFPPath.TabIndex = 2;
 			this.tbxPFPPath.Validating += new System.ComponentModel.CancelEventHandler(this.tbxPFPPath_Validating);
 			// 
@@ -269,98 +220,6 @@
 			this.cbxFomod.TabIndex = 0;
 			this.cbxFomod.Text = "Create FOMOD";
 			this.cbxFomod.UseVisualStyleBackColor = true;
-			// 
-			// vtpReadme
-			// 
-			this.vtpReadme.BackColor = System.Drawing.SystemColors.Control;
-			this.vtpReadme.Controls.Add(this.redReadmeEditor);
-			this.vtpReadme.Controls.Add(this.panel2);
-			this.vtpReadme.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.vtpReadme.Location = new System.Drawing.Point(0, 0);
-			this.vtpReadme.Name = "vtpReadme";
-			this.vtpReadme.PageIndex = 2;
-			this.vtpReadme.Size = new System.Drawing.Size(595, 367);
-			this.vtpReadme.TabIndex = 3;
-			this.vtpReadme.Text = "Readme";
-			// 
-			// redReadmeEditor
-			// 
-			this.redReadmeEditor.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.redReadmeEditor.Location = new System.Drawing.Point(0, 75);
-			this.redReadmeEditor.Name = "redReadmeEditor";
-			this.redReadmeEditor.Size = new System.Drawing.Size(595, 292);
-			this.redReadmeEditor.TabIndex = 1;
-			// 
-			// panel2
-			// 
-			this.panel2.Controls.Add(this.butGenerateReadme);
-			this.panel2.Controls.Add(this.label7);
-			this.panel2.Controls.Add(this.label6);
-			this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
-			this.panel2.Location = new System.Drawing.Point(0, 0);
-			this.panel2.Name = "panel2";
-			this.panel2.Size = new System.Drawing.Size(595, 75);
-			this.panel2.TabIndex = 0;
-			// 
-			// butGenerateReadme
-			// 
-			this.butGenerateReadme.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.butGenerateReadme.Location = new System.Drawing.Point(358, 46);
-			this.butGenerateReadme.Name = "butGenerateReadme";
-			this.butGenerateReadme.Size = new System.Drawing.Size(75, 23);
-			this.butGenerateReadme.TabIndex = 2;
-			this.butGenerateReadme.Text = "Generate...";
-			this.butGenerateReadme.UseVisualStyleBackColor = true;
-			this.butGenerateReadme.Click += new System.EventHandler(this.butGenerateReadme_Click);
-			// 
-			// label7
-			// 
-			this.label7.Location = new System.Drawing.Point(3, 20);
-			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(430, 33);
-			this.label7.TabIndex = 1;
-			this.label7.Text = "You can either enter the text manually, or click the Generate button to create a " +
-				"readme from existing files.";
-			// 
-			// label6
-			// 
-			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(3, 3);
-			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(171, 13);
-			this.label6.TabIndex = 0;
-			this.label6.Text = "Provide the text for the readme file.";
-			// 
-			// vtpInfo
-			// 
-			this.vtpInfo.BackColor = System.Drawing.SystemColors.Control;
-			this.vtpInfo.Controls.Add(this.finInfo);
-			this.vtpInfo.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.vtpInfo.Location = new System.Drawing.Point(0, 0);
-			this.vtpInfo.Name = "vtpInfo";
-			this.vtpInfo.PageIndex = 3;
-			this.vtpInfo.Size = new System.Drawing.Size(595, 367);
-			this.vtpInfo.TabIndex = 4;
-			this.vtpInfo.Text = "FOMOD Info";
-			// 
-			// finInfo
-			// 
-			this.finInfo.Author = "";
-			this.finInfo.AutoScroll = true;
-			this.finInfo.Description = "";
-			this.finInfo.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.finInfo.Email = "";
-			this.finInfo.Groups = new string[0];
-			this.finInfo.HumanReadableVersion = "";
-			this.finInfo.Location = new System.Drawing.Point(0, 0);
-			this.finInfo.MachineVersion = ((System.Version)(resources.GetObject("finInfo.MachineVersion")));
-			this.finInfo.MinFommVersion = ((System.Version)(resources.GetObject("finInfo.MinFommVersion")));
-			this.finInfo.ModName = "";
-			this.finInfo.Name = "finInfo";
-			this.finInfo.Screenshot = null;
-			this.finInfo.Size = new System.Drawing.Size(595, 367);
-			this.finInfo.TabIndex = 0;
-			this.finInfo.Website = "";
 			// 
 			// vtpSources
 			// 
@@ -423,6 +282,151 @@
 			this.tbxFomodFileName.Size = new System.Drawing.Size(416, 20);
 			this.tbxFomodFileName.TabIndex = 0;
 			this.tbxFomodFileName.Validating += new System.ComponentModel.CancelEventHandler(this.tbxFomodFileName_Validating);
+			// 
+			// vtpInfo
+			// 
+			this.vtpInfo.BackColor = System.Drawing.SystemColors.Control;
+			this.vtpInfo.Controls.Add(this.finInfo);
+			this.vtpInfo.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.vtpInfo.Location = new System.Drawing.Point(150, 0);
+			this.vtpInfo.Name = "vtpInfo";
+			this.vtpInfo.PageIndex = 3;
+			this.vtpInfo.Size = new System.Drawing.Size(445, 367);
+			this.vtpInfo.TabIndex = 4;
+			this.vtpInfo.Text = "FOMOD Info";
+			// 
+			// finInfo
+			// 
+			this.finInfo.Author = "";
+			this.finInfo.AutoScroll = true;
+			this.finInfo.Description = "";
+			this.finInfo.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.finInfo.Email = "";
+			this.finInfo.Groups = new string[0];
+			this.finInfo.HumanReadableVersion = "";
+			this.finInfo.Location = new System.Drawing.Point(0, 0);
+			this.finInfo.MachineVersion = ((System.Version)(resources.GetObject("finInfo.MachineVersion")));
+			this.finInfo.MinFommVersion = ((System.Version)(resources.GetObject("finInfo.MinFommVersion")));
+			this.finInfo.ModName = "";
+			this.finInfo.Name = "finInfo";
+			this.finInfo.Screenshot = null;
+			this.finInfo.Size = new System.Drawing.Size(445, 367);
+			this.finInfo.TabIndex = 0;
+			this.finInfo.Website = "";
+			// 
+			// vtpScript
+			// 
+			this.vtpScript.BackColor = System.Drawing.SystemColors.Control;
+			this.vtpScript.Controls.Add(this.fseScriptEditor);
+			this.vtpScript.Controls.Add(this.panel3);
+			this.vtpScript.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.vtpScript.Location = new System.Drawing.Point(0, 0);
+			this.vtpScript.Name = "vtpScript";
+			this.vtpScript.PageIndex = 4;
+			this.vtpScript.Size = new System.Drawing.Size(595, 367);
+			this.vtpScript.TabIndex = 6;
+			this.vtpScript.Text = "Script";
+			// 
+			// fseScriptEditor
+			// 
+			this.fseScriptEditor.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.fseScriptEditor.Location = new System.Drawing.Point(0, 40);
+			this.fseScriptEditor.Name = "fseScriptEditor";
+			this.fseScriptEditor.Script = null;
+			this.fseScriptEditor.Size = new System.Drawing.Size(595, 327);
+			this.fseScriptEditor.TabIndex = 1;
+			// 
+			// panel3
+			// 
+			this.panel3.Controls.Add(this.cbxUseScript);
+			this.panel3.Controls.Add(this.label8);
+			this.panel3.Dock = System.Windows.Forms.DockStyle.Top;
+			this.panel3.Location = new System.Drawing.Point(0, 0);
+			this.panel3.Name = "panel3";
+			this.panel3.Size = new System.Drawing.Size(595, 40);
+			this.panel3.TabIndex = 0;
+			// 
+			// cbxUseScript
+			// 
+			this.cbxUseScript.AutoSize = true;
+			this.cbxUseScript.Location = new System.Drawing.Point(16, 20);
+			this.cbxUseScript.Name = "cbxUseScript";
+			this.cbxUseScript.Size = new System.Drawing.Size(91, 17);
+			this.cbxUseScript.TabIndex = 1;
+			this.cbxUseScript.Text = "Include Script";
+			this.cbxUseScript.UseVisualStyleBackColor = true;
+			this.cbxUseScript.CheckedChanged += new System.EventHandler(this.cbxUseScript_CheckedChanged);
+			// 
+			// label8
+			// 
+			this.label8.AutoSize = true;
+			this.label8.Location = new System.Drawing.Point(3, 3);
+			this.label8.Name = "label8";
+			this.label8.Size = new System.Drawing.Size(215, 13);
+			this.label8.TabIndex = 0;
+			this.label8.Text = "Provide the script for the FOMOD, if desired.";
+			// 
+			// vtpReadme
+			// 
+			this.vtpReadme.BackColor = System.Drawing.SystemColors.Control;
+			this.vtpReadme.Controls.Add(this.redReadmeEditor);
+			this.vtpReadme.Controls.Add(this.panel2);
+			this.vtpReadme.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.vtpReadme.Location = new System.Drawing.Point(0, 0);
+			this.vtpReadme.Name = "vtpReadme";
+			this.vtpReadme.PageIndex = 2;
+			this.vtpReadme.Size = new System.Drawing.Size(595, 367);
+			this.vtpReadme.TabIndex = 3;
+			this.vtpReadme.Text = "Readme";
+			// 
+			// redReadmeEditor
+			// 
+			this.redReadmeEditor.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.redReadmeEditor.Location = new System.Drawing.Point(0, 75);
+			this.redReadmeEditor.Name = "redReadmeEditor";
+			this.redReadmeEditor.Readme = null;
+			this.redReadmeEditor.Size = new System.Drawing.Size(595, 292);
+			this.redReadmeEditor.TabIndex = 1;
+			// 
+			// panel2
+			// 
+			this.panel2.Controls.Add(this.butGenerateReadme);
+			this.panel2.Controls.Add(this.label7);
+			this.panel2.Controls.Add(this.label6);
+			this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
+			this.panel2.Location = new System.Drawing.Point(0, 0);
+			this.panel2.Name = "panel2";
+			this.panel2.Size = new System.Drawing.Size(595, 75);
+			this.panel2.TabIndex = 0;
+			// 
+			// butGenerateReadme
+			// 
+			this.butGenerateReadme.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.butGenerateReadme.Location = new System.Drawing.Point(358, 46);
+			this.butGenerateReadme.Name = "butGenerateReadme";
+			this.butGenerateReadme.Size = new System.Drawing.Size(75, 23);
+			this.butGenerateReadme.TabIndex = 2;
+			this.butGenerateReadme.Text = "Generate...";
+			this.butGenerateReadme.UseVisualStyleBackColor = true;
+			this.butGenerateReadme.Click += new System.EventHandler(this.butGenerateReadme_Click);
+			// 
+			// label7
+			// 
+			this.label7.Location = new System.Drawing.Point(3, 20);
+			this.label7.Name = "label7";
+			this.label7.Size = new System.Drawing.Size(430, 33);
+			this.label7.TabIndex = 1;
+			this.label7.Text = "You can either enter the text manually, or click the Generate button to create a " +
+				"readme from existing files.";
+			// 
+			// label6
+			// 
+			this.label6.AutoSize = true;
+			this.label6.Location = new System.Drawing.Point(3, 3);
+			this.label6.Name = "label6";
+			this.label6.Size = new System.Drawing.Size(171, 13);
+			this.label6.TabIndex = 0;
+			this.label6.Text = "Provide the text for the readme file.";
 			// 
 			// vtpDownloadLocations
 			// 
@@ -490,18 +494,18 @@
 			this.pnlHeader.PerformLayout();
 			this.pnlButtons.ResumeLayout(false);
 			this.vtcFomodData.ResumeLayout(false);
-			this.vtpScript.ResumeLayout(false);
-			this.panel3.ResumeLayout(false);
-			this.panel3.PerformLayout();
 			this.vtpOutput.ResumeLayout(false);
 			this.vtpOutput.PerformLayout();
-			this.vtpReadme.ResumeLayout(false);
-			this.panel2.ResumeLayout(false);
-			this.panel2.PerformLayout();
-			this.vtpInfo.ResumeLayout(false);
 			this.vtpSources.ResumeLayout(false);
 			this.panel1.ResumeLayout(false);
 			this.panel1.PerformLayout();
+			this.vtpInfo.ResumeLayout(false);
+			this.vtpScript.ResumeLayout(false);
+			this.panel3.ResumeLayout(false);
+			this.panel3.PerformLayout();
+			this.vtpReadme.ResumeLayout(false);
+			this.panel2.ResumeLayout(false);
+			this.panel2.PerformLayout();
 			this.vtpDownloadLocations.ResumeLayout(false);
 			this.vtpDownloadLocations.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.sspError)).EndInit();
@@ -549,5 +553,6 @@
 		private System.Windows.Forms.CheckBox cbxFomod;
 		private Fomm.PackageManager.Controls.ReadmeEditor redReadmeEditor;
 		private Fomm.PackageManager.Controls.FomodScriptEditor fseScriptEditor;
+		private System.Windows.Forms.FolderBrowserDialog fbdPFPPath;
 	}
 }

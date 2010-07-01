@@ -80,6 +80,8 @@ namespace Fomm.PackageManager.FomodBuilder
 
 			tbxPFPPath.DataBindings.Add("Enabled", cbxPFP, "Checked");
 			butSelectPFPFolder.DataBindings.Add("Enabled", cbxPFP, "Checked");
+			fseScriptEditor.DataBindings.Add("Enabled", cbxUseScript, "Checked");
+			tbxPFPPath.Text = Settings.GetString("pfpOutputPath");
 		}
 
 		#endregion
@@ -151,10 +153,35 @@ namespace Fomm.PackageManager.FomodBuilder
 			Readme rmeReadme = redReadmeEditor.Readme;
 			FomodScript fscScript = fseScriptEditor.Script;
 			XmlDocument xmlInfo = m_booInfoEntered ? fomod.SaveInfo(finInfo) : null;
-			NewFomodBuilder fgnGenerator = new NewFomodBuilder();
-			m_strNewFomodPath = fgnGenerator.BuildFomod(tbxFomodFileName.Text, ffsFileStructure.GetCopyPaths(), rmeReadme, xmlInfo, m_booInfoEntered, finInfo.Screenshot, fscScript);
-			if (!String.IsNullOrEmpty(m_strNewFomodPath))
-				DialogResult = DialogResult.OK;
+
+			if (cbxFomod.Checked)
+			{
+				NewFomodBuilder fgnGenerator = new NewFomodBuilder();
+				m_strNewFomodPath = fgnGenerator.BuildFomod(tbxFomodFileName.Text, ffsFileStructure.GetCopyPaths(), rmeReadme, xmlInfo, m_booInfoEntered, finInfo.Screenshot, fscScript);
+				if (String.IsNullOrEmpty(m_strNewFomodPath))
+					return;
+			}
+			if (cbxPFP.Checked)
+			{
+				Settings.SetString("pfpOutputPath", tbxPFPPath.Text);
+
+				string strVersion = "1.0";
+				XmlDocument xmlInfoTmp = fomod.SaveInfo(finInfo);
+				if (xmlInfoTmp != null)
+				{
+					XmlNode xndVersion = xmlInfoTmp.SelectSingleNode("/fomod/Version");
+					if (xndVersion != null)
+						strVersion = xndVersion.InnerText;
+				}
+				Dictionary<string, string> dicDownloadLocations = new Dictionary<string, string>();
+				foreach (SourceDownloadSelector.SourceDownloadLocation sdlLocation in sdsDownloadLocations.DataSource)
+					dicDownloadLocations[sdlLocation.Source] = sdlLocation.Included ? null : sdlLocation.URL;
+				PremadeFomodPackBuilder fpbPackBuilder = new PremadeFomodPackBuilder();
+				string strPFPPAth = fpbPackBuilder.BuildPFP(tbxFomodFileName.Text, strVersion, ffsFileStructure.GetCopyPaths(), dicDownloadLocations, rmeReadme, xmlInfo, m_booInfoEntered, finInfo.Screenshot, fscScript, tbxPFPPath.Text);
+				if (String.IsNullOrEmpty(strPFPPAth))
+					return;
+			}
+			DialogResult = DialogResult.OK;
 		}
 
 		#endregion
@@ -459,7 +486,6 @@ namespace Fomm.PackageManager.FomodBuilder
 		{
 			if (cbxUseScript.Checked)
 				SetScriptDefault();
-			fseScriptEditor.Enabled = cbxUseScript.Checked;
 		}
 
 		/// <summary>
@@ -528,10 +554,12 @@ namespace Fomm.PackageManager.FomodBuilder
 					xmlInfo.LoadXml(strInfo);
 				}
 				else if (File.Exists(kvpScript.Value))
-					xmlInfo.Load(File.ReadAllText(kvpScript.Value));
+					xmlInfo.Load(kvpScript.Value);
 
 				fomod.LoadInfo(xmlInfo, finInfo, false);
 			}
+			else if (String.IsNullOrEmpty(finInfo.ModName))
+				finInfo.ModName = tbxFomodFileName.Text;
 
 			string strScreenshotFileName = "fomod" + Path.DirectorySeparatorChar + "screenshot.*";
 			lstFiles = ffsFileStructure.FindFomodFiles(strScreenshotFileName);
@@ -573,6 +601,17 @@ namespace Fomm.PackageManager.FomodBuilder
 				e.GenerateOnNextKey = true;
 				e.ExtraInsertionCharacters.Add(Path.DirectorySeparatorChar);
 			}
+		}
+
+		/// <summary>
+		/// Handles the <see cref="Control.Click"/> event of the select PFP folder button.
+		/// </summary>
+		/// <param name="sender">The object that raised the event.</param>
+		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+		private void butSelectPFPFolder_Click(object sender, EventArgs e)
+		{
+			if (fbdPFPPath.ShowDialog(this) == DialogResult.OK)
+				tbxPFPPath.Text = fbdPFPPath.SelectedPath;
 		}
 	}
 }

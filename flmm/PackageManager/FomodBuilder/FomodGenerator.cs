@@ -15,6 +15,47 @@ namespace Fomm.PackageManager.FomodBuilder
 	/// </summary>
 	public abstract class FomodGenerator
 	{
+		/// <summary>
+		/// The arguments object to pass to the background worker when generating a fomod.
+		/// </summary>
+		protected abstract class GenerateFomodArgs
+		{
+			private string m_strPackedPath = null;
+
+			#region Properties
+
+			/// <summary>
+			/// Gets or sets the path where the packed file will be created.
+			/// </summary>
+			/// <value>The path where the packed file will be created.</value>
+			public string PackedPath
+			{
+				get
+				{
+					return m_strPackedPath;
+				}
+				set
+				{
+					m_strPackedPath = value;
+				}
+			}
+
+			#endregion
+
+			#region Constructors
+
+			/// <summary>
+			/// A simple constructor that initializes the object with the given values.
+			/// </summary>
+			/// <param name="p_strPackedPath">The value with which to initialize the <see cref="PackedPath"/> property.</param>
+			public GenerateFomodArgs(string p_strPackedPath)
+			{
+				m_strPackedPath = p_strPackedPath;
+			}
+
+			#endregion
+		}
+
 		private BackgroundWorkerProgressDialog m_bwdProgress = null;
 		private LinkedList<string> m_lltTempFolders = new LinkedList<string>();
 
@@ -34,6 +75,17 @@ namespace Fomm.PackageManager.FomodBuilder
 			}
 		}
 
+		/// <summary>
+		/// Gets the overall message to display in the progress dialog.
+		/// </summary>
+		protected virtual string OverallProgressMessage
+		{
+			get
+			{
+				return "Building Fomod...";
+			}
+		}
+
 		#endregion
 
 		#region Fomod Generation
@@ -50,28 +102,28 @@ namespace Fomm.PackageManager.FomodBuilder
 		/// This method deals with the cases where <paramref name="p_strPackedFomodPath"/> points
 		/// to an existing file. It also performs housecleaning in case the user cancels the operation.
 		/// </remarks>
-		/// <param name="p_strPackedFomodPath">The location at which to save the new fomod.</param>
-		/// <param name="p_objArgs">The arguments to pass the the <see cref="DoGenerateFomod(object p_objArgs)"/>
+		/// <param name="p_gfaArgs">The arguments to pass the the <see cref="DoGenerateFomod(object p_objArgs)"/>
 		/// method.</param>
 		/// <returns>The atual path of the generated fomod. This could be <see cref="p_strPackedFomodPath"/>, but
 		/// may be different if the given path pointed to an existing file.</returns>
-		protected string GenerateFomod(string p_strPackedFomodPath, object p_objArgs)
+		protected string GenerateFomod(GenerateFomodArgs p_gfaArgs)
 		{
-			string strPackedFomodPath = p_strPackedFomodPath;
-			if (!CheckFileName(ref strPackedFomodPath))
+			string strPackedPath = p_gfaArgs.PackedPath;
+			if (!CheckFileName(ref strPackedPath))
 				return null;
+			p_gfaArgs.PackedPath = strPackedPath;
 
 			try
 			{
 				using (m_bwdProgress = new BackgroundWorkerProgressDialog(DoGenerateFomod))
 				{
-					m_bwdProgress.OverallMessage = "Building Fomod...";
+					m_bwdProgress.OverallMessage = OverallProgressMessage;
 					m_bwdProgress.ShowItemProgress = true;
 					m_bwdProgress.OverallProgressStep = 1;
-					m_bwdProgress.WorkMethodArguments = p_objArgs;
+					m_bwdProgress.WorkMethodArguments = p_gfaArgs;
 					if (m_bwdProgress.ShowDialog() == DialogResult.Cancel)
 					{
-						FileUtil.ForceDelete(strPackedFomodPath);
+						FileUtil.ForceDelete(strPackedPath);
 						return null;
 					}
 				}
@@ -81,7 +133,7 @@ namespace Fomm.PackageManager.FomodBuilder
 				foreach (string strFolder in m_lltTempFolders)
 					FileUtil.ForceDelete(strFolder);
 			}
-			return strPackedFomodPath;
+			return strPackedPath;
 		}
 
 		/// <summary>
@@ -173,7 +225,7 @@ namespace Fomm.PackageManager.FomodBuilder
 			ProgressDialog.ItemProgressMaximum = 1;
 			ProgressDialog.ItemProgressStep = 1;
 			ProgressDialog.ItemMessage = String.Format("Creating Script File...");
-			if (!String.IsNullOrEmpty(p_fscScript.Text))
+			if ((p_fscScript != null) && !String.IsNullOrEmpty(p_fscScript.Text))
 				File.WriteAllText(Path.Combine(p_strFomodFomodFolder, p_fscScript.FileName), p_fscScript.Text);
 			ProgressDialog.StepItemProgress();
 		}
@@ -235,7 +287,7 @@ namespace Fomm.PackageManager.FomodBuilder
 			ProgressDialog.ItemProgressMaximum = 1;
 			ProgressDialog.ItemProgressStep = 1;
 			ProgressDialog.ItemMessage = String.Format("Creating Readme File...");
-			if (!String.IsNullOrEmpty(p_rmeReadme.Text))
+			if ((p_rmeReadme != null) && !String.IsNullOrEmpty(p_rmeReadme.Text))
 			{
 				string strReadmeFileName = String.Format("Readme - {0}{1}", p_strFomodName, p_rmeReadme.Extension);
 				if (Settings.GetBool("UseDocsFolder"))
@@ -317,7 +369,7 @@ namespace Fomm.PackageManager.FomodBuilder
 		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
 		protected void FileCompressionFinished(object sender, EventArgs e)
 		{
-			ProgressDialog.StepOverallProgress();
+			ProgressDialog.StepItemProgress();
 		}
 
 		/// <summary>

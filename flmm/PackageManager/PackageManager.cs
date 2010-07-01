@@ -331,7 +331,7 @@ namespace Fomm.PackageManager
 
 			butDeactivate.Enabled = mod.IsActive;
 			bActivate.Text = mod.IsActive ? "Reactivate" : "Activate";
-			bEditScript.Text = mod.HasInstallScript? "Edit script": "Create script";
+			bEditScript.Text = mod.HasInstallScript ? "Edit script" : "Create script";
 			pictureBox1.Image = mod.GetScreenshotImage();
 		}
 
@@ -880,7 +880,10 @@ namespace Fomm.PackageManager
 		{
 			FomodBuilderForm fbfBuilder = new FomodBuilderForm();
 			if (fbfBuilder.ShowDialog(this) == DialogResult.OK)
-				AddFomod(fbfBuilder.FomodPath, true);
+			{
+				if (!String.IsNullOrEmpty(fbfBuilder.FomodPath))
+					AddFomod(fbfBuilder.FomodPath, true);
+			}
 		}
 	}
 }

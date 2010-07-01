@@ -115,7 +115,13 @@ namespace Fomm.PackageManager.FomodBuilder
 
 		public void AddSource(string p_strSource)
 		{
-			m_lstSources.Add(p_strSource);
+			if (IsDirectory)
+			{
+				m_lstSources.Remove(p_strSource);
+				m_lstSources.Add(p_strSource);
+			}
+			else
+				m_lstSources[0] = p_strSource;
 		}
 	}
 }

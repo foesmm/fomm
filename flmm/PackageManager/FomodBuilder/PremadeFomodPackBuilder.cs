@@ -17,7 +17,7 @@ namespace Fomm.PackageManager.FomodBuilder
 		protected class BuildPFPArgs : BuildFomodArgs
 		{
 			private IDictionary<string, string> m_dicDownloadLocations = null;
-			
+
 			#region Properties
 
 			/// <summary>
@@ -57,6 +57,18 @@ namespace Fomm.PackageManager.FomodBuilder
 			#endregion
 		}
 
+		#region Properties
+
+		protected override string OverallProgressMessage
+		{
+			get
+			{
+				return "Building Premade Fomod Pack...";
+			}
+		}
+
+		#endregion
+
 		#region Build Fomod
 
 		/// <summary>
@@ -67,6 +79,7 @@ namespace Fomm.PackageManager.FomodBuilder
 		/// allow cancellation.
 		/// </remarks>
 		/// <param name="p_strFileName">The name of the fomod file, excluding extension.</param>
+		/// <param name="p_strVersion">The version of the fomod for which we are creating the PFP.</param>
 		/// <param name="p_lstCopyInstructions">The list of files to copy into the fomod.</param>
 		/// <param name="p_dicDownloadLocations">The list of download locations for the sources.</param>
 		/// <param name="p_rmeReadme">The fomod readme.</param>
@@ -76,14 +89,8 @@ namespace Fomm.PackageManager.FomodBuilder
 		/// <param name="p_fscScript">The fomod install script.</param>
 		/// <param name="p_strPFPPath">The path where the Premade Fomod Pack will be created.</param>
 		/// <returns>The path to the new premade fomod pack if it was successfully built; <lang cref="null"/> otherwise.</returns>
-		public string BuildPFP(string p_strFileName, IList<KeyValuePair<string, string>> p_lstCopyInstructions, IDictionary<string, string> p_dicDownloadLocations, Readme p_rmeReadme, XmlDocument p_xmlInfo, bool p_booSetScreenshot, Screenshot p_shtScreenshot, FomodScript p_fscScript, string p_strPFPPath)
+		public string BuildPFP(string p_strFileName, string p_strVersion, IList<KeyValuePair<string, string>> p_lstCopyInstructions, IDictionary<string, string> p_dicDownloadLocations, Readme p_rmeReadme, XmlDocument p_xmlInfo, bool p_booSetScreenshot, Screenshot p_shtScreenshot, FomodScript p_fscScript, string p_strPFPPath)
 		{
-			string strVersion = "1.0";
-			if (p_xmlInfo != null)
-			{
-				XmlNode xndVersion = p_xmlInfo.SelectSingleNode("/fomod/Version");
-				strVersion = xndVersion.InnerText;
-			}
 			string strPFPExtension = null;
 			switch ((OutArchiveFormat)Settings.GetInt("pfpCompressionFormat", (Int32)OutArchiveFormat.SevenZip))
 			{
@@ -107,9 +114,9 @@ namespace Fomm.PackageManager.FomodBuilder
 					break;
 				default:
 					throw new Exception("Unrecognized value for OutArchiveFormat enum.");
-			}
-			string strPFPPath = Path.Combine(p_strPFPPath, String.Format("{0} {1}{2}", p_strFileName, strVersion, strPFPExtension));
-			strPFPPath = GenerateFomod(p_strPFPPath, new BuildPFPArgs(p_strFileName,
+			}				
+			string strPFPPath = Path.Combine(p_strPFPPath, String.Format("{0} {1}{2}", p_strFileName, p_strVersion, strPFPExtension));
+			strPFPPath = GenerateFomod(new BuildPFPArgs(p_strFileName,
 																p_lstCopyInstructions,
 																p_dicDownloadLocations,
 																p_rmeReadme,
@@ -154,37 +161,39 @@ namespace Fomm.PackageManager.FomodBuilder
 
 			//get only the instructions for files that are to be included in the PFP
 			// files will be included in the PFP only if they don't have a download location
-			List<KeyValuePair<string, string>> lstCopyInstructions = new List<KeyValuePair<string, string>>();
+			List<KeyValuePair<string, string>> lstPFPCopyInstructions = new List<KeyValuePair<string, string>>();
+			List<KeyValuePair<string, string>> lstFomodCopyInstructions = new List<KeyValuePair<string, string>>();
+			bool booIsPFPCopy = true;
 			foreach (KeyValuePair<string, string> kvpInstruction in bpaArgs.CopyInstructions)
 			{
 				if (kvpInstruction.Key.StartsWith(Archive.ARCHIVE_PREFIX))
 				{
 					KeyValuePair<string, string> kvpArchive = Archive.ParseArchivePath(kvpInstruction.Key);
-					if (bpaArgs.DownloadLocations[kvpArchive.Key] != null)
-						continue;
+					booIsPFPCopy = (bpaArgs.DownloadLocations[kvpArchive.Key] == null);
 				}
 				else
 				{
-					bool booFound = false;
+					booIsPFPCopy = true;
 					foreach (KeyValuePair<string, string> kvpLocation in bpaArgs.DownloadLocations)
 					{
 						if (kvpLocation.Key.StartsWith(Archive.ARCHIVE_PREFIX))
 							continue;
 						if (kvpInstruction.Key.StartsWith(kvpLocation.Key))
 						{
-							booFound = (kvpLocation.Value != null);
+							booIsPFPCopy = (kvpLocation.Value == null);
 							break;
 						}
 					}
-					if (booFound)
-						continue;
 				}
-				lstCopyInstructions.Add(kvpInstruction);
+				if (booIsPFPCopy)
+					lstPFPCopyInstructions.Add(kvpInstruction);
+				else
+					lstFomodCopyInstructions.Add(kvpInstruction);
 			}
 
 			// 1) Create tmp dirs for extraction of sources that will be stored in PFP
-			Dictionary<string, string> dicSources = CreateExtractionDirectories(lstCopyInstructions);
-			ProgressDialog.OverallProgressMaximum = intBaseStepCount + dicSources.Count + lstCopyInstructions.Count;
+			Dictionary<string, string> dicSources = CreateExtractionDirectories(lstPFPCopyInstructions);
+			ProgressDialog.OverallProgressMaximum = intBaseStepCount + dicSources.Count + lstPFPCopyInstructions.Count;
 			if (ProgressDialog.Cancelled())
 				return;
 			ProgressDialog.StepOverallProgress();
@@ -209,7 +218,7 @@ namespace Fomm.PackageManager.FomodBuilder
 			ProgressDialog.StepOverallProgress();
 
 			// 4) Copy sources to dest PFP dir
-			foreach (KeyValuePair<string, string> kvpCopyInstruction in lstCopyInstructions)
+			foreach (KeyValuePair<string, string> kvpCopyInstruction in lstPFPCopyInstructions)
 			{
 				CopyFiles(strTempPFPPremadeFolder, dicSources, kvpCopyInstruction);
 				if (ProgressDialog.Cancelled())
@@ -220,7 +229,7 @@ namespace Fomm.PackageManager.FomodBuilder
 				Directory.CreateDirectory(strTempPFPPremadeFomodFolder);
 
 			// 5) Create metadata.xml
-			CreateMetadataFile(strTempPFPFolder, bpaArgs.DownloadLocations, lstCopyInstructions);
+			CreateMetadataFile(strTempPFPFolder, bpaArgs.DownloadLocations, lstFomodCopyInstructions);
 			if (ProgressDialog.Cancelled())
 				return;
 			ProgressDialog.StepOverallProgress();
@@ -266,7 +275,7 @@ namespace Fomm.PackageManager.FomodBuilder
 		/// <param name="p_dicDownloadLocations">The list of source download locations.</param>
 		/// <param name="p_lstCopyInstructions">The list of copy instructions to execute to create the fomod.
 		/// This list should not include copy instructions for files included in the PFP.</param>
-		protected void CreateMetadataFile(string p_strPFPFolder, IDictionary<string, string> p_dicDownloadLocations, IList<KeyValuePair<string,string>> p_lstCopyInstructions)
+		protected void CreateMetadataFile(string p_strPFPFolder, IDictionary<string, string> p_dicDownloadLocations, IList<KeyValuePair<string, string>> p_lstCopyInstructions)
 		{
 			ProgressDialog.ItemProgress = 0;
 			ProgressDialog.ItemProgressMaximum = p_dicDownloadLocations.Count + p_lstCopyInstructions.Count;
