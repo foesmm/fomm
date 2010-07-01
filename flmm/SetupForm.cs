@@ -114,7 +114,7 @@ namespace Fomm
 			cbxPFPCompression.DataSource = Enum.GetValues(typeof(CompressionLevel));
 			cbxPFPFormat.DataSource = Enum.GetValues(typeof(OutArchiveFormat));
 			cbxPFPCompression.SelectedItem = (CompressionLevel)Settings.GetInt("pfpCompressionLevel", (Int32)CompressionLevel.Ultra);
-			cbxPFPFormat.SelectedItem = (OutArchiveFormat)Settings.GetInt("pfpCompressionFormat", (Int32)OutArchiveFormat.Zip);
+			cbxPFPFormat.SelectedItem = (OutArchiveFormat)Settings.GetInt("pfpCompressionFormat", (Int32)OutArchiveFormat.SevenZip);
 		}
 
 		private void SetupForm_FormClosing(object sender, FormClosingEventArgs e)

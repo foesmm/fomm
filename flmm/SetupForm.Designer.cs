@@ -49,21 +49,22 @@ namespace Fomm {
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
 			this.tabPage2 = new System.Windows.Forms.TabPage();
-			this.cbxFomodCompression = new System.Windows.Forms.ComboBox();
-			this.label6 = new System.Windows.Forms.Label();
-			this.cbxFomodFormat = new System.Windows.Forms.ComboBox();
-			this.label5 = new System.Windows.Forms.Label();
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.cbxPFPFormat = new System.Windows.Forms.ComboBox();
 			this.cbxPFPCompression = new System.Windows.Forms.ComboBox();
 			this.label7 = new System.Windows.Forms.Label();
 			this.label8 = new System.Windows.Forms.Label();
+			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.cbxFomodFormat = new System.Windows.Forms.ComboBox();
+			this.cbxFomodCompression = new System.Windows.Forms.ComboBox();
+			this.label5 = new System.Windows.Forms.Label();
+			this.label6 = new System.Windows.Forms.Label();
+			this.label9 = new System.Windows.Forms.Label();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.tabPage2.SuspendLayout();
-			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
+			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// cbFomod
@@ -353,64 +354,13 @@ namespace Fomm {
 			this.tabPage2.Text = "FOMOD Options";
 			this.tabPage2.UseVisualStyleBackColor = true;
 			// 
-			// cbxFomodCompression
-			// 
-			this.cbxFomodCompression.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.cbxFomodCompression.FormattingEnabled = true;
-			this.cbxFomodCompression.Location = new System.Drawing.Point(111, 46);
-			this.cbxFomodCompression.Name = "cbxFomodCompression";
-			this.cbxFomodCompression.Size = new System.Drawing.Size(186, 21);
-			this.cbxFomodCompression.TabIndex = 1;
-			// 
-			// label6
-			// 
-			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(6, 49);
-			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(99, 13);
-			this.label6.TabIndex = 2;
-			this.label6.Text = "Compression Level:";
-			// 
-			// cbxFomodFormat
-			// 
-			this.cbxFomodFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.cbxFomodFormat.FormattingEnabled = true;
-			this.cbxFomodFormat.Location = new System.Drawing.Point(111, 19);
-			this.cbxFomodFormat.Name = "cbxFomodFormat";
-			this.cbxFomodFormat.Size = new System.Drawing.Size(186, 21);
-			this.cbxFomodFormat.TabIndex = 0;
-			// 
-			// label5
-			// 
-			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(63, 22);
-			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(42, 13);
-			this.label5.TabIndex = 0;
-			this.label5.Text = "Format:";
-			// 
-			// groupBox1
-			// 
-			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.groupBox1.Controls.Add(this.cbxFomodFormat);
-			this.groupBox1.Controls.Add(this.cbxFomodCompression);
-			this.groupBox1.Controls.Add(this.label5);
-			this.groupBox1.Controls.Add(this.label6);
-			this.groupBox1.Location = new System.Drawing.Point(8, 6);
-			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(382, 80);
-			this.groupBox1.TabIndex = 0;
-			this.groupBox1.TabStop = false;
-			this.groupBox1.Text = "FOMOD Compression";
-			// 
 			// groupBox2
 			// 
 			this.groupBox2.Controls.Add(this.cbxPFPFormat);
 			this.groupBox2.Controls.Add(this.cbxPFPCompression);
 			this.groupBox2.Controls.Add(this.label7);
 			this.groupBox2.Controls.Add(this.label8);
-			this.groupBox2.Location = new System.Drawing.Point(8, 92);
+			this.groupBox2.Location = new System.Drawing.Point(8, 124);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(382, 80);
 			this.groupBox2.TabIndex = 1;
@@ -453,6 +403,66 @@ namespace Fomm {
 			this.label8.TabIndex = 6;
 			this.label8.Text = "Compression Level:";
 			// 
+			// groupBox1
+			// 
+			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox1.Controls.Add(this.label9);
+			this.groupBox1.Controls.Add(this.cbxFomodFormat);
+			this.groupBox1.Controls.Add(this.cbxFomodCompression);
+			this.groupBox1.Controls.Add(this.label5);
+			this.groupBox1.Controls.Add(this.label6);
+			this.groupBox1.Location = new System.Drawing.Point(8, 6);
+			this.groupBox1.Name = "groupBox1";
+			this.groupBox1.Size = new System.Drawing.Size(382, 112);
+			this.groupBox1.TabIndex = 0;
+			this.groupBox1.TabStop = false;
+			this.groupBox1.Text = "FOMOD Compression";
+			// 
+			// cbxFomodFormat
+			// 
+			this.cbxFomodFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cbxFomodFormat.FormattingEnabled = true;
+			this.cbxFomodFormat.Location = new System.Drawing.Point(111, 50);
+			this.cbxFomodFormat.Name = "cbxFomodFormat";
+			this.cbxFomodFormat.Size = new System.Drawing.Size(186, 21);
+			this.cbxFomodFormat.TabIndex = 0;
+			// 
+			// cbxFomodCompression
+			// 
+			this.cbxFomodCompression.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cbxFomodCompression.FormattingEnabled = true;
+			this.cbxFomodCompression.Location = new System.Drawing.Point(111, 77);
+			this.cbxFomodCompression.Name = "cbxFomodCompression";
+			this.cbxFomodCompression.Size = new System.Drawing.Size(186, 21);
+			this.cbxFomodCompression.TabIndex = 1;
+			// 
+			// label5
+			// 
+			this.label5.AutoSize = true;
+			this.label5.Location = new System.Drawing.Point(63, 53);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(42, 13);
+			this.label5.TabIndex = 0;
+			this.label5.Text = "Format:";
+			// 
+			// label6
+			// 
+			this.label6.AutoSize = true;
+			this.label6.Location = new System.Drawing.Point(6, 80);
+			this.label6.Name = "label6";
+			this.label6.Size = new System.Drawing.Size(99, 13);
+			this.label6.TabIndex = 2;
+			this.label6.Text = "Compression Level:";
+			// 
+			// label9
+			// 
+			this.label9.Location = new System.Drawing.Point(22, 16);
+			this.label9.Name = "label9";
+			this.label9.Size = new System.Drawing.Size(354, 31);
+			this.label9.TabIndex = 3;
+			this.label9.Text = "NOTE: Using a format other than Zip can make the Package Manager respond slowly.";
+			// 
 			// SetupForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -466,10 +476,10 @@ namespace Fomm {
 			this.tabPage1.ResumeLayout(false);
 			this.tabPage1.PerformLayout();
 			this.tabPage2.ResumeLayout(false);
-			this.groupBox1.ResumeLayout(false);
-			this.groupBox1.PerformLayout();
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox2.PerformLayout();
+			this.groupBox1.ResumeLayout(false);
+			this.groupBox1.PerformLayout();
 			this.ResumeLayout(false);
 
         }
@@ -512,5 +522,6 @@ namespace Fomm {
 		private System.Windows.Forms.ComboBox cbxPFPCompression;
 		private System.Windows.Forms.Label label7;
 		private System.Windows.Forms.Label label8;
+		private System.Windows.Forms.Label label9;
     }
 }
