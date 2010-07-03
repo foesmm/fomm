@@ -36,6 +36,7 @@ namespace Fomm.PackageManager
 				return;
 			m_dicWebVersions[(string)p_objState] = p_strWebVersion;
 			ListViewItem lviMod = lvModList.Items[(string)p_objState];
+			lviMod.UseItemStyleForSubItems = false;
 			if (!String.IsNullOrEmpty(p_strWebVersion) && !p_strWebVersion.Equals(lviMod.SubItems["WebVersion"].Text))
 			{
 				lviMod.SubItems["WebVersion"].Text = p_strWebVersion;
@@ -53,7 +54,8 @@ namespace Fomm.PackageManager
 						strWebVersion = strWebVersion.Substring(0, strWebVersion.Length - 2);
 
 					if (!strWebVersion.Equals(strVersion))
-						lviMod.BackColor = Color.LightSalmon;
+						lviMod.SubItems["WebVersion"].BackColor = Color.LightSalmon;
+					
 				}
 			}
 		}
@@ -911,6 +913,14 @@ namespace Fomm.PackageManager
 				AddFomod(strNewFomodPath, true);
 		}
 
+		/// <summary>
+		/// Handles the <see cref="Control.Click"/> event of the edit pfp button.
+		/// </summary>
+		/// <remarks>
+		/// Edits a PFP.
+		/// </remarks>
+		/// <param name="sender">The object that raised the event.</param>
+		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
 		private void editPFPToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			PremadeFomodPackForm pkfPFPForm = new PremadeFomodPackForm();
