@@ -524,7 +524,7 @@ namespace Fomm.PackageManager.FomodBuilder
 		/// </summary>
 		protected void SetScriptDefault()
 		{
-			if (cbxUseScript.Checked && (fseScriptEditor.Script == null))
+			if (fseScriptEditor.Script == null)
 			{
 				FomodScript fscInstallScript = null;
 				string strScriptPath = null;
@@ -541,9 +541,13 @@ namespace Fomm.PackageManager.FomodBuilder
 				}
 
 				if (fscInstallScript == null)
-					fscInstallScript = new FomodScript(FomodScriptType.CSharp, FomodScriptEditor.DEFAULT_CSHARP_SCRIPT);
+				{
+					if (cbxUseScript.Checked)
+						fscInstallScript = new FomodScript(FomodScriptType.CSharp, FomodScriptEditor.DEFAULT_CSHARP_SCRIPT);
+				}
 				else
 				{
+					cbxUseScript.Checked = true;
 					if (strScriptPath.StartsWith(Archive.ARCHIVE_PREFIX))
 					{
 						KeyValuePair<string, string> kvpArchiveInfo = Archive.ParseArchivePath(strScriptPath);

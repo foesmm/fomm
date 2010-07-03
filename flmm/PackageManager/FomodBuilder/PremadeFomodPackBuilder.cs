@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Xml;
 using System.IO;
 using SevenZip;
+using System.Text;
+using Fomm.PackageManager.XmlConfiguredInstall;
 
 namespace Fomm.PackageManager.FomodBuilder
 {
@@ -114,7 +116,7 @@ namespace Fomm.PackageManager.FomodBuilder
 					break;
 				default:
 					throw new Exception("Unrecognized value for OutArchiveFormat enum.");
-			}				
+			}
 			string strPFPPath = Path.Combine(p_strPFPPath, String.Format("{0} {1}{2}", p_strFileName, p_strVersion, strPFPExtension));
 			strPFPPath = GenerateFomod(new BuildPFPArgs(p_strFileName,
 																p_lstCopyInstructions,
@@ -148,7 +150,7 @@ namespace Fomm.PackageManager.FomodBuilder
 			 * 3) Create dest PFP dir
 			 * 4) Copy sources to dest PFP dir
 			 * 5) Create metadata.xml
-			 * 6) Create readme
+			 * 6) Create fomod readme
 			 * 7) Create info.xml
 			 * 8) Create screenshot
 			 * 9) Create script
@@ -234,7 +236,9 @@ namespace Fomm.PackageManager.FomodBuilder
 				return;
 			ProgressDialog.StepOverallProgress();
 
-			// 6) Create readme
+			CreatePFPHowTo(strTempPFPFolder, bpaArgs.FomodName, bpaArgs.DownloadLocations, lstFomodCopyInstructions, bpaArgs.Script);
+
+			// 6) Create fomod readme
 			CreateReadmeFile(strTempPFPPremadeFolder, bpaArgs.FomodName, bpaArgs.Readme);
 			if (ProgressDialog.Cancelled())
 				return;
@@ -330,6 +334,133 @@ namespace Fomm.PackageManager.FomodBuilder
 
 			xmlMeta.Save(Path.Combine(p_strPFPFolder, "metadata.xml"));
 			return;
+		}
+
+		/// <summary>
+		/// Creates the howto file explaining how to use the PFP.
+		/// </summary>
+		/// <param name="p_strPFPFolder">The folder in which to create the howto file.</param>
+		/// <param name="p_strModBaseName">The base name of the FOMod for which we are creating a PFP.</param>
+		/// <param name="p_dicDownloadLocations">The source file download locations.</param>
+		/// <param name="p_lstCopyInstructions">The list of copy instructions to execute to create the fomod.
+		/// This list should not include copy instructions for files included in the PFP.</param>
+		/// <param name="p_fscScript">The FOMod script.</param>
+		protected void CreatePFPHowTo(string p_strPFPFolder, string p_strModBaseName, IDictionary<string, string> p_dicDownloadLocations, IList<KeyValuePair<string, string>> p_lstCopyInstructions, FomodScript p_fscScript)
+		{
+			Dictionary<string, List<string>> dicSources = new Dictionary<string, List<string>>();
+			foreach (KeyValuePair<string, string> kvpSource in p_dicDownloadLocations)
+			{
+				if (kvpSource.Value == null)
+					continue;
+				if (!dicSources.ContainsKey(kvpSource.Value))
+					dicSources[kvpSource.Value] = new List<string>();
+				dicSources[kvpSource.Value].Add(Path.GetFileName(kvpSource.Key));
+			}
+			StringBuilder stbHowto = new StringBuilder();
+			Int32 intStepCounter = 1;
+			stbHowto.AppendLine("Instructions");
+			stbHowto.AppendLine("------------").AppendLine();
+			AppendWrappedFormat(stbHowto, "{0}) Download the files required to build the FOMod:", intStepCounter++).AppendLine();
+			foreach (KeyValuePair<string, List<string>> kvpSource in dicSources)
+			{
+				if (kvpSource.Value.Count > 1)
+					stbHowto.AppendLine("\tThese files:");
+				else
+					stbHowto.AppendLine("\tThis file:");
+				foreach (string strSource in kvpSource.Value)
+					stbHowto.Append("\t\t").AppendLine(strSource);
+				stbHowto.AppendLine("\tcan be downloaded from:");
+				stbHowto.Append("\t\t").AppendLine(kvpSource.Key).AppendLine();
+			}
+
+			//decide if you are using manual or auto install
+			AppendWrappedFormat(stbHowto, "{0}) If you are using FOMM 0.12.0 or newer, proceed to Step {1}, otherwise proceed to Step {2}.", intStepCounter++, intStepCounter, intStepCounter + 8).AppendLine().AppendLine();
+
+			//auto install
+			Int32 intSourceFolderStep = intStepCounter;
+			AppendWrappedFormat(stbHowto, "{0}) Put all the files you downloaded in Step {1} into the same folder.", intSourceFolderStep, intStepCounter++ - 1).AppendLine();
+			AppendWrappedFormat(stbHowto, "{0}) Start FOMM.", intStepCounter++).AppendLine();
+			AppendWrappedFormat(stbHowto, "{0}) Click the 'Package Manager' button.", intStepCounter++).AppendLine();
+			AppendWrappedFormat(stbHowto, "{0}) Click the arrow on the top button in the 'Package Manager' window. Select 'Add PFP' from the menu.", intStepCounter++).AppendLine();
+			AppendWrappedFormat(stbHowto, "{0}) Enter the path to the Premade FOMod Pack (PFP) in the 'Premade FOMod Pack' textbox. You can click the '...' button next to the textbox to select the file, if desired. The PFP file is the archive containing this HowTo file.", intStepCounter++).AppendLine();
+			AppendWrappedFormat(stbHowto, "{0}) Enter the path you put all of the downloaded files into in Step {1} into the 'Source Files Folder' textbox. You can click the '...' button next to the textbox to select the folder, if desired.", intStepCounter++, intSourceFolderStep).AppendLine();
+			AppendWrappedFormat(stbHowto, "{0}) Click OK.", intStepCounter++).AppendLine();
+			AppendWrappedFormat(stbHowto, "{0}) Enjoy!", intStepCounter++).AppendLine();
+			stbHowto.AppendLine();
+
+			//manual install
+			Int32 intSourceFolderCreationStep = intStepCounter;
+			AppendWrappedFormat(stbHowto, "{0}) Extract the source files to the following folders:", intStepCounter++).AppendLine();
+			foreach (string strSource in p_dicDownloadLocations.Keys)
+			{
+				stbHowto.AppendFormat("\tExtract '{0}'", Path.GetFileName(strSource)).AppendLine();
+				stbHowto.AppendFormat("\t\tto a folder named '{0}'.", Path.GetFileNameWithoutExtension(strSource)).AppendLine();
+			}
+			Int32 intCreateFomodFolderStep = intStepCounter;
+			AppendWrappedFormat(stbHowto, "{0}) Create a folder named '{1}'.", intStepCounter++, p_strModBaseName).AppendLine();
+			AppendWrappedFormat(stbHowto, "{0}) Make the following copies:", intStepCounter++).AppendLine();
+			foreach (KeyValuePair<string, string> kvpInstruction in p_lstCopyInstructions)
+			{
+				string strSource = kvpInstruction.Key;
+				if (strSource.StartsWith(Archive.ARCHIVE_PREFIX))
+				{
+					KeyValuePair<string, string> kvpArchive = Archive.ParseArchivePath(strSource);
+					strSource = Path.Combine(Path.GetFileNameWithoutExtension(kvpArchive.Key), kvpArchive.Value);
+				}
+				stbHowto.AppendFormat("\tCopy '{0}'", strSource).AppendLine();
+				stbHowto.AppendFormat("\t\tto '{0}'.", Path.Combine(p_strModBaseName, kvpInstruction.Value)).AppendLine();
+			}
+			if ((p_fscScript != null) && (p_fscScript.Type == FomodScriptType.XMLConfig))
+			{
+				string strXMLVersion = Parser.GetConfigVersion(p_fscScript.Text);
+				string strMinFOMMVersion = null;
+				switch (strXMLVersion)
+				{
+					case "1.0":
+						strMinFOMMVersion = "0.11.5";
+						break;
+					case "2.0":
+						strMinFOMMVersion = "0.11.7";
+						break;
+					case "3.0":
+						strMinFOMMVersion = "0.11.9";
+						break;
+				}
+				AppendWrappedFormat(stbHowto, "{0}) If you are using FOMM {1} or newer, proceed to Step {2}, otherwise proceed to Step {3}.", intStepCounter++, strMinFOMMVersion, intStepCounter + 2, intStepCounter).AppendLine();
+				stbHowto.AppendLine();
+				AppendWrappedFormat(stbHowto, "{0}) Download the 'Old FOMM Compatibility' file.", intStepCounter++).AppendLine();
+				AppendWrappedFormat(stbHowto, "{0}) In the file you downloaded in Step {1} is a 'fomod' folder. Copy the contents of that folder into the '{2}/fomod' folder you created in Step {3}.", intStepCounter++, intStepCounter - 2, p_strModBaseName, intCreateFomodFolderStep).AppendLine();
+				stbHowto.AppendLine();
+			}
+			AppendWrappedFormat(stbHowto, "{0}) Start FOMM.", intStepCounter++).AppendLine();
+			AppendWrappedFormat(stbHowto, "{0}) Click the 'Package Manager' button.", intStepCounter++).AppendLine();
+			AppendWrappedFormat(stbHowto, "{0}) Click the arrow on the top button in the 'Package Manager' window. Select 'Create From Folder' from the menu.", intStepCounter++).AppendLine();
+			AppendWrappedFormat(stbHowto, "{0}) Select the '{1}' folder you created in Step {2}.", intStepCounter++, p_strModBaseName, intCreateFomodFolderStep).AppendLine();
+			AppendWrappedFormat(stbHowto, "{0}) Click OK.", intStepCounter++).AppendLine();
+			AppendWrappedFormat(stbHowto, "{0}) Enjoy!", intStepCounter++).AppendLine();
+
+			File.WriteAllText(Path.Combine(p_strPFPFolder, "howto.txt"), stbHowto.ToString().Replace("\t","    "));
+		}
+
+		/// <summary>
+		/// Appends a line to the given <see cref="StringBuilder"/> that is wrapped at 80 characters.
+		/// </summary>
+		/// <param name="p_stbBuilder">The <see cref="StringBuilder"/> to which to append the string.</param>
+		/// <param name="p_strFormat">The format of the string to append.</param>
+		/// <param name="p_objParams">The parameters to use with the given format.</param>
+		/// <returns>The given <see cref="StringBuilder"/>.</returns>
+		public static StringBuilder AppendWrappedFormat(StringBuilder p_stbBuilder, string p_strFormat, params object[] p_objParams)
+		{
+			Int32 intWidth = 80;
+			string strFormatted = String.Format(p_strFormat, p_objParams).Replace("\t", "    ");
+			while (strFormatted.Length > intWidth)
+			{
+				Int32 intBreakPos = strFormatted.LastIndexOf(' ', intWidth);
+				p_stbBuilder.AppendLine(strFormatted.Substring(0, intBreakPos));
+				strFormatted = "    " + strFormatted.Substring(intBreakPos + 1);
+			}
+			p_stbBuilder.Append(strFormatted);
+			return p_stbBuilder;
 		}
 
 		/// <summary>
