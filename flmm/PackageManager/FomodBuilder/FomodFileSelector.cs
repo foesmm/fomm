@@ -344,7 +344,7 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
 		/// <param name="e">A <see cref="DragEventArgs"/> that describes the event arguments.</param>
 		private void tvwFomod_DragOver(object sender, DragEventArgs e)
 		{
-			if (!e.Data.GetDataPresent(typeof(SourceFileTree.SourceFileSystemDragData)))
+			if (!e.Data.GetDataPresent(typeof(List<SourceFileTree.SourceFileSystemDragData>)))
 				return;
 			e.Effect = DragDropEffects.Copy;
 			FileSystemTreeNode tndFolder = (FileSystemTreeNode)tvwFomod.GetNodeAt(tvwFomod.PointToClient(new Point(e.X, e.Y)));
@@ -364,26 +364,32 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
 		/// <param name="e">A <see cref="DragEventArgs"/> that describes the event arguments.</param>
 		private void tvwFomod_DragDrop(object sender, DragEventArgs e)
 		{
-			if (!e.Data.GetDataPresent(typeof(SourceFileTree.SourceFileSystemDragData)))
+			if (!e.Data.GetDataPresent(typeof(List<SourceFileTree.SourceFileSystemDragData>)))
 				return;
 			Cursor crsOldCursor = Cursor;
 			Cursor = Cursors.WaitCursor;
+			tvwFomod.BeginUpdate();
 			FileSystemTreeNode tndFolder = (FileSystemTreeNode)tvwFomod.GetNodeAt(tvwFomod.PointToClient(new Point(e.X, e.Y)));
-			string strPath = ((SourceFileTree.SourceFileSystemDragData)e.Data.GetData(typeof(SourceFileTree.SourceFileSystemDragData))).Path;
+			List<SourceFileTree.SourceFileSystemDragData> lstPaths = ((List<SourceFileTree.SourceFileSystemDragData>)e.Data.GetData(typeof(List<SourceFileTree.SourceFileSystemDragData>)));
 			if (tndFolder != null)
 			{
 				if (!tndFolder.IsDirectory)
 					tndFolder = tndFolder.Parent;
 				if (tndFolder != null)
 				{
-					addFomodFile(tndFolder, strPath);
+					foreach (SourceFileTree.SourceFileSystemDragData sfdData in lstPaths)
+						addFomodFile(tndFolder, sfdData.Path);
 					tndFolder.Expand();
 				}
 				else
-					addFomodFile(null, strPath);
+					foreach (SourceFileTree.SourceFileSystemDragData sfdData in lstPaths)
+						addFomodFile(null, sfdData.Path);
 			}
 			else
-				addFomodFile(null, strPath);
+				foreach (SourceFileTree.SourceFileSystemDragData sfdData in lstPaths)
+					addFomodFile(null, sfdData.Path);
+			tvwFomod.Sort();
+			tvwFomod.EndUpdate();
 			Cursor = crsOldCursor;
 		}
 

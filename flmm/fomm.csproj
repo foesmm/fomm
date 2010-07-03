@@ -112,6 +112,9 @@
     </Compile>
     <Compile Include="Controls\DropDownTabPageCollectionEditor.cs" />
     <Compile Include="Controls\IStatusProviderAware.cs" />
+    <Compile Include="Controls\MultiSelectTreeView.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\PanelToolStrip.cs">
       <SubType>Component</SubType>
     </Compile>

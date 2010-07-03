@@ -36,7 +36,7 @@
 			this.butAddFiles = new System.Windows.Forms.Button();
 			this.panel3 = new System.Windows.Forms.Panel();
 			this.label1 = new System.Windows.Forms.Label();
-			this.tvwSource = new System.Windows.Forms.TreeView();
+			this.tvwSource = new Fomm.Controls.MultiSelectTreeView();
 			this.ofdFileChooser = new System.Windows.Forms.OpenFileDialog();
 			this.fbdFolderChooser = new System.Windows.Forms.FolderBrowserDialog();
 			this.panel2.SuspendLayout();
@@ -144,7 +144,7 @@
 		private System.Windows.Forms.Panel panel2;
 		private System.Windows.Forms.Panel panel3;
 		private System.Windows.Forms.ImageList imlIcons;
-		private System.Windows.Forms.TreeView tvwSource;
+		private Fomm.Controls.MultiSelectTreeView tvwSource;
 		private System.Windows.Forms.OpenFileDialog ofdFileChooser;
 		private System.Windows.Forms.FolderBrowserDialog fbdFolderChooser;
 	}

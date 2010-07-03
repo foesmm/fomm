@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using System.IO;
 using System.Collections.Generic;
+using Fomm.Controls;
 
 namespace Fomm.PackageManager.FomodBuilder
 {
@@ -256,8 +257,16 @@ namespace Fomm.PackageManager.FomodBuilder
 		/// <param name="e">A <see cref="ItemDragEventArgs"/> that describes the event arguments.</param>
 		private void tvwSource_ItemDrag(object sender, ItemDragEventArgs e)
 		{
-			FileSystemTreeNode tndNode = (FileSystemTreeNode)e.Item;
-			tvwSource.DoDragDrop(new SourceFileSystemDragData(tndNode.Name, tndNode.IsDirectory), DragDropEffects.Copy);
+			List<SourceFileSystemDragData> lstData = new List<SourceFileSystemDragData>();
+			if (tvwSource.SelectedNodes.Contains((FileSystemTreeNode)e.Item))
+				foreach (FileSystemTreeNode tndNode in tvwSource.SelectedNodes)
+					lstData.Add(new SourceFileSystemDragData(tndNode.Name, tndNode.IsDirectory));
+			else
+			{
+				FileSystemTreeNode tndNode = (FileSystemTreeNode)e.Item;
+				lstData.Add(new SourceFileSystemDragData(tndNode.Name, tndNode.IsDirectory));
+			}
+			tvwSource.DoDragDrop(lstData, DragDropEffects.Copy);
 		}
 
 		/// <summary>
