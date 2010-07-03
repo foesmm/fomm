@@ -18,11 +18,26 @@ namespace Fomm.PackageManager
 		public const string ARCHIVE_PREFIX = "arch:";
 
 		private string m_strPath = null;
-		//private SevenZipExtractor m_szeExtractor = null;
 		private SevenZipCompressor m_szcCompressor = null;
 		private List<string> m_strFiles = new List<string>();
 		private Dictionary<string, Int32> m_dicFileIndex = new Dictionary<string, int>();
 		private bool m_booCanEdit = false;
+
+		#region Properties
+
+		/// <summary>
+		/// Gets the path of the archive.
+		/// </summary>
+		/// <value>The path of the archive.</value>
+		public string ArchivePath
+		{
+			get
+			{
+				return m_strPath;
+			}
+		}
+
+		#endregion
 
 		#region Constructors
 
@@ -129,9 +144,9 @@ namespace Fomm.PackageManager
 		/// <returns>A list of directories that are in the specified directory in this archive.</returns>
 		public string[] GetDirectories(string p_strDirectory)
 		{
-			if (String.IsNullOrEmpty(p_strDirectory))
-				return m_strFiles.ToArray();
 			string strPrefix = p_strDirectory;
+			if (String.IsNullOrEmpty(p_strDirectory))
+				strPrefix = "";
 			strPrefix = strPrefix.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
 			strPrefix = strPrefix.Trim(new char[] { Path.DirectorySeparatorChar });
 			if (strPrefix.Length > 0)
