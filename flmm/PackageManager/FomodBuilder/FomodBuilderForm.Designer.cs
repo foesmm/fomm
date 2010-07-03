@@ -240,7 +240,6 @@
 			this.ffsFileStructure.Location = new System.Drawing.Point(0, 78);
 			this.ffsFileStructure.Name = "ffsFileStructure";
 			this.ffsFileStructure.Size = new System.Drawing.Size(445, 289);
-			this.ffsFileStructure.Sources = new string[0];
 			this.ffsFileStructure.TabIndex = 1;
 			// 
 			// panel1

@@ -259,6 +259,12 @@
     </Compile>
     <Compile Include="PackageManager\FomodBuilder\FomodGenerator.cs" />
     <Compile Include="PackageManager\FomodBuilder\PremadeFomodPackBuilder.cs" />
+    <Compile Include="PackageManager\FomodBuilder\PremadeFomodPackForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PackageManager\FomodBuilder\PremadeFomodPackForm.Designer.cs">
+      <DependentUpon>PremadeFomodPackForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="PackageManager\FomodBuilder\ReadmeFileSelector.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -314,6 +320,7 @@
     <Compile Include="PackageManager\ModScript.cs" />
     <Compile Include="PackageManager\ModUninstaller.cs" />
     <Compile Include="PackageManager\PermissionsManager.cs" />
+    <Compile Include="PackageManager\PremadeFomodPack.cs" />
     <Compile Include="PackageManager\Readme.cs" />
     <Compile Include="PackageManager\Screenshot.cs" />
     <Compile Include="PackageManager\SelectForm.cs">
@@ -514,6 +521,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="PackageManager\FomodBuilder\FomodFileSelector.resx">
       <DependentUpon>FomodFileSelector.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PackageManager\FomodBuilder\PremadeFomodPackForm.resx">
+      <DependentUpon>PremadeFomodPackForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PackageManager\FomodBuilder\ReadmeFileSelector.resx">
       <DependentUpon>ReadmeFileSelector.cs</DependentUpon>

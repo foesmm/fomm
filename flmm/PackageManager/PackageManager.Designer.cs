@@ -49,9 +49,11 @@ namespace Fomm.PackageManager {
 			this.fbdExtractFomod = new System.Windows.Forms.FolderBrowserDialog();
 			this.cmsAddFomod = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.addFOMODToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.addPFPToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.createFromFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.createFOMODToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.sbtAddFomod = new Fomm.Controls.SplitButton();
+			this.editPFPToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
 			this.splitContainer1.SuspendLayout();
@@ -312,10 +314,12 @@ namespace Fomm.PackageManager {
 			// 
 			this.cmsAddFomod.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.addFOMODToolStripMenuItem,
+            this.addPFPToolStripMenuItem,
             this.createFromFolderToolStripMenuItem,
-            this.createFOMODToolStripMenuItem});
+            this.createFOMODToolStripMenuItem,
+            this.editPFPToolStripMenuItem});
 			this.cmsAddFomod.Name = "cmsAddFomod";
-			this.cmsAddFomod.Size = new System.Drawing.Size(176, 70);
+			this.cmsAddFomod.Size = new System.Drawing.Size(176, 136);
 			// 
 			// addFOMODToolStripMenuItem
 			// 
@@ -323,6 +327,13 @@ namespace Fomm.PackageManager {
 			this.addFOMODToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
 			this.addFOMODToolStripMenuItem.Text = "Add FOMOD";
 			this.addFOMODToolStripMenuItem.Click += new System.EventHandler(this.addFOMODToolStripMenuItem_Click);
+			// 
+			// addPFPToolStripMenuItem
+			// 
+			this.addPFPToolStripMenuItem.Name = "addPFPToolStripMenuItem";
+			this.addPFPToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+			this.addPFPToolStripMenuItem.Text = "Add PFP";
+			this.addPFPToolStripMenuItem.Click += new System.EventHandler(this.addPFPToolStripMenuItem_Click);
 			// 
 			// createFromFolderToolStripMenuItem
 			// 
@@ -348,6 +359,13 @@ namespace Fomm.PackageManager {
 			this.sbtAddFomod.TabIndex = 19;
 			this.sbtAddFomod.Text = "Add FOMOD";
 			this.sbtAddFomod.UseVisualStyleBackColor = true;
+			// 
+			// editPFPToolStripMenuItem
+			// 
+			this.editPFPToolStripMenuItem.Name = "editPFPToolStripMenuItem";
+			this.editPFPToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+			this.editPFPToolStripMenuItem.Text = "Edit PFP";
+			this.editPFPToolStripMenuItem.Click += new System.EventHandler(this.editPFPToolStripMenuItem_Click);
 			// 
 			// PackageManager
 			// 
@@ -415,5 +433,7 @@ namespace Fomm.PackageManager {
 		private System.Windows.Forms.ToolStripMenuItem addFOMODToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem createFromFolderToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem createFOMODToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem addPFPToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem editPFPToolStripMenuItem;
     }
 }

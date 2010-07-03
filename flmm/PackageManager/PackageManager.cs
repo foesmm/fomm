@@ -885,5 +885,37 @@ namespace Fomm.PackageManager
 					AddFomod(fbfBuilder.FomodPath, true);
 			}
 		}
+
+		private void addPFPToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			PremadeFomodPackForm pkfPFPForm = new PremadeFomodPackForm();
+			if (pkfPFPForm.ShowDialog(this) == DialogResult.Cancel)
+				return;
+
+			PremadeFomodPack pfpPack = new PremadeFomodPack(pkfPFPForm.PFPPath);
+			List<KeyValuePair<string, string>> lstCopyInstructions = pfpPack.GetCopyInstructions(pkfPFPForm.SourcesPath);
+			string strPremadeSource = Archive.GenerateArchivePath(pkfPFPForm.PFPPath, pfpPack.PremadePath);
+			lstCopyInstructions.Add(new KeyValuePair<string, string>(strPremadeSource, "/"));
+
+			NewFomodBuilder fgnGenerator = new NewFomodBuilder();
+			string strNewFomodPath = fgnGenerator.BuildFomod(pfpPack.FomodName, lstCopyInstructions, null, null, false, null, null);
+			if (!String.IsNullOrEmpty(strNewFomodPath))
+				AddFomod(strNewFomodPath, true);
+		}
+
+		private void editPFPToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			PremadeFomodPackForm pkfPFPForm = new PremadeFomodPackForm();
+			if (pkfPFPForm.ShowDialog(this) == DialogResult.Cancel)
+				return;
+
+			PremadeFomodPack pfpPack = new PremadeFomodPack(pkfPFPForm.PFPPath);
+			FomodBuilderForm fbfBuilder = new FomodBuilderForm(pfpPack, pkfPFPForm.SourcesPath);
+			if (fbfBuilder.ShowDialog(this) == DialogResult.OK)
+			{
+				if (!String.IsNullOrEmpty(fbfBuilder.FomodPath))
+					AddFomod(fbfBuilder.FomodPath, true);
+			}
+		}
 	}
 }

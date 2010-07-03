@@ -336,7 +336,10 @@ namespace Fomm.PackageManager.FomodBuilder
 			ProgressDialog.ItemMessage = String.Format("Copying Source Files: {0}...", Path.GetFileName(strSource));
 			ProgressDialog.ItemProgressMaximum = File.Exists(strSource) ? 1 : Directory.GetFiles(strSource, "*", SearchOption.AllDirectories).Length;
 
-			string strDestination = Path.Combine(p_strFomodFolder, p_kvpCopyInstruction.Value);
+			string strDestination = p_kvpCopyInstruction.Value;
+			strDestination = strDestination.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+			strDestination = strDestination.Trim(new char[] { Path.DirectorySeparatorChar });
+			strDestination = Path.Combine(p_strFomodFolder, strDestination);
 			FileUtil.Copy(strSource, strDestination, FileCopied);
 		}
 

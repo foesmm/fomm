@@ -8,6 +8,7 @@ using System.IO;
 using System.Drawing;
 using Fomm.Controls;
 using System.Text.RegularExpressions;
+using Fomm.Util;
 
 namespace Fomm.PackageManager.FomodBuilder
 {
@@ -42,10 +43,6 @@ Remeber, you can customize the FOMOD file structure by doing any of the followin
 			{
 				return sftSources.Sources;
 			}
-			set
-			{
-				sftSources.Sources = value;
-			}
 		}
 
 		#endregion
@@ -68,12 +65,124 @@ Remeber, you can customize the FOMOD file structure by doing any of the followin
 		#region Path Mapping
 
 		/// <summary>
+		/// Populates the file selector based on the given sources and copy instructions.
+		/// </summary>
+		/// <param name="p_lstSources"></param>
+		public void SetCopyInstructions(IList<string> p_lstSources, IList<KeyValuePair<string, string>> p_lstInstructions)
+		{
+			List<KeyValuePair<string, string>> lstInstructions = new List<KeyValuePair<string, string>>();
+			//we need to replace any instructions of the form:
+			// "blaFolder => /"
+			// with a set of instructions that explicitly copies the contents of blaFolder
+			// to the root, like:
+			// "blaFolder/subFolder => subFolder"
+			// "blaFolder/file.txt => file.txt"
+			// this needs to be done so we can populate the FOMod Files tree
+			foreach (KeyValuePair<string, string> kvpInstruction in p_lstInstructions)
+			{
+				string strParentDirectory = Path.GetDirectoryName(kvpInstruction.Value);
+				if (strParentDirectory == null)
+				{
+					if (kvpInstruction.Key.StartsWith(Archive.ARCHIVE_PREFIX))
+					{
+						KeyValuePair<string, string> kvpSource = Archive.ParseArchivePath(kvpInstruction.Key);
+						Archive arcSource = new Archive(kvpSource.Key);
+						if (!arcSource.IsDirectory(kvpSource.Value))
+							throw new Exception("Copy instruction is renaming a file to the root directory.");
+						foreach (string strDirectory in arcSource.GetDirectories(kvpSource.Value))
+						{
+							string strDestPath = strDirectory.Substring(kvpSource.Value.Length);
+							lstInstructions.Add(new KeyValuePair<string, string>(Archive.GenerateArchivePath(kvpSource.Key, strDirectory), strDestPath));
+						}
+						foreach (string strFile in arcSource.GetFiles(kvpSource.Value))
+						{
+							string strDestPath = strFile.Substring(kvpSource.Value.Length);
+							lstInstructions.Add(new KeyValuePair<string, string>(Archive.GenerateArchivePath(kvpSource.Key, strFile), strDestPath));
+						}
+					}
+					else
+					{
+						if (!Directory.Exists(kvpInstruction.Key))
+							throw new Exception("Copy instruction is renaming a file to the root directory.");
+						foreach (string strDirectory in Directory.GetDirectories(kvpInstruction.Key))
+						{
+							string strDestPath = strDirectory.Substring(kvpInstruction.Key.Length);
+							lstInstructions.Add(new KeyValuePair<string, string>(strDirectory, strDestPath));
+						}
+						foreach (string strFile in Directory.GetFiles(kvpInstruction.Key))
+						{
+							string strDestPath = strFile.Substring(kvpInstruction.Key.Length);
+							lstInstructions.Add(new KeyValuePair<string, string>(strFile, strDestPath));
+						}
+					}
+				}
+				else
+					lstInstructions.Add(kvpInstruction);
+			}
+
+			Set<string> setSources = new Set<string>();
+			foreach (KeyValuePair<string, string> kvpInstruction in lstInstructions)
+			{
+				if (kvpInstruction.Key.StartsWith(Archive.ARCHIVE_PREFIX))
+					setSources.Add(Archive.ParseArchivePath(kvpInstruction.Key).Key);
+				else
+				{
+					foreach (string strSource in p_lstSources)
+						if (kvpInstruction.Key.StartsWith(strSource))
+							setSources.Add(strSource);
+				}
+				string strParentDirectory = Path.GetDirectoryName(kvpInstruction.Value);
+				strParentDirectory = strParentDirectory.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+				FileSystemTreeNode tndRoot = findNode(strParentDirectory);
+				if ((tndRoot == null) || !tndRoot.FullPath.Equals(strParentDirectory))
+				{
+					Int32 strFoundPathLength = (tndRoot == null) ? -1 : tndRoot.FullPath.Length;
+					//we need to create some folders
+					string[] strRemainingFolders = strParentDirectory.Substring(strFoundPathLength + 1).Split(new char[] { Path.DirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries);
+					foreach (string strFolder in strRemainingFolders)
+						tndRoot = addFomodFile(tndRoot, FileSystemTreeNode.NEW_PREFIX + "//" + strFolder);
+				}
+				addFomodFile(tndRoot, kvpInstruction.Key);
+			}
+			sftSources.Sources = setSources.ToArray();
+		}
+
+		protected FileSystemTreeNode findNode(string p_strPath)
+		{
+			if (String.IsNullOrEmpty(p_strPath))
+				return null;
+			string strPath = p_strPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+			strPath = strPath.Trim(new char[] { Path.DirectorySeparatorChar });
+			string[] strPathNodes = strPath.Split(Path.DirectorySeparatorChar);
+			Stack<string> stkPath = new Stack<string>(strPathNodes);
+			TreeNodeCollection tncNodes = tvwFomod.Nodes;
+			FileSystemTreeNode tndLastNode = null;
+			Int32 intPathCount = 0;
+			while ((tncNodes.Count > 0) && (intPathCount != stkPath.Count))
+			{
+				intPathCount = stkPath.Count;
+				foreach (FileSystemTreeNode tndNode in tncNodes)
+					if (tndNode.Name.Equals(stkPath.Peek(), StringComparison.InvariantCultureIgnoreCase))
+					{
+						stkPath.Pop();
+						if (stkPath.Count == 0)
+							return tndNode;
+						PopulateChildren(tndNode);
+						tndLastNode = tndNode;
+						tncNodes = tndNode.Nodes;
+						break;
+					}
+			}
+			return tndLastNode;
+		}
+
+		/// <summary>
 		/// Gets a list of path mappings, from source to destination, required to
 		/// create the specified fomod file structure.
 		/// </summary>
 		/// <returns>A list of path mappings, from source to destination, required to
 		/// create the specified fomod file structure.</returns>
-		public IList<KeyValuePair<string, string>> GetCopyPaths()
+		public IList<KeyValuePair<string, string>> GetCopyInstructions()
 		{
 			List<FileSystemTreeNode> lstPathNodes = new List<FileSystemTreeNode>();
 			foreach (FileSystemTreeNode tndNode in tvwFomod.Nodes)
@@ -356,21 +465,11 @@ Remeber, you can customize the FOMOD file structure by doing any of the followin
 			return tndFile;
 		}
 
-		/// <summary>
-		/// Handles the <see cref="TreeView.BeforeExpand"/> event of the fomod tree view.
-		/// </summary>
-		/// <remarks>
-		/// This handles retrieving the sub-files and sub-folders to display in the tree view.
-		/// </remarks>
-		/// <param name="sender">The object that triggered the event.</param>
-		/// <param name="e">A <see cref="TreeViewCancelEventArgs"/> that describes the event arguments.</param>
-		private void tvwFomod_BeforeExpand(object sender, TreeViewCancelEventArgs e)
+		protected void PopulateChildren(TreeNode p_tndNode)
 		{
-			Cursor crsOldCursor = Cursor;
-			Cursor = Cursors.WaitCursor;
 			List<string> lstFolders = new List<string>();
 			List<string> lstFiles = new List<string>();
-			foreach (FileSystemTreeNode tndFolder in e.Node.Nodes)
+			foreach (FileSystemTreeNode tndFolder in p_tndNode.Nodes)
 			{
 				if ((tndFolder.Nodes.Count > 0) || !tndFolder.IsDirectory)
 					continue;
@@ -402,6 +501,21 @@ Remeber, you can customize the FOMOD file structure by doing any of the followin
 				foreach (string strfile in lstFiles)
 					addFomodFile(tndFolder, strfile);
 			}
+		}
+
+		/// <summary>
+		/// Handles the <see cref="TreeView.BeforeExpand"/> event of the fomod tree view.
+		/// </summary>
+		/// <remarks>
+		/// This handles retrieving the sub-files and sub-folders to display in the tree view.
+		/// </remarks>
+		/// <param name="sender">The object that triggered the event.</param>
+		/// <param name="e">A <see cref="TreeViewCancelEventArgs"/> that describes the event arguments.</param>
+		private void tvwFomod_BeforeExpand(object sender, TreeViewCancelEventArgs e)
+		{
+			Cursor crsOldCursor = Cursor;
+			Cursor = Cursors.WaitCursor;
+			PopulateChildren(e.Node);
 			Cursor = crsOldCursor;
 		}
 

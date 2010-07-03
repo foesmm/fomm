@@ -84,6 +84,35 @@ namespace Fomm.PackageManager.FomodBuilder
 			tbxPFPPath.Text = Settings.GetString("pfpOutputPath");
 		}
 
+		/// <summary>
+		/// The PFP edit constructor.
+		/// </summary>
+		/// <param name="p_pfpPack">The PFP to edit.</param>
+		/// <param name="p_strSourcesPath">The path to the directory contains the required source files.</param>
+		public FomodBuilderForm(PremadeFomodPack p_pfpPack, string p_strSourcesPath)
+			: this()
+		{
+			List<KeyValuePair<string, string>> lstCopyInstructions = p_pfpPack.GetCopyInstructions(p_strSourcesPath);
+			string strPremadeSource = Archive.GenerateArchivePath(p_pfpPack.PFPPath, p_pfpPack.PremadePath);
+			lstCopyInstructions.Add(new KeyValuePair<string, string>(strPremadeSource, "/"));
+
+			List<KeyValuePair<string, string>> lstSourceLocations = p_pfpPack.GetSources();
+			lstSourceLocations.Add(new KeyValuePair<string, string>(p_pfpPack.PFPPath, null));
+
+			List<string> lstSources = new List<string>();
+			List<SourceDownloadSelector.SourceDownloadLocation> lstLocations = new List<SourceDownloadSelector.SourceDownloadLocation>();
+			foreach (KeyValuePair<string, string> kvpSource in lstSourceLocations)
+			{
+				lstLocations.Add(new SourceDownloadSelector.SourceDownloadLocation(Path.Combine(p_strSourcesPath, kvpSource.Key), kvpSource.Value, String.IsNullOrEmpty(kvpSource.Value)));
+				lstSources.Add(kvpSource.Key);
+			}
+			ffsFileStructure.SetCopyInstructions(lstSources, lstCopyInstructions);
+			tbxFomodFileName.Text = p_pfpPack.FomodName;
+			sdsDownloadLocations.DataSource = lstLocations;
+			cbxPFP.Checked = true;
+			tbxPFPPath.Text = Path.GetDirectoryName(p_pfpPack.PFPPath);
+		}
+
 		#endregion
 
 		/// <summary>
@@ -157,7 +186,7 @@ namespace Fomm.PackageManager.FomodBuilder
 			if (cbxFomod.Checked)
 			{
 				NewFomodBuilder fgnGenerator = new NewFomodBuilder();
-				m_strNewFomodPath = fgnGenerator.BuildFomod(tbxFomodFileName.Text, ffsFileStructure.GetCopyPaths(), rmeReadme, xmlInfo, m_booInfoEntered, finInfo.Screenshot, fscScript);
+				m_strNewFomodPath = fgnGenerator.BuildFomod(tbxFomodFileName.Text, ffsFileStructure.GetCopyInstructions(), rmeReadme, xmlInfo, m_booInfoEntered, finInfo.Screenshot, fscScript);
 				if (String.IsNullOrEmpty(m_strNewFomodPath))
 					return;
 			}
@@ -177,7 +206,7 @@ namespace Fomm.PackageManager.FomodBuilder
 				foreach (SourceDownloadSelector.SourceDownloadLocation sdlLocation in sdsDownloadLocations.DataSource)
 					dicDownloadLocations[sdlLocation.Source] = sdlLocation.Included ? null : sdlLocation.URL;
 				PremadeFomodPackBuilder fpbPackBuilder = new PremadeFomodPackBuilder();
-				string strPFPPAth = fpbPackBuilder.BuildPFP(tbxFomodFileName.Text, strVersion, ffsFileStructure.GetCopyPaths(), dicDownloadLocations, rmeReadme, xmlInfo, m_booInfoEntered, finInfo.Screenshot, fscScript, tbxPFPPath.Text);
+				string strPFPPAth = fpbPackBuilder.BuildPFP(tbxFomodFileName.Text, strVersion, ffsFileStructure.GetCopyInstructions(), dicDownloadLocations, rmeReadme, xmlInfo, m_booInfoEntered, finInfo.Screenshot, fscScript, tbxPFPPath.Text);
 				if (String.IsNullOrEmpty(strPFPPAth))
 					return;
 			}
@@ -325,7 +354,7 @@ namespace Fomm.PackageManager.FomodBuilder
 		protected bool ValidateFomodFiles()
 		{
 			sspError.SetStatus(ffsFileStructure, null);
-			if (ffsFileStructure.GetCopyPaths().Count == 0)
+			if (ffsFileStructure.GetCopyInstructions().Count == 0)
 			{
 				sspError.SetStatus(ffsFileStructure, "You must select file to include in the FOMOD.");
 				return false;
@@ -442,7 +471,7 @@ namespace Fomm.PackageManager.FomodBuilder
 				string strReadme = null;
 				string strReadmeName = "readme - " + tbxFomodFileName.Text.ToLowerInvariant();
 				Regex rgxReadme = new Regex(strReadmeName + @"\.\w\w\w\w?$", RegexOptions.IgnoreCase);
-				IList<KeyValuePair<string, string>> lstFiles = ffsFileStructure.GetCopyPaths();
+				IList<KeyValuePair<string, string>> lstFiles = ffsFileStructure.GetCopyInstructions();
 				foreach (KeyValuePair<string, string> kvpFile in lstFiles)
 				{
 					if (rgxReadme.IsMatch(kvpFile.Value))
