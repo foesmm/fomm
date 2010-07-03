@@ -237,7 +237,7 @@ namespace Fomm.PackageManager.FomodBuilder
 			ProgressDialog.StepOverallProgress();
 
 			CreatePFPHowTo(strTempPFPFolder, bpaArgs.FomodName, bpaArgs.DownloadLocations, lstFomodCopyInstructions, bpaArgs.Script);
-
+			
 			// 6) Create fomod readme
 			CreateReadmeFile(strTempPFPPremadeFolder, bpaArgs.FomodName, bpaArgs.Readme);
 			if (ProgressDialog.Cancelled())
@@ -391,10 +391,12 @@ namespace Fomm.PackageManager.FomodBuilder
 			//manual install
 			Int32 intSourceFolderCreationStep = intStepCounter;
 			AppendWrappedFormat(stbHowto, "{0}) Extract the source files to the following folders:", intStepCounter++).AppendLine();
-			foreach (string strSource in p_dicDownloadLocations.Keys)
+			foreach (KeyValuePair<string,string> kvpSource in p_dicDownloadLocations)
 			{
-				stbHowto.AppendFormat("\tExtract '{0}'", Path.GetFileName(strSource)).AppendLine();
-				stbHowto.AppendFormat("\t\tto a folder named '{0}'.", Path.GetFileNameWithoutExtension(strSource)).AppendLine();
+				if (kvpSource.Value == null)
+					continue;
+				stbHowto.AppendFormat("\tExtract '{0}'", Path.GetFileName(kvpSource.Key)).AppendLine();
+				stbHowto.AppendFormat("\t\tto a folder named '{0}'.", Path.GetFileNameWithoutExtension(kvpSource.Key)).AppendLine();
 			}
 			Int32 intCreateFomodFolderStep = intStepCounter;
 			AppendWrappedFormat(stbHowto, "{0}) Create a folder named '{1}'.", intStepCounter++, p_strModBaseName).AppendLine();
@@ -410,6 +412,7 @@ namespace Fomm.PackageManager.FomodBuilder
 				stbHowto.AppendFormat("\tCopy '{0}'", strSource).AppendLine();
 				stbHowto.AppendFormat("\t\tto '{0}'.", Path.Combine(p_strModBaseName, kvpInstruction.Value)).AppendLine();
 			}
+			AppendWrappedFormat(stbHowto, "{0}) Copy the files in the included 'Premade {1}' folder into the '{1}' folder you created in Step {2}.", intStepCounter++, p_strModBaseName, intCreateFomodFolderStep).AppendLine();
 			if ((p_fscScript != null) && (p_fscScript.Type == FomodScriptType.XMLConfig))
 			{
 				string strXMLVersion = Parser.GetConfigVersion(p_fscScript.Text);
