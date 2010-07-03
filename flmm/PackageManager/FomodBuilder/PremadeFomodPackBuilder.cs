@@ -348,6 +348,7 @@ namespace Fomm.PackageManager.FomodBuilder
 			szcCompressor.CompressionLevel = (CompressionLevel)Settings.GetInt("pfpCompressionLevel", (Int32)CompressionLevel.Ultra);
 			szcCompressor.ArchiveFormat = (OutArchiveFormat)Settings.GetInt("pfpCompressionFormat", (Int32)OutArchiveFormat.SevenZip);
 			szcCompressor.CompressionMethod = CompressionMethod.Default;
+			szcCompressor.CompressionMode = CompressionMode.Create;
 			szcCompressor.FileCompressionStarted += new EventHandler<FileNameEventArgs>(FileCompressionStarted);
 			szcCompressor.FileCompressionFinished += new EventHandler(FileCompressionFinished);
 			szcCompressor.CompressDirectory(p_strPFPFolder, p_strPackedPFPPath);

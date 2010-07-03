@@ -185,10 +185,17 @@ namespace Fomm.PackageManager.FomodBuilder
 			}
 			if (!newpath.Equals(strNewPath))
 			{
-				if (MessageBox.Show("File '" + newpath + "' already exists. Continue anyway?\nA new file named '" + strNewPath + "' will be created", "Warning", MessageBoxButtons.YesNo) != DialogResult.Yes)
-					return false;
+				switch (MessageBox.Show("File '" + newpath + "' already exists. The old file can be replaced, or the new file can be named '" + strNewPath + "'. Do you want to overwrite the old file?", "Warning", MessageBoxButtons.YesNoCancel))
+				{
+					case DialogResult.Yes:
+						return true;
+					case DialogResult.No:
+						newpath = strNewPath;
+						return true;
+					case DialogResult.Cancel:
+						return false;
+				}
 			}
-			newpath = strNewPath;
 			return true;
 		}
 
@@ -208,6 +215,7 @@ namespace Fomm.PackageManager.FomodBuilder
 			szcCompressor.CompressionLevel = (CompressionLevel)Settings.GetInt("fomodCompressionLevel", (Int32)CompressionLevel.Ultra);
 			szcCompressor.ArchiveFormat = (OutArchiveFormat)Settings.GetInt("fomodCompressionFormat", (Int32)OutArchiveFormat.Zip);
 			szcCompressor.CompressionMethod = CompressionMethod.Default;
+			szcCompressor.CompressionMode = CompressionMode.Create;
 			szcCompressor.FileCompressionStarted += new EventHandler<FileNameEventArgs>(FileCompressionStarted);
 			szcCompressor.FileCompressionFinished += new EventHandler(FileCompressionFinished);
 			szcCompressor.CompressDirectory(p_strFomodFolder, p_strPackedFomodPath);
