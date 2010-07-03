@@ -10,6 +10,7 @@ namespace Fomm.PackageManager
 	class ModUninstaller : ModInstallScript
 	{
 		private BackgroundWorkerProgressDialog m_bwdProgress = null;
+		private string m_strBaseName = null;
 
 		#region Properties
 
@@ -53,6 +54,16 @@ namespace Fomm.PackageManager
 		{
 		}
 
+		/// <summary>
+		/// A simple constructor that initializes the object.
+		/// </summary>
+		/// <param name="p_strFomodBaseName">The base name of the <see cref="fomod"/> to be uninstalled.</param>
+		public ModUninstaller(string p_strFomodBaseName)
+			: base(null)
+		{
+			m_strBaseName = p_strFomodBaseName.ToLowerInvariant();
+		}
+
 		#endregion
 
 		#region Uninstall Methods
@@ -66,6 +77,8 @@ namespace Fomm.PackageManager
 		/// <seealso cref="ModInstallScript.CheckAlreadyDone()"/>
 		protected override bool CheckAlreadyDone()
 		{
+			if (Fomod == null)
+				return false;
 			return !Fomod.IsActive;
 		}
 
@@ -104,24 +117,36 @@ namespace Fomm.PackageManager
 			TransactionalFileManager.Snapshot(Program.GeckPrefsIniPath);
 			TransactionalFileManager.Snapshot(InstallLog.Current.InstallLogPath);
 
+			bool booIsActive = true;
 			try
 			{
-				MergeModule = InstallLog.Current.GetMergeModule(Fomod.BaseName);
-				if (Fomod.HasUninstallScript)
-					Fomod.IsActive = !RunCustomUninstallScript();
+				if (Fomod != null)
+				{
+					MergeModule = InstallLog.Current.GetMergeModule(Fomod.BaseName);
+					if (Fomod.HasUninstallScript)
+						Fomod.IsActive = !RunCustomUninstallScript();
+					else
+						Fomod.IsActive = !RunBasicUninstallScript();
+					if (!Fomod.IsActive)
+						InstallLog.Current.UnmergeModule(Fomod.BaseName);
+					booIsActive = Fomod.IsActive;
+				}
 				else
-					Fomod.IsActive = !RunBasicUninstallScript();
-				if (!Fomod.IsActive)
-					InstallLog.Current.UnmergeModule(Fomod.BaseName);
+				{
+					MergeModule = InstallLog.Current.GetMergeModule(m_strBaseName);
+					booIsActive = !RunBasicUninstallScript();
+					InstallLog.Current.UnmergeModule(m_strBaseName);
+				}
 			}
 			catch (Exception e)
 			{
-				Fomod.IsActive = true;
+				if (Fomod != null)
+					Fomod.IsActive = true;
 				throw e;
 			}
-			if (Fomod.IsActive)
+			if (booIsActive)
 				return false;
-			return true;			
+			return true;
 		}
 
 		/// <summary>
@@ -184,7 +209,10 @@ namespace Fomm.PackageManager
 			{
 				if (m_bwdProgress.Cancelled())
 					return;
-				UninstallDataFile(strFile);
+				if (Fomod == null)
+					UninstallDataFile(m_strBaseName, strFile);
+				else
+					UninstallDataFile(strFile);
 				m_bwdProgress.StepItemProgress();
 				m_bwdProgress.StepOverallProgress();
 			}

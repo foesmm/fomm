@@ -481,12 +481,34 @@ namespace Fomm.PackageManager
 		/// the file is deleted.
 		/// </remarks>
 		/// <param name="p_strPath">The path to the file that is to be uninstalled.</param>
+		/// <seealso cref="UninstallDataFile(string p_strFomodBaseName, string p_strFile)"/>
 		protected void UninstallDataFile(string p_strFile)
+		{
+			UninstallDataFile(Fomod.BaseName, p_strFile);
+		}
+
+		/// <summary>
+		/// Uninstalls the specified file.
+		/// </summary>
+		/// <remarks>
+		/// If the mod we are uninstalling doesn't own the file, then its version is removed
+		/// from the overwrites directory. If the mod we are uninstalling overwrote a file when it
+		/// installed the specified file, then the overwritten file is restored. Otherwise
+		/// the file is deleted.
+		/// 
+		/// This variant of <see cref="UninstallDataFile"/> is for use when uninstalling a file
+		/// for a mod whose FOMod is missing.
+		/// </remarks>
+		/// <param name="p_strFomodBaseName">The base name of the <see cref="fomod"/> whose file
+		/// is being uninstalled.</param>
+		/// <param name="p_strPath">The path to the file that is to be uninstalled.</param>
+		/// <seealso cref="UninstallDataFile(string p_strFile)"/>
+		protected void UninstallDataFile(string p_strFomodBaseName, string p_strFile)
 		{
 			PermissionsManager.CurrentPermissions.Assert();
 			FileManagement.AssertFilePathIsSafe(p_strFile);
 			string strDataPath = Path.GetFullPath(Path.Combine("data", p_strFile));
-			string strKey = InstallLog.Current.GetModKey(Fomod.BaseName);
+			string strKey = InstallLog.Current.GetModKey(p_strFomodBaseName);
 			string strDirectory = Path.GetDirectoryName(p_strFile);
 			string strBackupDirectory = Path.GetFullPath(Path.Combine(Program.overwriteDir, strDirectory));
 			if (File.Exists(strDataPath))

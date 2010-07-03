@@ -26,6 +26,7 @@ using Fomm.PackageManager.Upgrade;
 using SevenZip;
 using Microsoft.Win32;
 using Fomm.Util;
+using System.Collections.Generic;
 
 namespace Fomm
 {
@@ -719,10 +720,33 @@ namespace Fomm
 				Trace.Flush();
 #endif
 				SevenZipCompressor.SetLibraryPath(Path.Combine(Program.fommDir, "7z-32bit.dll"));
+#if TRACE
+				Trace.Write("Uninstalling missing FOMods..."));
+#endif
+
+				//let's uninstall any fomods that have been deleted since we last ran
+				IList<InstallLog.FomodInfo> lstMods = InstallLog.Current.GetVersionedModList();
+				foreach (InstallLog.FomodInfo fifMod in lstMods)
+				{
+					string strFomodPath = Path.Combine(Program.PackageDir, fifMod.BaseName + ".fomod");
+					if (!File.Exists(strFomodPath))
+					{
+						string strMessage = "'" + fifMod.BaseName + ".fomod' was deleted without being deactivated. " + Environment.NewLine +
+											"If you don't uninstall the FOMod, FOMM will close and you will " +
+											"have to put the FOMod back in the mods folder." + Environment.NewLine +
+											"Would you like to uninstall the missing FOMod?";
+						if (MessageBox.Show(strMessage, "Missing FOMod", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
+							return;
+						ModUninstaller mduUninstaller = new ModUninstaller(fifMod.BaseName);
+						mduUninstaller.Uninstall(true);
+					}
+				}
+
 				try
 				{
 #if TRACE
-						Trace.Write("Scanning for upgraded FOMODs...");
+					Trace.WriteLine("Done.");
+					Trace.Write("Scanning for upgraded FOMODs...");
 #endif
 					//check to see if any fomod versions have changed, and whether to upgrade them
 					UpgradeScanner upsScanner = new UpgradeScanner();
