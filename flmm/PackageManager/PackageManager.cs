@@ -25,6 +25,79 @@ namespace Fomm.PackageManager
 		private Regex m_rgxNexusFileId = new Regex(@"fallout3nexus\.com/downloads/file\.php\?id=(\d+)");
 		private Dictionary<string, string> m_dicWebVersions = new Dictionary<string, string>();
 
+		public PackageManager(MainForm mf)
+		{
+			this.mf = mf;
+			InitializeComponent();
+
+			this.Icon = Fomm.Properties.Resources.fomm02;
+			cmbSortOrder.ContextMenu = new ContextMenu();
+			lvModList.ListViewItemSorter = new FomodSorter();
+			Settings.GetWindowPosition("PackageManager", this);
+			sbtAddFomod.SelectedItemIndex = Settings.GetInt("SelectedAddFomodAction", 0);
+			m_strLastFromFolderPath = Settings.GetString("LastBuildFOMODFromFolderPath");
+
+			foreach (string modpath in Program.GetFiles(Program.PackageDir, "*.fomod.zip"))
+			{
+				if (!File.Exists(Path.ChangeExtension(modpath, null))) File.Move(modpath, Path.ChangeExtension(modpath, null));
+			}
+
+			string[] groups = Settings.GetStringArray("fomodGroups");
+			if (groups == null)
+			{
+				groups = new string[] {
+                    "Items",
+                    "Items/Guns",
+                    "Items/Armor",
+                    "Items/Misc",
+                    "Locations",
+                    "Locations/Houses",
+                    "Locations/Interiors",
+                    "Locations/Exteriors",
+                    "Gameplay",
+                    "Gameplay/Perks",
+                    "Gameplay/Realism",
+                    "Gameplay/Combat",
+                    "Gameplay/Loot",
+                    "Gameplay/Enemies",
+                    "Quests",
+                    "Companions",
+                    "ModResource",
+                    "UI",
+                    "Music",
+                    "Replacers",
+                    "Replacers/Meshes",
+                    "Replacers/Textures",
+                    "Replacers/Sounds",
+                    "Replacers/Shaders",
+                    "Tweaks",
+                    "Fixes",
+                    "Cosmetic",
+                    "Cosmetic/Races",
+                    "Cosmetic/Eyes",
+                    "Cosmetic/Hair"
+                };
+				Settings.SetStringArray("fomodGroups", groups);
+			}
+			this.groups = new List<string>(groups);
+			this.lgroups = new List<string>(groups.Length);
+			for (int i = 0; i < groups.Length; i++) lgroups.Add(groups[i].ToLowerInvariant());
+
+			if (Settings.GetBool("PackageManagerShowsGroups"))
+			{
+				cbGroups.Checked = true;
+			}
+
+			WebsiteLogin();
+
+			foreach (string modpath in Program.GetFiles(Program.PackageDir, "*.fomod"))
+			{
+				AddFomod(modpath, false);
+			}
+
+			RebuildListView();
+		}
+
 		/// <summary>
 		/// The callback method for the call to retrieve a mod version from the Nexus website.
 		/// </summary>
@@ -204,79 +277,6 @@ namespace Fomm.PackageManager
 			if (addToList) AddFomodToList(mod);
 		}
 
-		public PackageManager(MainForm mf)
-		{
-			this.mf = mf;
-			InitializeComponent();
-
-			this.Icon = Fomm.Properties.Resources.fomm02;
-			cmbSortOrder.ContextMenu = new ContextMenu();
-			lvModList.ListViewItemSorter = new FomodSorter();
-			Settings.GetWindowPosition("PackageManager", this);
-			sbtAddFomod.SelectedItemIndex = Settings.GetInt("SelectedAddFomodAction", 0);
-			m_strLastFromFolderPath = Settings.GetString("LastBuildFOMODFromFolderPath");
-
-			foreach (string modpath in Program.GetFiles(Program.PackageDir, "*.fomod.zip"))
-			{
-				if (!File.Exists(Path.ChangeExtension(modpath, null))) File.Move(modpath, Path.ChangeExtension(modpath, null));
-			}
-
-			string[] groups = Settings.GetStringArray("fomodGroups");
-			if (groups == null)
-			{
-				groups = new string[] {
-                    "Items",
-                    "Items/Guns",
-                    "Items/Armor",
-                    "Items/Misc",
-                    "Locations",
-                    "Locations/Houses",
-                    "Locations/Interiors",
-                    "Locations/Exteriors",
-                    "Gameplay",
-                    "Gameplay/Perks",
-                    "Gameplay/Realism",
-                    "Gameplay/Combat",
-                    "Gameplay/Loot",
-                    "Gameplay/Enemies",
-                    "Quests",
-                    "Companions",
-                    "ModResource",
-                    "UI",
-                    "Music",
-                    "Replacers",
-                    "Replacers/Meshes",
-                    "Replacers/Textures",
-                    "Replacers/Sounds",
-                    "Replacers/Shaders",
-                    "Tweaks",
-                    "Fixes",
-                    "Cosmetic",
-                    "Cosmetic/Races",
-                    "Cosmetic/Eyes",
-                    "Cosmetic/Hair"
-                };
-				Settings.SetStringArray("fomodGroups", groups);
-			}
-			this.groups = new List<string>(groups);
-			this.lgroups = new List<string>(groups.Length);
-			for (int i = 0; i < groups.Length; i++) lgroups.Add(groups[i].ToLowerInvariant());
-
-			if (Settings.GetBool("PackageManagerShowsGroups"))
-			{
-				cbGroups.Checked = true;
-			}
-
-			WebsiteLogin();
-
-			foreach (string modpath in Program.GetFiles(Program.PackageDir, "*.fomod"))
-			{
-				AddFomod(modpath, false);
-			}
-
-			RebuildListView();
-		}
-
 		/// <summary>
 		/// Logins into the websites.
 		/// </summary>
@@ -286,7 +286,21 @@ namespace Fomm.PackageManager
 		private void WebsiteLogin()
 		{
 			if (!Settings.HasSetting("checkForNewModVersions"))
-				Settings.SetBool("checkForNewModVersions", true);
+			{
+				string strMessage = "Would you like FOMM to check for new versions of your mods?" +
+									Environment.NewLine +
+									"This may require you to login to some mod sites. You can change this " +
+									"setting in the Settings window.";
+				switch (MessageBox.Show(this, strMessage, "Check For New Mods", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+				{
+					case DialogResult.Yes:
+						Settings.SetBool("checkForNewModVersions", true);
+						break;
+					case DialogResult.No:
+						Settings.SetBool("checkForNewModVersions", false);
+						break;
+				}
+			}
 			if (Settings.GetBool("checkForNewModVersions"))
 			{
 				string strNexusLoginKey = Settings.GetString("nexusLoginKey");
