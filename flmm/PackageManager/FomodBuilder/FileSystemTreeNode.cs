@@ -72,7 +72,7 @@ namespace Fomm.PackageManager.FomodBuilder
 				try
 				{
 					szeExtractor = new SevenZipExtractor(m_lstSources[0]);
-					object g = szeExtractor.ArchiveFileNames;
+					UInt32 g = szeExtractor.FilesCount;
 				}
 				catch (Exception e)
 				{
