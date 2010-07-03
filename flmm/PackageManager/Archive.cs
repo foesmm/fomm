@@ -20,7 +20,7 @@ namespace Fomm.PackageManager
 		private string m_strPath = null;
 		private SevenZipCompressor m_szcCompressor = null;
 		private List<string> m_strFiles = new List<string>();
-		private Dictionary<string, Int32> m_dicFileIndex = new Dictionary<string, int>();
+		private Dictionary<string, ArchiveFileInfo> m_dicFileInfo = new Dictionary<string, ArchiveFileInfo>();
 		private bool m_booCanEdit = false;
 
 		#region Properties
@@ -68,14 +68,14 @@ namespace Fomm.PackageManager
 		/// </summary>
 		protected void LoadFileIndices()
 		{
-			m_dicFileIndex.Clear();
+			m_dicFileInfo.Clear();
 			m_strFiles.Clear();
 			using (SevenZipExtractor szeExtractor = new SevenZipExtractor(m_strPath))
 			{
 				foreach (ArchiveFileInfo afiFile in szeExtractor.ArchiveFileData)
 					if (!afiFile.IsDirectory)
 					{
-						m_dicFileIndex[afiFile.FileName.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).ToLowerInvariant()] = afiFile.Index;
+						m_dicFileInfo[afiFile.FileName.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).ToLowerInvariant()] = afiFile;
 						m_strFiles.Add(afiFile.FileName.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar));
 					}
 			}
@@ -204,7 +204,7 @@ namespace Fomm.PackageManager
 		public bool ContainsFile(string p_strPath)
 		{
 			string strPath = p_strPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).ToLowerInvariant();
-			return m_dicFileIndex.ContainsKey(strPath);
+			return m_dicFileInfo.ContainsKey(strPath);
 		}
 
 		/// <summary>
@@ -215,13 +215,13 @@ namespace Fomm.PackageManager
 		public byte[] GetFileContents(string p_strPath)
 		{
 			string strPath = p_strPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).ToLowerInvariant();
-			if (!m_dicFileIndex.ContainsKey(strPath))
+			if (!m_dicFileInfo.ContainsKey(strPath))
 				throw new FileNotFoundException("The requested file does not exist in the archive.", p_strPath);
 
 			byte[] bteFile = null;
 			using (SevenZipExtractor szeExtractor = new SevenZipExtractor(m_strPath))
 			{
-				ArchiveFileInfo afiFile = szeExtractor.ArchiveFileData[m_dicFileIndex[strPath]];
+				ArchiveFileInfo afiFile = m_dicFileInfo[strPath];
 				bteFile = new byte[afiFile.Size];
 				using (MemoryStream msmFile = new MemoryStream())
 				{
@@ -263,9 +263,9 @@ namespace Fomm.PackageManager
 				using (SevenZipExtractor szeExtractor = new SevenZipExtractor(m_strPath))
 					throw new InvalidOperationException("Cannot modify archive of type: " + szeExtractor.Format);
 			string strPath = p_strFileName.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).ToLowerInvariant();
-			if (m_dicFileIndex.ContainsKey(strPath))
+			if (m_dicFileInfo.ContainsKey(strPath))
 			{
-				Dictionary<int, string> dicDelete = new Dictionary<int, string>() { { m_dicFileIndex[strPath], null } };
+				Dictionary<int, string> dicDelete = new Dictionary<int, string>() { { m_dicFileInfo[strPath].Index, null } };
 				m_szcCompressor.ModifyArchive(m_strPath, dicDelete);
 			}
 			using (MemoryStream msmData = new MemoryStream(p_bteData))
@@ -291,9 +291,9 @@ namespace Fomm.PackageManager
 				using (SevenZipExtractor szeExtractor = new SevenZipExtractor(m_strPath))
 					throw new InvalidOperationException("Cannot modify archive of type: " + szeExtractor.Format);
 			string strPath = p_strFileName.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).ToLowerInvariant();
-			if (m_dicFileIndex.ContainsKey(strPath))
+			if (m_dicFileInfo.ContainsKey(strPath))
 			{
-				Dictionary<int, string> dicDelete = new Dictionary<int, string>() { { m_dicFileIndex[strPath], null } };
+				Dictionary<int, string> dicDelete = new Dictionary<int, string>() { { m_dicFileInfo[strPath].Index, null } };
 				m_szcCompressor.ModifyArchive(m_strPath, dicDelete);
 			}
 			LoadFileIndices();
