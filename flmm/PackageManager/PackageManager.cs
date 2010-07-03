@@ -55,7 +55,7 @@ namespace Fomm.PackageManager
 
 					if (!strWebVersion.Equals(strVersion))
 						lviMod.SubItems["WebVersion"].BackColor = Color.LightSalmon;
-					
+
 				}
 			}
 		}
@@ -86,6 +86,9 @@ namespace Fomm.PackageManager
 
 			string strWebVersion = "NA";
 			m_dicWebVersions.TryGetValue(mod.BaseName, out strWebVersion);
+
+			if (lvModList.Items.ContainsKey(mod.BaseName))
+				lvModList.Items.RemoveByKey(mod.BaseName);
 
 			if (!cbGroups.Checked)
 			{
@@ -191,6 +194,12 @@ namespace Fomm.PackageManager
 				MessageBox.Show("Error loading '" + Path.GetFileName(modpath) + "'\n" + ex.Message);
 				return;
 			}
+			for (Int32 i = mods.Count - 1; i >= 0; i--)
+				if (mods[i].filepath.Equals(mod.filepath))
+				{
+					mods.RemoveAt(i);
+					break;
+				}
 			mods.Add(mod);
 			if (addToList) AddFomodToList(mod);
 		}
