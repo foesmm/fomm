@@ -18,6 +18,30 @@ namespace Fomm.PackageManager.FomodBuilder
 	public partial class FomodFileSelector : UserControl, IStatusProviderAware
 	{
 		/// <summary>
+		/// Compares two <see cref="FileSystemTreeNode"/>s.
+		/// </summary>
+		private class NodeComparer : IComparer
+		{
+			#region IComparer Members
+
+			/// <summary>
+			/// Compares the given <see cref="FileSystemTreeNode"/>s using their
+			/// <see cref="FileSystemTreeNode.CompareTo"/> method.
+			/// </summary>
+			/// <param name="x">A <see cref="FileSystemTreeNode"/> to compare to another node.</param>
+			/// <param name="y">A <see cref="FileSystemTreeNode"/> to compare to another node.</param>
+			/// <returns>A value less than 0 if <paramref name="x"/> is less than <paramref name="y"/>.
+			/// 0 if this node is equal to the other.
+			/// A value greater than 0 if <paramref name="x"/> is greater than <paramref name="y"/>.</returns>
+			public int Compare(object x, object y)
+			{
+				return ((FileSystemTreeNode)x).CompareTo((FileSystemTreeNode)y);
+			}
+
+			#endregion
+		}
+
+		/// <summary>
 		/// The rich-text formated content of the help box.
 		/// </summary>
 		private const string HELP_STRING = @"{\rtf1\ansi\ansicpg1252\deff0\deflang4105{\fonttbl{\f0\fnil\fcharset0 Arial;}{\f1\fnil\fcharset2 Symbol;}}
@@ -56,8 +80,8 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
 		{
 			InitializeComponent();
 			rtbHelp.Rtf = HELP_STRING;
-
 			rtbHelp.Visible = false;
+			tvwFomod.TreeViewNodeSorter = new NodeComparer();
 		}
 
 		#endregion

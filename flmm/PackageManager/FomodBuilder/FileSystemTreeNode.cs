@@ -14,7 +14,7 @@ namespace Fomm.PackageManager.FomodBuilder
 	/// <remarks>
 	/// This tracks the sources of and item.
 	/// </remarks>
-	public class FileSystemTreeNode : TreeNode
+	public class FileSystemTreeNode : TreeNode, IComparable<FileSystemTreeNode>
 	{
 		/// <summary>
 		/// The prefix used to indicate the node was created by the user.
@@ -170,5 +170,29 @@ namespace Fomm.PackageManager.FomodBuilder
 			else
 				m_lstSources[0] = p_strSource;
 		}
+
+		#region IComparable<FileSystemTreeNode> Members
+
+		/// <summary>
+		/// Compares this node to another.
+		/// </summary>
+		/// <remarks>
+		/// A directory is less than a file. If the nodes being compared are
+		/// both directories, or both not directories, their display text
+		/// is compared.
+		/// </remarks> 
+		/// <param name="other">The <see cref="FileSystemTreeNode"/> to which to compare this node.</param>
+		/// <returns>A value less than 0 if this node is less than the other.
+		/// 0 if this node is equal to the other.
+		/// A value greater than 0 if this node is greater than the other.</returns>
+		public int CompareTo(FileSystemTreeNode other)
+		{
+			Int32 intResult = other.IsDirectory.CompareTo(this.IsDirectory);
+			if (intResult == 0)
+				intResult = this.Text.CompareTo(other.Text);
+			return intResult;
+		}
+
+		#endregion
 	}
 }
