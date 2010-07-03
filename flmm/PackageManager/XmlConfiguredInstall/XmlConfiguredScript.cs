@@ -136,8 +136,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 			{
 				if (m_bwdProgress.Cancelled())
 					return;
-				if (!InstallPluginFile(pflRequiredFile, true))
-					return;
+				InstallPluginFile(pflRequiredFile, true);
 				m_bwdProgress.StepOverallProgress();
 			}
 
@@ -146,8 +145,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 			{
 				if (m_bwdProgress.Cancelled())
 					return;
-				if (!InstallPluginFile(plfFile, lstActivateFiles.Contains(plfFile)))
-					return;
+				InstallPluginFile(plfFile, lstActivateFiles.Contains(plfFile));
 				m_bwdProgress.StepOverallProgress();
 			}
 
@@ -159,8 +157,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 					{
 						if (m_bwdProgress.Cancelled())
 							return;
-						if (!InstallPluginFile(plfFile, true))
-							return;
+						InstallPluginFile(plfFile, true);
 						m_bwdProgress.StepOverallProgress();
 					}
 			}
