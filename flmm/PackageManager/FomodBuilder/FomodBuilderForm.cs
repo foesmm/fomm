@@ -467,38 +467,50 @@ namespace Fomm.PackageManager.FomodBuilder
 		{
 			if (redReadmeEditor.Readme == null)
 			{
-				ReadmeFormat fmtReadmeFormat = ReadmeFormat.PlainText;
-				string strReadme = null;
-				string strReadmeName = "readme - " + tbxFomodFileName.Text.ToLowerInvariant();
-				Regex rgxReadme = new Regex(strReadmeName + @"\.\w\w\w\w?$", RegexOptions.IgnoreCase);
-				IList<KeyValuePair<string, string>> lstFiles = ffsFileStructure.GetCopyInstructions();
-				foreach (KeyValuePair<string, string> kvpFile in lstFiles)
+				List<KeyValuePair<string, string>> lstReadmes = null;
+				foreach (string strExtension in Readme.ValidExtensions)
 				{
-					if (rgxReadme.IsMatch(kvpFile.Value))
+					lstReadmes = ffsFileStructure.FindFomodFiles("readme - " + tbxFomodFileName.Text + strExtension);
+					if (lstReadmes.Count > 0)
+						break;
+				}
+				if (lstReadmes.Count == 0)
+					foreach (string strExtension in Readme.ValidExtensions)
 					{
-						string strExtension = Path.GetExtension(kvpFile.Value).ToLowerInvariant();
-						if (strExtension.Equals(".txt"))
-							fmtReadmeFormat = ReadmeFormat.PlainText;
-						else if (strExtension.Equals(".rtf"))
-							fmtReadmeFormat = ReadmeFormat.RichText;
-						else if (strExtension.Equals(".html") || strExtension.Equals(".htm"))
-							fmtReadmeFormat = ReadmeFormat.HTML;
-						else
-							continue;
-						if (kvpFile.Key.StartsWith(Archive.ARCHIVE_PREFIX))
+						lstReadmes = ffsFileStructure.FindFomodFiles("*readme*" + strExtension);
+						if (lstReadmes.Count > 0)
+							break;
+					}
+				if (lstReadmes.Count == 0)
+					foreach (string strExtension in Readme.ValidExtensions)
+					{
+						lstReadmes = ffsFileStructure.FindFomodFiles("*" + strExtension);
+						if (lstReadmes.Count > 0)
+							break;
+					}
+
+				Readme rmeReadme = null;
+				foreach (KeyValuePair<string, string> kvpReadme in lstReadmes)
+				{
+					if (Readme.IsValidReadme(kvpReadme.Key))
+					{
+						string strReadme = null;
+						if (kvpReadme.Value.StartsWith(Archive.ARCHIVE_PREFIX))
 						{
-							KeyValuePair<string, string> kvpArchiveInfo = Archive.ParseArchivePath(kvpFile.Key);
+							KeyValuePair<string, string> kvpArchiveInfo = Archive.ParseArchivePath(kvpReadme.Value);
 							Archive arcArchive = new Archive(kvpArchiveInfo.Key);
 							strReadme = TextUtil.ByteToString(arcArchive.GetFileContents(kvpArchiveInfo.Value));
 						}
-						else if (File.Exists(kvpFile.Key))
+						else if (File.Exists(kvpReadme.Value))
 						{
-							strReadme = File.ReadAllText(kvpFile.Key);
+							strReadme = File.ReadAllText(kvpReadme.Value);
 							break;
 						}
+						rmeReadme = new Readme(kvpReadme.Key, strReadme);
+						break;
 					}
 				}
-				redReadmeEditor.Readme = new Readme(fmtReadmeFormat, strReadme);
+				redReadmeEditor.Readme = rmeReadme ?? new Readme(ReadmeFormat.PlainText, null);
 			}
 		}
 
