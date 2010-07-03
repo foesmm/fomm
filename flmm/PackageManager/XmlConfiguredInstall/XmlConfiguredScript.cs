@@ -57,7 +57,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		private ModInstallScript m_misInstallScript = null;
 		private BackgroundWorkerProgressDialog m_bwdProgress = null;
 		private DependencyStateManager m_dsmStateManager = null;
-		
+
 		#region Constructors
 
 		/// <summary>
@@ -136,7 +136,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 			{
 				if (m_bwdProgress.Cancelled())
 					return;
-				InstallPluginFile(pflRequiredFile, true);
+				if (!InstallPluginFile(pflRequiredFile, true))
+					return;
 				m_bwdProgress.StepOverallProgress();
 			}
 
@@ -145,7 +146,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 			{
 				if (m_bwdProgress.Cancelled())
 					return;
-				InstallPluginFile(plfFile, lstActivateFiles.Contains(plfFile));
+				if (!InstallPluginFile(plfFile, lstActivateFiles.Contains(plfFile)))
+					return;
 				m_bwdProgress.StepOverallProgress();
 			}
 
@@ -157,7 +159,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 					{
 						if (m_bwdProgress.Cancelled())
 							return;
-						InstallPluginFile(plfFile, true);
+						if (!InstallPluginFile(plfFile, true))
+							return;
 						m_bwdProgress.StepOverallProgress();
 					}
 			}
@@ -178,8 +181,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 			m_bwdProgress.ItemMessage = "Installing " + (String.IsNullOrEmpty(strDest) ? strSource : strDest);
 			if (plfFile.IsFolder)
 			{
-				if (!CopyDataFolder(strSource, strDest))
-					throw new ApplicationException("Could not install " + strSource + " to " + strDest);
+				CopyDataFolder(strSource, strDest);
 
 				if (m_bwdProgress.Cancelled())
 					return false;
@@ -214,8 +216,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 				m_bwdProgress.ItemProgress = 0;
 				m_bwdProgress.ItemProgressMaximum = 2;
 
-				if (!m_misInstallScript.CopyDataFile(strSource, strDest))
-					throw new ApplicationException("Could not install " + strSource + " to " + strDest);
+				m_misInstallScript.CopyDataFile(strSource, strDest);
 
 				m_bwdProgress.StepItemProgress();
 
@@ -241,8 +242,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		/// </summary>
 		/// <param name="p_strFrom">The source from whence to copy the files.</param>
 		/// <param name="p_strTo">The destination for the copied files.</param>
-		/// <returns>true if the copy succeeded; false otherwise.</returns>
-		protected bool CopyDataFolder(string p_strFrom, string p_strTo)
+		protected void CopyDataFolder(string p_strFrom, string p_strTo)
 		{
 			List<string> lstFOMODFiles = GetFomodFolderFileList(p_strFrom);
 			m_bwdProgress.ItemProgress = 0;
@@ -258,16 +258,14 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 			for (Int32 i = 0; i < lstFOMODFiles.Count; i++)
 			{
 				if (m_bwdProgress.Cancelled())
-					return true;
+					return;
 
 				strFOMODFile = lstFOMODFiles[i];
 				string strNewFileName = strFOMODFile.Substring(strFrom.Length, strFOMODFile.Length - strFrom.Length);
-				if (!m_misInstallScript.CopyDataFile(strFOMODFile, Path.Combine(strTo, strNewFileName)))
-					return false;
+				m_misInstallScript.CopyDataFile(strFOMODFile, Path.Combine(strTo, strNewFileName));
 
 				m_bwdProgress.StepItemProgress();
 			}
-			return true;
 		}
 
 		/// <summary>
