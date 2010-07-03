@@ -15,7 +15,7 @@ using Fomm.PackageManager.Controls;
 namespace Fomm.PackageManager.FomodBuilder
 {
 	/// <summary>
-	/// This form builds a FOMOD form existing files.
+	/// This form builds a FOMod form existing files.
 	/// </summary>
 	public partial class FomodBuilderForm : Form
 	{
@@ -158,7 +158,7 @@ namespace Fomm.PackageManager.FomodBuilder
 		/// Handles the <see cref="Control.Click"/> event of the OK button.
 		/// </summary>
 		/// <remarks>
-		/// This ensures that the information is valid before creating the FOMOD/Premade FOMOD Pack.
+		/// This ensures that the information is valid before creating the FOMod/Premade FOMod Pack.
 		/// </remarks>
 		/// <param name="sender">The object that raised the event.</param>
 		/// <param name="e">A <see cref="EventArgs"/> describing the event arguments.</param>
@@ -306,7 +306,7 @@ namespace Fomm.PackageManager.FomodBuilder
 			}
 			else if (!ValidatePFPSavePath())
 			{
-				sspError.SetError(vtpOutput, "Premade FOMOD Pack save location is required.");
+				sspError.SetError(vtpOutput, "Premade FOMod Pack save location is required.");
 				booHasErrors = true;
 			}
 
@@ -320,9 +320,9 @@ namespace Fomm.PackageManager.FomodBuilder
 		#region Sources Tab
 
 		/// <summary>
-		/// Validates the source files of the FOMOD.
+		/// Validates the source files of the FOMod.
 		/// </summary>
-		/// <returns><lang cref="true"/> if the user has entered a file name for the FOMOD, and selected
+		/// <returns><lang cref="true"/> if the user has entered a file name for the FOMod, and selected
 		/// files to include; <lang cref="false"/> otherwise.</returns>
 		protected bool ValidateSources()
 		{
@@ -340,23 +340,23 @@ namespace Fomm.PackageManager.FomodBuilder
 			sspError.SetError(tbxFomodFileName, null);
 			if (String.IsNullOrEmpty(tbxFomodFileName.Text))
 			{
-				sspError.SetError(tbxFomodFileName, "FOMOD File Name is required.");
+				sspError.SetError(tbxFomodFileName, "FOMod File Name is required.");
 				return false;
 			}
 			return true;
 		}
 
 		/// <summary>
-		/// Ensures that the user has selected files to include in the FOMOD.
+		/// Ensures that the user has selected files to include in the FOMod.
 		/// </summary>
-		/// <returns><lang cref="true"/> if the user has selected files to include in the FOMOD;
+		/// <returns><lang cref="true"/> if the user has selected files to include in the FOMod;
 		/// <lang cref="false"/> otherwise.</returns>
 		protected bool ValidateFomodFiles()
 		{
 			sspError.SetStatus(ffsFileStructure, null);
 			if (ffsFileStructure.GetCopyInstructions().Count == 0)
 			{
-				sspError.SetStatus(ffsFileStructure, "You must select file to include in the FOMOD.");
+				sspError.SetStatus(ffsFileStructure, "You must select file to include in the FOMod.");
 				return false;
 			}
 			return true;
@@ -380,26 +380,26 @@ namespace Fomm.PackageManager.FomodBuilder
 		#region Save Locations Tab
 
 		/// <summary>
-		/// Ensures that the user has entered a Premade FOMOD Pack save path, if a PFP is being created.
+		/// Ensures that the user has entered a Premade FOMod Pack save path, if a PFP is being created.
 		/// </summary>
-		/// <returns><lang cref="true"/> if the user has entered a path and a Premade FOMOD Pack is being created;
+		/// <returns><lang cref="true"/> if the user has entered a path and a Premade FOMod Pack is being created;
 		/// <lang cref="false"/> otherwise.</returns>
 		protected bool ValidatePFPSavePath()
 		{
 			sspError.SetError(cbxPFP, null);
 			if (String.IsNullOrEmpty(tbxPFPPath.Text) && cbxPFP.Checked)
 			{
-				sspError.SetError(cbxPFP, "Premade FOMOD Pack save location is required.");
+				sspError.SetError(cbxPFP, "Premade FOMod Pack save location is required.");
 				return false;
 			}
 			return true;
 		}
 
 		/// <summary>
-		/// Handles the <see cref="Control.Validating"/> event of the Premade FOMOD Pack save path textbox.
+		/// Handles the <see cref="Control.Validating"/> event of the Premade FOMod Pack save path textbox.
 		/// </summary>
 		/// <remarks>
-		/// This validates the Premade FOMOD Pack save path.
+		/// This validates the Premade FOMod Pack save path.
 		/// </remarks>
 		/// <param name="sender">The object that raised the event.</param>
 		/// <param name="e">A <see cref="CancelEventArgs"/> describing the event arguments.</param>
@@ -614,7 +614,7 @@ namespace Fomm.PackageManager.FomodBuilder
 		/// editor.
 		/// </summary>
 		/// <remarks>
-		/// This methods populates the code completion list with the file paths in the FOMOD file structure
+		/// This methods populates the code completion list with the file paths in the FOMod file structure
 		/// when the value being completed is the source value of a file tag.
 		/// </remarks>
 		/// <param name="sender">The object that raised the event.</param>

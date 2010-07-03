@@ -100,7 +100,7 @@
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(135, 19);
 			this.label1.TabIndex = 0;
-			this.label1.Text = "Create a FOMOD";
+			this.label1.Text = "Create a FOMod";
 			// 
 			// pnlButtons
 			// 
@@ -208,7 +208,7 @@
 			this.cbxPFP.Name = "cbxPFP";
 			this.cbxPFP.Size = new System.Drawing.Size(172, 17);
 			this.cbxPFP.TabIndex = 1;
-			this.cbxPFP.Text = "Create Premade FOMOD Pack";
+			this.cbxPFP.Text = "Create Premade FOMod Pack";
 			this.cbxPFP.UseVisualStyleBackColor = true;
 			// 
 			// cbxFomod
@@ -218,7 +218,7 @@
 			this.cbxFomod.Name = "cbxFomod";
 			this.cbxFomod.Size = new System.Drawing.Size(99, 17);
 			this.cbxFomod.TabIndex = 0;
-			this.cbxFomod.Text = "Create FOMOD";
+			this.cbxFomod.Text = "Create FOMod";
 			this.cbxFomod.UseVisualStyleBackColor = true;
 			// 
 			// vtpSources
@@ -260,7 +260,7 @@
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(383, 13);
 			this.label3.TabIndex = 2;
-			this.label3.Text = "Enter the name of the FOMOD file, and select the files you would like to include." +
+			this.label3.Text = "Enter the name of the FOMod file, and select the files you would like to include." +
 				"";
 			// 
 			// label2
@@ -270,7 +270,7 @@
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(190, 13);
 			this.label2.TabIndex = 1;
-			this.label2.Text = "FOMOD File Name (without extension):";
+			this.label2.Text = "FOMod File Name (without extension):";
 			// 
 			// tbxFomodFileName
 			// 
@@ -292,7 +292,7 @@
 			this.vtpInfo.PageIndex = 3;
 			this.vtpInfo.Size = new System.Drawing.Size(445, 367);
 			this.vtpInfo.TabIndex = 4;
-			this.vtpInfo.Text = "FOMOD Info";
+			this.vtpInfo.Text = "FOMod Info";
 			// 
 			// finInfo
 			// 
@@ -363,7 +363,7 @@
 			this.label8.Name = "label8";
 			this.label8.Size = new System.Drawing.Size(215, 13);
 			this.label8.TabIndex = 0;
-			this.label8.Text = "Provide the script for the FOMOD, if desired.";
+			this.label8.Text = "Provide the script for the FOMod, if desired.";
 			// 
 			// vtpReadme
 			// 

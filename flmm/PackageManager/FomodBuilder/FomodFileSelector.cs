@@ -23,12 +23,12 @@ namespace Fomm.PackageManager.FomodBuilder
 		private const string HELP_STRING = @"{\rtf1\ansi\ansicpg1252\deff0\deflang4105{\fonttbl{\f0\fnil\fcharset0 Arial;}{\f1\fnil\fcharset2 Symbol;}}
 {\*\generator Msftedit 5.41.21.2509;}\viewkind4\uc1\pard{\pntext\f0 1.\tab}{\*\pn\pnlvlbody\pnf0\pnindent0\pnstart1\pndec{\pntxta.}}
 \fi-360\li720\sl240\slmult1\lang9\fs18 Add files and/or folders to the \b Source Files\b0  box. You can either drag and drop files and folders, or use the buttons.\par
-{\pntext\f0 2.\tab}Browse the \b Source Files\b0  tree and drag the files and folders you want to include in your FOMOD into the \b FOMOD Files\b0  box. Archive files (like Zip and 7z files) in the \b Source Files\b0  box can browsed like directories.\par
+{\pntext\f0 2.\tab}Browse the \b Source Files\b0  tree and drag the files and folders you want to include in your FOMod into the \b FOMod Files\b0  box. Archive files (like Zip and 7z files) in the \b Source Files\b0  box can browsed like directories.\par
 \pard\sl240\slmult1\par
-Remeber, you can customize the FOMOD file structure by doing any of the following:\par
-\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\sl240\slmult1 You can rename any folder in the \b FOMOD Files\b0  box.\par
-{\pntext\f1\'B7\tab}You can create new folders on the \b FOMOD Files\b0  box.\par
-{\pntext\f1\'B7\tab}You can remove folders and file from the \b FOMOD Files\b0  box. Doing so will not delete the file from your computer.\par
+Remeber, you can customize the FOMod file structure by doing any of the following:\par
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\sl240\slmult1 You can rename any folder in the \b FOMod Files\b0  box.\par
+{\pntext\f1\'B7\tab}You can create new folders on the \b FOMod Files\b0  box.\par
+{\pntext\f1\'B7\tab}You can remove folders and file from the \b FOMod Files\b0  box. Doing so will not delete the file from your computer.\par
 }
  ";
 		#region Properties

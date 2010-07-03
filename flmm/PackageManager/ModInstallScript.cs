@@ -378,7 +378,7 @@ namespace Fomm.PackageManager
 		}
 
 		/// <summary>
-		/// Installs the speified file from the FOMOD to the file system.
+		/// Installs the speified file from the FOMod to the file system.
 		/// </summary>
 		/// <param name="p_strFile">The path of the file to install.</param>
 		/// <returns><lang cref="true"/> if the file was written; <lang cref="false"/> if the user chose
@@ -391,14 +391,14 @@ namespace Fomm.PackageManager
 		}
 
 		/// <summary>
-		/// Installs the speified file from the FOMOD to the specified location on the file system.
+		/// Installs the speified file from the FOMod to the specified location on the file system.
 		/// </summary>
-		/// <param name="p_strFrom">The path of the file in the FOMOD to install.</param>
+		/// <param name="p_strFrom">The path of the file in the FOMod to install.</param>
 		/// <param name="p_strTo">The path on the file system where the file is to be created.</param>
 		/// <returns><lang cref="true"/> if the file was written; <lang cref="false"/> if the user chose
 		/// not to overwrite an existing file.</returns>
 		/// <exception cref="FileNotFoundException">Thrown if the file referenced by
-		/// <paramref name="p_strFrom"/> is not in the FOMOD.</exception>
+		/// <paramref name="p_strFrom"/> is not in the FOMod.</exception>
 		/// <exception cref="IllegalFilePathException">Thrown if <paramref name="p_strTo"/> is
 		/// not safe.</exception>
 		public bool CopyDataFile(string p_strFrom, string p_strTo)

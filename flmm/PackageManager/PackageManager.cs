@@ -422,7 +422,7 @@ namespace Fomm.PackageManager
 				if (fomodMod.ModName.Equals(mod.ModName) && fomodMod.IsActive && !fomodMod.BaseName.Equals(mod.BaseName))
 				{
 					//ask to do upgrade
-					string strUpgradeMessage = "A different verion of {0} has been detected. The installed verion is {1}, the new verion is {2}. Would you like to upgrade?" + Environment.NewLine + "Selecting No will install the new FOMOD normally.";
+					string strUpgradeMessage = "A different verion of {0} has been detected. The installed verion is {1}, the new verion is {2}. Would you like to upgrade?" + Environment.NewLine + "Selecting No will install the new FOMod normally.";
 					switch (MessageBox.Show(String.Format(strUpgradeMessage, fomodMod.ModName, fomodMod.HumanReadableVersion, mod.HumanReadableVersion), "Upgrade", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
 					{
 						case DialogResult.Yes:
@@ -886,6 +886,14 @@ namespace Fomm.PackageManager
 			}
 		}
 
+		/// <summary>
+		/// Handles the <see cref="Control.Click"/> event of the add pfp button.
+		/// </summary>
+		/// <remarks>
+		/// Creates a FOMod from a PFP.
+		/// </remarks>
+		/// <param name="sender">The object that raised the event.</param>
+		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
 		private void addPFPToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			PremadeFomodPackForm pkfPFPForm = new PremadeFomodPackForm();

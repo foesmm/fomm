@@ -202,7 +202,7 @@ namespace Fomm.PackageManager.FomodBuilder
 			ProgressDialog.ItemProgress = 0;
 			ProgressDialog.ItemProgressMaximum = Directory.GetFiles(p_strFomodFolder, "*", SearchOption.AllDirectories).Length;
 			ProgressDialog.ItemProgressStep = 1;
-			ProgressDialog.ItemMessage = String.Format("Compressing FOMOD...");
+			ProgressDialog.ItemMessage = String.Format("Compressing FOMod...");
 
 			SevenZipCompressor szcCompressor = new SevenZipCompressor();
 			szcCompressor.CompressionLevel = (CompressionLevel)Settings.GetInt("fomodCompressionLevel", (Int32)CompressionLevel.Ultra);

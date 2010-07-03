@@ -274,10 +274,10 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		}
 
 		/// <summary>
-		/// Gets a list of all files in the specified FOMOD folder.
+		/// Gets a list of all files in the specified FOMod folder.
 		/// </summary>
-		/// <param name="p_strPath">The FOMOD folder whose file list is to be retrieved.</param>
-		/// <returns>The list of all files in the specified FOMOD folder.</returns>
+		/// <param name="p_strPath">The FOMod folder whose file list is to be retrieved.</param>
+		/// <returns>The list of all files in the specified FOMod folder.</returns>
 		protected List<string> GetFomodFolderFileList(string p_strPath)
 		{
 			if (m_strFomodFiles == null)

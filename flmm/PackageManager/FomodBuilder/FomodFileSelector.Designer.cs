@@ -140,7 +140,7 @@
 			this.lblFomodFiles.Name = "lblFomodFiles";
 			this.lblFomodFiles.Size = new System.Drawing.Size(81, 13);
 			this.lblFomodFiles.TabIndex = 0;
-			this.lblFomodFiles.Text = "FOMOD Files";
+			this.lblFomodFiles.Text = "FOMod Files";
 			// 
 			// cmsFomodNode
 			// 

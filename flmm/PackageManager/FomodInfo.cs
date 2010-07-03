@@ -11,7 +11,7 @@ using System.IO;
 namespace Fomm.PackageManager
 {
 	/// <summary>
-	/// Encapsulates the editing of FOMOD info.
+	/// Encapsulates the editing of FOMod info.
 	/// </summary>
 	public partial class FomodInfo : UserControl, IFomodInfo
 	{

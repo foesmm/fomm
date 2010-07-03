@@ -325,7 +325,7 @@ namespace Fomm.PackageManager {
 			// 
 			this.addFOMODToolStripMenuItem.Name = "addFOMODToolStripMenuItem";
 			this.addFOMODToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
-			this.addFOMODToolStripMenuItem.Text = "Add FOMOD";
+			this.addFOMODToolStripMenuItem.Text = "Add FOMod";
 			this.addFOMODToolStripMenuItem.Click += new System.EventHandler(this.addFOMODToolStripMenuItem_Click);
 			// 
 			// addPFPToolStripMenuItem
@@ -346,7 +346,7 @@ namespace Fomm.PackageManager {
 			// 
 			this.createFOMODToolStripMenuItem.Name = "createFOMODToolStripMenuItem";
 			this.createFOMODToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
-			this.createFOMODToolStripMenuItem.Text = "Create FOMOD";
+			this.createFOMODToolStripMenuItem.Text = "Create FOMod";
 			this.createFOMODToolStripMenuItem.Click += new System.EventHandler(this.createFOMODToolStripMenuItem_Click);
 			// 
 			// sbtAddFomod
@@ -357,7 +357,7 @@ namespace Fomm.PackageManager {
 			this.sbtAddFomod.Name = "sbtAddFomod";
 			this.sbtAddFomod.Size = new System.Drawing.Size(120, 23);
 			this.sbtAddFomod.TabIndex = 19;
-			this.sbtAddFomod.Text = "Add FOMOD";
+			this.sbtAddFomod.Text = "Add FOMod";
 			this.sbtAddFomod.UseVisualStyleBackColor = true;
 			// 
 			// editPFPToolStripMenuItem

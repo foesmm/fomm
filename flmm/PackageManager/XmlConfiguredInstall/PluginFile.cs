@@ -8,7 +8,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 	/// A plugin file or folder.
 	/// </summary>
 	/// <remarks>
-	/// This class describes the location of the file/folder in the FOMOD, as well as where the
+	/// This class describes the location of the file/folder in the FOMod, as well as where the
 	/// file/folder should be installed.
 	/// </remarks>
 	public class PluginFile : IComparable<PluginFile>
@@ -23,9 +23,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		#region Properties
 
 		/// <summary>
-		/// Gets the file's/folder's location in the FOMOD.
+		/// Gets the file's/folder's location in the FOMod.
 		/// </summary>
-		/// <value>The file's/folder's location in the FOMOD.</value>
+		/// <value>The file's/folder's location in the FOMod.</value>
 		public string Source
 		{
 			get
@@ -105,7 +105,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		/// <summary>
 		/// A simple constructor that initializes the values of the object.
 		/// </summary>
-		/// <param name="p_strSource">The file's/folder's location in the FOMOD.</param>
+		/// <param name="p_strSource">The file's/folder's location in the FOMod.</param>
 		/// <param name="p_strDest">Where the file/folder should be installed.</param>
 		/// <param name="p_booIsFolder">Whether this item is a folder.</param>
 		/// <param name="p_intPriority">The priority of the item.</param>

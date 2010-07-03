@@ -680,9 +680,9 @@ namespace Fomm.PackageManager
 		}
 
 		/// <summary>
-		/// Retrieves the list of files in this FOMOD.
+		/// Retrieves the list of files in this FOMod.
 		/// </summary>
-		/// <returns>The list of files in this FOMOD.</returns>
+		/// <returns>The list of files in this FOMod.</returns>
 		public List<string> GetFileList()
 		{
 			PermissionsManager.CurrentPermissions.Assert();

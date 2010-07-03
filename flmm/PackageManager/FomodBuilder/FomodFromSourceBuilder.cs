@@ -296,7 +296,7 @@ namespace Fomm.PackageManager.FomodBuilder
 		}
 
 		/// <summary>
-		/// This descends through the file structure until a FOMOD structure is located.
+		/// This descends through the file structure until a FOMod structure is located.
 		/// </summary>
 		/// <remarks>
 		/// This bypasses any top-level container folders. For example, a mod may be in an archive Mod.zip.
@@ -310,7 +310,7 @@ namespace Fomm.PackageManager.FomodBuilder
 			ProgressDialog.ItemProgress = 0;
 			ProgressDialog.ItemProgressMaximum = 50;
 			ProgressDialog.ItemProgressStep = 1;
-			ProgressDialog.ItemMessage = String.Format("Finding FOMOD Folder...");
+			ProgressDialog.ItemMessage = String.Format("Finding FOMod Folder...");
 
 			string strSourcePath = p_strSourcePath;
 			//this code removes any top-level folders until it finds esp/esm/bsa, or the top-level folder

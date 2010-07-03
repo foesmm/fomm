@@ -143,9 +143,9 @@ namespace fomm.Scripting
 		#region File Management
 
 		/// <summary>
-		/// Installs the speified file from the FOMOD to the specified location on the file system.
+		/// Installs the specified file from the FOMod to the specified location on the file system.
 		/// </summary>
-		/// <param name="p_strFrom">The path of the file in the FOMOD to install.</param>
+		/// <param name="p_strFrom">The path of the file in the FOMod to install.</param>
 		/// <param name="p_strTo">The path on the file system where the file is to be created.</param>
 		/// <returns><lang cref="true"/> if the file was written; <lang cref="false"/> otherwise.</returns>
 		/// <seealso cref="ModInstaller.CopyDataFile(string p_strFrom, string p_strTo)"/>
@@ -155,9 +155,9 @@ namespace fomm.Scripting
 		}
 
 		/// <summary>
-		/// Retrieves the list of files in the FOMOD.
+		/// Retrieves the list of files in the FOMod.
 		/// </summary>
-		/// <returns>The list of files in the FOMOD.</returns>
+		/// <returns>The list of files in the FOMod.</returns>
 		/// <seealso cref="fomod.GetFileList()"/>
 		public static string[] GetFomodFileList()
 		{
@@ -165,7 +165,7 @@ namespace fomm.Scripting
 		}
 
 		/// <summary>
-		/// Installs the speified file from the FOMOD to the file system.
+		/// Installs the speified file from the FOMod to the file system.
 		/// </summary>
 		/// <param name="p_strFile">The path of the file to install.</param>
 		/// <returns><lang cref="true"/> if the file was written; <lang cref="false"/> otherwise.</returns>

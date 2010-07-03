@@ -135,7 +135,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		#region Xml Helper Methods
 
 		/// <summary>
-		/// Loads the module configuration file from the FOMOD.
+		/// Loads the module configuration file from the FOMod.
 		/// </summary>
 		/// <param name="p_strConfigPath">The path to the configuration file.</param>
 		/// <param name="p_strSchemaPath">The path to the configuration file schema.</param>
@@ -148,7 +148,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		}
 
 		/// <summary>
-		/// Loads the module configuration schema from the FOMOD.
+		/// Loads the module configuration schema from the FOMod.
 		/// </summary>
 		/// <returns>The module configuration schema.</returns>
 		private XmlSchema loadModuleConfigSchema()

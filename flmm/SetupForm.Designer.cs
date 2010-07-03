@@ -295,7 +295,7 @@ namespace Fomm {
 			this.ckbCheckFomodVersions.Name = "ckbCheckFomodVersions";
 			this.ckbCheckFomodVersions.Size = new System.Drawing.Size(182, 17);
 			this.ckbCheckFomodVersions.TabIndex = 21;
-			this.ckbCheckFomodVersions.Text = "Check for new FOMOD versions.";
+			this.ckbCheckFomodVersions.Text = "Check for new FOMod versions.";
 			this.ckbCheckFomodVersions.UseVisualStyleBackColor = true;
 			this.ckbCheckFomodVersions.CheckedChanged += new System.EventHandler(this.ckbCheckFomodVersions_CheckedChanged);
 			// 
@@ -351,7 +351,7 @@ namespace Fomm {
 			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
 			this.tabPage2.Size = new System.Drawing.Size(398, 341);
 			this.tabPage2.TabIndex = 1;
-			this.tabPage2.Text = "FOMOD Options";
+			this.tabPage2.Text = "FOMod Options";
 			this.tabPage2.UseVisualStyleBackColor = true;
 			// 
 			// groupBox2
@@ -365,7 +365,7 @@ namespace Fomm {
 			this.groupBox2.Size = new System.Drawing.Size(382, 80);
 			this.groupBox2.TabIndex = 1;
 			this.groupBox2.TabStop = false;
-			this.groupBox2.Text = "Premade FOMOD Pack Compression";
+			this.groupBox2.Text = "Premade FOMod Pack Compression";
 			// 
 			// cbxPFPFormat
 			// 
@@ -417,7 +417,7 @@ namespace Fomm {
 			this.groupBox1.Size = new System.Drawing.Size(382, 112);
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
-			this.groupBox1.Text = "FOMOD Compression";
+			this.groupBox1.Text = "FOMod Compression";
 			// 
 			// cbxFomodFormat
 			// 

@@ -231,7 +231,7 @@
 		</xs:annotation>
 		<xs:attribute name="path" use="required">
 			<xs:annotation>
-				<xs:documentation>The path to the image in the FOMOD.</xs:documentation>
+				<xs:documentation>The path to the image in the FOMod.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
 	</xs:complexType>
@@ -242,7 +242,7 @@
 		</xs:annotation>
 		<xs:attribute name="path" use="optional" type="xs:string">
 			<xs:annotation>
-				<xs:documentation>The path to the image in the FOMOD. If omitted the FOMOD's screenshot is used.</xs:documentation>
+				<xs:documentation>The path to the image in the FOMod. If omitted the FOMod's screenshot is used.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
 		<xs:attribute name="showImage" type="xs:boolean" default="true" use="optional">
@@ -433,7 +433,7 @@
 		</xs:annotation>
 		<xs:attribute name="source" type="xs:string" use="required">
 			<xs:annotation>
-				<xs:documentation>The path to the file or folder in the FOMOD.</xs:documentation>
+				<xs:documentation>The path to the file or folder in the FOMod.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
 		<xs:attribute name="destination" type="xs:string">
