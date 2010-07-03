@@ -22,6 +22,8 @@ namespace Fomm.PackageManager.FomodBuilder
 		public const string NEW_PREFIX = "new:";
 
 		private Set<string> m_lstSources = new Set<string>();
+		private bool? m_booIsAchive = null;
+		private bool? m_booIsDirectory = null;
 
 		#region Properties
 
@@ -61,15 +63,20 @@ namespace Fomm.PackageManager.FomodBuilder
 		{
 			get
 			{
+				if (m_booIsDirectory.HasValue)
+					return m_booIsDirectory.Value;
+
 				if ((m_lstSources.Count == 0) || m_lstSources[0].StartsWith(NEW_PREFIX))
-					return true;
-				if (m_lstSources[0].StartsWith(Archive.ARCHIVE_PREFIX))
+					m_booIsDirectory = true;
+				else if (m_lstSources[0].StartsWith(Archive.ARCHIVE_PREFIX))
 				{
 					KeyValuePair<string, string> kvpArchive = Archive.ParseArchivePath(m_lstSources[0]);
 					Archive arcArchive = new Archive(kvpArchive.Key);
-					return arcArchive.IsDirectory(kvpArchive.Value);
+					m_booIsDirectory = arcArchive.IsDirectory(kvpArchive.Value);
 				}
-				return Directory.Exists(m_lstSources[0]);
+				else
+					m_booIsDirectory = Directory.Exists(m_lstSources[0]);
+				return m_booIsDirectory.Value;
 			}
 		}
 
@@ -81,21 +88,26 @@ namespace Fomm.PackageManager.FomodBuilder
 		{
 			get
 			{
-				if (m_lstSources.Count == 0)
-					return false;
-				if (m_lstSources[0].StartsWith(Archive.ARCHIVE_PREFIX) || m_lstSources[0].StartsWith(NEW_PREFIX))
-					return false;
-				SevenZipExtractor szeExtractor = null;
-				try
+				if (m_booIsAchive.HasValue)
+					return m_booIsAchive.Value;
+
+				if ((m_lstSources.Count == 0) || m_lstSources[0].StartsWith(Archive.ARCHIVE_PREFIX) || m_lstSources[0].StartsWith(NEW_PREFIX))
+					m_booIsAchive = false;
+				else
 				{
-					szeExtractor = new SevenZipExtractor(m_lstSources[0]);
-					UInt32 g = szeExtractor.FilesCount;
+					SevenZipExtractor szeExtractor = null;
+					m_booIsAchive = true;
+					try
+					{
+						szeExtractor = new SevenZipExtractor(m_lstSources[0]);
+						UInt32 g = szeExtractor.FilesCount;
+					}
+					catch (Exception e)
+					{
+						m_booIsAchive = false;
+					}
 				}
-				catch (Exception e)
-				{
-					return false;
-				}
-				return true;
+				return m_booIsAchive.Value;
 			}
 		}
 
