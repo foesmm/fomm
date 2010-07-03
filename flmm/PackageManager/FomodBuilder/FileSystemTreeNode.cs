@@ -16,10 +16,19 @@ namespace Fomm.PackageManager.FomodBuilder
 	/// </remarks>
 	public class FileSystemTreeNode : TreeNode
 	{
+		/// <summary>
+		/// The prefix used to indicate the node was created by the user.
+		/// </summary>
 		public const string NEW_PREFIX = "new:";
 
 		private Set<string> m_lstSources = new Set<string>();
 
+		#region Properties
+
+		/// <summary>
+		/// Gets the path to the node in the current tree.
+		/// </summary>
+		/// <value>The path to the node in the current tree.</value>
 		public new string FullPath
 		{
 			get
@@ -44,6 +53,10 @@ namespace Fomm.PackageManager.FomodBuilder
 			}
 		}
 
+		/// <summary>
+		/// Gets whether or not the node represents a directory.
+		/// </summary>
+		/// <value>Whether or not the node represents a directory.</value>
 		public bool IsDirectory
 		{
 			get
@@ -60,6 +73,10 @@ namespace Fomm.PackageManager.FomodBuilder
 			}
 		}
 
+		/// <summary>
+		/// Gets whether or not the node represents an archive.
+		/// </summary>
+		/// <value>Whether or not the node represents an archive.</value>
 		public bool IsArchive
 		{
 			get
@@ -82,6 +99,13 @@ namespace Fomm.PackageManager.FomodBuilder
 			}
 		}
 
+		/// <summary>
+		/// Gets the node's parent.
+		/// </summary>
+		/// <remarks>
+		/// This casts the parent as a <see cref="FileSystemTreeNode"/>.
+		/// </remarks>
+		/// <value>The node's parent.</value>
 		public new FileSystemTreeNode Parent
 		{
 			get
@@ -90,6 +114,10 @@ namespace Fomm.PackageManager.FomodBuilder
 			}
 		}
 
+		/// <summary>
+		/// Gets the sources for the node.
+		/// </summary>
+		/// <value>The sources for the node.</value>
 		public IList<string> Sources
 		{
 			get
@@ -98,6 +126,14 @@ namespace Fomm.PackageManager.FomodBuilder
 			}
 		}
 
+		#endregion
+
+		#region Constructors
+
+		/// <summary>
+		/// The copy constructor.
+		/// </summary>
+		/// <param name="p_tndCopy">The node to copy.</param>
 		public FileSystemTreeNode(FileSystemTreeNode p_tndCopy)
 			: base(p_tndCopy.Text)
 		{
@@ -105,6 +141,11 @@ namespace Fomm.PackageManager.FomodBuilder
 			this.m_lstSources = new Set<string>(p_tndCopy.m_lstSources);
 		}
 
+		/// <summary>
+		/// A simple constructor that initializes the object with the given values.
+		/// </summary>
+		/// <param name="p_strName">The name of the node.</param>
+		/// <param name="p_strPath">The path of the file system item being represented by the node.</param>
 		public FileSystemTreeNode(string p_strName, string p_strPath)
 			: base(p_strName)
 		{
@@ -113,6 +154,12 @@ namespace Fomm.PackageManager.FomodBuilder
 			m_lstSources.Add(p_strPath);
 		}
 
+		#endregion
+
+		/// <summary>
+		/// Adds the specified path as a source for the node.
+		/// </summary>
+		/// <param name="p_strSource">The path to add as a source for the node.</param>
 		public void AddSource(string p_strSource)
 		{
 			if (IsDirectory)
