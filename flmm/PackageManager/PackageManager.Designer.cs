@@ -52,8 +52,8 @@ namespace Fomm.PackageManager {
 			this.addPFPToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.createFromFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.createFOMODToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.sbtAddFomod = new Fomm.Controls.SplitButton();
 			this.editPFPToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.sbtAddFomod = new Fomm.Controls.SplitButton();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
 			this.splitContainer1.SuspendLayout();
@@ -319,7 +319,7 @@ namespace Fomm.PackageManager {
             this.createFOMODToolStripMenuItem,
             this.editPFPToolStripMenuItem});
 			this.cmsAddFomod.Name = "cmsAddFomod";
-			this.cmsAddFomod.Size = new System.Drawing.Size(176, 136);
+			this.cmsAddFomod.Size = new System.Drawing.Size(176, 114);
 			// 
 			// addFOMODToolStripMenuItem
 			// 
@@ -349,6 +349,13 @@ namespace Fomm.PackageManager {
 			this.createFOMODToolStripMenuItem.Text = "Create FOMod";
 			this.createFOMODToolStripMenuItem.Click += new System.EventHandler(this.createFOMODToolStripMenuItem_Click);
 			// 
+			// editPFPToolStripMenuItem
+			// 
+			this.editPFPToolStripMenuItem.Name = "editPFPToolStripMenuItem";
+			this.editPFPToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+			this.editPFPToolStripMenuItem.Text = "Edit PFP";
+			this.editPFPToolStripMenuItem.Click += new System.EventHandler(this.editPFPToolStripMenuItem_Click);
+			// 
 			// sbtAddFomod
 			// 
 			this.sbtAddFomod.AutoSize = true;
@@ -359,13 +366,6 @@ namespace Fomm.PackageManager {
 			this.sbtAddFomod.TabIndex = 19;
 			this.sbtAddFomod.Text = "Add FOMod";
 			this.sbtAddFomod.UseVisualStyleBackColor = true;
-			// 
-			// editPFPToolStripMenuItem
-			// 
-			this.editPFPToolStripMenuItem.Name = "editPFPToolStripMenuItem";
-			this.editPFPToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
-			this.editPFPToolStripMenuItem.Text = "Edit PFP";
-			this.editPFPToolStripMenuItem.Click += new System.EventHandler(this.editPFPToolStripMenuItem_Click);
 			// 
 			// PackageManager
 			// 
@@ -388,7 +388,7 @@ namespace Fomm.PackageManager {
 			this.Controls.Add(this.bEditGroups);
 			this.Controls.Add(this.cbGroups);
 			this.Name = "PackageManager";
-			this.Text = "PackageManager";
+			this.Text = "Package Manager";
 			this.Load += new System.EventHandler(this.PackageManager_Load);
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.PackageManager_FormClosing);
 			this.splitContainer1.Panel1.ResumeLayout(false);
