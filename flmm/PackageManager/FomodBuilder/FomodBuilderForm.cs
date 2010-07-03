@@ -182,11 +182,12 @@ namespace Fomm.PackageManager.FomodBuilder
 			Readme rmeReadme = redReadmeEditor.Readme;
 			FomodScript fscScript = fseScriptEditor.Script;
 			XmlDocument xmlInfo = m_booInfoEntered ? fomod.SaveInfo(finInfo) : null;
+			IList<KeyValuePair<string,string>> lstCopyInstructions = ffsFileStructure.GetCopyInstructions();
 
 			if (cbxFomod.Checked)
 			{
 				NewFomodBuilder fgnGenerator = new NewFomodBuilder();
-				m_strNewFomodPath = fgnGenerator.BuildFomod(tbxFomodFileName.Text, ffsFileStructure.GetCopyInstructions(), rmeReadme, xmlInfo, m_booInfoEntered, finInfo.Screenshot, fscScript);
+				m_strNewFomodPath = fgnGenerator.BuildFomod(tbxFomodFileName.Text, lstCopyInstructions, rmeReadme, xmlInfo, m_booInfoEntered, finInfo.Screenshot, fscScript);
 				if (String.IsNullOrEmpty(m_strNewFomodPath))
 					return;
 			}
@@ -206,7 +207,7 @@ namespace Fomm.PackageManager.FomodBuilder
 				foreach (SourceDownloadSelector.SourceDownloadLocation sdlLocation in sdsDownloadLocations.DataSource)
 					dicDownloadLocations[sdlLocation.Source] = sdlLocation.Included ? null : sdlLocation.URL;
 				PremadeFomodPackBuilder fpbPackBuilder = new PremadeFomodPackBuilder();
-				string strPFPPAth = fpbPackBuilder.BuildPFP(tbxFomodFileName.Text, strVersion, ffsFileStructure.GetCopyInstructions(), dicDownloadLocations, rmeReadme, xmlInfo, m_booInfoEntered, finInfo.Screenshot, fscScript, tbxPFPPath.Text);
+				string strPFPPAth = fpbPackBuilder.BuildPFP(tbxFomodFileName.Text, strVersion, lstCopyInstructions, dicDownloadLocations, rmeReadme, xmlInfo, m_booInfoEntered, finInfo.Screenshot, fscScript, tbxPFPPath.Text);
 				if (String.IsNullOrEmpty(strPFPPAth))
 					return;
 			}
@@ -354,9 +355,9 @@ namespace Fomm.PackageManager.FomodBuilder
 		protected bool ValidateFomodFiles()
 		{
 			sspError.SetStatus(ffsFileStructure, null);
-			if (ffsFileStructure.GetCopyInstructions().Count == 0)
+			if (ffsFileStructure.FindFomodFiles("*").Count == 0)
 			{
-				sspError.SetStatus(ffsFileStructure, "You must select file to include in the FOMod.");
+				sspError.SetStatus(ffsFileStructure, "You must select files to include in the FOMod.");
 				return false;
 			}
 			return true;
