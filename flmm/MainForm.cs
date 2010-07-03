@@ -86,6 +86,12 @@ namespace Fomm
 			if (tmp != null) lvEspList.Columns[1].Width = int.Parse(tmp);
 			RefreshEspList();
 			exportLoadOrder(Path.Combine(Program.fommDir, "load order backup.txt"));
+
+			if (!File.Exists(Program.FOIniPath))
+			{
+				MessageBox.Show("You have no Fallout INI file. Please run Fallout 3 to initialize the file before installing any mods or turning on Archive Invalidation.", "Missing INI", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				return;
+			}
 		}
 
 		private void lvEspList_DragDrop(object sender, DragEventArgs e)
