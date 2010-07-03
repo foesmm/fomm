@@ -252,7 +252,7 @@ namespace Fomm.AutoSorter
 				}
 				else
 				{
-					sb.AppendLine("* This mod does not exist in the current template");
+					sb.AppendLine("* The auto-sorter doesn't recognize this mod. It is probably safe to put it anywhere, depending on how you want the various plugins to override one another.");
 				}
 				sb.AppendLine();
 			}
