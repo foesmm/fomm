@@ -5,6 +5,7 @@ using System.IO;
 using SevenZip;
 using System.Text;
 using Fomm.PackageManager.XmlConfiguredInstall;
+using Fomm.Util;
 
 namespace Fomm.PackageManager.FomodBuilder
 {
@@ -237,7 +238,7 @@ namespace Fomm.PackageManager.FomodBuilder
 			ProgressDialog.StepOverallProgress();
 
 			CreatePFPHowTo(strTempPFPFolder, bpaArgs.FomodName, bpaArgs.DownloadLocations, lstFomodCopyInstructions, bpaArgs.Script);
-			
+
 			// 6) Create fomod readme
 			CreateReadmeFile(strTempPFPPremadeFolder, bpaArgs.FomodName, bpaArgs.Readme);
 			if (ProgressDialog.Cancelled())
@@ -290,19 +291,8 @@ namespace Fomm.PackageManager.FomodBuilder
 			XmlNode xndRoot = xmlMeta.AppendChild(xmlMeta.CreateElement("premadeFomodPack"));
 			XmlNode xndSources = xndRoot.AppendChild(xmlMeta.CreateElement("sources"));
 			XmlNode xndInstructions = xndRoot.AppendChild(xmlMeta.CreateElement("copyInstructions"));
-			foreach (KeyValuePair<string, string> kvpSource in p_dicDownloadLocations)
-			{
-				if (kvpSource.Value != null)
-				{
-					XmlNode xndSource = xndSources.AppendChild(xmlMeta.CreateElement("source"));
-					xndSource.Attributes.Append(xmlMeta.CreateAttribute("name")).Value = Path.GetFileName(kvpSource.Key);
-					xndSource.Attributes.Append(xmlMeta.CreateAttribute("url")).Value = kvpSource.Value;
-				}
-				ProgressDialog.StepItemProgress();
-				if (ProgressDialog.Cancelled())
-					return;
-			}
 
+			Set<string> setSources = new Set<string>();
 			foreach (KeyValuePair<string, string> kvpInstruction in p_lstCopyInstructions)
 			{
 				XmlNode xndInstruction = xndInstructions.AppendChild(xmlMeta.CreateElement("instruction"));
@@ -310,6 +300,7 @@ namespace Fomm.PackageManager.FomodBuilder
 				if (kvpInstruction.Key.StartsWith(Archive.ARCHIVE_PREFIX))
 				{
 					KeyValuePair<string, string> kvpArchive = Archive.ParseArchivePath(kvpInstruction.Key);
+					setSources.Add(kvpArchive.Key);
 					xndInstruction.Attributes.Append(xmlMeta.CreateAttribute("source")).Value = Archive.GenerateArchivePath(Path.GetFileName(kvpArchive.Key), kvpArchive.Value);
 					xndInstruction.Attributes.Append(xmlMeta.CreateAttribute("destination")).Value = kvpInstruction.Value;
 				}
@@ -321,11 +312,25 @@ namespace Fomm.PackageManager.FomodBuilder
 							continue;
 						if (kvpInstruction.Key.StartsWith(kvpSource.Key))
 						{
+							setSources.Add(kvpSource.Key);
 							xndInstruction.Attributes.Append(xmlMeta.CreateAttribute("source")).Value = kvpInstruction.Key.Substring(kvpSource.Key.Length);
 							xndInstruction.Attributes.Append(xmlMeta.CreateAttribute("destination")).Value = kvpInstruction.Value;
 							break;
 						}
 					}
+				}
+				ProgressDialog.StepItemProgress();
+				if (ProgressDialog.Cancelled())
+					return;
+			}
+
+			foreach (string strSource in setSources)
+			{
+				if (p_dicDownloadLocations[strSource] != null)
+				{
+					XmlNode xndSource = xndSources.AppendChild(xmlMeta.CreateElement("source"));
+					xndSource.Attributes.Append(xmlMeta.CreateAttribute("name")).Value = Path.GetFileName(strSource);
+					xndSource.Attributes.Append(xmlMeta.CreateAttribute("url")).Value = p_dicDownloadLocations[strSource];
 				}
 				ProgressDialog.StepItemProgress();
 				if (ProgressDialog.Cancelled())
@@ -347,21 +352,42 @@ namespace Fomm.PackageManager.FomodBuilder
 		/// <param name="p_fscScript">The FOMod script.</param>
 		protected void CreatePFPHowTo(string p_strPFPFolder, string p_strModBaseName, IDictionary<string, string> p_dicDownloadLocations, IList<KeyValuePair<string, string>> p_lstCopyInstructions, FomodScript p_fscScript)
 		{
-			Dictionary<string, List<string>> dicSources = new Dictionary<string, List<string>>();
-			foreach (KeyValuePair<string, string> kvpSource in p_dicDownloadLocations)
+			Dictionary<string, Set<string>> dicSources = new Dictionary<string, Set<string>>();
+			string strSourceFile = null;
+			foreach (KeyValuePair<string, string> kvpInstruction in p_lstCopyInstructions)
 			{
-				if (kvpSource.Value == null)
-					continue;
-				if (!dicSources.ContainsKey(kvpSource.Value))
-					dicSources[kvpSource.Value] = new List<string>();
-				dicSources[kvpSource.Value].Add(Path.GetFileName(kvpSource.Key));
+				if (kvpInstruction.Key.StartsWith(Archive.ARCHIVE_PREFIX))
+				{
+					KeyValuePair<string, string> kvpArchive = Archive.ParseArchivePath(kvpInstruction.Key);
+					strSourceFile = kvpArchive.Key;
+				}
+				else
+				{
+					foreach (KeyValuePair<string, string> kvpSource in p_dicDownloadLocations)
+					{
+						if (kvpSource.Key.StartsWith(Archive.ARCHIVE_PREFIX))
+							continue;
+						if (kvpInstruction.Key.StartsWith(kvpSource.Key))
+						{
+							strSourceFile = kvpSource.Key;
+							break;
+						}
+					}
+				}
+				if (p_dicDownloadLocations[strSourceFile] != null)
+				{
+					if (!dicSources.ContainsKey(p_dicDownloadLocations[strSourceFile]))
+						dicSources[p_dicDownloadLocations[strSourceFile]] = new Set<string>();
+					dicSources[p_dicDownloadLocations[strSourceFile]].Add(Path.GetFileName(strSourceFile));
+				}
 			}
+
 			StringBuilder stbHowto = new StringBuilder();
 			Int32 intStepCounter = 1;
 			stbHowto.AppendLine("Instructions");
 			stbHowto.AppendLine("------------").AppendLine();
 			AppendWrappedFormat(stbHowto, "{0}) Download the files required to build the FOMod:", intStepCounter++).AppendLine();
-			foreach (KeyValuePair<string, List<string>> kvpSource in dicSources)
+			foreach (KeyValuePair<string, Set<string>> kvpSource in dicSources)
 			{
 				if (kvpSource.Value.Count > 1)
 					stbHowto.AppendLine("\tThese files:");
@@ -391,12 +417,13 @@ namespace Fomm.PackageManager.FomodBuilder
 			//manual install
 			Int32 intSourceFolderCreationStep = intStepCounter;
 			AppendWrappedFormat(stbHowto, "{0}) Extract the source files to the following folders:", intStepCounter++).AppendLine();
-			foreach (KeyValuePair<string,string> kvpSource in p_dicDownloadLocations)
+			foreach (KeyValuePair<string, Set<string>> kvpSource in dicSources)
 			{
-				if (kvpSource.Value == null)
-					continue;
-				stbHowto.AppendFormat("\tExtract '{0}'", Path.GetFileName(kvpSource.Key)).AppendLine();
-				stbHowto.AppendFormat("\t\tto a folder named '{0}'.", Path.GetFileNameWithoutExtension(kvpSource.Key)).AppendLine();
+				foreach (string strSource in kvpSource.Value)
+				{
+					stbHowto.AppendFormat("\tExtract '{0}'", Path.GetFileName(strSource)).AppendLine();
+					stbHowto.AppendFormat("\t\tto a folder named '{0}'.", Path.GetFileNameWithoutExtension(strSource)).AppendLine();
+				}
 			}
 			Int32 intCreateFomodFolderStep = intStepCounter;
 			AppendWrappedFormat(stbHowto, "{0}) Create a folder named '{1}'.", intStepCounter++, p_strModBaseName).AppendLine();
@@ -442,7 +469,7 @@ namespace Fomm.PackageManager.FomodBuilder
 			AppendWrappedFormat(stbHowto, "{0}) Click OK.", intStepCounter++).AppendLine();
 			AppendWrappedFormat(stbHowto, "{0}) Enjoy!", intStepCounter++).AppendLine();
 
-			File.WriteAllText(Path.Combine(p_strPFPFolder, "howto.txt"), stbHowto.ToString().Replace("\t","    "));
+			File.WriteAllText(Path.Combine(p_strPFPFolder, "howto.txt"), stbHowto.ToString().Replace("\t", "    "));
 		}
 
 		/// <summary>
