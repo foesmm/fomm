@@ -156,7 +156,7 @@ namespace Fomm.FileManager
 			{
 				IList<string> lstInstallers = InstallLog.Current.GetInstallingMods(strFile);
 				bool booMissing = false;
-				string currentOwner = InstallLog.Current.GetCurrentFileOwnerKey(strFile);					
+				string currentOwner = InstallLog.Current.GetCurrentFileOwnerKey(strFile);
 				foreach (string strMod in lstInstallers)
 				{
 					string strModKey = InstallLog.Current.GetModKey(strMod);
@@ -204,7 +204,8 @@ namespace Fomm.FileManager
 				lviFile.SubItems.Add(fliFile.CreationTime.ToString("g"));
 				lviFile.SubItems.Add(fliFile.LastWriteTime.ToString("g"));
 				lviFile.SubItems.Add(((Int64)Math.Ceiling(fliFile.Length / 1024.0)) + " KB");
-				imlFiles.Images.Add(fliFile.Extension, System.Drawing.Icon.ExtractAssociatedIcon(fliFile.FullName));
+				if (!imlFiles.Images.ContainsKey(fliFile.Extension))
+					imlFiles.Images.Add(fliFile.Extension, System.Drawing.Icon.ExtractAssociatedIcon(fliFile.FullName));
 				lviFile.ImageKey = fliFile.Extension;
 				lvwFiles.Items.Add(lviFile);
 			}

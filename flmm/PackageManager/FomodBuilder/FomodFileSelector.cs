@@ -515,10 +515,13 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
 			else
 			{
 				string strExtension = Path.GetExtension(p_strFile).ToLowerInvariant();
-				string strIconPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName()) + strExtension;
-				File.CreateText(strIconPath).Close();
-				imlIcons.Images.Add(strExtension, System.Drawing.Icon.ExtractAssociatedIcon(strIconPath));
-				File.Delete(strIconPath);
+				if (!imlIcons.Images.ContainsKey(strExtension))
+				{
+					string strIconPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName()) + strExtension;
+					File.CreateText(strIconPath).Close();
+					imlIcons.Images.Add(strExtension, System.Drawing.Icon.ExtractAssociatedIcon(strIconPath));
+					File.Delete(strIconPath);
+				}
 				tndFile.ImageKey = strExtension;
 				tndFile.SelectedImageKey = strExtension;
 			}
