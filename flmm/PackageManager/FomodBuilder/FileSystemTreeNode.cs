@@ -66,16 +66,16 @@ namespace Fomm.PackageManager.FomodBuilder
 				if (m_booIsDirectory.HasValue)
 					return m_booIsDirectory.Value;
 
-				if ((m_lstSources.Count == 0) || m_lstSources[0].StartsWith(NEW_PREFIX))
+				if ((m_lstSources.Count == 0) || LastSource.StartsWith(NEW_PREFIX))
 					m_booIsDirectory = true;
-				else if (m_lstSources[0].StartsWith(Archive.ARCHIVE_PREFIX))
+				else if (LastSource.StartsWith(Archive.ARCHIVE_PREFIX))
 				{
-					KeyValuePair<string, string> kvpArchive = Archive.ParseArchivePath(m_lstSources[0]);
+					KeyValuePair<string, string> kvpArchive = Archive.ParseArchivePath(LastSource);
 					Archive arcArchive = new Archive(kvpArchive.Key);
 					m_booIsDirectory = arcArchive.IsDirectory(kvpArchive.Value);
 				}
 				else
-					m_booIsDirectory = Directory.Exists(m_lstSources[0]);
+					m_booIsDirectory = Directory.Exists(LastSource);
 				return m_booIsDirectory.Value;
 			}
 		}
@@ -91,7 +91,7 @@ namespace Fomm.PackageManager.FomodBuilder
 				if (m_booIsAchive.HasValue)
 					return m_booIsAchive.Value;
 
-				if ((m_lstSources.Count == 0) || m_lstSources[0].StartsWith(Archive.ARCHIVE_PREFIX) || m_lstSources[0].StartsWith(NEW_PREFIX))
+				if ((m_lstSources.Count == 0) || LastSource.StartsWith(Archive.ARCHIVE_PREFIX) || LastSource.StartsWith(NEW_PREFIX))
 					m_booIsAchive = false;
 				else
 				{
@@ -99,7 +99,7 @@ namespace Fomm.PackageManager.FomodBuilder
 					m_booIsAchive = true;
 					try
 					{
-						szeExtractor = new SevenZipExtractor(m_lstSources[0]);
+						szeExtractor = new SevenZipExtractor(LastSource);
 						UInt32 g = szeExtractor.FilesCount;
 					}
 					catch (Exception e)
@@ -135,6 +135,24 @@ namespace Fomm.PackageManager.FomodBuilder
 			get
 			{
 				return m_lstSources;
+			}
+		}
+
+		/// <summary>
+		/// Gets the last source for the node.
+		/// </summary>
+		/// <remarks>
+		/// The last source is the source that will overwrite the other sources. It is the source
+		/// last added.
+		/// </remarks>
+		/// <value>The last source for the node.</value>
+		public string LastSource
+		{
+			get
+			{
+				if (m_lstSources.Count > 0)
+					return m_lstSources[m_lstSources.Count - 1];
+				return null;
 			}
 		}
 
@@ -174,13 +192,8 @@ namespace Fomm.PackageManager.FomodBuilder
 		/// <param name="p_strSource">The path to add as a source for the node.</param>
 		public void AddSource(string p_strSource)
 		{
-			if (IsDirectory)
-			{
-				m_lstSources.Remove(p_strSource);
-				m_lstSources.Add(p_strSource);
-			}
-			else
-				m_lstSources[0] = p_strSource;
+			m_lstSources.Remove(p_strSource);
+			m_lstSources.Add(p_strSource);
 		}
 
 		#region IComparable<FileSystemTreeNode> Members
