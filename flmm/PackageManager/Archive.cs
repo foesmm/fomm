@@ -17,8 +17,6 @@ namespace Fomm.PackageManager
 		/// </summary>
 		public const string ARCHIVE_PREFIX = "arch:";
 
-		private static Dictionary<string, Dictionary<string, ArchiveFileInfo>> m_dicFileInfoCache = new Dictionary<string, Dictionary<string, ArchiveFileInfo>>(StringComparer.InvariantCultureIgnoreCase);
-
 		private string m_strPath = null;
 		private SevenZipCompressor m_szcCompressor = null;
 		private List<string> m_strFiles = null;
@@ -60,21 +58,9 @@ namespace Fomm.PackageManager
 					m_booCanEdit = true;
 				}
 			}
-			lock (m_dicFileInfoCache)
-			{
-				if (m_dicFileInfoCache.ContainsKey(m_strPath))
-				{
-					m_dicFileInfo = m_dicFileInfoCache[m_strPath];
-					m_strFiles = new List<string>(m_dicFileInfo.Keys);
-				}
-				else
-				{
-					m_dicFileInfo = new Dictionary<string, ArchiveFileInfo>(StringComparer.InvariantCultureIgnoreCase);
-					m_strFiles = new List<string>();
-					LoadFileIndices();
-					m_dicFileInfoCache[m_strPath] = m_dicFileInfo;
-				}
-			}
+			m_dicFileInfo = new Dictionary<string, ArchiveFileInfo>(StringComparer.InvariantCultureIgnoreCase);
+			m_strFiles = new List<string>();
+			LoadFileIndices();
 		}
 
 		#endregion
@@ -84,19 +70,16 @@ namespace Fomm.PackageManager
 		/// </summary>
 		protected void LoadFileIndices()
 		{
-			lock (m_dicFileInfoCache)
+			m_dicFileInfo.Clear();
+			m_strFiles.Clear();
+			using (SevenZipExtractor szeExtractor = new SevenZipExtractor(m_strPath))
 			{
-				m_dicFileInfo.Clear();
-				m_strFiles.Clear();
-				using (SevenZipExtractor szeExtractor = new SevenZipExtractor(m_strPath))
-				{
-					foreach (ArchiveFileInfo afiFile in szeExtractor.ArchiveFileData)
-						if (!afiFile.IsDirectory)
-						{
-							m_dicFileInfo[afiFile.FileName.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar)] = afiFile;
-							m_strFiles.Add(afiFile.FileName.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar));
-						}
-				}
+				foreach (ArchiveFileInfo afiFile in szeExtractor.ArchiveFileData)
+					if (!afiFile.IsDirectory)
+					{
+						m_dicFileInfo[afiFile.FileName.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar)] = afiFile;
+						m_strFiles.Add(afiFile.FileName.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar));
+					}
 			}
 		}
 
