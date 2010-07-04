@@ -54,6 +54,7 @@
 			this.dgvSourceList.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvSourceList_CellValueChanged);
 			this.dgvSourceList.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dgvSourceList_RowsAdded);
 			this.dgvSourceList.CurrentCellDirtyStateChanged += new System.EventHandler(this.dgvSourceList_CurrentCellDirtyStateChanged);
+			this.dgvSourceList.DataSourceChanged += new System.EventHandler(this.dgvSourceList_DataSourceChanged);
 			// 
 			// clmSource
 			// 

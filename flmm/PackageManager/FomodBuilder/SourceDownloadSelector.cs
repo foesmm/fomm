@@ -138,5 +138,17 @@ namespace Fomm.PackageManager.FomodBuilder
 		{
 			HandleIncludedChange(e.RowIndex);
 		}
+
+		/// <summary>
+		/// Handles the <see cref="DataGridView.DataSourceChanged"/> event of the
+		/// source list grid.
+		/// </summary>
+		/// <param name="sender">The object that raised the event.</param>
+		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+		private void dgvSourceList_DataSourceChanged(object sender, EventArgs e)
+		{
+			for (Int32 i = 0; i < dgvSourceList.RowCount; i++)
+				HandleIncludedChange(i);
+		}
 	}
 }
