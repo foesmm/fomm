@@ -503,10 +503,7 @@ namespace Fomm.PackageManager.FomodBuilder
 							strReadme = TextUtil.ByteToString(arcArchive.GetFileContents(kvpArchiveInfo.Value));
 						}
 						else if (File.Exists(kvpReadme.Value))
-						{
 							strReadme = File.ReadAllText(kvpReadme.Value);
-							break;
-						}
 						rmeReadme = new Readme(kvpReadme.Key, strReadme);
 						break;
 					}
