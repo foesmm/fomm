@@ -21,6 +21,8 @@ namespace Fomm.PackageManager.FomodBuilder
 		/// </summary>
 		public const string NEW_PREFIX = "new:";
 
+		private static Dictionary<string, Archive> m_dicArchiveCache = new Dictionary<string, Archive>(StringComparer.InvariantCultureIgnoreCase);
+
 		private Set<string> m_lstSources = new Set<string>();
 		private bool? m_booIsAchive = null;
 		private bool? m_booIsDirectory = null;
@@ -66,12 +68,19 @@ namespace Fomm.PackageManager.FomodBuilder
 				if (m_booIsDirectory.HasValue)
 					return m_booIsDirectory.Value;
 
+
 				if ((m_lstSources.Count == 0) || LastSource.StartsWith(NEW_PREFIX))
 					m_booIsDirectory = true;
 				else if (LastSource.StartsWith(Archive.ARCHIVE_PREFIX))
 				{
 					KeyValuePair<string, string> kvpArchive = Archive.ParseArchivePath(LastSource);
-					Archive arcArchive = new Archive(kvpArchive.Key);
+					Archive arcArchive = null;
+					lock (m_dicArchiveCache)
+					{
+						if (!m_dicArchiveCache.ContainsKey(kvpArchive.Key))
+							m_dicArchiveCache[kvpArchive.Key] = new Archive(kvpArchive.Key);
+						arcArchive = m_dicArchiveCache[kvpArchive.Key];
+					}
 					m_booIsDirectory = arcArchive.IsDirectory(kvpArchive.Value);
 				}
 				else

@@ -17,10 +17,12 @@ namespace Fomm.PackageManager
 		/// </summary>
 		public const string ARCHIVE_PREFIX = "arch:";
 
+		private static Dictionary<string, Dictionary<string, ArchiveFileInfo>> m_dicFileInfoCache = new Dictionary<string, Dictionary<string, ArchiveFileInfo>>(StringComparer.InvariantCultureIgnoreCase);
+
 		private string m_strPath = null;
 		private SevenZipCompressor m_szcCompressor = null;
-		private List<string> m_strFiles = new List<string>();
-		private Dictionary<string, ArchiveFileInfo> m_dicFileInfo = new Dictionary<string, ArchiveFileInfo>();
+		private List<string> m_strFiles = null;
+		private Dictionary<string, ArchiveFileInfo> m_dicFileInfo = null;
 		private bool m_booCanEdit = false;
 
 		#region Properties
@@ -47,7 +49,7 @@ namespace Fomm.PackageManager
 		/// <param name="p_strPath">The path to the archive file.</param>
 		public Archive(string p_strPath)
 		{
-			m_strPath = p_strPath;
+			m_strPath = p_strPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
 			using (SevenZipExtractor szeExtractor = new SevenZipExtractor(m_strPath))
 			{
 				if (Enum.IsDefined(typeof(OutArchiveFormat), szeExtractor.Format.ToString()))
@@ -58,7 +60,21 @@ namespace Fomm.PackageManager
 					m_booCanEdit = true;
 				}
 			}
-			LoadFileIndices();
+			lock (m_dicFileInfoCache)
+			{
+				if (m_dicFileInfoCache.ContainsKey(m_strPath))
+				{
+					m_dicFileInfo = m_dicFileInfoCache[m_strPath];
+					m_strFiles = new List<string>(m_dicFileInfo.Keys);
+				}
+				else
+				{
+					m_dicFileInfo = new Dictionary<string, ArchiveFileInfo>(StringComparer.InvariantCultureIgnoreCase);
+					m_strFiles = new List<string>();
+					LoadFileIndices();
+					m_dicFileInfoCache[m_strPath] = m_dicFileInfo;
+				}
+			}
 		}
 
 		#endregion
@@ -68,16 +84,19 @@ namespace Fomm.PackageManager
 		/// </summary>
 		protected void LoadFileIndices()
 		{
-			m_dicFileInfo.Clear();
-			m_strFiles.Clear();
-			using (SevenZipExtractor szeExtractor = new SevenZipExtractor(m_strPath))
+			lock (m_dicFileInfoCache)
 			{
-				foreach (ArchiveFileInfo afiFile in szeExtractor.ArchiveFileData)
-					if (!afiFile.IsDirectory)
-					{
-						m_dicFileInfo[afiFile.FileName.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).ToLowerInvariant()] = afiFile;
-						m_strFiles.Add(afiFile.FileName.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar));
-					}
+				m_dicFileInfo.Clear();
+				m_strFiles.Clear();
+				using (SevenZipExtractor szeExtractor = new SevenZipExtractor(m_strPath))
+				{
+					foreach (ArchiveFileInfo afiFile in szeExtractor.ArchiveFileData)
+						if (!afiFile.IsDirectory)
+						{
+							m_dicFileInfo[afiFile.FileName.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar)] = afiFile;
+							m_strFiles.Add(afiFile.FileName.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar));
+						}
+				}
 			}
 		}
 
@@ -118,22 +137,29 @@ namespace Fomm.PackageManager
 		/// <lang cref="false"/> otherwise.</returns>
 		public bool IsDirectory(string p_strPath)
 		{
-			string strPathWithSep = p_strPath.Trim(new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar });
-			string strPathWithAltSep = strPathWithSep + Path.AltDirectorySeparatorChar;
-			strPathWithSep += Path.DirectorySeparatorChar;
+			string strPath = p_strPath.Trim(new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar });
+			strPath = strPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+			string strPathWithSep = strPath + Path.DirectorySeparatorChar;
+
+			if (m_dicFileInfo.ContainsKey(strPath))
+				return false;
+
+			foreach (string strFile in m_dicFileInfo.Keys)
+				if (strFile.StartsWith(strPathWithSep, StringComparison.InvariantCultureIgnoreCase))
+					return true;
 
 			ArchiveFileInfo afiFile = default(ArchiveFileInfo);
+			string strArchiveFileName = null;
 			using (SevenZipExtractor szeExtractor = new SevenZipExtractor(m_strPath))
-			{
 				foreach (ArchiveFileInfo afiTmp in szeExtractor.ArchiveFileData)
-					if (afiTmp.FileName.Equals(p_strPath, StringComparison.InvariantCultureIgnoreCase))
+				{
+					strArchiveFileName = afiTmp.FileName.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+					if (strArchiveFileName.Equals(strPath, StringComparison.InvariantCultureIgnoreCase))
 					{
 						afiFile = afiTmp;
 						break;
 					}
-					else if (afiTmp.FileName.StartsWith(strPathWithSep, StringComparison.InvariantCultureIgnoreCase) || afiTmp.FileName.StartsWith(strPathWithAltSep, StringComparison.InvariantCultureIgnoreCase))
-						return true;
-			}
+				}
 			return (afiFile == null) ? false : afiFile.IsDirectory;
 		}
 
