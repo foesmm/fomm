@@ -116,10 +116,17 @@ namespace Fomm.PackageManager.FomodBuilder
 		/// <param name="e">A <see cref="DragEventArgs"/> that describes the event arguments.</param>
 		private void lvwReadmeFiles_DragOver(object sender, DragEventArgs e)
 		{
-			if (!e.Data.GetDataPresent(typeof(SourceFileTree.SourceFileSystemDragData)))
+			if (!e.Data.GetDataPresent(typeof(List<SourceFileTree.SourceFileSystemDragData>)))
 				return;
-			SourceFileTree.SourceFileSystemDragData sddData = (SourceFileTree.SourceFileSystemDragData)e.Data.GetData(typeof(SourceFileTree.SourceFileSystemDragData));
-			if (sddData.IsDirectory)
+			List<SourceFileTree.SourceFileSystemDragData> lstData = (List<SourceFileTree.SourceFileSystemDragData>)e.Data.GetData(typeof(List<SourceFileTree.SourceFileSystemDragData>));
+			bool booFoundFile = false;
+			foreach (SourceFileTree.SourceFileSystemDragData sddData in lstData)
+				if (!sddData.IsDirectory)
+				{
+					booFoundFile = true;
+					break;
+				}
+			if (!booFoundFile)
 				return;
 			e.Effect = DragDropEffects.Copy;
 		}
@@ -134,12 +141,12 @@ namespace Fomm.PackageManager.FomodBuilder
 		/// <param name="e">A <see cref="DragEventArgs"/> that describes the event arguments.</param>
 		private void lvwReadmeFiles_DragDrop(object sender, DragEventArgs e)
 		{
-			if (!e.Data.GetDataPresent(typeof(SourceFileTree.SourceFileSystemDragData)))
+			if (!e.Data.GetDataPresent(typeof(List<SourceFileTree.SourceFileSystemDragData>)))
 				return;
-			SourceFileTree.SourceFileSystemDragData sddData = (SourceFileTree.SourceFileSystemDragData)e.Data.GetData(typeof(SourceFileTree.SourceFileSystemDragData));
-			if (sddData.IsDirectory)
-				return;
-			lvwReadmeFiles.Items.Add(sddData.Path, Path.GetFileName(sddData.Path), 0);
+			List<SourceFileTree.SourceFileSystemDragData> lstData = (List<SourceFileTree.SourceFileSystemDragData>)e.Data.GetData(typeof(List<SourceFileTree.SourceFileSystemDragData>));
+			foreach (SourceFileTree.SourceFileSystemDragData sddData in lstData)
+				if (!sddData.IsDirectory)
+					lvwReadmeFiles.Items.Add(sddData.Path, Path.GetFileName(sddData.Path), 0);
 		}
 
 		#endregion
@@ -154,7 +161,7 @@ namespace Fomm.PackageManager.FomodBuilder
 			string strFileName = null;
 			foreach (ListViewItem lviFile in lvwReadmeFiles.Items)
 			{
-				strFileName=lviFile.Name;
+				strFileName = lviFile.Name;
 				if (strFileName.StartsWith(Archive.ARCHIVE_PREFIX))
 				{
 					KeyValuePair<string, string> kvpPath = Archive.ParseArchivePath(strFileName);
