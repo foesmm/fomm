@@ -213,8 +213,11 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
 		{
 			foreach (FileSystemTreeNode tndNode in p_tncNodes)
 			{
-				foreach (string strSource in tndNode.Sources)
-					p_lstPaths.Add(new KeyValuePair<string, string>(strSource, tndNode.FullPath));
+				if (tndNode.IsDirectory)
+					foreach (string strSource in tndNode.Sources)
+						p_lstPaths.Add(new KeyValuePair<string, string>(strSource, tndNode.FullPath));
+				else
+					p_lstPaths.Add(new KeyValuePair<string, string>(tndNode.LastSource, tndNode.FullPath));
 				GetCopyPaths(p_lstPaths, tndNode.Nodes);
 			}
 		}
