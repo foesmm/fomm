@@ -182,7 +182,11 @@ namespace Fomm.PackageManager.FomodBuilder
 			Readme rmeReadme = redReadmeEditor.Readme;
 			FomodScript fscScript = fseScriptEditor.Script;
 			XmlDocument xmlInfo = m_booInfoEntered ? fomod.SaveInfo(finInfo) : null;
+
+			Cursor crsOldCursor = Cursor;
+			Cursor = Cursors.WaitCursor;
 			IList<KeyValuePair<string,string>> lstCopyInstructions = ffsFileStructure.GetCopyInstructions();
+			Cursor = crsOldCursor;
 
 			if (cbxFomod.Checked)
 			{
