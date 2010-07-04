@@ -74,7 +74,7 @@ namespace Fomm.PackageManager.FomodBuilder
 			{
 				List<string> lstSource = new List<string>();
 				foreach (FileSystemTreeNode tndSource in tvwSource.Nodes)
-					lstSource.Add(tndSource.Sources[0]);
+					lstSource.Add(tndSource.LastSource);
 				return lstSource.ToArray();
 			}
 			set
@@ -303,7 +303,7 @@ namespace Fomm.PackageManager.FomodBuilder
 					continue;
 				if (tndFolder.IsDirectory)
 				{
-					strPath = tndFolder.Sources[0];
+					strPath = tndFolder.LastSource;
 					if (strPath.StartsWith(Archive.ARCHIVE_PREFIX))
 					{
 						KeyValuePair<string, string> kvpPath = Archive.ParseArchivePath(strPath);
