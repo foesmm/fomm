@@ -318,14 +318,40 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
 					lstSubPaths.AddRange(Directory.GetDirectories(strSource));
 					lstSubPaths.AddRange(Directory.GetFiles(strSource));
 				}
+				//if we find all the current folder's subpaths, and each subpath
+				// has no children in the same source tree, then we can just copy
+				// the current folder instead of copying each child individually
 				Int32 intFoundCount = 0;
+				//so, for each subpath of the current folder...
 				foreach (string strSubPath in lstSubPaths)
 				{
-					foreach (FileSystemTreeNode tndNode in p_tndNode.Nodes)
+					//...look through all the children nodes for the subpath...
+					foreach (FileSystemTreeNode tndChild in p_tndNode.Nodes)
 					{
-						if (tndNode.Sources.Contains(strSubPath) && (tndNode.Nodes.Count == 0))
+						//...if we find the subpath...
+						if (tndChild.Sources.Contains(strSubPath))
 						{
-							intFoundCount++;
+							//...and the node containing the subpath has no children
+							// containing anything in the same source tree...
+							bool booFound = false;
+							foreach (FileSystemTreeNode tndSubNode in tndChild.Nodes)
+							{
+								foreach (string strSubSource in tndSubNode.Sources)
+									if (strSubSource.StartsWith(strSubPath))
+									{
+										booFound = true;
+										break;
+									}
+								if (booFound)
+									break;
+							}
+							//...then we found the subpath.
+							// if the node containing the subpath had had children containing
+							// something in the same source tree, that would imply we aren't
+							// copying all the current folder's descendants, so we would have to
+							// copy each descendent individually, instead of just copying this folder
+							if (!booFound)
+								intFoundCount++;
 							break;
 						}
 					}
@@ -340,10 +366,13 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
 							tndNode = (FileSystemTreeNode)p_tndNode.Nodes[i];
 							if (tndNode.Sources.Contains(strSubPath))
 							{
-								if (tndNode.Sources.Count > 1)
-									tndNode.Sources.Remove(strSubPath);
-								else
+								//if we are removing the last source, and there are no
+								// children nodes (implying this node isn't needed in
+								// another source tree), then prune this node away...
+								if ((tndNode.Nodes.Count == 0) && (tndNode.Sources.Count <= 1))
 									p_tndNode.Nodes.RemoveAt(i);
+								else //...otherwise just remove the source
+									tndNode.Sources.Remove(strSubPath);
 								break;
 							}
 						}
@@ -735,7 +764,7 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
 				}
 			}
 			else if ((p_queDirectories.Count == 0) && p_rgxFileNamePattern.IsMatch(p_tndRoot.Name))
-				lstMatches.Add(new KeyValuePair<string, string>(p_tndRoot.FullPath, p_tndRoot.Sources[0]));
+				lstMatches.Add(new KeyValuePair<string, string>(p_tndRoot.FullPath, p_tndRoot.LastSource));
 			return lstMatches;
 		}
 
