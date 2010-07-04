@@ -431,17 +431,17 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
 					tndFolder = tndFolder.Parent;
 				if (tndFolder != null)
 				{
-					foreach (SourceFileTree.SourceFileSystemDragData sfdData in lstPaths)
-						addFomodFile(tndFolder, sfdData.Path);
+					for (Int32 i = 0; i < lstPaths.Count; i++)
+						addFomodFile(tndFolder, lstPaths[i].Path);
 					tndFolder.Expand();
 				}
 				else
-					foreach (SourceFileTree.SourceFileSystemDragData sfdData in lstPaths)
-						addFomodFile(null, sfdData.Path);
+					for (Int32 i = 0; i < lstPaths.Count; i++)
+						addFomodFile(null, lstPaths[i].Path);
 			}
 			else
-				foreach (SourceFileTree.SourceFileSystemDragData sfdData in lstPaths)
-					addFomodFile(null, sfdData.Path);
+				for (Int32 i = 0; i < lstPaths.Count; i++)
+					addFomodFile(null, lstPaths[i].Path);
 			tvwFomod.BeginInvoke((MethodInvoker)(() => { tvwFomod.Sort(); }));
 			tvwFomod.EndUpdate();
 			Cursor = crsOldCursor;
@@ -495,20 +495,20 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
 						KeyValuePair<string, string> kvpPath = Archive.ParseArchivePath(p_strFile);
 						Archive arcArchive = new Archive(kvpPath.Key);
 						string[] strFolders = arcArchive.GetDirectories(kvpPath.Value);
-						foreach (string strSubFolder in strFolders)
-							addFomodFile(tndFile, Archive.GenerateArchivePath(kvpPath.Key, strSubFolder));
+						for (Int32 i = 0; i < strFolders.Length; i++)
+							addFomodFile(tndFile, Archive.GenerateArchivePath(kvpPath.Key, strFolders[i]));
 						string[] strFiles = arcArchive.GetFiles(kvpPath.Value);
-						foreach (string strfile in strFiles)
-							addFomodFile(tndFile, Archive.GenerateArchivePath(kvpPath.Key, strfile));
+						for (Int32 i = 0; i < strFiles.Length; i++)
+							addFomodFile(tndFile, Archive.GenerateArchivePath(kvpPath.Key, strFiles[i]));
 					}
 					else if (!p_strFile.StartsWith(FileSystemTreeNode.NEW_PREFIX))
 					{
 						string[] strFolders = Directory.GetDirectories(p_strFile);
-						foreach (string strSubFolder in strFolders)
-							addFomodFile(tndFile, strSubFolder);
+						for (Int32 i = 0; i < strFolders.Length; i++)
+							addFomodFile(tndFile, strFolders[i]);
 						string[] strFiles = Directory.GetFiles(p_strFile);
-						foreach (string strfile in strFiles)
-							addFomodFile(tndFile, strfile);
+						for (Int32 i = 0; i < strFiles.Length; i++)
+							addFomodFile(tndFile, strFiles[i]);
 					}
 				}
 			}
@@ -527,14 +527,10 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
 
 		protected void PopulateChildren(TreeNode p_tndNode)
 		{
-			List<string> lstFolders = new List<string>();
-			List<string> lstFiles = new List<string>();
 			foreach (FileSystemTreeNode tndFolder in p_tndNode.Nodes)
 			{
 				if ((tndFolder.Nodes.Count > 0) || !tndFolder.IsDirectory)
 					continue;
-				lstFolders.Clear();
-				lstFiles.Clear();
 				foreach (string strSource in tndFolder.Sources)
 				{
 					if (strSource.StartsWith(Archive.ARCHIVE_PREFIX))
@@ -542,24 +538,22 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
 						KeyValuePair<string, string> kvpPath = Archive.ParseArchivePath(strSource);
 						Archive arcArchive = new Archive(kvpPath.Key);
 						string[] strFolders = arcArchive.GetDirectories(kvpPath.Value);
-						foreach (string strSubFolder in strFolders)
-							lstFolders.Add(Archive.GenerateArchivePath(kvpPath.Key, strSubFolder));
+						for (Int32 i = 0; i < strFolders.Length; i++)
+							addFomodFile(tndFolder, Archive.GenerateArchivePath(kvpPath.Key, strFolders[i]));
 						string[] strFiles = arcArchive.GetFiles(kvpPath.Value);
-						foreach (string strfile in strFiles)
-							lstFiles.Add(Archive.GenerateArchivePath(kvpPath.Key, strfile));
+						for (Int32 i = 0; i < strFiles.Length; i++)
+							addFomodFile(tndFolder, Archive.GenerateArchivePath(kvpPath.Key, strFiles[i]));
 					}
 					else if (!strSource.StartsWith(FileSystemTreeNode.NEW_PREFIX))
 					{
 						string[] strFolders = Directory.GetDirectories(strSource);
-						lstFolders.AddRange(strFolders);
+						for (Int32 i = 0; i < strFolders.Length; i++)
+							addFomodFile(tndFolder, strFolders[i]);
 						string[] strFiles = Directory.GetFiles(strSource);
-						lstFiles.AddRange(strFiles);
+						for (Int32 i = 0; i < strFiles.Length; i++)
+							addFomodFile(tndFolder, strFiles[i]);
 					}
 				}
-				foreach (string strSubFolder in lstFolders)
-					addFomodFile(tndFolder, strSubFolder);
-				foreach (string strfile in lstFiles)
-					addFomodFile(tndFolder, strfile);
 			}
 		}
 
