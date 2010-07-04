@@ -83,6 +83,7 @@ namespace Fomm.PackageManager.FomodBuilder
 		/// </remarks>
 		/// <param name="p_strFileName">The name of the fomod file, excluding extension.</param>
 		/// <param name="p_strVersion">The version of the fomod for which we are creating the PFP.</param>
+		/// <param name="p_strMachineVersion">The machine version of the fomod for which we are creating the PFP.</param>
 		/// <param name="p_lstCopyInstructions">The list of files to copy into the fomod.</param>
 		/// <param name="p_dicDownloadLocations">The list of download locations for the sources.</param>
 		/// <param name="p_rmeReadme">The fomod readme.</param>
@@ -92,7 +93,7 @@ namespace Fomm.PackageManager.FomodBuilder
 		/// <param name="p_fscScript">The fomod install script.</param>
 		/// <param name="p_strPFPPath">The path where the Premade Fomod Pack will be created.</param>
 		/// <returns>The path to the new premade fomod pack if it was successfully built; <lang cref="null"/> otherwise.</returns>
-		public string BuildPFP(string p_strFileName, string p_strVersion, IList<KeyValuePair<string, string>> p_lstCopyInstructions, IDictionary<string, string> p_dicDownloadLocations, Readme p_rmeReadme, XmlDocument p_xmlInfo, bool p_booSetScreenshot, Screenshot p_shtScreenshot, FomodScript p_fscScript, string p_strPFPPath)
+		public string BuildPFP(string p_strFileName, string p_strVersion, string p_strMachineVersion, IList<KeyValuePair<string, string>> p_lstCopyInstructions, IDictionary<string, string> p_dicDownloadLocations, Readme p_rmeReadme, XmlDocument p_xmlInfo, bool p_booSetScreenshot, Screenshot p_shtScreenshot, FomodScript p_fscScript, string p_strPFPPath)
 		{
 			string strPFPExtension = null;
 			switch ((OutArchiveFormat)Settings.GetInt("pfpCompressionFormat", (Int32)OutArchiveFormat.SevenZip))
@@ -118,7 +119,10 @@ namespace Fomm.PackageManager.FomodBuilder
 				default:
 					throw new Exception("Unrecognized value for OutArchiveFormat enum.");
 			}
-			string strPFPPath = Path.Combine(p_strPFPPath, String.Format("{0} {1}{2}", p_strFileName, p_strVersion, strPFPExtension));
+			string strVersion = p_strVersion;
+			if (strVersion.Length > 8)
+				strVersion = p_strMachineVersion;
+			string strPFPPath = Path.Combine(p_strPFPPath, String.Format("{0} {1}{2}", p_strFileName, strVersion, strPFPExtension));
 			strPFPPath = GenerateFomod(new BuildPFPArgs(p_strFileName,
 																p_lstCopyInstructions,
 																p_dicDownloadLocations,
