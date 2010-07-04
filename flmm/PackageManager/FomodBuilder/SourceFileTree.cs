@@ -94,6 +94,7 @@ namespace Fomm.PackageManager.FomodBuilder
 		public SourceFileTree()
 		{
 			InitializeComponent();
+			tvwSource.TreeViewNodeSorter = new NodeComparer();
 		}
 
 		#endregion

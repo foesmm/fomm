@@ -331,6 +331,7 @@ namespace Fomm.Controls
 		/// </summary>
 		public MultiSelectTreeView()
 		{
+			DoubleBuffered = true;
 			m_tncSelectedNodes = new TreeNodeCollection();
 			m_tncSelectedNodes.ItemAdded += new EventHandler<TreeNodeCollection.TreeNodeEventArgs>(m_tncSelectedNodes_ItemAdded);
 			m_tncSelectedNodes.ItemRemoved += new EventHandler<TreeNodeCollection.TreeNodeEventArgs>(m_tncSelectedNodes_ItemRemoved);
@@ -409,7 +410,6 @@ namespace Fomm.Controls
 		/// <param name="e">A <see cref="TreeViewEventArgs"/> describing the event arguments.</param>
 		protected override void OnAfterSelect(TreeViewEventArgs e)
 		{
-			BeginUpdate();
 			if (((ModifierKeys & Keys.Control) > 0))
 			{
 				if (!SelectedNodes.Contains(e.Node))
@@ -431,7 +431,6 @@ namespace Fomm.Controls
 					SelectedNodes.Add(e.Node);
 				}
 			}
-			EndUpdate();
 			base.OnAfterSelect(e);
 		}
 
