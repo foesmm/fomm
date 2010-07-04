@@ -178,6 +178,7 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
 			string strPath = p_strPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
 			strPath = strPath.Trim(new char[] { Path.DirectorySeparatorChar });
 			string[] strPathNodes = strPath.Split(Path.DirectorySeparatorChar);
+			Array.Reverse(strPathNodes);
 			Stack<string> stkPath = new Stack<string>(strPathNodes);
 			TreeNodeCollection tncNodes = tvwFomod.Nodes;
 			FileSystemTreeNode tndLastNode = null;
