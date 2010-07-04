@@ -200,18 +200,24 @@ namespace Fomm.PackageManager.FomodBuilder
 				Settings.SetString("pfpOutputPath", tbxPFPPath.Text);
 
 				string strVersion = "1.0";
+				string strMachineVersion = "1.0";
 				XmlDocument xmlInfoTmp = fomod.SaveInfo(finInfo);
 				if (xmlInfoTmp != null)
 				{
 					XmlNode xndVersion = xmlInfoTmp.SelectSingleNode("/fomod/Version");
 					if (xndVersion != null)
+					{
 						strVersion = xndVersion.InnerText;
+						XmlAttribute xatVersion = xndVersion.Attributes["MachineVersion"];
+						if (xatVersion != null)
+							strMachineVersion = xatVersion.Value;
+					}
 				}
 				Dictionary<string, string> dicDownloadLocations = new Dictionary<string, string>();
 				foreach (SourceDownloadSelector.SourceDownloadLocation sdlLocation in sdsDownloadLocations.DataSource)
 					dicDownloadLocations[sdlLocation.Source] = sdlLocation.Included ? null : sdlLocation.URL;
 				PremadeFomodPackBuilder fpbPackBuilder = new PremadeFomodPackBuilder();
-				string strPFPPAth = fpbPackBuilder.BuildPFP(tbxFomodFileName.Text, strVersion, lstCopyInstructions, dicDownloadLocations, rmeReadme, xmlInfo, m_booInfoEntered, finInfo.Screenshot, fscScript, tbxPFPPath.Text);
+				string strPFPPAth = fpbPackBuilder.BuildPFP(tbxFomodFileName.Text, strVersion, strMachineVersion, lstCopyInstructions, dicDownloadLocations, rmeReadme, xmlInfo, m_booInfoEntered, finInfo.Screenshot, fscScript, tbxPFPPath.Text);
 				if (String.IsNullOrEmpty(strPFPPAth))
 					return;
 			}
@@ -579,7 +585,7 @@ namespace Fomm.PackageManager.FomodBuilder
 		#endregion
 
 		#region Info
-
+		private bool m_booLoadedInfo = false;
 		/// <summary>
 		/// If no info has been entered, this method looks for an info file in the selected
 		/// files, and, if one is found, uses it to populate the info editor. If one is not found,
@@ -587,41 +593,45 @@ namespace Fomm.PackageManager.FomodBuilder
 		/// </summary>
 		protected void SetInfoDefault()
 		{
-			string strInfoFileName = "fomod" + Path.DirectorySeparatorChar + "info.xml";
-			IList<KeyValuePair<string, string>> lstFiles = ffsFileStructure.FindFomodFiles(strInfoFileName);
-			if (lstFiles.Count > 0)
+			if (!m_booLoadedInfo)
 			{
-				XmlDocument xmlInfo = new XmlDocument();
-				KeyValuePair<string, string> kvpScript = lstFiles[0];
-				if (kvpScript.Value.StartsWith(Archive.ARCHIVE_PREFIX))
+				m_booLoadedInfo = true;
+				string strInfoFileName = "fomod" + Path.DirectorySeparatorChar + "info.xml";
+				IList<KeyValuePair<string, string>> lstFiles = ffsFileStructure.FindFomodFiles(strInfoFileName);
+				if (lstFiles.Count > 0)
 				{
-					KeyValuePair<string, string> kvpArchiveInfo = Archive.ParseArchivePath(kvpScript.Value);
-					Archive arcArchive = new Archive(kvpArchiveInfo.Key);
-					string strInfo = TextUtil.ByteToString(arcArchive.GetFileContents(kvpArchiveInfo.Value));
-					xmlInfo.LoadXml(strInfo);
+					XmlDocument xmlInfo = new XmlDocument();
+					KeyValuePair<string, string> kvpScript = lstFiles[0];
+					if (kvpScript.Value.StartsWith(Archive.ARCHIVE_PREFIX))
+					{
+						KeyValuePair<string, string> kvpArchiveInfo = Archive.ParseArchivePath(kvpScript.Value);
+						Archive arcArchive = new Archive(kvpArchiveInfo.Key);
+						string strInfo = TextUtil.ByteToString(arcArchive.GetFileContents(kvpArchiveInfo.Value));
+						xmlInfo.LoadXml(strInfo);
+					}
+					else if (File.Exists(kvpScript.Value))
+						xmlInfo.Load(kvpScript.Value);
+
+					fomod.LoadInfo(xmlInfo, finInfo, false);
 				}
-				else if (File.Exists(kvpScript.Value))
-					xmlInfo.Load(kvpScript.Value);
+				else if (String.IsNullOrEmpty(finInfo.ModName))
+					finInfo.ModName = tbxFomodFileName.Text;
 
-				fomod.LoadInfo(xmlInfo, finInfo, false);
-			}
-			else if (String.IsNullOrEmpty(finInfo.ModName))
-				finInfo.ModName = tbxFomodFileName.Text;
-
-			string strScreenshotFileName = "fomod" + Path.DirectorySeparatorChar + "screenshot.*";
-			lstFiles = ffsFileStructure.FindFomodFiles(strScreenshotFileName);
-			if (lstFiles.Count > 0)
-			{
-				KeyValuePair<string, string> kvpScreenshot = lstFiles[0];
-				if (kvpScreenshot.Value.StartsWith(Archive.ARCHIVE_PREFIX))
+				string strScreenshotFileName = "fomod" + Path.DirectorySeparatorChar + "screenshot.*";
+				IList<KeyValuePair<string, string>> lstScreenshotFiles = ffsFileStructure.FindFomodFiles(strScreenshotFileName);
+				if (lstScreenshotFiles.Count > 0)
 				{
-					KeyValuePair<string, string> kvpArchiveInfo = Archive.ParseArchivePath(kvpScreenshot.Value);
-					Archive arcArchive = new Archive(kvpArchiveInfo.Key);
-					byte[] bteScreenshot = arcArchive.GetFileContents(kvpArchiveInfo.Value);
-					finInfo.Screenshot = new Screenshot(kvpArchiveInfo.Value, bteScreenshot);
+					KeyValuePair<string, string> kvpScreenshot = lstScreenshotFiles[0];
+					if (kvpScreenshot.Value.StartsWith(Archive.ARCHIVE_PREFIX))
+					{
+						KeyValuePair<string, string> kvpArchiveInfo = Archive.ParseArchivePath(kvpScreenshot.Value);
+						Archive arcArchive = new Archive(kvpArchiveInfo.Key);
+						byte[] bteScreenshot = arcArchive.GetFileContents(kvpArchiveInfo.Value);
+						finInfo.Screenshot = new Screenshot(kvpArchiveInfo.Value, bteScreenshot);
+					}
+					else if (File.Exists(kvpScreenshot.Value))
+						finInfo.Screenshot = new Screenshot(kvpScreenshot.Value, File.ReadAllBytes(kvpScreenshot.Value));
 				}
-				else if (File.Exists(kvpScreenshot.Value))
-					finInfo.Screenshot = new Screenshot(kvpScreenshot.Value, File.ReadAllBytes(kvpScreenshot.Value));
 			}
 		}
 
