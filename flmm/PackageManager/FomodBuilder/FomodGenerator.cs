@@ -185,7 +185,7 @@ namespace Fomm.PackageManager.FomodBuilder
 			}
 			if (!newpath.Equals(strNewPath))
 			{
-				switch (MessageBox.Show("File '" + newpath + "' already exists. The old file can be replaced, or the new file can be named '" + strNewPath + "'. Do you want to overwrite the old file?", "Warning", MessageBoxButtons.YesNoCancel))
+				switch (MessageBox.Show("File '" + newpath + "' already exists. The old file can be replaced, or the new file can be named '" + strNewPath + "'." + Environment.NewLine + "Do you want to overwrite the old file?", "Warning", MessageBoxButtons.YesNoCancel))
 				{
 					case DialogResult.Yes:
 						return true;
