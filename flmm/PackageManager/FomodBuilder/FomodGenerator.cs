@@ -176,7 +176,7 @@ namespace Fomm.PackageManager.FomodBuilder
 			string strExtension = Path.GetExtension(newpath);
 			for (Int32 i = 2; i < 999 && File.Exists(strNewPath); i++)
 			{
-				strNewPath = String.Format("{0} ({1}){2}", Path.ChangeExtension(strNewPath, null), i, strExtension);
+				strNewPath = String.Format("{0} ({1}){2}", Path.ChangeExtension(newpath, null), i, strExtension);
 			}
 			if (File.Exists(strNewPath))
 			{
