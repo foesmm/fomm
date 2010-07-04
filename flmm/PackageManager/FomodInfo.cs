@@ -15,8 +15,6 @@ namespace Fomm.PackageManager
 	/// </summary>
 	public partial class FomodInfo : UserControl, IFomodInfo
 	{
-		protected static readonly Regex m_rgxEmail = new Regex(@"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", RegexOptions.Singleline | RegexOptions.CultureInvariant);
-
 		private Screenshot m_shtScreenshot = null;
 
 		#region Properties
@@ -207,42 +205,12 @@ namespace Fomm.PackageManager
 		}
 
 		/// <summary>
-		/// Ensures that the email is valid, if present.
-		/// </summary>
-		/// <returns><lang cref="true"/> if the email is valid or not present;
-		/// <lang cref="false"/> otherwise.</returns>
-		protected bool ValidateEmail()
-		{
-			erpErrors.SetError(tbEmail, null);
-			if (!String.IsNullOrEmpty(tbEmail.Text) && !m_rgxEmail.IsMatch(tbEmail.Text))
-			{
-				erpErrors.SetError(tbEmail, "Invalid email address.");
-				return false;
-			}
-			return true;
-		}
-
-		/// <summary>
-		/// Handles the <see cref="Control.Validating"/> event of the email textbox.
-		/// </summary>
-		/// <remarks>
-		/// Ensures that the email is valid, if present.
-		/// </remarks>
-		/// <param name="sender">The object that raised the event.</param>
-		/// <param name="e">A <see cref="CancelEventArgs"/> describing the event arguments.</param>
-		private void tbEmail_Validating(object sender, CancelEventArgs e)
-		{
-			ValidateEmail();
-		}
-
-		/// <summary>
 		/// Validate the controls on this control.
 		/// </summary>
 		/// <returns><lang cref="true"/> if all controls passed validation; <lang cref="false"/> otherwise.</returns>
 		public bool PerformValidation()
 		{
-			bool booIsValid = ValidateEmail();
-			booIsValid &= ValidateMachineVersion();
+			bool booIsValid = ValidateMachineVersion();
 			booIsValid &= ValidateMinFommVersion();
 			booIsValid &= ValidateWebsite();
 			return booIsValid;

@@ -94,7 +94,6 @@
 			this.tbEmail.Name = "tbEmail";
 			this.tbEmail.Size = new System.Drawing.Size(219, 20);
 			this.tbEmail.TabIndex = 33;
-			this.tbEmail.Validating += new System.ComponentModel.CancelEventHandler(this.tbEmail_Validating);
 			// 
 			// label7
 			// 
