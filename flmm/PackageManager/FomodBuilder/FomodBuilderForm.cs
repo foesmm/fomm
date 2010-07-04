@@ -657,6 +657,7 @@ namespace Fomm.PackageManager.FomodBuilder
 		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
 		private void butSelectPFPFolder_Click(object sender, EventArgs e)
 		{
+			fbdPFPPath.SelectedPath = tbxPFPPath.Text;
 			if (fbdPFPPath.ShowDialog(this) == DialogResult.OK)
 				tbxPFPPath.Text = fbdPFPPath.SelectedPath;
 		}
