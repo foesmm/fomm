@@ -57,6 +57,7 @@ namespace Fomm.PackageManager
                 Program.exeDir, Program.Fallout3SaveDir, Program.tmpPath, Program.LocalDataPath, Environment.CurrentDirectory,
 				Program.overwriteDir, Path.GetTempPath()
             }));
+			permissions.AddPermission(new SecurityPermission(SecurityPermissionFlag.UnmanagedCode));
 			permissions.AddPermission(new UIPermission(UIPermissionWindow.AllWindows));
 		}
 
