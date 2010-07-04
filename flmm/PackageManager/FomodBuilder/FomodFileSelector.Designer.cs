@@ -41,7 +41,7 @@
 			this.cmsFomodNode = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.renameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.newFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.nodeNewFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.lnkHelp = new System.Windows.Forms.LinkLabel();
 			this.rtbHelp = new System.Windows.Forms.RichTextBox();
@@ -121,6 +121,7 @@
 			this.sftSources.Location = new System.Drawing.Point(0, 0);
 			this.sftSources.Name = "sftSources";
 			this.sftSources.Size = new System.Drawing.Size(166, 165);
+			this.sftSources.Sources = new string[0];
 			this.sftSources.TabIndex = 0;
 			// 
 			// panel4
@@ -138,7 +139,7 @@
 			this.lblFomodFiles.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lblFomodFiles.Location = new System.Drawing.Point(3, 3);
 			this.lblFomodFiles.Name = "lblFomodFiles";
-			this.lblFomodFiles.Size = new System.Drawing.Size(81, 13);
+			this.lblFomodFiles.Size = new System.Drawing.Size(77, 13);
 			this.lblFomodFiles.TabIndex = 0;
 			this.lblFomodFiles.Text = "FOMod Files";
 			// 
@@ -147,14 +148,14 @@
 			this.cmsFomodNode.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.renameToolStripMenuItem,
             this.deleteToolStripMenuItem,
-            this.newFolderToolStripMenuItem});
+            this.nodeNewFolderToolStripMenuItem});
 			this.cmsFomodNode.Name = "cmsFomod";
-			this.cmsFomodNode.Size = new System.Drawing.Size(135, 70);
+			this.cmsFomodNode.Size = new System.Drawing.Size(153, 92);
 			// 
 			// renameToolStripMenuItem
 			// 
 			this.renameToolStripMenuItem.Name = "renameToolStripMenuItem";
-			this.renameToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
+			this.renameToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.renameToolStripMenuItem.Text = "Rename";
 			this.renameToolStripMenuItem.Click += new System.EventHandler(this.renameToolStripMenuItem_Click);
 			// 
@@ -162,16 +163,16 @@
 			// 
 			this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
 			this.deleteToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Delete;
-			this.deleteToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
+			this.deleteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.deleteToolStripMenuItem.Text = "Delete";
 			this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
 			// 
-			// newFolderToolStripMenuItem
+			// nodeNewFolderToolStripMenuItem
 			// 
-			this.newFolderToolStripMenuItem.Name = "newFolderToolStripMenuItem";
-			this.newFolderToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
-			this.newFolderToolStripMenuItem.Text = "New Folder";
-			this.newFolderToolStripMenuItem.Click += new System.EventHandler(this.newFolderToolStripMenuItem_Click);
+			this.nodeNewFolderToolStripMenuItem.Name = "nodeNewFolderToolStripMenuItem";
+			this.nodeNewFolderToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.nodeNewFolderToolStripMenuItem.Text = "New Folder";
+			this.nodeNewFolderToolStripMenuItem.Click += new System.EventHandler(this.newFolderToolStripMenuItem_Click);
 			// 
 			// panel1
 			// 
@@ -237,7 +238,7 @@
 		private System.Windows.Forms.ToolStripMenuItem renameToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
 		private System.Windows.Forms.ImageList imlIcons;
-		private System.Windows.Forms.ToolStripMenuItem newFolderToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem nodeNewFolderToolStripMenuItem;
 		private System.Windows.Forms.ContextMenuStrip cmsFomod;
 		private System.Windows.Forms.ToolStripMenuItem newFolderToolStripMenuItem1;
 		private System.Windows.Forms.Panel panel1;

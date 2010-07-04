@@ -442,7 +442,7 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
 			else
 				foreach (SourceFileTree.SourceFileSystemDragData sfdData in lstPaths)
 					addFomodFile(null, sfdData.Path);
-			tvwFomod.Sort();
+			tvwFomod.BeginInvoke((MethodInvoker)(() => { tvwFomod.Sort(); }));
 			tvwFomod.EndUpdate();
 			Cursor = crsOldCursor;
 		}
@@ -589,7 +589,10 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
 			if (e.Label == null)
 				e.CancelEdit = true;
 			else
+			{
 				e.Node.Name = e.Label.ToLowerInvariant();
+				tvwFomod.BeginInvoke((MethodInvoker)(() => { tvwFomod.Sort(); }));
+			}
 		}
 
 		#endregion
@@ -642,10 +645,18 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
 		/// <param name="e">An <see cref="EventArgs"/> that describes the event arguments.</param>
 		private void newFolderToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			TreeNode tndNode = tvwFomod.SelectedNode;
+			TreeNode tndNode = null;
+			//sometimes the selected node is set even when the no-node-selected context
+			// menu was display, so check which menu we are comming from in order to
+			// determine if we should be creating the new folder as a child of an existing
+			// nide
+			if (sender == nodeNewFolderToolStripMenuItem)
+				tndNode = tvwFomod.SelectedNode;
 			FileSystemTreeNode tndNewNode = addFomodFile(tndNode, FileSystemTreeNode.NEW_PREFIX + "//New Folder");
 			if (tndNode != null)
 				tndNode.Expand();
+			//make sure the node being edited is the only one selected
+			tvwFomod.SelectedNode = null;
 			tndNewNode.BeginEdit();
 		}
 
@@ -659,9 +670,11 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
 		/// <param name="e">A <see cref="MouseEventArgs"/> that describes the event arguments.</param>
 		private void tvwFomod_MouseDown(object sender, MouseEventArgs e)
 		{
+			Console.WriteLine("B: " + e.Button);
 			if (e.Button == MouseButtons.Right)
 			{
 				FileSystemTreeNode tndFolder = (FileSystemTreeNode)tvwFomod.GetNodeAt(e.Location);
+				Console.WriteLine("F: " + tndFolder);
 				tvwFomod.SelectedNode = tndFolder;
 			}
 		}
