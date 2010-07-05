@@ -204,6 +204,7 @@ namespace Fomm.PackageManager.FomodBuilder
 				tndFile.SelectedImageKey = "folder";
 				if ((p_tndRoot == null) || (p_tndRoot.IsExpanded))
 				{
+					tndFile.Sources[p_strFile].IsLoaded = true;
 					if (p_strFile.StartsWith(Archive.ARCHIVE_PREFIX))
 					{
 						KeyValuePair<string, string> kvpPath = Archive.ParseArchivePath(p_strFile);
@@ -228,6 +229,7 @@ namespace Fomm.PackageManager.FomodBuilder
 			}
 			else
 			{
+				tndFile.Sources[p_strFile].IsLoaded = true;
 				string strExtension = Path.GetExtension(p_strFile).ToLowerInvariant();
 				if (!imlIcons.Images.ContainsKey(strExtension))
 				{
@@ -303,31 +305,29 @@ namespace Fomm.PackageManager.FomodBuilder
 			string strPath = null;
 			foreach (FileSystemTreeNode tndFolder in e.Node.Nodes)
 			{
-				if (tndFolder.Nodes.Count > 0)
+				if (tndFolder.LastSource.IsLoaded || !tndFolder.IsDirectory)
 					continue;
-				if (tndFolder.IsDirectory)
+				tndFolder.LastSource.IsLoaded = true;
+				strPath = tndFolder.LastSource;
+				if (strPath.StartsWith(Archive.ARCHIVE_PREFIX))
 				{
-					strPath = tndFolder.LastSource;
-					if (strPath.StartsWith(Archive.ARCHIVE_PREFIX))
-					{
-						KeyValuePair<string, string> kvpPath = Archive.ParseArchivePath(strPath);
-						Archive arcArchive = new Archive(kvpPath.Key);
-						string[] strFolders = arcArchive.GetDirectories(kvpPath.Value);
-						for (Int32 i = 0; i < strFolders.Length; i++)
-							addSourceFile(tndFolder, Archive.GenerateArchivePath(kvpPath.Key, strFolders[i]));
-						string[] strFiles = arcArchive.GetFiles(kvpPath.Value);
-						for (Int32 i = 0; i < strFiles.Length; i++)
-							addSourceFile(tndFolder, Archive.GenerateArchivePath(kvpPath.Key, strFiles[i]));
-					}
-					else if (!strPath.StartsWith(FileSystemTreeNode.NEW_PREFIX))
-					{
-						string[] strFolders = Directory.GetDirectories(strPath);
-						for (Int32 i = 0; i < strFolders.Length; i++)
-							addSourceFile(tndFolder, strFolders[i]);
-						string[] strFiles = Directory.GetFiles(strPath);
-						for (Int32 i = 0; i < strFiles.Length; i++)
-							addSourceFile(tndFolder, strFiles[i]);
-					}
+					KeyValuePair<string, string> kvpPath = Archive.ParseArchivePath(strPath);
+					Archive arcArchive = new Archive(kvpPath.Key);
+					string[] strFolders = arcArchive.GetDirectories(kvpPath.Value);
+					for (Int32 i = 0; i < strFolders.Length; i++)
+						addSourceFile(tndFolder, Archive.GenerateArchivePath(kvpPath.Key, strFolders[i]));
+					string[] strFiles = arcArchive.GetFiles(kvpPath.Value);
+					for (Int32 i = 0; i < strFiles.Length; i++)
+						addSourceFile(tndFolder, Archive.GenerateArchivePath(kvpPath.Key, strFiles[i]));
+				}
+				else if (!strPath.StartsWith(FileSystemTreeNode.NEW_PREFIX))
+				{
+					string[] strFolders = Directory.GetDirectories(strPath);
+					for (Int32 i = 0; i < strFolders.Length; i++)
+						addSourceFile(tndFolder, strFolders[i]);
+					string[] strFiles = Directory.GetFiles(strPath);
+					for (Int32 i = 0; i < strFiles.Length; i++)
+						addSourceFile(tndFolder, strFiles[i]);
 				}
 			}
 			Cursor = crsOldCursor;

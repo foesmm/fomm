@@ -17,13 +17,182 @@ namespace Fomm.PackageManager.FomodBuilder
 	public class FileSystemTreeNode : TreeNode, IComparable<FileSystemTreeNode>
 	{
 		/// <summary>
+		/// A set of <see cref="Source"/>s.
+		/// </summary>
+		public class SourceSet : Set<Source>
+		{
+			#region Contructors
+
+			/// <summary>
+			/// The default constructor.
+			/// </summary>
+			public SourceSet()
+			{
+			}
+
+			/// <summary>
+			/// The copy constructor.
+			/// </summary>
+			/// <param name="p_setCopy">The set to copy.</param>
+			public SourceSet(Set<Source> p_setCopy)
+				: base(p_setCopy)
+			{
+			}
+
+			#endregion
+
+			public Source this[string p_strPath]
+			{
+				get
+				{
+					return this.Find((s) => { return s.Equals(p_strPath); });
+				}
+			}
+
+			public void Add(string p_strPath, bool p_booIsLoaded)
+			{
+				this.Add(new Source(p_strPath, false));
+			}
+
+			public bool Remove(string p_strPath)
+			{
+				for (Int32 i = Count - 1; i >= 0; i--)
+					if (this[i].Equals(p_strPath))
+					{
+						RemoveAt(i);
+						return true;
+					}
+				return false;
+			}
+
+			/// <summary>
+			/// Determines if the set contains a <see cref="Source"/>
+			/// with the given path.
+			/// </summary>
+			/// <param name="p_strSourcePath">The source path to look for in the set.</param>
+			/// <returns><lang cref="true"/> if the set contains a <see cref="Source"/> with
+			/// the given path; <lang cref="false"/> otherwise.</returns>
+			public bool Contains(string p_strSourcePath)
+			{
+				for (Int32 i = Count - 1; i >= 0; i--)
+					if (this[i].Equals(p_strSourcePath))
+						return true;
+				return false;
+			}
+		}
+
+		/// <summary>
+		/// A file system item source.
+		/// </summary>
+		public class Source : IEquatable<Source>, IEquatable<string>
+		{
+			private string m_strPath = null;
+			private bool m_booIsLoaded = false;
+
+			#region Properties
+
+			/// <summary>
+			/// Gets the path of the source.
+			/// </summary>
+			/// <value>The path of the source.</value>
+			public string Path
+			{
+				get
+				{
+					return m_strPath;
+				}
+			}
+
+			/// <summary>
+			/// Gets or sets whether the source has been loaded for the
+			/// current node.
+			/// </summary>
+			/// <value>Whether the source has been loaded for the
+			/// current node.</value>
+			public bool IsLoaded
+			{
+				get
+				{
+					return m_booIsLoaded;
+				}
+				set
+				{
+					m_booIsLoaded = value;
+				}
+			}
+
+			#endregion
+
+			#region Constructors
+
+			/// <summary>
+			/// A simple constructor that initializes the object with the given values.
+			/// </summary>
+			/// <param name="p_strPath">The path of the source.</param>
+			/// <param name="p_booIsLoaded">Whether the source has been loaded for the
+			/// current node.</param>
+			public Source(string p_strPath, bool p_booIsLoaded)
+			{
+				m_strPath = p_strPath;
+				m_booIsLoaded = p_booIsLoaded;
+			}
+
+			#endregion
+
+			#region IEquatable<Source> Members
+
+			/// <summary>
+			/// Determines if this <see cref="Source"/> is equal to the given
+			/// <see cref="Source"/>.
+			/// </summary>
+			/// <remarks>
+			/// Two <see cref="Source"/>s are equal if and only if their
+			/// <see cref="Source.Path"/>s are case-insensitively equal.
+			/// </remarks>
+			/// <param name="other">The <see cref="Source"/> to compare to this one.</param>
+			/// <returns><lang cref="true"/> if the two <see cref="Source"/>s are equal;
+			/// <lang cref="false"/> otherwise.</returns>
+			public bool Equals(Source other)
+			{
+				return Path.Equals(other.Path, StringComparison.InvariantCultureIgnoreCase);
+			}
+
+			#endregion
+
+			#region IEquatable<string> Members
+
+			/// <summary>
+			/// Determines if this <see cref="Source"/> is equal to the given
+			/// string.
+			/// </summary>
+			/// <remarks>
+			/// A <see cref="Source"/> is equal to a string if and only if the
+			/// <see cref="Source.Path"/> is case-insensitively equal to the string.
+			/// </remarks>
+			/// <param name="other">The string to compare to this <see cref="Source"/>.</param>
+			/// <returns><lang cref="true"/> if this <see cref="Source"/> is equal
+			/// to the given string; <lang cref="false"/> otherwise.</returns>
+			public bool Equals(string other)
+			{
+				return Path.Equals(other);
+			}
+
+			#endregion
+
+			public static implicit operator string(Source p_srcSource)
+			{
+				return p_srcSource.Path;
+			}
+		}
+
+		/// <summary>
 		/// The prefix used to indicate the node was created by the user.
 		/// </summary>
 		public const string NEW_PREFIX = "new:";
 
 		private static Dictionary<string, Archive> m_dicArchiveCache = new Dictionary<string, Archive>(StringComparer.InvariantCultureIgnoreCase);
 
-		private Set<string> m_lstSources = new Set<string>();
+		private SourceSet m_sstSources = new SourceSet();
 		private bool? m_booIsAchive = null;
 		private bool? m_booIsDirectory = null;
 
@@ -69,9 +238,9 @@ namespace Fomm.PackageManager.FomodBuilder
 					return m_booIsDirectory.Value;
 
 
-				if ((m_lstSources.Count == 0) || LastSource.StartsWith(NEW_PREFIX))
+				if ((m_sstSources.Count == 0) || LastSource.Path.StartsWith(NEW_PREFIX))
 					m_booIsDirectory = true;
-				else if (LastSource.StartsWith(Archive.ARCHIVE_PREFIX))
+				else if (LastSource.Path.StartsWith(Archive.ARCHIVE_PREFIX))
 				{
 					KeyValuePair<string, string> kvpArchive = Archive.ParseArchivePath(LastSource);
 					Archive arcArchive = null;
@@ -100,7 +269,7 @@ namespace Fomm.PackageManager.FomodBuilder
 				if (m_booIsAchive.HasValue)
 					return m_booIsAchive.Value;
 
-				if ((m_lstSources.Count == 0) || LastSource.StartsWith(Archive.ARCHIVE_PREFIX) || LastSource.StartsWith(NEW_PREFIX))
+				if ((m_sstSources.Count == 0) || LastSource.Path.StartsWith(Archive.ARCHIVE_PREFIX) || LastSource.Path.StartsWith(NEW_PREFIX))
 					m_booIsAchive = false;
 				else
 				{
@@ -139,11 +308,11 @@ namespace Fomm.PackageManager.FomodBuilder
 		/// Gets the sources for the node.
 		/// </summary>
 		/// <value>The sources for the node.</value>
-		public IList<string> Sources
+		public SourceSet Sources
 		{
 			get
 			{
-				return m_lstSources;
+				return m_sstSources;
 			}
 		}
 
@@ -155,12 +324,12 @@ namespace Fomm.PackageManager.FomodBuilder
 		/// last added.
 		/// </remarks>
 		/// <value>The last source for the node.</value>
-		public string LastSource
+		public Source LastSource
 		{
 			get
 			{
-				if (m_lstSources.Count > 0)
-					return m_lstSources[m_lstSources.Count - 1];
+				if (m_sstSources.Count > 0)
+					return m_sstSources[m_sstSources.Count - 1];
 				return null;
 			}
 		}
@@ -177,7 +346,7 @@ namespace Fomm.PackageManager.FomodBuilder
 			: base(p_tndCopy.Text)
 		{
 			this.Name = p_tndCopy.Name;
-			this.m_lstSources = new Set<string>(p_tndCopy.m_lstSources);
+			this.m_sstSources = new SourceSet(p_tndCopy.m_sstSources);
 		}
 
 		/// <summary>
@@ -190,7 +359,7 @@ namespace Fomm.PackageManager.FomodBuilder
 		{
 			if (!p_strPath.StartsWith(Archive.ARCHIVE_PREFIX) && !p_strPath.StartsWith(NEW_PREFIX) && !Directory.Exists(p_strPath) && !File.Exists(p_strPath))
 				throw new FileNotFoundException("The given path is not valid.", p_strPath);
-			m_lstSources.Add(p_strPath);
+			m_sstSources.Add(p_strPath, false);
 		}
 
 		#endregion
@@ -199,10 +368,10 @@ namespace Fomm.PackageManager.FomodBuilder
 		/// Adds the specified path as a source for the node.
 		/// </summary>
 		/// <param name="p_strSource">The path to add as a source for the node.</param>
-		public void AddSource(string p_strSource)
+		public void AddSource(string p_strSource, bool p_booIsLoaded)
 		{
-			m_lstSources.Remove(p_strSource);
-			m_lstSources.Add(p_strSource);
+			m_sstSources.Remove(p_strSource);
+			m_sstSources.Add(p_strSource, p_booIsLoaded);
 		}
 
 		#region IComparable<FileSystemTreeNode> Members

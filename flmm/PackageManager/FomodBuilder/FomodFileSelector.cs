@@ -143,11 +143,17 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
 					foreach (string strFolder in strRemainingFolders)
 						tndRoot = addFomodFile(tndRoot, FileSystemTreeNode.NEW_PREFIX + "//" + strFolder);
 				}
+				tndRoot.Sources[strParentDirectory].IsLoaded = true;
 				addFomodFile(tndRoot, kvpInstruction.Key);
 			}
 			sftSources.Sources = setSources.ToArray();
 		}
 
+		/// <summary>
+		/// Finds the deepest nod in the fomod file system along the given path.
+		/// </summary>
+		/// <param name="p_strPath">The path for which to find the deepest node.</param>
+		/// <returns>The deepest nod in the fomod file structure that is along the given path.</returns>
 		protected FileSystemTreeNode findNode(string p_strPath)
 		{
 			if (String.IsNullOrEmpty(p_strPath))
@@ -169,7 +175,7 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
 						stkPath.Pop();
 						if (stkPath.Count == 0)
 							return tndNode;
-						PopulateChildren(tndNode);
+						PopulateNodeWithChildren(tndNode);
 						tndLastNode = tndNode;
 						tncNodes = tndNode.Nodes;
 						break;
@@ -268,99 +274,115 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
 			if (p_tndNode.Nodes.Count == 0)
 			{
 				for (Int32 j = p_tndNode.Sources.Count - 1; j >= 0; j--)
-					if (p_tndNode.Sources[j].StartsWith(FileSystemTreeNode.NEW_PREFIX))
+					if (p_tndNode.Sources[j].Path.StartsWith(FileSystemTreeNode.NEW_PREFIX))
 						p_tndNode.Sources.RemoveAt(j);
 				return;
 			}
 			foreach (FileSystemTreeNode tndNode in p_tndNode.Nodes)
 				ProcessTree(tndNode);
 			List<string> lstSubPaths = new List<string>();
-			string strSource = null;
+			FileSystemTreeNode.Source srcSource = null;
 			for (Int32 j = p_tndNode.Sources.Count - 1; j >= 0; j--)
 			{
-				strSource = p_tndNode.Sources[j];
+				srcSource = p_tndNode.Sources[j];
 				lstSubPaths.Clear();
-				if (strSource.StartsWith(Archive.ARCHIVE_PREFIX))
+				if (srcSource.Path.StartsWith(Archive.ARCHIVE_PREFIX))
 				{
-					KeyValuePair<string, string> kvpPath = Archive.ParseArchivePath(strSource);
+					KeyValuePair<string, string> kvpPath = Archive.ParseArchivePath(srcSource.Path);
 					Archive arcArchive = new Archive(kvpPath.Key);
 					foreach (string strPath in arcArchive.GetDirectories(kvpPath.Value))
 						lstSubPaths.Add(Archive.GenerateArchivePath(kvpPath.Key, strPath));
 					foreach (string strPath in arcArchive.GetFiles(kvpPath.Value))
 						lstSubPaths.Add(Archive.GenerateArchivePath(kvpPath.Key, strPath));
 				}
-				else if (strSource.StartsWith(FileSystemTreeNode.NEW_PREFIX))
+				else if (srcSource.Path.StartsWith(FileSystemTreeNode.NEW_PREFIX))
 				{
 					p_tndNode.Sources.RemoveAt(j);
 					continue;
 				}
 				else
 				{
-					lstSubPaths.AddRange(Directory.GetDirectories(strSource));
-					lstSubPaths.AddRange(Directory.GetFiles(strSource));
+					lstSubPaths.AddRange(Directory.GetDirectories(srcSource.Path));
+					lstSubPaths.AddRange(Directory.GetFiles(srcSource.Path));
 				}
-				//if we find all the current folder's subpaths, and each subpath
-				// has no children in the same source tree, then we can just copy
-				// the current folder instead of copying each child individually
-				Int32 intFoundCount = 0;
-				//so, for each subpath of the current folder...
-				foreach (string strSubPath in lstSubPaths)
+				//if the source hasn't been loaded, then we treat it as if all
+				// subpaths are present and have already been removed from
+				// the children nodes, so we don't have to do anything
+				if (srcSource.IsLoaded)
 				{
-					//...look through all the children nodes for the subpath...
-					foreach (FileSystemTreeNode tndChild in p_tndNode.Nodes)
-					{
-						//...if we find the subpath...
-						if (tndChild.Sources.Contains(strSubPath))
-						{
-							//...and the node containing the subpath has no children
-							// containing anything in the same source tree...
-							bool booFound = false;
-							foreach (FileSystemTreeNode tndSubNode in tndChild.Nodes)
-							{
-								foreach (string strSubSource in tndSubNode.Sources)
-									if (strSubSource.StartsWith(strSubPath))
-									{
-										booFound = true;
-										break;
-									}
-								if (booFound)
-									break;
-							}
-							//...then we found the subpath.
-							// if the node containing the subpath had had children containing
-							// something in the same source tree, that would imply we aren't
-							// copying all the current folder's descendants, so we would have to
-							// copy each descendent individually, instead of just copying this folder
-							if (!booFound)
-								intFoundCount++;
-							break;
-						}
-					}
-				}
-				if (intFoundCount == lstSubPaths.Count)
-				{
-					FileSystemTreeNode tndNode = null;
+					//if we find all the current folder's subpaths, and each subpath
+					// has no children in the same source tree, then we can just copy
+					// the current folder instead of copying each child individually
+					Int32 intFoundCount = 0;
+
+					//so, for each subpath of the current folder...
 					foreach (string strSubPath in lstSubPaths)
 					{
-						for (Int32 i = p_tndNode.Nodes.Count - 1; i >= 0; i--)
+						//...look through all the children nodes for the subpath...
+						foreach (FileSystemTreeNode tndChild in p_tndNode.Nodes)
 						{
-							tndNode = (FileSystemTreeNode)p_tndNode.Nodes[i];
-							if (tndNode.Sources.Contains(strSubPath))
+							//...if we find the subpath...
+							if (tndChild.Sources.Contains(strSubPath))
 							{
-								//if we are removing the last source, and there are no
-								// children nodes (implying this node isn't needed in
-								// another source tree), then prune this node away...
-								if ((tndNode.Nodes.Count == 0) && (tndNode.Sources.Count <= 1))
-									p_tndNode.Nodes.RemoveAt(i);
-								else //...otherwise just remove the source
-									tndNode.Sources.Remove(strSubPath);
+								//...and the node containing the subpath has no children
+								// containing anything in the same source tree...
+								bool booFound = false;
+								foreach (FileSystemTreeNode tndSubNode in tndChild.Nodes)
+								{
+									foreach (string strSubSource in tndSubNode.Sources)
+										if (strSubSource.StartsWith(strSubPath))
+										{
+											booFound = true;
+											break;
+										}
+									if (booFound)
+										break;
+								}
+								//...then we found the subpath.
+								// if the node containing the subpath had had children containing
+								// something in the same source tree, that would imply we aren't
+								// copying all the current folder's descendants, so we would have to
+								// copy each descendent individually, instead of just copying this folder
+								if (!booFound)
+									intFoundCount++;
 								break;
 							}
 						}
 					}
+					//if we found all the subpaths...
+					if (intFoundCount == lstSubPaths.Count)
+					{
+						//...then remove the subpaths, so we just copy the
+						// current folder instead of copying each child individually
+						FileSystemTreeNode tndNode = null;
+						foreach (string strSubPath in lstSubPaths)
+						{
+							for (Int32 i = p_tndNode.Nodes.Count - 1; i >= 0; i--)
+							{
+								tndNode = (FileSystemTreeNode)p_tndNode.Nodes[i];
+								if (tndNode.Sources.Contains(strSubPath))
+								{
+									//if we are removing the last source, and there are no
+									// children nodes (implying this node isn't needed in
+									// another source tree), then prune this node away...
+									if ((tndNode.Nodes.Count == 0) && (tndNode.Sources.Count <= 1))
+										p_tndNode.Nodes.RemoveAt(i);
+									else //...otherwise just remove the source
+										tndNode.Sources.Remove(strSubPath);
+									break;
+								}
+							}
+						}
+					}
+					else
+						//...else if we only found some of the subpaths
+						// then remove the current folder from the sources so
+						// it doesn't get copied: the current folder will be
+						// created when the subpaths are copied...
+						//...else if we found no subpaths then we remove the current folder
+						// to prune empty folders
+						p_tndNode.Sources.RemoveAt(j);
 				}
-				else
-					p_tndNode.Sources.RemoveAt(j);
 			}
 		}
 
@@ -454,7 +476,7 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
 			if (tncSiblings.ContainsKey(strFileName.ToLowerInvariant()))
 			{
 				tndFile = (FileSystemTreeNode)tncSiblings[strFileName.ToLowerInvariant()];
-				tndFile.AddSource(p_strFile);
+				tndFile.AddSource(p_strFile, false);
 			}
 			else
 			{
@@ -468,31 +490,11 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
 				tndFile.ImageKey = "folder";
 				tndFile.SelectedImageKey = "folder";
 				if ((p_tndRoot == null) || (p_tndRoot.IsExpanded))
-				{
-					if (p_strFile.StartsWith(Archive.ARCHIVE_PREFIX))
-					{
-						KeyValuePair<string, string> kvpPath = Archive.ParseArchivePath(p_strFile);
-						Archive arcArchive = new Archive(kvpPath.Key);
-						string[] strFolders = arcArchive.GetDirectories(kvpPath.Value);
-						for (Int32 i = 0; i < strFolders.Length; i++)
-							addFomodFile(tndFile, Archive.GenerateArchivePath(kvpPath.Key, strFolders[i]));
-						string[] strFiles = arcArchive.GetFiles(kvpPath.Value);
-						for (Int32 i = 0; i < strFiles.Length; i++)
-							addFomodFile(tndFile, Archive.GenerateArchivePath(kvpPath.Key, strFiles[i]));
-					}
-					else if (!p_strFile.StartsWith(FileSystemTreeNode.NEW_PREFIX))
-					{
-						string[] strFolders = Directory.GetDirectories(p_strFile);
-						for (Int32 i = 0; i < strFolders.Length; i++)
-							addFomodFile(tndFile, strFolders[i]);
-						string[] strFiles = Directory.GetFiles(p_strFile);
-						for (Int32 i = 0; i < strFiles.Length; i++)
-							addFomodFile(tndFile, strFiles[i]);
-					}
-				}
+					PopulateNodeWithChildren(tndFile);
 			}
 			else
 			{
+				tndFile.Sources[p_strFile].IsLoaded = true;
 				string strExtension = Path.GetExtension(p_strFile).ToLowerInvariant();
 				if (!imlIcons.Images.ContainsKey(strExtension))
 				{
@@ -507,34 +509,40 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
 			return tndFile;
 		}
 
-		protected void PopulateChildren(TreeNode p_tndNode)
+		/// <summary>
+		/// Populates the given node with its children.
+		/// </summary>
+		/// <param name="p_tndNode">The node to populate with children.</param>
+		protected void PopulateNodeWithChildren(FileSystemTreeNode p_tndNode)
 		{
-			foreach (FileSystemTreeNode tndFolder in p_tndNode.Nodes)
+			string strSource = null;
+			if (!p_tndNode.IsDirectory)
+				return;
+			foreach (FileSystemTreeNode.Source srcSource in p_tndNode.Sources)
 			{
-				if ((tndFolder.Nodes.Count > 0) || !tndFolder.IsDirectory)
+				if (srcSource.IsLoaded)
 					continue;
-				foreach (string strSource in tndFolder.Sources)
+				strSource = srcSource.Path;
+				srcSource.IsLoaded = true;
+				if (strSource.StartsWith(Archive.ARCHIVE_PREFIX))
 				{
-					if (strSource.StartsWith(Archive.ARCHIVE_PREFIX))
-					{
-						KeyValuePair<string, string> kvpPath = Archive.ParseArchivePath(strSource);
-						Archive arcArchive = new Archive(kvpPath.Key);
-						string[] strFolders = arcArchive.GetDirectories(kvpPath.Value);
-						for (Int32 i = 0; i < strFolders.Length; i++)
-							addFomodFile(tndFolder, Archive.GenerateArchivePath(kvpPath.Key, strFolders[i]));
-						string[] strFiles = arcArchive.GetFiles(kvpPath.Value);
-						for (Int32 i = 0; i < strFiles.Length; i++)
-							addFomodFile(tndFolder, Archive.GenerateArchivePath(kvpPath.Key, strFiles[i]));
-					}
-					else if (!strSource.StartsWith(FileSystemTreeNode.NEW_PREFIX))
-					{
-						string[] strFolders = Directory.GetDirectories(strSource);
-						for (Int32 i = 0; i < strFolders.Length; i++)
-							addFomodFile(tndFolder, strFolders[i]);
-						string[] strFiles = Directory.GetFiles(strSource);
-						for (Int32 i = 0; i < strFiles.Length; i++)
-							addFomodFile(tndFolder, strFiles[i]);
-					}
+					KeyValuePair<string, string> kvpPath = Archive.ParseArchivePath(strSource);
+					Archive arcArchive = new Archive(kvpPath.Key);
+					string[] strFolders = arcArchive.GetDirectories(kvpPath.Value);
+					for (Int32 i = 0; i < strFolders.Length; i++)
+						addFomodFile(p_tndNode, Archive.GenerateArchivePath(kvpPath.Key, strFolders[i]));
+					string[] strFiles = arcArchive.GetFiles(kvpPath.Value);
+					for (Int32 i = 0; i < strFiles.Length; i++)
+						addFomodFile(p_tndNode, Archive.GenerateArchivePath(kvpPath.Key, strFiles[i]));
+				}
+				else if (!strSource.StartsWith(FileSystemTreeNode.NEW_PREFIX))
+				{
+					string[] strFolders = Directory.GetDirectories(strSource);
+					for (Int32 i = 0; i < strFolders.Length; i++)
+						addFomodFile(p_tndNode, strFolders[i]);
+					string[] strFiles = Directory.GetFiles(strSource);
+					for (Int32 i = 0; i < strFiles.Length; i++)
+						addFomodFile(p_tndNode, strFiles[i]);
 				}
 			}
 		}
@@ -551,7 +559,8 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
 		{
 			Cursor crsOldCursor = Cursor;
 			Cursor = Cursors.WaitCursor;
-			PopulateChildren(e.Node);
+			foreach (FileSystemTreeNode tndFolder in e.Node.Nodes)
+				PopulateNodeWithChildren(tndFolder);
 			Cursor = crsOldCursor;
 		}
 
@@ -711,40 +720,10 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
 		private List<KeyValuePair<string, string>> FindFomodFiles(FileSystemTreeNode p_tndRoot, Queue<string> p_queDirectories, Regex p_rgxFileNamePattern)
 		{
 			List<KeyValuePair<string, string>> lstMatches = new List<KeyValuePair<string, string>>();
-			List<string> lstFolders = new List<string>();
-			List<string> lstFiles = new List<string>();
 			if (p_tndRoot.IsDirectory && ((p_queDirectories.Count > 0) && p_tndRoot.Name.Equals(p_queDirectories.Peek())))
 			{
 				p_queDirectories.Dequeue();
-				if (p_tndRoot.Nodes.Count == 0)
-				{
-					foreach (string strSource in p_tndRoot.Sources)
-					{
-						if (strSource.StartsWith(Archive.ARCHIVE_PREFIX))
-						{
-							KeyValuePair<string, string> kvpPath = Archive.ParseArchivePath(strSource);
-							Archive arcArchive = new Archive(kvpPath.Key);
-							string[] strFolders = arcArchive.GetDirectories(kvpPath.Value);
-							foreach (string strSubFolder in strFolders)
-								lstFolders.Add(Archive.GenerateArchivePath(kvpPath.Key, strSubFolder));
-							string[] strFiles = arcArchive.GetFiles(kvpPath.Value);
-							foreach (string strFile in strFiles)
-								lstFiles.Add(Archive.GenerateArchivePath(kvpPath.Key, strFile));
-						}
-						else if (!strSource.StartsWith(FileSystemTreeNode.NEW_PREFIX))
-						{
-							string[] strFolders = Directory.GetDirectories(strSource);
-							lstFolders.AddRange(strFolders);
-							string[] strFiles = Directory.GetFiles(strSource);
-							foreach (string strFile in strFiles)
-								lstFiles.Add(strFile);
-						}
-					}
-					foreach (string strSubFolder in lstFolders)
-						addFomodFile(p_tndRoot, strSubFolder);
-					foreach (string strfile in lstFiles)
-						addFomodFile(p_tndRoot, strfile);
-				}
+				PopulateNodeWithChildren(p_tndRoot);
 				Int32 intOriginalDepth = p_queDirectories.Count;
 				foreach (FileSystemTreeNode tndNode in p_tndRoot.Nodes)
 				{
