@@ -143,7 +143,6 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
 					foreach (string strFolder in strRemainingFolders)
 						tndRoot = addFomodFile(tndRoot, FileSystemTreeNode.NEW_PREFIX + "//" + strFolder);
 				}
-				tndRoot.Sources[strParentDirectory].IsLoaded = true;
 				addFomodFile(tndRoot, kvpInstruction.Key);
 			}
 			sftSources.Sources = setSources.ToArray();
