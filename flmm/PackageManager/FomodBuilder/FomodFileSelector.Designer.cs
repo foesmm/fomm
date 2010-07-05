@@ -117,6 +117,7 @@
 			// 
 			// sftSources
 			// 
+			this.sftSources.Cursor = System.Windows.Forms.Cursors.Default;
 			this.sftSources.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.sftSources.Location = new System.Drawing.Point(0, 0);
 			this.sftSources.Name = "sftSources";
@@ -151,6 +152,7 @@
             this.nodeNewFolderToolStripMenuItem});
 			this.cmsFomodNode.Name = "cmsFomod";
 			this.cmsFomodNode.Size = new System.Drawing.Size(153, 92);
+			this.cmsFomodNode.Opening += new System.ComponentModel.CancelEventHandler(this.cmsFomodNode_Opening);
 			// 
 			// renameToolStripMenuItem
 			// 

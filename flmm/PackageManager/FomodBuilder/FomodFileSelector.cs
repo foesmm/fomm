@@ -9,6 +9,7 @@ using System.Drawing;
 using Fomm.Controls;
 using System.Text.RegularExpressions;
 using Fomm.Util;
+using System.ComponentModel;
 
 namespace Fomm.PackageManager.FomodBuilder
 {
@@ -143,7 +144,7 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
 					foreach (string strFolder in strRemainingFolders)
 						tndRoot = addFomodFile(tndRoot, FileSystemTreeNode.NEW_PREFIX + "//" + strFolder);
 				}
-				addFomodFile(tndRoot, kvpInstruction.Key);
+				addFomodFile(tndRoot, kvpInstruction.Key).Text = Path.GetFileName(kvpInstruction.Value);
 			}
 			sftSources.Sources = setSources.ToArray();
 		}
@@ -601,6 +602,8 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
 		private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			TreeNode tndNode = tvwFomod.SelectedNode;
+			if (MessageBox.Show(this, "Are you sure you want to delete '" + tndNode.Text + "?'", "Confirm", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.Cancel)
+				return;
 			if (tndNode.Parent == null)
 				tvwFomod.Nodes.Remove(tndNode);
 			else
@@ -654,13 +657,25 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
 		/// <param name="e">A <see cref="MouseEventArgs"/> that describes the event arguments.</param>
 		private void tvwFomod_MouseDown(object sender, MouseEventArgs e)
 		{
-			Console.WriteLine("B: " + e.Button);
 			if (e.Button == MouseButtons.Right)
 			{
 				FileSystemTreeNode tndFolder = (FileSystemTreeNode)tvwFomod.GetNodeAt(e.Location);
-				Console.WriteLine("F: " + tndFolder);
 				tvwFomod.SelectedNode = tndFolder;
 			}
+		}
+
+		/// <summary>
+		/// Handles the <see cref="MenuStrip.Opening"/> event of the node context menu.
+		/// </summary>
+		/// <remarks>
+		/// This enables/disables the new folder menu item dependent upon whether the clicked
+		/// node is a folder.
+		/// </remarks>
+		/// <param name="sender">The object that triggered the event.</param>
+		/// <param name="e">A <see cref="CancelEventArgs"/> that describes the event arguments.</param>
+		private void cmsFomodNode_Opening(object sender, CancelEventArgs e)
+		{
+			nodeNewFolderToolStripMenuItem.Enabled = ((FileSystemTreeNode)tvwFomod.SelectedNode).IsDirectory;
 		}
 
 		#endregion
