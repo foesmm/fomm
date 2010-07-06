@@ -825,10 +825,12 @@ namespace Fomm.PackageManager
 			m_bwdProgress.OverallProgressMaximum = lstFiles.Count;
 			m_bwdProgress.OverallProgressStep = 1;
 
-			SevenZipExtractor szeExtractor = new SevenZipExtractor(fomodMod.filepath);
-			szeExtractor.FileExtractionFinished += new EventHandler<FileInfoEventArgs>(UnpackFomod_FileExtractionFinished);
-			szeExtractor.FileExtractionStarted += new EventHandler<FileInfoEventArgs>(UnpackFomod_FileExtractionStarted);
-			szeExtractor.ExtractArchive(strOutput);
+			using (SevenZipExtractor szeExtractor = new SevenZipExtractor(fomodMod.filepath))
+			{
+				szeExtractor.FileExtractionFinished += new EventHandler<FileInfoEventArgs>(UnpackFomod_FileExtractionFinished);
+				szeExtractor.FileExtractionStarted += new EventHandler<FileInfoEventArgs>(UnpackFomod_FileExtractionStarted);
+				szeExtractor.ExtractArchive(strOutput);
+			}
 		}
 
 		/// <summary>

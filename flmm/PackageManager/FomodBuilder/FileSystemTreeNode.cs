@@ -269,16 +269,17 @@ namespace Fomm.PackageManager.FomodBuilder
 				if (m_booIsAchive.HasValue)
 					return m_booIsAchive.Value;
 
-				if ((m_sstSources.Count == 0) || LastSource.Path.StartsWith(Archive.ARCHIVE_PREFIX) || LastSource.Path.StartsWith(NEW_PREFIX))
+				if ((m_sstSources.Count == 0) || LastSource.Path.StartsWith(NEW_PREFIX))
 					m_booIsAchive = false;
 				else
 				{
-					SevenZipExtractor szeExtractor = null;
 					m_booIsAchive = true;
 					try
 					{
-						szeExtractor = new SevenZipExtractor(LastSource);
-						UInt32 g = szeExtractor.FilesCount;
+						using (SevenZipExtractor szeExtractor = Archive.GetExtractor(LastSource))
+						{
+							UInt32 g = szeExtractor.FilesCount;
+						}
 					}
 					catch (Exception e)
 					{

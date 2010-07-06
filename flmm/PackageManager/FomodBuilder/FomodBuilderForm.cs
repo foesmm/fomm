@@ -104,7 +104,7 @@ namespace Fomm.PackageManager.FomodBuilder
 			foreach (KeyValuePair<string, string> kvpSource in lstSourceLocations)
 			{
 				lstLocations.Add(new SourceDownloadSelector.SourceDownloadLocation(Path.Combine(p_strSourcesPath, kvpSource.Key), kvpSource.Value, String.IsNullOrEmpty(kvpSource.Value)));
-				lstSources.Add(kvpSource.Key);
+				lstSources.Add(Path.Combine(p_strSourcesPath, kvpSource.Key));
 			}
 			ffsFileStructure.SetCopyInstructions(lstSources, lstCopyInstructions);
 			tbxFomodFileName.Text = p_pfpPack.FomodName;

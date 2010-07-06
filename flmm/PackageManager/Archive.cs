@@ -39,6 +39,58 @@ namespace Fomm.PackageManager
 
 		#endregion
 
+		/// <summary>
+		/// Gets a <see cref="SevenZipExtractor"/> for the given path.
+		/// </summary>
+		/// <remarks>
+		/// This builds a <see cref="SevenZipExtractor"/> for the given path. The path can
+		/// be to a nested archive (an archive in another archive).
+		/// </remarks> 
+		/// <param name="p_strPath">The path to the archive for which to get a <see cref="SevenZipExtractor"/>.</param>
+		/// <returns>A <see cref="SevenZipExtractor"/> for the given path.</returns>
+		public static SevenZipExtractor GetExtractor(string p_strPath)
+		{
+			if (p_strPath.StartsWith(Archive.ARCHIVE_PREFIX))
+			{
+				Stack<KeyValuePair<string, string>> stkFiles = new Stack<KeyValuePair<string, string>>();
+				string strPath = p_strPath;
+				while (strPath.StartsWith(Archive.ARCHIVE_PREFIX))
+				{
+					stkFiles.Push(Archive.ParseArchivePath(strPath));
+					strPath = stkFiles.Peek().Key;
+				}
+				Stack<SevenZipExtractor> stkExtractors = new Stack<SevenZipExtractor>();
+				try
+				{
+					KeyValuePair<string, string> kvpArchive = stkFiles.Pop();
+					SevenZipExtractor szeArchive = new SevenZipExtractor(kvpArchive.Key);
+					stkExtractors.Push(szeArchive);
+					for (; stkFiles.Count > 0; kvpArchive = stkFiles.Pop())
+					{
+						MemoryStream msmArchive = new MemoryStream();
+						szeArchive.ExtractFile(kvpArchive.Value, msmArchive);
+						msmArchive.Position = 0;
+						szeArchive = new SevenZipExtractor(msmArchive);
+						stkExtractors.Push(szeArchive);
+					}
+
+					MemoryStream msmFile = new MemoryStream();
+					szeArchive.ExtractFile(kvpArchive.Value, msmFile);
+					msmFile.Position = 0;
+					return new SevenZipExtractor(msmFile);
+				}
+				finally
+				{
+					while (stkExtractors.Count > 0)
+						stkExtractors.Pop().Dispose();
+				}
+			}
+			else
+			{
+				return new SevenZipExtractor(p_strPath);
+			}
+		}
+
 		#region Constructors
 
 		/// <summary>
@@ -47,15 +99,19 @@ namespace Fomm.PackageManager
 		/// <param name="p_strPath">The path to the archive file.</param>
 		public Archive(string p_strPath)
 		{
-			m_strPath = p_strPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
-			using (SevenZipExtractor szeExtractor = new SevenZipExtractor(m_strPath))
+			m_strPath = p_strPath;
+			if (!p_strPath.StartsWith(ARCHIVE_PREFIX))
 			{
-				if (Enum.IsDefined(typeof(OutArchiveFormat), szeExtractor.Format.ToString()))
+				m_strPath = p_strPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+				using (SevenZipExtractor szeExtractor = new SevenZipExtractor(m_strPath))
 				{
-					m_szcCompressor = new SevenZipCompressor();
-					m_szcCompressor.CompressionMode = CompressionMode.Append;
-					m_szcCompressor.ArchiveFormat = (OutArchiveFormat)Enum.Parse(typeof(OutArchiveFormat), szeExtractor.Format.ToString());
-					m_booCanEdit = true;
+					if (Enum.IsDefined(typeof(OutArchiveFormat), szeExtractor.Format.ToString()))
+					{
+						m_szcCompressor = new SevenZipCompressor();
+						m_szcCompressor.CompressionMode = CompressionMode.Append;
+						m_szcCompressor.ArchiveFormat = (OutArchiveFormat)Enum.Parse(typeof(OutArchiveFormat), szeExtractor.Format.ToString());
+						m_booCanEdit = true;
+					}
 				}
 			}
 			m_dicFileInfo = new Dictionary<string, ArchiveFileInfo>(StringComparer.InvariantCultureIgnoreCase);
@@ -72,7 +128,7 @@ namespace Fomm.PackageManager
 		{
 			m_dicFileInfo.Clear();
 			m_strFiles.Clear();
-			using (SevenZipExtractor szeExtractor = new SevenZipExtractor(m_strPath))
+			using (SevenZipExtractor szeExtractor = GetExtractor(m_strPath))
 			{
 				foreach (ArchiveFileInfo afiFile in szeExtractor.ArchiveFileData)
 					if (!afiFile.IsDirectory)
@@ -93,7 +149,7 @@ namespace Fomm.PackageManager
 		{
 			if (!p_strPath.StartsWith(ARCHIVE_PREFIX))
 				return new KeyValuePair<string, string>(null, null);
-			Int32 intEndIndex = p_strPath.IndexOf("//", ARCHIVE_PREFIX.Length);
+			Int32 intEndIndex = p_strPath.LastIndexOf("//");
 			if (intEndIndex < 0)
 				intEndIndex = p_strPath.Length;
 			string strArchive = p_strPath.Substring(ARCHIVE_PREFIX.Length, intEndIndex - ARCHIVE_PREFIX.Length);
@@ -133,7 +189,7 @@ namespace Fomm.PackageManager
 
 			ArchiveFileInfo afiFile = default(ArchiveFileInfo);
 			string strArchiveFileName = null;
-			using (SevenZipExtractor szeExtractor = new SevenZipExtractor(m_strPath))
+			using (SevenZipExtractor szeExtractor = GetExtractor(m_strPath))
 				foreach (ArchiveFileInfo afiTmp in szeExtractor.ArchiveFileData)
 				{
 					strArchiveFileName = afiTmp.FileName.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
@@ -228,7 +284,7 @@ namespace Fomm.PackageManager
 				throw new FileNotFoundException("The requested file does not exist in the archive.", p_strPath);
 
 			byte[] bteFile = null;
-			using (SevenZipExtractor szeExtractor = new SevenZipExtractor(m_strPath))
+			using (SevenZipExtractor szeExtractor = GetExtractor(m_strPath))
 			{
 				ArchiveFileInfo afiFile = m_dicFileInfo[strPath];
 				bteFile = new byte[afiFile.Size];
@@ -269,7 +325,7 @@ namespace Fomm.PackageManager
 		public void ReplaceFile(string p_strFileName, byte[] p_bteData)
 		{
 			if (!m_booCanEdit)
-				using (SevenZipExtractor szeExtractor = new SevenZipExtractor(m_strPath))
+				using (SevenZipExtractor szeExtractor = GetExtractor(m_strPath))
 					throw new InvalidOperationException("Cannot modify archive of type: " + szeExtractor.Format);
 			string strPath = p_strFileName.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).ToLowerInvariant();
 			if (m_dicFileInfo.ContainsKey(strPath))
@@ -297,7 +353,7 @@ namespace Fomm.PackageManager
 		public void DeleteFile(string p_strFileName)
 		{
 			if (!m_booCanEdit)
-				using (SevenZipExtractor szeExtractor = new SevenZipExtractor(m_strPath))
+				using (SevenZipExtractor szeExtractor = GetExtractor(m_strPath))
 					throw new InvalidOperationException("Cannot modify archive of type: " + szeExtractor.Format);
 			string strPath = p_strFileName.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).ToLowerInvariant();
 			if (m_dicFileInfo.ContainsKey(strPath))

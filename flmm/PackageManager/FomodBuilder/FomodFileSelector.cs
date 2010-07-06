@@ -122,17 +122,8 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
 					lstInstructions.Add(kvpInstruction);
 			}
 
-			Set<string> setSources = new Set<string>();
 			foreach (KeyValuePair<string, string> kvpInstruction in lstInstructions)
 			{
-				if (kvpInstruction.Key.StartsWith(Archive.ARCHIVE_PREFIX))
-					setSources.Add(Archive.ParseArchivePath(kvpInstruction.Key).Key);
-				else
-				{
-					foreach (string strSource in p_lstSources)
-						if (kvpInstruction.Key.StartsWith(strSource))
-							setSources.Add(strSource);
-				}
 				string strParentDirectory = Path.GetDirectoryName(kvpInstruction.Value);
 				strParentDirectory = strParentDirectory.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
 				FileSystemTreeNode tndRoot = findNode(strParentDirectory);
@@ -146,7 +137,9 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
 				}
 				addFomodFile(tndRoot, kvpInstruction.Key).Text = Path.GetFileName(kvpInstruction.Value);
 			}
-			sftSources.Sources = setSources.ToArray();
+			string[] strSources = new string[p_lstSources.Count];
+			p_lstSources.CopyTo(strSources, 0);
+			sftSources.Sources = strSources;
 		}
 
 		/// <summary>

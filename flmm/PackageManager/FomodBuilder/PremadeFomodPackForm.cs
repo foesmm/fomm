@@ -105,16 +105,16 @@ namespace Fomm.PackageManager.FomodBuilder
 			erpError.Clear();
 			if (String.IsNullOrEmpty(tbxPFP.Text))
 			{
-				erpError.SetError(butPFP,"You must specify a PFP.");
+				erpError.SetError(butPFP, "You must specify a PFP.");
 				return false;
 			}
 			if (!File.Exists(tbxPFP.Text))
 			{
-				erpError.SetError(butPFP,"File does not exist.");
+				erpError.SetError(butPFP, "File does not exist.");
 				return false;
 			}
 
-			string strError = PremadeFomodPack.ValidatePFP(tbxPFP.Text);			
+			string strError = PremadeFomodPack.ValidatePFP(tbxPFP.Text);
 			if (!String.IsNullOrEmpty(strError))
 			{
 				erpError.SetError(butPFP, "File is not a valid PFP: " + strError);
@@ -145,13 +145,13 @@ namespace Fomm.PackageManager.FomodBuilder
 					StringBuilder stbErrorHtml = new StringBuilder("<html><body bgcolor=\"");
 					stbErrorHtml.AppendFormat("#{0:x6}", Color.FromKnownColor(KnownColor.Control).ToArgb() & 0x00ffffff);
 					stbErrorHtml.Append("\">The following sources are missing:<ul>");
-					foreach (KeyValuePair<string,string> kvpSource in dicMissingSources)
+					foreach (KeyValuePair<string, string> kvpSource in dicMissingSources)
 						stbErrorHtml.Append("<li><a href=\"").Append(kvpSource.Value).Append("\">").Append(kvpSource.Key).Append("</a></li>");
 					stbErrorHtml.Append("</ul></body></html>");
 					ShowHTML(stbErrorHtml.ToString());
 					return false;
 				}
-			}			
+			}
 
 			return true;
 		}
@@ -183,7 +183,8 @@ namespace Fomm.PackageManager.FomodBuilder
 		private void butOK_Click(object sender, EventArgs e)
 		{
 			Settings.SetString("LastPFPPath", Path.GetDirectoryName(tbxPFP.Text));
-			Settings.SetString("LastPFPSourcesPath", Path.GetDirectoryName(tbxSources.Text));
+			if (!String.IsNullOrEmpty(tbxSources.Text))
+				Settings.SetString("LastPFPSourcesPath", Path.GetDirectoryName(tbxSources.Text));
 			if (ValidateFiles())
 				DialogResult = DialogResult.OK;
 		}

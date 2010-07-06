@@ -126,6 +126,35 @@ namespace Fomm.PackageManager
 		#endregion
 
 		/// <summary>
+		/// Changes the directory of the archive referenced in the given path to the specified
+		/// new directory.
+		/// </summary>
+		/// <remarks>
+		/// This changes something of the form:
+		///		arch:old\path\archive.zip//interior/path/file.txt
+		///	to:
+		///		arch:new\path\archive.zip//interior/path/file.txt
+		/// </remarks>
+		/// <param name="p_strArchivePath">The archive path whose directory is to be replaced.</param>
+		/// <param name="p_strNewArchiveDirectory">The new directory to put into the given archive path.</param>
+		/// <returns>The archive path with the new directory.</returns>
+		public static string ChangeArchiveDirectory(string p_strArchivePath, string p_strNewArchiveDirectory)
+		{
+			string strNewDirectory = p_strNewArchiveDirectory ?? "";
+			KeyValuePair<string, string> kvpArchive = Archive.ParseArchivePath(p_strArchivePath);
+			Stack<string> stkArchives = new Stack<string>();
+			while (kvpArchive.Key.StartsWith(Archive.ARCHIVE_PREFIX))
+			{
+				stkArchives.Push(kvpArchive.Value);
+				kvpArchive = Archive.ParseArchivePath(kvpArchive.Key);
+			}
+			string strSource = Archive.GenerateArchivePath(Path.Combine(strNewDirectory, Path.GetFileName(kvpArchive.Key)), kvpArchive.Value);
+			while (stkArchives.Count > 0)
+				strSource = Archive.GenerateArchivePath(strSource, stkArchives.Pop());
+			return strSource;
+		}
+
+		/// <summary>
 		/// Gets the copy instructions for the PFP.
 		/// </summary>
 		/// <remarks>
@@ -144,10 +173,8 @@ namespace Fomm.PackageManager
 			XmlNode xndIntructions = m_xmlMeta.SelectSingleNode("premadeFomodPack/copyInstructions");
 			foreach (XmlNode xndInstruction in xndIntructions.ChildNodes)
 			{
-				string strSource = xndInstruction.Attributes["source"].Value;
+				string strSource = ChangeArchiveDirectory(xndInstruction.Attributes["source"].Value, p_strSourcesPath);
 				string strDestination = xndInstruction.Attributes["destination"].Value;
-				KeyValuePair<string, string> kvpArchive = Archive.ParseArchivePath(strSource);
-				strSource = Archive.GenerateArchivePath(Path.Combine(p_strSourcesPath, kvpArchive.Key), kvpArchive.Value);
 				lstCopyInstructions.Add(new KeyValuePair<string, string>(strSource, strDestination));
 			}
 			return lstCopyInstructions;

@@ -312,14 +312,16 @@ namespace Fomm.PackageManager.FomodBuilder
 		/// <param name="p_strExtractionPath">The path to the directory to which to unpack the archive.</param>
 		protected void UnpackArchive(string p_strArchivePath, string p_strExtractionPath)
 		{
-			SevenZipExtractor szeExtractor = new SevenZipExtractor(p_strArchivePath);
-			szeExtractor.FileExtractionFinished += new EventHandler<FileInfoEventArgs>(FileExtractionFinished);
-			szeExtractor.FileExtractionStarted += new EventHandler<FileInfoEventArgs>(FileExtractionStarted);
-			ProgressDialog.ItemProgress = 0;
-			ProgressDialog.ItemProgressMaximum = (Int32)szeExtractor.FilesCount;
-			ProgressDialog.ItemProgressStep = 1;
-			ProgressDialog.ItemMessage = String.Format("Extracting Source Files ({0})...", Path.GetFileName(p_strArchivePath));
-			szeExtractor.ExtractArchive(p_strExtractionPath);
+			using (SevenZipExtractor szeExtractor = Archive.GetExtractor(p_strArchivePath))
+			{
+				szeExtractor.FileExtractionFinished += new EventHandler<FileInfoEventArgs>(FileExtractionFinished);
+				szeExtractor.FileExtractionStarted += new EventHandler<FileInfoEventArgs>(FileExtractionStarted);
+				ProgressDialog.ItemProgress = 0;
+				ProgressDialog.ItemProgressMaximum = (Int32)szeExtractor.FilesCount;
+				ProgressDialog.ItemProgressStep = 1;
+				ProgressDialog.ItemMessage = String.Format("Extracting Source Files ({0})...", Path.GetFileName(p_strArchivePath));
+				szeExtractor.ExtractArchive(p_strExtractionPath);
+			}
 		}
 
 		#endregion
