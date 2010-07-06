@@ -400,6 +400,7 @@ namespace Fomm.PackageManager.FomodBuilder
 			//manual install
 			StringBuilder stbExtractions = new StringBuilder();
 			StringBuilder stbCopies = new StringBuilder();
+			List<string> lstExtracted = new List<string>();
 			foreach (KeyValuePair<string, string> kvpInstruction in p_lstCopyInstructions)
 			{
 				string strSource = kvpInstruction.Key;
@@ -417,9 +418,14 @@ namespace Fomm.PackageManager.FomodBuilder
 					strSource = "";
 					while (stkArchives.Count > 0)
 					{
-						stbExtractions.AppendFormat("\tExtract '{0}'", Path.Combine(strSource, stkArchives.Peek())).AppendLine();
-						strSource = Path.Combine(strSource, Path.GetFileNameWithoutExtension(stkArchives.Pop()));
-						stbExtractions.AppendFormat("\t\tto a folder named '{0}'.", strSource).AppendLine();
+						string strArchive = Path.Combine(strSource, stkArchives.Peek());
+						strSource = Path.Combine(strSource, Path.ChangeExtension(stkArchives.Pop(), null));
+						if (!lstExtracted.Contains(strArchive))
+						{
+							stbExtractions.AppendFormat("\tExtract '{0}'", strArchive).AppendLine();
+							stbExtractions.AppendFormat("\t\tto a folder named '{0}'.", strSource).AppendLine();
+							lstExtracted.Add(strArchive);
+						}
 					}
 					strSource = Path.Combine(strSource, kvpSource.Value);
 				}
