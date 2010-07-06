@@ -273,18 +273,7 @@ namespace Fomm.PackageManager.FomodBuilder
 					m_booIsAchive = false;
 				else
 				{
-					m_booIsAchive = true;
-					try
-					{
-						using (SevenZipExtractor szeExtractor = Archive.GetExtractor(LastSource))
-						{
-							UInt32 g = szeExtractor.FilesCount;
-						}
-					}
-					catch (Exception e)
-					{
-						m_booIsAchive = false;
-					}
+					m_booIsAchive = Archive.IsArchive(LastSource);
 				}
 				return m_booIsAchive.Value;
 			}

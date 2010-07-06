@@ -33,6 +33,8 @@
 			this.clmSource = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.clmURL = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.clmIncluded = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+			this.clmHidden = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+			this.clmGenerated = new System.Windows.Forms.DataGridViewCheckBoxColumn();
 			((System.ComponentModel.ISupportInitialize)(this.dgvSourceList)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -45,7 +47,9 @@
 			this.dgvSourceList.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.clmSource,
             this.clmURL,
-            this.clmIncluded});
+            this.clmIncluded,
+			this.clmHidden,
+			this.clmGenerated});
 			this.dgvSourceList.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.dgvSourceList.Location = new System.Drawing.Point(0, 0);
 			this.dgvSourceList.Name = "dgvSourceList";
@@ -77,6 +81,18 @@
 			this.clmIncluded.HeaderText = "Included";
 			this.clmIncluded.Name = "clmIncluded";
 			// 
+			// clmHidden
+			// 
+			this.clmHidden.DataPropertyName = "Hidden";
+			this.clmHidden.HeaderText = "Hidden";
+			this.clmHidden.Name = "clmHidden";
+			// 
+			// clmGenerated
+			// 
+			this.clmGenerated.DataPropertyName = "Generated";
+			this.clmGenerated.HeaderText = "Generated";
+			this.clmGenerated.Name = "clmGenerated";
+			// 
 			// SourceDownloadSelector
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -95,5 +111,7 @@
 		private System.Windows.Forms.DataGridViewTextBoxColumn clmSource;
 		private System.Windows.Forms.DataGridViewTextBoxColumn clmURL;
 		private System.Windows.Forms.DataGridViewCheckBoxColumn clmIncluded;
+		private System.Windows.Forms.DataGridViewCheckBoxColumn clmHidden;
+		private System.Windows.Forms.DataGridViewCheckBoxColumn clmGenerated;
 	}
 }

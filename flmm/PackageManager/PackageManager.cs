@@ -923,7 +923,7 @@ namespace Fomm.PackageManager
 		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
 		private void addPFPToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			PremadeFomodPackForm pkfPFPForm = new PremadeFomodPackForm();
+			PremadeFomodPackForm pkfPFPForm = new PremadeFomodPackForm(PremadeFomodPackForm.OpenPFPMode.Install);
 			if (pkfPFPForm.ShowDialog(this) == DialogResult.Cancel)
 				return;
 
@@ -948,7 +948,7 @@ namespace Fomm.PackageManager
 		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
 		private void editPFPToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			PremadeFomodPackForm pkfPFPForm = new PremadeFomodPackForm();
+			PremadeFomodPackForm pkfPFPForm = new PremadeFomodPackForm(PremadeFomodPackForm.OpenPFPMode.Edit);
 			if (pkfPFPForm.ShowDialog(this) == DialogResult.Cancel)
 				return;
 

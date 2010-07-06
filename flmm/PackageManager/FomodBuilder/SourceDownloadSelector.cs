@@ -15,39 +15,6 @@ namespace Fomm.PackageManager.FomodBuilder
 	/// </remarks>
 	public partial class SourceDownloadSelector : UserControl
 	{
-		/// <summary>
-		/// Encasuplates the download location of a source file.
-		/// </summary>
-		/// <remarks>
-		/// Source files are used to build FOMods and PFPs.
-		/// </remarks>
-		public class SourceDownloadLocation
-		{
-			public string Source { get; set; }
-
-			public string SourceFileName
-			{
-				get
-				{
-					return Path.GetFileName(Source);
-				}
-			}
-
-			public string URL { get; set; }
-			public bool Included { get; set; }
-
-			public SourceDownloadLocation()
-			{
-			}
-
-			public SourceDownloadLocation(string p_strSource, string p_strUrl, bool p_booIncluded)
-			{
-				Source = p_strSource;
-				URL = p_strUrl;
-				Included = p_booIncluded;
-			}
-		}
-
 		#region Properties
 
 		/// <summary>
@@ -56,11 +23,11 @@ namespace Fomm.PackageManager.FomodBuilder
 		/// <value>The list of source download locations being managed.</value>
 		[Browsable(false)]
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public IList<SourceDownloadLocation> DataSource
+		public IList<SourceFile> DataSource
 		{
 			get
 			{
-				return (IList<SourceDownloadLocation>)dgvSourceList.DataSource ?? new List<SourceDownloadLocation>();
+				return (IList<SourceFile>)dgvSourceList.DataSource ?? new List<SourceFile>();
 			}
 			set
 			{
@@ -120,12 +87,15 @@ namespace Fomm.PackageManager.FomodBuilder
 		private void HandleIncludedChange(Int32 p_intRowIndex)
 		{
 			DataGridViewTextBoxCell downloadLocationCell = (DataGridViewTextBoxCell)dgvSourceList.Rows[p_intRowIndex].Cells["clmURL"];
+			DataGridViewCheckBoxCell ckcHidden = (DataGridViewCheckBoxCell)dgvSourceList.Rows[p_intRowIndex].Cells["clmHidden"];
+			DataGridViewCheckBoxCell ckcGenerated = (DataGridViewCheckBoxCell)dgvSourceList.Rows[p_intRowIndex].Cells["clmGenerated"];
 
-			DataGridViewCheckBoxCell checkCell = (DataGridViewCheckBoxCell)dgvSourceList.Rows[p_intRowIndex].Cells["clmIncluded"];
-			downloadLocationCell.ReadOnly = (Boolean)checkCell.Value;
-			downloadLocationCell.Style.ForeColor = ((Boolean)checkCell.Value) ? Color.FromKnownColor(KnownColor.InactiveCaptionText) : Color.FromKnownColor(KnownColor.WindowText);
-			downloadLocationCell.Style.Font = ((Boolean)checkCell.Value) ? new Font(downloadLocationCell.InheritedStyle.Font, FontStyle.Italic) : new Font(downloadLocationCell.InheritedStyle.Font, FontStyle.Regular);
-
+			DataGridViewCheckBoxCell ckcIncluded = (DataGridViewCheckBoxCell)dgvSourceList.Rows[p_intRowIndex].Cells["clmIncluded"];
+			downloadLocationCell.ReadOnly = (Boolean)ckcIncluded.Value;
+			downloadLocationCell.Style.ForeColor = ((Boolean)ckcIncluded.Value) ? Color.FromKnownColor(KnownColor.InactiveCaptionText) : Color.FromKnownColor(KnownColor.WindowText);
+			downloadLocationCell.Style.Font = ((Boolean)ckcIncluded.Value) ? new Font(downloadLocationCell.InheritedStyle.Font, FontStyle.Italic) : new Font(downloadLocationCell.InheritedStyle.Font, FontStyle.Regular);
+			ckcHidden.ReadOnly = (Boolean)ckcIncluded.Value;
+			ckcGenerated.ReadOnly = (Boolean)ckcIncluded.Value;
 		}
 
 		/// <summary>

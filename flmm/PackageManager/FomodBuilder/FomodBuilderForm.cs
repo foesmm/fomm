@@ -46,6 +46,7 @@ namespace Fomm.PackageManager.FomodBuilder
 		private ReadmeGeneratorForm m_rgdGenerator = new ReadmeGeneratorForm();
 		private bool m_booInfoEntered = false;
 		private string m_strNewFomodPath = null;
+		private bool m_booLoadedInfo = false;
 
 		#region Properties
 
@@ -96,21 +97,16 @@ namespace Fomm.PackageManager.FomodBuilder
 			string strPremadeSource = Archive.GenerateArchivePath(p_pfpPack.PFPPath, p_pfpPack.PremadePath);
 			lstCopyInstructions.Add(new KeyValuePair<string, string>(strPremadeSource, "/"));
 
-			List<KeyValuePair<string, string>> lstSourceLocations = p_pfpPack.GetSources();
-			lstSourceLocations.Add(new KeyValuePair<string, string>(p_pfpPack.PFPPath, null));
+			List<SourceFile> lstSourceFiles = p_pfpPack.GetSources();
+			lstSourceFiles.ForEach((s) => { s.Source = Path.Combine(p_strSourcesPath, s.Source); });
+			lstSourceFiles.Add(new SourceFile(p_pfpPack.PFPPath, null, true, false, false));
 
-			List<string> lstSources = new List<string>();
-			List<SourceDownloadSelector.SourceDownloadLocation> lstLocations = new List<SourceDownloadSelector.SourceDownloadLocation>();
-			foreach (KeyValuePair<string, string> kvpSource in lstSourceLocations)
-			{
-				lstLocations.Add(new SourceDownloadSelector.SourceDownloadLocation(Path.Combine(p_strSourcesPath, kvpSource.Key), kvpSource.Value, String.IsNullOrEmpty(kvpSource.Value)));
-				lstSources.Add(Path.Combine(p_strSourcesPath, kvpSource.Key));
-			}
-			ffsFileStructure.SetCopyInstructions(lstSources, lstCopyInstructions);
+			ffsFileStructure.SetCopyInstructions(lstSourceFiles, lstCopyInstructions);
 			tbxFomodFileName.Text = p_pfpPack.FomodName;
-			sdsDownloadLocations.DataSource = lstLocations;
+			sdsDownloadLocations.DataSource = lstSourceFiles;
 			cbxPFP.Checked = true;
 			tbxPFPPath.Text = Path.GetDirectoryName(p_pfpPack.PFPPath);
+			tbxHowTo.Text = p_pfpPack.GetCustomHowToSteps();
 		}
 
 		#endregion
@@ -185,7 +181,7 @@ namespace Fomm.PackageManager.FomodBuilder
 
 			Cursor crsOldCursor = Cursor;
 			Cursor = Cursors.WaitCursor;
-			IList<KeyValuePair<string,string>> lstCopyInstructions = ffsFileStructure.GetCopyInstructions();
+			IList<KeyValuePair<string, string>> lstCopyInstructions = ffsFileStructure.GetCopyInstructions();
 			Cursor = crsOldCursor;
 
 			if (cbxFomod.Checked)
@@ -213,11 +209,8 @@ namespace Fomm.PackageManager.FomodBuilder
 							strMachineVersion = xatVersion.Value;
 					}
 				}
-				Dictionary<string, string> dicDownloadLocations = new Dictionary<string, string>();
-				foreach (SourceDownloadSelector.SourceDownloadLocation sdlLocation in sdsDownloadLocations.DataSource)
-					dicDownloadLocations[sdlLocation.Source] = sdlLocation.Included ? null : sdlLocation.URL;
 				PremadeFomodPackBuilder fpbPackBuilder = new PremadeFomodPackBuilder();
-				string strPFPPAth = fpbPackBuilder.BuildPFP(tbxFomodFileName.Text, strVersion, strMachineVersion, lstCopyInstructions, dicDownloadLocations, rmeReadme, xmlInfo, m_booInfoEntered, finInfo.Screenshot, fscScript, tbxPFPPath.Text);
+				string strPFPPAth = fpbPackBuilder.BuildPFP(tbxFomodFileName.Text, strVersion, strMachineVersion, lstCopyInstructions, sdsDownloadLocations.DataSource, tbxHowTo.Text, rmeReadme, xmlInfo, m_booInfoEntered, finInfo.Screenshot, fscScript, tbxPFPPath.Text);
 				if (String.IsNullOrEmpty(strPFPPAth))
 					return;
 			}
@@ -251,9 +244,9 @@ namespace Fomm.PackageManager.FomodBuilder
 
 			//download locations tab validation
 			UpdateDownloadLocationsList();
-			IList<SourceDownloadSelector.SourceDownloadLocation> lstLocations = (IList<SourceDownloadSelector.SourceDownloadLocation>)sdsDownloadLocations.DataSource;
-			foreach (SourceDownloadSelector.SourceDownloadLocation sdlLocation in lstLocations)
-				if (String.IsNullOrEmpty(sdlLocation.URL) && !sdlLocation.Included)
+			IList<SourceFile> lstSourceFiles = (IList<SourceFile>)sdsDownloadLocations.DataSource;
+			foreach (SourceFile sflLocation in lstSourceFiles)
+				if (String.IsNullOrEmpty(sflLocation.URL) && !sflLocation.Included)
 				{
 					if (cbxPFP.Checked)
 					{
@@ -430,23 +423,49 @@ namespace Fomm.PackageManager.FomodBuilder
 		/// </summary>
 		protected void UpdateDownloadLocationsList()
 		{
-			IList<SourceDownloadSelector.SourceDownloadLocation> lstOldLocations = (IList<SourceDownloadSelector.SourceDownloadLocation>)sdsDownloadLocations.DataSource;
-			List<SourceDownloadSelector.SourceDownloadLocation> lstLocations = new List<SourceDownloadSelector.SourceDownloadLocation>();
+			IList<SourceFile> lstOldLocations = sdsDownloadLocations.DataSource;
+			List<SourceFile> lstLocations = new List<SourceFile>();
 			string[] strSources = ffsFileStructure.Sources;
 			bool booFound = false;
+			LinkedList<string> lklSourceFiles = new LinkedList<string>();
 			foreach (string strSource in strSources)
 			{
-				booFound = false;
-				foreach (SourceDownloadSelector.SourceDownloadLocation sdlOldLocation in lstOldLocations)
-					if (sdlOldLocation.Source.Equals(strSource))
-					{
-						lstLocations.Add(sdlOldLocation);
-						booFound = true;
-						break;
-					}
-				if (!booFound)
-					lstLocations.Add(new SourceDownloadSelector.SourceDownloadLocation(strSource, null, false));
+				lklSourceFiles.Clear();
+				if (Archive.IsArchive(strSource))
+				{
+					string[] strVolumes = new Archive(strSource).VolumeFileNames;
+					foreach (string strVolumneName in strVolumes)
+						lklSourceFiles.AddLast(strVolumneName);
+				}
+				else
+					lklSourceFiles.AddLast(strSource);
+
+				foreach (string strSourceFile in lklSourceFiles)
+				{
+					booFound = false;
+					for (Int32 i = lstOldLocations.Count - 1; i >= 0; i--)
+						if (lstOldLocations[i].Source.Equals(strSourceFile))
+						{
+							lstLocations.Add(lstOldLocations[i]);
+							lstOldLocations.RemoveAt(i);
+							booFound = true;
+							break;
+						}
+					if (!booFound)
+						foreach (SourceFile sflLocation in lstLocations)
+							if (sflLocation.Source.Equals(strSourceFile))
+							{
+								booFound = true;
+								break;
+							}
+					if (!booFound)
+						lstLocations.Add(new SourceFile(strSourceFile, null, false, !strSource.Equals(strSourceFile), false));
+				}
 			}
+			//make sure all the hidden sources are in the download list
+			foreach (SourceFile sflOldSource in lstOldLocations)
+				if (sflOldSource.Hidden && !lstLocations.Contains(sflOldSource))
+					lstLocations.Add(sflOldSource);
 			sdsDownloadLocations.DataSource = lstLocations;
 		}
 
@@ -585,7 +604,7 @@ namespace Fomm.PackageManager.FomodBuilder
 		#endregion
 
 		#region Info
-		private bool m_booLoadedInfo = false;
+
 		/// <summary>
 		/// If no info has been entered, this method looks for an info file in the selected
 		/// files, and, if one is found, uses it to populate the info editor. If one is not found,

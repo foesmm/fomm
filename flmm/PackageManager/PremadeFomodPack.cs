@@ -126,35 +126,6 @@ namespace Fomm.PackageManager
 		#endregion
 
 		/// <summary>
-		/// Changes the directory of the archive referenced in the given path to the specified
-		/// new directory.
-		/// </summary>
-		/// <remarks>
-		/// This changes something of the form:
-		///		arch:old\path\archive.zip//interior/path/file.txt
-		///	to:
-		///		arch:new\path\archive.zip//interior/path/file.txt
-		/// </remarks>
-		/// <param name="p_strArchivePath">The archive path whose directory is to be replaced.</param>
-		/// <param name="p_strNewArchiveDirectory">The new directory to put into the given archive path.</param>
-		/// <returns>The archive path with the new directory.</returns>
-		public static string ChangeArchiveDirectory(string p_strArchivePath, string p_strNewArchiveDirectory)
-		{
-			string strNewDirectory = p_strNewArchiveDirectory ?? "";
-			KeyValuePair<string, string> kvpArchive = Archive.ParseArchivePath(p_strArchivePath);
-			Stack<string> stkArchives = new Stack<string>();
-			while (kvpArchive.Key.StartsWith(Archive.ARCHIVE_PREFIX))
-			{
-				stkArchives.Push(kvpArchive.Value);
-				kvpArchive = Archive.ParseArchivePath(kvpArchive.Key);
-			}
-			string strSource = Archive.GenerateArchivePath(Path.Combine(strNewDirectory, Path.GetFileName(kvpArchive.Key)), kvpArchive.Value);
-			while (stkArchives.Count > 0)
-				strSource = Archive.GenerateArchivePath(strSource, stkArchives.Pop());
-			return strSource;
-		}
-
-		/// <summary>
 		/// Gets the copy instructions for the PFP.
 		/// </summary>
 		/// <remarks>
@@ -173,7 +144,7 @@ namespace Fomm.PackageManager
 			XmlNode xndIntructions = m_xmlMeta.SelectSingleNode("premadeFomodPack/copyInstructions");
 			foreach (XmlNode xndInstruction in xndIntructions.ChildNodes)
 			{
-				string strSource = ChangeArchiveDirectory(xndInstruction.Attributes["source"].Value, p_strSourcesPath);
+				string strSource = Archive.ChangeArchiveDirectory(xndInstruction.Attributes["source"].Value, p_strSourcesPath);
 				string strDestination = xndInstruction.Attributes["destination"].Value;
 				lstCopyInstructions.Add(new KeyValuePair<string, string>(strSource, strDestination));
 			}
@@ -184,17 +155,35 @@ namespace Fomm.PackageManager
 		/// Gets the list of sources required by the PFP.
 		/// </summary>
 		/// <returns>The list of sources required by the PFP.</returns>
-		public List<KeyValuePair<string, string>> GetSources()
+		public List<SourceFile> GetSources()
 		{
-			List<KeyValuePair<string, string>> lstSources = new List<KeyValuePair<string, string>>();
+			List<SourceFile> lstSources = new List<SourceFile>();
 			XmlNode xndSources = m_xmlMeta.SelectSingleNode("premadeFomodPack/sources");
 			foreach (XmlNode xndSource in xndSources.ChildNodes)
 			{
 				string strSource = xndSource.Attributes["name"].Value;
 				string strUrl = xndSource.Attributes["url"].Value;
-				lstSources.Add(new KeyValuePair<string, string>(strSource, strUrl));
+				bool booHidden = false;
+				if (xndSource.Attributes["hidden"] != null)
+					Boolean.TryParse(xndSource.Attributes["hidden"].Value, out booHidden);
+				bool booGenerated = false;
+				if (xndSource.Attributes["generated"] != null)
+					Boolean.TryParse(xndSource.Attributes["generated"].Value, out booGenerated);
+				lstSources.Add(new SourceFile(strSource, strUrl, String.IsNullOrEmpty(strUrl), booHidden, booGenerated));
 			}
 			return lstSources;
+		}
+
+		/// <summary>
+		/// Gets the custom howto steps specified by the PFP.
+		/// </summary>
+		/// <returns>The custom howto steps specified by the PFP.</returns>
+		public string GetCustomHowToSteps()
+		{
+			XmlNode xndCustomHowToSteps = m_xmlMeta.SelectSingleNode("premadeFomodPack/customHowToSteps");
+			if (xndCustomHowToSteps != null)
+				return xndCustomHowToSteps.InnerXml;
+			return null;
 		}
 	}
 }

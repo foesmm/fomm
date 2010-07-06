@@ -15,6 +15,24 @@ namespace Fomm.PackageManager.FomodBuilder
 	/// </summary>
 	public partial class PremadeFomodPackForm : Form
 	{
+		/// <summary>
+		/// The open PFP modes.
+		/// </summary>
+		public enum OpenPFPMode
+		{
+			/// <summary>
+			/// Indicates the PFP is being opened to install it as a FOMod.
+			/// </summary>
+			Install,
+
+			/// <summary>
+			/// Indicates the PFP is being opened for editing.
+			/// </summary>
+			Edit
+		}
+
+		private OpenPFPMode m_omdMode = OpenPFPMode.Install;
+
 		#region Properties
 
 		/// <summary>
@@ -58,13 +76,14 @@ namespace Fomm.PackageManager.FomodBuilder
 		/// <summary>
 		/// The default constructor.
 		/// </summary>
-		public PremadeFomodPackForm()
+		public PremadeFomodPackForm(OpenPFPMode p_omdMode)
 		{
 			InitializeComponent();
 
 			Icon = Fomm.Properties.Resources.fomm02;
 			ofdPFP.InitialDirectory = Settings.GetString("LastPFPPath");
 			fbdSources.SelectedPath = Settings.GetString("LastPFPSourcesPath");
+			m_omdMode = p_omdMode;
 		}
 
 		#endregion
@@ -121,7 +140,7 @@ namespace Fomm.PackageManager.FomodBuilder
 				return false;
 			}
 			PremadeFomodPack pfpPack = new PremadeFomodPack(tbxPFP.Text);
-			List<KeyValuePair<string, string>> lstSources = pfpPack.GetSources();
+			List<SourceFile> lstSources = pfpPack.GetSources();
 			if (lstSources.Count > 0)
 			{
 				if (String.IsNullOrEmpty(tbxSources.Text))
@@ -134,20 +153,52 @@ namespace Fomm.PackageManager.FomodBuilder
 					erpError.SetError(butSources, "Folder does not exist.");
 					return false;
 				}
-				Dictionary<string, string> dicMissingSources = new Dictionary<string, string>();
-				foreach (KeyValuePair<string, string> kvpSource in lstSources)
-					if (!File.Exists(Path.Combine(tbxSources.Text, kvpSource.Key)))
-						dicMissingSources[kvpSource.Key] = kvpSource.Value;
-				if (dicMissingSources.Count > 0)
+				List<SourceFile> lstMissingSources = new List<SourceFile>();
+				List<SourceFile> lstMissingHiddenSources = new List<SourceFile>();
+				foreach (SourceFile sflSource in lstSources)
+				{
+					if ((!sflSource.Hidden || sflSource.Generated) && !File.Exists(Path.Combine(tbxSources.Text, sflSource.Source)))
+						lstMissingSources.Add(sflSource);
+					if ((sflSource.Hidden && !sflSource.Generated) && !File.Exists(Path.Combine(tbxSources.Text, sflSource.Source)))
+						lstMissingHiddenSources.Add(sflSource);
+				}
+				if ((lstMissingSources.Count > 0) || ((m_omdMode == OpenPFPMode.Edit) && (lstMissingHiddenSources.Count > 0)))
 				{
 					erpError.SetError(butSources, "Missing sources.");
 
 					StringBuilder stbErrorHtml = new StringBuilder("<html><body bgcolor=\"");
 					stbErrorHtml.AppendFormat("#{0:x6}", Color.FromKnownColor(KnownColor.Control).ToArgb() & 0x00ffffff);
-					stbErrorHtml.Append("\">The following sources are missing:<ul>");
-					foreach (KeyValuePair<string, string> kvpSource in dicMissingSources)
-						stbErrorHtml.Append("<li><a href=\"").Append(kvpSource.Value).Append("\">").Append(kvpSource.Key).Append("</a></li>");
-					stbErrorHtml.Append("</ul></body></html>");
+					stbErrorHtml.Append("\">");
+					bool booMissingGeneratedFiles = false;
+					if (lstMissingSources.Count > 0)
+					{
+						stbErrorHtml.Append("The following sources are missing:<ul>");
+						foreach (SourceFile sflSource in lstMissingSources)
+						{
+							if (!sflSource.Generated)
+								stbErrorHtml.AppendFormat("<li><a href=\"{0}\">{1}</a></li>", sflSource.URL, sflSource.SourceFileName).AppendLine();
+							else
+							{
+								booMissingGeneratedFiles = true;
+								stbErrorHtml.AppendFormat("<li>{0}</li>", sflSource.SourceFileName).AppendLine();
+							}
+						}
+						stbErrorHtml.AppendLine("</ul>");
+					}
+					if (lstMissingHiddenSources.Count > 0)
+					{
+						stbErrorHtml.Append("Some of the missing sources require the following files to be downloaded:<ul>");
+						foreach (SourceFile sflSource in lstMissingHiddenSources)
+							stbErrorHtml.AppendFormat("<li><a href=\"{0}\">{1}</a></li>", sflSource.URL, sflSource.SourceFileName).AppendLine();
+						stbErrorHtml.AppendLine("</ul>");
+					}
+					if (booMissingGeneratedFiles)
+					{
+						stbErrorHtml.Append("You are missing some files that need to be created before FOMM can open the Premade FOMod Pack (PFP). ");
+						stbErrorHtml.Append("Please read the <b>howto.txt</b> file included in the PFP.");
+					}
+
+					stbErrorHtml.Append("</body></html>");
 					ShowHTML(stbErrorHtml.ToString());
 					return false;
 				}
@@ -162,6 +213,7 @@ namespace Fomm.PackageManager.FomodBuilder
 		protected void ShowHTML(string p_strHTML)
 		{
 			Form frmHTMLPreview = new Form();
+			frmHTMLPreview.Size = new Size(500, 500);
 			frmHTMLPreview.Icon = Fomm.Properties.Resources.fomm02;
 			frmHTMLPreview.ShowInTaskbar = false;
 			frmHTMLPreview.StartPosition = FormStartPosition.CenterParent;

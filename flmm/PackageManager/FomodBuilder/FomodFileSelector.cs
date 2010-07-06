@@ -70,7 +70,7 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
 		/// Populates the file selector based on the given sources and copy instructions.
 		/// </summary>
 		/// <param name="p_lstSources"></param>
-		public void SetCopyInstructions(IList<string> p_lstSources, IList<KeyValuePair<string, string>> p_lstInstructions)
+		public void SetCopyInstructions(IList<SourceFile> p_lstSources, IList<KeyValuePair<string, string>> p_lstInstructions)
 		{
 			List<KeyValuePair<string, string>> lstInstructions = new List<KeyValuePair<string, string>>();
 			//we need to replace any instructions of the form:
@@ -137,9 +137,11 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
 				}
 				addFomodFile(tndRoot, kvpInstruction.Key).Text = Path.GetFileName(kvpInstruction.Value);
 			}
-			string[] strSources = new string[p_lstSources.Count];
-			p_lstSources.CopyTo(strSources, 0);
-			sftSources.Sources = strSources;
+			List<string> lstSources = new List<string>(p_lstSources.Count);
+			foreach (SourceFile sflSource in p_lstSources)
+				if (!sflSource.Hidden)
+					lstSources.Add(sflSource.Source);
+			sftSources.Sources = lstSources.ToArray();
 		}
 
 		/// <summary>

@@ -37,7 +37,27 @@ namespace Fomm.PackageManager
 			}
 		}
 
+		/// <summary>
+		/// Gets the names of the volumes that make up this archive.
+		/// </summary>
+		/// <value>The names of the volumes that make up this archive.</value>
+		public string[] VolumeFileNames
+		{
+			get
+			{
+				using (SevenZipExtractor szeExtractor = GetExtractor(m_strPath))
+				{
+					IList<string> lstVolumes = szeExtractor.VolumeFileNames;
+					string[] strVolumes = new string[lstVolumes.Count];
+					lstVolumes.CopyTo(strVolumes,0);
+					return strVolumes;
+				}
+			}
+		}
+
 		#endregion
+
+		#region Utility Methods
 
 		/// <summary>
 		/// Gets a <see cref="SevenZipExtractor"/> for the given path.
@@ -90,6 +110,63 @@ namespace Fomm.PackageManager
 				return new SevenZipExtractor(p_strPath);
 			}
 		}
+
+		/// <summary>
+		/// Determines whether or not the file specified by the given path
+		/// is an archive.
+		/// </summary>
+		/// <returns><lang cref="true"/> if the specified file is an archive;
+		/// <lang cref="false"/> otherwise.</returns>
+		public static bool IsArchive(string p_strPath)
+		{
+			if (!File.Exists(p_strPath))
+				return false;
+			bool booIsAchive = true;
+			try
+			{
+				using (SevenZipExtractor szeExtractor = GetExtractor(p_strPath))
+				{
+					UInt32 g = szeExtractor.FilesCount;
+				}
+			}
+			catch (Exception e)
+			{
+				booIsAchive = false;
+			}
+			return booIsAchive;
+		}
+
+		/// <summary>
+		/// Changes the directory of the archive referenced in the given path to the specified
+		/// new directory.
+		/// </summary>
+		/// <remarks>
+		/// This changes something of the form:
+		///		arch:old\path\archive.zip//interior/path/file.txt
+		///	to:
+		///		arch:new\path\archive.zip//interior/path/file.txt
+		/// </remarks>
+		/// <param name="p_strArchivePath">The archive path whose directory is to be replaced.</param>
+		/// <param name="p_strNewArchiveDirectory">The new directory to put into the given archive path.</param>
+		/// <returns>The archive path with the new directory.</returns>
+		public static string ChangeArchiveDirectory(string p_strArchivePath, string p_strNewArchiveDirectory)
+		{
+			string strNewDirectory = p_strNewArchiveDirectory ?? "";
+			KeyValuePair<string, string> kvpArchive = ParseArchivePath(p_strArchivePath);
+			Stack<string> stkArchives = new Stack<string>();
+			while (kvpArchive.Key.StartsWith(ARCHIVE_PREFIX))
+			{
+				stkArchives.Push(kvpArchive.Value);
+				kvpArchive = ParseArchivePath(kvpArchive.Key);
+			}
+			string strSource = GenerateArchivePath(Path.Combine(strNewDirectory, Path.GetFileName(kvpArchive.Key)), kvpArchive.Value);
+			while (stkArchives.Count > 0)
+				strSource = GenerateArchivePath(strSource, stkArchives.Pop());
+			return strSource;
+		}
+
+		#endregion
+
 
 		#region Constructors
 

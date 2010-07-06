@@ -99,6 +99,9 @@
     <Compile Include="BSACreator.Designer.cs">
       <DependentUpon>BSACreator.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\AutosizeLabel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\CodeEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -334,6 +337,7 @@
       <DependentUpon>SelectForm.cs</DependentUpon>
     </Compile>
     <Compile Include="PackageManager\ShaderException.cs" />
+    <Compile Include="PackageManager\SourceDownloadLocation.cs" />
     <Compile Include="PackageManager\TextEditor.cs">
       <SubType>Form</SubType>
     </Compile>
