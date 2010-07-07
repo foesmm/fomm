@@ -144,7 +144,11 @@ namespace Fomm.PackageManager
 			XmlNode xndIntructions = m_xmlMeta.SelectSingleNode("premadeFomodPack/copyInstructions");
 			foreach (XmlNode xndInstruction in xndIntructions.ChildNodes)
 			{
-				string strSource = Archive.ChangeArchiveDirectory(xndInstruction.Attributes["source"].Value, p_strSourcesPath);
+				string strSource = xndInstruction.Attributes["source"].Value;
+				if (strSource.StartsWith(Archive.ARCHIVE_PREFIX))
+					strSource = Archive.ChangeArchiveDirectory(strSource, p_strSourcesPath);
+				else
+					strSource = Path.Combine(p_strSourcesPath, strSource);
 				string strDestination = xndInstruction.Attributes["destination"].Value;
 				lstCopyInstructions.Add(new KeyValuePair<string, string>(strSource, strDestination));
 			}

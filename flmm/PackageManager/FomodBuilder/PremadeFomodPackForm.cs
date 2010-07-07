@@ -155,11 +155,13 @@ namespace Fomm.PackageManager.FomodBuilder
 				}
 				List<SourceFile> lstMissingSources = new List<SourceFile>();
 				List<SourceFile> lstMissingHiddenSources = new List<SourceFile>();
+				bool booSourceMissing = false;
 				foreach (SourceFile sflSource in lstSources)
 				{
-					if ((!sflSource.Hidden || sflSource.Generated) && !File.Exists(Path.Combine(tbxSources.Text, sflSource.Source)))
+					booSourceMissing = !File.Exists(Path.Combine(tbxSources.Text, sflSource.Source)) && !Directory.Exists(Path.Combine(tbxSources.Text, sflSource.Source));
+					if ((!sflSource.Hidden || sflSource.Generated) && booSourceMissing)
 						lstMissingSources.Add(sflSource);
-					if ((sflSource.Hidden && !sflSource.Generated) && !File.Exists(Path.Combine(tbxSources.Text, sflSource.Source)))
+					if ((sflSource.Hidden && !sflSource.Generated) && booSourceMissing)
 						lstMissingHiddenSources.Add(sflSource);
 				}
 				if ((lstMissingSources.Count > 0) || ((m_omdMode == OpenPFPMode.Edit) && (lstMissingHiddenSources.Count > 0)))

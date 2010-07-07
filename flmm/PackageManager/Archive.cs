@@ -151,6 +151,8 @@ namespace Fomm.PackageManager
 		/// <returns>The archive path with the new directory.</returns>
 		public static string ChangeArchiveDirectory(string p_strArchivePath, string p_strNewArchiveDirectory)
 		{
+			if (!p_strArchivePath.StartsWith(ARCHIVE_PREFIX))
+				throw new ArgumentException("The given path is not an archive path: " + p_strArchivePath, "p_strArchivePath");
 			string strNewDirectory = p_strNewArchiveDirectory ?? "";
 			KeyValuePair<string, string> kvpArchive = ParseArchivePath(p_strArchivePath);
 			Stack<string> stkArchives = new Stack<string>();
