@@ -298,7 +298,12 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
 				else
 				{
 					lstSubPaths.AddRange(Directory.GetDirectories(srcSource.Path));
-					lstSubPaths.AddRange(Directory.GetFiles(srcSource.Path));
+					foreach (string strPath in Directory.GetFiles(srcSource.Path))
+					{
+						if ((new FileInfo(strPath).Attributes & FileAttributes.System) > 0)
+							continue;
+						lstSubPaths.AddRange(Directory.GetFiles(srcSource.Path));
+					}
 				}
 				//if the source hasn't been loaded, then we treat it as if all
 				// subpaths are present and have already been removed from
