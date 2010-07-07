@@ -358,6 +358,7 @@ namespace Fomm.PackageManager {
 			// 
 			// sbtAddFomod
 			// 
+			this.sbtAddFomod.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.sbtAddFomod.AutoSize = true;
 			this.sbtAddFomod.ContextMenuStrip = this.cmsAddFomod;
 			this.sbtAddFomod.Location = new System.Drawing.Point(493, 108);
