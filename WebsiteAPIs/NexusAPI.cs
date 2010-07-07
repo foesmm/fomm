@@ -348,7 +348,7 @@ namespace WebsiteAPIs
 		protected string GetFileKey(Int32 p_intModKey, string p_strFileTitle)
 		{
 			string strFileUploadPage = GetUploadPage(p_intModKey);
-			Regex rgxFileKey = new Regex("\\s+" + p_strFileTitle + "</a>.*?do_deletesinglefile.php\\?id=(\\d+)", RegexOptions.Singleline);
+			Regex rgxFileKey = new Regex(">\\s+" + p_strFileTitle + "</a>.*?do_deletesinglefile.php\\?id=(\\d+)", RegexOptions.Singleline);
 			if (!rgxFileKey.IsMatch(strFileUploadPage))
 				return null;
 			string strKey = rgxFileKey.Match(strFileUploadPage).Groups[1].Value;
