@@ -216,7 +216,7 @@ namespace Fomm.PackageManager.FomodBuilder
 			foreach (SourceFile sflSource in bpaArgs.SourceFiles)
 				if (sflSource.Hidden || sflSource.Generated)
 					setUsedSources.Add(sflSource);
-			
+
 			// 1) Create tmp dirs for extraction of sources that will be stored in PFP
 			Dictionary<string, string> dicSources = CreateExtractionDirectories(lstPFPCopyInstructions);
 			ProgressDialog.OverallProgressMaximum = intBaseStepCount + dicSources.Count + lstPFPCopyInstructions.Count;
@@ -335,7 +335,7 @@ namespace Fomm.PackageManager.FomodBuilder
 					{
 						if (kvpInstruction.Key.StartsWith(sflSource.Source))
 						{
-							xndInstruction.Attributes.Append(xmlMeta.CreateAttribute("source")).Value = kvpInstruction.Key.Substring(sflSource.Source.Length);
+							xndInstruction.Attributes.Append(xmlMeta.CreateAttribute("source")).Value = kvpInstruction.Key.Substring(Path.GetDirectoryName(sflSource.Source).Length + 1);
 							xndInstruction.Attributes.Append(xmlMeta.CreateAttribute("destination")).Value = kvpInstruction.Value;
 							break;
 						}
@@ -391,6 +391,7 @@ namespace Fomm.PackageManager.FomodBuilder
 			Int32 intStepCounter = 1;
 			stbHowTo.AppendLine("Instructions");
 			stbHowTo.AppendLine("------------").AppendLine();
+			Int32 intDownloadStep = intStepCounter;
 			AppendWrappedFormat(stbHowTo, "{0}) Download the files required to build the FOMod:", intStepCounter++).AppendLine();
 			foreach (KeyValuePair<string, Set<string>> kvpSource in dicSources)
 			{
@@ -405,24 +406,29 @@ namespace Fomm.PackageManager.FomodBuilder
 			}
 
 			//insert any custom steps
+			string strCollateStepFormat = null;
 			if (!String.IsNullOrEmpty(p_strCustomHowToSteps))
 			{
 				string[] strCustomSteps = p_strCustomHowToSteps.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
 				stbHowTo.AppendLine();
+				Int32 intCustomStartStep = intStepCounter;
 				foreach (string strCustomStep in strCustomSteps)
 					if (strCustomStep.Contains("#)"))
 						AppendWrappedFormat(stbHowTo, strCustomStep.Replace("#)", "{0})"), intStepCounter++).AppendLine();
 					else
 						AppendWrappedFormat(stbHowTo, strCustomStep).AppendLine();
 				stbHowTo.AppendLine();
+				strCollateStepFormat = String.Format("{{0}}) Put all the files you downloaded in Step {{1}}, as well as any files or folders you created in Steps {0}-{1}, into the same folder.", intCustomStartStep, intStepCounter - 1);
 			}
+			else
+				strCollateStepFormat = "{0}) Put all the files you downloaded in Step {1} into the same folder.";
 
 			//decide if you are using manual or auto install
 			AppendWrappedFormat(stbHowTo, "{0}) If you are using FOMM 0.12.0 or newer, proceed to Step {1}, otherwise proceed to Step {2}.", intStepCounter++, intStepCounter, intStepCounter + 8).AppendLine().AppendLine();
 
 			//auto install
 			Int32 intSourceFolderStep = intStepCounter;
-			AppendWrappedFormat(stbHowTo, "{0}) Put all the files you downloaded in Step {1} into the same folder.", intSourceFolderStep, intStepCounter++ - 1).AppendLine();
+			AppendWrappedFormat(stbHowTo, strCollateStepFormat, intStepCounter++, intDownloadStep).AppendLine();
 			AppendWrappedFormat(stbHowTo, "{0}) Start FOMM.", intStepCounter++).AppendLine();
 			AppendWrappedFormat(stbHowTo, "{0}) Click the 'Package Manager' button.", intStepCounter++).AppendLine();
 			AppendWrappedFormat(stbHowTo, "{0}) Click the arrow on the top button in the 'Package Manager' window. Select 'Add PFP' from the menu.", intStepCounter++).AppendLine();
@@ -464,13 +470,24 @@ namespace Fomm.PackageManager.FomodBuilder
 					}
 					strSource = Path.Combine(strSource, kvpSource.Value);
 				}
+				else
+				{
+					foreach (SourceFile sflSource in p_lstSourceFiles)
+						if (strSource.StartsWith(sflSource.Source))
+						{
+							strSource = strSource.Substring(Path.GetDirectoryName(sflSource.Source).Length + 1);
+							break;
+						}
+				}
 				stbCopies.AppendFormat("\tCopy '{0}'", strSource).AppendLine();
 				stbCopies.AppendFormat("\t\tto '{0}'.", Path.Combine(p_strModBaseName, kvpInstruction.Value)).AppendLine();
 			}
 
-			Int32 intSourceFolderCreationStep = intStepCounter;
-			AppendWrappedFormat(stbHowTo, "{0}) Extract the source files to the following folders:", intStepCounter++).AppendLine();
-			stbHowTo.Append(stbExtractions);
+			if (stbExtractions.Length > 0)
+			{
+				AppendWrappedFormat(stbHowTo, "{0}) Extract the source files to the following folders:", intStepCounter++).AppendLine();
+				stbHowTo.Append(stbExtractions);
+			}
 
 			Int32 intCreateFomodFolderStep = intStepCounter;
 			AppendWrappedFormat(stbHowTo, "{0}) Create a folder named '{1}'.", intStepCounter++, p_strModBaseName).AppendLine();
