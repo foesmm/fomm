@@ -62,12 +62,14 @@ namespace Fomm.PackageManager
 				if (m_bteData == null)
 					return null;
 				Image imgSreenshot = null;
+				Image imgReal = null;
 				using (MemoryStream msmImage = new MemoryStream(m_bteData))
 				{
 					imgSreenshot = System.Drawing.Image.FromStream(msmImage);
+					imgReal = new Bitmap(imgSreenshot);
 					msmImage.Close();
 				}
-				return imgSreenshot;
+				return imgReal;
 			}
 		}
 
