@@ -83,6 +83,8 @@
 			this.tbxReadme.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
 			this.tbxReadme.Size = new System.Drawing.Size(381, 215);
 			this.tbxReadme.TabIndex = 0;
+			this.tbxReadme.AcceptsReturn = true;
+			this.tbxReadme.AcceptsTab = true;
 			this.tbxReadme.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbxReadme_KeyPress);
 			// 
 			// ddpHTML
