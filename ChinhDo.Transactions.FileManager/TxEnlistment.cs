@@ -5,6 +5,8 @@ using System.IO;
 using System.Runtime.InteropServices;
 using fomm.Transactions;
 using System.Text.RegularExpressions;
+using System.Security.Permissions;
+using System.Security;
 
 namespace ChinhDo.Transactions
 {
@@ -85,16 +87,16 @@ namespace ChinhDo.Transactions
 			/// <param name="path">The directory path to create.</param>
 			public void CreateDirectory(string path)
 			{
-				//because a call to this method can actually create multiple diretories,
-				// we need to find out explicitly which are being created, and add a
-				// journal entry for each.
-
-				string strNormalizedPath = m_rgxCleanPath.Replace(path, Path.DirectorySeparatorChar.ToString());
-				strNormalizedPath = strNormalizedPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
-				string[] strPaths = strNormalizedPath.Split(Path.DirectorySeparatorChar);
-
 				if (_tx != null)
 				{
+					//because a call to this method can actually create multiple diretories,
+					// we need to find out explicitly which are being created, and add a
+					// journal entry for each.
+
+					string strNormalizedPath = m_rgxCleanPath.Replace(path, Path.DirectorySeparatorChar.ToString());
+					strNormalizedPath = strNormalizedPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+					string[] strPaths = strNormalizedPath.Split(Path.DirectorySeparatorChar);
+
 					Int32 i = 0;
 					string strPath = "";
 					if (strPaths[0].EndsWith(Path.VolumeSeparatorChar.ToString()))
@@ -104,12 +106,22 @@ namespace ChinhDo.Transactions
 					}
 					for (; i < strPaths.Length; i++)
 					{
-						strPath = Path.Combine(strPath, strPaths[i]);
-						if (!Directory.Exists(strPath))
+						//if we don't have write permission to the parent directory, then whether
+						// or not the child directory exists is irrelevant, as we won't be able to create it
+						try
 						{
-							_journal.Add(new RollbackDirectory(strPath));
-							Enlist();
+							FileIOPermission fipWritePermission = new FileIOPermission(FileIOPermissionAccess.Write, strPath);
+							strPath = Path.Combine(strPath, strPaths[i]);
+							fipWritePermission.Demand();
+							if (!Directory.Exists(strPath))
+							{
+								_journal.Add(new RollbackDirectory(strPath));
+								Enlist();
+							}
 						}
+						catch (SecurityException)
+						{
+						}						
 					}
 				}
 
