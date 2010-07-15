@@ -211,6 +211,8 @@ namespace Fomm.PackageManager
 						using (TransactionScope tsTransaction = new TransactionScope())
 						{
 							m_tfmFileManager = new TxFileManager();
+							if (Fomod != null)
+								Fomod.BeginReadOnlyTransaction();
 							booSuccess = DoScript();
 							if (booSuccess)
 								tsTransaction.Complete();
@@ -252,6 +254,8 @@ namespace Fomm.PackageManager
 					m_booOverwriteAllIni = false;
 					ActivePlugins = null;
 					m_ilmModInstallLog = null;
+					if (Fomod != null)
+						Fomod.EndReadOnlyTransaction();
 				}
 			}
 			if (booSuccess && !p_booSuppressSuccessMessage && !String.IsNullOrEmpty(SuccessMessage))

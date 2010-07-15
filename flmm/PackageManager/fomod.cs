@@ -694,6 +694,32 @@ namespace Fomm.PackageManager
 		}
 
 		/// <summary>
+		/// Starts a read-only transaction.
+		/// </summary>
+		/// <remarks>
+		/// This puts the FOMod into read-only mode.
+		/// 
+		/// Read-only mode can greatly increase the speed at which multiple file are extracted.
+		/// </remarks>
+		public void BeginReadOnlyTransaction()
+		{
+			m_arcFile.BeginReadOnlyTransaction();
+		}
+
+		/// <summary>
+		/// Ends a read-only transaction.
+		/// </summary>
+		/// <remarks>
+		/// This takes the FOMod out of read-only mode.
+		/// 
+		/// Read-only mode can greatly increase the speed at which multiple file are extracted.
+		/// </remarks>
+		public void EndReadOnlyTransaction()
+		{
+			m_arcFile.EndReadOnlyTransaction();
+		}
+
+		/// <summary>
 		/// Determines if the specified file is in the fomod.
 		/// </summary>
 		/// <param name="p_strFile">The file whose existence is to be determined.</param>

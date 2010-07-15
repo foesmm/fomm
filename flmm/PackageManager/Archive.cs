@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using Fomm.Util;
 using System.Text;
+using System.Threading;
 
 namespace Fomm.PackageManager
 {
@@ -22,6 +23,8 @@ namespace Fomm.PackageManager
 		private List<string> m_strFiles = null;
 		private Dictionary<string, ArchiveFileInfo> m_dicFileInfo = null;
 		private bool m_booCanEdit = false;
+		private SevenZipExtractor m_szeReadOnlyExtractor = null;
+		private SynchronizationContext m_scxReadOnlySyncContext = null;
 
 		#region Properties
 
@@ -49,7 +52,7 @@ namespace Fomm.PackageManager
 				{
 					IList<string> lstVolumes = szeExtractor.VolumeFileNames;
 					string[] strVolumes = new string[lstVolumes.Count];
-					lstVolumes.CopyTo(strVolumes,0);
+					lstVolumes.CopyTo(strVolumes, 0);
 					return strVolumes;
 				}
 			}
@@ -167,8 +170,36 @@ namespace Fomm.PackageManager
 			return strSource;
 		}
 
-		#endregion
+		/// <summary>
+		/// Parses the given path to extract the path to the archive file, and the path to
+		/// a file within said archive.
+		/// </summary>
+		/// <param name="p_strPath">The file path to parse.</param>
+		/// <returns>The path to an archive file, and the path to a file within said archive.</returns>
+		public static KeyValuePair<string, string> ParseArchivePath(string p_strPath)
+		{
+			if (!p_strPath.StartsWith(ARCHIVE_PREFIX))
+				return new KeyValuePair<string, string>(null, null);
+			Int32 intEndIndex = p_strPath.LastIndexOf("//");
+			if (intEndIndex < 0)
+				intEndIndex = p_strPath.Length;
+			string strArchive = p_strPath.Substring(ARCHIVE_PREFIX.Length, intEndIndex - ARCHIVE_PREFIX.Length);
+			string strPath = p_strPath.Substring(intEndIndex + 2);
+			return new KeyValuePair<string, string>(strArchive, strPath);
+		}
 
+		/// <summary>
+		/// Generates a path to a file in an archive.
+		/// </summary>
+		/// <param name="p_strArchivePath">The path of the archive file.</param>
+		/// <param name="p_strInternalPath">The path of the file in the archive.</param>
+		/// <returns></returns>
+		public static string GenerateArchivePath(string p_strArchivePath, string p_strInternalPath)
+		{
+			return String.Format("{0}{1}//{2}", Archive.ARCHIVE_PREFIX, p_strArchivePath, p_strInternalPath);
+		}
+
+		#endregion
 
 		#region Constructors
 
@@ -200,6 +231,58 @@ namespace Fomm.PackageManager
 
 		#endregion
 
+		#region Read Transactions
+
+		/// <summary>
+		/// Gets whether the archive is in read-only mode.
+		/// </summary>
+		/// <remarks>
+		/// Read-only mode maintains a single extractor for all operations, greatly increasing
+		/// extraction speed as the extractor isn't created/destroyed for each operation. While
+		/// in read-only mod the underlying file is left open (this class holds a handle to the file).
+		/// </remarks>
+		/// <value>Whether the archive is in read-only mode.</value>
+		protected bool IsReadonly
+		{
+			get
+			{
+				return m_szeReadOnlyExtractor != null;
+			}
+		}
+
+		/// <summary>
+		/// Starts a read-only transaction.
+		/// </summary>
+		/// <remarks>
+		/// This puts the archive into read-only mode.
+		/// </remarks>
+		public void BeginReadOnlyTransaction()
+		{
+			if (m_szeReadOnlyExtractor == null)
+			{
+				m_scxReadOnlySyncContext = SynchronizationContext.Current ?? new SynchronizationContext();
+				m_szeReadOnlyExtractor = GetExtractor(m_strPath);
+			}
+		}
+
+		/// <summary>
+		/// Ends a read-only transaction.
+		/// </summary>
+		/// <remarks>
+		/// This takes the archive out of read-only mode, and releases any used resources.
+		/// </remarks>
+		public void EndReadOnlyTransaction()
+		{
+			if (m_szeReadOnlyExtractor != null)
+			{
+				m_szeReadOnlyExtractor.Dispose();
+				m_scxReadOnlySyncContext = null;
+			}
+			m_szeReadOnlyExtractor = null;
+		}
+
+		#endregion
+
 		/// <summary>
 		/// Caches information about the files in the archive.
 		/// </summary>
@@ -216,35 +299,6 @@ namespace Fomm.PackageManager
 						m_strFiles.Add(afiFile.FileName.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar));
 					}
 			}
-		}
-
-		/// <summary>
-		/// Parses the given path to extract the path to the archive file, and the path to
-		/// a file within said archive.
-		/// </summary>
-		/// <param name="p_strPath">The file path to parse.</param>
-		/// <returns>The path to an archive file, and the path to a file within said archive.</returns>
-		public static KeyValuePair<string, string> ParseArchivePath(string p_strPath)
-		{
-			if (!p_strPath.StartsWith(ARCHIVE_PREFIX))
-				return new KeyValuePair<string, string>(null, null);
-			Int32 intEndIndex = p_strPath.LastIndexOf("//");
-			if (intEndIndex < 0)
-				intEndIndex = p_strPath.Length;
-			string strArchive = p_strPath.Substring(ARCHIVE_PREFIX.Length, intEndIndex - ARCHIVE_PREFIX.Length);
-			string strPath = p_strPath.Substring(intEndIndex + 2);
-			return new KeyValuePair<string, string>(strArchive, strPath);
-		}
-
-		/// <summary>
-		/// Generates a path to a file in an archive.
-		/// </summary>
-		/// <param name="p_strArchivePath">The path of the archive file.</param>
-		/// <param name="p_strInternalPath">The path of the file in the archive.</param>
-		/// <returns></returns>
-		public static string GenerateArchivePath(string p_strArchivePath, string p_strInternalPath)
-		{
-			return String.Format("{0}{1}//{2}", Archive.ARCHIVE_PREFIX, p_strArchivePath, p_strInternalPath);
 		}
 
 		/// <summary>
@@ -368,17 +422,30 @@ namespace Fomm.PackageManager
 				throw new FileNotFoundException("The requested file does not exist in the archive.", p_strPath);
 
 			byte[] bteFile = null;
-			using (SevenZipExtractor szeExtractor = GetExtractor(m_strPath))
+			SevenZipExtractor szeExtractor = IsReadonly ? m_szeReadOnlyExtractor : GetExtractor(m_strPath);
+			try
 			{
 				ArchiveFileInfo afiFile = m_dicFileInfo[strPath];
 				bteFile = new byte[afiFile.Size];
 				using (MemoryStream msmFile = new MemoryStream())
 				{
-					szeExtractor.ExtractFile(afiFile.Index, msmFile);
+					//check to see if we are on the same thread as the extractor
+					// if not, then marshall the call to the extractor's thread.
+					// this needs to be done as the 7zip dll cannot handle calls from other
+					// threads.
+					if ((m_scxReadOnlySyncContext != null) && (m_scxReadOnlySyncContext != SynchronizationContext.Current))
+						m_scxReadOnlySyncContext.Send((s) => { szeExtractor.ExtractFile(afiFile.Index, msmFile); }, null);
+					else
+						szeExtractor.ExtractFile(afiFile.Index, msmFile);
 					msmFile.Position = 0;
 					for (Int32 intOffset = 0, intRead = 0; intOffset < bteFile.Length && ((intRead = msmFile.Read(bteFile, intOffset, bteFile.Length - intOffset)) >= 0); intOffset += intRead) ;
 					msmFile.Close();
 				}
+			}
+			finally
+			{
+				if (!IsReadonly)
+					szeExtractor.Dispose();
 			}
 			return bteFile;
 		}
@@ -406,8 +473,12 @@ namespace Fomm.PackageManager
 		/// <param name="p_bteData">The new file data.</param>
 		/// <exception cref="InvalidOperationException">Thrown if modification of archives of the current
 		/// archive type is not supported.</exception>
+		/// <exception cref="InvalidOperationException">Thrown if modification of archive is attempted
+		/// while the archive is in a ready only transaction.</exception>
 		public void ReplaceFile(string p_strFileName, byte[] p_bteData)
 		{
+			if (IsReadonly)
+				throw new InvalidOperationException("Cannot replace a file while Archive is in a Read Only Transaction.");
 			if (!m_booCanEdit)
 				using (SevenZipExtractor szeExtractor = GetExtractor(m_strPath))
 					throw new InvalidOperationException("Cannot modify archive of type: " + szeExtractor.Format);
@@ -434,8 +505,12 @@ namespace Fomm.PackageManager
 		/// <param name="p_strFileName">The path to the file to delete from the archive.</param>
 		/// <exception cref="InvalidOperationException">Thrown if modification of archives of the current
 		/// archive type is not supported.</exception>
+		/// <exception cref="InvalidOperationException">Thrown if modification of archive is attempted
+		/// while the archive is in a ready only transaction.</exception>
 		public void DeleteFile(string p_strFileName)
 		{
+			if (IsReadonly)
+				throw new InvalidOperationException("Cannot delete a file while Archive is in a Read Only Transaction.");
 			if (!m_booCanEdit)
 				using (SevenZipExtractor szeExtractor = GetExtractor(m_strPath))
 					throw new InvalidOperationException("Cannot modify archive of type: " + szeExtractor.Format);
@@ -455,6 +530,8 @@ namespace Fomm.PackageManager
 		/// </summary>
 		public void Dispose()
 		{
+			if (m_szeReadOnlyExtractor != null)
+				m_szeReadOnlyExtractor.Dispose();
 		}
 
 		#endregion
