@@ -246,6 +246,7 @@ namespace Fomm
 		private static void Main(string[] args)
 		{
 			AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+			Application.ThreadException += new System.Threading.ThreadExceptionEventHandler(Application_ThreadException);
 			if (Array.IndexOf<string>(args, "-mono") != -1) monoMode = true;
 #if TRACE
 			TRACE_FILE = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), TRACE_FILE);
@@ -775,7 +776,16 @@ namespace Fomm
 				else
 				{
 					if (autoLoad == null && Array.IndexOf<string>(args, "-package-manager") != -1) autoLoad = string.Empty;
-					Application.Run(new MainForm(autoLoad));
+					try
+					{
+						Application.Run(new MainForm(autoLoad));
+					}
+					catch (Exception e)
+					{
+						MessageBox.Show("Something bad seems to have happened. As long as it wasn't too bad, a crash dump will have been saved in 'fomm\\crashdump.txt'\n" +
+											"Please include the contents of that file if you want to make a bug report", "Error");
+						HandleException(e);
+					}
 				}
 #if TRACE
 				Trace.Flush();
@@ -819,6 +829,24 @@ namespace Fomm
 #endif
 		}
 
+		static void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)
+		{
+#if TRACE
+			Trace.WriteLine("");
+			Trace.WriteLine("Unhandled Exception Occurred:");
+			Exception ex = e.Exception;
+			if (ex != null)
+				TraceException(ex);
+			else if (e.ExceptionObject != null)
+				Trace.WriteLine("\tNOT AN EXCEPTION. Error Type: " + e.ExceptionObject.GetType());
+			else
+				Trace.WriteLine("\tNO EXCEPTION.");
+#endif
+			MessageBox.Show("Something bad seems to have happened. As long as it wasn't too bad, a crash dump will have been saved in 'fomm\\crashdump.txt'\n" +
+				"Please include the contents of that file if you want to make a bug report", "Error");
+			HandleException(e.Exception);
+		}
+
 		static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
 		{
 #if TRACE
@@ -850,6 +878,7 @@ namespace Fomm
 #endif
 			if (ex != null)
 			{
+				PermissionsManager.CurrentPermissions.Assert();
 				string msg = DateTime.Now.ToLongDateString() + " - " + DateTime.Now.ToLongTimeString() + Environment.NewLine +
 					"Fomm " + Version + (monoMode ? " (Mono)" : "") + Environment.NewLine + "OS version: " + Environment.OSVersion.ToString() +
 				Environment.NewLine + Environment.NewLine + ex.ToString() + Environment.NewLine;
