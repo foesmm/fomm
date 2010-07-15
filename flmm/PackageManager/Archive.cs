@@ -304,7 +304,7 @@ namespace Fomm.PackageManager
 					intStopIndex = strFile.IndexOf(Path.DirectorySeparatorChar, strPrefix.Length);
 					if (intStopIndex < 0)
 						continue;
-					lstFolders.Add(strFile.Substring(0, intStopIndex));
+					lstFolders.Add(String.Copy(strFile.Substring(0, intStopIndex)));
 				}
 			}
 			return lstFolders.ToArray();
@@ -317,23 +317,28 @@ namespace Fomm.PackageManager
 		/// <returns>A list of files that are in the specified directory in this archive.</returns>
 		public string[] GetFiles(string p_strDirectory)
 		{
-			if (String.IsNullOrEmpty(p_strDirectory))
-				return m_strFiles.ToArray();
-			string strPrefix = p_strDirectory;
-			strPrefix = strPrefix.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
-			strPrefix = strPrefix.Trim(new char[] { Path.DirectorySeparatorChar });
-			if (strPrefix.Length > 0)
-				strPrefix += Path.DirectorySeparatorChar;
 			Set<string> lstFiles = new Set<string>();
-			Int32 intStopIndex = 0;
-			foreach (string strFile in m_strFiles)
+			if (String.IsNullOrEmpty(p_strDirectory))
 			{
-				if (strFile.StartsWith(strPrefix, StringComparison.InvariantCultureIgnoreCase))
+				m_strFiles.ForEach((s) => { lstFiles.Add(String.Copy(s)); });
+			}
+			else
+			{
+				string strPrefix = p_strDirectory;
+				strPrefix = strPrefix.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+				strPrefix = strPrefix.Trim(new char[] { Path.DirectorySeparatorChar });
+				if (strPrefix.Length > 0)
+					strPrefix += Path.DirectorySeparatorChar;
+				Int32 intStopIndex = 0;
+				foreach (string strFile in m_strFiles)
 				{
-					intStopIndex = strFile.IndexOf(Path.DirectorySeparatorChar, strPrefix.Length);
-					if (intStopIndex > 0)
-						continue;
-					lstFiles.Add(strFile);
+					if (strFile.StartsWith(strPrefix, StringComparison.InvariantCultureIgnoreCase))
+					{
+						intStopIndex = strFile.IndexOf(Path.DirectorySeparatorChar, strPrefix.Length);
+						if (intStopIndex > 0)
+							continue;
+						lstFiles.Add(String.Copy(strFile));
+					}
 				}
 			}
 			return lstFiles.ToArray();
