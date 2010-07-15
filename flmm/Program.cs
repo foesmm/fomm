@@ -845,6 +845,7 @@ namespace Fomm
 			MessageBox.Show("Something bad seems to have happened. As long as it wasn't too bad, a crash dump will have been saved in 'fomm\\crashdump.txt'\n" +
 				"Please include the contents of that file if you want to make a bug report", "Error");
 			HandleException(e.Exception);
+			Application.ExitThread();
 		}
 
 		static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
