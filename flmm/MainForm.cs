@@ -1004,7 +1004,11 @@ namespace Fomm
 			string strWebVersion = rgxVersion.Match(strVersionPage).Groups[1].Value.Trim();
 			if (new Version(strWebVersion + ".0") > Program.MVersion)
 			{
-				MessageBox.Show("A new version of fomm is available: " + strWebVersion, "Message");
+				if (MessageBox.Show("A new version of fomm is available: " + strWebVersion +
+					"\nDo you wish to download?", "Message", MessageBoxButtons.YesNo) == DialogResult.Yes)
+				{
+					System.Diagnostics.Process.Start("http://sf.net/projects/fomm");
+				}
 				booWasUpdate = true;
 			}
 
