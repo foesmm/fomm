@@ -355,6 +355,7 @@ namespace Fomm.PackageManager
 			tbModInfo.Text = mod.HasInfo ? mod.Description : "No description is associaited with this fomod. Click 'edit info' if you want to add one.";
 
 			butDeactivate.Enabled = mod.IsActive;
+			butViewReadme.Enabled = mod.HasReadme;
 			bActivate.Text = mod.IsActive ? "Reactivate" : "Activate";
 			bEditScript.Text = mod.HasInstallScript ? "Edit script" : "Create script";
 			pictureBox1.Image = mod.GetScreenshotImage();
@@ -381,19 +382,16 @@ namespace Fomm.PackageManager
 			UpdateModStateText();
 		}
 
-		private void bEditReadme_Click(object sender, EventArgs e)
+		private void butViewReadme_Click(object sender, EventArgs e)
 		{
 			if (lvModList.SelectedItems.Count != 1)
 				return;
 			fomod mod = (fomod)lvModList.SelectedItems[0].Tag;
-			EditReadmeForm erfEditor = new EditReadmeForm();
-			if (!mod.HasReadme)
-				erfEditor.Readme = new Readme(ReadmeFormat.PlainText, "");
-			else
-				erfEditor.Readme = mod.GetReadme();
-			if (erfEditor.ShowDialog(this) == DialogResult.OK)
-				mod.SetReadme(erfEditor.Readme);
-			UpdateModStateText();
+			if (mod.HasReadme)
+			{
+				ViewReadmeForm vrfEditor = new ViewReadmeForm(mod.GetReadme());
+				vrfEditor.ShowDialog(this);
+			}
 		}
 
 		private void PackageManager_FormClosing(object sender, FormClosingEventArgs e)

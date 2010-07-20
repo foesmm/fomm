@@ -34,7 +34,7 @@ namespace Fomm.PackageManager {
 			this.tbModInfo = new System.Windows.Forms.TextBox();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.bEditScript = new System.Windows.Forms.Button();
-			this.bEditReadme = new System.Windows.Forms.Button();
+			this.butViewReadme = new System.Windows.Forms.Button();
 			this.bEditInfo = new System.Windows.Forms.Button();
 			this.bActivate = new System.Windows.Forms.Button();
 			this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
@@ -176,16 +176,16 @@ namespace Fomm.PackageManager {
 			this.bEditScript.UseVisualStyleBackColor = true;
 			this.bEditScript.Click += new System.EventHandler(this.bEditScript_Click);
 			// 
-			// bEditReadme
+			// butViewReadme
 			// 
-			this.bEditReadme.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.bEditReadme.Location = new System.Drawing.Point(493, 341);
-			this.bEditReadme.Name = "bEditReadme";
-			this.bEditReadme.Size = new System.Drawing.Size(120, 23);
-			this.bEditReadme.TabIndex = 8;
-			this.bEditReadme.Text = "View readme";
-			this.bEditReadme.UseVisualStyleBackColor = true;
-			this.bEditReadme.Click += new System.EventHandler(this.bEditReadme_Click);
+			this.butViewReadme.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.butViewReadme.Location = new System.Drawing.Point(493, 341);
+			this.butViewReadme.Name = "bEditReadme";
+			this.butViewReadme.Size = new System.Drawing.Size(120, 23);
+			this.butViewReadme.TabIndex = 8;
+			this.butViewReadme.Text = "View readme";
+			this.butViewReadme.UseVisualStyleBackColor = true;
+			this.butViewReadme.Click += new System.EventHandler(this.butViewReadme_Click);
 			// 
 			// bEditInfo
 			// 
@@ -382,7 +382,7 @@ namespace Fomm.PackageManager {
 			this.Controls.Add(this.bDeactivateAll);
 			this.Controls.Add(this.bDeactivateGroup);
 			this.Controls.Add(this.bActivateGroup);
-			this.Controls.Add(this.bEditReadme);
+			this.Controls.Add(this.butViewReadme);
 			this.Controls.Add(this.bActivate);
 			this.Controls.Add(this.bEditInfo);
 			this.Controls.Add(this.bEditScript);
@@ -411,7 +411,7 @@ namespace Fomm.PackageManager {
         private System.Windows.Forms.TextBox tbModInfo;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Button bEditScript;
-        private System.Windows.Forms.Button bEditReadme;
+        private System.Windows.Forms.Button butViewReadme;
         private System.Windows.Forms.Button bEditInfo;
 		private System.Windows.Forms.Button bActivate;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;

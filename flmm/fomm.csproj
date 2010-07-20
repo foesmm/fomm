@@ -370,6 +370,12 @@
     <Compile Include="PackageManager\Upgrade\ModUpgrader.cs" />
     <Compile Include="PackageManager\Upgrade\UpgradeFomod.cs" />
     <Compile Include="PackageManager\Upgrade\UpgradeScanner.cs" />
+    <Compile Include="PackageManager\ViewReadmeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PackageManager\ViewReadmeForm.Designer.cs">
+      <DependentUpon>ViewReadmeForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="PackageManager\XmlConfiguredInstall\CompositeDependency.cs" />
     <Compile Include="PackageManager\XmlConfiguredInstall\ConditionalFlag.cs" />
     <Compile Include="PackageManager\XmlConfiguredInstall\ConditionalFileInstallPattern.cs" />
@@ -573,6 +579,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="BackgroundWorkerProgressDialog.resx">
       <DependentUpon>BackgroundWorkerProgressDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PackageManager\ViewReadmeForm.resx">
+      <DependentUpon>ViewReadmeForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PackageManager\XmlConfiguredInstall\OptionsForm.resx">
       <DependentUpon>OptionsForm.cs</DependentUpon>

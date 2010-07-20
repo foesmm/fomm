@@ -27,6 +27,7 @@ namespace Fomm.PackageManager {
 			this.butSave = new System.Windows.Forms.Button();
 			this.butCancel = new System.Windows.Forms.Button();
 			this.panel1 = new System.Windows.Forms.Panel();
+			this.butEditReadme = new System.Windows.Forms.Button();
 			this.finInfo = new Fomm.PackageManager.FomodInfo();
 			this.panel1.SuspendLayout();
 			this.SuspendLayout();
@@ -55,6 +56,7 @@ namespace Fomm.PackageManager {
 			// 
 			// panel1
 			// 
+			this.panel1.Controls.Add(this.butEditReadme);
 			this.panel1.Controls.Add(this.butCancel);
 			this.panel1.Controls.Add(this.butSave);
 			this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -62,6 +64,16 @@ namespace Fomm.PackageManager {
 			this.panel1.Name = "panel1";
 			this.panel1.Size = new System.Drawing.Size(331, 47);
 			this.panel1.TabIndex = 23;
+			// 
+			// butEditReadme
+			// 
+			this.butEditReadme.Location = new System.Drawing.Point(12, 12);
+			this.butEditReadme.Name = "butEditReadme";
+			this.butEditReadme.Size = new System.Drawing.Size(78, 23);
+			this.butEditReadme.TabIndex = 2;
+			this.butEditReadme.Text = "Edit Readme";
+			this.butEditReadme.UseVisualStyleBackColor = true;
+			this.butEditReadme.Click += new System.EventHandler(this.butEditReadme_Click);
 			// 
 			// finInfo
 			// 
@@ -105,5 +117,6 @@ namespace Fomm.PackageManager {
 		private System.Windows.Forms.Button butCancel;
 		private System.Windows.Forms.Panel panel1;
 		private FomodInfo finInfo;
+		private System.Windows.Forms.Button butEditReadme;
     }
 }
