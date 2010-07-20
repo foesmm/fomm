@@ -605,8 +605,8 @@ namespace Fomm.PackageManager
 				else
 				{
 					if (!HasScreenshot)
-						m_strScreenshotPath = "screenshot.jpg";
-					m_strScreenshotPath = Path.ChangeExtension(m_strScreenshotPath, p_shtScreenshot.Extension);
+						m_strScreenshotPath = "fomod/screenshot.jpg";
+					m_strScreenshotPath = Path.ChangeExtension(m_strScreenshotPath, p_shtScreenshot.Extension).ToLowerInvariant();
 					m_arcFile.ReplaceFile(m_strScreenshotPath, p_shtScreenshot.Data);
 				}
 			}
