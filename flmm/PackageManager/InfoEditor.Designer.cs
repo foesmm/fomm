@@ -104,7 +104,7 @@ namespace Fomm.PackageManager {
 			this.Controls.Add(this.finInfo);
 			this.Controls.Add(this.panel1);
 			this.Name = "InfoEditor";
-			this.Text = "InfoEditor";
+			this.Text = "Info Editor";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.InfoEditor_FormClosing);
 			this.panel1.ResumeLayout(false);
 			this.ResumeLayout(false);
