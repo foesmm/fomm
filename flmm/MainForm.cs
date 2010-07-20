@@ -1208,7 +1208,7 @@ namespace Fomm
 		#endregion
 
 		/// <summary>
-		/// Handles the <see cref="RichTextBox.LinkClicked"/> event of the plugin info text box..
+		/// Handles the <see cref="RichTextBox.LinkClicked"/> event of the plugin info text box.
 		/// </summary>
 		/// <remarks>
 		/// Launches clicked links using the default browser.
