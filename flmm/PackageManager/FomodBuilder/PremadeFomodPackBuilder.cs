@@ -187,7 +187,6 @@ namespace Fomm.PackageManager.FomodBuilder
 			List<KeyValuePair<string, string>> lstPFPCopyInstructions = new List<KeyValuePair<string, string>>();
 			List<KeyValuePair<string, string>> lstFomodCopyInstructions = new List<KeyValuePair<string, string>>();
 			Set<SourceFile> setUsedSources = new Set<SourceFile>();
-			bool booIsPFPCopy = true;
 			foreach (KeyValuePair<string, string> kvpInstruction in bpaArgs.CopyInstructions)
 			{
 				string strPath = kvpInstruction.Key;
@@ -195,7 +194,6 @@ namespace Fomm.PackageManager.FomodBuilder
 					while (strPath.StartsWith(Archive.ARCHIVE_PREFIX))
 						strPath = Archive.ParseArchivePath(strPath).Key;
 
-				booIsPFPCopy = true;
 				foreach (SourceFile sflSource in bpaArgs.SourceFiles)
 				{
 					if (strPath.StartsWith(sflSource.Source))
