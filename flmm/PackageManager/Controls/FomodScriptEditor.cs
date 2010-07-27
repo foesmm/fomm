@@ -4,6 +4,7 @@ using System.IO;
 using System.Xml.Schema;
 using Fomm.PackageManager.XmlConfiguredInstall;
 using System.Text.RegularExpressions;
+using Fomm.Controls;
 
 namespace Fomm.PackageManager.Controls
 {
@@ -20,6 +21,14 @@ class Script : BaseScript {
 	}
 }
 ";
+		/// <summary>
+		/// Raised when the code completion options for the XML config script have been retrieved.
+		/// </summary>
+		/// <remarks>
+		/// Handling this event allows the addition/removal of code completion items.
+		/// </remarks>
+		public event EventHandler<RegeneratableAutoCompleteListEventArgs> GotXMLAutoCompleteList;
+
 		#region Properties
 
 		/// <summary>
@@ -152,6 +161,21 @@ class Script : BaseScript {
 					xedScript.Schema = XmlSchema.Read(fsmSchema, null);
 					fsmSchema.Close();
 				}
+		}
+
+		/// <summary>
+		/// Handles the <see cref="XmlCompletionProvider.GotAutoCompleteList"/> event of the
+		/// xml config editor.
+		/// </summary>
+		/// <remarks>
+		/// This raises the editor's <see cref="GotXMLAutoCompleteList"/> event.
+		/// </remarks>
+		/// <param name="sender">The object that raised the event.</param>
+		/// <param name="e">An <see cref="RegeneratableAutoCompleteListEventArgs"/> describing the event arguments.</param>
+		private void xedScript_GotAutoCompleteList(object sender, RegeneratableAutoCompleteListEventArgs e)
+		{
+			if (GotXMLAutoCompleteList != null)
+				GotXMLAutoCompleteList(this, e);
 		}
 	}
 }

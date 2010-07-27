@@ -68,7 +68,7 @@ namespace Fomm.Controls
 	public class XmlEditor : TextEditorControl
 	{
 		/// <summary>
-		/// Raised when the code completion option6s have been retrieved.
+		/// Raised when the code completion options have been retrieved.
 		/// </summary>
 		/// <remarks>
 		/// Handling this event allows the addition/removal of code completion items.

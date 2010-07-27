@@ -558,6 +558,7 @@
 			this.fseScriptEditor.Script = null;
 			this.fseScriptEditor.Size = new System.Drawing.Size(595, 327);
 			this.fseScriptEditor.TabIndex = 1;
+			this.fseScriptEditor.GotXMLAutoCompleteList += new System.EventHandler<Fomm.Controls.RegeneratableAutoCompleteListEventArgs>(fseScriptEditor_GotXMLAutoCompleteList);
 			// 
 			// panel3
 			// 

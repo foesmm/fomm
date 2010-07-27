@@ -657,7 +657,7 @@ namespace Fomm.PackageManager.FomodBuilder
 		#endregion
 
 		/// <summary>
-		/// Handles the <see cref="XmlEditor.GotAutoCompleteList"/> event of the XML configration script
+		/// Handles the <see cref="FomodScriptEditor.GotXMLAutoCompleteList"/> event of the script
 		/// editor.
 		/// </summary>
 		/// <remarks>
@@ -666,9 +666,12 @@ namespace Fomm.PackageManager.FomodBuilder
 		/// </remarks>
 		/// <param name="sender">The object that raised the event.</param>
 		/// <param name="e">A <see cref="RegeneratableAutoCompleteListEventArgs"/> decribing the event arguments.</param>
-		private void xedScript_GotAutoCompleteList(object sender, RegeneratableAutoCompleteListEventArgs e)
+		private void fseScriptEditor_GotXMLAutoCompleteList(object sender, RegeneratableAutoCompleteListEventArgs e)
 		{
-			if (!String.IsNullOrEmpty(e.ElementPath) && Path.GetFileName(e.ElementPath).Equals("file") && (e.AutoCompleteType == AutoCompleteType.AttributeValues) && (e.Siblings[e.Siblings.Length - 1].Equals("source")))
+			if (!String.IsNullOrEmpty(e.ElementPath) &&
+				(Path.GetFileName(e.ElementPath).Equals("file") || Path.GetFileName(e.ElementPath).Equals("folder")) &&
+				(e.AutoCompleteType == AutoCompleteType.AttributeValues) &&
+				(e.Siblings[e.Siblings.Length - 1].Equals("source")))
 			{
 				string strPrefix = e.LastWord.EndsWith("=") ? "" : e.LastWord;
 				List<KeyValuePair<string, string>> lstFiles = ffsFileStructure.FindFomodFiles(strPrefix + "*");

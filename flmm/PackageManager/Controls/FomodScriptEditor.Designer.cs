@@ -100,6 +100,7 @@
 			this.xedScript.Name = "xedScript";
 			this.xedScript.Size = new System.Drawing.Size(442, 313);
 			this.xedScript.TabIndex = 1;
+			this.xedScript.GotAutoCompleteList += new System.EventHandler<Fomm.Controls.RegeneratableAutoCompleteListEventArgs>(xedScript_GotAutoCompleteList);
 			// 
 			// panel4
 			// 
