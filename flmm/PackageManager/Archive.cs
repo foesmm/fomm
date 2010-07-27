@@ -122,7 +122,7 @@ namespace Fomm.PackageManager
 		/// <lang cref="false"/> otherwise.</returns>
 		public static bool IsArchive(string p_strPath)
 		{
-			if (!File.Exists(p_strPath))
+			if (!p_strPath.StartsWith(ARCHIVE_PREFIX) && !File.Exists(p_strPath))
 				return false;
 			bool booIsAchive = true;
 			try
