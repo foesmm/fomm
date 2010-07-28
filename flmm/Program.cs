@@ -678,9 +678,15 @@ namespace Fomm
 #endif
 				}
 #if TRACE
-					Trace.Unindent();
-					Trace.WriteLine("Install Log Version: " + InstallLog.Current.GetInstallLogVersion());
-					Trace.Indent();
+				Trace.Unindent();
+				string str7zPath = Path.Combine(Program.fommDir, "7z-32bit.dll");
+				Trace.WriteLine("7z Path: " + str7zPath + " (Exists: " + File.Exists(str7zPath) + ")");
+				Trace.Flush();
+#endif
+				SevenZipCompressor.SetLibraryPath(Path.Combine(Program.fommDir, "7z-32bit.dll"));
+#if TRACE
+				Trace.WriteLine("Install Log Version: " + InstallLog.Current.GetInstallLogVersion());
+				Trace.Indent();
 #endif
 				//check to see if we need to upgrade the install log format
 				if (InstallLog.Current.GetInstallLogVersion() < InstallLog.CURRENT_VERSION)
@@ -717,12 +723,7 @@ namespace Fomm
 				}
 #if TRACE
 				Trace.Unindent();
-				Trace.WriteLine("7z Path: " + Path.Combine(Program.fommDir, "7z-32bit.dll"));
-				Trace.Flush();
-#endif
-				SevenZipCompressor.SetLibraryPath(Path.Combine(Program.fommDir, "7z-32bit.dll"));
-#if TRACE
-				Trace.Write("Uninstalling missing FOMods..."));
+				Trace.Write("Uninstalling missing FOMods...");
 #endif
 
 				//let's uninstall any fomods that have been deleted since we last ran
@@ -837,8 +838,8 @@ namespace Fomm
 			Exception ex = e.Exception;
 			if (ex != null)
 				TraceException(ex);
-			else if (e.ExceptionObject != null)
-				Trace.WriteLine("\tNOT AN EXCEPTION. Error Type: " + e.ExceptionObject.GetType());
+			else if (e.Exception != null)
+				Trace.WriteLine("\tNOT AN EXCEPTION. Error Type: " + e.Exception.GetType());
 			else
 				Trace.WriteLine("\tNO EXCEPTION.");
 #endif
