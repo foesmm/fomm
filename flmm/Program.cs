@@ -50,7 +50,7 @@ namespace Fomm
 
 	public static class Program
 	{
-		public const string Version = "0.12.2";
+		public const string Version = "0.12.3";
 		public static readonly Version MVersion = new Version(Version + ".0");
 		/*private static string typefromint(int i, bool name) {
 			switch(i) {
