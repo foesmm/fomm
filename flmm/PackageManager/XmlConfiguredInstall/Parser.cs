@@ -185,12 +185,6 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		public abstract CompositeDependency GetModDependencies();
 
 		/// <summary>
-		/// Gets the mod plugins, organized into their groups.
-		/// </summary>
-		/// <returns>The mod plugins, organized into their groups.</returns>
-		//public abstract IList<PluginGroup> GetGroupedPlugins();
-
-		/// <summary>
 		/// Gets the mod install steps.
 		/// </summary>
 		/// <remarks>

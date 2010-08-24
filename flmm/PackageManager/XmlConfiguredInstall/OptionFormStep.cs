@@ -8,12 +8,25 @@ using System.Windows.Forms;
 
 namespace Fomm.PackageManager.XmlConfiguredInstall
 {
+	/// <summary>
+	/// Displays the optional plugin groups for a specific step in a mod's install.
+	/// </summary>
 	public partial class OptionFormStep : UserControl
 	{
+		/// <summary>
+		/// Raised when an option is checked.
+		/// </summary>
 		public event EventHandler ItemChecked = delegate {};
 
 		private DependencyStateManager m_dsmStateManager = null;
 
+		#region Constructors
+
+		/// <summary>
+		/// A simple constructor that initializes the object with the given values.
+		/// </summary>
+		/// <param name="p_dsmStateManager">The install state manager.</param>
+		/// <param name="p_lstGroups">The plugin groups to display.</param>
 		public OptionFormStep(DependencyStateManager p_dsmStateManager, IList<PluginGroup> p_lstGroups)
 		{
 			m_dsmStateManager = p_dsmStateManager;
@@ -24,6 +37,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 			if (lvwPlugins.Items.Count > 0)
 				lvwPlugins.Items[0].Selected = true;
 		}
+
+		#endregion
 
 		#region Control Members
 
