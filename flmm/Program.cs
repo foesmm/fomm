@@ -50,7 +50,7 @@ namespace Fomm
 
 	public static class Program
 	{
-		public const string Version = "0.12.3";
+		public const string Version = "0.12.4";
 		public static readonly Version MVersion = new Version(Version + ".0");
 		/*private static string typefromint(int i, bool name) {
 			switch(i) {
@@ -883,7 +883,13 @@ namespace Fomm
 				PermissionsManager.CurrentPermissions.Assert();
 				string msg = DateTime.Now.ToLongDateString() + " - " + DateTime.Now.ToLongTimeString() + Environment.NewLine +
 					"Fomm " + Version + (monoMode ? " (Mono)" : "") + Environment.NewLine + "OS version: " + Environment.OSVersion.ToString() +
-				Environment.NewLine + Environment.NewLine + ex.ToString() + Environment.NewLine;
+					Environment.NewLine + Environment.NewLine + ex.ToString() + Environment.NewLine;
+				if (ex is BadImageFormatException)
+				{
+					BadImageFormatException biex = (BadImageFormatException)ex;
+					msg += "File Name:\t" + biex.FileName + Environment.NewLine;
+					msg += "Fusion Log:\t" + biex.FusionLog + Environment.NewLine;
+				}
 				while (ex.InnerException != null)
 				{
 					ex = ex.InnerException;
@@ -900,6 +906,12 @@ namespace Fomm
 			Trace.WriteLine("Error: ");
 			Trace.WriteLine(e.Message);
 			Trace.WriteLine(e.ToString());
+			if (e is BadImageFormatException)
+			{
+				BadImageFormatException biex = (BadImageFormatException)e;
+				Trace.WriteLine("File Name:\t" + biex.FileName);
+				Trace.WriteLine("Fusion Log:\t" + biex.FusionLog);
+			}
 			if (e.InnerException != null)
 			{
 				Trace.WriteLine("Inner Exception: ");
