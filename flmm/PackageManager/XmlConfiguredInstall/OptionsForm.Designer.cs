@@ -122,13 +122,6 @@
 
 		private System.Windows.Forms.Panel pnlBottom;
 		private System.Windows.Forms.Button butCancel;
-		//private System.Windows.Forms.SplitContainer sptPlugins;
-		//private System.Windows.Forms.ListView lvwPlugins;
-		//private System.Windows.Forms.ColumnHeader columnHeader1;
-		//private System.Windows.Forms.TextBox tbxDescription;
-		//private System.Windows.Forms.GroupBox groupBox1;
-		//private System.Windows.Forms.SplitContainer sptImage;
-		//private System.Windows.Forms.PictureBox pbxImage;
 		private HeaderPanel hplTitle;
 		private System.Windows.Forms.Button butBack;
 		private System.Windows.Forms.Button butNext;
