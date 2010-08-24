@@ -90,11 +90,11 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 			if ((cpdModDependencies != null) && !cpdModDependencies.IsFufilled)
 				throw new DependencyException(cpdModDependencies.Message);
 
-			IList<PluginGroup> lstGroups = prsParser.GetGroupedPlugins();
+			IList<InstallStep> lstSteps = prsParser.GetInstallSteps();
 			HeaderInfo hifHeaderInfo = prsParser.GetHeaderInfo();
-			OptionsForm ofmOptions = new OptionsForm(this, hifHeaderInfo, m_dsmStateManager, lstGroups);
+			OptionsForm ofmOptions = new OptionsForm(this, hifHeaderInfo, m_dsmStateManager, lstSteps);
 			bool booPerformInstall = false;
-			if (lstGroups.Count == 0)
+			if (lstSteps.Count == 0)
 				booPerformInstall = true;
 			else
 				booPerformInstall = (ofmOptions.ShowDialog() == DialogResult.OK);

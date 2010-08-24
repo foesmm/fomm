@@ -53,14 +53,44 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 			return loadDependency(xndModDependencies);
 		}
 
-		/// <seealso cref="Parser.GetGroupedPlugins()"/>
-		public override IList<PluginGroup> GetGroupedPlugins()
+		/// <seealso cref="Parser.GetHeaderInfo()"/>
+		public override HeaderInfo GetHeaderInfo()
+		{
+			XmlNode xndTitle = XmlConfig.SelectSingleNode("/config/moduleName");
+			string strTitle = xndTitle.InnerText;
+			Color clrColour = Color.FromArgb((Int32)(UInt32.Parse(xndTitle.Attributes["colour"].Value, NumberStyles.HexNumber, null) | 0xff000000));
+			TextPosition tpsPosition = (TextPosition)Enum.Parse(typeof(TextPosition), xndTitle.Attributes["position"].Value);
+
+			XmlNode xndImage = XmlConfig.SelectSingleNode("/config/moduleImage");
+			if (xndImage != null)
+			{
+				string strImagePath = xndImage.Attributes["path"].Value;
+				Image imgImage = String.IsNullOrEmpty(strImagePath) ? Fomod.GetScreenshotImage() : new Bitmap(Fomod.GetImage(strImagePath));
+				bool booShowImage = Boolean.Parse(xndImage.Attributes["showImage"].Value) && (imgImage != null);
+				bool booShowFade = Boolean.Parse(xndImage.Attributes["showFade"].Value);
+				Int32 intHeight = Int32.Parse(xndImage.Attributes["height"].Value);
+				if ((intHeight == -1) && booShowImage)
+					intHeight = 75;
+				return new HeaderInfo(strTitle, clrColour, tpsPosition, imgImage, booShowImage, booShowFade, intHeight);
+			}
+			Image imgScreenshot = Fomod.GetScreenshotImage();
+			return new HeaderInfo(strTitle, clrColour, tpsPosition, imgScreenshot, imgScreenshot != null, true, (imgScreenshot != null) ? 75 : -1);
+		}
+
+		#endregion
+
+		#region Parsing Methods
+
+		/// <summary>
+		/// Gets the mod plugins, organized into their groups.
+		/// </summary>
+		/// <returns>The mod plugins, organized into their groups.</returns>
+		public override IList<PluginGroup> loadGroupedPlugins(XmlNode p_xndFileGroups)
 		{
 			List<PluginGroup> lstGroups = new List<PluginGroup>();
-			XmlNode xndGroups = XmlConfig.SelectSingleNode("/config/optionalFileGroups");
-			foreach (XmlNode xndGroup in xndGroups.ChildNodes)
+			foreach (XmlNode xndGroup in p_xndFileGroups.ChildNodes)
 				lstGroups.Add(parseGroup(xndGroup));
-			switch (xndGroups.Attributes["order"].InnerText)
+			switch (p_xndFileGroups.Attributes["order"].InnerText)
 			{
 				case "Ascending":
 					lstGroups.Sort((x, y) =>
@@ -89,34 +119,6 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 			}
 			return lstGroups;
 		}
-
-		/// <seealso cref="Parser.GetHeaderInfo()"/>
-		public override HeaderInfo GetHeaderInfo()
-		{
-			XmlNode xndTitle = XmlConfig.SelectSingleNode("/config/moduleName");
-			string strTitle = xndTitle.InnerText;
-			Color clrColour = Color.FromArgb((Int32)(UInt32.Parse(xndTitle.Attributes["colour"].Value, NumberStyles.HexNumber, null) | 0xff000000));
-			TextPosition tpsPosition = (TextPosition)Enum.Parse(typeof(TextPosition), xndTitle.Attributes["position"].Value);
-
-			XmlNode xndImage = XmlConfig.SelectSingleNode("/config/moduleImage");
-			if (xndImage != null)
-			{
-				string strImagePath = xndImage.Attributes["path"].Value;
-				Image imgImage = String.IsNullOrEmpty(strImagePath) ? Fomod.GetScreenshotImage() : new Bitmap(Fomod.GetImage(strImagePath));
-				bool booShowImage = Boolean.Parse(xndImage.Attributes["showImage"].Value) && (imgImage != null);
-				bool booShowFade = Boolean.Parse(xndImage.Attributes["showFade"].Value);
-				Int32 intHeight = Int32.Parse(xndImage.Attributes["height"].Value);
-				if ((intHeight == -1) && booShowImage)
-					intHeight = 75;
-				return new HeaderInfo(strTitle, clrColour, tpsPosition, imgImage, booShowImage, booShowFade, intHeight);
-			}
-			Image imgScreenshot = Fomod.GetScreenshotImage();
-			return new HeaderInfo(strTitle, clrColour, tpsPosition, imgScreenshot, imgScreenshot != null, true, (imgScreenshot != null) ? 75 : -1);
-		}
-
-		#endregion
-
-		#region Parsing Methods
 
 		/// <summary>
 		/// Creates a plugin group based on the given info.
@@ -154,6 +156,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		/// <returns>A <see cref="CompositeDependency"/> representing the dependency described in the given node.</returns>
 		protected override CompositeDependency loadDependency(XmlNode p_xndCompositeDependency)
 		{
+			if (p_xndCompositeDependency == null)
+				return null;
 			DependencyOperator dopOperator = (DependencyOperator)Enum.Parse(typeof(DependencyOperator), p_xndCompositeDependency.Attributes["operator"].InnerText);
 			CompositeDependency cpdDependency = new CompositeDependency(dopOperator);
 			XmlNodeList xnlDependencies = p_xndCompositeDependency.ChildNodes;

@@ -379,6 +379,14 @@
     <Compile Include="PackageManager\XmlConfiguredInstall\CompositeDependency.cs" />
     <Compile Include="PackageManager\XmlConfiguredInstall\ConditionalFlag.cs" />
     <Compile Include="PackageManager\XmlConfiguredInstall\ConditionalFileInstallPattern.cs" />
+    <Compile Include="PackageManager\XmlConfiguredInstall\InstallStep.cs" />
+    <Compile Include="PackageManager\XmlConfiguredInstall\OptionFormStep.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PackageManager\XmlConfiguredInstall\OptionFormStep.Designer.cs">
+      <DependentUpon>OptionFormStep.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PackageManager\XmlConfiguredInstall\Parser40.cs" />
     <Compile Include="PackageManager\XmlConfiguredInstall\FommDependency.cs" />
     <Compile Include="PackageManager\XmlConfiguredInstall\FalloutDependency.cs" />
     <Compile Include="PackageManager\XmlConfiguredInstall\FoseDependency.cs" />
@@ -583,6 +591,9 @@
     <EmbeddedResource Include="PackageManager\ViewReadmeForm.resx">
       <DependentUpon>ViewReadmeForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="PackageManager\XmlConfiguredInstall\OptionFormStep.resx">
+      <DependentUpon>OptionFormStep.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="PackageManager\XmlConfiguredInstall\OptionsForm.resx">
       <DependentUpon>OptionsForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -748,6 +759,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="fomm\ModConfig3.0.xsd">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="fomm\ModConfig4.0.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="Resources\fomm02.ico" />

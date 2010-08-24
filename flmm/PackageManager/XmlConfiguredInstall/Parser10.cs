@@ -75,15 +75,16 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 			return cpdDependency;
 		}
 
-		/// <seealso cref="Parser.GetGroupedPlugins()"/>
-		public override IList<PluginGroup> GetGroupedPlugins()
+		/// <seealso cref="Parser.GetInstallSteps()"/>
+		public override IList<InstallStep> GetInstallSteps()
 		{
-			List<PluginGroup> lstGroups = new List<PluginGroup>();
-			XmlNodeList xnlGroups = XmlConfig.SelectNodes("/config/optionalFileGroups/*");
-			foreach (XmlNode xndGroup in xnlGroups)
-				lstGroups.Add(parseGroup(xndGroup));
-			return lstGroups;
-		}
+			XmlNode xndGroups = XmlConfig.SelectSingleNode("/config/optionalFileGroups");
+			IList<PluginGroup> lstGroups = loadGroupedPlugins(xndGroups);
+			InstallStep stpStep = new InstallStep(null, null, lstGroups);
+			List<InstallStep> lstSteps = new List<InstallStep>();
+			lstSteps.Add(stpStep);
+			return lstSteps;
+		}		
 
 		/// <seealso cref="Parser.GetRequiredInstallFiles()"/>
 		public override IList<PluginFile> GetRequiredInstallFiles()
@@ -108,6 +109,18 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		#endregion
 
 		#region Parsing Methods
+
+		/// <summary>
+		/// Gets the mod plugins, organized into their groups.
+		/// </summary>
+		/// <returns>The mod plugins, organized into their groups.</returns>
+		public virtual IList<PluginGroup> loadGroupedPlugins(XmlNode p_xndFileGroups)
+		{
+			List<PluginGroup> lstGroups = new List<PluginGroup>();
+			foreach (XmlNode xndGroup in p_xndFileGroups)
+				lstGroups.Add(parseGroup(xndGroup));
+			return lstGroups;
+		}
 
 		/// <summary>
 		/// Creates a plugin group based on the given info.

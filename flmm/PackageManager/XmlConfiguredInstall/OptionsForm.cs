@@ -15,6 +15,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 	{
 		private XmlConfiguredScript m_xcsScript = null;
 		private DependencyStateManager m_dsmStateManager = null;
+		private List<KeyValuePair<InstallStep, OptionFormStep>> m_lstInstallSteps = new List<KeyValuePair<InstallStep, OptionFormStep>>();
+		private Int32 m_intCurrentStep = 0;
 
 		/// <summary>
 		/// A simple constructor that initializes the object with the given values.
@@ -22,8 +24,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		/// <param name="p_xcsScript">The install script.</param>
 		/// <param name="p_hifHeaderInfo">Information describing the form header.</param>
 		/// <param name="p_dsmStateManager">The install state manager.</param>
-		/// <param name="p_lstGroups">The grouped plugins.</param>
-		public OptionsForm(XmlConfiguredScript p_xcsScript, HeaderInfo p_hifHeaderInfo, DependencyStateManager p_dsmStateManager, IList<PluginGroup> p_lstGroups)
+		/// <param name="p_lstInstallSteps">The install steps.</param>
+		public OptionsForm(XmlConfiguredScript p_xcsScript, HeaderInfo p_hifHeaderInfo, DependencyStateManager p_dsmStateManager, IList<InstallStep> p_lstInstallSteps)
 		{
 			m_xcsScript = p_xcsScript;
 			m_dsmStateManager = p_dsmStateManager;
@@ -35,9 +37,18 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 			hplTitle.TextPosition = p_hifHeaderInfo.TextPosition;
 			if (p_hifHeaderInfo.Height > hplTitle.Height)
 				hplTitle.Height = p_hifHeaderInfo.Height;
-			loadPlugins(p_lstGroups);
-			if (lvwPlugins.Items.Count > 0)
-				lvwPlugins.Items[0].Selected = true;
+
+			foreach (InstallStep stpStep in p_lstInstallSteps)
+			{
+				OptionFormStep ofsStep = new OptionFormStep(m_dsmStateManager, stpStep.GroupedPlugins);
+				ofsStep.Dock = DockStyle.Fill;
+				ofsStep.Visible = false;
+				ofsStep.ItemChecked += new EventHandler(ofsStep_ItemChecked);
+				pnlWizardSteps.Controls.Add(ofsStep);
+				m_lstInstallSteps.Add(new KeyValuePair<InstallStep, OptionFormStep>(stpStep, ofsStep));
+			}
+			m_intCurrentStep = -1;
+			StepForward();
 		}
 
 		#region Form Members
@@ -54,17 +65,12 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 			get
 			{
 				List<PluginFile> lstInstall = new List<PluginFile>();
-				foreach (ListViewItem lviItem in lvwPlugins.Items)
+				foreach (KeyValuePair<InstallStep, OptionFormStep> kvpStep in m_lstInstallSteps)
 				{
-					PluginInfo pifPlugin = (PluginInfo)lviItem.Tag;
-					PluginType ptpPluginType = pifPlugin.Type;
-					GroupType gtpGroupType = (GroupType)lviItem.Group.Tag;
-					if (lviItem.Checked)
-						lstInstall.AddRange(pifPlugin.Files);
-					else
-						foreach (PluginFile pflFile in pifPlugin.Files)
-							if (pflFile.AlwaysInstall || (pflFile.InstallIfUsable && (pifPlugin.Type != PluginType.NotUsable)))
-								lstInstall.Add(pflFile);
+					if (kvpStep.Key.Visible)
+					{
+						lstInstall.AddRange(kvpStep.Value.FilesToInstall);
+					}
 				}
 				lstInstall.Sort();
 				return lstInstall;
@@ -83,333 +89,16 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 			get
 			{
 				List<PluginFile> lstActivate = new List<PluginFile>();
-				foreach (ListViewItem lviItem in lvwPlugins.Items)
+				foreach (KeyValuePair<InstallStep, OptionFormStep> kvpStep in m_lstInstallSteps)
 				{
-					PluginInfo pifPlugin = (PluginInfo)lviItem.Tag;
-					if (lviItem.Checked)
-						foreach (PluginFile pflFile in pifPlugin.Files)
-						{
-							if (pflFile.IsFolder)
-							{
-								if (pflFile.Destination.Length == 0)
-									lstActivate.Add(pflFile);
-							}
-							else if (String.IsNullOrEmpty(pflFile.Destination))
-							{
-								if (pflFile.Source.ToLower().EndsWith(".esm") || pflFile.Source.ToLower().EndsWith(".esp"))
-									lstActivate.Add(pflFile);
-							}
-							else if (pflFile.Destination.ToLower().EndsWith(".esm") || pflFile.Destination.ToLower().EndsWith(".esp"))
-								lstActivate.Add(pflFile);
-						}
+					if (kvpStep.Key.Visible)
+					{
+						lstActivate.AddRange(kvpStep.Value.PluginsToActivate);
+					}
 				}
 				lstActivate.Sort();
 				return lstActivate;
 			}
-		}
-
-		/// <summary>
-		/// Loads the plugins into the form.
-		/// </summary>
-		/// <param name="p_lstGroups">The list of grouped plugins.</param>
-		private void loadPlugins(IList<PluginGroup> p_lstGroups)
-		{
-			adjustListViewColumnWidth();
-			foreach (PluginGroup pgpGroup in p_lstGroups)
-			{
-				ListViewGroup lvgGroup = addGroup(pgpGroup);
-				foreach (PluginInfo pifPlugin in pgpGroup.Plugins)
-					addPlugin(lvgGroup, pifPlugin);
-			}
-			checkDefaults();
-		}
-
-		/// <summary>
-		/// Checks the plugins that should be checked by default.
-		/// </summary>
-		private void checkDefaults()
-		{
-			ListViewItem lviRequired = null;
-			ListViewItem lviRecommended = null;
-			PluginInfo pifPlugin = null;
-			foreach (ListViewGroup lvgGroup in lvwPlugins.Groups)
-			{
-				switch ((GroupType)lvgGroup.Tag)
-				{
-					case GroupType.SelectAll:
-						foreach (ListViewItem lviPlugin in lvgGroup.Items)
-							lviPlugin.Checked = true;
-						break;
-					case GroupType.SelectExactlyOne:
-						lviRequired = null;
-						lviRecommended = null;
-						foreach (ListViewItem lviPlugin in lvgGroup.Items)
-						{
-							pifPlugin = (PluginInfo)lviPlugin.Tag;
-							switch (pifPlugin.Type)
-							{
-								case PluginType.Recommended:
-									lviRecommended = lviPlugin;
-									break;
-								case PluginType.Required:
-									lviRequired = lviPlugin;
-									break;
-							}
-						}
-						if (lviRequired != null)
-							lviRequired.Checked = true;
-						else if (lviRecommended != null)
-							lviRecommended.Checked = true;
-						else if (lvgGroup.Items.Count > 0)
-							lvgGroup.Items[0].Checked = true;
-						break;
-					case GroupType.SelectAtLeastOne:
-					default:
-						bool booOneSelected = false;
-						foreach (ListViewItem lviPlugin in lvgGroup.Items)
-						{
-							pifPlugin = (PluginInfo)lviPlugin.Tag;
-							switch (pifPlugin.Type)
-							{
-								case PluginType.Recommended:
-								case PluginType.Required:
-									lviPlugin.Checked = true;
-									booOneSelected = true;
-									break;
-							}
-						}
-						if ((GroupType.SelectAtLeastOne == (GroupType)lvgGroup.Tag) && !booOneSelected && (lvgGroup.Items.Count > 0))
-							lvgGroup.Items[0].Checked = true;
-						break;
-				}
-			}
-		}
-
-		/// <summary>
-		/// Adds a group to the list of plugins.
-		/// </summary>
-		/// <param name="p_pgpGroup">The plugin group to add.</param>
-		/// <returns>The new <see cref="ListViewGroup"/> representing the group.</returns>
-		private ListViewGroup addGroup(PluginGroup p_pgpGroup)
-		{
-			ListViewGroup lvgGroup = null;
-			foreach (ListViewGroup lvgExistingGroup in lvwPlugins.Groups)
-				if (lvgExistingGroup.Name.Equals(p_pgpGroup.Name))
-				{
-					lvgGroup = lvgExistingGroup;
-					break;
-				}
-			if (lvgGroup == null)
-			{
-				lvgGroup = new ListViewGroup();
-				lvwPlugins.Groups.Add(lvgGroup);
-			}
-			lvgGroup.Name = p_pgpGroup.Name;
-			lvgGroup.Tag = p_pgpGroup.Type;
-			switch (p_pgpGroup.Type)
-			{
-				case GroupType.SelectAll:
-					lvgGroup.Header = p_pgpGroup.Name + " (All Required)";
-					break;
-				case GroupType.SelectAtLeastOne:
-					lvgGroup.Header = p_pgpGroup.Name + " (One Required)";
-					break;
-				case GroupType.SelectAtMostOne:
-					lvgGroup.Header = p_pgpGroup.Name + " (Select Only One)";
-					break;
-				case GroupType.SelectExactlyOne:
-					lvgGroup.Header = p_pgpGroup.Name + " (Select One)";
-					break;
-				case GroupType.SelectAny:
-					lvgGroup.Header = p_pgpGroup.Name;
-					break;
-			}
-			return lvgGroup;
-		}
-
-		/// <summary>
-		/// Adds a plugin to the list of plugins.
-		/// </summary>
-		/// <param name="p_lvgGroup">The group to which to add the plugin.</param>
-		/// <param name="p_pifPlugin">The plugin to add.</param>
-		private void addPlugin(ListViewGroup p_lvgGroup, PluginInfo p_pifPlugin)
-		{
-			string strName = p_pifPlugin.Name;
-			ListViewItem lviPlugin = null;
-			foreach (ListViewItem lviExistingPlugin in p_lvgGroup.Items)
-				if (lviExistingPlugin.Text.Equals(strName))
-				{
-					lviPlugin = lviExistingPlugin;
-					break;
-				}
-			if (lviPlugin == null)
-			{
-				lviPlugin = new ListViewItem();
-				lvwPlugins.Items.Add(lviPlugin);
-			}
-
-			lviPlugin.Text = strName;
-			lviPlugin.Tag = p_pifPlugin;
-			lviPlugin.Group = p_lvgGroup;
-			lviPlugin.Checked = false;
-		}
-
-		/// <summary>
-		/// Sizes the column of the list view of plugins to fill the control.
-		/// </summary>
-		private void adjustListViewColumnWidth()
-		{
-			lvwPlugins.Columns[0].Width = lvwPlugins.Width - SystemInformation.VerticalScrollBarWidth - 6;
-		}
-
-		/// <summary>
-		/// Handles the SizeChanged event of the list view of plugins.
-		/// </summary>
-		/// <remarks>
-		/// This ensures that the column of the list view of plugins fills the control.
-		/// </remarks>
-		/// <param name="sender">The object that triggered the event.</param>
-		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
-		private void lvwPlugins_SizeChanged(object sender, EventArgs e)
-		{
-			adjustListViewColumnWidth();
-		}
-
-		/// <summary>
-		/// Handles the SelectedIndexChanged event of the list view of plugins.
-		/// </summary>
-		/// <remarks>
-		/// This changes the displayed description to that of the selected plugin.
-		/// </remarks>
-		/// <param name="sender">The object that triggered the event.</param>
-		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
-		private void lvwPlugins_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			if (lvwPlugins.SelectedItems.Count > 0)
-			{
-				PluginInfo pifPlugin = (PluginInfo)lvwPlugins.SelectedItems[0].Tag;
-				tbxDescription.Text = pifPlugin.Description;
-				pbxImage.Image = pifPlugin.Image;
-			}
-			else
-			{
-				tbxDescription.Text = "";
-				pbxImage.Image = null;
-			}
-			sptImage.Panel2Collapsed = (pbxImage.Image == null);
-		}
-
-		/// <summary>
-		/// Handles the ItemCheck event of the list view of plugins.
-		/// </summary>
-		/// <remarks>
-		/// This enforces any restrictions on the selection of plugins.
-		/// </remarks>
-		/// <param name="sender">The object that triggered the event.</param>
-		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
-		private void lvwPlugins_ItemCheck(object sender, ItemCheckEventArgs e)
-		{
-			PluginInfo pifPlugin = (PluginInfo)lvwPlugins.Items[e.Index].Tag;
-			switch (pifPlugin.Type)
-			{
-				case PluginType.Required:
-					if (e.NewValue != CheckState.Checked)
-						MessageBox.Show(this, pifPlugin.Name + " is required. You cannot unselect it.");
-					e.NewValue = CheckState.Checked;
-					return;
-				case PluginType.Recommended:
-					if (e.NewValue != CheckState.Checked)
-						if (MessageBox.Show(this, pifPlugin.Name + " is recommended. Disabling it may result in game instability. Are you sure you want to continue?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
-						{
-							e.NewValue = CheckState.Checked;
-							return;
-						}
-					break;
-				case PluginType.NotUsable:
-				case PluginType.CouldBeUsable:
-					if (e.NewValue == CheckState.Checked)
-						if (MessageBox.Show(this, pifPlugin.Name + " is not usable with your loaded mods. Enabling it may result in game instability. Are you sure you want to continue?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
-						{
-							e.NewValue = CheckState.Unchecked;
-							return;
-						}
-					break;
-			}
-			ListViewGroup lvgGroup = lvwPlugins.Items[e.Index].Group;
-			switch ((GroupType)lvgGroup.Tag)
-			{
-				case GroupType.SelectAll:
-					if (e.NewValue != CheckState.Checked)
-						MessageBox.Show(this, pifPlugin.Name + " is required. You cannot unselect it.");
-					e.NewValue = CheckState.Checked;
-					break;
-				case GroupType.SelectAtLeastOne:
-					if (e.NewValue != CheckState.Checked)
-					{
-						bool booOtherChecked = false;
-						foreach (ListViewItem lviGroupItem in lvgGroup.Items)
-							if ((lviGroupItem.Index != e.Index) && (lviGroupItem.Checked))
-							{
-								booOtherChecked = true;
-								break;
-							}
-						if (!booOtherChecked)
-						{
-							MessageBox.Show(this, "You must select at least one plugin in this group.");
-							e.NewValue = CheckState.Checked;
-						}
-					}
-					break;
-				case GroupType.SelectExactlyOne:
-					if (e.NewValue != CheckState.Checked)
-					{
-						bool booOtherChecked = false;
-						foreach (ListViewItem lviGroupItem in lvgGroup.Items)
-							if ((lviGroupItem.Index != e.Index) && (lviGroupItem.Checked))
-							{
-								booOtherChecked = true;
-								break;
-							}
-						if (!booOtherChecked)
-						{
-							MessageBox.Show(this, "You must select one plugin in this group.");
-							e.NewValue = CheckState.Checked;
-						}
-					}
-					break;
-			}
-		}
-
-		/// <summary>
-		/// Handles the ItemChecked event of the list view of plugins.
-		/// </summary>
-		/// <remarks>
-		/// This enforces any restrictions on the selection of plugins.
-		/// </remarks>
-		/// <param name="sender">The object that triggered the event.</param>
-		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
-		private void lvwPlugins_ItemChecked(object sender, ItemCheckedEventArgs e)
-		{
-			ListViewItem lviItem = e.Item;
-			ListViewGroup lvgGroup = lviItem.Group;
-			switch ((GroupType)lvgGroup.Tag)
-			{
-				case GroupType.SelectAtMostOne:
-				case GroupType.SelectExactlyOne:
-					if (lviItem.Checked)
-						foreach (ListViewItem lviGroupItem in lvgGroup.Items)
-							if ((lviGroupItem != lviItem) && (lviGroupItem.Index > -1))
-								lviGroupItem.Checked = false;
-					break;
-			}
-			PluginInfo pifPlugin = (PluginInfo)e.Item.Tag;
-			if (lviItem.Checked)
-			{
-				foreach (ConditionalFlag cfgFlag in pifPlugin.Flags)
-					m_dsmStateManager.SetFlagValue(cfgFlag.Name, cfgFlag.ConditionalValue, pifPlugin);
-			}
-			else
-				m_dsmStateManager.RemoveFlags(pifPlugin);
 		}
 
 		/// <summary>
@@ -425,18 +114,121 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 			DialogResult = DialogResult.Cancel;
 		}
 
+		#region Navigation
+
 		/// <summary>
-		/// Handles the Click event of the OK button.
+		/// This updates the back/next button states.
+		/// </summary>
+		protected void SetWizardButtonStates()
+		{
+			bool booLast = true;
+			for (Int32 i = m_intCurrentStep + 1; i < m_lstInstallSteps.Count; i++)
+			{
+				KeyValuePair<InstallStep, OptionFormStep> kvpStep = m_lstInstallSteps[i];
+				if (kvpStep.Key.Visible)
+				{
+					booLast = false;
+					break;
+				}
+			}
+			if (booLast)
+				butNext.Text = "Finish";
+			else
+				butNext.Text = "Next >";
+
+			bool booFirst = true;
+			for (Int32 i = m_intCurrentStep - 1; i >= 0; i--)
+			{
+				KeyValuePair<InstallStep, OptionFormStep> kvpStep = m_lstInstallSteps[i];
+				if (kvpStep.Key.Visible)
+				{
+					booFirst = false;
+					break;
+				}
+			}
+			butBack.Enabled = !booFirst;
+		}
+
+		/// <summary>
+		/// Advances the wizard to the next visible step, or finishes the wizard if the current step
+		/// is the last visible step.
+		/// </summary>
+		protected void StepForward()
+		{
+			if (butNext.Text.Equals("Finish"))
+			{
+				DialogResult = DialogResult.OK;
+				Close();
+			}
+			for (Int32 i = m_intCurrentStep + 1; i < m_lstInstallSteps.Count; i++)
+			{
+				KeyValuePair<InstallStep, OptionFormStep> kvpStep = m_lstInstallSteps[i];
+				if (kvpStep.Key.Visible)
+				{
+					if (m_intCurrentStep >= 0)
+						m_lstInstallSteps[m_intCurrentStep].Value.Visible = false;
+					kvpStep.Value.Visible = true;
+					m_intCurrentStep = i;
+					break;
+				}
+			}
+			SetWizardButtonStates();
+		}
+
+		/// <summary>
+		/// Moves the wizard to the previous visible step.
+		/// </summary>
+		protected void StepBack()
+		{
+			for (Int32 i = m_intCurrentStep - 1; i >= 0; i--)
+			{
+				KeyValuePair<InstallStep, OptionFormStep> kvpStep = m_lstInstallSteps[i];
+				if (kvpStep.Key.Visible)
+				{
+					if (m_intCurrentStep < m_lstInstallSteps.Count)
+						m_lstInstallSteps[m_intCurrentStep].Value.Visible = false;
+					kvpStep.Value.Visible = true;
+					m_intCurrentStep = i;
+					break;
+				}
+			}
+			SetWizardButtonStates();
+		}
+
+		/// <summary>
+		/// Handles the <see cref="Control.Click"/> event of the next button.
+		/// </summary>
+		/// <param name="sender">The object that triggered the event.</param>
+		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+		private void butNext_Click(object sender, EventArgs e)
+		{
+			StepForward();
+		}
+
+		/// <summary>
+		/// Handles the <see cref="Control.Click"/> event of the back button.
+		/// </summary>
+		/// <param name="sender">The object that triggered the event.</param>
+		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+		private void butBack_Click(object sender, EventArgs e)
+		{
+			StepBack();
+		}
+
+		/// <summary>
+		/// Handles the <see cref="OptionFormStep.ItemChecked"/> event of the option form steps.
 		/// </summary>
 		/// <remarks>
-		/// This OKs the dialog.
+		/// This updates the back/next button states.
 		/// </remarks>
 		/// <param name="sender">The object that triggered the event.</param>
 		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
-		private void butOK_Click(object sender, EventArgs e)
+		private void ofsStep_ItemChecked(object sender, EventArgs e)
 		{
-			DialogResult = DialogResult.OK;
+			SetWizardButtonStates();
 		}
+
+		#endregion
 
 		#endregion
 	}

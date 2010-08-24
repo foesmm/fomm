@@ -60,6 +60,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 					return new Parser20(p_xmlConfig, p_fomodMod, p_dsmSate);
 				case "3.0":
 					return new Parser30(p_xmlConfig, p_fomodMod, p_dsmSate);
+				case "4.0":
+					return new Parser40(p_xmlConfig, p_fomodMod, p_dsmSate);
 			}
 			throw new ParserException("Unrecognized Module Configuration version (" + strConfigVersion + "). Perhaps a newer version of FOMM is required.");
 		}
@@ -186,7 +188,16 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		/// Gets the mod plugins, organized into their groups.
 		/// </summary>
 		/// <returns>The mod plugins, organized into their groups.</returns>
-		public abstract IList<PluginGroup> GetGroupedPlugins();
+		//public abstract IList<PluginGroup> GetGroupedPlugins();
+
+		/// <summary>
+		/// Gets the mod install steps.
+		/// </summary>
+		/// <remarks>
+		/// The steps contain the mod plugins, organized into their groups.
+		/// </remarks>
+		/// <returns>The mod install steps.</returns>
+		public abstract IList<InstallStep> GetInstallSteps();
 
 		/// <summary>
 		/// Gets the mod's required install files.
