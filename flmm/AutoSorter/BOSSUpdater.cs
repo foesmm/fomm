@@ -11,10 +11,20 @@ namespace Fomm.AutoSorter
 	/// </summary>
 	public class BOSSUpdater
 	{
-		private const string MASTERLIST_VERSION_URL = "http://better-oblivion-sorting-software.googlecode.com/svn/FO3Masterlist/";
-		private const string MASTERLIST_URL = "http://better-oblivion-sorting-software.googlecode.com/svn/FO3Masterlist/masterlist.txt";
-		private static Regex m_rgxVersion = new Regex(@"Revision (\d+): /FO3Masterlist");
-	
+		private const string MASTERLIST_URL = "http://better-oblivion-sorting-software.googlecode.com/svn/data/boss-fallout/masterlist.txt";
+		private static Regex m_rgxVersion = new Regex(@"Revision (\d+): ");
+
+		public static string MasterListUrl
+		{
+			get
+			{
+				string strMasterListUrl = Settings.GetString("MasterListUpdateUrl");
+				if (String.IsNullOrEmpty(strMasterListUrl))
+					strMasterListUrl = MASTERLIST_URL;
+				return strMasterListUrl;
+			}
+		}
+
 		/// <summary>
 		/// Gets the current verison of the BOSS Fallout 3 Masterlist.
 		/// </summary>
@@ -24,7 +34,10 @@ namespace Fomm.AutoSorter
 			string strVersionPage = null;
 			using (WebClient wclGetter = new WebClient())
 			{
-				strVersionPage = wclGetter.DownloadString(MASTERLIST_VERSION_URL);
+				string strMasterListUrl = MasterListUrl;
+				Int32 intLastDividerPos = strMasterListUrl.LastIndexOfAny(new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar });
+				string strVersionUrl = strMasterListUrl.Substring(0, intLastDividerPos);
+				strVersionPage = wclGetter.DownloadString(strVersionUrl);
 			}
 
 			string strWebVersion = m_rgxVersion.Match(strVersionPage).Groups[1].Value.Trim();
@@ -40,7 +53,7 @@ namespace Fomm.AutoSorter
 			using (WebClient wclGetter = new WebClient())
 			{
 				//the substring is to remove the 3byte EFBBBF Byte Order Mark (BOM)
-				strMasterlist = wclGetter.DownloadString(MASTERLIST_URL).Substring(3);
+				strMasterlist = wclGetter.DownloadString(MasterListUrl).Substring(3);
 			}
 			File.WriteAllText(p_strPath, GetMasterlistVersion().ToString() + strMasterlist);
 			LoadOrderSorter.LoadList();

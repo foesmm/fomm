@@ -2,6 +2,7 @@ using System;
 using System.Windows.Forms;
 using Microsoft.Win32;
 using SevenZip;
+using Fomm.AutoSorter;
 
 namespace Fomm
 {
@@ -19,6 +20,7 @@ namespace Fomm
 			FinishedSetup = false;
 			LoadGeneralOptions();
 			LoadFOMODOptions();
+			LoadUpdatesOptions();
 			FinishedSetup = true;
 		}
 
@@ -117,6 +119,11 @@ namespace Fomm
 			cbxPFPFormat.SelectedItem = (OutArchiveFormat)Settings.GetInt("pfpCompressionFormat", (Int32)OutArchiveFormat.SevenZip);
 		}
 
+		protected void LoadUpdatesOptions()
+		{
+			tbxBOSSUrl.Text = BOSSUpdater.MasterListUrl;
+		}
+
 		private void SetupForm_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			if (cbFomod.Checked) Settings.SetString("FomodDir", tbFomod.Text);
@@ -137,6 +144,7 @@ namespace Fomm
 			Settings.SetInt("fomodCompressionLevel", (Int32)cbxFomodCompression.SelectedItem);
 			Settings.SetInt("pfpCompressionFormat", (Int32)cbxPFPFormat.SelectedItem);
 			Settings.SetInt("pfpCompressionLevel", (Int32)cbxPFPCompression.SelectedItem);
+			Settings.SetString("MasterListUpdateUrl", tbxBOSSUrl.Text);
 		}
 
 		private void cbFomod_CheckedChanged(object sender, EventArgs e)

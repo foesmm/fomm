@@ -55,16 +55,27 @@ namespace Fomm {
 			this.label7 = new System.Windows.Forms.Label();
 			this.label8 = new System.Windows.Forms.Label();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.label9 = new System.Windows.Forms.Label();
 			this.cbxFomodFormat = new System.Windows.Forms.ComboBox();
 			this.cbxFomodCompression = new System.Windows.Forms.ComboBox();
 			this.label5 = new System.Windows.Forms.Label();
 			this.label6 = new System.Windows.Forms.Label();
-			this.label9 = new System.Windows.Forms.Label();
+			this.tabPage3 = new System.Windows.Forms.TabPage();
+			this.label10 = new System.Windows.Forms.Label();
+			this.comboBox1 = new System.Windows.Forms.ComboBox();
+			this.comboBox2 = new System.Windows.Forms.ComboBox();
+			this.label11 = new System.Windows.Forms.Label();
+			this.label12 = new System.Windows.Forms.Label();
+			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.label15 = new System.Windows.Forms.Label();
+			this.tbxBOSSUrl = new System.Windows.Forms.TextBox();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.tabPage2.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox1.SuspendLayout();
+			this.tabPage3.SuspendLayout();
+			this.groupBox3.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// cbFomod
@@ -293,7 +304,7 @@ namespace Fomm {
 			this.ckbCheckFomodVersions.AutoSize = true;
 			this.ckbCheckFomodVersions.Location = new System.Drawing.Point(10, 316);
 			this.ckbCheckFomodVersions.Name = "ckbCheckFomodVersions";
-			this.ckbCheckFomodVersions.Size = new System.Drawing.Size(182, 17);
+			this.ckbCheckFomodVersions.Size = new System.Drawing.Size(178, 17);
 			this.ckbCheckFomodVersions.TabIndex = 21;
 			this.ckbCheckFomodVersions.Text = "Check for new FOMod versions.";
 			this.ckbCheckFomodVersions.UseVisualStyleBackColor = true;
@@ -303,6 +314,7 @@ namespace Fomm {
 			// 
 			this.tabControl1.Controls.Add(this.tabPage1);
 			this.tabControl1.Controls.Add(this.tabPage2);
+			this.tabControl1.Controls.Add(this.tabPage3);
 			this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tabControl1.Location = new System.Drawing.Point(0, 0);
 			this.tabControl1.Name = "tabControl1";
@@ -419,6 +431,14 @@ namespace Fomm {
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "FOMod Compression";
 			// 
+			// label9
+			// 
+			this.label9.Location = new System.Drawing.Point(22, 16);
+			this.label9.Name = "label9";
+			this.label9.Size = new System.Drawing.Size(354, 31);
+			this.label9.TabIndex = 3;
+			this.label9.Text = "NOTE: Using a format other than Zip can make the Package Manager respond slowly.";
+			// 
 			// cbxFomodFormat
 			// 
 			this.cbxFomodFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -455,13 +475,89 @@ namespace Fomm {
 			this.label6.TabIndex = 2;
 			this.label6.Text = "Compression Level:";
 			// 
-			// label9
+			// tabPage3
 			// 
-			this.label9.Location = new System.Drawing.Point(22, 16);
-			this.label9.Name = "label9";
-			this.label9.Size = new System.Drawing.Size(354, 31);
-			this.label9.TabIndex = 3;
-			this.label9.Text = "NOTE: Using a format other than Zip can make the Package Manager respond slowly.";
+			this.tabPage3.Controls.Add(this.groupBox3);
+			this.tabPage3.Location = new System.Drawing.Point(4, 22);
+			this.tabPage3.Name = "tabPage3";
+			this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage3.Size = new System.Drawing.Size(398, 341);
+			this.tabPage3.TabIndex = 2;
+			this.tabPage3.Text = "Updates";
+			this.tabPage3.UseVisualStyleBackColor = true;
+			// 
+			// label10
+			// 
+			this.label10.Location = new System.Drawing.Point(22, 16);
+			this.label10.Name = "label10";
+			this.label10.Size = new System.Drawing.Size(354, 31);
+			this.label10.TabIndex = 3;
+			this.label10.Text = "NOTE: Using a format other than Zip can make the Package Manager respond slowly.";
+			// 
+			// comboBox1
+			// 
+			this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboBox1.FormattingEnabled = true;
+			this.comboBox1.Location = new System.Drawing.Point(111, 50);
+			this.comboBox1.Name = "comboBox1";
+			this.comboBox1.Size = new System.Drawing.Size(186, 21);
+			this.comboBox1.TabIndex = 0;
+			// 
+			// comboBox2
+			// 
+			this.comboBox2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboBox2.FormattingEnabled = true;
+			this.comboBox2.Location = new System.Drawing.Point(111, 77);
+			this.comboBox2.Name = "comboBox2";
+			this.comboBox2.Size = new System.Drawing.Size(186, 21);
+			this.comboBox2.TabIndex = 1;
+			// 
+			// label11
+			// 
+			this.label11.AutoSize = true;
+			this.label11.Location = new System.Drawing.Point(63, 53);
+			this.label11.Name = "label11";
+			this.label11.Size = new System.Drawing.Size(42, 13);
+			this.label11.TabIndex = 0;
+			this.label11.Text = "Format:";
+			// 
+			// label12
+			// 
+			this.label12.AutoSize = true;
+			this.label12.Location = new System.Drawing.Point(6, 80);
+			this.label12.Name = "label12";
+			this.label12.Size = new System.Drawing.Size(99, 13);
+			this.label12.TabIndex = 2;
+			this.label12.Text = "Compression Level:";
+			// 
+			// groupBox3
+			// 
+			this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox3.Controls.Add(this.tbxBOSSUrl);
+			this.groupBox3.Controls.Add(this.label15);
+			this.groupBox3.Location = new System.Drawing.Point(8, 6);
+			this.groupBox3.Name = "groupBox3";
+			this.groupBox3.Size = new System.Drawing.Size(382, 56);
+			this.groupBox3.TabIndex = 0;
+			this.groupBox3.TabStop = false;
+			this.groupBox3.Text = "Auto-Sorter (BOSS)";
+			// 
+			// label15
+			// 
+			this.label15.AutoSize = true;
+			this.label15.Location = new System.Drawing.Point(6, 24);
+			this.label15.Name = "label15";
+			this.label15.Size = new System.Drawing.Size(70, 13);
+			this.label15.TabIndex = 2;
+			this.label15.Text = "Update URL:";
+			// 
+			// tbxBOSSUrl
+			// 
+			this.tbxBOSSUrl.Location = new System.Drawing.Point(82, 21);
+			this.tbxBOSSUrl.Name = "tbxBOSSUrl";
+			this.tbxBOSSUrl.Size = new System.Drawing.Size(287, 20);
+			this.tbxBOSSUrl.TabIndex = 0;
 			// 
 			// SetupForm
 			// 
@@ -480,6 +576,9 @@ namespace Fomm {
 			this.groupBox2.PerformLayout();
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
+			this.tabPage3.ResumeLayout(false);
+			this.groupBox3.ResumeLayout(false);
+			this.groupBox3.PerformLayout();
 			this.ResumeLayout(false);
 
         }
@@ -523,5 +622,14 @@ namespace Fomm {
 		private System.Windows.Forms.Label label7;
 		private System.Windows.Forms.Label label8;
 		private System.Windows.Forms.Label label9;
+		private System.Windows.Forms.TabPage tabPage3;
+		private System.Windows.Forms.GroupBox groupBox3;
+		private System.Windows.Forms.TextBox tbxBOSSUrl;
+		private System.Windows.Forms.Label label15;
+		private System.Windows.Forms.Label label10;
+		private System.Windows.Forms.ComboBox comboBox1;
+		private System.Windows.Forms.ComboBox comboBox2;
+		private System.Windows.Forms.Label label11;
+		private System.Windows.Forms.Label label12;
     }
 }
