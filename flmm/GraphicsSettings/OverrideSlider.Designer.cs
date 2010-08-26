@@ -58,6 +58,7 @@
 			this.ckbOverride.TabIndex = 9;
 			this.ckbOverride.Text = "Override";
 			this.ckbOverride.UseVisualStyleBackColor = true;
+			this.ckbOverride.CheckedChanged += new System.EventHandler(this.ckbOverride_CheckedChanged);
 			// 
 			// tkbSlider
 			// 
