@@ -508,6 +508,9 @@ namespace Fomm.PackageManager.FomodBuilder
 					case "3.0":
 						strMinFOMMVersion = "0.11.9";
 						break;
+					case "4.0":
+						strMinFOMMVersion = "0.12.4";
+						break;
 				}
 				AppendWrappedFormat(stbHowTo, "{0}) If you are using FOMM {1} or newer, proceed to Step {2}, otherwise proceed to Step {3}.", intStepCounter++, strMinFOMMVersion, intStepCounter + 2, intStepCounter).AppendLine();
 				stbHowTo.AppendLine();

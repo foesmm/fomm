@@ -81,6 +81,9 @@ class Script : BaseScript {
 								case "3.0":
 									cbxVersion.SelectedIndex = 2;
 									break;
+								case "4.0":
+									cbxVersion.SelectedIndex = 3;
+									break;
 								default:
 									ddtScript.SelectedTabPage = dtpCSharp;
 									sedScript.Text = null;
@@ -130,7 +133,8 @@ class Script : BaseScript {
 			cbxVersion.Items.Add("1.0");
 			cbxVersion.Items.Add("2.0");
 			cbxVersion.Items.Add("3.0");
-			cbxVersion.SelectedIndex = 2;
+			cbxVersion.Items.Add("4.0");
+			cbxVersion.SelectedIndex = 3;
 			LoadConfigSchema();
 		}
 
