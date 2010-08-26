@@ -98,7 +98,14 @@ namespace Fomm.PackageManager.FomodBuilder
 		public string BuildFomodFromSource(string p_strPath)
 		{
 			string strSource = p_strPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-			string strFomodName = Path.GetFileNameWithoutExtension(strSource);
+			string strFomodName = null;
+			if (File.Exists(strSource))
+			strFomodName = Path.GetFileNameWithoutExtension(strSource);
+			else
+			{
+				Int32 intLastSeparatorPos = strSource.LastIndexOfAny(new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar });
+				strFomodName = strSource.Substring(intLastSeparatorPos + 1);
+			}
 
 			bool booRepack = false;
 			string strTesNexusUrl = null;
