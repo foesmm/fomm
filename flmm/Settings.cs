@@ -4,6 +4,7 @@ using Path = System.IO.Path;
 using File = System.IO.File;
 using Point = System.Drawing.Point;
 using Size = System.Drawing.Size;
+using System.Windows.Forms;
 
 namespace Fomm
 {
@@ -58,9 +59,16 @@ namespace Fomm
 			}
 			else
 			{
-				f.Location = new Point(int.Parse(xe.Attributes.GetNamedItem("left").Value), int.Parse(xe.Attributes.GetNamedItem("top").Value));
+				Point pntTopLeft = new Point(int.Parse(xe.Attributes.GetNamedItem("left").Value), int.Parse(xe.Attributes.GetNamedItem("top").Value));
+				Screen[] scrScreens = Screen.AllScreens;
+				foreach (Screen scrScreen in scrScreens)
+					if (scrScreen.WorkingArea.Contains(pntTopLeft))
+					{
+						f.Location = pntTopLeft;
+						f.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
+						break;
+					}
 				f.ClientSize = new Size(int.Parse(xe.Attributes.GetNamedItem("width").Value), int.Parse(xe.Attributes.GetNamedItem("height").Value));
-				f.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			}
 		}
 
