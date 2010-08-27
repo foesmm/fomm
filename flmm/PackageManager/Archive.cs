@@ -427,7 +427,7 @@ namespace Fomm.PackageManager
 			{
 				ArchiveFileInfo afiFile = m_dicFileInfo[strPath];
 				bteFile = new byte[afiFile.Size];
-				using (MemoryStream msmFile = new MemoryStream())
+				using (MemoryStream msmFile = new MemoryStream(bteFile))
 				{
 					//check to see if we are on the same thread as the extractor
 					// if not, then marshall the call to the extractor's thread.
@@ -437,9 +437,17 @@ namespace Fomm.PackageManager
 						m_scxReadOnlySyncContext.Send((s) => { szeExtractor.ExtractFile(afiFile.Index, msmFile); }, null);
 					else
 						szeExtractor.ExtractFile(afiFile.Index, msmFile);
-					msmFile.Position = 0;
-					for (Int32 intOffset = 0, intRead = 0; intOffset < bteFile.Length && ((intRead = msmFile.Read(bteFile, intOffset, bteFile.Length - intOffset)) >= 0); intOffset += intRead) ;
 					msmFile.Close();
+				}
+				if (bteFile.LongLength != (Int64)afiFile.Size)
+				{
+					//if I understand things correctly, this block should never execute
+					// as bteFile should always be exactly the right size to hold the extracted file
+					//however, just to be safe, I've included this code to make sure we only return
+					// valid bytes
+					byte[] bteReal = new byte[afiFile.Size];
+					Array.Copy(bteFile, bteReal, bteReal.LongLength);
+					bteFile = bteReal;
 				}
 			}
 			finally
