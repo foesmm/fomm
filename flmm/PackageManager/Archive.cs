@@ -395,6 +395,7 @@ namespace Fomm.PackageManager
 					}
 				}
 			}
+			lstFiles.ForEach((s) => { s = s.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar); });
 			return lstFiles.ToArray();
 		}
 
