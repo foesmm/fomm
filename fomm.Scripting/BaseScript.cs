@@ -3,6 +3,7 @@ using Fomm.PackageManager;
 using DialogResult = System.Windows.Forms.DialogResult;
 using System.Windows.Forms;
 using System.Drawing;
+using System.IO;
 
 namespace fomm.Scripting
 {
@@ -161,7 +162,10 @@ namespace fomm.Scripting
 		/// <seealso cref="fomod.GetFileList()"/>
 		public static string[] GetFomodFileList()
 		{
-			return (string[])ExecuteMethod(() => m_mdiScript.Fomod.GetFileList().ToArray());
+			string[] strFiles = (string[])ExecuteMethod(() => m_mdiScript.Fomod.GetFileList().ToArray());
+			for (Int32 i = strFiles.Length - 1; i >= 0; i--)
+				strFiles[i] = strFiles[i].Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+			return strFiles;
 		}
 
 		/// <summary>

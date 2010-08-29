@@ -248,12 +248,12 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 			m_bwdProgress.ItemProgress = 0;
 			m_bwdProgress.ItemProgressMaximum = lstFOMODFiles.Count;
 
-			String strFrom = p_strFrom.Replace('\\', '/').ToLowerInvariant();
-			if (!strFrom.EndsWith("/"))
-				strFrom += "/";
-			String strTo = p_strTo.Replace('\\', '/');
-			if ((strTo.Length > 0) && (!strTo.EndsWith("/")))
-				strTo += "/";
+			String strFrom = p_strFrom.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).ToLowerInvariant();
+			if (!strFrom.EndsWith(Path.DirectorySeparatorChar.ToString()))
+				strFrom += Path.DirectorySeparatorChar;
+			String strTo = p_strTo.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+			if ((strTo.Length > 0) && (!strTo.EndsWith(Path.DirectorySeparatorChar.ToString())))
+				strTo += Path.DirectorySeparatorChar;
 			String strFOMODFile = null;
 			for (Int32 i = 0; i < lstFOMODFiles.Count; i++)
 			{
@@ -276,8 +276,12 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		protected List<string> GetFomodFolderFileList(string p_strPath)
 		{
 			if (m_strFomodFiles == null)
+			{
 				m_strFomodFiles = m_misInstallScript.Fomod.GetFileList().ToArray();
-			String strPath = p_strPath.Replace('\\', '/').ToLowerInvariant();
+				for (Int32 i = m_strFomodFiles.Length - 1; i >= 0; i--)
+					m_strFomodFiles[i] = m_strFomodFiles[i].Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+			}
+			String strPath = p_strPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).ToLowerInvariant();
 			List<string> lstFiles = new List<string>();
 			foreach (string strFile in m_strFomodFiles)
 				if (strFile.ToLowerInvariant().StartsWith(strPath))

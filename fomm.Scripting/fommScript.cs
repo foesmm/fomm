@@ -510,7 +510,11 @@ namespace fomm.Scripting
 							return NullLoop;
 						}
 						if (line.Length > 4) Warn("Unexpected extra arguments to 'For Each DataFile'");
-						return new FlowControlStruct((string[])ExecuteMethod(() => m_midInstaller.Fomod.GetFileList().ToArray()), line[3], LineNo);
+
+						string[] strFiles = (string[])ExecuteMethod(() => m_midInstaller.Fomod.GetFileList().ToArray());
+						for (Int32 i = strFiles.Length - 1; i >= 0; i--)
+							strFiles[i] = strFiles[i].Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+						return new FlowControlStruct(strFiles, line[3], LineNo);
 					}
 			}
 			return NullLoop;
