@@ -264,7 +264,7 @@ namespace Fomm.PackageManager
 			else
 			{
 				Reset();
-				SetInstallLogVersion(CURRENT_VERSION);
+				SetInstallLogVersion(new Version("0.0.0.0"));
 				Save();
 			}
 		}
