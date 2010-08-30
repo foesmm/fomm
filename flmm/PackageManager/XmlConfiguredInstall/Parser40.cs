@@ -49,34 +49,37 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		{
 			List<InstallStep> lstSteps = new List<InstallStep>();
 			XmlNode xndSteps = XmlConfig.SelectSingleNode("/config/installSteps");
-			foreach (XmlNode xndStep in xndSteps.ChildNodes)
-				lstSteps.Add(parseInstallStep(xndStep));
-			switch (xndSteps.Attributes["order"].InnerText)
+			if (xndSteps != null)
 			{
-				case "Ascending":
-					lstSteps.Sort((x, y) =>
-					{
-						if (String.IsNullOrEmpty(x.Name))
-						{
-							if (String.IsNullOrEmpty(y.Name))
-								return 0;
-							return -1;
-						}
-						return x.Name.CompareTo(y.Name);
-					});
-					break;
-				case "Descending":
-					lstSteps.Sort((x, y) =>
-					{
-						if (String.IsNullOrEmpty(y.Name))
+				foreach (XmlNode xndStep in xndSteps.ChildNodes)
+					lstSteps.Add(parseInstallStep(xndStep));
+				switch (xndSteps.Attributes["order"].InnerText)
+				{
+					case "Ascending":
+						lstSteps.Sort((x, y) =>
 						{
 							if (String.IsNullOrEmpty(x.Name))
-								return 0;
-							return -1;
-						}
-						return y.Name.CompareTo(x.Name);
-					});
-					break;
+							{
+								if (String.IsNullOrEmpty(y.Name))
+									return 0;
+								return -1;
+							}
+							return x.Name.CompareTo(y.Name);
+						});
+						break;
+					case "Descending":
+						lstSteps.Sort((x, y) =>
+						{
+							if (String.IsNullOrEmpty(y.Name))
+							{
+								if (String.IsNullOrEmpty(x.Name))
+									return 0;
+								return -1;
+							}
+							return y.Name.CompareTo(x.Name);
+						});
+						break;
+				}
 			}
 			return lstSteps;
 		}

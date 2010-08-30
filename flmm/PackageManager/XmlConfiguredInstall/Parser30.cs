@@ -88,34 +88,37 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		public override IList<PluginGroup> loadGroupedPlugins(XmlNode p_xndFileGroups)
 		{
 			List<PluginGroup> lstGroups = new List<PluginGroup>();
-			foreach (XmlNode xndGroup in p_xndFileGroups.ChildNodes)
-				lstGroups.Add(parseGroup(xndGroup));
-			switch (p_xndFileGroups.Attributes["order"].InnerText)
+			if (p_xndFileGroups != null)
 			{
-				case "Ascending":
-					lstGroups.Sort((x, y) =>
-					{
-						if (String.IsNullOrEmpty(x.Name))
-						{
-							if (String.IsNullOrEmpty(y.Name))
-								return 0;
-							return -1;
-						}
-						return x.Name.CompareTo(y.Name);
-					});
-					break;
-				case "Descending":
-					lstGroups.Sort((x, y) =>
-					{
-						if (String.IsNullOrEmpty(y.Name))
+				foreach (XmlNode xndGroup in p_xndFileGroups.ChildNodes)
+					lstGroups.Add(parseGroup(xndGroup));
+				switch (p_xndFileGroups.Attributes["order"].InnerText)
+				{
+					case "Ascending":
+						lstGroups.Sort((x, y) =>
 						{
 							if (String.IsNullOrEmpty(x.Name))
-								return 0;
-							return -1;
-						}
-						return y.Name.CompareTo(x.Name);
-					});
-					break;
+							{
+								if (String.IsNullOrEmpty(y.Name))
+									return 0;
+								return -1;
+							}
+							return x.Name.CompareTo(y.Name);
+						});
+						break;
+					case "Descending":
+						lstGroups.Sort((x, y) =>
+						{
+							if (String.IsNullOrEmpty(y.Name))
+							{
+								if (String.IsNullOrEmpty(x.Name))
+									return 0;
+								return -1;
+							}
+							return y.Name.CompareTo(x.Name);
+						});
+						break;
+				}
 			}
 			return lstGroups;
 		}

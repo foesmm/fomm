@@ -83,6 +83,11 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 			string strConfig = m_misInstallScript.Fomod.GetInstallScript().Text;
 			xmlConfig.LoadXml(strConfig);
 
+			//remove comments so we don't have to deal with them later
+			XmlNodeList xnlComments = xmlConfig.SelectNodes("//comment()");
+			foreach (XmlNode xndComment in xnlComments)
+				xndComment.ParentNode.RemoveChild(xndComment);
+
 			m_dsmStateManager = new DependencyStateManager(m_misInstallScript);
 
 			Parser prsParser = Parser.GetParser(xmlConfig, m_misInstallScript.Fomod, m_dsmStateManager);

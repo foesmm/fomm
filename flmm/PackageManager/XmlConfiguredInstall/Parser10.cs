@@ -80,11 +80,11 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		{
 			XmlNode xndGroups = XmlConfig.SelectSingleNode("/config/optionalFileGroups");
 			IList<PluginGroup> lstGroups = loadGroupedPlugins(xndGroups);
-			InstallStep stpStep = new InstallStep(null, null, lstGroups);
 			List<InstallStep> lstSteps = new List<InstallStep>();
-			lstSteps.Add(stpStep);
+			if (lstGroups.Count > 0)
+				lstSteps.Add(new InstallStep(null, null, lstGroups));
 			return lstSteps;
-		}		
+		}
 
 		/// <seealso cref="Parser.GetRequiredInstallFiles()"/>
 		public override IList<PluginFile> GetRequiredInstallFiles()
@@ -117,8 +117,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		public virtual IList<PluginGroup> loadGroupedPlugins(XmlNode p_xndFileGroups)
 		{
 			List<PluginGroup> lstGroups = new List<PluginGroup>();
-			foreach (XmlNode xndGroup in p_xndFileGroups)
-				lstGroups.Add(parseGroup(xndGroup));
+			if (p_xndFileGroups != null)
+				foreach (XmlNode xndGroup in p_xndFileGroups)
+					lstGroups.Add(parseGroup(xndGroup));
 			return lstGroups;
 		}
 
