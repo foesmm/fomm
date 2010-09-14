@@ -317,23 +317,37 @@ namespace Fomm.PackageManager
 		/// exist, the file can be written. If the file does exist, than the user is
 		/// asked to overwrite the file.
 		/// </remarks>
-		/// <param name="p_strPath">The file path whose writability is to be verified.</param>
+		/// <param name="p_strPath">The file path, relative to the Data folder, whose writability is to be verified.</param>
 		/// <returns><lang cref="true"/> if the location specified by <paramref name="p_strPath"/>
 		/// can be written; <lang cref="false"/> otherwise.</returns>
 		protected bool TestDoOverwrite(string p_strPath)
 		{
-			if (!File.Exists(p_strPath))
+			string strDataPath = Path.GetFullPath(Path.Combine("Data", p_strPath));
+			if (!File.Exists(strDataPath))
 				return true;
-			string strLoweredPath = p_strPath.ToLowerInvariant();
-			if (m_lstOverwriteFolders.Contains(strLoweredPath))
+			string strLoweredPath = strDataPath.ToLowerInvariant();
+			if (m_lstOverwriteFolders.Contains(Path.GetDirectoryName(strLoweredPath)))
 				return true;
-			if (m_lstDontOverwriteFolders.Contains(strLoweredPath))
+			if (m_lstDontOverwriteFolders.Contains(Path.GetDirectoryName(strLoweredPath)))
 				return false;
 			if (m_booOverwriteAll)
 				return true;
 			if (m_booDontOverwriteAll)
 				return false;
-			switch (Overwriteform.ShowDialog("Data file '" + p_strPath + "' already exists.\nOverwrite?", true))
+
+			string strOldMod = InstallLog.Current.GetCurrentFileOwnerName(p_strPath);
+			string strMessage = null;
+			if (strOldMod != null)
+			{
+				strMessage = String.Format("Data file '{{0}}' has already been installed by '{0}'" + Environment.NewLine +
+								"Overwrite with this mod's file?", strOldMod);
+			}
+			else
+			{
+				strMessage = "Data file '{0}' already exists." + Environment.NewLine +
+								"Overwrite with this mod's file?";
+			}
+			switch (Overwriteform.ShowDialog(String.Format(strMessage, p_strPath), true))
 			{
 				case OverwriteResult.Yes:
 					return true;
@@ -434,7 +448,7 @@ namespace Fomm.PackageManager
 				TransactionalFileManager.CreateDirectory(Path.GetDirectoryName(strDataPath));
 			else
 			{
-				if (!TestDoOverwrite(strDataPath))
+				if (!TestDoOverwrite(p_strPath))
 					return false;
 
 				if (File.Exists(strDataPath))
