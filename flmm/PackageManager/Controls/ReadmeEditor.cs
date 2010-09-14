@@ -54,6 +54,7 @@ namespace Fomm.PackageManager.Controls
 					{
 						case ReadmeFormat.PlainText:
 							ddtReadme.SelectedTabPage = ddpPlainText;
+							tbxReadme.Font = new Font(FontFamily.GenericMonospace, tbxReadme.Font.Size, tbxReadme.Font.Style);
 							tbxReadme.Text = value.Text;
 							break;
 						case ReadmeFormat.RichText:

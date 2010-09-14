@@ -36,7 +36,10 @@ namespace Fomm.PackageManager
 					rtbReadme.TabStop = false;
 					rtbReadme.LinkClicked += new LinkClickedEventHandler(rtbReadme_LinkClicked);
 					if (p_rmeReadme.Format == ReadmeFormat.PlainText)
-						rtbReadme.Text = p_rmeReadme.Text;
+					{
+						rtbReadme.Font = new Font(FontFamily.GenericMonospace, rtbReadme.Font.Size, rtbReadme.Font.Style);
+						rtbReadme.Text = p_rmeReadme.Text;						
+					}
 					else
 						rtbReadme.Rtf = p_rmeReadme.Text;
 					rtbReadme.Dock = DockStyle.Fill;
