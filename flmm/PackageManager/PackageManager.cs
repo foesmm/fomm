@@ -976,17 +976,23 @@ namespace Fomm.PackageManager
 			if (sfdModList.ShowDialog() != DialogResult.OK)
 				return;
 
-			Int32 intMaxLength = 0;
+			Int32 intMaxNameLength = 0;
+			Int32 intMaxVersionLength = 0;
 			for (int i = 0; i < lvModList.Items.Count; i++)
-				if ((lvModList.Items[i].Checked || !p_booActiveOnly) && (lvModList.Items[i].Text.Length > intMaxLength))
-					intMaxLength = lvModList.Items[i].Text.Length;
+				if (lvModList.Items[i].Checked || !p_booActiveOnly)
+				{
+					if (lvModList.Items[i].Text.Length > intMaxNameLength)
+						intMaxNameLength = lvModList.Items[i].Text.Length;
+					if (lvModList.Items[i].SubItems[1].Text.Length > intMaxVersionLength)
+						intMaxVersionLength = lvModList.Items[i].SubItems[1].Text.Length;
+				}
 		
 			StreamWriter swrModList = new StreamWriter(sfdModList.FileName);
 			try
 			{
 				for (int i = 0; i < lvModList.Items.Count; i++)
 					if (lvModList.Items[i].Checked || !p_booActiveOnly)
-						swrModList.WriteLine(String.Format("[{0}] {1,-" + intMaxLength + "}\t{2}", (lvModList.Items[i].Checked ? "X" : " "), lvModList.Items[i].Text, lvModList.Items[i].SubItems[1].Text));
+						swrModList.WriteLine(String.Format("[{0}] {1,-" + intMaxNameLength + "}\t{2,-" + intMaxVersionLength + "}\t{3}", (lvModList.Items[i].Checked ? "X" : " "), lvModList.Items[i].Text, lvModList.Items[i].SubItems[1].Text, ((fomod)lvModList.Items[i].Tag).filepath));
 			}
 			finally
 			{
