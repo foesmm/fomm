@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using fomm.Transactions;
 using System.ComponentModel;
 using Fomm.PackageManager;
+using Fomm.PackageManager.ModInstallLog;
 
 namespace Fomm.InstallLogUpgraders
 {

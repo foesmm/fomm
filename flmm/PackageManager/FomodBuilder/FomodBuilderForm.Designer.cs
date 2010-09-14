@@ -67,7 +67,7 @@
 			this.cbxPFP = new System.Windows.Forms.CheckBox();
 			this.cbxFomod = new System.Windows.Forms.CheckBox();
 			this.vtpInfo = new Fomm.Controls.VerticalTabPage();
-			this.finInfo = new Fomm.PackageManager.FomodInfo();
+			this.finInfo = new Fomm.PackageManager.FomodInfoControl();
 			this.vtpScript = new Fomm.Controls.VerticalTabPage();
 			this.fseScriptEditor = new Fomm.PackageManager.Controls.FomodScriptEditor();
 			this.panel3 = new System.Windows.Forms.Panel();
@@ -666,7 +666,7 @@
 		private System.Windows.Forms.Label label6;
 		private System.Windows.Forms.Button butGenerateReadme;
 		private Fomm.Controls.VerticalTabPage vtpInfo;
-		private FomodInfo finInfo;
+		private FomodInfoControl finInfo;
 		private Fomm.Controls.SiteStatusProvider sspError;
 		private Fomm.Controls.SiteStatusProvider sspWarning;
 		private Fomm.Controls.VerticalTabPage vtpOutput;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using System.Windows.Forms;
+using Fomm.PackageManager.ModInstallLog;
 
 namespace Fomm.PackageManager.Upgrade
 {
@@ -23,11 +24,11 @@ namespace Fomm.PackageManager.Upgrade
 		/// </remarks>
 		public void Scan()
 		{
-			IList<InstallLog.FomodInfo> lstMods = InstallLog.Current.GetVersionedModList();
+			IList<FomodInfo> lstMods = InstallLog.Current.GetVersionedModList();
 			fomod fomodMod = null;
 			List<fomod> lstModsToUpgrade = new List<fomod>();
 			List<fomod> lstModsToReplace = new List<fomod>();
-			foreach (InstallLog.FomodInfo fifMod in lstMods)
+			foreach (FomodInfo fifMod in lstMods)
 			{
 				fomodMod = new fomod(Path.Combine(Program.PackageDir, fifMod.BaseName + ".fomod"));
 				if (!fomodMod.HumanReadableVersion.Equals(fifMod.Version))

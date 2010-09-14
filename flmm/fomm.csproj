@@ -296,11 +296,11 @@
     <Compile Include="PackageManager\FomodBuilder\SourceFileTree.Designer.cs">
       <DependentUpon>SourceFileTree.cs</DependentUpon>
     </Compile>
-    <Compile Include="PackageManager\FomodInfo.cs">
+    <Compile Include="PackageManager\FomodInfoControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="PackageManager\FomodInfo.Designer.cs">
-      <DependentUpon>FomodInfo.cs</DependentUpon>
+    <Compile Include="PackageManager\FomodInfoControl.Designer.cs">
+      <DependentUpon>FomodInfoControl.cs</DependentUpon>
     </Compile>
     <Compile Include="PackageManager\FomodScript.cs" />
     <Compile Include="PackageManager\IFomodInfo.cs" />
@@ -311,9 +311,10 @@
     <Compile Include="PackageManager\InfoEditor.Designer.cs">
       <DependentUpon>InfoEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="PackageManager\InstallLogBase.cs" />
+    <Compile Include="PackageManager\ModInstallLog\FomodInfo.cs" />
+    <Compile Include="PackageManager\ModInstallLog\InstallLogBase.cs" />
     <Compile Include="InstallLogUpgraders\InstallLogUpgrader.cs" />
-    <Compile Include="PackageManager\InstallLogException.cs" />
+    <Compile Include="PackageManager\ModInstallLog\InstallLogException.cs" />
     <Compile Include="PackageManager\LoginForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -321,7 +322,7 @@
       <DependentUpon>LoginForm.cs</DependentUpon>
     </Compile>
     <Compile Include="PackageManager\ModInstaller.cs" />
-    <Compile Include="PackageManager\InstallLogMergeModule.cs" />
+    <Compile Include="PackageManager\ModInstallLog\InstallLogMergeModule.cs" />
     <Compile Include="PackageManager\ModInstallScript.cs" />
     <Compile Include="PackageManager\ModReactivator.cs" />
     <Compile Include="PackageManager\ModScript.cs" />
@@ -345,7 +346,7 @@
       <DependentUpon>TextEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="PackageManager\fomod.cs" />
-    <Compile Include="PackageManager\InstallLog.cs" />
+    <Compile Include="PackageManager\ModInstallLog\InstallLog.cs" />
     <Compile Include="PackageManager\Overwriteform.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -559,8 +560,8 @@
     <EmbeddedResource Include="PackageManager\FomodBuilder\SourceFileTree.resx">
       <DependentUpon>SourceFileTree.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PackageManager\FomodInfo.resx">
-      <DependentUpon>FomodInfo.cs</DependentUpon>
+    <EmbeddedResource Include="PackageManager\FomodInfoControl.resx">
+      <DependentUpon>FomodInfoControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PackageManager\InfoEditor.resx">
       <SubType>Designer</SubType>

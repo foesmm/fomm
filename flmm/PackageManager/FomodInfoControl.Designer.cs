@@ -1,6 +1,6 @@
 ﻿namespace Fomm.PackageManager
 {
-	partial class FomodInfo
+	partial class FomodInfoControl
 	{
 		/// <summary> 
 		/// Required designer variable.

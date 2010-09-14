@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using System.Windows.Forms;
+using Fomm.PackageManager.ModInstallLog;
 
 namespace Fomm.PackageManager.Upgrade
 {
@@ -103,7 +104,7 @@ namespace Fomm.PackageManager.Upgrade
 		/// <seealso cref="ModInstallScript.CheckAlreadyDone()"/>
 		protected override bool CheckAlreadyDone()
 		{
-			InstallLog.FomodInfo fifInfo = InstallLog.Current.GetModInfo(Fomod.BaseName);
+			FomodInfo fifInfo = InstallLog.Current.GetModInfo(Fomod.BaseName);
 			string strCurrentVersion =  (fifInfo == null) ? null : fifInfo.Version;
 			return Fomod.HumanReadableVersion.Equals(strCurrentVersion);
 		}

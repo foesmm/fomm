@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using fomm.Transactions;
 using System.Windows.Forms;
 using System.Text;
+using Fomm.PackageManager.ModInstallLog;
 
 namespace Fomm.PackageManager
 {

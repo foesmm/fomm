@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using fomm.Transactions;
 using Fomm.PackageManager.XmlConfiguredInstall;
+using Fomm.PackageManager.ModInstallLog;
 
 namespace Fomm.PackageManager
 {

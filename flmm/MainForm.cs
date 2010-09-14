@@ -10,6 +10,7 @@ using System.Text;
 using Fomm.CriticalRecords;
 using Fomm.AutoSorter;
 using System.Text.RegularExpressions;
+using Fomm.PackageManager.ModInstallLog;
 #if TRACE
 using System.Diagnostics;
 #endif

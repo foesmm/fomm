@@ -27,6 +27,7 @@ using SevenZip;
 using Microsoft.Win32;
 using Fomm.Util;
 using System.Collections.Generic;
+using Fomm.PackageManager.ModInstallLog;
 
 namespace Fomm
 {
@@ -373,6 +374,7 @@ namespace Fomm
 #if TRACE
 				Trace.Unindent();
 #endif
+
 			try
 			{
 #if TRACE
@@ -727,8 +729,8 @@ namespace Fomm
 #endif
 
 				//let's uninstall any fomods that have been deleted since we last ran
-				IList<InstallLog.FomodInfo> lstMods = InstallLog.Current.GetVersionedModList();
-				foreach (InstallLog.FomodInfo fifMod in lstMods)
+				IList<FomodInfo> lstMods = InstallLog.Current.GetVersionedModList();
+				foreach (FomodInfo fifMod in lstMods)
 				{
 					string strFomodPath = Path.Combine(Program.PackageDir, fifMod.BaseName + ".fomod");
 					if (!File.Exists(strFomodPath))

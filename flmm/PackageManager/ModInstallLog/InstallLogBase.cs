@@ -2,7 +2,7 @@
 using System.Text.RegularExpressions;
 using System.IO;
 
-namespace Fomm.PackageManager
+namespace Fomm.PackageManager.ModInstallLog
 {
 	abstract class InstallLogBase
 	{

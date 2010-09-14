@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using System.Collections.Generic;
 
-namespace Fomm.PackageManager
+namespace Fomm.PackageManager.ModInstallLog
 {
 	/// <summary>
 	/// A mod's install log tracks which files were installed as a

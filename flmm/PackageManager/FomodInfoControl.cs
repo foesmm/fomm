@@ -13,7 +13,7 @@ namespace Fomm.PackageManager
 	/// <summary>
 	/// Encapsulates the editing of FOMod info.
 	/// </summary>
-	public partial class FomodInfo : UserControl, IFomodInfo
+	public partial class FomodInfoControl : UserControl, IFomodInfo
 	{
 		private Screenshot m_shtScreenshot = null;
 
@@ -43,7 +43,7 @@ namespace Fomm.PackageManager
 		/// <summary>
 		/// The default constructor.
 		/// </summary>
-		public FomodInfo()
+		public FomodInfoControl()
 		{
 			InitializeComponent();
 

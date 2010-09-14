@@ -28,7 +28,7 @@ namespace Fomm.PackageManager {
 			this.butCancel = new System.Windows.Forms.Button();
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.butEditReadme = new System.Windows.Forms.Button();
-			this.finInfo = new Fomm.PackageManager.FomodInfo();
+			this.finInfo = new Fomm.PackageManager.FomodInfoControl();
 			this.panel1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -116,7 +116,7 @@ namespace Fomm.PackageManager {
 		private System.Windows.Forms.Button butSave;
 		private System.Windows.Forms.Button butCancel;
 		private System.Windows.Forms.Panel panel1;
-		private FomodInfo finInfo;
+		private FomodInfoControl finInfo;
 		private System.Windows.Forms.Button butEditReadme;
     }
 }

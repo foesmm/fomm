@@ -5,6 +5,7 @@ using System.IO;
 using System.Windows.Forms;
 using fomm.Transactions;
 using System.Text;
+using Fomm.PackageManager.ModInstallLog;
 
 namespace Fomm.FileManager
 {

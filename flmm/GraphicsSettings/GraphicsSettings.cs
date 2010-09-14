@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 using ChinhDo.Transactions;
 using Fomm.PackageManager;
 using fomm.Transactions;
+using Fomm.PackageManager.ModInstallLog;
 
 namespace Fomm.GraphicsSettings
 {

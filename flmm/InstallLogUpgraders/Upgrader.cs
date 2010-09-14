@@ -4,6 +4,7 @@ using System.Xml;
 using Fomm.PackageManager;
 using fomm.Transactions;
 using System.Windows.Forms;
+using Fomm.PackageManager.ModInstallLog;
 
 namespace Fomm.InstallLogUpgraders
 {

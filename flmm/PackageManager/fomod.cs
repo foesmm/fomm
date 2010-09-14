@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Collections.Generic;
 using Fomm.Util;
 using System.IO;
+using Fomm.PackageManager.ModInstallLog;
 
 /*
  * Installed data XML Structure

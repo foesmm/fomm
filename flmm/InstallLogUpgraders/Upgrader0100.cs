@@ -1,7 +1,8 @@
 ﻿using System;
-using Fomm.PackageManager;
 using System.Collections.Generic;
 using System.IO;
+using Fomm.PackageManager.ModInstallLog;
+using Fomm.PackageManager;
 
 namespace Fomm.InstallLogUpgraders
 {

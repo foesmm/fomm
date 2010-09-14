@@ -5,6 +5,7 @@ using Fomm.PackageManager;
 using System.IO;
 using ChinhDo.Transactions;
 using System.Drawing;
+using Fomm.PackageManager.ModInstallLog;
 
 namespace Fomm.FileManager
 {
