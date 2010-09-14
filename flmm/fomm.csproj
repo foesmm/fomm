@@ -743,6 +743,7 @@
     <Compile Include="Util\Set.cs" />
     <Compile Include="Util\SortedList.cs" />
     <Compile Include="Util\TextUtil.cs" />
+    <Compile Include="Util\ThreadSafeSevenZipExtractor.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fomm\7z-32bit.dll">

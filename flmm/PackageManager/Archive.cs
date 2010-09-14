@@ -23,8 +23,8 @@ namespace Fomm.PackageManager
 		private List<string> m_strFiles = null;
 		private Dictionary<string, ArchiveFileInfo> m_dicFileInfo = null;
 		private bool m_booCanEdit = false;
-		private SevenZipExtractor m_szeReadOnlyExtractor = null;
-		private SynchronizationContext m_scxReadOnlySyncContext = null;
+		private ThreadSafeSevenZipExtractor m_szeReadOnlyExtractor = null;
+		//private SynchronizationContext m_scxReadOnlySyncContext = null;
 
 		#region Properties
 
@@ -73,6 +73,36 @@ namespace Fomm.PackageManager
 		/// <returns>A <see cref="SevenZipExtractor"/> for the given path.</returns>
 		public static SevenZipExtractor GetExtractor(string p_strPath)
 		{
+			return (SevenZipExtractor)GetExtractor(p_strPath, false);
+		}
+
+		/// <summary>
+		/// Gets a <see cref="ThreadSafeSevenZipExtractor"/> for the given path.
+		/// </summary>
+		/// <remarks>
+		/// This builds a <see cref="ThreadSafeSevenZipExtractor"/> for the given path. The path can
+		/// be to a nested archive (an archive in another archive).
+		/// </remarks> 
+		/// <param name="p_strPath">The path to the archive for which to get a <see cref="ThreadSafeSevenZipExtractor"/>.</param>
+		/// <returns>A <see cref="ThreadSafeSevenZipExtractor"/> for the given path.</returns>
+		public static ThreadSafeSevenZipExtractor GetThreadSafeExtractor(string p_strPath)
+		{
+			return (ThreadSafeSevenZipExtractor)GetExtractor(p_strPath, true);
+		}
+
+		/// <summary>
+		/// Gets a <see cref="SevenZipExtractor"/> for the given path.
+		/// </summary>
+		/// <remarks>
+		/// This builds a <see cref="SevenZipExtractor"/> for the given path. The path can
+		/// be to a nested archive (an archive in another archive).
+		/// </remarks> 
+		/// <param name="p_strPath">The path to the archive for which to get a <see cref="SevenZipExtractor"/>.</param>
+		/// <param name="p_booThreadSafe">Indicates if the returned extractor need to be thread safe.</param>
+		/// <returns>A <see cref="SevenZipExtractor"/> for the given path if the extractor doesn't need to be
+		/// thread safe; a <see cref="ThreadSafeSevenZipExtractor"/> otherwise.</returns>
+		private static object GetExtractor(string p_strPath, bool p_booThreadSafe)
+		{
 			if (p_strPath.StartsWith(Archive.ARCHIVE_PREFIX))
 			{
 				Stack<KeyValuePair<string, string>> stkFiles = new Stack<KeyValuePair<string, string>>();
@@ -100,6 +130,8 @@ namespace Fomm.PackageManager
 					MemoryStream msmFile = new MemoryStream();
 					szeArchive.ExtractFile(kvpArchive.Value, msmFile);
 					msmFile.Position = 0;
+					if (p_booThreadSafe)
+						return new ThreadSafeSevenZipExtractor(msmFile);
 					return new SevenZipExtractor(msmFile);
 				}
 				finally
@@ -110,6 +142,8 @@ namespace Fomm.PackageManager
 			}
 			else
 			{
+				if (p_booThreadSafe)
+					return new ThreadSafeSevenZipExtractor(p_strPath);
 				return new SevenZipExtractor(p_strPath);
 			}
 		}
@@ -260,8 +294,7 @@ namespace Fomm.PackageManager
 		{
 			if (m_szeReadOnlyExtractor == null)
 			{
-				m_scxReadOnlySyncContext = SynchronizationContext.Current ?? new SynchronizationContext();
-				m_szeReadOnlyExtractor = GetExtractor(m_strPath);
+				m_szeReadOnlyExtractor = GetThreadSafeExtractor(m_strPath);
 			}
 		}
 
@@ -276,7 +309,6 @@ namespace Fomm.PackageManager
 			if (m_szeReadOnlyExtractor != null)
 			{
 				m_szeReadOnlyExtractor.Dispose();
-				m_scxReadOnlySyncContext = null;
 			}
 			m_szeReadOnlyExtractor = null;
 		}
@@ -422,38 +454,41 @@ namespace Fomm.PackageManager
 				throw new FileNotFoundException("The requested file does not exist in the archive.", p_strPath);
 
 			byte[] bteFile = null;
-			SevenZipExtractor szeExtractor = IsReadonly ? m_szeReadOnlyExtractor : GetExtractor(m_strPath);
-			try
+			ArchiveFileInfo afiFile = m_dicFileInfo[strPath];
+			bteFile = new byte[afiFile.Size];
+			using (MemoryStream msmFile = new MemoryStream(bteFile))
 			{
-				ArchiveFileInfo afiFile = m_dicFileInfo[strPath];
-				bteFile = new byte[afiFile.Size];
-				using (MemoryStream msmFile = new MemoryStream(bteFile))
+				//check to see if we are on the same thread as the extractor
+				// if not, then marshall the call to the extractor's thread.
+				// this needs to be done as the 7zip dll cannot handle calls from other
+				// threads.
+				/*if ((m_scxReadOnlySyncContext != null) && (m_scxReadOnlySyncContext != SynchronizationContext.Current))
 				{
-					//check to see if we are on the same thread as the extractor
-					// if not, then marshall the call to the extractor's thread.
-					// this needs to be done as the 7zip dll cannot handle calls from other
-					// threads.
-					if ((m_scxReadOnlySyncContext != null) && (m_scxReadOnlySyncContext != SynchronizationContext.Current))
-						m_scxReadOnlySyncContext.Send((s) => { szeExtractor.ExtractFile(afiFile.Index, msmFile); }, null);
-					else
+					//m_scxReadOnlySyncContext.Send((s) => { szeExtractor.ExtractFile(afiFile.Index, msmFile); }, null);
+					object[] state = new object[] { szeExtractor, afiFile, msmFile };
+					m_scxReadOnlySyncContext.Send(ha, state);
+				}
+				else*/
+				if (IsReadonly)
+				{
+					m_szeReadOnlyExtractor.ExtractFile(afiFile.Index, msmFile);
+				}
+				else
+				{
+					using (SevenZipExtractor szeExtractor = GetExtractor(m_strPath))
 						szeExtractor.ExtractFile(afiFile.Index, msmFile);
-					msmFile.Close();
 				}
-				if (bteFile.LongLength != (Int64)afiFile.Size)
-				{
-					//if I understand things correctly, this block should never execute
-					// as bteFile should always be exactly the right size to hold the extracted file
-					//however, just to be safe, I've included this code to make sure we only return
-					// valid bytes
-					byte[] bteReal = new byte[afiFile.Size];
-					Array.Copy(bteFile, bteReal, bteReal.LongLength);
-					bteFile = bteReal;
-				}
+				msmFile.Close();
 			}
-			finally
+			if (bteFile.LongLength != (Int64)afiFile.Size)
 			{
-				if (!IsReadonly)
-					szeExtractor.Dispose();
+				//if I understand things correctly, this block should never execute
+				// as bteFile should always be exactly the right size to hold the extracted file
+				//however, just to be safe, I've included this code to make sure we only return
+				// valid bytes
+				byte[] bteReal = new byte[afiFile.Size];
+				Array.Copy(bteFile, bteReal, bteReal.LongLength);
+				bteFile = bteReal;
 			}
 			return bteFile;
 		}
