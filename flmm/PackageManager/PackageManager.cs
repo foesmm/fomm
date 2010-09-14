@@ -958,5 +958,60 @@ namespace Fomm.PackageManager
 					AddFomod(fbfBuilder.FomodPath, true);
 			}
 		}
+
+		/// <summary>
+		/// Exports the list of mods being managed by FOMM.
+		/// </summary>
+		/// <remarks>
+		/// The list of mods is export to a file of the user's choosing. Optionally, only active mods
+		/// can be exported.
+		/// </remarks>
+		/// <param name="p_booActiveOnly">Whether only active mods should be exported.</param>
+		protected void ExportModList(bool p_booActiveOnly)
+		{
+			SaveFileDialog sfdModList = new SaveFileDialog();
+			sfdModList.Filter = "Text file (*.txt)|*.txt";
+			sfdModList.AddExtension = true;
+			sfdModList.RestoreDirectory = true;
+			if (sfdModList.ShowDialog() != DialogResult.OK)
+				return;
+
+			Int32 intMaxLength = 0;
+			for (int i = 0; i < lvModList.Items.Count; i++)
+				if ((lvModList.Items[i].Checked || !p_booActiveOnly) && (lvModList.Items[i].Text.Length > intMaxLength))
+					intMaxLength = lvModList.Items[i].Text.Length;
+		
+			StreamWriter swrModList = new StreamWriter(sfdModList.FileName);
+			try
+			{
+				for (int i = 0; i < lvModList.Items.Count; i++)
+					if (lvModList.Items[i].Checked || !p_booActiveOnly)
+						swrModList.WriteLine(String.Format("[{0}] {1,-" + intMaxLength + "}\t{2}", (lvModList.Items[i].Checked ? "X" : " "), lvModList.Items[i].Text, lvModList.Items[i].SubItems[1].Text));
+			}
+			finally
+			{
+				swrModList.Close();
+			}
+		}
+
+		/// <summary>
+		/// Handles the <see cref="Control.Click"/> event of the Export Mod List menu item.
+		/// </summary>
+		/// <param name="sender">The object that triggered the event.</param>
+		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+		private void exportModListToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			ExportModList(false);
+		}
+
+		/// <summary>
+		/// Handles the <see cref="Control.Click"/> event of the Export Active Mod List menu item.
+		/// </summary>
+		/// <param name="sender">The object that triggered the event.</param>
+		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+		private void exportActiveModListToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			ExportModList(true);
+		}
 	}
 }

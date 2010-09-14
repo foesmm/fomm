@@ -54,12 +54,17 @@ namespace Fomm.PackageManager {
 			this.createFOMODToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.editPFPToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.sbtAddFomod = new Fomm.Controls.SplitButton();
+			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+			this.modListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.exportModListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.exportActiveModListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
 			this.splitContainer1.SuspendLayout();
 			this.fomodContextMenu.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.cmsAddFomod.SuspendLayout();
+			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// splitContainer1
@@ -68,7 +73,7 @@ namespace Fomm.PackageManager {
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
-			this.splitContainer1.Location = new System.Drawing.Point(12, 12);
+			this.splitContainer1.Location = new System.Drawing.Point(12, 27);
 			this.splitContainer1.Name = "splitContainer1";
 			this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
 			// 
@@ -79,8 +84,8 @@ namespace Fomm.PackageManager {
 			// splitContainer1.Panel2
 			// 
 			this.splitContainer1.Panel2.Controls.Add(this.tbModInfo);
-			this.splitContainer1.Size = new System.Drawing.Size(475, 533);
-			this.splitContainer1.SplitterDistance = 361;
+			this.splitContainer1.Size = new System.Drawing.Size(475, 560);
+			this.splitContainer1.SplitterDistance = 388;
 			this.splitContainer1.TabIndex = 18;
 			// 
 			// lvModList
@@ -94,7 +99,7 @@ namespace Fomm.PackageManager {
 			this.lvModList.Location = new System.Drawing.Point(0, 0);
 			this.lvModList.MultiSelect = false;
 			this.lvModList.Name = "lvModList";
-			this.lvModList.Size = new System.Drawing.Size(475, 361);
+			this.lvModList.Size = new System.Drawing.Size(475, 388);
 			this.lvModList.TabIndex = 0;
 			this.lvModList.UseCompatibleStateImageBehavior = false;
 			this.lvModList.View = System.Windows.Forms.View.Details;
@@ -157,7 +162,7 @@ namespace Fomm.PackageManager {
 			// 
 			this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.pictureBox1.Location = new System.Drawing.Point(493, 12);
+			this.pictureBox1.Location = new System.Drawing.Point(493, 27);
 			this.pictureBox1.Name = "pictureBox1";
 			this.pictureBox1.Size = new System.Drawing.Size(120, 90);
 			this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -168,7 +173,7 @@ namespace Fomm.PackageManager {
 			// bEditScript
 			// 
 			this.bEditScript.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.bEditScript.Location = new System.Drawing.Point(493, 370);
+			this.bEditScript.Location = new System.Drawing.Point(493, 385);
 			this.bEditScript.Name = "bEditScript";
 			this.bEditScript.Size = new System.Drawing.Size(120, 23);
 			this.bEditScript.TabIndex = 9;
@@ -179,8 +184,8 @@ namespace Fomm.PackageManager {
 			// butViewReadme
 			// 
 			this.butViewReadme.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.butViewReadme.Location = new System.Drawing.Point(493, 341);
-			this.butViewReadme.Name = "bEditReadme";
+			this.butViewReadme.Location = new System.Drawing.Point(493, 356);
+			this.butViewReadme.Name = "butViewReadme";
 			this.butViewReadme.Size = new System.Drawing.Size(120, 23);
 			this.butViewReadme.TabIndex = 8;
 			this.butViewReadme.Text = "View readme";
@@ -190,7 +195,7 @@ namespace Fomm.PackageManager {
 			// bEditInfo
 			// 
 			this.bEditInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.bEditInfo.Location = new System.Drawing.Point(493, 399);
+			this.bEditInfo.Location = new System.Drawing.Point(493, 414);
 			this.bEditInfo.Name = "bEditInfo";
 			this.bEditInfo.Size = new System.Drawing.Size(120, 23);
 			this.bEditInfo.TabIndex = 10;
@@ -201,7 +206,7 @@ namespace Fomm.PackageManager {
 			// bActivate
 			// 
 			this.bActivate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.bActivate.Location = new System.Drawing.Point(493, 181);
+			this.bActivate.Location = new System.Drawing.Point(493, 196);
 			this.bActivate.Name = "bActivate";
 			this.bActivate.Size = new System.Drawing.Size(120, 23);
 			this.bActivate.TabIndex = 3;
@@ -218,7 +223,7 @@ namespace Fomm.PackageManager {
 			// 
 			this.cbGroups.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.cbGroups.AutoSize = true;
-			this.cbGroups.Location = new System.Drawing.Point(493, 472);
+			this.cbGroups.Location = new System.Drawing.Point(493, 487);
 			this.cbGroups.Name = "cbGroups";
 			this.cbGroups.Size = new System.Drawing.Size(97, 17);
 			this.cbGroups.TabIndex = 12;
@@ -229,7 +234,7 @@ namespace Fomm.PackageManager {
 			// bEditGroups
 			// 
 			this.bEditGroups.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.bEditGroups.Location = new System.Drawing.Point(493, 443);
+			this.bEditGroups.Location = new System.Drawing.Point(493, 458);
 			this.bEditGroups.Name = "bEditGroups";
 			this.bEditGroups.Size = new System.Drawing.Size(120, 23);
 			this.bEditGroups.TabIndex = 11;
@@ -241,7 +246,7 @@ namespace Fomm.PackageManager {
 			// 
 			this.bActivateGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.bActivateGroup.Enabled = false;
-			this.bActivateGroup.Location = new System.Drawing.Point(493, 239);
+			this.bActivateGroup.Location = new System.Drawing.Point(493, 254);
 			this.bActivateGroup.Name = "bActivateGroup";
 			this.bActivateGroup.Size = new System.Drawing.Size(120, 23);
 			this.bActivateGroup.TabIndex = 5;
@@ -253,7 +258,7 @@ namespace Fomm.PackageManager {
 			// 
 			this.bDeactivateGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.bDeactivateGroup.Enabled = false;
-			this.bDeactivateGroup.Location = new System.Drawing.Point(493, 268);
+			this.bDeactivateGroup.Location = new System.Drawing.Point(493, 283);
 			this.bDeactivateGroup.Name = "bDeactivateGroup";
 			this.bDeactivateGroup.Size = new System.Drawing.Size(120, 23);
 			this.bDeactivateGroup.TabIndex = 6;
@@ -264,7 +269,7 @@ namespace Fomm.PackageManager {
 			// bDeactivateAll
 			// 
 			this.bDeactivateAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.bDeactivateAll.Location = new System.Drawing.Point(493, 297);
+			this.bDeactivateAll.Location = new System.Drawing.Point(493, 312);
 			this.bDeactivateAll.Name = "bDeactivateAll";
 			this.bDeactivateAll.Size = new System.Drawing.Size(120, 23);
 			this.bDeactivateAll.TabIndex = 7;
@@ -280,7 +285,7 @@ namespace Fomm.PackageManager {
             "File name",
             "Mod name",
             "Author"});
-			this.cmbSortOrder.Location = new System.Drawing.Point(493, 495);
+			this.cmbSortOrder.Location = new System.Drawing.Point(493, 510);
 			this.cmbSortOrder.Name = "cmbSortOrder";
 			this.cmbSortOrder.Size = new System.Drawing.Size(120, 21);
 			this.cmbSortOrder.TabIndex = 13;
@@ -291,7 +296,7 @@ namespace Fomm.PackageManager {
 			// butDeactivate
 			// 
 			this.butDeactivate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.butDeactivate.Location = new System.Drawing.Point(493, 210);
+			this.butDeactivate.Location = new System.Drawing.Point(493, 225);
 			this.butDeactivate.Name = "butDeactivate";
 			this.butDeactivate.Size = new System.Drawing.Size(120, 23);
 			this.butDeactivate.TabIndex = 4;
@@ -302,7 +307,7 @@ namespace Fomm.PackageManager {
 			// butExtractFomod
 			// 
 			this.butExtractFomod.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.butExtractFomod.Location = new System.Drawing.Point(493, 137);
+			this.butExtractFomod.Location = new System.Drawing.Point(493, 152);
 			this.butExtractFomod.Name = "butExtractFomod";
 			this.butExtractFomod.Size = new System.Drawing.Size(120, 23);
 			this.butExtractFomod.TabIndex = 2;
@@ -361,24 +366,60 @@ namespace Fomm.PackageManager {
 			this.sbtAddFomod.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.sbtAddFomod.AutoSize = true;
 			this.sbtAddFomod.ContextMenuStrip = this.cmsAddFomod;
-			this.sbtAddFomod.Location = new System.Drawing.Point(493, 108);
+			this.sbtAddFomod.Location = new System.Drawing.Point(493, 123);
 			this.sbtAddFomod.Name = "sbtAddFomod";
 			this.sbtAddFomod.Size = new System.Drawing.Size(120, 23);
 			this.sbtAddFomod.TabIndex = 19;
 			this.sbtAddFomod.Text = "Add FOMod";
 			this.sbtAddFomod.UseVisualStyleBackColor = true;
 			// 
+			// menuStrip1
+			// 
+			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.modListToolStripMenuItem});
+			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+			this.menuStrip1.Name = "menuStrip1";
+			this.menuStrip1.Size = new System.Drawing.Size(625, 24);
+			this.menuStrip1.TabIndex = 20;
+			this.menuStrip1.Text = "menuStrip1";
+			// 
+			// modListToolStripMenuItem
+			// 
+			this.modListToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.exportModListToolStripMenuItem,
+            this.exportActiveModListToolStripMenuItem});
+			this.modListToolStripMenuItem.Name = "modListToolStripMenuItem";
+			this.modListToolStripMenuItem.Size = new System.Drawing.Size(65, 20);
+			this.modListToolStripMenuItem.Text = "Mod List";
+			// 
+			// exportModListToolStripMenuItem
+			// 
+			this.exportModListToolStripMenuItem.Name = "exportModListToolStripMenuItem";
+			this.exportModListToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
+			this.exportModListToolStripMenuItem.Text = "Export Mod List...";
+			this.exportModListToolStripMenuItem.Click += new System.EventHandler(this.exportModListToolStripMenuItem_Click);
+			// 
+			// exportActiveModListToolStripMenuItem
+			// 
+			this.exportActiveModListToolStripMenuItem.Name = "exportActiveModListToolStripMenuItem";
+			this.exportActiveModListToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
+			this.exportActiveModListToolStripMenuItem.Text = "Export Active Mod List...";
+			this.exportActiveModListToolStripMenuItem.Click += new System.EventHandler(this.exportActiveModListToolStripMenuItem_Click);
+			// 
 			// PackageManager
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(625, 557);
+			this.ClientSize = new System.Drawing.Size(625, 599);
+			this.Controls.Add(this.menuStrip1);
+			this.Controls.Add(this.splitContainer1);
+			this.Controls.Add(this.pictureBox1);
 			this.Controls.Add(this.sbtAddFomod);
 			this.Controls.Add(this.butDeactivate);
 			this.Controls.Add(this.butExtractFomod);
-			this.Controls.Add(this.splitContainer1);
+			this.Controls.Add(this.cbGroups);
 			this.Controls.Add(this.cmbSortOrder);
-			this.Controls.Add(this.pictureBox1);
+			this.Controls.Add(this.bEditGroups);
 			this.Controls.Add(this.bDeactivateAll);
 			this.Controls.Add(this.bDeactivateGroup);
 			this.Controls.Add(this.bActivateGroup);
@@ -386,8 +427,7 @@ namespace Fomm.PackageManager {
 			this.Controls.Add(this.bActivate);
 			this.Controls.Add(this.bEditInfo);
 			this.Controls.Add(this.bEditScript);
-			this.Controls.Add(this.bEditGroups);
-			this.Controls.Add(this.cbGroups);
+			this.MainMenuStrip = this.menuStrip1;
 			this.Name = "PackageManager";
 			this.Text = "Package Manager";
 			this.Load += new System.EventHandler(this.PackageManager_Load);
@@ -399,6 +439,8 @@ namespace Fomm.PackageManager {
 			this.fomodContextMenu.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			this.cmsAddFomod.ResumeLayout(false);
+			this.menuStrip1.ResumeLayout(false);
+			this.menuStrip1.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -436,5 +478,9 @@ namespace Fomm.PackageManager {
 		private System.Windows.Forms.ToolStripMenuItem createFOMODToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem addPFPToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem editPFPToolStripMenuItem;
+		private System.Windows.Forms.MenuStrip menuStrip1;
+		private System.Windows.Forms.ToolStripMenuItem modListToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem exportModListToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem exportActiveModListToolStripMenuItem;
     }
 }
