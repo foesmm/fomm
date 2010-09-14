@@ -204,9 +204,17 @@ namespace Fomm.FileManager
 				FileInfo fliFile = new FileInfo(Path.GetFullPath(Path.Combine("data", strFile)));
 				lviFile.SubItems.Add(fliFile.CreationTime.ToString("g"));
 				lviFile.SubItems.Add(fliFile.LastWriteTime.ToString("g"));
-				lviFile.SubItems.Add(((Int64)Math.Ceiling(fliFile.Length / 1024.0)) + " KB");
-				if (!imlFiles.Images.ContainsKey(fliFile.Extension))
-					imlFiles.Images.Add(fliFile.Extension, System.Drawing.Icon.ExtractAssociatedIcon(fliFile.FullName));
+				if (fliFile.Exists)
+				{
+					lviFile.SubItems.Add(((Int64)Math.Ceiling(fliFile.Length / 1024.0)) + " KB");
+					if (!imlFiles.Images.ContainsKey(fliFile.Extension))
+						imlFiles.Images.Add(fliFile.Extension, System.Drawing.Icon.ExtractAssociatedIcon(fliFile.FullName));
+				}
+				else
+				{
+					ListViewItem.ListViewSubItem lsiSubItem = lviFile.SubItems.Add("0 KB");
+					lviFile.Font = new Font(lviFile.Font, FontStyle.Strikeout);
+				}
 				lviFile.ImageKey = fliFile.Extension;
 				lvwFiles.Items.Add(lviFile);
 			}
