@@ -17,6 +17,7 @@ namespace Fomm.PackageManager
 		/// The path prefix use to identify a file as being contained in an archive.
 		/// </summary>
 		public const string ARCHIVE_PREFIX = "arch:";
+		protected static List<string> m_lstNonArchiveExtensions = new List<string> { ".esp", ".esm", ".txt", ".htm", ".html", ".nif", ".dds", ".png", ".rtf", ".jpg", ".bmp", ".cs", ".xml", ".xsd", ".ico" };
 
 		private string m_strPath = null;
 		private SevenZipCompressor m_szcCompressor = null;
@@ -159,6 +160,8 @@ namespace Fomm.PackageManager
 			if (!p_strPath.StartsWith(ARCHIVE_PREFIX) && !File.Exists(p_strPath))
 				return false;
 			bool booIsAchive = true;
+			if (m_lstNonArchiveExtensions.Contains(Path.GetExtension(p_strPath)))
+				return false;
 			try
 			{
 				using (SevenZipExtractor szeExtractor = GetExtractor(p_strPath))
