@@ -402,7 +402,97 @@ namespace WebsiteAPIs
 			Regex rgxName = new Regex("^[a-zA-Z0-9 _-]+$");
 			return rgxName.IsMatch(p_strName);
 		}
+		
+		/// <summary>
+		/// Edits a file's info.
+		/// </summary>
+		/// <param name="p_intModKey">The key of the mod to manage.</param>
+		/// <param name="p_strOldFileTitle">The old title of the file.</param>
+		/// <param name="p_strNewFileTitle">The new title of the file.</param>
+		/// <param name="p_fctCategory">The category to which to upload the file.</param>
+		/// <param name="p_strDescription">The file description.</param>
+		/// <returns><lang cref="true"/> if the file info was edited; <lang cref="false"/> otherwise.</returns>
+		/// <exception cref="FileNotFoundException">If the specified file does not exist on hte Nexus.</exception>
+		public bool EditFile(Int32 p_intModKey, string p_strOldFileTitle, string p_strNewFileTitle, FileCategory p_fctCategory, string p_strDescription)
+		{
+			AssertLoggedIn();
+			if (!isFileTitleValid(p_strNewFileTitle))
+				throw new ArgumentException("The file title can only contain letters, numbers, spaces, hypens and underscores.", "p_strNewFileTitle");
 
+			string strFileKey = GetFileKey(p_intModKey, p_strOldFileTitle);
+			if (strFileKey == null)
+				throw new FileNotFoundException("The file does not exist.");
+
+			NameValueCollection nvc = new NameValueCollection();
+			nvc.Add("filename", p_strNewFileTitle);
+			nvc.Add("category", ((Int32)p_fctCategory).ToString());
+			nvc.Add("desc", p_strDescription);
+
+			string strBoundary = Guid.NewGuid().ToString().Replace("-", "");
+			HttpWebRequest hwrFileEditPage = (HttpWebRequest)WebRequest.Create(String.Format("http://{0}/members/do_editfilename.php?id={1}", m_strSite, strFileKey));
+			hwrFileEditPage.ContentType = "multipart/form-data; boundary=" + strBoundary;
+			hwrFileEditPage.Method = "POST";
+			hwrFileEditPage.KeepAlive = true;
+			hwrFileEditPage.Credentials = System.Net.CredentialCache.DefaultCredentials;
+			hwrFileEditPage.CookieContainer = m_ckcCookies;
+			hwrFileEditPage.Timeout = System.Threading.Timeout.Infinite;
+			hwrFileEditPage.ReadWriteTimeout = System.Threading.Timeout.Infinite;
+
+			byte[] bteBoundary = System.Text.Encoding.ASCII.GetBytes("\r\n--" + strBoundary + "\r\n");
+			string strFormDataTemplate = "\r\n--" + strBoundary + "\r\nContent-Disposition: form-data; name=\"{0}\"\r\n\r\n{1}";
+			using (Stream stmRequestContent = new MemoryStream())
+			{
+				foreach (string strFormField in nvc.Keys)
+				{
+					string strFormItem = String.Format(strFormDataTemplate, strFormField, nvc[strFormField]);
+					byte[] bteFormItem = System.Text.Encoding.UTF8.GetBytes(strFormItem);
+					stmRequestContent.Write(bteFormItem, 0, bteFormItem.Length);
+				}
+
+				stmRequestContent.Write(bteBoundary, 0, bteBoundary.Length);
+				hwrFileEditPage.ContentLength = stmRequestContent.Length;
+
+				try
+				{
+					stmRequestContent.Position = 0;
+					Int32 intTotalBytesRead = 0;
+					Int64 intRequestContentLength = stmRequestContent.Length;
+					using (Stream stmRequest = hwrFileEditPage.GetRequestStream())
+					{
+						byte[] bteBuffer = new byte[1024];
+						Int32 intBytesRead = 0;
+						while ((intBytesRead = stmRequestContent.Read(bteBuffer, 0, bteBuffer.Length)) != 0)
+						{
+							stmRequest.Write(bteBuffer, 0, intBytesRead);
+							intTotalBytesRead += intBytesRead;
+							OnUploadProgress((Int32)(intTotalBytesRead * 100 / intRequestContentLength));
+						}
+						stmRequest.Close();
+					}
+				}
+				catch (Exception e)
+				{
+					throw e;
+				}
+				stmRequestContent.Close();
+			}
+
+			string strReponse = null;
+			using (WebResponse wrpUpload = hwrFileEditPage.GetResponse())
+			{
+				using (Stream stmResponse = wrpUpload.GetResponseStream())
+				{
+					using (StreamReader srdResponse = new StreamReader(stmResponse))
+					{
+						strReponse = srdResponse.ReadToEnd();
+						srdResponse.Close();
+					}
+					stmResponse.Close();
+				}
+				wrpUpload.Close();
+			}
+			return strReponse.Contains("File details changed");
+		}
 
 		/// <summary>
 		/// Uploads a file to the specified mod.
@@ -518,6 +608,28 @@ namespace WebsiteAPIs
 		}
 
 		/// <summary>
+		/// Parse the file version out of the file's info page.
+		/// </summary>
+		/// <param name="p_strVersionPage">The info page of the file whose version is being parsed.</param>
+		/// <returns>The version string from the given file info page.</returns>
+		protected string ParseFileVersion(string p_strVersionPage)
+		{
+			string strWebVersion = m_rgxVersion.Match(p_strVersionPage).Groups[1].Value.Trim().Trim(new char[] { '.' });
+			string strLoweredWebVersion = strWebVersion.ToLowerInvariant();
+			if (strWebVersion.StartsWith("ver. ", StringComparison.InvariantCultureIgnoreCase))
+				strWebVersion = strWebVersion.Substring(5);
+			else if (strWebVersion.StartsWith("ver.", StringComparison.InvariantCultureIgnoreCase))
+				strWebVersion = strWebVersion.Substring(4);
+			else if (strWebVersion.StartsWith("v. ", StringComparison.InvariantCultureIgnoreCase))
+				strWebVersion = strWebVersion.Substring(3);
+			else if (strWebVersion.StartsWith("v.", StringComparison.InvariantCultureIgnoreCase))
+				strWebVersion = strWebVersion.Substring(2);
+			else if (strWebVersion.StartsWith("v", StringComparison.InvariantCultureIgnoreCase))
+				strWebVersion = strWebVersion.Substring(1);
+			return strWebVersion;
+		}
+
+		/// <summary>
 		/// Gets the current verison of the specified file.
 		/// </summary>
 		/// <param name="p_intFileId">The id of the file whose version is to be retrieved.</param>
@@ -547,17 +659,7 @@ namespace WebsiteAPIs
 				wrpFilePage.Close();
 			}
 
-			string strWebVersion = m_rgxVersion.Match(strFilePage).Groups[1].Value.Trim();
-			if (strWebVersion.StartsWith("ver. "))
-				strWebVersion = strWebVersion.Substring(5);
-			else if (strWebVersion.StartsWith("ver."))
-				strWebVersion = strWebVersion.Substring(4);
-			else if (strWebVersion.StartsWith("v. "))
-				strWebVersion = strWebVersion.Substring(3);
-			else if (strWebVersion.StartsWith("v."))
-				strWebVersion = strWebVersion.Substring(2);
-			else if (strWebVersion.StartsWith("v"))
-				strWebVersion = strWebVersion.Substring(1);
+			string strWebVersion = ParseFileVersion(strFilePage);
 
 			return strWebVersion;
 		}
@@ -602,8 +704,8 @@ namespace WebsiteAPIs
 			HttpWebRequest hwrFilePage = (HttpWebRequest)objState[0];
 			AsyncOperation aopOperation = (AsyncOperation)objState[1];
 
-			string strFilePage = null;
 			string strWebVersion = null;
+			string strFilePage = null;
 			try
 			{
 				using (WebResponse wrpFilePage = hwrFilePage.EndGetResponse(p_asrResult))
@@ -641,20 +743,7 @@ namespace WebsiteAPIs
 			}
 
 			if (!"Error".Equals(strWebVersion))
-			{
-				strWebVersion = m_rgxVersion.Match(strFilePage).Groups[1].Value.Trim().Trim(new char[] { '.' });
-				string strLoweredWebVersion = strWebVersion.ToLowerInvariant();
-				if (strLoweredWebVersion.StartsWith("ver. "))
-					strWebVersion = strWebVersion.Substring(5);
-				else if (strLoweredWebVersion.StartsWith("ver."))
-					strWebVersion = strWebVersion.Substring(4);
-				else if (strLoweredWebVersion.StartsWith("v. "))
-					strWebVersion = strWebVersion.Substring(3);
-				else if (strLoweredWebVersion.StartsWith("v."))
-					strWebVersion = strWebVersion.Substring(2);
-				else if (strLoweredWebVersion.StartsWith("v"))
-					strWebVersion = strWebVersion.Substring(1);
-			}
+				strWebVersion = ParseFileVersion(strFilePage);
 
 			aopOperation.PostOperationCompleted((p_WebVersion) => { CallGetFileVersionAsyncCallback((KeyValuePair<Action<object, string>, object>)aopOperation.UserSuppliedState, (string)p_WebVersion); }, strWebVersion);
 		}
