@@ -50,6 +50,7 @@
 			// 
 			// butBack
 			// 
+			this.butBack.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.butBack.Location = new System.Drawing.Point(342, 4);
 			this.butBack.Name = "butBack";
 			this.butBack.Size = new System.Drawing.Size(75, 23);
@@ -60,6 +61,7 @@
 			// 
 			// butNext
 			// 
+			this.butNext.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.butNext.Location = new System.Drawing.Point(419, 4);
 			this.butNext.Name = "butNext";
 			this.butNext.Size = new System.Drawing.Size(75, 23);
