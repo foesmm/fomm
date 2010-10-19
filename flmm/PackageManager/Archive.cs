@@ -5,6 +5,7 @@ using System.IO;
 using Fomm.Util;
 using System.Text;
 using System.Threading;
+using System.Text.RegularExpressions;
 
 namespace Fomm.PackageManager
 {
@@ -13,6 +14,11 @@ namespace Fomm.PackageManager
 	/// </summary>
 	public class Archive : IDisposable
 	{
+		/// <summary>
+		/// Raised when the files in the archive have changed.
+		/// </summary>
+		public event EventHandler FilesChanged = delegate { };
+
 		/// <summary>
 		/// The path prefix use to identify a file as being contained in an archive.
 		/// </summary>
@@ -334,6 +340,7 @@ namespace Fomm.PackageManager
 						m_strFiles.Add(afiFile.FileName.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar));
 					}
 			}
+			FilesChanged(this, new EventArgs());
 		}
 
 		/// <summary>
@@ -381,7 +388,7 @@ namespace Fomm.PackageManager
 			if (String.IsNullOrEmpty(p_strDirectory))
 				strPrefix = "";
 			strPrefix = strPrefix.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
-			strPrefix = strPrefix.Trim(new char[] { Path.DirectorySeparatorChar });
+			strPrefix = strPrefix.Trim(Path.DirectorySeparatorChar);
 			if (strPrefix.Length > 0)
 				strPrefix += Path.DirectorySeparatorChar;
 			Set<string> lstFolders = new Set<string>();
@@ -415,7 +422,7 @@ namespace Fomm.PackageManager
 			{
 				string strPrefix = p_strDirectory;
 				strPrefix = strPrefix.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
-				strPrefix = strPrefix.Trim(new char[] { Path.DirectorySeparatorChar });
+				strPrefix = strPrefix.Trim(Path.DirectorySeparatorChar);
 				if (strPrefix.Length > 0)
 					strPrefix += Path.DirectorySeparatorChar;
 				Int32 intStopIndex = 0;
@@ -430,6 +437,26 @@ namespace Fomm.PackageManager
 					}
 				}
 			}
+			return lstFiles.ToArray();
+		}
+
+		/// <summary>
+		/// Gets a list of files that are in the specified directory and match the given pattern in this archive.
+		/// </summary>
+		/// <param name="p_strDirectory">The directory in the archive whose descendents are to be returned.</param>
+		/// <param name="p_strPattern">The filename pattern of the files to be returned.</param>
+		/// <returns>A list of files that are in the specified directory and match the given pattern in this archive.</returns>
+		public string[] GetFiles(string p_strDirectory, string p_strPattern)
+		{
+			Set<string> lstFiles = new Set<string>();
+			string[] strFiles = GetFiles(p_strDirectory);
+
+			string strPattern = p_strPattern.Replace(".", "\\.").Replace("*",".*");
+			Regex rgxPattern = new Regex(strPattern);
+
+			foreach (string strFile in strFiles)
+				if (rgxPattern.IsMatch(strFile))
+					lstFiles.Add(strFile);
 			return lstFiles.ToArray();
 		}
 
