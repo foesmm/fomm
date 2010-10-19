@@ -283,7 +283,7 @@ namespace Fomm.InstallLogUpgraders
 				Crc32 crcDiskFile = new Crc32();
 				Crc32 crcFomodFile = new Crc32();
 				crcDiskFile.Update(File.ReadAllBytes(strFile));
-				if (!p_fomodMod.FileExists(strDataRelativePath))
+				if (!p_fomodMod.ContainsFile(strDataRelativePath))
 				{
 					//we don't know if this mod owns the file, so let's assume
 					// it doesn't
