@@ -116,6 +116,15 @@ namespace Fomm
 
 		private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
 		{
+			for (Int32 i = Application.OpenForms.Count - 1; i >= 0; i--)
+			{
+				Form frmForm = Application.OpenForms[i];
+				if (frmForm.GetType().Namespace.StartsWith("ICSharp", StringComparison.InvariantCultureIgnoreCase))
+				{
+					frmForm.Close();
+					frmForm.Dispose();
+				}
+			}
 			if (Application.OpenForms.Count > 1)
 			{
 				MessageBox.Show("Please close all utility windows before closing fomm");
