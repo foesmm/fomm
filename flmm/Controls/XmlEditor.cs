@@ -417,5 +417,22 @@ namespace Fomm.Controls
 		}
 
 		#endregion
+
+		/// <summary>
+		/// Disposes of resources used by the editor.
+		/// </summary>
+		/// <remarks>
+		/// This makes sure that the code completion windows is closed.
+		/// </remarks>
+		/// <param name="disposing">Whether or not the object is being disposed.</param>
+		protected override void Dispose(bool disposing)
+		{
+			base.Dispose(disposing);
+			if (m_ccwCodeCompletionWindow != null)
+			{
+				m_ccwCodeCompletionWindow.Close();
+				m_ccwCodeCompletionWindow.Dispose();
+			}
+		}
 	}
 }
