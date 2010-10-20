@@ -215,6 +215,19 @@ namespace Fomm.PackageManager.FomodBuilder
 			szcCompressor.CompressionLevel = (CompressionLevel)Settings.GetInt("fomodCompressionLevel", (Int32)CompressionLevel.Ultra);
 			szcCompressor.ArchiveFormat = (OutArchiveFormat)Settings.GetInt("fomodCompressionFormat", (Int32)OutArchiveFormat.Zip);
 			szcCompressor.CompressionMethod = CompressionMethod.Default;
+			switch (szcCompressor.ArchiveFormat)
+			{
+				case OutArchiveFormat.Zip:
+				case OutArchiveFormat.GZip:
+				case OutArchiveFormat.BZip2:
+					szcCompressor.CustomParameters.Add("mt", "on");
+					break;
+				case OutArchiveFormat.SevenZip:
+				case OutArchiveFormat.XZ:
+					szcCompressor.CustomParameters.Add("mt", "on");
+					szcCompressor.CustomParameters.Add("s", "off");
+					break;
+			}
 			szcCompressor.CompressionMode = CompressionMode.Create;
 			szcCompressor.FileCompressionStarted += new EventHandler<FileNameEventArgs>(FileCompressionStarted);
 			szcCompressor.FileCompressionFinished += new EventHandler(FileCompressionFinished);
