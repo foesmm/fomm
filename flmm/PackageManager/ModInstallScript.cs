@@ -6,6 +6,7 @@ using fomm.Transactions;
 using System.Windows.Forms;
 using System.Text;
 using Fomm.PackageManager.ModInstallLog;
+using System.ComponentModel;
 
 namespace Fomm.PackageManager
 {
@@ -23,6 +24,7 @@ namespace Fomm.PackageManager
 		private bool m_booDontOverwriteAllIni = false;
 		private bool m_booOverwriteAllIni = false;
 		private InstallLogMergeModule m_ilmModInstallLog = null;
+		private BackgroundWorkerProgressDialog m_bwdProgress = null;
 
 		#region Properties
 
@@ -174,7 +176,7 @@ namespace Fomm.PackageManager
 		/// </summary>
 		protected bool Run()
 		{
-			return Run(false);
+			return Run(false, true);
 		}
 
 		/// <summary>
@@ -188,7 +190,7 @@ namespace Fomm.PackageManager
 		/// <param name="p_booSuppressSuccessMessage">Indicates whether to
 		/// supress the success message. This is useful for batch installs.</param>
 		/// <seealso cref="DoScript()"/>
-		protected bool Run(bool p_booSuppressSuccessMessage)
+		protected bool Run(bool p_booSuppressSuccessMessage, bool p_booSetFOModReadOnly)
 		{
 			bool booSuccess = false;
 			if (CheckAlreadyDone())
@@ -212,11 +214,40 @@ namespace Fomm.PackageManager
 						using (TransactionScope tsTransaction = new TransactionScope())
 						{
 							m_tfmFileManager = new TxFileManager();
-							if (Fomod != null)
-								Fomod.BeginReadOnlyTransaction();
-							booSuccess = DoScript();
-							if (booSuccess)
-								tsTransaction.Complete();
+							bool booCancelled = false;
+							if (p_booSetFOModReadOnly && (Fomod != null))
+							{
+								if (Fomod.ReadOnlyInitStepCount > 1)
+								{
+									using (m_bwdProgress = new BackgroundWorkerProgressDialog(BeginFOModReadOnlyTransaction))
+									{
+										m_bwdProgress.OverallMessage = "Preparing FOMod...";
+										m_bwdProgress.ShowItemProgress = false;
+										m_bwdProgress.OverallProgressMaximum = Fomod.ReadOnlyInitStepCount;
+										m_bwdProgress.OverallProgressStep = 1;
+										try
+										{
+											Fomod.ReadOnlyInitStepStarted += new CancelEventHandler(Fomod_ReadOnlyInitStepStarted);
+											Fomod.ReadOnlyInitStepFinished += new CancelEventHandler(Fomod_ReadOnlyInitStepFinished);
+											if (m_bwdProgress.ShowDialog() == DialogResult.Cancel)
+												booCancelled = true;
+										}
+										finally
+										{
+											Fomod.ReadOnlyInitStepStarted -= new CancelEventHandler(Fomod_ReadOnlyInitStepStarted);
+											Fomod.ReadOnlyInitStepFinished -= new CancelEventHandler(Fomod_ReadOnlyInitStepFinished);
+										}
+									}
+								}
+								else
+									Fomod.BeginReadOnlyTransaction();
+							}
+							if (!booCancelled)
+							{
+								booSuccess = DoScript();
+								if (booSuccess)
+									tsTransaction.Complete();
+							}
 						}
 					}
 				}
@@ -264,6 +295,43 @@ namespace Fomm.PackageManager
 			else if (!booSuccess && !String.IsNullOrEmpty(FailMessage))
 				MessageBox(FailMessage, "Failure");
 			return booSuccess;
+		}
+
+		/// <summary>
+		/// Handles the <see cref="fomod.ReadOnlyInitStepFinished"/> event of the FOMod.
+		/// </summary>
+		/// <remarks>
+		/// This steps the progress in the progress dialog.
+		/// </remarks>
+		/// <param name="sender">The object that raised the event.</param>
+		/// <param name="e">A <see cref="CancelEventArgs"/> describing the event arguments.</param>
+		private void Fomod_ReadOnlyInitStepFinished(object sender, CancelEventArgs e)
+		{
+			m_bwdProgress.StepOverallProgress();
+		}
+
+		/// <summary>
+		/// Handles the <see cref="fomod.ReadOnlyInitStepStarted"/> event of the FOMod.
+		/// </summary>
+		/// <remarks>
+		/// This cancels the operation if the user has clicked cancel.
+		/// </remarks>
+		/// <param name="sender">The object that raised the event.</param>
+		/// <param name="e">A <see cref="CancelEventArgs"/> describing the event arguments.</param>
+		private void Fomod_ReadOnlyInitStepStarted(object sender, CancelEventArgs e)
+		{
+			e.Cancel = m_bwdProgress.Cancelled();
+		}
+
+		/// <summary>
+		/// Puts the FOMod into read-only mode.
+		/// </summary>
+		/// <remarks>
+		/// This method is called by a <see cref="BackgroundWorkerProgressDialog"/>.
+		/// </remarks>
+		private void BeginFOModReadOnlyTransaction()
+		{
+			Fomod.BeginReadOnlyTransaction();
 		}
 
 		#endregion

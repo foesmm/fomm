@@ -6,6 +6,7 @@ using Fomm.Util;
 using System.Text;
 using System.Threading;
 using System.Text.RegularExpressions;
+using System.ComponentModel;
 
 namespace Fomm.PackageManager
 {
@@ -30,8 +31,9 @@ namespace Fomm.PackageManager
 		private List<string> m_strFiles = null;
 		private Dictionary<string, ArchiveFileInfo> m_dicFileInfo = null;
 		private bool m_booCanEdit = false;
+		private bool m_booIsSolid = false;
 		private ThreadSafeSevenZipExtractor m_szeReadOnlyExtractor = null;
-		//private SynchronizationContext m_scxReadOnlySyncContext = null;
+		private string m_strReadOnlyTempDirectory = null;
 
 		#region Properties
 
@@ -62,6 +64,18 @@ namespace Fomm.PackageManager
 					lstVolumes.CopyTo(strVolumes, 0);
 					return strVolumes;
 				}
+			}
+		}
+
+		/// <summary>
+		/// Gets whether the archive is solid.
+		/// </summary>
+		/// <value>Whether the archive is solid.</value>
+		public bool IsSolid
+		{
+			get
+			{
+				return m_booIsSolid;
 			}
 		}
 
@@ -277,6 +291,16 @@ namespace Fomm.PackageManager
 		#region Read Transactions
 
 		/// <summary>
+		/// Raised when a read-only initialization step has started.
+		/// </summary>
+		public event CancelEventHandler ReadOnlyInitStepStarted = delegate { };
+
+		/// <summary>
+		/// Raised when a read-only initialization step has finished.
+		/// </summary>
+		public event CancelEventHandler ReadOnlyInitStepFinished = delegate { };
+
+		/// <summary>
 		/// Gets whether the archive is in read-only mode.
 		/// </summary>
 		/// <remarks>
@@ -289,7 +313,24 @@ namespace Fomm.PackageManager
 		{
 			get
 			{
-				return m_szeReadOnlyExtractor != null;
+				return ((object)m_strReadOnlyTempDirectory ?? m_szeReadOnlyExtractor) != null;
+			}
+		}
+
+		/// <summary>
+		/// Gets the number of steps that need to be performed to put the archive into read-only mode.
+		/// </summary>
+		/// <value>The number of steps that need to be performed to put the archive into read-only mode.</value>
+		public Int32 ReadOnlyInitStepCount
+		{
+			get
+			{
+				using (SevenZipExtractor szeExtractor = GetExtractor(m_strPath))
+				{
+					if (szeExtractor.IsSolid)
+						return (Int32)szeExtractor.FilesCount;
+				}
+				return 1;
 			}
 		}
 
@@ -304,8 +345,54 @@ namespace Fomm.PackageManager
 			if (m_szeReadOnlyExtractor == null)
 			{
 				m_szeReadOnlyExtractor = GetThreadSafeExtractor(m_strPath);
+				if (m_szeReadOnlyExtractor.IsSolid)
+				{
+					m_szeReadOnlyExtractor.Dispose();
+					m_szeReadOnlyExtractor = null;
+					m_strReadOnlyTempDirectory = Program.CreateTempDirectory();
+					using (SevenZipExtractor szeExtractor = Archive.GetExtractor(m_strPath))
+					{
+						szeExtractor.FileExtractionFinished += new EventHandler<FileInfoEventArgs>(FileExtractionFinished);
+						szeExtractor.FileExtractionStarted += new EventHandler<FileInfoEventArgs>(FileExtractionStarted);
+						szeExtractor.ExtractArchive(m_strReadOnlyTempDirectory);
+					}
+				}
 			}
 		}
+
+		#region Callbacks
+
+		/// <summary>
+		/// Called when a file has been extracted from a source archive.
+		/// </summary>
+		/// <remarks>
+		/// This notifies listeners that a read-only initialization step has finished.
+		/// </remarks>
+		/// <param name="sender">The object that raised the event.</param>
+		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+		private void FileExtractionFinished(object sender, FileInfoEventArgs e)
+		{
+			CancelEventArgs ceaArgs = new CancelEventArgs(false);
+			ReadOnlyInitStepFinished(this, ceaArgs);
+			e.Cancel = ceaArgs.Cancel;
+		}
+
+		/// <summary>
+		/// Called when a file is about to be extracted from a source archive.
+		/// </summary>
+		/// <remarks>
+		/// This notifies listeners that a read-only initialization step has started.
+		/// </remarks>
+		/// <param name="sender">The object that raised the event.</param>
+		/// <param name="e">A <see cref="FileNameEventArgs"/> describing the event arguments.</param>
+		private void FileExtractionStarted(object sender, FileInfoEventArgs e)
+		{
+			CancelEventArgs ceaArgs = new CancelEventArgs(false);
+			ReadOnlyInitStepStarted(this, ceaArgs);
+			e.Cancel = ceaArgs.Cancel;
+		}
+
+		#endregion
 
 		/// <summary>
 		/// Ends a read-only transaction.
@@ -316,10 +403,11 @@ namespace Fomm.PackageManager
 		public void EndReadOnlyTransaction()
 		{
 			if (m_szeReadOnlyExtractor != null)
-			{
 				m_szeReadOnlyExtractor.Dispose();
-			}
 			m_szeReadOnlyExtractor = null;
+			if (!String.IsNullOrEmpty(m_strReadOnlyTempDirectory))
+				FileUtil.ForceDelete(m_strReadOnlyTempDirectory);
+			m_strReadOnlyTempDirectory = null;
 		}
 
 		#endregion
@@ -333,6 +421,7 @@ namespace Fomm.PackageManager
 			m_strFiles.Clear();
 			using (SevenZipExtractor szeExtractor = GetExtractor(m_strPath))
 			{
+				m_booIsSolid = szeExtractor.IsSolid;
 				foreach (ArchiveFileInfo afiFile in szeExtractor.ArchiveFileData)
 					if (!afiFile.IsDirectory)
 					{
@@ -492,16 +581,12 @@ namespace Fomm.PackageManager
 				// if not, then marshall the call to the extractor's thread.
 				// this needs to be done as the 7zip dll cannot handle calls from other
 				// threads.
-				/*if ((m_scxReadOnlySyncContext != null) && (m_scxReadOnlySyncContext != SynchronizationContext.Current))
-				{
-					//m_scxReadOnlySyncContext.Send((s) => { szeExtractor.ExtractFile(afiFile.Index, msmFile); }, null);
-					object[] state = new object[] { szeExtractor, afiFile, msmFile };
-					m_scxReadOnlySyncContext.Send(ha, state);
-				}
-				else*/
 				if (IsReadonly)
 				{
-					m_szeReadOnlyExtractor.ExtractFile(afiFile.Index, msmFile);
+					if (m_szeReadOnlyExtractor == null)
+						bteFile = File.ReadAllBytes(Path.Combine(m_strReadOnlyTempDirectory, strPath));
+					else
+						m_szeReadOnlyExtractor.ExtractFile(afiFile.Index, msmFile);
 				}
 				else
 				{
@@ -603,8 +688,7 @@ namespace Fomm.PackageManager
 		/// </summary>
 		public void Dispose()
 		{
-			if (m_szeReadOnlyExtractor != null)
-				m_szeReadOnlyExtractor.Dispose();
+			EndReadOnlyTransaction();
 		}
 
 		#endregion

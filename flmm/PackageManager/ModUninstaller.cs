@@ -100,7 +100,7 @@ namespace Fomm.PackageManager
 		/// <seealso cref="Uninstall()"/>
 		public void Uninstall(bool p_booSuppressSuccessMessage)
 		{
-			Run(p_booSuppressSuccessMessage);
+			Run(p_booSuppressSuccessMessage, false);
 		}
 
 		/// <summary>

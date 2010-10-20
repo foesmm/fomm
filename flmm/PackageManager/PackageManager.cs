@@ -10,6 +10,7 @@ using System.Drawing;
 using System.Diagnostics;
 using Fomm.PackageManager.FomodBuilder;
 using Fomm.PackageManager.Controls;
+using Fomm.Util;
 
 namespace Fomm.PackageManager
 {
@@ -29,6 +30,8 @@ namespace Fomm.PackageManager
 		{
 			this.mf = mf;
 			InitializeComponent();
+
+			CheckFOModCache();
 
 			this.Icon = Fomm.Properties.Resources.fomm02;
 			cmbSortOrder.ContextMenu = new ContextMenu();
@@ -96,6 +99,20 @@ namespace Fomm.PackageManager
 			}
 
 			RebuildListView();
+		}
+
+		/// <summary>
+		/// This removes any old cache files.
+		/// </summary>
+		protected void CheckFOModCache()
+		{
+			string[] strCaches = Directory.GetFiles(Program.modInfoCacheDir);
+			foreach (string strCache in strCaches)
+			{
+				string strFOModPath = Path.Combine(Program.PackageDir, Path.GetFileNameWithoutExtension(strCache) + ".fomod");
+				if (!File.Exists(strFOModPath) || (File.GetLastWriteTimeUtc(strCache) < File.GetLastWriteTimeUtc(strFOModPath)))
+					FileUtil.ForceDelete(strCache);
+			}
 		}
 
 		/// <summary>

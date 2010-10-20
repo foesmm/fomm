@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using Fomm.Util;
 using System.IO;
 using Fomm.PackageManager.ModInstallLog;
+using SevenZip;
+using System.ComponentModel;
 
 /*
  * Installed data XML Structure
@@ -29,6 +31,7 @@ namespace Fomm.PackageManager
 		class fomodLoadException : Exception { public fomodLoadException(string msg) : base(msg) { } }
 
 		private Archive m_arcFile;
+		private Archive m_arcCacheFile;
 
 		internal readonly string filepath;
 
@@ -41,10 +44,11 @@ namespace Fomm.PackageManager
 
 		private bool hasInfo;
 		private bool isActive;
-		
+
 		private string m_strPathPrefix = null;
 		private Dictionary<string, string> m_dicMovedArchiveFiles = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
-		
+
+		private string m_strCachePath = null;
 		private string m_strScreenshotPath = null;
 		private string m_strScriptPath = null;
 		private string m_strReadmePath = null;
@@ -313,6 +317,18 @@ namespace Fomm.PackageManager
 			}
 		}
 
+		/// <summary>
+		/// Gets the number of steps that need to be performed to put the FOMod into read-only mode.
+		/// </summary>
+		/// <value>The number of steps that need to be performed to put the FOMod into read-only mode.</value>
+		public Int32 ReadOnlyInitStepCount
+		{
+			get
+			{
+				return m_arcFile.ReadOnlyInitStepCount;
+			}
+		}
+
 		#endregion
 
 		#region Constructors
@@ -338,15 +354,15 @@ namespace Fomm.PackageManager
 			Groups = new string[0];
 			isActive = (InstallLog.Current.GetModKey(this.baseName) != null);
 
-			LoadInfo();
-
+			//check for script
 			for (int i = 0; i < FomodScript.ScriptNames.Length; i++)
 				if (ContainsFile("fomod/" + FomodScript.ScriptNames[i]))
 				{
 					m_strScriptPath = "fomod/" + FomodScript.ScriptNames[i];
 					break;
 				}
-		
+
+			//check for readme
 			for (int i = 0; i < Readme.ValidExtensions.Length; i++)
 				if (ContainsFile("readme - " + baseName + Readme.ValidExtensions[i]))
 				{
@@ -361,6 +377,7 @@ namespace Fomm.PackageManager
 						break;
 					}
 
+			//check for screenshot
 			string[] extensions = new string[] { ".png", ".jpg", ".bmp" };
 			for (int i = 0; i < extensions.Length; i++)
 				if (ContainsFile("fomod/screenshot" + extensions[i]))
@@ -368,6 +385,42 @@ namespace Fomm.PackageManager
 					m_strScreenshotPath = "fomod/screenshot" + extensions[i];
 					break;
 				}
+
+			m_strCachePath = Path.Combine(Program.modInfoCacheDir, ModName + ".zip");
+			if (!File.Exists(m_strCachePath) && m_arcFile.IsSolid)
+			{
+				string strTmpInfo = Program.CreateTempDirectory();
+				try
+				{
+					Directory.CreateDirectory(Path.Combine(strTmpInfo, "fomod"));
+
+					if (ContainsFile("fomod/info.xml"))
+						File.WriteAllBytes(Path.Combine(strTmpInfo, "fomod/info.xml"), GetFileContents("fomod/info.xml"));
+
+					if (!String.IsNullOrEmpty(m_strReadmePath))
+						File.WriteAllBytes(Path.Combine(strTmpInfo, m_strReadmePath), GetFileContents(m_strReadmePath));
+
+					if (!String.IsNullOrEmpty(m_strScreenshotPath))
+						File.WriteAllBytes(Path.Combine(strTmpInfo, m_strScreenshotPath), GetFileContents(m_strScreenshotPath));
+
+					string[] strFilesToCompress = Directory.GetFiles(strTmpInfo, "*.*", SearchOption.AllDirectories);
+					if (strFilesToCompress.Length > 0)
+					{
+						SevenZipCompressor szcCompressor = new SevenZipCompressor();
+						szcCompressor.ArchiveFormat = OutArchiveFormat.Zip;
+						szcCompressor.CompressionLevel = CompressionLevel.Ultra;
+						szcCompressor.CompressFiles(m_strCachePath, strFilesToCompress);
+					}
+				}
+				finally
+				{
+					FileUtil.ForceDelete(strTmpInfo);
+				}
+			}
+			if (File.Exists(m_strCachePath))
+				m_arcCacheFile = new Archive(m_strCachePath);
+
+			LoadInfo();
 		}
 
 		#endregion
@@ -493,7 +546,9 @@ namespace Fomm.PackageManager
 		/// <param name="p_strPath">The path of the file whose contents are to be retrieved.</param>
 		/// <returns>The contents of the specified file.</returns>
 		protected byte[] GetFileContents(string p_strPath)
-		{	
+		{
+			if ((m_arcCacheFile != null) && m_arcCacheFile.ContainsFile(p_strPath))
+				return m_arcCacheFile.GetFileContents(GetPrefixAdjustedPath(p_strPath));
 			return m_arcFile.GetFileContents(GetPrefixAdjustedPath(p_strPath));
 		}
 
@@ -507,6 +562,8 @@ namespace Fomm.PackageManager
 		protected void DeleteFile(string p_strPath)
 		{
 			m_arcFile.DeleteFile(GetPrefixAdjustedPath(p_strPath));
+			if ((m_arcCacheFile != null) && m_arcCacheFile.ContainsFile(p_strPath))
+				m_arcCacheFile.DeleteFile(GetPrefixAdjustedPath(p_strPath));
 		}
 
 		/// <summary>
@@ -520,6 +577,8 @@ namespace Fomm.PackageManager
 		protected void ReplaceFile(string p_strPath, byte[] p_bteData)
 		{
 			m_arcFile.ReplaceFile(GetPrefixAdjustedPath(p_strPath), p_bteData);
+			if ((m_arcCacheFile != null) && m_arcCacheFile.ContainsFile(p_strPath))
+				m_arcCacheFile.ReplaceFile(GetPrefixAdjustedPath(p_strPath), p_bteData);
 		}
 
 		/// <summary>
@@ -533,6 +592,8 @@ namespace Fomm.PackageManager
 		protected void ReplaceFile(string p_strPath, string p_strData)
 		{
 			m_arcFile.ReplaceFile(GetPrefixAdjustedPath(p_strPath), p_strData);
+			if ((m_arcCacheFile != null) && m_arcCacheFile.ContainsFile(p_strPath))
+				m_arcCacheFile.ReplaceFile(GetPrefixAdjustedPath(p_strPath), p_strData);
 		}
 
 		#endregion
@@ -870,6 +931,38 @@ namespace Fomm.PackageManager
 			return sb.ToString();
 		}
 
+		#region Read Transactions
+
+		/// <summary>
+		/// Raised when a read-only initialization step has started.
+		/// </summary>
+		public event CancelEventHandler ReadOnlyInitStepStarted
+		{
+			add
+			{
+				m_arcFile.ReadOnlyInitStepStarted += value;
+			}
+			remove
+			{
+				m_arcFile.ReadOnlyInitStepStarted -= value;
+			}
+		}
+
+		/// <summary>
+		/// Raised when a read-only initialization step has finished.
+		/// </summary>
+		public event CancelEventHandler ReadOnlyInitStepFinished
+		{
+			add
+			{
+				m_arcFile.ReadOnlyInitStepFinished += value;
+			}
+			remove
+			{
+				m_arcFile.ReadOnlyInitStepFinished -= value;
+			}
+		}
+
 		/// <summary>
 		/// Starts a read-only transaction.
 		/// </summary>
@@ -895,6 +988,8 @@ namespace Fomm.PackageManager
 		{
 			m_arcFile.EndReadOnlyTransaction();
 		}
+
+		#endregion
 
 		/// <summary>
 		/// Retrieves the specified file from the fomod.

@@ -85,7 +85,7 @@ namespace Fomm.FileManager
 		{
 			m_strFile = p_strFile;
 			m_lstOrderedMods = p_lstOrderedMods;
-			return Run(true);
+			return Run(true, true);
 		}
 
 		/// <summary>

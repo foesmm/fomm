@@ -70,6 +70,7 @@ namespace Fomm
 		private static string packageDir;
 		public static readonly string fommDir = Path.Combine(exeDir, "fomm");
 		public static readonly string overwriteDir = Path.Combine(exeDir, "overwrites");
+		public static string modInfoCacheDir;
 		public static readonly string LocalDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Fallout3");
 		public static readonly string PluginsFile = Path.Combine(LocalDataPath, "plugins.txt");
 		public static readonly string DLCDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Microsoft\\xlive\\DLC");
@@ -135,6 +136,7 @@ namespace Fomm
 
 			packageDir = Settings.GetString("FomodDir");
 			if (packageDir == null) packageDir = Path.Combine(exeDir, "mods");
+			modInfoCacheDir = Path.Combine(packageDir, "cache");
 #if TRACE
 				Trace.WriteLine("We know where the mods live: " + packageDir);
 #endif
@@ -335,6 +337,7 @@ namespace Fomm
 				if (!Directory.Exists(fommDir)) Directory.CreateDirectory(fommDir);
 				if (!Directory.Exists(LocalDataPath)) Directory.CreateDirectory(LocalDataPath);
 				if (!Directory.Exists(overwriteDir)) Directory.CreateDirectory(overwriteDir);
+				if (!Directory.Exists(modInfoCacheDir)) Directory.CreateDirectory(modInfoCacheDir);
 
 #if TRACE
 					Trace.WriteLine("Checking DLC location.");
