@@ -57,6 +57,28 @@ namespace Fomm.Util
 			}
 		}
 
+		/// <summary>
+		/// Gets whether the archive is solid.
+		/// </summary>
+		/// <remarks>
+		/// This wrapper property ensures the operation executes on the same thread in which the
+		/// <see cref="SevenZipExtractor"/> was created.
+		/// </remarks>
+		/// <value><lang cref="true"/> if the archive is solid; <lang cref="false"/> otherwise.</value>
+		/// <seealso cref="SevenZipExtractor.IsSolid"/>
+		public bool IsSolid
+		{
+			get
+			{
+				bool booIsSolid = false;
+				ManualResetEvent mreDoneEvent = new ManualResetEvent(false);
+				m_queEvents.Enqueue(new KeyValuePair<Action<object>, ManualResetEvent>((o) => { booIsSolid = m_szeExtractor.IsSolid; }, mreDoneEvent));
+				m_mreEvent.Set();
+				mreDoneEvent.WaitOne(Timeout.Infinite);
+				return booIsSolid;
+			}
+		}
+
 		#endregion
 
 		#region Constructors
