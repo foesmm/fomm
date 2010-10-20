@@ -532,8 +532,8 @@ namespace Fomm.PackageManager
 		public void AddNewFomod(string p_strPath)
 		{
 			FomodFromSourceBuilder ffbBuilder = new FomodFromSourceBuilder();
-			string strFomodPath = ffbBuilder.BuildFomodFromSource(p_strPath);
-			if (!String.IsNullOrEmpty(strFomodPath))
+			IList<string> lstFomodPaths = ffbBuilder.BuildFomodFromSource(p_strPath);
+			foreach (string strFomodPath in lstFomodPaths)
 				AddFomod(strFomodPath, true);
 		}
 

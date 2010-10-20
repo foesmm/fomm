@@ -34,10 +34,17 @@ namespace Fomm.PackageManager
 
 		public static readonly Version DefaultVersion = new Version(1, 0);
 		public static readonly Version DefaultMinFommVersion = new Version(0, 0, 0, 0);
+		private static readonly List<string> StopFolders = new List<string>() { "fomod", "textures",
+																	"meshes", "music", "shaders", "video",
+																	"facegen", "menus", "lodsettings", "lsdata",
+																	"sound" };
 
 		private bool hasInfo;
 		private bool isActive;
-
+		
+		private string m_strPathPrefix = null;
+		private Dictionary<string, string> m_dicMovedArchiveFiles = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
+		
 		private string m_strScreenshotPath = null;
 		private string m_strScriptPath = null;
 		private string m_strReadmePath = null;
@@ -54,6 +61,22 @@ namespace Fomm.PackageManager
 		private string[] m_strGroups;
 
 		#region Properties
+
+		/// <summary>
+		/// Gets the path prefix of the FOMod.
+		/// </summary>
+		/// <remarks>
+		/// The path prefix is used to present the FOMod file structure as if it were rooted at the prefix. This
+		/// normalizes the file structure of FOMods and adjusts for incorrectly packaged FOMods.
+		/// </remarks>
+		/// <value>The path prefix of the FOMod.</value>
+		protected string PathPrefix
+		{
+			get
+			{
+				return m_strPathPrefix;
+			}
+		}
 
 		/// <summary>
 		/// Gets or sets the name of the fomod.
@@ -303,6 +326,8 @@ namespace Fomm.PackageManager
 			this.filepath = path;
 
 			m_arcFile = new Archive(path);
+			FindPathPrefix();
+			m_arcFile.FilesChanged += new EventHandler(Archive_FilesChanged);
 			ModName = System.IO.Path.GetFileNameWithoutExtension(path);
 			baseName = ModName.ToLowerInvariant();
 			Author = "DEFAULT";
@@ -316,21 +341,21 @@ namespace Fomm.PackageManager
 			LoadInfo();
 
 			for (int i = 0; i < FomodScript.ScriptNames.Length; i++)
-				if (m_arcFile.ContainsFile("fomod/" + FomodScript.ScriptNames[i]))
+				if (ContainsFile("fomod/" + FomodScript.ScriptNames[i]))
 				{
 					m_strScriptPath = "fomod/" + FomodScript.ScriptNames[i];
 					break;
 				}
 		
 			for (int i = 0; i < Readme.ValidExtensions.Length; i++)
-				if (m_arcFile.ContainsFile("readme - " + baseName + Readme.ValidExtensions[i]))
+				if (ContainsFile("readme - " + baseName + Readme.ValidExtensions[i]))
 				{
 					m_strReadmePath = "Readme - " + Path.GetFileNameWithoutExtension(path) + Readme.ValidExtensions[i];
 					break;
 				}
 			if (String.IsNullOrEmpty(m_strReadmePath))
 				for (int i = 0; i < Readme.ValidExtensions.Length; i++)
-					if (m_arcFile.ContainsFile("docs/readme - " + baseName + Readme.ValidExtensions[i]))
+					if (ContainsFile("docs/readme - " + baseName + Readme.ValidExtensions[i]))
 					{
 						m_strReadmePath = "docs/Readme - " + Path.GetFileNameWithoutExtension(path) + Readme.ValidExtensions[i];
 						break;
@@ -338,11 +363,176 @@ namespace Fomm.PackageManager
 
 			string[] extensions = new string[] { ".png", ".jpg", ".bmp" };
 			for (int i = 0; i < extensions.Length; i++)
-				if (m_arcFile.ContainsFile("fomod/screenshot" + extensions[i]))
+				if (ContainsFile("fomod/screenshot" + extensions[i]))
 				{
 					m_strScreenshotPath = "fomod/screenshot" + extensions[i];
 					break;
 				}
+		}
+
+		#endregion
+
+		#region Archive Interaction
+
+		/// <summary>
+		/// This finds where in the archive the FOMod file structure begins.
+		/// </summary>
+		/// <remarks>
+		/// This methods finds the path prefix to the folder containing the core files and folders of the FOMod. If
+		/// there are any files that are above the core folder, than they are given new file names inside the
+		/// core folder.
+		/// </remarks>
+		/// <seealso cref="PathPrefix"/>
+		protected void FindPathPrefix()
+		{
+			m_dicMovedArchiveFiles.Clear();
+			string strSourcePath = "/";
+			//this code removes any top-level folders until it finds esp/esm/bsa, or the top-level folder
+			// is a fomod/textures/meshes/music/shaders/video/facegen/menus/lodsettings/lsdata/sound folder.
+			string[] directories = m_arcFile.GetDirectories(strSourcePath);
+			while (directories.Length == 1 &&
+					m_arcFile.GetFiles(strSourcePath, "*.esp").Length == 0 &&
+					m_arcFile.GetFiles(strSourcePath, "*.esm").Length == 0 &&
+					m_arcFile.GetFiles(strSourcePath, "*.bsa").Length == 0)
+			{
+				directories = directories[0].Split(Path.DirectorySeparatorChar);
+				string name = directories[directories.Length - 1].ToLowerInvariant();
+				if (!StopFolders.Contains(name))
+				{
+					foreach (string file in m_arcFile.GetFiles(strSourcePath))
+					{
+						string strNewFileName = Path.GetFileName(file);
+						for (Int32 i = 1; m_dicMovedArchiveFiles.ContainsKey(strNewFileName); i++)
+							strNewFileName = Path.GetFileNameWithoutExtension(file) + " " + i + Path.GetExtension(file);
+						m_dicMovedArchiveFiles[strNewFileName] = file;
+					}
+					strSourcePath = Path.Combine(strSourcePath, name);
+					directories = m_arcFile.GetDirectories(strSourcePath);
+				}
+				else
+					break;
+			}
+			m_strPathPrefix = strSourcePath.Trim('/');
+		}
+
+		/// <summary>
+		/// Handles the <see cref="Archive.FilesChanged"/> event of the FOMod's archive.
+		/// </summary>
+		/// <remarks>
+		/// This ensures that the path prefix that points to the folder in the archive that contains the core files
+		/// and folders of the FOMod is updated when the archive changes.
+		/// </remarks>
+		/// <param name="sender">The object that raised the event.</param>
+		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+		void Archive_FilesChanged(object sender, EventArgs e)
+		{
+			FindPathPrefix();
+		}
+
+		/// <summary>
+		/// Determines if the FOMod contains the given file.
+		/// </summary>
+		/// <remarks>
+		/// This method accounts for the <see cref="PathPrefix"/>.
+		/// </remarks> 
+		/// <param name="p_strPath">The filename whose existence in the FOMod is to be determined.</param>
+		/// <returns><lang cref="true"/> if the specified file is in the FOMod; <lang cref="false"/> otherwise.</returns>
+		public bool ContainsFile(string p_strPath)
+		{
+			string strPath = p_strPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+			strPath = strPath.Trim(Path.DirectorySeparatorChar);
+			if (m_dicMovedArchiveFiles.ContainsKey(strPath))
+				return true;
+			return m_arcFile.ContainsFile(Path.Combine(PathPrefix, strPath));
+		}
+
+		/// <summary>
+		/// This method adjusts the given path to account for the <see cref="PathPrefix"/>.
+		/// </summary>
+		/// <param name="p_strPath">The path to adjust.</param>
+		/// <returns>The adjusted path.</returns>
+		protected string GetPrefixAdjustedPath(string p_strPath)
+		{
+			string strPath = p_strPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+			strPath = strPath.Trim(Path.DirectorySeparatorChar);
+			string strAdjustedPath = null;
+			if (!m_dicMovedArchiveFiles.TryGetValue(strPath, out strAdjustedPath))
+				strAdjustedPath = Path.Combine(PathPrefix, strPath);
+			return strAdjustedPath;
+		}
+
+		/// <summary>
+		/// Retrieves the list of files in this FOMod.
+		/// </summary>
+		/// <remarks>
+		/// This method accounts for the <see cref="PathPrefix"/>.
+		/// </remarks> 
+		/// <returns>The list of files in this FOMod.</returns>
+		public List<string> GetFileList()
+		{
+			PermissionsManager.CurrentPermissions.Assert();
+			List<string> lstFiles = new List<string>();
+			foreach (string strFile in m_arcFile.GetFiles(null))
+				if (strFile.StartsWith(PathPrefix, StringComparison.InvariantCultureIgnoreCase))
+				{
+					string strAdjustedFileName = strFile.Remove(0, PathPrefix.Length);
+					if (!strAdjustedFileName.StartsWith("fomod", StringComparison.OrdinalIgnoreCase))
+						lstFiles.Add(strAdjustedFileName);
+				}
+			foreach (string strFile in m_dicMovedArchiveFiles.Keys)
+				lstFiles.Add(strFile);
+			return lstFiles;
+		}
+
+		/// <summary>
+		/// Gets the contents of the specified file.
+		/// </summary>
+		/// <remarks>
+		/// This method accounts for the <see cref="PathPrefix"/>.
+		/// </remarks> 
+		/// <param name="p_strPath">The path of the file whose contents are to be retrieved.</param>
+		/// <returns>The contents of the specified file.</returns>
+		protected byte[] GetFileContents(string p_strPath)
+		{	
+			return m_arcFile.GetFileContents(GetPrefixAdjustedPath(p_strPath));
+		}
+
+		/// <summary>
+		/// Deletes the specified file.
+		/// </summary>
+		/// <remarks>
+		/// This method accounts for the <see cref="PathPrefix"/>.
+		/// </remarks> 
+		/// <param name="p_strPath">The path of the file to delete.</param>
+		protected void DeleteFile(string p_strPath)
+		{
+			m_arcFile.DeleteFile(GetPrefixAdjustedPath(p_strPath));
+		}
+
+		/// <summary>
+		/// Replaces the specified file with the given data.
+		/// </summary>
+		/// <remarks>
+		/// This method accounts for the <see cref="PathPrefix"/>.
+		/// </remarks> 
+		/// <param name="p_strPath">The path of the file to replace.</param>
+		/// <param name="p_bteData">The new file data.</param>
+		protected void ReplaceFile(string p_strPath, byte[] p_bteData)
+		{
+			m_arcFile.ReplaceFile(GetPrefixAdjustedPath(p_strPath), p_bteData);
+		}
+
+		/// <summary>
+		/// Replaces the specified file with the given text.
+		/// </summary>
+		/// <remarks>
+		/// This method accounts for the <see cref="PathPrefix"/>.
+		/// </remarks> 
+		/// <param name="p_strPath">The path of the file to replace.</param>
+		/// <param name="p_strData">The new file text.</param>
+		protected void ReplaceFile(string p_strPath, string p_strData)
+		{
+			m_arcFile.ReplaceFile(GetPrefixAdjustedPath(p_strPath), p_strData);
 		}
 
 		#endregion
@@ -505,11 +695,11 @@ namespace Fomm.PackageManager
 
 		protected void LoadInfo()
 		{
-			if (m_arcFile.ContainsFile("fomod/info.xml"))
+			if (ContainsFile("fomod/info.xml"))
 			{
 				hasInfo = true;
 				XmlDocument doc = new XmlDocument();
-				doc.LoadXml(TextUtil.ByteToString(m_arcFile.GetFileContents("fomod/info.xml")));
+				doc.LoadXml(TextUtil.ByteToString(GetFileContents("fomod/info.xml")));
 				LoadInfo(doc, this);
 				if (Program.MVersion < MinFommVersion)
 					throw new fomodLoadException("This fomod requires a newer version of Fallout mod manager to load." + Environment.NewLine + "Expected " + MachineVersion);
@@ -520,7 +710,7 @@ namespace Fomm.PackageManager
 		{
 			if (!HasInstallScript)
 				return null;
-			return new FomodScript(m_strScriptPath, TextUtil.ByteToString(m_arcFile.GetFileContents(m_strScriptPath)));
+			return new FomodScript(m_strScriptPath, TextUtil.ByteToString(GetFileContents(m_strScriptPath)));
 		}
 
 		/// <summary>
@@ -551,7 +741,7 @@ namespace Fomm.PackageManager
 			{
 				if (HasInstallScript)
 				{
-					m_arcFile.DeleteFile(m_strScriptPath);
+					DeleteFile(m_strScriptPath);
 					m_strScriptPath = null;
 				}
 			}
@@ -559,7 +749,7 @@ namespace Fomm.PackageManager
 			{
 				if (m_strScriptPath == null)
 					m_strScriptPath = Path.Combine("fomod", p_fscScript.FileName);
-				m_arcFile.ReplaceFile(m_strScriptPath, p_fscScript.Text);
+				ReplaceFile(m_strScriptPath, p_fscScript.Text);
 			}
 		}
 
@@ -567,13 +757,13 @@ namespace Fomm.PackageManager
 		{
 			if (String.IsNullOrEmpty(m_strReadmePath) || !Readme.IsValidReadme(m_strReadmePath))
 				return null;
-			return new Readme(m_strReadmePath, TextUtil.ByteToString(m_arcFile.GetFileContents(m_strReadmePath)));
+			return new Readme(m_strReadmePath, TextUtil.ByteToString(GetFileContents(m_strReadmePath)));
 		}
 
 		internal void SetReadme(Readme p_rmeReadme)
 		{
 			if (HasReadme)
-				m_arcFile.DeleteFile(m_strReadmePath);
+				DeleteFile(m_strReadmePath);
 			if (p_rmeReadme == null)
 				m_strReadmePath = null;
 			else
@@ -581,7 +771,7 @@ namespace Fomm.PackageManager
 				if (m_strReadmePath == null)
 					m_strReadmePath = (Settings.GetBool("UseDocsFolder") ? "docs/" : "") + "Readme - " + Path.GetFileNameWithoutExtension(filepath) + ".rtf";
 				m_strReadmePath = Path.ChangeExtension(m_strReadmePath, p_rmeReadme.Extension);
-				m_arcFile.ReplaceFile(m_strReadmePath, p_rmeReadme.Text);
+				ReplaceFile(m_strReadmePath, p_rmeReadme.Text);
 			}
 		}
 
@@ -592,14 +782,14 @@ namespace Fomm.PackageManager
 
 			MemoryStream ms = new MemoryStream();
 			xmlInfo.Save(ms);
-			m_arcFile.ReplaceFile("fomod/info.xml", ms.ToArray());
+			ReplaceFile("fomod/info.xml", ms.ToArray());
 			if (SetScreenshot)
 			{
 				if (p_shtScreenshot == null)
 				{
 					if (HasScreenshot)
 					{
-						m_arcFile.DeleteFile(m_strScreenshotPath);
+						DeleteFile(m_strScreenshotPath);
 						m_strScreenshotPath = null;
 					}
 				}
@@ -608,7 +798,7 @@ namespace Fomm.PackageManager
 					if (!HasScreenshot)
 						m_strScreenshotPath = "fomod/screenshot.jpg";
 					m_strScreenshotPath = Path.ChangeExtension(m_strScreenshotPath, p_shtScreenshot.Extension).ToLowerInvariant();
-					m_arcFile.ReplaceFile(m_strScreenshotPath, p_shtScreenshot.Data);
+					ReplaceFile(m_strScreenshotPath, p_shtScreenshot.Data);
 				}
 			}
 		}
@@ -651,7 +841,7 @@ namespace Fomm.PackageManager
 			sb.AppendLine("Is active: " + (isActive ? "Yes" : "No"));
 			sb.AppendLine();
 			sb.AppendLine("-- fomod contents list:");
-			sb.AppendLine(String.Join(Environment.NewLine, m_arcFile.GetFiles(null)));
+			sb.AppendLine(String.Join(Environment.NewLine, GetFileList().ToArray()));
 			if (isActive)
 			{
 				sb.AppendLine();
@@ -681,20 +871,6 @@ namespace Fomm.PackageManager
 		}
 
 		/// <summary>
-		/// Retrieves the list of files in this FOMod.
-		/// </summary>
-		/// <returns>The list of files in this FOMod.</returns>
-		public List<string> GetFileList()
-		{
-			PermissionsManager.CurrentPermissions.Assert();
-			List<string> lstFiles = new List<string>();
-			foreach (string strFile in m_arcFile.GetFiles(null))
-				if (!strFile.StartsWith("fomod", StringComparison.OrdinalIgnoreCase))
-					lstFiles.Add(strFile);
-			return lstFiles;
-		}
-
-		/// <summary>
 		/// Starts a read-only transaction.
 		/// </summary>
 		/// <remarks>
@@ -721,17 +897,6 @@ namespace Fomm.PackageManager
 		}
 
 		/// <summary>
-		/// Determines if the specified file is in the fomod.
-		/// </summary>
-		/// <param name="p_strFile">The file whose existence is to be determined.</param>
-		/// <returns><lang cref="true"/> if the file is in the fomod; <lang dref="false"/> otherwise.</returns>
-		public bool FileExists(string p_strFile)
-		{
-			PermissionsManager.CurrentPermissions.Assert();
-			return m_arcFile.ContainsFile(p_strFile);
-		}
-
-		/// <summary>
 		/// Retrieves the specified file from the fomod.
 		/// </summary>
 		/// <param name="p_strFile">The file to retrieve.</param>
@@ -743,9 +908,9 @@ namespace Fomm.PackageManager
 		public byte[] GetFile(string p_strFile)
 		{
 			PermissionsManager.CurrentPermissions.Assert();
-			if (!m_arcFile.ContainsFile(p_strFile))
+			if (!ContainsFile(p_strFile))
 				throw new FileNotFoundException("File doesn't exist in fomod", p_strFile);
-			return m_arcFile.GetFileContents(p_strFile);
+			return GetFileContents(p_strFile);
 		}
 
 		/// <summary>
@@ -760,10 +925,10 @@ namespace Fomm.PackageManager
 		public Image GetImage(string p_strFile)
 		{
 			PermissionsManager.CurrentPermissions.Assert();
-			if (!m_arcFile.ContainsFile(p_strFile))
+			if (!ContainsFile(p_strFile))
 				throw new FileNotFoundException("File doesn't exist in fomod", p_strFile);
 			Image imgImage = null;
-			using (MemoryStream msmImage = new MemoryStream(m_arcFile.GetFileContents(p_strFile)))
+			using (MemoryStream msmImage = new MemoryStream(GetFileContents(p_strFile)))
 			{
 				imgImage = Image.FromStream(msmImage);
 				msmImage.Close();

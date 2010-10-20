@@ -95,65 +95,72 @@ namespace Fomm.PackageManager.FomodBuilder
 		/// </remarks>
 		/// <param name="p_strPath">The path to the source from which to create the fomod.</param>
 		/// <returns>The path to the new fomod if it was successfully built; <lang cref="null"/> otherwise.</returns>
-		public string BuildFomodFromSource(string p_strPath)
+		public IList<string> BuildFomodFromSource(string p_strPath)
 		{
 			string strSource = p_strPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-			string strFomodName = null;
+
+			List<string> lstPackedFOModPaths = new List<string>();
 			if (File.Exists(strSource))
-			strFomodName = Path.GetFileNameWithoutExtension(strSource);
+			{
+				if (!Archive.IsArchive(strSource))
+					throw new ArgumentException("Unrecognized file format.", "p_strPath");
+
+				string strPackedFomodPath = Path.GetFileNameWithoutExtension(strSource);
+				string strTesNexusUrl = null;
+				Int32 intFileId;
+				if (strPackedFomodPath.Contains("-") && int.TryParse(strPackedFomodPath.Substring(strPackedFomodPath.LastIndexOf('-') + 1), out intFileId))
+				{
+					strPackedFomodPath = strPackedFomodPath.Remove(strPackedFomodPath.LastIndexOf('-')) + Path.GetExtension(strSource);
+					strTesNexusUrl = @"http://www.fallout3nexus.com/downloads/file.php?id=" + intFileId;
+				}
+
+				string[] strFOMods = null;
+				using (Archive arcMod = new Archive(strSource))
+					strFOMods = arcMod.GetFiles(null, "*.fomod");
+				if (strFOMods.Length > 0)
+				{
+					foreach (string strFOMod in strFOMods)
+					{
+						string strNewPath = Path.Combine(Program.PackageDir, Path.GetFileName(strFOMod));
+						if (CheckFileName(ref strNewPath))
+						{
+							using (SevenZipExtractor szeExtractor = Archive.GetExtractor(strSource))
+							{
+								using (FileStream fsmFOMod = new FileStream(strNewPath, FileMode.Create))
+									szeExtractor.ExtractFile(strFOMod, fsmFOMod);
+							}
+							lstPackedFOModPaths.Add(strNewPath);
+						}
+					}
+				}
+				else
+				{
+					strPackedFomodPath = Path.Combine(Program.PackageDir, Path.GetFileNameWithoutExtension(strPackedFomodPath));
+					if (!strPackedFomodPath.EndsWith(".fomod", StringComparison.OrdinalIgnoreCase))
+						strPackedFomodPath += ".fomod";
+					string strNewPath = strPackedFomodPath;
+					if (CheckFileName(ref strNewPath))
+					{
+						FileUtil.ForceDelete(strNewPath);
+						if (MessageBox.Show("Make a copy of the original file?", "", MessageBoxButtons.YesNo) != DialogResult.Yes)
+							File.Move(strSource, strNewPath);
+						else
+							File.Copy(strSource, strNewPath, true);
+						lstPackedFOModPaths.Add(strNewPath);
+					}
+				}
+			}
 			else
 			{
 				Int32 intLastSeparatorPos = strSource.LastIndexOfAny(new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar });
-				strFomodName = strSource.Substring(intLastSeparatorPos + 1);
+				string strFomodName = strSource.Substring(intLastSeparatorPos + 1);
+
+				string strPackedFomodPath = Path.Combine(Program.PackageDir, strFomodName + ".fomod");
+				strPackedFomodPath = GenerateFomod(new BuildFomodArgs(strFomodName, strSource, null, strPackedFomodPath));
+				lstPackedFOModPaths.Add(strPackedFomodPath);
 			}
 
-			bool booRepack = false;
-			string strTesNexusUrl = null;
-			string strPackedFomodPath = null;
-			if (File.Exists(strSource))
-			{
-				if (strSource.EndsWith(".fomod", StringComparison.OrdinalIgnoreCase))
-					strPackedFomodPath = Path.Combine(Program.PackageDir, Path.GetFileName(strSource));
-				else if (strSource.EndsWith(".fomod.zip", StringComparison.OrdinalIgnoreCase))
-					strPackedFomodPath = Path.Combine(Program.PackageDir, Path.GetFileNameWithoutExtension(strSource));
-				else if (strSource.EndsWith(".zip", StringComparison.OrdinalIgnoreCase) && strSource.Contains("-fomod-"))
-				{
-					string strFileName = Path.GetFileName(strSource);
-					strPackedFomodPath = Path.Combine(Program.PackageDir, Path.GetFileName(strFileName.Substring(0, strFileName.IndexOf("-fomod-")))) + ".fomod";
-				}
-				else
-				{
-					strPackedFomodPath = Path.Combine(Program.PackageDir, Path.ChangeExtension(Path.GetFileName(strSource), ".fomod"));
-					booRepack = true;
-				}
-
-				strTesNexusUrl = Path.GetFileNameWithoutExtension(strPackedFomodPath);
-				Int32 intFileId;
-				if (strTesNexusUrl.Contains("-") && int.TryParse(strTesNexusUrl.Substring(strTesNexusUrl.LastIndexOf('-') + 1), out intFileId))
-				{
-					strFomodName = strTesNexusUrl.Remove(strTesNexusUrl.LastIndexOf('-'));
-					strPackedFomodPath = Path.Combine(Path.GetDirectoryName(strPackedFomodPath), strTesNexusUrl.Remove(strTesNexusUrl.LastIndexOf('-'))) + Path.GetExtension(strPackedFomodPath);
-					strTesNexusUrl = @"http://www.fallout3nexus.com/downloads/file.php?id=" + intFileId;
-				}
-				else
-					strTesNexusUrl = null;
-			}
-			else
-			{
-				booRepack = true;
-				strPackedFomodPath = Path.Combine(Program.PackageDir, strFomodName + ".fomod");
-			}
-
-			if (!booRepack)
-			{
-				if (MessageBox.Show("Make a copy of the original file?", "", MessageBoxButtons.YesNo) != DialogResult.Yes)
-					File.Move(strSource, strPackedFomodPath);
-				else
-					File.Copy(strSource, strPackedFomodPath);
-			}
-			else
-				strPackedFomodPath = GenerateFomod(new BuildFomodArgs(strFomodName, strSource, strTesNexusUrl, strPackedFomodPath));
-			return strPackedFomodPath;
+			return lstPackedFOModPaths;
 		}
 
 		/// <summary>
