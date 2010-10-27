@@ -1,0 +1,667 @@
+﻿using System;
+using System.IO;
+using System.Collections.Generic;
+using Microsoft.Win32;
+using System.Windows.Forms;
+using System.Threading;
+using System.Diagnostics;
+using Fomm.PackageManager;
+
+namespace Fomm.Games.Fallout3
+{
+	public class Fallout3GameMode : GameMode
+	{
+		public static class SettingsFile
+		{
+			public static readonly string FOIniPath = "FOIniPath";
+			public static readonly string FOPrefsIniPath = "FOPrefsIniPath";
+			public static readonly string GeckIniPath = "GeckIniPath";
+			public static readonly string GeckPrefsIniPath = "GeckPrefsIniPath";
+		}
+
+		private readonly string m_strOverwriteDirectory = null;
+		private readonly string m_strUserGameDataPath = null;
+		private readonly string m_strSavesPath = null;
+		private readonly string m_strUserSettingsPath = null;
+		private Dictionary<string, string> m_dicAdditionalPaths = new Dictionary<string, string>();
+		private Dictionary<string, string> m_dicSettingsFiles = new Dictionary<string, string>();
+		private List<GameTool> m_lstTools = new List<GameTool>();
+		private List<GameTool> m_lstGameSettingsTools = new List<GameTool>();
+		private List<GameTool> m_lstRightClickTools = new List<GameTool>();
+		private Fallout3PluginManager m_pmgPluginManager = new Fallout3PluginManager();
+
+		#region Properties
+
+		public override string PluginsPath
+		{
+			get
+			{
+				return Path.Combine(Environment.CurrentDirectory, "Data");
+			}
+		}
+
+		public string PluginsFilePath
+		{
+			get
+			{
+				return m_dicAdditionalPaths["PluginsFile"];
+			}
+		}
+
+		public override string OverwriteDirectory
+		{
+			get
+			{
+				return m_strOverwriteDirectory;
+			}
+		}
+
+		public override string UserGameDataPath
+		{
+			get
+			{
+				return m_strUserGameDataPath;
+			}
+		}
+
+		public override IDictionary<string, string> SettingsFiles
+		{
+			get
+			{
+				return m_dicSettingsFiles;
+			}
+		}
+
+		public override string SavesPath
+		{
+			get
+			{
+				return m_strSavesPath;
+			}
+		}
+
+		public override string UserSettingsPath
+		{
+			get
+			{
+				return m_strUserSettingsPath;
+			}
+		}
+
+		public override IDictionary<string, string> AdditionalPaths
+		{
+			get
+			{
+				return m_dicAdditionalPaths;
+			}
+		}
+
+		protected string DLCDirectory
+		{
+			get
+			{
+				return m_dicAdditionalPaths["DLCDir"];
+			}
+		}
+
+		public override IList<GameTool> Tools
+		{
+			get
+			{
+				return m_lstTools;
+			}
+		}
+
+		public override IList<GameTool> GameSettingsTools
+		{
+			get
+			{
+				return m_lstGameSettingsTools;
+			}
+		}
+
+		public override IList<GameTool> RightClickTools
+		{
+			get
+			{
+				return m_lstRightClickTools;
+			}
+		}
+
+		public override PluginManager PluginManager
+		{
+			get
+			{
+				return m_pmgPluginManager;
+			}
+		}
+
+		public string FORendererFile
+		{
+			get
+			{
+				return m_dicAdditionalPaths["FORendererFile"];
+			}
+		}
+
+		/// <summary>
+		/// Gets the version of the installed game.
+		/// </summary>
+		/// <value>The version of the installed game.</value>
+		public override Version GameVersion
+		{
+			get
+			{
+				if (File.Exists("Fallout3.exe"))
+					return new Version(System.Diagnostics.FileVersionInfo.GetVersionInfo("Fallout3.exe").FileVersion.Replace(", ", "."));
+				if (File.Exists("Fallout3ng.exe"))
+					return new Version(System.Diagnostics.FileVersionInfo.GetVersionInfo("Fallout3ng.exe").FileVersion.Replace(", ", "."));
+				return null;
+			}
+		}
+
+		#endregion
+
+		#region Constructors
+
+		public Fallout3GameMode()
+		{
+			m_strOverwriteDirectory = Path.Combine(Program.ExecutableDirectory, "overwrites");
+			if (!Directory.Exists(m_strOverwriteDirectory)) Directory.CreateDirectory(m_strOverwriteDirectory);
+
+			m_strUserGameDataPath = Path.Combine(String.IsNullOrEmpty(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)) ? Registry.GetValue(@"HKEY_CURRENT_USER\software\microsoft\windows\currentversion\explorer\user shell folders", "Personal", null).ToString() : Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "My games\\Fallout3");
+			m_strUserSettingsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Fallout3");
+
+			m_dicSettingsFiles[SettingsFile.FOIniPath] = Path.Combine(m_strUserGameDataPath, "Fallout.ini");
+			m_dicSettingsFiles[SettingsFile.FOPrefsIniPath] = Path.Combine(m_strUserGameDataPath, "FalloutPrefs.ini");
+			m_dicSettingsFiles[SettingsFile.GeckIniPath] = Path.Combine(m_strUserGameDataPath, "GECKCustom.ini");
+			m_dicSettingsFiles[SettingsFile.GeckPrefsIniPath] = Path.Combine(m_strUserGameDataPath, "GECKPrefs.ini");
+
+			m_dicAdditionalPaths["FORendererFile"] = Path.Combine(m_strUserGameDataPath, "RendererInfo.txt");
+			m_dicAdditionalPaths["PluginsFile"] = Path.Combine(m_strUserSettingsPath, "plugins.txt");
+			m_dicAdditionalPaths["DLCDir"] = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Microsoft\\xlive\\DLC");
+
+			m_strSavesPath = Path.Combine(m_strUserGameDataPath, NativeMethods.GetPrivateProfileString("General", "SLocalSavePath", "Games", m_dicSettingsFiles["FOIniPath"]));
+
+			m_lstTools.Add(new GameTool("BSA Tool", "Creates and unpacks BSA files.", LaunchBSATool));
+			m_lstTools.Add(new GameTool("TESsnip", "An ESP/ESM editor.", LaunchTESsnipTool));
+			m_lstTools.Add(new GameTool("Shader Editor", "A shader (SDP) editor.", LaunchShaderEditTool));
+			m_lstTools.Add(new GameTool("CREditor", "Edits critical records in an ESP/ESM.", LaunchCREditorTool));
+			m_lstTools.Add(new GameTool("Archive Invalidation", "Toggles Archive Invalidation.", ToggleArchiveInvalidation));
+			m_lstTools.Add(new GameTool("Install Tweaker", "Advanced Fallout 3 tweaking.", LaunchInstallTweakerTool));
+
+			m_lstGameSettingsTools.Add(new GameTool("Graphics Settings", "Changes the graphics settings.", LaunchGraphicsSettingsTool));
+
+			m_lstRightClickTools.Add(new GameTool("Open in TESsnip...", "Open the selected plugins in TESsnip.", LaunchTESsnipToolWithSelectedPlugins));
+			m_lstRightClickTools.Add(new GameTool("Open in CREditor...", "Open the selected plugins in TESsnip.", LaunchCREditorToolWithSelectedPlugins));
+		}
+
+		#endregion
+
+		#region Tool Launch Methods
+
+		/// <summary>
+		/// Launches the BSA tool.
+		/// </summary>
+		/// <param name="p_frmMainForm">The main mod management form.</param>
+		public void LaunchBSATool(MainForm p_frmMainForm)
+		{
+			new Tools.BSA.BSABrowser().Show();
+		}
+
+		/// <summary>
+		/// Launches the Install Tweaker tool.
+		/// </summary>
+		/// <param name="p_frmMainForm">The main mod management form.</param>
+		public void LaunchInstallTweakerTool(MainForm p_frmMainForm)
+		{
+			if (p_frmMainForm.IsPackageManagerOpen)
+			{
+				MessageBox.Show(p_frmMainForm, "Please close the Package Manager before running the install tweaker.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+				return;
+			}
+			(new Tools.InstallTweaker.InstallationTweaker()).ShowDialog();
+		}
+
+		/// <summary>
+		/// Launches the TESsnip tool.
+		/// </summary>
+		/// <param name="p_frmMainForm">The main mod management form.</param>
+		public void LaunchTESsnipTool(MainForm p_frmMainForm)
+		{
+			Tools.TESsnip.TESsnip tes = new Tools.TESsnip.TESsnip();
+			tes.FormClosed += delegate(object sender2, FormClosedEventArgs e2)
+			{
+				p_frmMainForm.RefreshPluginList();
+				GC.Collect();
+			};
+			tes.Show();
+		}
+
+		/// <summary>
+		/// Launches the TESsnip tool, passing it the given plugins.
+		/// </summary>
+		/// <param name="p_frmMainForm">The main mod management form.</param>
+		public void LaunchTESsnipToolWithSelectedPlugins(MainForm p_frmMainForm)
+		{
+			if (p_frmMainForm.SelectedPlugins.Count == 0)
+				return;
+			List<string> lstPlugins = new List<string>();
+			foreach (string strPluginName in p_frmMainForm.SelectedPlugins)
+				lstPlugins.Add(Path.Combine(Program.GameMode.PluginsPath, strPluginName));
+			Tools.TESsnip.TESsnip tes = new Tools.TESsnip.TESsnip(lstPlugins.ToArray());
+			tes.FormClosed += delegate(object sender2, FormClosedEventArgs e2)
+			{
+				p_frmMainForm.RefreshPluginList();
+				GC.Collect();
+			};
+			tes.Show();
+		}
+
+		/// <summary>
+		/// Launches the Shader Edit tool.
+		/// </summary>
+		/// <param name="p_frmMainForm">The main mod management form.</param>
+		public void LaunchShaderEditTool(MainForm p_frmMainForm)
+		{
+			new Tools.ShaderEdit.MainForm().Show();
+		}
+
+		/// <summary>
+		/// Launches the CREditor tool.
+		/// </summary>
+		/// <param name="p_frmMainForm">The main mod management form.</param>
+		public void LaunchCREditorTool(MainForm p_frmMainForm)
+		{
+			Tools.CriticalRecords.CriticalRecordsForm crfEditor = new Tools.CriticalRecords.CriticalRecordsForm();
+			crfEditor.Show();
+			GC.Collect();
+		}
+
+		/// <summary>
+		/// Launches the CREditor tool, passing it the given plugins.
+		/// </summary>
+		/// <param name="p_frmMainForm">The main mod management form.</param>
+		public void LaunchCREditorToolWithSelectedPlugins(MainForm p_frmMainForm)
+		{
+			if (p_frmMainForm.SelectedPlugins.Count == 0)
+				return;
+			List<string> lstPlugins = new List<string>();
+			foreach (string strPluginName in p_frmMainForm.SelectedPlugins)
+				lstPlugins.Add(Path.Combine(Program.GameMode.PluginsPath, strPluginName));
+			Tools.CriticalRecords.CriticalRecordsForm crfEditor = new Tools.CriticalRecords.CriticalRecordsForm(lstPlugins.ToArray());
+			crfEditor.Show();
+		}
+
+		/// <summary>
+		/// Launches the Graphics Settings tool.
+		/// </summary>
+		/// <param name="p_frmMainForm">The main mod management form.</param>
+		public void LaunchGraphicsSettingsTool(MainForm p_frmMainForm)
+		{
+			Tools.GraphicsSettings.GraphicsSettings gsfGraphicsSettingsForm = new Tools.GraphicsSettings.GraphicsSettings();
+			gsfGraphicsSettingsForm.ShowDialog();
+		}
+
+		/// <summary>
+		/// Toggles archive invalidation.
+		/// </summary>
+		/// <param name="p_frmMainForm">The main mod management form.</param>
+		public void ToggleArchiveInvalidation(MainForm p_frmMainForm)
+		{
+			Fomm.Games.Fallout3.Tools.ArchiveInvalidation.Update();
+		}
+
+		#endregion
+
+		#region Scripts
+
+		/// <summary>
+		/// Creates a mod installer script for the given <see cref="fomod"/>.
+		/// </summary>
+		/// <param name="p_fomodMod">The mod for which to create an installer script.</param>
+		/// <param name="p_mirInstaller">The installer for which the script is being created.</param>
+		/// <returns>A mod installer script for the given <see cref="fomod"/>.</returns>
+		/*public override ModInstaller GetModInstallerScript(fomod p_fomodMod)
+		{
+			return new Fallout3ModInstallerScript(p_fomodMod);
+		}*/
+
+		#endregion
+
+		public override bool HandleStandaloneArguments(string[] p_strArgs)
+		{
+			if (!p_strArgs[0].StartsWith("-") && File.Exists(p_strArgs[0]))
+			{
+				switch (Path.GetExtension(p_strArgs[0]).ToLowerInvariant())
+				{
+					case ".dat":
+					case ".bsa":
+						Application.Run(new Tools.BSA.BSABrowser(p_strArgs[0]));
+						return true;
+					case ".sdp":
+						Application.Run(new Tools.ShaderEdit.MainForm(p_strArgs[0]));
+						return true;
+					case ".esp":
+					case ".esm":
+						Application.Run(new Tools.TESsnip.TESsnip(new string[] { p_strArgs[0] }));
+						return true;
+				}
+			}
+			else
+			{
+				switch (p_strArgs[0])
+				{
+					case "-setup":
+						bool booNewMutex = false;
+						Mutex mutex = new Mutex(true, "fommMainMutex", out booNewMutex);
+						if (!booNewMutex)
+						{
+							MessageBox.Show("fomm is already running", "Error");
+							mutex.Close();
+							return true;
+						}
+						Application.Run(new SettingsForm(false));
+						mutex.Close();
+						return true;
+					case "-bsa-unpacker":
+						Application.Run(new Tools.BSA.BSABrowser());
+						return true;
+					case "-bsa-creator":
+						Application.Run(new Tools.BSA.BSACreator());
+						return true;
+					case "-tessnip":
+						Application.Run(new Tools.TESsnip.TESsnip());
+						return true;
+					case "-sdp-editor":
+						Application.Run(new Tools.ShaderEdit.MainForm());
+						return true;
+				}
+			}
+			return false;
+		}
+
+		public override bool HandleInAppArguments(string[] p_strArgs)
+		{
+			if (Array.IndexOf<string>(p_strArgs, "-install-tweaker") != -1)
+			{
+				Application.Run(new Tools.InstallTweaker.InstallationTweaker());
+				return true;
+			}
+			return false;
+		}
+
+		public override bool SetWorkingDirectory(out string p_strErrorMessage)
+		{
+#if TRACE
+			Trace.WriteLine("Looking for Fallout 3.");
+			Trace.Indent();
+#endif
+			//If we aren't in fallouts directory, look it up in the registry
+			if (!File.Exists("Fallout3.exe") && !File.Exists("Fallout3ng.exe"))
+			{
+				if (File.Exists("..\\Fallout3.exe") || File.Exists("..\\Fallout3ng.exe"))
+				{
+					Directory.SetCurrentDirectory(Path.Combine(Directory.GetCurrentDirectory(), ".."));
+#if TRACE
+					Trace.WriteLine("Found, we think (1): " + Path.GetFullPath("."));
+#endif
+				}
+				else
+				{
+					string path = Settings.GetString("FalloutDir");
+					if (path == null)
+					{
+						try
+						{
+							path = Microsoft.Win32.Registry.GetValue(@"HKEY_LOCAL_MACHINE\Software\Bethesda Softworks\Fallout3", "Installed Path", null) as string;
+						}
+						catch
+						{
+							path = null;
+						}
+
+					}
+					if (path != null)
+					{
+						Directory.SetCurrentDirectory(path);
+#if TRACE
+						Trace.WriteLine("Found, we think (2): " + Path.GetFullPath("."));
+#endif
+					}
+				}
+			}
+#if TRACE
+			Trace.WriteLine("Verifying Fallout 3 location: " + Path.GetFullPath("."));
+#endif
+			if (!File.Exists("fallout3.exe") && !File.Exists("fallout3ng.exe"))
+			{
+#if TRACE
+				Trace.WriteLine("Could not find Fallout 3.");
+#endif
+				p_strErrorMessage = "Could not find fallout 3 directory." + Environment.NewLine + "Fallout's registry entry appears to be missing or incorrect. Install fomm into fallout's base directory instead.";
+				return false;
+			}
+			p_strErrorMessage = null;
+			return true;
+		}
+
+		public override void Init()
+		{
+			CheckForDLCs();
+			((Fallout3PluginManager)PluginManager).LoadPluginList();
+		}
+
+		protected void CheckForDLCs()
+		{
+#if TRACE
+			Trace.WriteLine("Checking DLC location.");
+			Trace.Indent();
+#endif
+
+			if (Directory.Exists(DLCDirectory) && Settings.GetString("IgnoreDLC") != "True")
+			{
+#if TRACE
+				Trace.Write("Anchorage...");
+#endif
+				if (Program.GetFiles(DLCDirectory, "Anchorage.esm", SearchOption.AllDirectories).Length == 1)
+				{
+					if (!File.Exists("data\\Anchorage.esm") && !File.Exists("data\\Anchorage - Main.bsa") && !File.Exists("data\\Anchorage - Sounds.bsa"))
+					{
+						string[] f1 = Directory.GetFiles(DLCDirectory, "Anchorage.esm", SearchOption.AllDirectories);
+						string[] f2 = Directory.GetFiles(DLCDirectory, "Anchorage - Main.bsa", SearchOption.AllDirectories);
+						string[] f3 = Directory.GetFiles(DLCDirectory, "Anchorage - Sounds.bsa", SearchOption.AllDirectories);
+						if (f1.Length == 1 && f2.Length == 1 && f3.Length == 1)
+						{
+							switch (MessageBox.Show("You seem to have bought the DLC Anchorage.\n" +
+								"Would you like to move it to fallout's data directory to allow for offline use and fose compatibility?\n" +
+								"Note that this may cause issues with any save games created after it was purchased but before it was moved.\n" +
+								"Click yes to move, cancel to ignore, and no if you don't want fomm to offer to move any DLC for you again.",
+								"Question", MessageBoxButtons.YesNoCancel))
+							{
+								case DialogResult.Yes:
+									File.Move(f1[0], "data\\Anchorage.esm");
+									File.Move(f2[0], "data\\Anchorage - Main.bsa");
+									File.Move(f3[0], "data\\Anchorage - Sounds.bsa");
+									break;
+								case DialogResult.No:
+									Settings.SetString("IgnoreDLC", "True");
+									break;
+							}
+						}
+					}
+				}
+#if TRACE
+				Trace.WriteLine("Done");
+				Trace.Write("The Pitt...");
+#endif
+				if (Program.GetFiles(DLCDirectory, "ThePitt.esm", SearchOption.AllDirectories).Length == 1)
+				{
+					if (!File.Exists("data\\ThePitt.esm") && !File.Exists("data\\ThePitt - Main.bsa") && !File.Exists("data\\ThePitt - Sounds.bsa"))
+					{
+						string[] f1 = Directory.GetFiles(DLCDirectory, "ThePitt.esm", SearchOption.AllDirectories);
+						string[] f2 = Directory.GetFiles(DLCDirectory, "ThePitt - Main.bsa", SearchOption.AllDirectories);
+						string[] f3 = Directory.GetFiles(DLCDirectory, "ThePitt - Sounds.bsa", SearchOption.AllDirectories);
+						if (f1.Length == 1 && f2.Length == 1 && f3.Length == 1)
+						{
+							switch (MessageBox.Show("You seem to have bought the DLC The Pitt.\n" +
+								"Would you like to move it to fallout's data directory to allow for offline use and fose compatibility?\n" +
+								"Note that this may cause issues with any save games created after it was purchased but before it was moved.\n" +
+								"Click yes to move, cancel to ignore, and no if you don't want fomm to offer to move any DLC for you again.",
+								"Question", MessageBoxButtons.YesNoCancel))
+							{
+								case DialogResult.Yes:
+									File.Move(f1[0], "data\\ThePitt.esm");
+									File.Move(f2[0], "data\\ThePitt - Main.bsa");
+									File.Move(f3[0], "data\\ThePitt - Sounds.bsa");
+									break;
+								case DialogResult.No:
+									Settings.SetString("IgnoreDLC", "True");
+									break;
+							}
+						}
+					}
+				}
+#if TRACE
+				Trace.WriteLine("Done.");
+				Trace.Write("Broken Steel...");
+#endif
+				if (Program.GetFiles(DLCDirectory, "BrokenSteel.esm", SearchOption.AllDirectories).Length == 1)
+				{
+					if (!File.Exists("Data\\BrokenSteel.esm"))
+					{
+						string[][] files = new string[8][];
+						files[0] = Directory.GetFiles(DLCDirectory, "BrokenSteel.esm", SearchOption.AllDirectories);
+						files[1] = Directory.GetFiles(DLCDirectory, "BrokenSteel - Main.bsa", SearchOption.AllDirectories);
+						files[2] = Directory.GetFiles(DLCDirectory, "BrokenSteel - Sounds.bsa", SearchOption.AllDirectories);
+						files[3] = Directory.GetFiles(DLCDirectory, "2 weeks later.bik", SearchOption.AllDirectories);
+						files[4] = Directory.GetFiles(DLCDirectory, "B09.bik", SearchOption.AllDirectories);
+						files[5] = Directory.GetFiles(DLCDirectory, "B27.bik", SearchOption.AllDirectories);
+						files[6] = Directory.GetFiles(DLCDirectory, "B28.bik", SearchOption.AllDirectories);
+						files[7] = Directory.GetFiles(DLCDirectory, "B29.bik", SearchOption.AllDirectories);
+						bool missing = false;
+						for (int i = 0; i < 8; i++)
+						{
+							if (files[i].Length != 1)
+							{
+								missing = true;
+								break;
+							}
+							if ((i < 3 && File.Exists(Path.Combine("Data", Path.GetFileName(files[i][0])))) ||
+							(i > 4 && File.Exists(Path.Combine("Data\\Video", Path.GetFileName(files[i][0])))))
+							{
+								missing = true;
+								break;
+							}
+						}
+						if (!missing)
+						{
+							switch (MessageBox.Show("You seem to have bought the DLC Broken Steel.\n" +
+								"Would you like to move it to fallout's data directory to allow for offline use and fose compatibility?\n" +
+								"Note that this may cause issues with any save games created after it was purchased but before it was moved.\n" +
+								"Click yes to move, cancel to ignore, and no if you don't want fomm to offer to move any DLC for you again.",
+								"Question", MessageBoxButtons.YesNoCancel))
+							{
+								case DialogResult.Yes:
+									if (File.Exists("data\\video\\2 weeks later.bik"))
+									{
+										File.Move("data\\video\\2 weeks later.bik", "data\\Video\\2 weeks later.bik.old");
+									}
+									if (File.Exists("data\\video\\b09.bik"))
+									{
+										File.Move("data\\video\\b09.bik", "data\\Video\\b09.bik.old");
+									}
+									for (int i = 0; i < 3; i++)
+									{
+										File.Move(files[i][0], Path.Combine("Data", Path.GetFileName(files[i][0])));
+									}
+									for (int i = 3; i < 8; i++)
+									{
+										File.Move(files[i][0], Path.Combine("Data\\Video", Path.GetFileName(files[i][0])));
+									}
+									break;
+								case DialogResult.No:
+									Settings.SetString("IgnoreDLC", "True");
+									break;
+							}
+						}
+					}
+				}
+#if TRACE
+				Trace.WriteLine("Done.");
+				Trace.Write("Point Lookout...");
+#endif
+				if (Program.GetFiles(DLCDirectory, "PointLookout.esm ", SearchOption.AllDirectories).Length == 1)
+				{
+					if (!File.Exists("data\\PointLookout.esm ") && !File.Exists("data\\PointLookout - Main.bsa") && !File.Exists("data\\PointLookout - Sounds.bsa"))
+					{
+						string[] f1 = Directory.GetFiles(DLCDirectory, "PointLookout.esm", SearchOption.AllDirectories);
+						string[] f2 = Directory.GetFiles(DLCDirectory, "PointLookout - Main.bsa", SearchOption.AllDirectories);
+						string[] f3 = Directory.GetFiles(DLCDirectory, "PointLookout - Sounds.bsa", SearchOption.AllDirectories);
+						if (f1.Length == 1 && f2.Length == 1 && f3.Length == 1)
+						{
+							switch (MessageBox.Show("You seem to have bought the DLC Point lookout.\n" +
+								"Would you like to move it to fallout's data directory to allow for offline use and fose compatibility?\n" +
+								"Note that this may cause issues with any save games created after it was purchased but before it was moved.\n" +
+								"Click yes to move, cancel to ignore, and no if you don't want fomm to offer to move any DLC for you again.",
+								"Question", MessageBoxButtons.YesNoCancel))
+							{
+								case DialogResult.Yes:
+									File.Move(f1[0], "data\\PointLookout.esm");
+									File.Move(f2[0], "data\\PointLookout - Main.bsa");
+									File.Move(f3[0], "data\\PointLookout - Sounds.bsa");
+									break;
+								case DialogResult.No:
+									Settings.SetString("IgnoreDLC", "True");
+									break;
+							}
+						}
+					}
+				}
+#if TRACE
+				Trace.WriteLine("Done.");
+				Trace.Write("Zeta...");
+#endif
+				if (Program.GetFiles(DLCDirectory, "Zeta.esm ", SearchOption.AllDirectories).Length == 1)
+				{
+					if (!File.Exists("data\\Zeta.esm ") && !File.Exists("data\\Zeta - Main.bsa") && !File.Exists("data\\Zeta - Sounds.bsa"))
+					{
+						string[] f1 = Directory.GetFiles(DLCDirectory, "Zeta.esm", SearchOption.AllDirectories);
+						string[] f2 = Directory.GetFiles(DLCDirectory, "Zeta - Main.bsa", SearchOption.AllDirectories);
+						string[] f3 = Directory.GetFiles(DLCDirectory, "Zeta - Sounds.bsa", SearchOption.AllDirectories);
+						if (f1.Length == 1 && f2.Length == 1 && f3.Length == 1)
+						{
+							switch (MessageBox.Show("You seem to have bought the DLC Mothership Zeta.\n" +
+								"Would you like to move it to fallout's data directory to allow for offline use and fose compatibility?\n" +
+								"Note that this may cause issues with any save games created after it was purchased but before it was moved.\n" +
+								"Click yes to move, cancel to ignore, and no if you don't want fomm to offer to move any DLC for you again.",
+								"Question", MessageBoxButtons.YesNoCancel))
+							{
+								case DialogResult.Yes:
+									File.Move(f1[0], "data\\Zeta.esm");
+									File.Move(f2[0], "data\\Zeta - Main.bsa");
+									File.Move(f3[0], "data\\Zeta - Sounds.bsa");
+									break;
+								case DialogResult.No:
+									Settings.SetString("IgnoreDLC", "True");
+									break;
+							}
+						}
+					}
+				}
+#if TRACE
+				Trace.WriteLine("Done.");
+#endif
+			}
+#if TRACE
+			Trace.Unindent();
+#endif
+		}
+
+		public override bool IsPluginFile(string p_strPath)
+		{
+			string strExt = Path.GetExtension(p_strPath).ToLowerInvariant();
+			return (strExt == ".esp" || strExt == ".esm");
+		}
+	}
+}

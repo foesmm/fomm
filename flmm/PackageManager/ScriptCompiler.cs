@@ -25,7 +25,7 @@ namespace Fomm.PackageManager
 			cParams.GenerateInMemory = false;
 			cParams.IncludeDebugInformation = false;
 			//cParams.OutputAssembly=ScriptOutputPath;
-			cParams.ReferencedAssemblies.Add(System.IO.Path.Combine(Program.exeDir, "fomm.Scripting.dll"));
+			cParams.ReferencedAssemblies.Add(System.IO.Path.Combine(Program.ExecutableDirectory, "fomm.Scripting.dll"));
 			cParams.ReferencedAssemblies.Add("System.dll");
 			cParams.ReferencedAssemblies.Add("System.Drawing.dll");
 			cParams.ReferencedAssemblies.Add("System.Windows.Forms.dll");

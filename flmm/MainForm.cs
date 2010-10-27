@@ -2,22 +2,23 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.IO;
-using Fomm.TESsnip;
+using Fomm.Games.Fallout3.Tools.TESsnip;
 using System.Runtime.Remoting;
 using Fomm.PackageManager;
 using System.Drawing;
 using System.Text;
-using Fomm.CriticalRecords;
+using Fomm.Games.Fallout3.Tools.CriticalRecords;
 using Fomm.AutoSorter;
 using System.Text.RegularExpressions;
 using Fomm.PackageManager.ModInstallLog;
 #if TRACE
 using System.Diagnostics;
+using Fomm.Games;
 #endif
 
 namespace Fomm
 {
-	partial class MainForm : Form
+	public partial class MainForm : Form
 	{
 #if TRACE
 		private bool m_booListedPlugins = false;
@@ -27,6 +28,37 @@ namespace Fomm
 		private List<string> m_lstIgnoreReadOnly = new List<string>();
 		private Dictionary<string, Dictionary<string, List<string>>> m_dicExtraInfo = new Dictionary<string, Dictionary<string, List<string>>>();
 		private BackgroundWorkerProgressDialog m_bwdProgress = null;
+
+		#region Properties
+
+		/// <summary>
+		/// Gets a list of currently selected plugins.
+		/// </summary>
+		/// <value>A list of currently selected plugins.</value>
+		public IList<string> SelectedPlugins
+		{
+			get
+			{
+				List<string> lstSelectedPlugins = new List<string>();
+				foreach (ListViewItem lviPlugin in lvEspList.SelectedItems)
+					lstSelectedPlugins.Add(lviPlugin.Text);
+				return lstSelectedPlugins;			
+			}
+		}
+
+		/// <summary>
+		/// Gets whether the package manager is open.
+		/// </summary>
+		/// <value>Whether the package manager is open.</value>
+		public bool IsPackageManagerOpen
+		{
+			get
+			{
+				return PackageManagerForm != null;
+			}
+		}
+
+		#endregion
 
 		#region Constructors
 
@@ -66,9 +98,32 @@ namespace Fomm
 					Settings.SetBool("DisableIPC", true);
 				}
 			}
+
+			SetupTools();
 		}
 
 		#endregion
+
+		/// <summary>
+		/// Adds the game-specific tools to the Tool menu.
+		/// </summary>
+		protected void SetupTools()
+		{
+			foreach (GameTool gtlTool in Program.GameMode.Tools)
+				toolsToolStripMenuItem.DropDownItems.Add(gtlTool.Name, null, (s, a) => { ExecuteGameToolCommand(gtlTool); });
+
+			foreach (GameTool gtlTool in Program.GameMode.GameSettingsTools)
+				gameSettingsToolStripMenuItem.DropDownItems.Add(gtlTool.Name, null, (s, a) => { ExecuteGameToolCommand(gtlTool); });
+
+			foreach (GameTool gtlTool in Program.GameMode.RightClickTools)
+				cmsPlugins.Items.Add(gtlTool.Name, null, (s, a) => { ExecuteGameToolCommand(gtlTool); });
+		}
+
+		private void ExecuteGameToolCommand(GameTool p_gtlTool)
+		{
+			if (p_gtlTool.Command != null)
+				p_gtlTool.Command(this);
+		}
 
 		private void MainForm_Load(object sender, EventArgs e)
 		{
@@ -85,10 +140,10 @@ namespace Fomm
 			if (tmp != null) lvEspList.Columns[0].Width = int.Parse(tmp);
 			tmp = Settings.GetString("MainFormCol2Width");
 			if (tmp != null) lvEspList.Columns[1].Width = int.Parse(tmp);
-			RefreshEspList();
+			RefreshPluginList();
 			exportLoadOrder(Path.Combine(Program.fommDir, "load order backup.txt"));
 
-			if (!File.Exists(Program.FOIniPath))
+			if (!File.Exists(Program.GameMode.SettingsFiles[Fomm.Games.Fallout3.Fallout3GameMode.SettingsFile.FOIniPath]))
 			{
 				MessageBox.Show("You have no Fallout INI file. Please run Fallout 3 to initialize the file before installing any mods or turning on Archive Invalidation.", "Missing INI", MessageBoxButtons.OK, MessageBoxIcon.Information);
 				return;
@@ -241,7 +296,7 @@ namespace Fomm
 				PackageManagerForm = new Fomm.PackageManager.PackageManager(this);
 				PackageManagerForm.FormClosed += delegate(object sender2, FormClosedEventArgs e2)
 				{
-					RefreshEspList();
+					RefreshPluginList();
 					PackageManagerForm = null;
 				};
 				PackageManagerForm.Show();
@@ -283,60 +338,34 @@ namespace Fomm
 				boldify = Settings.GetBool("ShowEsmInBold");
 			}
 
-			if (File.Exists(Program.PluginsFile))
+			string[] strPlugins = Program.GameMode.PluginManager.SortPluginList(Program.GameMode.PluginManager.ActivePluginList);
+
+			for (int i = 0; i < strPlugins.Length; i++)
+				strPlugins[i] = Path.GetFileName(strPlugins[i].Trim()).ToLowerInvariant();
+			foreach (ListViewItem lvi in lvEspList.Items)
 			{
-				string[] lines = File.ReadAllLines(Program.PluginsFile);
-				List<Pair<FileInfo, bool>> files = new List<Pair<FileInfo, bool>>(lines.Length);
-				char[] invalidChars = Path.GetInvalidFileNameChars();
-				for (int i = 0; i < lines.Length; i++)
+				int i = Array.IndexOf<string>(strPlugins, lvi.Text.ToLowerInvariant());
+				if (i != -1)
 				{
-					lines[i] = lines[i].Trim();
-					if (lines[i].Length == 0 || lines[i][0] == '#' || lines[i].IndexOfAny(invalidChars) != -1) continue;
-					string path = Path.Combine("Data", lines[i]);
-					if (!File.Exists(path)) continue;
-					files.Add(new Pair<FileInfo, bool>(new FileInfo(path), TESsnip.Plugin.GetIsEsm(path)));
-				}
-				files.Sort(delegate(Pair<FileInfo, bool> a, Pair<FileInfo, bool> b)
-				{
-					if (a.b == b.b) return a.a.LastWriteTime.CompareTo(b.a.LastWriteTime);
-					else return a.b ? -1 : 1;
-				});
-				if (lines.Length != files.Count) lines = new string[files.Count];
-				for (int i = 0; i < lines.Length; i++) lines[i] = files[i].a.Name.Trim().ToLowerInvariant();
-				foreach (ListViewItem lvi in lvEspList.Items)
-				{
-					int i = Array.IndexOf<string>(lines, lvi.Text.ToLowerInvariant());
-					if (i != -1)
+					if (add)
 					{
-						if (add)
-						{
-							if (boldify && files[i].b) lvi.Font = new System.Drawing.Font(lvi.Font, System.Drawing.FontStyle.Bold);
-							lvi.Checked = true;
-							lvi.SubItems.Add(i.ToString("X2"));
-						}
-						else lvi.SubItems[1].Text = i.ToString("X2");
+						lvi.Checked = true;
+						lvi.SubItems.Add(i.ToString("X2"));
 					}
 					else
-					{
-						if (add)
-						{
-							if (boldify && TESsnip.Plugin.GetIsEsm(Path.Combine("Data", lvi.Text))) lvi.Font = new System.Drawing.Font(lvi.Font, System.Drawing.FontStyle.Bold);
-							lvi.SubItems.Add("NA");
-						}
-						else lvi.SubItems[1].Text = "NA";
-					}
+						lvi.SubItems[1].Text = i.ToString("X2");
 				}
-			}
-			else
-			{
-				foreach (ListViewItem lvi in lvEspList.Items)
+				else
 				{
-					if (add) lvi.SubItems.Add("NA");
-					else lvi.SubItems[1].Text = "NA";
+					if (add)
+						lvi.SubItems.Add("NA");
+					else
+						lvi.SubItems[1].Text = "NA";
 				}
 			}
 		}
-		public void RefreshEspList()
+
+		public void RefreshPluginList()
 		{
 #if TRACE
 			if (!m_booListedPlugins)
@@ -350,55 +379,26 @@ namespace Fomm
 			lvEspList.BeginUpdate();
 			lvEspList.Items.Clear();
 
-			List<ListViewItem> plugins = new List<ListViewItem>();
-			DirectoryInfo di = new DirectoryInfo("data");
-			List<FileInfo> files = new List<FileInfo>(Program.GetFiles(di, "*.esp"));
-			files.AddRange(Program.GetFiles(di, "*.esm"));
-			int count = 0;
-			for (int i = 0; i < files.Count; i++)
-			{
-				try
-				{
-					count += files[i].LastWriteTime.Hour;
-				}
-				catch (ArgumentOutOfRangeException)
-				{
-					MessageBox.Show("File '" + files[i].Name + "' had an invalid time stamp, and has been reset.\n" +
-						"Please check its position in the load order.", "Warning");
-					files[i].LastWriteTime = DateTime.Now;
-				}
-			}
+			List<string> lstPluginFilenames = new List<string>(Program.GameMode.PluginManager.OrderedPluginList);
 			if (AlphaSortMode)
 			{
-				files.Sort(delegate(FileInfo a, FileInfo b)
+				lstPluginFilenames.Sort(delegate(string a, string b)
 				{
-					return a.Name.CompareTo(b.Name);
+					return Path.GetFileName(a).CompareTo(Path.GetFileName(b));
 				});
-			}
-			else
-			{
-				files.Sort(delegate(FileInfo a, FileInfo b)
-				{
-					return a.LastWriteTime.CompareTo(b.LastWriteTime);
-				});
-			}
-			foreach (FileInfo fi in files)
-			{
-				if (((fi.Attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly) && !m_lstIgnoreReadOnly.Contains(fi.Name))
-				{
-					if (MessageBox.Show(this, String.Format("'{0}' is read-only, so its load order cannot be changed. Would you like to make it not read-only?", fi.Name), "Read Only", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-						fi.Attributes &= ~FileAttributes.ReadOnly;
-					else
-						m_lstIgnoreReadOnly.Add(fi.Name);
-				}
-#if TRACE
-				if (!m_booListedPlugins)
-					Trace.WriteLine(fi.Name);
-#endif
-				plugins.Add(new ListViewItem(fi.Name));
 			}
 
-			lvEspList.Items.AddRange(plugins.ToArray());
+			List<ListViewItem> lstPluginViewItems = new List<ListViewItem>();
+			foreach (string strPlugin in lstPluginFilenames)
+			{
+#if TRACE
+				if (!m_booListedPlugins)
+					Trace.WriteLine(strPlugin);
+#endif
+				lstPluginViewItems.Add(new ListViewItem(strPlugin));
+			}
+
+			lvEspList.Items.AddRange(lstPluginViewItems.ToArray());
 			RefreshIndexCounts();
 			lvEspList.EndUpdate();
 			RefreshingList = false;
@@ -412,86 +412,7 @@ namespace Fomm
 #endif
 		}
 
-		private void bEnableAI_Click(object sender, EventArgs e)
-		{
-			ArchiveInvalidation.Update();
-		}
-
 		#region toolbuttons
-
-		private void openInTESsnipToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			if (lvEspList.SelectedItems.Count == 0) return;
-			string[] mods = new string[lvEspList.SelectedItems.Count];
-			for (int i = 0; i < mods.Length; i++) mods[i] = Path.Combine("data", lvEspList.SelectedItems[i].Text);
-			TESsnip.TESsnip tes = new TESsnip.TESsnip(mods);
-			tes.FormClosed += delegate(object sender2, FormClosedEventArgs e2)
-				{
-					RefreshEspList();
-				};
-			tes.Show();
-			GC.Collect();
-		}
-
-		/// <summary>
-		/// Handles the <see cref="ToolStripMenuItem.Click"/> event of the open in CREditor context menu item.
-		/// </summary>
-		/// <remarks>
-		/// Launches the critical records editor, passing it the selected plugins.
-		/// </remarks>
-		/// <param name="sender">The object that trigger the event.</param>
-		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
-		private void openInCREditorToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			if (lvEspList.SelectedItems.Count == 0) return;
-			string[] strPlugins = new string[lvEspList.SelectedItems.Count];
-			for (int i = 0; i < strPlugins.Length; i++)
-				strPlugins[i] = Path.Combine("data", lvEspList.SelectedItems[i].Text);
-			CriticalRecordsForm crfEditor = new CriticalRecordsForm(strPlugins);
-			crfEditor.Show();
-			GC.Collect();
-		}
-
-		/// <summary>
-		/// Handles the <see cref="ToolStripMenuItem.Click"/> event of the CREditor menu item.
-		/// </summary>
-		/// <remarks>
-		/// Launches the critical records editor.
-		/// </remarks>
-		/// <param name="sender">The object that trigger the event.</param>
-		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
-		private void cREditorToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			CriticalRecordsForm crfEditor = new CriticalRecordsForm();
-			crfEditor.Show();
-			GC.Collect();
-		}
-
-		private void bBSAUnpack_Click(object sender, EventArgs e)
-		{
-			new BSABrowser().Show();
-		}
-
-		private void cBSACreator_Click(object sender, EventArgs e)
-		{
-			new BSACreator().Show();
-		}
-
-		private void bTESsnip_Click(object sender, EventArgs e)
-		{
-			TESsnip.TESsnip tes = new TESsnip.TESsnip();
-			tes.FormClosed += delegate(object sender2, FormClosedEventArgs e2)
-				{
-					RefreshEspList();
-				};
-			tes.Show();
-			GC.Collect();
-		}
-
-		private void bShaderEdit_Click(object sender, EventArgs e)
-		{
-			new ShaderEdit.MainForm().Show();
-		}
 
 		private void bLaunch_Click(object sender, EventArgs e)
 		{
@@ -688,12 +609,10 @@ namespace Fomm
 		private void lvEspList_ItemChecked(object sender, ItemCheckedEventArgs e)
 		{
 			if (RefreshingList) return;
-			string[] plugins = new string[lvEspList.CheckedItems.Count];
-			for (int i = 0; i < plugins.Length; i++)
-			{
-				plugins[i] = lvEspList.CheckedItems[i].Text;
-			}
-			File.WriteAllLines(Program.PluginsFile, plugins, System.Text.Encoding.Default);
+			if (e.Item.Checked)
+				Program.GameMode.PluginManager.ActivatePlugin(e.Item.Text);
+			else
+				Program.GameMode.PluginManager.DeactivatePlugin(e.Item.Text);
 			RefreshIndexCounts();
 		}
 
@@ -836,7 +755,7 @@ namespace Fomm
 				timestamp += twomins;
 			}
 
-			RefreshEspList();
+			RefreshPluginList();
 
 			RefreshingList = true;
 			for (int i = 0; i < lvEspList.Items.Count; i++) lvEspList.Items[i].Checked = active.Contains(lvEspList.Items[i].Text.ToLowerInvariant());
@@ -891,16 +810,6 @@ namespace Fomm
 			RefreshIndexCounts();
 		}
 
-		private void bInstallTweaker_Click(object sender, EventArgs e)
-		{
-			if (PackageManagerForm != null)
-			{
-				MessageBox.Show("Please close the package manager before running the install tweaker");
-				return;
-			}
-			(new InstallTweaker.InstallationTweaker()).ShowDialog();
-		}
-
 		private void bSettings_Click(object sender, EventArgs e)
 		{
 			if (Application.OpenForms.Count > 1)
@@ -908,8 +817,8 @@ namespace Fomm
 				MessageBox.Show("Please close all utility windows before changing the settings");
 				return;
 			}
-			(new SetupForm(true)).ShowDialog();
-			RefreshEspList();
+			(new SettingsForm(true)).ShowDialog();
+			RefreshPluginList();
 		}
 
 		private void lvEspList_ColumnClick(object sender, ColumnClickEventArgs e)
@@ -917,7 +826,7 @@ namespace Fomm
 			AlphaSortMode = e.Column == 0;
 			if (AlphaSortMode) lvEspList.AllowDrop = false;
 			else lvEspList.AllowDrop = true;
-			RefreshEspList();
+			RefreshPluginList();
 		}
 
 		private void closeToolStripMenuItem_Click(object sender, EventArgs e)
@@ -940,7 +849,7 @@ namespace Fomm
 				File.SetLastWriteTime(Path.Combine("data", plugins[i]), timestamp);
 				timestamp += twomins;
 			}
-			RefreshEspList();
+			RefreshPluginList();
 		}
 
 		private void bReport_Click(object sender, EventArgs e)
@@ -1038,30 +947,6 @@ namespace Fomm
 			{
 				MessageBox.Show("No newer updates available");
 				Settings.SetString("LastUpdateCheck", DateTime.Now.ToString());
-			}
-		}
-
-		private GraphicsSettings.GraphicsSettings m_gsfGraphicsSettingsForm = null;
-		/// <summary>
-		/// Handles the <see cref="Button.Click"/> event of the gameSettingsToolStripMenuItem.
-		/// </summary>
-		/// <remarks>
-		/// Displays the graphics setting dialog.
-		/// </remarks>
-		/// <param name="sender">The object that trigger the event.</param>
-		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
-		private void gameSettingsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			if (m_gsfGraphicsSettingsForm != null)
-				m_gsfGraphicsSettingsForm.Focus();
-			else
-			{
-				m_gsfGraphicsSettingsForm = new Fomm.GraphicsSettings.GraphicsSettings();
-				m_gsfGraphicsSettingsForm.FormClosed += delegate(object sender2, FormClosedEventArgs e2)
-				{
-					m_gsfGraphicsSettingsForm = null;
-				};
-				m_gsfGraphicsSettingsForm.ShowDialog(this);
 			}
 		}
 

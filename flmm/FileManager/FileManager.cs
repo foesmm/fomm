@@ -162,7 +162,7 @@ namespace Fomm.FileManager
 				{
 					string strModKey = InstallLog.Current.GetModKey(strMod);
 					string strDirectory = Path.GetDirectoryName(strFile);
-					string strBackupPath = Path.GetFullPath(Path.Combine(Program.overwriteDir, strDirectory));
+					string strBackupPath = Path.GetFullPath(Path.Combine(Program.GameMode.OverwriteDirectory, strDirectory));
 					strBackupPath = Path.Combine(strBackupPath, strModKey + "_" + Path.GetFileName(strFile));
 					if (!File.Exists(strBackupPath) && !currentOwner.Equals(strModKey))
 						booMissing = true;

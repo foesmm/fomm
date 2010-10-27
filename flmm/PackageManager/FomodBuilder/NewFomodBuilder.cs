@@ -163,7 +163,7 @@ namespace Fomm.PackageManager.FomodBuilder
 		/// <returns>The path to the new fomod if it was successfully built; <lang cref="null"/> otherwise.</returns>
 		public string BuildFomod(string p_strFileName, IList<KeyValuePair<string, string>> p_lstCopyInstructions, Readme p_rmeReadme, XmlDocument p_xmlInfo, bool p_booSetScreenshot, Screenshot p_shtScreenshot, FomodScript p_fscScript)
 		{
-			string strFomodPath = Path.Combine(Program.PackageDir, p_strFileName + ".fomod");
+			string strFomodPath = Path.Combine(Program.GameMode.ModDirectory, p_strFileName + ".fomod");
 			strFomodPath = GenerateFomod(new BuildFomodArgs(p_strFileName,
 																p_lstCopyInstructions,
 																p_rmeReadme,

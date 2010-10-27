@@ -7,13 +7,15 @@ using System.Windows.Forms;
 using System.Text;
 using Fomm.PackageManager.ModInstallLog;
 using System.ComponentModel;
+using System.Drawing;
+using Fomm.AutoSorter;
 
 namespace Fomm.PackageManager
 {
 	/// <summary>
 	/// the base script for scripts that install or uninstall mods.
 	/// </summary>
-	public abstract class ModInstallScript : ModScript
+	public abstract class ModInstallScript : IDisposable
 	{
 		protected static readonly object objInstallLock = new object();
 		private TxFileManager m_tfmFileManager = null;
@@ -25,8 +27,39 @@ namespace Fomm.PackageManager
 		private bool m_booOverwriteAllIni = false;
 		private InstallLogMergeModule m_ilmModInstallLog = null;
 		private BackgroundWorkerProgressDialog m_bwdProgress = null;
+		private List<string> m_lstActivePlugins = null;
+		private fomod m_fomodMod = null;
 
 		#region Properties
+
+		/// <summary>
+		/// Gets the list of active plugins.
+		/// </summary>
+		/// <value>The list of active plugins.</value>
+		protected List<string> ActivePlugins
+		{
+			get
+			{
+				LoadActivePlugins();
+				return m_lstActivePlugins;
+			}
+			set
+			{
+				m_lstActivePlugins = value;
+			}
+		}
+
+		/// <summary>
+		/// Gets the mod that is being scripted against.
+		/// </summary>
+		/// <value>The mod that is being scripted against.</value>
+		public fomod Fomod
+		{
+			get
+			{
+				return m_fomodMod;
+			}
+		}
 
 		/// <summary>
 		/// Gets the transactional file manager the script is using.
@@ -141,8 +174,17 @@ namespace Fomm.PackageManager
 		/// </summary>
 		/// <param name="p_fomodMod">The <see cref="fomod"/> to be installed or uninstalled.</param>
 		public ModInstallScript(fomod p_fomodMod)
-			: base(p_fomodMod)
 		{
+			m_fomodMod = p_fomodMod;
+
+			//make sure the permissions manager is initialized.
+			// static members are (usually) only loaded upon first access.
+			// this can cause a problem for our permissions manager as if
+			// the first time it is called is in a domain with limited access
+			// to the machine then the initialization will fail.
+			// to prevent this, we call it now to make sure it is ready when we need it.
+			object objIgnore = PermissionsManager.CurrentPermissions;
+
 			m_tfmFileManager = new TxFileManager();
 		}
 
@@ -336,6 +378,287 @@ namespace Fomm.PackageManager
 
 		#endregion
 
+		#region UI
+
+		#region MessageBox
+
+		/// <summary>
+		/// Shows a message box with the given message.
+		/// </summary>
+		/// <param name="p_strMessage">The message to display in the message box.</param>
+		public void MessageBox(string p_strMessage)
+		{
+			PermissionsManager.CurrentPermissions.Assert();
+			System.Windows.Forms.MessageBox.Show(p_strMessage);
+		}
+
+		/// <summary>
+		/// Shows a message box with the given message and title.
+		/// </summary>
+		/// <param name="p_strMessage">The message to display in the message box.</param>
+		/// <param name="p_strTitle">The message box's title, display in the title bar.</param>
+		public void MessageBox(string p_strMessage, string p_strTitle)
+		{
+			PermissionsManager.CurrentPermissions.Assert();
+			System.Windows.Forms.MessageBox.Show(p_strMessage, p_strTitle);
+		}
+
+		/// <summary>
+		/// Shows a message box with the given message, title, and buttons.
+		/// </summary>
+		/// <param name="p_strMessage">The message to display in the message box.</param>
+		/// <param name="p_strTitle">The message box's title, display in the title bar.</param>
+		/// <param name="p_mbbButtons">The buttons to show in the message box.</param>
+		public DialogResult MessageBox(string p_strMessage, string p_strTitle, MessageBoxButtons p_mbbButtons)
+		{
+			PermissionsManager.CurrentPermissions.Assert();
+			return System.Windows.Forms.MessageBox.Show(p_strMessage, p_strTitle, p_mbbButtons);
+		}
+
+		#endregion
+
+		/// <summary>
+		/// Displays a selection form to the user.
+		/// </summary>
+		/// <remarks>
+		/// The items, previews, and descriptions are repectively ordered. In other words,
+		/// the i-th item in <paramref name="p_strItems"/> uses the i-th preview in
+		/// <paramref name="p_strPreviews"/> and the i-th description in <paramref name="p_strDescriptions"/>.
+		/// 
+		/// Similarly, the idices return as results correspond to the indices of the items in
+		/// <paramref name="p_strItems"/>.
+		/// </remarks>
+		/// <param name="p_strItems">The items from which to select.</param>
+		/// <param name="p_strPreviews">The preview image file names for the items.</param>
+		/// <param name="p_strDescriptions">The descriptions of the items.</param>
+		/// <param name="p_strTitle">The title of the selection form.</param>
+		/// <param name="p_booSelectMany">Whether more than one item can be selected.</param>
+		/// <returns>The indices of the selected items.</returns>
+		public int[] Select(string[] p_strItems, string[] p_strPreviews, string[] p_strDescriptions, string p_strTitle, bool p_booSelectMany)
+		{
+			PermissionsManager.CurrentPermissions.Assert();
+			Image[] imgPreviews = null;
+			if (p_strPreviews != null)
+			{
+				imgPreviews = new Image[p_strPreviews.Length];
+				int intMissingImages = 0;
+				for (int i = 0; i < p_strPreviews.Length; i++)
+				{
+					if (p_strPreviews[i] == null)
+						continue;
+					try
+					{
+						imgPreviews[i] = Fomod.GetImage(p_strPreviews[i]);
+					}
+					catch (Exception e)
+					{
+						if ((e is FileNotFoundException) || (e is DecompressionException))
+							intMissingImages++;
+						else
+							throw e;
+					}
+				}
+				//for now I don't think the user needs to be able to detect this.
+				// i don't think it is severe enough to be an exception, as it may be
+				// intentional, and if it is a bug it should be readily apparent
+				// during testing.
+				/*if (intMissingImages > 0)
+				{
+					m_strLastError = "There were " + intMissingImages + " filenames specified for preview images which could not be loaded";
+				}*/
+			}
+			SelectForm sfmSelectForm = new SelectForm(p_strItems, p_strTitle, p_booSelectMany, imgPreviews, p_strDescriptions);
+			sfmSelectForm.ShowDialog();
+			int[] intResults = new int[sfmSelectForm.SelectedIndex.Length];
+			for (int i = 0; i < sfmSelectForm.SelectedIndex.Length; i++)
+				intResults[i] = sfmSelectForm.SelectedIndex[i];
+			return intResults;
+		}
+
+		/// <summary>
+		/// Creates a form that can be used in custom mod scripts.
+		/// </summary>
+		/// <returns>A form that can be used in custom mod scripts.</returns>
+		public Form CreateCustomForm()
+		{
+			PermissionsManager.CurrentPermissions.Assert();
+			return new Form();
+		}
+
+		#endregion
+
+		#region Version Checking
+
+		/// <summary>
+		/// Gets the version of FOMM.
+		/// </summary>
+		/// <returns>The version of FOMM.</returns>
+		public Version GetFommVersion()
+		{
+			return Program.MVersion;
+		}
+
+		/// <summary>
+		/// Gets the version of Fallout that is installed.
+		/// </summary>
+		/// <returns>The version of Fallout, or <lang cref="null"/> if Fallout
+		/// is not installed.</returns>
+		public Version GetGameVersion()
+		{
+			PermissionsManager.CurrentPermissions.Assert();
+			return Program.GameMode.GameVersion;
+		}
+
+		#endregion
+
+		#region Plugin Management
+
+		/// <summary>
+		/// Gets a list of all installed plugins.
+		/// </summary>
+		/// <returns>A list of all installed plugins.</returns>
+		public string[] GetAllPlugins()
+		{
+			PermissionsManager.CurrentPermissions.Assert();
+			return Program.GameMode.PluginManager.OrderedPluginList;
+		}
+
+		#region Plugin Activation Info
+
+		/// <summary>
+		/// Loads the list of active plugins.
+		/// </summary>
+		private void LoadActivePlugins()
+		{
+			if (m_lstActivePlugins != null)
+				return;
+			PermissionsManager.CurrentPermissions.Assert();
+			string[] strPlugins = Program.GameMode.PluginManager.ActivePluginList;
+			for (int i = 0; i < strPlugins.Length; i++)
+				strPlugins[i] = strPlugins[i].Trim().ToLowerInvariant();
+			m_lstActivePlugins = new List<string>(strPlugins);
+		}
+
+		/// <summary>
+		/// Retrieves a list of currently active plugins.
+		/// </summary>
+		/// <returns>A list of currently active plugins.</returns>
+		public string[] GetActivePlugins()
+		{
+			LoadActivePlugins();
+			PermissionsManager.CurrentPermissions.Assert();
+			return Program.GameMode.PluginManager.SortPluginList(m_lstActivePlugins.ToArray());
+		}
+
+		#endregion
+
+		#region Load Order Management
+
+		/// <summary>
+		/// Sets the load order of the plugins.
+		/// </summary>
+		/// <remarks>
+		/// Each plugin will be moved from its current index to its indice's position
+		/// in <paramref name="p_intPlugins"/>.
+		/// </remarks>
+		/// <param name="p_intPlugins">The new load order of the plugins. Each entry in this array
+		/// contains the current index of a plugin. This array must contain all current indices.</param>
+		/// <exception cref="ArgumentException">Thrown if <paramref name="p_intPlugins"/> does not
+		/// contain all current plugins.</exception>
+		/// <exception cref="IndexOutOfRangeException">Thrown if an index in <paramref name="p_intPlugins"/>
+		/// is outside the range of current plugins. In other words, it is thrown if an entry in
+		/// <paramref name="p_intPlugins"/> refers to a non-existant plugin.</exception>
+		public void SetLoadOrder(int[] p_intPlugins)
+		{
+			string[] strPluginNames = GetAllPlugins();
+			if (p_intPlugins.Length != strPluginNames.Length)
+				throw new ArgumentException("Length of new load order array was different to the total number of plugins");
+
+			for (int i = 0; i < p_intPlugins.Length; i++)
+				if (p_intPlugins[i] < 0 || p_intPlugins[i] >= p_intPlugins.Length)
+					throw new IndexOutOfRangeException("A plugin index was out of range");
+
+			PermissionsManager.CurrentPermissions.Assert();
+			for (int i = 0; i < strPluginNames.Length; i++)
+				Program.GameMode.PluginManager.SetLoadOrder(Path.Combine(Program.GameMode.PluginsPath, strPluginNames[p_intPlugins[i]]), i);
+		}
+
+		/// <summary>
+		/// Moves the specified plugins to the given position in the load order.
+		/// </summary>
+		/// <remarks>
+		/// Note that the order of the given list of plugins is not maintained. They are re-ordered
+		/// to be in the same order as they are in the before-operation load order. This, I think,
+		/// is somewhat counter-intuitive and may change, though likely not so as to not break
+		/// backwards compatibility.
+		/// </remarks>
+		/// <param name="p_intPlugins">The list of plugins to move to the given position in the
+		/// load order. Each entry in this array contains the current index of a plugin.</param>
+		/// <param name="p_intPosition">The position in the load order to which to move the specified
+		/// plugins.</param>
+		public void SetLoadOrder(int[] p_intPlugins, int p_intPosition)
+		{
+			string[] strPluginNames = GetAllPlugins();
+			PermissionsManager.CurrentPermissions.Assert();
+			Array.Sort<int>(p_intPlugins);
+
+			Int32 intLoadOrder = 0;
+			for (int i = 0; i < p_intPosition; i++)
+			{
+				if (Array.BinarySearch<int>(p_intPlugins, i) >= 0)
+					continue;
+				Program.GameMode.PluginManager.SetLoadOrder(Path.Combine(Program.GameMode.PluginsPath, strPluginNames[i]), intLoadOrder++);
+			}
+			for (int i = 0; i < p_intPlugins.Length; i++)
+				Program.GameMode.PluginManager.SetLoadOrder(Path.Combine(Program.GameMode.PluginsPath, strPluginNames[p_intPlugins[i]]), intLoadOrder++);
+			for (int i = p_intPosition; i < strPluginNames.Length; i++)
+			{
+				if (Array.BinarySearch<int>(p_intPlugins, i) >= 0)
+					continue;
+				Program.GameMode.PluginManager.SetLoadOrder(Path.Combine(Program.GameMode.PluginsPath, strPluginNames[i]), intLoadOrder++);
+			}
+		}
+
+		/// <summary>
+		/// Determines if the plugins have been auto-sorted.
+		/// </summary>
+		/// <returns><lang cref="true"/> if the plugins have been auto-sorted;
+		/// <lang cref="false"/> otherwise.</returns>
+		public bool IsLoadOrderAutoSorted()
+		{
+			PermissionsManager.CurrentPermissions.Assert();
+			return LoadOrderSorter.CheckList(GetAllPlugins());
+		}
+
+		/// <summary>
+		/// Determins where in the load order the specified plugin would be inserted
+		/// if the plugins were auto-sorted.
+		/// </summary>
+		/// <param name="p_strPlugin">The name of the plugin whose auto-sort insertion
+		/// point is to be determined.</param>
+		/// <returns>The index where the specified plugin would be inserted were the
+		/// plugins to be auto-sorted.</returns>
+		public int GetAutoInsertionPoint(string p_strPlugin)
+		{
+			PermissionsManager.CurrentPermissions.Assert();
+			return LoadOrderSorter.GetInsertionPos(GetAllPlugins(), p_strPlugin);
+		}
+
+		/// <summary>
+		/// Auto-sorts the specified plugins.
+		/// </summary>
+		/// <remarks>
+		/// This is, apparently, a beta function. Use with caution.
+		/// </remarks>
+		/// <param name="p_strPlugins">The list of plugins to auto-sort.</param>
+		public void AutoSortPlugins(string[] p_strPlugins)
+		{
+			PermissionsManager.CurrentPermissions.Assert();
+			LoadOrderSorter.SortList(p_strPlugins);
+		}
+
+		#endregion
+
 		#region Plugin Activation
 
 		/// <summary>
@@ -352,7 +675,7 @@ namespace Fomm.PackageManager
 			p_strName = p_strName.ToLowerInvariant();
 			if (p_strName.IndexOfAny(Path.GetInvalidFileNameChars()) != -1)
 				throw new IllegalFilePathException(p_strName);
-			if (!File.Exists(Path.Combine("Data", p_strName)))
+			if (!File.Exists(Path.Combine(Program.GameMode.PluginsPath, p_strName)))
 				throw new FileNotFoundException("Plugin does not exist", p_strName);
 			if (p_booActivate)
 			{
@@ -367,9 +690,11 @@ namespace Fomm.PackageManager
 		{
 			if (ActivePlugins == null)
 				return;
-			File.WriteAllLines(Program.PluginsFile, ActivePlugins.ToArray());
+			Program.GameMode.PluginManager.CommitActivePlugins(ActivePlugins);
 			ActivePlugins = null;
 		}
+
+		#endregion
 
 		#endregion
 
@@ -390,7 +715,7 @@ namespace Fomm.PackageManager
 		/// can be written; <lang cref="false"/> otherwise.</returns>
 		protected bool TestDoOverwrite(string p_strPath)
 		{
-			string strDataPath = Path.GetFullPath(Path.Combine("Data", p_strPath));
+			string strDataPath = Path.GetFullPath(Path.Combine(Program.GameMode.PluginsPath, p_strPath));
 			if (!File.Exists(strDataPath))
 				return true;
 			string strLoweredPath = strDataPath.ToLowerInvariant();
@@ -511,7 +836,7 @@ namespace Fomm.PackageManager
 		{
 			PermissionsManager.CurrentPermissions.Assert();
 			FileManagement.AssertFilePathIsSafe(p_strPath);
-			string strDataPath = Path.GetFullPath(Path.Combine("Data", p_strPath));
+			string strDataPath = Path.GetFullPath(Path.Combine(Program.GameMode.PluginsPath, p_strPath));
 			if (!Directory.Exists(Path.GetDirectoryName(strDataPath)))
 				TransactionalFileManager.CreateDirectory(Path.GetDirectoryName(strDataPath));
 			else
@@ -522,7 +847,7 @@ namespace Fomm.PackageManager
 				if (File.Exists(strDataPath))
 				{
 					string strDirectory = Path.GetDirectoryName(p_strPath);
-					string strBackupPath = Path.GetFullPath(Path.Combine(Program.overwriteDir, strDirectory));
+					string strBackupPath = Path.GetFullPath(Path.Combine(Program.GameMode.OverwriteDirectory, strDirectory));
 					string strOldModKey = InstallLog.Current.GetCurrentFileOwnerKey(p_strPath);
 					//if this mod installed a file, and now we are overwriting itm
 					// the install log will tell us no one owns the file, or the wrong mod owns the
@@ -594,10 +919,10 @@ namespace Fomm.PackageManager
 		{
 			PermissionsManager.CurrentPermissions.Assert();
 			FileManagement.AssertFilePathIsSafe(p_strFile);
-			string strDataPath = Path.GetFullPath(Path.Combine("data", p_strFile));
+			string strDataPath = Path.GetFullPath(Path.Combine(Program.GameMode.PluginsPath, p_strFile));
 			string strKey = InstallLog.Current.GetModKey(p_strFomodBaseName);
 			string strDirectory = Path.GetDirectoryName(p_strFile);
-			string strBackupDirectory = Path.GetFullPath(Path.Combine(Program.overwriteDir, strDirectory));
+			string strBackupDirectory = Path.GetFullPath(Path.Combine(Program.GameMode.OverwriteDirectory, strDirectory));
 			if (File.Exists(strDataPath))
 			{
 				string strCurrentOwnerKey = InstallLog.Current.GetCurrentFileOwnerKey(p_strFile);
@@ -623,12 +948,16 @@ namespace Fomm.PackageManager
 						}
 
 						//remove anny empty directories from the overwrite folder we may have created
-						TrimEmptyDirectories(strRestoreFromPath, Program.overwriteDir);
+						string strStopDirectory = Program.GameMode.OverwriteDirectory;
+						strStopDirectory = strStopDirectory.Remove(0, strStopDirectory.LastIndexOfAny(new char[] { Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar }));
+						TrimEmptyDirectories(strRestoreFromPath, strStopDirectory);
 					}
 					else
 					{
 						//remove any empty directories from the data folder we may have created
-						TrimEmptyDirectories(strDataPath, "data");
+						string strStopDirectory = Program.GameMode.PluginsPath;
+						strStopDirectory = strStopDirectory.Remove(0, strStopDirectory.LastIndexOfAny(new char[] { Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar }));
+						TrimEmptyDirectories(strDataPath, strStopDirectory);
 					}
 				}
 			}
@@ -640,7 +969,7 @@ namespace Fomm.PackageManager
 			{
 				TransactionalFileManager.Delete(strOverwritePath);
 				//remove anny empty directories from the overwrite folder we may have created
-				TrimEmptyDirectories(strOverwritePath, Program.overwriteDir);
+				TrimEmptyDirectories(strOverwritePath, Program.GameMode.OverwriteDirectory);
 			}
 		}
 
@@ -671,28 +1000,59 @@ namespace Fomm.PackageManager
 
 		#region Ini Management
 
+		#region Ini File Value Retrieval
+
+		/// <summary>
+		/// Retrieves the specified settings value as a string.
+		/// </summary>
+		/// <param name="p_strSettingsFileName">The name of the settings file from which to retrieve the value.</param>
+		/// <param name="p_strSection">The section containing the value to retrieve.</param>
+		/// <param name="p_strKey">The key of the value to retrieve.</param>
+		/// <returns>The specified value as a string.</returns>
+		protected string GetSettingsString(string p_strSettingsFileName, string p_strSection, string p_strKey)
+		{
+			PermissionsManager.CurrentPermissions.Assert();
+			return NativeMethods.GetPrivateProfileString(p_strSection, p_strKey, null, Program.GameMode.SettingsFiles[p_strSettingsFileName]);
+		}
+
+		/// <summary>
+		/// Retrieves the specified settings value as an integer.
+		/// </summary>
+		/// <param name="p_strSettingsFileName">The name of the settings file from which to retrieve the value.</param>
+		/// <param name="p_strSection">The section containing the value to retrieve.</param>
+		/// <param name="p_strKey">The key of the value to retrieve.</param>
+		/// <returns>The specified value as an integer.</returns>
+		protected Int32 GetSettingsInt(string p_strSettingsFileName, string p_strSection, string p_strKey)
+		{
+			PermissionsManager.CurrentPermissions.Assert();
+			return NativeMethods.GetPrivateProfileIntA(p_strSection, p_strKey, 0, Program.GameMode.SettingsFiles[p_strSettingsFileName]);
+		}
+
+		#endregion
+
 		#region Ini Editing
 
 		/// <summary>
 		/// Sets the specified value in the specified Ini file to the given value.
 		/// </summary>
-		/// <param name="p_strFile">The Ini file to edit.</param>
+		/// <param name="p_strSettingsFileName">The name of the settings file to edit.</param>
 		/// <param name="p_strSection">The section in the Ini file to edit.</param>
 		/// <param name="p_strKey">The key in the Ini file to edit.</param>
 		/// <param name="p_strValue">The value to which to set the key.</param>
 		/// <returns><lang cref="true"/> if the value was set; <lang cref="false"/>
 		/// if the user chose not to overwrite the existing value.</returns>
-		protected virtual bool EditINI(string p_strFile, string p_strSection, string p_strKey, string p_strValue)
+		protected virtual bool EditINI(string p_strSettingsFileName, string p_strSection, string p_strKey, string p_strValue)
 		{
+			string strFile = Program.GameMode.SettingsFiles[p_strSettingsFileName];
 			if (m_booDontOverwriteAllIni)
 				return false;
 
 			PermissionsManager.CurrentPermissions.Assert();
-			string strLoweredFile = p_strFile.ToLowerInvariant();
+			string strLoweredFile = strFile.ToLowerInvariant();
 			string strLoweredSection = p_strSection.ToLowerInvariant();
 			string strLoweredKey = p_strKey.ToLowerInvariant();
-			string strOldMod = InstallLog.Current.GetCurrentIniEditorModName(p_strFile, p_strSection, p_strKey);
-			string strOldValue = NativeMethods.GetPrivateProfileString(p_strSection, p_strKey, null, p_strFile);
+			string strOldMod = InstallLog.Current.GetCurrentIniEditorModName(strFile, p_strSection, p_strKey);
+			string strOldValue = NativeMethods.GetPrivateProfileString(p_strSection, p_strKey, null, strFile);
 			if (!m_booOverwriteAllIni)
 			{
 				string strMessage = null;
@@ -708,7 +1068,7 @@ namespace Fomm.PackageManager
 									"Allow the change?\n" +
 									"Current value '{3}', new value '{4}'";
 				}
-				switch (Overwriteform.ShowDialog(String.Format(strMessage, p_strKey, p_strSection, p_strFile, strOldValue, p_strValue), false))
+				switch (Overwriteform.ShowDialog(String.Format(strMessage, p_strKey, p_strSection, strFile, strOldValue, p_strValue), false))
 				{
 					case OverwriteResult.YesToAll:
 						m_booOverwriteAllIni = true;
@@ -732,62 +1092,6 @@ namespace Fomm.PackageManager
 			return true;
 		}
 
-		/// <summary>
-		/// Sets the specified value in the Fallout.ini file to the given value. 
-		/// </summary>
-		/// <param name="p_strSection">The section in the Ini file to edit.</param>
-		/// <param name="p_strKey">The key in the Ini file to edit.</param>
-		/// <param name="p_strValue">The value to which to set the key.</param>
-		/// <param name="p_booSaveOld">Not used.</param>
-		/// <returns><lang cref="true"/> if the value was set; <lang cref="false"/>
-		/// if the user chose not to overwrite the existing value.</returns>
-		public bool EditFalloutINI(string p_strSection, string p_strKey, string p_strValue, bool p_booSaveOld)
-		{
-			return EditINI(Program.FOIniPath, p_strSection, p_strKey, p_strValue);
-		}
-
-		/// <summary>
-		/// Sets the specified value in the FalloutPrefs.ini file to the given value. 
-		/// </summary>
-		/// <param name="p_strSection">The section in the Ini file to edit.</param>
-		/// <param name="p_strKey">The key in the Ini file to edit.</param>
-		/// <param name="p_strValue">The value to which to set the key.</param>
-		/// <param name="p_booSaveOld">Not used.</param>
-		/// <returns><lang cref="true"/> if the value was set; <lang cref="false"/>
-		/// if the user chose not to overwrite the existing value.</returns>
-		public bool EditPrefsINI(string p_strSection, string p_strKey, string p_strValue, bool p_booSaveOld)
-		{
-			return EditINI(Program.FOPrefsIniPath, p_strSection, p_strKey, p_strValue);
-		}
-
-		/// <summary>
-		/// Sets the specified value in the GECKCustom.ini file to the given value. 
-		/// </summary>
-		/// <param name="p_strSection">The section in the Ini file to edit.</param>
-		/// <param name="p_strKey">The key in the Ini file to edit.</param>
-		/// <param name="p_strValue">The value to which to set the key.</param>
-		/// <param name="p_booSaveOld">Not used.</param>
-		/// <returns><lang cref="true"/> if the value was set; <lang cref="false"/>
-		/// if the user chose not to overwrite the existing value.</returns>
-		public bool EditGeckINI(string p_strSection, string p_strKey, string p_strValue, bool p_booSaveOld)
-		{
-			return EditINI(Program.GeckIniPath, p_strSection, p_strKey, p_strValue);
-		}
-
-		/// <summary>
-		/// Sets the specified value in the GECKPrefs.ini file to the given value. 
-		/// </summary>
-		/// <param name="p_strSection">The section in the Ini file to edit.</param>
-		/// <param name="p_strKey">The key in the Ini file to edit.</param>
-		/// <param name="p_strValue">The value to which to set the key.</param>
-		/// <param name="p_booSaveOld">Not used.</param>
-		/// <returns><lang cref="true"/> if the value was set; <lang cref="false"/>
-		/// if the user chose not to overwrite the existing value.</returns>
-		public bool EditGeckPrefsINI(string p_strSection, string p_strKey, string p_strValue, bool p_booSaveOld)
-		{
-			return EditINI(Program.GeckPrefsIniPath, p_strSection, p_strKey, p_strValue);
-		}
-
 		#endregion
 
 		#region Ini Unediting
@@ -795,12 +1099,12 @@ namespace Fomm.PackageManager
 		/// <summary>
 		/// Undoes the edit made to the spcified key.
 		/// </summary>
-		/// <param name="p_strFile">The Ini file to unedit.</param>
+		/// <param name="p_strSettingsFileName">The name of the settings file to edit.</param>
 		/// <param name="p_strSection">The section in the Ini file to unedit.</param>
 		/// <param name="p_strKey">The key in the Ini file to unedit.</param>
-		protected void UneditIni(string p_strFile, string p_strSection, string p_strKey)
+		protected void UneditIni(string p_strSettingsFileName, string p_strSection, string p_strKey)
 		{
-			string strLoweredFile = p_strFile.ToLowerInvariant();
+			string strLoweredFile = Program.GameMode.SettingsFiles[p_strSettingsFileName].ToLowerInvariant();
 			string strLoweredSection = p_strSection.ToLowerInvariant();
 			string strLoweredKey = p_strKey.ToLowerInvariant();
 
@@ -816,7 +1120,7 @@ namespace Fomm.PackageManager
 			if (strPreviousValue != null)
 			{
 				PermissionsManager.CurrentPermissions.Assert();
-				NativeMethods.WritePrivateProfileStringA(p_strSection, p_strKey, strPreviousValue, p_strFile);
+				NativeMethods.WritePrivateProfileStringA(p_strSection, p_strKey, strPreviousValue, strLoweredFile);
 			}
 			//TODO: how do we remove an Ini key? Right now, if there was no previous value the current value
 			// remains
@@ -826,117 +1130,14 @@ namespace Fomm.PackageManager
 
 		#endregion
 
-		#region Shader Management
-
-		#region Shader Editing
+		#region IDisposable Members
 
 		/// <summary>
-		/// Edits the specified shader with the specified data.
+		/// Cleans up used resources.
 		/// </summary>
-		/// <param name="p_intPackage">The package containing the shader to edit.</param>
-		/// <param name="p_strShaderName">The shader to edit.</param>
-		/// <param name="p_bteData">The value to which to edit the shader.</param>
-		/// <returns><lang cref="true"/> if the value was set; <lang cref="false"/>
-		/// if the user chose not to overwrite the existing value.</returns>
-		/// <exception cref="ShaderException">Thrown if the shader could not be edited.</exception>
-		public virtual bool EditShader(int p_intPackage, string p_strShaderName, byte[] p_bteData)
+		public virtual void Dispose()
 		{
-			string strOldMod = InstallLog.Current.GetCurrentShaderEditorModName(p_intPackage, p_strShaderName);
-			string strMessage = null;
-			if (strOldMod != null)
-			{
-				strMessage = String.Format("Shader '{0}' in package '{1}' has already been overwritten by '{2}'\n" +
-											"Overwrite the changes?", p_strShaderName, p_intPackage, strOldMod);
-				if (System.Windows.Forms.MessageBox.Show(strMessage, "Confirm Overwrite", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
-					return false;
-			}
-
-			PermissionsManager.CurrentPermissions.Assert();
-			byte[] oldData;
-			if (!SDPArchives.EditShader(p_intPackage, p_strShaderName, p_bteData, out oldData))
-				throw new ShaderException("Failed to edit the shader");
-
-			//if we are overwriting an original shader, back it up
-			if ((strOldMod == null) || (oldData != null))
-				MergeModule.BackupOriginalSpd(p_intPackage, p_strShaderName, oldData);
-
-			MergeModule.AddSdpEdit(p_intPackage, p_strShaderName, p_bteData);
-			return true;
 		}
-
-		#endregion
-
-		#region Shader Unediting
-
-		/// <summary>
-		/// Undoes the edit made to the specified shader.
-		/// </summary>
-		/// <param name="p_intPackage">The package containing the shader to edit.</param>
-		/// <param name="p_strShaderName">The shader to edit.</param>
-		/// <exception cref="ShaderException">Thrown if the shader could not be unedited.</exception>
-		protected void UneditShader(int p_intPackage, string p_strShaderName)
-		{
-			string strLoweredShaderName = p_strShaderName.ToLowerInvariant();
-
-			string strKey = InstallLog.Current.GetModKey(Fomod.BaseName);
-			string strCurrentOwnerKey = InstallLog.Current.GetCurrentShaderEditorModKey(p_intPackage, strLoweredShaderName);
-			//if we didn't edit the shader, then leave it alone
-			if (!strKey.Equals(strCurrentOwnerKey))
-				return;
-
-			//if we did edit the shader, replace it with the shader we overwrote
-			// if we didn't overwrite the shader, then just delete it
-			byte[] btePreviousData = InstallLog.Current.GetPreviousSdpData(p_intPackage, strLoweredShaderName);
-			if (btePreviousData != null)
-			{
-				/*TODO: I'm not sure if this is the strictly correct way to unedit a shader
-				 * the original unedit code was:
-				 * 
-				 *	if (m_xelModInstallLogSdpEdits != null)
-				 *	{
-				 *		foreach (XmlNode node in m_xelModInstallLogSdpEdits.ChildNodes)
-				 *		{
-				 *			//TODO: Remove this workaround for the release version
-				 *			if (node.Attributes.GetNamedItem("crc") == null)
-				 *			{
-				 *				InstallLog.UndoShaderEdit(int.Parse(node.Attributes.GetNamedItem("package").Value), node.Attributes.GetNamedItem("shader").Value, 0);
-				 *			}
-				 *			else
-				 *			{
-				 *				InstallLog.UndoShaderEdit(int.Parse(node.Attributes.GetNamedItem("package").Value), node.Attributes.GetNamedItem("shader").Value,
-				 *					uint.Parse(node.Attributes.GetNamedItem("crc").Value));
-				 *			}
-				 *		}
-				 *	}
-				 *	
-				 * where InstallLog.UndoShaderEdit was:
-				 * 
-				 *	public void UndoShaderEdit(int package, string shader, uint crc)
-				 *	{
-				 *		XmlNode node = sdpEditsNode.SelectSingleNode("sdp[@package='" + package + "' and @shader='" + shader + "']");
-				 *		if (node == null) return;
-				 *		byte[] b = new byte[node.InnerText.Length / 2];
-				 *		for (int i = 0; i < b.Length; i++)
-				 *		{
-				 *			b[i] = byte.Parse("" + node.InnerText[i * 2] + node.InnerText[i * 2 + 1], System.Globalization.NumberStyles.AllowHexSpecifier);
-				 *		}
-				 *		if (SDPArchives.RestoreShader(package, shader, b, crc)) sdpEditsNode.RemoveChild(node);
-				 *	}
-				 *	
-				 * after looking at SDPArchives it is not clear to me why a crc was being used.
-				 * if ever it becomes evident that a crc is required, I will have to alter the log to store
-				 *  a crc and pass it to the RestoreShader method.
-				 */
-
-				PermissionsManager.CurrentPermissions.Assert();
-				if (!SDPArchives.RestoreShader(p_intPackage, p_strShaderName, btePreviousData, 0))
-					throw new ShaderException("Failed to unedit the shader");
-			}
-			//TODO: how do we delete a shader? Right now, if there was no previous shader the current shader
-			// remains
-		}
-
-		#endregion
 
 		#endregion
 	}

@@ -40,7 +40,7 @@ namespace Fomm.InstallLogUpgraders
 		{
 			InstallLog.Current.Reset();
 
-			string[] strModInstallFiles = Directory.GetFiles(Program.PackageDir, "*.XMl", SearchOption.TopDirectoryOnly);
+			string[] strModInstallFiles = Directory.GetFiles(Program.GameMode.ModDirectory, "*.XMl", SearchOption.TopDirectoryOnly);
 			ProgressWorker.OverallProgressStep = 1;
 			ProgressWorker.OverallProgressMaximum = strModInstallFiles.Length;
 			ProgressWorker.ItemProgressStep = 1;
@@ -131,6 +131,7 @@ namespace Fomm.InstallLogUpgraders
 			{
 				Int32 intPackage = Int32.Parse(xndSdpEdit.Attributes.GetNamedItem("package").Value);
 				string strShader = xndSdpEdit.Attributes.GetNamedItem("shader").Value;
+				string strShaderKey = String.Format("sdp:{0}/{1}", intPackage, strShader);
 				byte[] bteOldValue = GetOldSdpValue(intPackage, strShader);
 				//we have no way of knowing who last edited the shader - that information
 				// was not tracked
@@ -139,9 +140,9 @@ namespace Fomm.InstallLogUpgraders
 				{
 					//this is the first mod we have encountered that edited this shader,
 					// so let's assume it is the lastest mod to have made the edit...
-					InstallLog.Current.AddShaderEdit(p_strModBaseName, intPackage, strShader, SDPArchives.GetShader(intPackage, strShader));
+					InstallLog.Current.AddGameSpecificValueEdit(p_strModBaseName, strShaderKey, Fomm.Games.Fallout3.Tools.BSA.SDPArchives.GetShader(intPackage, strShader));
 					//...and backup the old value as the original value
-					InstallLog.Current.PrependAfterOriginalShaderEdit(InstallLog.ORIGINAL_VALUES, intPackage, strShader, bteOldValue);
+					InstallLog.Current.PrependAfterOriginalGameSpecificValueEdit(InstallLog.ORIGINAL_VALUES, strShaderKey, bteOldValue);
 					m_lstSeenShader.Add(intPackage + "~" + strShader.ToLowerInvariant());
 				}
 				else
@@ -149,7 +150,7 @@ namespace Fomm.InstallLogUpgraders
 					//someone else made the shader edit
 					// we don't know what value was overwritten, so we will just use what we have
 					// which is the old value
-					InstallLog.Current.PrependAfterOriginalShaderEdit(p_strModBaseName, intPackage, strShader, bteOldValue);
+					InstallLog.Current.PrependAfterOriginalGameSpecificValueEdit(p_strModBaseName, strShaderKey, bteOldValue);
 				}
 
 				if (ProgressWorker.Cancelled())
@@ -232,7 +233,7 @@ namespace Fomm.InstallLogUpgraders
 		{
 			string strModKey = InstallLog.Current.GetModKey(p_strMadBaseName);
 			string strDirectory = Path.GetDirectoryName(p_strDataRealtivePath);
-			string strBackupPath = Path.GetFullPath(Path.Combine(Program.overwriteDir, strDirectory));
+			string strBackupPath = Path.GetFullPath(Path.Combine(Program.GameMode.OverwriteDirectory, strDirectory));
 			strBackupPath = Path.Combine(strBackupPath, strModKey + "_" + Path.GetFileName(p_strDataRealtivePath));
 			FileManager.Delete(strBackupPath);
 			InstallLog.Current.AddDataFile(p_strMadBaseName, p_strDataRealtivePath);
@@ -253,7 +254,7 @@ namespace Fomm.InstallLogUpgraders
 			if (strModKey == null)
 				return false;
 			string strDirectory = Path.GetDirectoryName(p_strDataRelativePath);
-			string strBackupPath = Path.GetFullPath(Path.Combine(Program.overwriteDir, strDirectory));
+			string strBackupPath = Path.GetFullPath(Path.Combine(Program.GameMode.OverwriteDirectory, strDirectory));
 			strBackupPath = Path.Combine(strBackupPath, strModKey + "_" + Path.GetFileName(p_strDataRelativePath));
 			return !FileManager.FileExists(strBackupPath);
 		}
@@ -293,7 +294,7 @@ namespace Fomm.InstallLogUpgraders
 					// strictly correct, but it is inline with the behaviour
 					// of the fomm version we are upgrading from
 					string strDirectory = Path.GetDirectoryName(strDataRelativePath);
-					string strBackupPath = Path.GetFullPath(Path.Combine(Program.overwriteDir, strDirectory));
+					string strBackupPath = Path.GetFullPath(Path.Combine(Program.GameMode.OverwriteDirectory, strDirectory));
 					string strModKey = InstallLog.Current.GetModKey(p_strModBaseName);
 					if (!Directory.Exists(strBackupPath))
 						FileManager.CreateDirectory(strBackupPath);
@@ -319,7 +320,7 @@ namespace Fomm.InstallLogUpgraders
 					//either way, put this mod's file into
 					// the overwrites directory
 					string strDirectory = Path.GetDirectoryName(strDataRelativePath);
-					string strBackupPath = Path.GetFullPath(Path.Combine(Program.overwriteDir, strDirectory));
+					string strBackupPath = Path.GetFullPath(Path.Combine(Program.GameMode.OverwriteDirectory, strDirectory));
 					string strModKey = InstallLog.Current.GetModKey(p_strModBaseName);
 					if (!Directory.Exists(strBackupPath))
 						FileManager.CreateDirectory(strBackupPath);

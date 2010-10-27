@@ -30,7 +30,7 @@ namespace Fomm.PackageManager.Upgrade
 			List<fomod> lstModsToReplace = new List<fomod>();
 			foreach (FomodInfo fifMod in lstMods)
 			{
-				fomodMod = new fomod(Path.Combine(Program.PackageDir, fifMod.BaseName + ".fomod"));
+				fomodMod = new fomod(Path.Combine(Program.GameMode.ModDirectory, fifMod.BaseName + ".fomod"));
 				if (!fomodMod.HumanReadableVersion.Equals(fifMod.Version))
 				{
 					switch (MessageBox.Show(String.Format(m_strUpgradeMessage, fomodMod.ModName, fifMod.Version, fomodMod.HumanReadableVersion), "Upgrade", MessageBoxButtons.YesNo, MessageBoxIcon.Question))

@@ -31,14 +31,23 @@ namespace Fomm.PackageManager.ModInstallLog
 	 *	     </installingMods>
 	 *     </ini>
 	 *   </iniEdits>
-	 *   <sdpEdits>
-	 *     <spd package='' shader=''>
+	 *   <gameSpecificEdits>
+	 *	   <edit key=''>
 	 *       <installingMods>
 	 *	       <mod key="">old value</mod>
 	 *	     </installingMods>
-	 *     </spd>
-	 *   </sdpEdits>
+	 *	   </edit>
+	 *	 </gameSpecificEdits>
 	 * </installLog>
+	 * 
+	 * Other data eg:
+	 *   <gameSpecificEdits>
+	 *     <edit key='spd:<package name>/<shader name>'>
+	 *       <installingMods>
+	 *	       <mod key="">old shader value</mod>
+	 *	     </installingMods>
+	 *     </edit>
+	 *   </gameSpecificEdits>
 	 */
 	internal class InstallLog : InstallLogBase
 	{
@@ -60,7 +69,7 @@ namespace Fomm.PackageManager.ModInstallLog
 		private XmlElement m_xelModListNode;
 		private XmlElement dataFilesNode;
 		private XmlElement iniEditsNode;
-		private XmlElement sdpEditsNode;
+		private XmlElement gameSpecificValueEditsNode;
 		private Dictionary<string, string> m_dicModList = null;
 		private FileSystemWatcher m_fswLogWatcher = null;
 
@@ -189,7 +198,7 @@ namespace Fomm.PackageManager.ModInstallLog
 				m_xelModListNode = (XmlElement)xmlDoc.SelectSingleNode("installLog/modList");
 				dataFilesNode = (XmlElement)xmlDoc.SelectSingleNode("installLog/dataFiles");
 				iniEditsNode = (XmlElement)xmlDoc.SelectSingleNode("installLog/iniEdits");
-				sdpEditsNode = (XmlElement)xmlDoc.SelectSingleNode("installLog/sdpEdits");
+				gameSpecificValueEditsNode = (XmlElement)xmlDoc.SelectSingleNode("installLog/gameSpecificEdits");
 				if (m_xelModListNode == null)
 				{
 					XmlNode root = (XmlNode)xmlDoc.SelectSingleNode("installLog");
@@ -212,7 +221,7 @@ namespace Fomm.PackageManager.ModInstallLog
 			root.AppendChild(m_xelModListNode = xmlDoc.CreateElement("modList"));
 			root.AppendChild(dataFilesNode = xmlDoc.CreateElement("dataFiles"));
 			root.AppendChild(iniEditsNode = xmlDoc.CreateElement("iniEdits"));
-			root.AppendChild(sdpEditsNode = xmlDoc.CreateElement("sdpEdits"));
+			root.AppendChild(gameSpecificValueEditsNode = xmlDoc.CreateElement("gameSpecificEdits"));
 			InitMods();
 		}
 
@@ -931,40 +940,39 @@ namespace Fomm.PackageManager.ModInstallLog
 
 		#endregion
 
-		#region Shader Edit Version Management
+		#region Game-Specific Value Edit Version Management
 
 		/// <summary>
-		/// Returns the list of mods that have edited the spcified Ini value.
+		/// Returns the list of mods that have edited the spcified game-specific value.
 		/// </summary>
 		/// <remarks>
 		/// The returned list is ordered by install date. In other words, the first
-		/// mod in the list was the first to edit the shader, and the last mod in
+		/// mod in the list was the first to edit the game-specific value, and the last mod in
 		/// the list was the most recent. This implies that the current version of
 		/// the specified edit was installed by the last mod in the list. 
 		/// </remarks>
-		/// <param name="p_intPackage">The package containing the shader whose editors are to be retrieved.</param>
-		/// <param name="p_strShaderName">The shader whose whose editors are to be retrieved.</param>
-		/// <returns>The list of mods that have edited the specified shader.</returns>
-		internal List<string> GetInstallingMods(int p_intPackage, string p_strShaderName)
+		/// <param name="p_strValueKey">The key of the game-specific value whose editors are to be retrieved.</param>
+		/// <returns>The list of mods that have edited the specified game-specific value.</returns>
+		internal List<string> GetGameSpecifcValueInstallingMods(string p_strValueKey)
 		{
 			List<string> lstInstallers = new List<string>();
-			XmlNodeList xnlInstallingMods = sdpEditsNode.SelectNodes("sdp[@package=\"" + p_intPackage + "\" and @shader=\"" + p_strShaderName.ToLowerInvariant() + "\"]/installingMods/*");
+			XmlNodeList xnlInstallingMods = gameSpecificValueEditsNode.SelectNodes("edit[@key=\"" + p_strValueKey.ToLowerInvariant() + "\"]/installingMods/*");
 			foreach (XmlNode xndInallingMod in xnlInstallingMods)
 				lstInstallers.Add(GetModName(xndInallingMod.Attributes["key"].InnerText));
 			return lstInstallers;
 		}
 
-		public string GetCurrentShaderEditorModName(int p_intPackage, string p_strName)
+		public string GetCurrentGameSpecifcValueEditorModName(string p_strValueKey)
 		{
-			string strKey = GetCurrentShaderEditorModKey(p_intPackage, p_strName);
+			string strKey = GetCurrentGameSpecifcValueEditorModKey(p_strValueKey);
 			if (strKey == null)
 				return null;
 			return GetModName(strKey);
 		}
 
-		public string GetCurrentShaderEditorModKey(int p_intPackage, string p_strShader)
+		public string GetCurrentGameSpecifcValueEditorModKey(string p_strValueKey)
 		{
-			XmlNode xndModList = sdpEditsNode.SelectSingleNode("sdp[@package=\"" + p_intPackage + "\" and @shader=\"" + p_strShader.ToLowerInvariant() + "\"]/installingMods");
+			XmlNode xndModList = gameSpecificValueEditsNode.SelectSingleNode("edit[@key=\"" + p_strValueKey.ToLowerInvariant() + "\"]/installingMods");
 			if (xndModList == null)
 				return null;
 			XmlNode xndInstallingMod = xndModList.LastChild;
@@ -972,15 +980,14 @@ namespace Fomm.PackageManager.ModInstallLog
 		}
 
 		/// <summary>
-		/// Gets the data of the specified shader before it was most recently overwritten.
+		/// Gets the data of the specified game-specific value before it was most recently overwritten.
 		/// </summary>
-		/// <param name="p_intPackage">The package containing the shader whose previous data is to be retrieved.</param>
-		/// <param name="p_strShaderName">The shader whose previous data is to be retrieved.</param>
-		/// <returns>The data of the specified shader before it was most recently overwritten, or
+		/// <param name="p_strValueKey">The key of the game-specific value whose previous data is to be retrieved.</param>
+		/// <returns>The data of the specified game-specific value before it was most recently overwritten, or
 		/// <lang cref="null"/> if there was no previous value.</returns>
-		public byte[] GetPreviousSdpData(int p_intPackage, string p_strShaderName)
+		public byte[] GetPreviousGameSpecifcValueData(string p_strValueKey)
 		{
-			XmlNode xndModList = sdpEditsNode.SelectSingleNode("sdp[@package=\"" + p_intPackage + "\" and @shader=\"" + p_strShaderName.ToLowerInvariant() + "\"]/installingMods");
+			XmlNode xndModList = gameSpecificValueEditsNode.SelectSingleNode("edit[@key=\"" + p_strValueKey.ToLowerInvariant() + "\"]/installingMods");
 			if (xndModList == null)
 				return null;
 			XmlNode xndInstallingMod = xndModList.LastChild;
@@ -996,40 +1003,36 @@ namespace Fomm.PackageManager.ModInstallLog
 
 		#endregion
 
-		#region Shader Edit Logging
+		#region Game-Specific Value Logging
 
 		/// <summary>
-		/// Creates a node representing that the specified mod made the specified sdp edit.
+		/// Creates a node representing that the specified mod made the specified edit to a game-specific value.
 		/// </summary>
 		/// <param name="p_strModKey">The key of the mod that made the edit.</param>
-		/// <param name="p_intPackage">The package containing the shader that was edited.</param>
-		/// <param name="p_strShaderName">The shader that was edited.</param>
-		/// <param name="p_bteData">The value to which to the shader was set.</param>
+		/// <param name="p_strValueKey">The key of the game-specific value that was edited.</param>
+		/// <param name="p_bteData">The data to which to the value was set.</param>
 		/// <param name="p_xndModList">An out pramater returning the node containing the list of mods that
-		/// have edited the specified shader. This is useful for inserting the created node.</param>
-		/// <returns>A node representing that the specified mod made the specified sdp edit. The out
+		/// have edited the specified game-specific value. This is useful for inserting the created node.</param>
+		/// <returns>A node representing the specified mod that made the specified game-specific edit. The out
 		/// parameter <paramref name="p_xndModList"/> returns the node containing the list of mods that
-		/// have edited the specified shader.</returns>
-		protected XmlNode CreateSdpEditNode(string p_strModKey, int p_intPackage, string p_strShader, byte[] p_bteData, out XmlNode p_xndModList)
+		/// have edited the specified game-specific value.</returns>
+		protected XmlNode CreateGameSpecificValueEditNode(string p_strModKey, string p_strValueKey, byte[] p_bteData, out XmlNode p_xndModList)
 		{
-			string strLoweredShader = p_strShader.ToLowerInvariant();
+			string strLoweredValueKey = p_strValueKey.ToLowerInvariant();
 			XmlNode xndInstallingMod = null;
-			lock (sdpEditsNode)
+			lock (gameSpecificValueEditsNode)
 			{
-				XmlNode xndSpd = sdpEditsNode.SelectSingleNode("sdp[@package=\"" + p_intPackage + "\" and @shader=\"" + strLoweredShader + "\"]");
-				if (xndSpd == null)
+				XmlNode xndGameSpecificValueEdit = gameSpecificValueEditsNode.SelectSingleNode("edit[@key=\"" + strLoweredValueKey + "\"]");
+				if (xndGameSpecificValueEdit == null)
 				{
-					xndSpd = sdpEditsNode.AppendChild(xmlDoc.CreateElement("sdp"));
-					xndSpd.Attributes.Append(xmlDoc.CreateAttribute("package"));
-					xndSpd.Attributes.Append(xmlDoc.CreateAttribute("shader"));
-					xndSpd.Attributes[0].Value = p_intPackage.ToString();
-					xndSpd.Attributes[1].Value = strLoweredShader;
-					p_xndModList = xndSpd.AppendChild(xmlDoc.CreateElement("installingMods"));
-
+					xndGameSpecificValueEdit = gameSpecificValueEditsNode.AppendChild(xmlDoc.CreateElement("edit"));
+					xndGameSpecificValueEdit.Attributes.Append(xmlDoc.CreateAttribute("key"));
+					xndGameSpecificValueEdit.Attributes[0].Value = strLoweredValueKey;
+					p_xndModList = xndGameSpecificValueEdit.AppendChild(xmlDoc.CreateElement("installingMods"));
 				}
 				else
 				{
-					p_xndModList = xndSpd.SelectSingleNode("installingMods");
+					p_xndModList = xndGameSpecificValueEdit.SelectSingleNode("installingMods");
 					xndInstallingMod = p_xndModList.SelectSingleNode("mod[@key=\"" + p_strModKey + "\"]");
 					if (xndInstallingMod != null)
 						p_xndModList.RemoveChild(xndInstallingMod);
@@ -1049,44 +1052,42 @@ namespace Fomm.PackageManager.ModInstallLog
 		}
 
 		/// <summary>
-		/// Adds a node representing that the specified mod made the specified sdp edit.
+		/// Adds a node representing that the specified mod made the specified edit to a game-specific value.
 		/// </summary>
 		/// <remarks>
 		/// This method appends the node to the end of the list of installing mods, indicating
-		/// that the specified mod is the latest mod to edit the specified shader.
+		/// that the specified mod is the latest mod to edit the specified game-specific value.
 		/// </remarks>
 		/// <param name="p_strModName">The base name of the mod that made the edit.</param>
-		/// <param name="p_intPackage">The package containing the shader that was edited.</param>
-		/// <param name="p_strShaderName">The shader that was edited.</param>
-		/// <param name="p_bteData">The value to which to the shader was set.</param>
-		internal protected void AddShaderEdit(string p_strModName, int p_intPackage, string p_strShader, byte[] p_bteData)
+		/// <param name="p_strValueKey">The key of the game-specific value that was edited.</param>
+		/// <param name="p_bteData">The data to which to the value was set.</param>
+		internal protected void AddGameSpecificValueEdit(string p_strModName, string p_strValueKey, byte[] p_bteData)
 		{
 			XmlNode xndModList = null;
-			XmlNode xndInstallingMod = CreateSdpEditNode(GetModKey(p_strModName), p_intPackage, p_strShader, p_bteData, out xndModList);
-			lock (sdpEditsNode)
+			XmlNode xndInstallingMod = CreateGameSpecificValueEditNode(GetModKey(p_strModName), p_strValueKey, p_bteData, out xndModList);
+			lock (gameSpecificValueEditsNode)
 			{
 				xndModList.AppendChild(xndInstallingMod);
 			}
 		}
 
 		/// <summary>
-		/// Replaces a node representing that the specified mod made the specified sdp edit.
+		/// Replaces a node representing that the specified mod made the specified edit to a game-specific value.
 		/// </summary>
 		/// <remarks>
-		/// If the specified mod already edited the specified shader, the value of the edit is updated,
+		/// If the specified mod already edited the specified game-specific value, the value of the edit is updated,
 		/// but the install order is not changed. Otherwise, this method appends the node to the end of the
 		/// list of installing mods, indicating that the specified mod is the latest mod to edit the
-		/// specified shader.
+		/// specified game-specific value.
 		/// </remarks>
 		/// <param name="p_strModName">The base name of the mod that made the edit.</param>
-		/// <param name="p_intPackage">The package containing the shader that was edited.</param>
-		/// <param name="p_strShaderName">The shader that was edited.</param>
-		/// <param name="p_bteData">The value to which to the shader was set.</param>
-		/// <seealso cref="AddShaderEdit(string p_strModName, int p_intPackage, string p_strShader, byte[] p_bteData)"/>
-		internal protected void ReplaceShaderEdit(string p_strModName, int p_intPackage, string p_strShader, byte[] p_bteData)
+		/// <param name="p_strValueKey">The key of the game-specific value that was edited.</param>
+		/// <param name="p_bteData">The data to which to the value was set.</param>
+		/// <seealso cref="AddGameSpecificValueEdit(string p_strModName, string p_strValueKey, byte[] p_bteData)"/>
+		internal protected void ReplaceGameSpecificValueEdit(string p_strModName, string p_strValueKey, byte[] p_bteData)
 		{
-			string strLoweredShader = p_strShader.ToLowerInvariant();
-			XmlNode xndInstallingMod = sdpEditsNode.SelectSingleNode("sdp[@package=\"" + p_intPackage + "\" and @shader=\"" + strLoweredShader + "\"]/installingMods/mod[@key=\"" + GetModKey(p_strModName) + "\"]");
+			string strLoweredValueKey = p_strValueKey.ToLowerInvariant();
+			XmlNode xndInstallingMod = gameSpecificValueEditsNode.SelectSingleNode("edit[@key=\"" + strLoweredValueKey + "\"]/installingMods/mod[@key=\"" + GetModKey(p_strModName) + "\"]");
 			if (xndInstallingMod != null)
 			{
 				StringBuilder stbData = new StringBuilder(p_bteData.Length * 2);
@@ -1095,25 +1096,24 @@ namespace Fomm.PackageManager.ModInstallLog
 				xndInstallingMod.InnerText = stbData.ToString();
 			}
 			else
-				AddShaderEdit(p_strModName, p_intPackage, p_strShader, p_bteData);
+				AddGameSpecificValueEdit(p_strModName, p_strValueKey, p_bteData);
 		}
 
 		/// <summary>
-		/// Adds a node representing that the specified mod made the specified sdp edit.
+		/// Adds a node representing that the specified mod made the specified edit to a game-specific value.
 		/// </summary>
 		/// <remarks>
 		/// This method prepends the node to the beginning of the list of installing mods, but
 		/// after the ORIGINAL_VALUES node if it exists, indicating that the specified mod is not
-		/// the latest mod to edit the specified shader.
+		/// the latest mod to edit the specified the game-specific value..
 		/// </remarks>
 		/// <param name="p_strModName">The base name of the mod that made the edit.</param>
-		/// <param name="p_intPackage">The package containing the shader that was edited.</param>
-		/// <param name="p_strShaderName">The shader that was edited.</param>
-		/// <param name="p_bteData">The value to which to the shader was set.</param>
-		internal protected void PrependAfterOriginalShaderEdit(string p_strModName, int p_intPackage, string p_strShader, byte[] p_bteData)
+		/// <param name="p_strValueKey">The key of the game-specific value that was edited.</param>
+		/// <param name="p_bteData">The data to which to the value was set.</param>
+		internal protected void PrependAfterOriginalGameSpecificValueEdit(string p_strModName, string p_strValueKey, byte[] p_bteData)
 		{
 			XmlNode xndModList = null;
-			XmlNode xndInstallingMod = CreateSdpEditNode(GetModKey(p_strModName), p_intPackage, p_strShader, p_bteData, out xndModList);
+			XmlNode xndInstallingMod = CreateGameSpecificValueEditNode(GetModKey(p_strModName), p_strValueKey, p_bteData, out xndModList);
 			if ((xndModList.FirstChild != null) && (xndModList.FirstChild.Attributes["key"].InnerText.Equals(OriginalValuesKey)))
 				xndModList.InsertAfter(xndInstallingMod, xndModList.FirstChild);
 			else
@@ -1121,24 +1121,23 @@ namespace Fomm.PackageManager.ModInstallLog
 		}
 
 		/// <summary>
-		/// Removes the node representing that the specified mod edited the specified shader.
+		/// Removes the node representing that the specified mod edited the specified game-specific value.
 		/// </summary>
 		/// <param name="p_strModName">The base name of the mod that edited the shader.</param>
-		/// <param name="p_intPackage">The package containing the shader that was edited.</param>
-		/// <param name="p_strShaderName">The shader that was edited.</param>
-		protected void RemoveShaderEdit(string p_strModName, int p_intPackage, string p_strShader)
+		/// <param name="p_strValueKey">The key of the game-specific value that was edited.</param>
+		protected void RemoveGameSpecificValueEdit(string p_strModName, string p_strValueKey)
 		{
-			string strLoweredShader = p_strShader.ToLowerInvariant();
-			lock (sdpEditsNode)
+			string strLoweredValueKey = p_strValueKey.ToLowerInvariant();
+			lock (gameSpecificValueEditsNode)
 			{
-				XmlNode xndInstallingMod = sdpEditsNode.SelectSingleNode("sdp[@package=\"" + p_intPackage + "\" and @shader=\"" + strLoweredShader + "\"]/installingMods/mod[@key=\"" + GetModKey(p_strModName) + "\"]");
+				XmlNode xndInstallingMod = gameSpecificValueEditsNode.SelectSingleNode("edit[@key=\"" + strLoweredValueKey + "\"]/installingMods/mod[@key=\"" + GetModKey(p_strModName) + "\"]");
 				if (xndInstallingMod != null)
 				{
 					XmlNode xndInstallingMods = xndInstallingMod.ParentNode;
-					XmlNode xndSdpEdit = xndInstallingMods.ParentNode;
+					XmlNode xndGameSpecificValueEdit = xndInstallingMods.ParentNode;
 					xndInstallingMods.RemoveChild(xndInstallingMod);
 					if ((xndInstallingMods.ChildNodes.Count == 0) || (xndInstallingMods.LastChild.Attributes["key"].InnerText.Equals(GetModKey(ORIGINAL_VALUES))))
-						xndSdpEdit.ParentNode.RemoveChild(xndSdpEdit);
+						xndGameSpecificValueEdit.ParentNode.RemoveChild(xndGameSpecificValueEdit);
 				}
 			}
 		}
@@ -1194,9 +1193,9 @@ namespace Fomm.PackageManager.ModInstallLog
 			foreach (InstallLogMergeModule.IniEdit iniEdit in ilmPreviousChanges.IniEdits)
 				if (!p_ilmMergeModule.IniEdits.Contains(iniEdit))
 					RemoveIniEdit(p_fomodMod.BaseName, iniEdit.File, iniEdit.Section, iniEdit.Key);
-			foreach (InstallLogMergeModule.SdpEdit sdpEdit in ilmPreviousChanges.SdpEdits)
-				if (!p_ilmMergeModule.SdpEdits.Contains(sdpEdit))
-					RemoveShaderEdit(p_fomodMod.BaseName, sdpEdit.Package, sdpEdit.ShaderName);
+			foreach (InstallLogMergeModule.GameSpecificValueEdit gsvEdit in ilmPreviousChanges.GameSpecificValueEdits)
+				if (!p_ilmMergeModule.GameSpecificValueEdits.Contains(gsvEdit))
+					RemoveGameSpecificValueEdit(p_fomodMod.BaseName, gsvEdit.Key);
 
 			//add/replace changes
 			foreach (string strFile in p_ilmMergeModule.ReplacedOriginalDataFiles)
@@ -1207,10 +1206,10 @@ namespace Fomm.PackageManager.ModInstallLog
 				AddIniEdit(iniEdit.File, iniEdit.Section, iniEdit.Key, ORIGINAL_VALUES, iniEdit.Value);
 			foreach (InstallLogMergeModule.IniEdit iniEdit in p_ilmMergeModule.IniEdits)
 				ReplaceIniEdit(iniEdit.File, iniEdit.Section, iniEdit.Key, p_fomodMod.BaseName, iniEdit.Value);
-			foreach (InstallLogMergeModule.SdpEdit spdEdit in p_ilmMergeModule.ReplacedOriginalSdpData)
-				AddShaderEdit(ORIGINAL_VALUES, spdEdit.Package, spdEdit.ShaderName, spdEdit.Data);
-			foreach (InstallLogMergeModule.SdpEdit spdEdit in p_ilmMergeModule.SdpEdits)
-				ReplaceShaderEdit(p_fomodMod.BaseName, spdEdit.Package, spdEdit.ShaderName, spdEdit.Data);
+			foreach (InstallLogMergeModule.GameSpecificValueEdit gsvEdit in p_ilmMergeModule.ReplacedGameSpecificValueData)
+				AddGameSpecificValueEdit(ORIGINAL_VALUES, gsvEdit.Key, gsvEdit.Data);
+			foreach (InstallLogMergeModule.GameSpecificValueEdit gsvEdit in p_ilmMergeModule.GameSpecificValueEdits)
+				ReplaceGameSpecificValueEdit(p_fomodMod.BaseName, gsvEdit.Key, gsvEdit.Data);
 
 			Save();
 		}
@@ -1247,10 +1246,10 @@ namespace Fomm.PackageManager.ModInstallLog
 				AddIniEdit(iniEdit.File, iniEdit.Section, iniEdit.Key, ORIGINAL_VALUES, iniEdit.Value);
 			foreach (InstallLogMergeModule.IniEdit iniEdit in p_ilmMergeModule.IniEdits)
 				AddIniEdit(iniEdit.File, iniEdit.Section, iniEdit.Key, p_strModName, iniEdit.Value);
-			foreach (InstallLogMergeModule.SdpEdit spdEdit in p_ilmMergeModule.ReplacedOriginalSdpData)
-				AddShaderEdit(ORIGINAL_VALUES, spdEdit.Package, spdEdit.ShaderName, spdEdit.Data);
-			foreach (InstallLogMergeModule.SdpEdit spdEdit in p_ilmMergeModule.SdpEdits)
-				AddShaderEdit(p_strModName, spdEdit.Package, spdEdit.ShaderName, spdEdit.Data);
+			foreach (InstallLogMergeModule.GameSpecificValueEdit gsvEdit in p_ilmMergeModule.ReplacedGameSpecificValueData)
+				AddGameSpecificValueEdit(ORIGINAL_VALUES, gsvEdit.Key, gsvEdit.Data);
+			foreach (InstallLogMergeModule.GameSpecificValueEdit gsvEdit in p_ilmMergeModule.GameSpecificValueEdits)
+				AddGameSpecificValueEdit(p_strModName, gsvEdit.Key, gsvEdit.Data);
 			Save();
 		}
 
@@ -1290,9 +1289,9 @@ namespace Fomm.PackageManager.ModInstallLog
 						xndComponent.ParentNode.RemoveChild(xndComponent);
 				}
 			}
-			lock (sdpEditsNode)
+			lock (gameSpecificValueEditsNode)
 			{
-				xnlComponentMods = sdpEditsNode.SelectNodes("descendant::mod[@key=\"" + m_dicModList[p_strModName] + "\"]");
+				xnlComponentMods = gameSpecificValueEditsNode.SelectNodes("descendant::mod[@key=\"" + m_dicModList[p_strModName] + "\"]");
 				foreach (XmlNode xndSdpEdit in xnlComponentMods)
 				{
 					xndInstallingMods = xndSdpEdit.ParentNode;
@@ -1333,19 +1332,17 @@ namespace Fomm.PackageManager.ModInstallLog
 											xndComponent.Attributes["key"].InnerText,
 											xndIniEdit.InnerText);
 			}
-			xnlComponentMods = sdpEditsNode.SelectNodes("descendant::mod[@key=\"" + m_dicModList[p_strModName] + "\"]");
-			foreach (XmlNode xndSdpEdit in xnlComponentMods)
+			xnlComponentMods = gameSpecificValueEditsNode.SelectNodes("descendant::mod[@key=\"" + m_dicModList[p_strModName] + "\"]");
+			foreach (XmlNode xndGameSpecificValueEdit in xnlComponentMods)
 			{
-				xndComponent = xndSdpEdit.ParentNode.ParentNode;
+				xndComponent = xndGameSpecificValueEdit.ParentNode.ParentNode;
 
-				string strData = xndSdpEdit.InnerText;
+				string strData = xndGameSpecificValueEdit.InnerText;
 				byte[] bteData = new byte[strData.Length / 2];
 				for (int i = 0; i < bteData.Length; i++)
 					bteData[i] = byte.Parse("" + strData[i * 2] + strData[i * 2 + 1], System.Globalization.NumberStyles.AllowHexSpecifier);
 
-				ilmMergeModule.AddSdpEdit(Int32.Parse(xndComponent.Attributes["package"].InnerText),
-											xndComponent.Attributes["shader"].InnerText,
-											bteData);
+				ilmMergeModule.AddGameSpecificValueEdit(xndComponent.Attributes["key"].InnerText, bteData);
 			}
 
 			return ilmMergeModule;

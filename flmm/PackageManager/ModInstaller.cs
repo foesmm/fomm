@@ -98,12 +98,12 @@ namespace Fomm.PackageManager
 		/// </summary>
 		protected override bool DoScript()
 		{
-			TransactionalFileManager.Snapshot(Program.FOIniPath);
-			TransactionalFileManager.Snapshot(Program.FOPrefsIniPath);
-			TransactionalFileManager.Snapshot(Program.GeckIniPath);
-			TransactionalFileManager.Snapshot(Program.GeckPrefsIniPath);
+			foreach (string strSettingsFile in Program.GameMode.SettingsFiles.Values)
+				TransactionalFileManager.Snapshot(strSettingsFile);
+			foreach (string strAdditionalFile in Program.GameMode.AdditionalPaths.Values)
+				if (File.Exists(strAdditionalFile))
+					TransactionalFileManager.Snapshot(strAdditionalFile);
 			TransactionalFileManager.Snapshot(InstallLog.Current.InstallLogPath);
-			TransactionalFileManager.Snapshot(Program.PluginsFile);
 
 			try
 			{
@@ -205,8 +205,7 @@ namespace Fomm.PackageManager
 				if ((m_bwdProgress != null) && m_bwdProgress.Cancelled())
 					return;
 				InstallFileFromFomod(strFile);
-				string strExt = Path.GetExtension(strFile).ToLowerInvariant();
-				if ((strExt == ".esp" || strExt == ".esm") && strFile.IndexOfAny(chrDirectorySeperators) == -1)
+				if (Program.GameMode.IsPluginFile(strFile) && strFile.IndexOfAny(chrDirectorySeperators) == -1)
 					SetPluginActivation(strFile, true);
 				if (m_bwdProgress != null)
 					m_bwdProgress.StepOverallProgress();

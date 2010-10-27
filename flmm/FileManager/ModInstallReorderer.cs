@@ -113,7 +113,7 @@ namespace Fomm.FileManager
 				strDataPath = Directory.GetFiles(Path.GetDirectoryName(strDataPath), Path.GetFileName(strDataPath))[0];
 				
 				string strDirectory = Path.GetDirectoryName(m_strFile);
-				string strBackupPath = Path.GetFullPath(Path.Combine(Program.overwriteDir, strDirectory));
+				string strBackupPath = Path.GetFullPath(Path.Combine(Program.GameMode.OverwriteDirectory, strDirectory));
 				//the old backup file is becoming the new file
 				string strOldBackupFile = strNewOwner + "_" + Path.GetFileName(strDataPath);
 				//the old owner is becoming the new backup file

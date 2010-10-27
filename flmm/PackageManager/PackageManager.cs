@@ -40,7 +40,7 @@ namespace Fomm.PackageManager
 			sbtAddFomod.SelectedItemIndex = Settings.GetInt("SelectedAddFomodAction", 0);
 			m_strLastFromFolderPath = Settings.GetString("LastBuildFOMODFromFolderPath");
 
-			foreach (string modpath in Program.GetFiles(Program.PackageDir, "*.fomod.zip"))
+			foreach (string modpath in Program.GetFiles(Program.GameMode.ModDirectory, "*.fomod.zip"))
 			{
 				if (!File.Exists(Path.ChangeExtension(modpath, null))) File.Move(modpath, Path.ChangeExtension(modpath, null));
 			}
@@ -93,7 +93,7 @@ namespace Fomm.PackageManager
 
 			WebsiteLogin();
 
-			foreach (string modpath in Program.GetFiles(Program.PackageDir, "*.fomod"))
+			foreach (string modpath in Program.GetFiles(Program.GameMode.ModDirectory, "*.fomod"))
 			{
 				AddFomod(modpath, false);
 			}
@@ -106,10 +106,10 @@ namespace Fomm.PackageManager
 		/// </summary>
 		protected void CheckFOModCache()
 		{
-			string[] strCaches = Directory.GetFiles(Program.modInfoCacheDir);
+			string[] strCaches = Directory.GetFiles(Program.GameMode.ModInfoCacheDirectory);
 			foreach (string strCache in strCaches)
 			{
-				string strFOModPath = Path.Combine(Program.PackageDir, Path.GetFileNameWithoutExtension(strCache) + ".fomod");
+				string strFOModPath = Path.Combine(Program.GameMode.ModDirectory, Path.GetFileNameWithoutExtension(strCache) + ".fomod");
 				if (!File.Exists(strFOModPath) || (File.GetLastWriteTimeUtc(strCache) < File.GetLastWriteTimeUtc(strFOModPath)))
 					FileUtil.ForceDelete(strCache);
 			}
@@ -522,7 +522,7 @@ namespace Fomm.PackageManager
 			if (!mod.IsActive) bActivate.Text = "Activate";
 			else bActivate.Text = "Reactivate";
 
-			mf.RefreshEspList();
+			mf.RefreshPluginList();
 		}
 
 		private void bActivate_Click(object sender, EventArgs e)
@@ -678,7 +678,7 @@ namespace Fomm.PackageManager
 				}
 			}
 
-			mf.RefreshEspList();
+			mf.RefreshPluginList();
 		}
 
 		private void bDeactivateGroup_Click(object sender, EventArgs e)
@@ -704,7 +704,7 @@ namespace Fomm.PackageManager
 				}
 			}
 
-			mf.RefreshEspList();
+			mf.RefreshPluginList();
 		}
 
 		private void bDeactivateAll_Click(object sender, EventArgs e)
@@ -720,7 +720,7 @@ namespace Fomm.PackageManager
 			}
 			foreach (ListViewItem lvi in lvModList.Items) lvi.Checked = false;
 
-			mf.RefreshEspList();
+			mf.RefreshPluginList();
 		}
 
 		private class FomodSorter : System.Collections.IComparer

@@ -122,12 +122,12 @@ namespace Fomm.PackageManager.Upgrade
 		/// </summary>
 		protected override bool DoScript()
 		{
-			TransactionalFileManager.Snapshot(Program.FOIniPath);
-			TransactionalFileManager.Snapshot(Program.FOPrefsIniPath);
-			TransactionalFileManager.Snapshot(Program.GeckIniPath);
-			TransactionalFileManager.Snapshot(Program.GeckPrefsIniPath);
+			foreach (string strSettingsFile in Program.GameMode.SettingsFiles.Values)
+				TransactionalFileManager.Snapshot(strSettingsFile);
+			foreach (string strAdditionalFile in Program.GameMode.AdditionalPaths.Values)
+				if (File.Exists(strAdditionalFile))
+					TransactionalFileManager.Snapshot(strAdditionalFile);
 			TransactionalFileManager.Snapshot(InstallLog.Current.InstallLogPath);
-			TransactionalFileManager.Snapshot(Program.PluginsFile);
 
 			bool booUpgraded = false;
 			try
@@ -267,7 +267,7 @@ namespace Fomm.PackageManager.Upgrade
 				if (!lstInstallers[lstInstallers.Count - 1].Equals(Fomod.BaseName))
 				{
 					string strDirectory = Path.GetDirectoryName(p_strPath);
-					string strBackupPath = Path.GetFullPath(Path.Combine(Program.overwriteDir, strDirectory));
+					string strBackupPath = Path.GetFullPath(Path.Combine(Program.GameMode.OverwriteDirectory, strDirectory));
 					string strOldModKey = InstallLog.Current.GetModKey(Fomod.BaseName);
 					string strFile = strOldModKey + "_" + Path.GetFileName(p_strPath);
 					strWritePath = Path.Combine(strBackupPath, strFile);

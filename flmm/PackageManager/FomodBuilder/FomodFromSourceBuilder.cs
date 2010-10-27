@@ -121,7 +121,7 @@ namespace Fomm.PackageManager.FomodBuilder
 				{
 					foreach (string strFOMod in strFOMods)
 					{
-						string strNewPath = Path.Combine(Program.PackageDir, Path.GetFileName(strFOMod));
+						string strNewPath = Path.Combine(Program.GameMode.ModDirectory, Path.GetFileName(strFOMod));
 						if (CheckFileName(ref strNewPath))
 						{
 							using (SevenZipExtractor szeExtractor = Archive.GetExtractor(strSource))
@@ -135,7 +135,7 @@ namespace Fomm.PackageManager.FomodBuilder
 				}
 				else
 				{
-					strPackedFomodPath = Path.Combine(Program.PackageDir, Path.GetFileNameWithoutExtension(strPackedFomodPath));
+					strPackedFomodPath = Path.Combine(Program.GameMode.ModDirectory, Path.GetFileNameWithoutExtension(strPackedFomodPath));
 					if (!strPackedFomodPath.EndsWith(".fomod", StringComparison.OrdinalIgnoreCase))
 						strPackedFomodPath += ".fomod";
 					string strNewPath = strPackedFomodPath;
@@ -155,7 +155,7 @@ namespace Fomm.PackageManager.FomodBuilder
 				Int32 intLastSeparatorPos = strSource.LastIndexOfAny(new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar });
 				string strFomodName = strSource.Substring(intLastSeparatorPos + 1);
 
-				string strPackedFomodPath = Path.Combine(Program.PackageDir, strFomodName + ".fomod");
+				string strPackedFomodPath = Path.Combine(Program.GameMode.ModDirectory, strFomodName + ".fomod");
 				strPackedFomodPath = GenerateFomod(new BuildFomodArgs(strFomodName, strSource, null, strPackedFomodPath));
 				lstPackedFOModPaths.Add(strPackedFomodPath);
 			}

@@ -32,21 +32,21 @@ namespace Fomm.PackageManager
 			Trace.WriteLine("Setting up File IO Permissions for: ");
 			Trace.Indent();
 			Trace.Write("       Exe Dir: ");
-			Trace.WriteLine(Program.exeDir);
+			Trace.WriteLine(Program.ExecutableDirectory);
 			Trace.Write("      Save Dir: ");
-			Trace.WriteLine(Program.Fallout3SaveDir);
+			Trace.WriteLine(Program.GameMode.SavesPath);
 			Trace.Indent();
 			Trace.Write("      Registry says profile lives here: ");
 			Trace.WriteLine(Registry.GetValue(@"HKEY_CURRENT_USER\software\microsoft\windows\currentversion\explorer\user shell folders", "Personal", "Not Found").ToString());
 			Trace.Unindent();
 			Trace.Write("  FOMM tmp Dir: ");
 			Trace.WriteLine(Program.tmpPath);
-			Trace.Write("Local Data Dir: ");
-			Trace.WriteLine(Program.LocalDataPath);
+			Trace.Write("User Setting Path: ");
+			Trace.WriteLine(Program.GameMode.UserSettingsPath);
 			Trace.Write("   Current Dir: ");
 			Trace.WriteLine(Environment.CurrentDirectory);
 			Trace.Write(" Overwrite Dir: ");
-			Trace.WriteLine(Program.overwriteDir);
+			Trace.WriteLine(Program.GameMode.OverwriteDirectory);
 			Trace.Write("System tmp Dir: ");
 			Trace.WriteLine(Path.GetTempPath());
 			Trace.Unindent();
@@ -54,8 +54,9 @@ namespace Fomm.PackageManager
 #endif
 			permissions = new PermissionSet(PermissionState.None);
 			permissions.AddPermission(new FileIOPermission(FileIOPermissionAccess.AllAccess, new string[] {
-                Program.exeDir, Program.Fallout3SaveDir, Program.tmpPath, Program.LocalDataPath, Environment.CurrentDirectory,
-				Program.overwriteDir, Path.GetTempPath()
+                Program.ExecutableDirectory, Program.GameMode.SavesPath, Program.tmpPath,
+				Program.GameMode.UserSettingsPath, Environment.CurrentDirectory,
+				Program.GameMode.OverwriteDirectory, Path.GetTempPath()
             }));
 			permissions.AddPermission(new SecurityPermission(SecurityPermissionFlag.UnmanagedCode));
 			permissions.AddPermission(new UIPermission(UIPermissionWindow.AllWindows));

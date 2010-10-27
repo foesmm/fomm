@@ -126,9 +126,85 @@ namespace Fomm.PackageManager.ModInstallLog
 		}
 
 		/// <summary>
+		/// Describes an edit to a game-specific value.
+		/// </summary>
+		internal class GameSpecificValueEdit : IComparable<GameSpecificValueEdit>
+		{
+			private string m_strKey = null;
+			private byte[] m_bteData;
+
+			#region Properties
+
+			/// <summary>
+			/// Gets the key of the value that was edited.
+			/// </summary>
+			/// <value>The key of the value that was edited.</value>
+			public string Key
+			{
+				get
+				{
+					return m_strKey;
+				}
+			}
+
+			/// <summary>
+			/// Gets or sets the data to which the game-specific value was set.
+			/// </summary>
+			/// <value>The data to which the game-specific value was set.</value>
+			public byte[] Data
+			{
+				get
+				{
+					return m_bteData;
+				}
+				set
+				{
+					m_bteData = value;
+				}
+			}
+
+			#endregion
+
+			#region Constructors
+
+			/// <summary>
+			/// A simple constructor that initializes the object with the given values.
+			/// </summary>
+			/// <param name="p_strKey">The key of the game-specific value that was edited.</param>
+			public GameSpecificValueEdit(string p_strKey)
+			{
+				m_strKey = p_strKey;
+			}
+
+			#endregion
+
+			#region IComparable<OtherEdit> Members
+
+			/// <summary>
+			/// Compares this <see cref="GameSpecificValueEdit"/> to the given <see cref="GameSpecificValueEdit"/>.
+			/// </summary>
+			/// <remarks>
+			/// Two <see cref="GameSpecificValueEdit"/> objects can be strictly ordered by
+			/// the keys of the edits.
+			/// </remarks>
+			/// <param name="other">The <see cref="GameSpecificValueEdit"/> to which to compare this <see cref="GameSpecificValueEdit"/>.</param>
+			/// <returns>A value less than zero if this instance is less than the given instance,
+			/// or a value of zero  if this instance is equal to the given instance,
+			/// or a value greater than zero if this instance is greater than the given
+			/// instance.</returns>
+			public int CompareTo(GameSpecificValueEdit other)
+			{
+				Int32 intResult = m_strKey.CompareTo(other.m_strKey);
+				return intResult;
+			}
+
+			#endregion
+		}
+
+		/// <summary>
 		/// Describes an edit to an Sdp.
 		/// </summary>
-		internal class SdpEdit : IComparable<SdpEdit>
+		/*internal class SdpEdit : IComparable<SdpEdit>
 		{
 			private Int32 m_intPackage = -1;
 			private string m_strShaderName = null;
@@ -217,14 +293,14 @@ namespace Fomm.PackageManager.ModInstallLog
 			}
 
 			#endregion
-		}
+		}*/
 	
 		private List<string> m_lstDataFiles = null;
 		private List<string> m_lstReplacedDataFiles = null;
 		private List<IniEdit> m_lstIniEdits = null;
 		private List<IniEdit> m_lstReplacedIniValues = null;
-		private List<SdpEdit> m_lstSdpEdits = null;
-		private List<SdpEdit> m_lstReplacedSdpData = null;
+		private List<GameSpecificValueEdit> m_lstGameSpecificValueEdits = null;
+		private List<GameSpecificValueEdit> m_lstReplacedGameSpecificValues = null;
 
 		#region Properties
 
@@ -277,26 +353,26 @@ namespace Fomm.PackageManager.ModInstallLog
 		}
 
 		/// <summary>
-		/// Gets the list of Sdp edits performed during an install.
+		/// Gets the list of game-specifc value edits performed during an install.
 		/// </summary>
-		/// <value>The list of Sdp edits performed during an install.</value>
-		internal List<SdpEdit> SdpEdits
+		/// <value>The list of game-specifc value edits performed during an install.</value>
+		internal List<GameSpecificValueEdit> GameSpecificValueEdits
 		{
 			get
 			{
-				return m_lstSdpEdits;
+				return m_lstGameSpecificValueEdits;
 			}
 		}
 
 		/// <summary>
-		/// Gets the list of original shader data that were overwritten.
+		/// Gets the list of original game-specifc values that were overwritten.
 		/// </summary>
-		/// <value>The list of original shader data that were overwritten.</value>
-		internal List<SdpEdit> ReplacedOriginalSdpData
+		/// <value>The list of original game-specifc values that were overwritten.</value>
+		internal List<GameSpecificValueEdit> ReplacedGameSpecificValueData
 		{
 			get
 			{
-				return m_lstReplacedSdpData;
+				return m_lstReplacedGameSpecificValues;
 			}
 		}
 
@@ -313,8 +389,8 @@ namespace Fomm.PackageManager.ModInstallLog
 			m_lstReplacedDataFiles = new List<string>();
 			m_lstIniEdits = new List<IniEdit>();
 			m_lstReplacedIniValues = new List<IniEdit>();
-			m_lstSdpEdits = new List<SdpEdit>();
-			m_lstReplacedSdpData = new List<SdpEdit>();
+			m_lstGameSpecificValueEdits = new List<GameSpecificValueEdit>();
+			m_lstReplacedGameSpecificValues = new List<GameSpecificValueEdit>();
 		}
 
 		#endregion
@@ -432,49 +508,47 @@ namespace Fomm.PackageManager.ModInstallLog
 
 		#endregion
 
-		#region Shader Management
+		#region Game-Specific Value Management
 
 		/// <summary>
-		/// Adds the given Shader edit to the mod install log.
+		/// Adds the given <see cref="GameSpecificValueEdit"/> to the mod install log.
 		/// </summary>
 		/// <remarks>
-		/// Adding an Shader edit to a mod's install log indicates that said edit was made
+		/// Adding a <see cref="GameSpecificValueEdit"/> to a mod's install log indicates that said edit was made
 		/// as part of the mod.
 		/// </remarks>
-		/// <param name="p_intPackage">The package containing the shader that was edited.</param>
-		/// <param name="p_strShader">The shader that was edited.</param>
-		/// <param name="p_bteData">The value to which the shader was set.</param>
-		internal void AddSdpEdit(int p_intPackage, string p_strShader, byte[] p_bteData)
+		/// <param name="p_strKey">The key of the value that was edited.</param>
+		/// <param name="p_bteData">The data to which the value was set.</param>
+		internal void AddGameSpecificValueEdit(string p_strKey, byte[] p_bteData)
 		{
-			string strLoweredShader = p_strShader.ToLowerInvariant();
-			SdpEdit spdEdit = new SdpEdit(p_intPackage, p_strShader);
-			Int32 intIndex = m_lstSdpEdits.IndexOf(spdEdit);
+			string strLoweredKey = p_strKey.ToLowerInvariant();
+			GameSpecificValueEdit gseEdit = new GameSpecificValueEdit(strLoweredKey);
+			Int32 intIndex = m_lstGameSpecificValueEdits.IndexOf(gseEdit);
 			if (intIndex == -1)
-				m_lstSdpEdits.Add(spdEdit);
+				m_lstGameSpecificValueEdits.Add(gseEdit);
 			else
-				spdEdit = m_lstSdpEdits[intIndex];
-			spdEdit.Data = p_bteData;
+				gseEdit = m_lstGameSpecificValueEdits[intIndex];
+			gseEdit.Data = p_bteData;
 		}
 
 		/// <summary>
-		/// Adds the given original shader to the mod install log.
+		/// Adds the given original data of the a game-specific value to the mod install log.
 		/// </summary>
 		/// <remarks>
-		/// This backs up an original shader we are overwriting.
+		/// This backs up the original data of the a game-specific value we are overwriting.
 		/// </remarks>
-		/// <param name="p_intPackage">The package containing the shader that was edited.</param>
-		/// <param name="p_strShader">The shader that was edited.</param>
-		/// <param name="p_bteData">The original data of the edited shader.</param>
-		internal void BackupOriginalSpd(int p_intPackage, string p_strShader, byte[] p_bteData)
+		/// <param name="p_strKey">The key of the value that was edited.</param>
+		/// <param name="p_bteData">The original data of the edited value.</param>
+		internal void BackupOriginalGameSpecificValueEdit(string p_strKey, byte[] p_bteData)
 		{
-			string strLoweredShader = p_strShader.ToLowerInvariant();
-			SdpEdit spdEdit = new SdpEdit(p_intPackage, p_strShader);
-			Int32 intIndex = m_lstReplacedSdpData.IndexOf(spdEdit);
+			string strLoweredKey = p_strKey.ToLowerInvariant();
+			GameSpecificValueEdit oetEdit = new GameSpecificValueEdit(strLoweredKey);
+			Int32 intIndex = m_lstReplacedGameSpecificValues.IndexOf(oetEdit);
 			if (intIndex == -1)
-				m_lstReplacedSdpData.Add(spdEdit);
+				m_lstReplacedGameSpecificValues.Add(oetEdit);
 			else
-				spdEdit = m_lstReplacedSdpData[intIndex];
-			spdEdit.Data = p_bteData;
+				oetEdit = m_lstReplacedGameSpecificValues[intIndex];
+			oetEdit.Data = p_bteData;
 		}
 
 		#endregion

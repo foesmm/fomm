@@ -32,20 +32,17 @@ namespace Fomm
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.bLaunch = new System.Windows.Forms.Button();
 			this.cmsPlugins = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.openInTESsnipToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.sendToTopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.sendToBottomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.uncheckAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.checkAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.openInCREditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
 			this.lvEspList = new L0ki.Controls.ReordableItemListView();
 			this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
 			this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
 			this.rtbPluginInfo = new System.Windows.Forms.RichTextBox();
 			this.bPackageManager = new System.Windows.Forms.Button();
-			this.bEnableAI = new System.Windows.Forms.Button();
 			this.bSaveGames = new System.Windows.Forms.Button();
 			this.bHelp = new System.Windows.Forms.Button();
 			this.bSettings = new System.Windows.Forms.Button();
@@ -57,16 +54,10 @@ namespace Fomm
 			this.runCustomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.bSAUnpackerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.bSACreatorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.tESsnipToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.sDPEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.installTweakerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.loadOrderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.copyToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.gameSettingsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.gameSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.viewReadmeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -75,7 +66,6 @@ namespace Fomm
 			this.bReport = new System.Windows.Forms.Button();
 			this.butFileManager = new System.Windows.Forms.Button();
 			this.butCheckCriticalRecords = new System.Windows.Forms.Button();
-			this.cREditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.cmsPlugins.SuspendLayout();
 			this.splitContainer1.Panel1.SuspendLayout();
@@ -109,64 +99,48 @@ namespace Fomm
 			// cmsPlugins
 			// 
 			this.cmsPlugins.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.openInTESsnipToolStripMenuItem,
-            this.openInCREditorToolStripMenuItem,
             this.sendToTopToolStripMenuItem,
             this.sendToBottomToolStripMenuItem,
             this.uncheckAllToolStripMenuItem,
             this.checkAllToolStripMenuItem,
             this.deleteToolStripMenuItem});
 			this.cmsPlugins.Name = "cmsPlugins";
-			this.cmsPlugins.Size = new System.Drawing.Size(166, 158);
-			// 
-			// openInTESsnipToolStripMenuItem
-			// 
-			this.openInTESsnipToolStripMenuItem.Name = "openInTESsnipToolStripMenuItem";
-			this.openInTESsnipToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
-			this.openInTESsnipToolStripMenuItem.Text = "Open in TESsnip";
-			this.openInTESsnipToolStripMenuItem.Click += new System.EventHandler(this.openInTESsnipToolStripMenuItem_Click);
+			this.cmsPlugins.Size = new System.Drawing.Size(136, 114);
 			// 
 			// sendToTopToolStripMenuItem
 			// 
 			this.sendToTopToolStripMenuItem.Name = "sendToTopToolStripMenuItem";
-			this.sendToTopToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+			this.sendToTopToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
 			this.sendToTopToolStripMenuItem.Text = "Load first";
 			this.sendToTopToolStripMenuItem.Click += new System.EventHandler(this.sendToTopToolStripMenuItem_Click);
 			// 
 			// sendToBottomToolStripMenuItem
 			// 
 			this.sendToBottomToolStripMenuItem.Name = "sendToBottomToolStripMenuItem";
-			this.sendToBottomToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+			this.sendToBottomToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
 			this.sendToBottomToolStripMenuItem.Text = "Load last";
 			this.sendToBottomToolStripMenuItem.Click += new System.EventHandler(this.sendToBottomToolStripMenuItem_Click);
 			// 
 			// uncheckAllToolStripMenuItem
 			// 
 			this.uncheckAllToolStripMenuItem.Name = "uncheckAllToolStripMenuItem";
-			this.uncheckAllToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+			this.uncheckAllToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
 			this.uncheckAllToolStripMenuItem.Text = "Uncheck all";
 			this.uncheckAllToolStripMenuItem.Click += new System.EventHandler(this.uncheckAllToolStripMenuItem_Click);
 			// 
 			// checkAllToolStripMenuItem
 			// 
 			this.checkAllToolStripMenuItem.Name = "checkAllToolStripMenuItem";
-			this.checkAllToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+			this.checkAllToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
 			this.checkAllToolStripMenuItem.Text = "Check all";
 			this.checkAllToolStripMenuItem.Click += new System.EventHandler(this.checkAllToolStripMenuItem_Click);
 			// 
 			// deleteToolStripMenuItem
 			// 
 			this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-			this.deleteToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+			this.deleteToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
 			this.deleteToolStripMenuItem.Text = "Delete";
 			this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
-			// 
-			// openInCREditorToolStripMenuItem
-			// 
-			this.openInCREditorToolStripMenuItem.Name = "openInCREditorToolStripMenuItem";
-			this.openInCREditorToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
-			this.openInCREditorToolStripMenuItem.Text = "Open in CREditor";
-			this.openInCREditorToolStripMenuItem.Click += new System.EventHandler(this.openInCREditorToolStripMenuItem_Click);
 			// 
 			// splitContainer1
 			// 
@@ -247,17 +221,6 @@ namespace Fomm
 			this.bPackageManager.UseVisualStyleBackColor = true;
 			this.bPackageManager.Click += new System.EventHandler(this.bPackageManager_Click);
 			// 
-			// bEnableAI
-			// 
-			this.bEnableAI.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.bEnableAI.Location = new System.Drawing.Point(417, 317);
-			this.bEnableAI.Name = "bEnableAI";
-			this.bEnableAI.Size = new System.Drawing.Size(120, 23);
-			this.bEnableAI.TabIndex = 5;
-			this.bEnableAI.Text = "Toggle invalidation";
-			this.bEnableAI.UseVisualStyleBackColor = true;
-			this.bEnableAI.Click += new System.EventHandler(this.bEnableAI_Click);
-			// 
 			// bSaveGames
 			// 
 			this.bSaveGames.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -308,7 +271,7 @@ namespace Fomm
             this.fileToolStripMenuItem,
             this.toolsToolStripMenuItem,
             this.loadOrderToolStripMenuItem,
-            this.gameSettingsToolStripMenuItem1,
+            this.gameSettingsToolStripMenuItem,
             this.helpToolStripMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
@@ -357,51 +320,9 @@ namespace Fomm
 			// 
 			// toolsToolStripMenuItem
 			// 
-			this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.bSAUnpackerToolStripMenuItem,
-            this.bSACreatorToolStripMenuItem,
-            this.tESsnipToolStripMenuItem,
-            this.cREditorToolStripMenuItem,
-            this.sDPEditorToolStripMenuItem,
-            this.installTweakerToolStripMenuItem});
 			this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
 			this.toolsToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
 			this.toolsToolStripMenuItem.Text = "Tools";
-			// 
-			// bSAUnpackerToolStripMenuItem
-			// 
-			this.bSAUnpackerToolStripMenuItem.Name = "bSAUnpackerToolStripMenuItem";
-			this.bSAUnpackerToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.bSAUnpackerToolStripMenuItem.Text = "BSA unpacker";
-			this.bSAUnpackerToolStripMenuItem.Click += new System.EventHandler(this.bBSAUnpack_Click);
-			// 
-			// bSACreatorToolStripMenuItem
-			// 
-			this.bSACreatorToolStripMenuItem.Name = "bSACreatorToolStripMenuItem";
-			this.bSACreatorToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.bSACreatorToolStripMenuItem.Text = "BSA creator";
-			this.bSACreatorToolStripMenuItem.Click += new System.EventHandler(this.cBSACreator_Click);
-			// 
-			// tESsnipToolStripMenuItem
-			// 
-			this.tESsnipToolStripMenuItem.Name = "tESsnipToolStripMenuItem";
-			this.tESsnipToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.tESsnipToolStripMenuItem.Text = "TESsnip";
-			this.tESsnipToolStripMenuItem.Click += new System.EventHandler(this.bTESsnip_Click);
-			// 
-			// sDPEditorToolStripMenuItem
-			// 
-			this.sDPEditorToolStripMenuItem.Name = "sDPEditorToolStripMenuItem";
-			this.sDPEditorToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.sDPEditorToolStripMenuItem.Text = "SDP editor";
-			this.sDPEditorToolStripMenuItem.Click += new System.EventHandler(this.bShaderEdit_Click);
-			// 
-			// installTweakerToolStripMenuItem
-			// 
-			this.installTweakerToolStripMenuItem.Name = "installTweakerToolStripMenuItem";
-			this.installTweakerToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.installTweakerToolStripMenuItem.Text = "Install tweaker";
-			this.installTweakerToolStripMenuItem.Click += new System.EventHandler(this.bInstallTweaker_Click);
 			// 
 			// loadOrderToolStripMenuItem
 			// 
@@ -434,20 +355,11 @@ namespace Fomm
 			this.copyToClipboardToolStripMenuItem.Text = "Copy to clipboard";
 			this.copyToClipboardToolStripMenuItem.Click += new System.EventHandler(this.copyLoadOrderToClipboardToolStripMenuItem_Click);
 			// 
-			// gameSettingsToolStripMenuItem1
-			// 
-			this.gameSettingsToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.gameSettingsToolStripMenuItem});
-			this.gameSettingsToolStripMenuItem1.Name = "gameSettingsToolStripMenuItem1";
-			this.gameSettingsToolStripMenuItem1.Size = new System.Drawing.Size(95, 20);
-			this.gameSettingsToolStripMenuItem1.Text = "Game Settings";
-			// 
 			// gameSettingsToolStripMenuItem
 			// 
 			this.gameSettingsToolStripMenuItem.Name = "gameSettingsToolStripMenuItem";
-			this.gameSettingsToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
-			this.gameSettingsToolStripMenuItem.Text = "Game Settings...";
-			this.gameSettingsToolStripMenuItem.Click += new System.EventHandler(this.gameSettingsToolStripMenuItem_Click);
+			this.gameSettingsToolStripMenuItem.Size = new System.Drawing.Size(95, 20);
+			this.gameSettingsToolStripMenuItem.Text = "Game Settings";
 			// 
 			// helpToolStripMenuItem
 			// 
@@ -513,13 +425,6 @@ namespace Fomm
 			this.butCheckCriticalRecords.UseVisualStyleBackColor = true;
 			this.butCheckCriticalRecords.Click += new System.EventHandler(this.butCheckCriticalRecords_Click);
 			// 
-			// cREditorToolStripMenuItem
-			// 
-			this.cREditorToolStripMenuItem.Name = "cREditorToolStripMenuItem";
-			this.cREditorToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.cREditorToolStripMenuItem.Text = "CREditor";
-			this.cREditorToolStripMenuItem.Click += new System.EventHandler(this.cREditorToolStripMenuItem_Click);
-			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -533,7 +438,6 @@ namespace Fomm
 			this.Controls.Add(this.bSort);
 			this.Controls.Add(this.pictureBox1);
 			this.Controls.Add(this.bPackageManager);
-			this.Controls.Add(this.bEnableAI);
 			this.Controls.Add(this.bLaunch);
 			this.Controls.Add(this.bSaveGames);
 			this.Controls.Add(this.bSettings);
@@ -565,10 +469,8 @@ namespace Fomm
 		private System.Windows.Forms.SplitContainer splitContainer1;
 		private System.Windows.Forms.RichTextBox rtbPluginInfo;
 		private System.Windows.Forms.Button bPackageManager;
-		private System.Windows.Forms.Button bEnableAI;
 		private System.Windows.Forms.Button bSaveGames;
 		private System.Windows.Forms.ContextMenuStrip cmsPlugins;
-		private System.Windows.Forms.ToolStripMenuItem openInTESsnipToolStripMenuItem;
 		private System.Windows.Forms.Button bHelp;
 		private System.Windows.Forms.ColumnHeader columnHeader2;
 		private System.Windows.Forms.ToolStripMenuItem sendToTopToolStripMenuItem;
@@ -585,10 +487,6 @@ namespace Fomm
 		private System.Windows.Forms.ToolStripMenuItem runCustomToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem closeToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem bSAUnpackerToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem bSACreatorToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem tESsnipToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem sDPEditorToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem loadOrderToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem importToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem exportToolStripMenuItem;
@@ -598,13 +496,9 @@ namespace Fomm
 		private System.Windows.Forms.ToolStripMenuItem viewReadmeToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem visitForumsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem checkForUpdateToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem installTweakerToolStripMenuItem;
 		private System.Windows.Forms.Button butFileManager;
-		private System.Windows.Forms.ToolStripMenuItem gameSettingsToolStripMenuItem1;
 		private System.Windows.Forms.ToolStripMenuItem gameSettingsToolStripMenuItem;
 		private System.Windows.Forms.Button butCheckCriticalRecords;
-		private System.Windows.Forms.ToolStripMenuItem openInCREditorToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem cREditorToolStripMenuItem;
 	}
 }
 

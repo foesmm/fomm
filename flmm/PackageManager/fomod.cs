@@ -386,7 +386,7 @@ namespace Fomm.PackageManager
 					break;
 				}
 
-			m_strCachePath = Path.Combine(Program.modInfoCacheDir, ModName + ".zip");
+			m_strCachePath = Path.Combine(Program.GameMode.ModInfoCacheDirectory, ModName + ".zip");
 			if (!File.Exists(m_strCachePath) && m_arcFile.IsSolid)
 			{
 				string strTmpInfo = Program.CreateTempDirectory();

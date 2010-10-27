@@ -112,10 +112,11 @@ namespace Fomm.PackageManager
 		/// <seealso cref="ModInstallScript.DoScript"/>
 		protected override bool DoScript()
 		{
-			TransactionalFileManager.Snapshot(Program.FOIniPath);
-			TransactionalFileManager.Snapshot(Program.FOPrefsIniPath);
-			TransactionalFileManager.Snapshot(Program.GeckIniPath);
-			TransactionalFileManager.Snapshot(Program.GeckPrefsIniPath);
+			foreach (string strSettingsFile in Program.GameMode.SettingsFiles.Values)
+				TransactionalFileManager.Snapshot(strSettingsFile);
+			foreach (string strAdditionalFile in Program.GameMode.AdditionalPaths.Values)
+				if (File.Exists(strAdditionalFile))
+					TransactionalFileManager.Snapshot(strAdditionalFile);
 			TransactionalFileManager.Snapshot(InstallLog.Current.InstallLogPath);
 
 			bool booIsActive = true;
@@ -201,8 +202,8 @@ namespace Fomm.PackageManager
 		{
 			List<string> lstFiles = MergeModule.DataFiles;
 			List<InstallLogMergeModule.IniEdit> lstIniEdits = MergeModule.IniEdits;
-			List<InstallLogMergeModule.SdpEdit> lstSdpEdits = MergeModule.SdpEdits;
-			m_bwdProgress.OverallProgressMaximum = lstFiles.Count + lstIniEdits.Count + lstSdpEdits.Count;
+			List<InstallLogMergeModule.GameSpecificValueEdit> lstGameSpecificValueEdits = MergeModule.GameSpecificValueEdits;
+			m_bwdProgress.OverallProgressMaximum = lstFiles.Count + lstIniEdits.Count + lstGameSpecificValueEdits.Count;
 
 			m_bwdProgress.ItemProgressMaximum = lstFiles.Count;
 			m_bwdProgress.ItemMessage = "Uninstalling Files";
@@ -229,9 +230,9 @@ namespace Fomm.PackageManager
 				m_bwdProgress.StepOverallProgress();
 			}
 
-			m_bwdProgress.ItemProgressMaximum = lstSdpEdits.Count;
-			m_bwdProgress.ItemMessage = "Undoing Shader Edits";
-			foreach (InstallLogMergeModule.SdpEdit sdpEdit in lstSdpEdits)
+			m_bwdProgress.ItemProgressMaximum = lstGameSpecificValueEdits.Count;
+			m_bwdProgress.ItemMessage = "Undoing Game Specific Value Edits";
+			foreach (InstallLogMergeModule.GameSpecificValueEdit gsvEdit in lstGameSpecificValueEdits)
 			{
 				if (m_bwdProgress.Cancelled())
 					return;

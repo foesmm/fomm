@@ -84,19 +84,21 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ArchiveInvalidation.cs" />
+    <Compile Include="Games\Fallout3\Fallout3PluginManager.cs" />
+    <Compile Include="Games\Fallout3\Script\Fallout3ModInstallScript.cs" />
+    <Compile Include="Games\Fallout3\Tools\ArchiveInvalidation.cs" />
     <Compile Include="AutoSorter\BOSSUpdater.cs" />
-    <Compile Include="BSAArchive.cs" />
-    <Compile Include="BSABrowser.cs">
+    <Compile Include="Games\Fallout3\Tools\BSA\BSAArchive.cs" />
+    <Compile Include="Games\Fallout3\Tools\BSA\BSABrowser.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="BSABrowser.Designer.cs">
+    <Compile Include="Games\Fallout3\Tools\BSA\BSABrowser.Designer.cs">
       <DependentUpon>BSABrowser.cs</DependentUpon>
     </Compile>
-    <Compile Include="BSACreator.cs">
+    <Compile Include="Games\Fallout3\Tools\BSA\BSACreator.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="BSACreator.Designer.cs">
+    <Compile Include="Games\Fallout3\Tools\BSA\BSACreator.Designer.cs">
       <DependentUpon>BSACreator.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\AutosizeLabel.cs">
@@ -162,11 +164,11 @@
     <Compile Include="Controls\XmlFoldingStrategy.cs" />
     <Compile Include="Controls\XmlFormattingStrategy.cs" />
     <Compile Include="Controls\XmlParser.cs" />
-    <Compile Include="CriticalRecords\ConflictDetector.cs" />
-    <Compile Include="CriticalRecords\CriticalRecordInfo.cs" />
-    <Compile Include="CriticalRecords\CriticalRecordPlugin.cs" />
-    <Compile Include="CriticalRecords\PluginFullException.cs" />
-    <Compile Include="DoubleBufferedListView.cs">
+    <Compile Include="Games\Fallout3\Tools\CriticalRecords\ConflictDetector.cs" />
+    <Compile Include="Games\Fallout3\Tools\CriticalRecords\CriticalRecordInfo.cs" />
+    <Compile Include="Games\Fallout3\Tools\CriticalRecords\CriticalRecordPlugin.cs" />
+    <Compile Include="Games\Fallout3\Tools\CriticalRecords\PluginFullException.cs" />
+    <Compile Include="Controls\DoubleBufferedListView.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="FileManager\FileManager.cs">
@@ -176,18 +178,22 @@
       <DependentUpon>FileManager.cs</DependentUpon>
     </Compile>
     <Compile Include="FileManager\ModInstallReorderer.cs" />
-    <Compile Include="GraphicsSettings\GraphicsSettings.cs">
+    <Compile Include="Games\Fallout3\Fallout3GameMode.cs" />
+    <Compile Include="Games\GameMode.cs" />
+    <Compile Include="Games\GameTool.cs" />
+    <Compile Include="Games\Fallout3\Tools\GraphicsSettings\GraphicsSettings.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="GraphicsSettings\GraphicsSettings.Designer.cs">
+    <Compile Include="Games\Fallout3\Tools\GraphicsSettings\GraphicsSettings.Designer.cs">
       <DependentUpon>GraphicsSettings.cs</DependentUpon>
     </Compile>
-    <Compile Include="GraphicsSettings\OverrideSlider.cs">
+    <Compile Include="Games\Fallout3\Tools\GraphicsSettings\OverrideSlider.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="GraphicsSettings\OverrideSlider.Designer.cs">
+    <Compile Include="Games\Fallout3\Tools\GraphicsSettings\OverrideSlider.Designer.cs">
       <DependentUpon>OverrideSlider.cs</DependentUpon>
     </Compile>
+    <Compile Include="Games\PluginManager.cs" />
     <Compile Include="ImageForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -198,27 +204,28 @@
     <Compile Include="InstallLogUpgraders\Upgrader.cs" />
     <Compile Include="InstallLogUpgraders\Upgrader0000.cs" />
     <Compile Include="InstallLogUpgraders\Upgrader0100.cs" />
-    <Compile Include="InstallTweaker\BsaTrimmer.cs" />
-    <Compile Include="InstallTweaker\EsmTrimmer.cs" />
-    <Compile Include="InstallTweaker\InstallationTweaker.cs">
+    <Compile Include="Games\Fallout3\Tools\InstallTweaker\BsaTrimmer.cs" />
+    <Compile Include="Games\Fallout3\Tools\InstallTweaker\EsmTrimmer.cs" />
+    <Compile Include="Games\Fallout3\Tools\InstallTweaker\InstallationTweaker.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="InstallTweaker\InstallationTweaker.Designer.cs">
+    <Compile Include="Games\Fallout3\Tools\InstallTweaker\InstallationTweaker.Designer.cs">
       <DependentUpon>InstallationTweaker.cs</DependentUpon>
     </Compile>
-    <Compile Include="InstallTweaker\xliveSettings.cs">
+    <Compile Include="Games\Fallout3\Tools\InstallTweaker\xliveSettings.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="InstallTweaker\xliveSettings.Designer.cs">
+    <Compile Include="Games\Fallout3\Tools\InstallTweaker\xliveSettings.Designer.cs">
       <DependentUpon>xliveSettings.cs</DependentUpon>
     </Compile>
     <Compile Include="AutoSorter\LoadOrderSorter.cs" />
+    <Compile Include="InstallLogUpgraders\Upgrader0110.cs" />
     <Compile Include="Messaging.cs" />
-    <Compile Include="PackageManager\BsaManager.cs" />
-    <Compile Include="CriticalRecords\CriticalRecordsForm.cs">
+    <Compile Include="Games\Fallout3\Script\BsaManager.cs" />
+    <Compile Include="Games\Fallout3\Tools\CriticalRecords\CriticalRecordsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CriticalRecords\CriticalRecordsForm.Designer.cs">
+    <Compile Include="Games\Fallout3\Tools\CriticalRecords\CriticalRecordsForm.Designer.cs">
       <DependentUpon>CriticalRecordsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="PackageManager\Controls\FomodScriptEditor.cs">
@@ -311,6 +318,7 @@
     <Compile Include="PackageManager\InfoEditor.Designer.cs">
       <DependentUpon>InfoEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="PackageManager\ModInstallerBase.cs" />
     <Compile Include="PackageManager\ModInstallLog\FomodInfo.cs" />
     <Compile Include="PackageManager\ModInstallLog\InstallLogBase.cs" />
     <Compile Include="InstallLogUpgraders\InstallLogUpgrader.cs" />
@@ -325,7 +333,6 @@
     <Compile Include="PackageManager\ModInstallLog\InstallLogMergeModule.cs" />
     <Compile Include="PackageManager\ModInstallScript.cs" />
     <Compile Include="PackageManager\ModReactivator.cs" />
-    <Compile Include="PackageManager\ModScript.cs" />
     <Compile Include="PackageManager\ModUninstaller.cs" />
     <Compile Include="PackageManager\PermissionsManager.cs" />
     <Compile Include="PackageManager\PremadeFomodPack.cs" />
@@ -360,7 +367,7 @@
       <DependentUpon>PackageManager.cs</DependentUpon>
     </Compile>
     <Compile Include="PackageManager\ScriptCompiler.cs" />
-    <Compile Include="PackageManager\TextureManager.cs" />
+    <Compile Include="Games\Fallout3\Script\TextureManager.cs" />
     <Compile Include="PackageManager\unrar.cs" />
     <Compile Include="BackgroundWorkerProgressDialog.cs">
       <SubType>Form</SubType>
@@ -423,7 +430,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="ReorderableItemListView.cs">
+    <Compile Include="Controls\ReorderableItemListView.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="SaveForm.cs">
@@ -432,55 +439,55 @@
     <Compile Include="SaveForm.Designer.cs">
       <DependentUpon>SaveForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ScriptCompiler\ScriptCompiler.cs">
+    <Compile Include="Games\Fallout3\Tools\TESsnip\ScriptCompiler\ScriptCompiler.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ScriptCompiler\Tokenizer.cs">
+    <Compile Include="Games\Fallout3\Tools\TESsnip\ScriptCompiler\Tokenizer.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Settings.cs" />
-    <Compile Include="SetupForm.cs">
+    <Compile Include="SettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="SetupForm.Designer.cs">
-      <DependentUpon>SetupForm.cs</DependentUpon>
+    <Compile Include="SettingsForm.Designer.cs">
+      <DependentUpon>SettingsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="TESsnip\AddMasterForm.cs">
+    <Compile Include="Games\Fallout3\Tools\TESsnip\AddMasterForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="TESsnip\AddMasterForm.Designer.cs">
+    <Compile Include="Games\Fallout3\Tools\TESsnip\AddMasterForm.Designer.cs">
       <DependentUpon>AddMasterForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="TESsnip\GroupEditor.cs">
+    <Compile Include="Games\Fallout3\Tools\TESsnip\GroupEditor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="TESsnip\GroupEditor.Designer.cs">
+    <Compile Include="Games\Fallout3\Tools\TESsnip\GroupEditor.Designer.cs">
       <DependentUpon>GroupEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="TESsnip\HexBox\ByteCollection.cs" />
-    <Compile Include="TESsnip\HexBox\DataBlock.cs" />
-    <Compile Include="TESsnip\HexBox\DataMap.cs" />
-    <Compile Include="TESsnip\HexBox\Design\HexFontEditor.cs" />
-    <Compile Include="TESsnip\HexBox\DynamicByteProvider.cs" />
-    <Compile Include="TESsnip\HexBox\FileByteProvider.cs" />
-    <Compile Include="TESsnip\HexBox\HexBox.cs">
+    <Compile Include="Games\Fallout3\Tools\TESsnip\HexBox\ByteCollection.cs" />
+    <Compile Include="Games\Fallout3\Tools\TESsnip\HexBox\DataBlock.cs" />
+    <Compile Include="Games\Fallout3\Tools\TESsnip\HexBox\DataMap.cs" />
+    <Compile Include="Games\Fallout3\Tools\TESsnip\HexBox\Design\HexFontEditor.cs" />
+    <Compile Include="Games\Fallout3\Tools\TESsnip\HexBox\DynamicByteProvider.cs" />
+    <Compile Include="Games\Fallout3\Tools\TESsnip\HexBox\FileByteProvider.cs" />
+    <Compile Include="Games\Fallout3\Tools\TESsnip\HexBox\HexBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="TESsnip\HexBox\IByteProvider.cs" />
-    <Compile Include="TESsnip\HexBox\NativeMethods.cs" />
-    <Compile Include="TESsnip\HexDataEdit.cs">
+    <Compile Include="Games\Fallout3\Tools\TESsnip\HexBox\IByteProvider.cs" />
+    <Compile Include="Games\Fallout3\Tools\TESsnip\HexBox\NativeMethods.cs" />
+    <Compile Include="Games\Fallout3\Tools\TESsnip\HexDataEdit.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="TESsnip\HexDataEdit.Designer.cs">
+    <Compile Include="Games\Fallout3\Tools\TESsnip\HexDataEdit.Designer.cs">
       <DependentUpon>HexDataEdit.cs</DependentUpon>
     </Compile>
-    <Compile Include="TESsnip\MediumLevelRecordEditor.cs">
+    <Compile Include="Games\Fallout3\Tools\TESsnip\MediumLevelRecordEditor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="TESsnip\MediumLevelRecordEditor.Designer.cs">
+    <Compile Include="Games\Fallout3\Tools\TESsnip\MediumLevelRecordEditor.Designer.cs">
       <DependentUpon>MediumLevelRecordEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="TESsnip\RecordStructure.cs" />
+    <Compile Include="Games\Fallout3\Tools\TESsnip\RecordStructure.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -492,11 +499,11 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="BSABrowser.resx">
+    <EmbeddedResource Include="Games\Fallout3\Tools\BSA\BSABrowser.resx">
       <DependentUpon>BSABrowser.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="BSACreator.resx">
+    <EmbeddedResource Include="Games\Fallout3\Tools\BSA\BSACreator.resx">
       <DependentUpon>BSACreator.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -509,25 +516,25 @@
     <EmbeddedResource Include="FileManager\FileManager.resx">
       <DependentUpon>FileManager.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GraphicsSettings\GraphicsSettings.resx">
+    <EmbeddedResource Include="Games\Fallout3\Tools\GraphicsSettings\GraphicsSettings.resx">
       <DependentUpon>GraphicsSettings.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GraphicsSettings\OverrideSlider.resx">
+    <EmbeddedResource Include="Games\Fallout3\Tools\GraphicsSettings\OverrideSlider.resx">
       <DependentUpon>OverrideSlider.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ImageForm.resx">
       <DependentUpon>ImageForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="InstallTweaker\InstallationTweaker.resx">
+    <EmbeddedResource Include="Games\Fallout3\Tools\InstallTweaker\InstallationTweaker.resx">
       <DependentUpon>InstallationTweaker.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="InstallTweaker\xliveSettings.resx">
+    <EmbeddedResource Include="Games\Fallout3\Tools\InstallTweaker\xliveSettings.resx">
       <SubType>Designer</SubType>
       <DependentUpon>xliveSettings.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CriticalRecords\CriticalRecordsForm.resx">
+    <EmbeddedResource Include="Games\Fallout3\Tools\CriticalRecords\CriticalRecordsForm.resx">
       <DependentUpon>CriticalRecordsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PackageManager\Controls\FomodScriptEditor.resx">
@@ -607,22 +614,22 @@
       <DependentUpon>SaveForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="SetupForm.resx">
+    <EmbeddedResource Include="SettingsForm.resx">
       <SubType>Designer</SubType>
-      <DependentUpon>SetupForm.cs</DependentUpon>
+      <DependentUpon>SettingsForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="TESsnip\AddMasterForm.resx">
+    <EmbeddedResource Include="Games\Fallout3\Tools\TESsnip\AddMasterForm.resx">
       <DependentUpon>AddMasterForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="TESsnip\GroupEditor.resx">
+    <EmbeddedResource Include="Games\Fallout3\Tools\TESsnip\GroupEditor.resx">
       <SubType>Designer</SubType>
       <DependentUpon>GroupEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="TESsnip\HexDataEdit.resx">
+    <EmbeddedResource Include="Games\Fallout3\Tools\TESsnip\HexDataEdit.resx">
       <DependentUpon>HexDataEdit.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="TESsnip\MediumLevelRecordEditor.resx">
+    <EmbeddedResource Include="Games\Fallout3\Tools\TESsnip\MediumLevelRecordEditor.resx">
       <SubType>Designer</SubType>
       <DependentUpon>MediumLevelRecordEditor.cs</DependentUpon>
     </EmbeddedResource>
@@ -634,40 +641,40 @@
       <DependentUpon>ProgressForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="ShaderEdit\HLSLImporter.resx">
+    <EmbeddedResource Include="Games\Fallout3\Tools\ShaderEdit\HLSLImporter.resx">
       <DependentUpon>HLSLImporter.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="ShaderEdit\MainForm.resx">
+    <EmbeddedResource Include="Games\Fallout3\Tools\ShaderEdit\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="TESsnip\DataEdit.resx">
+    <EmbeddedResource Include="Games\Fallout3\Tools\TESsnip\DataEdit.resx">
       <DependentUpon>DataEdit.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="TESsnip\HeaderEditor.resx">
+    <EmbeddedResource Include="Games\Fallout3\Tools\TESsnip\HeaderEditor.resx">
       <DependentUpon>HeaderEditor.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="TESsnip\SearchForm.resx">
+    <EmbeddedResource Include="Games\Fallout3\Tools\TESsnip\SearchForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>SearchForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="TESsnip\TESsnip.resx">
+    <EmbeddedResource Include="Games\Fallout3\Tools\TESsnip\TESsnip.resx">
       <SubType>Designer</SubType>
       <DependentUpon>TESsnip.cs</DependentUpon>
     </EmbeddedResource>
-    <Compile Include="ShaderEdit\HLSLImporter.cs">
+    <Compile Include="Games\Fallout3\Tools\ShaderEdit\HLSLImporter.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ShaderEdit\HLSLImporter.Designer.cs">
+    <Compile Include="Games\Fallout3\Tools\ShaderEdit\HLSLImporter.Designer.cs">
       <DependentUpon>HLSLImporter.cs</DependentUpon>
     </Compile>
-    <Compile Include="ShaderEdit\MainForm.cs">
+    <Compile Include="Games\Fallout3\Tools\ShaderEdit\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ShaderEdit\MainForm.Designer.cs">
+    <Compile Include="Games\Fallout3\Tools\ShaderEdit\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="SharpZipLib\Checksums\Adler32.cs" />
@@ -714,31 +721,31 @@
     <Compile Include="SharpZipLib\Zip\ZipHelperStream.cs" />
     <Compile Include="SharpZipLib\Zip\ZipNameTransform.cs" />
     <Compile Include="SharpZipLib\Zip\ZipOutputStream.cs" />
-    <Compile Include="TESsnip\DataEdit.cs">
+    <Compile Include="Games\Fallout3\Tools\TESsnip\DataEdit.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="TESsnip\DataEdit.Designer.cs">
+    <Compile Include="Games\Fallout3\Tools\TESsnip\DataEdit.Designer.cs">
       <DependentUpon>DataEdit.cs</DependentUpon>
     </Compile>
-    <Compile Include="TESsnip\HeaderEditor.cs">
+    <Compile Include="Games\Fallout3\Tools\TESsnip\HeaderEditor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="TESsnip\HeaderEditor.Designer.cs">
+    <Compile Include="Games\Fallout3\Tools\TESsnip\HeaderEditor.Designer.cs">
       <DependentUpon>HeaderEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="TESsnip\SearchForm.cs">
+    <Compile Include="Games\Fallout3\Tools\TESsnip\SearchForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="TESsnip\SearchForm.Designer.cs">
+    <Compile Include="Games\Fallout3\Tools\TESsnip\SearchForm.Designer.cs">
       <DependentUpon>SearchForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="TESsnip\TESsnip.cs">
+    <Compile Include="Games\Fallout3\Tools\TESsnip\TESsnip.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="TESsnip\TESsnip.Designer.cs">
+    <Compile Include="Games\Fallout3\Tools\TESsnip\TESsnip.Designer.cs">
       <DependentUpon>TESsnip.cs</DependentUpon>
     </Compile>
-    <Compile Include="TESsnip\TESsnipParser.cs" />
+    <Compile Include="Games\Fallout3\Tools\TESsnip\TESsnipParser.cs" />
     <Compile Include="TypeConverter.cs" />
     <Compile Include="Util\FileUtil.cs" />
     <Compile Include="Util\Set.cs" />
@@ -794,19 +801,19 @@
     <None Include="Resources\justify_right.png" />
     <None Include="Resources\strikeout.png" />
     <None Include="Resources\underline.png" />
-    <Content Include="ScriptCompiler\ScriptFunctions.xml">
+    <Content Include="Games\Fallout3\Tools\TESsnip\ScriptCompiler\ScriptFunctions.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="ScriptCompiler\ScriptFunctionsFormat.txt">
+    <Content Include="Games\Fallout3\Tools\TESsnip\ScriptCompiler\ScriptFunctionsFormat.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="ShaderDisasm.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="TESsnip\RecordStructure.xml">
+    <Content Include="Games\Fallout3\Tools\TESsnip\RecordStructure.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="TESsnip\RecordStructureFormat.txt">
+    <Content Include="Games\Fallout3\Tools\TESsnip\RecordStructureFormat.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

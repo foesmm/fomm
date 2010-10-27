@@ -28,6 +28,9 @@ using Microsoft.Win32;
 using Fomm.Util;
 using System.Collections.Generic;
 using Fomm.PackageManager.ModInstallLog;
+using Fomm.Games;
+using Fomm.Games.Fallout3;
+using System.Threading;
 
 namespace Fomm
 {
@@ -59,26 +62,21 @@ namespace Fomm
 #endif
 
 		public static readonly string tmpPath = Path.Combine(Path.GetTempPath(), "fomm");
-		public static readonly string exeDir = Path.GetDirectoryName(Application.ExecutablePath);
-		public static readonly string Fallout3SaveDir = Path.Combine(String.IsNullOrEmpty(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)) ? Registry.GetValue(@"HKEY_CURRENT_USER\software\microsoft\windows\currentversion\explorer\user shell folders", "Personal", null).ToString() : Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "My games\\Fallout3");
-		public static readonly string FOIniPath = Path.Combine(Fallout3SaveDir, "Fallout.ini");
-		public static readonly string FOPrefsIniPath = Path.Combine(Fallout3SaveDir, "FalloutPrefs.ini");
-		public static readonly string GeckIniPath = Path.Combine(Fallout3SaveDir, "GECKCustom.ini");
-		public static readonly string GeckPrefsIniPath = Path.Combine(Fallout3SaveDir, "GECKPrefs.ini");
-		public static readonly string FORendererFile = Path.Combine(Fallout3SaveDir, "RendererInfo.txt");
-		public static readonly string FOSavesPath = Path.Combine(Fallout3SaveDir, NativeMethods.GetPrivateProfileString("General", "SLocalSavePath", "Games", FOIniPath));
-		private static string packageDir;
-		public static readonly string fommDir = Path.Combine(exeDir, "fomm");
-		public static readonly string overwriteDir = Path.Combine(exeDir, "overwrites");
-		public static string modInfoCacheDir;
-		public static readonly string LocalDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Fallout3");
-		public static readonly string PluginsFile = Path.Combine(LocalDataPath, "plugins.txt");
-		public static readonly string DLCDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Microsoft\\xlive\\DLC");
+		private static readonly string m_strExecutableDirectory = Path.GetDirectoryName(Application.ExecutablePath);
+		public static readonly string fommDir = Path.Combine(m_strExecutableDirectory, "fomm");
 
 		private static bool monoMode;
 		public static bool MonoMode { get { return monoMode; } }
 
-		public static string PackageDir { get { return packageDir; } }
+		public static string ExecutableDirectory
+		{
+			get
+			{
+				return m_strExecutableDirectory;
+			}
+		}
+
+		public static GameMode GameMode = null;
 
 		private static void WriteHelp()
 		{
@@ -119,167 +117,109 @@ namespace Fomm
 				Trace.WriteLine("Where we currently are (1): " + Path.GetFullPath("."));
 				Trace.WriteLine("We know where FOMM lives: " + Application.ExecutablePath);
 #endif
-			if (args.Length > 0 && (args[0] == "-?" || args[0] == "/?" || args[0] == "-help"))
-			{
-				WriteHelp();
-				return;
-			}
+				if (args.Length > 0 && (args[0] == "-?" || args[0] == "/?" || args[0] == "-help"))
+				{
+					WriteHelp();
+					return;
+				}
 
-			System.Threading.Mutex mutex;
-			bool newMutex;
-			Directory.SetCurrentDirectory(exeDir);
-			//Style setup
-			Application.EnableVisualStyles();
-			Application.SetCompatibleTextRenderingDefault(false);
+				Directory.SetCurrentDirectory(ExecutableDirectory);
+				//Style setup
+				Application.EnableVisualStyles();
+				Application.SetCompatibleTextRenderingDefault(false);
 
-			Settings.Init();
+				Settings.Init();
 
-			packageDir = Settings.GetString("FomodDir");
-			if (packageDir == null) packageDir = Path.Combine(exeDir, "mods");
-			modInfoCacheDir = Path.Combine(packageDir, "cache");
+				//TODO: Detect GameMode to use.
+				GameMode = new Fallout3GameMode();
+
 #if TRACE
-				Trace.WriteLine("We know where the mods live: " + packageDir);
+				Trace.WriteLine("We know where the mods live: " + GameMode.ModDirectory);
 #endif
-			string autoLoad = null;
+				Mutex mutex;
+				bool booNewMutex;
+				string autoLoad = null;
 
-			if (args.Length > 0)
-			{
-				if (!args[0].StartsWith("-") && File.Exists(args[0]))
+				if (args.Length > 0)
 				{
-					switch (Path.GetExtension(args[0]).ToLowerInvariant())
+					bool booArgsHandled = true;
+					bool booExit = false;
+					if (!args[0].StartsWith("-") && File.Exists(args[0]))
 					{
-						case ".rar":
-						case ".7z":
-						case ".zip":
-						case ".fomod":
-							mutex = new System.Threading.Mutex(true, "fommMainMutex", out newMutex);
-							mutex.Close();
-							if (!newMutex)
-							{
-								Messaging.TransmitMessage(args[0]);
-								return;
-							}
-							else
-							{
-								autoLoad = args[0];
-								break;
-							}
-						case ".dat":
-						case ".bsa":
-							Application.Run(new BSABrowser(args[0]));
-							return;
-						case ".sdp":
-							Application.Run(new ShaderEdit.MainForm(args[0]));
-							return;
-						case ".esp":
-						case ".esm":
-							Application.Run(new TESsnip.TESsnip(new string[] { args[0] }));
-							return;
-					}
-				}
-				else
-				{
-					switch (args[0])
-					{
-						case "-setup":
-							mutex = new System.Threading.Mutex(true, "fommMainMutex", out newMutex);
-							if (!newMutex)
-							{
-								MessageBox.Show("fomm is already running", "Error");
+						switch (Path.GetExtension(args[0]).ToLowerInvariant())
+						{
+							case ".rar":
+							case ".7z":
+							case ".zip":
+							case ".fomod":
+								mutex = new System.Threading.Mutex(true, "fommMainMutex", out booNewMutex);
 								mutex.Close();
-								return;
-							}
-							Application.Run(new SetupForm(false));
-							mutex.Close();
-							return;
-						case "-bsa-unpacker":
-							Application.Run(new BSABrowser());
-							return;
-						case "-bsa-creator":
-							Application.Run(new BSACreator());
-							return;
-						case "-tessnip":
-							Application.Run(new TESsnip.TESsnip());
-							return;
-						case "-sdp-editor":
-							Application.Run(new ShaderEdit.MainForm());
-							return;
-						case "-u":
-							string strGuid = args[1];
-							string strPath = Environment.GetFolderPath(Environment.SpecialFolder.System);
-							ProcessStartInfo psiInfo = new ProcessStartInfo(strPath + @"\msiexec.exe", "/x " + strGuid);
-							Process.Start(psiInfo);
-							return;
+								if (!booNewMutex)
+								{
+									Messaging.TransmitMessage(args[0]);
+									return;
+								}
+								else
+								{
+									autoLoad = args[0];
+									break;
+								}
+							default:
+								booArgsHandled = false;
+								break;
+						}
 					}
+					else
+					{
+						switch (args[0])
+						{
+							case "-u":
+								string strGuid = args[1];
+								string strPath = Environment.GetFolderPath(Environment.SpecialFolder.System);
+								ProcessStartInfo psiInfo = new ProcessStartInfo(strPath + @"\msiexec.exe", "/x " + strGuid);
+								Process.Start(psiInfo);
+								return;
+							default:
+								booArgsHandled = false;
+								break;
+						}
+					}
+					if (!booArgsHandled && GameMode.HandleStandaloneArguments(args))
+						return;
 				}
-			}
+
 #if TRACE
 				Trace.WriteLine("Creating mutex.");
 				Trace.Indent();
 #endif
-
-			mutex = new System.Threading.Mutex(true, "fommMainMutex", out newMutex);
-			if (!newMutex)
-			{
+				mutex = new System.Threading.Mutex(true, "fommMainMutex", out booNewMutex);
+				if (!booNewMutex)
+				{
 #if TRACE
 					Trace.WriteLine("FOMM is already running.");
-
 #endif
-				MessageBox.Show("fomm is already running", "Error");
-				mutex.Close();
-				return;
-			}
+					MessageBox.Show("fomm is already running", "Error");
+					mutex.Close();
+					return;
+				}
 #if TRACE
 				Trace.Unindent();
 #endif
 
-			try
-			{
-#if TRACE
-					Trace.WriteLine("Looking for Fallout 3.");
-					Trace.Indent();
-#endif
-				//If we aren't in fallouts directory, look it up in the registry
-				if (!File.Exists("Fallout3.exe") && !File.Exists("Fallout3ng.exe"))
+				try
 				{
-					if (File.Exists("..\\Fallout3.exe") || File.Exists("..\\Fallout3ng.exe"))
+					string strErrorMessage = null;
+					if (!GameMode.SetWorkingDirectory(out strErrorMessage))
 					{
-						Directory.SetCurrentDirectory(Path.Combine(Directory.GetCurrentDirectory(), ".."));
-#if TRACE
-							Trace.WriteLine("Found, we think (1): " + Path.GetFullPath("."));
-#endif
+						MessageBox.Show(null, strErrorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+						return;
 					}
-					else
-					{
-						string path = Settings.GetString("FalloutDir");
-						if (path == null)
-						{
-							try
-							{
-								path = Microsoft.Win32.Registry.GetValue(@"HKEY_LOCAL_MACHINE\Software\Bethesda Softworks\Fallout3", "Installed Path", null) as string;
-							}
-							catch { path = null; }
 
-						}
-						if (path != null)
-						{
-							Directory.SetCurrentDirectory(path);
+					//Check that we're in fallout's directory and that we have write access
+					bool cancellaunch = true;
 #if TRACE
-								Trace.WriteLine("Found, we think (2): " + Path.GetFullPath("."));
-#endif
-						}
-					}
-				}
-#if TRACE
-					Trace.WriteLine("Verifying Fallout 3 location: " + Path.GetFullPath("."));
-#endif
-				//Check that we're in fallout's directory and that we have write access
-				bool cancellaunch = true;
-				if (File.Exists("fallout3.exe") || File.Exists("fallout3ng.exe"))
-				{
-#if TRACE
-						Trace.WriteLine("Check for UAC.");
-						Trace.Indent();
+					Trace.WriteLine("Check for UAC.");
+					Trace.Indent();
 #endif
 					if (!Settings.GetBool("NoUACCheck") || Array.IndexOf<string>(args, "-no-uac-check") == -1)
 					{
@@ -295,7 +235,7 @@ namespace Fomm
 							if (File.Exists(VistaVirtualStore))
 							{
 #if TRACE
-									Trace.WriteLine("UAC is messing us up.");
+								Trace.WriteLine("UAC is messing us up.");
 #endif
 								MessageBox.Show("Vista's UAC is preventing Fallout mod manager from obtaining write access to fallout's installation directory.\n" +
 								"Either right click fomm.exe and check the 'run as administrator' checkbox on the comptibility tab, or disable UAC", "Error");
@@ -310,378 +250,169 @@ namespace Fomm
 						catch
 						{
 #if TRACE
-								Trace.WriteLine("Can't write to Fallout's directory.");
+							Trace.WriteLine("Can't write to Fallout's directory.");
 #endif
 							MessageBox.Show("Unable to get write permissions for fallout's installation directory." + Environment.NewLine + "Please read the 'Readme - fomm.txt' file found in the fomm subfolder of your FOMM installation.", "Error");
 						}
 					}
-					else cancellaunch = false;
-				}
-				else
-				{
-#if TRACE
-						Trace.WriteLine("Could not find Fallout.");
-#endif
-					MessageBox.Show("Could not find fallout 3 directory\nFallout's registry entry appear to be missing or incorrect. Install fomm into fallout's base directory instead.", "Error");
-				}
+					else
+						cancellaunch = false;
 #if TRACE
 					Trace.Unindent();
-					Trace.WriteLine("We know where Fallout lives: " + Path.GetFullPath("."));
+					Trace.WriteLine("We set the working directory: " + Path.GetFullPath("."));
 					Trace.Unindent();
 #endif
 
-				if (cancellaunch) return;
+					if (cancellaunch) return;
 
-				if (!Directory.Exists(tmpPath)) Directory.CreateDirectory(tmpPath);
-				if (!Directory.Exists(PackageDir)) Directory.CreateDirectory(PackageDir);
-				if (!Directory.Exists(fommDir)) Directory.CreateDirectory(fommDir);
-				if (!Directory.Exists(LocalDataPath)) Directory.CreateDirectory(LocalDataPath);
-				if (!Directory.Exists(overwriteDir)) Directory.CreateDirectory(overwriteDir);
-				if (!Directory.Exists(modInfoCacheDir)) Directory.CreateDirectory(modInfoCacheDir);
+					if (!Directory.Exists(tmpPath)) Directory.CreateDirectory(tmpPath);
+					if (!Directory.Exists(fommDir)) Directory.CreateDirectory(fommDir);
 
 #if TRACE
-					Trace.WriteLine("Checking DLC location.");
+					string str7zPath = Path.Combine(Program.fommDir, "7z-32bit.dll");
+					Trace.WriteLine("7z Path: " + str7zPath + " (Exists: " + File.Exists(str7zPath) + ")");
+					Trace.Flush();
+#endif
+					SevenZipCompressor.SetLibraryPath(Path.Combine(Program.fommDir, "7z-32bit.dll"));
+#if TRACE
+					Trace.WriteLine("Install Log Version: " + InstallLog.Current.GetInstallLogVersion());
 					Trace.Indent();
 #endif
-
-				if (Directory.Exists(DLCDir) && Settings.GetString("IgnoreDLC") != "True")
-				{
-#if TRACE
-						Trace.Write("Anchorage...");
-#endif
-					if (GetFiles(DLCDir, "Anchorage.esm", SearchOption.AllDirectories).Length == 1)
+					//check to see if we need to upgrade the install log format
+					if (InstallLog.Current.GetInstallLogVersion() < InstallLog.CURRENT_VERSION)
 					{
-						if (!File.Exists("data\\Anchorage.esm") && !File.Exists("data\\Anchorage - Main.bsa") && !File.Exists("data\\Anchorage - Sounds.bsa"))
-						{
-							string[] f1 = Directory.GetFiles(DLCDir, "Anchorage.esm", SearchOption.AllDirectories);
-							string[] f2 = Directory.GetFiles(DLCDir, "Anchorage - Main.bsa", SearchOption.AllDirectories);
-							string[] f3 = Directory.GetFiles(DLCDir, "Anchorage - Sounds.bsa", SearchOption.AllDirectories);
-							if (f1.Length == 1 && f2.Length == 1 && f3.Length == 1)
-							{
-								switch (MessageBox.Show("You seem to have bought the DLC Anchorage.\n" +
-									"Would you like to move it to fallout's data directory to allow for offline use and fose compatibility?\n" +
-									"Note that this may cause issues with any save games created after it was purchased but before it was moved.\n" +
-									"Click yes to move, cancel to ignore, and no if you don't want fomm to offer to move any DLC for you again.",
-									"Question", MessageBoxButtons.YesNoCancel))
-								{
-									case DialogResult.Yes:
-										File.Move(f1[0], "data\\Anchorage.esm");
-										File.Move(f2[0], "data\\Anchorage - Main.bsa");
-										File.Move(f3[0], "data\\Anchorage - Sounds.bsa");
-										break;
-									case DialogResult.No:
-										Settings.SetString("IgnoreDLC", "True");
-										break;
-								}
-							}
-						}
-					}
-#if TRACE
-						Trace.WriteLine("Done");
-						Trace.Write("The Pitt...");
-#endif
-					if (GetFiles(DLCDir, "ThePitt.esm", SearchOption.AllDirectories).Length == 1)
-					{
-						if (!File.Exists("data\\ThePitt.esm") && !File.Exists("data\\ThePitt - Main.bsa") && !File.Exists("data\\ThePitt - Sounds.bsa"))
-						{
-							string[] f1 = Directory.GetFiles(DLCDir, "ThePitt.esm", SearchOption.AllDirectories);
-							string[] f2 = Directory.GetFiles(DLCDir, "ThePitt - Main.bsa", SearchOption.AllDirectories);
-							string[] f3 = Directory.GetFiles(DLCDir, "ThePitt - Sounds.bsa", SearchOption.AllDirectories);
-							if (f1.Length == 1 && f2.Length == 1 && f3.Length == 1)
-							{
-								switch (MessageBox.Show("You seem to have bought the DLC The Pitt.\n" +
-									"Would you like to move it to fallout's data directory to allow for offline use and fose compatibility?\n" +
-									"Note that this may cause issues with any save games created after it was purchased but before it was moved.\n" +
-									"Click yes to move, cancel to ignore, and no if you don't want fomm to offer to move any DLC for you again.",
-									"Question", MessageBoxButtons.YesNoCancel))
-								{
-									case DialogResult.Yes:
-										File.Move(f1[0], "data\\ThePitt.esm");
-										File.Move(f2[0], "data\\ThePitt - Main.bsa");
-										File.Move(f3[0], "data\\ThePitt - Sounds.bsa");
-										break;
-									case DialogResult.No:
-										Settings.SetString("IgnoreDLC", "True");
-										break;
-								}
-							}
-						}
-					}
-#if TRACE
-						Trace.WriteLine("Done.");
-						Trace.Write("Broken Steel...");
-#endif
-					if (GetFiles(DLCDir, "BrokenSteel.esm", SearchOption.AllDirectories).Length == 1)
-					{
-						if (!File.Exists("Data\\BrokenSteel.esm"))
-						{
-							string[][] files = new string[8][];
-							files[0] = Directory.GetFiles(DLCDir, "BrokenSteel.esm", SearchOption.AllDirectories);
-							files[1] = Directory.GetFiles(DLCDir, "BrokenSteel - Main.bsa", SearchOption.AllDirectories);
-							files[2] = Directory.GetFiles(DLCDir, "BrokenSteel - Sounds.bsa", SearchOption.AllDirectories);
-							files[3] = Directory.GetFiles(DLCDir, "2 weeks later.bik", SearchOption.AllDirectories);
-							files[4] = Directory.GetFiles(DLCDir, "B09.bik", SearchOption.AllDirectories);
-							files[5] = Directory.GetFiles(DLCDir, "B27.bik", SearchOption.AllDirectories);
-							files[6] = Directory.GetFiles(DLCDir, "B28.bik", SearchOption.AllDirectories);
-							files[7] = Directory.GetFiles(DLCDir, "B29.bik", SearchOption.AllDirectories);
-							bool missing = false;
-							for (int i = 0; i < 8; i++)
-							{
-								if (files[i].Length != 1)
-								{
-									missing = true;
-									break;
-								}
-								if ((i < 3 && File.Exists(Path.Combine("Data", Path.GetFileName(files[i][0])))) ||
-								(i > 4 && File.Exists(Path.Combine("Data\\Video", Path.GetFileName(files[i][0])))))
-								{
-									missing = true;
-									break;
-								}
-							}
-							if (!missing)
-							{
-								switch (MessageBox.Show("You seem to have bought the DLC Broken Steel.\n" +
-									"Would you like to move it to fallout's data directory to allow for offline use and fose compatibility?\n" +
-									"Note that this may cause issues with any save games created after it was purchased but before it was moved.\n" +
-									"Click yes to move, cancel to ignore, and no if you don't want fomm to offer to move any DLC for you again.",
-									"Question", MessageBoxButtons.YesNoCancel))
-								{
-									case DialogResult.Yes:
-										if (File.Exists("data\\video\\2 weeks later.bik"))
-										{
-											File.Move("data\\video\\2 weeks later.bik", "data\\Video\\2 weeks later.bik.old");
-										}
-										if (File.Exists("data\\video\\b09.bik"))
-										{
-											File.Move("data\\video\\b09.bik", "data\\Video\\b09.bik.old");
-										}
-										for (int i = 0; i < 3; i++)
-										{
-											File.Move(files[i][0], Path.Combine("Data", Path.GetFileName(files[i][0])));
-										}
-										for (int i = 3; i < 8; i++)
-										{
-											File.Move(files[i][0], Path.Combine("Data\\Video", Path.GetFileName(files[i][0])));
-										}
-										break;
-									case DialogResult.No:
-										Settings.SetString("IgnoreDLC", "True");
-										break;
-								}
-							}
-						}
-					}
-#if TRACE
-						Trace.WriteLine("Done.");
-						Trace.Write("Point Lookout...");
-#endif
-					if (GetFiles(DLCDir, "PointLookout.esm ", SearchOption.AllDirectories).Length == 1)
-					{
-						if (!File.Exists("data\\PointLookout.esm ") && !File.Exists("data\\PointLookout - Main.bsa") && !File.Exists("data\\PointLookout - Sounds.bsa"))
-						{
-							string[] f1 = Directory.GetFiles(DLCDir, "PointLookout.esm", SearchOption.AllDirectories);
-							string[] f2 = Directory.GetFiles(DLCDir, "PointLookout - Main.bsa", SearchOption.AllDirectories);
-							string[] f3 = Directory.GetFiles(DLCDir, "PointLookout - Sounds.bsa", SearchOption.AllDirectories);
-							if (f1.Length == 1 && f2.Length == 1 && f3.Length == 1)
-							{
-								switch (MessageBox.Show("You seem to have bought the DLC Point lookout.\n" +
-									"Would you like to move it to fallout's data directory to allow for offline use and fose compatibility?\n" +
-									"Note that this may cause issues with any save games created after it was purchased but before it was moved.\n" +
-									"Click yes to move, cancel to ignore, and no if you don't want fomm to offer to move any DLC for you again.",
-									"Question", MessageBoxButtons.YesNoCancel))
-								{
-									case DialogResult.Yes:
-										File.Move(f1[0], "data\\PointLookout.esm");
-										File.Move(f2[0], "data\\PointLookout - Main.bsa");
-										File.Move(f3[0], "data\\PointLookout - Sounds.bsa");
-										break;
-									case DialogResult.No:
-										Settings.SetString("IgnoreDLC", "True");
-										break;
-								}
-							}
-						}
-					}
-#if TRACE
-						Trace.WriteLine("Done.");
-						Trace.Write("Zeta...");
-#endif
-					if (GetFiles(DLCDir, "Zeta.esm ", SearchOption.AllDirectories).Length == 1)
-					{
-						if (!File.Exists("data\\Zeta.esm ") && !File.Exists("data\\Zeta - Main.bsa") && !File.Exists("data\\Zeta - Sounds.bsa"))
-						{
-							string[] f1 = Directory.GetFiles(DLCDir, "Zeta.esm", SearchOption.AllDirectories);
-							string[] f2 = Directory.GetFiles(DLCDir, "Zeta - Main.bsa", SearchOption.AllDirectories);
-							string[] f3 = Directory.GetFiles(DLCDir, "Zeta - Sounds.bsa", SearchOption.AllDirectories);
-							if (f1.Length == 1 && f2.Length == 1 && f3.Length == 1)
-							{
-								switch (MessageBox.Show("You seem to have bought the DLC Mothership Zeta.\n" +
-									"Would you like to move it to fallout's data directory to allow for offline use and fose compatibility?\n" +
-									"Note that this may cause issues with any save games created after it was purchased but before it was moved.\n" +
-									"Click yes to move, cancel to ignore, and no if you don't want fomm to offer to move any DLC for you again.",
-									"Question", MessageBoxButtons.YesNoCancel))
-								{
-									case DialogResult.Yes:
-										File.Move(f1[0], "data\\Zeta.esm");
-										File.Move(f2[0], "data\\Zeta - Main.bsa");
-										File.Move(f3[0], "data\\Zeta - Sounds.bsa");
-										break;
-									case DialogResult.No:
-										Settings.SetString("IgnoreDLC", "True");
-										break;
-								}
-							}
-						}
-					}
-#if TRACE
-						Trace.WriteLine("Done.");
-#endif
-				}
-#if TRACE
-				Trace.Unindent();
-				string str7zPath = Path.Combine(Program.fommDir, "7z-32bit.dll");
-				Trace.WriteLine("7z Path: " + str7zPath + " (Exists: " + File.Exists(str7zPath) + ")");
-				Trace.Flush();
-#endif
-				SevenZipCompressor.SetLibraryPath(Path.Combine(Program.fommDir, "7z-32bit.dll"));
-#if TRACE
-				Trace.WriteLine("Install Log Version: " + InstallLog.Current.GetInstallLogVersion());
-				Trace.Indent();
-#endif
-				//check to see if we need to upgrade the install log format
-				if (InstallLog.Current.GetInstallLogVersion() < InstallLog.CURRENT_VERSION)
-				{
 #if TRACE
 						Trace.Write("Upgrade to " + InstallLog.CURRENT_VERSION + " required...");
 #endif
-					InstallLogUpgrader iluUgrader = new InstallLogUpgrader();
-					try
-					{
-						MessageBox.Show("FOMM needs to upgrade some of its files. This could take a few minutes, depending on how many mods are installed.", "Upgrade Required");
-						if (!iluUgrader.UpgradeInstallLog())
+						InstallLogUpgrader iluUgrader = new InstallLogUpgrader();
+						try
 						{
+							MessageBox.Show("FOMM needs to upgrade some of its files. This could take a few minutes, depending on how many mods are installed.", "Upgrade Required");
+							if (!iluUgrader.UpgradeInstallLog())
+							{
 #if TRACE
 								Trace.WriteLine("Refused.");
 #endif
-							MessageBox.Show("FOMM needs to upgrade its files before it can run. Please allow the upgrade to complete, or install an older version of FOMM.", "Upgrade Cancelled", MessageBoxButtons.OK, MessageBoxIcon.Information);
-							return;
+								MessageBox.Show("FOMM needs to upgrade its files before it can run. Please allow the upgrade to complete, or install an older version of FOMM.", "Upgrade Cancelled", MessageBoxButtons.OK, MessageBoxIcon.Information);
+								return;
+							}
 						}
-					}
-					catch (Exception e)
-					{
+						catch (Exception e)
+						{
 #if TRACE
 							TraceException(e);
 #endif
-						MessageBox.Show("An error occurred while upgrading your log file. A crash dump will have been saved in 'fomm\\crashdump.txt'" + Environment.NewLine +
-										"Please make a bug report and include the contents of that file.", "Upgrade Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-						HandleException(e);
-						return;
-					}
+							MessageBox.Show("An error occurred while upgrading your log file. A crash dump will have been saved in 'fomm\\crashdump.txt'" + Environment.NewLine +
+											"Please make a bug report and include the contents of that file.", "Upgrade Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+							HandleException(e);
+							return;
+						}
 #if TRACE
 						Trace.WriteLine("Done.");
 #endif
-				}
-#if TRACE
-				Trace.Unindent();
-				Trace.Write("Uninstalling missing FOMods...");
-#endif
-
-				//let's uninstall any fomods that have been deleted since we last ran
-				IList<FomodInfo> lstMods = InstallLog.Current.GetVersionedModList();
-				foreach (FomodInfo fifMod in lstMods)
-				{
-					string strFomodPath = Path.Combine(Program.PackageDir, fifMod.BaseName + ".fomod");
-					if (!File.Exists(strFomodPath))
-					{
-						string strMessage = "'" + fifMod.BaseName + ".fomod' was deleted without being deactivated. " + Environment.NewLine +
-											"If you don't uninstall the FOMod, FOMM will close and you will " +
-											"have to put the FOMod back in the mods folder." + Environment.NewLine +
-											"Would you like to uninstall the missing FOMod?";
-						if (MessageBox.Show(strMessage, "Missing FOMod", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
-							return;
-						ModUninstaller mduUninstaller = new ModUninstaller(fifMod.BaseName);
-						mduUninstaller.Uninstall(true);
 					}
-				}
+#if TRACE
+					Trace.WriteLine("Game Mode Specific Initialization:");
+					Trace.Indent();
+#endif
+					GameMode.Init();
+#if TRACE
+					Trace.Unindent();
+					Trace.WriteLine("Done Game Mode Specific Initialization.");
 
-				try
-				{
-#if TRACE
-					Trace.WriteLine("Done.");
-					Trace.Write("Scanning for upgraded FOMODs...");
+					Trace.Unindent();
+					Trace.Write("Uninstalling missing FOMods...");
 #endif
-					//check to see if any fomod versions have changed, and whether to upgrade them
-					UpgradeScanner upsScanner = new UpgradeScanner();
-					upsScanner.Scan();
-				}
-				catch (Exception e)
-				{
-#if TRACE
-						TraceException(e);
-#endif
-					MessageBox.Show("An error occurred while scanning your fomods for new versions. A crash dump will have been saved in 'fomm\\crashdump.txt'" + Environment.NewLine +
-										"Please make a bug report and include the contents of that file.", "Scan Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-					HandleException(e);
-					return;
-				}
+					//let's uninstall any fomods that have been deleted since we last ran
+					IList<FomodInfo> lstMods = InstallLog.Current.GetVersionedModList();
+					foreach (FomodInfo fifMod in lstMods)
+					{
+						string strFomodPath = Path.Combine(GameMode.ModDirectory, fifMod.BaseName + ".fomod");
+						if (!File.Exists(strFomodPath))
+						{
+							string strMessage = "'" + fifMod.BaseName + ".fomod' was deleted without being deactivated. " + Environment.NewLine +
+												"If you don't uninstall the FOMod, FOMM will close and you will " +
+												"have to put the FOMod back in the mods folder." + Environment.NewLine +
+												"Would you like to uninstall the missing FOMod?";
+							if (MessageBox.Show(strMessage, "Missing FOMod", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
+								return;
+							ModUninstaller mduUninstaller = new ModUninstaller(fifMod.BaseName);
+							mduUninstaller.Uninstall(true);
+						}
+					}
 
-#if TRACE
-				Trace.WriteLine("Done.");
-				Trace.WriteLine("Running Application.");
-				Trace.Flush();
-#endif
-				if (Array.IndexOf<string>(args, "-install-tweaker") != -1)
-				{
-					Application.Run(new InstallTweaker.InstallationTweaker());
-				}
-				else
-				{
-					if (autoLoad == null && Array.IndexOf<string>(args, "-package-manager") != -1) autoLoad = string.Empty;
 					try
 					{
-						Application.Run(new MainForm(autoLoad));
+#if TRACE
+						Trace.WriteLine("Done.");
+						Trace.Write("Scanning for upgraded FOMODs...");
+#endif
+						//check to see if any fomod versions have changed, and whether to upgrade them
+						UpgradeScanner upsScanner = new UpgradeScanner();
+						upsScanner.Scan();
 					}
 					catch (Exception e)
 					{
-						MessageBox.Show("Something bad seems to have happened. As long as it wasn't too bad, a crash dump will have been saved in 'fomm\\crashdump.txt'\n" +
-											"Please include the contents of that file if you want to make a bug report", "Error");
-						HandleException(e);
-					}
-				}
 #if TRACE
-				Trace.Flush();
+						TraceException(e);
+#endif
+						MessageBox.Show("An error occurred while scanning your fomods for new versions. A crash dump will have been saved in 'fomm\\crashdump.txt'" + Environment.NewLine +
+											"Please make a bug report and include the contents of that file.", "Scan Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+						HandleException(e);
+						return;
+					}
+
+#if TRACE
+					Trace.WriteLine("Done.");
+					Trace.WriteLine("Running Application.");
+					Trace.Flush();
+#endif
+					if (!GameMode.HandleInAppArguments(args))
+					{
+						try
+						{
+							Application.Run(new MainForm(autoLoad));
+						}
+						catch (Exception e)
+						{
+							MessageBox.Show("Something bad seems to have happened. As long as it wasn't too bad, a crash dump will have been saved in 'fomm\\crashdump.txt'\n" +
+												"Please include the contents of that file if you want to make a bug report", "Error");
+							HandleException(e);
+						}
+					}
+#if TRACE
+					Trace.Flush();
 #endif
 
-				//backup the install log
-				if (File.Exists(InstallLog.Current.InstallLogPath))
-				{
-					string strLogPath = InstallLog.Current.InstallLogPath + ".bak";
-					FileInfo fifInstallLog = new FileInfo(InstallLog.Current.InstallLogPath);
-					FileInfo fifInstallLogBak = null;
-					if (File.Exists(strLogPath))
-						fifInstallLogBak = new FileInfo(strLogPath);
-
-					if ((fifInstallLogBak == null) || (fifInstallLogBak.LastWriteTimeUtc != fifInstallLog.LastWriteTimeUtc))
+					//backup the install log
+					if (File.Exists(InstallLog.Current.InstallLogPath))
 					{
-						for (Int32 i = 4; i > 0; i--)
-						{
-							if (File.Exists(strLogPath + i))
-								File.Copy(strLogPath + i, strLogPath + (i + 1), true);
-						}
+						string strLogPath = InstallLog.Current.InstallLogPath + ".bak";
+						FileInfo fifInstallLog = new FileInfo(InstallLog.Current.InstallLogPath);
+						FileInfo fifInstallLogBak = null;
 						if (File.Exists(strLogPath))
-							File.Copy(strLogPath, strLogPath + "1", true);
-						File.Copy(InstallLog.Current.InstallLogPath, InstallLog.Current.InstallLogPath + ".bak", true);
-					}
-				}
+							fifInstallLogBak = new FileInfo(strLogPath);
 
-				FileUtil.ForceDelete(tmpPath);
-			}
-			finally
-			{
-				if (mutex != null)
-					mutex.Close();
-			}
+						if ((fifInstallLogBak == null) || (fifInstallLogBak.LastWriteTimeUtc != fifInstallLog.LastWriteTimeUtc))
+						{
+							for (Int32 i = 4; i > 0; i--)
+							{
+								if (File.Exists(strLogPath + i))
+									File.Copy(strLogPath + i, strLogPath + (i + 1), true);
+							}
+							if (File.Exists(strLogPath))
+								File.Copy(strLogPath, strLogPath + "1", true);
+							File.Copy(InstallLog.Current.InstallLogPath, InstallLog.Current.InstallLogPath + ".bak", true);
+						}
+					}
+
+					FileUtil.ForceDelete(tmpPath);
+				}
+				finally
+				{
+					if (mutex != null)
+						mutex.Close();
+				}
 #if TRACE
 			}
 			finally
