@@ -5,6 +5,7 @@ using System.IO;
 using Fomm.PackageManager;
 using Fomm.PackageManager.XmlConfiguredInstall;
 using Fomm.PackageManager.XmlConfiguredInstall.Parsers;
+using System.Drawing;
 
 namespace Fomm.Games
 {
@@ -14,6 +15,15 @@ namespace Fomm.Games
 		private string m_strModInfoCacheDirectory = null;
 
 		#region Properties
+
+		/// <summary>
+		/// Gets the icon used for the plugin file type.
+		/// </summary>
+		/// <value>The icon used for the plugin file type.</value>
+		public abstract Icon PluginFileIcon
+		{
+			get;
+		}
 
 		/// <summary>
 		/// Gets or sets the modDirectory of the GameMode.

@@ -23,8 +23,7 @@ namespace Fomm.FileManager
 			LoadFiles();
 			//highlightMissing(tvwFolders.Nodes[0]);
 			rlvOverwrites.Columns[0].Width = rlvOverwrites.ClientSize.Width - 3;
-			string strFalloutEsm = Path.Combine("data", "fallout3.esm");
-			imlFolders.Images.Add("mod", System.Drawing.Icon.ExtractAssociatedIcon(strFalloutEsm));
+			imlFolders.Images.Add("mod", Program.GameMode.PluginFileIcon);
 		}
 
 		/// <summary>
@@ -36,7 +35,7 @@ namespace Fomm.FileManager
 			if (radByFile.Checked)
 			{
 				List<string> lstInstalledFiles = InstallLog.Current.GetFileList();
-				TreeNode tndCurrentDirectory = new TreeNode("Data");
+				TreeNode tndCurrentDirectory = new TreeNode(Path.GetFileName(Program.GameMode.PluginsPath));
 				tndCurrentDirectory.Name = tndCurrentDirectory.Text;
 				tvwFolders.Nodes.Add(tndCurrentDirectory);
 				AddFilesToNode(tndCurrentDirectory, lstInstalledFiles);
@@ -54,7 +53,7 @@ namespace Fomm.FileManager
 					tndCurrentDirectory.Name = tndCurrentDirectory.Text;
 					tndCurrentDirectory.ImageKey = "mod";
 					tndCurrentDirectory.SelectedImageKey = "mod";
-					tndCurrentDirectory = tndCurrentDirectory.Nodes.Add("Data");
+					tndCurrentDirectory = tndCurrentDirectory.Nodes.Add(Path.GetFileName(Program.GameMode.PluginsPath));
 					tndCurrentDirectory.Name = tndCurrentDirectory.Text;
 					lstInstalledFiles = InstallLog.Current.GetFileList(strMod);
 					AddFilesToNode(tndCurrentDirectory, lstInstalledFiles);

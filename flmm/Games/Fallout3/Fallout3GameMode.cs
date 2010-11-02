@@ -41,6 +41,19 @@ namespace Fomm.Games.Fallout3
 
 		#region Properties
 
+		/// <summary>
+		/// Gets the icon used for the plugin file type.
+		/// </summary>
+		/// <value>The icon used for the plugin file type.</value>
+		public override Icon PluginFileIcon
+		{
+			get
+			{
+				string strFalloutEsm = Path.Combine(PluginsPath, "fallout3.esm");
+				return System.Drawing.Icon.ExtractAssociatedIcon(strFalloutEsm);
+			}
+		}
+
 		public override string PluginsPath
 		{
 			get
