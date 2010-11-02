@@ -582,7 +582,7 @@ namespace Fomm.PackageManager.FomodBuilder
 				if (fscInstallScript == null)
 				{
 					if (cbxUseScript.Checked)
-						fscInstallScript = new FomodScript(FomodScriptType.CSharp, FomodScriptEditor.DEFAULT_CSHARP_SCRIPT);
+						fscInstallScript = new FomodScript(FomodScriptType.CSharp, Program.GameMode.DefaultCSharpScript);
 				}
 				else
 				{

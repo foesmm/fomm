@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Fomm.PackageManager.XmlConfiguredInstall
+namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
 {
 	/// <summary>
 	/// The exception that is thrown if there is a problem parsing a config file.

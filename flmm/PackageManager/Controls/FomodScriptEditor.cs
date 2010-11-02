@@ -5,22 +5,12 @@ using System.Xml.Schema;
 using Fomm.PackageManager.XmlConfiguredInstall;
 using System.Text.RegularExpressions;
 using Fomm.Controls;
+using Fomm.PackageManager.XmlConfiguredInstall.Parsers;
 
 namespace Fomm.PackageManager.Controls
 {
 	public partial class FomodScriptEditor : UserControl
 	{
-		public static string DEFAULT_CSHARP_SCRIPT = @"using System;
-using fomm.Scripting;
-
-class Script : BaseScript {
-	public static bool OnActivate() {
-        //Install all files from the fomod and activate any esps
-        PerformBasicInstall();
-		return true;
-	}
-}
-";
 		/// <summary>
 		/// Raised when the code completion options for the XML config script have been retrieved.
 		/// </summary>
@@ -83,6 +73,9 @@ class Script : BaseScript {
 									break;
 								case "4.0":
 									cbxVersion.SelectedIndex = 3;
+									break;
+								case "5.0":
+									cbxVersion.SelectedIndex = 4;
 									break;
 								default:
 									ddtScript.SelectedTabPage = dtpCSharp;
@@ -158,7 +151,7 @@ class Script : BaseScript {
 		/// </remarks>
 		protected void LoadConfigSchema()
 		{
-			string strSchemaPath = Path.Combine(Program.exeDir, String.Format(@"fomm\ModConfig{0}.xsd", cbxVersion.SelectedItem.ToString()));
+			string strSchemaPath = Program.GameMode.GetXMLConfigSchemaPath(cbxVersion.SelectedItem.ToString());
 			if (File.Exists(strSchemaPath))
 				using (FileStream fsmSchema = new FileStream(strSchemaPath, FileMode.Open))
 				{

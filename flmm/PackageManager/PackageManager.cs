@@ -391,7 +391,7 @@ namespace Fomm.PackageManager
 			fomod mod = (fomod)lvModList.SelectedItems[0].Tag;
 			EditScriptForm esfEditor = new EditScriptForm();
 			if (!mod.HasInstallScript)
-				esfEditor.Script = new FomodScript(FomodScriptType.CSharp, FomodScriptEditor.DEFAULT_CSHARP_SCRIPT);
+				esfEditor.Script = new FomodScript(FomodScriptType.CSharp, Program.GameMode.DefaultCSharpScript);
 			else
 				esfEditor.Script = mod.GetInstallScript();
 			if (esfEditor.ShowDialog(this) == DialogResult.OK)

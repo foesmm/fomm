@@ -162,7 +162,7 @@ namespace Fomm.PackageManager.Upgrade
 					((UpgradeFomod)Fomod).SetBaseName(((UpgradeFomod)Fomod).OriginalBaseName);
 					InstallLog.Current.MergeUpgrade(Fomod, strOldBaseName, MergeModule);
 					((UpgradeFomod)Fomod).SetBaseName(strOldBaseName);
-					CommitActivePlugins();
+					Script.CommitActivePlugins();
 				}
 			}
 			catch (Exception e)
@@ -172,6 +172,11 @@ namespace Fomm.PackageManager.Upgrade
 			}
 			m_fomodOriginalMod.IsActive = DetermineFomodActiveStatus(booUpgraded);
 			return booUpgraded;
+		}
+
+		protected override ModInstallScript CreateInstallScript()
+		{
+			return Program.GameMode.CreateUpgradeScript(Fomod, this);
 		}
 
 		/// <summary>
@@ -204,7 +209,7 @@ namespace Fomm.PackageManager.Upgrade
 			foreach (string strFile in ilmPreviousChanges.DataFiles)
 			{
 				if (!MergeModule.ContainsFile(strFile))
-					UninstallDataFile(strFile);
+					Script.UninstallDataFile(strFile);
 				if (m_bwdProgress.Cancelled())
 					return;
 				m_bwdProgress.StepItemProgress();
@@ -216,155 +221,24 @@ namespace Fomm.PackageManager.Upgrade
 			foreach (InstallLogMergeModule.IniEdit iniEdit in ilmPreviousChanges.IniEdits)
 			{
 				if (!MergeModule.IniEdits.Contains(iniEdit))
-					UneditIni(iniEdit.File, iniEdit.Section, iniEdit.Key);
+					Script.UneditIni(iniEdit.File, iniEdit.Section, iniEdit.Key);
 				if (m_bwdProgress.Cancelled())
 					return;
 				m_bwdProgress.StepItemProgress();
 			}
 			m_bwdProgress.StepOverallProgress();
 
-			m_bwdProgress.ItemMessage = "Synchronizing Shader Edits";
-			m_bwdProgress.ItemProgressMaximum = ilmPreviousChanges.SdpEdits.Count;
-			foreach (InstallLogMergeModule.SdpEdit sdpEdit in ilmPreviousChanges.SdpEdits)
+			m_bwdProgress.ItemMessage = "Synchronizing Game Specific Value Edits";
+			m_bwdProgress.ItemProgressMaximum = ilmPreviousChanges.GameSpecificValueEdits.Count;
+			foreach (InstallLogMergeModule.GameSpecificValueEdit gsvEdit in ilmPreviousChanges.GameSpecificValueEdits)
 			{
-				if (!MergeModule.SdpEdits.Contains(sdpEdit))
-					UneditShader(sdpEdit.Package, sdpEdit.ShaderName);
+				if (!MergeModule.GameSpecificValueEdits.Contains(gsvEdit))
+					Script.UneditGameSpecificValue(gsvEdit.Key);
 				if (m_bwdProgress.Cancelled())
 					return;
 				m_bwdProgress.StepItemProgress();
 			}
 			m_bwdProgress.StepOverallProgress();
 		}
-
-		#region File Creation
-
-		/// <summary>
-		/// Writes the file represented by the given byte array to the given path.
-		/// </summary>
-		/// <remarks>
-		/// This method writes the given data as a file at the given path, if it is owned
-		/// by the fomod being upgraded. If the specified data file is not owned by the fomod
-		/// being upgraded, the file is instead written to the overwrites directory.
-		/// 
-		/// If the file was not previously installed by the fomod, then the normal install rules apply,
-		/// including confirming overwrite if applicable.
-		/// </remarks>
-		/// <param name="p_strPath">The path where the file is to be created.</param>
-		/// <param name="p_bteData">The data that is to make up the file.</param>
-		/// <returns><lang cref="true"/> if the file was written; <lang cref="false"/> if the user chose
-		/// not to overwrite an existing file.</returns>
-		/// <exception cref="IllegalFilePathException">Thrown if <paramref name="p_strPath"/> is
-		/// not safe.</exception>
-		public override bool GenerateDataFile(string p_strPath, byte[] p_bteData)
-		{
-			PermissionsManager.CurrentPermissions.Assert();
-			FileManagement.AssertFilePathIsSafe(p_strPath);
-
-			IList<string> lstInstallers = InstallLog.Current.GetInstallingMods(p_strPath);
-			if (lstInstallers.Contains(Fomod.BaseName))
-			{
-				string strWritePath = null;
-				if (!lstInstallers[lstInstallers.Count - 1].Equals(Fomod.BaseName))
-				{
-					string strDirectory = Path.GetDirectoryName(p_strPath);
-					string strBackupPath = Path.GetFullPath(Path.Combine(Program.GameMode.OverwriteDirectory, strDirectory));
-					string strOldModKey = InstallLog.Current.GetModKey(Fomod.BaseName);
-					string strFile = strOldModKey + "_" + Path.GetFileName(p_strPath);
-					strWritePath = Path.Combine(strBackupPath, strFile);
-				}
-				else
-					strWritePath = Path.GetFullPath(Path.Combine("Data", p_strPath));
-				TransactionalFileManager.WriteAllBytes(strWritePath, p_bteData);
-				MergeModule.AddFile(p_strPath);
-				return true;
-			}
-
-			return base.GenerateDataFile(p_strPath, p_bteData);
-		}
-
-		#endregion
-
-		#region Ini Editing
-
-		/// <summary>
-		/// Sets the specified value in the specified Ini file to the given value.
-		/// </summary>
-		/// <remarks>
-		/// This method edits the specified Ini value, if the latest edit is owned
-		/// by the fomod being upgraded. If the latest edit is not owned by the fomod
-		/// being upgraded, the edit is simply archived in the appropriate location in the
-		/// install log.
-		/// 
-		/// If the edit was not previously installed by the fomod, then the normal install rules apply,
-		/// including confirming overwrite if applicable.
-		/// </remarks>
-		/// <param name="p_strFile">The Ini file to edit.</param>
-		/// <param name="p_strSection">The section in the Ini file to edit.</param>
-		/// <param name="p_strKey">The key in the Ini file to edit.</param>
-		/// <param name="p_strValue">The value to which to set the key.</param>
-		/// <returns><lang cref="true"/> if the value was set; <lang cref="false"/>
-		/// if the user chose not to overwrite the existing value.</returns>
-		protected override bool EditINI(string p_strFile, string p_strSection, string p_strKey, string p_strValue)
-		{
-			PermissionsManager.CurrentPermissions.Assert();
-
-			IList<string> lstInstallers = InstallLog.Current.GetInstallingMods(p_strFile, p_strSection, p_strKey);
-			if (lstInstallers.Contains(Fomod.BaseName))
-			{
-				string strLoweredFile = p_strFile.ToLowerInvariant();
-				string strLoweredSection = p_strSection.ToLowerInvariant();
-				string strLoweredKey = p_strKey.ToLowerInvariant();
-				if (lstInstallers[lstInstallers.Count - 1].Equals(Fomod.BaseName))
-					NativeMethods.WritePrivateProfileStringA(strLoweredSection, strLoweredKey, p_strValue, strLoweredFile);
-				MergeModule.AddIniEdit(strLoweredFile, strLoweredSection, strLoweredKey, p_strValue);
-				return true;
-			}
-
-			return base.EditINI(p_strFile, p_strSection, p_strKey, p_strValue);
-		}
-
-		#endregion
-
-		#region Shader Editing
-
-		/// <summary>
-		/// Edits the specified shader with the specified data.
-		/// </summary>
-		/// <remarks>
-		/// This method edits the specified shader, if the latest edit is owned
-		/// by the fomod being upgraded. If the latest edit is not owned by the fomod
-		/// being upgraded, the edit is simply archived in the appropriate location in the
-		/// install log.
-		/// 
-		/// If the edit was not previously installed by the fomod, then the normal install rules apply,
-		/// including confirming overwrite if applicable.
-		/// </remarks>
-		/// <param name="p_intPackage">The package containing the shader to edit.</param>
-		/// <param name="p_strShaderName">The shader to edit.</param>
-		/// <param name="p_bteData">The value to which to edit the shader.</param>
-		/// <returns><lang cref="true"/> if the value was set; <lang cref="false"/>
-		/// if the user chose not to overwrite the existing value.</returns>
-		/// <exception cref="ShaderException">Thrown if the shader could not be edited.</exception>
-		public override bool EditShader(int p_intPackage, string p_strShaderName, byte[] p_bteData)
-		{
-			PermissionsManager.CurrentPermissions.Assert();
-
-			IList<string> lstInstallers = InstallLog.Current.GetInstallingMods(p_intPackage, p_strShaderName);
-			if (lstInstallers.Contains(Fomod.BaseName))
-			{
-				if (lstInstallers[lstInstallers.Count - 1].Equals(Fomod.BaseName))
-				{
-					byte[] oldData;
-					if (!SDPArchives.EditShader(p_intPackage, p_strShaderName, p_bteData, out oldData))
-						throw new ShaderException("Failed to edit the shader");
-				}
-				MergeModule.AddSdpEdit(p_intPackage, p_strShaderName, p_bteData);
-				return true;
-			}
-
-			return base.EditShader(p_intPackage, p_strShaderName, p_bteData);
-		}
-
-		#endregion
 	}
 }

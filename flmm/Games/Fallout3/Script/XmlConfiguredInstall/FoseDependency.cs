@@ -1,15 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using Fomm.PackageManager.XmlConfiguredInstall;
 
-namespace Fomm.PackageManager.XmlConfiguredInstall
+namespace Fomm.Games.Fallout3.Script.XmlConfiguredInstall
 {
 	/// <summary>
 	/// A dependency that requires a minimum version of FOSE to be installed.
 	/// </summary>
 	public class FoseDependency : IDependency
 	{
-		private DependencyStateManager m_dsmStateManager = null;
+		private Fallout3DependencyStateManager m_dsmStateManager = null;
 		private Version m_verMinVersion = null;
 
 		#region IDependency Members
@@ -65,7 +64,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		/// </summary>
 		/// <param name="p_dsmStateManager">The manager that reports the currect install state.</param>
 		/// <param name="p_verVersion">The minimum required version of FOSE.</param>
-		public FoseDependency(DependencyStateManager p_dsmStateManager, Version p_verVersion)
+		public FoseDependency(Fallout3DependencyStateManager p_dsmStateManager, Version p_verVersion)
 		{
 			m_dsmStateManager = p_dsmStateManager;
 			m_verMinVersion = p_verVersion;

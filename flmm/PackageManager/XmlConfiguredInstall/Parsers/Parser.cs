@@ -5,7 +5,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
-namespace Fomm.PackageManager.XmlConfiguredInstall
+namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
 {
 	/// <summary>
 	/// Provides a contract and base functionality for XML configuration file parsers.
@@ -52,25 +52,41 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 				if (intLength > 0)
 					strConfigVersion = strSchemaName.Substring(intStartPos, intLength);
 			}
+			ParserExtension pexParserExtension = Program.GameMode.GetParserExtension(strConfigVersion);
 			switch (strConfigVersion)
 			{
 				case "1.0":
-					return new Parser10(p_xmlConfig, p_fomodMod, p_dsmSate);
+					return new Parser10(p_xmlConfig, p_fomodMod, p_dsmSate, pexParserExtension);
 				case "2.0":
-					return new Parser20(p_xmlConfig, p_fomodMod, p_dsmSate);
+					return new Parser20(p_xmlConfig, p_fomodMod, p_dsmSate, pexParserExtension);
 				case "3.0":
-					return new Parser30(p_xmlConfig, p_fomodMod, p_dsmSate);
+					return new Parser30(p_xmlConfig, p_fomodMod, p_dsmSate, pexParserExtension);
 				case "4.0":
-					return new Parser40(p_xmlConfig, p_fomodMod, p_dsmSate);
+					return new Parser40(p_xmlConfig, p_fomodMod, p_dsmSate, pexParserExtension);
+				case "5.0":
+					return new Parser50(p_xmlConfig, p_fomodMod, p_dsmSate, pexParserExtension);
 			}
 			throw new ParserException("Unrecognized Module Configuration version (" + strConfigVersion + "). Perhaps a newer version of FOMM is required.");
 		}
 
+		public ParserExtension m_pexParserExtension = null;
 		private XmlDocument m_xmlConfig = null;
 		private fomod m_fomodMod = null;
 		private DependencyStateManager m_dsmSate = null;
 
 		#region Properties
+
+		/// <summary>
+		/// Gets the parser extension that provides game-specific config file parsing.
+		/// </summary>
+		/// <value>The parser extension that provides game-specific config file parsing.</value>
+		protected ParserExtension ParserExtension
+		{
+			get
+			{
+				return m_pexParserExtension;
+			}
+		}
 
 		/// <summary>
 		/// Gets the name of the schema used by the parser.
@@ -124,8 +140,10 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		/// <param name="p_xmlConfig">The modules configuration file.</param>
 		/// <param name="p_fomodMod">The mod whose configuration file we are parsing.</param>
 		/// <param name="p_dsmSate">The state of the install.</param>
-		public Parser(XmlDocument p_xmlConfig, fomod p_fomodMod, DependencyStateManager p_dsmSate)
+		/// <param name="p_pexParserExtension">The parser extension that provides game-specific config file parsing.</param>
+		public Parser(XmlDocument p_xmlConfig, fomod p_fomodMod, DependencyStateManager p_dsmSate, ParserExtension p_pexParserExtension)
 		{
+			m_pexParserExtension = p_pexParserExtension;
 			m_xmlConfig = p_xmlConfig;
 			m_fomodMod = p_fomodMod;
 			m_dsmSate = p_dsmSate;

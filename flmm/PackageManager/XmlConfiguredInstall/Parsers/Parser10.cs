@@ -6,7 +6,7 @@ using System.IO;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace Fomm.PackageManager.XmlConfiguredInstall
+namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
 {
 	/// <summary>
 	/// Parses version 1.0 mod configuration files.
@@ -34,8 +34,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		/// <param name="p_xmlConfig">The modules configuration file.</param>
 		/// <param name="p_fomodMod">The mod whose configuration file we are parsing.</param>
 		/// <param name="p_dsmSate">The state of the install.</param>
-		public Parser10(XmlDocument p_xmlConfig, fomod p_fomodMod, DependencyStateManager p_dsmSate)
-			: base(p_xmlConfig, p_fomodMod, p_dsmSate)
+		/// <param name="p_pexParserExtension">The parser extension that provides game-specific config file parsing.</param>
+		public Parser10(XmlDocument p_xmlConfig, fomod p_fomodMod, DependencyStateManager p_dsmSate, ParserExtension p_pexParserExtension)
+			: base(p_xmlConfig, p_fomodMod, p_dsmSate, p_pexParserExtension)
 		{
 		}
 
@@ -52,13 +53,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 			{
 				switch (xndDependency.Name)
 				{
-					case "foseDependancy":
-						Version verMinFoseVersion = new Version(xndDependency.Attributes["version"].InnerText);
-						cpdDependency.Dependencies.Add(new FoseDependency(StateManager, verMinFoseVersion));
-						break;
 					case "falloutDependancy":
 						Version verMinFalloutVersion = new Version(xndDependency.Attributes["version"].InnerText);
-						cpdDependency.Dependencies.Add(new FalloutDependency(StateManager, verMinFalloutVersion));
+						cpdDependency.Dependencies.Add(new GameVersionDependency(StateManager, verMinFalloutVersion));
 						break;
 					case "fommDependancy":
 						Version verMinFommVersion = new Version(xndDependency.Attributes["version"].InnerText);
@@ -69,7 +66,12 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 						cpdDependency.Dependencies.Add(new FileDependency(strDependency, ModFileState.Active, StateManager));
 						break;
 					default:
-						throw new ParserException("Invalid dependency node: " + xndDependency.Name + ". At this point the config file has been validated against the schema, so there's something wrong with the parser.");
+						IDependency dpnExtensionDependency = ParserExtension.ParseDependency(xndDependency, StateManager);
+						if (dpnExtensionDependency != null)
+							cpdDependency.Dependencies.Add(dpnExtensionDependency);
+						else
+							throw new ParserException("Invalid dependency node: " + xndDependency.Name + ". At this point the config file has been validated against the schema, so there's something wrong with the parser.");
+						break;
 				}
 			}
 			return cpdDependency;

@@ -56,9 +56,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BaseScript.cs" />
+    <Compile Include="Fallout3BaseScript.cs" />
     <Compile Include="fommScript.cs" />
-    <Compile Include="Plugin.cs" />
+    <Compile Include="GenericBaseScript.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

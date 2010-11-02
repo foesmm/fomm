@@ -4,7 +4,7 @@ using System.IO;
 
 namespace Fomm.PackageManager.ModInstallLog
 {
-	abstract class InstallLogBase
+	public abstract class InstallLogBase
 	{
 		private static readonly Regex m_rgxCleanPath = new Regex("[" + Path.DirectorySeparatorChar + Path.AltDirectorySeparatorChar + "]{2,}");
 		

@@ -10,7 +10,7 @@ namespace Fomm.PackageManager.ModInstallLog
 	/// A mod's install log tracks which files were installed as a
 	/// pasrt of a specific mod. This is used when the mod is uninstalled.
 	/// </summary>
-	class InstallLogMergeModule : InstallLogBase
+	public class InstallLogMergeModule : InstallLogBase
 	{
 		/// <summary>
 		/// Describes an edit to an Ini file.

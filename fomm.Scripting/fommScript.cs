@@ -5,6 +5,7 @@ using MessageBox = System.Windows.Forms.MessageBox;
 using mbButtons = System.Windows.Forms.MessageBoxButtons;
 using DialogResult = System.Windows.Forms.DialogResult;
 using Path = System.IO.Path;
+using Fomm.Games.Fallout3.Script;
 
 namespace fomm.Scripting
 {
@@ -56,6 +57,14 @@ namespace fomm.Scripting
 		}
 		private static Dictionary<string, string> variables;
 		private static ModInstaller m_midInstaller = null;
+
+		private static Fallout3ModInstallScript Script
+		{
+			get
+			{
+				return (Fallout3ModInstallScript)m_midInstaller.Script;
+			}
+		}
 
 		#region Method Execution
 
@@ -290,7 +299,7 @@ namespace fomm.Scripting
 					}
 					try
 					{
-						return ((Version)ExecuteMethod(() => m_midInstaller.GetFalloutVersion())) >= new Version(line[2] + ".0");
+						return ((Version)ExecuteMethod(() => m_midInstaller.Script.GetGameVersion())) >= new Version(line[2] + ".0");
 					}
 					catch
 					{
@@ -299,7 +308,7 @@ namespace fomm.Scripting
 					}
 				case "ScriptExtenderPresent":
 					if (line.Length > 2) Warn("Unexpected arguments to 'If ScriptExtenderPresent'");
-					return (bool)(ExecuteMethod(() => m_midInstaller.ScriptExtenderPresent()) ?? false);
+					return (bool)(ExecuteMethod(() => Script.ScriptExtenderPresent()) ?? false);
 				case "ScriptExtenderNewerThan":
 					if (line.Length == 2)
 					{
@@ -307,10 +316,10 @@ namespace fomm.Scripting
 						return false;
 					}
 					if (line.Length > 3) Warn("Unexpected arguments to 'If ScriptExtenderNewerThan'");
-					if (!(bool)(ExecuteMethod(() => m_midInstaller.ScriptExtenderPresent()) ?? false)) return false;
+					if (!(bool)(ExecuteMethod(() => Script.ScriptExtenderPresent()) ?? false)) return false;
 					try
 					{
-						return ((Version)ExecuteMethod(() => m_midInstaller.GetFoseVersion())) >= new Version(line[2] + ".0");
+						return ((Version)ExecuteMethod(() => Script.GetFoseVersion())) >= new Version(line[2] + ".0");
 					}
 					catch
 					{
@@ -326,7 +335,7 @@ namespace fomm.Scripting
 					if (line.Length > 3) Warn("Unexpected arguments to 'If FalloutNewerThan'");
 					try
 					{
-						return ((Version)ExecuteMethod(() => m_midInstaller.GetFalloutVersion())) >= new Version(line[2] + ".0");
+						return ((Version)ExecuteMethod(() => Script.GetGameVersion())) >= new Version(line[2] + ".0");
 					}
 					catch
 					{
@@ -436,7 +445,7 @@ namespace fomm.Scripting
 				}
 			}
 			//Display select form
-			int[] indices = (int[])ExecuteMethod(() => m_midInstaller.Select(items, previews, descs, title, many));
+			int[] indices = (int[])ExecuteMethod(() => m_midInstaller.Script.Select(items, previews, descs, title, many));
 			string[] result = new string[indices.Length];
 			for (int i = 0; i < indices.Length; i++)
 			{
@@ -523,7 +532,7 @@ namespace fomm.Scripting
 		private static void FunctionPerformBasicInstall(string[] line)
 		{
 			if (line.Length > 1) Warn("Unexpected extra arguments to function PerformBasicInstall");
-			BaseScript.PerformBasicInstall();
+			Fallout3BaseScript.PerformBasicInstall();
 		}
 
 		private static void FunctionMessage(string[] line)
@@ -534,10 +543,10 @@ namespace fomm.Scripting
 					Warn("Missing arguments to function 'Message'");
 					break;
 				case 2:
-					ExecuteMethod(() => m_midInstaller.MessageBox(line[1]));
+					ExecuteMethod(() => Script.MessageBox(line[1]));
 					break;
 				case 3:
-					ExecuteMethod(() => m_midInstaller.MessageBox(line[1], line[2]));
+					ExecuteMethod(() => Script.MessageBox(line[1], line[2]));
 					break;
 				default:
 					Warn("Unexpected arguments after 'Message'");
@@ -553,7 +562,7 @@ namespace fomm.Scripting
 				return;
 			}
 			if (line.Length > 2) Warn("Unexpected arguments after InstallDataFile");
-			ExecuteMethod(() => m_midInstaller.InstallFileFromFomod(line[1]));
+			ExecuteMethod(() => Script.InstallFileFromFomod(line[1]));
 		}
 
 		private static void FunctionCopyDataFile(string[] line)
@@ -565,7 +574,7 @@ namespace fomm.Scripting
 			}
 			if (line.Length > 3) Warn("Unexpected extra arguments after CopyDataFile");
 			byte[] bteData = (byte[])ExecuteMethod(() => m_midInstaller.Fomod.GetFile(line[1]));
-			ExecuteMethod(() => m_midInstaller.GenerateDataFile(line[2], bteData));
+			ExecuteMethod(() => Script.GenerateDataFile(line[2], bteData));
 		}
 
 		private static void FunctionSetPluginActivation(string[] line)
@@ -577,9 +586,9 @@ namespace fomm.Scripting
 			}
 			if (line.Length > 3) Warn("Unexpected extra arguments to function SetPluginActivation");
 			if (line[2] == "True")
-				ExecuteMethod(() => m_midInstaller.SetPluginActivation(line[1], true));
+				ExecuteMethod(() => Script.SetPluginActivation(line[1], true));
 			else if (line[2] == "False")
-				ExecuteMethod(() => m_midInstaller.SetPluginActivation(line[1], false));
+				ExecuteMethod(() => Script.SetPluginActivation(line[1], false));
 			else Warn("Expected 'True' or 'False', but got '" + line[2] + "'");
 		}
 
@@ -595,16 +604,16 @@ namespace fomm.Scripting
 			switch (type)
 			{
 				case IniType.Fallout:
-					ExecuteMethod(() => m_midInstaller.EditFalloutINI(line[1], line[2], line[3], true));
+					ExecuteMethod(() => Script.EditFalloutINI(line[1], line[2], line[3], true));
 					break;
 				case IniType.FalloutPrefs:
-					ExecuteMethod(() => m_midInstaller.EditPrefsINI(line[1], line[2], line[3], true));
+					ExecuteMethod(() => Script.EditPrefsINI(line[1], line[2], line[3], true));
 					break;
 				case IniType.Geck:
-					ExecuteMethod(() => m_midInstaller.EditGeckINI(line[1], line[2], line[3], true));
+					ExecuteMethod(() => Script.EditGeckINI(line[1], line[2], line[3], true));
 					break;
 				case IniType.GeckPrefs:
-					ExecuteMethod(() => m_midInstaller.EditGeckPrefsINI(line[1], line[2], line[3], true));
+					ExecuteMethod(() => Script.EditGeckPrefsINI(line[1], line[2], line[3], true));
 					break;
 			}
 		}
@@ -624,7 +633,7 @@ namespace fomm.Scripting
 				return;
 			}
 			byte[] bteData = (byte[])ExecuteMethod(() => m_midInstaller.Fomod.GetFile(line[3]));
-			ExecuteMethod(() => m_midInstaller.EditShader(package, line[2], bteData));
+			ExecuteMethod(() => Script.EditShader(package, line[2], bteData));
 		}
 
 		private static void FunctionSetVar(string[] line)
@@ -792,16 +801,16 @@ namespace fomm.Scripting
 			switch (type)
 			{
 				case IniType.Fallout:
-					variables[line[1]] = (string)ExecuteMethod(() => m_midInstaller.GetFalloutIniString(line[2], line[3]));
+					variables[line[1]] = (string)ExecuteMethod(() => Script.GetFalloutIniString(line[2], line[3]));
 					break;
 				case IniType.FalloutPrefs:
-					variables[line[1]] = (string)ExecuteMethod(() => m_midInstaller.GetPrefsIniString(line[2], line[3]));
+					variables[line[1]] = (string)ExecuteMethod(() => Script.GetPrefsIniString(line[2], line[3]));
 					break;
 				case IniType.Geck:
-					variables[line[1]] = (string)ExecuteMethod(() => m_midInstaller.GetGeckIniString(line[2], line[3]));
+					variables[line[1]] = (string)ExecuteMethod(() => Script.GetGeckIniString(line[2], line[3]));
 					break;
 				case IniType.GeckPrefs:
-					variables[line[1]] = (string)ExecuteMethod(() => m_midInstaller.GetGeckPrefsIniString(line[2], line[3]));
+					variables[line[1]] = (string)ExecuteMethod(() => Script.GetGeckPrefsIniString(line[2], line[3]));
 					break;
 			}
 		}
@@ -814,7 +823,7 @@ namespace fomm.Scripting
 				return;
 			}
 			if (line.Length > 3) Warn("Unexpected extra arguments to function 'ReadRendererInfo'");
-			variables[line[1]] = (string)ExecuteMethod(() => m_midInstaller.GetRendererInfo(line[2]));
+			variables[line[1]] = (string)ExecuteMethod(() => Script.GetRendererInfo(line[2]));
 		}
 
 		private static void FunctionExecLines(string[] line, Queue<string> queue)

@@ -6,6 +6,7 @@ using SevenZip;
 using System.Text;
 using Fomm.PackageManager.XmlConfiguredInstall;
 using Fomm.Util;
+using Fomm.PackageManager.XmlConfiguredInstall.Parsers;
 
 namespace Fomm.PackageManager.FomodBuilder
 {
@@ -510,6 +511,9 @@ namespace Fomm.PackageManager.FomodBuilder
 						break;
 					case "4.0":
 						strMinFOMMVersion = "0.12.4";
+						break;
+					case "5.0":
+						strMinFOMMVersion = "0.13.0";
 						break;
 				}
 				AppendWrappedFormat(stbHowTo, "{0}) If you are using FOMM {1} or newer, proceed to Step {2}, otherwise proceed to Step {3}.", intStepCounter++, strMinFOMMVersion, intStepCounter + 2, intStepCounter).AppendLine();

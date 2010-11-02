@@ -8,7 +8,7 @@ using Fomm.PackageManager.ModInstallLog;
 
 namespace Fomm.PackageManager
 {
-	class ModUninstaller : ModInstallScript
+	class ModUninstaller : ModInstallerBase
 	{
 		private BackgroundWorkerProgressDialog m_bwdProgress = null;
 		private string m_strBaseName = null;
@@ -212,9 +212,9 @@ namespace Fomm.PackageManager
 				if (m_bwdProgress.Cancelled())
 					return;
 				if (Fomod == null)
-					UninstallDataFile(m_strBaseName, strFile);
+					Script.UninstallDataFile(m_strBaseName, strFile);
 				else
-					UninstallDataFile(strFile);
+					Script.UninstallDataFile(strFile);
 				m_bwdProgress.StepItemProgress();
 				m_bwdProgress.StepOverallProgress();
 			}
@@ -225,7 +225,7 @@ namespace Fomm.PackageManager
 			{
 				if (m_bwdProgress.Cancelled())
 					return;
-				UneditIni(iniEdit.File, iniEdit.Section, iniEdit.Key);
+				Script.UneditIni(iniEdit.File, iniEdit.Section, iniEdit.Key);
 				m_bwdProgress.StepItemProgress();
 				m_bwdProgress.StepOverallProgress();
 			}
@@ -236,7 +236,7 @@ namespace Fomm.PackageManager
 			{
 				if (m_bwdProgress.Cancelled())
 					return;
-				UneditShader(sdpEdit.Package, sdpEdit.ShaderName);
+				Script.UneditGameSpecificValue(gsvEdit.Key);
 				m_bwdProgress.StepItemProgress();
 				m_bwdProgress.StepOverallProgress();
 			}

@@ -9,7 +9,7 @@ using Fomm.PackageManager.ModInstallLog;
 
 namespace Fomm.FileManager
 {
-	public class ModInstallReorderer : ModInstallScript
+	public class ModInstallReorderer : ModInstallerBase
 	{
 		private string m_strFailMessage = null;
 		private string m_strFile = null;

@@ -15,7 +15,7 @@ namespace Fomm.PackageManager
 	/// <summary>
 	/// Installs a <see cref="fomod"/>.
 	/// </summary>
-	public class ModInstaller : ModInstallScript
+	public class ModInstaller : ModInstallerBase
 	{
 		private BackgroundWorkerProgressDialog m_bwdProgress = null;
 
@@ -126,7 +126,7 @@ namespace Fomm.PackageManager
 				if (Fomod.IsActive)
 				{
 					InstallLog.Current.Merge(Fomod, MergeModule);
-					CommitActivePlugins();
+					Script.CommitActivePlugins();
 				}
 			}
 			catch (Exception e)
@@ -146,7 +146,7 @@ namespace Fomm.PackageManager
 		/// <lang cref="false"/> otherwise.</returns>
 		protected bool RunXmlInstallScript()
 		{
-			XmlConfiguredScript xmlScript = new XmlConfiguredScript(this);
+			XmlConfiguredScript xmlScript = new XmlConfiguredScript(Script);
 			return xmlScript.Install();
 		}
 
@@ -204,9 +204,9 @@ namespace Fomm.PackageManager
 			{
 				if ((m_bwdProgress != null) && m_bwdProgress.Cancelled())
 					return;
-				InstallFileFromFomod(strFile);
+				Script.InstallFileFromFomod(strFile);
 				if (Program.GameMode.IsPluginFile(strFile) && strFile.IndexOfAny(chrDirectorySeperators) == -1)
-					SetPluginActivation(strFile, true);
+					Script.SetPluginActivation(strFile, true);
 				if (m_bwdProgress != null)
 					m_bwdProgress.StepOverallProgress();
 			}

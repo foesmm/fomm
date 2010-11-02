@@ -7,7 +7,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Globalization;
 
-namespace Fomm.PackageManager.XmlConfiguredInstall
+namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
 {
 	/// <summary>
 	/// Parses version 4.0 mod configuration files.
@@ -35,8 +35,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		/// <param name="p_xmlConfig">The modules configuration file.</param>
 		/// <param name="p_fomodMod">The mod whose configuration file we are parsing.</param>
 		/// <param name="p_dsmSate">The state of the install.</param>
-		public Parser40(XmlDocument p_xmlConfig, fomod p_fomodMod, DependencyStateManager p_dsmSate)
-			: base(p_xmlConfig, p_fomodMod, p_dsmSate)
+		/// <param name="p_pexParserExtension">The parser extension that provides game-specific config file parsing.</param>
+		public Parser40(XmlDocument p_xmlConfig, fomod p_fomodMod, DependencyStateManager p_dsmSate, ParserExtension p_pexParserExtension)
+			: base(p_xmlConfig, p_fomodMod, p_dsmSate, p_pexParserExtension)
 		{
 		}
 

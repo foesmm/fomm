@@ -625,12 +625,20 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
 		/// This installer treats FOMM as a mod. The advantage of this is that changes that are
 		/// made to the settings are recorded in the install log.
 		/// </remarks>
-		private class SettingsInstaller : ModInstallScript
+		private class SettingsInstaller : ModInstallerBase
 		{
 			private bool m_booChanged = false;
 			private GraphicsSettings m_gstSettings = null;
 
 			#region Properties
+
+			protected Fallout3ModInstallScript Fallout3Script
+			{
+				get
+				{
+					return (Fallout3ModInstallScript)Script;
+				}
+			}
 
 			/// <seealso cref="ModInstallScript.ExceptionMessage"/>
 			protected override string ExceptionMessage
@@ -699,9 +707,9 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
 			/// <lang cref="false"/> otherwise.</returns>
 			private bool SaveValue(string p_strSection, string p_strKey, string p_strValue)
 			{
-				if (!GetPrefsIniString(p_strSection, p_strKey).Equals(p_strValue))
+				if (!Fallout3Script.GetPrefsIniString(p_strSection, p_strKey).Equals(p_strValue))
 				{
-					EditPrefsINI(p_strSection, p_strKey, p_strValue, true);
+					Fallout3Script.EditPrefsINI(p_strSection, p_strKey, p_strValue, true);
 					m_booChanged = true;
 					return true;
 				}
@@ -794,14 +802,14 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
 				// iWaterReflectHeight
 				// the above values should always be the same
 				if (SaveValue("Water", "iWaterReflectWidth", ((ComboBoxItem)p_gstSettings.cbxReflectionQuality.SelectedItem).ValueAsString))
-					EditPrefsINI("Water", "iWaterReflectHeight", ((ComboBoxItem)p_gstSettings.cbxReflectionQuality.SelectedItem).ValueAsString, true);
+					Fallout3Script.EditPrefsINI("Water", "iWaterReflectHeight", ((ComboBoxItem)p_gstSettings.cbxReflectionQuality.SelectedItem).ValueAsString, true);
 
 				//soft reflections
 				// iWaterBlurAmount=2
 				// sometimes the above is 1, but it should always be 2
 				// as it is ignored if bUseWaterReflectionBlur is 0
 				if (SaveValue("Water", "bUseWaterReflectionBlur", (p_gstSettings.ckbSoftReflections.Checked ? "1" : "0")))
-					EditPrefsINI("Water", "iWaterBlurAmount", "2", true);
+					Fallout3Script.EditPrefsINI("Water", "iWaterBlurAmount", "2", true);
 
 				//full scene
 				SaveValue("Water", "bForceHighDetailReflections", (p_gstSettings.ckbFullSceneReflections.Checked ? "1" : "0"));
@@ -915,7 +923,7 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
 					throw new InvalidOperationException("The SettingsForm property must be set before calling Run(); or Run(GraphicsSettings) can be used instead.");
 
 				TransactionalFileManager.Snapshot(Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOPrefsIniPath]);
-				OverwriteAllIni = true;
+				Fallout3Script.OverwriteAllIni = true;
 					
 				m_booChanged = false;
 				MergeModule = new InstallLogMergeModule();

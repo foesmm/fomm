@@ -7,7 +7,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 	/// <summary>
 	/// This class manages the state of the installation.
 	/// </summary>
-	public class DependencyStateManager
+	public abstract class DependencyStateManager
 	{
 		/// <summary>
 		/// Describe the owner and value of a condition flag.
@@ -30,6 +30,18 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		private Dictionary<string, bool> m_dicInstalledPlugins = null;
 
 		#region Properties
+
+		/// <summary>
+		/// Gets the install script being used to perform the install.
+		/// </summary>
+		/// <value>The install script being used to perform the install.</value>
+		protected ModInstallScript Script
+		{
+			get
+			{
+				return m_misInstallScript;
+			}
+		}
 
 		/// <summary>
 		/// A dictionary listed all installed plugins, and indicating which are active.
@@ -62,32 +74,17 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		}
 
 		/// <summary>
-		/// Gets the installed version of FOSE.
+		/// Gets the installed version of the current game.
 		/// </summary>
 		/// <remarks>
-		/// <lang cref="null"/> is returned if FOSE is not installed.
+		/// <lang cref="null"/> is returned if the game is not installed.
 		/// </remarks>
-		/// <value>The installed version of FOSE.</value>
-		public Version FoseVersion
+		/// <value>The installed version of the current game.</value>
+		public Version GameVersion
 		{
 			get
 			{
-			return m_misInstallScript.GetFoseVersion();
-			}
-		}
-
-		/// <summary>
-		/// Gets the installed version of Fallout 3.
-		/// </summary>
-		/// <remarks>
-		/// <lang cref="null"/> is returned if Fallout 3 is not installed.
-		/// </remarks>
-		/// <value>The installed version of Fallout 3.</value>
-		public Version FalloutVersion
-		{
-			get
-			{
-				return m_misInstallScript.GetFalloutVersion();
+				return m_misInstallScript.GetGameVersion();
 			}
 		}
 

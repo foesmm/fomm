@@ -5,14 +5,14 @@ using Fomm.Games.Fallout3.Tools.TESsnip;
 using Fomm.PackageManager.ModInstallLog;
 using System.Windows.Forms;
 using Fomm.Games.Fallout3.Tools.BSA;
+using System.Collections.Generic;
 
 namespace Fomm.Games.Fallout3.Script
 {
-	public abstract class Fallout3ModInstallScript : IDisposable
+	public class Fallout3ModInstallScript : ModInstallScript
 	{
 		private BsaManager m_bamBsaManager = null;
 		private TextureManager m_txmTextureManager = null;
-		public ModInstallScript m_misScript = null;
 
 		#region Properties
 
@@ -48,9 +48,10 @@ namespace Fomm.Games.Fallout3.Script
 		/// A simple constructor that initializes the object.
 		/// </summary>
 		/// <param name="p_fomodMod">The <see cref="fomod"/> against which to run the script.</param>
-		public Fallout3ModInstallScript(fomod p_fomodMod)
+		public Fallout3ModInstallScript(fomod p_fomodMod, ModInstallerBase p_mibInstaller)
+			: base(p_fomodMod, p_mibInstaller)
 		{
-			m_misScript = new ModInstallScript(p_fomodMod);
+			//m_misScript = new ModInstallScript(p_fomodMod);
 			m_bamBsaManager = new BsaManager();
 			m_txmTextureManager = new TextureManager();
 		}
@@ -123,6 +124,17 @@ namespace Fomm.Games.Fallout3.Script
 			if (!File.Exists("geck.exe"))
 				return null;
 			return new Version(System.Diagnostics.FileVersionInfo.GetVersionInfo("geck.exe").FileVersion.Replace(", ", "."));
+		}
+
+		#endregion
+
+		#region Plugin Activation
+
+		protected override void DoCommitActivePlugins(List<string> p_strActivePlugins)
+		{
+			if (p_strActivePlugins == null)
+				return;
+			File.WriteAllLines(((Fallout3GameMode)Program.GameMode).PluginsFilePath, p_strActivePlugins.ToArray());
 		}
 
 		#endregion
@@ -283,6 +295,27 @@ namespace Fomm.Games.Fallout3.Script
 
 		#endregion
 
+		#region Game-Specific Value Management
+
+		/// <summary>
+		/// Undoes the edit made to the spcified game-specific value.
+		/// </summary>
+		/// <param name="p_strValueKey">The key of the game-specific value to unedit.</param>
+		public override bool UneditGameSpecificValue(string p_strValueKey)
+		{
+			string[] strKey = p_strValueKey.Split(new char[] { ':' }, 2);
+			switch (strKey[0])
+			{
+				case "sdp":
+					string[] strShaderInfo = strKey[1].Split('/');
+					UneditShader(Int32.Parse(strShaderInfo[0]), strShaderInfo[1]);
+					return true;
+			}
+			return false;
+		}
+
+		#endregion
+
 		#region Shader Management
 
 		#region Shader Editing
@@ -316,9 +349,9 @@ namespace Fomm.Games.Fallout3.Script
 
 			//if we are overwriting an original shader, back it up
 			if ((strOldMod == null) || (oldData != null))
-				MergeModule.BackupOriginalGameSpecificValueEdit(strShaderKey, oldData);
+				Installer.MergeModule.BackupOriginalGameSpecificValueEdit(strShaderKey, oldData);
 
-			MergeModule.AddGameSpecificValueEdit(strShaderKey, p_bteData);
+			Installer.MergeModule.AddGameSpecificValueEdit(strShaderKey, p_bteData);
 			return true;
 		}
 
@@ -441,8 +474,6 @@ namespace Fomm.Games.Fallout3.Script
 		/// </summary>
 		public void Dispose()
 		{
-			if (m_misScript != null)
-				m_misScript.Dispose();
 			if (m_txmTextureManager != null)
 				m_txmTextureManager.Dispose();
 			if (m_bamBsaManager != null)

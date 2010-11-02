@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using System.IO;
+using Fomm.PackageManager.XmlConfiguredInstall.Parsers;
 
 namespace Fomm.PackageManager.XmlConfiguredInstall
 {
@@ -88,7 +89,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 			foreach (XmlNode xndComment in xnlComments)
 				xndComment.ParentNode.RemoveChild(xndComment);
 
-			m_dsmStateManager = new DependencyStateManager(m_misInstallScript);
+			m_dsmStateManager = Program.GameMode.CreateDependencyStateManager(m_misInstallScript);
 
 			Parser prsParser = Parser.GetParser(xmlConfig, m_misInstallScript.Fomod, m_dsmStateManager);
 			CompositeDependency cpdModDependencies = prsParser.GetModDependencies();

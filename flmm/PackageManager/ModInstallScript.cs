@@ -17,19 +17,16 @@ namespace Fomm.PackageManager
 	/// </summary>
 	public abstract class ModInstallScript : IDisposable
 	{
-		protected static readonly object objInstallLock = new object();
-		private TxFileManager m_tfmFileManager = null;
+		private List<string> m_lstActivePlugins = null;
+		private fomod m_fomodMod = null;
+		private ModInstallerBase m_mibInstaller = null;
 		private List<string> m_lstOverwriteFolders = new List<string>();
 		private List<string> m_lstDontOverwriteFolders = new List<string>();
 		private bool m_booDontOverwriteAll = false;
 		private bool m_booOverwriteAll = false;
 		private bool m_booDontOverwriteAllIni = false;
 		private bool m_booOverwriteAllIni = false;
-		private InstallLogMergeModule m_ilmModInstallLog = null;
-		private BackgroundWorkerProgressDialog m_bwdProgress = null;
-		private List<string> m_lstActivePlugins = null;
-		private fomod m_fomodMod = null;
-
+		
 		#region Properties
 
 		/// <summary>
@@ -62,26 +59,12 @@ namespace Fomm.PackageManager
 		}
 
 		/// <summary>
-		/// Gets the transactional file manager the script is using.
-		/// </summary>
-		/// <value>The transactional file manager the script is using.</value>
-		protected TxFileManager TransactionalFileManager
-		{
-			get
-			{
-				if (m_tfmFileManager == null)
-					throw new InvalidOperationException("The transactional file manager must be initialized by calling InitTransactionalFileManager() before it is used.");
-				return m_tfmFileManager;
-			}
-		}
-
-		/// <summary>
 		/// Gets or sets a value indicating whether to overwrite
 		/// all Ini values.
 		/// </summary>
 		/// <value>A value indicating whether to overwrite
 		/// all Ini values.</value>
-		protected bool OverwriteAllIni
+		public bool OverwriteAllIni
 		{
 			get
 			{
@@ -111,58 +94,12 @@ namespace Fomm.PackageManager
 			}
 		}
 
-		/// <summary>
-		/// Gets or sets the merge module we are using.
-		/// </summary>
-		/// <value>The merge module we are using.</value>
-		internal InstallLogMergeModule MergeModule
+		protected ModInstallerBase Installer
 		{
 			get
 			{
-				return m_ilmModInstallLog;
+				return m_mibInstaller;
 			}
-			set
-			{
-				m_ilmModInstallLog = value;
-			}
-		}
-
-		/// <summary>
-		/// Gets the message to display to the user when an exception is caught.
-		/// </summary>
-		/// <remarks>
-		/// In order to display the exception message, the placeholder {0} should be used.
-		/// </remarks>
-		/// <value>The message to display to the user when an exception is caught.</value>
-		protected abstract string ExceptionMessage
-		{
-			get;
-		}
-
-		/// <summary>
-		/// Gets the message to display upon failure of the script.
-		/// </summary>
-		/// <remarks>
-		/// If the value of this property is <lang cref="null"/> then no message will be
-		/// displayed.
-		/// </remarks>
-		/// <value>The message to display upon failure of the script.</value>
-		protected abstract string FailMessage
-		{
-			get;
-		}
-
-		/// <summary>
-		/// Gets the message to display upon success of the script.
-		/// </summary>
-		/// <remarks>
-		/// If the value of this property is <lang cref="null"/> then no message will be
-		/// displayed.
-		/// </remarks>
-		/// <value>The message to display upon success of the script.</value>
-		protected abstract string SuccessMessage
-		{
-			get;
 		}
 
 		#endregion
@@ -173,7 +110,7 @@ namespace Fomm.PackageManager
 		/// A simple constructor that initializes the object.
 		/// </summary>
 		/// <param name="p_fomodMod">The <see cref="fomod"/> to be installed or uninstalled.</param>
-		public ModInstallScript(fomod p_fomodMod)
+		public ModInstallScript(fomod p_fomodMod, ModInstallerBase p_mibInstaller)
 		{
 			m_fomodMod = p_fomodMod;
 
@@ -185,195 +122,8 @@ namespace Fomm.PackageManager
 			// to prevent this, we call it now to make sure it is ready when we need it.
 			object objIgnore = PermissionsManager.CurrentPermissions;
 
-			m_tfmFileManager = new TxFileManager();
-		}
-
-		#endregion
-
-		#region Script Execution
-
-		/// <summary>
-		/// Checks to see if the script work has already been done.
-		/// </summary>
-		/// <returns><lang cref="true"/> if the script work has already been done and the script
-		/// doesn't need to execute; <lang cref="false"/> otherwise.</returns>
-		protected virtual bool CheckAlreadyDone()
-		{
-			return true;
-		}
-
-		/// <summary>
-		/// Does the script-specific work.
-		/// </summary>
-		/// <remarks>
-		/// This is the method that needs to be overridden by implementers to do
-		/// their script-specific work.
-		/// </remarks>
-		/// <returns><lang cref="true"/> if the script work was completed successfully and needs to
-		/// be committed; <lang cref="false"/> otherwise.</returns>
-		protected abstract bool DoScript();
-
-		/// <summary>
-		/// Runs the install script.
-		/// </summary>
-		protected bool Run()
-		{
-			return Run(false, true);
-		}
-
-		/// <summary>
-		/// Runs the install script.
-		/// </summary>
-		/// <remarks>
-		/// This contains the boilerplate code that needs to be done for all install-type
-		/// scripts. Implementers must override the <see cref="DoScript()"/> method to
-		/// implement their script-specific functionality.
-		/// </remarks>
-		/// <param name="p_booSuppressSuccessMessage">Indicates whether to
-		/// supress the success message. This is useful for batch installs.</param>
-		/// <seealso cref="DoScript()"/>
-		protected bool Run(bool p_booSuppressSuccessMessage, bool p_booSetFOModReadOnly)
-		{
-			bool booSuccess = false;
-			if (CheckAlreadyDone())
-				booSuccess = true;
-
-			if (!booSuccess)
-			{
-				try
-				{
-					//the install process modifies INI and config files.
-					// if multiple sources (i.e., installs) try to modify
-					// these files simultaneously the outcome is not well known
-					// (e.g., one install changes SETTING1 in a config file to valueA
-					// while simultaneously another install changes SETTING1 in the
-					// file to value2 - after each install commits its changes it is
-					// not clear what the value of SETTING1 will be).
-					// as a result, we only allow one mod to be installed at a time,
-					// hence the lock.
-					lock (ModInstallScript.objInstallLock)
-					{
-						using (TransactionScope tsTransaction = new TransactionScope())
-						{
-							m_tfmFileManager = new TxFileManager();
-							bool booCancelled = false;
-							if (p_booSetFOModReadOnly && (Fomod != null))
-							{
-								if (Fomod.ReadOnlyInitStepCount > 1)
-								{
-									using (m_bwdProgress = new BackgroundWorkerProgressDialog(BeginFOModReadOnlyTransaction))
-									{
-										m_bwdProgress.OverallMessage = "Preparing FOMod...";
-										m_bwdProgress.ShowItemProgress = false;
-										m_bwdProgress.OverallProgressMaximum = Fomod.ReadOnlyInitStepCount;
-										m_bwdProgress.OverallProgressStep = 1;
-										try
-										{
-											Fomod.ReadOnlyInitStepStarted += new CancelEventHandler(Fomod_ReadOnlyInitStepStarted);
-											Fomod.ReadOnlyInitStepFinished += new CancelEventHandler(Fomod_ReadOnlyInitStepFinished);
-											if (m_bwdProgress.ShowDialog() == DialogResult.Cancel)
-												booCancelled = true;
-										}
-										finally
-										{
-											Fomod.ReadOnlyInitStepStarted -= new CancelEventHandler(Fomod_ReadOnlyInitStepStarted);
-											Fomod.ReadOnlyInitStepFinished -= new CancelEventHandler(Fomod_ReadOnlyInitStepFinished);
-										}
-									}
-								}
-								else
-									Fomod.BeginReadOnlyTransaction();
-							}
-							if (!booCancelled)
-							{
-								booSuccess = DoScript();
-								if (booSuccess)
-									tsTransaction.Complete();
-							}
-						}
-					}
-				}
-				catch (Exception e)
-				{
-#if TRACE
-					Program.TraceException(e);
-#endif
-					StringBuilder stbError = new StringBuilder(e.Message);
-					if (e is FileNotFoundException)
-						stbError.Append(" (" + ((FileNotFoundException)e).FileName + ")");
-					if (e is IllegalFilePathException)
-						stbError.Append(" (" + ((IllegalFilePathException)e).Path + ")");
-					if (e.InnerException != null)
-						stbError.AppendLine().AppendLine(e.InnerException.Message);
-					if (e is RollbackException)
-						foreach (RollbackException.ExceptedResourceManager erm in ((RollbackException)e).ExceptedResourceManagers)
-						{
-							stbError.AppendLine(erm.ResourceManager.ToString());
-							stbError.AppendLine(erm.Exception.Message);
-							if (erm.Exception.InnerException != null)
-								stbError.AppendLine(erm.Exception.InnerException.Message);
-						}
-					string strMessage = String.Format(ExceptionMessage, stbError.ToString());
-					System.Windows.Forms.MessageBox.Show(strMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-					return false;
-				}
-				finally
-				{
-					m_lstOverwriteFolders.Clear();
-					m_lstDontOverwriteFolders.Clear();
-					m_tfmFileManager = null;
-					m_booDontOverwriteAll = false;
-					m_booOverwriteAll = false;
-					m_booDontOverwriteAllIni = false;
-					m_booOverwriteAllIni = false;
-					ActivePlugins = null;
-					m_ilmModInstallLog = null;
-					if (Fomod != null)
-						Fomod.EndReadOnlyTransaction();
-				}
-			}
-			if (booSuccess && !p_booSuppressSuccessMessage && !String.IsNullOrEmpty(SuccessMessage))
-				MessageBox(SuccessMessage, "Success");
-			else if (!booSuccess && !String.IsNullOrEmpty(FailMessage))
-				MessageBox(FailMessage, "Failure");
-			return booSuccess;
-		}
-
-		/// <summary>
-		/// Handles the <see cref="fomod.ReadOnlyInitStepFinished"/> event of the FOMod.
-		/// </summary>
-		/// <remarks>
-		/// This steps the progress in the progress dialog.
-		/// </remarks>
-		/// <param name="sender">The object that raised the event.</param>
-		/// <param name="e">A <see cref="CancelEventArgs"/> describing the event arguments.</param>
-		private void Fomod_ReadOnlyInitStepFinished(object sender, CancelEventArgs e)
-		{
-			m_bwdProgress.StepOverallProgress();
-		}
-
-		/// <summary>
-		/// Handles the <see cref="fomod.ReadOnlyInitStepStarted"/> event of the FOMod.
-		/// </summary>
-		/// <remarks>
-		/// This cancels the operation if the user has clicked cancel.
-		/// </remarks>
-		/// <param name="sender">The object that raised the event.</param>
-		/// <param name="e">A <see cref="CancelEventArgs"/> describing the event arguments.</param>
-		private void Fomod_ReadOnlyInitStepStarted(object sender, CancelEventArgs e)
-		{
-			e.Cancel = m_bwdProgress.Cancelled();
-		}
-
-		/// <summary>
-		/// Puts the FOMod into read-only mode.
-		/// </summary>
-		/// <remarks>
-		/// This method is called by a <see cref="BackgroundWorkerProgressDialog"/>.
-		/// </remarks>
-		private void BeginFOModReadOnlyTransaction()
-		{
-			Fomod.BeginReadOnlyTransaction();
+			m_mibInstaller = p_mibInstaller;
+			//m_tfmFileManager = new TxFileManager();
 		}
 
 		#endregion
@@ -686,11 +436,13 @@ namespace Fomm.PackageManager
 				ActivePlugins.Remove(p_strName);
 		}
 
-		protected void CommitActivePlugins()
+		protected abstract void DoCommitActivePlugins(List<string> p_strActivePlugins);
+
+		public void CommitActivePlugins()
 		{
 			if (ActivePlugins == null)
 				return;
-			Program.GameMode.PluginManager.CommitActivePlugins(ActivePlugins);
+			DoCommitActivePlugins(ActivePlugins);
 			ActivePlugins = null;
 		}
 
@@ -838,7 +590,7 @@ namespace Fomm.PackageManager
 			FileManagement.AssertFilePathIsSafe(p_strPath);
 			string strDataPath = Path.GetFullPath(Path.Combine(Program.GameMode.PluginsPath, p_strPath));
 			if (!Directory.Exists(Path.GetDirectoryName(strDataPath)))
-				TransactionalFileManager.CreateDirectory(Path.GetDirectoryName(strDataPath));
+				Installer.TransactionalFileManager.CreateDirectory(Path.GetDirectoryName(strDataPath));
 			else
 			{
 				if (!TestDoOverwrite(p_strPath))
@@ -853,29 +605,29 @@ namespace Fomm.PackageManager
 					// the install log will tell us no one owns the file, or the wrong mod owns the
 					// file. so, if this mod has installed this file already just replace it, don't
 					// back it up.
-					if (!MergeModule.ContainsFile(p_strPath))
+					if (!Installer.MergeModule.ContainsFile(p_strPath))
 					{
 						if (!Directory.Exists(strBackupPath))
-							TransactionalFileManager.CreateDirectory(strBackupPath);
+							Installer.TransactionalFileManager.CreateDirectory(strBackupPath);
 
 						//if we are overwriting an original value, back it up
 						if (strOldModKey == null)
 						{
-							MergeModule.BackupOriginalDataFile(p_strPath);
+							Installer.MergeModule.BackupOriginalDataFile(p_strPath);
 							strOldModKey = InstallLog.Current.OriginalValuesKey;
 						}
 						string strFile = Path.GetFileName(Directory.GetFiles(Path.GetDirectoryName(strDataPath), Path.GetFileName(strDataPath))[0]);
 						strFile = strOldModKey + "_" + strFile;
 
 						strBackupPath = Path.Combine(strBackupPath, strFile);
-						TransactionalFileManager.Copy(strDataPath, strBackupPath, true);
+						Installer.TransactionalFileManager.Copy(strDataPath, strBackupPath, true);
 					}
-					TransactionalFileManager.Delete(strDataPath);
+					Installer.TransactionalFileManager.Delete(strDataPath);
 				}
 			}
 
-			TransactionalFileManager.WriteAllBytes(strDataPath, p_bteData);
-			MergeModule.AddFile(p_strPath);
+			Installer.TransactionalFileManager.WriteAllBytes(strDataPath, p_bteData);
+			Installer.MergeModule.AddFile(p_strPath);
 			return true;
 		}
 
@@ -894,7 +646,7 @@ namespace Fomm.PackageManager
 		/// </remarks>
 		/// <param name="p_strPath">The path to the file that is to be uninstalled.</param>
 		/// <seealso cref="UninstallDataFile(string p_strFomodBaseName, string p_strFile)"/>
-		protected void UninstallDataFile(string p_strFile)
+		public void UninstallDataFile(string p_strFile)
 		{
 			UninstallDataFile(Fomod.BaseName, p_strFile);
 		}
@@ -915,7 +667,7 @@ namespace Fomm.PackageManager
 		/// is being uninstalled.</param>
 		/// <param name="p_strPath">The path to the file that is to be uninstalled.</param>
 		/// <seealso cref="UninstallDataFile(string p_strFile)"/>
-		protected void UninstallDataFile(string p_strFomodBaseName, string p_strFile)
+		public void UninstallDataFile(string p_strFomodBaseName, string p_strFile)
 		{
 			PermissionsManager.CurrentPermissions.Assert();
 			FileManagement.AssertFilePathIsSafe(p_strFile);
@@ -931,7 +683,7 @@ namespace Fomm.PackageManager
 				{
 					//if we did install the file, replace it with the file we overwrote
 					// if we didn't overwrite a file, then just delete it
-					TransactionalFileManager.Delete(strDataPath);
+					Installer.TransactionalFileManager.Delete(strDataPath);
 
 					string strPreviousOwnerKey = InstallLog.Current.GetPreviousFileOwnerKey(p_strFile);
 					if (strPreviousOwnerKey != null)
@@ -943,8 +695,8 @@ namespace Fomm.PackageManager
 							string strBackupFileName = Path.GetFileName(Directory.GetFiles(Path.GetDirectoryName(strRestoreFromPath), Path.GetFileName(strRestoreFromPath))[0]);
 							string strCasedFileName = strBackupFileName.Substring(strBackupFileName.IndexOf('_') + 1);
 							string strNewDataPath = Path.Combine(Path.GetDirectoryName(strDataPath), strCasedFileName);
-							TransactionalFileManager.Copy(strRestoreFromPath, strNewDataPath, true);
-							TransactionalFileManager.Delete(strRestoreFromPath);
+							Installer.TransactionalFileManager.Copy(strRestoreFromPath, strNewDataPath, true);
+							Installer.TransactionalFileManager.Delete(strRestoreFromPath);
 						}
 
 						//remove anny empty directories from the overwrite folder we may have created
@@ -967,7 +719,7 @@ namespace Fomm.PackageManager
 			string strOverwritePath = Path.Combine(strBackupDirectory, strOverwriteFile);
 			if (File.Exists(strOverwritePath))
 			{
-				TransactionalFileManager.Delete(strOverwritePath);
+				Installer.TransactionalFileManager.Delete(strOverwritePath);
 				//remove anny empty directories from the overwrite folder we may have created
 				TrimEmptyDirectories(strOverwritePath, Program.GameMode.OverwriteDirectory);
 			}
@@ -1085,10 +837,10 @@ namespace Fomm.PackageManager
 
 			//if we are overwriting an original value, back it up
 			if ((strOldMod == null) || (strOldValue != null))
-				m_ilmModInstallLog.BackupOriginalIniValue(strLoweredFile, strLoweredSection, strLoweredKey, strOldValue);
+				Installer.MergeModule.BackupOriginalIniValue(strLoweredFile, strLoweredSection, strLoweredKey, strOldValue);
 
 			NativeMethods.WritePrivateProfileStringA(strLoweredSection, strLoweredKey, p_strValue, strLoweredFile);
-			m_ilmModInstallLog.AddIniEdit(strLoweredFile, strLoweredSection, strLoweredKey, p_strValue);
+			Installer.MergeModule.AddIniEdit(strLoweredFile, strLoweredSection, strLoweredKey, p_strValue);
 			return true;
 		}
 
@@ -1099,10 +851,10 @@ namespace Fomm.PackageManager
 		/// <summary>
 		/// Undoes the edit made to the spcified key.
 		/// </summary>
-		/// <param name="p_strSettingsFileName">The name of the settings file to edit.</param>
+		/// <param name="p_strSettingsFileName">The name of the settings file to unedit.</param>
 		/// <param name="p_strSection">The section in the Ini file to unedit.</param>
 		/// <param name="p_strKey">The key in the Ini file to unedit.</param>
-		protected void UneditIni(string p_strSettingsFileName, string p_strSection, string p_strKey)
+		public void UneditIni(string p_strSettingsFileName, string p_strSection, string p_strKey)
 		{
 			string strLoweredFile = Program.GameMode.SettingsFiles[p_strSettingsFileName].ToLowerInvariant();
 			string strLoweredSection = p_strSection.ToLowerInvariant();
@@ -1130,6 +882,16 @@ namespace Fomm.PackageManager
 
 		#endregion
 
+		#region Game-Specific Value Management
+
+		/// <summary>
+		/// Undoes the edit made to the spcified game-specific value.
+		/// </summary>
+		/// <param name="p_strValueKey">The key of the game-specific value to unedit.</param>
+		public abstract bool UneditGameSpecificValue(string p_strValueKey);
+
+		#endregion
+
 		#region IDisposable Members
 
 		/// <summary>
@@ -1137,6 +899,13 @@ namespace Fomm.PackageManager
 		/// </summary>
 		public virtual void Dispose()
 		{
+			m_lstOverwriteFolders.Clear();
+			m_lstDontOverwriteFolders.Clear();
+			m_booDontOverwriteAll = false;
+			m_booOverwriteAll = false;
+			m_booDontOverwriteAllIni = false;
+			m_booOverwriteAllIni = false;
+			ActivePlugins = null;
 		}
 
 		#endregion

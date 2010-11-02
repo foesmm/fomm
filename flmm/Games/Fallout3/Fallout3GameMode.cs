@@ -6,6 +6,15 @@ using System.Windows.Forms;
 using System.Threading;
 using System.Diagnostics;
 using Fomm.PackageManager;
+using Fomm.Games.Fallout3.Script;
+using System.Text;
+using System.Drawing;
+using Fomm.Games.Fallout3.Tools.CriticalRecords;
+using Fomm.PackageManager.ModInstallLog;
+using Fomm.PackageManager.XmlConfiguredInstall;
+using Fomm.Games.Fallout3.Script.XmlConfiguredInstall;
+using Fomm.PackageManager.XmlConfiguredInstall.Parsers;
+using Fomm.Games.Fallout3.Script.XmlConfiguredInstall.Parsers;
 
 namespace Fomm.Games.Fallout3
 {
@@ -189,6 +198,7 @@ namespace Fomm.Games.Fallout3
 			m_lstTools.Add(new GameTool("CREditor", "Edits critical records in an ESP/ESM.", LaunchCREditorTool));
 			m_lstTools.Add(new GameTool("Archive Invalidation", "Toggles Archive Invalidation.", ToggleArchiveInvalidation));
 			m_lstTools.Add(new GameTool("Install Tweaker", "Advanced Fallout 3 tweaking.", LaunchInstallTweakerTool));
+			m_lstTools.Add(new GameTool("Conflict Detector", "Checks for conflicts with mod-author specified critical records.", LaunchConflictDetector));
 
 			m_lstGameSettingsTools.Add(new GameTool("Graphics Settings", "Changes the graphics settings.", LaunchGraphicsSettingsTool));
 
@@ -199,6 +209,20 @@ namespace Fomm.Games.Fallout3
 		#endregion
 
 		#region Tool Launch Methods
+
+		/// <summary>
+		/// Launches the conflict detector tool.
+		/// </summary>
+		/// <param name="p_frmMainForm">The main mod management form.</param>
+		public void LaunchConflictDetector(MainForm p_frmMainForm)
+		{
+			string strMessage = "This is an experimental feature that relies on fomod authors specifying which parts of their plugins are critical." + Environment.NewLine + "Using this feature will not hurt anything, but it is not guaranteed to find any or all conflicts.";
+			if (MessageBox.Show(p_frmMainForm, strMessage, "Warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Information) == DialogResult.Cancel)
+				return;
+			Tools.PluginConflictDetector pcdDetector = new Tools.PluginConflictDetector(p_frmMainForm);
+			pcdDetector.CheckForConflicts();
+			p_frmMainForm.LoadPluginInfo();
+		}
 
 		/// <summary>
 		/// Launches the BSA tool.
@@ -317,15 +341,93 @@ namespace Fomm.Games.Fallout3
 		#region Scripts
 
 		/// <summary>
-		/// Creates a mod installer script for the given <see cref="fomod"/>.
+		/// Gets the default script for a mod.
+		/// </summary>
+		/// <value>The default script for a mod.</value>
+		public virtual string DefaultCSharpScript
+		{
+			get
+			{
+				return @"using System;
+using fomm.Scripting;
+
+class Script : Fallout3BaseScript {
+	public static bool OnActivate() {
+        //Install all files from the fomod and activate any esps
+        PerformBasicInstall();
+		return true;
+	}
+}
+";
+			}
+		}
+
+		/// <summary>
+		/// Creates a mod install script for the given <see cref="fomod"/>.
 		/// </summary>
 		/// <param name="p_fomodMod">The mod for which to create an installer script.</param>
-		/// <param name="p_mirInstaller">The installer for which the script is being created.</param>
-		/// <returns>A mod installer script for the given <see cref="fomod"/>.</returns>
-		/*public override ModInstaller GetModInstallerScript(fomod p_fomodMod)
+		/// <param name="p_mibInstaller">The installer for which the script is being created.</param>
+		/// <returns>A mod install script for the given <see cref="fomod"/>.</returns>
+		public override ModInstallScript CreateInstallScript(fomod p_fomodMod, ModInstallerBase p_mibInstaller)
 		{
-			return new Fallout3ModInstallerScript(p_fomodMod);
-		}*/
+			return new Fallout3ModInstallScript(p_fomodMod, p_mibInstaller);
+		}
+
+		/// <summary>
+		/// Creates a mod upgrade script for the given <see cref="fomod"/>.
+		/// </summary>
+		/// <param name="p_fomodMod">The mod for which to create an installer script.</param>
+		/// <param name="p_mibInstaller">The installer for which the script is being created.</param>
+		/// <returns>A mod upgrade script for the given <see cref="fomod"/>.</returns>
+		public override ModInstallScript CreateUpgradeScript(fomod p_fomodMod, ModInstallerBase p_mibInstaller)
+		{
+			return new Fallout3ModUpgradeScript(p_fomodMod, p_mibInstaller);
+		}
+
+		/// <summary>
+		/// Creates a <see cref="DependencyStateManager"/> for the given <see cref="ModInstallScript"/>.
+		/// </summary>
+		/// <param name="p_misInstallScript">The <see cref="ModInstallScript"/> for which the
+		/// <see cref="DependencyStateManager"/> is being created.</param>
+		/// <returns>A <see cref="DependencyStateManager"/> for the given <see cref="ModInstallScript"/>.</returns>
+		public override DependencyStateManager CreateDependencyStateManager(ModInstallScript p_misInstallScript)
+		{
+			return new Fallout3DependencyStateManager(p_misInstallScript);
+		}
+
+		/// <summary>
+		/// The factory method that creates the appropriate parser extension for the specified configuration file version.
+		/// </summary>
+		/// <param name="p_strVersion">The XML configuration file version for which to return a parser extension.</param>
+		/// <returns>The appropriate parser extension for the specified configuration file version, or
+		/// <lang cref="null"/> if no extension is available.</returns>
+		public override ParserExtension CreateParserExtension(string p_strVersion)
+		{
+			switch (p_strVersion)
+			{
+				case "1.0":
+					return new Fallout3Parser10Extension();
+				case "2.0":
+				case "3.0":
+				case "4.0":
+				case "5.0":
+					return new Fallout3Parser20Extension();
+				default:
+					return null;
+			}
+		}
+
+		/// <summary>
+		/// Gets the path to the schema file for the specified configuration file version.
+		/// </summary>
+		/// <param name="p_strVersion">The XML configuration file version for which to return a parser extension.</param>
+		/// <returns>The path to the schema file for the specified configuration file version, or
+		/// <lang cref="null"/> if there is no game-specific schema for the specified configuration
+		/// file version.</returns>
+		public override string GetGameSpecificXMLConfigSchemaPath(string p_strVersion)
+		{
+			return Path.Combine(Program.ExecutableDirectory, String.Format(@"fomm\Fallout3\ModConfig{0}.xsd", p_strVersion));
+		}
 
 		#endregion
 

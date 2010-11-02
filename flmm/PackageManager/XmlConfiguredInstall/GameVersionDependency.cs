@@ -7,7 +7,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 	/// <summary>
 	/// A dependency that requires a minimum version of Fallout 3 to be installed.
 	/// </summary>
-	public class FalloutDependency : IDependency
+	public class GameVersionDependency : IDependency
 	{
 		private DependencyStateManager m_dsmStateManager = null;
 		private Version m_verMinVersion = null;
@@ -27,7 +27,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		{
 			get
 			{
-				Version verInstalledVersion = m_dsmStateManager.FalloutVersion;
+				Version verInstalledVersion = m_dsmStateManager.GameVersion;
 				return ((verInstalledVersion != null) && (verInstalledVersion >= m_verMinVersion));
 			}
 		}
@@ -46,9 +46,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 			get
 			{
 
-				Version verInstalledVersion = m_dsmStateManager.FalloutVersion;
+				Version verInstalledVersion = m_dsmStateManager.GameVersion;
 				if (verInstalledVersion < m_verMinVersion)
-					return String.Format("This mod requires Fallout 3 v{0} or higher. You have {1}. Please update your game.", m_verMinVersion, verInstalledVersion);
+					return String.Format("This mod requires v{0} or higher of the game. You have {1}. Please update your game.", m_verMinVersion, verInstalledVersion);
 				return "Passed";
 			}
 		}
@@ -62,7 +62,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		/// </summary>
 		/// <param name="p_dsmStateManager">The manager that reports the currect install state.</param>
 		/// <param name="p_verVersion">The minimum required version of Fallout 3.</param>
-		public FalloutDependency(DependencyStateManager p_dsmStateManager, Version p_verVersion)
+		public GameVersionDependency(DependencyStateManager p_dsmStateManager, Version p_verVersion)
 		{
 			m_dsmStateManager = p_dsmStateManager;
 			m_verMinVersion = p_verVersion;
@@ -76,7 +76,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 		/// <returns>A text representation of the dependency.</returns>
 		public override string ToString()
 		{
-			return "Fallout 3: " + m_verMinVersion + " =/= " + m_dsmStateManager.FalloutVersion;
+			return "Game Version: " + m_verMinVersion + " =/= " + m_dsmStateManager.GameVersion;
 		}
 	}
 }

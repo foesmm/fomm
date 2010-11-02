@@ -82,11 +82,5 @@ namespace Fomm.Games
 		public abstract void SetLoadOrder(string p_strPluginPath, int p_intPluginLoadOrderIndex);
 
 		#endregion
-
-		#region Plugin Activation
-
-		public abstract void CommitActivePlugins(List<string> p_strActivePlugins);
-
-		#endregion
 	}
 }

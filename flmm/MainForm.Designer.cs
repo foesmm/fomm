@@ -423,7 +423,6 @@ namespace Fomm
 			this.butCheckCriticalRecords.TabIndex = 6;
 			this.butCheckCriticalRecords.Text = "Check for Conflicts";
 			this.butCheckCriticalRecords.UseVisualStyleBackColor = true;
-			this.butCheckCriticalRecords.Click += new System.EventHandler(this.butCheckCriticalRecords_Click);
 			// 
 			// MainForm
 			// 

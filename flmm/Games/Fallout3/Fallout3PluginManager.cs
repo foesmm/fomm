@@ -174,16 +174,5 @@ namespace Fomm.Games.Fallout3
 		}
 
 		#endregion
-
-		#region Plugin Activation
-
-		public override void CommitActivePlugins(List<string> p_strActivePlugins)
-		{
-			if (p_strActivePlugins == null)
-				return;
-			File.WriteAllLines(((Fallout3GameMode)Program.GameMode).PluginsFilePath, p_strActivePlugins.ToArray());
-		}
-
-		#endregion
 	}
 }
