@@ -54,7 +54,7 @@ namespace Fomm
 
 	public static class Program
 	{
-		public const string Version = "0.12.7";
+		public const string Version = "0.13.0";
 		public static readonly Version MVersion = new Version(Version + ".0");
 
 #if TRACE
@@ -101,6 +101,8 @@ namespace Fomm
 		[STAThread]
 		private static void Main(string[] args)
 		{
+			MessageBox.Show("Debug Attach");
+		
 			AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 			Application.ThreadException += new System.Threading.ThreadExceptionEventHandler(Application_ThreadException);
 			if (Array.IndexOf<string>(args, "-mono") != -1) monoMode = true;
