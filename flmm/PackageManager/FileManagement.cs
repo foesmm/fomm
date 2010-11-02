@@ -52,7 +52,7 @@ namespace Fomm.PackageManager
 		{
 			AssertFilePathIsSafe(p_strPath);
 			PermissionsManager.CurrentPermissions.Assert();
-			string datapath = Path.Combine("Data", p_strPath);
+			string datapath = Path.Combine(Program.GameMode.PluginsPath, p_strPath);
 			return File.Exists(datapath);
 		}
 
@@ -68,7 +68,7 @@ namespace Fomm.PackageManager
 		{
 			AssertFilePathIsSafe(p_strPath);
 			PermissionsManager.CurrentPermissions.Assert();
-			return Directory.GetFiles(Path.Combine("Data", p_strPath), p_strPattern, p_booAllFolders ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
+			return Directory.GetFiles(Path.Combine(Program.GameMode.PluginsPath, p_strPath), p_strPattern, p_booAllFolders ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
 		}
 
 		/// <summary>
@@ -82,7 +82,7 @@ namespace Fomm.PackageManager
 		{
 			AssertFilePathIsSafe(p_strPath);
 			PermissionsManager.CurrentPermissions.Assert();
-			string datapath = Path.Combine("Data", p_strPath);
+			string datapath = Path.Combine(Program.GameMode.PluginsPath, p_strPath);
 			if (!File.Exists(datapath))
 				throw new FileNotFoundException();
 			return File.ReadAllBytes(datapath);

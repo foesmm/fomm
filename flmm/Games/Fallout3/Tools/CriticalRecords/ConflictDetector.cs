@@ -170,13 +170,13 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
 				if (SKIP_PLUGINS.Contains(strBasePlugin.ToLowerInvariant()))
 					continue;
 
-				crpBasePlugin = new CriticalRecordPlugin(Path.Combine("data", strBasePlugin), false);
+				crpBasePlugin = new CriticalRecordPlugin(Path.Combine(Program.GameMode.PluginsPath, strBasePlugin), false);
 				if (!crpBasePlugin.HasCriticalRecordData)
 					continue;
 				for (Int32 i = intIndex + 1; i < p_lstOrderedPlugins.Count; i++)
 				{
 					strPlugin = p_lstOrderedPlugins[i];
-					plgPlugin = new Plugin(Path.Combine("data", strPlugin), false);
+					plgPlugin = new Plugin(Path.Combine(Program.GameMode.PluginsPath, strPlugin), false);
 					foreach (UInt32 uintFormId in crpBasePlugin.CriticalRecordFormIds)
 					{
 						strMasterPlugin = crpBasePlugin.GetMaster((Int32)uintFormId >> 24) ?? strBasePlugin;

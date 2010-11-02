@@ -42,7 +42,7 @@ namespace Fomm.Games.Fallout3.Tools.BSA
             // saveFileDialog1
             // 
             this.saveFileDialog1.Filter = "BSA archives (*.bsa)|*.bsa";
-            this.saveFileDialog1.InitialDirectory = "data";
+			this.saveFileDialog1.InitialDirectory = Program.GameMode.PluginsPath;
             this.saveFileDialog1.RestoreDirectory = true;
             this.saveFileDialog1.Title = "Save archive as";
             // 

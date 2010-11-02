@@ -58,7 +58,7 @@ namespace Fomm.Games.Fallout3.Script
 					strWritePath = Path.Combine(strBackupPath, strFile);
 				}
 				else
-					strWritePath = Path.GetFullPath(Path.Combine("Data", p_strPath));
+					strWritePath = Path.GetFullPath(Path.Combine(Program.GameMode.PluginsPath, p_strPath));
 				Installer.TransactionalFileManager.WriteAllBytes(strWritePath, p_bteData);
 				Installer.MergeModule.AddFile(p_strPath);
 				return true;

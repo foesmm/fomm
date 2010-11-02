@@ -200,7 +200,7 @@ namespace Fomm.FileManager
 				ListViewItem lviFile = new ListViewItem(Path.GetFileName(strFile));
 				lviFile.Name = lviFile.Text;
 				lviFile.Tag = strFile;
-				FileInfo fliFile = new FileInfo(Path.GetFullPath(Path.Combine("data", strFile)));
+				FileInfo fliFile = new FileInfo(Path.GetFullPath(Path.Combine(Program.GameMode.PluginsPath, strFile)));
 				lviFile.SubItems.Add(fliFile.CreationTime.ToString("g"));
 				lviFile.SubItems.Add(fliFile.LastWriteTime.ToString("g"));
 				if (fliFile.Exists)

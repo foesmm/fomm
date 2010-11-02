@@ -109,7 +109,7 @@ namespace Fomm.FileManager
 
 			if (!strNewOwner.Equals(strOldOwner))
 			{
-				string strDataPath = Path.GetFullPath(Path.Combine("data", m_strFile));
+				string strDataPath = Path.GetFullPath(Path.Combine(Program.GameMode.PluginsPath, m_strFile));
 				strDataPath = Directory.GetFiles(Path.GetDirectoryName(strDataPath), Path.GetFileName(strDataPath))[0];
 				
 				string strDirectory = Path.GetDirectoryName(m_strFile);

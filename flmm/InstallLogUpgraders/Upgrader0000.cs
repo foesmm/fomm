@@ -272,7 +272,7 @@ namespace Fomm.InstallLogUpgraders
 		/// <param name="p_strModBaseName">The base name of the mod whose install log is being parsed.</param>
 		private void UpgradeInstalledFiles(XmlDocument p_xmlModInstallLog, fomod p_fomodMod, string p_strModBaseName)
 		{
-			Int32 intDataPathStartPos = Path.GetFullPath("data").Length + 1;
+			Int32 intDataPathStartPos = Path.GetFullPath(Program.GameMode.PluginsPath).Length + 1;
 			XmlNodeList xnlFiles = p_xmlModInstallLog.SelectNodes("descendant::installedFiles/*");
 			foreach (XmlNode xndFile in xnlFiles)
 			{
@@ -299,7 +299,7 @@ namespace Fomm.InstallLogUpgraders
 					if (!Directory.Exists(strBackupPath))
 						FileManager.CreateDirectory(strBackupPath);
 					strBackupPath = Path.Combine(strBackupPath, strModKey + "_" + Path.GetFileName(strDataRelativePath));
-					FileManager.Copy(Path.Combine(Path.GetFullPath("data"), strDataRelativePath), strBackupPath, true);
+					FileManager.Copy(Path.Combine(Path.GetFullPath(Program.GameMode.PluginsPath), strDataRelativePath), strBackupPath, true);
 					InstallLog.Current.PrependDataFile(p_strModBaseName, strDataRelativePath);
 
 					//however, it may own the file, so let's make it the default owner for now

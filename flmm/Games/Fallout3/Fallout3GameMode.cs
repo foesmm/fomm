@@ -662,8 +662,8 @@ class Script : Fallout3BaseScript {
 								missing = true;
 								break;
 							}
-							if ((i < 3 && File.Exists(Path.Combine("Data", Path.GetFileName(files[i][0])))) ||
-							(i > 4 && File.Exists(Path.Combine("Data\\Video", Path.GetFileName(files[i][0])))))
+							if ((i < 3 && File.Exists(Path.Combine(PluginsPath, Path.GetFileName(files[i][0])))) ||
+							(i > 4 && File.Exists(Path.Combine(PluginsPath, Path.Combine("Video", Path.GetFileName(files[i][0]))))))
 							{
 								missing = true;
 								break;
@@ -688,11 +688,11 @@ class Script : Fallout3BaseScript {
 									}
 									for (int i = 0; i < 3; i++)
 									{
-										File.Move(files[i][0], Path.Combine("Data", Path.GetFileName(files[i][0])));
+										File.Move(files[i][0], Path.Combine(PluginsPath, Path.GetFileName(files[i][0])));
 									}
 									for (int i = 3; i < 8; i++)
 									{
-										File.Move(files[i][0], Path.Combine("Data\\Video", Path.GetFileName(files[i][0])));
+										File.Move(files[i][0], Path.Combine(PluginsPath, Path.Combine("Video", Path.GetFileName(files[i][0]))));
 									}
 									break;
 								case DialogResult.No:

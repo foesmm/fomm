@@ -10,20 +10,6 @@ namespace Fomm.Games.Fallout3.Tools
 {
 	public static class ArchiveInvalidation
 	{
-		/*private static void GenAItext() {
-			string ArchiveInvalidationFile="ArchiveInvalidation.txt";
-			StreamWriter sw=new StreamWriter(ArchiveInvalidationFile, false, System.Text.Encoding.Default);
-			string Dir=Directory.GetCurrentDirectory();
-			Directory.SetCurrentDirectory("Data");
-			string[] paths=Directory.GetFiles(".", "*.dds", SearchOption.AllDirectories);
-			foreach(string path in paths) {
-				if(path.Length>6&&path[path.Length-6]=='_') continue;
-				sw.WriteLine(path.Replace('/', '\\').ToLowerInvariant().Substring(2));
-			}
-			sw.Close();
-			Directory.SetCurrentDirectory(Dir);
-		}*/
-
 		private const string AiBsa = "ArchiveInvalidationInvalidated!.bsa";
 		private const string BsaPath = "data\\" + AiBsa;
 
@@ -40,12 +26,12 @@ namespace Fomm.Games.Fallout3.Tools
 
 		private static void ApplyAI()
 		{
-			foreach (FileInfo fi in new DirectoryInfo("data").GetFiles("Fallout - *.bsa")) fi.LastWriteTime = new DateTime(2008, 10, 1);
-			foreach (FileInfo fi in new DirectoryInfo("data").GetFiles("Anchorage - *.bsa")) fi.LastWriteTime = new DateTime(2008, 10, 2);
-			foreach (FileInfo fi in new DirectoryInfo("data").GetFiles("ThePitt - *.bsa")) fi.LastWriteTime = new DateTime(2008, 10, 3);
-			foreach (FileInfo fi in new DirectoryInfo("data").GetFiles("BrokenSteel - *.bsa")) fi.LastWriteTime = new DateTime(2008, 10, 4);
-			foreach (FileInfo fi in new DirectoryInfo("data").GetFiles("PointLookout - *.bsa")) fi.LastWriteTime = new DateTime(2008, 10, 5);
-			foreach (FileInfo fi in new DirectoryInfo("data").GetFiles("Zeta - *.bsa")) fi.LastWriteTime = new DateTime(2008, 10, 6);
+			foreach (FileInfo fi in new DirectoryInfo(Program.GameMode.PluginsPath).GetFiles("Fallout - *.bsa")) fi.LastWriteTime = new DateTime(2008, 10, 1);
+			foreach (FileInfo fi in new DirectoryInfo(Program.GameMode.PluginsPath).GetFiles("Anchorage - *.bsa")) fi.LastWriteTime = new DateTime(2008, 10, 2);
+			foreach (FileInfo fi in new DirectoryInfo(Program.GameMode.PluginsPath).GetFiles("ThePitt - *.bsa")) fi.LastWriteTime = new DateTime(2008, 10, 3);
+			foreach (FileInfo fi in new DirectoryInfo(Program.GameMode.PluginsPath).GetFiles("BrokenSteel - *.bsa")) fi.LastWriteTime = new DateTime(2008, 10, 4);
+			foreach (FileInfo fi in new DirectoryInfo(Program.GameMode.PluginsPath).GetFiles("PointLookout - *.bsa")) fi.LastWriteTime = new DateTime(2008, 10, 5);
+			foreach (FileInfo fi in new DirectoryInfo(Program.GameMode.PluginsPath).GetFiles("Zeta - *.bsa")) fi.LastWriteTime = new DateTime(2008, 10, 6);
 
 			NativeMethods.WritePrivateProfileIntA("Archive", "bInvalidateOlderFiles", 1, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOIniPath]);
 			NativeMethods.WritePrivateProfileIntA("General", "bLoadFaceGenHeadEGTFiles", 1, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOIniPath]);
