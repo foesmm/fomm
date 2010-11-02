@@ -551,7 +551,7 @@ class Script : Fallout3BaseScript {
 		public override void Init()
 		{
 			CheckForDLCs();
-			((Fallout3PluginManager)PluginManager).LoadPluginList();
+			ScanForReadonlyPlugins();
 		}
 
 		protected void CheckForDLCs()
@@ -758,6 +758,23 @@ class Script : Fallout3BaseScript {
 #if TRACE
 			Trace.Unindent();
 #endif
+		}
+
+		protected void ScanForReadonlyPlugins()
+		{
+			DirectoryInfo difPluginsDirectory = new DirectoryInfo(Program.GameMode.PluginsPath);
+			List<FileInfo> lstPlugins = new List<FileInfo>(Program.GetFiles(difPluginsDirectory, "*.esp"));
+			lstPlugins.AddRange(Program.GetFiles(difPluginsDirectory, "*.esm"));
+
+			for (Int32 i = 0; i < lstPlugins.Count; i++)
+			{
+				FileInfo fifPlugin = lstPlugins[i];
+				if ((fifPlugin.Attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
+				{
+					if (MessageBox.Show(null, String.Format("'{0}' is read-only, so its load order cannot be changed. Would you like to make it not read-only?", fifPlugin.Name), "Read Only", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+						fifPlugin.Attributes &= ~FileAttributes.ReadOnly;
+				}
+			}
 		}
 
 		public override bool IsPluginFile(string p_strPath)

@@ -65,7 +65,6 @@ namespace Fomm
 			this.checkForUpdateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.bReport = new System.Windows.Forms.Button();
 			this.butFileManager = new System.Windows.Forms.Button();
-			this.butCheckCriticalRecords = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.cmsPlugins.SuspendLayout();
 			this.splitContainer1.Panel1.SuspendLayout();
@@ -414,22 +413,11 @@ namespace Fomm
 			this.butFileManager.UseVisualStyleBackColor = true;
 			this.butFileManager.Click += new System.EventHandler(this.butFileManager_Click);
 			// 
-			// butCheckCriticalRecords
-			// 
-			this.butCheckCriticalRecords.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.butCheckCriticalRecords.Location = new System.Drawing.Point(417, 346);
-			this.butCheckCriticalRecords.Name = "butCheckCriticalRecords";
-			this.butCheckCriticalRecords.Size = new System.Drawing.Size(120, 23);
-			this.butCheckCriticalRecords.TabIndex = 6;
-			this.butCheckCriticalRecords.Text = "Check for Conflicts";
-			this.butCheckCriticalRecords.UseVisualStyleBackColor = true;
-			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(549, 600);
-			this.Controls.Add(this.butCheckCriticalRecords);
 			this.Controls.Add(this.butFileManager);
 			this.Controls.Add(this.bReport);
 			this.Controls.Add(this.menuStrip1);
@@ -497,7 +485,6 @@ namespace Fomm
 		private System.Windows.Forms.ToolStripMenuItem checkForUpdateToolStripMenuItem;
 		private System.Windows.Forms.Button butFileManager;
 		private System.Windows.Forms.ToolStripMenuItem gameSettingsToolStripMenuItem;
-		private System.Windows.Forms.Button butCheckCriticalRecords;
 	}
 }
 

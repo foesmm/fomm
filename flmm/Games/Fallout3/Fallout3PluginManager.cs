@@ -10,7 +10,7 @@ namespace Fomm.Games.Fallout3
 	/// </summary>
 	public class Fallout3PluginManager : PluginManager
 	{
-		private List<string> m_lstPluginPaths = null;
+		//private List<string> m_lstPluginPaths = null;
 
 		#region Plugin Activation/Deactivation
 
@@ -93,7 +93,22 @@ namespace Fomm.Games.Fallout3
 		{
 			get
 			{
-				return m_lstPluginPaths.ToArray();
+				DirectoryInfo difPluginsDirectory = new DirectoryInfo(Program.GameMode.PluginsPath);
+				List<FileInfo> lstPlugins = new List<FileInfo>(Program.GetFiles(difPluginsDirectory, "*.esp"));
+				lstPlugins.AddRange(Program.GetFiles(difPluginsDirectory, "*.esm"));
+
+				lstPlugins.Sort(delegate(FileInfo a, FileInfo b)
+				{
+					if (Tools.TESsnip.Plugin.GetIsEsm(a.FullName) == Tools.TESsnip.Plugin.GetIsEsm(b.FullName))
+						return a.LastWriteTime.CompareTo(b.LastWriteTime);
+					return Tools.TESsnip.Plugin.GetIsEsm(a.FullName) ? -1 : 1;
+				});
+
+				List<string> lstPluginPaths = new List<string>();
+				for (Int32 i = 0; i < lstPlugins.Count; i++)
+					lstPluginPaths.Add(lstPlugins[i].FullName);
+
+				return lstPluginPaths.ToArray();
 			}
 		}
 
@@ -127,35 +142,6 @@ namespace Fomm.Games.Fallout3
 			foreach (FileInfo fifPlugin in lstPlugins)
 				lstPluginPaths.Add(fifPlugin.FullName);
 			return lstPluginPaths.ToArray();
-		}
-
-		public void LoadPluginList()
-		{
-			m_lstPluginPaths = new List<string>();
-
-			DirectoryInfo difPluginsDirectory = new DirectoryInfo(Program.GameMode.PluginsPath);
-			List<FileInfo> lstPlugins = new List<FileInfo>(Program.GetFiles(difPluginsDirectory, "*.esp"));
-			lstPlugins.AddRange(Program.GetFiles(difPluginsDirectory, "*.esm"));
-
-			lstPlugins.Sort(delegate(FileInfo a, FileInfo b)
-			{
-				if (Tools.TESsnip.Plugin.GetIsEsm(a.FullName) == Tools.TESsnip.Plugin.GetIsEsm(b.FullName))
-					return a.LastWriteTime.CompareTo(b.LastWriteTime);
-				return Tools.TESsnip.Plugin.GetIsEsm(a.FullName) ? -1 : 1;
-			});
-
-			List<string> lstPluginPaths = new List<string>();
-			for (Int32 i = 0; i < lstPlugins.Count; i++)
-			{
-				FileInfo fifPlugin = lstPlugins[i];
-				m_lstPluginPaths.Add(fifPlugin.FullName);
-
-				if ((fifPlugin.Attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
-				{
-					if (MessageBox.Show(null, String.Format("'{0}' is read-only, so its load order cannot be changed. Would you like to make it not read-only?", fifPlugin.Name), "Read Only", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-						fifPlugin.Attributes &= ~FileAttributes.ReadOnly;
-				}
-			}
 		}
 
 		/// <summary>
