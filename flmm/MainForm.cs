@@ -11,9 +11,9 @@ using Fomm.Games.Fallout3.Tools.CriticalRecords;
 using Fomm.AutoSorter;
 using System.Text.RegularExpressions;
 using Fomm.PackageManager.ModInstallLog;
+using Fomm.Games;
 #if TRACE
 using System.Diagnostics;
-using Fomm.Games;
 #endif
 
 namespace Fomm
@@ -136,19 +136,22 @@ namespace Fomm
 		protected void SetupTools()
 		{
 			foreach (GameTool gtlTool in Program.GameMode.Tools)
-				toolsToolStripMenuItem.DropDownItems.Add(gtlTool.Name, null, (s, a) => { ExecuteGameToolCommand(gtlTool); });
+			{
+				ToolStripItem tsiMenuItem = toolsToolStripMenuItem.DropDownItems.Add(gtlTool.Name, null, (s, a) => { ((GameTool.LaunchToolMethod)((ToolStripItem)s).Tag)(this); });
+				tsiMenuItem.Tag = gtlTool.Command;
+			}
 
 			foreach (GameTool gtlTool in Program.GameMode.GameSettingsTools)
-				gameSettingsToolStripMenuItem.DropDownItems.Add(gtlTool.Name, null, (s, a) => { ExecuteGameToolCommand(gtlTool); });
+			{
+				ToolStripItem tsiMenuItem = gameSettingsToolStripMenuItem.DropDownItems.Add(gtlTool.Name, null, (s, a) => { ((GameTool.LaunchToolMethod)((ToolStripItem)s).Tag)(this); });
+				tsiMenuItem.Tag = gtlTool.Command;
+			}
 
 			foreach (GameTool gtlTool in Program.GameMode.RightClickTools)
-				cmsPlugins.Items.Add(gtlTool.Name, null, (s, a) => { ExecuteGameToolCommand(gtlTool); });
-		}
-
-		private void ExecuteGameToolCommand(GameTool p_gtlTool)
-		{
-			if (p_gtlTool.Command != null)
-				p_gtlTool.Command(this);
+			{
+				ToolStripItem tsiMenuItem = cmsPlugins.Items.Add(gtlTool.Name, null, (s, a) => { ((GameTool.LaunchToolMethod)((ToolStripItem)s).Tag)(this); });
+				tsiMenuItem.Tag = gtlTool.Command;
+			}
 		}
 
 		private void MainForm_Load(object sender, EventArgs e)
@@ -421,7 +424,7 @@ namespace Fomm
 				if (!m_booListedPlugins)
 					Trace.WriteLine(strPlugin);
 #endif
-				lstPluginViewItems.Add(new ListViewItem(strPlugin));
+				lstPluginViewItems.Add(new ListViewItem(Path.GetFileName(strPlugin)));
 			}
 
 			lvEspList.Items.AddRange(lstPluginViewItems.ToArray());
