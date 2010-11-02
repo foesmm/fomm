@@ -41,6 +41,16 @@ namespace Fomm.Games.Fallout3
 
 		#region Properties
 
+		public override GameTool LaunchCommand
+		{
+			get
+			{
+				if (Settings.GetString("LaunchCommand") == null && File.Exists("fose_loader.exe"))
+					return new GameTool("Launch FOSE", "Launches Fallout 3 using FOSE.", LaunchGame);
+				return new GameTool("Launch Fallout 3", "Launches Fallout 3 using FOSE.", LaunchGame);
+			}
+		}
+
 		/// <summary>
 		/// Gets the icon used for the plugin file type.
 		/// </summary>
@@ -222,6 +232,43 @@ namespace Fomm.Games.Fallout3
 		#endregion
 
 		#region Tool Launch Methods
+
+		/// <summary>
+		/// Launches the game.
+		/// </summary>
+		/// <param name="p_frmMainForm">The main mod management form.</param>
+		public void LaunchGame(MainForm p_frmMainForm)
+		{
+			string command = Settings.GetString("LaunchCommand");
+			string args = Settings.GetString("LaunchCommandArgs");
+			if (command == null)
+			{
+				if (File.Exists("fose_loader.exe"))
+					command = "fose_loader.exe";
+				else if (File.Exists("fallout3.exe"))
+					command = "fallout3.exe";
+				else
+					command = "fallout3ng.exe";
+				args = null;
+			}
+			try
+			{
+				System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
+				psi.Arguments = args;
+				psi.FileName = command;
+				psi.WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath(command));
+				if (System.Diagnostics.Process.Start(psi) == null)
+				{
+					MessageBox.Show("Failed to launch '" + command + "'");
+					return;
+				}
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show("Failed to launch '" + command + "'\n" + ex.Message);
+				return;
+			}
+		}
 
 		/// <summary>
 		/// Launches the conflict detector tool.

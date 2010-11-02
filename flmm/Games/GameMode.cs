@@ -17,6 +17,15 @@ namespace Fomm.Games
 		#region Properties
 
 		/// <summary>
+		/// Gets the game launch command.
+		/// </summary>
+		/// <value>The game launch command.</value>
+		public abstract GameTool LaunchCommand
+		{
+			get;
+		}
+
+		/// <summary>
 		/// Gets the icon used for the plugin file type.
 		/// </summary>
 		/// <value>The icon used for the plugin file type.</value>
