@@ -39,6 +39,7 @@ namespace Fomm.Games.Fallout3
 		private List<GameTool> m_lstGameSettingsTools = new List<GameTool>();
 		private List<GameTool> m_lstRightClickTools = new List<GameTool>();
 		private List<GameTool> m_lstLoadOrderTools = new List<GameTool>();
+		private List<GameTool> m_lstGameLaunchCommands = new List<GameTool>();		
 		private Fallout3PluginManager m_pmgPluginManager = new Fallout3PluginManager();
 
 		#region Properties
@@ -162,13 +163,19 @@ namespace Fomm.Games.Fallout3
 			}
 		}
 
-
-
 		public override IList<GameTool> LoadOrderTools
 		{
 			get
 			{
 				return m_lstLoadOrderTools;
+			}
+		}
+
+		public override IList<GameTool> GameLaunchCommands
+		{
+			get
+			{
+				return m_lstGameLaunchCommands;
 			}
 		}
 
@@ -242,14 +249,128 @@ namespace Fomm.Games.Fallout3
 
 			m_lstLoadOrderTools.Add(new GameTool("Load Order Report...", "Generates a report on the current load order, as compared to the BOSS recomendation.", LaunchLoadOrderReport));
 			m_lstLoadOrderTools.Add(new GameTool("BOSS Auto Sort", "Auto-sorts the plugins using BOSS's masterlist.", LaunchSortPlugins));
+
+			m_lstGameLaunchCommands.Add(new GameTool("Launch Fallout 3", "Launches plain Fallout 3.", LaunchFallout3Plain));
+			m_lstGameLaunchCommands.Add(new GameTool("Launch FOSE", "Launches Fallout 3 with FOSE.", LaunchFallout3FOSE));
+			m_lstGameLaunchCommands.Add(new GameTool("Launch Custom Fallout 3", "Launches Fallout 3 with custom command.", LaunchFallout3Custom));
 		}
 
 		#endregion
 
 		#region Tool Launch Methods
 
+		#region Game Launch
+
 		/// <summary>
-		/// Launches the game.
+		/// Launches the game with a custom command.
+		/// </summary>
+		/// <param name="p_frmMainForm">The main mod management form.</param>
+		public void LaunchFallout3Custom(MainForm p_frmMainForm)
+		{
+			if (p_frmMainForm.HasOpenUtilityWindows)
+			{
+				MessageBox.Show("Please close all utility windows before launching fallout");
+				return;
+			}
+			string command = Settings.GetString("LaunchCommand");
+			string args = Settings.GetString("LaunchCommandArgs");
+			if (command == null)
+			{
+				MessageBox.Show("No custom launch command has been set", "Error");
+				return;
+			}
+			try
+			{
+				System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
+				psi.Arguments = args;
+				psi.FileName = command;
+				psi.WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath(command));
+				if (System.Diagnostics.Process.Start(psi) == null)
+				{
+					MessageBox.Show("Failed to launch '" + command + "'");
+					return;
+				}
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show("Failed to launch '" + command + "'\n" + ex.Message);
+				return;
+			}
+			p_frmMainForm.Close();
+		}
+
+		/// <summary>
+		/// Launches the game, with FOSE.
+		/// </summary>
+		/// <param name="p_frmMainForm">The main mod management form.</param>
+		public void LaunchFallout3FOSE(MainForm p_frmMainForm)
+		{
+			if (!File.Exists("fose_loader.exe"))
+			{
+				MessageBox.Show("fose does not appear to be installed");
+				return;
+			}
+			if (p_frmMainForm.HasOpenUtilityWindows)
+			{
+				MessageBox.Show("Please close all utility windows before launching fallout");
+				return;
+			}
+			try
+			{
+				System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
+				psi.FileName = "fose_loader.exe";
+				psi.WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath("fose_loader.exe"));
+				if (System.Diagnostics.Process.Start(psi) == null)
+				{
+					MessageBox.Show("Failed to launch 'fose_loader.exe'");
+					return;
+				}
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show("Failed to launch 'fose_loader.exe'\n" + ex.Message);
+				return;
+			}
+			p_frmMainForm.Close();
+		}
+
+		/// <summary>
+		/// Launches the game, without FOSE.
+		/// </summary>
+		/// <param name="p_frmMainForm">The main mod management form.</param>
+		public void LaunchFallout3Plain(MainForm p_frmMainForm)
+		{
+			if (p_frmMainForm.HasOpenUtilityWindows)
+			{
+				MessageBox.Show("Please close all utility windows before launching fallout");
+				return;
+			}
+			string command;
+			if (File.Exists("fallout3.exe"))
+				command = "fallout3.exe";
+			else
+				command = "fallout3ng.exe";
+			try
+			{
+				System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
+				psi.FileName = command;
+				psi.WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath(command));
+				if (System.Diagnostics.Process.Start(psi) == null)
+				{
+					MessageBox.Show("Failed to launch '" + command + "'");
+					return;
+				}
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show("Failed to launch '" + command + "'\n" + ex.Message);
+				return;
+			}
+			p_frmMainForm.Close();
+		}
+
+		/// <summary>
+		/// Launches the game, using FOSE if present.
 		/// </summary>
 		/// <param name="p_frmMainForm">The main mod management form.</param>
 		public void LaunchGame(MainForm p_frmMainForm)
@@ -284,6 +405,8 @@ namespace Fomm.Games.Fallout3
 				return;
 			}
 		}
+
+		#endregion
 
 		#region Load Order Menu
 

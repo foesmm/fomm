@@ -120,6 +120,11 @@ namespace Fomm.Games
 			get;
 		}
 
+		public abstract IList<GameTool> GameLaunchCommands
+		{
+			get;
+		}
+
 		public abstract string PluginsPath
 		{
 			get;

@@ -27,6 +27,25 @@ namespace Fomm
 		#region Properties
 
 		/// <summary>
+		/// Gets whether there are any open utility windows.
+		/// </summary>
+		/// <value>Whether there are any open utility windows.</value>
+		public bool HasOpenUtilityWindows
+		{
+			get
+			{
+				Int32 intIngoredWindowCount = 0;
+				for (Int32 i = Application.OpenForms.Count - 1; i >= 0; i--)
+				{
+					Form frmForm = Application.OpenForms[i];
+					if (frmForm.GetType().Namespace.StartsWith("ICSharp", StringComparison.InvariantCultureIgnoreCase))
+						intIngoredWindowCount++;
+				}
+				return (Application.OpenForms.Count - intIngoredWindowCount > 1);
+			}
+		}
+
+		/// <summary>
 		/// Gets the list view items representing the currently installed plugins.
 		/// </summary>
 		/// <value>The list view items representing the currently installed plugins.</value>
@@ -115,12 +134,22 @@ namespace Fomm
 
 		#region Extra Plugin Info
 
+		/// <summary>
+		/// Clears all current extra plugin info for the specified info provider.
+		/// </summary>
+		/// <param name="p_strInfoKey">The key of the info provider whose extra info should be cleared.</param>
 		public void ClearExtraInfo(string p_strInfoKey)
 		{
 			if (m_dicExtraInfo.ContainsKey(p_strInfoKey))
 				m_dicExtraInfo.Remove(p_strInfoKey);
 		}
 
+		/// <summary>
+		/// Adds extra info to be displayed in the description box for the specified plugin, from the specified provider.
+		/// </summary>
+		/// <param name="p_strInfoKey">The key of the info provider providing the extra info.</param>
+		/// <param name="p_strPluginName">The plugin for which the info is being provided.</param>
+		/// <param name="p_strMessage">The extra info about the plugin.</param>
 		public void AddExtraInfo(string p_strInfoKey, string p_strPluginName, string p_strMessage)
 		{
 			if (!m_dicExtraInfo.ContainsKey(p_strInfoKey))
@@ -158,6 +187,12 @@ namespace Fomm
 			foreach (GameTool gtlTool in Program.GameMode.LoadOrderTools)
 			{
 				ToolStripItem tsiMenuItem = loadOrderToolStripMenuItem.DropDownItems.Add(gtlTool.Name, null, (s, a) => { ((GameTool.LaunchToolMethod)((ToolStripItem)s).Tag)(this); });
+				tsiMenuItem.Tag = gtlTool.Command;
+			}
+
+			foreach (GameTool gtlTool in Program.GameMode.GameLaunchCommands)
+			{
+				ToolStripItem tsiMenuItem = launchGameToolStripMenuItem.DropDownItems.Add(gtlTool.Name, null, (s, a) => { ((GameTool.LaunchToolMethod)((ToolStripItem)s).Tag)(this); });
 				tsiMenuItem.Tag = gtlTool.Command;
 			}
 		}
@@ -387,100 +422,6 @@ namespace Fomm
 				return;
 			}
 			((GameTool.LaunchToolMethod)((Button)sender).Tag)(this);
-			Close();
-		}
-
-		private void runFalloutToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			if (Application.OpenForms.Count > 1)
-			{
-				MessageBox.Show("Please close all utility windows before launching fallout");
-				return;
-			}
-			string command;
-			if (File.Exists("fallout3.exe")) command = "fallout3.exe";
-			else command = "fallout3ng.exe";
-			try
-			{
-				System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
-				psi.FileName = command;
-				psi.WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath(command));
-				if (System.Diagnostics.Process.Start(psi) == null)
-				{
-					MessageBox.Show("Failed to launch '" + command + "'");
-					return;
-				}
-			}
-			catch (Exception ex)
-			{
-				MessageBox.Show("Failed to launch '" + command + "'\n" + ex.Message);
-				return;
-			}
-			Close();
-		}
-
-		private void runFoseToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			if (!File.Exists("fose_loader.exe"))
-			{
-				MessageBox.Show("fose does not appear to be installed");
-				return;
-			}
-			if (Application.OpenForms.Count > 1)
-			{
-				MessageBox.Show("Please close all utility windows before launching fallout");
-				return;
-			}
-			try
-			{
-				System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
-				psi.FileName = "fose_loader.exe";
-				psi.WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath("fose_loader.exe"));
-				if (System.Diagnostics.Process.Start(psi) == null)
-				{
-					MessageBox.Show("Failed to launch 'fose_loader.exe'");
-					return;
-				}
-			}
-			catch (Exception ex)
-			{
-				MessageBox.Show("Failed to launch 'fose_loader.exe'\n" + ex.Message);
-				return;
-			}
-			Close();
-		}
-
-		private void runCustomToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			if (Application.OpenForms.Count > 1)
-			{
-				MessageBox.Show("Please close all utility windows before launching fallout");
-				return;
-			}
-			string command = Settings.GetString("LaunchCommand");
-			string args = Settings.GetString("LaunchCommandArgs");
-			if (command == null)
-			{
-				MessageBox.Show("No custom launch command has been set", "Error");
-				return;
-			}
-			try
-			{
-				System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
-				psi.Arguments = args;
-				psi.FileName = command;
-				psi.WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath(command));
-				if (System.Diagnostics.Process.Start(psi) == null)
-				{
-					MessageBox.Show("Failed to launch '" + command + "'");
-					return;
-				}
-			}
-			catch (Exception ex)
-			{
-				MessageBox.Show("Failed to launch '" + command + "'\n" + ex.Message);
-				return;
-			}
 			Close();
 		}
 

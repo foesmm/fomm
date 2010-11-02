@@ -48,9 +48,7 @@ namespace Fomm
 			this.bSettings = new System.Windows.Forms.Button();
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.runFalloutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.runFoseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.runCustomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.launchGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.loadOrderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -268,39 +266,22 @@ namespace Fomm
 			// fileToolStripMenuItem
 			// 
 			this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.runFalloutToolStripMenuItem,
-            this.runFoseToolStripMenuItem,
-            this.runCustomToolStripMenuItem,
+            this.launchGameToolStripMenuItem,
             this.closeToolStripMenuItem});
 			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
 			this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
 			this.fileToolStripMenuItem.Text = "File";
 			// 
-			// runFalloutToolStripMenuItem
+			// launchGameToolStripMenuItem
 			// 
-			this.runFalloutToolStripMenuItem.Name = "runFalloutToolStripMenuItem";
-			this.runFalloutToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
-			this.runFalloutToolStripMenuItem.Text = "Run fallout";
-			this.runFalloutToolStripMenuItem.Click += new System.EventHandler(this.runFalloutToolStripMenuItem_Click);
-			// 
-			// runFoseToolStripMenuItem
-			// 
-			this.runFoseToolStripMenuItem.Name = "runFoseToolStripMenuItem";
-			this.runFoseToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
-			this.runFoseToolStripMenuItem.Text = "Run fose";
-			this.runFoseToolStripMenuItem.Click += new System.EventHandler(this.runFoseToolStripMenuItem_Click);
-			// 
-			// runCustomToolStripMenuItem
-			// 
-			this.runCustomToolStripMenuItem.Name = "runCustomToolStripMenuItem";
-			this.runCustomToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
-			this.runCustomToolStripMenuItem.Text = "Run custom";
-			this.runCustomToolStripMenuItem.Click += new System.EventHandler(this.runCustomToolStripMenuItem_Click);
+			this.launchGameToolStripMenuItem.Name = "launchGameToolStripMenuItem";
+			this.launchGameToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.launchGameToolStripMenuItem.Text = "Launch Game";
 			// 
 			// closeToolStripMenuItem
 			// 
 			this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-			this.closeToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+			this.closeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.closeToolStripMenuItem.Text = "Close";
 			this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
 			// 
@@ -442,9 +423,7 @@ namespace Fomm
 		private System.Windows.Forms.Button bSettings;
 		private System.Windows.Forms.MenuStrip menuStrip1;
 		private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem runFalloutToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem runFoseToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem runCustomToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem launchGameToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem closeToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem loadOrderToolStripMenuItem;
