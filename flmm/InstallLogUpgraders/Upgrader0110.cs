@@ -17,8 +17,11 @@ namespace Fomm.InstallLogUpgraders
 		/// </remarks>
 		protected override void DoUpgrade()
 		{
+			InstallLog.Current.SetInstallLogVersion(InstallLog.CURRENT_VERSION);
+			InstallLog.Current.Save();
+
 			XmlDocument xmlInstallLog = new XmlDocument();
-			xmlInstallLog.LoadXml(InstallLog.Current.InstallLogPath);
+			xmlInstallLog.Load(InstallLog.Current.InstallLogPath);
 
 			XmlNode xndRoot = xmlInstallLog.SelectSingleNode("installLog");
 			XmlNode xndSdpEdits = xndRoot.SelectSingleNode("sdpEdits");
@@ -40,9 +43,6 @@ namespace Fomm.InstallLogUpgraders
 				xndGameSpecificsValueEdit.AppendChild(xndSdpEdit.FirstChild.Clone());
 			}
 			xmlInstallLog.Save(InstallLog.Current.InstallLogPath);
-
-			InstallLog.Current.SetInstallLogVersion(InstallLog.CURRENT_VERSION);
-			InstallLog.Current.Save();
 		}
 	}
 }
