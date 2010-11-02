@@ -162,7 +162,7 @@ namespace Fomm.Games.Fallout3
 		/// <summary>
 		/// Gets the plugin info for the specified plugin.
 		/// </summary>
-		/// <param name="p_strPluginPath">The plugin for which to get the info.</param>
+		/// <param name="p_strPluginPath">The full path to the plugin for which to get the info.</param>
 		/// <returns>The plugin info for the specified plugin.</returns>
 		/// <exception cref="FileNotFoundException">Thrown if the specified plug in does not exist.</exception>
 		public override PluginInfo GetPluginInfo(string p_strPluginPath)
@@ -241,6 +241,17 @@ namespace Fomm.Games.Fallout3
 			if (pic != null)
 				pifInfo.Picture = System.Drawing.Bitmap.FromStream(new MemoryStream(pic));
 			return pifInfo;
+		}
+
+		/// <summary>
+		/// Determines if the specified plugin is critical to the current game.
+		/// </summary>
+		/// <param name="p_strPluginPath">The full path to the plugin for which it is to be determined whether or not it is critical.</param>
+		/// <returns><lang cref="true"/> if the specified pluing is critical;
+		/// <lang cref="false"/> otherwise.</returns>
+		public override bool IsCriticalPlugin(string p_strPluginPath)
+		{
+			return Path.GetFileName(p_strPluginPath).Equals("fallout3.esm", StringComparison.OrdinalIgnoreCase);
 		}
 	}
 }

@@ -669,13 +669,14 @@ namespace Fomm
 			for (int i = 0; i < lvEspList.SelectedItems.Count; i++)
 			{
 				files[i] = lvEspList.SelectedItems[i];
-				if (files[i].Text.Equals("fallout3.esm", StringComparison.OrdinalIgnoreCase))
+				if (Program.GameMode.PluginManager.IsCriticalPlugin(Path.Combine(Program.GameMode.PluginsPath, files[i].Text)))
 				{
-					MessageBox.Show("Cannot delete Fallout3.esm", "Error");
+					MessageBox.Show(this, "Cannot delete " + files[i].Text, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 					return;
 				}
 			}
-			if (MessageBox.Show("Are you sure you want to delete the selected plugins?", "Warning", MessageBoxButtons.YesNo) != DialogResult.Yes) return;
+			if (MessageBox.Show(this, "Are you sure you want to delete the selected plugins?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+				return;
 			lvEspList.SelectedItems.Clear();
 			for (int i = 0; i < files.Length; i++)
 			{

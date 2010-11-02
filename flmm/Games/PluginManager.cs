@@ -86,9 +86,17 @@ namespace Fomm.Games
 		/// <summary>
 		/// Gets the plugin info for the specified plugin.
 		/// </summary>
-		/// <param name="p_strPluginPath">The plugin for which to get the info.</param>
+		/// <param name="p_strPluginPath">The full path to the plugin for which to get the info.</param>
 		/// <returns>The plugin info for the specified plugin.</returns>
 		/// <exception cref="FileNotFoundException">Thrown if the specified plug in does not exist.</exception>
 		public abstract PluginInfo GetPluginInfo(string p_strPluginPath);
+
+		/// <summary>
+		/// Determines if the specified plugin is critical to the current game.
+		/// </summary>
+		/// <param name="p_strPluginPath">The full path to the plugin for which it is to be determined whether or not it is critical.</param>
+		/// <returns><lang cref="true"/> if the specified pluing is critical;
+		/// <lang cref="false"/> otherwise.</returns>
+		public abstract bool IsCriticalPlugin(string p_strPluginPath);
 	}
 }
