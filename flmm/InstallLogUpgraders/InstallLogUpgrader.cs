@@ -27,6 +27,7 @@ namespace Fomm.InstallLogUpgraders
 			m_dicUpgraders = new Dictionary<Version, Upgrader>();
 			m_dicUpgraders[new Version("0.0.0.0")] = new Upgrader0000();
 			m_dicUpgraders[new Version("0.1.0.0")] = new Upgrader0100();
+			m_dicUpgraders[new Version("0.1.1.0")] = new Upgrader0110();
 		}
 
 		/// <summary>
