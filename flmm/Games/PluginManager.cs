@@ -82,5 +82,13 @@ namespace Fomm.Games
 		public abstract void SetLoadOrder(string p_strPluginPath, int p_intPluginLoadOrderIndex);
 
 		#endregion
+
+		/// <summary>
+		/// Gets the plugin info for the specified plugin.
+		/// </summary>
+		/// <param name="p_strPluginPath">The plugin for which to get the info.</param>
+		/// <returns>The plugin info for the specified plugin.</returns>
+		/// <exception cref="FileNotFoundException">Thrown if the specified plug in does not exist.</exception>
+		public abstract PluginInfo GetPluginInfo(string p_strPluginPath);
 	}
 }

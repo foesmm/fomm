@@ -471,44 +471,6 @@ namespace fomm.Scripting
 			ExecuteMethod(() => m_mdiScript.Script.SetLoadOrder(p_intPlugins, p_intPosition));
 		}
 
-		/// <summary>
-		/// Determines if the plugins have been auto-sorted.
-		/// </summary>
-		/// <returns><lang cref="true"/> if the plugins have been auto-sorted;
-		/// <lang cref="false"/> otherwise.</returns>
-		/// <seealso cref="ModScript.IsLoadOrderAutoSorted()"/>
-		public static bool IsLoadOrderAutoSorted()
-		{
-			return (bool)(ExecuteMethod(() => m_mdiScript.Script.IsLoadOrderAutoSorted()) ?? false);
-		}
-
-		/// <summary>
-		/// Determins where in the load order the specified plugin would be inserted
-		/// if the plugins were auto-sorted.
-		/// </summary>
-		/// <param name="p_strPlugin">The name of the plugin whose auto-sort insertion
-		/// point is to be determined.</param>
-		/// <returns>The index where the specified plugin would be inserted were the
-		/// plugins to be auto-sorted.</returns>
-		/// <seealso cref="ModScript.GetAutoInsertionPoint(string p_strPlugin)"/>
-		public static int GetAutoInsertionPoint(string p_strPlugin)
-		{
-			return (int)ExecuteMethod(() => m_mdiScript.Script.GetAutoInsertionPoint(p_strPlugin));
-		}
-
-		/// <summary>
-		/// Auto-sorts the specified plugins.
-		/// </summary>
-		/// <remarks>
-		/// This is, apparently, a beta function. Use with caution.
-		/// </remarks>
-		/// <param name="p_strPlugins">The list of plugins to auto-sort.</param>
-		/// <seealso cref="ModScript.AutoSortPlugins(string[] p_strPlugins)"/>
-		public static void AutoSortPlugins(string[] p_strPlugins)
-		{
-			ExecuteMethod(() => m_mdiScript.Script.AutoSortPlugins(p_strPlugins));
-		}
-
 		#endregion
 
 		#endregion

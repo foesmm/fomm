@@ -2,7 +2,6 @@ using System;
 using System.Windows.Forms;
 using Microsoft.Win32;
 using SevenZip;
-using Fomm.AutoSorter;
 
 namespace Fomm
 {
@@ -121,7 +120,7 @@ namespace Fomm
 
 		protected void LoadUpdatesOptions()
 		{
-			tbxBOSSUrl.Text = BOSSUpdater.MasterListUrl;
+			tbxBOSSUrl.Text = Fomm.Games.Fallout3.Tools.AutoSorter.BOSSUpdater.MasterListUrl;
 		}
 
 		private void SetupForm_FormClosing(object sender, FormClosingEventArgs e)

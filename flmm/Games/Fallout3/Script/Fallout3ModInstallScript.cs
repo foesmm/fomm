@@ -6,6 +6,7 @@ using Fomm.PackageManager.ModInstallLog;
 using System.Windows.Forms;
 using Fomm.Games.Fallout3.Tools.BSA;
 using System.Collections.Generic;
+using Fomm.Games.Fallout3.Tools.AutoSorter;
 
 namespace Fomm.Games.Fallout3.Script
 {
@@ -133,6 +134,48 @@ namespace Fomm.Games.Fallout3.Script
 		protected override void DoCommitActivePlugins()
 		{
 			File.WriteAllLines(((Fallout3GameMode)Program.GameMode).PluginsFilePath, GetActivePlugins());
+		}
+
+		#endregion
+
+		#region Load Order Management
+
+		/// <summary>
+		/// Determines if the plugins have been auto-sorted.
+		/// </summary>
+		/// <returns><lang cref="true"/> if the plugins have been auto-sorted;
+		/// <lang cref="false"/> otherwise.</returns>
+		public bool IsLoadOrderAutoSorted()
+		{
+			PermissionsManager.CurrentPermissions.Assert();
+			return LoadOrderSorter.CheckList(GetAllPlugins());
+		}
+
+		/// <summary>
+		/// Determins where in the load order the specified plugin would be inserted
+		/// if the plugins were auto-sorted.
+		/// </summary>
+		/// <param name="p_strPlugin">The name of the plugin whose auto-sort insertion
+		/// point is to be determined.</param>
+		/// <returns>The index where the specified plugin would be inserted were the
+		/// plugins to be auto-sorted.</returns>
+		public int GetAutoInsertionPoint(string p_strPlugin)
+		{
+			PermissionsManager.CurrentPermissions.Assert();
+			return LoadOrderSorter.GetInsertionPos(GetAllPlugins(), p_strPlugin);
+		}
+
+		/// <summary>
+		/// Auto-sorts the specified plugins.
+		/// </summary>
+		/// <remarks>
+		/// This is, apparently, a beta function. Use with caution.
+		/// </remarks>
+		/// <param name="p_strPlugins">The list of plugins to auto-sort.</param>
+		public void AutoSortPlugins(string[] p_strPlugins)
+		{
+			PermissionsManager.CurrentPermissions.Assert();
+			LoadOrderSorter.SortList(p_strPlugins);
 		}
 
 		#endregion

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace Fomm.AutoSorter
+namespace Fomm.Games.Fallout3.Tools.AutoSorter
 {
 	static class LoadOrderSorter
 	{

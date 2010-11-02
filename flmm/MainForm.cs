@@ -2,13 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.IO;
-using Fomm.Games.Fallout3.Tools.TESsnip;
 using System.Runtime.Remoting;
 using Fomm.PackageManager;
 using System.Drawing;
 using System.Text;
-using Fomm.Games.Fallout3.Tools.CriticalRecords;
-using Fomm.AutoSorter;
 using System.Text.RegularExpressions;
 using Fomm.PackageManager.ModInstallLog;
 using Fomm.Games;
@@ -26,10 +23,13 @@ namespace Fomm
 		private bool AlphaSortMode = false;
 		private List<string> m_lstIgnoreReadOnly = new List<string>();
 		private Dictionary<string, Dictionary<string, List<string>>> m_dicExtraInfo = new Dictionary<string, Dictionary<string, List<string>>>();
-		private BackgroundWorkerProgressDialog m_bwdProgress = null;
 
 		#region Properties
 
+		/// <summary>
+		/// Gets the list view items representing the currently installed plugins.
+		/// </summary>
+		/// <value>The list view items representing the currently installed plugins.</value>
 		public ListView.ListViewItemCollection PluginsListViewItems
 		{
 			get
@@ -86,7 +86,9 @@ namespace Fomm
 				if (fomod.Length > 0) PackageManagerForm.AddNewFomod(fomod);
 			}
 
-			if (Settings.GetString("LaunchCommand") == null && File.Exists("fose_loader.exe")) bLaunch.Text = "Launch FOSE";
+			GameTool gtlGameLaunch = Program.GameMode.LaunchCommand;
+			bLaunch.Text = gtlGameLaunch.Name;
+			bLaunch.Tag = gtlGameLaunch.Command;
 
 			if (!Settings.GetBool("DisableIPC"))
 			{
@@ -152,6 +154,12 @@ namespace Fomm
 				ToolStripItem tsiMenuItem = cmsPlugins.Items.Add(gtlTool.Name, null, (s, a) => { ((GameTool.LaunchToolMethod)((ToolStripItem)s).Tag)(this); });
 				tsiMenuItem.Tag = gtlTool.Command;
 			}
+
+			foreach (GameTool gtlTool in Program.GameMode.LoadOrderTools)
+			{
+				ToolStripItem tsiMenuItem = loadOrderToolStripMenuItem.DropDownItems.Add(gtlTool.Name, null, (s, a) => { ((GameTool.LaunchToolMethod)((ToolStripItem)s).Tag)(this); });
+				tsiMenuItem.Tag = gtlTool.Command;
+			}
 		}
 
 		private void MainForm_Load(object sender, EventArgs e)
@@ -186,14 +194,8 @@ namespace Fomm
 				MessageBox.Show("Cannot change load order when sorting by file name", "Error");
 				return;
 			}
-			DateTime timestamp = new DateTime(2008, 1, 1);
-			TimeSpan twomins = TimeSpan.FromMinutes(2);
-
 			for (int i = 0; i < lvEspList.Items.Count; i++)
-			{
-				File.SetLastWriteTime(Path.Combine("data", lvEspList.Items[i].Text), timestamp);
-				timestamp += twomins;
-			}
+				Program.GameMode.PluginManager.SetLoadOrder(Path.Combine(Program.GameMode.PluginsPath, lvEspList.Items[i].Text), i);
 
 			RefreshIndexCounts();
 		}
@@ -224,78 +226,11 @@ namespace Fomm
 
 		public void LoadPluginInfo()
 		{
-			if (lvEspList.SelectedItems.Count != 1) return;
-			Plugin plgPlugin;
-			try
-			{
-				plgPlugin = new Plugin(Path.Combine("data", lvEspList.SelectedItems[0].Text), true);
-			}
-			catch
-			{
-				plgPlugin = null;
-			}
-			if (plgPlugin == null || plgPlugin.Records.Count == 0 || plgPlugin.Records[0].Name != "TES4")
-			{
-				rtbPluginInfo.Text = lvEspList.SelectedItems[0].Text + Environment.NewLine + "Warning: Plugin appears corrupt";
-				pictureBox1.Image = null;
+			if (lvEspList.SelectedItems.Count != 1)
 				return;
-			}
 
-			StringBuilder stbDescription = new StringBuilder(@"{\rtf1\ansi\ansicpg1252\deff0\deflang4105{\fonttbl{\f0\fnil\fcharset0 MS Sans Serif;}{\f1\fnil\fcharset2 Symbol;}}");
-			stbDescription.AppendLine().AppendLine(@"{\colortbl ;\red255\green0\blue0;\red255\green215\blue0;\red51\green153\blue255;}");
-			stbDescription.AppendLine().Append(@"{\*\generator Msftedit 5.41.21.2509;}\viewkind4\uc1\pard\sl240\slmult1\lang9\f0\fs17 ");
-			string name = null;
-			string desc = null;
-			byte[] pic = null;
-			List<string> masters = new List<string>();
-			foreach (SubRecord sr in ((Record)plgPlugin.Records[0]).SubRecords)
-			{
-				switch (sr.Name)
-				{
-					case "CNAM":
-						name = sr.GetStrData();
-						break;
-					case "SNAM":
-						desc = sr.GetStrData();
-						break;
-					case "MAST":
-						masters.Add(sr.GetStrData());
-						break;
-					case "SCRN":
-						pic = sr.GetData();
-						break;
-				}
-			}
-			if (pic != null)
-			{
-				pictureBox1.Image = System.Drawing.Bitmap.FromStream(new MemoryStream(pic));
-			}
-			else pictureBox1.Image = null;
-			if ((Path.GetExtension(lvEspList.SelectedItems[0].Text).CompareTo(".esp") == 0) != ((((Record)plgPlugin.Records[0]).Flags1 & 1) == 0))
-			{
-				if ((((Record)plgPlugin.Records[0]).Flags1 & 1) == 0)
-					stbDescription.Append(@"\cf1 \b WARNING: This plugin has the file extension .esm, but its file header marks it as an esp! \b0 \cf0 \line \line ");
-				else
-					stbDescription.Append(@"\cf1 \b WARNING: This plugin has the file extension .esp, but its file header marks it as an esm! \b0 \cf0 \line \line ");
-			}
-			stbDescription.AppendFormat(@"\b \ul {0} \ulnone \b0 \line ", lvEspList.SelectedItems[0].Text);
-			if (name != null)
-				stbDescription.AppendFormat(@"\b Author: \b0 {0} \line ", name);
-			if (desc != null)
-			{
-				desc = desc.Replace("\r\n", "\n").Replace("\n\r", "\n").Replace("\n", "\\line ");
-				stbDescription.AppendFormat(@"\b Description: \b0 \line {0} \line ", desc);
-			}
-			if (masters.Count > 0)
-			{
-				stbDescription.Append(@"\b Masters: \b0 \par \pard{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\sl240\slmult1 ");
-				for (int i = 0; i < masters.Count; i++)
-				{
-					stbDescription.AppendFormat("{{\\pntext\\f1\\'B7\\tab}}{0}\\par ", masters[i]);
-					stbDescription.AppendLine();
-				}
-				stbDescription.Append(@"\pard\sl240\slmult1 ");
-			}
+			PluginInfo pifInfo = Program.GameMode.PluginManager.GetPluginInfo(Path.Combine(Program.GameMode.PluginsPath, lvEspList.SelectedItems[0].Text));
+			StringBuilder stbDescription = new StringBuilder(pifInfo.Description);
 			foreach (string strInfoOwner in m_dicExtraInfo.Keys)
 			{
 				if (m_dicExtraInfo[strInfoOwner].ContainsKey(lvEspList.SelectedItems[0].Text))
@@ -309,6 +244,7 @@ namespace Fomm
 			}
 			stbDescription.AppendLine().Append("}");
 			rtbPluginInfo.Rtf = stbDescription.ToString();
+			pictureBox1.Image = pifInfo.Picture;
 		}
 
 		private void lvEspList_SelectedIndexChanged(object sender, EventArgs e)
@@ -450,32 +386,7 @@ namespace Fomm
 				MessageBox.Show("Please close all utility windows before launching fallout");
 				return;
 			}
-			string command = Settings.GetString("LaunchCommand");
-			string args = Settings.GetString("LaunchCommandArgs");
-			if (command == null)
-			{
-				if (File.Exists("fose_loader.exe")) command = "fose_loader.exe";
-				else if (File.Exists("fallout3.exe")) command = "fallout3.exe";
-				else command = "fallout3ng.exe";
-				args = null;
-			}
-			try
-			{
-				System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
-				psi.Arguments = args;
-				psi.FileName = command;
-				psi.WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath(command));
-				if (System.Diagnostics.Process.Start(psi) == null)
-				{
-					MessageBox.Show("Failed to launch '" + command + "'");
-					return;
-				}
-			}
-			catch (Exception ex)
-			{
-				MessageBox.Show("Failed to launch '" + command + "'\n" + ex.Message);
-				return;
-			}
+			((GameTool.LaunchToolMethod)((Button)sender).Tag)(this);
 			Close();
 		}
 
@@ -598,31 +509,29 @@ namespace Fomm
 				return;
 			}
 			Array.Sort<int>(indicies);
-			DateTime timestamp = new DateTime(2008, 1, 1);
-			TimeSpan twomins = TimeSpan.FromMinutes(2);
 			List<ListViewItem> items = new List<ListViewItem>();
 			RefreshingList = true;
 			lvEspList.BeginUpdate();
+			Int32 intLoadOrder = 0;
 			for (int i = 0; i < position; i++)
 			{
-				if (Array.BinarySearch<int>(indicies, i) >= 0) continue;
-				File.SetLastWriteTime(Path.Combine("data", lvEspList.Items[i].Text), timestamp);
-				timestamp += twomins;
+				if (Array.BinarySearch<int>(indicies, i) >= 0)
+					continue;
+				Program.GameMode.PluginManager.SetLoadOrder(Path.Combine(Program.GameMode.PluginsPath, lvEspList.Items[i].Text), intLoadOrder++);
 				items.Add(lvEspList.Items[i]);
 				items[items.Count - 1].Selected = false;
 			}
 			for (int i = 0; i < indicies.Length; i++)
 			{
-				File.SetLastWriteTime(Path.Combine("data", lvEspList.Items[indicies[i]].Text), timestamp);
-				timestamp += twomins;
+				Program.GameMode.PluginManager.SetLoadOrder(Path.Combine(Program.GameMode.PluginsPath, lvEspList.Items[indicies[i]].Text), intLoadOrder++);
 				items.Add(lvEspList.Items[indicies[i]]);
 				items[items.Count - 1].Selected = true;
 			}
 			for (int i = position; i < lvEspList.Items.Count; i++)
 			{
-				if (Array.BinarySearch<int>(indicies, i) >= 0) continue;
-				File.SetLastWriteTime(Path.Combine("data", lvEspList.Items[i].Text), timestamp);
-				timestamp += twomins;
+				if (Array.BinarySearch<int>(indicies, i) >= 0)
+					continue;
+				Program.GameMode.PluginManager.SetLoadOrder(Path.Combine(Program.GameMode.PluginsPath, lvEspList.Items[i].Text), intLoadOrder++);
 				items.Add(lvEspList.Items[i]);
 				items[items.Count - 1].Selected = false;
 			}
@@ -770,24 +679,20 @@ namespace Fomm
 			int upto = 0;
 			for (int i = 0; i < lines.Length; i++)
 			{
-				if (File.Exists(Path.Combine("data", lines[i]))) order[upto++] = lines[i];
+				if (File.Exists(Path.Combine(Program.GameMode.PluginsPath, lines[i]))) order[upto++] = lines[i];
 			}
 			for (int i = 0; i < lvEspList.Items.Count; i++)
 			{
 				if (Array.IndexOf<string>(order, lvEspList.Items[i].Text.ToLowerInvariant()) == -1) order[upto++] = lvEspList.Items[i].Text;
 			}
-			DateTime timestamp = new DateTime(2008, 1, 1);
-			TimeSpan twomins = TimeSpan.FromMinutes(2);
 			for (int i = 0; i < order.Length; i++)
-			{
-				File.SetLastWriteTime(Path.Combine("data", order[i]), timestamp);
-				timestamp += twomins;
-			}
+				Program.GameMode.PluginManager.SetLoadOrder(Path.Combine(Program.GameMode.PluginsPath, order[i]), i);
 
 			RefreshPluginList();
 
 			RefreshingList = true;
-			for (int i = 0; i < lvEspList.Items.Count; i++) lvEspList.Items[i].Checked = active.Contains(lvEspList.Items[i].Text.ToLowerInvariant());
+			for (int i = 0; i < lvEspList.Items.Count; i++)
+				lvEspList.Items[i].Checked = active.Contains(lvEspList.Items[i].Text.ToLowerInvariant());
 			RefreshingList = false;
 			lvEspList_ItemChecked(null, null);
 		}
@@ -833,7 +738,7 @@ namespace Fomm
 			lvEspList.SelectedItems.Clear();
 			for (int i = 0; i < files.Length; i++)
 			{
-				File.Delete(Path.Combine("data", files[i].Text));
+				File.Delete(Path.Combine(Program.GameMode.PluginsPath, files[i].Text));
 				lvEspList.Items.Remove(files[i]);
 			}
 			RefreshIndexCounts();
@@ -861,63 +766,6 @@ namespace Fomm
 		private void closeToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Close();
-		}
-
-		private void bSort_Click(object sender, EventArgs e)
-		{
-			if (MessageBox.Show("This is currently a beta feature, and the load order template may not be optimal.\n" +
-				"Ensure you have a backup of your load order before running this tool.\n" +
-				"War you sure you wish to continue?", "Warning", MessageBoxButtons.YesNo) != DialogResult.Yes) return;
-			string[] plugins = new string[lvEspList.Items.Count];
-			for (int i = 0; i < plugins.Length; i++) plugins[i] = lvEspList.Items[i].Text;
-			LoadOrderSorter.SortList(plugins);
-			DateTime timestamp = new DateTime(2008, 1, 1);
-			TimeSpan twomins = TimeSpan.FromMinutes(2);
-			for (int i = 0; i < plugins.Length; i++)
-			{
-				File.SetLastWriteTime(Path.Combine("data", plugins[i]), timestamp);
-				timestamp += twomins;
-			}
-			RefreshPluginList();
-		}
-
-		private void bReport_Click(object sender, EventArgs e)
-		{
-			string[] plugins = new string[lvEspList.Items.Count];
-			bool[] active = new bool[lvEspList.Items.Count];
-			bool[] corrupt = new bool[lvEspList.Items.Count];
-			string[][] masters = new string[lvEspList.Items.Count][];
-			Plugin p;
-			List<string> mlist = new List<string>();
-			for (int i = 0; i < plugins.Length; i++)
-			{
-				plugins[i] = lvEspList.Items[i].Text;
-				active[i] = lvEspList.Items[i].Checked;
-				try
-				{
-					p = new Plugin(Path.Combine("data", plugins[i]), true);
-				}
-				catch
-				{
-					p = null;
-					corrupt[i] = true;
-				}
-				if (p != null)
-				{
-					foreach (SubRecord sr in ((Record)p.Records[0]).SubRecords)
-					{
-						if (sr.Name != "MAST") continue;
-						mlist.Add(sr.GetStrData().ToLowerInvariant());
-					}
-					if (mlist.Count > 0)
-					{
-						masters[i] = mlist.ToArray();
-						mlist.Clear();
-					}
-				}
-			}
-			string s = LoadOrderSorter.GenerateReport(plugins, active, corrupt, masters);
-			PackageManager.TextEditor.ShowEditor(s, Fomm.PackageManager.TextEditorType.Text, false);
 		}
 
 		private void visitForumsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -960,18 +808,8 @@ namespace Fomm
 				booWasUpdate = true;
 			}
 
-			//check for new load order tepmlate
-			Int32 intLOVersion = BOSSUpdater.GetMasterlistVersion();
-			if (intLOVersion > LoadOrderSorter.GetFileVersion())
-			{
-				if (MessageBox.Show("A new version of the load order template is available: Release " + intLOVersion +
-					"\nDo you wish to download?", "Message", MessageBoxButtons.YesNo) == DialogResult.Yes)
-				{
-					BOSSUpdater.UpdateMasterlist(LoadOrderSorter.LoadOrderTemplatePath);
-					MessageBox.Show(this, "The load order template was updated.", "Update Complete.", MessageBoxButtons.OK, MessageBoxIcon.Information);
-				}
-				booWasUpdate = true;
-			}
+			booWasUpdate = booWasUpdate || Program.GameMode.CheckForUpdates();
+
 			if (!booWasUpdate)
 			{
 				MessageBox.Show("No newer updates available");

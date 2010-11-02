@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
+using Fomm.Games.Fallout3.Tools.TESsnip;
+using System.Text;
 
 namespace Fomm.Games.Fallout3
 {
@@ -10,8 +12,6 @@ namespace Fomm.Games.Fallout3
 	/// </summary>
 	public class Fallout3PluginManager : PluginManager
 	{
-		//private List<string> m_lstPluginPaths = null;
-
 		#region Plugin Activation/Deactivation
 
 		/// <summary>
@@ -158,5 +158,89 @@ namespace Fomm.Games.Fallout3
 		}
 
 		#endregion
+
+		/// <summary>
+		/// Gets the plugin info for the specified plugin.
+		/// </summary>
+		/// <param name="p_strPluginPath">The plugin for which to get the info.</param>
+		/// <returns>The plugin info for the specified plugin.</returns>
+		/// <exception cref="FileNotFoundException">Thrown if the specified plug in does not exist.</exception>
+		public override PluginInfo GetPluginInfo(string p_strPluginPath)
+		{
+			if (!File.Exists(p_strPluginPath))
+				throw new FileNotFoundException("The specified plugin does not exist.", p_strPluginPath);
+
+			string strPluginName = Path.GetFileName(p_strPluginPath);
+			Plugin plgPlugin;
+			try
+			{
+				plgPlugin = new Plugin(p_strPluginPath, true);
+			}
+			catch
+			{
+				plgPlugin = null;
+			}
+			if (plgPlugin == null || plgPlugin.Records.Count == 0 || plgPlugin.Records[0].Name != "TES4")
+			{
+				string strDescription = strPluginName + Environment.NewLine + "Warning: Plugin appears corrupt";
+				return new PluginInfo(strDescription, null);
+			}
+
+			StringBuilder stbDescription = new StringBuilder(@"{\rtf1\ansi\ansicpg1252\deff0\deflang4105{\fonttbl{\f0\fnil\fcharset0 MS Sans Serif;}{\f1\fnil\fcharset2 Symbol;}}");
+			stbDescription.AppendLine().AppendLine(@"{\colortbl ;\red255\green0\blue0;\red255\green215\blue0;\red51\green153\blue255;}");
+			stbDescription.AppendLine().Append(@"{\*\generator Msftedit 5.41.21.2509;}\viewkind4\uc1\pard\sl240\slmult1\lang9\f0\fs17 ");
+			string name = null;
+			string desc = null;
+			byte[] pic = null;
+			List<string> masters = new List<string>();
+			foreach (SubRecord sr in ((Record)plgPlugin.Records[0]).SubRecords)
+			{
+				switch (sr.Name)
+				{
+					case "CNAM":
+						name = sr.GetStrData();
+						break;
+					case "SNAM":
+						desc = sr.GetStrData();
+						break;
+					case "MAST":
+						masters.Add(sr.GetStrData());
+						break;
+					case "SCRN":
+						pic = sr.GetData();
+						break;
+				}
+			}
+			if ((Path.GetExtension(p_strPluginPath).CompareTo(".esp") == 0) != ((((Record)plgPlugin.Records[0]).Flags1 & 1) == 0))
+			{
+				if ((((Record)plgPlugin.Records[0]).Flags1 & 1) == 0)
+					stbDescription.Append(@"\cf1 \b WARNING: This plugin has the file extension .esm, but its file header marks it as an esp! \b0 \cf0 \line \line ");
+				else
+					stbDescription.Append(@"\cf1 \b WARNING: This plugin has the file extension .esp, but its file header marks it as an esm! \b0 \cf0 \line \line ");
+			}
+			stbDescription.AppendFormat(@"\b \ul {0} \ulnone \b0 \line ", strPluginName);
+			if (name != null)
+				stbDescription.AppendFormat(@"\b Author: \b0 {0} \line ", name);
+			if (desc != null)
+			{
+				desc = desc.Replace("\r\n", "\n").Replace("\n\r", "\n").Replace("\n", "\\line ");
+				stbDescription.AppendFormat(@"\b Description: \b0 \line {0} \line ", desc);
+			}
+			if (masters.Count > 0)
+			{
+				stbDescription.Append(@"\b Masters: \b0 \par \pard{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\sl240\slmult1 ");
+				for (int i = 0; i < masters.Count; i++)
+				{
+					stbDescription.AppendFormat("{{\\pntext\\f1\\'B7\\tab}}{0}\\par ", masters[i]);
+					stbDescription.AppendLine();
+				}
+				stbDescription.Append(@"\pard\sl240\slmult1 ");
+			}
+
+			PluginInfo pifInfo = new PluginInfo(stbDescription.ToString(), null);
+			if (pic != null)
+				pifInfo.Picture = System.Drawing.Bitmap.FromStream(new MemoryStream(pic));
+			return pifInfo;
+		}
 	}
 }

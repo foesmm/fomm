@@ -15,6 +15,7 @@ using Fomm.PackageManager.XmlConfiguredInstall;
 using Fomm.Games.Fallout3.Script.XmlConfiguredInstall;
 using Fomm.PackageManager.XmlConfiguredInstall.Parsers;
 using Fomm.Games.Fallout3.Script.XmlConfiguredInstall.Parsers;
+using Fomm.Games.Fallout3.Tools.TESsnip;
 
 namespace Fomm.Games.Fallout3
 {
@@ -37,6 +38,7 @@ namespace Fomm.Games.Fallout3
 		private List<GameTool> m_lstTools = new List<GameTool>();
 		private List<GameTool> m_lstGameSettingsTools = new List<GameTool>();
 		private List<GameTool> m_lstRightClickTools = new List<GameTool>();
+		private List<GameTool> m_lstLoadOrderTools = new List<GameTool>();
 		private Fallout3PluginManager m_pmgPluginManager = new Fallout3PluginManager();
 
 		#region Properties
@@ -160,6 +162,16 @@ namespace Fomm.Games.Fallout3
 			}
 		}
 
+
+
+		public override IList<GameTool> LoadOrderTools
+		{
+			get
+			{
+				return m_lstLoadOrderTools;
+			}
+		}
+
 		public override PluginManager PluginManager
 		{
 			get
@@ -227,6 +239,9 @@ namespace Fomm.Games.Fallout3
 
 			m_lstRightClickTools.Add(new GameTool("Open in TESsnip...", "Open the selected plugins in TESsnip.", LaunchTESsnipToolWithSelectedPlugins));
 			m_lstRightClickTools.Add(new GameTool("Open in CREditor...", "Open the selected plugins in TESsnip.", LaunchCREditorToolWithSelectedPlugins));
+
+			m_lstLoadOrderTools.Add(new GameTool("Load Order Report...", "Generates a report on the current load order, as compared to the BOSS recomendation.", LaunchLoadOrderReport));
+			m_lstLoadOrderTools.Add(new GameTool("BOSS Auto Sort", "Auto-sorts the plugins using BOSS's masterlist.", LaunchSortPlugins));
 		}
 
 		#endregion
@@ -269,6 +284,126 @@ namespace Fomm.Games.Fallout3
 				return;
 			}
 		}
+
+		#region Load Order Menu
+
+		/// <summary>
+		/// Auto-sorts the plugins using BOSS's masterlist.
+		/// </summary>
+		/// <param name="p_frmMainForm">The main mod management form.</param>
+		public void LaunchSortPlugins(MainForm p_frmMainForm)
+		{
+			if (MessageBox.Show(p_frmMainForm, "This is currently a beta feature, and the load order template may not be optimal.\n" +
+				"Ensure you have a backup of your load order before running this tool.\n" +
+				"War you sure you wish to continue?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) return;
+			string[] plugins = new string[p_frmMainForm.PluginsListViewItems.Count];
+			for (int i = 0; i < plugins.Length; i++)
+				plugins[i] = p_frmMainForm.PluginsListViewItems[i].Text;
+			Fomm.Games.Fallout3.Tools.AutoSorter.LoadOrderSorter.SortList(plugins);
+			for (int i = 0; i < plugins.Length; i++)
+				PluginManager.SetLoadOrder(Path.Combine(PluginsPath, plugins[i]), i);
+			p_frmMainForm.RefreshPluginList();
+		}
+
+		/// <summary>
+		/// Generates a report on the current load order, as compared to the BOSS recomendation.
+		/// </summary>
+		/// <param name="p_frmMainForm">The main mod management form.</param>
+		public void LaunchLoadOrderReport(MainForm p_frmMainForm)
+		{
+			string[] plugins = new string[p_frmMainForm.PluginsListViewItems.Count];
+			bool[] active = new bool[plugins.Length];
+			bool[] corrupt = new bool[plugins.Length];
+			string[][] masters = new string[plugins.Length][];
+			Plugin p;
+			List<string> mlist = new List<string>();
+			for (int i = 0; i < plugins.Length; i++)
+			{
+				plugins[i] = p_frmMainForm.PluginsListViewItems[i].Text;
+				active[i] = p_frmMainForm.PluginsListViewItems[i].Checked;
+				try
+				{
+					p = new Plugin(Path.Combine(PluginsPath, plugins[i]), true);
+				}
+				catch
+				{
+					p = null;
+					corrupt[i] = true;
+				}
+				if (p != null)
+				{
+					foreach (SubRecord sr in ((Record)p.Records[0]).SubRecords)
+					{
+						if (sr.Name != "MAST") continue;
+						mlist.Add(sr.GetStrData().ToLowerInvariant());
+					}
+					if (mlist.Count > 0)
+					{
+						masters[i] = mlist.ToArray();
+						mlist.Clear();
+					}
+				}
+			}
+			string s = Fomm.Games.Fallout3.Tools.AutoSorter.LoadOrderSorter.GenerateReport(plugins, active, corrupt, masters);
+			PackageManager.TextEditor.ShowEditor(s, Fomm.PackageManager.TextEditorType.Text, false);
+		}
+
+		#endregion
+
+		#region Right Click Menu
+
+		/// <summary>
+		/// Launches the TESsnip tool, passing it the given plugins.
+		/// </summary>
+		/// <param name="p_frmMainForm">The main mod management form.</param>
+		public void LaunchTESsnipToolWithSelectedPlugins(MainForm p_frmMainForm)
+		{
+			if (p_frmMainForm.SelectedPlugins.Count == 0)
+				return;
+			List<string> lstPlugins = new List<string>();
+			foreach (string strPluginName in p_frmMainForm.SelectedPlugins)
+				lstPlugins.Add(Path.Combine(Program.GameMode.PluginsPath, strPluginName));
+			Tools.TESsnip.TESsnip tes = new Tools.TESsnip.TESsnip(lstPlugins.ToArray());
+			tes.FormClosed += delegate(object sender2, FormClosedEventArgs e2)
+			{
+				p_frmMainForm.RefreshPluginList();
+				GC.Collect();
+			};
+			tes.Show();
+		}
+
+		/// <summary>
+		/// Launches the CREditor tool, passing it the given plugins.
+		/// </summary>
+		/// <param name="p_frmMainForm">The main mod management form.</param>
+		public void LaunchCREditorToolWithSelectedPlugins(MainForm p_frmMainForm)
+		{
+			if (p_frmMainForm.SelectedPlugins.Count == 0)
+				return;
+			List<string> lstPlugins = new List<string>();
+			foreach (string strPluginName in p_frmMainForm.SelectedPlugins)
+				lstPlugins.Add(Path.Combine(Program.GameMode.PluginsPath, strPluginName));
+			Tools.CriticalRecords.CriticalRecordsForm crfEditor = new Tools.CriticalRecords.CriticalRecordsForm(lstPlugins.ToArray());
+			crfEditor.Show();
+		}
+
+		#endregion
+
+		#region Game Settings Menu
+
+		/// <summary>
+		/// Launches the Graphics Settings tool.
+		/// </summary>
+		/// <param name="p_frmMainForm">The main mod management form.</param>
+		public void LaunchGraphicsSettingsTool(MainForm p_frmMainForm)
+		{
+			Tools.GraphicsSettings.GraphicsSettings gsfGraphicsSettingsForm = new Tools.GraphicsSettings.GraphicsSettings();
+			gsfGraphicsSettingsForm.ShowDialog();
+		}
+
+		#endregion
+
+		#region Tools Menu
 
 		/// <summary>
 		/// Launches the conflict detector tool.
@@ -323,26 +458,6 @@ namespace Fomm.Games.Fallout3
 		}
 
 		/// <summary>
-		/// Launches the TESsnip tool, passing it the given plugins.
-		/// </summary>
-		/// <param name="p_frmMainForm">The main mod management form.</param>
-		public void LaunchTESsnipToolWithSelectedPlugins(MainForm p_frmMainForm)
-		{
-			if (p_frmMainForm.SelectedPlugins.Count == 0)
-				return;
-			List<string> lstPlugins = new List<string>();
-			foreach (string strPluginName in p_frmMainForm.SelectedPlugins)
-				lstPlugins.Add(Path.Combine(Program.GameMode.PluginsPath, strPluginName));
-			Tools.TESsnip.TESsnip tes = new Tools.TESsnip.TESsnip(lstPlugins.ToArray());
-			tes.FormClosed += delegate(object sender2, FormClosedEventArgs e2)
-			{
-				p_frmMainForm.RefreshPluginList();
-				GC.Collect();
-			};
-			tes.Show();
-		}
-
-		/// <summary>
 		/// Launches the Shader Edit tool.
 		/// </summary>
 		/// <param name="p_frmMainForm">The main mod management form.</param>
@@ -362,30 +477,6 @@ namespace Fomm.Games.Fallout3
 			GC.Collect();
 		}
 
-		/// <summary>
-		/// Launches the CREditor tool, passing it the given plugins.
-		/// </summary>
-		/// <param name="p_frmMainForm">The main mod management form.</param>
-		public void LaunchCREditorToolWithSelectedPlugins(MainForm p_frmMainForm)
-		{
-			if (p_frmMainForm.SelectedPlugins.Count == 0)
-				return;
-			List<string> lstPlugins = new List<string>();
-			foreach (string strPluginName in p_frmMainForm.SelectedPlugins)
-				lstPlugins.Add(Path.Combine(Program.GameMode.PluginsPath, strPluginName));
-			Tools.CriticalRecords.CriticalRecordsForm crfEditor = new Tools.CriticalRecords.CriticalRecordsForm(lstPlugins.ToArray());
-			crfEditor.Show();
-		}
-
-		/// <summary>
-		/// Launches the Graphics Settings tool.
-		/// </summary>
-		/// <param name="p_frmMainForm">The main mod management form.</param>
-		public void LaunchGraphicsSettingsTool(MainForm p_frmMainForm)
-		{
-			Tools.GraphicsSettings.GraphicsSettings gsfGraphicsSettingsForm = new Tools.GraphicsSettings.GraphicsSettings();
-			gsfGraphicsSettingsForm.ShowDialog();
-		}
 
 		/// <summary>
 		/// Toggles archive invalidation.
@@ -395,6 +486,8 @@ namespace Fomm.Games.Fallout3
 		{
 			Fomm.Games.Fallout3.Tools.ArchiveInvalidation.Update();
 		}
+
+		#endregion
 
 		#endregion
 
@@ -841,6 +934,27 @@ class Script : Fallout3BaseScript {
 		{
 			string strExt = Path.GetExtension(p_strPath).ToLowerInvariant();
 			return (strExt == ".esp" || strExt == ".esm");
+		}
+
+		/// <summary>
+		/// hecks for any updates that are available for any game-specific components.
+		/// </summary>
+		/// <remarks><lang cref="true"/> if updates were available; otherwise <lang cref="false"/>.</remarks>
+		public override bool CheckForUpdates()
+		{
+			//check for new load order tepmlate
+			Int32 intLOVersion = Fomm.Games.Fallout3.Tools.AutoSorter.BOSSUpdater.GetMasterlistVersion();
+			if (intLOVersion > Fomm.Games.Fallout3.Tools.AutoSorter.LoadOrderSorter.GetFileVersion())
+			{
+				if (MessageBox.Show("A new version of the load order template is available: Release " + intLOVersion +
+					"\nDo you wish to download?", "Message", MessageBoxButtons.YesNo) == DialogResult.Yes)
+				{
+					Fomm.Games.Fallout3.Tools.AutoSorter.BOSSUpdater.UpdateMasterlist(Fomm.Games.Fallout3.Tools.AutoSorter.LoadOrderSorter.LoadOrderTemplatePath);
+					MessageBox.Show("The load order template was updated.", "Update Complete.", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				}
+				return true;
+			}
+			return false;
 		}
 	}
 }

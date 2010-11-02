@@ -46,7 +46,6 @@ namespace Fomm
 			this.bSaveGames = new System.Windows.Forms.Button();
 			this.bHelp = new System.Windows.Forms.Button();
 			this.bSettings = new System.Windows.Forms.Button();
-			this.bSort = new System.Windows.Forms.Button();
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.runFalloutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -63,7 +62,6 @@ namespace Fomm
 			this.viewReadmeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.visitForumsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.checkForUpdateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.bReport = new System.Windows.Forms.Button();
 			this.butFileManager = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.cmsPlugins.SuspendLayout();
@@ -234,7 +232,7 @@ namespace Fomm
 			// bHelp
 			// 
 			this.bHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.bHelp.Location = new System.Drawing.Point(417, 424);
+			this.bHelp.Location = new System.Drawing.Point(417, 288);
 			this.bHelp.Name = "bHelp";
 			this.bHelp.Size = new System.Drawing.Size(120, 23);
 			this.bHelp.TabIndex = 8;
@@ -245,24 +243,13 @@ namespace Fomm
 			// bSettings
 			// 
 			this.bSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.bSettings.Location = new System.Drawing.Point(417, 395);
+			this.bSettings.Location = new System.Drawing.Point(417, 259);
 			this.bSettings.Name = "bSettings";
 			this.bSettings.Size = new System.Drawing.Size(120, 23);
 			this.bSettings.TabIndex = 7;
 			this.bSettings.Text = "Settings";
 			this.bSettings.UseVisualStyleBackColor = true;
 			this.bSettings.Click += new System.EventHandler(this.bSettings_Click);
-			// 
-			// bSort
-			// 
-			this.bSort.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.bSort.Location = new System.Drawing.Point(417, 288);
-			this.bSort.Name = "bSort";
-			this.bSort.Size = new System.Drawing.Size(120, 23);
-			this.bSort.TabIndex = 4;
-			this.bSort.Text = "Auto sort";
-			this.bSort.UseVisualStyleBackColor = true;
-			this.bSort.Click += new System.EventHandler(this.bSort_Click);
 			// 
 			// menuStrip1
 			// 
@@ -391,17 +378,6 @@ namespace Fomm
 			this.checkForUpdateToolStripMenuItem.Text = "Check for update";
 			this.checkForUpdateToolStripMenuItem.Click += new System.EventHandler(this.checkForUpdateToolStripMenuItem_Click);
 			// 
-			// bReport
-			// 
-			this.bReport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.bReport.Location = new System.Drawing.Point(417, 259);
-			this.bReport.Name = "bReport";
-			this.bReport.Size = new System.Drawing.Size(120, 23);
-			this.bReport.TabIndex = 3;
-			this.bReport.Text = "Load order report";
-			this.bReport.UseVisualStyleBackColor = true;
-			this.bReport.Click += new System.EventHandler(this.bReport_Click);
-			// 
 			// butFileManager
 			// 
 			this.butFileManager.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -419,10 +395,8 @@ namespace Fomm
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(549, 600);
 			this.Controls.Add(this.butFileManager);
-			this.Controls.Add(this.bReport);
 			this.Controls.Add(this.menuStrip1);
 			this.Controls.Add(this.splitContainer1);
-			this.Controls.Add(this.bSort);
 			this.Controls.Add(this.pictureBox1);
 			this.Controls.Add(this.bPackageManager);
 			this.Controls.Add(this.bLaunch);
@@ -466,7 +440,6 @@ namespace Fomm
 		private System.Windows.Forms.ToolStripMenuItem checkAllToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
 		private System.Windows.Forms.Button bSettings;
-		private System.Windows.Forms.Button bSort;
 		private System.Windows.Forms.MenuStrip menuStrip1;
 		private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem runFalloutToolStripMenuItem;
@@ -478,7 +451,6 @@ namespace Fomm
 		private System.Windows.Forms.ToolStripMenuItem importToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem exportToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem copyToClipboardToolStripMenuItem;
-		private System.Windows.Forms.Button bReport;
 		private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem viewReadmeToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem visitForumsToolStripMenuItem;

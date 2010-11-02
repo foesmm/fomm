@@ -91,7 +91,7 @@
     <Compile Include="Games\Fallout3\Script\XmlConfiguredInstall\Parsers\Fallout3Parser20Extension.cs" />
     <Compile Include="Games\Fallout3\Script\XmlConfiguredInstall\Parsers\Fallout3Parser10Extension.cs" />
     <Compile Include="Games\Fallout3\Tools\ArchiveInvalidation.cs" />
-    <Compile Include="AutoSorter\BOSSUpdater.cs" />
+    <Compile Include="Games\Fallout3\Tools\AutoSorter\BOSSUpdater.cs" />
     <Compile Include="Games\Fallout3\Tools\BSA\BSAArchive.cs" />
     <Compile Include="Games\Fallout3\Tools\BSA\BSABrowser.cs">
       <SubType>Form</SubType>
@@ -198,6 +198,7 @@
     <Compile Include="Games\Fallout3\Tools\GraphicsSettings\OverrideSlider.Designer.cs">
       <DependentUpon>OverrideSlider.cs</DependentUpon>
     </Compile>
+    <Compile Include="Games\PluginInfo.cs" />
     <Compile Include="Games\PluginManager.cs" />
     <Compile Include="ImageForm.cs">
       <SubType>Form</SubType>
@@ -223,7 +224,7 @@
     <Compile Include="Games\Fallout3\Tools\InstallTweaker\xliveSettings.Designer.cs">
       <DependentUpon>xliveSettings.cs</DependentUpon>
     </Compile>
-    <Compile Include="AutoSorter\LoadOrderSorter.cs" />
+    <Compile Include="Games\Fallout3\Tools\AutoSorter\LoadOrderSorter.cs" />
     <Compile Include="InstallLogUpgraders\Upgrader0110.cs" />
     <Compile Include="Messaging.cs" />
     <Compile Include="Games\Fallout3\Script\BsaManager.cs" />

@@ -3,7 +3,7 @@ using System.Net;
 using System.Text.RegularExpressions;
 using System.IO;
 
-namespace Fomm.AutoSorter
+namespace Fomm.Games.Fallout3.Tools.AutoSorter
 {
 	/// <summary>
 	/// Utility class that handles checking for, and retreiving, new
@@ -55,7 +55,7 @@ namespace Fomm.AutoSorter
 				//the substring is to remove the 3byte EFBBBF Byte Order Mark (BOM)
 				strMasterlist = wclGetter.DownloadString(MasterListUrl).Substring(3);
 			}
-			File.WriteAllText(p_strPath, GetMasterlistVersion().ToString() + strMasterlist);
+			File.WriteAllText(p_strPath, GetMasterlistVersion().ToString() + Environment.NewLine + strMasterlist);
 			LoadOrderSorter.LoadList();
 		}
 	}

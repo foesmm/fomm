@@ -115,6 +115,11 @@ namespace Fomm.Games
 			get;
 		}
 
+		public abstract IList<GameTool> LoadOrderTools
+		{
+			get;
+		}
+
 		public abstract string PluginsPath
 		{
 			get;
@@ -261,5 +266,14 @@ class Script : GenericBaseScript {
 		public abstract void Init();
 
 		public abstract bool IsPluginFile(string p_strPath);
+
+		/// <summary>
+		/// hecks for any updates that are available for any game-specific components.
+		/// </summary>
+		/// <remarks><lang cref="true"/> if updates were available; otherwise <lang cref="false"/>.</remarks>
+		public virtual bool CheckForUpdates()
+		{
+			return false;
+		}
 	}
 }
