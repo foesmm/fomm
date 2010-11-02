@@ -297,7 +297,10 @@ namespace Fomm.PackageManager
 		{
 			LoadActivePlugins();
 			PermissionsManager.CurrentPermissions.Assert();
-			return Program.GameMode.PluginManager.SortPluginList(m_lstActivePlugins.ToArray());
+			string[] strPlugins = Program.GameMode.PluginManager.SortPluginList(m_lstActivePlugins.ToArray());
+			for (int i = 0; i < strPlugins.Length; i++)
+				strPlugins[i] = Path.GetFileName(strPlugins[i]);
+			return strPlugins;
 		}
 
 		#endregion
@@ -422,27 +425,27 @@ namespace Fomm.PackageManager
 		public void SetPluginActivation(string p_strName, bool p_booActivate)
 		{
 			PermissionsManager.CurrentPermissions.Assert();
-			p_strName = p_strName.ToLowerInvariant();
 			if (p_strName.IndexOfAny(Path.GetInvalidFileNameChars()) != -1)
 				throw new IllegalFilePathException(p_strName);
-			if (!File.Exists(Path.Combine(Program.GameMode.PluginsPath, p_strName)))
+			string strLoweredFullPath = Path.Combine(Program.GameMode.PluginsPath, p_strName).ToLowerInvariant();
+			if (!File.Exists(strLoweredFullPath))
 				throw new FileNotFoundException("Plugin does not exist", p_strName);
 			if (p_booActivate)
 			{
-				if (!ActivePlugins.Contains(p_strName))
-					ActivePlugins.Add(p_strName);
+				if (!ActivePlugins.Contains(strLoweredFullPath))
+					ActivePlugins.Add(strLoweredFullPath);
 			}
 			else
-				ActivePlugins.Remove(p_strName);
+				ActivePlugins.Remove(strLoweredFullPath);
 		}
 
-		protected abstract void DoCommitActivePlugins(List<string> p_strActivePlugins);
+		protected abstract void DoCommitActivePlugins();
 
 		public void CommitActivePlugins()
 		{
 			if (ActivePlugins == null)
 				return;
-			DoCommitActivePlugins(ActivePlugins);
+			DoCommitActivePlugins();
 			ActivePlugins = null;
 		}
 

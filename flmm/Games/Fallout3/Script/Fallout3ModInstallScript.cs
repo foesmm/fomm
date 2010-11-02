@@ -130,11 +130,9 @@ namespace Fomm.Games.Fallout3.Script
 
 		#region Plugin Activation
 
-		protected override void DoCommitActivePlugins(List<string> p_strActivePlugins)
+		protected override void DoCommitActivePlugins()
 		{
-			if (p_strActivePlugins == null)
-				return;
-			File.WriteAllLines(((Fallout3GameMode)Program.GameMode).PluginsFilePath, p_strActivePlugins.ToArray());
+			File.WriteAllLines(((Fallout3GameMode)Program.GameMode).PluginsFilePath, GetActivePlugins());
 		}
 
 		#endregion
