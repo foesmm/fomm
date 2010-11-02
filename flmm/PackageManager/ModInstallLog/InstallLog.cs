@@ -51,7 +51,7 @@ namespace Fomm.PackageManager.ModInstallLog
 	 */
 	internal class InstallLog : InstallLogBase
 	{
-		public static readonly Version CURRENT_VERSION = new Version("0.1.1.0");
+		public static readonly Version CURRENT_VERSION = new Version("0.2.0.0");
 		internal protected const string ORIGINAL_VALUES = "ORIGINAL_VALUES";
 		internal protected const string FOMM = "FOMM";
 		private static readonly InstallLog m_ilgCurrent = new InstallLog();
