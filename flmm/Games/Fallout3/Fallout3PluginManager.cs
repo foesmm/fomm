@@ -24,7 +24,7 @@ namespace Fomm.Games.Fallout3
 			{
 				string strPluginsFilePath = ((Fallout3GameMode)Program.GameMode).PluginsFilePath;
 
-				List<string> lstActivePlugins = null;
+				List<string> lstActivePlugins = new List<string>();
 				if (File.Exists(strPluginsFilePath))
 				{
 					string[] strPlugins = File.ReadAllLines(strPluginsFilePath);
@@ -40,8 +40,6 @@ namespace Fomm.Games.Fallout3
 						lstActivePlugins.Add(strPluginPath);
 					}
 				}
-				else
-					lstActivePlugins = new List<string>();
 				return lstActivePlugins.ToArray();
 			}
 		}

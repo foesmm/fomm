@@ -14,12 +14,12 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
 	{
 		#region Properties
 
-		/// <seealso cref="Parser.SchemaFileName"/>
-		protected override string SchemaFileName
+		/// <seealso cref="Parser.ConfigurationFileVersion"/>
+		protected override string ConfigurationFileVersion
 		{
 			get
 			{
-				return "ModConfig2.0.xsd";
+				return "2.0";
 			}
 		}
 

@@ -4,6 +4,7 @@ using System.CodeDom.Compiler;
 using Assembly = System.Reflection.Assembly;
 using sList = System.Collections.Generic.List<string>;
 using StringBuilder = System.Text.StringBuilder;
+using System.Reflection;
 
 namespace Fomm.PackageManager
 {
@@ -153,8 +154,11 @@ class ScriptRunner {
 				return false;
 			}
 			try
-			{
-				s.GetType().BaseType.GetMethod("Setup", new Type[] { typeof(ModInstaller) }).Invoke(s, new object[] { p_midInstaller });
+			{	
+				MethodInfo mifMethod = null;
+				for (Type tpeScriptType = s.GetType(); mifMethod == null; tpeScriptType = tpeScriptType.BaseType)
+					mifMethod = tpeScriptType.GetMethod("Setup", new Type[] { typeof(ModInstaller) });
+				mifMethod.Invoke(s, new object[] { p_midInstaller });
 				return (bool)s.GetType().GetMethod("OnActivate").Invoke(s, null);
 			}
 			catch (Exception ex)

@@ -92,7 +92,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
 		/// Gets the name of the schema used by the parser.
 		/// </summary>
 		/// <value>The name of the schema used by the parser.</value>
-		protected abstract string SchemaFileName { get; }
+		protected abstract string ConfigurationFileVersion { get; }
 
 		/// <summary>
 		/// Gets the xml configuration file.
@@ -173,7 +173,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
 		/// <returns>The module configuration schema.</returns>
 		private XmlSchema loadModuleConfigSchema()
 		{
-			string strSchemaPath = Path.Combine(Program.fommDir, SchemaFileName);
+			string strSchemaPath = Program.GameMode.GetXMLConfigSchemaPath(ConfigurationFileVersion);
 			byte[] bteSchema = File.ReadAllBytes(strSchemaPath);
 			XmlSchema xscSchema = null;
 			using (MemoryStream stmSchema = new MemoryStream(bteSchema))

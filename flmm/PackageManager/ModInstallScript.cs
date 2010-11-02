@@ -856,7 +856,7 @@ namespace Fomm.PackageManager
 		/// <param name="p_strKey">The key in the Ini file to unedit.</param>
 		public void UneditIni(string p_strSettingsFileName, string p_strSection, string p_strKey)
 		{
-			string strLoweredFile = Program.GameMode.SettingsFiles[p_strSettingsFileName].ToLowerInvariant();
+			string strLoweredFile = p_strSettingsFileName.ToLowerInvariant();
 			string strLoweredSection = p_strSection.ToLowerInvariant();
 			string strLoweredKey = p_strKey.ToLowerInvariant();
 

@@ -219,7 +219,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip {
         public static Dictionary<string, RecordStructure> Records;
 
 #if DEBUG
-        private static string xmlPath=System.IO.Path.Combine(Program.exeDir, "..\\flmm\\TESsnip\\RecordStructure.xml");
+		private static string xmlPath = System.IO.Path.Combine(Program.ExecutableDirectory, "..\\flmm\\TESsnip\\RecordStructure.xml");
 #else
         private static string xmlPath=System.IO.Path.Combine(Program.ExecutableDirectory, "TESsnip\\RecordStructure.xml");
 #endif

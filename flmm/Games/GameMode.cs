@@ -223,9 +223,9 @@ class Script : GenericBaseScript {
 
 		protected void SetModDirectory()
 		{
-			ModDirectory = Settings.GetString("FomodDir");
-			if (String.IsNullOrEmpty(ModDirectory))
-				ModDirectory = Path.Combine(Program.ExecutableDirectory, "mods");
+			m_strModDirectory = Settings.GetString("FomodDir");
+			if (String.IsNullOrEmpty(m_strModDirectory))
+				m_strModDirectory = Path.Combine(Program.ExecutableDirectory, "mods");
 		}
 
 		protected void SetModInfoCacheDirectory()
