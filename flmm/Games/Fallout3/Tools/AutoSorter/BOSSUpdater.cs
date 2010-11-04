@@ -14,15 +14,6 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
 		//private const string MASTERLIST_URL = "http://better-oblivion-sorting-software.googlecode.com/svn/data/boss-fallout/masterlist.txt";
 		private static Regex m_rgxVersion = new Regex(@"Revision (\d+): ");
 
-		public static string MasterListUrl
-		{
-			get
-			{
-				string strMasterListUrl = Properties.Settings.Default.fallout3MasterListUpdateUrl;
-				return strMasterListUrl;
-			}
-		}
-
 		/// <summary>
 		/// Gets the current verison of the BOSS Fallout 3 Masterlist.
 		/// </summary>
@@ -32,7 +23,7 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
 			string strVersionPage = null;
 			using (WebClient wclGetter = new WebClient())
 			{
-				string strMasterListUrl = MasterListUrl;
+				string strMasterListUrl = Properties.Settings.Default.fallout3MasterListUpdateUrl;
 				Int32 intLastDividerPos = strMasterListUrl.LastIndexOfAny(new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar });
 				string strVersionUrl = strMasterListUrl.Substring(0, intLastDividerPos);
 				strVersionPage = wclGetter.DownloadString(strVersionUrl);
@@ -51,7 +42,7 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
 			using (WebClient wclGetter = new WebClient())
 			{
 				//the substring is to remove the 3byte EFBBBF Byte Order Mark (BOM)
-				strMasterlist = wclGetter.DownloadString(MasterListUrl).Substring(3);
+				strMasterlist = wclGetter.DownloadString(Properties.Settings.Default.fallout3MasterListUpdateUrl).Substring(3);
 			}
 			File.WriteAllText(p_strPath, GetMasterlistVersion().ToString() + Environment.NewLine + strMasterlist);
 			LoadOrderSorter.LoadList();

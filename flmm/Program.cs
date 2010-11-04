@@ -146,7 +146,6 @@ namespace Fomm
 				if (args.Length > 0)
 				{
 					bool booArgsHandled = true;
-					bool booExit = false;
 					if (!args[0].StartsWith("-") && File.Exists(args[0]))
 					{
 						switch (Path.GetExtension(args[0]).ToLowerInvariant())
@@ -318,7 +317,8 @@ namespace Fomm
 					Trace.WriteLine("Game Mode Specific Initialization:");
 					Trace.Indent();
 #endif
-					GameMode.Init();
+					if (!GameMode.Init())
+						return;
 #if TRACE
 					Trace.Unindent();
 					Trace.WriteLine("Done Game Mode Specific Initialization.");

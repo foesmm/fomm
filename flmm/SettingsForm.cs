@@ -120,7 +120,7 @@ namespace Fomm
 
 		protected void LoadUpdatesOptions()
 		{
-			tbxBOSSUrl.Text = Fomm.Games.Fallout3.Tools.AutoSorter.BOSSUpdater.MasterListUrl;
+			tbxBOSSUrl.Text = Properties.Settings.Default.fallout3MasterListUpdateUrl;
 		}
 
 		private void SetupForm_FormClosing(object sender, FormClosingEventArgs e)

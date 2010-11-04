@@ -419,6 +419,24 @@ namespace Fomm.Controls
 		}
 
 		/// <summary>
+		/// Gets or sets whether the tabs are visible.
+		/// </summary>
+		/// <value>Whether the tabs are visible.</value>
+		[Category("Appearance")]
+		[DefaultValue(true)]
+		public virtual bool TabsVisible
+		{
+			get
+			{
+				return m_ptsTabContainer.Visible;
+			}
+			set
+			{
+				m_ptsTabContainer.Visible = value;
+			}
+		}
+
+		/// <summary>
 		/// 
 		/// </summary>
 		[DefaultValue(KnownColor.Window)]

@@ -104,6 +104,8 @@ namespace Fomm.Util
 		/// <returns>A string array containing the strings in the given <see cref="SettingsStringList"/>.</returns>
 		public static implicit operator string[](SettingsList arr)
 		{
+			if (arr == null)
+				return null;
 			List<string> lstValues = new List<string>(arr);
 			return lstValues.ToArray();
 		}
@@ -115,6 +117,8 @@ namespace Fomm.Util
 		/// <returns>A <see cref="SettingsStringList"/> containing the strings in the given string array.</returns>
 		public static implicit operator SettingsList(string[] values)
 		{
+			if (values == null)
+				return null;
 			SettingsList sslValues = new SettingsList();
 			sslValues.AddRange(values);
 			return sslValues;
@@ -127,6 +131,8 @@ namespace Fomm.Util
 		/// <returns>A <see cref="SettingsStringList"/> containing the strings in the given <see cref="List{string}"/>.</returns>
 		public static implicit operator SettingsList(List<string> values)
 		{
+			if (values == null)
+				return null;
 			SettingsList sslValues = new SettingsList();
 			sslValues.AddRange(values.ToArray());
 			return sslValues;
@@ -157,6 +163,8 @@ namespace Fomm.Util
 		/// <returns>A string array containing the strings in the given <see cref="SettingsStringList"/>.</returns>
 		public static implicit operator Int32[](SettingsList arr)
 		{
+			if (arr == null)
+				return null;
 			List<Int32> lstValues = new List<Int32>();
 			Int32 intValue = 0;
 			for (Int32 i = 0; i < arr.Count; i++)
@@ -175,6 +183,8 @@ namespace Fomm.Util
 		/// <returns>A <see cref="SettingsStringList"/> containing the strings in the given string array.</returns>
 		public static implicit operator SettingsList(Int32[] values)
 		{
+			if (values == null)
+				return null;
 			SettingsList sslValues = new SettingsList();
 			foreach (Int32 intValue in values)
 				sslValues.Add(intValue.ToString());

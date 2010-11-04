@@ -6,12 +6,32 @@ using Fomm.PackageManager;
 using Fomm.PackageManager.XmlConfiguredInstall;
 using Fomm.PackageManager.XmlConfiguredInstall.Parsers;
 using System.Drawing;
+using Fomm.Controls;
+using Microsoft.Win32;
 
 namespace Fomm.Games
 {
 	public abstract class GameMode
 	{
 		#region Properties
+
+		/// <summary>
+		/// Gets the Personal directory of the current user.
+		/// </summary>
+		/// <remarks>
+		/// Typically, this is the Documents folder of the current user.
+		/// </remarks>
+		/// <value>The Personal directory of the current user.</value>
+		public string PersonalDirectory
+		{
+			get
+			{
+				string strPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+				if (String.IsNullOrEmpty(strPath))
+					return Registry.GetValue(@"HKEY_CURRENT_USER\software\microsoft\windows\currentversion\explorer\user shell folders", "Personal", null).ToString();
+				return strPath;
+			}
+		}
 
 		/// <summary>
 		/// Gets the game launch command.
@@ -32,23 +52,21 @@ namespace Fomm.Games
 		}
 
 		/// <summary>
-		/// Gets or sets the modDirectory of the GameMode.
+		/// Gets the modDirectory of the GameMode.
 		/// </summary>
 		/// <value>The modDirectory of the GameMode.</value>
 		public abstract string ModDirectory
 		{
 			get;
-			set;
 		}
 
 		/// <summary>
-		/// Gets or sets the modInfoCacheDirectory of the GameMode.
+		/// Gets the modInfoCacheDirectory of the GameMode.
 		/// </summary>
 		/// <value>The modInfoCacheDirectory of the GameMode.</value>
 		public abstract string ModInfoCacheDirectory
 		{
 			get;
-			set;
 		}
 
 		public abstract string OverwriteDirectory
@@ -102,6 +120,11 @@ namespace Fomm.Games
 		}
 
 		public abstract IList<GameTool> GameLaunchCommands
+		{
+			get;
+		}
+
+		public abstract IList<SettingsPage> SettingsPages
 		{
 			get;
 		}
@@ -234,7 +257,7 @@ class Script : GenericBaseScript {
 
 		public abstract bool SetWorkingDirectory(out string p_strErrorMessage);
 
-		public abstract void Init();
+		public abstract bool Init();
 
 		public abstract bool IsPluginFile(string p_strPath);
 

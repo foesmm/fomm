@@ -201,11 +201,13 @@ namespace Fomm
 		private void MainForm_Load(object sender, EventArgs e)
 		{
 			Int32 tmp = Properties.Settings.Default.MainFormPanelSplit;
-			splitContainer1.SplitterDistance = Math.Max(splitContainer1.Panel1MinSize + 1, Math.Min(splitContainer1.Height - (splitContainer1.Panel2MinSize + 1), tmp));
+			if (tmp > 0)
+				splitContainer1.SplitterDistance = Math.Max(splitContainer1.Panel1MinSize + 1, Math.Min(splitContainer1.Height - (splitContainer1.Panel2MinSize + 1), tmp));
 
 			Int32[] intColumnWidths = Properties.Settings.Default.MainFormColumnWidths;
-			for (Int32 i = 0; i < intColumnWidths.Length; i++)
-				lvEspList.Columns[i].Width = intColumnWidths[i];
+			if (intColumnWidths != null)
+				for (Int32 i = 0; i < intColumnWidths.Length; i++)
+					lvEspList.Columns[i].Width = intColumnWidths[i];
 			RefreshPluginList();
 			exportLoadOrder(Path.Combine(Program.fommDir, "load order backup.txt"));
 
@@ -747,7 +749,7 @@ namespace Fomm
 			if (!booWasUpdate)
 			{
 				MessageBox.Show("No newer updates available");
-				Properties.Settings.Default.LastUpdateCheck =DateTime.Now;
+				Properties.Settings.Default.LastUpdateCheck = DateTime.Now;
 				Properties.Settings.Default.Save();
 			}
 		}

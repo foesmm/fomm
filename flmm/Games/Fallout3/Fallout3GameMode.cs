@@ -16,6 +16,8 @@ using Fomm.Games.Fallout3.Script.XmlConfiguredInstall;
 using Fomm.PackageManager.XmlConfiguredInstall.Parsers;
 using Fomm.Games.Fallout3.Script.XmlConfiguredInstall.Parsers;
 using Fomm.Games.Fallout3.Tools.TESsnip;
+using Fomm.Controls;
+using Fomm.Games.Fallout3.Settings;
 
 namespace Fomm.Games.Fallout3
 {
@@ -40,12 +42,13 @@ namespace Fomm.Games.Fallout3
 		private List<GameTool> m_lstRightClickTools = new List<GameTool>();
 		private List<GameTool> m_lstLoadOrderTools = new List<GameTool>();
 		private List<GameTool> m_lstGameLaunchCommands = new List<GameTool>();
+		private List<SettingsPage> m_lstSettingsPages = new List<SettingsPage>();
 		private Fallout3PluginManager m_pmgPluginManager = new Fallout3PluginManager();
 
 		#region Properties
 
 		/// <summary>
-		/// Gets or sets the modDirectory of the GameMode.
+		/// Gets the modDirectory of the GameMode.
 		/// </summary>
 		/// <value>The modDirectory of the GameMode.</value>
 		public override string ModDirectory
@@ -59,35 +62,20 @@ namespace Fomm.Games.Fallout3
 					Directory.CreateDirectory(strModDirectory);
 				return strModDirectory;
 			}
-			set
-			{
-				Properties.Settings.Default.fallout3ModDirectory = value;
-				Properties.Settings.Default.Save();
-			}
 		}
 
 		/// <summary>
-		/// Gets or sets the modInfoCacheDirectory of the GameMode.
+		/// Gets the modInfoCacheDirectory of the GameMode.
 		/// </summary>
 		/// <value>The modInfoCacheDirectory of the GameMode.</value>
 		public override string ModInfoCacheDirectory
 		{
 			get
 			{
-				string strCache = Properties.Settings.Default.fallout3ModInfoCacheDirectory;
-				if (String.IsNullOrEmpty(strCache))
-				{
-					strCache = Path.Combine(ModDirectory, "cache");
-					ModInfoCacheDirectory = strCache;
-				}
+				string strCache = Path.Combine(ModDirectory, "cache");
 				if (!Directory.Exists(strCache))
 					Directory.CreateDirectory(strCache);
 				return strCache;
-			}
-			set
-			{
-				Properties.Settings.Default.fallout3ModInfoCacheDirectory = value;
-				Properties.Settings.Default.Save();
 			}
 		}
 
@@ -226,6 +214,14 @@ namespace Fomm.Games.Fallout3
 			}
 		}
 
+		public override IList<SettingsPage> SettingsPages
+		{
+			get
+			{
+				return m_lstSettingsPages;
+			}
+		}
+
 		public override PluginManager PluginManager
 		{
 			get
@@ -265,9 +261,10 @@ namespace Fomm.Games.Fallout3
 		public Fallout3GameMode()
 		{
 			m_strOverwriteDirectory = Path.Combine(Program.ExecutableDirectory, "overwrites");
-			if (!Directory.Exists(m_strOverwriteDirectory)) Directory.CreateDirectory(m_strOverwriteDirectory);
+			if (!Directory.Exists(m_strOverwriteDirectory))
+				Directory.CreateDirectory(m_strOverwriteDirectory);
 
-			m_strUserGameDataPath = Path.Combine(String.IsNullOrEmpty(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)) ? Registry.GetValue(@"HKEY_CURRENT_USER\software\microsoft\windows\currentversion\explorer\user shell folders", "Personal", null).ToString() : Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "My games\\Fallout3");
+			m_strUserGameDataPath = Path.Combine(PersonalDirectory, "My games\\Fallout3");
 			m_strUserSettingsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Fallout3");
 
 			m_dicSettingsFiles[SettingsFile.FOIniPath] = Path.Combine(m_strUserGameDataPath, "Fallout.ini");
@@ -280,6 +277,8 @@ namespace Fomm.Games.Fallout3
 			m_dicAdditionalPaths["DLCDir"] = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Microsoft\\xlive\\DLC");
 
 			m_strSavesPath = Path.Combine(m_strUserGameDataPath, NativeMethods.GetPrivateProfileString("General", "SLocalSavePath", "Games", m_dicSettingsFiles["FOIniPath"]));
+
+			m_lstSettingsPages.Add(new UpdateSettingsPage());
 
 			m_lstTools.Add(new GameTool("BSA Tool", "Creates and unpacks BSA files.", LaunchBSATool));
 			m_lstTools.Add(new GameTool("TESsnip", "An ESP/ESM editor.", LaunchTESsnipTool));
@@ -856,7 +855,7 @@ class Script : Fallout3BaseScript {
 					strWorkingDirectory = null;
 				}
 			}
-			strWorkingDirectory = null;
+
 			using (WorkingDirectorySelectionForm wdfForm = new WorkingDirectorySelectionForm(
 					"Could not find Fallout 3 directory." + Environment.NewLine +
 					"Fallout's registry entry appears to be missing or incorrect." + Environment.NewLine +
@@ -885,10 +884,22 @@ class Script : Fallout3BaseScript {
 			return true;
 		}
 
-		public override void Init()
+		public override bool Init()
 		{
+			if (!Properties.Settings.Default.fallout3DoneSetup)
+			{
+				SetupForm sfmSetup = new SetupForm();
+				if (sfmSetup.ShowDialog() == DialogResult.Cancel)
+					return false;
+				/*
+				Properties.Settings.Default.fallout3DoneSetup = true;
+				Properties.Settings.Default.Save();
+				 */
+			}
+
 			CheckForDLCs();
 			ScanForReadonlyPlugins();
+			return true;
 		}
 
 		protected void CheckForDLCs()

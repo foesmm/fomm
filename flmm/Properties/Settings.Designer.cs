@@ -169,18 +169,6 @@ namespace Fomm.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string fallout3ModInfoCacheDirectory {
-            get {
-                return ((string)(this["fallout3ModInfoCacheDirectory"]));
-            }
-            set {
-                this["fallout3ModInfoCacheDirectory"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool checkForNewModVersions {
             get {
@@ -385,29 +373,39 @@ namespace Fomm.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("\r\n<ArrayOfString xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=" +
-            "\"http://www.w3.org/2001/XMLSchema\">\r\n                        <string>Items</stri" +
-            "ng>\r\n                        <string>Items/Guns</string>\r\n                      " +
-            "  <string>Items/Armor</string>\r\n                        <string>Items/Misc</stri" +
-            "ng>\r\n                        <string>Locations</string>\r\n                       " +
-            " <string>Locations/Houses</string>\r\n                        <string>Locations/In" +
-            "teriors</string>\r\n                        <string>Locations/Exteriors</string>\r\n" +
-            "                        <string>Gameplay</string>\r\n                        <stri" +
-            "ng>Gameplay/Perks</string>\r\n                        <string>Gameplay/Realism</st" +
-            "ring>\r\n                        <string>Gameplay/Combat</string>\r\n               " +
-            "         <string>Gameplay/Loot</string>\r\n                        <string>Gamepla" +
-            "y/Enemies</string>\r\n                        <string>Quests</string>\r\n           " +
-            "             <string>Companions</string>\r\n                        <string>ModRes" +
-            "ource</string>\r\n                        <string>UI</string>\r\n                   " +
-            "     <string>Music</string>\r\n                        <string>Replacers</string>\r" +
-            "\n                        <string>Replacers/Meshes</string>\r\n                    " +
-            "    <string>Replacers/Textures</string>\r\n                        <string>Replace" +
-            "rs/Sounds</string>\r\n                        <string>Replacers/Shaders</string>\r\n" +
-            "                        <string>Tweaks</string>\r\n                        <string" +
-            ">Fixes</string>\r\n                        <string>Cosmetic</string>\r\n            " +
-            "            <string>Cosmetic/Races</string>\r\n                        <string>Cos" +
-            "metic/Eyes</string>\r\n                        <string>Cosmetic/Hair</string>     " +
-            "               </ArrayOfString>")]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<ArrayOfString xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+  <string>Items</string>
+  <string>Items/Guns</string>
+  <string>Items/Armor</string>
+  <string>Items/Misc</string>
+  <string>Locations</string>
+  <string>Locations/Houses</string>
+  <string>Locations/Interiors</string>
+  <string>Locations/Exteriors</string>
+  <string>Gameplay</string>
+  <string>Gameplay/Perks</string>
+  <string>Gameplay/Realism</string>
+  <string>Gameplay/Combat</string>
+  <string>Gameplay/Loot</string>
+  <string>Gameplay/Enemies</string>
+  <string>Quests</string>
+  <string>Companions</string>
+  <string>ModResource</string>
+  <string>UI</string>
+  <string>Music</string>
+  <string>Replacers</string>
+  <string>Replacers/Meshes</string>
+  <string>Replacers/Textures</string>
+  <string>Replacers/Sounds</string>
+  <string>Replacers/Shaders</string>
+  <string>Tweaks</string>
+  <string>Fixes</string>
+  <string>Cosmetic</string>
+  <string>Cosmetic/Races</string>
+  <string>Cosmetic/Eyes</string>
+  <string>Cosmetic/Hair</string>
+</ArrayOfString>")]
         public global::Fomm.Util.SettingsList pluginGroups {
             get {
                 return ((global::Fomm.Util.SettingsList)(this["pluginGroups"]));
@@ -444,6 +442,18 @@ namespace Fomm.Properties {
             }
             set {
                 this["fallout3WorkingDirectory"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool fallout3DoneSetup {
+            get {
+                return ((bool)(this["fallout3DoneSetup"]));
+            }
+            set {
+                this["fallout3DoneSetup"] = value;
             }
         }
     }
