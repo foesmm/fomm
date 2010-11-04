@@ -159,6 +159,18 @@ namespace Fomm
 		}
 
 		/// <summary>
+		/// Sets whether the overall progress bar should be a marquee.
+		/// </summary>
+		/// <value>Whether the overall progress bar should be a marquee.</value>
+		public bool OverallProgressMarquee
+		{
+			set
+			{
+				pbrTotalProgress.Style = value ? ProgressBarStyle.Marquee : ProgressBarStyle.Continuous;
+			}
+		}
+
+		/// <summary>
 		/// Sets the step size of the item progress bar.
 		/// </summary>
 		/// <value>The step size of the item progress bar.</value>
