@@ -212,8 +212,8 @@ namespace Fomm.PackageManager.FomodBuilder
 			ProgressDialog.ItemMessage = String.Format("Compressing FOMod...");
 
 			SevenZipCompressor szcCompressor = new SevenZipCompressor();
-			szcCompressor.CompressionLevel = (CompressionLevel)Settings.GetInt("fomodCompressionLevel", (Int32)CompressionLevel.Ultra);
-			szcCompressor.ArchiveFormat = (OutArchiveFormat)Settings.GetInt("fomodCompressionFormat", (Int32)OutArchiveFormat.Zip);
+			szcCompressor.CompressionLevel = Properties.Settings.Default.fomodCompressionLevel;
+			szcCompressor.ArchiveFormat = Properties.Settings.Default.fomodCompressionFormat;
 			szcCompressor.CompressionMethod = CompressionMethod.Default;
 			switch (szcCompressor.ArchiveFormat)
 			{
@@ -311,7 +311,7 @@ namespace Fomm.PackageManager.FomodBuilder
 			if ((p_rmeReadme != null) && !String.IsNullOrEmpty(p_rmeReadme.Text))
 			{
 				string strReadmeFileName = String.Format("Readme - {0}{1}", p_strFomodName, p_rmeReadme.Extension);
-				if (Settings.GetBool("UseDocsFolder"))
+				if (Properties.Settings.Default.UseDocsFolder)
 					strReadmeFileName = Path.Combine("docs", strReadmeFileName);
 				File.WriteAllText(Path.Combine(p_strFomodFolder, strReadmeFileName), p_rmeReadme.Text);
 			}

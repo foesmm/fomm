@@ -42,6 +42,13 @@
 			this.label3 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.tbxFomodFileName = new System.Windows.Forms.TextBox();
+			this.vtpHowTo = new Fomm.Controls.VerticalTabPage();
+			this.panel7 = new System.Windows.Forms.Panel();
+			this.tbxHowTo = new System.Windows.Forms.TextBox();
+			this.panel6 = new System.Windows.Forms.Panel();
+			this.autosizeLabel3 = new Fomm.Controls.AutosizeLabel();
+			this.vtpInfo = new Fomm.Controls.VerticalTabPage();
+			this.finInfo = new Fomm.PackageManager.FomodInfoControl();
 			this.vtpDownloadLocations = new Fomm.Controls.VerticalTabPage();
 			this.sdsDownloadLocations = new Fomm.PackageManager.FomodBuilder.SourceDownloadSelector();
 			this.panel5 = new System.Windows.Forms.Panel();
@@ -55,19 +62,12 @@
 			this.butGenerateReadme = new System.Windows.Forms.Button();
 			this.label7 = new System.Windows.Forms.Label();
 			this.label6 = new System.Windows.Forms.Label();
-			this.vtpHowTo = new Fomm.Controls.VerticalTabPage();
-			this.panel7 = new System.Windows.Forms.Panel();
-			this.tbxHowTo = new System.Windows.Forms.TextBox();
-			this.panel6 = new System.Windows.Forms.Panel();
-			this.autosizeLabel3 = new Fomm.Controls.AutosizeLabel();
 			this.vtpOutput = new Fomm.Controls.VerticalTabPage();
 			this.label10 = new System.Windows.Forms.Label();
 			this.butSelectPFPFolder = new System.Windows.Forms.Button();
 			this.tbxPFPPath = new System.Windows.Forms.TextBox();
 			this.cbxPFP = new System.Windows.Forms.CheckBox();
 			this.cbxFomod = new System.Windows.Forms.CheckBox();
-			this.vtpInfo = new Fomm.Controls.VerticalTabPage();
-			this.finInfo = new Fomm.PackageManager.FomodInfoControl();
 			this.vtpScript = new Fomm.Controls.VerticalTabPage();
 			this.fseScriptEditor = new Fomm.PackageManager.Controls.FomodScriptEditor();
 			this.panel3 = new System.Windows.Forms.Panel();
@@ -80,16 +80,16 @@
 			this.vtcFomodData.SuspendLayout();
 			this.vtpSources.SuspendLayout();
 			this.panel1.SuspendLayout();
+			this.vtpHowTo.SuspendLayout();
+			this.panel7.SuspendLayout();
+			this.panel6.SuspendLayout();
+			this.vtpInfo.SuspendLayout();
 			this.vtpDownloadLocations.SuspendLayout();
 			this.panel5.SuspendLayout();
 			this.panel4.SuspendLayout();
 			this.vtpReadme.SuspendLayout();
 			this.panel2.SuspendLayout();
-			this.vtpHowTo.SuspendLayout();
-			this.panel7.SuspendLayout();
-			this.panel6.SuspendLayout();
 			this.vtpOutput.SuspendLayout();
-			this.vtpInfo.SuspendLayout();
 			this.vtpScript.SuspendLayout();
 			this.panel3.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.sspError)).BeginInit();
@@ -150,18 +150,18 @@
 			// vtcFomodData
 			// 
 			this.vtcFomodData.BackColor = System.Drawing.SystemColors.Window;
+			this.vtcFomodData.Controls.Add(this.vtpDownloadLocations);
 			this.vtcFomodData.Controls.Add(this.vtpSources);
 			this.vtcFomodData.Controls.Add(this.vtpHowTo);
 			this.vtcFomodData.Controls.Add(this.vtpInfo);
-			this.vtcFomodData.Controls.Add(this.vtpDownloadLocations);
 			this.vtcFomodData.Controls.Add(this.vtpReadme);
 			this.vtcFomodData.Controls.Add(this.vtpOutput);
 			this.vtcFomodData.Controls.Add(this.vtpScript);
 			this.vtcFomodData.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.vtcFomodData.Location = new System.Drawing.Point(0, 36);
 			this.vtcFomodData.Name = "vtcFomodData";
-			this.vtcFomodData.SelectedIndex = 0;
-			this.vtcFomodData.SelectedTabPage = this.vtpSources;
+			this.vtcFomodData.SelectedIndex = 3;
+			this.vtcFomodData.SelectedTabPage = this.vtpDownloadLocations;
 			this.vtcFomodData.Size = new System.Drawing.Size(595, 367);
 			this.vtcFomodData.TabIndex = 2;
 			this.vtcFomodData.Text = "verticalTabControl1";
@@ -229,6 +229,100 @@
 			this.tbxFomodFileName.TabIndex = 0;
 			this.tbxFomodFileName.Validating += new System.ComponentModel.CancelEventHandler(this.tbxFomodFileName_Validating);
 			// 
+			// vtpHowTo
+			// 
+			this.vtpHowTo.BackColor = System.Drawing.SystemColors.Control;
+			this.vtpHowTo.Controls.Add(this.panel7);
+			this.vtpHowTo.Controls.Add(this.panel6);
+			this.vtpHowTo.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.vtpHowTo.Location = new System.Drawing.Point(0, 0);
+			this.vtpHowTo.Name = "vtpHowTo";
+			this.vtpHowTo.PageIndex = 5;
+			this.vtpHowTo.Size = new System.Drawing.Size(595, 367);
+			this.vtpHowTo.TabIndex = 7;
+			this.vtpHowTo.Text = "Custom HowTo";
+			// 
+			// panel7
+			// 
+			this.panel7.Controls.Add(this.tbxHowTo);
+			this.panel7.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.panel7.Location = new System.Drawing.Point(0, 43);
+			this.panel7.Name = "panel7";
+			this.panel7.Padding = new System.Windows.Forms.Padding(6);
+			this.panel7.Size = new System.Drawing.Size(595, 324);
+			this.panel7.TabIndex = 2;
+			// 
+			// tbxHowTo
+			// 
+			this.tbxHowTo.AcceptsReturn = true;
+			this.tbxHowTo.AcceptsTab = true;
+			this.tbxHowTo.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tbxHowTo.Location = new System.Drawing.Point(6, 6);
+			this.tbxHowTo.Multiline = true;
+			this.tbxHowTo.Name = "tbxHowTo";
+			this.tbxHowTo.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+			this.tbxHowTo.Size = new System.Drawing.Size(583, 312);
+			this.tbxHowTo.TabIndex = 1;
+			this.tbxHowTo.WordWrap = false;
+			// 
+			// panel6
+			// 
+			this.panel6.AutoSize = true;
+			this.panel6.Controls.Add(this.autosizeLabel3);
+			this.panel6.Dock = System.Windows.Forms.DockStyle.Top;
+			this.panel6.Location = new System.Drawing.Point(0, 0);
+			this.panel6.Name = "panel6";
+			this.panel6.Padding = new System.Windows.Forms.Padding(6);
+			this.panel6.Size = new System.Drawing.Size(595, 43);
+			this.panel6.TabIndex = 0;
+			// 
+			// autosizeLabel3
+			// 
+			this.autosizeLabel3.BackColor = System.Drawing.SystemColors.Control;
+			this.autosizeLabel3.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			this.autosizeLabel3.Dock = System.Windows.Forms.DockStyle.Top;
+			this.autosizeLabel3.Enabled = false;
+			this.autosizeLabel3.Location = new System.Drawing.Point(6, 6);
+			this.autosizeLabel3.Name = "autosizeLabel3";
+			this.autosizeLabel3.ReadOnly = true;
+			this.autosizeLabel3.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
+			this.autosizeLabel3.Size = new System.Drawing.Size(583, 31);
+			this.autosizeLabel3.TabIndex = 0;
+			this.autosizeLabel3.TabStop = false;
+			this.autosizeLabel3.Text = "This is used for advanced customization of the Premade FOMod Pack HowTo file. Unl" +
+				"ess you know what this is for, you can ignore it.";
+			// 
+			// vtpInfo
+			// 
+			this.vtpInfo.BackColor = System.Drawing.SystemColors.Control;
+			this.vtpInfo.Controls.Add(this.finInfo);
+			this.vtpInfo.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.vtpInfo.Location = new System.Drawing.Point(0, 0);
+			this.vtpInfo.Name = "vtpInfo";
+			this.vtpInfo.PageIndex = 2;
+			this.vtpInfo.Size = new System.Drawing.Size(595, 367);
+			this.vtpInfo.TabIndex = 4;
+			this.vtpInfo.Text = "FOMod Info";
+			// 
+			// finInfo
+			// 
+			this.finInfo.Author = "";
+			this.finInfo.AutoScroll = true;
+			this.finInfo.Description = "";
+			this.finInfo.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.finInfo.Email = "";
+			this.finInfo.Groups = new string[0];
+			this.finInfo.HumanReadableVersion = "";
+			this.finInfo.Location = new System.Drawing.Point(0, 0);
+			this.finInfo.MachineVersion = ((System.Version)(resources.GetObject("finInfo.MachineVersion")));
+			this.finInfo.MinFommVersion = ((System.Version)(resources.GetObject("finInfo.MinFommVersion")));
+			this.finInfo.ModName = "";
+			this.finInfo.Name = "finInfo";
+			this.finInfo.Screenshot = null;
+			this.finInfo.Size = new System.Drawing.Size(595, 367);
+			this.finInfo.TabIndex = 0;
+			this.finInfo.Website = "";
+			// 
 			// vtpDownloadLocations
 			// 
 			this.vtpDownloadLocations.BackColor = System.Drawing.SystemColors.Control;
@@ -236,10 +330,10 @@
 			this.vtpDownloadLocations.Controls.Add(this.panel5);
 			this.vtpDownloadLocations.Controls.Add(this.panel4);
 			this.vtpDownloadLocations.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.vtpDownloadLocations.Location = new System.Drawing.Point(0, 0);
+			this.vtpDownloadLocations.Location = new System.Drawing.Point(150, 0);
 			this.vtpDownloadLocations.Name = "vtpDownloadLocations";
 			this.vtpDownloadLocations.PageIndex = 1;
-			this.vtpDownloadLocations.Size = new System.Drawing.Size(595, 367);
+			this.vtpDownloadLocations.Size = new System.Drawing.Size(445, 367);
 			this.vtpDownloadLocations.TabIndex = 2;
 			this.vtpDownloadLocations.Text = "Download Locations";
 			// 
@@ -249,7 +343,7 @@
 			this.sdsDownloadLocations.Location = new System.Drawing.Point(0, 89);
 			this.sdsDownloadLocations.Name = "sdsDownloadLocations";
 			this.sdsDownloadLocations.Padding = new System.Windows.Forms.Padding(6);
-			this.sdsDownloadLocations.Size = new System.Drawing.Size(595, 278);
+			this.sdsDownloadLocations.Size = new System.Drawing.Size(445, 278);
 			this.sdsDownloadLocations.TabIndex = 2;
 			// 
 			// panel5
@@ -261,7 +355,7 @@
 			this.panel5.Location = new System.Drawing.Point(0, 17);
 			this.panel5.Name = "panel5";
 			this.panel5.Padding = new System.Windows.Forms.Padding(5);
-			this.panel5.Size = new System.Drawing.Size(595, 72);
+			this.panel5.Size = new System.Drawing.Size(445, 72);
 			this.panel5.TabIndex = 4;
 			// 
 			// autosizeLabel2
@@ -270,15 +364,15 @@
 			this.autosizeLabel2.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.autosizeLabel2.Dock = System.Windows.Forms.DockStyle.Top;
 			this.autosizeLabel2.Enabled = false;
-			this.autosizeLabel2.Location = new System.Drawing.Point(5, 49);
+			this.autosizeLabel2.Location = new System.Drawing.Point(5, 62);
 			this.autosizeLabel2.Name = "autosizeLabel2";
 			this.autosizeLabel2.ReadOnly = true;
 			this.autosizeLabel2.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
-			this.autosizeLabel2.Size = new System.Drawing.Size(585, 18);
+			this.autosizeLabel2.Size = new System.Drawing.Size(435, 31);
 			this.autosizeLabel2.TabIndex = 1;
 			this.autosizeLabel2.TabStop = false;
-			this.autosizeLabel2.Text = "The Hidden and Generated columns are for advanced configuration, and can be le" +
-				"ft alone if you know what they\'re for.";
+			this.autosizeLabel2.Text = "The Hidden and Generated columns are for advanced configuration, and can be left " +
+				"alone if you know what they\'re for.";
 			// 
 			// autosizeLabel1
 			// 
@@ -290,7 +384,7 @@
 			this.autosizeLabel1.Name = "autosizeLabel1";
 			this.autosizeLabel1.ReadOnly = true;
 			this.autosizeLabel1.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
-			this.autosizeLabel1.Size = new System.Drawing.Size(585, 44);
+			this.autosizeLabel1.Size = new System.Drawing.Size(585, 57);
 			this.autosizeLabel1.TabIndex = 0;
 			this.autosizeLabel1.TabStop = false;
 			this.autosizeLabel1.Text = resources.GetString("autosizeLabel1.Text");
@@ -301,7 +395,7 @@
 			this.panel4.Dock = System.Windows.Forms.DockStyle.Top;
 			this.panel4.Location = new System.Drawing.Point(0, 0);
 			this.panel4.Name = "panel4";
-			this.panel4.Size = new System.Drawing.Size(595, 17);
+			this.panel4.Size = new System.Drawing.Size(445, 17);
 			this.panel4.TabIndex = 3;
 			// 
 			// label4
@@ -375,69 +469,6 @@
 			this.label6.TabIndex = 0;
 			this.label6.Text = "Provide the text for the readme file.";
 			// 
-			// vtpHowTo
-			// 
-			this.vtpHowTo.BackColor = System.Drawing.SystemColors.Control;
-			this.vtpHowTo.Controls.Add(this.panel7);
-			this.vtpHowTo.Controls.Add(this.panel6);
-			this.vtpHowTo.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.vtpHowTo.Location = new System.Drawing.Point(150, 0);
-			this.vtpHowTo.Name = "vtpHowTo";
-			this.vtpHowTo.PageIndex = 5;
-			this.vtpHowTo.Size = new System.Drawing.Size(445, 367);
-			this.vtpHowTo.TabIndex = 7;
-			this.vtpHowTo.Text = "Custom HowTo";
-			// 
-			// panel7
-			// 
-			this.panel7.Controls.Add(this.tbxHowTo);
-			this.panel7.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panel7.Location = new System.Drawing.Point(0, 43);
-			this.panel7.Name = "panel7";
-			this.panel7.Padding = new System.Windows.Forms.Padding(6);
-			this.panel7.Size = new System.Drawing.Size(445, 324);
-			this.panel7.TabIndex = 2;
-			// 
-			// tbxHowTo
-			// 
-			this.tbxHowTo.AcceptsReturn = true;
-			this.tbxHowTo.AcceptsTab = true;
-			this.tbxHowTo.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tbxHowTo.Location = new System.Drawing.Point(6, 6);
-			this.tbxHowTo.Multiline = true;
-			this.tbxHowTo.Name = "tbxHowTo";
-			this.tbxHowTo.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-			this.tbxHowTo.Size = new System.Drawing.Size(433, 312);
-			this.tbxHowTo.TabIndex = 1;
-			this.tbxHowTo.WordWrap = false;
-			// 
-			// panel6
-			// 
-			this.panel6.AutoSize = true;
-			this.panel6.Controls.Add(this.autosizeLabel3);
-			this.panel6.Dock = System.Windows.Forms.DockStyle.Top;
-			this.panel6.Location = new System.Drawing.Point(0, 0);
-			this.panel6.Name = "panel6";
-			this.panel6.Padding = new System.Windows.Forms.Padding(6);
-			this.panel6.Size = new System.Drawing.Size(445, 43);
-			this.panel6.TabIndex = 0;
-			// 
-			// autosizeLabel3
-			// 
-			this.autosizeLabel3.BackColor = System.Drawing.SystemColors.Control;
-			this.autosizeLabel3.BorderStyle = System.Windows.Forms.BorderStyle.None;
-			this.autosizeLabel3.Dock = System.Windows.Forms.DockStyle.Top;
-			this.autosizeLabel3.Enabled = false;
-			this.autosizeLabel3.Location = new System.Drawing.Point(6, 6);
-			this.autosizeLabel3.Name = "autosizeLabel3";
-			this.autosizeLabel3.ReadOnly = true;
-			this.autosizeLabel3.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
-			this.autosizeLabel3.Size = new System.Drawing.Size(433, 31);
-			this.autosizeLabel3.TabIndex = 0;
-			this.autosizeLabel3.TabStop = false;
-			this.autosizeLabel3.Text = "This is used for advanced customization of the Premade FOMod Pack HowTo file. Unl" +
-				"ess you know what this is for, you can ignore it.";
-			// 
 			// vtpOutput
 			// 
 			this.vtpOutput.BackColor = System.Drawing.SystemColors.Control;
@@ -506,37 +537,6 @@
 			this.cbxFomod.Text = "Create FOMod";
 			this.cbxFomod.UseVisualStyleBackColor = true;
 			// 
-			// vtpInfo
-			// 
-			this.vtpInfo.BackColor = System.Drawing.SystemColors.Control;
-			this.vtpInfo.Controls.Add(this.finInfo);
-			this.vtpInfo.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.vtpInfo.Location = new System.Drawing.Point(150, 0);
-			this.vtpInfo.Name = "vtpInfo";
-			this.vtpInfo.PageIndex = 2;
-			this.vtpInfo.Size = new System.Drawing.Size(445, 367);
-			this.vtpInfo.TabIndex = 4;
-			this.vtpInfo.Text = "FOMod Info";
-			// 
-			// finInfo
-			// 
-			this.finInfo.Author = "";
-			this.finInfo.AutoScroll = true;
-			this.finInfo.Description = "";
-			this.finInfo.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.finInfo.Email = "";
-			this.finInfo.Groups = new string[0];
-			this.finInfo.HumanReadableVersion = "";
-			this.finInfo.Location = new System.Drawing.Point(0, 0);
-			this.finInfo.MachineVersion = ((System.Version)(resources.GetObject("finInfo.MachineVersion")));
-			this.finInfo.MinFommVersion = ((System.Version)(resources.GetObject("finInfo.MinFommVersion")));
-			this.finInfo.ModName = "";
-			this.finInfo.Name = "finInfo";
-			this.finInfo.Screenshot = null;
-			this.finInfo.Size = new System.Drawing.Size(445, 367);
-			this.finInfo.TabIndex = 0;
-			this.finInfo.Website = "";
-			// 
 			// vtpScript
 			// 
 			this.vtpScript.BackColor = System.Drawing.SystemColors.Control;
@@ -558,7 +558,7 @@
 			this.fseScriptEditor.Script = null;
 			this.fseScriptEditor.Size = new System.Drawing.Size(595, 327);
 			this.fseScriptEditor.TabIndex = 1;
-			this.fseScriptEditor.GotXMLAutoCompleteList += new System.EventHandler<Fomm.Controls.RegeneratableAutoCompleteListEventArgs>(fseScriptEditor_GotXMLAutoCompleteList);
+			this.fseScriptEditor.GotXMLAutoCompleteList += new System.EventHandler<Fomm.Controls.RegeneratableAutoCompleteListEventArgs>(this.fseScriptEditor_GotXMLAutoCompleteList);
 			// 
 			// panel3
 			// 
@@ -618,6 +618,12 @@
 			this.vtpSources.ResumeLayout(false);
 			this.panel1.ResumeLayout(false);
 			this.panel1.PerformLayout();
+			this.vtpHowTo.ResumeLayout(false);
+			this.vtpHowTo.PerformLayout();
+			this.panel7.ResumeLayout(false);
+			this.panel7.PerformLayout();
+			this.panel6.ResumeLayout(false);
+			this.vtpInfo.ResumeLayout(false);
 			this.vtpDownloadLocations.ResumeLayout(false);
 			this.vtpDownloadLocations.PerformLayout();
 			this.panel5.ResumeLayout(false);
@@ -626,14 +632,8 @@
 			this.vtpReadme.ResumeLayout(false);
 			this.panel2.ResumeLayout(false);
 			this.panel2.PerformLayout();
-			this.vtpHowTo.ResumeLayout(false);
-			this.vtpHowTo.PerformLayout();
-			this.panel7.ResumeLayout(false);
-			this.panel7.PerformLayout();
-			this.panel6.ResumeLayout(false);
 			this.vtpOutput.ResumeLayout(false);
 			this.vtpOutput.PerformLayout();
-			this.vtpInfo.ResumeLayout(false);
 			this.vtpScript.ResumeLayout(false);
 			this.panel3.ResumeLayout(false);
 			this.panel3.PerformLayout();

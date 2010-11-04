@@ -41,7 +41,7 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
 			cbxSeverity.DataSource = Enum.GetValues(typeof(CriticalRecordInfo.ConflictSeverity));
 			cbxSeverity.SelectedItem = CriticalRecordInfo.ConflictSeverity.Conflict;
 
-			Settings.GetWindowPosition("CREditor", this);
+			Properties.Settings.Default.windowPositions.GetWindowPosition("CREditor", this);
 		}
 
 		/// <summary>
@@ -290,7 +290,8 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
 		protected override void OnClosing(CancelEventArgs e)
 		{
 			tvwRecords.Nodes.Clear();
-			Settings.SetWindowPosition("CREditor", this);
+			Properties.Settings.Default.windowPositions.SetWindowPosition("CREditor", this);
+			Properties.Settings.Default.Save(); 
 			base.OnClosing(e);
 		}
 	}

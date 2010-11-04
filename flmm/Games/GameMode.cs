@@ -11,9 +11,6 @@ namespace Fomm.Games
 {
 	public abstract class GameMode
 	{
-		private string m_strModDirectory = null;
-		private string m_strModInfoCacheDirectory = null;
-
 		#region Properties
 
 		/// <summary>
@@ -38,36 +35,20 @@ namespace Fomm.Games
 		/// Gets or sets the modDirectory of the GameMode.
 		/// </summary>
 		/// <value>The modDirectory of the GameMode.</value>
-		public string ModDirectory
+		public abstract string ModDirectory
 		{
-			get
-			{
-				if (String.IsNullOrEmpty(m_strModDirectory))
-					SetModDirectory();
-				return m_strModDirectory;
-			}
-			protected set
-			{
-				m_strModDirectory = value;
-			}
+			get;
+			set;
 		}
 
 		/// <summary>
 		/// Gets or sets the modInfoCacheDirectory of the GameMode.
 		/// </summary>
 		/// <value>The modInfoCacheDirectory of the GameMode.</value>
-		public string ModInfoCacheDirectory
+		public abstract string ModInfoCacheDirectory
 		{
-			get
-			{
-				if (String.IsNullOrEmpty(m_strModInfoCacheDirectory))
-					SetModInfoCacheDirectory();
-				return m_strModInfoCacheDirectory;
-			}
-			protected set
-			{
-				m_strModInfoCacheDirectory = value;
-			}
+			get;
+			set;
 		}
 
 		public abstract string OverwriteDirectory
@@ -150,9 +131,6 @@ namespace Fomm.Games
 
 		public GameMode()
 		{
-			if (!Directory.Exists(ModDirectory)) Directory.CreateDirectory(ModDirectory);
-			if (!Directory.Exists(ModInfoCacheDirectory)) Directory.CreateDirectory(ModInfoCacheDirectory);
-
 			//this folder can't be created here, as the path may not be set
 			// further, this folder should be created by the game, so I don't think the appropriate way
 			// to handle thing if it's missing is to create it
@@ -249,18 +227,6 @@ class Script : GenericBaseScript {
 		}
 
 		#endregion
-
-		protected void SetModDirectory()
-		{
-			m_strModDirectory = Settings.GetString("FomodDir");
-			if (String.IsNullOrEmpty(m_strModDirectory))
-				m_strModDirectory = Path.Combine(Program.ExecutableDirectory, "mods");
-		}
-
-		protected void SetModInfoCacheDirectory()
-		{
-			ModInfoCacheDirectory = Path.Combine(ModDirectory, "cache");
-		}
 
 		public abstract bool HandleStandaloneArguments(string[] p_strArgs);
 

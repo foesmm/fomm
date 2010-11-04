@@ -40,7 +40,7 @@ namespace Fomm.PackageManager
 			InitializeComponent();
 
 			Icon = Fomm.Properties.Resources.fomm02;
-			Settings.GetWindowPosition("EditReadmeForm", this);
+			Properties.Settings.Default.windowPositions.GetWindowPosition("EditReadmeForm", this);
 		}
 
 		#endregion
@@ -54,7 +54,8 @@ namespace Fomm.PackageManager
 		/// <param name="e">A <see cref="CancelEventArgs"/> describing the event arguments.</param>
 		protected override void OnClosing(CancelEventArgs e)
 		{
-			Settings.SetWindowPosition("EditReadmeForm", this);
+			Properties.Settings.Default.windowPositions.SetWindowPosition("EditReadmeForm", this);
+			Properties.Settings.Default.Save();
 			base.OnClosing(e);
 		}
 

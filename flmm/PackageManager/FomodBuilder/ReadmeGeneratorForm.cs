@@ -63,7 +63,7 @@ namespace Fomm.PackageManager.FomodBuilder
 			InitializeComponent();
 
 			Icon = Fomm.Properties.Resources.fomm02;
-			Settings.GetWindowPosition("ReadmeGeneratorForm", this);
+			Properties.Settings.Default.windowPositions.GetWindowPosition("ReadmeGeneratorForm", this);
 		}
 
 		#endregion
@@ -77,7 +77,8 @@ namespace Fomm.PackageManager.FomodBuilder
 		/// <param name="e">A <see cref="CancelEventArgs"/> describing the event arguments.</param>
 		protected override void OnClosing(CancelEventArgs e)
 		{
-			Settings.SetWindowPosition("ReadmeGeneratorForm", this);
+			Properties.Settings.Default.windowPositions.SetWindowPosition("ReadmeGeneratorForm", this);
+			Properties.Settings.Default.Save(); 
 			base.OnClosing(e);
 		}
 

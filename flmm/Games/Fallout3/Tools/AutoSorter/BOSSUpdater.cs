@@ -11,16 +11,14 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
 	/// </summary>
 	public class BOSSUpdater
 	{
-		private const string MASTERLIST_URL = "http://better-oblivion-sorting-software.googlecode.com/svn/data/boss-fallout/masterlist.txt";
+		//private const string MASTERLIST_URL = "http://better-oblivion-sorting-software.googlecode.com/svn/data/boss-fallout/masterlist.txt";
 		private static Regex m_rgxVersion = new Regex(@"Revision (\d+): ");
 
 		public static string MasterListUrl
 		{
 			get
 			{
-				string strMasterListUrl = Settings.GetString("MasterListUpdateUrl");
-				if (String.IsNullOrEmpty(strMasterListUrl))
-					strMasterListUrl = MASTERLIST_URL;
+				string strMasterListUrl = Properties.Settings.Default.fallout3MasterListUpdateUrl;
 				return strMasterListUrl;
 			}
 		}

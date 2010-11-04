@@ -17,7 +17,7 @@ namespace Fomm.PackageManager
 		{
 			InitializeComponent();
 			this.Icon = Fomm.Properties.Resources.fomm02;
-			Settings.GetWindowPosition("TextEditor", this);
+			Properties.Settings.Default.windowPositions.GetWindowPosition("TextEditor", this);
 			switch (type)
 			{
 				case TextEditorType.Text:
@@ -70,7 +70,8 @@ namespace Fomm.PackageManager
 						return;
 				}
 			}
-			Settings.SetWindowPosition("TextEditor", this);
+			Properties.Settings.Default.windowPositions.SetWindowPosition("TextEditor", this);
+			Properties.Settings.Default.Save(); 
 		}
 	}
 }

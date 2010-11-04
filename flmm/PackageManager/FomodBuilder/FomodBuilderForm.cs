@@ -77,12 +77,12 @@ namespace Fomm.PackageManager.FomodBuilder
 			InitializeComponent();
 
 			Icon = Fomm.Properties.Resources.fomm02;
-			Settings.GetWindowPosition("FomodBuilderForm", this);
+			Properties.Settings.Default.windowPositions.GetWindowPosition("FomodBuilderForm", this);
 
 			tbxPFPPath.DataBindings.Add("Enabled", cbxPFP, "Checked");
 			butSelectPFPFolder.DataBindings.Add("Enabled", cbxPFP, "Checked");
 			fseScriptEditor.DataBindings.Add("Enabled", cbxUseScript, "Checked");
-			tbxPFPPath.Text = Settings.GetString("pfpOutputPath");
+			tbxPFPPath.Text = Properties.Settings.Default.pfpOutputPath;
 		}
 
 		/// <summary>
@@ -120,7 +120,8 @@ namespace Fomm.PackageManager.FomodBuilder
 		/// <param name="e">A <see cref="CancelEventArgs"/> describing the event arguments.</param>
 		protected override void OnClosing(CancelEventArgs e)
 		{
-			Settings.SetWindowPosition("FomodBuilderForm", this);
+			Properties.Settings.Default.windowPositions.SetWindowPosition("FomodBuilderForm", this);
+			Properties.Settings.Default.Save(); 
 			base.OnClosing(e);
 		}
 
@@ -193,7 +194,8 @@ namespace Fomm.PackageManager.FomodBuilder
 			}
 			if (cbxPFP.Checked)
 			{
-				Settings.SetString("pfpOutputPath", tbxPFPPath.Text);
+				Properties.Settings.Default.pfpOutputPath = tbxPFPPath.Text;
+				Properties.Settings.Default.Save();
 
 				string strVersion = "1.0";
 				string strMachineVersion = "1.0";

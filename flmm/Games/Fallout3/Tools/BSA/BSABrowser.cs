@@ -10,24 +10,18 @@ namespace Fomm.Games.Fallout3.Tools.BSA
 		{
 			InitializeComponent();
 			this.Icon = Fomm.Properties.Resources.fomm02;
-			string path = Settings.GetString("LastBSAUnpackPath");
-			if (path != null) SaveAllDialog.SelectedPath = path;
+			string path = Properties.Settings.Default.fallout3LastBSAUnpackPath;
+			if (!String.IsNullOrEmpty(path))
+				SaveAllDialog.SelectedPath = path;
 			OpenBSA.InitialDirectory = Path.GetFullPath(Program.GameMode.PluginsPath);
 
-			Settings.GetWindowPosition("BSABrowser", this);
+			Properties.Settings.Default.windowPositions.GetWindowPosition("BSABrowser", this);
 		}
 
 		private void BSABrowser_Load(object sender, EventArgs e)
 		{
-			string tmp = Settings.GetString("BSABrowserPanelSplit");
-			if (tmp != null)
-			{
-				try
-				{
-					splitContainer1.SplitterDistance = Math.Max(splitContainer1.Panel1MinSize + 1, Math.Min(splitContainer1.Width - (splitContainer1.Panel2MinSize + 1), int.Parse(tmp)));
-				}
-				catch { }
-			}
+			Int32 tmp = Properties.Settings.Default.fallout3BSABrowserPanelSplit;
+			splitContainer1.SplitterDistance = Math.Max(splitContainer1.Panel1MinSize + 1, Math.Min(splitContainer1.Width - (splitContainer1.Panel2MinSize + 1), tmp));
 		}
 
 		internal BSABrowser(string BSAPath)
@@ -440,9 +434,10 @@ namespace Fomm.Games.Fallout3.Tools.BSA
 		private void BSABrowser_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			if (ArchiveOpen) CloseArchive();
-			Settings.SetWindowPosition("BSABrowser", this);
-			Settings.SetString("LastBSAUnpackPath", SaveAllDialog.SelectedPath);
-			Settings.SetString("BSABrowserPanelSplit", splitContainer1.SplitterDistance.ToString());
+			Properties.Settings.Default.windowPositions.SetWindowPosition("BSABrowser", this);
+			Properties.Settings.Default.fallout3LastBSAUnpackPath = SaveAllDialog.SelectedPath;
+			Properties.Settings.Default.fallout3BSABrowserPanelSplit = splitContainer1.SplitterDistance;
+			Properties.Settings.Default.Save();
 		}
 
 		private void bPreview_Click(object sender, EventArgs e)

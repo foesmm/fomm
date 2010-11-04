@@ -47,13 +47,22 @@ namespace Fomm.PackageManager
 		{
 			InitializeComponent();
 
-			string[] strGroups = Settings.GetStringArray("fomodGroups");
-			if (strGroups != null)
+			//this try...catch is required because design time viewing on the control doesn't recognize
+			// the implicit conversion of Properties.Settings.Default.pluginGroups to an array of string.
+			// no idea why
+			try
 			{
-				clbGroups.SuspendLayout();
-				foreach (string strGroup in strGroups)
-					clbGroups.Items.Add(strGroup, 0);
-				clbGroups.ResumeLayout();
+				string[] strGroups = Properties.Settings.Default.pluginGroups;
+				if (strGroups != null)
+				{
+					clbGroups.SuspendLayout();
+					foreach (string strGroup in strGroups)
+						clbGroups.Items.Add(strGroup, 0);
+					clbGroups.ResumeLayout();
+				}
+			}
+			catch
+			{
 			}
 		}
 

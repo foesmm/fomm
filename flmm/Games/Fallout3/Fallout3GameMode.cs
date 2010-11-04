@@ -39,16 +39,63 @@ namespace Fomm.Games.Fallout3
 		private List<GameTool> m_lstGameSettingsTools = new List<GameTool>();
 		private List<GameTool> m_lstRightClickTools = new List<GameTool>();
 		private List<GameTool> m_lstLoadOrderTools = new List<GameTool>();
-		private List<GameTool> m_lstGameLaunchCommands = new List<GameTool>();		
+		private List<GameTool> m_lstGameLaunchCommands = new List<GameTool>();
 		private Fallout3PluginManager m_pmgPluginManager = new Fallout3PluginManager();
 
 		#region Properties
+
+		/// <summary>
+		/// Gets or sets the modDirectory of the GameMode.
+		/// </summary>
+		/// <value>The modDirectory of the GameMode.</value>
+		public override string ModDirectory
+		{
+			get
+			{
+				string strModDirectory = Properties.Settings.Default.fallout3ModDirectory;
+				if (String.IsNullOrEmpty(strModDirectory))
+					throw new Exception("The Mod Directory for Fallout 3 Mods has not been set.");
+				if (!Directory.Exists(strModDirectory))
+					Directory.CreateDirectory(strModDirectory);
+				return strModDirectory;
+			}
+			set
+			{
+				Properties.Settings.Default.fallout3ModDirectory = value;
+				Properties.Settings.Default.Save();
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the modInfoCacheDirectory of the GameMode.
+		/// </summary>
+		/// <value>The modInfoCacheDirectory of the GameMode.</value>
+		public override string ModInfoCacheDirectory
+		{
+			get
+			{
+				string strCache = Properties.Settings.Default.fallout3ModInfoCacheDirectory;
+				if (String.IsNullOrEmpty(strCache))
+				{
+					strCache = Path.Combine(ModDirectory, "cache");
+					ModInfoCacheDirectory = strCache;
+				}
+				if (!Directory.Exists(strCache))
+					Directory.CreateDirectory(strCache);
+				return strCache;
+			}
+			set
+			{
+				Properties.Settings.Default.fallout3ModInfoCacheDirectory = value;
+				Properties.Settings.Default.Save();
+			}
+		}
 
 		public override GameTool LaunchCommand
 		{
 			get
 			{
-				if (Settings.GetString("LaunchCommand") == null && File.Exists("fose_loader.exe"))
+				if (String.IsNullOrEmpty(Properties.Settings.Default.fallout3LaunchCommand) && File.Exists("fose_loader.exe"))
 					return new GameTool("Launch FOSE", "Launches Fallout 3 using FOSE.", LaunchGame);
 				return new GameTool("Launch Fallout 3", "Launches Fallout 3 using FOSE.", LaunchGame);
 			}
@@ -272,9 +319,9 @@ namespace Fomm.Games.Fallout3
 				MessageBox.Show("Please close all utility windows before launching fallout");
 				return;
 			}
-			string command = Settings.GetString("LaunchCommand");
-			string args = Settings.GetString("LaunchCommandArgs");
-			if (command == null)
+			string command = Properties.Settings.Default.fallout3LaunchCommand;
+			string args = Properties.Settings.Default.fallout3LaunchCommandArgs;
+			if (String.IsNullOrEmpty(command))
 			{
 				MessageBox.Show("No custom launch command has been set", "Error");
 				return;
@@ -375,9 +422,9 @@ namespace Fomm.Games.Fallout3
 		/// <param name="p_frmMainForm">The main mod management form.</param>
 		public void LaunchGame(MainForm p_frmMainForm)
 		{
-			string command = Settings.GetString("LaunchCommand");
-			string args = Settings.GetString("LaunchCommandArgs");
-			if (command == null)
+			string command = Properties.Settings.Default.fallout3LaunchCommand;
+			string args = Properties.Settings.Default.fallout3LaunchCommandArgs;
+			if (String.IsNullOrEmpty(command))
 			{
 				if (File.Exists("fose_loader.exe"))
 					command = "fose_loader.exe";
@@ -707,6 +754,8 @@ class Script : Fallout3BaseScript {
 
 		#endregion
 
+		#region Command Line Arguments
+
 		public override bool HandleStandaloneArguments(string[] p_strArgs)
 		{
 			if (!p_strArgs[0].StartsWith("-") && File.Exists(p_strArgs[0]))
@@ -769,57 +818,69 @@ class Script : Fallout3BaseScript {
 			return false;
 		}
 
+		#endregion
+
+		protected bool VerifyWorkingDirectory(string p_strPath)
+		{
+			if (String.IsNullOrEmpty(p_strPath))
+				return false;
+
+			string[] strExes = new string[] { Path.Combine(p_strPath, "fallout3.exe"),
+												Path.Combine(p_strPath, "fallout3ng.exe") };
+			bool booFound = false;
+			foreach (string strExe in strExes)
+				if (File.Exists(strExe))
+				{
+					booFound = true;
+					break;
+				}
+			return booFound;
+		}
+
 		public override bool SetWorkingDirectory(out string p_strErrorMessage)
 		{
 #if TRACE
 			Trace.WriteLine("Looking for Fallout 3.");
 			Trace.Indent();
 #endif
-			//If we aren't in fallouts directory, look it up in the registry
-			if (!File.Exists("Fallout3.exe") && !File.Exists("Fallout3ng.exe"))
-			{
-				if (File.Exists("..\\Fallout3.exe") || File.Exists("..\\Fallout3ng.exe"))
-				{
-					Directory.SetCurrentDirectory(Path.Combine(Directory.GetCurrentDirectory(), ".."));
-#if TRACE
-					Trace.WriteLine("Found, we think (1): " + Path.GetFullPath("."));
-#endif
-				}
-				else
-				{
-					string path = Settings.GetString("FalloutDir");
-					if (path == null)
-					{
-						try
-						{
-							path = Microsoft.Win32.Registry.GetValue(@"HKEY_LOCAL_MACHINE\Software\Bethesda Softworks\Fallout3", "Installed Path", null) as string;
-						}
-						catch
-						{
-							path = null;
-						}
+			string strWorkingDirectory = Properties.Settings.Default.fallout3WorkingDirectory;
 
-					}
-					if (path != null)
-					{
-						Directory.SetCurrentDirectory(path);
-#if TRACE
-						Trace.WriteLine("Found, we think (2): " + Path.GetFullPath("."));
-#endif
-					}
+			if (String.IsNullOrEmpty(strWorkingDirectory) || !Directory.Exists(strWorkingDirectory))
+			{
+				try
+				{
+					strWorkingDirectory = Microsoft.Win32.Registry.GetValue(@"HKEY_LOCAL_MACHINE\Software\Bethesda Softworks\Fallout3", "Installed Path", null) as string;
+				}
+				catch
+				{
+					strWorkingDirectory = null;
 				}
 			}
-#if TRACE
-			Trace.WriteLine("Verifying Fallout 3 location: " + Path.GetFullPath("."));
-#endif
-			if (!File.Exists("fallout3.exe") && !File.Exists("fallout3ng.exe"))
+			strWorkingDirectory = null;
+			using (WorkingDirectorySelectionForm wdfForm = new WorkingDirectorySelectionForm(
+					"Could not find Fallout 3 directory." + Environment.NewLine +
+					"Fallout's registry entry appears to be missing or incorrect." + Environment.NewLine +
+					"Please enter the path to your Fallout 3 game file, or click \"Auto Detect\" to search" +
+					" for the install directory. Note that Auto Detection can take several minutes.",
+					"Fallout 3 Game Directory:",
+					new string[] { "fallout3.exe", "fallout3ng.exe" }))
 			{
-#if TRACE
-				Trace.WriteLine("Could not find Fallout 3.");
-#endif
-				p_strErrorMessage = "Could not find fallout 3 directory." + Environment.NewLine + "Fallout's registry entry appears to be missing or incorrect. Install fomm into fallout's base directory instead.";
-				return false;
+				while (!VerifyWorkingDirectory(strWorkingDirectory))
+				{
+					if (wdfForm.ShowDialog() == DialogResult.Cancel)
+					{
+						p_strErrorMessage = "Could not find Fallout 3 directory.";
+						return false;
+					}
+					strWorkingDirectory = wdfForm.WorkingDirectory;
+				}
 			}
+			Directory.SetCurrentDirectory(strWorkingDirectory);
+			Properties.Settings.Default.fallout3WorkingDirectory = strWorkingDirectory;
+			Properties.Settings.Default.Save();
+#if TRACE
+				Trace.WriteLine("Found: " + Path.GetFullPath("."));
+#endif
 			p_strErrorMessage = null;
 			return true;
 		}
@@ -837,7 +898,7 @@ class Script : Fallout3BaseScript {
 			Trace.Indent();
 #endif
 
-			if (Directory.Exists(DLCDirectory) && Settings.GetString("IgnoreDLC") != "True")
+			if (Directory.Exists(DLCDirectory) && !Properties.Settings.Default.fallout3IgnoreDLC)
 			{
 #if TRACE
 				Trace.Write("Anchorage...");
@@ -863,7 +924,8 @@ class Script : Fallout3BaseScript {
 									File.Move(f3[0], "data\\Anchorage - Sounds.bsa");
 									break;
 								case DialogResult.No:
-									Settings.SetString("IgnoreDLC", "True");
+									Properties.Settings.Default.fallout3IgnoreDLC = true;
+									Properties.Settings.Default.Save();
 									break;
 							}
 						}
@@ -894,7 +956,8 @@ class Script : Fallout3BaseScript {
 									File.Move(f3[0], "data\\ThePitt - Sounds.bsa");
 									break;
 								case DialogResult.No:
-									Settings.SetString("IgnoreDLC", "True");
+									Properties.Settings.Default.fallout3IgnoreDLC = true;
+									Properties.Settings.Default.Save();
 									break;
 							}
 						}
@@ -959,7 +1022,8 @@ class Script : Fallout3BaseScript {
 									}
 									break;
 								case DialogResult.No:
-									Settings.SetString("IgnoreDLC", "True");
+									Properties.Settings.Default.fallout3IgnoreDLC = true;
+									Properties.Settings.Default.Save();
 									break;
 							}
 						}
@@ -990,7 +1054,8 @@ class Script : Fallout3BaseScript {
 									File.Move(f3[0], "data\\PointLookout - Sounds.bsa");
 									break;
 								case DialogResult.No:
-									Settings.SetString("IgnoreDLC", "True");
+									Properties.Settings.Default.fallout3IgnoreDLC = true;
+									Properties.Settings.Default.Save();
 									break;
 							}
 						}
@@ -1021,7 +1086,8 @@ class Script : Fallout3BaseScript {
 									File.Move(f3[0], "data\\Zeta - Sounds.bsa");
 									break;
 								case DialogResult.No:
-									Settings.SetString("IgnoreDLC", "True");
+									Properties.Settings.Default.fallout3IgnoreDLC = true;
+									Properties.Settings.Default.Save();
 									break;
 							}
 						}

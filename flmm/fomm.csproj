@@ -16,6 +16,9 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <TargetFrameworkSubset>
+    </TargetFrameworkSubset>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -28,11 +31,8 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkSubset>
-    </TargetFrameworkSubset>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -200,6 +200,12 @@
     </Compile>
     <Compile Include="Games\PluginInfo.cs" />
     <Compile Include="Games\PluginManager.cs" />
+    <Compile Include="Games\WorkingDirectorySelectionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Games\WorkingDirectorySelectionForm.Designer.cs">
+      <DependentUpon>WorkingDirectorySelectionForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="ImageForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -441,6 +447,11 @@
     <Compile Include="Controls\ReorderableItemListView.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="SaveForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -529,6 +540,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Games\Fallout3\Tools\GraphicsSettings\OverrideSlider.resx">
       <DependentUpon>OverrideSlider.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Games\WorkingDirectorySelectionForm.resx">
+      <DependentUpon>WorkingDirectorySelectionForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ImageForm.resx">
       <DependentUpon>ImageForm.cs</DependentUpon>
@@ -757,9 +771,11 @@
     <Compile Include="TypeConverter.cs" />
     <Compile Include="Util\FileUtil.cs" />
     <Compile Include="Util\Set.cs" />
+    <Compile Include="Util\SettingsList.cs" />
     <Compile Include="Util\SortedList.cs" />
     <Compile Include="Util\TextUtil.cs" />
     <Compile Include="Util\ThreadSafeSevenZipExtractor.cs" />
+    <Compile Include="Util\WindowPositions.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fomm\7z-32bit.dll">
@@ -787,6 +803,10 @@
     <Content Include="fomm\Fallout3\ModConfig5.0.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
     <None Include="Resources\fomm02.ico" />
     <None Include="Resources\RedSquare.png" />
     <None Include="Resources\YellowSquare.png" />
@@ -815,19 +835,19 @@
     <None Include="Resources\justify_right.png" />
     <None Include="Resources\strikeout.png" />
     <None Include="Resources\underline.png" />
-    <Content Include="Games\Fallout3\Tools\TESsnip\ScriptCompiler\ScriptFunctions.xml">
+    <Content Include="fomm\Fallout3\TESsnip\ScriptCompiler\ScriptFunctions.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Games\Fallout3\Tools\TESsnip\ScriptCompiler\ScriptFunctionsFormat.txt">
+    <Content Include="fomm\Fallout3\TESsnip\ScriptCompiler\ScriptFunctionsFormat.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="ShaderDisasm.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Games\Fallout3\Tools\TESsnip\RecordStructure.xml">
+    <Content Include="fomm\Fallout3\TESsnip\RecordStructure.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Games\Fallout3\Tools\TESsnip\RecordStructureFormat.txt">
+    <Content Include="fomm\Fallout3\TESsnip\RecordStructureFormat.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

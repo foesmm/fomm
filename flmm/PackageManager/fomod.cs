@@ -830,7 +830,7 @@ namespace Fomm.PackageManager
 			else
 			{
 				if (m_strReadmePath == null)
-					m_strReadmePath = (Settings.GetBool("UseDocsFolder") ? "docs/" : "") + "Readme - " + Path.GetFileNameWithoutExtension(filepath) + ".rtf";
+					m_strReadmePath = (Properties.Settings.Default.UseDocsFolder ? "docs/" : "") + "Readme - " + Path.GetFileNameWithoutExtension(filepath) + ".rtf";
 				m_strReadmePath = Path.ChangeExtension(m_strReadmePath, p_rmeReadme.Extension);
 				ReplaceFile(m_strReadmePath, p_rmeReadme.Text);
 			}

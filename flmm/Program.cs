@@ -64,6 +64,7 @@ namespace Fomm
 		public static readonly string tmpPath = Path.Combine(Path.GetTempPath(), "fomm");
 		private static readonly string m_strExecutableDirectory = Path.GetDirectoryName(Application.ExecutablePath);
 		public static readonly string fommDir = Path.Combine(m_strExecutableDirectory, "fomm");
+		//public static readonly string LocalApplicationDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "GeMM");
 
 		private static bool monoMode;
 		public static bool MonoMode { get { return monoMode; } }
@@ -223,7 +224,7 @@ namespace Fomm
 					Trace.WriteLine("Check for UAC.");
 					Trace.Indent();
 #endif
-					if (!Settings.GetBool("NoUACCheck") || Array.IndexOf<string>(args, "-no-uac-check") == -1)
+					if (!Properties.Settings.Default.NoUACCheck || Array.IndexOf<string>(args, "-no-uac-check") == -1)
 					{
 						try
 						{

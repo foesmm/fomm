@@ -36,67 +36,26 @@ namespace Fomm.PackageManager
 			this.Icon = Fomm.Properties.Resources.fomm02;
 			cmbSortOrder.ContextMenu = new ContextMenu();
 			lvModList.ListViewItemSorter = new FomodSorter();
-			Settings.GetWindowPosition("PackageManager", this);
-			sbtAddFomod.SelectedItemIndex = Settings.GetInt("SelectedAddFomodAction", 0);
-			m_strLastFromFolderPath = Settings.GetString("LastBuildFOMODFromFolderPath");
+			Properties.Settings.Default.windowPositions.GetWindowPosition("PackageManager", this);
+			sbtAddFomod.SelectedItemIndex = Properties.Settings.Default.SelectedAddFomodAction;
+			m_strLastFromFolderPath = Properties.Settings.Default.LastBuildFOMODFromFolderPath;
 
 			foreach (string modpath in Program.GetFiles(Program.GameMode.ModDirectory, "*.fomod.zip"))
 			{
 				if (!File.Exists(Path.ChangeExtension(modpath, null))) File.Move(modpath, Path.ChangeExtension(modpath, null));
 			}
 
-			string[] groups = Settings.GetStringArray("fomodGroups");
-			if (groups == null)
-			{
-				groups = new string[] {
-                    "Items",
-                    "Items/Guns",
-                    "Items/Armor",
-                    "Items/Misc",
-                    "Locations",
-                    "Locations/Houses",
-                    "Locations/Interiors",
-                    "Locations/Exteriors",
-                    "Gameplay",
-                    "Gameplay/Perks",
-                    "Gameplay/Realism",
-                    "Gameplay/Combat",
-                    "Gameplay/Loot",
-                    "Gameplay/Enemies",
-                    "Quests",
-                    "Companions",
-                    "ModResource",
-                    "UI",
-                    "Music",
-                    "Replacers",
-                    "Replacers/Meshes",
-                    "Replacers/Textures",
-                    "Replacers/Sounds",
-                    "Replacers/Shaders",
-                    "Tweaks",
-                    "Fixes",
-                    "Cosmetic",
-                    "Cosmetic/Races",
-                    "Cosmetic/Eyes",
-                    "Cosmetic/Hair"
-                };
-				Settings.SetStringArray("fomodGroups", groups);
-			}
+			string[] groups = Properties.Settings.Default.pluginGroups;
 			this.groups = new List<string>(groups);
 			this.lgroups = new List<string>(groups.Length);
 			for (int i = 0; i < groups.Length; i++) lgroups.Add(groups[i].ToLowerInvariant());
 
-			if (Settings.GetBool("PackageManagerShowsGroups"))
-			{
-				cbGroups.Checked = true;
-			}
+			cbGroups.Checked = Properties.Settings.Default.PackageManagerShowsGroups;
 
 			WebsiteLogin();
 
 			foreach (string modpath in Program.GetFiles(Program.GameMode.ModDirectory, "*.fomod"))
-			{
 				AddFomod(modpath, false);
-			}
 
 			RebuildListView();
 		}
@@ -220,16 +179,6 @@ namespace Fomm.PackageManager
 		private void RebuildListView()
 		{
 			lvModList.SuspendLayout();
-
-			Int32[] intColumnWidths = { 200, 100, 100, 100 };
-			for (Int32 i = 0; i < intColumnWidths.Length; i++)
-			{
-				Int32 intWidth = -1;
-				string strWidth = Settings.GetString("PackageManagerCol" + i + "Width");
-				if (Int32.TryParse(strWidth, out intWidth))
-					intColumnWidths[i] = intWidth;
-			}
-
 			lvModList.Clear();
 			lvModList.Groups.Clear();
 
@@ -256,11 +205,13 @@ namespace Fomm.PackageManager
 				lvModList.Columns.Add("Version");
 				lvModList.Columns.Add("Web Version");
 				lvModList.Columns.Add("Author");
+				Int32[] intColumnWidths = Properties.Settings.Default.PackageManagerColumnWidths;
 				for (Int32 i = 0; i < intColumnWidths.Length; i++)
 					lvModList.Columns[i].Width = intColumnWidths[i];
 			}
 
-			foreach (fomod mod in mods) AddFomodToList(mod);
+			foreach (fomod mod in mods)
+				AddFomodToList(mod);
 
 			lvModList.ResumeLayout();
 		}
@@ -302,7 +253,7 @@ namespace Fomm.PackageManager
 		/// </remarks>
 		private void WebsiteLogin()
 		{
-			if (!Settings.HasSetting("checkForNewModVersions"))
+			if (!Properties.Settings.Default.checkForNewModVersionsInitialized)
 			{
 				string strMessage = "Would you like FOMM to check for new versions of your mods?" +
 									Environment.NewLine +
@@ -311,23 +262,25 @@ namespace Fomm.PackageManager
 				switch (MessageBox.Show(this, strMessage, "Check For New Mods", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
 				{
 					case DialogResult.Yes:
-						Settings.SetBool("checkForNewModVersions", true);
+						Properties.Settings.Default.checkForNewModVersions = true;
 						break;
 					case DialogResult.No:
-						Settings.SetBool("checkForNewModVersions", false);
+						Properties.Settings.Default.checkForNewModVersions = false;
 						break;
 				}
+				Properties.Settings.Default.checkForNewModVersionsInitialized = true;
+				Properties.Settings.Default.Save();
 			}
-			if (Settings.GetBool("checkForNewModVersions"))
+			if (Properties.Settings.Default.checkForNewModVersions)
 			{
-				string strNexusLoginKey = Settings.GetString("nexusLoginKey");
+				string strNexusLoginKey = Properties.Settings.Default.nexusLoginKey;
 				if (String.IsNullOrEmpty(strNexusLoginKey))
 				{
 					string strMessage = "You must log into the Nexus website.";
-					LoginForm lgfLogin = new LoginForm(strMessage, Settings.GetString("nexusUsername"));
+					LoginForm lgfLogin = new LoginForm(strMessage, Properties.Settings.Default.nexusUsername);
 					while (lgfLogin.ShowDialog() != DialogResult.Cancel)
 					{
-						Settings.SetString("nexusUsername", lgfLogin.Username);
+						Properties.Settings.Default.nexusUsername = lgfLogin.Username;
 						m_nxaNexus = new NexusAPI(NexusSite.Fallout3, lgfLogin.Username, lgfLogin.Password);
 						if (!m_nxaNexus.Login())
 						{
@@ -337,8 +290,9 @@ namespace Fomm.PackageManager
 						if (lgfLogin.StayLoggedIn)
 						{
 							strNexusLoginKey = m_nxaNexus.LoginKey;
-							Settings.SetString("nexusLoginKey", strNexusLoginKey);
+							Properties.Settings.Default.nexusLoginKey = strNexusLoginKey;
 						}
+						Properties.Settings.Default.Save();
 						break;
 					}
 					return;
@@ -349,8 +303,8 @@ namespace Fomm.PackageManager
 
 		private void PackageManager_Load(object sender, EventArgs e)
 		{
-			string tmp = Settings.GetString("PackageManagerPanelSplit");
-			if (tmp != null) splitContainer1.SplitterDistance = Math.Max(splitContainer1.Panel1MinSize + 1, Math.Min(splitContainer1.Height - (splitContainer1.Panel2MinSize + 1), int.Parse(tmp))); ;
+			Int32 tmp = Properties.Settings.Default.PackageManagerPanelSplit;
+			splitContainer1.SplitterDistance = Math.Max(splitContainer1.Panel1MinSize + 1, Math.Min(splitContainer1.Height - (splitContainer1.Panel2MinSize + 1), tmp));
 		}
 
 		private void lvModList_SelectedIndexChanged(object sender, EventArgs e)
@@ -413,11 +367,14 @@ namespace Fomm.PackageManager
 
 		private void PackageManager_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			Settings.SetWindowPosition("PackageManager", this);
-			Settings.SetInt("SelectedAddFomodAction", sbtAddFomod.SelectedItemIndex);
-			Settings.SetString("PackageManagerPanelSplit", splitContainer1.SplitterDistance.ToString());
+			Properties.Settings.Default.windowPositions.SetWindowPosition("PackageManager", this);
+			Properties.Settings.Default.SelectedAddFomodAction = sbtAddFomod.SelectedItemIndex;
+			Properties.Settings.Default.PackageManagerPanelSplit = splitContainer1.SplitterDistance;
+			Int32[] intColumnWidths = new Int32[lvModList.Columns.Count];
 			for (Int32 i = 0; i < lvModList.Columns.Count; i++)
-				Settings.SetString("PackageManagerCol" + i + "Width", lvModList.Columns[i].Width.ToString());
+				intColumnWidths[i] = lvModList.Columns[i].Width;
+			Properties.Settings.Default.PackageManagerColumnWidths = intColumnWidths;
+			Properties.Settings.Default.Save();
 
 			foreach (ListViewItem lvi in lvModList.Items)
 			{
@@ -585,7 +542,8 @@ namespace Fomm.PackageManager
 		private void cbGroups_CheckedChanged(object sender, EventArgs e)
 		{
 			RebuildListView();
-			Settings.SetBool("PackageManagerShowsGroups", cbGroups.Checked);
+			Properties.Settings.Default.PackageManagerShowsGroups = cbGroups.Checked;
+			Properties.Settings.Default.Save();
 			bActivateGroup.Enabled = cbGroups.Checked;
 			bDeactivateGroup.Enabled = cbGroups.Checked;
 			cmbSortOrder.Enabled = !cbGroups.Checked;
@@ -594,7 +552,7 @@ namespace Fomm.PackageManager
 		private void bEditGroups_Click(object sender, EventArgs e)
 		{
 			Form f = new Form();
-			Settings.GetWindowPosition("GroupEditor", f);
+			Properties.Settings.Default.windowPositions.GetWindowPosition("GroupEditor", f);
 			f.Text = "Groups";
 			TextBox tb = new TextBox();
 			f.Controls.Add(tb);
@@ -606,7 +564,8 @@ namespace Fomm.PackageManager
 			tb.Select(0, 0);
 			f.FormClosing += delegate(object sender2, FormClosingEventArgs args2)
 			{
-				Settings.SetWindowPosition("GroupEditor", f);
+				Properties.Settings.Default.windowPositions.SetWindowPosition("GroupEditor", f);
+				Properties.Settings.Default.Save();
 			};
 			f.ShowDialog();
 			groups.Clear();
@@ -618,7 +577,8 @@ namespace Fomm.PackageManager
 			lgroups.Clear();
 			for (int i = 0; i < groups.Count; i++) lgroups.Add(groups[i].ToLowerInvariant());
 			RebuildListView();
-			Settings.SetStringArray("fomodGroups", groups.ToArray());
+			Properties.Settings.Default.pluginGroups = groups;
+			Properties.Settings.Default.Save();
 		}
 
 		private void fomodStatusToolStripMenuItem_Click(object sender, EventArgs e)
@@ -626,7 +586,7 @@ namespace Fomm.PackageManager
 			if (lvModList.SelectedItems.Count != 1) return;
 			fomod mod = (fomod)lvModList.SelectedItems[0].Tag;
 			Form f = new Form();
-			Settings.GetWindowPosition("FomodStatus", f);
+			Properties.Settings.Default.windowPositions.GetWindowPosition("FomodStatus", f);
 			f.Text = "Fomod status";
 			TextBox tb = new TextBox();
 			f.Controls.Add(tb);
@@ -638,7 +598,8 @@ namespace Fomm.PackageManager
 			tb.Select(0, 0);
 			tb.ScrollBars = ScrollBars.Vertical;
 			f.ShowDialog();
-			Settings.SetWindowPosition("FomodStatus", f);
+			Properties.Settings.Default.windowPositions.SetWindowPosition("FomodStatus", f);
+			Properties.Settings.Default.Save();
 		}
 
 		private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
@@ -906,7 +867,8 @@ namespace Fomm.PackageManager
 			fbd.Description = "Pick a folder to convert to a fomod";
 			if (fbd.ShowDialog() != DialogResult.OK) return;
 			m_strLastFromFolderPath = fbd.SelectedPath;
-			Settings.SetString("LastBuildFOMODFromFolderPath", Path.GetDirectoryName(m_strLastFromFolderPath));
+			Properties.Settings.Default.LastBuildFOMODFromFolderPath = Path.GetDirectoryName(m_strLastFromFolderPath);
+			Properties.Settings.Default.Save();
 			AddNewFomod(fbd.SelectedPath);
 		}
 
@@ -1003,7 +965,7 @@ namespace Fomm.PackageManager
 					if (lvModList.Items[i].SubItems[1].Text.Length > intMaxVersionLength)
 						intMaxVersionLength = lvModList.Items[i].SubItems[1].Text.Length;
 				}
-		
+
 			StreamWriter swrModList = new StreamWriter(sfdModList.FileName);
 			try
 			{

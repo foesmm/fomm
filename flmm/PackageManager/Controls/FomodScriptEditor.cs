@@ -127,11 +127,17 @@ namespace Fomm.PackageManager.Controls
 			cbxVersion.Items.Add("2.0");
 			cbxVersion.Items.Add("3.0");
 			cbxVersion.Items.Add("4.0");
-			cbxVersion.SelectedIndex = 3;
-			LoadConfigSchema();
+			cbxVersion.Items.Add("5.0");
 		}
 
 		#endregion
+
+		protected override void OnLoad(EventArgs e)
+		{
+			cbxVersion.SelectedIndex = 3;
+			LoadConfigSchema();
+			base.OnLoad(e);
+		}
 
 		/// <summary>
 		/// Handles the <see cref="ComboBox.SelectedIndexChanged"/> event of the XML config version drop down list.
@@ -151,13 +157,16 @@ namespace Fomm.PackageManager.Controls
 		/// </remarks>
 		protected void LoadConfigSchema()
 		{
-			string strSchemaPath = Program.GameMode.GetXMLConfigSchemaPath(cbxVersion.SelectedItem.ToString());
-			if (File.Exists(strSchemaPath))
-				using (FileStream fsmSchema = new FileStream(strSchemaPath, FileMode.Open))
-				{
-					xedScript.Schema = XmlSchema.Read(fsmSchema, null);
-					fsmSchema.Close();
-				}
+			if (Program.GameMode != null)
+			{
+				string strSchemaPath = Program.GameMode.GetXMLConfigSchemaPath(cbxVersion.SelectedItem.ToString());
+				if (File.Exists(strSchemaPath))
+					using (FileStream fsmSchema = new FileStream(strSchemaPath, FileMode.Open))
+					{
+						xedScript.Schema = XmlSchema.Read(fsmSchema, null);
+						fsmSchema.Close();
+					}
+			}
 		}
 
 		/// <summary>

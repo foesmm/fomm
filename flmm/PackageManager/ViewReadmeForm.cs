@@ -21,7 +21,7 @@ namespace Fomm.PackageManager
 		{
 			InitializeComponent();
 			this.Icon = Fomm.Properties.Resources.fomm02;
-			Settings.GetWindowPosition("ReadmeViewer", this);
+			Properties.Settings.Default.windowPositions.GetWindowPosition("ReadmeViewer", this);
 
 			switch (p_rmeReadme.Format)
 			{
@@ -85,7 +85,8 @@ namespace Fomm.PackageManager
 		/// <param name="e">A <see cref="CancelEventArgs"/> describing the event arguments.</param>
 		protected override void OnClosing(CancelEventArgs e)
 		{
-			Settings.SetWindowPosition("ReadmeViewer", this);
+			Properties.Settings.Default.windowPositions.SetWindowPosition("ReadmeViewer", this);
+			Properties.Settings.Default.Save(); 
 			base.OnClosing(e);
 		}
 	}

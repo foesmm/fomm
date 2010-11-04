@@ -81,8 +81,8 @@ namespace Fomm.PackageManager.FomodBuilder
 			InitializeComponent();
 
 			Icon = Fomm.Properties.Resources.fomm02;
-			ofdPFP.InitialDirectory = Settings.GetString("LastPFPPath");
-			fbdSources.SelectedPath = Settings.GetString("LastPFPSourcesPath");
+			ofdPFP.InitialDirectory = Properties.Settings.Default.LastPFPPath;
+			fbdSources.SelectedPath = Properties.Settings.Default.LastPFPSourcesPath;
 			m_omdMode = p_omdMode;
 		}
 
@@ -236,9 +236,10 @@ namespace Fomm.PackageManager.FomodBuilder
 
 		private void butOK_Click(object sender, EventArgs e)
 		{
-			Settings.SetString("LastPFPPath", Path.GetDirectoryName(tbxPFP.Text));
+			Properties.Settings.Default.LastPFPPath = Path.GetDirectoryName(tbxPFP.Text);
 			if (!String.IsNullOrEmpty(tbxSources.Text))
-				Settings.SetString("LastPFPSourcesPath", Path.GetDirectoryName(tbxSources.Text));
+				Properties.Settings.Default.LastPFPSourcesPath = Path.GetDirectoryName(tbxSources.Text);
+			Properties.Settings.Default.Save();
 			if (ValidateFiles())
 				DialogResult = DialogResult.OK;
 		}

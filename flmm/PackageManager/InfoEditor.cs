@@ -12,7 +12,7 @@ namespace Fomm.PackageManager
 		{
 			InitializeComponent();
 			this.Icon = Fomm.Properties.Resources.fomm02;
-			Settings.GetWindowPosition("InfoEditor", this);
+			Properties.Settings.Default.windowPositions.GetWindowPosition("InfoEditor", this);
 
 			m_fomodMod = p_fomodMod;
 			finInfo.LoadFomod(m_fomodMod);
@@ -28,7 +28,8 @@ namespace Fomm.PackageManager
 
 		private void InfoEditor_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			Settings.SetWindowPosition("InfoEditor", this);
+			Properties.Settings.Default.windowPositions.SetWindowPosition("InfoEditor", this);
+			Properties.Settings.Default.Save();
 		}
 
 		private void butEditReadme_Click(object sender, EventArgs e)

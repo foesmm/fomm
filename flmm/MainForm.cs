@@ -92,7 +92,7 @@ namespace Fomm
 		{
 			InitializeComponent();
 			this.Icon = Fomm.Properties.Resources.fomm02;
-			Settings.GetWindowPosition("MainForm", this);
+			Properties.Settings.Default.windowPositions.GetWindowPosition("MainForm", this);
 
 			Text += " (" + Program.Version + ")";
 #if TRACE
@@ -109,7 +109,7 @@ namespace Fomm
 			bLaunch.Text = gtlGameLaunch.Name;
 			bLaunch.Tag = gtlGameLaunch.Command;
 
-			if (!Settings.GetBool("DisableIPC"))
+			if (!Properties.Settings.Default.DisableIPC)
 			{
 				Timer newFommTimer = new Timer();
 				try
@@ -123,7 +123,8 @@ namespace Fomm
 				{
 					newFommTimer.Stop();
 					newFommTimer.Enabled = false;
-					Settings.SetBool("DisableIPC", true);
+					Properties.Settings.Default.DisableIPC = true;
+					Properties.Settings.Default.Save();
 				}
 			}
 
@@ -199,19 +200,12 @@ namespace Fomm
 
 		private void MainForm_Load(object sender, EventArgs e)
 		{
-			string tmp = Settings.GetString("MainFormPanelSplit");
-			if (tmp != null)
-			{
-				try
-				{
-					splitContainer1.SplitterDistance = Math.Max(splitContainer1.Panel1MinSize + 1, Math.Min(splitContainer1.Height - (splitContainer1.Panel2MinSize + 1), int.Parse(tmp)));
-				}
-				catch { }
-			}
-			tmp = Settings.GetString("MainFormCol1Width");
-			if (tmp != null) lvEspList.Columns[0].Width = int.Parse(tmp);
-			tmp = Settings.GetString("MainFormCol2Width");
-			if (tmp != null) lvEspList.Columns[1].Width = int.Parse(tmp);
+			Int32 tmp = Properties.Settings.Default.MainFormPanelSplit;
+			splitContainer1.SplitterDistance = Math.Max(splitContainer1.Panel1MinSize + 1, Math.Min(splitContainer1.Height - (splitContainer1.Panel2MinSize + 1), tmp));
+
+			Int32[] intColumnWidths = Properties.Settings.Default.MainFormColumnWidths;
+			for (Int32 i = 0; i < intColumnWidths.Length; i++)
+				lvEspList.Columns[i].Width = intColumnWidths[i];
 			RefreshPluginList();
 			exportLoadOrder(Path.Combine(Program.fommDir, "load order backup.txt"));
 
@@ -253,10 +247,15 @@ namespace Fomm
 				return;
 			}
 
-			Settings.SetWindowPosition("MainForm", this);
-			Settings.SetString("MainFormPanelSplit", splitContainer1.SplitterDistance.ToString());
-			Settings.SetString("MainFormCol1Width", lvEspList.Columns[0].Width.ToString());
-			Settings.SetString("MainFormCol2Width", lvEspList.Columns[1].Width.ToString());
+			Properties.Settings.Default.windowPositions.SetWindowPosition("MainForm", this);
+			Properties.Settings.Default.MainFormPanelSplit = splitContainer1.SplitterDistance;
+
+			Int32[] intColumnWidths = new Int32[lvEspList.Columns.Count];
+			foreach (ColumnHeader chdHeader in lvEspList.Columns)
+				intColumnWidths[chdHeader.Index] = chdHeader.Width;
+			Properties.Settings.Default.MainFormColumnWidths = intColumnWidths;
+
+			Properties.Settings.Default.Save();
 		}
 
 		public void LoadPluginInfo()
@@ -718,18 +717,11 @@ namespace Fomm
 		private void checkForUpdateToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			bool booWasUpdate = false;
-			string strLastUpdateCheck = Settings.GetString("LastUpdateCheck");
-			if (strLastUpdateCheck != null)
+			DateTime dteLastUpdateCheck = Properties.Settings.Default.LastUpdateCheck;
+			if (dteLastUpdateCheck + TimeSpan.FromHours(2) > DateTime.Now)
 			{
-				DateTime dteLastUpdateCheck;
-				if (DateTime.TryParse(strLastUpdateCheck, out dteLastUpdateCheck))
-				{
-					if (dteLastUpdateCheck + TimeSpan.FromHours(2) > DateTime.Now)
-					{
-						MessageBox.Show("No newer updates available");
-						return;
-					}
-				}
+				MessageBox.Show("No newer updates available");
+				return;
 			}
 
 			//check for new FOMM
@@ -755,7 +747,8 @@ namespace Fomm
 			if (!booWasUpdate)
 			{
 				MessageBox.Show("No newer updates available");
-				Settings.SetString("LastUpdateCheck", DateTime.Now.ToString());
+				Properties.Settings.Default.LastUpdateCheck =DateTime.Now;
+				Properties.Settings.Default.Save();
 			}
 		}
 

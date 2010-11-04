@@ -34,7 +34,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 			}
 			InitializeComponent();
 			this.Icon = Fomm.Properties.Resources.fomm02;
-			Settings.GetWindowPosition("TESsnip", this);
+			Properties.Settings.Default.windowPositions.GetWindowPosition("TESsnip", this);
 		}
 		public TESsnip(string[] mods)
 		{
@@ -51,7 +51,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 			}
 			InitializeComponent();
 			this.Icon = Fomm.Properties.Resources.fomm02;
-			Settings.GetWindowPosition("TESsnip", this);
+			Properties.Settings.Default.windowPositions.GetWindowPosition("TESsnip", this);
 			for (int i = 0; i < mods.Length; i++) LoadPlugin(mods[i]);
 		}
 
@@ -687,7 +687,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 			Clipboard = null;
 			ClipboardNode = null;
 			parentRecord = null;
-			Settings.SetWindowPosition("TESsnip", this);
+			Properties.Settings.Default.windowPositions.SetWindowPosition("TESsnip", this);
+			Properties.Settings.Default.Save(); 
 		}
 
 		private void tbInfo_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
