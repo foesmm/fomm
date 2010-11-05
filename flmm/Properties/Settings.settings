@@ -8,7 +8,7 @@
     <Setting Name="fallout3BSABrowserPanelSplit" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
-    <Setting Name="fallout3MasterListUpdateUrl" Type="System.String" Scope="User">
+    <Setting Name="fallout3MasterListUpdateUrl" Type="System.String" Scope="Application">
       <Value Profile="(Default)">http://better-oblivion-sorting-software.googlecode.com/svn/data/boss-fallout/masterlist.txt</Value>
     </Setting>
     <Setting Name="LastBuildFOMODFromFolderPath" Type="System.String" Scope="User">
@@ -87,9 +87,13 @@
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="windowPositions" Type="Fomm.Util.WindowPositions" Scope="User">
-      <Value Profile="(Default)">
-                    &lt;WindowPositions /&gt;
-                </Value>
+      <Value Profile="(Default)">&lt;WindowPositions /&gt;</Value>
+    </Setting>
+    <Setting Name="fallout3WorkingDirectory" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="fallout3DoneSetup" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="pluginGroups" Type="Fomm.Util.SettingsList" Scope="User">
       <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
@@ -127,19 +131,12 @@
 &lt;/ArrayOfString&gt;</Value>
     </Setting>
     <Setting Name="PackageManagerColumnWidths" Type="Fomm.Util.SettingsList" Scope="User">
-      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
-&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
-  &lt;string&gt;200&lt;/string&gt;
-  &lt;string&gt;100&lt;/string&gt;
-  &lt;string&gt;100&lt;/string&gt;
-  &lt;string&gt;100&lt;/string&gt;
-&lt;/ArrayOfString&gt;</Value>
-    </Setting>
-    <Setting Name="fallout3WorkingDirectory" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="fallout3DoneSetup" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
+      <Value Profile="(Default)">&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+                        &lt;string&gt;200&lt;/string&gt;
+                        &lt;string&gt;100&lt;/string&gt;
+                        &lt;string&gt;100&lt;/string&gt;
+                        &lt;string&gt;100&lt;/string&gt;
+                    &lt;/ArrayOfString&gt;</Value>
     </Setting>
   </Settings>
 </SettingsFile>

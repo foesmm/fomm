@@ -278,7 +278,7 @@ namespace Fomm.Games.Fallout3
 
 			m_strSavesPath = Path.Combine(m_strUserGameDataPath, NativeMethods.GetPrivateProfileString("General", "SLocalSavePath", "Games", m_dicSettingsFiles["FOIniPath"]));
 
-			m_lstSettingsPages.Add(new UpdateSettingsPage());
+			m_lstSettingsPages.Add(new GeneralSettingsPage());
 
 			m_lstTools.Add(new GameTool("BSA Tool", "Creates and unpacks BSA files.", LaunchBSATool));
 			m_lstTools.Add(new GameTool("TESsnip", "An ESP/ESM editor.", LaunchTESsnipTool));
@@ -787,7 +787,7 @@ class Script : Fallout3BaseScript {
 							mutex.Close();
 							return true;
 						}
-						Application.Run(new SettingsForm(false));
+						Application.Run(new SettingsForm());
 						mutex.Close();
 						return true;
 					case "-bsa-unpacker":

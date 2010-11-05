@@ -97,11 +97,11 @@
     <Compile Include="Games\Fallout3\Script\Fallout3ModUpgradeScript.cs" />
     <Compile Include="Games\Fallout3\Script\XmlConfiguredInstall\Parsers\Fallout3Parser20Extension.cs" />
     <Compile Include="Games\Fallout3\Script\XmlConfiguredInstall\Parsers\Fallout3Parser10Extension.cs" />
-    <Compile Include="Games\Fallout3\Settings\UpdateSettingsPage.cs">
+    <Compile Include="Games\Fallout3\Settings\GeneralSettingsPage.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Games\Fallout3\Settings\UpdateSettingsPage.Designer.cs">
-      <DependentUpon>UpdateSettingsPage.cs</DependentUpon>
+    <Compile Include="Games\Fallout3\Settings\GeneralSettingsPage.Designer.cs">
+      <DependentUpon>GeneralSettingsPage.cs</DependentUpon>
     </Compile>
     <Compile Include="Games\Fallout3\SetupForm.cs">
       <SubType>Form</SubType>
@@ -483,7 +483,6 @@
     <Compile Include="Games\Fallout3\Tools\TESsnip\ScriptCompiler\Tokenizer.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Settings.cs" />
     <Compile Include="SettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -537,8 +536,8 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Games\Fallout3\Settings\UpdateSettingsPage.resx">
-      <DependentUpon>UpdateSettingsPage.cs</DependentUpon>
+    <EmbeddedResource Include="Games\Fallout3\Settings\GeneralSettingsPage.resx">
+      <DependentUpon>GeneralSettingsPage.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Games\Fallout3\SetupForm.resx">
       <DependentUpon>SetupForm.cs</DependentUpon>

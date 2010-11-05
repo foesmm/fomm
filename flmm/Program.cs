@@ -131,8 +131,6 @@ namespace Fomm
 				Application.EnableVisualStyles();
 				Application.SetCompatibleTextRenderingDefault(false);
 
-				Settings.Init();
-
 				//TODO: Detect GameMode to use.
 				GameMode = new Fallout3GameMode();
 

@@ -47,16 +47,13 @@ namespace Fomm.Properties {
             }
         }
         
-        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("http://better-oblivion-sorting-software.googlecode.com/svn/data/boss-fallout/mast" +
             "erlist.txt")]
         public string fallout3MasterListUpdateUrl {
             get {
                 return ((string)(this["fallout3MasterListUpdateUrl"]));
-            }
-            set {
-                this["fallout3MasterListUpdateUrl"] = value;
             }
         }
         
@@ -361,13 +358,37 @@ namespace Fomm.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("\r\n                    <WindowPositions />\r\n                ")]
+        [global::System.Configuration.DefaultSettingValueAttribute("<WindowPositions />")]
         public global::Fomm.Util.WindowPositions windowPositions {
             get {
                 return ((global::Fomm.Util.WindowPositions)(this["windowPositions"]));
             }
             set {
                 this["windowPositions"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string fallout3WorkingDirectory {
+            get {
+                return ((string)(this["fallout3WorkingDirectory"]));
+            }
+            set {
+                this["fallout3WorkingDirectory"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool fallout3DoneSetup {
+            get {
+                return ((bool)(this["fallout3DoneSetup"]));
+            }
+            set {
+                this["fallout3DoneSetup"] = value;
             }
         }
         
@@ -417,43 +438,18 @@ namespace Fomm.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
-<ArrayOfString xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
-  <string>200</string>
-  <string>100</string>
-  <string>100</string>
-  <string>100</string>
-</ArrayOfString>")]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<ArrayOfString xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+                        <string>200</string>
+                        <string>100</string>
+                        <string>100</string>
+                        <string>100</string>
+                    </ArrayOfString>")]
         public global::Fomm.Util.SettingsList PackageManagerColumnWidths {
             get {
                 return ((global::Fomm.Util.SettingsList)(this["PackageManagerColumnWidths"]));
             }
             set {
                 this["PackageManagerColumnWidths"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string fallout3WorkingDirectory {
-            get {
-                return ((string)(this["fallout3WorkingDirectory"]));
-            }
-            set {
-                this["fallout3WorkingDirectory"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool fallout3DoneSetup {
-            get {
-                return ((bool)(this["fallout3DoneSetup"]));
-            }
-            set {
-                this["fallout3DoneSetup"] = value;
             }
         }
     }

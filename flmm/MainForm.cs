@@ -332,12 +332,6 @@ namespace Fomm
 		{
 			if (lvEspList.Items.Count == 0) return;
 			bool add = lvEspList.Items[0].SubItems.Count == 1;
-			bool boldify = false;
-
-			if (add)
-			{
-				boldify = Settings.GetBool("ShowEsmInBold");
-			}
 
 			string[] strPlugins = Program.GameMode.PluginManager.SortPluginList(Program.GameMode.PluginManager.ActivePluginList);
 
@@ -694,8 +688,9 @@ namespace Fomm
 				MessageBox.Show("Please close all utility windows before changing the settings");
 				return;
 			}
-			(new SettingsForm(true)).ShowDialog();
-			RefreshPluginList();
+			SettingsForm sfmSettings = new SettingsForm();
+			if ((sfmSettings.ShowDialog(this) == DialogResult.OK) && sfmSettings.RequiresRestart)
+				RefreshPluginList();
 		}
 
 		private void lvEspList_ColumnClick(object sender, ColumnClickEventArgs e)
