@@ -482,10 +482,10 @@
     <Compile Include="Games\Fallout3\Tools\SaveForm.Designer.cs">
       <DependentUpon>SaveForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Games\Fallout3\Tools\TESsnip\ScriptCompiler\ScriptCompiler.cs">
+    <Compile Include="Games\Fallout3\Tools\TESsnip\HexBox\ScriptCompiler\ScriptCompiler.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Games\Fallout3\Tools\TESsnip\ScriptCompiler\Tokenizer.cs">
+    <Compile Include="Games\Fallout3\Tools\TESsnip\HexBox\ScriptCompiler\Tokenizer.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SettingsForm.cs">

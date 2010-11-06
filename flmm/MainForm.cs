@@ -244,7 +244,7 @@ namespace Fomm
 			}
 			if (Application.OpenForms.Count > 1)
 			{
-				MessageBox.Show("Please close all utility windows before closing fomm");
+				MessageBox.Show("Please close all utility windows before closing the programme.");
 				e.Cancel = true;
 				return;
 			}

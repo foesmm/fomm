@@ -63,10 +63,34 @@ namespace Fomm
 
 		
 		private static readonly string m_strExecutableDirectory = Path.GetDirectoryName(Application.ExecutablePath);
-		public static readonly string tmpPath = Path.Combine(Path.GetTempPath(), "fomm");
-		//public static readonly string fommDir = Path.Combine(m_strExecutableDirectory, "fomm");
-		//public static readonly string LocalApplicationDataPath = Path.Combine(PersonalDirectory, "GeMM");
+		public static readonly string tmpPath = Path.Combine(Path.GetTempPath(), ProgrammeAcronym);
 
+		/// <summary>
+		/// Gets the programme acronym.
+		/// </summary>
+		/// <remarks>
+		/// This is used whe creating temporary files, folders, etc.
+		/// </remarks>
+		/// <value>The programme acronym.</value>
+		public static string ProgrammeAcronym
+		{
+			get
+			{
+				return "FOMM";
+			}
+		}
+
+		/// <summary>
+		/// Gets the path to where per user application data is stored.
+		/// </summary>
+		/// <value>The path to where per user application data is stored.</value>
+		public static string LocalApplicationDataPath
+		{
+			get
+			{
+				return Path.Combine(PersonalDirectory, ProgrammeAcronym);
+			}
+		}
 
 		/// <summary>
 		/// Gets the path to the directory where programme data is stored.
@@ -349,9 +373,7 @@ namespace Fomm
 #if TRACE
 							TraceException(e);
 #endif
-						MessageBox.Show("An error occurred while upgrading your log file. A crash dump will have been saved in 'fomm\\crashdump.txt'" + Environment.NewLine +
-										"Please make a bug report and include the contents of that file.", "Upgrade Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-						HandleException(e);
+						HandleException(e, "An error occurred while upgrading your log file.", "Upgrade Error");
 						return;
 					}
 #if TRACE
@@ -395,9 +417,7 @@ namespace Fomm
 #if TRACE
 						TraceException(e);
 #endif
-					MessageBox.Show("An error occurred while scanning your fomods for new versions. A crash dump will have been saved in 'fomm\\crashdump.txt'" + Environment.NewLine +
-										"Please make a bug report and include the contents of that file.", "Scan Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-					HandleException(e);
+					HandleException(e, "An error occurred while scanning your fomods for new versions.", "Scan Error");
 					return;
 				}
 
@@ -414,9 +434,7 @@ namespace Fomm
 					}
 					catch (Exception e)
 					{
-						MessageBox.Show("Something bad seems to have happened. As long as it wasn't too bad, a crash dump will have been saved in 'fomm\\crashdump.txt'\n" +
-											"Please include the contents of that file if you want to make a bug report", "Error");
-						HandleException(e);
+						HandleException(e, "Something bad seems to have happened.", "Error");
 					}
 				}
 #if TRACE
@@ -474,9 +492,7 @@ namespace Fomm
 			else
 				Trace.WriteLine("\tNO EXCEPTION.");
 #endif
-			MessageBox.Show("Something bad seems to have happened. As long as it wasn't too bad, a crash dump will have been saved in 'fomm\\crashdump.txt'\n" +
-				"Please include the contents of that file if you want to make a bug report", "Error");
-			HandleException(e.Exception);
+			HandleException(e.Exception, "Something bad seems to have happened.", "Error");
 			Application.ExitThread();
 		}
 
@@ -493,13 +509,15 @@ namespace Fomm
 			else
 				Trace.WriteLine("\tNO EXCEPTION.");
 #endif
-			MessageBox.Show("Something bad seems to have happened. As long as it wasn't too bad, a crash dump will have been saved in 'fomm\\crashdump.txt'\n" +
-				"Please include the contents of that file if you want to make a bug report", "Error");
-			HandleException(e.ExceptionObject as Exception);
+			HandleException(e.ExceptionObject as Exception, "Something bad seems to have happened.", "Error");
 		}
 
-		static void HandleException(Exception ex)
+		static void HandleException(Exception ex, string p_strPromptMessage, string p_strPromptCaption)
 		{
+			MessageBox.Show(p_strPromptMessage + Environment.NewLine +
+							"As long as it wasn't too bad, a crash dump will have been saved in" + Environment.NewLine +
+							LocalApplicationDataPath + "\\crashdump.txt" + Environment.NewLine +
+							"Please include the contents of that file if you want to make a bug report", p_strPromptCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
 #if TRACE
 			Trace.WriteLine("");
 			Trace.WriteLine("Crashdumping an Exception:");

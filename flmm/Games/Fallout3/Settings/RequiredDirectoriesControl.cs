@@ -25,10 +25,10 @@ namespace Fomm.Games.Fallout3.Settings
 
 			tbxModDirectory.Text = Properties.Settings.Default.fallout3ModDirectory;
 			if (String.IsNullOrEmpty(tbxModDirectory.Text))
-				tbxModDirectory.Text = Path.Combine(Program.PersonalDirectory, Path.Combine("fomm", Path.Combine("Fallout 3", "mods")));
+				tbxModDirectory.Text = Path.Combine(Program.PersonalDirectory, Path.Combine(Program.ProgrammeAcronym, Path.Combine("Fallout 3", "mods")));
 			tbxInstallInfo.Text = Properties.Settings.Default.fallout3InstallInfoDirectory;
 			if (String.IsNullOrEmpty(tbxInstallInfo.Text))
-				tbxInstallInfo.Text = Path.Combine(Program.PersonalDirectory, Path.Combine("fomm", Path.Combine("Fallout 3", "Install Info")));
+				tbxInstallInfo.Text = Path.Combine(Program.PersonalDirectory, Path.Combine(Program.ProgrammeAcronym, Path.Combine("Fallout 3", "Install Info")));
 		}
 
 		#endregion
