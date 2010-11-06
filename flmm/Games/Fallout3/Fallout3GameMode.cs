@@ -31,10 +31,7 @@ namespace Fomm.Games.Fallout3
 			public static readonly string GeckPrefsIniPath = "GeckPrefsIniPath";
 		}
 
-		private readonly string m_strOverwriteDirectory = null;
-		private readonly string m_strUserGameDataPath = null;
 		private readonly string m_strSavesPath = null;
-		private readonly string m_strUserSettingsPath = null;
 		private Dictionary<string, string> m_dicAdditionalPaths = new Dictionary<string, string>();
 		private Dictionary<string, string> m_dicSettingsFiles = new Dictionary<string, string>();
 		private List<GameTool> m_lstTools = new List<GameTool>();
@@ -118,43 +115,31 @@ namespace Fomm.Games.Fallout3
 			}
 		}
 
-		public override string OverwriteDirectory
+		/// <summary>
+		/// Gets the directory where installation information is stored for this game mode.
+		/// </summary>
+		/// <remarks>
+		/// This is where install logs, overwrites, and the like are stored.
+		/// </remarks>
+		/// <value>The directory where installation information is stored for this game mode.</value>
+		public override string InstallInfoDirectory
 		{
 			get
 			{
-				return m_strOverwriteDirectory;
+				string strDirectory = Properties.Settings.Default.fallout3InstallInfoDirectory;
+				if (String.IsNullOrEmpty(strDirectory))
+					throw new Exception("The InstallInfoDirectory for Fallout 3 Mods has not been set.");
+				if (!Directory.Exists(strDirectory))
+					Directory.CreateDirectory(strDirectory);
+				return strDirectory;
 			}
 		}
-
-		public override string UserGameDataPath
-		{
-			get
-			{
-				return m_strUserGameDataPath;
-			}
-		}
-
+		
 		public override IDictionary<string, string> SettingsFiles
 		{
 			get
 			{
 				return m_dicSettingsFiles;
-			}
-		}
-
-		public override string SavesPath
-		{
-			get
-			{
-				return m_strSavesPath;
-			}
-		}
-
-		public override string UserSettingsPath
-		{
-			get
-			{
-				return m_strUserSettingsPath;
 			}
 		}
 
@@ -166,6 +151,18 @@ namespace Fomm.Games.Fallout3
 			}
 		}
 
+		/// <summary>
+		/// Gets the path to the game's save game files.
+		/// </summary>
+		/// <value>The path to the game's save game files.</value>
+		public override string SavesPath
+		{
+			get
+			{
+				return m_strSavesPath;
+			}
+		}
+
 		protected string DLCDirectory
 		{
 			get
@@ -173,6 +170,8 @@ namespace Fomm.Games.Fallout3
 				return m_dicAdditionalPaths["DLCDir"];
 			}
 		}
+
+		#region Tool Injection
 
 		public override IList<GameTool> Tools
 		{
@@ -214,6 +213,8 @@ namespace Fomm.Games.Fallout3
 			}
 		}
 
+		#endregion
+
 		public override IList<SettingsPage> SettingsPages
 		{
 			get
@@ -229,7 +230,11 @@ namespace Fomm.Games.Fallout3
 				return m_pmgPluginManager;
 			}
 		}
-
+		
+		/// <summary>
+		/// Gets the Fallout 3 rederer info file.
+		/// </summary>
+		/// <value>The Fallout 3 rederer info file.</value>
 		public string FORendererFile
 		{
 			get
@@ -260,23 +265,18 @@ namespace Fomm.Games.Fallout3
 
 		public Fallout3GameMode()
 		{
-			m_strOverwriteDirectory = Path.Combine(Program.ExecutableDirectory, "overwrites");
-			if (!Directory.Exists(m_strOverwriteDirectory))
-				Directory.CreateDirectory(m_strOverwriteDirectory);
+			string strUserGameDataPath = Path.Combine(Program.PersonalDirectory, "My games\\Fallout3");
+			
+			m_dicSettingsFiles[SettingsFile.FOIniPath] = Path.Combine(strUserGameDataPath, "Fallout.ini");
+			m_dicSettingsFiles[SettingsFile.FOPrefsIniPath] = Path.Combine(strUserGameDataPath, "FalloutPrefs.ini");
+			m_dicSettingsFiles[SettingsFile.GeckIniPath] = Path.Combine(strUserGameDataPath, "GECKCustom.ini");
+			m_dicSettingsFiles[SettingsFile.GeckPrefsIniPath] = Path.Combine(strUserGameDataPath, "GECKPrefs.ini");
 
-			m_strUserGameDataPath = Path.Combine(PersonalDirectory, "My games\\Fallout3");
-			m_strUserSettingsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Fallout3");
-
-			m_dicSettingsFiles[SettingsFile.FOIniPath] = Path.Combine(m_strUserGameDataPath, "Fallout.ini");
-			m_dicSettingsFiles[SettingsFile.FOPrefsIniPath] = Path.Combine(m_strUserGameDataPath, "FalloutPrefs.ini");
-			m_dicSettingsFiles[SettingsFile.GeckIniPath] = Path.Combine(m_strUserGameDataPath, "GECKCustom.ini");
-			m_dicSettingsFiles[SettingsFile.GeckPrefsIniPath] = Path.Combine(m_strUserGameDataPath, "GECKPrefs.ini");
-
-			m_dicAdditionalPaths["FORendererFile"] = Path.Combine(m_strUserGameDataPath, "RendererInfo.txt");
-			m_dicAdditionalPaths["PluginsFile"] = Path.Combine(m_strUserSettingsPath, "plugins.txt");
+			m_dicAdditionalPaths["FORendererFile"] = Path.Combine(strUserGameDataPath, "RendererInfo.txt");
+			m_dicAdditionalPaths["PluginsFile"] = Path.Combine(Program.PersonalDirectory, "Fallout3/plugins.txt");
 			m_dicAdditionalPaths["DLCDir"] = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Microsoft\\xlive\\DLC");
 
-			m_strSavesPath = Path.Combine(m_strUserGameDataPath, NativeMethods.GetPrivateProfileString("General", "SLocalSavePath", "Games", m_dicSettingsFiles["FOIniPath"]));
+			m_strSavesPath = Path.Combine(strUserGameDataPath, NativeMethods.GetPrivateProfileString("General", "SLocalSavePath", "Games", m_dicSettingsFiles["FOIniPath"]));
 
 			m_lstSettingsPages.Add(new GeneralSettingsPage());
 
@@ -287,6 +287,7 @@ namespace Fomm.Games.Fallout3
 			m_lstTools.Add(new GameTool("Archive Invalidation", "Toggles Archive Invalidation.", ToggleArchiveInvalidation));
 			m_lstTools.Add(new GameTool("Install Tweaker", "Advanced Fallout 3 tweaking.", LaunchInstallTweakerTool));
 			m_lstTools.Add(new GameTool("Conflict Detector", "Checks for conflicts with mod-author specified critical records.", LaunchConflictDetector));
+			m_lstTools.Add(new GameTool("Save Games", "Save game info viewer.", LaunchSaveGamesViewer));
 
 			m_lstGameSettingsTools.Add(new GameTool("Graphics Settings", "Changes the graphics settings.", LaunchGraphicsSettingsTool));
 
@@ -573,6 +574,27 @@ namespace Fomm.Games.Fallout3
 		#endregion
 
 		#region Tools Menu
+
+		/// <summary>
+		/// Launches the save games viewer.
+		/// </summary>
+		/// <param name="p_frmMainForm">The main mod management form.</param>
+		public void LaunchSaveGamesViewer(MainForm p_frmMainForm)
+		{
+			List<string> lstActive = new List<string>();
+			//the original implementation populated the inactive list with all plugins
+			// we only populate it with inactive plugins - hopefully that's OK
+			List<string> lstInactive = new List<string>();
+
+			foreach (ListViewItem lviPlugin in p_frmMainForm.PluginsListViewItems)
+			{
+				if (lviPlugin.Checked)
+					lstActive.Add(lviPlugin.Text);
+				else
+					lstInactive.Add(lviPlugin.Text);
+			}
+			(new Tools.SaveForm(lstActive.ToArray(), lstInactive.ToArray())).Show();
+		}
 
 		/// <summary>
 		/// Launches the conflict detector tool.

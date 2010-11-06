@@ -2,6 +2,7 @@
 using System.Security;
 using System.Security.Permissions;
 using System.IO;
+using System.Collections.Generic;
 #if TRACE
 using System.Diagnostics;
 using Microsoft.Win32;
@@ -53,11 +54,17 @@ namespace Fomm.PackageManager
 			Trace.Flush();
 #endif
 			permissions = new PermissionSet(PermissionState.None);
-			permissions.AddPermission(new FileIOPermission(FileIOPermissionAccess.AllAccess, new string[] {
-                Program.ExecutableDirectory, Program.GameMode.SavesPath, Program.tmpPath,
-				Program.GameMode.UserSettingsPath, Environment.CurrentDirectory,
-				Program.GameMode.OverwriteDirectory, Path.GetTempPath()
-            }));
+			//do the following paths need to add to this?
+			// savesPath - fallout 3
+			FileIOPermission fipFilePermission = new FileIOPermission(FileIOPermissionAccess.AllAccess, new string[] {
+                Program.tmpPath, Path.GetTempPath(),
+				Program.GameMode.InstallInfoDirectory			
+            });
+
+			List<string> lstPaths = new List<string>(Program.GameMode.SettingsFiles.Values);
+			lstPaths.AddRange(Program.GameMode.AdditionalPaths.Values);
+			fipFilePermission.AddPathList(FileIOPermissionAccess.AllAccess, lstPaths.ToArray());
+
 			permissions.AddPermission(new SecurityPermission(SecurityPermissionFlag.UnmanagedCode));
 			permissions.AddPermission(new UIPermission(UIPermissionWindow.AllWindows));
 		}

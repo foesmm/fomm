@@ -209,7 +209,7 @@ namespace Fomm
 				for (Int32 i = 0; i < intColumnWidths.Length; i++)
 					lvEspList.Columns[i].Width = intColumnWidths[i];
 			RefreshPluginList();
-			exportLoadOrder(Path.Combine(Program.fommDir, "load order backup.txt"));
+			exportLoadOrder(Path.Combine(Program.GameMode.InstallInfoDirectory, "load order backup.txt"));
 
 			if (!File.Exists(Program.GameMode.SettingsFiles[Fomm.Games.Fallout3.Fallout3GameMode.SettingsFile.FOIniPath]))
 			{
@@ -420,19 +420,9 @@ namespace Fomm
 			Close();
 		}
 
-		private void bSaveGames_Click(object sender, EventArgs e)
-		{
-			string[] active = new string[lvEspList.CheckedItems.Count];
-			for (int i = 0; i < active.Length; i++) active[i] = lvEspList.CheckedItems[i].Text;
-			//ok, so this includes active mods as well as inactive ones, but it still works the same
-			string[] inactive = new string[lvEspList.Items.Count];
-			for (int i = 0; i < inactive.Length; i++) inactive[i] = lvEspList.Items[i].Text;
-			(new SaveForm(active, inactive)).Show();
-		}
-
 		private void bHelp_Click(object sender, EventArgs e)
 		{
-			System.Diagnostics.Process.Start(Path.Combine(Program.fommDir, "fomm.chm"));
+			System.Diagnostics.Process.Start(Path.Combine(Program.ExecutableDirectory, "fomm\\fomm.chm"));
 			//System.Diagnostics.Process.Start(@"http://fomm.wiki.sourceforge.net/");
 		}
 		#endregion

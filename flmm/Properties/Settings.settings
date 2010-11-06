@@ -86,9 +86,6 @@
     <Setting Name="UseDocsFolder" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="windowPositions" Type="Fomm.Util.WindowPositions" Scope="User">
-      <Value Profile="(Default)">&lt;WindowPositions /&gt;</Value>
-    </Setting>
     <Setting Name="fallout3WorkingDirectory" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
@@ -130,13 +127,21 @@
   &lt;string&gt;Cosmetic/Hair&lt;/string&gt;
 &lt;/ArrayOfString&gt;</Value>
     </Setting>
+    <Setting Name="windowPositions" Type="Fomm.Util.WindowPositions" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;WindowPositions /&gt;</Value>
+    </Setting>
     <Setting Name="PackageManagerColumnWidths" Type="Fomm.Util.SettingsList" Scope="User">
-      <Value Profile="(Default)">&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
-                        &lt;string&gt;200&lt;/string&gt;
-                        &lt;string&gt;100&lt;/string&gt;
-                        &lt;string&gt;100&lt;/string&gt;
-                        &lt;string&gt;100&lt;/string&gt;
-                    &lt;/ArrayOfString&gt;</Value>
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;string&gt;200&lt;/string&gt;
+  &lt;string&gt;100&lt;/string&gt;
+  &lt;string&gt;100&lt;/string&gt;
+  &lt;string&gt;100&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
+    </Setting>
+    <Setting Name="fallout3InstallInfoDirectory" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
     </Setting>
   </Settings>
 </SettingsFile>

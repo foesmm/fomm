@@ -35,7 +35,7 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
 			}
 		}
 
-		private static readonly string localDataPath = Path.Combine(Program.fommDir, "lotemplate.txt");
+		private static readonly string localDataPath = Path.Combine(Program.GameMode.InstallInfoDirectory, "lotemplate.txt");
 		private static Dictionary<string, RecordInfo> order;
 		private static int duplicateCount;
 		private static int fileVersion;

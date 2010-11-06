@@ -28,23 +28,14 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.label1 = new System.Windows.Forms.Label();
 			this.pnlShadow = new System.Windows.Forms.Panel();
 			this.pnlLight = new System.Windows.Forms.Panel();
 			this.wizSetup = new Fomm.Controls.WizardControl();
 			this.vtpDirectories = new Fomm.Controls.VerticalTabPage();
-			this.butModDirectory = new System.Windows.Forms.Button();
-			this.label3 = new System.Windows.Forms.Label();
-			this.tbxModDirectory = new System.Windows.Forms.TextBox();
-			this.label2 = new System.Windows.Forms.Label();
-			this.erpValidator = new System.Windows.Forms.ErrorProvider(this.components);
-			this.fbdModDirectory = new System.Windows.Forms.FolderBrowserDialog();
 			this.panel1.SuspendLayout();
 			this.wizSetup.SuspendLayout();
-			this.vtpDirectories.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.erpValidator)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// panel1
@@ -106,10 +97,6 @@
 			// vtpDirectories
 			// 
 			this.vtpDirectories.BackColor = System.Drawing.SystemColors.Control;
-			this.vtpDirectories.Controls.Add(this.butModDirectory);
-			this.vtpDirectories.Controls.Add(this.label3);
-			this.vtpDirectories.Controls.Add(this.tbxModDirectory);
-			this.vtpDirectories.Controls.Add(this.label2);
 			this.vtpDirectories.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.vtpDirectories.Location = new System.Drawing.Point(0, 0);
 			this.vtpDirectories.Name = "vtpDirectories";
@@ -117,47 +104,6 @@
 			this.vtpDirectories.Size = new System.Drawing.Size(455, 307);
 			this.vtpDirectories.TabIndex = 2;
 			this.vtpDirectories.Text = "verticalTabPage1";
-			// 
-			// butModDirectory
-			// 
-			this.butModDirectory.AutoSize = true;
-			this.butModDirectory.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-			this.butModDirectory.Location = new System.Drawing.Point(403, 17);
-			this.butModDirectory.Name = "butModDirectory";
-			this.butModDirectory.Size = new System.Drawing.Size(26, 23);
-			this.butModDirectory.TabIndex = 1;
-			this.butModDirectory.Text = "...";
-			this.butModDirectory.UseVisualStyleBackColor = true;
-			this.butModDirectory.Click += new System.EventHandler(this.butModDirectory_Click);
-			// 
-			// label3
-			// 
-			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(12, 3);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(356, 13);
-			this.label3.TabIndex = 2;
-			this.label3.Text = "Choose the directory where you would like to store your Fallout 3 FOMods.";
-			// 
-			// tbxModDirectory
-			// 
-			this.tbxModDirectory.Location = new System.Drawing.Point(111, 19);
-			this.tbxModDirectory.Name = "tbxModDirectory";
-			this.tbxModDirectory.Size = new System.Drawing.Size(286, 20);
-			this.tbxModDirectory.TabIndex = 0;
-			// 
-			// label2
-			// 
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(29, 22);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(76, 13);
-			this.label2.TabIndex = 0;
-			this.label2.Text = "Mod Directory:";
-			// 
-			// erpValidator
-			// 
-			this.erpValidator.ContainerControl = this;
 			// 
 			// SetupForm
 			// 
@@ -172,9 +118,6 @@
 			this.panel1.ResumeLayout(false);
 			this.panel1.PerformLayout();
 			this.wizSetup.ResumeLayout(false);
-			this.vtpDirectories.ResumeLayout(false);
-			this.vtpDirectories.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.erpValidator)).EndInit();
 			this.ResumeLayout(false);
 
 		}
@@ -187,12 +130,6 @@
 		private System.Windows.Forms.Label label1;
 		private Fomm.Controls.WizardControl wizSetup;
 		private Fomm.Controls.VerticalTabPage vtpDirectories;
-		private System.Windows.Forms.Button butModDirectory;
-		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.TextBox tbxModDirectory;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.ErrorProvider erpValidator;
-		private System.Windows.Forms.FolderBrowserDialog fbdModDirectory;
 
 
 

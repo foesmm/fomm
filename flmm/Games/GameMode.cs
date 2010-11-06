@@ -16,24 +16,6 @@ namespace Fomm.Games
 		#region Properties
 
 		/// <summary>
-		/// Gets the Personal directory of the current user.
-		/// </summary>
-		/// <remarks>
-		/// Typically, this is the Documents folder of the current user.
-		/// </remarks>
-		/// <value>The Personal directory of the current user.</value>
-		public string PersonalDirectory
-		{
-			get
-			{
-				string strPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-				if (String.IsNullOrEmpty(strPath))
-					return Registry.GetValue(@"HKEY_CURRENT_USER\software\microsoft\windows\currentversion\explorer\user shell folders", "Personal", null).ToString();
-				return strPath;
-			}
-		}
-
-		/// <summary>
 		/// Gets the game launch command.
 		/// </summary>
 		/// <value>The game launch command.</value>
@@ -69,27 +51,34 @@ namespace Fomm.Games
 			get;
 		}
 
-		public abstract string OverwriteDirectory
+		/// <summary>
+		/// Gets the directory where installation information is stored for this game mode.
+		/// </summary>
+		/// <remarks>
+		/// This is where install logs, overwrites, and the like are stored.
+		/// </remarks>
+		/// <value>The directory where installation information is stored for this game mode.</value>
+		public abstract string InstallInfoDirectory
 		{
 			get;
 		}
 
-		public abstract string UserGameDataPath
+		/// <summary>
+		/// Gets the directory where overwrites are stored for this game mode.
+		/// </summary>
+		/// <value>The directory where overwrites are stored for this game mode.</value>
+		public string OverwriteDirectory
 		{
-			get;
+			get
+			{
+				string strDirectory = Path.Combine(InstallInfoDirectory, "overwrites");
+				if (!Directory.Exists(strDirectory))
+					Directory.CreateDirectory(strDirectory);
+				return strDirectory;
+			}
 		}
-
+		
 		public abstract IDictionary<string, string> SettingsFiles
-		{
-			get;
-		}
-
-		public abstract string SavesPath
-		{
-			get;
-		}
-
-		public abstract string UserSettingsPath
 		{
 			get;
 		}
@@ -98,6 +87,17 @@ namespace Fomm.Games
 		{
 			get;
 		}
+		
+		/// <summary>
+		/// Gets the path to the game's save game files.
+		/// </summary>
+		/// <value>The path to the game's save game files.</value>
+		public abstract string SavesPath
+		{
+			get;
+		}		
+
+		#region Tool Injection
 
 		public abstract IList<GameTool> Tools
 		{
@@ -124,16 +124,26 @@ namespace Fomm.Games
 			get;
 		}
 
+		#endregion
+
 		public abstract IList<SettingsPage> SettingsPages
 		{
 			get;
 		}
 
+		/// <summary>
+		/// Gets the path to the game directory were pluings are to be installed.
+		/// </summary>
+		/// <value>The path to the game directory were pluings are to be installed.</value>
 		public abstract string PluginsPath
 		{
 			get;
 		}
 
+		/// <summary>
+		/// Gets the plugin manager for this game mode.
+		/// </summary>
+		/// <value>The plugin manager for this game mode.</value>
 		public abstract PluginManager PluginManager
 		{
 			get;

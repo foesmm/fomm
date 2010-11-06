@@ -171,7 +171,7 @@ class ScriptRunner {
 					ex = ex.InnerException;
 					str += Environment.NewLine + Environment.NewLine + ex.ToString();
 				}
-				System.IO.File.WriteAllText(System.IO.Path.Combine(Program.fommDir, "ScriptException.txt"), str);
+				System.IO.File.WriteAllText(System.IO.Path.Combine(Program.GameMode.InstallInfoDirectory, "ScriptException.txt"), str);
 				return false;
 			}
 		}

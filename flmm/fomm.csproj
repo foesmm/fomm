@@ -103,6 +103,12 @@
     <Compile Include="Games\Fallout3\Settings\GeneralSettingsPage.Designer.cs">
       <DependentUpon>GeneralSettingsPage.cs</DependentUpon>
     </Compile>
+    <Compile Include="Games\Fallout3\Settings\RequiredDirectoriesControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Games\Fallout3\Settings\RequiredDirectoriesControl.Designer.cs">
+      <DependentUpon>RequiredDirectoriesControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Games\Fallout3\SetupForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -471,10 +477,10 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="SaveForm.cs">
+    <Compile Include="Games\Fallout3\Tools\SaveForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="SaveForm.Designer.cs">
+    <Compile Include="Games\Fallout3\Tools\SaveForm.Designer.cs">
       <DependentUpon>SaveForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Games\Fallout3\Tools\TESsnip\ScriptCompiler\ScriptCompiler.cs">
@@ -538,6 +544,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Games\Fallout3\Settings\GeneralSettingsPage.resx">
       <DependentUpon>GeneralSettingsPage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Games\Fallout3\Settings\RequiredDirectoriesControl.resx">
+      <DependentUpon>RequiredDirectoriesControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Games\Fallout3\SetupForm.resx">
       <DependentUpon>SetupForm.cs</DependentUpon>
@@ -656,7 +665,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="SaveForm.resx">
+    <EmbeddedResource Include="Games\Fallout3\Tools\SaveForm.resx">
       <DependentUpon>SaveForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>

@@ -5,7 +5,7 @@ using System.Drawing.Imaging;
 using System.Windows.Forms;
 using System.IO;
 
-namespace Fomm
+namespace Fomm.Games.Fallout3.Tools
 {
 	internal partial class SaveForm : Form
 	{

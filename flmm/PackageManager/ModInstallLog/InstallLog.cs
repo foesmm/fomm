@@ -64,7 +64,7 @@ namespace Fomm.PackageManager.ModInstallLog
 			}
 		}
 
-		private readonly string xmlpath = Path.Combine(Program.fommDir, "InstallLog.xml");
+		private readonly string xmlpath = Path.Combine(Program.GameMode.InstallInfoDirectory, "InstallLog.xml");
 		private XmlDocument xmlDoc;
 		private XmlElement m_xelModListNode;
 		private XmlElement dataFilesNode;

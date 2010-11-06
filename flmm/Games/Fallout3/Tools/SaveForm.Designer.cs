@@ -1,4 +1,5 @@
-namespace Fomm {
+namespace Fomm.Games.Fallout3.Tools
+{
     partial class SaveForm {
         /// <summary>
         /// Required designer variable.

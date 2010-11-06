@@ -43,7 +43,6 @@ namespace Fomm
 			this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
 			this.rtbPluginInfo = new System.Windows.Forms.RichTextBox();
 			this.bPackageManager = new System.Windows.Forms.Button();
-			this.bSaveGames = new System.Windows.Forms.Button();
 			this.bHelp = new System.Windows.Forms.Button();
 			this.bSettings = new System.Windows.Forms.Button();
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -216,17 +215,6 @@ namespace Fomm
 			this.bPackageManager.UseVisualStyleBackColor = true;
 			this.bPackageManager.Click += new System.EventHandler(this.bPackageManager_Click);
 			// 
-			// bSaveGames
-			// 
-			this.bSaveGames.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.bSaveGames.Location = new System.Drawing.Point(417, 210);
-			this.bSaveGames.Name = "bSaveGames";
-			this.bSaveGames.Size = new System.Drawing.Size(120, 23);
-			this.bSaveGames.TabIndex = 2;
-			this.bSaveGames.Text = "Save game list";
-			this.bSaveGames.UseVisualStyleBackColor = true;
-			this.bSaveGames.Click += new System.EventHandler(this.bSaveGames_Click);
-			// 
 			// bHelp
 			// 
 			this.bHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -381,7 +369,6 @@ namespace Fomm
 			this.Controls.Add(this.pictureBox1);
 			this.Controls.Add(this.bPackageManager);
 			this.Controls.Add(this.bLaunch);
-			this.Controls.Add(this.bSaveGames);
 			this.Controls.Add(this.bSettings);
 			this.Controls.Add(this.bHelp);
 			this.MainMenuStrip = this.menuStrip1;
@@ -411,7 +398,6 @@ namespace Fomm
 		private System.Windows.Forms.SplitContainer splitContainer1;
 		private System.Windows.Forms.RichTextBox rtbPluginInfo;
 		private System.Windows.Forms.Button bPackageManager;
-		private System.Windows.Forms.Button bSaveGames;
 		private System.Windows.Forms.ContextMenuStrip cmsPlugins;
 		private System.Windows.Forms.Button bHelp;
 		private System.Windows.Forms.ColumnHeader columnHeader2;

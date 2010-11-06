@@ -63,8 +63,26 @@ namespace Fomm
 
 		public static readonly string tmpPath = Path.Combine(Path.GetTempPath(), "fomm");
 		private static readonly string m_strExecutableDirectory = Path.GetDirectoryName(Application.ExecutablePath);
-		public static readonly string fommDir = Path.Combine(m_strExecutableDirectory, "fomm");
-		//public static readonly string LocalApplicationDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "GeMM");
+		//public static readonly string fommDir = Path.Combine(m_strExecutableDirectory, "fomm");
+		public static readonly string LocalApplicationDataPath = Path.Combine(PersonalDirectory, "GeMM");
+
+		/// <summary>
+		/// Gets the Personal directory of the current user.
+		/// </summary>
+		/// <remarks>
+		/// Typically, this is the Documents folder of the current user.
+		/// </remarks>
+		/// <value>The Personal directory of the current user.</value>
+		public static string PersonalDirectory
+		{
+			get
+			{
+				string strPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+				if (String.IsNullOrEmpty(strPath))
+					return Registry.GetValue(@"HKEY_CURRENT_USER\software\microsoft\windows\currentversion\explorer\user shell folders", "Personal", null).ToString();
+				return strPath;
+			}
+		}
 
 		private static bool monoMode;
 		public static bool MonoMode { get { return monoMode; } }
@@ -266,14 +284,13 @@ namespace Fomm
 					if (cancellaunch) return;
 
 					if (!Directory.Exists(tmpPath)) Directory.CreateDirectory(tmpPath);
-					if (!Directory.Exists(fommDir)) Directory.CreateDirectory(fommDir);
 
 #if TRACE
 					string str7zPath = Path.Combine(Program.fommDir, "7z-32bit.dll");
 					Trace.WriteLine("7z Path: " + str7zPath + " (Exists: " + File.Exists(str7zPath) + ")");
 					Trace.Flush();
 #endif
-					SevenZipCompressor.SetLibraryPath(Path.Combine(Program.fommDir, "7z-32bit.dll"));
+					SevenZipCompressor.SetLibraryPath(Path.Combine(Program.ExecutableDirectory, "fomm\\7z-32bit.dll"));
 #if TRACE
 					Trace.WriteLine("Install Log Version: " + InstallLog.Current.GetInstallLogVersion());
 					Trace.Indent();
