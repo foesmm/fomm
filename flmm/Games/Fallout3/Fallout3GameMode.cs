@@ -263,6 +263,9 @@ namespace Fomm.Games.Fallout3
 
 		#region Constructors
 
+		/// <summary>
+		/// The default constructor.
+		/// </summary>
 		public Fallout3GameMode()
 		{
 			string strUserGameDataPath = Path.Combine(Program.PersonalDirectory, "My games\\Fallout3");
@@ -777,6 +780,31 @@ class Script : Fallout3BaseScript {
 
 		#region Command Line Arguments
 
+		/// <summary>
+		/// Return command line help for the arguments provided by the game mode.
+		/// </summary>
+		/// <remarks>
+		/// This method should only return the text required to describe the arguments. All header,
+		/// footer, and context text is already provided.
+		/// </remarks>
+		/// <returns>Command line help for the arguments provided by the game mode.</returns>
+		public override string GetCommandLineHelp()
+		{
+			StringBuilder stbHelp = new StringBuilder();
+			stbHelp.AppendLine("*.dat, *.bsa, *.esm, *.esp, *.sdp");
+			stbHelp.AppendLine("Open the specified file in the relevent utility");
+			stbHelp.AppendLine();
+			stbHelp.AppendLine("-setup, -bsa-unpacker, -bsa-creator, -tessnip, -sdp-editor, -install-tweaker");
+			stbHelp.AppendLine("Open the specified utility window, without opening the main form where appropriate");
+			return stbHelp.ToString();
+		}
+
+		/// <summary>
+		/// Handles the command line arguments that run outside of an instance of FOMM.
+		/// </summary>
+		/// <param name="p_strArgs">The command line arguments that were passed to the programme.</param>
+		/// <returns><lang cref="true"/> if at least one of the arguments were handled;
+		/// <lang cref="false"/> otherwise.</returns>
 		public override bool HandleStandaloneArguments(string[] p_strArgs)
 		{
 			if (!p_strArgs[0].StartsWith("-") && File.Exists(p_strArgs[0]))
@@ -829,6 +857,12 @@ class Script : Fallout3BaseScript {
 			return false;
 		}
 
+		/// <summary>
+		/// Handles the command line arguments that affect an instance of FOMM.
+		/// </summary>
+		/// <param name="p_strArgs">The command line arguments that were passed to the programme.</param>
+		/// <returns><lang cref="true"/> if at least one of the arguments were handled;
+		/// <lang cref="false"/> otherwise.</returns>
 		public override bool HandleInAppArguments(string[] p_strArgs)
 		{
 			if (Array.IndexOf<string>(p_strArgs, "-install-tweaker") != -1)
