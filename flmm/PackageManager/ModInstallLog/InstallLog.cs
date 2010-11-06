@@ -54,12 +54,14 @@ namespace Fomm.PackageManager.ModInstallLog
 		public static readonly Version CURRENT_VERSION = new Version("0.2.0.0");
 		internal protected const string ORIGINAL_VALUES = "ORIGINAL_VALUES";
 		internal protected const string FOMM = "FOMM";
-		private static readonly InstallLog m_ilgCurrent = new InstallLog();
+		private static InstallLog m_ilgCurrent = null;
 
 		public static InstallLog Current
 		{
 			get
 			{
+				if (m_ilgCurrent == null)
+					m_ilgCurrent = new InstallLog();
 				return m_ilgCurrent;
 			}
 		}
