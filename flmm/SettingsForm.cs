@@ -4,6 +4,7 @@ using Microsoft.Win32;
 using SevenZip;
 using Fomm.Controls;
 using System.Drawing;
+using Fomm.Util;
 
 namespace Fomm
 {
@@ -12,6 +13,8 @@ namespace Fomm
 	/// </summary>
 	partial class SettingsForm : Form
 	{
+		private bool booToolTipShown = false;
+
 		#region Constructors
 
 		/// <summary>
@@ -29,6 +32,45 @@ namespace Fomm
 
 		#endregion
 
+		#region Tool Tip
+
+		/// <summary>
+		/// Handles the <see cref="Control.MouseHover"/> event of the tab page control.
+		/// </summary>
+		/// <remarks>
+		/// This displays the tool tip for the file associations group box when it is disabled.
+		/// </remarks>
+		/// <param name="sender">The object that raised the event.</param>
+		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+		private void tpgGeneral_MouseHover(object sender, EventArgs e)
+		{
+			if (!gbxAssociations.Enabled && gbxAssociations.ClientRectangle.Contains(gbxAssociations.PointToClient(Cursor.Position)))
+			{
+				booToolTipShown = true;
+				Point pntToolTipLocation = gbxAssociations.PointToClient(Cursor.Position);
+				ttpTip.Show(ttpTip.GetToolTip(gbxAssociations), gbxAssociations, pntToolTipLocation.X, pntToolTipLocation.Y + Cursor.Current.Size.Height);
+			}
+		}
+
+		/// <summary>
+		/// Handles the <see cref="Control.MouseMove"/> event of the tab page control.
+		/// </summary>
+		/// <remarks>
+		/// This hides the tool tip for the file associations group box when appropriate.
+		/// </remarks>
+		/// <param name="sender">The object that raised the event.</param>
+		/// <param name="e">An <see cref="MouseEventArgs"/> describing the event arguments.</param>
+		private void tpgGeneral_MouseMove(object sender, MouseEventArgs e)
+		{
+			if (booToolTipShown && !gbxAssociations.ClientRectangle.Contains(gbxAssociations.PointToClient(Cursor.Position)))
+			{
+				booToolTipShown = false;
+				ttpTip.Hide(gbxAssociations);
+			}
+		}
+
+		#endregion
+
 		#region Settings Loading
 
 		/// <summary>
@@ -39,6 +81,12 @@ namespace Fomm
 			cbDisableUAC.Checked = Properties.Settings.Default.NoUACCheck;
 			cbDisableIPC.Checked = Properties.Settings.Default.DisableIPC;
 			ckbCheckFomodVersions.Checked = Properties.Settings.Default.checkForNewModVersions;
+
+			if (!UacUtil.IsElevated)
+			{
+				gbxAssociations.Enabled = false;
+				ttpTip.SetToolTip(gbxAssociations, "Run FOMM as Administrator to change these settings.");
+			}
 
 			string key = Registry.GetValue(@"HKEY_CLASSES_ROOT\.bsa", null, null) as string;
 			switch (key)
@@ -80,10 +128,12 @@ namespace Fomm
 			}
 
 			key = Registry.GetValue(@"HKEY_CLASSES_ROOT\.zip", null, null) as string;
-			if (key == null) cbShellExtensions.Enabled = false;
+			if (key == null)
+				cbShellExtensions.Enabled = false;
 			else
 			{
-				if (Registry.GetValue("HKEY_CLASSES_ROOT\\" + key + "\\Shell\\Convert_to_fomod\\command", null, null) != null) cbShellExtensions.Checked = true;
+				if (Registry.GetValue("HKEY_CLASSES_ROOT\\" + key + "\\Shell\\Convert_to_fomod\\command", null, null) != null)
+					cbShellExtensions.Checked = true;
 			}
 		}
 
@@ -178,56 +228,59 @@ namespace Fomm
 			Properties.Settings.Default.DisableIPC = cbDisableIPC.Checked;
 			Properties.Settings.Default.checkForNewModVersions = ckbCheckFomodVersions.Checked;
 
-			if (!cbAssociateBsa.Checked)
+			if (UacUtil.IsElevated)
 			{
-				Registry.ClassesRoot.DeleteSubKeyTree("BethesdaSoftworks_Archive");
-				Registry.ClassesRoot.DeleteSubKeyTree(".bsa");
-			}
-			else
-			{
-				Registry.SetValue(@"HKEY_CLASSES_ROOT\.bsa", null, "BethesdaSoftworks_Archive");
-				Registry.SetValue(@"HKEY_CLASSES_ROOT\BethesdaSoftworks_Archive", null, "Bethesda File Archive", RegistryValueKind.String);
-				Registry.SetValue(@"HKEY_CLASSES_ROOT\BethesdaSoftworks_Archive\DefaultIcon", null, Application.ExecutablePath + ",0", RegistryValueKind.String);
-				Registry.SetValue(@"HKEY_CLASSES_ROOT\BethesdaSoftworks_Archive\shell\open\command", null, "\"" + Application.ExecutablePath + "\" \"%1\"", RegistryValueKind.String);
-			}
+				if (!cbAssociateBsa.Checked)
+				{
+					Registry.ClassesRoot.DeleteSubKeyTree("BethesdaSoftworks_Archive");
+					Registry.ClassesRoot.DeleteSubKeyTree(".bsa");
+				}
+				else
+				{
+					Registry.SetValue(@"HKEY_CLASSES_ROOT\.bsa", null, "BethesdaSoftworks_Archive");
+					Registry.SetValue(@"HKEY_CLASSES_ROOT\BethesdaSoftworks_Archive", null, "Bethesda File Archive", RegistryValueKind.String);
+					Registry.SetValue(@"HKEY_CLASSES_ROOT\BethesdaSoftworks_Archive\DefaultIcon", null, Application.ExecutablePath + ",0", RegistryValueKind.String);
+					Registry.SetValue(@"HKEY_CLASSES_ROOT\BethesdaSoftworks_Archive\shell\open\command", null, "\"" + Application.ExecutablePath + "\" \"%1\"", RegistryValueKind.String);
+				}
 
-			if (!cbAssociateSdp.Checked)
-			{
-				Registry.ClassesRoot.DeleteSubKeyTree("BethesdaSoftworks_ShaderPackage");
-				Registry.ClassesRoot.DeleteSubKeyTree(".sdp");
-			}
-			else
-			{
-				Registry.SetValue(@"HKEY_CLASSES_ROOT\.sdp", null, "BethesdaSoftworks_ShaderPackage");
-				Registry.SetValue(@"HKEY_CLASSES_ROOT\BethesdaSoftworks_ShaderPackage", null, "Bethesda Shader Package", RegistryValueKind.String);
-				Registry.SetValue(@"HKEY_CLASSES_ROOT\BethesdaSoftworks_ShaderPackage\DefaultIcon", null, Application.ExecutablePath + ",0", RegistryValueKind.String);
-				Registry.SetValue(@"HKEY_CLASSES_ROOT\BethesdaSoftworks_ShaderPackage\shell\open\command", null, "\"" + Application.ExecutablePath + "\" \"%1\"", RegistryValueKind.String);
-			}
+				if (!cbAssociateSdp.Checked)
+				{
+					Registry.ClassesRoot.DeleteSubKeyTree("BethesdaSoftworks_ShaderPackage");
+					Registry.ClassesRoot.DeleteSubKeyTree(".sdp");
+				}
+				else
+				{
+					Registry.SetValue(@"HKEY_CLASSES_ROOT\.sdp", null, "BethesdaSoftworks_ShaderPackage");
+					Registry.SetValue(@"HKEY_CLASSES_ROOT\BethesdaSoftworks_ShaderPackage", null, "Bethesda Shader Package", RegistryValueKind.String);
+					Registry.SetValue(@"HKEY_CLASSES_ROOT\BethesdaSoftworks_ShaderPackage\DefaultIcon", null, Application.ExecutablePath + ",0", RegistryValueKind.String);
+					Registry.SetValue(@"HKEY_CLASSES_ROOT\BethesdaSoftworks_ShaderPackage\shell\open\command", null, "\"" + Application.ExecutablePath + "\" \"%1\"", RegistryValueKind.String);
+				}
 
-			if (!cbAssociateFomod.Checked)
-			{
-				Registry.ClassesRoot.DeleteSubKeyTree("FOMM_Mod_Archive");
-				Registry.ClassesRoot.DeleteSubKeyTree(".fomod");
-			}
-			else
-			{
-				Registry.SetValue(@"HKEY_CLASSES_ROOT\.fomod", null, "FOMM_Mod_Archive");
-				Registry.SetValue(@"HKEY_CLASSES_ROOT\FOMM_Mod_Archive", null, "Fallout Mod Manager Archive", RegistryValueKind.String);
-				Registry.SetValue(@"HKEY_CLASSES_ROOT\FOMM_Mod_Archive\DefaultIcon", null, Application.ExecutablePath + ",0", RegistryValueKind.String);
-				Registry.SetValue(@"HKEY_CLASSES_ROOT\FOMM_Mod_Archive\shell\open\command", null, "\"" + Application.ExecutablePath + "\" \"%1\"", RegistryValueKind.String);
-			}
+				if (!cbAssociateFomod.Checked)
+				{
+					Registry.ClassesRoot.DeleteSubKeyTree("FOMM_Mod_Archive");
+					Registry.ClassesRoot.DeleteSubKeyTree(".fomod");
+				}
+				else
+				{
+					Registry.SetValue(@"HKEY_CLASSES_ROOT\.fomod", null, "FOMM_Mod_Archive");
+					Registry.SetValue(@"HKEY_CLASSES_ROOT\FOMM_Mod_Archive", null, "Fallout Mod Manager Archive", RegistryValueKind.String);
+					Registry.SetValue(@"HKEY_CLASSES_ROOT\FOMM_Mod_Archive\DefaultIcon", null, Application.ExecutablePath + ",0", RegistryValueKind.String);
+					Registry.SetValue(@"HKEY_CLASSES_ROOT\FOMM_Mod_Archive\shell\open\command", null, "\"" + Application.ExecutablePath + "\" \"%1\"", RegistryValueKind.String);
+				}
 
-			if (cbShellExtensions.Checked)
-			{
-				AddShellExtension(Registry.GetValue(@"HKEY_CLASSES_ROOT\.zip", null, null) as string);
-				AddShellExtension(Registry.GetValue(@"HKEY_CLASSES_ROOT\.rar", null, null) as string);
-				AddShellExtension(Registry.GetValue(@"HKEY_CLASSES_ROOT\.7z", null, null) as string);
-			}
-			else
-			{
-				RemoveShellExtension(Registry.GetValue(@"HKEY_CLASSES_ROOT\.zip", null, null) as string);
-				RemoveShellExtension(Registry.GetValue(@"HKEY_CLASSES_ROOT\.rar", null, null) as string);
-				RemoveShellExtension(Registry.GetValue(@"HKEY_CLASSES_ROOT\.7z", null, null) as string);
+				if (cbShellExtensions.Checked)
+				{
+					AddShellExtension(Registry.GetValue(@"HKEY_CLASSES_ROOT\.zip", null, null) as string);
+					AddShellExtension(Registry.GetValue(@"HKEY_CLASSES_ROOT\.rar", null, null) as string);
+					AddShellExtension(Registry.GetValue(@"HKEY_CLASSES_ROOT\.7z", null, null) as string);
+				}
+				else
+				{
+					RemoveShellExtension(Registry.GetValue(@"HKEY_CLASSES_ROOT\.zip", null, null) as string);
+					RemoveShellExtension(Registry.GetValue(@"HKEY_CLASSES_ROOT\.rar", null, null) as string);
+					RemoveShellExtension(Registry.GetValue(@"HKEY_CLASSES_ROOT\.7z", null, null) as string);
+				}
 			}
 		}
 
@@ -253,11 +306,13 @@ namespace Fomm
 		protected bool SaveGameModeSettings()
 		{
 			bool booIsValid = true;
+			bool booIsPageValid = true;
 			foreach (TabPage tpgSettings in tbcTabs.TabPages)
 				if (tpgSettings.Tag is SettingsPage)
 				{
-					booIsValid &= ((SettingsPage)tpgSettings.Tag).SaveSettings();
-					if (!booIsValid)
+					booIsPageValid = ((SettingsPage)tpgSettings.Tag).SaveSettings();
+					booIsValid &= booIsPageValid;
+					if (!booIsPageValid)
 						tbcTabs.SelectedTab = tpgSettings;
 				}
 			return booIsValid;

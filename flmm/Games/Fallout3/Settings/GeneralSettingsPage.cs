@@ -84,12 +84,8 @@ namespace Fomm.Games.Fallout3.Settings
 				rdcDirectories.SaveSettings();
 				Properties.Settings.Default.fallout3LaunchCommand = tbxCommand.Text;
 				Properties.Settings.Default.fallout3LaunchCommandArgs = tbxCommandArguments.Text;
-
-				if (!tbxWorkingDirectory.Text.Equals(Properties.Settings.Default.fallout3WorkingDirectory))
-				{
-					Properties.Settings.Default.fallout3WorkingDirectory = tbxWorkingDirectory.Text;
-					return true;
-				}
+				Properties.Settings.Default.fallout3WorkingDirectory = tbxWorkingDirectory.Text;
+				return true;
 			}
 			return false;
 		}

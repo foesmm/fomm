@@ -244,18 +244,18 @@ namespace Fomm
 						try
 						{
 							File.Delete("limited");
-							string VistaVirtualStore = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "VirtualStore\\");
-							VistaVirtualStore = Path.Combine(VistaVirtualStore, Directory.GetCurrentDirectory().Remove(0, 3));
-							VistaVirtualStore = Path.Combine(VistaVirtualStore, "limited");
-							if (File.Exists(VistaVirtualStore)) File.Delete(VistaVirtualStore);
+							string strVirtualStore = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "VirtualStore\\");
+							strVirtualStore = Path.Combine(strVirtualStore, Directory.GetCurrentDirectory().Remove(0, 3));
+							strVirtualStore = Path.Combine(strVirtualStore, "limited");
+							if (File.Exists(strVirtualStore)) File.Delete(strVirtualStore);
 							FileStream fs = File.Create("limited");
 							fs.Close();
-							if (File.Exists(VistaVirtualStore))
+							if (File.Exists(strVirtualStore))
 							{
 #if TRACE
 								Trace.WriteLine("UAC is messing us up.");
 #endif
-								MessageBox.Show("Vista's UAC is preventing Fallout mod manager from obtaining write access to fallout's installation directory.\n" +
+								MessageBox.Show(" UAC is preventing Fallout mod manager from obtaining write access to fallout's installation directory.\n" +
 								"Either right click fomm.exe and check the 'run as administrator' checkbox on the comptibility tab, or disable UAC", "Error");
 								File.Delete("limited");
 							}

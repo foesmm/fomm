@@ -23,6 +23,7 @@ namespace Fomm {
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
+			this.components = new System.ComponentModel.Container();
 			this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
 			this.cbAssociateFomod = new System.Windows.Forms.CheckBox();
 			this.cbAssociateBsa = new System.Windows.Forms.CheckBox();
@@ -32,9 +33,9 @@ namespace Fomm {
 			this.cbDisableUAC = new System.Windows.Forms.CheckBox();
 			this.ckbCheckFomodVersions = new System.Windows.Forms.CheckBox();
 			this.tbcTabs = new System.Windows.Forms.TabControl();
-			this.tabPage1 = new System.Windows.Forms.TabPage();
+			this.tpgGeneral = new System.Windows.Forms.TabPage();
 			this.groupBox5 = new System.Windows.Forms.GroupBox();
-			this.groupBox4 = new System.Windows.Forms.GroupBox();
+			this.gbxAssociations = new System.Windows.Forms.GroupBox();
 			this.tabPage2 = new System.Windows.Forms.TabPage();
 			this.cbUseDocs = new System.Windows.Forms.CheckBox();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -56,10 +57,11 @@ namespace Fomm {
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.butCancel = new System.Windows.Forms.Button();
 			this.butOK = new System.Windows.Forms.Button();
+			this.ttpTip = new System.Windows.Forms.ToolTip(this.components);
 			this.tbcTabs.SuspendLayout();
-			this.tabPage1.SuspendLayout();
+			this.tpgGeneral.SuspendLayout();
 			this.groupBox5.SuspendLayout();
-			this.groupBox4.SuspendLayout();
+			this.gbxAssociations.SuspendLayout();
 			this.tabPage2.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox1.SuspendLayout();
@@ -138,7 +140,7 @@ namespace Fomm {
 			// 
 			// tbcTabs
 			// 
-			this.tbcTabs.Controls.Add(this.tabPage1);
+			this.tbcTabs.Controls.Add(this.tpgGeneral);
 			this.tbcTabs.Controls.Add(this.tabPage2);
 			this.tbcTabs.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tbcTabs.Location = new System.Drawing.Point(0, 0);
@@ -147,17 +149,19 @@ namespace Fomm {
 			this.tbcTabs.Size = new System.Drawing.Size(406, 320);
 			this.tbcTabs.TabIndex = 22;
 			// 
-			// tabPage1
+			// tpgGeneral
 			// 
-			this.tabPage1.Controls.Add(this.groupBox5);
-			this.tabPage1.Controls.Add(this.groupBox4);
-			this.tabPage1.Location = new System.Drawing.Point(4, 22);
-			this.tabPage1.Name = "tabPage1";
-			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage1.Size = new System.Drawing.Size(398, 294);
-			this.tabPage1.TabIndex = 0;
-			this.tabPage1.Text = "General";
-			this.tabPage1.UseVisualStyleBackColor = true;
+			this.tpgGeneral.Controls.Add(this.groupBox5);
+			this.tpgGeneral.Controls.Add(this.gbxAssociations);
+			this.tpgGeneral.Location = new System.Drawing.Point(4, 22);
+			this.tpgGeneral.Name = "tpgGeneral";
+			this.tpgGeneral.Padding = new System.Windows.Forms.Padding(3);
+			this.tpgGeneral.Size = new System.Drawing.Size(398, 294);
+			this.tpgGeneral.TabIndex = 0;
+			this.tpgGeneral.Text = "General";
+			this.tpgGeneral.UseVisualStyleBackColor = true;
+			this.tpgGeneral.MouseMove += new System.Windows.Forms.MouseEventHandler(this.tpgGeneral_MouseMove);
+			this.tpgGeneral.MouseHover += new System.EventHandler(this.tpgGeneral_MouseHover);
 			// 
 			// groupBox5
 			// 
@@ -171,18 +175,18 @@ namespace Fomm {
 			this.groupBox5.TabStop = false;
 			this.groupBox5.Text = "Options";
 			// 
-			// groupBox4
+			// gbxAssociations
 			// 
-			this.groupBox4.Controls.Add(this.cbAssociateFomod);
-			this.groupBox4.Controls.Add(this.cbAssociateBsa);
-			this.groupBox4.Controls.Add(this.cbAssociateSdp);
-			this.groupBox4.Controls.Add(this.cbShellExtensions);
-			this.groupBox4.Location = new System.Drawing.Point(6, 6);
-			this.groupBox4.Name = "groupBox4";
-			this.groupBox4.Size = new System.Drawing.Size(384, 114);
-			this.groupBox4.TabIndex = 22;
-			this.groupBox4.TabStop = false;
-			this.groupBox4.Text = "File Type Associations";
+			this.gbxAssociations.Controls.Add(this.cbAssociateFomod);
+			this.gbxAssociations.Controls.Add(this.cbAssociateBsa);
+			this.gbxAssociations.Controls.Add(this.cbAssociateSdp);
+			this.gbxAssociations.Controls.Add(this.cbShellExtensions);
+			this.gbxAssociations.Location = new System.Drawing.Point(6, 6);
+			this.gbxAssociations.Name = "gbxAssociations";
+			this.gbxAssociations.Size = new System.Drawing.Size(384, 114);
+			this.gbxAssociations.TabIndex = 22;
+			this.gbxAssociations.TabStop = false;
+			this.gbxAssociations.Text = "File Type Associations";
 			// 
 			// tabPage2
 			// 
@@ -406,11 +410,11 @@ namespace Fomm {
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Settings";
 			this.tbcTabs.ResumeLayout(false);
-			this.tabPage1.ResumeLayout(false);
+			this.tpgGeneral.ResumeLayout(false);
 			this.groupBox5.ResumeLayout(false);
 			this.groupBox5.PerformLayout();
-			this.groupBox4.ResumeLayout(false);
-			this.groupBox4.PerformLayout();
+			this.gbxAssociations.ResumeLayout(false);
+			this.gbxAssociations.PerformLayout();
 			this.tabPage2.ResumeLayout(false);
 			this.tabPage2.PerformLayout();
 			this.groupBox2.ResumeLayout(false);
@@ -433,7 +437,7 @@ namespace Fomm {
 		private System.Windows.Forms.CheckBox cbDisableUAC;
 		private System.Windows.Forms.CheckBox ckbCheckFomodVersions;
 		private System.Windows.Forms.TabControl tbcTabs;
-		private System.Windows.Forms.TabPage tabPage1;
+		private System.Windows.Forms.TabPage tpgGeneral;
 		private System.Windows.Forms.TabPage tabPage2;
 		private System.Windows.Forms.Label label5;
 		private System.Windows.Forms.ComboBox cbxFomodCompression;
@@ -452,10 +456,11 @@ namespace Fomm {
 		private System.Windows.Forms.Label label11;
 		private System.Windows.Forms.Label label12;
 		private System.Windows.Forms.GroupBox groupBox5;
-		private System.Windows.Forms.GroupBox groupBox4;
+		private System.Windows.Forms.GroupBox gbxAssociations;
 		private System.Windows.Forms.CheckBox cbUseDocs;
 		private System.Windows.Forms.Panel panel1;
 		private System.Windows.Forms.Button butCancel;
 		private System.Windows.Forms.Button butOK;
+		private System.Windows.Forms.ToolTip ttpTip;
     }
 }

@@ -808,6 +808,7 @@
     <Compile Include="Util\SortedList.cs" />
     <Compile Include="Util\TextUtil.cs" />
     <Compile Include="Util\ThreadSafeSevenZipExtractor.cs" />
+    <Compile Include="Util\UacUtil.cs" />
     <Compile Include="Util\WindowPositions.cs" />
   </ItemGroup>
   <ItemGroup>
