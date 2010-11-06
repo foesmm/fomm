@@ -32,24 +32,22 @@ namespace Fomm.PackageManager
 			Trace.WriteLine("");
 			Trace.WriteLine("Setting up File IO Permissions for: ");
 			Trace.Indent();
-			Trace.Write("       Exe Dir: ");
-			Trace.WriteLine(Program.ExecutableDirectory);
-			Trace.Write("      Save Dir: ");
-			Trace.WriteLine(Program.GameMode.SavesPath);
-			Trace.Indent();
-			Trace.Write("      Registry says profile lives here: ");
-			Trace.WriteLine(Registry.GetValue(@"HKEY_CURRENT_USER\software\microsoft\windows\currentversion\explorer\user shell folders", "Personal", "Not Found").ToString());
-			Trace.Unindent();
-			Trace.Write("  FOMM tmp Dir: ");
+			Trace.Write("     FOMM tmp Dir: ");
 			Trace.WriteLine(Program.tmpPath);
-			Trace.Write("User Setting Path: ");
-			Trace.WriteLine(Program.GameMode.UserSettingsPath);
-			Trace.Write("   Current Dir: ");
-			Trace.WriteLine(Environment.CurrentDirectory);
-			Trace.Write(" Overwrite Dir: ");
-			Trace.WriteLine(Program.GameMode.OverwriteDirectory);
-			Trace.Write("System tmp Dir: ");
+			Trace.Write(" Install Info Dir: ");
+			Trace.WriteLine(Program.GameMode.InstallInfoDirectory);
+			Trace.Write("   System tmp Dir: ");
 			Trace.WriteLine(Path.GetTempPath());
+			Trace.WriteLine("   Settings Files: ");
+			Trace.Indent();
+			foreach (string strValue in Program.GameMode.SettingsFiles.Values)
+				Trace.WriteLine(strValue);
+			Trace.Unindent();
+			Trace.WriteLine("      Other Paths: ");
+			Trace.Indent();
+			foreach (string strValue in Program.GameMode.AdditionalPaths.Values)
+				Trace.WriteLine(strValue);
+			Trace.Unindent();
 			Trace.Unindent();
 			Trace.Flush();
 #endif
