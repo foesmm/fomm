@@ -401,6 +401,7 @@ namespace Fomm {
 			this.ClientSize = new System.Drawing.Size(406, 367);
 			this.Controls.Add(this.tbcTabs);
 			this.Controls.Add(this.panel1);
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.Name = "SettingsForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Settings";

@@ -679,7 +679,7 @@ namespace Fomm
 				return;
 			}
 			SettingsForm sfmSettings = new SettingsForm();
-			if ((sfmSettings.ShowDialog(this) == DialogResult.OK) && sfmSettings.RequiresRestart)
+			if (sfmSettings.ShowDialog(this) == DialogResult.OK)
 				RefreshPluginList();
 		}
 

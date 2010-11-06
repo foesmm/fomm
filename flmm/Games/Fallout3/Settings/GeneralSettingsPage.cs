@@ -6,6 +6,7 @@ using System.Data;
 using System.Text;
 using System.Windows.Forms;
 using Fomm.Controls;
+using System.IO;
 
 namespace Fomm.Games.Fallout3.Settings
 {
@@ -27,6 +28,38 @@ namespace Fomm.Games.Fallout3.Settings
 
 		#endregion
 
+		#region Validation
+
+		/// <summary>
+		/// Validates the entered settings values on this page.
+		/// </summary>
+		/// <returns><lang cref="true"/> if the entered settings values are valid;
+		/// <lang cref="false"/> otherwise.</returns>
+		protected bool ValidateSettings()
+		{
+			bool booValid = rdcDirectories.ValidateSettings();
+			booValid &= ValidateWorkingDirectory();
+			return booValid;
+		}
+
+		/// <summary>
+		/// Validates the selected working directory.
+		/// </summary>
+		/// <returns><lang cref="true"/> if the selected working directory is valid;
+		/// <lang cref="false"/> otherwise.</returns>
+		protected bool ValidateWorkingDirectory()
+		{
+			erpErrors.SetError(butSelectWorkingDirectory, null);
+			if (!Fallout3GameMode.VerifyWorkingDirectory(tbxWorkingDirectory.Text))
+			{
+				erpErrors.SetError(butSelectWorkingDirectory, "Invalid working directory. Could not find Fallout 3.");
+				return false;
+			}
+			return true;
+		}
+
+		#endregion
+
 		#region Settings Management
 
 		/// <summary>
@@ -34,7 +67,6 @@ namespace Fomm.Games.Fallout3.Settings
 		/// </summary>
 		public override void LoadSettings()
 		{
-			tbxModDirectory.Text = Properties.Settings.Default.fallout3ModDirectory;
 			tbxWorkingDirectory.Text = Properties.Settings.Default.fallout3WorkingDirectory;
 			tbxCommand.Text = Properties.Settings.Default.fallout3LaunchCommand;
 			tbxCommandArguments.Text = Properties.Settings.Default.fallout3LaunchCommandArgs;
@@ -43,38 +75,26 @@ namespace Fomm.Games.Fallout3.Settings
 		/// <summary>
 		/// Persists the settings from the page's controls.
 		/// </summary>
-		/// <returns><lang cref="true"/> if the changed settings require a programme restart;
+		/// <returns><lang cref="true"/> if ettings were saved;
 		/// <lang cref="false"/> otherwise.</returns>
 		public override bool SaveSettings()
 		{
-			Properties.Settings.Default.fallout3ModDirectory = tbxModDirectory.Text;
-			Properties.Settings.Default.fallout3LaunchCommand = tbxCommand.Text;
-			Properties.Settings.Default.fallout3LaunchCommandArgs = tbxCommandArguments.Text;
-
-			if (!tbxWorkingDirectory.Text.Equals(Properties.Settings.Default.fallout3WorkingDirectory))
+			if (ValidateSettings())
 			{
-				Properties.Settings.Default.fallout3WorkingDirectory = tbxWorkingDirectory.Text;
-				return true;
+				rdcDirectories.SaveSettings();
+				Properties.Settings.Default.fallout3LaunchCommand = tbxCommand.Text;
+				Properties.Settings.Default.fallout3LaunchCommandArgs = tbxCommandArguments.Text;
+
+				if (!tbxWorkingDirectory.Text.Equals(Properties.Settings.Default.fallout3WorkingDirectory))
+				{
+					Properties.Settings.Default.fallout3WorkingDirectory = tbxWorkingDirectory.Text;
+					return true;
+				}
 			}
 			return false;
 		}
 
 		#endregion
-
-		/// <summary>
-		/// Handles the <see cref="Control.Click"/> event of the select mod directory button.
-		/// </summary>
-		/// <remarks>
-		/// This opens the folder selection dialog for the selection of the mod directory.
-		/// </remarks>
-		/// <param name="sender">The object that raised the event.</param>
-		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
-		private void butSelectModDirectory_Click(object sender, EventArgs e)
-		{
-			fbdModDirectory.SelectedPath = tbxModDirectory.Text;
-			if (fbdModDirectory.ShowDialog(this.FindForm()) == DialogResult.OK)
-				tbxModDirectory.Text = fbdModDirectory.SelectedPath;
-		}
 
 		/// <summary>
 		/// Handles the <see cref="Control.Click"/> event of the select working directory button.

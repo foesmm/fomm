@@ -44,6 +44,7 @@
 			// 
 			// butSelectInfoDirectory
 			// 
+			this.butSelectInfoDirectory.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.butSelectInfoDirectory.AutoSize = true;
 			this.butSelectInfoDirectory.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.butSelectInfoDirectory.Location = new System.Drawing.Point(394, 57);
@@ -64,6 +65,8 @@
 			// 
 			// tbxInstallInfo
 			// 
+			this.tbxInstallInfo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.tbxInstallInfo.Location = new System.Drawing.Point(102, 59);
 			this.tbxInstallInfo.Name = "tbxInstallInfo";
 			this.tbxInstallInfo.Size = new System.Drawing.Size(286, 20);
@@ -80,6 +83,7 @@
 			// 
 			// butSelectModDirectory
 			// 
+			this.butSelectModDirectory.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.butSelectModDirectory.AutoSize = true;
 			this.butSelectModDirectory.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.butSelectModDirectory.Location = new System.Drawing.Point(394, 14);
@@ -100,6 +104,8 @@
 			// 
 			// tbxModDirectory
 			// 
+			this.tbxModDirectory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.tbxModDirectory.Location = new System.Drawing.Point(102, 16);
 			this.tbxModDirectory.Name = "tbxModDirectory";
 			this.tbxModDirectory.Size = new System.Drawing.Size(286, 20);

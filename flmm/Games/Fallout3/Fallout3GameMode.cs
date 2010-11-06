@@ -266,14 +266,14 @@ namespace Fomm.Games.Fallout3
 		public Fallout3GameMode()
 		{
 			string strUserGameDataPath = Path.Combine(Program.PersonalDirectory, "My games\\Fallout3");
-			
+
 			m_dicSettingsFiles[SettingsFile.FOIniPath] = Path.Combine(strUserGameDataPath, "Fallout.ini");
 			m_dicSettingsFiles[SettingsFile.FOPrefsIniPath] = Path.Combine(strUserGameDataPath, "FalloutPrefs.ini");
 			m_dicSettingsFiles[SettingsFile.GeckIniPath] = Path.Combine(strUserGameDataPath, "GECKCustom.ini");
 			m_dicSettingsFiles[SettingsFile.GeckPrefsIniPath] = Path.Combine(strUserGameDataPath, "GECKPrefs.ini");
 
 			m_dicAdditionalPaths["FORendererFile"] = Path.Combine(strUserGameDataPath, "RendererInfo.txt");
-			m_dicAdditionalPaths["PluginsFile"] = Path.Combine(Program.PersonalDirectory, "Fallout3/plugins.txt");
+			m_dicAdditionalPaths["PluginsFile"] = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Fallout3/plugins.txt");
 			m_dicAdditionalPaths["DLCDir"] = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Microsoft\\xlive\\DLC");
 
 			m_strSavesPath = Path.Combine(strUserGameDataPath, NativeMethods.GetPrivateProfileString("General", "SLocalSavePath", "Games", m_dicSettingsFiles["FOIniPath"]));
@@ -841,7 +841,13 @@ class Script : Fallout3BaseScript {
 
 		#endregion
 
-		protected bool VerifyWorkingDirectory(string p_strPath)
+		/// <summary>
+		/// Verifies that the given path is a valid working directory for the game mode.
+		/// </summary>
+		/// <param name="p_strPath">The path to validate as a working directory.</param>
+		/// <returns><lang cref="true"/> if the path is a vlid working directory;
+		/// <lang cref="false"/> otherwise.</returns>
+		public static bool VerifyWorkingDirectory(string p_strPath)
 		{
 			if (String.IsNullOrEmpty(p_strPath))
 				return false;

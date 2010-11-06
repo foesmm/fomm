@@ -12,24 +12,6 @@ namespace Fomm
 	/// </summary>
 	partial class SettingsForm : Form
 	{
-		private bool m_booRequireRestart = false;
-
-		#region Properties
-
-		/// <summary>
-		/// Gets whether or not the settings changed require a programme restart.
-		/// </summary>
-		/// <value>Whether or not the settings changed require a programme restart.</value>
-		public bool RequiresRestart
-		{
-			get
-			{
-				return m_booRequireRestart;
-			}
-		}
-
-		#endregion
-
 		#region Constructors
 
 		/// <summary>
@@ -134,6 +116,7 @@ namespace Fomm
 				spgSettings.Dock = DockStyle.Fill;
 				tbcTabs.TabPages[spgSettings.Name].UseVisualStyleBackColor = true;
 				tbcTabs.TabPages[spgSettings.Name].Controls.Add(spgSettings);
+				tbcTabs.TabPages[spgSettings.Name].Tag = spgSettings;
 				spgSettings.LoadSettings();
 			}
 		}
@@ -150,9 +133,12 @@ namespace Fomm
 		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
 		private void butOK_Click(object sender, EventArgs e)
 		{
+			if (!SaveGameModeSettings())
+				return;
+
 			SaveGeneralSettings();
 			SaveFOMODSettings();
-			SaveGameModeSettings();
+
 			Properties.Settings.Default.Save();
 			DialogResult = DialogResult.OK;
 		}
@@ -262,10 +248,19 @@ namespace Fomm
 		/// <summary>
 		/// Persists the game-mode specific settings.
 		/// </summary>
-		protected void SaveGameModeSettings()
+		/// <returns><lang cref="true"/> if ettings were saved;
+		/// <lang cref="false"/> otherwise.</returns>
+		protected bool SaveGameModeSettings()
 		{
-			foreach (SettingsPage spgSettings in Program.GameMode.SettingsPages)
-				m_booRequireRestart |= spgSettings.SaveSettings();
+			bool booIsValid = true;
+			foreach (TabPage tpgSettings in tbcTabs.TabPages)
+				if (tpgSettings.Tag is SettingsPage)
+				{
+					booIsValid &= ((SettingsPage)tpgSettings.Tag).SaveSettings();
+					if (!booIsValid)
+						tbcTabs.SelectedTab = tpgSettings;
+				}
+			return booIsValid;
 		}
 
 		#endregion

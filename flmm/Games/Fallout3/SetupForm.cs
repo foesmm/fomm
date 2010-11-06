@@ -42,8 +42,8 @@ namespace Fomm.Games.Fallout3
 		{
 			if (e.TabPage == vtpDirectories)
 			{
-				/*if (!ValidateModDirectory())
-					wizSetup.SelectedTabPage = e.TabPage;*/
+				if (!rdcDirectories.ValidateSettings())
+					wizSetup.SelectedTabPage = e.TabPage;
 			}
 		}
 
@@ -71,12 +71,12 @@ namespace Fomm.Games.Fallout3
 		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
 		private void wizSetup_Finished(object sender, EventArgs e)
 		{
-			//TODO: add requireddirectories control to this
-			/*if (ValidateModDirectory())
+			if (rdcDirectories.ValidateSettings())
 			{
+				rdcDirectories.SaveSettings();
 				Properties.Settings.Default.Save();
 				DialogResult = DialogResult.OK;
-			}*/
+			}
 		}
 
 		#endregion

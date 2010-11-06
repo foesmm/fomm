@@ -34,8 +34,10 @@
 			this.pnlLight = new System.Windows.Forms.Panel();
 			this.wizSetup = new Fomm.Controls.WizardControl();
 			this.vtpDirectories = new Fomm.Controls.VerticalTabPage();
+			this.rdcDirectories = new Fomm.Games.Fallout3.Settings.RequiredDirectoriesControl();
 			this.panel1.SuspendLayout();
 			this.wizSetup.SuspendLayout();
+			this.vtpDirectories.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// panel1
@@ -97,6 +99,7 @@
 			// vtpDirectories
 			// 
 			this.vtpDirectories.BackColor = System.Drawing.SystemColors.Control;
+			this.vtpDirectories.Controls.Add(this.rdcDirectories);
 			this.vtpDirectories.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.vtpDirectories.Location = new System.Drawing.Point(0, 0);
 			this.vtpDirectories.Name = "vtpDirectories";
@@ -104,6 +107,14 @@
 			this.vtpDirectories.Size = new System.Drawing.Size(455, 307);
 			this.vtpDirectories.TabIndex = 2;
 			this.vtpDirectories.Text = "verticalTabPage1";
+			// 
+			// rdcDirectories
+			// 
+			this.rdcDirectories.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.rdcDirectories.Location = new System.Drawing.Point(0, 0);
+			this.rdcDirectories.Name = "rdcDirectories";
+			this.rdcDirectories.Size = new System.Drawing.Size(455, 307);
+			this.rdcDirectories.TabIndex = 0;
 			// 
 			// SetupForm
 			// 
@@ -118,6 +129,7 @@
 			this.panel1.ResumeLayout(false);
 			this.panel1.PerformLayout();
 			this.wizSetup.ResumeLayout(false);
+			this.vtpDirectories.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -130,6 +142,7 @@
 		private System.Windows.Forms.Label label1;
 		private Fomm.Controls.WizardControl wizSetup;
 		private Fomm.Controls.VerticalTabPage vtpDirectories;
+		private Fomm.Games.Fallout3.Settings.RequiredDirectoriesControl rdcDirectories;
 
 
 

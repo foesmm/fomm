@@ -166,7 +166,7 @@ namespace Fomm.Util
 		{
 			if (p_frmWindow.WindowState == FormWindowState.Minimized)
 				return;
-			m_dicPositions[p_strWindowName] = new LocationInfo(p_frmWindow.Location, p_frmWindow.Size, p_frmWindow.WindowState == FormWindowState.Maximized);
+			m_dicPositions[p_strWindowName] = new LocationInfo(p_frmWindow.Location, p_frmWindow.ClientSize, p_frmWindow.WindowState == FormWindowState.Maximized);
 		}
 
 		#region IXmlSerializable Members

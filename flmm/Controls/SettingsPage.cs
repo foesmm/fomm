@@ -34,7 +34,7 @@ namespace Fomm.Controls
 		/// <summary>
 		/// Persists the settings from the page's controls.
 		/// </summary>
-		/// <returns><lang cref="true"/> if the changed settings require a programme restart;
+		/// <returns><lang cref="true"/> if ettings were saved;
 		/// <lang cref="false"/> otherwise.</returns>
 		public virtual bool SaveSettings()
 		{
