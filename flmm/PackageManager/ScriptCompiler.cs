@@ -164,7 +164,7 @@ class ScriptRunner {
 			catch (Exception ex)
 			{
 				System.Windows.Forms.MessageBox.Show("An exception occured. The mod may not have been activated completely.\n" +
-					"Check 'fomm\\ScriptException.txt' for full details", "Error");
+					"Check 'ScriptException.txt' for full details", "Error");
 				string str = ex.ToString();
 				while (ex.InnerException != null)
 				{

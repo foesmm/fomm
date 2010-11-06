@@ -256,7 +256,7 @@ class Script : GenericBaseScript {
 		public string GetXMLConfigSchemaPath(string p_strVersion)
 		{
 			string strSchemaPath = GetGameSpecificXMLConfigSchemaPath(p_strVersion);
-			return strSchemaPath ?? Path.Combine(Program.ExecutableDirectory, String.Format(@"fomm\ModConfig{0}.xsd", p_strVersion));
+			return strSchemaPath ?? Path.Combine(Program.ProgrammeInfoDirectory, String.Format("ModConfig{0}.xsd", p_strVersion));
 		}
 
 		#endregion

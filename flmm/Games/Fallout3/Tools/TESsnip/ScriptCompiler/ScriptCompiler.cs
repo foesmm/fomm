@@ -115,7 +115,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler {
         private static readonly Dictionary<string, Pair<uint, string>> edidList=new Dictionary<string, Pair<uint, string>>();
         private static readonly Dictionary<string, Dictionary<string, ushort>> farVars=new Dictionary<string, Dictionary<string, ushort>>();
 
-        private static string xmlPath=System.IO.Path.Combine(Program.ExecutableDirectory, "fomm\\Fallout3\\TESsnip\\ScriptCompiler\\ScriptFunctions.xml");
+        private static string xmlPath=System.IO.Path.Combine(Program.ProgrammeInfoDirectory, "Fallout3\\TESsnip\\ScriptCompiler\\ScriptFunctions.xml");
 
 		private static void AddFunction(string name, string sname, FunctionSig sig) {
             name=name.ToLowerInvariant();

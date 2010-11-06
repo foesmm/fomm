@@ -773,7 +773,7 @@ class Script : Fallout3BaseScript {
 		/// file version.</returns>
 		public override string GetGameSpecificXMLConfigSchemaPath(string p_strVersion)
 		{
-			return Path.Combine(Program.ExecutableDirectory, String.Format(@"fomm\Fallout3\ModConfig{0}.xsd", p_strVersion));
+			return Path.Combine(Program.ProgrammeInfoDirectory, String.Format(@"Fallout3\ModConfig{1}.xsd", p_strVersion));
 		}
 
 		#endregion

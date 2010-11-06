@@ -61,10 +61,24 @@ namespace Fomm
 		public static string TRACE_FILE = "TraceLog" + DateTime.Now.ToString("yyyyMMddHHmm") + ".txt";
 #endif
 
-		public static readonly string tmpPath = Path.Combine(Path.GetTempPath(), "fomm");
+		
 		private static readonly string m_strExecutableDirectory = Path.GetDirectoryName(Application.ExecutablePath);
+		public static readonly string tmpPath = Path.Combine(Path.GetTempPath(), "fomm");
 		//public static readonly string fommDir = Path.Combine(m_strExecutableDirectory, "fomm");
-		public static readonly string LocalApplicationDataPath = Path.Combine(PersonalDirectory, "GeMM");
+		//public static readonly string LocalApplicationDataPath = Path.Combine(PersonalDirectory, "GeMM");
+
+
+		/// <summary>
+		/// Gets the path to the directory where programme data is stored.
+		/// </summary>
+		/// <value>The path to the directory where programme data is stored.</value>
+		public static string ProgrammeInfoDirectory
+		{
+			get
+			{
+				return Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "data");
+			}
+		}
 
 		/// <summary>
 		/// Gets the Personal directory of the current user.
@@ -292,7 +306,7 @@ namespace Fomm
 
 				if (!Directory.Exists(tmpPath)) Directory.CreateDirectory(tmpPath);
 
-				string str7zPath = Path.Combine(Program.ExecutableDirectory, "fomm\\7z-32bit.dll");
+				string str7zPath = Path.Combine(Program.ProgrammeInfoDirectory, "7z-32bit.dll");
 #if TRACE			
 					Trace.WriteLine("7z Path: " + str7zPath + " (Exists: " + File.Exists(str7zPath) + ")");
 					Trace.Flush();

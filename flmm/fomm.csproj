@@ -405,7 +405,6 @@
     </Compile>
     <Compile Include="PackageManager\ScriptCompiler.cs" />
     <Compile Include="Games\Fallout3\Script\TextureManager.cs" />
-    <Compile Include="PackageManager\unrar.cs" />
     <Compile Include="BackgroundWorkerProgressDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -812,29 +811,29 @@
     <Compile Include="Util\WindowPositions.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="fomm\7z-32bit.dll">
+    <Content Include="data\7z-32bit.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="fomm\fomm.chm">
+    <Content Include="data\fomm.chm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="app.config" />
-    <Content Include="fomm\Fallout3\ModConfig1.0.xsd">
+    <Content Include="data\Fallout3\ModConfig1.0.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="fomm\Fallout3\ModConfig2.0.xsd">
+    <Content Include="data\Fallout3\ModConfig2.0.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="fomm\Fallout3\ModConfig3.0.xsd">
+    <Content Include="data\Fallout3\ModConfig3.0.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="fomm\Fallout3\ModConfig4.0.xsd">
+    <Content Include="data\Fallout3\ModConfig4.0.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="fomm\ModConfig5.0.xsd">
+    <Content Include="data\ModConfig5.0.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="fomm\Fallout3\ModConfig5.0.xsd">
+    <Content Include="data\Fallout3\ModConfig5.0.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="Properties\Settings.settings">
@@ -845,16 +844,16 @@
     <None Include="Resources\RedSquare.png" />
     <None Include="Resources\YellowSquare.png" />
     <None Include="Resources\GreenSquare.png" />
-    <Content Include="fomm\Readme - ChinhDo Transactions.txt">
+    <Content Include="data\Readme - ChinhDo Transactions.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="fomm\Readme - fomm.txt">
+    <Content Include="data\Readme - fomm.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="fomm\unrar.dll">
+    <Content Include="data\unrar.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="fomm\xlive.dll">
+    <Content Include="data\xlive.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="Resources\arrow_down_black_small.png" />
@@ -869,19 +868,19 @@
     <None Include="Resources\justify_right.png" />
     <None Include="Resources\strikeout.png" />
     <None Include="Resources\underline.png" />
-    <Content Include="fomm\Fallout3\TESsnip\ScriptCompiler\ScriptFunctions.xml">
+    <Content Include="data\Fallout3\TESsnip\ScriptCompiler\ScriptFunctions.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="fomm\Fallout3\TESsnip\ScriptCompiler\ScriptFunctionsFormat.txt">
+    <Content Include="data\Fallout3\TESsnip\ScriptCompiler\ScriptFunctionsFormat.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="ShaderDisasm.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="fomm\Fallout3\TESsnip\RecordStructure.xml">
+    <Content Include="data\Fallout3\TESsnip\RecordStructure.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="fomm\Fallout3\TESsnip\RecordStructureFormat.txt">
+    <Content Include="data\Fallout3\TESsnip\RecordStructureFormat.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

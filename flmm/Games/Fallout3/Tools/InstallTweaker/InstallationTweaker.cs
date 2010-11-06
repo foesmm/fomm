@@ -8,10 +8,10 @@ namespace Fomm.Games.Fallout3.Tools.InstallTweaker
 
 	partial class InstallationTweaker : Form
 	{
-		private static readonly string BackupPath = Path.Combine(Program.ExecutableDirectory, "fomm\\itBackup\\");
+		private static readonly string BackupPath = Path.Combine(Program.GameMode.InstallInfoDirectory, "itBackup\\");
 		private static readonly string esmBackup = Path.Combine(BackupPath, "fallout3.esm");
 		private static readonly string bsaBackup = Path.Combine(BackupPath, "Fallout - Textures.bsa");
-		private static readonly string xlivePath = Path.Combine(Program.ExecutableDirectory, "fomm\\xlive.dll");
+		private static readonly string xlivePath = Path.Combine(Program.ProgrammeInfoDirectory, "xlive.dll");
 
 		public InstallationTweaker()
 		{

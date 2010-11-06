@@ -422,7 +422,7 @@ namespace Fomm
 
 		private void bHelp_Click(object sender, EventArgs e)
 		{
-			System.Diagnostics.Process.Start(Path.Combine(Program.ExecutableDirectory, "fomm\\fomm.chm"));
+			System.Diagnostics.Process.Start(Path.Combine(Program.ProgrammeInfoDirectory, "fomm.chm"));
 			//System.Diagnostics.Process.Start(@"http://fomm.wiki.sourceforge.net/");
 		}
 		#endregion
