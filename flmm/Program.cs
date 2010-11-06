@@ -121,7 +121,7 @@ namespace Fomm
 		private static void Main(string[] args)
 		{
 			MessageBox.Show("Debug Attach");
-		
+
 			AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 			Application.ThreadException += new System.Threading.ThreadExceptionEventHandler(Application_ThreadException);
 			if (Array.IndexOf<string>(args, "-mono") != -1) monoMode = true;
@@ -285,13 +285,22 @@ namespace Fomm
 
 					if (!Directory.Exists(tmpPath)) Directory.CreateDirectory(tmpPath);
 
-#if TRACE
-					string str7zPath = Path.Combine(Program.fommDir, "7z-32bit.dll");
+					string str7zPath = Path.Combine(Program.ExecutableDirectory, "fomm\\7z-32bit.dll");
+#if TRACE			
 					Trace.WriteLine("7z Path: " + str7zPath + " (Exists: " + File.Exists(str7zPath) + ")");
 					Trace.Flush();
 #endif
-					SevenZipCompressor.SetLibraryPath(Path.Combine(Program.ExecutableDirectory, "fomm\\7z-32bit.dll"));
+					SevenZipCompressor.SetLibraryPath(str7zPath);
+
 #if TRACE
+					Trace.WriteLine("Game Mode Specific Initialization:");
+					Trace.Indent();
+#endif
+					if (!GameMode.Init())
+						return;
+#if TRACE
+					Trace.Unindent();
+					Trace.WriteLine("Done Game Mode Specific Initialization.");
 					Trace.WriteLine("Install Log Version: " + InstallLog.Current.GetInstallLogVersion());
 					Trace.Indent();
 #endif
@@ -329,15 +338,6 @@ namespace Fomm
 #endif
 					}
 #if TRACE
-					Trace.WriteLine("Game Mode Specific Initialization:");
-					Trace.Indent();
-#endif
-					if (!GameMode.Init())
-						return;
-#if TRACE
-					Trace.Unindent();
-					Trace.WriteLine("Done Game Mode Specific Initialization.");
-
 					Trace.Unindent();
 					Trace.Write("Uninstalling missing FOMods...");
 #endif
