@@ -14,6 +14,9 @@ using Fomm.Util;
 
 namespace Fomm.PackageManager
 {
+	/// <summary>
+	/// The mod manager window.
+	/// </summary>
 	internal partial class PackageManager : Form
 	{
 		private readonly List<fomod> mods = new List<fomod>();
@@ -278,7 +281,7 @@ namespace Fomm.PackageManager
 				{
 					string strMessage = "You must log into the Nexus website.";
 					LoginForm lgfLogin = new LoginForm(strMessage, Properties.Settings.Default.nexusUsername);
-					while (lgfLogin.ShowDialog() != DialogResult.Cancel)
+					while (lgfLogin.ShowDialog(this) != DialogResult.Cancel)
 					{
 						Properties.Settings.Default.nexusUsername = lgfLogin.Username;
 						m_nxaNexus = new NexusAPI(NexusSite.Fallout3, lgfLogin.Username, lgfLogin.Password);
@@ -304,7 +307,8 @@ namespace Fomm.PackageManager
 		private void PackageManager_Load(object sender, EventArgs e)
 		{
 			Int32 tmp = Properties.Settings.Default.PackageManagerPanelSplit;
-			splitContainer1.SplitterDistance = Math.Max(splitContainer1.Panel1MinSize + 1, Math.Min(splitContainer1.Height - (splitContainer1.Panel2MinSize + 1), tmp));
+			if (tmp > 0)
+				splitContainer1.SplitterDistance = Math.Max(splitContainer1.Panel1MinSize + 1, Math.Min(splitContainer1.Height - (splitContainer1.Panel2MinSize + 1), tmp));
 		}
 
 		private void lvModList_SelectedIndexChanged(object sender, EventArgs e)
