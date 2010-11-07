@@ -549,5 +549,18 @@ namespace Fomm.Properties {
                 this["falloutNewVegasDoneSetup"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://better-oblivion-sorting-software.googlecode.com/svn/data/boss-fallout-nv/m" +
+            "asterlist.txt")]
+        public string falloutNewVegasMasterListUpdateUrl {
+            get {
+                return ((string)(this["falloutNewVegasMasterListUpdateUrl"]));
+            }
+            set {
+                this["falloutNewVegasMasterListUpdateUrl"] = value;
+            }
+        }
     }
 }

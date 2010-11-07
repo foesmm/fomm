@@ -117,7 +117,7 @@
       <DependentUpon>SetupForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Games\Fallout3\Tools\ArchiveInvalidation.cs" />
-    <Compile Include="Games\Fallout3\Tools\AutoSorter\BOSSUpdater.cs" />
+    <Compile Include="Games\Fallout3\Tools\AutoSorter\Fallout3BOSSUpdater.cs" />
     <Compile Include="Games\Fallout3\Tools\BSA\BSAArchive.cs" />
     <Compile Include="Games\Fallout3\Tools\BSA\BSABrowser.cs">
       <SubType>Form</SubType>
@@ -212,7 +212,12 @@
     <Compile Include="Games\Fallout3\Tools\PluginConflictDetector.cs" />
     <Compile Include="Games\Fallout3\Tools\TESsnip\ScriptCompiler\ScriptCompiler.cs" />
     <Compile Include="Games\Fallout3\Tools\TESsnip\ScriptCompiler\Tokenizer.cs" />
+    <Compile Include="Games\FalloutNewVegas\ArchiveInvalidation.cs" />
     <Compile Include="Games\FalloutNewVegas\FalloutNewVegasGameMode.cs" />
+    <Compile Include="Games\FalloutNewVegas\Script\FalloutNewVegasModUpgradeScript.cs" />
+    <Compile Include="Games\FalloutNewVegas\Script\FalloutNewVegasModInstallScript.cs" />
+    <Compile Include="Games\FalloutNewVegas\Script\XmlConfiguredInstall\NvseDependency.cs" />
+    <Compile Include="Games\FalloutNewVegas\Script\XmlConfiguredInstall\Parsers\FalloutNewVegasParser50Extension.cs" />
     <Compile Include="Games\FalloutNewVegas\Settings\GeneralSettingsPage.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -231,6 +236,7 @@
     <Compile Include="Games\FalloutNewVegas\SetupForm.Designer.cs">
       <DependentUpon>SetupForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Games\FalloutNewVegas\Tools\AutoSorter\FalloutNewVegasBOSSUpdater.cs" />
     <Compile Include="Games\GameMode.cs" />
     <Compile Include="Games\GameTool.cs" />
     <Compile Include="Games\Fallout3\Tools\GraphicsSettings\GraphicsSettings.cs">
@@ -859,6 +865,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="data\Fallout3\ModConfig5.0.xsd">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="data\FalloutNV\ModConfig5.0.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="Properties\Settings.settings">

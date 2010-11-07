@@ -12,17 +12,17 @@ namespace Fomm.Games.Fallout3.Script.XmlConfiguredInstall
 		#region Properties
 
 		/// <summary>
-		/// Gets the installed version of FOSE.
+		/// Gets the installed version of the script extender.
 		/// </summary>
 		/// <remarks>
-		/// <lang cref="null"/> is returned if FOSE is not installed.
+		/// <lang cref="null"/> is returned if the script extender is not installed.
 		/// </remarks>
-		/// <value>The installed version of FOSE.</value>
-		public Version FoseVersion
+		/// <value>The installed version of the script extender.</value>
+		public Version ScriptExtenderVersion
 		{
 			get
 			{
-				return ((Fallout3ModInstallScript)Script).GetFoseVersion();
+				return ((Fallout3ModInstallScript)Script).GetScriptExtenderVersion();
 			}
 		}
 

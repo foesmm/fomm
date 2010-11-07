@@ -10,6 +10,8 @@ using Fomm.Controls;
 using Fomm.PackageManager;
 using Fomm.PackageManager.XmlConfiguredInstall;
 using Fomm.PackageManager.XmlConfiguredInstall.Parsers;
+using Fomm.Games.FalloutNewVegas.Script.XmlConfiguredInstall.Parsers;
+using Fomm.Games.FalloutNewVegas.Script;
 
 namespace Fomm.Games.FalloutNewVegas
 {
@@ -106,6 +108,21 @@ namespace Fomm.Games.FalloutNewVegas
 				throw new NotImplementedException();
 				//we may not need to overrid this property
 				return Path.Combine(Environment.CurrentDirectory, "Data");
+			}
+		}
+
+		/// <summary>
+		/// Gets the path to the plugins.txt file.
+		/// </summary>
+		/// <remarks>
+		/// plugins.txt is a Fallout 3 file that tracks active plugins.
+		/// </remarks>
+		/// <value>The path to the plugins.txt file.</value>
+		public string PluginsFilePath
+		{
+			get
+			{
+				return m_dicAdditionalPaths["PluginsFile"];
 			}
 		}
 
@@ -369,7 +386,7 @@ namespace Fomm.Games.FalloutNewVegas
 				return @"using System;
 using fomm.Scripting;
 
-class Script : Fallout3BaseScript {
+class Script : FalloutNewVegasBaseScript {
 	public static bool OnActivate() {
         //Install all files from the fomod and activate any esps
         PerformBasicInstall();
@@ -388,7 +405,7 @@ class Script : Fallout3BaseScript {
 		/// <returns>A mod install script for the given <see cref="fomod"/>.</returns>
 		public override ModInstallScript CreateInstallScript(fomod p_fomodMod, ModInstallerBase p_mibInstaller)
 		{
-			return new Fomm.Games.Fallout3.Script.Fallout3ModInstallScript(p_fomodMod, p_mibInstaller);
+			return new FalloutNewVegasModInstallScript(p_fomodMod, p_mibInstaller);
 		}
 
 		/// <summary>
@@ -399,7 +416,7 @@ class Script : Fallout3BaseScript {
 		/// <returns>A mod upgrade script for the given <see cref="fomod"/>.</returns>
 		public override ModInstallScript CreateUpgradeScript(fomod p_fomodMod, ModInstallerBase p_mibInstaller)
 		{
-			return new Fomm.Games.Fallout3.Script.Fallout3ModUpgradeScript(p_fomodMod, p_mibInstaller);
+			return new FalloutNewVegasModUpgradeScript(p_fomodMod, p_mibInstaller);
 		}
 
 		/// <summary>
@@ -423,13 +440,8 @@ class Script : Fallout3BaseScript {
 		{
 			switch (p_strVersion)
 			{
-				case "1.0":
-					return new Fomm.Games.Fallout3.Script.XmlConfiguredInstall.Parsers.Fallout3Parser10Extension();
-				case "2.0":
-				case "3.0":
-				case "4.0":
 				case "5.0":
-					return new Fomm.Games.Fallout3.Script.XmlConfiguredInstall.Parsers.Fallout3Parser20Extension();
+					return new FalloutNewVegasParser50Extension();
 				default:
 					return null;
 			}
@@ -444,7 +456,7 @@ class Script : Fallout3BaseScript {
 		/// file version.</returns>
 		public override string GetGameSpecificXMLConfigSchemaPath(string p_strVersion)
 		{
-			return Path.Combine(Program.ProgrammeInfoDirectory, String.Format(@"Fallout3\ModConfig{1}.xsd", p_strVersion));
+			return Path.Combine(Program.ProgrammeInfoDirectory, String.Format(@"FalloutNV\ModConfig{0}.xsd", p_strVersion));
 		}
 
 		#endregion
@@ -680,6 +692,28 @@ class Script : Fallout3BaseScript {
 		{
 			string strExt = Path.GetExtension(p_strPath).ToLowerInvariant();
 			return (strExt == ".esp" || strExt == ".esm");
+		}
+
+		/// <summary>
+		/// hecks for any updates that are available for any game-specific components.
+		/// </summary>
+		/// <remarks><lang cref="true"/> if updates were available; otherwise <lang cref="false"/>.</remarks>
+		public override bool CheckForUpdates()
+		{
+			//check for new load order tepmlate
+			Tools.AutoSorter.FalloutNewVegasBOSSUpdater bupUpdater = new Tools.AutoSorter.FalloutNewVegasBOSSUpdater();
+			Int32 intLOVersion = bupUpdater.GetMasterlistVersion();
+			if (intLOVersion > new Fallout3.Tools.AutoSorter.LoadOrderSorter().GetFileVersion())
+			{
+				if (MessageBox.Show("A new version of the load order template is available: Release " + intLOVersion +
+					"\nDo you wish to download?", "Message", MessageBoxButtons.YesNo) == DialogResult.Yes)
+				{
+					bupUpdater.UpdateMasterlist(Fomm.Games.Fallout3.Tools.AutoSorter.LoadOrderSorter.LoadOrderTemplatePath);
+					MessageBox.Show("The load order template was updated.", "Update Complete.", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				}
+				return true;
+			}
+			return false;
 		}
 	}
 }

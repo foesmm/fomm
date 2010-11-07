@@ -9,21 +9,32 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
 	/// Utility class that handles checking for, and retreiving, new
 	/// version of the load order template.
 	/// </summary>
-	public class BOSSUpdater
+	public class Fallout3BOSSUpdater
 	{
-		//private const string MASTERLIST_URL = "http://better-oblivion-sorting-software.googlecode.com/svn/data/boss-fallout/masterlist.txt";
 		private static Regex m_rgxVersion = new Regex(@"Revision (\d+): ");
+
+		/// <summary>
+		/// Gets the URL where the latest masterlist lives.
+		/// </summary>
+		/// <value>The URL where the latest masterlist lives.</value>
+		protected virtual string MasterListURL
+		{
+			get
+			{
+				return Properties.Settings.Default.fallout3MasterListUpdateUrl;
+			}
+		}
 
 		/// <summary>
 		/// Gets the current verison of the BOSS Fallout 3 Masterlist.
 		/// </summary>
 		/// <returns>The current verison of the BOSS Fallout 3 Masterlist.</returns>
-		public static Int32 GetMasterlistVersion()
+		public Int32 GetMasterlistVersion()
 		{
 			string strVersionPage = null;
 			using (WebClient wclGetter = new WebClient())
 			{
-				string strMasterListUrl = Properties.Settings.Default.fallout3MasterListUpdateUrl;
+				string strMasterListUrl = MasterListURL;
 				Int32 intLastDividerPos = strMasterListUrl.LastIndexOfAny(new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar });
 				string strVersionUrl = strMasterListUrl.Substring(0, intLastDividerPos);
 				strVersionPage = wclGetter.DownloadString(strVersionUrl);
@@ -36,13 +47,13 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
 		/// <summary>
 		/// Updates the BOSS Fallout 3 Masterlist used by FOMM.
 		/// </summary>
-		public static void UpdateMasterlist(string p_strPath)
+		public void UpdateMasterlist(string p_strPath)
 		{
 			string strMasterlist = null;
 			using (WebClient wclGetter = new WebClient())
 			{
 				//the substring is to remove the 3byte EFBBBF Byte Order Mark (BOM)
-				strMasterlist = wclGetter.DownloadString(Properties.Settings.Default.fallout3MasterListUpdateUrl).Substring(3);
+				strMasterlist = wclGetter.DownloadString(MasterListURL).Substring(3);
 			}
 			File.WriteAllText(p_strPath, GetMasterlistVersion().ToString() + Environment.NewLine + strMasterlist);
 		}

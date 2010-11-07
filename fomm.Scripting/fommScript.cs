@@ -319,7 +319,7 @@ namespace fomm.Scripting
 					if (!(bool)(ExecuteMethod(() => Script.ScriptExtenderPresent()) ?? false)) return false;
 					try
 					{
-						return ((Version)ExecuteMethod(() => Script.GetFoseVersion())) >= new Version(line[2] + ".0");
+						return ((Version)ExecuteMethod(() => Script.GetScriptExtenderVersion())) >= new Version(line[2] + ".0");
 					}
 					catch
 					{

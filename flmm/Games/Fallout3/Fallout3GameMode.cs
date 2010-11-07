@@ -1,23 +1,18 @@
 ﻿using System;
 using System.IO;
-using System.Collections.Generic;
-using Microsoft.Win32;
+using System.Drawing;
+using System.Text;
 using System.Windows.Forms;
 using System.Threading;
-using System.Diagnostics;
-using Fomm.PackageManager;
-using Fomm.Games.Fallout3.Script;
-using System.Text;
-using System.Drawing;
-using Fomm.Games.Fallout3.Tools.CriticalRecords;
-using Fomm.PackageManager.ModInstallLog;
-using Fomm.PackageManager.XmlConfiguredInstall;
-using Fomm.Games.Fallout3.Script.XmlConfiguredInstall;
-using Fomm.PackageManager.XmlConfiguredInstall.Parsers;
-using Fomm.Games.Fallout3.Script.XmlConfiguredInstall.Parsers;
-using Fomm.Games.Fallout3.Tools.TESsnip;
+using System.Collections.Generic;
 using Fomm.Controls;
+using Fomm.PackageManager;
+using Fomm.PackageManager.XmlConfiguredInstall;
+using Fomm.PackageManager.XmlConfiguredInstall.Parsers;
 using Fomm.Games.Fallout3.Settings;
+using Fomm.Games.Fallout3.Script;
+using Fomm.Games.Fallout3.Script.XmlConfiguredInstall;
+using Fomm.Games.Fallout3.Script.XmlConfiguredInstall.Parsers;
 
 namespace Fomm.Games.Fallout3
 {
@@ -596,7 +591,7 @@ namespace Fomm.Games.Fallout3
 			bool[] active = new bool[plugins.Length];
 			bool[] corrupt = new bool[plugins.Length];
 			string[][] masters = new string[plugins.Length][];
-			Plugin p;
+			Tools.TESsnip.Plugin p;
 			List<string> mlist = new List<string>();
 			for (int i = 0; i < plugins.Length; i++)
 			{
@@ -604,7 +599,7 @@ namespace Fomm.Games.Fallout3
 				active[i] = p_frmMainForm.PluginsListViewItems[i].Checked;
 				try
 				{
-					p = new Plugin(Path.Combine(PluginsPath, plugins[i]), true);
+					p = new Tools.TESsnip.Plugin(Path.Combine(PluginsPath, plugins[i]), true);
 				}
 				catch
 				{
@@ -613,7 +608,7 @@ namespace Fomm.Games.Fallout3
 				}
 				if (p != null)
 				{
-					foreach (SubRecord sr in ((Record)p.Records[0]).SubRecords)
+					foreach (Tools.TESsnip.SubRecord sr in ((Tools.TESsnip.Record)p.Records[0]).SubRecords)
 					{
 						if (sr.Name != "MAST") continue;
 						mlist.Add(sr.GetStrData().ToLowerInvariant());
@@ -882,7 +877,7 @@ class Script : Fallout3BaseScript {
 		/// file version.</returns>
 		public override string GetGameSpecificXMLConfigSchemaPath(string p_strVersion)
 		{
-			return Path.Combine(Program.ProgrammeInfoDirectory, String.Format(@"Fallout3\ModConfig{1}.xsd", p_strVersion));
+			return Path.Combine(Program.ProgrammeInfoDirectory, String.Format(@"Fallout3\ModConfig{0}.xsd", p_strVersion));
 		}
 
 		#endregion
@@ -1350,13 +1345,14 @@ class Script : Fallout3BaseScript {
 		public override bool CheckForUpdates()
 		{
 			//check for new load order tepmlate
-			Int32 intLOVersion = Fomm.Games.Fallout3.Tools.AutoSorter.BOSSUpdater.GetMasterlistVersion();
+			Tools.AutoSorter.Fallout3BOSSUpdater bupUpdater = new Tools.AutoSorter.Fallout3BOSSUpdater();
+			Int32 intLOVersion = bupUpdater.GetMasterlistVersion();
 			if (intLOVersion > new Tools.AutoSorter.LoadOrderSorter().GetFileVersion())
 			{
 				if (MessageBox.Show("A new version of the load order template is available: Release " + intLOVersion +
 					"\nDo you wish to download?", "Message", MessageBoxButtons.YesNo) == DialogResult.Yes)
 				{
-					Fomm.Games.Fallout3.Tools.AutoSorter.BOSSUpdater.UpdateMasterlist(Fomm.Games.Fallout3.Tools.AutoSorter.LoadOrderSorter.LoadOrderTemplatePath);
+					bupUpdater.UpdateMasterlist(Fomm.Games.Fallout3.Tools.AutoSorter.LoadOrderSorter.LoadOrderTemplatePath);
 					MessageBox.Show("The load order template was updated.", "Update Complete.", MessageBoxButtons.OK, MessageBoxIcon.Information);
 				}
 				return true;

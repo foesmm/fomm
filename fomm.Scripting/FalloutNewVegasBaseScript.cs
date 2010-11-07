@@ -1,20 +1,20 @@
 using System;
-using Fomm.Games.Fallout3.Script;
 using Fomm.Games.Fallout3.Tools.TESsnip;
 using System.Drawing;
+using Fomm.Games.FalloutNewVegas.Script;
 
 namespace fomm.Scripting
 {
 	/// <summary>
-	/// The base class for custom Fallout3 install scripts.
+	/// The base class for custom Fallout: New Vegas install scripts.
 	/// </summary>
-	public abstract class Fallout3BaseScript : GenericBaseScript
+	public abstract class FalloutNewVegasBaseScript : GenericBaseScript
 	{
-		protected static Fallout3ModInstallScript Script
+		protected static FalloutNewVegasModInstallScript Script
 		{
 			get
 			{
-				return (Fallout3ModInstallScript)Installer.Script;
+				return (FalloutNewVegasModInstallScript)Installer.Script;
 			}
 		}
 
@@ -31,12 +31,12 @@ namespace fomm.Scripting
 		}
 
 		/// <summary>
-		/// Gets the version of FOSE that is installed.
+		/// Gets the version of NVSE that is installed.
 		/// </summary>
-		/// <returns>The version of FOSE that is installed, or <lang cref="null"/> if FOSE
+		/// <returns>The version of FOSE that is installed, or <lang cref="null"/> if NVSE
 		/// is not installed.</returns>
-		/// <seealso cref="ModScript.GetFoseVersion()"/>
-		public static Version GetFoseVersion()
+		/// <seealso cref="ModScript.GetScriptExtenderVersion()"/>
+		public static Version GetNvseVersion()
 		{
 			return (Version)ExecuteMethod(() => Script.GetScriptExtenderVersion());
 		}

@@ -1,12 +1,13 @@
 ﻿using System;
 using Fomm.PackageManager.XmlConfiguredInstall;
+using Fomm.Games.Fallout3.Script.XmlConfiguredInstall;
 
-namespace Fomm.Games.Fallout3.Script.XmlConfiguredInstall
+namespace Fomm.Games.FalloutNewVegas.Script.XmlConfiguredInstall
 {
 	/// <summary>
-	/// A dependency that requires a minimum version of FOSE to be installed.
+	/// A dependency that requires a minimum version of NVSE to be installed.
 	/// </summary>
-	public class FoseDependency : IDependency
+	public class NvseDependency : IDependency
 	{
 		private Fallout3DependencyStateManager m_dsmStateManager = null;
 		private Version m_verMinVersion = null;
@@ -47,9 +48,9 @@ namespace Fomm.Games.Fallout3.Script.XmlConfiguredInstall
 			{
 				Version verInstalledVersion = m_dsmStateManager.ScriptExtenderVersion;
 				if (verInstalledVersion == null)
-					return String.Format("This mod requires FOSE v{0} or higher. Please download from http://silverlock.org", m_verMinVersion);
+					return String.Format("This mod requires NVSE v{0} or higher. Please download from http://nvse.silverlock.org", m_verMinVersion);
 				else if (verInstalledVersion < m_verMinVersion)
-					return String.Format("This mod requires FOSE v{0} or higher. You have {1}. Please update from http://silverlock.org", m_verMinVersion, verInstalledVersion);
+					return String.Format("This mod requires NVSE v{0} or higher. You have {1}. Please update from http://nvse.silverlock.org", m_verMinVersion, verInstalledVersion);
 				else
 					return "Passed";
 			}
@@ -64,7 +65,7 @@ namespace Fomm.Games.Fallout3.Script.XmlConfiguredInstall
 		/// </summary>
 		/// <param name="p_dsmStateManager">The manager that reports the currect install state.</param>
 		/// <param name="p_verVersion">The minimum required version of FOSE.</param>
-		public FoseDependency(Fallout3DependencyStateManager p_dsmStateManager, Version p_verVersion)
+		public NvseDependency(Fallout3DependencyStateManager p_dsmStateManager, Version p_verVersion)
 		{
 			m_dsmStateManager = p_dsmStateManager;
 			m_verMinVersion = p_verVersion;
@@ -78,7 +79,7 @@ namespace Fomm.Games.Fallout3.Script.XmlConfiguredInstall
 		/// <returns>A text representation of the dependency.</returns>
 		public override string ToString()
 		{
-			return "FOSE: " + m_verMinVersion + " =/= " + m_dsmStateManager.ScriptExtenderVersion;
+			return "NVSE: " + m_verMinVersion + " =/= " + m_dsmStateManager.ScriptExtenderVersion;
 		}
 	}
 }

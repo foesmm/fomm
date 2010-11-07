@@ -95,18 +95,18 @@ namespace Fomm.Games.Fallout3.Script
 		/// Indicates whether or not FOSE is present.
 		/// </summary>
 		/// <returns><lang cref="true"/> if FOSE is installed; <lang cref="false"/> otherwise.</returns>
-		public bool ScriptExtenderPresent()
+		public virtual bool ScriptExtenderPresent()
 		{
 			PermissionsManager.CurrentPermissions.Assert();
 			return File.Exists("fose_loader.exe");
 		}
 
 		/// <summary>
-		/// Gets the version of FOSE that is installed.
+		/// Gets the version of the sript extender that is installed.
 		/// </summary>
-		/// <returns>The version of FOSE that is installed, or <lang cref="null"/> if FOSE
-		/// is not installed.</returns>
-		public Version GetFoseVersion()
+		/// <returns>The version of the sript extender that is installed, or <lang cref="null"/> if no
+		/// sript extender is installed.</returns>
+		public virtual Version GetScriptExtenderVersion()
 		{
 			PermissionsManager.CurrentPermissions.Assert();
 			if (!File.Exists("fose_loader.exe"))
@@ -190,7 +190,7 @@ namespace Fomm.Games.Fallout3.Script
 		/// <param name="p_strSection">The section containing the value to retrieve.</param>
 		/// <param name="p_strKey">The key of the value to retrieve.</param>
 		/// <returns>The specified value as a string.</returns>
-		public string GetFalloutIniString(string p_strSection, string p_strKey)
+		public virtual string GetFalloutIniString(string p_strSection, string p_strKey)
 		{
 			return GetSettingsString(Fallout3GameMode.SettingsFile.FOIniPath, p_strSection, p_strKey);
 		}
@@ -201,7 +201,7 @@ namespace Fomm.Games.Fallout3.Script
 		/// <param name="p_strSection">The section containing the value to retrieve.</param>
 		/// <param name="p_strKey">The key of the value to retrieve.</param>
 		/// <returns>The specified value as an integer.</returns>
-		public int GetFalloutIniInt(string p_strSection, string p_strKey)
+		public virtual int GetFalloutIniInt(string p_strSection, string p_strKey)
 		{
 			return GetSettingsInt(Fallout3GameMode.SettingsFile.FOIniPath, p_strSection, p_strKey);
 		}
@@ -212,7 +212,7 @@ namespace Fomm.Games.Fallout3.Script
 		/// <param name="p_strSection">The section containing the value to retrieve.</param>
 		/// <param name="p_strKey">The key of the value to retrieve.</param>
 		/// <returns>The specified value as a string.</returns>
-		public string GetPrefsIniString(string p_strSection, string p_strKey)
+		public virtual string GetPrefsIniString(string p_strSection, string p_strKey)
 		{
 			return GetSettingsString(Fallout3GameMode.SettingsFile.FOPrefsIniPath, p_strSection, p_strKey);
 		}
@@ -223,7 +223,7 @@ namespace Fomm.Games.Fallout3.Script
 		/// <param name="p_strSection">The section containing the value to retrieve.</param>
 		/// <param name="p_strKey">The key of the value to retrieve.</param>
 		/// <returns>The specified value as an integer.</returns>
-		public int GetPrefsIniInt(string p_strSection, string p_strKey)
+		public virtual int GetPrefsIniInt(string p_strSection, string p_strKey)
 		{
 			return GetSettingsInt(Fallout3GameMode.SettingsFile.FOPrefsIniPath, p_strSection, p_strKey);
 		}
@@ -234,7 +234,7 @@ namespace Fomm.Games.Fallout3.Script
 		/// <param name="p_strSection">The section containing the value to retrieve.</param>
 		/// <param name="p_strKey">The key of the value to retrieve.</param>
 		/// <returns>The specified value as a string.</returns>
-		public string GetGeckIniString(string p_strSection, string p_strKey)
+		public virtual string GetGeckIniString(string p_strSection, string p_strKey)
 		{
 			return GetSettingsString(Fallout3GameMode.SettingsFile.GeckIniPath, p_strSection, p_strKey);
 		}
@@ -245,7 +245,7 @@ namespace Fomm.Games.Fallout3.Script
 		/// <param name="p_strSection">The section containing the value to retrieve.</param>
 		/// <param name="p_strKey">The key of the value to retrieve.</param>
 		/// <returns>The specified value as an integer.</returns>
-		public int GetGeckIniInt(string p_strSection, string p_strKey)
+		public virtual int GetGeckIniInt(string p_strSection, string p_strKey)
 		{
 			return GetSettingsInt(Fallout3GameMode.SettingsFile.GeckIniPath, p_strSection, p_strKey);
 		}
@@ -256,7 +256,7 @@ namespace Fomm.Games.Fallout3.Script
 		/// <param name="p_strSection">The section containing the value to retrieve.</param>
 		/// <param name="p_strKey">The key of the value to retrieve.</param>
 		/// <returns>The specified value as a string.</returns>
-		public string GetGeckPrefsIniString(string p_strSection, string p_strKey)
+		public virtual string GetGeckPrefsIniString(string p_strSection, string p_strKey)
 		{
 			return GetSettingsString(Fallout3GameMode.SettingsFile.GeckPrefsIniPath, p_strSection, p_strKey);
 		}
@@ -267,7 +267,7 @@ namespace Fomm.Games.Fallout3.Script
 		/// <param name="p_strSection">The section containing the value to retrieve.</param>
 		/// <param name="p_strKey">The key of the value to retrieve.</param>
 		/// <returns>The specified value as an integer.</returns>
-		public int GetGeckPrefsIniInt(string p_strSection, string p_strKey)
+		public virtual int GetGeckPrefsIniInt(string p_strSection, string p_strKey)
 		{
 			return GetSettingsInt(Fallout3GameMode.SettingsFile.GeckPrefsIniPath, p_strSection, p_strKey);
 		}
@@ -285,7 +285,7 @@ namespace Fomm.Games.Fallout3.Script
 		/// <param name="p_booSaveOld">Not used.</param>
 		/// <returns><lang cref="true"/> if the value was set; <lang cref="false"/>
 		/// if the user chose not to overwrite the existing value.</returns>
-		public bool EditFalloutINI(string p_strSection, string p_strKey, string p_strValue, bool p_booSaveOld)
+		public virtual bool EditFalloutINI(string p_strSection, string p_strKey, string p_strValue, bool p_booSaveOld)
 		{
 			return EditINI(Fallout3GameMode.SettingsFile.FOIniPath, p_strSection, p_strKey, p_strValue);
 		}
@@ -299,7 +299,7 @@ namespace Fomm.Games.Fallout3.Script
 		/// <param name="p_booSaveOld">Not used.</param>
 		/// <returns><lang cref="true"/> if the value was set; <lang cref="false"/>
 		/// if the user chose not to overwrite the existing value.</returns>
-		public bool EditPrefsINI(string p_strSection, string p_strKey, string p_strValue, bool p_booSaveOld)
+		public virtual bool EditPrefsINI(string p_strSection, string p_strKey, string p_strValue, bool p_booSaveOld)
 		{
 			return EditINI(Fallout3GameMode.SettingsFile.FOPrefsIniPath, p_strSection, p_strKey, p_strValue);
 		}
@@ -313,7 +313,7 @@ namespace Fomm.Games.Fallout3.Script
 		/// <param name="p_booSaveOld">Not used.</param>
 		/// <returns><lang cref="true"/> if the value was set; <lang cref="false"/>
 		/// if the user chose not to overwrite the existing value.</returns>
-		public bool EditGeckINI(string p_strSection, string p_strKey, string p_strValue, bool p_booSaveOld)
+		public virtual bool EditGeckINI(string p_strSection, string p_strKey, string p_strValue, bool p_booSaveOld)
 		{
 			return EditINI(Fallout3GameMode.SettingsFile.GeckIniPath, p_strSection, p_strKey, p_strValue);
 		}
@@ -327,7 +327,7 @@ namespace Fomm.Games.Fallout3.Script
 		/// <param name="p_booSaveOld">Not used.</param>
 		/// <returns><lang cref="true"/> if the value was set; <lang cref="false"/>
 		/// if the user chose not to overwrite the existing value.</returns>
-		public bool EditGeckPrefsINI(string p_strSection, string p_strKey, string p_strValue, bool p_booSaveOld)
+		public virtual bool EditGeckPrefsINI(string p_strSection, string p_strKey, string p_strValue, bool p_booSaveOld)
 		{
 			return EditINI(Fallout3GameMode.SettingsFile.GeckPrefsIniPath, p_strSection, p_strKey, p_strValue);
 		}
@@ -481,7 +481,7 @@ namespace Fomm.Games.Fallout3.Script
 		/// <param name="p_strValue">The value to retrieve from the file.</param>
 		/// <returns>The specified value from the RendererInfo.txt file, or
 		/// <lang cref="null"/> if the value is not found.</returns>
-		public string GetRendererInfo(string p_strValue)
+		public virtual string GetRendererInfo(string p_strValue)
 		{
 			PermissionsManager.CurrentPermissions.Assert();
 			string[] strLines = File.ReadAllLines(((Fallout3GameMode)Program.GameMode).FORendererFile);
@@ -501,7 +501,7 @@ namespace Fomm.Games.Fallout3.Script
 		/// </summary>
 		/// <returns><lang cref="true"/> if archive invalidation is active;
 		/// <lang cref="false"/> otherwise.</returns>
-		public bool IsAIActive()
+		public virtual bool IsAIActive()
 		{
 			return Tools.ArchiveInvalidation.IsActive();
 		}
