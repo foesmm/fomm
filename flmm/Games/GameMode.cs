@@ -305,16 +305,6 @@ class Script : GenericBaseScript {
 		#region Command Line Arguments
 
 		/// <summary>
-		/// Return command line help for the arguments provided by the game mode.
-		/// </summary>
-		/// <remarks>
-		/// This method should only return the text required to describe the arguments. All header,
-		/// footer, and context text is already provided.
-		/// </remarks>
-		/// <returns>Command line help for the arguments provided by the game mode.</returns>
-		public abstract string GetCommandLineHelp();
-
-		/// <summary>
 		/// Handles the command line arguments that run outside of an instance of FOMM.
 		/// </summary>
 		/// <param name="p_strArgs">The command line arguments that were passed to the programme.</param>

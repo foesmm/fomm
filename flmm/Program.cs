@@ -33,6 +33,7 @@ using Fomm.Games;
 using Fomm.Games.Fallout3;
 using System.Threading;
 using Fomm.Games.FalloutNewVegas;
+using System.Text;
 
 namespace Fomm
 {
@@ -153,24 +154,41 @@ namespace Fomm
 		/// </summary>
 		private static void WriteHelp()
 		{
-			Console.WriteLine("Command line options:");
-			Console.WriteLine();
-			Console.WriteLine("*.fomod, *.rar, *.7z, *.zip");
-			Console.WriteLine("Open the specified file in the relevent utility");
+			StringBuilder stbHelp = new StringBuilder();
+			stbHelp.AppendLine("Command line options:");
+			stbHelp.AppendLine();
+			stbHelp.AppendLine("*.fomod, *.rar, *.7z, *.zip");
+			stbHelp.AppendLine("Open the specified file in the relevent utility");
+			stbHelp.AppendLine();
+			stbHelp.AppendLine("-mono");
+			stbHelp.AppendLine("Run in mono compatibility mode. Disables some features which are known to be broken under mono");
+			stbHelp.AppendLine();
+			stbHelp.AppendLine("-no-uac-check");
+			stbHelp.AppendLine("Don't check for vista UAC issues");
 
-			string strGameModeHelp = Program.GameMode.GetCommandLineHelp();
+			stbHelp.AppendLine();
+			stbHelp.AppendLine("-game <game_name>");
+			stbHelp.AppendLine("Run the mod manager in the specified mode. Valid values for <game_name> are:");
+			foreach (string strGame in Enum.GetNames(typeof(SupportedGameModes)))
+				stbHelp.AppendLine("\t" + strGame);
+
+			string strGameModeHelp = Fallout3GameMode.GetCommandLineHelp();
 			if (!String.IsNullOrEmpty(strGameModeHelp))
 			{
-				Console.WriteLine();
-				Console.WriteLine(strGameModeHelp);
+				stbHelp.AppendLine();
+				stbHelp.AppendLine("When -game Fallout3 is specified:");
+				stbHelp.AppendLine(strGameModeHelp);
 			}
 
-			Console.WriteLine();
-			Console.WriteLine("-mono");
-			Console.WriteLine("Run in mono compatibility mode. Disables some features which are known to be broken under mono");
-			Console.WriteLine();
-			Console.WriteLine("-no-uac-check");
-			Console.WriteLine("Don't check for vista UAC issues");
+			strGameModeHelp = FalloutNewVegasGameMode.GetCommandLineHelp();
+			if (!String.IsNullOrEmpty(strGameModeHelp))
+			{
+				stbHelp.AppendLine();
+				stbHelp.AppendLine("When -game FalloutNV is specified:");
+				stbHelp.AppendLine(strGameModeHelp);
+			}
+
+			MessageBox.Show(stbHelp.ToString(), "Help");
 		}
 
 		/// <summary>
@@ -201,6 +219,12 @@ namespace Fomm
 			//Style setup
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
+
+			if (args.Length > 0 && (args[0] == "-?" || args[0] == "/?" || args[0] == "-help"))
+			{
+				WriteHelp();
+				return;
+			}
 
 			SupportedGameModes sgmSelectedGame = Properties.Settings.Default.rememberedGameMode;
 			bool booChooseGame = true;
@@ -241,12 +265,6 @@ namespace Fomm
 					default:
 						MessageBox.Show("Unrecognized game selection.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 						return;
-				}
-
-				if (args.Length > 0 && (args[0] == "-?" || args[0] == "/?" || args[0] == "-help"))
-				{
-					WriteHelp();
-					return;
 				}
 #if TRACE
 				Trace.WriteLine("We know where the mods live: " + GameMode.ModDirectory);

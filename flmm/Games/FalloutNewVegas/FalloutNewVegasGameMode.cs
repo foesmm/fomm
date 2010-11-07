@@ -475,7 +475,7 @@ class Script : FalloutNewVegasBaseScript {
 		/// footer, and context text is already provided.
 		/// </remarks>
 		/// <returns>Command line help for the arguments provided by the game mode.</returns>
-		public override string GetCommandLineHelp()
+		public static string GetCommandLineHelp()
 		{
 			StringBuilder stbHelp = new StringBuilder();
 			stbHelp.AppendLine("*.dat, *.bsa, *.esm, *.esp, *.sdp");
