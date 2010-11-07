@@ -60,6 +60,7 @@ namespace Fomm
 			this.visitForumsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.checkForUpdateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.butFileManager = new System.Windows.Forms.Button();
+			this.changeGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.cmsPlugins.SuspendLayout();
 			this.splitContainer1.Panel1.SuspendLayout();
@@ -255,6 +256,7 @@ namespace Fomm
 			// 
 			this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.launchGameToolStripMenuItem,
+            this.changeGameToolStripMenuItem,
             this.closeToolStripMenuItem});
 			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
 			this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
@@ -263,13 +265,13 @@ namespace Fomm
 			// launchGameToolStripMenuItem
 			// 
 			this.launchGameToolStripMenuItem.Name = "launchGameToolStripMenuItem";
-			this.launchGameToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.launchGameToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
 			this.launchGameToolStripMenuItem.Text = "Launch Game";
 			// 
 			// closeToolStripMenuItem
 			// 
 			this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-			this.closeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.closeToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
 			this.closeToolStripMenuItem.Text = "Close";
 			this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
 			// 
@@ -358,6 +360,13 @@ namespace Fomm
 			this.butFileManager.UseVisualStyleBackColor = true;
 			this.butFileManager.Click += new System.EventHandler(this.butFileManager_Click);
 			// 
+			// changeGameToolStripMenuItem
+			// 
+			this.changeGameToolStripMenuItem.Name = "changeGameToolStripMenuItem";
+			this.changeGameToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+			this.changeGameToolStripMenuItem.Text = "Change Game...";
+			this.changeGameToolStripMenuItem.Click += new System.EventHandler(this.changeGameToolStripMenuItem_Click);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -422,6 +431,7 @@ namespace Fomm
 		private System.Windows.Forms.ToolStripMenuItem checkForUpdateToolStripMenuItem;
 		private System.Windows.Forms.Button butFileManager;
 		private System.Windows.Forms.ToolStripMenuItem gameSettingsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem changeGameToolStripMenuItem;
 	}
 }
 

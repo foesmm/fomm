@@ -167,5 +167,11 @@
     <Setting Name="falloutNewVegasMasterListUpdateUrl" Type="System.String" Scope="User">
       <Value Profile="(Default)">http://better-oblivion-sorting-software.googlecode.com/svn/data/boss-fallout-nv/masterlist.txt</Value>
     </Setting>
+    <Setting Name="rememberGameMode" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="rememberedGameMode" Type="Fomm.Games.SupportedGameModes" Scope="User">
+      <Value Profile="(Default)">Fallout3</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -562,5 +562,29 @@ namespace Fomm.Properties {
                 this["falloutNewVegasMasterListUpdateUrl"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool rememberGameMode {
+            get {
+                return ((bool)(this["rememberGameMode"]));
+            }
+            set {
+                this["rememberGameMode"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Fallout3")]
+        public global::Fomm.Games.SupportedGameModes rememberedGameMode {
+            get {
+                return ((global::Fomm.Games.SupportedGameModes)(this["rememberedGameMode"]));
+            }
+            set {
+                this["rememberedGameMode"] = value;
+            }
+        }
     }
 }

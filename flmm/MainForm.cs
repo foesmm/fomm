@@ -20,11 +20,24 @@ namespace Fomm
 #if TRACE
 		private bool m_booListedPlugins = false;
 #endif
+		private bool m_booChangeGameMode = false;
 		private bool AlphaSortMode = false;
 		private List<string> m_lstIgnoreReadOnly = new List<string>();
 		private Dictionary<string, Dictionary<string, List<string>>> m_dicExtraInfo = new Dictionary<string, Dictionary<string, List<string>>>();
 
 		#region Properties
+
+		/// <summary>
+		/// Gets whether or not to change the game mode.
+		/// </summary>
+		/// <value>Whether or not to change the game mode.</value>
+		public bool ChangeGameMode
+		{
+			get
+			{
+				return m_booChangeGameMode;
+			}
+		}
 
 		/// <summary>
 		/// Gets whether there are any open utility windows.
@@ -750,6 +763,20 @@ namespace Fomm
 		private void rtbPluginInfo_LinkClicked(object sender, LinkClickedEventArgs e)
 		{
 			System.Diagnostics.Process.Start(e.LinkText);
+		}
+
+		/// <summary>
+		/// Handles the <see cref="Control.Click"/> event of the change game mode menu item.
+		/// </summary>
+		/// <remarks>
+		/// Re-launched the mod manager and allows the selection of a new game mode.
+		/// </remarks>
+		/// <param name="sender">The object that trigger the event.</param>
+		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+		private void changeGameToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			m_booChangeGameMode = true;
+			Close();
 		}
 	}
 }

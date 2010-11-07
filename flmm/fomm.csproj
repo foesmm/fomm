@@ -91,6 +91,12 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\WizardControlDesigner.cs" />
+    <Compile Include="GameModeSelector.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GameModeSelector.Designer.cs">
+      <DependentUpon>GameModeSelector.cs</DependentUpon>
+    </Compile>
     <Compile Include="Games\Fallout3\Fallout3PluginManager.cs" />
     <Compile Include="Games\Fallout3\FOMMMigrator.cs" />
     <Compile Include="Games\Fallout3\Script\XmlConfiguredInstall\Fallout3DependencyStateManager.cs" />
@@ -253,6 +259,7 @@
     </Compile>
     <Compile Include="Games\PluginInfo.cs" />
     <Compile Include="Games\PluginManager.cs" />
+    <Compile Include="Games\SupportedGameModes.cs" />
     <Compile Include="Games\WorkingDirectorySelectionForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -563,6 +570,9 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="GameModeSelector.resx">
+      <DependentUpon>GameModeSelector.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Games\Fallout3\Settings\GeneralSettingsPage.resx">
       <DependentUpon>GeneralSettingsPage.cs</DependentUpon>
     </EmbeddedResource>
