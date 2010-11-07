@@ -134,7 +134,6 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\CodeEditor.cs">
-      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Controls\CodeFoldingStrategy.cs" />
     <Compile Include="Controls\DropDownTabControl.cs">
@@ -188,7 +187,6 @@
     <Compile Include="Controls\XmlCompletionData.cs" />
     <Compile Include="Controls\XmlCompletionProvider.cs" />
     <Compile Include="Controls\XmlEditor.cs">
-      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Controls\XmlFoldingStrategy.cs" />
     <Compile Include="Controls\XmlFormattingStrategy.cs" />
