@@ -513,12 +513,13 @@ namespace Fomm.Games.Fallout3.Script
 		/// <summary>
 		/// Cleans up used resources.
 		/// </summary>
-		public void Dispose()
+		public override void Dispose()
 		{
 			if (m_txmTextureManager != null)
 				m_txmTextureManager.Dispose();
 			if (m_bamBsaManager != null)
 				m_bamBsaManager.Dispose();
+			base.Dispose();
 		}
 
 		#endregion

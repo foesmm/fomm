@@ -58,6 +58,8 @@ namespace Fomm.Games.Fallout3
 					case DialogResult.Cancel:
 						return false;
 					case DialogResult.No:
+						Properties.Settings.Default.migratedFromPre0130 = true;
+						Properties.Settings.Default.Save();
 						return true;
 				}
 			}

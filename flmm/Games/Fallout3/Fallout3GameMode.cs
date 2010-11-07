@@ -749,7 +749,7 @@ namespace Fomm.Games.Fallout3
 		/// Gets the default script for a mod.
 		/// </summary>
 		/// <value>The default script for a mod.</value>
-		public virtual string DefaultCSharpScript
+		public override string DefaultCSharpScript
 		{
 			get
 			{

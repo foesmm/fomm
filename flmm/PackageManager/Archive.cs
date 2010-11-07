@@ -189,7 +189,7 @@ namespace Fomm.PackageManager
 					UInt32 g = szeExtractor.FilesCount;
 				}
 			}
-			catch (Exception e)
+			catch (Exception)
 			{
 				booIsAchive = false;
 			}
