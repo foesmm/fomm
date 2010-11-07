@@ -21,6 +21,9 @@ using Fomm.Games.Fallout3.Settings;
 
 namespace Fomm.Games.Fallout3
 {
+	/// <summary>
+	/// Provides information required for the programme to manage Fallout 3 plugins.
+	/// </summary>
 	public class Fallout3GameMode : GameMode
 	{
 		public static class SettingsFile
@@ -76,6 +79,10 @@ namespace Fomm.Games.Fallout3
 			}
 		}
 
+		/// <summary>
+		/// Gets the game launch command.
+		/// </summary>
+		/// <value>The game launch command.</value>
 		public override GameTool LaunchCommand
 		{
 			get
@@ -99,6 +106,10 @@ namespace Fomm.Games.Fallout3
 			}
 		}
 
+		/// <summary>
+		/// Gets the path to the game directory were pluings are to be installed.
+		/// </summary>
+		/// <value>The path to the game directory were pluings are to be installed.</value>
 		public override string PluginsPath
 		{
 			get
@@ -107,6 +118,13 @@ namespace Fomm.Games.Fallout3
 			}
 		}
 
+		/// <summary>
+		/// Gets the path to the plugins.txt file.
+		/// </summary>
+		/// <remarks>
+		/// plugins.txt is a Fallout 3 file that tracks active plugins.
+		/// </remarks>
+		/// <value>The path to the plugins.txt file.</value>
 		public string PluginsFilePath
 		{
 			get
@@ -134,7 +152,11 @@ namespace Fomm.Games.Fallout3
 				return strDirectory;
 			}
 		}
-		
+
+		/// <summary>
+		/// Gets the settings files used in the game mode.
+		/// </summary>
+		/// <value>The settings files used in the game mode.</value>
 		public override IDictionary<string, string> SettingsFiles
 		{
 			get
@@ -143,6 +165,10 @@ namespace Fomm.Games.Fallout3
 			}
 		}
 
+		/// <summary>
+		/// Gets any other paths used in the game mode.
+		/// </summary>
+		/// <value>Any other paths used in the game mode.</value>
 		public override IDictionary<string, string> AdditionalPaths
 		{
 			get
@@ -163,6 +189,10 @@ namespace Fomm.Games.Fallout3
 			}
 		}
 
+		/// <summary>
+		/// Gets the path to the directory where Windows live install the DLCs.
+		/// </summary>
+		/// <value>The path to the directory where Windows live install the DLCs.</value>
 		protected string DLCDirectory
 		{
 			get
@@ -173,6 +203,10 @@ namespace Fomm.Games.Fallout3
 
 		#region Tool Injection
 
+		/// <summary>
+		/// Gets the list of tools to add to the tools menu.
+		/// </summary>
+		/// <value>The list of tools to add to the tools menu.</value>
 		public override IList<GameTool> Tools
 		{
 			get
@@ -181,6 +215,10 @@ namespace Fomm.Games.Fallout3
 			}
 		}
 
+		/// <summary>
+		/// Gets the list of tools to add to the game settings menu.
+		/// </summary>
+		/// <value>The list of tools to add to the game settings menu.</value>
 		public override IList<GameTool> GameSettingsTools
 		{
 			get
@@ -189,6 +227,10 @@ namespace Fomm.Games.Fallout3
 			}
 		}
 
+		/// <summary>
+		/// Gets the list of tools to add to the right-click menu.
+		/// </summary>
+		/// <value>The list of tools to add to the right-click menu.</value>
 		public override IList<GameTool> RightClickTools
 		{
 			get
@@ -197,6 +239,10 @@ namespace Fomm.Games.Fallout3
 			}
 		}
 
+		/// <summary>
+		/// Gets the list of tools to add to the load order menu.
+		/// </summary>
+		/// <value>The list of tools to add to the load order menu.</value>
 		public override IList<GameTool> LoadOrderTools
 		{
 			get
@@ -205,6 +251,10 @@ namespace Fomm.Games.Fallout3
 			}
 		}
 
+		/// <summary>
+		/// Gets the list of game launch commands.
+		/// </summary>
+		/// <value>The list of game launch commands.</value>
 		public override IList<GameTool> GameLaunchCommands
 		{
 			get
@@ -215,6 +265,10 @@ namespace Fomm.Games.Fallout3
 
 		#endregion
 
+		/// <summary>
+		/// Gets the settings pages that privode management of game mode-specific settings.
+		/// </summary>
+		/// <value>The settings pages that privode management of game mode-specific settings.</value>
 		public override IList<SettingsPage> SettingsPages
 		{
 			get
@@ -223,6 +277,10 @@ namespace Fomm.Games.Fallout3
 			}
 		}
 
+		/// <summary>
+		/// Gets the plugin manager for this game mode.
+		/// </summary>
+		/// <value>The plugin manager for this game mode.</value>
 		public override PluginManager PluginManager
 		{
 			get
@@ -898,6 +956,16 @@ class Script : Fallout3BaseScript {
 			return booFound;
 		}
 
+
+		/// <summary>
+		/// Sets the working directory for the programme.
+		/// </summary>
+		/// <remarks>
+		/// This sets the working directory to the Fallout 3 install folder.
+		/// </remarks>
+		/// <param name="p_strErrorMessage">The out parameter that is set to the error message, if an error occurred.</param>
+		/// <returns><lang cref="true"/> if the working directory was successfully set;
+		/// <lang cref="false"/> otherwise.</returns>
 		public override bool SetWorkingDirectory(out string p_strErrorMessage)
 		{
 #if TRACE
@@ -946,6 +1014,17 @@ class Script : Fallout3BaseScript {
 			return true;
 		}
 
+		/// <summary>
+		/// This initializes the game mode.
+		/// </summary>
+		/// <remarks>
+		/// This gets the user to specify the directories where the programme will store info
+		/// such as install logs, if the directories have not already been setup.
+		/// 
+		/// This method also checks for DLCs, and cleans up any missing FOMods.
+		/// </remarks>
+		/// <returns><lang cref="true"/> if the game mode was able to initialize;
+		/// <lang cref="false"/> otherwise.</returns>
 		public override bool Init()
 		{
 			if (!Properties.Settings.Default.fallout3DoneSetup)
@@ -953,10 +1032,8 @@ class Script : Fallout3BaseScript {
 				SetupForm sfmSetup = new SetupForm();
 				if (sfmSetup.ShowDialog() == DialogResult.Cancel)
 					return false;
-				/*
 				Properties.Settings.Default.fallout3DoneSetup = true;
 				Properties.Settings.Default.Save();
-				 */
 			}
 
 			CheckForDLCs();
@@ -964,6 +1041,10 @@ class Script : Fallout3BaseScript {
 			return true;
 		}
 
+		/// <summary>
+		/// This checks for DLCs isntall by Windows Live, and optionally moves them so
+		/// they are compatible with FOSE.
+		/// </summary>
 		protected void CheckForDLCs()
 		{
 #if TRACE
@@ -1175,6 +1256,9 @@ class Script : Fallout3BaseScript {
 #endif
 		}
 
+		/// <summary>
+		/// This chaecks for any FOMods that have been manually deleted since the programme last ran.
+		/// </summary>
 		protected void ScanForReadonlyPlugins()
 		{
 			DirectoryInfo difPluginsDirectory = new DirectoryInfo(Program.GameMode.PluginsPath);
@@ -1192,6 +1276,12 @@ class Script : Fallout3BaseScript {
 			}
 		}
 
+		/// <summary>
+		/// Determines if the specified file is a plugin for the game mode.
+		/// </summary>
+		/// <param name="p_strPath">The path to the file for which it is to be determined if it is a plugin file.</param>
+		/// <returns><lang cref="true"/> if the specified file is a plugin file in the game mode;
+		/// <lang cref="false"/> otherwise.</returns>
 		public override bool IsPluginFile(string p_strPath)
 		{
 			string strExt = Path.GetExtension(p_strPath).ToLowerInvariant();

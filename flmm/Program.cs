@@ -105,6 +105,18 @@ namespace Fomm
 		}
 
 		/// <summary>
+		/// Gets the programme's executable directory.
+		/// </summary>
+		/// <value>The programme's executable directory.</value>
+		public static string ExecutableDirectory
+		{
+			get
+			{
+				return m_strExecutableDirectory;
+			}
+		}
+
+		/// <summary>
 		/// Gets the Personal directory of the current user.
 		/// </summary>
 		/// <remarks>
@@ -124,14 +136,6 @@ namespace Fomm
 
 		private static bool monoMode;
 		public static bool MonoMode { get { return monoMode; } }
-
-		public static string ExecutableDirectory
-		{
-			get
-			{
-				return m_strExecutableDirectory;
-			}
-		}
 
 		public static GameMode GameMode = null;
 

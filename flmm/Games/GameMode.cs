@@ -11,6 +11,12 @@ using Microsoft.Win32;
 
 namespace Fomm.Games
 {
+	/// <summary>
+	/// The base class for game modes.
+	/// </summary>
+	/// <remarks>
+	/// A Game Mode is a state in which the programme manages plugins for a specific game.
+	/// </remarks>
 	public abstract class GameMode
 	{
 		#region Properties
@@ -78,11 +84,19 @@ namespace Fomm.Games
 			}
 		}
 		
+		/// <summary>
+		/// Gets the settings files used in the game mode.
+		/// </summary>
+		/// <value>The settings files used in the game mode.</value>
 		public abstract IDictionary<string, string> SettingsFiles
 		{
 			get;
 		}
 
+		/// <summary>
+		/// Gets any other paths used in the game mode.
+		/// </summary>
+		/// <value>Any other paths used in the game mode.</value>
 		public abstract IDictionary<string, string> AdditionalPaths
 		{
 			get;
@@ -99,26 +113,46 @@ namespace Fomm.Games
 
 		#region Tool Injection
 
+		/// <summary>
+		/// Gets the list of tools to add to the tools menu.
+		/// </summary>
+		/// <value>The list of tools to add to the tools menu.</value>
 		public abstract IList<GameTool> Tools
 		{
 			get;
 		}
 
+		/// <summary>
+		/// Gets the list of tools to add to the game settings menu.
+		/// </summary>
+		/// <value>The list of tools to add to the game settings menu.</value>
 		public abstract IList<GameTool> GameSettingsTools
 		{
 			get;
 		}
 
+		/// <summary>
+		/// Gets the list of tools to add to the right-click menu.
+		/// </summary>
+		/// <value>The list of tools to add to the right-click menu.</value>
 		public abstract IList<GameTool> RightClickTools
 		{
 			get;
 		}
 
+		/// <summary>
+		/// Gets the list of tools to add to the load order menu.
+		/// </summary>
+		/// <value>The list of tools to add to the load order menu.</value>
 		public abstract IList<GameTool> LoadOrderTools
 		{
 			get;
 		}
 
+		/// <summary>
+		/// Gets the list of game launch commands.
+		/// </summary>
+		/// <value>The list of game launch commands.</value>
 		public abstract IList<GameTool> GameLaunchCommands
 		{
 			get;
@@ -126,6 +160,10 @@ namespace Fomm.Games
 
 		#endregion
 
+		/// <summary>
+		/// Gets the settings pages that privode management of game mode-specific settings.
+		/// </summary>
+		/// <value>The settings pages that privode management of game mode-specific settings.</value>
 		public abstract IList<SettingsPage> SettingsPages
 		{
 			get;
@@ -162,6 +200,9 @@ namespace Fomm.Games
 
 		#region Constructors
 
+		/// <summary>
+		/// The default constructor.
+		/// </summary>
 		public GameMode()
 		{
 			//this folder can't be created here, as the path may not be set
@@ -291,10 +332,35 @@ class Script : GenericBaseScript {
 
 		#endregion
 
+		/// <summary>
+		/// Sets the working directory for the programme.
+		/// </summary>
+		/// <remarks>
+		/// This is often the directory where the game whose plugins are being managed is installed; however,
+		/// this cannot be assumed.
+		/// </remarks>
+		/// <param name="p_strErrorMessage">The out parameter that is set to the error message, if an error occurred.</param>
+		/// <returns><lang cref="true"/> if the working directory was successfully set;
+		/// <lang cref="false"/> otherwise.</returns>
 		public abstract bool SetWorkingDirectory(out string p_strErrorMessage);
 
+		/// <summary>
+		/// This initializes the game mode.
+		/// </summary>
+		/// <remarks>
+		/// This usually performs housekeeping taks and ensures the file system is in a state consistent
+		/// with what the game mode is expecting.
+		/// </remarks>
+		/// <returns><lang cref="true"/> if the game mode was able to initialize;
+		/// <lang cref="false"/> otherwise.</returns>
 		public abstract bool Init();
 
+		/// <summary>
+		/// Determines if the specified file is a plugin for the game mode.
+		/// </summary>
+		/// <param name="p_strPath">The path to the file for which it is to be determined if it is a plugin file.</param>
+		/// <returns><lang cref="true"/> if the specified file is a plugin file in the game mode;
+		/// <lang cref="false"/> otherwise.</returns>
 		public abstract bool IsPluginFile(string p_strPath);
 
 		/// <summary>
