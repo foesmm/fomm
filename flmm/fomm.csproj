@@ -92,6 +92,7 @@
     </Compile>
     <Compile Include="Controls\WizardControlDesigner.cs" />
     <Compile Include="Games\Fallout3\Fallout3PluginManager.cs" />
+    <Compile Include="Games\Fallout3\FOMMMigrator.cs" />
     <Compile Include="Games\Fallout3\Script\XmlConfiguredInstall\Fallout3DependencyStateManager.cs" />
     <Compile Include="Games\Fallout3\Script\Fallout3ModInstallScript.cs" />
     <Compile Include="Games\Fallout3\Script\Fallout3ModUpgradeScript.cs" />

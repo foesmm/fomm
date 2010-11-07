@@ -465,5 +465,17 @@ namespace Fomm.Properties {
                 this["fallout3InstallInfoDirectory"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool migratedFromPre0130 {
+            get {
+                return ((bool)(this["migratedFromPre0130"]));
+            }
+            set {
+                this["migratedFromPre0130"] = value;
+            }
+        }
     }
 }

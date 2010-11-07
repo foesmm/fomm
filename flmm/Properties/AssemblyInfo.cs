@@ -4,12 +4,12 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security.Permissions;
 
-[assembly: AssemblyTitle("fomm")]
-[assembly: AssemblyDescription("Fallout 3 Mod Manager")]
+[assembly: AssemblyTitle("FOMM")]
+[assembly: AssemblyDescription("Fallout Mod Manager")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Timeslip")]
-[assembly: AssemblyProduct("fomm")]
-[assembly: AssemblyCopyright("Copyright ©  2008 Timeslip")]
+[assembly: AssemblyCompany("FOMM")]
+[assembly: AssemblyProduct("FOMM")]
+[assembly: AssemblyCopyright("Copyright ©  2010 Timeslip, Q")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

@@ -1,6 +1,7 @@
 /*
  *    Fallout Mod Manager
  *    Copyright (C) 2008, 2009  Timeslip
+ *    Copyright (C) 2010  Timeslip, Q
  *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -64,6 +65,8 @@ namespace Fomm
 		
 		private static readonly string m_strExecutableDirectory = Path.GetDirectoryName(Application.ExecutablePath);
 		public static readonly string tmpPath = Path.Combine(Path.GetTempPath(), ProgrammeAcronym);
+
+		#region Properties
 
 		/// <summary>
 		/// Gets the programme acronym.
@@ -138,6 +141,8 @@ namespace Fomm
 		public static bool MonoMode { get { return monoMode; } }
 
 		public static GameMode GameMode = null;
+
+		#endregion
 
 		/// <summary>
 		/// Prints command line argument help.
@@ -265,7 +270,7 @@ namespace Fomm
 #if TRACE
 					Trace.WriteLine("FOMM is already running.");
 #endif
-				MessageBox.Show("fomm is already running", "Error");
+				MessageBox.Show(ProgrammeAcronym + " is already running", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				mutex.Close();
 				return;
 			}

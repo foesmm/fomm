@@ -1038,6 +1038,11 @@ class Script : Fallout3BaseScript {
 
 			CheckForDLCs();
 			ScanForReadonlyPlugins();
+
+			FOMMMigrator m = new FOMMMigrator();
+			if (!m.Migrate())
+				return false;
+
 			return true;
 		}
 
