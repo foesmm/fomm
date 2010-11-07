@@ -477,5 +477,77 @@ namespace Fomm.Properties {
                 this["migratedFromPre0130"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string falloutNewVegasModDirectory {
+            get {
+                return ((string)(this["falloutNewVegasModDirectory"]));
+            }
+            set {
+                this["falloutNewVegasModDirectory"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string falloutNewVegasInstallInfoDirectory {
+            get {
+                return ((string)(this["falloutNewVegasInstallInfoDirectory"]));
+            }
+            set {
+                this["falloutNewVegasInstallInfoDirectory"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string falloutNewVegasWorkingDirectory {
+            get {
+                return ((string)(this["falloutNewVegasWorkingDirectory"]));
+            }
+            set {
+                this["falloutNewVegasWorkingDirectory"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string falloutNewVegasLaunchCommand {
+            get {
+                return ((string)(this["falloutNewVegasLaunchCommand"]));
+            }
+            set {
+                this["falloutNewVegasLaunchCommand"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string falloutNewVegasLaunchCommandArgs {
+            get {
+                return ((string)(this["falloutNewVegasLaunchCommandArgs"]));
+            }
+            set {
+                this["falloutNewVegasLaunchCommandArgs"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool falloutNewVegasDoneSetup {
+            get {
+                return ((bool)(this["falloutNewVegasDoneSetup"]));
+            }
+            set {
+                this["falloutNewVegasDoneSetup"] = value;
+            }
+        }
     }
 }

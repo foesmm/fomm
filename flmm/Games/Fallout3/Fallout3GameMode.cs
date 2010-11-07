@@ -34,7 +34,7 @@ namespace Fomm.Games.Fallout3
 			public static readonly string GeckPrefsIniPath = "GeckPrefsIniPath";
 		}
 
-		private readonly string m_strSavesPath = null;
+		private string m_strSavesPath = null;
 		private Dictionary<string, string> m_dicAdditionalPaths = new Dictionary<string, string>();
 		private Dictionary<string, string> m_dicSettingsFiles = new Dictionary<string, string>();
 		private List<GameTool> m_lstTools = new List<GameTool>();
@@ -146,7 +146,7 @@ namespace Fomm.Games.Fallout3
 			{
 				string strDirectory = Properties.Settings.Default.fallout3InstallInfoDirectory;
 				if (String.IsNullOrEmpty(strDirectory))
-					throw new Exception("The InstallInfoDirectory for Fallout 3 Mods has not been set.");
+					throw new Exception("The InstallInfoDirectory for Fallout 3 has not been set.");
 				if (!Directory.Exists(strDirectory))
 					Directory.CreateDirectory(strDirectory);
 				return strDirectory;
@@ -187,13 +187,17 @@ namespace Fomm.Games.Fallout3
 			{
 				return m_strSavesPath;
 			}
+			protected set
+			{
+				m_strSavesPath = value;
+			}
 		}
 
 		/// <summary>
 		/// Gets the path to the directory where Windows live install the DLCs.
 		/// </summary>
 		/// <value>The path to the directory where Windows live install the DLCs.</value>
-		protected string DLCDirectory
+		private string DLCDirectory
 		{
 			get
 			{
@@ -326,6 +330,21 @@ namespace Fomm.Games.Fallout3
 		/// </summary>
 		public Fallout3GameMode()
 		{
+			SetupPaths();
+			SetupSettingsPages();
+			SetupTools();
+			SetupLaunchCommands();
+		}
+
+		#endregion
+
+		#region Initialization
+
+		/// <summary>
+		/// Sets up the paths for this game mode.
+		/// </summary>
+		protected virtual void SetupPaths()
+		{
 			string strUserGameDataPath = Path.Combine(Program.PersonalDirectory, "My games\\Fallout3");
 
 			m_dicSettingsFiles[SettingsFile.FOIniPath] = Path.Combine(strUserGameDataPath, "Fallout.ini");
@@ -337,10 +356,32 @@ namespace Fomm.Games.Fallout3
 			m_dicAdditionalPaths["PluginsFile"] = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Fallout3/plugins.txt");
 			m_dicAdditionalPaths["DLCDir"] = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Microsoft\\xlive\\DLC");
 
-			m_strSavesPath = Path.Combine(strUserGameDataPath, NativeMethods.GetPrivateProfileString("General", "SLocalSavePath", "Games", m_dicSettingsFiles["FOIniPath"]));
+			m_strSavesPath = Path.Combine(strUserGameDataPath, NativeMethods.GetPrivateProfileString("General", "SLocalSavePath", "Games", m_dicSettingsFiles[SettingsFile.FOIniPath]));
+		}
 
+		/// <summary>
+		/// Gets up the game-specific settings pages.
+		/// </summary>
+		protected virtual void SetupSettingsPages()
+		{
 			m_lstSettingsPages.Add(new GeneralSettingsPage());
+		}
 
+		/// <summary>
+		/// Sets up the launch commands for the game.
+		/// </summary>
+		protected virtual void SetupLaunchCommands()
+		{
+			m_lstGameLaunchCommands.Add(new GameTool("Launch Fallout 3", "Launches plain Fallout 3.", LaunchFallout3Plain));
+			m_lstGameLaunchCommands.Add(new GameTool("Launch FOSE", "Launches Fallout 3 with FOSE.", LaunchFallout3FOSE));
+			m_lstGameLaunchCommands.Add(new GameTool("Launch Custom Fallout 3", "Launches Fallout 3 with custom command.", LaunchFallout3Custom));
+		}
+
+		/// <summary>
+		/// Sets up the tools for this game mode.
+		/// </summary>
+		protected virtual void SetupTools()
+		{
 			m_lstTools.Add(new GameTool("BSA Tool", "Creates and unpacks BSA files.", LaunchBSATool));
 			m_lstTools.Add(new GameTool("TESsnip", "An ESP/ESM editor.", LaunchTESsnipTool));
 			m_lstTools.Add(new GameTool("Shader Editor", "A shader (SDP) editor.", LaunchShaderEditTool));
@@ -357,10 +398,6 @@ namespace Fomm.Games.Fallout3
 
 			m_lstLoadOrderTools.Add(new GameTool("Load Order Report...", "Generates a report on the current load order, as compared to the BOSS recomendation.", LaunchLoadOrderReport));
 			m_lstLoadOrderTools.Add(new GameTool("BOSS Auto Sort", "Auto-sorts the plugins using BOSS's masterlist.", LaunchSortPlugins));
-
-			m_lstGameLaunchCommands.Add(new GameTool("Launch Fallout 3", "Launches plain Fallout 3.", LaunchFallout3Plain));
-			m_lstGameLaunchCommands.Add(new GameTool("Launch FOSE", "Launches Fallout 3 with FOSE.", LaunchFallout3FOSE));
-			m_lstGameLaunchCommands.Add(new GameTool("Launch Custom Fallout 3", "Launches Fallout 3 with custom command.", LaunchFallout3Custom));
 		}
 
 		#endregion
@@ -969,7 +1006,6 @@ class Script : Fallout3BaseScript {
 				}
 			return booFound;
 		}
-
 
 		/// <summary>
 		/// Sets the working directory for the programme.

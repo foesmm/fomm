@@ -212,6 +212,25 @@
     <Compile Include="Games\Fallout3\Tools\PluginConflictDetector.cs" />
     <Compile Include="Games\Fallout3\Tools\TESsnip\ScriptCompiler\ScriptCompiler.cs" />
     <Compile Include="Games\Fallout3\Tools\TESsnip\ScriptCompiler\Tokenizer.cs" />
+    <Compile Include="Games\FalloutNewVegas\FalloutNewVegasGameMode.cs" />
+    <Compile Include="Games\FalloutNewVegas\Settings\GeneralSettingsPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Games\FalloutNewVegas\Settings\GeneralSettingsPage.Designer.cs">
+      <DependentUpon>GeneralSettingsPage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Games\FalloutNewVegas\Settings\RequiredDirectoriesControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Games\FalloutNewVegas\Settings\RequiredDirectoriesControl.Designer.cs">
+      <DependentUpon>RequiredDirectoriesControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Games\FalloutNewVegas\SetupForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Games\FalloutNewVegas\SetupForm.Designer.cs">
+      <DependentUpon>SetupForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Games\GameMode.cs" />
     <Compile Include="Games\GameTool.cs" />
     <Compile Include="Games\Fallout3\Tools\GraphicsSettings\GraphicsSettings.cs">
@@ -569,6 +588,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Games\Fallout3\Tools\GraphicsSettings\OverrideSlider.resx">
       <DependentUpon>OverrideSlider.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Games\FalloutNewVegas\Settings\GeneralSettingsPage.resx">
+      <DependentUpon>GeneralSettingsPage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Games\FalloutNewVegas\Settings\RequiredDirectoriesControl.resx">
+      <DependentUpon>RequiredDirectoriesControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Games\FalloutNewVegas\SetupForm.resx">
+      <DependentUpon>SetupForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Games\WorkingDirectorySelectionForm.resx">
       <DependentUpon>WorkingDirectorySelectionForm.cs</DependentUpon>
