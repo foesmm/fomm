@@ -9,8 +9,17 @@ using Fomm.Games;
 
 namespace Fomm
 {
+	/// <summary>
+	/// Selects the game for which mods will be managed.
+	/// </summary>
 	public partial class GameModeSelector : Form
 	{
+		#region Properties
+
+		/// <summary>
+		/// Gets the selected game mode.
+		/// </summary>
+		/// <value>The selected game mode.</value>
 		public SupportedGameModes SelectedGameMode
 		{
 			get
@@ -23,12 +32,29 @@ namespace Fomm
 			}
 		}
 
+		#endregion
+
+		#region Constructors
+
+		/// <summary>
+		/// The default constructor.
+		/// </summary>
 		public GameModeSelector()
 		{
 			InitializeComponent();
 			this.Icon = Properties.Resources.fomm02;
 		}
 
+		#endregion
+
+		/// <summary>
+		/// Hanldes the <see cref="Control.Click"/> event of the OK button.
+		/// </summary>
+		/// <remarks>
+		/// This makes the mod manager remember the selected game, if requested.
+		/// </remarks>
+		/// <param name="sender">The object that raised the event.</param>
+		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
 		private void butOK_Click(object sender, EventArgs e)
 		{
 			Properties.Settings.Default.rememberGameMode = cbxRemember.Checked;
