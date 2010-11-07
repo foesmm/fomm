@@ -288,7 +288,7 @@ namespace Fomm.Games.Fallout3
 				return m_pmgPluginManager;
 			}
 		}
-		
+
 		/// <summary>
 		/// Gets the Fallout 3 rederer info file.
 		/// </summary>
@@ -530,7 +530,13 @@ namespace Fomm.Games.Fallout3
 			string[] plugins = new string[p_frmMainForm.PluginsListViewItems.Count];
 			for (int i = 0; i < plugins.Length; i++)
 				plugins[i] = p_frmMainForm.PluginsListViewItems[i].Text;
-			Fomm.Games.Fallout3.Tools.AutoSorter.LoadOrderSorter.SortList(plugins);
+			Tools.AutoSorter.LoadOrderSorter losSorter = new Tools.AutoSorter.LoadOrderSorter();
+			if (!losSorter.HasMasterList)
+			{
+				MessageBox.Show(p_frmMainForm, "Unable to locate master list. Please update by clicking" + Environment.NewLine + "Help -> Check for update" + Environment.NewLine + "in the menu.", "Missing Master List", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+			losSorter.SortList(plugins);
 			for (int i = 0; i < plugins.Length; i++)
 				PluginManager.SetLoadOrder(Path.Combine(PluginsPath, plugins[i]), i);
 			p_frmMainForm.RefreshPluginList();
@@ -542,6 +548,13 @@ namespace Fomm.Games.Fallout3
 		/// <param name="p_frmMainForm">The main mod management form.</param>
 		public void LaunchLoadOrderReport(MainForm p_frmMainForm)
 		{
+			Tools.AutoSorter.LoadOrderSorter losSorter = new Tools.AutoSorter.LoadOrderSorter();
+			if (!losSorter.HasMasterList)
+			{
+				MessageBox.Show(p_frmMainForm, "Unable to locate master list. Please update by clicking" + Environment.NewLine + "Help -> Check for update" + Environment.NewLine + "in the menu.", "Missing Master List", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+
 			string[] plugins = new string[p_frmMainForm.PluginsListViewItems.Count];
 			bool[] active = new bool[plugins.Length];
 			bool[] corrupt = new bool[plugins.Length];
@@ -575,7 +588,8 @@ namespace Fomm.Games.Fallout3
 					}
 				}
 			}
-			string s = Fomm.Games.Fallout3.Tools.AutoSorter.LoadOrderSorter.GenerateReport(plugins, active, corrupt, masters);
+
+			string s = losSorter.GenerateReport(plugins, active, corrupt, masters);
 			PackageManager.TextEditor.ShowEditor(s, Fomm.PackageManager.TextEditorType.Text, false);
 		}
 
@@ -1301,7 +1315,7 @@ class Script : Fallout3BaseScript {
 		{
 			//check for new load order tepmlate
 			Int32 intLOVersion = Fomm.Games.Fallout3.Tools.AutoSorter.BOSSUpdater.GetMasterlistVersion();
-			if (intLOVersion > Fomm.Games.Fallout3.Tools.AutoSorter.LoadOrderSorter.GetFileVersion())
+			if (intLOVersion > new Tools.AutoSorter.LoadOrderSorter().GetFileVersion())
 			{
 				if (MessageBox.Show("A new version of the load order template is available: Release " + intLOVersion +
 					"\nDo you wish to download?", "Message", MessageBoxButtons.YesNo) == DialogResult.Yes)

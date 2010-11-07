@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Windows.Forms;
 
 namespace Fomm.Games.Fallout3.Tools.AutoSorter
 {
-	static class LoadOrderSorter
+	public class LoadOrderSorter
 	{
 		private struct ModInfo
 		{
@@ -35,23 +36,50 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
 			}
 		}
 
-		private static readonly string localDataPath = Path.Combine(Program.GameMode.InstallInfoDirectory, "lotemplate.txt");
-		private static Dictionary<string, RecordInfo> order;
-		private static int duplicateCount;
-		private static int fileVersion;
+		private static readonly string m_strLoadOrderTemplatePath = Path.Combine(Program.GameMode.InstallInfoDirectory, "lotemplate.txt");
+		private Dictionary<string, RecordInfo> m_dicMasterList;
+		private int duplicateCount;
+		private int fileVersion;
+
+		public bool HasMasterList
+		{
+			get
+			{
+				return File.Exists(m_strLoadOrderTemplatePath);
+			}
+		}
 
 		public static string LoadOrderTemplatePath
 		{
 			get
 			{
-				return localDataPath;
+				return m_strLoadOrderTemplatePath;
 			}
 		}
 
-		internal static void LoadList()
+		private Dictionary<string, RecordInfo> MasterListOrder
 		{
-			string[] fileLines = File.ReadAllLines(localDataPath);
-			order = new Dictionary<string, RecordInfo>(fileLines.Length);
+			get
+			{
+				return m_dicMasterList;
+			}
+		}
+
+		public LoadOrderSorter()
+		{
+			LoadList();
+		}
+
+		/// <summary>
+		/// Loads the master list.
+		/// </summary>
+		protected void LoadList()
+		{
+			m_dicMasterList = new Dictionary<string, RecordInfo>();
+			if (!File.Exists(LoadOrderTemplatePath))
+				return;
+			string[] fileLines = File.ReadAllLines(LoadOrderTemplatePath);
+			
 			if (!int.TryParse(fileLines[0], out fileVersion))
 			{
 				fileVersion = 0;
@@ -110,14 +138,14 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
 						comments.Clear();
 					}
 					fileLines[i] = fileLines[i].ToLowerInvariant();
-					if (order.ContainsKey(fileLines[i])) duplicateCount++;
-					order[fileLines[i]] = ri;
+					if (m_dicMasterList.ContainsKey(fileLines[i])) duplicateCount++;
+					m_dicMasterList[fileLines[i]] = ri;
 					i += skiplines;
 				}
 			}
 		}
 
-		private static ModInfo[] BuildModInfo(string[] plugins)
+		private ModInfo[] BuildModInfo(string[] plugins)
 		{
 			ModInfo[] mi = new ModInfo[plugins.Length];
 			int addcount = 1;
@@ -126,9 +154,9 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
 			for (int i = 0; i < mi.Length; i++)
 			{
 				string lplugin = plugins[i].ToLowerInvariant();
-				if (order.ContainsKey(lplugin))
+				if (m_dicMasterList.ContainsKey(lplugin))
 				{
-					lastPos = order[lplugin].id;
+					lastPos = m_dicMasterList[lplugin].id;
 					if (lastPos > maxPos) maxPos = lastPos;
 					mi[i] = new ModInfo(plugins[i], lastPos, true);
 					addcount = 1;
@@ -150,9 +178,8 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
 			return mi;
 		}
 
-		public static string GenerateReport(string[] plugins, bool[] active, bool[] corrupt, string[][] masters)
+		public string GenerateReport(string[] plugins, bool[] active, bool[] corrupt, string[][] masters)
 		{
-			if (order == null) LoadList();
 			System.Text.StringBuilder sb = new System.Text.StringBuilder(plugins.Length * 32);
 			string[] lplugins = new string[plugins.Length];
 			for (int i = 0; i < plugins.Length; i++) lplugins[i] = plugins[i].ToLowerInvariant();
@@ -200,9 +227,9 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
 						}
 					}
 				}
-				if (order.ContainsKey(plugins[i]))
+				if (m_dicMasterList.ContainsKey(plugins[i]))
 				{
-					RecordInfo ri = order[plugins[i]];
+					RecordInfo ri = m_dicMasterList[plugins[i]];
 					if (ri.id < latestPosition)
 					{
 						sb.AppendLine("* The current load order of this mod does not match the current template");
@@ -266,17 +293,23 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
 			return sb.ToString();
 		}
 
-		public static void SortList(string[] plugins)
+		public void SortList(string[] plugins)
 		{
-			if (order == null) LoadList();
 			ModInfo[] mi = BuildModInfo(plugins);
 			Array.Sort<ModInfo>(mi, delegate(ModInfo a, ModInfo b) { return a.id.CompareTo(b.id); });
 			for (int i = 0; i < mi.Length; i++) plugins[i] = mi[i].name;
 		}
 
-		public static bool CheckList(string[] plugins)
+		/// <summary>
+		/// Determins if the given list of plugins has been auto-sorted.
+		/// </summary>
+		/// <param name="plugins">The plugins whose order is to be verified.</param>
+		/// <returns><lang cref="true"/> if the plugins have been auto-sorted;
+		/// <lang cref="false"/> otherwise.</returns>
+		public bool CheckList(string[] plugins)
 		{
-			if (order == null) LoadList();
+			if (!HasMasterList)
+				return false;
 			ModInfo[] mi = BuildModInfo(plugins);
 			double upto = 0;
 			for (int i = 0; i < mi.Length; i++)
@@ -287,13 +320,12 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
 			return true;
 		}
 
-		public static int GetInsertionPos(string[] plugins, string plugin)
+		public int GetInsertionPos(string[] plugins, string plugin)
 		{
-			if (order == null) LoadList();
 			plugin = plugin.ToLowerInvariant();
-			if (!order.ContainsKey(plugin)) return plugins.Length;
+			if (!m_dicMasterList.ContainsKey(plugin)) return plugins.Length;
 			ModInfo[] mi = BuildModInfo(plugins);
-			int target = order[plugin].id;
+			int target = m_dicMasterList[plugin].id;
 			for (int i = 0; i < mi.Length; i++)
 			{
 				if (mi[i].id >= target) return i;
@@ -301,9 +333,8 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
 			return plugins.Length;
 		}
 
-		public static int GetFileVersion()
+		public int GetFileVersion()
 		{
-			if (order == null) LoadList();
 			return fileVersion;
 		}
 	}

@@ -91,7 +91,10 @@ namespace Fomm
 		{
 			get
 			{
-				return Path.Combine(PersonalDirectory, ProgrammeAcronym);
+				string strPath = Path.Combine(PersonalDirectory, ProgrammeAcronym);
+				if (!Directory.Exists(strPath))
+					Directory.CreateDirectory(strPath);
+				return strPath;
 			}
 		}
 
@@ -553,7 +556,7 @@ namespace Fomm
 					ex = ex.InnerException;
 					msg += ex.ToString() + Environment.NewLine;
 				}
-				string strDumpFile = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "crashdump.txt");
+				string strDumpFile = Path.Combine(LocalApplicationDataPath, "crashdump.txt");
 				File.WriteAllText(strDumpFile, msg);
 			}
 		}

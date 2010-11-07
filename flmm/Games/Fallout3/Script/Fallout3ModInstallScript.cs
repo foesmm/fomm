@@ -148,7 +148,7 @@ namespace Fomm.Games.Fallout3.Script
 		public bool IsLoadOrderAutoSorted()
 		{
 			PermissionsManager.CurrentPermissions.Assert();
-			return LoadOrderSorter.CheckList(GetAllPlugins());
+			return new LoadOrderSorter().CheckList(GetAllPlugins());
 		}
 
 		/// <summary>
@@ -162,7 +162,7 @@ namespace Fomm.Games.Fallout3.Script
 		public int GetAutoInsertionPoint(string p_strPlugin)
 		{
 			PermissionsManager.CurrentPermissions.Assert();
-			return LoadOrderSorter.GetInsertionPos(GetAllPlugins(), p_strPlugin);
+			return new LoadOrderSorter().GetInsertionPos(GetAllPlugins(), p_strPlugin);
 		}
 
 		/// <summary>
@@ -175,7 +175,7 @@ namespace Fomm.Games.Fallout3.Script
 		public void AutoSortPlugins(string[] p_strPlugins)
 		{
 			PermissionsManager.CurrentPermissions.Assert();
-			LoadOrderSorter.SortList(p_strPlugins);
+			new LoadOrderSorter().SortList(p_strPlugins);
 		}
 
 		#endregion

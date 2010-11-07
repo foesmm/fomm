@@ -45,7 +45,6 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
 				strMasterlist = wclGetter.DownloadString(Properties.Settings.Default.fallout3MasterListUpdateUrl).Substring(3);
 			}
 			File.WriteAllText(p_strPath, GetMasterlistVersion().ToString() + Environment.NewLine + strMasterlist);
-			LoadOrderSorter.LoadList();
 		}
 	}
 }
