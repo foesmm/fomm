@@ -180,10 +180,6 @@ namespace Fomm.Games.FalloutNewVegas
 			{
 				return m_strSavesPath;
 			}
-			protected set
-			{
-				m_strSavesPath = value;
-			}
 		}
 
 		#region Tool Injection
@@ -316,12 +312,20 @@ namespace Fomm.Games.FalloutNewVegas
 		protected virtual void SetupPaths()
 		{
 			throw new NotImplementedException();
-			//below is sample only
-			string strUserGameDataPath = Path.Combine(Program.PersonalDirectory, "My games\\FalloutNV");
-			SettingsFiles[SettingsFile.FOIniPath] = Path.Combine(strUserGameDataPath, "Fallout.ini");
+			/*
+			string strUserGameDataPath = Path.Combine(Program.PersonalDirectory, "My games\\Fallout3");
 
-			SavesPath = Path.Combine(strUserGameDataPath, NativeMethods.GetPrivateProfileString("General", "SLocalSavePath", "Games", SettingsFiles[SettingsFile.FOIniPath]));
-			//etc...
+			m_dicSettingsFiles[SettingsFile.FOIniPath] = Path.Combine(strUserGameDataPath, "Fallout.ini");
+			m_dicSettingsFiles[SettingsFile.FOPrefsIniPath] = Path.Combine(strUserGameDataPath, "FalloutPrefs.ini");
+			m_dicSettingsFiles[SettingsFile.GeckIniPath] = Path.Combine(strUserGameDataPath, "GECKCustom.ini");
+			m_dicSettingsFiles[SettingsFile.GeckPrefsIniPath] = Path.Combine(strUserGameDataPath, "GECKPrefs.ini");
+
+			m_dicAdditionalPaths["FORendererFile"] = Path.Combine(strUserGameDataPath, "RendererInfo.txt");
+			m_dicAdditionalPaths["PluginsFile"] = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Fallout3/plugins.txt");
+			m_dicAdditionalPaths["DLCDir"] = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Microsoft\\xlive\\DLC");
+
+			m_strSavesPath = Path.Combine(strUserGameDataPath, NativeMethods.GetPrivateProfileString("General", "SLocalSavePath", "Games", m_dicSettingsFiles[SettingsFile.FOIniPath]));
+			*/
 		}
 
 		/// <summary>
@@ -562,7 +566,7 @@ class Script : FalloutNewVegasBaseScript {
 		public static bool VerifyWorkingDirectory(string p_strPath)
 		{
 			throw new NotImplementedException();
-			if (String.IsNullOrEmpty(p_strPath))
+			/*if (String.IsNullOrEmpty(p_strPath))
 				return false;
 
 			string[] strExes = new string[] { Path.Combine(p_strPath, "fallout3.exe"),
@@ -574,7 +578,7 @@ class Script : FalloutNewVegasBaseScript {
 					booFound = true;
 					break;
 				}
-			return booFound;
+			return booFound;*/
 		}
 
 		/// <summary>
@@ -593,7 +597,7 @@ class Script : FalloutNewVegasBaseScript {
 			Trace.WriteLine("Looking for Fallout New Vegas.");
 			Trace.Indent();
 #endif
-			string strWorkingDirectory = Properties.Settings.Default.fallout3WorkingDirectory;
+			/*string strWorkingDirectory = Properties.Settings.Default.fallout3WorkingDirectory;
 
 			if (String.IsNullOrEmpty(strWorkingDirectory) || !Directory.Exists(strWorkingDirectory))
 			{
@@ -632,7 +636,7 @@ class Script : FalloutNewVegasBaseScript {
 				Trace.WriteLine("Found: " + Path.GetFullPath("."));
 #endif
 			p_strErrorMessage = null;
-			return true;
+			return true;*/
 		}
 
 		/// <summary>

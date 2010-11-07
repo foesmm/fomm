@@ -182,10 +182,6 @@ namespace Fomm.Games.Fallout3
 			{
 				return m_strSavesPath;
 			}
-			protected set
-			{
-				m_strSavesPath = value;
-			}
 		}
 
 		/// <summary>

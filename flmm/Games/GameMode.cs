@@ -109,7 +109,6 @@ namespace Fomm.Games
 		public abstract string SavesPath
 		{
 			get;
-			protected set;
 		}		
 
 		#region Tool Injection
