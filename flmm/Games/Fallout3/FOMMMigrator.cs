@@ -7,6 +7,9 @@ using System.IO;
 using Fomm.Util;
 using ChinhDo.Transactions;
 using fomm.Transactions;
+#if TRACE
+using System.Diagnostics;
+#endif
 
 namespace Fomm.Games.Fallout3
 {
@@ -28,12 +31,29 @@ namespace Fomm.Games.Fallout3
 			if (Properties.Settings.Default.migratedFromPre0130)
 				return true;
 
-			string strOldFOMMLocation = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Fallout Mod Manager_is1", "InstallLocation", "").ToString();
+#if TRACE
+			Trace.WriteLine("Check for old FOMM to migrate from...");
+			Trace.Indent();
+#endif
+			string strOldFOMMLocation = (Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Fallout Mod Manager_is1", "InstallLocation", "") ?? "").ToString();
+#if TRACE
+			Trace.WriteLine("First guess: " + strOldFOMMLocation);
+#endif
 			if (String.IsNullOrEmpty(strOldFOMMLocation))
-				strOldFOMMLocation = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Fallout Mod Manager_is1", "InstallLocation", "").ToString();
+			{
+				strOldFOMMLocation = (Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Fallout Mod Manager_is1", "InstallLocation", "") ?? "").ToString();
+#if TRACE
+				Trace.WriteLine("Second guess: " + strOldFOMMLocation);
+#endif
+			}
 			if (String.IsNullOrEmpty(strOldFOMMLocation))
+			{
+#if TRACE
+				Trace.WriteLine("No need to migrate");
+				Trace.Unindent();
+#endif
 				return true;
-
+			}
 
 			string strMessage = "An older version of the mod manager was detected. Would you like to migrate your mods into the new programme?" + Environment.NewLine +
 								"If you answer \"No\", you will have to manually copy your mods into: " + Environment.NewLine +
@@ -87,6 +107,10 @@ namespace Fomm.Games.Fallout3
 			lstModFiles.AddRange(Directory.GetFiles(Path.Combine(strOldFOMMLocation, "mods"), "*.fomod"));
 			lstModFiles.AddRange(Directory.GetFiles(Path.Combine(strOldFOMMLocation, "mods"), "*.xml"));
 			m_bwdProgress.ItemMessage = "Copying mods...";
+#if TRACE
+			Trace.WriteLine("Copying Mods (" + lstModFiles.Count + "):");
+			Trace.Indent();
+#endif
 			m_bwdProgress.ItemProgressMaximum = lstModFiles.Count;
 			m_bwdProgress.ItemProgress = 0;
 			string strModFileName = null;
@@ -94,12 +118,25 @@ namespace Fomm.Games.Fallout3
 			{
 				strModFileName = Path.GetFileName(strMod);
 				m_bwdProgress.ItemMessage = "Copying mods (" + strModFileName + ")...";
+#if TRACE
+				Trace.WriteLine(strModFileName);
+#endif
 				tfmFileManager.Copy(strMod, Path.Combine(Program.GameMode.ModDirectory, strModFileName), true);
 				//File.Copy(strMod, Path.Combine(Program.GameMode.ModDirectory, Path.GetFileName(strMod)));
 				m_bwdProgress.StepItemProgress();
 				if (m_bwdProgress.Cancelled())
+				{
+#if TRACE
+					Trace.Unindent();
+					Trace.WriteLine("Cancelled copying Mods.");
+#endif
 					return;
+				}
 			}
+#if TRACE
+			Trace.Unindent();
+			Trace.WriteLine("Done copying Mods.");
+#endif
 
 			m_bwdProgress.StepOverallProgress();
 
@@ -108,8 +145,15 @@ namespace Fomm.Games.Fallout3
 			m_bwdProgress.ItemMessage = "Copying overwrites...";
 			m_bwdProgress.ItemProgressMaximum = strOverwriteFiles.Length;
 			m_bwdProgress.ItemProgress = 0;
+#if TRACE
+			Trace.WriteLine("Copying overwrite files (" + strOverwriteFiles.Length + "):");
+			Trace.Indent();
+#endif
 			FileUtil.Copy(tfmFileManager, Path.Combine(strOldFOMMLocation, "overwrites"), ((Fallout3GameMode)Program.GameMode).OverwriteDirectory, OverwriteFileCopied);
-
+#if TRACE
+			Trace.Unindent();
+			Trace.WriteLine("Done copying overwrite files.");
+#endif
 
 			m_bwdProgress.StepOverallProgress();
 
@@ -118,13 +162,30 @@ namespace Fomm.Games.Fallout3
 			m_bwdProgress.ItemMessage = "Copying info files...";
 			m_bwdProgress.ItemProgressMaximum = strMiscFiles.Length;
 			m_bwdProgress.ItemProgress = 0;
+#if TRACE
+			Trace.WriteLine("Copying install logs (" + strMiscFiles.Length + "):");
+			Trace.Indent();
+#endif
 			foreach (string strFile in strMiscFiles)
 			{
+#if TRACE
+				Trace.WriteLine(strModFileName);
+#endif
 				tfmFileManager.Copy(strFile, Path.Combine(Program.GameMode.InstallInfoDirectory, Path.GetFileName(strFile)), true);
 				m_bwdProgress.StepItemProgress();
 				if (m_bwdProgress.Cancelled())
+				{
+#if TRACE
+					Trace.Unindent();
+					Trace.WriteLine("Cancelled copying install logs.");
+#endif				
 					return;
+				}
 			}
+#if TRACE
+			Trace.Unindent();
+			Trace.WriteLine("Done copying install logs.");
+#endif
 
 			m_bwdProgress.StepOverallProgress();
 		}
@@ -140,6 +201,13 @@ namespace Fomm.Games.Fallout3
 		/// <lang cref="false"/> otherwise.</returns>
 		protected bool OverwriteFileCopied(string p_strFile)
 		{
+#if TRACE
+			if (m_bwdProgress.Cancelled())
+			{
+				Trace.Unindent();
+				Trace.WriteLine("Cancelled copying overwrite files.");
+			}
+#endif
 			return m_bwdProgress.Cancelled();
 		}
 	}
