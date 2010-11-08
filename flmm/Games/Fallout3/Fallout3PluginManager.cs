@@ -4,6 +4,7 @@ using System.IO;
 using System.Windows.Forms;
 using Fomm.Games.Fallout3.Tools.TESsnip;
 using System.Text;
+using Fomm.Util;
 
 namespace Fomm.Games.Fallout3
 {
@@ -24,7 +25,7 @@ namespace Fomm.Games.Fallout3
 			{
 				string strPluginsFilePath = ((Fallout3GameMode)Program.GameMode).PluginsFilePath;
 
-				List<string> lstActivePlugins = new List<string>();
+				Set<string> setActivePlugins = new Set<string>();
 				if (File.Exists(strPluginsFilePath))
 				{
 					string[] strPlugins = File.ReadAllLines(strPluginsFilePath);
@@ -37,10 +38,10 @@ namespace Fomm.Games.Fallout3
 						string strPluginPath = Path.Combine(Program.GameMode.PluginsPath, strPlugins[i]);
 						if (!File.Exists(strPluginPath))
 							continue;
-						lstActivePlugins.Add(strPluginPath);
+						setActivePlugins.Add(strPluginPath);
 					}
 				}
-				return lstActivePlugins.ToArray();
+				return setActivePlugins.ToArray();
 			}
 		}
 
@@ -75,7 +76,7 @@ namespace Fomm.Games.Fallout3
 			{
 				List<string> lstActivePlugins = new List<string>(File.ReadAllLines(strPluginsFilePath));
 				string strPluginFilename = Path.GetFileName(p_strPath);
-				lstActivePlugins.Remove(strPluginFilename);
+				lstActivePlugins.RemoveAll((s) => { return strPluginFilename.Equals(s, StringComparison.InvariantCultureIgnoreCase); });
 
 				File.WriteAllLines(strPluginsFilePath, lstActivePlugins.ToArray(), System.Text.Encoding.Default);
 			}
