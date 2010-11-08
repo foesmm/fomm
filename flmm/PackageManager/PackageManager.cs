@@ -276,31 +276,34 @@ namespace Fomm.PackageManager
 			}
 			if (Properties.Settings.Default.checkForNewModVersions)
 			{
-				string strNexusLoginKey = Properties.Settings.Default.nexusLoginKey;
-				if (String.IsNullOrEmpty(strNexusLoginKey))
+				if (Program.GameMode.HasNexusSite)
 				{
-					string strMessage = "You must log into the Nexus website.";
-					LoginForm lgfLogin = new LoginForm(strMessage, Properties.Settings.Default.nexusUsername);
-					while (lgfLogin.ShowDialog(this) != DialogResult.Cancel)
+					string strNexusLoginKey = Properties.Settings.Default.nexusLoginKey;
+					if (String.IsNullOrEmpty(strNexusLoginKey))
 					{
-						Properties.Settings.Default.nexusUsername = lgfLogin.Username;
-						m_nxaNexus = new NexusAPI(NexusSite.Fallout3, lgfLogin.Username, lgfLogin.Password);
-						if (!m_nxaNexus.Login())
+						string strMessage = "You must log into the Nexus website.";
+						LoginForm lgfLogin = new LoginForm(strMessage, Properties.Settings.Default.nexusUsername);
+						while (lgfLogin.ShowDialog(this) != DialogResult.Cancel)
 						{
-							lgfLogin.ErrorMessage = "The given login information is invalid.";
-							continue;
+							Properties.Settings.Default.nexusUsername = lgfLogin.Username;
+							m_nxaNexus = new NexusAPI(Program.GameMode.NexusSite, lgfLogin.Username, lgfLogin.Password);
+							if (!m_nxaNexus.Login())
+							{
+								lgfLogin.ErrorMessage = "The given login information is invalid.";
+								continue;
+							}
+							if (lgfLogin.StayLoggedIn)
+							{
+								strNexusLoginKey = m_nxaNexus.LoginKey;
+								Properties.Settings.Default.nexusLoginKey = strNexusLoginKey;
+							}
+							Properties.Settings.Default.Save();
+							break;
 						}
-						if (lgfLogin.StayLoggedIn)
-						{
-							strNexusLoginKey = m_nxaNexus.LoginKey;
-							Properties.Settings.Default.nexusLoginKey = strNexusLoginKey;
-						}
-						Properties.Settings.Default.Save();
-						break;
+						return;
 					}
-					return;
+					m_nxaNexus = new NexusAPI(Program.GameMode.NexusSite, strNexusLoginKey);
 				}
-				m_nxaNexus = new NexusAPI(NexusSite.Fallout3, strNexusLoginKey);
 			}
 		}
 
