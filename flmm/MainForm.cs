@@ -632,9 +632,14 @@ namespace Fomm
 
 			RefreshingList = true;
 			for (int i = 0; i < lvEspList.Items.Count; i++)
+			{
 				lvEspList.Items[i].Checked = active.Contains(lvEspList.Items[i].Text.ToLowerInvariant());
+				if (lvEspList.Items[i].Checked)
+					Program.GameMode.PluginManager.ActivatePlugin(lvEspList.Items[i].Text);
+				else
+					Program.GameMode.PluginManager.DeactivatePlugin(lvEspList.Items[i].Text);
+			}
 			RefreshingList = false;
-			lvEspList_ItemChecked(null, null);
 		}
 
 		private void uncheckAllToolStripMenuItem_Click(object sender, EventArgs e)
