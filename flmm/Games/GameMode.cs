@@ -8,6 +8,7 @@ using Fomm.PackageManager.XmlConfiguredInstall.Parsers;
 using System.Drawing;
 using Fomm.Controls;
 using Microsoft.Win32;
+using WebsiteAPIs;
 
 namespace Fomm.Games
 {
@@ -20,6 +21,26 @@ namespace Fomm.Games
 	public abstract class GameMode
 	{
 		#region Properties
+
+		/// <summary>
+		/// Gets whether or not there is a Nexus site for this game.
+		/// </summary>
+		/// <value>Whether or not there is a Nexus site for this game.</value>
+		/// <seealso cref="NexusSite"/>
+		public abstract bool HasNexusSite
+		{
+			get;
+		}
+
+		/// <summary>
+		/// Gets the nexus site for this game.
+		/// </summary>
+		/// <value>The nexus site for this game.</value>
+		/// <seealso cref="HasNexusSite"/>
+		public abstract NexusSite NexusSite
+		{
+			get;
+		}
 
 		/// <summary>
 		/// Gets the name of the game whose plugins are being managed.

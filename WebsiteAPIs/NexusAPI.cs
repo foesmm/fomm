@@ -51,6 +51,11 @@ namespace WebsiteAPIs
 		Fallout3,
 
 		/// <summary>
+		/// The Fallout: New Vegas Nexus site.
+		/// </summary>
+		FalloutNV,
+
+		/// <summary>
 		/// The TES Nexus site.
 		/// </summary>
 		TES,
@@ -166,6 +171,8 @@ namespace WebsiteAPIs
 						return cclCookies["DANEX_Member"].Value;
 					case NexusSite.Fallout3:
 						return cclCookies["FO3Nexus_Member"].Value;
+					case NexusSite.FalloutNV:
+						return cclCookies["NVNexus_Member"].Value;
 					case NexusSite.TES:
 						return cclCookies["TESNEX_Member"].Value;
 				}
@@ -191,6 +198,9 @@ namespace WebsiteAPIs
 					break;
 				case NexusSite.Fallout3:
 					m_strSite = "www.fallout3nexus.com";
+					break;
+				case NexusSite.FalloutNV:
+					m_strSite = "www.newvegasnexus.com";
 					break;
 				case NexusSite.TES:
 					m_strSite = "www.tesnexus.com";
@@ -227,6 +237,9 @@ namespace WebsiteAPIs
 					break;
 				case NexusSite.Fallout3:
 					ckeLoginCookie = new Cookie("FO3Nexus_Member", p_strLoginKey, "/", m_strSite);
+					break;
+				case NexusSite.FalloutNV:
+					ckeLoginCookie = new Cookie("NVNexus_Member", p_strLoginKey, "/", m_strSite);
 					break;
 				case NexusSite.TES:
 					ckeLoginCookie = new Cookie("TESNEX_Member", p_strLoginKey, "/", m_strSite);

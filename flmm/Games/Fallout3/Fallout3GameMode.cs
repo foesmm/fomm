@@ -13,6 +13,7 @@ using Fomm.Games.Fallout3.Settings;
 using Fomm.Games.Fallout3.Script;
 using Fomm.Games.Fallout3.Script.XmlConfiguredInstall;
 using Fomm.Games.Fallout3.Script.XmlConfiguredInstall.Parsers;
+using WebsiteAPIs;
 
 namespace Fomm.Games.Fallout3
 {
@@ -41,6 +42,32 @@ namespace Fomm.Games.Fallout3
 		private Fallout3PluginManager m_pmgPluginManager = new Fallout3PluginManager();
 
 		#region Properties
+
+		/// <summary>
+		/// Gets whether or not there is a Nexus site for this game.
+		/// </summary>
+		/// <value>Whether or not there is a Nexus site for this game.</value>
+		/// <seealso cref="NexusSite"/>
+		public override bool HasNexusSite
+		{
+			get
+			{
+				return true;
+			}
+		}
+
+		/// <summary>
+		/// Gets the nexus site for this game.
+		/// </summary>
+		/// <value>The nexus site for this game.</value>
+		/// <seealso cref="HasNexusSite"/>
+		public override NexusSite NexusSite
+		{
+			get
+			{
+				return NexusSite.Fallout3;
+			}
+		}
 
 		/// <summary>
 		/// Gets the name of the game whose plugins are being managed.
