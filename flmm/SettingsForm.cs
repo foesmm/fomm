@@ -215,7 +215,8 @@ namespace Fomm
 		{
 			if (key == null) return;
 			RegistryKey rk = Registry.ClassesRoot.OpenSubKey(key + "\\Shell", true);
-			if (Array.IndexOf<string>(rk.GetSubKeyNames(), "Convert_to_fomod") != -1) rk.DeleteSubKeyTree("Convert_to_fomod");
+			if (Array.IndexOf<string>(rk.GetSubKeyNames(), "Convert_to_fomod") != -1)
+				rk.DeleteSubKeyTree("Convert_to_fomod");
 			rk.Close();
 		}
 
@@ -230,10 +231,14 @@ namespace Fomm
 
 			if (UacUtil.IsElevated)
 			{
+				string[] strKeys = Registry.ClassesRoot.GetSubKeyNames();
 				if (!cbAssociateBsa.Checked)
 				{
-					Registry.ClassesRoot.DeleteSubKeyTree("BethesdaSoftworks_Archive");
-					Registry.ClassesRoot.DeleteSubKeyTree(".bsa");
+					if (Array.IndexOf<string>(strKeys, "BethesdaSoftworks_Archive") != -1)
+					{
+						Registry.ClassesRoot.DeleteSubKeyTree("BethesdaSoftworks_Archive");
+						Registry.ClassesRoot.DeleteSubKeyTree(".bsa");
+					}
 				}
 				else
 				{
@@ -245,8 +250,11 @@ namespace Fomm
 
 				if (!cbAssociateSdp.Checked)
 				{
-					Registry.ClassesRoot.DeleteSubKeyTree("BethesdaSoftworks_ShaderPackage");
-					Registry.ClassesRoot.DeleteSubKeyTree(".sdp");
+					if (Array.IndexOf<string>(strKeys, "BethesdaSoftworks_ShaderPackage") != -1)
+					{
+						Registry.ClassesRoot.DeleteSubKeyTree("BethesdaSoftworks_ShaderPackage");
+						Registry.ClassesRoot.DeleteSubKeyTree(".sdp");
+					}
 				}
 				else
 				{
@@ -258,8 +266,11 @@ namespace Fomm
 
 				if (!cbAssociateFomod.Checked)
 				{
-					Registry.ClassesRoot.DeleteSubKeyTree("FOMM_Mod_Archive");
-					Registry.ClassesRoot.DeleteSubKeyTree(".fomod");
+					if (Array.IndexOf<string>(strKeys, "FOMM_Mod_Archive") != -1)
+					{
+						Registry.ClassesRoot.DeleteSubKeyTree("FOMM_Mod_Archive");
+						Registry.ClassesRoot.DeleteSubKeyTree(".fomod");
+					}
 				}
 				else
 				{
