@@ -57,7 +57,7 @@ namespace Fomm
 
 	public static class Program
 	{
-		public const string Version = "0.13.1";
+		public const string Version = "0.13.2";
 		public static readonly Version MVersion = new Version(Version + ".0");
 
 #if TRACE
@@ -208,7 +208,7 @@ namespace Fomm
 			Application.ThreadException += new System.Threading.ThreadExceptionEventHandler(Application_ThreadException);
 			if (Array.IndexOf<string>(args, "-mono") != -1) monoMode = true;
 #if TRACE
-			TRACE_FILE = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), TRACE_FILE);
+			TRACE_FILE = Path.Combine(LocalApplicationDataPath, TRACE_FILE);
 			TextWriterTraceListener twlListener = new TextWriterTraceListener(TRACE_FILE);
 			try
 			{
@@ -272,7 +272,7 @@ namespace Fomm
 						return;
 				}
 #if TRACE
-				Trace.WriteLine("We know where the mods live: " + GameMode.ModDirectory);
+					Trace.WriteLine("We are managing mods for: " + GameMode.GameName);
 #endif
 				Mutex mutex;
 				bool booNewMutex;
@@ -326,21 +326,21 @@ namespace Fomm
 				}
 
 #if TRACE
-				Trace.WriteLine("Creating mutex.");
-				Trace.Indent();
+					Trace.WriteLine("Creating mutex.");
+					Trace.Indent();
 #endif
 				mutex = new System.Threading.Mutex(true, "fommMainMutex", out booNewMutex);
 				if (!booNewMutex)
 				{
 #if TRACE
-					Trace.WriteLine("FOMM is already running.");
+						Trace.WriteLine("FOMM is already running.");
 #endif
 					MessageBox.Show(ProgrammeAcronym + " is already running", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 					mutex.Close();
 					return;
 				}
 #if TRACE
-				Trace.Unindent();
+					Trace.Unindent();
 #endif
 
 				try
@@ -355,8 +355,8 @@ namespace Fomm
 					//Check that we're in fallout's directory and that we have write access
 					bool cancellaunch = true;
 #if TRACE
-					Trace.WriteLine("Check for UAC.");
-					Trace.Indent();
+						Trace.WriteLine("Check for UAC.");
+						Trace.Indent();
 #endif
 					if (!Properties.Settings.Default.NoUACCheck || Array.IndexOf<string>(args, "-no-uac-check") == -1)
 					{
@@ -372,7 +372,7 @@ namespace Fomm
 							if (File.Exists(strVirtualStore))
 							{
 #if TRACE
-								Trace.WriteLine("UAC is messing us up.");
+									Trace.WriteLine("UAC is messing us up.");
 #endif
 								MessageBox.Show(" UAC is preventing Fallout mod manager from obtaining write access to fallout's installation directory.\n" +
 								"Either right click fomm.exe and check the 'run as administrator' checkbox on the comptibility tab, or disable UAC", "Error");
@@ -387,7 +387,7 @@ namespace Fomm
 						catch
 						{
 #if TRACE
-							Trace.WriteLine("Can't write to Fallout's directory.");
+								Trace.WriteLine("Can't write to Fallout's directory.");
 #endif
 							MessageBox.Show("Unable to get write permissions for fallout's installation directory." + Environment.NewLine + "Please read the 'Readme - fomm.txt' file found in the fomm subfolder of your FOMM installation.", "Error");
 						}
@@ -395,9 +395,9 @@ namespace Fomm
 					else
 						cancellaunch = false;
 #if TRACE
-					Trace.Unindent();
-					Trace.WriteLine("We set the working directory: " + Path.GetFullPath("."));
-					Trace.Unindent();
+						Trace.Unindent();
+						Trace.WriteLine("We set the working directory: " + Path.GetFullPath("."));
+						Trace.Unindent();
 #endif
 
 					if (cancellaunch) return;
@@ -405,29 +405,30 @@ namespace Fomm
 					if (!Directory.Exists(tmpPath)) Directory.CreateDirectory(tmpPath);
 
 					string str7zPath = Path.Combine(Program.ProgrammeInfoDirectory, "7z-32bit.dll");
-#if TRACE			
-					Trace.WriteLine("7z Path: " + str7zPath + " (Exists: " + File.Exists(str7zPath) + ")");
-					Trace.Flush();
+#if TRACE
+						Trace.WriteLine("7z Path: " + str7zPath + " (Exists: " + File.Exists(str7zPath) + ")");
+						Trace.Flush();
 #endif
 					SevenZipCompressor.SetLibraryPath(str7zPath);
 
 #if TRACE
-					Trace.WriteLine("Game Mode Specific Initialization:");
-					Trace.Indent();
+						Trace.WriteLine("Game Mode Specific Initialization:");
+						Trace.Indent();
 #endif
 					if (!GameMode.Init())
 						return;
 #if TRACE
-					Trace.Unindent();
-					Trace.WriteLine("Done Game Mode Specific Initialization.");
-					Trace.WriteLine("Install Log Version: " + InstallLog.Current.GetInstallLogVersion());
-					Trace.Indent();
+						Trace.Unindent();
+						Trace.WriteLine("Done Game Mode Specific Initialization.");
+						Trace.WriteLine("We know where the mods live: " + GameMode.ModDirectory);
+						Trace.WriteLine("Install Log Version: " + InstallLog.Current.GetInstallLogVersion());
+						Trace.Indent();
 #endif
 					//check to see if we need to upgrade the install log format
 					if (InstallLog.Current.GetInstallLogVersion() < InstallLog.CURRENT_VERSION)
 					{
 #if TRACE
-						Trace.Write("Upgrade to " + InstallLog.CURRENT_VERSION + " required...");
+							Trace.Write("Upgrade to " + InstallLog.CURRENT_VERSION + " required...");
 #endif
 						InstallLogUpgrader iluUgrader = new InstallLogUpgrader();
 						try
@@ -436,7 +437,7 @@ namespace Fomm
 							if (!iluUgrader.UpgradeInstallLog())
 							{
 #if TRACE
-								Trace.WriteLine("Refused.");
+									Trace.WriteLine("Refused.");
 #endif
 								MessageBox.Show("FOMM needs to upgrade its files before it can run. Please allow the upgrade to complete, or install an older version of FOMM.", "Upgrade Cancelled", MessageBoxButtons.OK, MessageBoxIcon.Information);
 								return;
@@ -445,18 +446,18 @@ namespace Fomm
 						catch (Exception e)
 						{
 #if TRACE
-							TraceException(e);
+								TraceException(e);
 #endif
 							HandleException(e, "An error occurred while upgrading your log file.", "Upgrade Error");
 							return;
 						}
 #if TRACE
-						Trace.WriteLine("Done.");
+							Trace.WriteLine("Done.");
 #endif
 					}
 #if TRACE
-					Trace.Unindent();
-					Trace.Write("Uninstalling missing FOMods...");
+						Trace.Unindent();
+						Trace.Write("Uninstalling missing FOMods...");
 #endif
 					//let's uninstall any fomods that have been deleted since we last ran
 					IList<FomodInfo> lstMods = InstallLog.Current.GetVersionedModList();
@@ -479,8 +480,8 @@ namespace Fomm
 					try
 					{
 #if TRACE
-						Trace.WriteLine("Done.");
-						Trace.Write("Scanning for upgraded FOMODs...");
+							Trace.WriteLine("Done.");
+							Trace.Write("Scanning for upgraded FOMODs...");
 #endif
 						//check to see if any fomod versions have changed, and whether to upgrade them
 						UpgradeScanner upsScanner = new UpgradeScanner();
@@ -489,16 +490,16 @@ namespace Fomm
 					catch (Exception e)
 					{
 #if TRACE
-						TraceException(e);
+							TraceException(e);
 #endif
 						HandleException(e, "An error occurred while scanning your fomods for new versions.", "Scan Error");
 						return;
 					}
 
 #if TRACE
-					Trace.WriteLine("Done.");
-					Trace.WriteLine("Running Application.");
-					Trace.Flush();
+						Trace.WriteLine("Done.");
+						Trace.WriteLine("Running Application.");
+						Trace.Flush();
 #endif
 					if (booChangeGameMode || !GameMode.HandleInAppArguments(args))
 					{
@@ -514,7 +515,7 @@ namespace Fomm
 						}
 					}
 #if TRACE
-					Trace.Flush();
+						Trace.Flush();
 #endif
 
 					//backup the install log
@@ -546,6 +547,7 @@ namespace Fomm
 					if (mutex != null)
 						mutex.Close();
 				}
+			} while (booChangeGameMode);
 #if TRACE
 			}
 			finally
@@ -553,7 +555,6 @@ namespace Fomm
 				Trace.Flush();
 			}
 #endif
-			} while (booChangeGameMode);
 		}
 
 		static void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)
