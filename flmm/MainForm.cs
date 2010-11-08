@@ -107,7 +107,7 @@ namespace Fomm
 			this.Icon = Fomm.Properties.Resources.fomm02;
 			Properties.Settings.Default.windowPositions.GetWindowPosition("MainForm", this);
 
-			Text += " (" + Program.Version + ")";
+			Text += " (" + Program.Version + ") - " + Program.GameMode.GameName;
 #if TRACE
 			Text += " TRACE";
 #endif

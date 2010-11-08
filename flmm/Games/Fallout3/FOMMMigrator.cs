@@ -34,34 +34,21 @@ namespace Fomm.Games.Fallout3
 			if (String.IsNullOrEmpty(strOldFOMMLocation))
 				return true;
 
-			Version verOldFOMM = new Version(System.Diagnostics.FileVersionInfo.GetVersionInfo(Path.Combine(strOldFOMMLocation, "fomm.exe")).FileVersion.Replace(", ", "."));
-			if (verOldFOMM < new Version("0.11.0.0"))
+
+			string strMessage = "An older version of the mod manager was detected. Would you like to migrate your mods into the new programme?" + Environment.NewLine +
+								"If you answer \"No\", you will have to manually copy your mods into: " + Environment.NewLine +
+								Program.GameMode.ModDirectory + Environment.NewLine +
+								"You will also have to reinstall the mods, so make sure you deactivate them in the old FOMM first." + Environment.NewLine +
+								"Clicking \"Cancel\" will close the programme so you can deactivate the mods in the old FOMM, if you so choose." + Environment.NewLine +
+								"If you are confused, click \"Yes\".";
+			switch (MessageBox.Show(strMessage, "Migrate", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question))
 			{
-				string strTooOldMessage = "An older version of the mod manager was detected. Unfortunately, migrating from your version of FOMM is not supported." + Environment.NewLine +
-											"Would you like to continue?" + Environment.NewLine + Environment.NewLine +
-											"It is recommended that you select \"No\", start your old FOMM, deactivate all of your mods, uninstall the old FOMM, manually copy your mods into: " + Environment.NewLine +
-											Program.GameMode.ModDirectory + Environment.NewLine +
-											" and start this programme again.";
-				if (MessageBox.Show(strTooOldMessage, "Cannot Migrate", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
+				case DialogResult.Cancel:
 					return false;
-			}
-			else
-			{
-				string strMessage = "An older version of the mod manager was detected. Would you like to migrate your mods into the new programme?" + Environment.NewLine +
-									"If you answer \"No\", you will have to manually copy your mods into: " + Environment.NewLine +
-									Program.GameMode.ModDirectory + Environment.NewLine +
-									"You will also have to reinstall the mods, so make sure you deactivate them in the old FOMM first." + Environment.NewLine +
-									"Clicking \"Cancel\" will close the programme so you can deactivate the mods in the old FOMM, if you so choose." + Environment.NewLine +
-									"If you are confused, click \"Yes\".";
-				switch (MessageBox.Show(strMessage, "Migrate", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question))
-				{
-					case DialogResult.Cancel:
-						return false;
-					case DialogResult.No:
-						Properties.Settings.Default.migratedFromPre0130 = true;
-						Properties.Settings.Default.Save();
-						return true;
-				}
+				case DialogResult.No:
+					Properties.Settings.Default.migratedFromPre0130 = true;
+					Properties.Settings.Default.Save();
+					return true;
 			}
 
 			using (TransactionScope tsTransaction = new TransactionScope())
@@ -96,12 +83,14 @@ namespace Fomm.Games.Fallout3
 			TxFileManager tfmFileManager = new TxFileManager();
 
 			//copy the mods
-			string[] strMods = Directory.GetFiles(Path.Combine(strOldFOMMLocation, "mods"), "*.fomod");
+			List<string> lstModFiles = new List<string>();
+			lstModFiles.AddRange(Directory.GetFiles(Path.Combine(strOldFOMMLocation, "mods"), "*.fomod"));
+			lstModFiles.AddRange(Directory.GetFiles(Path.Combine(strOldFOMMLocation, "mods"), "*.xml"));
 			m_bwdProgress.ItemMessage = "Copying mods...";
-			m_bwdProgress.ItemProgressMaximum = strMods.Length;
+			m_bwdProgress.ItemProgressMaximum = lstModFiles.Count;
 			m_bwdProgress.ItemProgress = 0;
 			string strModFileName = null;
-			foreach (string strMod in strMods)
+			foreach (string strMod in lstModFiles)
 			{
 				strModFileName = Path.GetFileName(strMod);
 				m_bwdProgress.ItemMessage = "Copying mods (" + strModFileName + ")...";
@@ -120,7 +109,7 @@ namespace Fomm.Games.Fallout3
 			m_bwdProgress.ItemProgressMaximum = strOverwriteFiles.Length;
 			m_bwdProgress.ItemProgress = 0;
 			FileUtil.Copy(tfmFileManager, Path.Combine(strOldFOMMLocation, "overwrites"), ((Fallout3GameMode)Program.GameMode).OverwriteDirectory, OverwriteFileCopied);
-			
+
 
 			m_bwdProgress.StepOverallProgress();
 

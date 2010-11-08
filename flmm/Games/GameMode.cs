@@ -22,6 +22,15 @@ namespace Fomm.Games
 		#region Properties
 
 		/// <summary>
+		/// Gets the name of the game whose plugins are being managed.
+		/// </summary>
+		/// <value>The name of the game whose plugins are being managed.</value>
+		public abstract string GameName
+		{
+			get;
+		}
+
+		/// <summary>
 		/// Gets the game launch command.
 		/// </summary>
 		/// <value>The game launch command.</value>

@@ -43,6 +43,18 @@ namespace Fomm.Games.Fallout3
 		#region Properties
 
 		/// <summary>
+		/// Gets the name of the game whose plugins are being managed.
+		/// </summary>
+		/// <value>The name of the game whose plugins are being managed.</value>
+		public override string GameName
+		{
+			get
+			{
+				return "Fallout 3";
+			}
+		}
+
+		/// <summary>
 		/// Gets the modDirectory of the GameMode.
 		/// </summary>
 		/// <value>The modDirectory of the GameMode.</value>
@@ -312,6 +324,18 @@ namespace Fomm.Games.Fallout3
 			}
 		}
 
+		/// <summary>
+		/// Gets the path to the per user Fallout 3 data.
+		/// </summary>
+		/// <value>The path to the per user Fallout 3 data.</value>
+		protected virtual string UserGameDataPath
+		{
+			get
+			{
+				return Path.Combine(Program.PersonalDirectory, "My games\\Fallout3");
+			}
+		}
+
 		#endregion
 
 		#region Constructors
@@ -336,18 +360,16 @@ namespace Fomm.Games.Fallout3
 		/// </summary>
 		protected virtual void SetupPaths()
 		{
-			string strUserGameDataPath = Path.Combine(Program.PersonalDirectory, "My games\\Fallout3");
+			m_dicSettingsFiles[SettingsFile.FOIniPath] = Path.Combine(UserGameDataPath, "Fallout.ini");
+			m_dicSettingsFiles[SettingsFile.FOPrefsIniPath] = Path.Combine(UserGameDataPath, "FalloutPrefs.ini");
+			m_dicSettingsFiles[SettingsFile.GeckIniPath] = Path.Combine(UserGameDataPath, "GECKCustom.ini");
+			m_dicSettingsFiles[SettingsFile.GeckPrefsIniPath] = Path.Combine(UserGameDataPath, "GECKPrefs.ini");
 
-			m_dicSettingsFiles[SettingsFile.FOIniPath] = Path.Combine(strUserGameDataPath, "Fallout.ini");
-			m_dicSettingsFiles[SettingsFile.FOPrefsIniPath] = Path.Combine(strUserGameDataPath, "FalloutPrefs.ini");
-			m_dicSettingsFiles[SettingsFile.GeckIniPath] = Path.Combine(strUserGameDataPath, "GECKCustom.ini");
-			m_dicSettingsFiles[SettingsFile.GeckPrefsIniPath] = Path.Combine(strUserGameDataPath, "GECKPrefs.ini");
-
-			m_dicAdditionalPaths["FORendererFile"] = Path.Combine(strUserGameDataPath, "RendererInfo.txt");
+			m_dicAdditionalPaths["FORendererFile"] = Path.Combine(UserGameDataPath, "RendererInfo.txt");
 			m_dicAdditionalPaths["PluginsFile"] = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Fallout3/plugins.txt");
 			m_dicAdditionalPaths["DLCDir"] = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Microsoft\\xlive\\DLC");
 
-			m_strSavesPath = Path.Combine(strUserGameDataPath, NativeMethods.GetPrivateProfileString("General", "SLocalSavePath", "Games", m_dicSettingsFiles[SettingsFile.FOIniPath]));
+			m_strSavesPath = Path.Combine(UserGameDataPath, NativeMethods.GetPrivateProfileString("General", "SLocalSavePath", "Games", m_dicSettingsFiles[SettingsFile.FOIniPath]));
 		}
 
 		/// <summary>
@@ -509,7 +531,7 @@ namespace Fomm.Games.Fallout3
 		/// Launches the game, using FOSE if present.
 		/// </summary>
 		/// <param name="p_frmMainForm">The main mod management form.</param>
-		public void LaunchGame(MainForm p_frmMainForm)
+		public virtual void LaunchGame(MainForm p_frmMainForm)
 		{
 			string command = Properties.Settings.Default.fallout3LaunchCommand;
 			string args = Properties.Settings.Default.fallout3LaunchCommandArgs;
@@ -981,7 +1003,7 @@ class Script : Fallout3BaseScript {
 		/// <param name="p_strPath">The path to validate as a working directory.</param>
 		/// <returns><lang cref="true"/> if the path is a vlid working directory;
 		/// <lang cref="false"/> otherwise.</returns>
-		public static bool VerifyWorkingDirectory(string p_strPath)
+		public virtual bool VerifyWorkingDirectory(string p_strPath)
 		{
 			if (String.IsNullOrEmpty(p_strPath))
 				return false;

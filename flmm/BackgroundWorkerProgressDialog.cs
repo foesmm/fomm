@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.ComponentModel;
+using Action = Fomm.Util.SystemUtil.Action;
 
 namespace Fomm
 {
@@ -57,8 +58,10 @@ namespace Fomm
 			}
 			set
 			{
-
-				pnlItemProgress.Visible = value;
+				if (pnlItemProgress.InvokeRequired)
+					pnlItemProgress.Invoke(new Action(() => { pnlItemProgress.Visible = value; }));
+				else
+					pnlItemProgress.Visible = value;
 			}
 		}
 
@@ -70,7 +73,10 @@ namespace Fomm
 		{
 			set
 			{
-				lblItemMessage.Text = value;
+				if (lblItemMessage.InvokeRequired)
+					lblItemMessage.Invoke(new Action(() => { lblItemMessage.Text = value; }));
+				else
+					lblItemMessage.Text = value;
 			}
 		}
 
@@ -82,7 +88,10 @@ namespace Fomm
 		{
 			set
 			{
-				lblTotalMessage.Text = value;
+				if (lblTotalMessage.InvokeRequired)
+					lblTotalMessage.Invoke(new Action(() => { lblTotalMessage.Text = value; }));
+				else
+					lblTotalMessage.Text = value;
 			}
 		}
 
@@ -94,7 +103,10 @@ namespace Fomm
 		{
 			set
 			{
-				pbrItemProgress.Value = value;
+				if (pbrItemProgress.InvokeRequired)
+					pbrItemProgress.Invoke(new Action(() => { pbrItemProgress.Value = value; }));
+				else
+					pbrItemProgress.Value = value;
 			}
 		}
 
@@ -106,7 +118,10 @@ namespace Fomm
 		{
 			set
 			{
-				pbrTotalProgress.Value = value;
+				if (pbrTotalProgress.InvokeRequired)
+					pbrTotalProgress.Invoke(new Action(() => { pbrTotalProgress.Value = value; }));
+				else
+					pbrTotalProgress.Value = value;
 			}
 		}
 
@@ -118,7 +133,10 @@ namespace Fomm
 		{
 			set
 			{
-				pbrItemProgress.Minimum = value;
+				if (pbrItemProgress.InvokeRequired)
+					pbrItemProgress.Invoke(new Action(() => { pbrItemProgress.Minimum = value; }));
+				else
+					pbrItemProgress.Minimum = value;
 			}
 		}
 
@@ -130,7 +148,10 @@ namespace Fomm
 		{
 			set
 			{
-				pbrTotalProgress.Minimum = value;
+				if (pbrTotalProgress.InvokeRequired)
+					pbrTotalProgress.Invoke(new Action(() => { pbrTotalProgress.Minimum = value; }));
+				else
+					pbrTotalProgress.Minimum = value;
 			}
 		}
 
@@ -142,7 +163,10 @@ namespace Fomm
 		{
 			set
 			{
-				pbrItemProgress.Maximum = value;
+				if (pbrItemProgress.InvokeRequired)
+					pbrItemProgress.Invoke(new Action(() => { pbrItemProgress.Maximum = value; }));
+				else
+					pbrItemProgress.Maximum = value;
 			}
 		}
 
@@ -154,7 +178,10 @@ namespace Fomm
 		{
 			set
 			{
-				pbrTotalProgress.Maximum = value;
+				if (pbrTotalProgress.InvokeRequired)
+					pbrTotalProgress.Invoke(new Action(() => { pbrTotalProgress.Maximum = value; }));
+				else
+					pbrTotalProgress.Maximum = value;
 			}
 		}
 
@@ -178,7 +205,10 @@ namespace Fomm
 		{
 			set
 			{
-				pbrItemProgress.Step = value;
+				if (pbrItemProgress.InvokeRequired)
+					pbrTotalProgress.Invoke(new Action(() => { pbrItemProgress.Step = value; }));
+				else
+					pbrItemProgress.Step = value;
 			}
 		}
 
@@ -190,7 +220,10 @@ namespace Fomm
 		{
 			set
 			{
-				pbrTotalProgress.Step = value;
+				if (pbrTotalProgress.InvokeRequired)
+					pbrTotalProgress.Invoke(new Action(() => { pbrTotalProgress.Step = value; }));
+				else
+					pbrTotalProgress.Step = value;
 			}
 		}
 

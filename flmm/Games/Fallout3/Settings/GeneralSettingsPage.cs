@@ -50,7 +50,7 @@ namespace Fomm.Games.Fallout3.Settings
 		protected bool ValidateWorkingDirectory()
 		{
 			erpErrors.SetError(butSelectWorkingDirectory, null);
-			if (!Fallout3GameMode.VerifyWorkingDirectory(tbxWorkingDirectory.Text))
+			if (!((Fallout3GameMode)Program.GameMode).VerifyWorkingDirectory(tbxWorkingDirectory.Text))
 			{
 				erpErrors.SetError(butSelectWorkingDirectory, "Invalid working directory. Could not find Fallout 3.");
 				return false;

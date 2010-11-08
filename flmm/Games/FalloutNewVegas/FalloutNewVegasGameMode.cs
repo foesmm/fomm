@@ -12,34 +12,28 @@ using Fomm.PackageManager.XmlConfiguredInstall;
 using Fomm.PackageManager.XmlConfiguredInstall.Parsers;
 using Fomm.Games.FalloutNewVegas.Script.XmlConfiguredInstall.Parsers;
 using Fomm.Games.FalloutNewVegas.Script;
+using Fomm.Games.Fallout3;
 
 namespace Fomm.Games.FalloutNewVegas
 {
 	/// <summary>
 	/// Provides information required for the programme to manage Fallout: New Vegas plugins.
 	/// </summary>
-	public class FalloutNewVegasGameMode : GameMode
+	public class FalloutNewVegasGameMode : Fallout3GameMode
 	{
-		public static class SettingsFile
-		{
-			public static readonly string FOIniPath = "FOIniPath";
-			public static readonly string FOPrefsIniPath = "FOPrefsIniPath";
-			public static readonly string GeckIniPath = "GeckIniPath";
-			public static readonly string GeckPrefsIniPath = "GeckPrefsIniPath";
-		}
-
-		private string m_strSavesPath = null;
-		private Dictionary<string, string> m_dicAdditionalPaths = new Dictionary<string, string>();
-		private Dictionary<string, string> m_dicSettingsFiles = new Dictionary<string, string>();
-		private List<GameTool> m_lstTools = new List<GameTool>();
-		private List<GameTool> m_lstGameSettingsTools = new List<GameTool>();
-		private List<GameTool> m_lstRightClickTools = new List<GameTool>();
-		private List<GameTool> m_lstLoadOrderTools = new List<GameTool>();
-		private List<GameTool> m_lstGameLaunchCommands = new List<GameTool>();
-		private List<SettingsPage> m_lstSettingsPages = new List<SettingsPage>();
-		private Fomm.Games.Fallout3.Fallout3PluginManager m_pmgPluginManager = new Fomm.Games.Fallout3.Fallout3PluginManager();
-
 		#region Properties
+
+		/// <summary>
+		/// Gets the name of the game whose plugins are being managed.
+		/// </summary>
+		/// <value>The name of the game whose plugins are being managed.</value>
+		public override string GameName
+		{
+			get
+			{
+				return "Fallout: New Vegas";
+			}
+		}
 
 		/// <summary>
 		/// Gets the modDirectory of the GameMode.
@@ -59,21 +53,6 @@ namespace Fomm.Games.FalloutNewVegas
 		}
 
 		/// <summary>
-		/// Gets the modInfoCacheDirectory of the GameMode.
-		/// </summary>
-		/// <value>The modInfoCacheDirectory of the GameMode.</value>
-		public override string ModInfoCacheDirectory
-		{
-			get
-			{
-				string strCache = Path.Combine(ModDirectory, "cache");
-				if (!Directory.Exists(strCache))
-					Directory.CreateDirectory(strCache);
-				return strCache;
-			}
-		}
-
-		/// <summary>
 		/// Gets the game launch command.
 		/// </summary>
 		/// <value>The game launch command.</value>
@@ -81,7 +60,9 @@ namespace Fomm.Games.FalloutNewVegas
 		{
 			get
 			{
-				throw new NotImplementedException();
+				if (String.IsNullOrEmpty(Properties.Settings.Default.falloutNewVegasLaunchCommand) && File.Exists("nvse_loader.exe"))
+					return new GameTool("Launch NVSE", "Launches Fallout: New Vegas using FOSE.", LaunchGame);
+				return new GameTool("Launch Fallout: NV", "Launches Fallout: New Vegas using FOSE.", LaunchGame);
 			}
 		}
 
@@ -93,36 +74,8 @@ namespace Fomm.Games.FalloutNewVegas
 		{
 			get
 			{
-				throw new NotImplementedException();
-			}
-		}
-
-		/// <summary>
-		/// Gets the path to the game directory were pluings are to be installed.
-		/// </summary>
-		/// <value>The path to the game directory were pluings are to be installed.</value>
-		public override string PluginsPath
-		{
-			get
-			{
-				throw new NotImplementedException();
-				//we may not need to overrid this property
-				return Path.Combine(Environment.CurrentDirectory, "Data");
-			}
-		}
-
-		/// <summary>
-		/// Gets the path to the plugins.txt file.
-		/// </summary>
-		/// <remarks>
-		/// plugins.txt is a Fallout 3 file that tracks active plugins.
-		/// </remarks>
-		/// <value>The path to the plugins.txt file.</value>
-		public string PluginsFilePath
-		{
-			get
-			{
-				return m_dicAdditionalPaths["PluginsFile"];
+				string strFalloutEsm = Path.Combine(PluginsPath, "falloutnv.esm");
+				return System.Drawing.Icon.ExtractAssociatedIcon(strFalloutEsm);
 			}
 		}
 
@@ -147,130 +100,6 @@ namespace Fomm.Games.FalloutNewVegas
 		}
 
 		/// <summary>
-		/// Gets the settings files used in the game mode.
-		/// </summary>
-		/// <value>The settings files used in the game mode.</value>
-		public override IDictionary<string, string> SettingsFiles
-		{
-			get
-			{
-				return m_dicSettingsFiles;
-			}
-		}
-
-		/// <summary>
-		/// Gets any other paths used in the game mode.
-		/// </summary>
-		/// <value>Any other paths used in the game mode.</value>
-		public override IDictionary<string, string> AdditionalPaths
-		{
-			get
-			{
-				return m_dicAdditionalPaths;
-			}
-		}
-
-		/// <summary>
-		/// Gets the path to the game's save game files.
-		/// </summary>
-		/// <value>The path to the game's save game files.</value>
-		public override string SavesPath
-		{
-			get
-			{
-				return m_strSavesPath;
-			}
-		}
-
-		#region Tool Injection
-
-		/// <summary>
-		/// Gets the list of tools to add to the tools menu.
-		/// </summary>
-		/// <value>The list of tools to add to the tools menu.</value>
-		public override IList<GameTool> Tools
-		{
-			get
-			{
-				return m_lstTools;
-			}
-		}
-
-		/// <summary>
-		/// Gets the list of tools to add to the game settings menu.
-		/// </summary>
-		/// <value>The list of tools to add to the game settings menu.</value>
-		public override IList<GameTool> GameSettingsTools
-		{
-			get
-			{
-				return m_lstGameSettingsTools;
-			}
-		}
-
-		/// <summary>
-		/// Gets the list of tools to add to the right-click menu.
-		/// </summary>
-		/// <value>The list of tools to add to the right-click menu.</value>
-		public override IList<GameTool> RightClickTools
-		{
-			get
-			{
-				return m_lstRightClickTools;
-			}
-		}
-
-		/// <summary>
-		/// Gets the list of tools to add to the load order menu.
-		/// </summary>
-		/// <value>The list of tools to add to the load order menu.</value>
-		public override IList<GameTool> LoadOrderTools
-		{
-			get
-			{
-				return m_lstLoadOrderTools;
-			}
-		}
-
-		/// <summary>
-		/// Gets the list of game launch commands.
-		/// </summary>
-		/// <value>The list of game launch commands.</value>
-		public override IList<GameTool> GameLaunchCommands
-		{
-			get
-			{
-				return m_lstGameLaunchCommands;
-			}
-		}
-
-		#endregion
-
-		/// <summary>
-		/// Gets the settings pages that privode management of game mode-specific settings.
-		/// </summary>
-		/// <value>The settings pages that privode management of game mode-specific settings.</value>
-		public override IList<SettingsPage> SettingsPages
-		{
-			get
-			{
-				return m_lstSettingsPages;
-			}
-		}
-
-		/// <summary>
-		/// Gets the plugin manager for this game mode.
-		/// </summary>
-		/// <value>The plugin manager for this game mode.</value>
-		public override PluginManager PluginManager
-		{
-			get
-			{
-				return m_pmgPluginManager;
-			}
-		}
-
-		/// <summary>
 		/// Gets the version of the installed game.
 		/// </summary>
 		/// <value>The version of the installed game.</value>
@@ -278,12 +107,23 @@ namespace Fomm.Games.FalloutNewVegas
 		{
 			get
 			{
-				throw new NotImplementedException();
-				if (File.Exists("Fallout3.exe"))
-					return new Version(System.Diagnostics.FileVersionInfo.GetVersionInfo("Fallout3.exe").FileVersion.Replace(", ", "."));
-				if (File.Exists("Fallout3ng.exe"))
-					return new Version(System.Diagnostics.FileVersionInfo.GetVersionInfo("Fallout3ng.exe").FileVersion.Replace(", ", "."));
+				if (File.Exists("FalloutNV.exe"))
+					return new Version(System.Diagnostics.FileVersionInfo.GetVersionInfo("FalloutNV.exe").FileVersion.Replace(", ", "."));
+				if (File.Exists("FalloutNVng.exe"))
+					return new Version(System.Diagnostics.FileVersionInfo.GetVersionInfo("FalloutNVng.exe").FileVersion.Replace(", ", "."));
 				return null;
+			}
+		}
+
+		/// <summary>
+		/// Gets the path to the per user Fallout: New Vegas data.
+		/// </summary>
+		/// <value>The path to the per user Fallout: New Vegas data.</value>
+		protected override string UserGameDataPath
+		{
+			get
+			{
+				return Path.Combine(Program.PersonalDirectory, "My games\\FalloutNV");
 			}
 		}
 
@@ -296,10 +136,6 @@ namespace Fomm.Games.FalloutNewVegas
 		/// </summary>
 		public FalloutNewVegasGameMode()
 		{
-			SetupPaths();
-			SetupSettingsPages();
-			SetupTools();
-			SetupLaunchCommands();
 		}
 
 		#endregion
@@ -307,31 +143,9 @@ namespace Fomm.Games.FalloutNewVegas
 		#region Initialization
 
 		/// <summary>
-		/// Sets up the paths for this game mode.
-		/// </summary>
-		protected virtual void SetupPaths()
-		{
-			throw new NotImplementedException();
-			/*
-			string strUserGameDataPath = Path.Combine(Program.PersonalDirectory, "My games\\Fallout3");
-
-			m_dicSettingsFiles[SettingsFile.FOIniPath] = Path.Combine(strUserGameDataPath, "Fallout.ini");
-			m_dicSettingsFiles[SettingsFile.FOPrefsIniPath] = Path.Combine(strUserGameDataPath, "FalloutPrefs.ini");
-			m_dicSettingsFiles[SettingsFile.GeckIniPath] = Path.Combine(strUserGameDataPath, "GECKCustom.ini");
-			m_dicSettingsFiles[SettingsFile.GeckPrefsIniPath] = Path.Combine(strUserGameDataPath, "GECKPrefs.ini");
-
-			m_dicAdditionalPaths["FORendererFile"] = Path.Combine(strUserGameDataPath, "RendererInfo.txt");
-			m_dicAdditionalPaths["PluginsFile"] = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Fallout3/plugins.txt");
-			m_dicAdditionalPaths["DLCDir"] = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Microsoft\\xlive\\DLC");
-
-			m_strSavesPath = Path.Combine(strUserGameDataPath, NativeMethods.GetPrivateProfileString("General", "SLocalSavePath", "Games", m_dicSettingsFiles[SettingsFile.FOIniPath]));
-			*/
-		}
-
-		/// <summary>
 		/// Gets up the game-specific settings pages.
 		/// </summary>
-		protected virtual void SetupSettingsPages()
+		protected override void SetupSettingsPages()
 		{
 			SettingsPages.Add(new GeneralSettingsPage());
 		}
@@ -339,41 +153,188 @@ namespace Fomm.Games.FalloutNewVegas
 		/// <summary>
 		/// Sets up the launch commands for the game.
 		/// </summary>
-		protected virtual void SetupLaunchCommands()
+		protected override void SetupLaunchCommands()
 		{
-			throw new NotImplementedException();
-			/*
-			m_lstGameLaunchCommands.Add(new GameTool("Launch Fallout 3", "Launches plain Fallout 3.", LaunchFallout3Plain));
-			m_lstGameLaunchCommands.Add(new GameTool("Launch FOSE", "Launches Fallout 3 with FOSE.", LaunchFallout3FOSE));
-			m_lstGameLaunchCommands.Add(new GameTool("Launch Custom Fallout 3", "Launches Fallout 3 with custom command.", LaunchFallout3Custom));
-			 */
+			GameLaunchCommands.Add(new GameTool("Launch Fallout: New Vegas", "Launches plain Fallout: New Vegas.", LaunchFalloutNVPlain));
+			GameLaunchCommands.Add(new GameTool("Launch NVSE", "Launches Fallout: New Vegas with NVSE.", LaunchFalloutNVNVSE));
+			GameLaunchCommands.Add(new GameTool("Launch Custom Fallout: New Vegas", "Launches Fallout: New Vegas with custom command.", LaunchFalloutNVCustom));
 		}
 
 		/// <summary>
 		/// Sets up the tools for this game mode.
 		/// </summary>
-		protected virtual void SetupTools()
+		protected override void SetupTools()
 		{
-			throw new NotImplementedException();
-			/*
-			m_lstTools.Add(new GameTool("BSA Tool", "Creates and unpacks BSA files.", LaunchBSATool));
-			m_lstTools.Add(new GameTool("TESsnip", "An ESP/ESM editor.", LaunchTESsnipTool));
-			m_lstTools.Add(new GameTool("Shader Editor", "A shader (SDP) editor.", LaunchShaderEditTool));
-			m_lstTools.Add(new GameTool("CREditor", "Edits critical records in an ESP/ESM.", LaunchCREditorTool));
-			m_lstTools.Add(new GameTool("Archive Invalidation", "Toggles Archive Invalidation.", ToggleArchiveInvalidation));
-			m_lstTools.Add(new GameTool("Install Tweaker", "Advanced Fallout 3 tweaking.", LaunchInstallTweakerTool));
-			m_lstTools.Add(new GameTool("Conflict Detector", "Checks for conflicts with mod-author specified critical records.", LaunchConflictDetector));
-			m_lstTools.Add(new GameTool("Save Games", "Save game info viewer.", LaunchSaveGamesViewer));
+			Tools.Add(new GameTool("BSA Tool", "Creates and unpacks BSA files.", LaunchBSATool));
+			Tools.Add(new GameTool("TESsnip", "An ESP/ESM editor.", LaunchTESsnipTool));
+			Tools.Add(new GameTool("Shader Editor", "A shader (SDP) editor.", LaunchShaderEditTool));
+			Tools.Add(new GameTool("CREditor", "Edits critical records in an ESP/ESM.", LaunchCREditorTool));
+			Tools.Add(new GameTool("Archive Invalidation", "Toggles Archive Invalidation.", ToggleArchiveInvalidation));
+			//m_lstTools.Add(new GameTool("Install Tweaker", "Advanced Fallout 3 tweaking.", LaunchInstallTweakerTool));
+			Tools.Add(new GameTool("Conflict Detector", "Checks for conflicts with mod-author specified critical records.", LaunchConflictDetector));
+			Tools.Add(new GameTool("Save Games", "Save game info viewer.", LaunchSaveGamesViewer));
 
-			m_lstGameSettingsTools.Add(new GameTool("Graphics Settings", "Changes the graphics settings.", LaunchGraphicsSettingsTool));
+			GameSettingsTools.Add(new GameTool("Graphics Settings", "Changes the graphics settings.", LaunchGraphicsSettingsTool));
 
-			m_lstRightClickTools.Add(new GameTool("Open in TESsnip...", "Open the selected plugins in TESsnip.", LaunchTESsnipToolWithSelectedPlugins));
-			m_lstRightClickTools.Add(new GameTool("Open in CREditor...", "Open the selected plugins in TESsnip.", LaunchCREditorToolWithSelectedPlugins));
+			RightClickTools.Add(new GameTool("Open in TESsnip...", "Open the selected plugins in TESsnip.", LaunchTESsnipToolWithSelectedPlugins));
+			RightClickTools.Add(new GameTool("Open in CREditor...", "Open the selected plugins in TESsnip.", LaunchCREditorToolWithSelectedPlugins));
 
-			m_lstLoadOrderTools.Add(new GameTool("Load Order Report...", "Generates a report on the current load order, as compared to the BOSS recomendation.", LaunchLoadOrderReport));
-			m_lstLoadOrderTools.Add(new GameTool("BOSS Auto Sort", "Auto-sorts the plugins using BOSS's masterlist.", LaunchSortPlugins));
-			 */
+			LoadOrderTools.Add(new GameTool("Load Order Report...", "Generates a report on the current load order, as compared to the BOSS recomendation.", LaunchLoadOrderReport));
+			LoadOrderTools.Add(new GameTool("BOSS Auto Sort", "Auto-sorts the plugins using BOSS's masterlist.", LaunchSortPlugins));
 		}
+
+		#endregion
+
+		#region Tool Launch Methods
+
+		#region Game Launch
+
+		/// <summary>
+		/// Launches the game with a custom command.
+		/// </summary>
+		/// <param name="p_frmMainForm">The main mod management form.</param>
+		public void LaunchFalloutNVCustom(MainForm p_frmMainForm)
+		{
+			if (p_frmMainForm.HasOpenUtilityWindows)
+			{
+				MessageBox.Show("Please close all utility windows before launching Fallout");
+				return;
+			}
+			string command = Properties.Settings.Default.falloutNewVegasLaunchCommand;
+			string args = Properties.Settings.Default.falloutNewVegasLaunchCommandArgs;
+			if (String.IsNullOrEmpty(command))
+			{
+				MessageBox.Show("No custom launch command has been set", "Error");
+				return;
+			}
+			try
+			{
+				System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
+				psi.Arguments = args;
+				psi.FileName = command;
+				psi.WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath(command));
+				if (System.Diagnostics.Process.Start(psi) == null)
+				{
+					MessageBox.Show("Failed to launch '" + command + "'");
+					return;
+				}
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show("Failed to launch '" + command + "'\n" + ex.Message);
+				return;
+			}
+			p_frmMainForm.Close();
+		}
+
+		/// <summary>
+		/// Launches the game, with NVSE.
+		/// </summary>
+		/// <param name="p_frmMainForm">The main mod management form.</param>
+		public void LaunchFalloutNVNVSE(MainForm p_frmMainForm)
+		{
+			if (!File.Exists("nvse_loader.exe"))
+			{
+				MessageBox.Show("NVSE does not appear to be installed");
+				return;
+			}
+			if (p_frmMainForm.HasOpenUtilityWindows)
+			{
+				MessageBox.Show("Please close all utility windows before launching Fallout");
+				return;
+			}
+			try
+			{
+				System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
+				psi.FileName = "nvse_loader.exe";
+				psi.WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath("nvse_loader.exe"));
+				if (System.Diagnostics.Process.Start(psi) == null)
+				{
+					MessageBox.Show("Failed to launch 'nvse_loader.exe'");
+					return;
+				}
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show("Failed to launch 'nvse_loader.exe'\n" + ex.Message);
+				return;
+			}
+			p_frmMainForm.Close();
+		}
+
+		/// <summary>
+		/// Launches the game, without NVSE.
+		/// </summary>
+		/// <param name="p_frmMainForm">The main mod management form.</param>
+		public void LaunchFalloutNVPlain(MainForm p_frmMainForm)
+		{
+			if (p_frmMainForm.HasOpenUtilityWindows)
+			{
+				MessageBox.Show("Please close all utility windows before launching fallout");
+				return;
+			}
+			string command;
+			if (File.Exists("falloutNV.exe"))
+				command = "falloutNV.exe";
+			else
+				command = "falloutNVng.exe";
+			try
+			{
+				System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
+				psi.FileName = command;
+				psi.WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath(command));
+				if (System.Diagnostics.Process.Start(psi) == null)
+				{
+					MessageBox.Show("Failed to launch '" + command + "'");
+					return;
+				}
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show("Failed to launch '" + command + "'\n" + ex.Message);
+				return;
+			}
+			p_frmMainForm.Close();
+		}
+
+		/// <summary>
+		/// Launches the game, using NVSE if present.
+		/// </summary>
+		/// <param name="p_frmMainForm">The main mod management form.</param>
+		public override void LaunchGame(MainForm p_frmMainForm)
+		{
+			string command = Properties.Settings.Default.falloutNewVegasLaunchCommand;
+			string args = Properties.Settings.Default.falloutNewVegasLaunchCommandArgs;
+			if (String.IsNullOrEmpty(command))
+			{
+				if (File.Exists("nvse_loader.exe"))
+					command = "nvse_loader.exe";
+				else if (File.Exists("falloutNV.exe"))
+					command = "falloutNV.exe";
+				else
+					command = "falloutNVng.exe";
+				args = null;
+			}
+			try
+			{
+				System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
+				psi.Arguments = args;
+				psi.FileName = command;
+				psi.WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath(command));
+				if (System.Diagnostics.Process.Start(psi) == null)
+				{
+					MessageBox.Show("Failed to launch '" + command + "'");
+					return;
+				}
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show("Failed to launch '" + command + "'\n" + ex.Message);
+				return;
+			}
+		}
+
+		#endregion
 
 		#endregion
 
@@ -424,17 +385,6 @@ class Script : FalloutNewVegasBaseScript {
 		}
 
 		/// <summary>
-		/// Creates a <see cref="DependencyStateManager"/> for the given <see cref="ModInstallScript"/>.
-		/// </summary>
-		/// <param name="p_misInstallScript">The <see cref="ModInstallScript"/> for which the
-		/// <see cref="DependencyStateManager"/> is being created.</param>
-		/// <returns>A <see cref="DependencyStateManager"/> for the given <see cref="ModInstallScript"/>.</returns>
-		public override DependencyStateManager CreateDependencyStateManager(ModInstallScript p_misInstallScript)
-		{
-			return new Fomm.Games.Fallout3.Script.XmlConfiguredInstall.Fallout3DependencyStateManager(p_misInstallScript);
-		}
-
-		/// <summary>
 		/// The factory method that creates the appropriate parser extension for the specified configuration file version.
 		/// </summary>
 		/// <param name="p_strVersion">The XML configuration file version for which to return a parser extension.</param>
@@ -475,7 +425,7 @@ class Script : FalloutNewVegasBaseScript {
 		/// footer, and context text is already provided.
 		/// </remarks>
 		/// <returns>Command line help for the arguments provided by the game mode.</returns>
-		public static string GetCommandLineHelp()
+		public static new string GetCommandLineHelp()
 		{
 			StringBuilder stbHelp = new StringBuilder();
 			stbHelp.AppendLine("*.dat, *.bsa, *.esm, *.esp, *.sdp");
@@ -552,7 +502,7 @@ class Script : FalloutNewVegasBaseScript {
 		/// <lang cref="false"/> otherwise.</returns>
 		public override bool HandleInAppArguments(string[] p_strArgs)
 		{
-			return true;
+			return false;
 		}
 
 		#endregion
@@ -563,14 +513,13 @@ class Script : FalloutNewVegasBaseScript {
 		/// <param name="p_strPath">The path to validate as a working directory.</param>
 		/// <returns><lang cref="true"/> if the path is a vlid working directory;
 		/// <lang cref="false"/> otherwise.</returns>
-		public static bool VerifyWorkingDirectory(string p_strPath)
+		public override bool VerifyWorkingDirectory(string p_strPath)
 		{
-			throw new NotImplementedException();
-			/*if (String.IsNullOrEmpty(p_strPath))
+			if (String.IsNullOrEmpty(p_strPath))
 				return false;
 
-			string[] strExes = new string[] { Path.Combine(p_strPath, "fallout3.exe"),
-												Path.Combine(p_strPath, "fallout3ng.exe") };
+			string[] strExes = new string[] { Path.Combine(p_strPath, "falloutNV.exe"),
+												Path.Combine(p_strPath, "falloutNVng.exe") };
 			bool booFound = false;
 			foreach (string strExe in strExes)
 				if (File.Exists(strExe))
@@ -578,7 +527,7 @@ class Script : FalloutNewVegasBaseScript {
 					booFound = true;
 					break;
 				}
-			return booFound;*/
+			return booFound;
 		}
 
 		/// <summary>
@@ -592,18 +541,17 @@ class Script : FalloutNewVegasBaseScript {
 		/// <lang cref="false"/> otherwise.</returns>
 		public override bool SetWorkingDirectory(out string p_strErrorMessage)
 		{
-			throw new NotImplementedException();
 #if TRACE
 			Trace.WriteLine("Looking for Fallout New Vegas.");
 			Trace.Indent();
 #endif
-			/*string strWorkingDirectory = Properties.Settings.Default.fallout3WorkingDirectory;
+			string strWorkingDirectory = Properties.Settings.Default.falloutNewVegasWorkingDirectory;
 
 			if (String.IsNullOrEmpty(strWorkingDirectory) || !Directory.Exists(strWorkingDirectory))
 			{
 				try
 				{
-					strWorkingDirectory = Microsoft.Win32.Registry.GetValue(@"HKEY_LOCAL_MACHINE\Software\Bethesda Softworks\Fallout3", "Installed Path", null) as string;
+					strWorkingDirectory = Microsoft.Win32.Registry.GetValue(@"HKEY_LOCAL_MACHINE\Software\Bethesda Softworks\FalloutNV", "Installed Path", null) as string;
 				}
 				catch
 				{
@@ -612,31 +560,31 @@ class Script : FalloutNewVegasBaseScript {
 			}
 
 			using (WorkingDirectorySelectionForm wdfForm = new WorkingDirectorySelectionForm(
-					"Could not find Fallout 3 directory." + Environment.NewLine +
+					"Could not find Fallout: New Vegas directory." + Environment.NewLine +
 					"Fallout's registry entry appears to be missing or incorrect." + Environment.NewLine +
-					"Please enter the path to your Fallout 3 game file, or click \"Auto Detect\" to search" +
+					"Please enter the path to your Fallout: New Vegas game file, or click \"Auto Detect\" to search" +
 					" for the install directory. Note that Auto Detection can take several minutes.",
 					"Fallout 3 Game Directory:",
-					new string[] { "fallout3.exe", "fallout3ng.exe" }))
+					new string[] { "falloutNV.exe", "falloutNVng.exe" }))
 			{
 				while (!VerifyWorkingDirectory(strWorkingDirectory))
 				{
 					if (wdfForm.ShowDialog() == DialogResult.Cancel)
 					{
-						p_strErrorMessage = "Could not find Fallout 3 directory.";
+						p_strErrorMessage = "Could not find Fallout: New Vegas directory.";
 						return false;
 					}
 					strWorkingDirectory = wdfForm.WorkingDirectory;
 				}
 			}
 			Directory.SetCurrentDirectory(strWorkingDirectory);
-			Properties.Settings.Default.fallout3WorkingDirectory = strWorkingDirectory;
+			Properties.Settings.Default.falloutNewVegasWorkingDirectory = strWorkingDirectory;
 			Properties.Settings.Default.Save();
 #if TRACE
 				Trace.WriteLine("Found: " + Path.GetFullPath("."));
 #endif
 			p_strErrorMessage = null;
-			return true;*/
+			return true;
 		}
 
 		/// <summary>
@@ -664,38 +612,6 @@ class Script : FalloutNewVegasBaseScript {
 			ScanForReadonlyPlugins();
 
 			return true;
-		}
-
-		/// <summary>
-		/// This chaecks for any FOMods that have been manually deleted since the programme last ran.
-		/// </summary>
-		protected void ScanForReadonlyPlugins()
-		{
-			DirectoryInfo difPluginsDirectory = new DirectoryInfo(Program.GameMode.PluginsPath);
-			List<FileInfo> lstPlugins = new List<FileInfo>(Program.GetFiles(difPluginsDirectory, "*.esp"));
-			lstPlugins.AddRange(Program.GetFiles(difPluginsDirectory, "*.esm"));
-
-			for (Int32 i = 0; i < lstPlugins.Count; i++)
-			{
-				FileInfo fifPlugin = lstPlugins[i];
-				if ((fifPlugin.Attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
-				{
-					if (MessageBox.Show(null, String.Format("'{0}' is read-only, so its load order cannot be changed. Would you like to make it not read-only?", fifPlugin.Name), "Read Only", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-						fifPlugin.Attributes &= ~FileAttributes.ReadOnly;
-				}
-			}
-		}
-
-		/// <summary>
-		/// Determines if the specified file is a plugin for the game mode.
-		/// </summary>
-		/// <param name="p_strPath">The path to the file for which it is to be determined if it is a plugin file.</param>
-		/// <returns><lang cref="true"/> if the specified file is a plugin file in the game mode;
-		/// <lang cref="false"/> otherwise.</returns>
-		public override bool IsPluginFile(string p_strPath)
-		{
-			string strExt = Path.GetExtension(p_strPath).ToLowerInvariant();
-			return (strExt == ".esp" || strExt == ".esm");
 		}
 
 		/// <summary>

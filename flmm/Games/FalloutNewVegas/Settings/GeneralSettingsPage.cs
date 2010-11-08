@@ -50,7 +50,7 @@ namespace Fomm.Games.FalloutNewVegas.Settings
 		protected bool ValidateWorkingDirectory()
 		{
 			erpErrors.SetError(butSelectWorkingDirectory, null);
-			if (!FalloutNewVegasGameMode.VerifyWorkingDirectory(tbxWorkingDirectory.Text))
+			if (!((FalloutNewVegasGameMode)Program.GameMode).VerifyWorkingDirectory(tbxWorkingDirectory.Text))
 			{
 				erpErrors.SetError(butSelectWorkingDirectory, "Invalid working directory. Could not find Fallout: New Vegas.");
 				return false;
