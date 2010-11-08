@@ -156,6 +156,13 @@ namespace Fomm.Games.FalloutNewVegas
 
 		#region Initialization
 
+		protected override void SetupPaths()
+		{
+			base.SetupPaths();
+			AdditionalPaths["PluginsFile"] = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "FalloutNV/plugins.txt");
+			AdditionalPaths.Remove("DLCDir");
+		}
+
 		/// <summary>
 		/// Gets up the game-specific settings pages.
 		/// </summary>
