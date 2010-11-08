@@ -53,6 +53,7 @@
 			this.butSelectInfoDirectory.TabIndex = 12;
 			this.butSelectInfoDirectory.Text = "...";
 			this.butSelectInfoDirectory.UseVisualStyleBackColor = true;
+			this.butSelectInfoDirectory.Click += new System.EventHandler(this.butSelectInfoDirectory_Click);
 			// 
 			// label4
 			// 
@@ -93,6 +94,7 @@
 			this.butSelectModDirectory.TabIndex = 9;
 			this.butSelectModDirectory.Text = "...";
 			this.butSelectModDirectory.UseVisualStyleBackColor = true;
+			this.butSelectModDirectory.Click += new System.EventHandler(this.butSelectModDirectory_Click);
 			// 
 			// label3
 			// 

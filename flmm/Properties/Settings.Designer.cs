@@ -586,5 +586,17 @@ namespace Fomm.Properties {
                 this["rememberedGameMode"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool settingsUpgraded {
+            get {
+                return ((bool)(this["settingsUpgraded"]));
+            }
+            set {
+                this["settingsUpgraded"] = value;
+            }
+        }
     }
 }

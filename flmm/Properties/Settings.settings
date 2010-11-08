@@ -173,5 +173,8 @@
     <Setting Name="rememberedGameMode" Type="Fomm.Games.SupportedGameModes" Scope="User">
       <Value Profile="(Default)">Fallout3</Value>
     </Setting>
+    <Setting Name="settingsUpgraded" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
