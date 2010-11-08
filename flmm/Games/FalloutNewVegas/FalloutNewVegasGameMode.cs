@@ -14,6 +14,9 @@ using Fomm.Games.FalloutNewVegas.Script.XmlConfiguredInstall.Parsers;
 using Fomm.Games.FalloutNewVegas.Script;
 using Fomm.Games.Fallout3;
 using WebsiteAPIs;
+#if TRACE
+using System.Diagnostics;
+#endif
 
 namespace Fomm.Games.FalloutNewVegas
 {

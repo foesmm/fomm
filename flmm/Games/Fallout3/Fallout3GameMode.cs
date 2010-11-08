@@ -14,6 +14,9 @@ using Fomm.Games.Fallout3.Script;
 using Fomm.Games.Fallout3.Script.XmlConfiguredInstall;
 using Fomm.Games.Fallout3.Script.XmlConfiguredInstall.Parsers;
 using WebsiteAPIs;
+#if TRACE
+using System.Diagnostics;
+#endif
 
 namespace Fomm.Games.Fallout3
 {
@@ -1098,7 +1101,8 @@ class Script : Fallout3BaseScript {
 			Properties.Settings.Default.fallout3WorkingDirectory = strWorkingDirectory;
 			Properties.Settings.Default.Save();
 #if TRACE
-				Trace.WriteLine("Found: " + Path.GetFullPath("."));
+			Trace.WriteLine("Found: " + Path.GetFullPath("."));
+			Trace.Unindent();
 #endif
 			p_strErrorMessage = null;
 			return true;
