@@ -485,7 +485,8 @@ namespace Fomm
 		private bool RefreshingList;
 		private void lvEspList_ItemChecked(object sender, ItemCheckedEventArgs e)
 		{
-			if (RefreshingList) return;
+			if (RefreshingList)
+				return;
 			if (e.Item.Checked)
 				Program.GameMode.PluginManager.ActivatePlugin(e.Item.Text);
 			else
@@ -639,17 +640,25 @@ namespace Fomm
 		private void uncheckAllToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			RefreshingList = true;
-			for (int i = 0; i < lvEspList.Items.Count; i++) lvEspList.Items[i].Checked = false;
+			for (int i = 0; i < lvEspList.Items.Count; i++)
+			{
+				lvEspList.Items[i].Checked = false;
+				Program.GameMode.PluginManager.DeactivatePlugin(lvEspList.Items[i].Text);
+			}
+			RefreshIndexCounts();
 			RefreshingList = false;
-			lvEspList_ItemChecked(null, null);
 		}
 
 		private void checkAllToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			RefreshingList = true;
-			for (int i = 0; i < lvEspList.Items.Count; i++) lvEspList.Items[i].Checked = true;
+			for (int i = 0; i < lvEspList.Items.Count; i++)
+			{
+				lvEspList.Items[i].Checked = true;
+				Program.GameMode.PluginManager.ActivatePlugin(lvEspList.Items[i].Text);
+			}
+			RefreshIndexCounts();
 			RefreshingList = false;
-			lvEspList_ItemChecked(null, null);
 		}
 
 		private void pictureBox1_Click(object sender, EventArgs e)
