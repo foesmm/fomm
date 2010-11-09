@@ -43,6 +43,17 @@ namespace Fomm
 		{
 			InitializeComponent();
 			this.Icon = Properties.Resources.fomm02;
+			switch (Properties.Settings.Default.rememberedGameMode)
+			{
+				case SupportedGameModes.Fallout3:
+					radFallout3.Checked = true;
+					break;
+				case SupportedGameModes.FalloutNV:
+					radFalloutNV.Checked = true;
+					break;
+				default:
+					throw new Exception("Unrecozied value for SupportedGameModes");
+			}
 		}
 
 		#endregion
@@ -58,8 +69,7 @@ namespace Fomm
 		private void butOK_Click(object sender, EventArgs e)
 		{
 			Properties.Settings.Default.rememberGameMode = cbxRemember.Checked;
-			if (cbxRemember.Checked)
-				Properties.Settings.Default.rememberedGameMode = SelectedGameMode;
+			Properties.Settings.Default.rememberedGameMode = SelectedGameMode;
 			Properties.Settings.Default.Save();
 			DialogResult = DialogResult.OK;
 		}
