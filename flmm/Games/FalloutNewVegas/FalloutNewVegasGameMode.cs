@@ -162,6 +162,8 @@ namespace Fomm.Games.FalloutNewVegas
 		protected override void SetupPaths()
 		{
 			base.SetupPaths();
+			SettingsFiles[SettingsFile.FOIniPath] = SettingsFiles[SettingsFile.FOPrefsIniPath];
+			
 			AdditionalPaths["PluginsFile"] = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "FalloutNV/plugins.txt");
 			AdditionalPaths.Remove("DLCDir");
 		}
