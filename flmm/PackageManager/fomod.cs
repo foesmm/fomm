@@ -489,9 +489,10 @@ namespace Fomm.PackageManager
 			// is a fomod/textures/meshes/music/shaders/video/facegen/menus/lodsettings/lsdata/sound folder.
 			string[] directories = m_arcFile.GetDirectories(strSourcePath);
 			while (directories.Length == 1 &&
-					m_arcFile.GetFiles(strSourcePath, "*.esp").Length == 0 &&
+					((m_arcFile.GetFiles(strSourcePath, "*.esp").Length == 0 &&
 					m_arcFile.GetFiles(strSourcePath, "*.esm").Length == 0 &&
-					m_arcFile.GetFiles(strSourcePath, "*.bsa").Length == 0)
+					m_arcFile.GetFiles(strSourcePath, "*.bsa").Length == 0) ||
+					Path.GetFileName(directories[0]).Equals("data", StringComparison.InvariantCultureIgnoreCase)))
 			{
 				directories = directories[0].Split(Path.DirectorySeparatorChar);
 				string name = directories[directories.Length - 1].ToLowerInvariant();
