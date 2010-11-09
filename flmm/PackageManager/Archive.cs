@@ -49,7 +49,7 @@ namespace Fomm.PackageManager
 		{
 			get
 			{
-				return m_booCanEdit;
+				return !m_booCanEdit;
 			}
 		}
 
