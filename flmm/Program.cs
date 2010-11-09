@@ -417,6 +417,8 @@ namespace Fomm
 #endif
 					if (!GameMode.Init())
 						return;
+
+					InstallLog.Reload();
 #if TRACE
 					Trace.WriteLine("Install Info Dir: " + GameMode.InstallInfoDirectory);
 					Trace.WriteLine("We know where the mods live: " + GameMode.ModDirectory);

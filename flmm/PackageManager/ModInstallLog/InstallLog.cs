@@ -61,9 +61,17 @@ namespace Fomm.PackageManager.ModInstallLog
 			get
 			{
 				if (m_ilgCurrent == null)
-					m_ilgCurrent = new InstallLog();
+					Reload();
 				return m_ilgCurrent;
 			}
+		}
+
+		/// <summary>
+		/// Forces the install log to reload itself.
+		/// </summary>
+		internal static void Reload()
+		{
+			m_ilgCurrent = new InstallLog();
 		}
 
 		private readonly string xmlpath = Path.Combine(Program.GameMode.InstallInfoDirectory, "InstallLog.xml");
@@ -1351,5 +1359,6 @@ namespace Fomm.PackageManager.ModInstallLog
 		}
 
 		#endregion
+
 	}
 }
