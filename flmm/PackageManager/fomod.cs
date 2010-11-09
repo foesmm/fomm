@@ -544,10 +544,11 @@ namespace Fomm.PackageManager
 		{
 			PermissionsManager.CurrentPermissions.Assert();
 			List<string> lstFiles = new List<string>();
+			Int32 intTrimLength = (PathPrefix.Length == 0) ? 0 : PathPrefix.Length + 1;
 			foreach (string strFile in m_arcFile.GetFiles(null))
 				if (strFile.StartsWith(PathPrefix, StringComparison.InvariantCultureIgnoreCase))
 				{
-					string strAdjustedFileName = strFile.Remove(0, PathPrefix.Length + 1);
+					string strAdjustedFileName = strFile.Remove(0, intTrimLength);
 					if (!strAdjustedFileName.StartsWith("fomod", StringComparison.OrdinalIgnoreCase))
 						lstFiles.Add(strAdjustedFileName);
 				}
