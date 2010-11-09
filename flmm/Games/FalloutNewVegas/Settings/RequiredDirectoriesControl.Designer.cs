@@ -60,10 +60,10 @@
 			this.label4.AutoSize = true;
 			this.label4.Location = new System.Drawing.Point(3, 43);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(414, 13);
+			this.label4.Size = new System.Drawing.Size(374, 13);
 			this.label4.TabIndex = 14;
-			this.label4.Text = "Choose the directory where you would like to store your Fallout: New Vegas instal" +
-				"l info.";
+			this.label4.Text = "Choose the directory where you would like to store your Fallout: NV install info." +
+				"";
 			// 
 			// tbxInstallInfo
 			// 
@@ -101,10 +101,9 @@
 			this.label3.AutoSize = true;
 			this.label3.Location = new System.Drawing.Point(3, 0);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(408, 13);
+			this.label3.Size = new System.Drawing.Size(368, 13);
 			this.label3.TabIndex = 11;
-			this.label3.Text = "Choose the directory where you would like to store your Fallout: New Vegas FOMods" +
-				".";
+			this.label3.Text = "Choose the directory where you would like to store your Fallout: NV FOMods.";
 			// 
 			// tbxModDirectory
 			// 
