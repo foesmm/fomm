@@ -191,21 +191,7 @@ namespace WebsiteAPIs
 		public NexusAPI(NexusSite p_nxsSite)
 		{
 			m_nxsSite = p_nxsSite;
-			switch (p_nxsSite)
-			{
-				case NexusSite.DragonAge:
-					m_strSite = "www.dragonagenexus.com";
-					break;
-				case NexusSite.Fallout3:
-					m_strSite = "www.fallout3nexus.com";
-					break;
-				case NexusSite.FalloutNV:
-					m_strSite = "www.newvegasnexus.com";
-					break;
-				case NexusSite.TES:
-					m_strSite = "www.tesnexus.com";
-					break;
-			}
+			m_strSite = GetWebsite(m_nxsSite);
 		}
 
 		/// <summary>
@@ -250,6 +236,28 @@ namespace WebsiteAPIs
 		}
 
 		#endregion
+
+		/// <summary>
+		/// Gets the website for the given Nexus site.
+		/// </summary>
+		/// <param name="p_nstSite">The site for which the retrieve the website.</param>
+		/// <returns>The website for the given Nexus site.</returns>
+		public static string GetWebsite(NexusSite p_nstSite)
+		{
+			switch (p_nstSite)
+			{
+				case NexusSite.DragonAge:
+					return "www.dragonagenexus.com";
+				case NexusSite.Fallout3:
+					return "www.fallout3nexus.com";
+				case NexusSite.FalloutNV:
+					return "www.newvegasnexus.com";
+				case NexusSite.TES:
+					return "www.tesnexus.com";
+				default:
+					throw new Exception("Unrecognized value for NexusSite.");
+			}
+		}
 
 		/// <summary>
 		/// Ensures that the API is logged in to the site.
