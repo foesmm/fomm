@@ -1132,6 +1132,7 @@ class Script : Fallout3BaseScript {
 
 			CheckForDLCs();
 			ScanForReadonlyPlugins();
+			ScanForReadonlySettingsFiles();
 
 			FOMMMigrator m = new FOMMMigrator();
 			if (!m.Migrate())
@@ -1356,7 +1357,23 @@ class Script : Fallout3BaseScript {
 		}
 
 		/// <summary>
-		/// This chaecks for any FOMods that have been manually deleted since the programme last ran.
+		/// This chaecks for any INI files that are readonly.
+		/// </summary>
+		protected void ScanForReadonlySettingsFiles()
+		{
+			foreach (string strFile in SettingsFiles.Values)
+			{
+				FileInfo fifPlugin = new FileInfo(strFile);
+				if (fifPlugin.Exists && ((fifPlugin.Attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly))
+				{
+					if (MessageBox.Show(null, String.Format("'{0}' is read-only, so it can't be managed by {1}. Would you like to make it not read-only?", fifPlugin.Name, Program.ProgrammeAcronym), "Read Only", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+						fifPlugin.Attributes &= ~FileAttributes.ReadOnly;
+				}
+			}
+		}
+
+		/// <summary>
+		/// This chaecks for any FOMods that are readonly, and so can't have they're load order changed.
 		/// </summary>
 		protected void ScanForReadonlyPlugins()
 		{

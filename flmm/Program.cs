@@ -57,7 +57,7 @@ namespace Fomm
 
 	public static class Program
 	{
-		public const string Version = "0.13.2";
+		public const string Version = "0.13.3";
 		public static readonly Version MVersion = new Version(Version + ".0");
 
 #if TRACE
@@ -418,17 +418,19 @@ namespace Fomm
 					if (!GameMode.Init())
 						return;
 #if TRACE
-						Trace.Unindent();
-						Trace.WriteLine("Done Game Mode Specific Initialization.");
-						Trace.WriteLine("We know where the mods live: " + GameMode.ModDirectory);
-						Trace.WriteLine("Install Log Version: " + InstallLog.Current.GetInstallLogVersion());
-						Trace.Indent();
+					Trace.WriteLine("Install Info Dir: " + GameMode.InstallInfoDirectory);
+					Trace.WriteLine("We know where the mods live: " + GameMode.ModDirectory);
+					Trace.Unindent();
+					Trace.WriteLine("Done Game Mode Specific Initialization.");
+					Trace.WriteLine("Install Log Version: " + InstallLog.Current.GetInstallLogVersion());
+					Trace.Indent();
 #endif
 					//check to see if we need to upgrade the install log format
 					if (InstallLog.Current.GetInstallLogVersion() < InstallLog.CURRENT_VERSION)
 					{
 #if TRACE
-							Trace.Write("Upgrade to " + InstallLog.CURRENT_VERSION + " required...");
+						Trace.WriteLine("Upgrade to " + InstallLog.CURRENT_VERSION + " required...");
+						Trace.Indent();
 #endif
 						InstallLogUpgrader iluUgrader = new InstallLogUpgrader();
 						try
@@ -452,7 +454,8 @@ namespace Fomm
 							return;
 						}
 #if TRACE
-							Trace.WriteLine("Done.");
+						Trace.Unindent();
+						Trace.WriteLine("Done Install Log Upgrade.");
 #endif
 					}
 #if TRACE

@@ -60,7 +60,7 @@ namespace Fomm.Games.Fallout3.Tools
 		{
 			if (!File.Exists(Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOIniPath]))
 			{
-				MessageBox.Show("You have no Fallout INI file. Please run Fallout 3 to initialize the file.", "Missing INI", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				MessageBox.Show("You have no Fallout INI file. Please run Fallout to initialize the file.", "Missing INI", MessageBoxButtons.OK, MessageBoxIcon.Information);
 				return;
 			}
 			if (NativeMethods.GetPrivateProfileIntA("Archive", "bInvalidateOlderFiles", 0, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOIniPath]) == 0)

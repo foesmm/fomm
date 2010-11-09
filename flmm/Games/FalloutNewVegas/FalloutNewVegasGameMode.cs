@@ -634,6 +634,7 @@ class Script : FalloutNewVegasBaseScript {
 			}
 
 			ScanForReadonlyPlugins();
+			ScanForReadonlySettingsFiles();
 
 			return true;
 		}

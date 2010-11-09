@@ -221,37 +221,13 @@ namespace Fomm.Games.FalloutNewVegas.Script
 		#region Misc Info
 
 		/// <summary>
-		/// Gets the specified value from the RendererInfo.txt file.
-		/// </summary>
-		/// <param name="p_strValue">The value to retrieve from the file.</param>
-		/// <returns>The specified value from the RendererInfo.txt file, or
-		/// <lang cref="null"/> if the value is not found.</returns>
-		public override string GetRendererInfo(string p_strValue)
-		{
-			throw new NotImplementedException();
-			/*
-			PermissionsManager.CurrentPermissions.Assert();
-			string[] strLines = File.ReadAllLines(((FalloutNewVegasGameMode)Program.GameMode).FORendererFile);
-			for (int i = 1; i < strLines.Length; i++)
-			{
-				if (!strLines[i].Contains(":"))
-					continue;
-				string strCurrentValue = strLines[i].Remove(strLines[i].IndexOf(':')).Trim();
-				if (strCurrentValue.Equals(p_strValue))
-					return strLines[i].Substring(strLines[i].IndexOf(':') + 1).Trim();
-			}
-			return null;
-			 * */
-		}
-
-		/// <summary>
 		/// Determines if archive invalidation is active.
 		/// </summary>
 		/// <returns><lang cref="true"/> if archive invalidation is active;
 		/// <lang cref="false"/> otherwise.</returns>
 		public override bool IsAIActive()
 		{
-			return Tools.ArchiveInvalidation.IsActive();
+			return Fallout3.Tools.ArchiveInvalidation.IsActive();
 		}
 
 		#endregion
