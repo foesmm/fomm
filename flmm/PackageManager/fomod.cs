@@ -300,6 +300,25 @@ namespace Fomm.PackageManager
 		}
 
 		/// <summary>
+		/// Gets whether or not this fomod requires a script.
+		/// </summary>
+		/// <remarks>
+		/// A FOMod requires a script if it contains plugins in subfolders.
+		/// </remarks>
+		/// <value>Whether or not this fomod requires a script.</value>
+		public bool RequiresScript
+		{
+			get
+			{
+				List<string> lstFiles = GetFileList();
+				foreach (string strFile in lstFiles)
+					if (Program.GameMode.IsPluginFile(strFile) && !Path.GetFileName(strFile).Equals(strFile))
+						return true;
+				return false;
+			}
+		}
+
+		/// <summary>
 		/// Gets whether the mod has a screenshot.
 		/// </summary>
 		/// <value>Whether the mod has a screenshot.</value>
@@ -350,13 +369,22 @@ namespace Fomm.PackageManager
 		/// </summary>
 		/// <param name="path">The path to the fomod file.</param>
 		internal fomod(string path)
+			: this(path, true)
+		{
+		}
+
+		/// <summary>
+		/// A simple constructor that initializes the object.
+		/// </summary>
+		/// <param name="path">The path to the fomod file.</param>
+		internal fomod(string path, bool p_booUseCache)
 		{
 			this.filepath = path;
 			ModName = System.IO.Path.GetFileNameWithoutExtension(path);
-			
+
 			m_arcFile = new Archive(path);
 			m_strCachePath = Path.Combine(Program.GameMode.ModInfoCacheDirectory, ModName + ".zip");
-			if (File.Exists(m_strCachePath))
+			if (p_booUseCache && File.Exists(m_strCachePath))
 				m_arcCacheFile = new Archive(m_strCachePath);
 
 			FindPathPrefix();
@@ -402,7 +430,7 @@ namespace Fomm.PackageManager
 					break;
 				}
 
-			if (!File.Exists(m_strCachePath) && (m_arcFile.IsSolid || m_arcFile.ReadOnly))
+			if (p_booUseCache && !File.Exists(m_strCachePath) && (m_arcFile.IsSolid || m_arcFile.ReadOnly))
 			{
 				string strTmpInfo = Program.CreateTempDirectory();
 				try

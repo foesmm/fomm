@@ -142,6 +142,12 @@ namespace Fomm.PackageManager.FomodBuilder
 				}
 				else
 				{
+					fomod mof = new fomod(strSource, false);
+					if (!mof.HasInstallScript && mof.RequiresScript)
+					{
+						if (MessageBox.Show("This mod requires a script to install properly, but doesn't have one." + Environment.NewLine + "Would you like to continue?", "Missing Script", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.No)
+							return lstPackedFOModPaths;
+					}
 					strPackedFomodPath = Path.Combine(Program.GameMode.ModDirectory, Path.GetFileNameWithoutExtension(strPackedFomodPath));
 					if (!strPackedFomodPath.EndsWith(".fomod", StringComparison.OrdinalIgnoreCase))
 						strPackedFomodPath += ".fomod";
