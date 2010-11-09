@@ -78,41 +78,7 @@ namespace Fomm.Games.Fallout3.Tools
 		{
 			MainForm.ClearExtraInfo(EXTRA_INFO_CRITICAL_RECORDS);
 
-			List<ListViewItem> lstItems = new List<ListViewItem>();
-			foreach (ListViewItem lviItem in MainForm.PluginsListViewItems)
-			{
-				lstItems.Add(lviItem);
-				lviItem.BackColor = Color.Transparent;
-			}
-			lstItems.Sort((a, b) =>
-			{
-				Int32 intIndexA = 0;
-				Int32 intIndexB = 0;
-				if (a == null)
-				{
-					if (b == null)
-						return 0;
-					return -1;
-				}
-				if (Int32.TryParse(a.SubItems[1].Text, System.Globalization.NumberStyles.HexNumber, null, out intIndexA))
-				{
-					if ((b != null) && Int32.TryParse(b.SubItems[1].Text, System.Globalization.NumberStyles.HexNumber, null, out intIndexB))
-						return intIndexA.CompareTo(intIndexB);
-					return 1;
-				}
-				if (!Int32.TryParse(b.SubItems[1].Text, System.Globalization.NumberStyles.HexNumber, null, out intIndexB))
-					return 0;
-				return -1;
-			});
-
-			Int32 intIndex = 0;
-			for (Int32 i = lstItems.Count - 1; i >= 0; i--)
-				if (!Int32.TryParse(lstItems[i].SubItems[1].Text, System.Globalization.NumberStyles.HexNumber, null, out intIndex))
-					lstItems.RemoveAt(i);
-
-			List<string> lstPlugins = new List<string>();
-			foreach (ListViewItem lviItem in lstItems)
-				lstPlugins.Add(lviItem.Text);
+			List<string> lstPlugins = new List<string>(Program.GameMode.PluginManager.SortPluginList(Program.GameMode.PluginManager.ActivePluginList));
 
 			m_bwdProgress.OverallProgressMaximum = lstPlugins.Count;
 			ConflictDetector cdrDetector = new ConflictDetector();
