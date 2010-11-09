@@ -38,6 +38,22 @@ namespace Fomm.PackageManager
 		#region Properties
 
 		/// <summary>
+		/// Gets whether or not the archive is read-only.
+		/// </summary>
+		/// <remarks>
+		/// RAR files are the only read-only archives. This is because FOMM isn't allow to create/edit RAR files
+		/// (from a licensing standpoint).
+		/// </remarks>
+		/// <value>Whether or not the archive is read-only.</value>
+		public bool ReadOnly
+		{
+			get
+			{
+				return m_booCanEdit;
+			}
+		}
+
+		/// <summary>
 		/// Gets the path of the archive.
 		/// </summary>
 		/// <value>The path of the archive.</value>

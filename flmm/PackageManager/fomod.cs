@@ -387,7 +387,7 @@ namespace Fomm.PackageManager
 				}
 
 			m_strCachePath = Path.Combine(Program.GameMode.ModInfoCacheDirectory, ModName + ".zip");
-			if (!File.Exists(m_strCachePath) && m_arcFile.IsSolid)
+			if (!File.Exists(m_strCachePath) && (m_arcFile.IsSolid || m_arcFile.ReadOnly))
 			{
 				string strTmpInfo = Program.CreateTempDirectory();
 				try
@@ -528,7 +528,7 @@ namespace Fomm.PackageManager
 			foreach (string strFile in m_arcFile.GetFiles(null))
 				if (strFile.StartsWith(PathPrefix, StringComparison.InvariantCultureIgnoreCase))
 				{
-					string strAdjustedFileName = strFile.Remove(0, PathPrefix.Length);
+					string strAdjustedFileName = strFile.Remove(0, PathPrefix.Length + 1);
 					if (!strAdjustedFileName.StartsWith("fomod", StringComparison.OrdinalIgnoreCase))
 						lstFiles.Add(strAdjustedFileName);
 				}
@@ -561,7 +561,8 @@ namespace Fomm.PackageManager
 		/// <param name="p_strPath">The path of the file to delete.</param>
 		protected void DeleteFile(string p_strPath)
 		{
-			m_arcFile.DeleteFile(GetPrefixAdjustedPath(p_strPath));
+			if (!m_arcFile.ReadOnly)
+				m_arcFile.DeleteFile(GetPrefixAdjustedPath(p_strPath));
 			if ((m_arcCacheFile != null) && m_arcCacheFile.ContainsFile(p_strPath))
 				m_arcCacheFile.DeleteFile(GetPrefixAdjustedPath(p_strPath));
 		}
@@ -576,7 +577,8 @@ namespace Fomm.PackageManager
 		/// <param name="p_bteData">The new file data.</param>
 		protected void ReplaceFile(string p_strPath, byte[] p_bteData)
 		{
-			m_arcFile.ReplaceFile(GetPrefixAdjustedPath(p_strPath), p_bteData);
+			if (!m_arcFile.ReadOnly)
+				m_arcFile.ReplaceFile(GetPrefixAdjustedPath(p_strPath), p_bteData);
 			if ((m_arcCacheFile != null) && m_arcCacheFile.ContainsFile(p_strPath))
 				m_arcCacheFile.ReplaceFile(GetPrefixAdjustedPath(p_strPath), p_bteData);
 		}
@@ -591,7 +593,8 @@ namespace Fomm.PackageManager
 		/// <param name="p_strData">The new file text.</param>
 		protected void ReplaceFile(string p_strPath, string p_strData)
 		{
-			m_arcFile.ReplaceFile(GetPrefixAdjustedPath(p_strPath), p_strData);
+			if (!m_arcFile.ReadOnly)
+				m_arcFile.ReplaceFile(GetPrefixAdjustedPath(p_strPath), p_strData);
 			if ((m_arcCacheFile != null) && m_arcCacheFile.ContainsFile(p_strPath))
 				m_arcCacheFile.ReplaceFile(GetPrefixAdjustedPath(p_strPath), p_strData);
 		}
