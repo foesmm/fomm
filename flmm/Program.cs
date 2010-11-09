@@ -460,6 +460,9 @@ namespace Fomm
 						Trace.WriteLine("Done Install Log Upgrade.");
 #endif
 					}
+
+					PermissionsManager.Init();
+
 #if TRACE
 						Trace.Unindent();
 						Trace.Write("Uninstalling missing FOMods...");

@@ -161,7 +161,7 @@ namespace Fomm.FileManager
 				{
 					string strModKey = InstallLog.Current.GetModKey(strMod);
 					string strDirectory = Path.GetDirectoryName(strFile);
-					string strBackupPath = Path.GetFullPath(Path.Combine(Program.GameMode.OverwriteDirectory, strDirectory));
+					string strBackupPath = Path.Combine(Program.GameMode.OverwriteDirectory, strDirectory);
 					strBackupPath = Path.Combine(strBackupPath, strModKey + "_" + Path.GetFileName(strFile));
 					if (!File.Exists(strBackupPath) && !currentOwner.Equals(strModKey))
 						booMissing = true;
@@ -200,7 +200,7 @@ namespace Fomm.FileManager
 				ListViewItem lviFile = new ListViewItem(Path.GetFileName(strFile));
 				lviFile.Name = lviFile.Text;
 				lviFile.Tag = strFile;
-				FileInfo fliFile = new FileInfo(Path.GetFullPath(Path.Combine(Program.GameMode.PluginsPath, strFile)));
+				FileInfo fliFile = new FileInfo(Path.Combine(Program.GameMode.PluginsPath, strFile));
 				lviFile.SubItems.Add(fliFile.CreationTime.ToString("g"));
 				lviFile.SubItems.Add(fliFile.LastWriteTime.ToString("g"));
 				if (fliFile.Exists)

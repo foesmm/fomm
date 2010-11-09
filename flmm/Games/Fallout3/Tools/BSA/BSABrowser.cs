@@ -13,7 +13,7 @@ namespace Fomm.Games.Fallout3.Tools.BSA
 			string path = Properties.Settings.Default.fallout3LastBSAUnpackPath;
 			if (!String.IsNullOrEmpty(path))
 				SaveAllDialog.SelectedPath = path;
-			OpenBSA.InitialDirectory = Path.GetFullPath(Program.GameMode.PluginsPath);
+			OpenBSA.InitialDirectory = Program.GameMode.PluginsPath;
 
 			Properties.Settings.Default.windowPositions.GetWindowPosition("BSABrowser", this);
 		}

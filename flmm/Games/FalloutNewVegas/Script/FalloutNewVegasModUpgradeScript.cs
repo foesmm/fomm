@@ -52,13 +52,13 @@ namespace Fomm.Games.FalloutNewVegas.Script
 				if (!lstInstallers[lstInstallers.Count - 1].Equals(Fomod.BaseName))
 				{
 					string strDirectory = Path.GetDirectoryName(p_strPath);
-					string strBackupPath = Path.GetFullPath(Path.Combine(Program.GameMode.OverwriteDirectory, strDirectory));
+					string strBackupPath = Path.Combine(Program.GameMode.OverwriteDirectory, strDirectory);
 					string strOldModKey = InstallLog.Current.GetModKey(Fomod.BaseName);
 					string strFile = strOldModKey + "_" + Path.GetFileName(p_strPath);
 					strWritePath = Path.Combine(strBackupPath, strFile);
 				}
 				else
-					strWritePath = Path.GetFullPath(Path.Combine(Program.GameMode.PluginsPath, p_strPath));
+					strWritePath = Path.Combine(Program.GameMode.PluginsPath, p_strPath);
 				Installer.TransactionalFileManager.WriteAllBytes(strWritePath, p_bteData);
 				Installer.MergeModule.AddFile(p_strPath);
 				return true;

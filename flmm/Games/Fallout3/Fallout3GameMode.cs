@@ -143,6 +143,7 @@ namespace Fomm.Games.Fallout3
 			}
 		}
 
+		string pp;
 		/// <summary>
 		/// Gets the path to the game directory were pluings are to be installed.
 		/// </summary>
@@ -151,7 +152,9 @@ namespace Fomm.Games.Fallout3
 		{
 			get
 			{
-				return Path.Combine(Environment.CurrentDirectory, "Data");
+				if (pp == null)
+					pp = Path.Combine(Environment.CurrentDirectory, "Data");
+				return pp;
 			}
 		}
 

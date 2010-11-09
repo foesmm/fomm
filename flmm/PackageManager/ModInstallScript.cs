@@ -431,7 +431,7 @@ namespace Fomm.PackageManager
 		/// can be written; <lang cref="false"/> otherwise.</returns>
 		protected bool TestDoOverwrite(string p_strPath)
 		{
-			string strDataPath = Path.GetFullPath(Path.Combine(Program.GameMode.PluginsPath, p_strPath));
+			string strDataPath = Path.Combine(Program.GameMode.PluginsPath, p_strPath);
 			if (!File.Exists(strDataPath))
 				return true;
 			string strLoweredPath = strDataPath.ToLowerInvariant();
@@ -552,7 +552,7 @@ namespace Fomm.PackageManager
 		{
 			PermissionsManager.CurrentPermissions.Assert();
 			FileManagement.AssertFilePathIsSafe(p_strPath);
-			string strDataPath = Path.GetFullPath(Path.Combine(Program.GameMode.PluginsPath, p_strPath));
+			string strDataPath = Path.Combine(Program.GameMode.PluginsPath, p_strPath);
 			if (!Directory.Exists(Path.GetDirectoryName(strDataPath)))
 				Installer.TransactionalFileManager.CreateDirectory(Path.GetDirectoryName(strDataPath));
 			else
@@ -563,7 +563,7 @@ namespace Fomm.PackageManager
 				if (File.Exists(strDataPath))
 				{
 					string strDirectory = Path.GetDirectoryName(p_strPath);
-					string strBackupPath = Path.GetFullPath(Path.Combine(Program.GameMode.OverwriteDirectory, strDirectory));
+					string strBackupPath = Path.Combine(Program.GameMode.OverwriteDirectory, strDirectory);
 					string strOldModKey = InstallLog.Current.GetCurrentFileOwnerKey(p_strPath);
 					//if this mod installed a file, and now we are overwriting itm
 					// the install log will tell us no one owns the file, or the wrong mod owns the
@@ -635,10 +635,10 @@ namespace Fomm.PackageManager
 		{
 			PermissionsManager.CurrentPermissions.Assert();
 			FileManagement.AssertFilePathIsSafe(p_strFile);
-			string strDataPath = Path.GetFullPath(Path.Combine(Program.GameMode.PluginsPath, p_strFile));
+			string strDataPath = Path.Combine(Program.GameMode.PluginsPath, p_strFile);
 			string strKey = InstallLog.Current.GetModKey(p_strFomodBaseName);
 			string strDirectory = Path.GetDirectoryName(p_strFile);
-			string strBackupDirectory = Path.GetFullPath(Path.Combine(Program.GameMode.OverwriteDirectory, strDirectory));
+			string strBackupDirectory = Path.Combine(Program.GameMode.OverwriteDirectory, strDirectory);
 			if (File.Exists(strDataPath))
 			{
 				string strCurrentOwnerKey = InstallLog.Current.GetCurrentFileOwnerKey(p_strFile);

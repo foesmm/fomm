@@ -22,7 +22,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 		public AddMasterForm()
 		{
 			InitializeComponent();
-			ofdChooseMaster.InitialDirectory = Path.GetFullPath(Program.GameMode.PluginsPath);
+			ofdChooseMaster.InitialDirectory = Program.GameMode.PluginsPath;
 		}
 
 		private void butOK_Click(object sender, EventArgs e)

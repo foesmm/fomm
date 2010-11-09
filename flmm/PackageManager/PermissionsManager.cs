@@ -18,15 +18,12 @@ namespace Fomm.PackageManager
 	/// </remarks>
 	internal class PermissionsManager
 	{
-		private static readonly PermissionSet permissions;
+		private static PermissionSet permissions;
 
 		/// <summary>
-		/// The static constructor.
+		/// Initializes the permissions manager with the permissions required by an install script.
 		/// </summary>
-		/// <remarks>
-		/// This sets up the required permissions.
-		/// </remarks>
-		static PermissionsManager()
+		internal static void Init()
 		{
 #if TRACE
 			Trace.WriteLine("");
@@ -56,13 +53,15 @@ namespace Fomm.PackageManager
 			// savesPath - fallout 3
 			FileIOPermission fipFilePermission = new FileIOPermission(FileIOPermissionAccess.AllAccess, new string[] {
                 Program.tmpPath, Path.GetTempPath(),
-				Program.GameMode.InstallInfoDirectory			
+				Program.GameMode.InstallInfoDirectory,
+				Program.GameMode.PluginsPath
             });
-
+			
 			List<string> lstPaths = new List<string>(Program.GameMode.SettingsFiles.Values);
 			lstPaths.AddRange(Program.GameMode.AdditionalPaths.Values);
 			fipFilePermission.AddPathList(FileIOPermissionAccess.AllAccess, lstPaths.ToArray());
 
+			permissions.AddPermission(fipFilePermission);
 			permissions.AddPermission(new SecurityPermission(SecurityPermissionFlag.UnmanagedCode));
 			permissions.AddPermission(new UIPermission(UIPermissionWindow.AllWindows));
 		}
@@ -75,6 +74,8 @@ namespace Fomm.PackageManager
 		{
 			get
 			{
+				if (permissions == null)
+					throw new InvalidOperationException("You must call Init() before using the permissions manager.");
 				return permissions;
 			}
 		}
