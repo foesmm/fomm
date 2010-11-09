@@ -382,7 +382,7 @@ namespace Fomm.PackageManager.FomodBuilder
 				if (sflSource.Generated)
 					continue;
 				if (!dicSources.ContainsKey(sflSource.URL))
-					dicSources[sflSource.URL] = new Set<string>();
+					dicSources[sflSource.URL] = new Set<string>(StringComparer.InvariantCultureIgnoreCase);
 				dicSources[sflSource.URL].Add(sflSource.SourceFileName);
 			}
 

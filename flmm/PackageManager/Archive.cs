@@ -496,7 +496,7 @@ namespace Fomm.PackageManager
 			strPrefix = strPrefix.Trim(Path.DirectorySeparatorChar);
 			if (strPrefix.Length > 0)
 				strPrefix += Path.DirectorySeparatorChar;
-			Set<string> lstFolders = new Set<string>();
+			Set<string> lstFolders = new Set<string>(StringComparer.InvariantCultureIgnoreCase);
 			Int32 intStopIndex = 0;
 			foreach (string strFile in m_strFiles)
 			{
@@ -518,7 +518,7 @@ namespace Fomm.PackageManager
 		/// <returns>A list of files that are in the specified directory in this archive.</returns>
 		public string[] GetFiles(string p_strDirectory)
 		{
-			Set<string> lstFiles = new Set<string>();
+			Set<string> lstFiles = new Set<string>(StringComparer.InvariantCultureIgnoreCase);
 			if (String.IsNullOrEmpty(p_strDirectory))
 			{
 				m_strFiles.ForEach((s) => { lstFiles.Add(String.Copy(s)); });
@@ -553,7 +553,7 @@ namespace Fomm.PackageManager
 		/// <returns>A list of files that are in the specified directory and match the given pattern in this archive.</returns>
 		public string[] GetFiles(string p_strDirectory, string p_strPattern)
 		{
-			Set<string> lstFiles = new Set<string>();
+			Set<string> lstFiles = new Set<string>(StringComparer.InvariantCultureIgnoreCase);
 			string[] strFiles = GetFiles(p_strDirectory);
 
 			string strPattern = p_strPattern.Replace(".", "\\.").Replace("*",".*");

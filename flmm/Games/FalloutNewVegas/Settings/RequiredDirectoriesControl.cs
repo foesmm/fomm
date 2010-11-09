@@ -22,16 +22,26 @@ namespace Fomm.Games.FalloutNewVegas.Settings
 		public RequiredDirectoriesControl()
 		{
 			InitializeComponent();
-
-			tbxModDirectory.Text = Properties.Settings.Default.falloutNewVegasModDirectory;
-			if (String.IsNullOrEmpty(tbxModDirectory.Text))
-				tbxModDirectory.Text = Path.Combine(Program.PersonalDirectory, Path.Combine(Program.ProgrammeAcronym, Path.Combine("FalloutNV", "mods")));
-			tbxInstallInfo.Text = Properties.Settings.Default.falloutNewVegasInstallInfoDirectory;
-			if (String.IsNullOrEmpty(tbxInstallInfo.Text))
-				tbxInstallInfo.Text = Path.Combine(Program.PersonalDirectory, Path.Combine(Program.ProgrammeAcronym, Path.Combine("FalloutNV", "Install Info")));
 		}
 
 		#endregion
+
+		/// <summary>
+		/// Raised the <see cref="Control.Load"/> event.
+		/// </summary>
+		/// <remarks>
+		/// This loads defaults into the textboxes.
+		/// </remarks>
+		/// <param name="e">The <see cref="EventArgs"/> describing the event arguments.</param>
+		protected override void OnLoad(EventArgs e)
+		{
+			tbxModDirectory.Text = Properties.Settings.Default.falloutNewVegasModDirectory;
+			if (String.IsNullOrEmpty(tbxModDirectory.Text))
+				tbxModDirectory.Text = Path.Combine(Path.GetDirectoryName(Program.GameMode.PluginsPath), "mods");
+			tbxInstallInfo.Text = Properties.Settings.Default.falloutNewVegasInstallInfoDirectory;
+			if (String.IsNullOrEmpty(tbxInstallInfo.Text))
+				tbxInstallInfo.Text = Path.Combine(Path.GetDirectoryName(Program.GameMode.PluginsPath), "Install Info");
+		}
 
 		#region Validation
 
