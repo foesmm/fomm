@@ -374,7 +374,7 @@ namespace Fomm
 #if TRACE
 									Trace.WriteLine("UAC is messing us up.");
 #endif
-								MessageBox.Show(" UAC is preventing Fallout mod manager from obtaining write access to fallout's installation directory.\n" +
+								MessageBox.Show("UAC is preventing Fallout mod manager from obtaining write access to fallout's installation directory.\n" +
 								"Either right click fomm.exe and check the 'run as administrator' checkbox on the comptibility tab, or disable UAC", "Error");
 								File.Delete("limited");
 							}

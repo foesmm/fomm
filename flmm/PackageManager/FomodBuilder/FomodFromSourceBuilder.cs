@@ -8,6 +8,7 @@ using Fomm.Util;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Text.RegularExpressions;
+using WebsiteAPIs;
 
 namespace Fomm.PackageManager.FomodBuilder
 {
@@ -111,7 +112,7 @@ namespace Fomm.PackageManager.FomodBuilder
 				if (strPackedFomodPath.Contains("-") && int.TryParse(strPackedFomodPath.Substring(strPackedFomodPath.LastIndexOf('-') + 1), out intFileId))
 				{
 					strPackedFomodPath = strPackedFomodPath.Remove(strPackedFomodPath.LastIndexOf('-')) + Path.GetExtension(strSource);
-					strTesNexusUrl = @"http://www.fallout3nexus.com/downloads/file.php?id=" + intFileId;
+					strTesNexusUrl = String.Format(@"http://{0}/downloads/file.php?id={1}", NexusAPI.GetWebsite(Program.GameMode.NexusSite), intFileId);
 				}
 
 				string[] strFOMods = null;
@@ -128,6 +129,12 @@ namespace Fomm.PackageManager.FomodBuilder
 							{
 								using (FileStream fsmFOMod = new FileStream(strNewPath, FileMode.Create))
 									szeExtractor.ExtractFile(strFOMod, fsmFOMod);
+							}
+							fomod fomodMod = new fomod(strNewPath);
+							if (String.IsNullOrEmpty(fomodMod.Website))
+							{
+								fomodMod.Website = strTesNexusUrl;
+								fomodMod.CommitInfo(false, null);
 							}
 							lstPackedFOModPaths.Add(strNewPath);
 						}
@@ -146,6 +153,12 @@ namespace Fomm.PackageManager.FomodBuilder
 							File.Move(strSource, strNewPath);
 						else
 							File.Copy(strSource, strNewPath, true);
+						fomod fomodMod = new fomod(strNewPath);
+						if (String.IsNullOrEmpty(fomodMod.Website))
+						{
+							fomodMod.Website = strTesNexusUrl;
+							fomodMod.CommitInfo(false, null);
+						}
 						lstPackedFOModPaths.Add(strNewPath);
 					}
 				}

@@ -26,7 +26,7 @@ namespace Fomm.PackageManager
 		private BackgroundWorkerProgressDialog m_bwdProgress = null;
 		private string m_strLastFromFolderPath = null;
 		private NexusAPI m_nxaNexus = null;
-		private Regex m_rgxNexusFileId = new Regex(@"fallout3nexus\.com/downloads/file\.php\?id=(\d+)");
+		private Regex m_rgxNexusFileId = new Regex(@"nexus\.com/downloads/file\.php\?id=(\d+)");
 		private Dictionary<string, string> m_dicWebVersions = new Dictionary<string, string>();
 
 		public PackageManager(MainForm mf)
@@ -618,9 +618,12 @@ namespace Fomm.PackageManager
 				MessageBox.Show("Cannot delete an active fomod");
 				return;
 			}
-			for (int i = 0; i < lvModList.Items.Count; i++) if (lvModList.Items[i].Tag == mod) lvModList.Items.RemoveAt(i--);
+			for (int i = 0; i < lvModList.Items.Count; i++)
+				if (lvModList.Items[i].Tag == mod)
+					lvModList.Items.RemoveAt(i--);
 			mod.Dispose();
 			File.Delete(mod.filepath);
+			File.Delete(mod.CachePath);
 			mods.Remove(mod);
 		}
 

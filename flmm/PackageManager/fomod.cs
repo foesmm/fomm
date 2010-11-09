@@ -67,6 +67,18 @@ namespace Fomm.PackageManager
 		#region Properties
 
 		/// <summary>
+		/// Gets the path to the fomod's cache file.
+		/// </summary>
+		/// <value>The path to the fomod's cache file.</value>
+		public string CachePath
+		{
+			get
+			{
+				return m_strCachePath;
+			}
+		}
+
+		/// <summary>
 		/// Gets the path prefix of the FOMod.
 		/// </summary>
 		/// <remarks>
@@ -340,11 +352,15 @@ namespace Fomm.PackageManager
 		internal fomod(string path)
 		{
 			this.filepath = path;
-
+			ModName = System.IO.Path.GetFileNameWithoutExtension(path);
+			
 			m_arcFile = new Archive(path);
+			m_strCachePath = Path.Combine(Program.GameMode.ModInfoCacheDirectory, ModName + ".zip");
+			if (File.Exists(m_strCachePath))
+				m_arcCacheFile = new Archive(m_strCachePath);
+
 			FindPathPrefix();
 			m_arcFile.FilesChanged += new EventHandler(Archive_FilesChanged);
-			ModName = System.IO.Path.GetFileNameWithoutExtension(path);
 			baseName = ModName.ToLowerInvariant();
 			Author = "DEFAULT";
 			Description = Email = Website = string.Empty;
@@ -386,7 +402,6 @@ namespace Fomm.PackageManager
 					break;
 				}
 
-			m_strCachePath = Path.Combine(Program.GameMode.ModInfoCacheDirectory, ModName + ".zip");
 			if (!File.Exists(m_strCachePath) && (m_arcFile.IsSolid || m_arcFile.ReadOnly))
 			{
 				string strTmpInfo = Program.CreateTempDirectory();
@@ -396,6 +411,8 @@ namespace Fomm.PackageManager
 
 					if (ContainsFile("fomod/info.xml"))
 						File.WriteAllBytes(Path.Combine(strTmpInfo, "fomod/info.xml"), GetFileContents("fomod/info.xml"));
+					else
+						File.WriteAllText(Path.Combine(strTmpInfo, "fomod/info.xml"), "<fomod/>");
 
 					if (!String.IsNullOrEmpty(m_strReadmePath))
 						File.WriteAllBytes(Path.Combine(strTmpInfo, m_strReadmePath), GetFileContents(m_strReadmePath));
@@ -409,16 +426,16 @@ namespace Fomm.PackageManager
 						SevenZipCompressor szcCompressor = new SevenZipCompressor();
 						szcCompressor.ArchiveFormat = OutArchiveFormat.Zip;
 						szcCompressor.CompressionLevel = CompressionLevel.Ultra;
-						szcCompressor.CompressFiles(m_strCachePath, strFilesToCompress);
+						szcCompressor.CompressDirectory(strTmpInfo, m_strCachePath);
 					}
 				}
 				finally
 				{
 					FileUtil.ForceDelete(strTmpInfo);
 				}
+				if (File.Exists(m_strCachePath))
+					m_arcCacheFile = new Archive(m_strCachePath);
 			}
-			if (File.Exists(m_strCachePath))
-				m_arcCacheFile = new Archive(m_strCachePath);
 
 			LoadInfo();
 		}
@@ -496,7 +513,9 @@ namespace Fomm.PackageManager
 			strPath = strPath.Trim(Path.DirectorySeparatorChar);
 			if (m_dicMovedArchiveFiles.ContainsKey(strPath))
 				return true;
-			return m_arcFile.ContainsFile(Path.Combine(PathPrefix, strPath));
+			if (m_arcFile.ContainsFile(Path.Combine(PathPrefix, strPath)))
+				return true;
+			return ((m_arcCacheFile != null) && m_arcCacheFile.ContainsFile(Path.Combine(PathPrefix, strPath)));
 		}
 
 		/// <summary>
