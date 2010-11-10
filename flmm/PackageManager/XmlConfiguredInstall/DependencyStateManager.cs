@@ -118,11 +118,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 
 			Dictionary<string, bool> dicPlugins = new Dictionary<string, bool>();
 			string[] strPlugins = m_misInstallScript.GetAllPlugins();
-			Int32 intTrimLength = Program.GameMode.PluginsPath.Length;
-			if (!Program.GameMode.PluginsPath.EndsWith(Path.DirectorySeparatorChar.ToString()) && !Program.GameMode.PluginsPath.EndsWith(Path.AltDirectorySeparatorChar.ToString()))
-				intTrimLength++;
 			foreach (string strPlugin in strPlugins)
-				dicPlugins.Add(strPlugin.ToLowerInvariant().Remove(0, intTrimLength), IsPluginActive(strPlugin));
+				dicPlugins.Add(strPlugin.ToLowerInvariant(), IsPluginActive(strPlugin));
 			InstalledPlugins = dicPlugins;
 		}
 
