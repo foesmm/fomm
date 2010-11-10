@@ -25,7 +25,7 @@ namespace Fomm.PackageManager
 		private bool m_booOverwriteAll = false;
 		private bool m_booDontOverwriteAllIni = false;
 		private bool m_booOverwriteAllIni = false;
-		
+
 		#region Properties
 
 		/// <summary>
@@ -269,7 +269,11 @@ namespace Fomm.PackageManager
 		public string[] GetAllPlugins()
 		{
 			PermissionsManager.CurrentPermissions.Assert();
-			return Program.GameMode.PluginManager.OrderedPluginList;
+			string[] strPlugins = Program.GameMode.PluginManager.OrderedPluginList;
+			Int32 intTrimLength = Program.GameMode.PluginsPath.Trim(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).Length + 1;
+			for (int i = 0; i < strPlugins.Length; i++)
+				strPlugins[i] = strPlugins[i].Remove(0, intTrimLength);
+			return strPlugins;
 		}
 
 		#region Plugin Activation Info
@@ -297,8 +301,9 @@ namespace Fomm.PackageManager
 			LoadActivePlugins();
 			PermissionsManager.CurrentPermissions.Assert();
 			string[] strPlugins = Program.GameMode.PluginManager.SortPluginList(m_lstActivePlugins.ToArray());
+			Int32 intTrimLength = Program.GameMode.PluginsPath.Trim(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).Length + 1;
 			for (int i = 0; i < strPlugins.Length; i++)
-				strPlugins[i] = Path.GetFileName(strPlugins[i]);
+				strPlugins[i] = strPlugins[i].Remove(0, intTrimLength);
 			return strPlugins;
 		}
 
