@@ -11,7 +11,8 @@ namespace Fomm.Games.FalloutNewVegas.Tools
 {
 	public static class ArchiveInvalidation
 	{
-		private const string AiBsa = "ArchiveInvalidationInvalidated!.bsa";
+		private const string AiBsa = "Fallout - AI!.bsa";
+		private const string OldAiBsa = "ArchiveInvalidationInvalidated!.bsa";
 		
 		private static string GetBSAList(bool p_booInsertAI)
 		{
@@ -20,13 +21,15 @@ namespace Fomm.Games.FalloutNewVegas.Tools
 			for (int i = 0; i < bsas.Count; i++)
 			{
 				bsas[i] = bsas[i].Trim(' ');
+				if (bsas[i] == OldAiBsa)
+					continue;
 				if (bsas[i].Contains("Misc"))
 					lstNewBSAs.Insert(0, bsas[i]);
 				else if (bsas[i] != AiBsa)
 					lstNewBSAs.Add(bsas[i]);
 			}
 			if (p_booInsertAI)
-				lstNewBSAs.Insert(1, AiBsa);
+				lstNewBSAs.Insert(0, AiBsa);
 			return string.Join(", ", lstNewBSAs.ToArray());
 		}
 
@@ -41,6 +44,7 @@ namespace Fomm.Games.FalloutNewVegas.Tools
 			NativeMethods.WritePrivateProfileIntA("General", "bLoadFaceGenHeadEGTFiles", 1, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOIniPath]);
 			NativeMethods.WritePrivateProfileStringA("Archive", "SInvalidationFile", "", Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOIniPath]);
 			File.Delete(Path.Combine(Program.GameMode.PluginsPath, "archiveinvalidation.txt"));
+			File.Delete(Path.Combine(Program.GameMode.PluginsPath, OldAiBsa));
 			File.WriteAllBytes(Path.Combine(Program.GameMode.PluginsPath, AiBsa), new byte[] {
                 0x42, 0x53, 0x41, 0x00, 0x67, 0x00, 0x00, 0x00, 0x24, 0x00, 0x00, 0x00, 0x03, 0x07, 0x00, 0x00,
                 0x01, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00,
@@ -57,6 +61,7 @@ namespace Fomm.Games.FalloutNewVegas.Tools
 			NativeMethods.WritePrivateProfileIntA("General", "bLoadFaceGenHeadEGTFiles", 0, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOIniPath]);
 			NativeMethods.WritePrivateProfileStringA("Archive", "SInvalidationFile", "ArchiveInvalidation.txt", Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOIniPath]);
 			File.Delete(Path.Combine(Program.GameMode.PluginsPath, AiBsa));
+			File.Delete(Path.Combine(Program.GameMode.PluginsPath, OldAiBsa));
 			NativeMethods.WritePrivateProfileStringA("Archive", "SArchiveList", GetBSAList(false), Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOIniPath]);
 		}
 
