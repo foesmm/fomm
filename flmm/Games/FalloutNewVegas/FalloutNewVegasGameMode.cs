@@ -364,6 +364,27 @@ namespace Fomm.Games.FalloutNewVegas
 		#region Tools Menu
 
 		/// <summary>
+		/// Launches the save games viewer.
+		/// </summary>
+		/// <param name="p_frmMainForm">The main mod management form.</param>
+		public override void LaunchSaveGamesViewer(MainForm p_frmMainForm)
+		{
+			List<string> lstActive = new List<string>();
+			//the original implementation populated the inactive list with all plugins
+			// we only populate it with inactive plugins - hopefully that's OK
+			List<string> lstInactive = new List<string>();
+
+			foreach (ListViewItem lviPlugin in p_frmMainForm.PluginsListViewItems)
+			{
+				if (lviPlugin.Checked)
+					lstActive.Add(lviPlugin.Text);
+				else
+					lstInactive.Add(lviPlugin.Text);
+			}
+			(new Tools.SaveForm(lstActive.ToArray(), lstInactive.ToArray())).Show();
+		}
+
+		/// <summary>
 		/// Toggles archive invalidation.
 		/// </summary>
 		/// <param name="p_frmMainForm">The main mod management form.</param>

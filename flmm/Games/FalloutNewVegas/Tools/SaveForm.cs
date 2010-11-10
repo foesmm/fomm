@@ -5,7 +5,7 @@ using System.Drawing.Imaging;
 using System.Windows.Forms;
 using System.IO;
 
-namespace Fomm.Games.Fallout3.Tools
+namespace Fomm.Games.FalloutNewVegas.Tools
 {
 	internal partial class SaveForm : Form
 	{
@@ -15,6 +15,7 @@ namespace Fomm.Games.Fallout3.Tools
 			internal string FileName;
 			internal string Player;
 			internal string Karma;
+			internal string Language;
 			internal int Level;
 			internal string Location;
 			internal string Playtime;
@@ -112,6 +113,10 @@ namespace Fomm.Games.Fallout3.Tools
 					sf.saved = (new FileInfo(file)).LastWriteTime;
 					sf.FileName = Path.GetFileName(file);
 					br.BaseStream.Position += 9;
+
+					for (int i = 0; i < 64; i++) sf.Language += (char)br.ReadByte();
+					sf.Language = sf.Language.Trim('\0');
+					br.ReadByte();
 
 					sf.ImageWidth = br.ReadInt32();
 					br.ReadByte();

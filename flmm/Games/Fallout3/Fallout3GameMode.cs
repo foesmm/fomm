@@ -737,7 +737,7 @@ namespace Fomm.Games.Fallout3
 		/// Launches the save games viewer.
 		/// </summary>
 		/// <param name="p_frmMainForm">The main mod management form.</param>
-		public void LaunchSaveGamesViewer(MainForm p_frmMainForm)
+		public virtual void LaunchSaveGamesViewer(MainForm p_frmMainForm)
 		{
 			List<string> lstActive = new List<string>();
 			//the original implementation populated the inactive list with all plugins
