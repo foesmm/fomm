@@ -227,7 +227,7 @@ namespace Fomm.Games.FalloutNewVegas.Script
 		/// <lang cref="false"/> otherwise.</returns>
 		public override bool IsAIActive()
 		{
-			return Fallout3.Tools.ArchiveInvalidation.IsActive();
+			return Tools.ArchiveInvalidation.IsActive();
 		}
 
 		#endregion

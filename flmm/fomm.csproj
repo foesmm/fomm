@@ -243,6 +243,7 @@
     <Compile Include="Games\FalloutNewVegas\SetupForm.Designer.cs">
       <DependentUpon>SetupForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Games\FalloutNewVegas\Tools\ArchiveInvalidation.cs" />
     <Compile Include="Games\FalloutNewVegas\Tools\AutoSorter\FalloutNewVegasBOSSUpdater.cs" />
     <Compile Include="Games\GameMode.cs" />
     <Compile Include="Games\GameTool.cs" />

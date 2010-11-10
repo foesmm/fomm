@@ -831,7 +831,7 @@ namespace Fomm.Games.Fallout3
 		/// Toggles archive invalidation.
 		/// </summary>
 		/// <param name="p_frmMainForm">The main mod management form.</param>
-		public void ToggleArchiveInvalidation(MainForm p_frmMainForm)
+		public virtual void ToggleArchiveInvalidation(MainForm p_frmMainForm)
 		{
 			Fomm.Games.Fallout3.Tools.ArchiveInvalidation.Update();
 		}

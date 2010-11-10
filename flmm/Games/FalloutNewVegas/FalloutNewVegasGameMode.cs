@@ -162,7 +162,6 @@ namespace Fomm.Games.FalloutNewVegas
 		protected override void SetupPaths()
 		{
 			base.SetupPaths();
-			SettingsFiles[SettingsFile.FOIniPath] = SettingsFiles[SettingsFile.FOPrefsIniPath];
 			
 			AdditionalPaths["PluginsFile"] = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "FalloutNV/plugins.txt");
 			AdditionalPaths.Remove("DLCDir");
@@ -358,6 +357,19 @@ namespace Fomm.Games.FalloutNewVegas
 				MessageBox.Show("Failed to launch '" + command + "'\n" + ex.Message);
 				return;
 			}
+		}
+
+		#endregion
+
+		#region Tools Menu
+
+		/// <summary>
+		/// Toggles archive invalidation.
+		/// </summary>
+		/// <param name="p_frmMainForm">The main mod management form.</param>
+		public override void ToggleArchiveInvalidation(MainForm p_frmMainForm)
+		{
+			Fomm.Games.FalloutNewVegas.Tools.ArchiveInvalidation.Update();
 		}
 
 		#endregion
@@ -634,6 +646,8 @@ class Script : FalloutNewVegasBaseScript {
 				Properties.Settings.Default.falloutNewVegasDoneSetup = true;
 				Properties.Settings.Default.Save();
 			}
+
+			SettingsFiles[SettingsFile.FOIniPath] = Path.Combine(PluginsPath, @"..\fallout_default.ini");
 
 			ScanForReadonlyPlugins();
 			ScanForReadonlySettingsFiles();

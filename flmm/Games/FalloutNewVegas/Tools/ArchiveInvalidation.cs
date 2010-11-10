@@ -5,33 +5,38 @@ using MessageBox = System.Windows.Forms.MessageBox;
 using MessageBoxButtons = System.Windows.Forms.MessageBoxButtons;
 using DialogResult = System.Windows.Forms.DialogResult;
 using System.Windows.Forms;
+using Fomm.Games.Fallout3;
 
-namespace Fomm.Games.Fallout3.Tools
+namespace Fomm.Games.FalloutNewVegas.Tools
 {
 	public static class ArchiveInvalidation
 	{
 		private const string AiBsa = "ArchiveInvalidationInvalidated!.bsa";
-
-		private static string GetBSAList()
+		
+		private static string GetBSAList(bool p_booInsertAI)
 		{
 			List<string> bsas = new List<string>(NativeMethods.GetPrivateProfileString("Archive", "SArchiveList", null, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOIniPath]).Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries));
+			List<string> lstNewBSAs = new List<string>();
 			for (int i = 0; i < bsas.Count; i++)
 			{
 				bsas[i] = bsas[i].Trim(' ');
-				if (bsas[i] == AiBsa) bsas.RemoveAt(i--);
+				if (bsas[i].Contains("Misc"))
+					lstNewBSAs.Insert(0, bsas[i]);
+				else if (bsas[i] != AiBsa)
+					lstNewBSAs.Add(bsas[i]);
 			}
-			return string.Join(", ", bsas.ToArray());
+			if (p_booInsertAI)
+				lstNewBSAs.Insert(1, AiBsa);
+			return string.Join(", ", lstNewBSAs.ToArray());
 		}
 
 		private static void ApplyAI()
 		{
-			foreach (FileInfo fi in new DirectoryInfo(Program.GameMode.PluginsPath).GetFiles("Fallout - *.bsa")) fi.LastWriteTime = new DateTime(2008, 10, 1);
-			foreach (FileInfo fi in new DirectoryInfo(Program.GameMode.PluginsPath).GetFiles("Anchorage - *.bsa")) fi.LastWriteTime = new DateTime(2008, 10, 2);
-			foreach (FileInfo fi in new DirectoryInfo(Program.GameMode.PluginsPath).GetFiles("ThePitt - *.bsa")) fi.LastWriteTime = new DateTime(2008, 10, 3);
-			foreach (FileInfo fi in new DirectoryInfo(Program.GameMode.PluginsPath).GetFiles("BrokenSteel - *.bsa")) fi.LastWriteTime = new DateTime(2008, 10, 4);
-			foreach (FileInfo fi in new DirectoryInfo(Program.GameMode.PluginsPath).GetFiles("PointLookout - *.bsa")) fi.LastWriteTime = new DateTime(2008, 10, 5);
-			foreach (FileInfo fi in new DirectoryInfo(Program.GameMode.PluginsPath).GetFiles("Zeta - *.bsa")) fi.LastWriteTime = new DateTime(2008, 10, 6);
-
+			foreach (FileInfo fi in new DirectoryInfo(Program.GameMode.PluginsPath).GetFiles("Fallout - *.bsa"))
+				fi.LastWriteTime = new DateTime(2008, 10, 1);
+			foreach (FileInfo fi in new DirectoryInfo(Program.GameMode.PluginsPath).GetFiles("ClassicPack - *.bsa"))
+				fi.LastWriteTime = new DateTime(2008, 10, 1);
+			
 			NativeMethods.WritePrivateProfileIntA("Archive", "bInvalidateOlderFiles", 1, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOIniPath]);
 			NativeMethods.WritePrivateProfileIntA("General", "bLoadFaceGenHeadEGTFiles", 1, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOIniPath]);
 			NativeMethods.WritePrivateProfileStringA("Archive", "SInvalidationFile", "", Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOIniPath]);
@@ -43,7 +48,7 @@ namespace Fomm.Games.Fallout3.Tools
                 0x36, 0x00, 0x00, 0x00, 0x01, 0x00, 0x61, 0x00, 0x01, 0x61, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                 0x00, 0x00, 0x48, 0x00, 0x00, 0x00, 0x61, 0x00
             });
-			NativeMethods.WritePrivateProfileStringA("Archive", "SArchiveList", AiBsa + ", " + GetBSAList(), Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOIniPath]);
+			NativeMethods.WritePrivateProfileStringA("Archive", "SArchiveList", GetBSAList(true), Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOIniPath]);
 		}
 
 		private static void RemoveAI()
@@ -52,7 +57,7 @@ namespace Fomm.Games.Fallout3.Tools
 			NativeMethods.WritePrivateProfileIntA("General", "bLoadFaceGenHeadEGTFiles", 0, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOIniPath]);
 			NativeMethods.WritePrivateProfileStringA("Archive", "SInvalidationFile", "ArchiveInvalidation.txt", Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOIniPath]);
 			File.Delete(Path.Combine(Program.GameMode.PluginsPath, AiBsa));
-			NativeMethods.WritePrivateProfileStringA("Archive", "SArchiveList", GetBSAList(), Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOIniPath]);
+			NativeMethods.WritePrivateProfileStringA("Archive", "SArchiveList", GetBSAList(false), Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOIniPath]);
 		}
 
 		public static void Update()
