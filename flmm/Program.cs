@@ -417,7 +417,7 @@ namespace Fomm
 #endif
 					if (!GameMode.Init())
 						return;
-
+					PermissionsManager.Init();
 					InstallLog.Reload();
 #if TRACE
 					Trace.WriteLine("Install Info Dir: " + GameMode.InstallInfoDirectory);
@@ -460,9 +460,6 @@ namespace Fomm
 						Trace.WriteLine("Done Install Log Upgrade.");
 #endif
 					}
-
-					PermissionsManager.Init();
-
 #if TRACE
 						Trace.Unindent();
 						Trace.Write("Uninstalling missing FOMods...");
