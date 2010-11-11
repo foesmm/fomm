@@ -103,37 +103,48 @@ namespace Fomm.Games.Fallout3
 			TxFileManager tfmFileManager = new TxFileManager();
 
 			//copy the mods
-			List<string> lstModFiles = new List<string>();
-			lstModFiles.AddRange(Directory.GetFiles(Path.Combine(strOldFOMMLocation, "mods"), "*.fomod"));
-			lstModFiles.AddRange(Directory.GetFiles(Path.Combine(strOldFOMMLocation, "mods"), "*.xml"));
-			m_bwdProgress.ItemMessage = "Copying mods...";
+			//do we need to copy?
 #if TRACE
-			Trace.WriteLine("Copying Mods (" + lstModFiles.Count + "):");
-			Trace.Indent();
+			Trace.Write("Copying Mods (");
 #endif
-			m_bwdProgress.ItemProgressMaximum = lstModFiles.Count;
-			m_bwdProgress.ItemProgress = 0;
-			string strModFileName = null;
-			foreach (string strMod in lstModFiles)
+			if (!Path.Combine(strOldFOMMLocation, "mods").Equals(Program.GameMode.ModDirectory))
 			{
-				strModFileName = Path.GetFileName(strMod);
-				m_bwdProgress.ItemMessage = "Copying mods (" + strModFileName + ")...";
+				List<string> lstModFiles = new List<string>();
+				lstModFiles.AddRange(Directory.GetFiles(Path.Combine(strOldFOMMLocation, "mods"), "*.fomod"));
+				lstModFiles.AddRange(Directory.GetFiles(Path.Combine(strOldFOMMLocation, "mods"), "*.xml"));
+				m_bwdProgress.ItemMessage = "Copying mods...";
 #if TRACE
-				Trace.WriteLine(strModFileName);
+				Trace.WriteLine(lstModFiles.Count + "):");
+				Trace.Indent();
 #endif
-				tfmFileManager.Copy(strMod, Path.Combine(Program.GameMode.ModDirectory, strModFileName), true);
-				//File.Copy(strMod, Path.Combine(Program.GameMode.ModDirectory, Path.GetFileName(strMod)));
-				m_bwdProgress.StepItemProgress();
-				if (m_bwdProgress.Cancelled())
+				m_bwdProgress.ItemProgressMaximum = lstModFiles.Count;
+				m_bwdProgress.ItemProgress = 0;
+				string strModFileName = null;
+				foreach (string strMod in lstModFiles)
 				{
+					strModFileName = Path.GetFileName(strMod);
+					m_bwdProgress.ItemMessage = "Copying mods (" + strModFileName + ")...";
 #if TRACE
-					Trace.Unindent();
-					Trace.WriteLine("Cancelled copying Mods.");
+					Trace.WriteLine(strMod + " => " + Path.Combine(Program.GameMode.ModDirectory, strModFileName));
 #endif
-					return;
+					tfmFileManager.Copy(strMod, Path.Combine(Program.GameMode.ModDirectory, strModFileName), true);
+					//File.Copy(strMod, Path.Combine(Program.GameMode.ModDirectory, Path.GetFileName(strMod)));
+					m_bwdProgress.StepItemProgress();
+					if (m_bwdProgress.Cancelled())
+					{
+#if TRACE
+						Trace.Unindent();
+						Trace.WriteLine("Cancelled copying Mods.");
+#endif
+						return;
+					}
 				}
 			}
 #if TRACE
+			else
+			{
+				Trace.WriteLine("No Need).");
+			}
 			Trace.Unindent();
 			Trace.WriteLine("Done copying Mods.");
 #endif
@@ -141,16 +152,27 @@ namespace Fomm.Games.Fallout3
 			m_bwdProgress.StepOverallProgress();
 
 			//copy overwrites folder
-			string[] strOverwriteFiles = Directory.GetFiles(Path.Combine(strOldFOMMLocation, "overwrites"), "*.*", SearchOption.AllDirectories);
-			m_bwdProgress.ItemMessage = "Copying overwrites...";
-			m_bwdProgress.ItemProgressMaximum = strOverwriteFiles.Length;
-			m_bwdProgress.ItemProgress = 0;
+			//do we need to?
 #if TRACE
-			Trace.WriteLine("Copying overwrite files (" + strOverwriteFiles.Length + "):");
-			Trace.Indent();
+			Trace.WriteLine("Copying overwrite files (");
 #endif
-			FileUtil.Copy(tfmFileManager, Path.Combine(strOldFOMMLocation, "overwrites"), ((Fallout3GameMode)Program.GameMode).OverwriteDirectory, OverwriteFileCopied);
+			if (!Path.Combine(strOldFOMMLocation, "overwrites").Equals(((Fallout3GameMode)Program.GameMode).OverwriteDirectory))
+			{
+				string[] strOverwriteFiles = Directory.GetFiles(Path.Combine(strOldFOMMLocation, "overwrites"), "*.*", SearchOption.AllDirectories);
+				m_bwdProgress.ItemMessage = "Copying overwrites...";
+				m_bwdProgress.ItemProgressMaximum = strOverwriteFiles.Length;
+				m_bwdProgress.ItemProgress = 0;
 #if TRACE
+				Trace.WriteLine(strOverwriteFiles.Length + "):");
+				Trace.Indent();
+#endif
+				FileUtil.Copy(tfmFileManager, Path.Combine(strOldFOMMLocation, "overwrites"), ((Fallout3GameMode)Program.GameMode).OverwriteDirectory, OverwriteFileCopied);
+			}
+#if TRACE
+			else
+			{
+				Trace.WriteLine("No Need).");
+			}
 			Trace.Unindent();
 			Trace.WriteLine("Done copying overwrite files.");
 #endif
@@ -158,31 +180,42 @@ namespace Fomm.Games.Fallout3
 			m_bwdProgress.StepOverallProgress();
 
 			//copy install logs
-			string[] strMiscFiles = Directory.GetFiles(Path.Combine(strOldFOMMLocation, "fomm"), "InstallLog.xml*");
-			m_bwdProgress.ItemMessage = "Copying info files...";
-			m_bwdProgress.ItemProgressMaximum = strMiscFiles.Length;
-			m_bwdProgress.ItemProgress = 0;
+			//do we need to?
 #if TRACE
-			Trace.WriteLine("Copying install logs (" + strMiscFiles.Length + "):");
-			Trace.Indent();
+			Trace.WriteLine("Copying install logs (");
 #endif
-			foreach (string strFile in strMiscFiles)
+			if (!Path.Combine(strOldFOMMLocation, "fomm").Equals(Program.GameMode.InstallInfoDirectory))
 			{
+				string[] strMiscFiles = Directory.GetFiles(Path.Combine(strOldFOMMLocation, "fomm"), "InstallLog.xml*");
+				m_bwdProgress.ItemMessage = "Copying info files...";
+				m_bwdProgress.ItemProgressMaximum = strMiscFiles.Length;
+				m_bwdProgress.ItemProgress = 0;
 #if TRACE
-				Trace.WriteLine(strModFileName);
+				Trace.WriteLine(strMiscFiles.Length + "):");
+				Trace.Indent();
 #endif
-				tfmFileManager.Copy(strFile, Path.Combine(Program.GameMode.InstallInfoDirectory, Path.GetFileName(strFile)), true);
-				m_bwdProgress.StepItemProgress();
-				if (m_bwdProgress.Cancelled())
+				foreach (string strFile in strMiscFiles)
 				{
 #if TRACE
-					Trace.Unindent();
-					Trace.WriteLine("Cancelled copying install logs.");
-#endif				
-					return;
+					Trace.WriteLine(strFile + " => " + Path.Combine(Program.GameMode.InstallInfoDirectory, Path.GetFileName(strFile)));
+#endif
+					tfmFileManager.Copy(strFile, Path.Combine(Program.GameMode.InstallInfoDirectory, Path.GetFileName(strFile)), true);
+					m_bwdProgress.StepItemProgress();
+					if (m_bwdProgress.Cancelled())
+					{
+#if TRACE
+						Trace.Unindent();
+						Trace.WriteLine("Cancelled copying install logs.");
+#endif
+						return;
+					}
 				}
 			}
 #if TRACE
+			else
+			{
+				Trace.WriteLine("No Need).");
+			}
 			Trace.Unindent();
 			Trace.WriteLine("Done copying install logs.");
 #endif
