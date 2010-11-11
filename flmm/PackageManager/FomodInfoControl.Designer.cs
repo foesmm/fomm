@@ -198,6 +198,7 @@
 			this.tbDescription.Location = new System.Drawing.Point(3, 198);
 			this.tbDescription.Multiline = true;
 			this.tbDescription.Name = "tbDescription";
+			this.tbDescription.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
 			this.tbDescription.Size = new System.Drawing.Size(364, 142);
 			this.tbDescription.TabIndex = 38;
 			// 
@@ -269,7 +270,7 @@
 			// 
 			this.erpErrors.ContainerControl = this;
 			// 
-			// FomodInfo
+			// FomodInfoControl
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -295,7 +296,7 @@
 			this.Controls.Add(this.tbAuthor);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.tbName);
-			this.Name = "FomodInfo";
+			this.Name = "FomodInfoControl";
 			this.Size = new System.Drawing.Size(371, 689);
 			((System.ComponentModel.ISupportInitialize)(this.pbxScreenshot)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.erpErrors)).EndInit();
