@@ -63,63 +63,66 @@ namespace Fomm.InstallLogUpgraders
 				if (ProgressWorker.Cancelled())
 					return;
 
-				xmlModInstallLog = new XmlDocument();
-				xmlModInstallLog.Load(strModInstallLog);
+				string strFomodPath = Path.ChangeExtension(strModInstallLog, ".fomod");
+				if (File.Exists(strFomodPath))
+				{
+					xmlModInstallLog = new XmlDocument();
+					xmlModInstallLog.Load(strModInstallLog);
 #if TRACE
 				Trace.WriteLine("Parsed");
 #endif
-				//figure out how much work we need to do for this mod
-				XmlNodeList xnlFiles = xmlModInstallLog.SelectNodes("descendant::installedFiles/*");
-				XmlNodeList xnlIniEdits = xmlModInstallLog.SelectNodes("descendant::iniEdits/*");
-				XmlNodeList xnlSdpEdits = xmlModInstallLog.SelectNodes("descendant::sdpEdits/*");
-				Int32 intItemCount = xnlFiles.Count + xnlIniEdits.Count + xnlSdpEdits.Count;
-				ProgressWorker.ItemMessage = Path.GetFileNameWithoutExtension(strModInstallLog);
-				ProgressWorker.ItemProgress = 0;
-				ProgressWorker.ItemProgressMaximum = intItemCount;
-
-				fomodMod = new fomod(strModInstallLog.ToLowerInvariant().Replace(".xml", ".fomod"));
-				strModBaseName = fomodMod.BaseName;
-				InstallLog.Current.AddMod(fomodMod);
+					//figure out how much work we need to do for this mod
+					XmlNodeList xnlFiles = xmlModInstallLog.SelectNodes("descendant::installedFiles/*");
+					XmlNodeList xnlIniEdits = xmlModInstallLog.SelectNodes("descendant::iniEdits/*");
+					XmlNodeList xnlSdpEdits = xmlModInstallLog.SelectNodes("descendant::sdpEdits/*");
+					Int32 intItemCount = xnlFiles.Count + xnlIniEdits.Count + xnlSdpEdits.Count;
+					ProgressWorker.ItemMessage = Path.GetFileNameWithoutExtension(strModInstallLog);
+					ProgressWorker.ItemProgress = 0;
+					ProgressWorker.ItemProgressMaximum = intItemCount;
+					
+					fomodMod = new fomod(strFomodPath);
+					strModBaseName = fomodMod.BaseName;
+					InstallLog.Current.AddMod(fomodMod);
 
 #if TRACE
 				Trace.Write("Upgrading files...");
 #endif
-				m_dicDefaultFileOwners = new Dictionary<string, string>();
-				UpgradeInstalledFiles(xmlModInstallLog, fomodMod, strModBaseName);
-				//we now have to tell all the remaining default owners that are are indeed
-				// the owners
-				foreach (KeyValuePair<string, string> kvpOwner in m_dicDefaultFileOwners)
-					MakeOverwrittenModOwner(kvpOwner.Value, kvpOwner.Key);
+					m_dicDefaultFileOwners = new Dictionary<string, string>();
+					UpgradeInstalledFiles(xmlModInstallLog, fomodMod, strModBaseName);
+					//we now have to tell all the remaining default owners that are are indeed
+					// the owners
+					foreach (KeyValuePair<string, string> kvpOwner in m_dicDefaultFileOwners)
+						MakeOverwrittenModOwner(kvpOwner.Value, kvpOwner.Key);
 #if TRACE
 				Trace.WriteLine("Done.");
 #endif
-				if (ProgressWorker.Cancelled())
-					return;
+					if (ProgressWorker.Cancelled())
+						return;
 
 #if TRACE
 				Trace.Write("Upgrading INI edits...");
 #endif
-				UpgradeIniEdits(xmlModInstallLog, strModBaseName);
+					UpgradeIniEdits(xmlModInstallLog, strModBaseName);
 #if TRACE
 				Trace.WriteLine("Done.");
 #endif
-				if (ProgressWorker.Cancelled())
-					return;
+					if (ProgressWorker.Cancelled())
+						return;
 
 #if TRACE
 				Trace.Write("Upgrading SDP edits...");
 #endif
-				UpgradeSdpEdits(xmlModInstallLog, strModBaseName);
+					UpgradeSdpEdits(xmlModInstallLog, strModBaseName);
 #if TRACE
 				Trace.WriteLine("Done.");
 #endif
-				if (ProgressWorker.Cancelled())
-					return;
+					if (ProgressWorker.Cancelled())
+						return;
 
-				if (File.Exists(strModInstallLog + ".bak"))
-					FileManager.Delete(strModInstallLog + ".bak");
-				FileManager.Move(strModInstallLog, strModInstallLog + ".bak");
-
+					if (File.Exists(strModInstallLog + ".bak"))
+						FileManager.Delete(strModInstallLog + ".bak");
+					FileManager.Move(strModInstallLog, strModInstallLog + ".bak");
+				}
 				ProgressWorker.StepOverallProgress();
 #if TRACE
 				Trace.Unindent();
