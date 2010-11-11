@@ -10,7 +10,7 @@ namespace fomm.Scripting
 	/// </summary>
 	public abstract class Fallout3BaseScript : GenericBaseScript
 	{
-		protected static Fallout3ModInstallScript Script
+		internal static Fallout3ModInstallScript Script
 		{
 			get
 			{

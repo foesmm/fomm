@@ -10,7 +10,7 @@ namespace fomm.Scripting
 	/// </summary>
 	public abstract class FalloutNewVegasBaseScript : GenericBaseScript
 	{
-		protected static FalloutNewVegasModInstallScript Script
+		internal static FalloutNewVegasModInstallScript Script
 		{
 			get
 			{
