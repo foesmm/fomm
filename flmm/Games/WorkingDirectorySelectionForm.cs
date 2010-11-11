@@ -6,6 +6,9 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
+#if TRACE
+using System.Diagnostics;
+#endif
 
 namespace Fomm.Games
 {
@@ -19,7 +22,7 @@ namespace Fomm.Games
 	{
 		private string[] m_strSearchFiles = null;
 		private BackgroundWorkerProgressDialog m_bwdProgress = null;
-		private string m_strFoundWorkingDirectory = null;		
+		private string m_strFoundWorkingDirectory = null;
 
 		#region Properties
 
@@ -114,17 +117,31 @@ namespace Fomm.Games
 		{
 			DriveInfo[] difDrives = DriveInfo.GetDrives();
 
-			foreach (DriveInfo difDrive in difDrives)
+#if TRACE
+			string strLastDrive = null;
+			try
 			{
-				if (difDrive.DriveType == DriveType.CDRom)
-					continue;
-				string strFound = Search(difDrive.Name);
-				if (!String.IsNullOrEmpty(strFound))
+#endif
+				foreach (DriveInfo difDrive in difDrives)
 				{
-					m_strFoundWorkingDirectory = strFound;
-					return;
+					strLastDrive = difDrive.Name;
+					if (difDrive.DriveType == DriveType.CDRom)
+						continue;
+					string strFound = Search(difDrive.Name);
+					if (!String.IsNullOrEmpty(strFound))
+					{
+						m_strFoundWorkingDirectory = strFound;
+						return;
+					}
 				}
+#if TRACE
 			}
+			catch (Exception e)
+			{
+				Trace.WriteLine("Exception while searching " + strLastDrive + ":");
+				Program.TraceException(e);
+			}
+#endif
 		}
 
 		/// <summary>
@@ -150,6 +167,13 @@ namespace Fomm.Games
 					//we don't have access to the path we are trying to search, so let's bail
 					return null;
 				}
+#if TRACE
+				catch (Exception ex)
+				{
+					Trace.WriteLine("Exception while searching for " + strSearchFile + " in " + p_strPath + ":");
+					Program.TraceException(ex);
+				}
+#endif
 			}
 			string[] strDirectories = Directory.GetDirectories(p_strPath);
 			foreach (string strDirectory in strDirectories)

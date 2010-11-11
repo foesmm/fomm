@@ -69,6 +69,17 @@ namespace Fomm.PackageManager
 			permissions.AddPermission(new SecurityPermission(SecurityPermissionFlag.UnmanagedCode));
 			permissions.AddPermission(new UIPermission(UIPermissionWindow.AllWindows));
 #if TRACE
+			Trace.Write("Demanding access to System tmp Dir...");
+			try
+			{
+				permissions.Demand();
+				Trace.WriteLine("Succeeded.");
+			}
+			catch (Exception e)
+			{
+				Trace.WriteLine("Failed:");
+				Program.TraceException(e);
+			}
 			Trace.WriteLine("   System tmp Dir Permissions:");
 			Trace.Indent();
 			DirectorySecurity drsPermissions = Directory.GetAccessControl(Path.GetTempPath());
