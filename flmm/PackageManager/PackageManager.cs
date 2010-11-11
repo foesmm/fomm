@@ -11,6 +11,7 @@ using System.Diagnostics;
 using Fomm.PackageManager.FomodBuilder;
 using Fomm.PackageManager.Controls;
 using Fomm.Util;
+using System.ComponentModel;
 
 namespace Fomm.PackageManager
 {
@@ -536,7 +537,18 @@ namespace Fomm.PackageManager
 		{
 			if (lvModList.SelectedItems.Count != 1) return;
 			fomod mod = (fomod)lvModList.SelectedItems[0].Tag;
-			System.Diagnostics.Process.Start(mod.Website, "");
+			try
+			{
+				System.Diagnostics.Process.Start(mod.Website);
+			}
+			catch (Win32Exception ex)
+			{
+				MessageBox.Show(this, "Cannot find programme to open: " + mod.Website, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+#if TRACE
+				Trace.WriteLine("Cannot find programme to open: " + mod.Website);
+				Program.TraceException(ex);
+#endif
+			}
 		}
 
 		private void emailAuthorToolStripMenuItem_Click(object sender, EventArgs e)
