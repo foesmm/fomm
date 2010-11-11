@@ -84,7 +84,9 @@ namespace Fomm.Games.FalloutNewVegas.Tools
 
 		public static bool IsActive()
 		{
-			return NativeMethods.GetPrivateProfileIntA("Archive", "bInvalidateOlderFiles", 0, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOIniPath]) != 0;
+			List<string> bsas = new List<string>(NativeMethods.GetPrivateProfileString("Archive", "SArchiveList", null, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOIniPath]).Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries));
+			Int32 intInvalidate = NativeMethods.GetPrivateProfileIntA("Archive", "bInvalidateOlderFiles", 0, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOIniPath]);
+			return bsas.Contains(AiBsa) || (intInvalidate != 0);
 		}
 	}
 }
