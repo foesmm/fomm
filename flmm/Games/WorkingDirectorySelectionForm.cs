@@ -122,18 +122,20 @@ namespace Fomm.Games
 			try
 			{
 #endif
-				foreach (DriveInfo difDrive in difDrives)
-				{
+			foreach (DriveInfo difDrive in difDrives)
+			{
+#if TRACE
 					strLastDrive = difDrive.Name;
-					if (difDrive.DriveType == DriveType.CDRom)
-						continue;
-					string strFound = Search(difDrive.Name);
-					if (!String.IsNullOrEmpty(strFound))
-					{
-						m_strFoundWorkingDirectory = strFound;
-						return;
-					}
+#endif
+				if (difDrive.DriveType == DriveType.CDRom)
+					continue;
+				string strFound = Search(difDrive.Name);
+				if (!String.IsNullOrEmpty(strFound))
+				{
+					m_strFoundWorkingDirectory = strFound;
+					return;
 				}
+			}
 #if TRACE
 			}
 			catch (Exception e)
