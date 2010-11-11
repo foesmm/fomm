@@ -164,7 +164,9 @@ class ScriptRunner {
 			catch (Exception ex)
 			{
 				System.Windows.Forms.MessageBox.Show("An exception occured. The mod may not have been activated completely.\n" +
-					"Check 'ScriptException.txt' for full details", "Error");
+					"Check" + Environment.NewLine +
+					System.IO.Path.Combine(Program.GameMode.InstallInfoDirectory, "ScriptException.txt") + Environment.NewLine +
+					"for full details", "Error");
 				string str = ex.ToString();
 				while (ex.InnerException != null)
 				{
