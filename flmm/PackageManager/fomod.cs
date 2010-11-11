@@ -435,18 +435,18 @@ namespace Fomm.PackageManager
 				string strTmpInfo = Program.CreateTempDirectory();
 				try
 				{
-					Directory.CreateDirectory(Path.Combine(strTmpInfo, "fomod"));
+					Directory.CreateDirectory(Path.Combine(strTmpInfo, GetPrefixAdjustedPath("fomod")));
 
 					if (ContainsFile("fomod/info.xml"))
-						File.WriteAllBytes(Path.Combine(strTmpInfo, "fomod/info.xml"), GetFileContents("fomod/info.xml"));
+						File.WriteAllBytes(Path.Combine(strTmpInfo, GetPrefixAdjustedPath("fomod/info.xml")), GetFileContents("fomod/info.xml"));
 					else
-						File.WriteAllText(Path.Combine(strTmpInfo, "fomod/info.xml"), "<fomod/>");
+						File.WriteAllText(Path.Combine(strTmpInfo, GetPrefixAdjustedPath("fomod/info.xml")), "<fomod/>");
 
 					if (!String.IsNullOrEmpty(m_strReadmePath))
-						File.WriteAllBytes(Path.Combine(strTmpInfo, m_strReadmePath), GetFileContents(m_strReadmePath));
+						File.WriteAllBytes(Path.Combine(strTmpInfo, GetPrefixAdjustedPath(m_strReadmePath)), GetFileContents(m_strReadmePath));
 
 					if (!String.IsNullOrEmpty(m_strScreenshotPath))
-						File.WriteAllBytes(Path.Combine(strTmpInfo, m_strScreenshotPath), GetFileContents(m_strScreenshotPath));
+						File.WriteAllBytes(Path.Combine(strTmpInfo, GetPrefixAdjustedPath(m_strScreenshotPath)), GetFileContents(m_strScreenshotPath));
 
 					string[] strFilesToCompress = Directory.GetFiles(strTmpInfo, "*.*", SearchOption.AllDirectories);
 					if (strFilesToCompress.Length > 0)
@@ -542,9 +542,9 @@ namespace Fomm.PackageManager
 			strPath = strPath.Trim(Path.DirectorySeparatorChar);
 			if (m_dicMovedArchiveFiles.ContainsKey(strPath))
 				return true;
-			if (m_arcFile.ContainsFile(Path.Combine(PathPrefix, strPath)))
+			if (m_arcFile.ContainsFile(GetPrefixAdjustedPath(strPath)))
 				return true;
-			return ((m_arcCacheFile != null) && m_arcCacheFile.ContainsFile(Path.Combine(PathPrefix, strPath)));
+			return ((m_arcCacheFile != null) && m_arcCacheFile.ContainsFile(GetPrefixAdjustedPath(strPath)));
 		}
 
 		/// <summary>
@@ -596,7 +596,7 @@ namespace Fomm.PackageManager
 		/// <returns>The contents of the specified file.</returns>
 		protected byte[] GetFileContents(string p_strPath)
 		{
-			if ((m_arcCacheFile != null) && m_arcCacheFile.ContainsFile(p_strPath))
+			if ((m_arcCacheFile != null) && m_arcCacheFile.ContainsFile(GetPrefixAdjustedPath(p_strPath)))
 				return m_arcCacheFile.GetFileContents(GetPrefixAdjustedPath(p_strPath));
 			return m_arcFile.GetFileContents(GetPrefixAdjustedPath(p_strPath));
 		}
@@ -612,7 +612,7 @@ namespace Fomm.PackageManager
 		{
 			if (!m_arcFile.ReadOnly)
 				m_arcFile.DeleteFile(GetPrefixAdjustedPath(p_strPath));
-			if ((m_arcCacheFile != null) && m_arcCacheFile.ContainsFile(p_strPath))
+			if ((m_arcCacheFile != null) && m_arcCacheFile.ContainsFile(GetPrefixAdjustedPath(p_strPath)))
 				m_arcCacheFile.DeleteFile(GetPrefixAdjustedPath(p_strPath));
 		}
 
@@ -628,7 +628,7 @@ namespace Fomm.PackageManager
 		{
 			if (!m_arcFile.ReadOnly)
 				m_arcFile.ReplaceFile(GetPrefixAdjustedPath(p_strPath), p_bteData);
-			if ((m_arcCacheFile != null) && m_arcCacheFile.ContainsFile(p_strPath))
+			if ((m_arcCacheFile != null) && (m_arcCacheFile.ContainsFile(GetPrefixAdjustedPath(p_strPath)) || m_arcFile.ReadOnly))
 				m_arcCacheFile.ReplaceFile(GetPrefixAdjustedPath(p_strPath), p_bteData);
 		}
 
@@ -644,7 +644,7 @@ namespace Fomm.PackageManager
 		{
 			if (!m_arcFile.ReadOnly)
 				m_arcFile.ReplaceFile(GetPrefixAdjustedPath(p_strPath), p_strData);
-			if ((m_arcCacheFile != null) && m_arcCacheFile.ContainsFile(p_strPath))
+			if ((m_arcCacheFile != null) && (m_arcCacheFile.ContainsFile(GetPrefixAdjustedPath(p_strPath)) || m_arcFile.ReadOnly))
 				m_arcCacheFile.ReplaceFile(GetPrefixAdjustedPath(p_strPath), p_strData);
 		}
 
