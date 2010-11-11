@@ -6,6 +6,9 @@ using System.Collections.Generic;
 #if TRACE
 using System.Diagnostics;
 using Microsoft.Win32;
+using System.Security.AccessControl;
+using System.Security.Principal;
+using System.Threading;
 #endif
 
 namespace Fomm.PackageManager
@@ -35,6 +38,7 @@ namespace Fomm.PackageManager
 			Trace.WriteLine(Program.GameMode.InstallInfoDirectory);
 			Trace.Write("   System tmp Dir: ");
 			Trace.WriteLine(Path.GetTempPath());
+			Directory.GetAccessControl(Path.GetTempPath());
 			Trace.WriteLine("   Settings Files: ");
 			Trace.Indent();
 			foreach (string strValue in Program.GameMode.SettingsFiles.Values)
@@ -64,6 +68,39 @@ namespace Fomm.PackageManager
 			permissions.AddPermission(fipFilePermission);
 			permissions.AddPermission(new SecurityPermission(SecurityPermissionFlag.UnmanagedCode));
 			permissions.AddPermission(new UIPermission(UIPermissionWindow.AllWindows));
+#if TRACE
+			Trace.WriteLine("   System tmp Dir Permissions:");
+			Trace.Indent();
+			DirectorySecurity drsPermissions = Directory.GetAccessControl(Path.GetTempPath());
+			Dictionary<string, List<FileSystemRights>> dicRights = new Dictionary<string, List<FileSystemRights>>();
+			foreach (FileSystemAccessRule fsrRule in drsPermissions.GetAccessRules(true, true, typeof(NTAccount)))
+			{
+				if (!dicRights.ContainsKey(fsrRule.IdentityReference.Value))
+					dicRights[fsrRule.IdentityReference.Value] = new List<FileSystemRights>();
+				dicRights[fsrRule.IdentityReference.Value].Add(fsrRule.FileSystemRights);
+			}
+			foreach (KeyValuePair<string, List<FileSystemRights>> kvpRight in dicRights)
+			{
+				Trace.WriteLine(kvpRight.Key + " =>");
+				Trace.Indent();
+				foreach (FileSystemRights fsrRight in kvpRight.Value)
+					Trace.WriteLine(fsrRight.ToString());
+				Trace.Unindent();
+			}
+			Trace.Unindent();
+			Trace.Write("Testing access to System tmp Dir...");
+			try
+			{
+				File.WriteAllText(Path.Combine(Path.GetTempPath(), "testFile.txt"), "This is fun.");
+				Trace.WriteLine("Passed: " + File.ReadAllText(Path.Combine(Path.GetTempPath(), "testFile.txt")));
+				File.Delete(Path.Combine(Path.GetTempPath(), "testFile.txt"));
+			}
+			catch (Exception e)
+			{
+				Trace.WriteLine("Failed: ");
+				Program.TraceException(e);
+			}
+#endif
 		}
 
 		/// <summary>
