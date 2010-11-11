@@ -40,8 +40,8 @@
 			this.nudValue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.nudValue.Location = new System.Drawing.Point(3, 42);
 			this.nudValue.Maximum = new decimal(new int[] {
-            100000000,
-            0,
+            -1,
+            -1,
             0,
             0});
 			this.nudValue.Name = "nudValue";
