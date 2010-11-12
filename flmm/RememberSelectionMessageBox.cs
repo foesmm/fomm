@@ -83,16 +83,16 @@ namespace Fomm
 			switch (p_mbiIcon)
 			{
 				case MessageBoxIcon.Information:
-					pbxIcon.Image = Image.FromFile(@"C:\Program Files (x86)\Microsoft Visual Studio 9.0\Common7\VS2008ImageLibrary\1033\VS2008ImageLibrary\Objects\png_format\WinVista\info.png");
+					pbxIcon.Image = Properties.Resources.info;
 					break;
 				case MessageBoxIcon.Error:
-					pbxIcon.Image = Image.FromFile(@"C:\Program Files (x86)\Microsoft Visual Studio 9.0\Common7\VS2008ImageLibrary\1033\VS2008ImageLibrary\Objects\png_format\WinVista\error.png");
+					pbxIcon.Image = Properties.Resources.error;
 					break;
 				case MessageBoxIcon.Warning:
-					pbxIcon.Image = Image.FromFile(@"C:\Program Files (x86)\Microsoft Visual Studio 9.0\Common7\VS2008ImageLibrary\1033\VS2008ImageLibrary\Objects\png_format\WinVista\warning.png");
+					pbxIcon.Image = Properties.Resources.Warning;
 					break;
 				case MessageBoxIcon.Question:
-					pbxIcon.Image = Image.FromFile(@"C:\Program Files (x86)\Microsoft Visual Studio 9.0\Common7\VS2008ImageLibrary\1033\VS2008ImageLibrary\Objects\png_format\WinVista\help.png");
+					pbxIcon.Image = Properties.Resources.help;
 					break;
 				case MessageBoxIcon.None:
 					booShowIcon = false;

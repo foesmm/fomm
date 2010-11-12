@@ -937,6 +937,10 @@
     <Content Include="data\Fallout3\TESsnip\ScriptCompiler\ScriptFunctionsFormat.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="Resources\info.png" />
+    <None Include="Resources\error.png" />
+    <None Include="Resources\Warning.png" />
+    <None Include="Resources\help.png" />
     <Content Include="ShaderDisasm.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
