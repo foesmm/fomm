@@ -14,7 +14,7 @@ namespace Fomm.Games.Fallout3.Tools
 
 		private static string GetBSAList()
 		{
-			List<string> bsas = new List<string>(NativeMethods.GetPrivateProfileString("Archive", "SArchiveList", null, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOIniPath]).Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries));
+			List<string> bsas = new List<string>(NativeMethods.GetPrivateProfileString("Archive", "SArchiveList", null, ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOIniPath).Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries));
 			for (int i = 0; i < bsas.Count; i++)
 			{
 				bsas[i] = bsas[i].Trim(' ');
@@ -32,9 +32,9 @@ namespace Fomm.Games.Fallout3.Tools
 			foreach (FileInfo fi in new DirectoryInfo(Program.GameMode.PluginsPath).GetFiles("PointLookout - *.bsa")) fi.LastWriteTime = new DateTime(2008, 10, 5);
 			foreach (FileInfo fi in new DirectoryInfo(Program.GameMode.PluginsPath).GetFiles("Zeta - *.bsa")) fi.LastWriteTime = new DateTime(2008, 10, 6);
 
-			NativeMethods.WritePrivateProfileIntA("Archive", "bInvalidateOlderFiles", 1, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOIniPath]);
-			NativeMethods.WritePrivateProfileIntA("General", "bLoadFaceGenHeadEGTFiles", 1, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOIniPath]);
-			NativeMethods.WritePrivateProfileStringA("Archive", "SInvalidationFile", "", Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOIniPath]);
+			NativeMethods.WritePrivateProfileIntA("Archive", "bInvalidateOlderFiles", 1, ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOIniPath);
+			NativeMethods.WritePrivateProfileIntA("General", "bLoadFaceGenHeadEGTFiles", 1, ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOIniPath);
+			NativeMethods.WritePrivateProfileStringA("Archive", "SInvalidationFile", "", ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOIniPath);
 			File.Delete(Path.Combine(Program.GameMode.PluginsPath, "archiveinvalidation.txt"));
 			File.WriteAllBytes(Path.Combine(Program.GameMode.PluginsPath, AiBsa), new byte[] {
                 0x42, 0x53, 0x41, 0x00, 0x67, 0x00, 0x00, 0x00, 0x24, 0x00, 0x00, 0x00, 0x03, 0x07, 0x00, 0x00,
@@ -43,26 +43,26 @@ namespace Fomm.Games.Fallout3.Tools
                 0x36, 0x00, 0x00, 0x00, 0x01, 0x00, 0x61, 0x00, 0x01, 0x61, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                 0x00, 0x00, 0x48, 0x00, 0x00, 0x00, 0x61, 0x00
             });
-			NativeMethods.WritePrivateProfileStringA("Archive", "SArchiveList", AiBsa + ", " + GetBSAList(), Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOIniPath]);
+			NativeMethods.WritePrivateProfileStringA("Archive", "SArchiveList", AiBsa + ", " + GetBSAList(), ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOIniPath);
 		}
 
 		private static void RemoveAI()
 		{
-			NativeMethods.WritePrivateProfileIntA("Archive", "bInvalidateOlderFiles", 0, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOIniPath]);
-			NativeMethods.WritePrivateProfileIntA("General", "bLoadFaceGenHeadEGTFiles", 0, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOIniPath]);
-			NativeMethods.WritePrivateProfileStringA("Archive", "SInvalidationFile", "ArchiveInvalidation.txt", Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOIniPath]);
+			NativeMethods.WritePrivateProfileIntA("Archive", "bInvalidateOlderFiles", 0, ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOIniPath);
+			NativeMethods.WritePrivateProfileIntA("General", "bLoadFaceGenHeadEGTFiles", 0, ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOIniPath);
+			NativeMethods.WritePrivateProfileStringA("Archive", "SInvalidationFile", "ArchiveInvalidation.txt", ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOIniPath);
 			File.Delete(Path.Combine(Program.GameMode.PluginsPath, AiBsa));
-			NativeMethods.WritePrivateProfileStringA("Archive", "SArchiveList", GetBSAList(), Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOIniPath]);
+			NativeMethods.WritePrivateProfileStringA("Archive", "SArchiveList", GetBSAList(), ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOIniPath);
 		}
 
 		public static void Update()
 		{
-			if (!File.Exists(Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOIniPath]))
+			if (!File.Exists(((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOIniPath))
 			{
 				MessageBox.Show("You have no Fallout INI file. Please run Fallout to initialize the file.", "Missing INI", MessageBoxButtons.OK, MessageBoxIcon.Information);
 				return;
 			}
-			if (NativeMethods.GetPrivateProfileIntA("Archive", "bInvalidateOlderFiles", 0, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOIniPath]) == 0)
+			if (NativeMethods.GetPrivateProfileIntA("Archive", "bInvalidateOlderFiles", 0, ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOIniPath) == 0)
 			{
 				if (MessageBox.Show("Apply archive invalidation?", "", MessageBoxButtons.YesNo) == DialogResult.Yes) ApplyAI();
 			}
@@ -74,7 +74,7 @@ namespace Fomm.Games.Fallout3.Tools
 
 		public static bool IsActive()
 		{
-			return NativeMethods.GetPrivateProfileIntA("Archive", "bInvalidateOlderFiles", 0, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOIniPath]) != 0;
+			return NativeMethods.GetPrivateProfileIntA("Archive", "bInvalidateOlderFiles", 0, ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOIniPath) != 0;
 		}
 	}
 }

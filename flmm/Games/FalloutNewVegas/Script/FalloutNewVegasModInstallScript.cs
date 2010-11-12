@@ -63,99 +63,7 @@ namespace Fomm.Games.FalloutNewVegas.Script
 		#endregion
 
 		#region Ini Management
-
-		#region Ini File Value Retrieval
-
-		/// <summary>
-		/// Retrieves the specified Fallout.ini value as a string.
-		/// </summary>
-		/// <param name="p_strSection">The section containing the value to retrieve.</param>
-		/// <param name="p_strKey">The key of the value to retrieve.</param>
-		/// <returns>The specified value as a string.</returns>
-		public override string GetFalloutIniString(string p_strSection, string p_strKey)
-		{
-			return GetSettingsString(FalloutNewVegasGameMode.SettingsFile.FOIniPath, p_strSection, p_strKey);
-		}
-
-		/// <summary>
-		/// Retrieves the specified Fallout.ini value as an integer.
-		/// </summary>
-		/// <param name="p_strSection">The section containing the value to retrieve.</param>
-		/// <param name="p_strKey">The key of the value to retrieve.</param>
-		/// <returns>The specified value as an integer.</returns>
-		public override int GetFalloutIniInt(string p_strSection, string p_strKey)
-		{
-			return GetSettingsInt(FalloutNewVegasGameMode.SettingsFile.FOIniPath, p_strSection, p_strKey);
-		}
-
-		/// <summary>
-		/// Retrieves the specified FalloutPrefs.ini value as a string.
-		/// </summary>
-		/// <param name="p_strSection">The section containing the value to retrieve.</param>
-		/// <param name="p_strKey">The key of the value to retrieve.</param>
-		/// <returns>The specified value as a string.</returns>
-		public override string GetPrefsIniString(string p_strSection, string p_strKey)
-		{
-			return GetSettingsString(FalloutNewVegasGameMode.SettingsFile.FOPrefsIniPath, p_strSection, p_strKey);
-		}
-
-		/// <summary>
-		/// Retrieves the specified FalloutPrefs.ini value as an integer.
-		/// </summary>
-		/// <param name="p_strSection">The section containing the value to retrieve.</param>
-		/// <param name="p_strKey">The key of the value to retrieve.</param>
-		/// <returns>The specified value as an integer.</returns>
-		public override int GetPrefsIniInt(string p_strSection, string p_strKey)
-		{
-			return GetSettingsInt(FalloutNewVegasGameMode.SettingsFile.FOPrefsIniPath, p_strSection, p_strKey);
-		}
-
-		/// <summary>
-		/// Retrieves the specified GECKCustom.ini value as a string.
-		/// </summary>
-		/// <param name="p_strSection">The section containing the value to retrieve.</param>
-		/// <param name="p_strKey">The key of the value to retrieve.</param>
-		/// <returns>The specified value as a string.</returns>
-		public override string GetGeckIniString(string p_strSection, string p_strKey)
-		{
-			return GetSettingsString(FalloutNewVegasGameMode.SettingsFile.GeckIniPath, p_strSection, p_strKey);
-		}
-
-		/// <summary>
-		/// Retrieves the specified GECKCustom.ini value as an integer.
-		/// </summary>
-		/// <param name="p_strSection">The section containing the value to retrieve.</param>
-		/// <param name="p_strKey">The key of the value to retrieve.</param>
-		/// <returns>The specified value as an integer.</returns>
-		public override int GetGeckIniInt(string p_strSection, string p_strKey)
-		{
-			return GetSettingsInt(FalloutNewVegasGameMode.SettingsFile.GeckIniPath, p_strSection, p_strKey);
-		}
-
-		/// <summary>
-		/// Retrieves the specified GECKPrefs.ini value as a string.
-		/// </summary>
-		/// <param name="p_strSection">The section containing the value to retrieve.</param>
-		/// <param name="p_strKey">The key of the value to retrieve.</param>
-		/// <returns>The specified value as a string.</returns>
-		public override string GetGeckPrefsIniString(string p_strSection, string p_strKey)
-		{
-			return GetSettingsString(FalloutNewVegasGameMode.SettingsFile.GeckPrefsIniPath, p_strSection, p_strKey);
-		}
-
-		/// <summary>
-		/// Retrieves the specified GECKPrefs.ini value as an integer.
-		/// </summary>
-		/// <param name="p_strSection">The section containing the value to retrieve.</param>
-		/// <param name="p_strKey">The key of the value to retrieve.</param>
-		/// <returns>The specified value as an integer.</returns>
-		public override int GetGeckPrefsIniInt(string p_strSection, string p_strKey)
-		{
-			return GetSettingsInt(FalloutNewVegasGameMode.SettingsFile.GeckPrefsIniPath, p_strSection, p_strKey);
-		}
-
-		#endregion
-
+		
 		#region Ini Editing
 
 		/// <summary>
@@ -169,49 +77,8 @@ namespace Fomm.Games.FalloutNewVegas.Script
 		/// if the user chose not to overwrite the existing value.</returns>
 		public override bool EditFalloutINI(string p_strSection, string p_strKey, string p_strValue, bool p_booSaveOld)
 		{
-			return EditINI(FalloutNewVegasGameMode.SettingsFile.FOIniPath, p_strSection, p_strKey, p_strValue);
-		}
-
-		/// <summary>
-		/// Sets the specified value in the FalloutPrefs.ini file to the given value. 
-		/// </summary>
-		/// <param name="p_strSection">The section in the Ini file to edit.</param>
-		/// <param name="p_strKey">The key in the Ini file to edit.</param>
-		/// <param name="p_strValue">The value to which to set the key.</param>
-		/// <param name="p_booSaveOld">Not used.</param>
-		/// <returns><lang cref="true"/> if the value was set; <lang cref="false"/>
-		/// if the user chose not to overwrite the existing value.</returns>
-		public override bool EditPrefsINI(string p_strSection, string p_strKey, string p_strValue, bool p_booSaveOld)
-		{
-			return EditINI(FalloutNewVegasGameMode.SettingsFile.FOPrefsIniPath, p_strSection, p_strKey, p_strValue);
-		}
-
-		/// <summary>
-		/// Sets the specified value in the GECKCustom.ini file to the given value. 
-		/// </summary>
-		/// <param name="p_strSection">The section in the Ini file to edit.</param>
-		/// <param name="p_strKey">The key in the Ini file to edit.</param>
-		/// <param name="p_strValue">The value to which to set the key.</param>
-		/// <param name="p_booSaveOld">Not used.</param>
-		/// <returns><lang cref="true"/> if the value was set; <lang cref="false"/>
-		/// if the user chose not to overwrite the existing value.</returns>
-		public override bool EditGeckINI(string p_strSection, string p_strKey, string p_strValue, bool p_booSaveOld)
-		{
-			return EditINI(FalloutNewVegasGameMode.SettingsFile.GeckIniPath, p_strSection, p_strKey, p_strValue);
-		}
-
-		/// <summary>
-		/// Sets the specified value in the GECKPrefs.ini file to the given value. 
-		/// </summary>
-		/// <param name="p_strSection">The section in the Ini file to edit.</param>
-		/// <param name="p_strKey">The key in the Ini file to edit.</param>
-		/// <param name="p_strValue">The value to which to set the key.</param>
-		/// <param name="p_booSaveOld">Not used.</param>
-		/// <returns><lang cref="true"/> if the value was set; <lang cref="false"/>
-		/// if the user chose not to overwrite the existing value.</returns>
-		public override bool EditGeckPrefsINI(string p_strSection, string p_strKey, string p_strValue, bool p_booSaveOld)
-		{
-			return EditINI(FalloutNewVegasGameMode.SettingsFile.GeckPrefsIniPath, p_strSection, p_strKey, p_strValue);
+			EditINI(((FalloutNewVegasGameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FODefaultIniPath, p_strSection, p_strKey, p_strValue);
+			return EditINI(((FalloutNewVegasGameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOIniPath, p_strSection, p_strKey, p_strValue);
 		}
 
 		#endregion

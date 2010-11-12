@@ -192,7 +192,7 @@ namespace Fomm.Games.Fallout3.Script
 		/// <returns>The specified value as a string.</returns>
 		public virtual string GetFalloutIniString(string p_strSection, string p_strKey)
 		{
-			return GetSettingsString(Fallout3GameMode.SettingsFile.FOIniPath, p_strSection, p_strKey);
+			return GetSettingsString(((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOIniPath, p_strSection, p_strKey);
 		}
 
 		/// <summary>
@@ -203,7 +203,7 @@ namespace Fomm.Games.Fallout3.Script
 		/// <returns>The specified value as an integer.</returns>
 		public virtual int GetFalloutIniInt(string p_strSection, string p_strKey)
 		{
-			return GetSettingsInt(Fallout3GameMode.SettingsFile.FOIniPath, p_strSection, p_strKey);
+			return GetSettingsInt(((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOIniPath, p_strSection, p_strKey);
 		}
 
 		/// <summary>
@@ -214,7 +214,7 @@ namespace Fomm.Games.Fallout3.Script
 		/// <returns>The specified value as a string.</returns>
 		public virtual string GetPrefsIniString(string p_strSection, string p_strKey)
 		{
-			return GetSettingsString(Fallout3GameMode.SettingsFile.FOPrefsIniPath, p_strSection, p_strKey);
+			return GetSettingsString(((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOPrefsIniPath, p_strSection, p_strKey);
 		}
 
 		/// <summary>
@@ -225,7 +225,7 @@ namespace Fomm.Games.Fallout3.Script
 		/// <returns>The specified value as an integer.</returns>
 		public virtual int GetPrefsIniInt(string p_strSection, string p_strKey)
 		{
-			return GetSettingsInt(Fallout3GameMode.SettingsFile.FOPrefsIniPath, p_strSection, p_strKey);
+			return GetSettingsInt(((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOPrefsIniPath, p_strSection, p_strKey);
 		}
 
 		/// <summary>
@@ -236,7 +236,7 @@ namespace Fomm.Games.Fallout3.Script
 		/// <returns>The specified value as a string.</returns>
 		public virtual string GetGeckIniString(string p_strSection, string p_strKey)
 		{
-			return GetSettingsString(Fallout3GameMode.SettingsFile.GeckIniPath, p_strSection, p_strKey);
+			return GetSettingsString(((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).GeckIniPath, p_strSection, p_strKey);
 		}
 
 		/// <summary>
@@ -247,7 +247,7 @@ namespace Fomm.Games.Fallout3.Script
 		/// <returns>The specified value as an integer.</returns>
 		public virtual int GetGeckIniInt(string p_strSection, string p_strKey)
 		{
-			return GetSettingsInt(Fallout3GameMode.SettingsFile.GeckIniPath, p_strSection, p_strKey);
+			return GetSettingsInt(((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).GeckIniPath, p_strSection, p_strKey);
 		}
 
 		/// <summary>
@@ -258,7 +258,7 @@ namespace Fomm.Games.Fallout3.Script
 		/// <returns>The specified value as a string.</returns>
 		public virtual string GetGeckPrefsIniString(string p_strSection, string p_strKey)
 		{
-			return GetSettingsString(Fallout3GameMode.SettingsFile.GeckPrefsIniPath, p_strSection, p_strKey);
+			return GetSettingsString(((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).GeckPrefsIniPath, p_strSection, p_strKey);
 		}
 
 		/// <summary>
@@ -269,7 +269,7 @@ namespace Fomm.Games.Fallout3.Script
 		/// <returns>The specified value as an integer.</returns>
 		public virtual int GetGeckPrefsIniInt(string p_strSection, string p_strKey)
 		{
-			return GetSettingsInt(Fallout3GameMode.SettingsFile.GeckPrefsIniPath, p_strSection, p_strKey);
+			return GetSettingsInt(((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).GeckPrefsIniPath, p_strSection, p_strKey);
 		}
 
 		#endregion
@@ -287,7 +287,7 @@ namespace Fomm.Games.Fallout3.Script
 		/// if the user chose not to overwrite the existing value.</returns>
 		public virtual bool EditFalloutINI(string p_strSection, string p_strKey, string p_strValue, bool p_booSaveOld)
 		{
-			return EditINI(Fallout3GameMode.SettingsFile.FOIniPath, p_strSection, p_strKey, p_strValue);
+			return EditINI(((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOIniPath, p_strSection, p_strKey, p_strValue);
 		}
 
 		/// <summary>
@@ -301,7 +301,7 @@ namespace Fomm.Games.Fallout3.Script
 		/// if the user chose not to overwrite the existing value.</returns>
 		public virtual bool EditPrefsINI(string p_strSection, string p_strKey, string p_strValue, bool p_booSaveOld)
 		{
-			return EditINI(Fallout3GameMode.SettingsFile.FOPrefsIniPath, p_strSection, p_strKey, p_strValue);
+			return EditINI(((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOPrefsIniPath, p_strSection, p_strKey, p_strValue);
 		}
 
 		/// <summary>
@@ -315,7 +315,7 @@ namespace Fomm.Games.Fallout3.Script
 		/// if the user chose not to overwrite the existing value.</returns>
 		public virtual bool EditGeckINI(string p_strSection, string p_strKey, string p_strValue, bool p_booSaveOld)
 		{
-			return EditINI(Fallout3GameMode.SettingsFile.GeckIniPath, p_strSection, p_strKey, p_strValue);
+			return EditINI(((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).GeckIniPath, p_strSection, p_strKey, p_strValue);
 		}
 
 		/// <summary>
@@ -329,7 +329,7 @@ namespace Fomm.Games.Fallout3.Script
 		/// if the user chose not to overwrite the existing value.</returns>
 		public virtual bool EditGeckPrefsINI(string p_strSection, string p_strKey, string p_strValue, bool p_booSaveOld)
 		{
-			return EditINI(Fallout3GameMode.SettingsFile.GeckPrefsIniPath, p_strSection, p_strKey, p_strValue);
+			return EditINI(((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).GeckPrefsIniPath, p_strSection, p_strKey, p_strValue);
 		}
 
 		#endregion

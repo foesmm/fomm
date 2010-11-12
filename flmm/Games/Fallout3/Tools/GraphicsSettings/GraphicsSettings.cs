@@ -293,11 +293,11 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
 		private void LoadGeneralValues()
 		{
 			//adapters
-			cbxAdapter.Items.Add(NativeMethods.GetPrivateProfileString("Display", "sD3DDevice", null, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOPrefsIniPath]));
+			cbxAdapter.Items.Add(NativeMethods.GetPrivateProfileString("Display", "sD3DDevice", null, ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOPrefsIniPath));
 			cbxAdapter.SelectedIndex = 0;
 
 			//aspect ratios
-			Int32 intCurrentAspect = NativeMethods.GetPrivateProfileIntA("Launcher", "uLastAspectRatio", 0, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOPrefsIniPath]);
+			Int32 intCurrentAspect = NativeMethods.GetPrivateProfileIntA("Launcher", "uLastAspectRatio", 0, ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOPrefsIniPath);
 			double dblCurrentRatio = 0;
 			for (Int32 i = 0; i < m_cbiAspectRatios.Length; i++)
 			{
@@ -310,8 +310,8 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
 			}
 
 			//screen resolutions
-			Int32 intScreenWidth = NativeMethods.GetPrivateProfileIntA("Display", "iSize W", 0, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOPrefsIniPath]);
-			Int32 intScreenHeight = NativeMethods.GetPrivateProfileIntA("Display", "iSize H", 0, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOPrefsIniPath]);
+			Int32 intScreenWidth = NativeMethods.GetPrivateProfileIntA("Display", "iSize W", 0, ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOPrefsIniPath);
+			Int32 intScreenHeight = NativeMethods.GetPrivateProfileIntA("Display", "iSize H", 0, ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOPrefsIniPath);
 			string strCurrentRes = String.Format("{0}x{1}", intScreenWidth, intScreenHeight);
 			LoadResolutions(dblCurrentRatio, strCurrentRes);
 			if (!cbxResolution.Items.Contains(strCurrentRes))
@@ -323,7 +323,7 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
 
 			//antialiasing
 			ComboBoxItem cbiAliasing = new ComboBoxItem("Off (best performance)", 0);
-			Int32 intAliasingSamples = NativeMethods.GetPrivateProfileIntA("Display", "iMultiSample", 0, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOPrefsIniPath]);
+			Int32 intAliasingSamples = NativeMethods.GetPrivateProfileIntA("Display", "iMultiSample", 0, ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOPrefsIniPath);
 			cbxAntialiasing.Items.Add(cbiAliasing);
 			for (Int32 i = 2; i < Math.Max(4, intAliasingSamples) + 1; i += 2)
 			{
@@ -334,7 +334,7 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
 
 			//ansio
 			ComboBoxItem cbiAniso = new ComboBoxItem("Off (best performance)", 0);
-			Int32 intAnisoSamples = NativeMethods.GetPrivateProfileIntA("Display", "iMaxAnisotropy", 0, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOPrefsIniPath]);
+			Int32 intAnisoSamples = NativeMethods.GetPrivateProfileIntA("Display", "iMaxAnisotropy", 0, ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOPrefsIniPath);
 			cbxAnisotropic.Items.Add(cbiAniso);
 			for (Int32 i = 2; i < Math.Max(15, intAnisoSamples) + 1; i++)
 			{
@@ -344,15 +344,15 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
 			cbxAnisotropic.SelectedIndex = (intAnisoSamples > 0) ? intAnisoSamples - 1 : 0;
 
 			//windowed
-			ckbWindowed.Checked = (NativeMethods.GetPrivateProfileIntA("Display", "bFull Screen", 0, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOPrefsIniPath]) == 0);
+			ckbWindowed.Checked = (NativeMethods.GetPrivateProfileIntA("Display", "bFull Screen", 0, ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOPrefsIniPath) == 0);
 
 			//vsync
-			ckbVSync.Checked = (NativeMethods.GetPrivateProfileIntA("Display", "iPresentInterval", 0, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOPrefsIniPath]) == 1);
+			ckbVSync.Checked = (NativeMethods.GetPrivateProfileIntA("Display", "iPresentInterval", 0, ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOPrefsIniPath) == 1);
 
 			//screen effects
 			radNone.Checked = true;
-			radHDR.Checked = (NativeMethods.GetPrivateProfileIntA("BlurShaderHDR", "bDoHighDynamicRange", 0, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOPrefsIniPath]) == 1);
-			radBloom.Checked = (NativeMethods.GetPrivateProfileIntA("BlurShader", "bUseBlurShader", 0, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOPrefsIniPath]) == 1);
+			radHDR.Checked = (NativeMethods.GetPrivateProfileIntA("BlurShaderHDR", "bDoHighDynamicRange", 0, ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOPrefsIniPath) == 1);
+			radBloom.Checked = (NativeMethods.GetPrivateProfileIntA("BlurShader", "bUseBlurShader", 0, ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOPrefsIniPath) == 1);
 		}
 
 		/// <summary>
@@ -361,7 +361,7 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
 		private void LoadDetailValues()
 		{
 			//texture quality
-			Int32 intTextureQuality = NativeMethods.GetPrivateProfileIntA("Display", "iTexMipMapSkip", 0, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOPrefsIniPath]);
+			Int32 intTextureQuality = NativeMethods.GetPrivateProfileIntA("Display", "iTexMipMapSkip", 0, ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOPrefsIniPath);
 			for (Int32 i = 0; i < m_cbiTextureQulities.Length; i++)
 			{
 				cbxTextureQuality.Items.Add(m_cbiTextureQulities[i]);
@@ -370,7 +370,7 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
 			}
 
 			//radial blur quality
-			Int32 intRadialBlurQuality = NativeMethods.GetPrivateProfileIntA("Imagespace", "iRadialBlurLevel", 0, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOPrefsIniPath]);
+			Int32 intRadialBlurQuality = NativeMethods.GetPrivateProfileIntA("Imagespace", "iRadialBlurLevel", 0, ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOPrefsIniPath);
 			for (Int32 i = 0; i < m_cbiRadialBlurQualities.Length; i++)
 			{
 				cbxRadialBlurQuality.Items.Add(m_cbiRadialBlurQualities[i]);
@@ -379,13 +379,13 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
 			}
 
 			//depth of field
-			ckbDepthOfField.Checked = (NativeMethods.GetPrivateProfileIntA("Imagespace", "bDoDepthOfField", 0, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOPrefsIniPath]) == 1);
+			ckbDepthOfField.Checked = (NativeMethods.GetPrivateProfileIntA("Imagespace", "bDoDepthOfField", 0, ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOPrefsIniPath) == 1);
 
 			//transparency multisampling
-			ckbTransparencyMultisampling.Checked = (NativeMethods.GetPrivateProfileIntA("Display", "bTransparencyMultisampling", 0, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOPrefsIniPath]) == 1);
+			ckbTransparencyMultisampling.Checked = (NativeMethods.GetPrivateProfileIntA("Display", "bTransparencyMultisampling", 0, ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOPrefsIniPath) == 1);
 
 			//decal cap
-			oslDecalCap.Value = NativeMethods.GetPrivateProfileIntA("Display", "iMaxDecalsPerFrame", 0, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOPrefsIniPath]);
+			oslDecalCap.Value = NativeMethods.GetPrivateProfileIntA("Display", "iMaxDecalsPerFrame", 0, ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOPrefsIniPath);
 		}
 
 		/// <summary>
@@ -394,16 +394,16 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
 		private void LoadWaterValues()
 		{
 			//refractions
-			ckbWaterRefractions.Checked = (NativeMethods.GetPrivateProfileIntA("Water", "bUseWaterRefractions", 0, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOPrefsIniPath]) == 1);
+			ckbWaterRefractions.Checked = (NativeMethods.GetPrivateProfileIntA("Water", "bUseWaterRefractions", 0, ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOPrefsIniPath) == 1);
 
 			//reflections
-			ckbWaterReflections.Checked = (NativeMethods.GetPrivateProfileIntA("Water", "bUseWaterReflections", 0, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOPrefsIniPath]) == 1);
+			ckbWaterReflections.Checked = (NativeMethods.GetPrivateProfileIntA("Water", "bUseWaterReflections", 0, ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOPrefsIniPath) == 1);
 
 			//reflection quality
 			// iWaterReflectWidth
 			// iWaterReflectHeight
 			// the above values should always be the same
-			Int32 intReflectionSize = NativeMethods.GetPrivateProfileIntA("Water", "iWaterReflectWidth", 0, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOPrefsIniPath]);
+			Int32 intReflectionSize = NativeMethods.GetPrivateProfileIntA("Water", "iWaterReflectWidth", 0, ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOPrefsIniPath);
 			for (Int32 i = 0; i < m_cbiReflectionQualities.Length; i++)
 			{
 				cbxReflectionQuality.Items.Add(m_cbiReflectionQualities[i]);
@@ -415,22 +415,22 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
 			// iWaterBlurAmount=2
 			// sometimes the above is 1, but it should always be 2
 			// as it is ignored if bUseWaterReflectionBlur is 0
-			ckbSoftReflections.Checked = (NativeMethods.GetPrivateProfileIntA("Water", "bUseWaterReflectionBlur", 0, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOPrefsIniPath]) == 1);
+			ckbSoftReflections.Checked = (NativeMethods.GetPrivateProfileIntA("Water", "bUseWaterReflectionBlur", 0, ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOPrefsIniPath) == 1);
 
 			//full scene
-			ckbFullSceneReflections.Checked = (NativeMethods.GetPrivateProfileIntA("Water", "bForceHighDetailReflections", 0, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOPrefsIniPath]) == 1);
+			ckbFullSceneReflections.Checked = (NativeMethods.GetPrivateProfileIntA("Water", "bForceHighDetailReflections", 0, ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOPrefsIniPath) == 1);
 
 			//full detail
-			ckbFullDetailReflections.Checked = (NativeMethods.GetPrivateProfileIntA("Water", "bAutoWaterSilhouetteReflections", 0, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOPrefsIniPath]) != 1);
+			ckbFullDetailReflections.Checked = (NativeMethods.GetPrivateProfileIntA("Water", "bAutoWaterSilhouetteReflections", 0, ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOPrefsIniPath) != 1);
 
 			//water displacements
-			ckbWaterDisplacement.Checked = (NativeMethods.GetPrivateProfileIntA("Water", "bUseWaterDisplacements", 0, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOPrefsIniPath]) == 1);
+			ckbWaterDisplacement.Checked = (NativeMethods.GetPrivateProfileIntA("Water", "bUseWaterDisplacements", 0, ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOPrefsIniPath) == 1);
 
 			//depth fog
-			ckbDepthFog.Checked = (NativeMethods.GetPrivateProfileIntA("Water", "bUseWaterDepth", 0, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOPrefsIniPath]) == 1);
+			ckbDepthFog.Checked = (NativeMethods.GetPrivateProfileIntA("Water", "bUseWaterDepth", 0, ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOPrefsIniPath) == 1);
 
 			//water multisamples
-			Int32 intSamples = NativeMethods.GetPrivateProfileIntA("Display", "iWaterMultisamples", 0, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOPrefsIniPath]);
+			Int32 intSamples = NativeMethods.GetPrivateProfileIntA("Display", "iWaterMultisamples", 0, ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOPrefsIniPath);
 			for (Int32 i = 0; i < m_cbiWaterMultisamples.Length; i++)
 			{
 				cbxWaterMultisampling.Items.Add(m_cbiWaterMultisamples[i]);
@@ -445,10 +445,10 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
 		private void LoadShadowValues()
 		{
 			//enable shadows
-			ckbEnableShadows.Checked = (NativeMethods.GetPrivateProfileIntA("Display", "bDrawShadows", 0, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOPrefsIniPath]) == 1);
+			ckbEnableShadows.Checked = (NativeMethods.GetPrivateProfileIntA("Display", "bDrawShadows", 0, ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOPrefsIniPath) == 1);
 
 			//shadow quality
-			Int32 intShadowsRes = NativeMethods.GetPrivateProfileIntA("Display", "iShadowMapResolution", 0, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOPrefsIniPath]);
+			Int32 intShadowsRes = NativeMethods.GetPrivateProfileIntA("Display", "iShadowMapResolution", 0, ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOPrefsIniPath);
 			for (Int32 i = 0; i < m_cbiShadowQualities.Length; i++)
 			{
 				cbxShadowQuality.Items.Add(m_cbiShadowQualities[i]);
@@ -457,7 +457,7 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
 			}
 
 			//shadow filtering
-			Int32 intShadowFilter = NativeMethods.GetPrivateProfileIntA("Display", "iShadowFilter", 0, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOPrefsIniPath]);
+			Int32 intShadowFilter = NativeMethods.GetPrivateProfileIntA("Display", "iShadowFilter", 0, ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOPrefsIniPath);
 			for (Int32 i = 0; i < m_cbiShadowFilters.Length; i++)
 			{
 				cbxShadowFiltering.Items.Add(m_cbiShadowFilters[i]);
@@ -466,10 +466,10 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
 			}
 
 			//interior shadows
-			oslMaxInteriorShadows.Value = NativeMethods.GetPrivateProfileIntA("Display", "iActorShadowCountInt", 0, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOPrefsIniPath]);
+			oslMaxInteriorShadows.Value = NativeMethods.GetPrivateProfileIntA("Display", "iActorShadowCountInt", 0, ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOPrefsIniPath);
 
 			//exterior shadows
-			oslMaxExteriorShadows.Value = NativeMethods.GetPrivateProfileIntA("Display", "iActorShadowCountExt", 0, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOPrefsIniPath]);
+			oslMaxExteriorShadows.Value = NativeMethods.GetPrivateProfileIntA("Display", "iActorShadowCountExt", 0, ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOPrefsIniPath);
 		}
 
 		/// <summary>
@@ -478,27 +478,27 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
 		private void LoadViewDistanceValues()
 		{
 			//object fade
-			oslObjectFade.Value = NativeMethods.GetPrivateProfileIntA("LOD", "fLODFadeOutMultObjects", 0, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOPrefsIniPath]);
+			oslObjectFade.Value = NativeMethods.GetPrivateProfileIntA("LOD", "fLODFadeOutMultObjects", 0, ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOPrefsIniPath);
 
 			//actor fade
-			oslActorFade.Value = NativeMethods.GetPrivateProfileIntA("LOD", "fLODFadeOutMultActors", 0, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOPrefsIniPath]);
+			oslActorFade.Value = NativeMethods.GetPrivateProfileIntA("LOD", "fLODFadeOutMultActors", 0, ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOPrefsIniPath);
 
 			//grass fade
-			oslGrassFade.Value = NativeMethods.GetPrivateProfileIntA("Grass", "fGrassStartFadeDistance", 0, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOPrefsIniPath]) / 1000;
+			oslGrassFade.Value = NativeMethods.GetPrivateProfileIntA("Grass", "fGrassStartFadeDistance", 0, ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOPrefsIniPath) / 1000;
 
 			//specularity fade
-			oslSpecularityFade.Value = NativeMethods.GetPrivateProfileIntA("Display", "fSpecularLODStartFade", 0, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOPrefsIniPath]) / 100;
+			oslSpecularityFade.Value = NativeMethods.GetPrivateProfileIntA("Display", "fSpecularLODStartFade", 0, ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOPrefsIniPath) / 100;
 
 			//light fade
-			oslLightFade.Value = NativeMethods.GetPrivateProfileIntA("Display", "fLightLODStartFade", 0, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOPrefsIniPath]) / 100;
+			oslLightFade.Value = NativeMethods.GetPrivateProfileIntA("Display", "fLightLODStartFade", 0, ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOPrefsIniPath) / 100;
 
 			//item fade
 			decimal dcmValue = 0;
-			Decimal.TryParse(NativeMethods.GetPrivateProfileString("LOD", "fLODFadeOutMultItems", "0", Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOPrefsIniPath]), out dcmValue);
+			Decimal.TryParse(NativeMethods.GetPrivateProfileString("LOD", "fLODFadeOutMultItems", "0", ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOPrefsIniPath), out dcmValue);
 			oslItemFade.Value = dcmValue;
 
 			//shadow fade
-			oslShadowFade.Value = NativeMethods.GetPrivateProfileIntA("Display", "fShadowLODStartFade", 0, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOPrefsIniPath]) / 100;
+			oslShadowFade.Value = NativeMethods.GetPrivateProfileIntA("Display", "fShadowLODStartFade", 0, ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOPrefsIniPath) / 100;
 		}
 
 		/// <summary>
@@ -507,14 +507,14 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
 		private void LoadDistantLODValues()
 		{
 			//tree lod fade
-			oslTreeLODFade.Value = NativeMethods.GetPrivateProfileIntA("TerrainManager", "fTreeLoadDistance", 0, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOPrefsIniPath]) / 1000;
+			oslTreeLODFade.Value = NativeMethods.GetPrivateProfileIntA("TerrainManager", "fTreeLoadDistance", 0, ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOPrefsIniPath) / 1000;
 
 			//object lod fade fBlockLoadDistanceLow
-			oslObjectLODFade.Value = NativeMethods.GetPrivateProfileIntA("TerrainManager", "fBlockLoadDistanceLow", 0, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOPrefsIniPath]) / 1000;
+			oslObjectLODFade.Value = NativeMethods.GetPrivateProfileIntA("TerrainManager", "fBlockLoadDistanceLow", 0, ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOPrefsIniPath) / 1000;
 
 			//land quality
 			decimal dcmValue = 0;
-			Decimal.TryParse(NativeMethods.GetPrivateProfileString("TerrainManager", "fSplitDistanceMult", "0", Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOPrefsIniPath]), out dcmValue);
+			Decimal.TryParse(NativeMethods.GetPrivateProfileString("TerrainManager", "fSplitDistanceMult", "0", ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOPrefsIniPath), out dcmValue);
 			oslLandQuality.Value = dcmValue * 100;
 		}
 
@@ -563,8 +563,8 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
 		/// <param name="e">An <see cref="EventArgs"/> describing the event's arguments.</param>
 		private void cbxAspectRatio_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			Int32 intScreenWidth = NativeMethods.GetPrivateProfileIntA("Display", "iSize W", 0, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOPrefsIniPath]);
-			Int32 intScreenHeight = NativeMethods.GetPrivateProfileIntA("Display", "iSize H", 0, Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOPrefsIniPath]);
+			Int32 intScreenWidth = NativeMethods.GetPrivateProfileIntA("Display", "iSize W", 0, ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOPrefsIniPath);
+			Int32 intScreenHeight = NativeMethods.GetPrivateProfileIntA("Display", "iSize H", 0, ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOPrefsIniPath);
 			string strCurrentRes = String.Format("{0}x{1}", intScreenWidth, intScreenHeight);
 			LoadResolutions((double)((ComboBoxItem)cbxAspectRatio.SelectedItem).Tag, strCurrentRes);
 			if ((cbxResolution.SelectedItem == null) && (cbxResolution.Items.Count > 0))
@@ -922,7 +922,7 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
 				if (m_gstSettings == null)
 					throw new InvalidOperationException("The SettingsForm property must be set before calling Run(); or Run(GraphicsSettings) can be used instead.");
 
-				TransactionalFileManager.Snapshot(Program.GameMode.SettingsFiles[Fallout3GameMode.SettingsFile.FOPrefsIniPath]);
+				TransactionalFileManager.Snapshot(((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOPrefsIniPath);
 				Fallout3Script.OverwriteAllIni = true;
 					
 				m_booChanged = false;

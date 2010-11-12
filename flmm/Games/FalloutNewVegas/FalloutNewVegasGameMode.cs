@@ -25,6 +25,34 @@ namespace Fomm.Games.FalloutNewVegas
 	/// </summary>
 	public class FalloutNewVegasGameMode : Fallout3GameMode
 	{
+		/// <summary>
+		/// This class provides strongly-typed access to this game mode's settings files.
+		/// </summary>
+		public new class SettingsFilesSet : Fallout3GameMode.SettingsFilesSet
+		{
+			private const string FODefaultIniPathKey = "FODefaultIniPath";
+
+			#region Properties
+
+			/// <summary>
+			/// Gets or sets the path to the fallout_default.ini file.
+			/// </summary>
+			/// <value>The path to the fallout_default.ini file.</value>
+			public string FODefaultIniPath
+			{
+				get
+				{
+					return this[FODefaultIniPathKey];
+				}
+				set
+				{
+					this[FODefaultIniPathKey] = value;
+				}
+			}
+
+			#endregion
+		}
+
 		#region Properties
 
 		/// <summary>
@@ -160,6 +188,39 @@ namespace Fomm.Games.FalloutNewVegas
 		#region Initialization
 
 		/// <summary>
+		/// This initializes the game mode.
+		/// </summary>
+		/// <remarks>
+		/// This gets the user to specify the directories where the programme will store info
+		/// such as install logs, if the directories have not already been setup.
+		/// 
+		/// This method also checks for DLCs, and cleans up any missing FOMods.
+		/// </remarks>
+		/// <returns><lang cref="true"/> if the game mode was able to initialize;
+		/// <lang cref="false"/> otherwise.</returns>
+		public override bool Init()
+		{
+			if (!Properties.Settings.Default.falloutNewVegasDoneSetup)
+			{
+				SetupForm sfmSetup = new SetupForm();
+				if (sfmSetup.ShowDialog() == DialogResult.Cancel)
+					return false;
+				Properties.Settings.Default.falloutNewVegasDoneSetup = true;
+				Properties.Settings.Default.Save();
+			}
+
+			((SettingsFilesSet)SettingsFiles).FODefaultIniPath = Path.Combine(PluginsPath, @"..\fallout_default.ini");
+
+			if (!File.Exists(((SettingsFilesSet)SettingsFiles).FOIniPath))
+				MessageBox.Show("You have no Fallout INI file. Please run Fallout: New Vegas to initialize the file before installing any mods or turning on Archive Invalidation.", "Missing INI", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+			ScanForReadonlyPlugins();
+			ScanForReadonlySettingsFiles();
+
+			return true;
+		}
+
+		/// <summary>
 		/// Creates the plugin manager that will be used by this game mode.
 		/// </summary>
 		/// <returns>The plugin manager that will be used by this game mode.</returns>
@@ -174,7 +235,6 @@ namespace Fomm.Games.FalloutNewVegas
 		protected override void SetupPaths()
 		{
 			base.SetupPaths();
-			
 			AdditionalPaths["PluginsFile"] = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "FalloutNV/plugins.txt");
 			AdditionalPaths.Remove("DLCDir");
 		}
@@ -655,36 +715,6 @@ class Script : FalloutNewVegasBaseScript {
 				Trace.WriteLine("Found: " + Path.GetFullPath("."));
 #endif
 			p_strErrorMessage = null;
-			return true;
-		}
-
-		/// <summary>
-		/// This initializes the game mode.
-		/// </summary>
-		/// <remarks>
-		/// This gets the user to specify the directories where the programme will store info
-		/// such as install logs, if the directories have not already been setup.
-		/// 
-		/// This method also checks for DLCs, and cleans up any missing FOMods.
-		/// </remarks>
-		/// <returns><lang cref="true"/> if the game mode was able to initialize;
-		/// <lang cref="false"/> otherwise.</returns>
-		public override bool Init()
-		{
-			if (!Properties.Settings.Default.falloutNewVegasDoneSetup)
-			{
-				SetupForm sfmSetup = new SetupForm();
-				if (sfmSetup.ShowDialog() == DialogResult.Cancel)
-					return false;
-				Properties.Settings.Default.falloutNewVegasDoneSetup = true;
-				Properties.Settings.Default.Save();
-			}
-
-			SettingsFiles[SettingsFile.FOIniPath] = Path.Combine(PluginsPath, @"..\fallout_default.ini");
-
-			ScanForReadonlyPlugins();
-			ScanForReadonlySettingsFiles();
-
 			return true;
 		}
 

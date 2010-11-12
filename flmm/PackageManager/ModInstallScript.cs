@@ -733,7 +733,7 @@ namespace Fomm.PackageManager
 		protected string GetSettingsString(string p_strSettingsFileName, string p_strSection, string p_strKey)
 		{
 			PermissionsManager.CurrentPermissions.Assert();
-			return NativeMethods.GetPrivateProfileString(p_strSection, p_strKey, null, Program.GameMode.SettingsFiles[p_strSettingsFileName]);
+			return NativeMethods.GetPrivateProfileString(p_strSection, p_strKey, null, p_strSettingsFileName);
 		}
 
 		/// <summary>
@@ -746,7 +746,7 @@ namespace Fomm.PackageManager
 		protected Int32 GetSettingsInt(string p_strSettingsFileName, string p_strSection, string p_strKey)
 		{
 			PermissionsManager.CurrentPermissions.Assert();
-			return NativeMethods.GetPrivateProfileIntA(p_strSection, p_strKey, 0, Program.GameMode.SettingsFiles[p_strSettingsFileName]);
+			return NativeMethods.GetPrivateProfileIntA(p_strSection, p_strKey, 0, p_strSettingsFileName);
 		}
 
 		#endregion
@@ -764,7 +764,7 @@ namespace Fomm.PackageManager
 		/// if the user chose not to overwrite the existing value.</returns>
 		protected virtual bool EditINI(string p_strSettingsFileName, string p_strSection, string p_strKey, string p_strValue)
 		{
-			string strFile = Program.GameMode.SettingsFiles[p_strSettingsFileName];
+			string strFile = p_strSettingsFileName;
 			if (m_booDontOverwriteAllIni)
 				return false;
 

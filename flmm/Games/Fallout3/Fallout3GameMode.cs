@@ -25,17 +25,88 @@ namespace Fomm.Games.Fallout3
 	/// </summary>
 	public class Fallout3GameMode : GameMode
 	{
-		public static class SettingsFile
+		/// <summary>
+		/// This class provides strongly-typed access to this game mode's settings files.
+		/// </summary>
+		public class SettingsFilesSet : Dictionary<string, string>
 		{
-			public static readonly string FOIniPath = "FOIniPath";
-			public static readonly string FOPrefsIniPath = "FOPrefsIniPath";
-			public static readonly string GeckIniPath = "GeckIniPath";
-			public static readonly string GeckPrefsIniPath = "GeckPrefsIniPath";
+			private const string FOIniPathKey = "FOIniPath";
+			private const string FOPrefsIniPathKey = "FOPrefsIniPath";
+			private const string GeckIniPathKey = "GeckIniPath";
+			private const string GeckPrefsIniPathKey = "GeckPrefsIniPath";
+
+			#region Properties
+
+			/// <summary>
+			/// Gets or sets the path to the Fallout.ini file.
+			/// </summary>
+			/// <value>The path to the Fallout.ini file.</value>
+			public string FOIniPath
+			{
+				get
+				{
+					return this[FOIniPathKey];
+				}
+				set
+				{
+					this[FOIniPathKey] = value;
+				}
+			}
+
+			/// <summary>
+			/// Gets or sets the path to the FalloutPrefs.ini file.
+			/// </summary>
+			/// <value>The path to the FalloutPrefs.ini file.</value>
+			public string FOPrefsIniPath
+			{
+				get
+				{
+					return this[FOPrefsIniPathKey];
+				}
+				set
+				{
+					this[FOPrefsIniPathKey] = value;
+				}
+			}
+
+			/// <summary>
+			/// Gets or sets the path to the Geck.ini file.
+			/// </summary>
+			/// <value>The path to the Geck.ini file.</value>
+			public string GeckIniPath
+			{
+				get
+				{
+					return this[GeckIniPathKey];
+				}
+				set
+				{
+					this[GeckIniPathKey] = value;
+				}
+			}
+
+			/// <summary>
+			/// Gets or sets the path to the GeckPrefs.ini file.
+			/// </summary>
+			/// <value>The path to the GeckPrefs.ini file.</value>
+			public string GeckPrefsIniPath
+			{
+				get
+				{
+					return this[GeckPrefsIniPathKey];
+				}
+				set
+				{
+					this[GeckPrefsIniPathKey] = value;
+				}
+			}
+
+			#endregion
 		}
 
 		private string m_strSavesPath = null;
 		private Dictionary<string, string> m_dicAdditionalPaths = new Dictionary<string, string>();
-		private Dictionary<string, string> m_dicSettingsFiles = new Dictionary<string, string>();
+		private SettingsFilesSet m_sfsSettingsFiles = new SettingsFilesSet();
 		private List<GameTool> m_lstTools = new List<GameTool>();
 		private List<GameTool> m_lstGameSettingsTools = new List<GameTool>();
 		private List<GameTool> m_lstRightClickTools = new List<GameTool>();
@@ -201,7 +272,7 @@ namespace Fomm.Games.Fallout3
 		{
 			get
 			{
-				return m_dicSettingsFiles;
+				return m_sfsSettingsFiles;
 			}
 		}
 
@@ -390,6 +461,43 @@ namespace Fomm.Games.Fallout3
 		#region Initialization
 
 		/// <summary>
+		/// This initializes the game mode.
+		/// </summary>
+		/// <remarks>
+		/// This gets the user to specify the directories where the programme will store info
+		/// such as install logs, if the directories have not already been setup.
+		/// 
+		/// This method also checks for DLCs, and cleans up any missing FOMods.
+		/// </remarks>
+		/// <returns><lang cref="true"/> if the game mode was able to initialize;
+		/// <lang cref="false"/> otherwise.</returns>
+		public override bool Init()
+		{
+			if (!Properties.Settings.Default.fallout3DoneSetup)
+			{
+				SetupForm sfmSetup = new SetupForm();
+				if (sfmSetup.ShowDialog() == DialogResult.Cancel)
+					return false;
+				Properties.Settings.Default.fallout3DoneSetup = true;
+				Properties.Settings.Default.Save();
+			}
+
+			CheckForDLCs();
+
+			if (!File.Exists(((SettingsFilesSet)SettingsFiles).FOIniPath))
+				MessageBox.Show("You have no Fallout INI file. Please run Fallout 3 to initialize the file before installing any mods or turning on Archive Invalidation.", "Missing INI", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+			ScanForReadonlyPlugins();
+			ScanForReadonlySettingsFiles();
+
+			FOMMMigrator m = new FOMMMigrator();
+			if (!m.Migrate())
+				return false;
+
+			return true;
+		}
+
+		/// <summary>
 		/// Creates the plugin manager that will be used by this game mode.
 		/// </summary>
 		/// <returns>The plugin manager that will be used by this game mode.</returns>
@@ -403,16 +511,16 @@ namespace Fomm.Games.Fallout3
 		/// </summary>
 		protected virtual void SetupPaths()
 		{
-			m_dicSettingsFiles[SettingsFile.FOIniPath] = Path.Combine(UserGameDataPath, "Fallout.ini");
-			m_dicSettingsFiles[SettingsFile.FOPrefsIniPath] = Path.Combine(UserGameDataPath, "FalloutPrefs.ini");
-			m_dicSettingsFiles[SettingsFile.GeckIniPath] = Path.Combine(UserGameDataPath, "GECKCustom.ini");
-			m_dicSettingsFiles[SettingsFile.GeckPrefsIniPath] = Path.Combine(UserGameDataPath, "GECKPrefs.ini");
+			((SettingsFilesSet)SettingsFiles).FOIniPath = Path.Combine(UserGameDataPath, "Fallout.ini");
+			((SettingsFilesSet)SettingsFiles).FOPrefsIniPath = Path.Combine(UserGameDataPath, "FalloutPrefs.ini");
+			((SettingsFilesSet)SettingsFiles).GeckIniPath = Path.Combine(UserGameDataPath, "GECKCustom.ini");
+			((SettingsFilesSet)SettingsFiles).GeckPrefsIniPath = Path.Combine(UserGameDataPath, "GECKPrefs.ini");
 
 			m_dicAdditionalPaths["FORendererFile"] = Path.Combine(UserGameDataPath, "RendererInfo.txt");
 			m_dicAdditionalPaths["PluginsFile"] = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Fallout3/plugins.txt");
 			m_dicAdditionalPaths["DLCDir"] = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Microsoft\\xlive\\DLC");
 
-			m_strSavesPath = Path.Combine(UserGameDataPath, NativeMethods.GetPrivateProfileString("General", "SLocalSavePath", "Games", m_dicSettingsFiles[SettingsFile.FOIniPath]));
+			m_strSavesPath = Path.Combine(UserGameDataPath, NativeMethods.GetPrivateProfileString("General", "SLocalSavePath", "Games", ((SettingsFilesSet)SettingsFiles).FOIniPath));
 		}
 
 		/// <summary>
@@ -1118,39 +1226,6 @@ class Script : Fallout3BaseScript {
 			Trace.Unindent();
 #endif
 			p_strErrorMessage = null;
-			return true;
-		}
-
-		/// <summary>
-		/// This initializes the game mode.
-		/// </summary>
-		/// <remarks>
-		/// This gets the user to specify the directories where the programme will store info
-		/// such as install logs, if the directories have not already been setup.
-		/// 
-		/// This method also checks for DLCs, and cleans up any missing FOMods.
-		/// </remarks>
-		/// <returns><lang cref="true"/> if the game mode was able to initialize;
-		/// <lang cref="false"/> otherwise.</returns>
-		public override bool Init()
-		{
-			if (!Properties.Settings.Default.fallout3DoneSetup)
-			{
-				SetupForm sfmSetup = new SetupForm();
-				if (sfmSetup.ShowDialog() == DialogResult.Cancel)
-					return false;
-				Properties.Settings.Default.fallout3DoneSetup = true;
-				Properties.Settings.Default.Save();
-			}
-
-			CheckForDLCs();
-			ScanForReadonlyPlugins();
-			ScanForReadonlySettingsFiles();
-
-			FOMMMigrator m = new FOMMMigrator();
-			if (!m.Migrate())
-				return false;
-
 			return true;
 		}
 
