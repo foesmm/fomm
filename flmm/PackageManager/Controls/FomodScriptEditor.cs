@@ -129,16 +129,12 @@ namespace Fomm.PackageManager.Controls
 			cbxVersion.Items.Add("3.0");
 			cbxVersion.Items.Add("4.0");
 			cbxVersion.Items.Add("5.0");
+
+			cbxVersion.SelectedIndex = 4;
+			LoadConfigSchema();
 		}
 
 		#endregion
-
-		protected override void OnLoad(EventArgs e)
-		{
-			cbxVersion.SelectedIndex = 3;
-			LoadConfigSchema();
-			base.OnLoad(e);
-		}
 
 		/// <summary>
 		/// Handles the <see cref="ComboBox.SelectedIndexChanged"/> event of the XML config version drop down list.
