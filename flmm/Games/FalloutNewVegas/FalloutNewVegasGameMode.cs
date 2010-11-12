@@ -159,6 +159,18 @@ namespace Fomm.Games.FalloutNewVegas
 
 		#region Initialization
 
+		/// <summary>
+		/// Creates the plugin manager that will be used by this game mode.
+		/// </summary>
+		/// <returns>The plugin manager that will be used by this game mode.</returns>
+		protected override Fallout3PluginManager CreatePluginManager()
+		{
+			return new FalloutNewVegasPluginManager();
+		}
+
+		/// <summary>
+		/// Sets up the paths for this game mode.
+		/// </summary>
 		protected override void SetupPaths()
 		{
 			base.SetupPaths();

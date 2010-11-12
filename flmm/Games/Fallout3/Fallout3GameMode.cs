@@ -42,7 +42,7 @@ namespace Fomm.Games.Fallout3
 		private List<GameTool> m_lstLoadOrderTools = new List<GameTool>();
 		private List<GameTool> m_lstGameLaunchCommands = new List<GameTool>();
 		private List<SettingsPage> m_lstSettingsPages = new List<SettingsPage>();
-		private Fallout3PluginManager m_pmgPluginManager = new Fallout3PluginManager();
+		private Fallout3PluginManager m_pmgPluginManager = null;
 
 		#region Properties
 
@@ -378,6 +378,7 @@ namespace Fomm.Games.Fallout3
 		/// </summary>
 		public Fallout3GameMode()
 		{
+			m_pmgPluginManager = CreatePluginManager();
 			SetupPaths();
 			SetupSettingsPages();
 			SetupTools();
@@ -387,6 +388,15 @@ namespace Fomm.Games.Fallout3
 		#endregion
 
 		#region Initialization
+
+		/// <summary>
+		/// Creates the plugin manager that will be used by this game mode.
+		/// </summary>
+		/// <returns>The plugin manager that will be used by this game mode.</returns>
+		protected virtual Fallout3PluginManager CreatePluginManager()
+		{
+			return new Fallout3PluginManager();
+		}
 
 		/// <summary>
 		/// Sets up the paths for this game mode.
