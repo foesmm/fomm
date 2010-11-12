@@ -20,7 +20,8 @@ namespace Fomm.Controls
 			this.BackColor = SystemColors.Control;
 			this.ReadOnly = true;
 			this.TabStop = false;
-			this.Enabled = false;
+			this.Cursor = Cursors.Arrow;
+			this.Enter += delegate { FindForm().Controls["nonExistant"].Focus(); };
 			SetTextColor();
 		}
 
