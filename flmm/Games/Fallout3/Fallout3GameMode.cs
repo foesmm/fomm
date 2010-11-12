@@ -487,6 +487,8 @@ namespace Fomm.Games.Fallout3
 
 			if (!File.Exists(((SettingsFilesSet)SettingsFiles).FOIniPath))
 				MessageBox.Show("You have no Fallout INI file. Please run Fallout 3 to initialize the file before installing any mods or turning on Archive Invalidation.", "Missing INI", MessageBoxButtons.OK, MessageBoxIcon.Information);
+			if (File.Exists("FO3Edit.exe"))
+				m_lstTools.Add(new GameTool("FO3Edit", "Launches FO3Edit, if it is installed.", LaunchFO3Edit));
 
 			ScanForReadonlyPlugins();
 			ScanForReadonlySettingsFiles();
@@ -564,9 +566,7 @@ namespace Fomm.Games.Fallout3
 			m_lstTools.Add(new GameTool("Install Tweaker", "Advanced Fallout 3 tweaking.", LaunchInstallTweakerTool));
 			m_lstTools.Add(new GameTool("Conflict Detector", "Checks for conflicts with mod-author specified critical records.", LaunchConflictDetector));
 			m_lstTools.Add(new GameTool("Save Games", "Save game info viewer.", LaunchSaveGamesViewer));
-			if (File.Exists("FO3Edit.exe"))
-				m_lstTools.Add(new GameTool("FO3Edit", "Launches FO3Edit, if it is installed.", LaunchFO3Edit));
-
+			
 			m_lstGameSettingsTools.Add(new GameTool("Graphics Settings", "Changes the graphics settings.", LaunchGraphicsSettingsTool));
 
 			m_lstRightClickTools.Add(new GameTool("Open in TESsnip...", "Open the selected plugins in TESsnip.", LaunchTESsnipToolWithSelectedPlugins));

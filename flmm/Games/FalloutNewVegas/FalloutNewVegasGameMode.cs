@@ -210,6 +210,8 @@ namespace Fomm.Games.FalloutNewVegas
 			}
 
 			((SettingsFilesSet)SettingsFiles).FODefaultIniPath = Path.Combine(PluginsPath, @"..\fallout_default.ini");
+			if (File.Exists("FNVEdit.exe"))
+				Tools.Add(new GameTool("FNVEdit", "Launches FNVEdit, if it is installed.", LaunchFNVEdit));
 
 			if (!File.Exists(((SettingsFilesSet)SettingsFiles).FOIniPath))
 				MessageBox.Show("You have no Fallout INI file. Please run Fallout: New Vegas to initialize the file before installing any mods or turning on Archive Invalidation.", "Missing INI", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -279,8 +281,6 @@ namespace Fomm.Games.FalloutNewVegas
 			//m_lstTools.Add(new GameTool("Install Tweaker", "Advanced Fallout 3 tweaking.", LaunchInstallTweakerTool));
 			Tools.Add(new GameTool("Conflict Detector", "Checks for conflicts with mod-author specified critical records.", LaunchConflictDetector));
 			Tools.Add(new GameTool("Save Games", "Save game info viewer.", LaunchSaveGamesViewer));
-			if (File.Exists("FNVEdit.exe"))
-				Tools.Add(new GameTool("FNVEdit", "Launches FNVEdit, if it is installed.", LaunchFNVEdit));
 
 			GameSettingsTools.Add(new GameTool("Graphics Settings", "Changes the graphics settings.", LaunchGraphicsSettingsTool));
 
