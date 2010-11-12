@@ -57,7 +57,7 @@ namespace Fomm
 
 	public static class Program
 	{
-		public const string Version = "0.13.11";
+		public const string Version = "0.13.12";
 		public static readonly Version MVersion = new Version(Version + ".0");
 
 #if TRACE
