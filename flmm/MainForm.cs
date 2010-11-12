@@ -223,12 +223,6 @@ namespace Fomm
 					lvEspList.Columns[i].Width = intColumnWidths[i];
 			RefreshPluginList();
 			exportLoadOrder(Path.Combine(Program.GameMode.InstallInfoDirectory, "load order backup.txt"));
-
-			if (!File.Exists(Program.GameMode.SettingsFiles[Fomm.Games.Fallout3.Fallout3GameMode.SettingsFile.FOIniPath]))
-			{
-				MessageBox.Show("You have no Fallout INI file. Please run Fallout 3 to initialize the file before installing any mods or turning on Archive Invalidation.", "Missing INI", MessageBoxButtons.OK, MessageBoxIcon.Information);
-				return;
-			}
 		}
 
 		private void lvEspList_DragDrop(object sender, DragEventArgs e)
