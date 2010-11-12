@@ -355,6 +355,9 @@ namespace Fomm.Games.FalloutNewVegas
 			{
 				System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
 				psi.FileName = "nvse_loader.exe";
+				psi.EnvironmentVariables.Add("SteamAppID", "22380");
+				psi.EnvironmentVariables.Add("SteamGameId", "22380");
+				psi.UseShellExecute = false;
 				psi.WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath("nvse_loader.exe"));
 				if (System.Diagnostics.Process.Start(psi) == null)
 				{
@@ -389,7 +392,9 @@ namespace Fomm.Games.FalloutNewVegas
 			try
 			{
 				System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
+				psi.EnvironmentVariables.Add("SteamAppID", "22380");
 				psi.FileName = command;
+				psi.UseShellExecute = false;
 				psi.WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath(command));
 				if (System.Diagnostics.Process.Start(psi) == null)
 				{
@@ -413,33 +418,12 @@ namespace Fomm.Games.FalloutNewVegas
 		{
 			string command = Properties.Settings.Default.falloutNewVegasLaunchCommand;
 			string args = Properties.Settings.Default.falloutNewVegasLaunchCommandArgs;
-			if (String.IsNullOrEmpty(command))
-			{
-				if (File.Exists("nvse_loader.exe"))
-					command = "nvse_loader.exe";
-				else if (File.Exists("falloutNV.exe"))
-					command = "falloutNV.exe";
-				else
-					command = "falloutNVng.exe";
-				args = null;
-			}
-			try
-			{
-				System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
-				psi.Arguments = args;
-				psi.FileName = command;
-				psi.WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath(command));
-				if (System.Diagnostics.Process.Start(psi) == null)
-				{
-					MessageBox.Show("Failed to launch '" + command + "'");
-					return;
-				}
-			}
-			catch (Exception ex)
-			{
-				MessageBox.Show("Failed to launch '" + command + "'\n" + ex.Message);
-				return;
-			}
+			if (!String.IsNullOrEmpty(command))
+				LaunchFalloutNVCustom(p_frmMainForm);
+			else if (File.Exists("nvse_loader.exe"))
+				LaunchFalloutNVNVSE(p_frmMainForm);
+			else
+				LaunchFalloutNVPlain(p_frmMainForm);
 		}
 
 		#endregion
