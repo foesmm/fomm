@@ -598,5 +598,29 @@ namespace Fomm.Properties {
                 this["settingsUpgraded"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool falloutNewVegasUnReadOnlySettingsFiles {
+            get {
+                return ((bool)(this["falloutNewVegasUnReadOnlySettingsFiles"]));
+            }
+            set {
+                this["falloutNewVegasUnReadOnlySettingsFiles"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool falloutNewVegasAskAboutReadOnlySettingsFiles {
+            get {
+                return ((bool)(this["falloutNewVegasAskAboutReadOnlySettingsFiles"]));
+            }
+            set {
+                this["falloutNewVegasAskAboutReadOnlySettingsFiles"] = value;
+            }
+        }
     }
 }

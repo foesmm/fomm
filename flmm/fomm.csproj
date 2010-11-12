@@ -525,6 +525,12 @@
     <Compile Include="Games\Fallout3\Tools\SaveForm.Designer.cs">
       <DependentUpon>SaveForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="RememberSelectionMessageBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RememberSelectionMessageBox.Designer.cs">
+      <DependentUpon>RememberSelectionMessageBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="SettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -720,6 +726,9 @@
     <EmbeddedResource Include="Games\Fallout3\Tools\SaveForm.resx">
       <DependentUpon>SaveForm.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RememberSelectionMessageBox.resx">
+      <DependentUpon>RememberSelectionMessageBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SettingsForm.resx">
       <SubType>Designer</SubType>

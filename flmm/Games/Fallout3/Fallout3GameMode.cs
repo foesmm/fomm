@@ -1369,8 +1369,19 @@ class Script : Fallout3BaseScript {
 				FileInfo fifPlugin = new FileInfo(strFile);
 				if (fifPlugin.Exists && ((fifPlugin.Attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly))
 				{
-					if (MessageBox.Show(null, String.Format("'{0}' is read-only, so it can't be managed by {1}. Would you like to make it not read-only?", fifPlugin.Name, Program.ProgrammeAcronym), "Read Only", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+					bool booAsk = Properties.Settings.Default.falloutNewVegasAskAboutReadOnlySettingsFiles;
+					bool booMakeWritable = Properties.Settings.Default.falloutNewVegasUnReadOnlySettingsFiles;
+					bool booRemember = false;
+					if (booAsk)
+						booMakeWritable = (RememberSelectionMessageBox.Show(null, String.Format("'{0}' is read-only, so it can't be managed by {1}. Would you like to make it not read-only?", fifPlugin.Name, Program.ProgrammeAcronym), "Read Only", MessageBoxButtons.YesNo, MessageBoxIcon.Question, out booRemember) == DialogResult.Yes);
+					if (booMakeWritable)
 						fifPlugin.Attributes &= ~FileAttributes.ReadOnly;
+					if (booRemember)
+					{
+						Properties.Settings.Default.falloutNewVegasAskAboutReadOnlySettingsFiles = false;
+						Properties.Settings.Default.falloutNewVegasUnReadOnlySettingsFiles = booMakeWritable;
+						Properties.Settings.Default.Save();
+					}
 				}
 			}
 		}
