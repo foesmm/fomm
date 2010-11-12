@@ -230,6 +230,15 @@ namespace Fomm.Games.FalloutNewVegas
 		}
 
 		/// <summary>
+		/// Creates the settings file set that will be used by this game mode.
+		/// </summary>
+		/// <returns>The settings file set that will be used by this game mode.</returns>
+		protected override Fallout3GameMode.SettingsFilesSet CreateSettingsFileSet()
+		{
+			return new SettingsFilesSet();
+		}
+
+		/// <summary>
 		/// Sets up the paths for this game mode.
 		/// </summary>
 		protected override void SetupPaths()
@@ -270,6 +279,8 @@ namespace Fomm.Games.FalloutNewVegas
 			//m_lstTools.Add(new GameTool("Install Tweaker", "Advanced Fallout 3 tweaking.", LaunchInstallTweakerTool));
 			Tools.Add(new GameTool("Conflict Detector", "Checks for conflicts with mod-author specified critical records.", LaunchConflictDetector));
 			Tools.Add(new GameTool("Save Games", "Save game info viewer.", LaunchSaveGamesViewer));
+			if (File.Exists("FNVEdit.exe"))
+				Tools.Add(new GameTool("FNVEdit", "Launches FNVEdit, if it is installed.", LaunchFNVEdit));
 
 			GameSettingsTools.Add(new GameTool("Graphics Settings", "Changes the graphics settings.", LaunchGraphicsSettingsTool));
 
@@ -434,6 +445,35 @@ namespace Fomm.Games.FalloutNewVegas
 		#endregion
 
 		#region Tools Menu
+
+		/// <summary>
+		/// Launches FNVEdit, if present.
+		/// </summary>
+		/// <param name="p_frmMainForm">The main mod management form.</param>
+		public virtual void LaunchFNVEdit(MainForm p_frmMainForm)
+		{
+			if (!File.Exists("FNVEdit.exe"))
+			{
+				MessageBox.Show(p_frmMainForm, "Could not find FNVEdit. Please install it.", "Missing FNVEdit", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+				return;
+			}
+			try
+			{
+				System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
+				psi.FileName = "FNVEdit.exe";
+				psi.WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath(psi.FileName));
+				if (System.Diagnostics.Process.Start(psi) == null)
+				{
+					MessageBox.Show("Failed to launch FNVEdit.");
+					return;
+				}
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show("Failed to launch FNVEdit." + Environment.NewLine + ex.Message);
+				return;
+			}
+		}
 
 		/// <summary>
 		/// Launches the save games viewer.

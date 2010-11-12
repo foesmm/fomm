@@ -106,7 +106,7 @@ namespace Fomm.Games.Fallout3
 
 		private string m_strSavesPath = null;
 		private Dictionary<string, string> m_dicAdditionalPaths = new Dictionary<string, string>();
-		private SettingsFilesSet m_sfsSettingsFiles = new SettingsFilesSet();
+		private SettingsFilesSet m_sfsSettingsFiles = null;
 		private List<GameTool> m_lstTools = new List<GameTool>();
 		private List<GameTool> m_lstGameSettingsTools = new List<GameTool>();
 		private List<GameTool> m_lstRightClickTools = new List<GameTool>();
@@ -449,6 +449,7 @@ namespace Fomm.Games.Fallout3
 		/// </summary>
 		public Fallout3GameMode()
 		{
+			m_sfsSettingsFiles = CreateSettingsFileSet();
 			m_pmgPluginManager = CreatePluginManager();
 			SetupPaths();
 			SetupSettingsPages();
@@ -507,6 +508,15 @@ namespace Fomm.Games.Fallout3
 		}
 
 		/// <summary>
+		/// Creates the settings file set that will be used by this game mode.
+		/// </summary>
+		/// <returns>The settings file set that will be used by this game mode.</returns>
+		protected virtual SettingsFilesSet CreateSettingsFileSet()
+		{
+			return new SettingsFilesSet();
+		}
+
+		/// <summary>
 		/// Sets up the paths for this game mode.
 		/// </summary>
 		protected virtual void SetupPaths()
@@ -554,6 +564,8 @@ namespace Fomm.Games.Fallout3
 			m_lstTools.Add(new GameTool("Install Tweaker", "Advanced Fallout 3 tweaking.", LaunchInstallTweakerTool));
 			m_lstTools.Add(new GameTool("Conflict Detector", "Checks for conflicts with mod-author specified critical records.", LaunchConflictDetector));
 			m_lstTools.Add(new GameTool("Save Games", "Save game info viewer.", LaunchSaveGamesViewer));
+			if (File.Exists("FO3Edit.exe"))
+				m_lstTools.Add(new GameTool("FO3Edit", "Launches FO3Edit, if it is installed.", LaunchFO3Edit));
 
 			m_lstGameSettingsTools.Add(new GameTool("Graphics Settings", "Changes the graphics settings.", LaunchGraphicsSettingsTool));
 
@@ -850,6 +862,35 @@ namespace Fomm.Games.Fallout3
 		#endregion
 
 		#region Tools Menu
+
+		/// <summary>
+		/// Launches FO3Edit, if present.
+		/// </summary>
+		/// <param name="p_frmMainForm">The main mod management form.</param>
+		public virtual void LaunchFO3Edit(MainForm p_frmMainForm)
+		{
+			if (!File.Exists("FO3Edit.exe"))
+			{
+				MessageBox.Show(p_frmMainForm, "Could not find FO3Edit. Please install it.", "Missing FO3Edit", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+				return;
+			}
+			try
+			{
+				System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
+				psi.FileName = "FO3Edit.exe";
+				psi.WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath(psi.FileName));
+				if (System.Diagnostics.Process.Start(psi) == null)
+				{
+					MessageBox.Show("Failed to launch FO3Edit.");
+					return;
+				}
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show("Failed to launch FO3Edit." + Environment.NewLine + ex.Message);
+				return;
+			}
+		}
 
 		/// <summary>
 		/// Launches the save games viewer.
