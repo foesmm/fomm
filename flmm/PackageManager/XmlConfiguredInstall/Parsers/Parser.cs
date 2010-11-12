@@ -178,10 +178,12 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
 			XmlSchema xscSchema = null;
 			using (MemoryStream stmSchema = new MemoryStream(bteSchema))
 			{
-				using (StreamReader srdSchemaReader = new StreamReader(stmSchema, true))
+				XmlReaderSettings xrsSettings = new XmlReaderSettings();
+				xrsSettings.IgnoreComments = true;
+				xrsSettings.IgnoreWhitespace = true;
+				using (XmlReader xrdSchemaReader = XmlReader.Create(stmSchema, xrsSettings, strSchemaPath))
 				{
-					xscSchema = XmlSchema.Read(srdSchemaReader, delegate(object sender, ValidationEventArgs e) { throw e.Exception; });
-					srdSchemaReader.Close();
+					xscSchema = XmlSchema.Read(xrdSchemaReader, delegate(object sender, ValidationEventArgs e) { throw e.Exception; });
 				}
 				stmSchema.Close();
 			}

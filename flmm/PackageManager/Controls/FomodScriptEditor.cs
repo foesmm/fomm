@@ -6,6 +6,7 @@ using Fomm.PackageManager.XmlConfiguredInstall;
 using System.Text.RegularExpressions;
 using Fomm.Controls;
 using Fomm.PackageManager.XmlConfiguredInstall.Parsers;
+using System.Xml;
 
 namespace Fomm.PackageManager.Controls
 {
@@ -161,11 +162,15 @@ namespace Fomm.PackageManager.Controls
 			{
 				string strSchemaPath = Program.GameMode.GetXMLConfigSchemaPath(cbxVersion.SelectedItem.ToString());
 				if (File.Exists(strSchemaPath))
-					using (FileStream fsmSchema = new FileStream(strSchemaPath, FileMode.Open))
+				{
+					XmlReaderSettings xrsSettings = new XmlReaderSettings();
+					xrsSettings.IgnoreComments = true;
+					xrsSettings.IgnoreWhitespace = true;
+					using (XmlReader xrdSchemaReader = XmlReader.Create(strSchemaPath, xrsSettings))
 					{
-						xedScript.Schema = XmlSchema.Read(fsmSchema, null);
-						fsmSchema.Close();
+						xedScript.Schema = XmlSchema.Read(xrdSchemaReader, delegate(object sender, ValidationEventArgs e) { throw e.Exception; });
 					}
+				}
 			}
 		}
 
