@@ -52,7 +52,7 @@ namespace Fomm.Util
 				ManualResetEvent mreDoneEvent = new ManualResetEvent(false);
 				m_queEvents.Enqueue(new KeyValuePair<Action<object>, ManualResetEvent>((o) => { rocFileInfo = m_szeExtractor.ArchiveFileData; }, mreDoneEvent));
 				m_mreEvent.Set();
-				mreDoneEvent.WaitOne(Timeout.Infinite);
+				mreDoneEvent.WaitOne();
 				return rocFileInfo;
 			}
 		}
@@ -74,7 +74,7 @@ namespace Fomm.Util
 				ManualResetEvent mreDoneEvent = new ManualResetEvent(false);
 				m_queEvents.Enqueue(new KeyValuePair<Action<object>, ManualResetEvent>((o) => { booIsSolid = m_szeExtractor.IsSolid; }, mreDoneEvent));
 				m_mreEvent.Set();
-				mreDoneEvent.WaitOne(Timeout.Infinite);
+				mreDoneEvent.WaitOne();
 				return booIsSolid;
 			}
 		}
@@ -117,7 +117,7 @@ namespace Fomm.Util
 			ManualResetEvent mreDoneStart = new ManualResetEvent(false);
 			m_queEvents.Enqueue(new KeyValuePair<Action<object>, ManualResetEvent>(null, mreDoneStart));
 			m_thdExtractor.Start();
-			mreDoneStart.WaitOne(Timeout.Infinite);
+			mreDoneStart.WaitOne();
 		}
 
 		#endregion
@@ -139,7 +139,7 @@ namespace Fomm.Util
 				kvpStartEvent.Value.Set();
 				while (true)
 				{
-					m_mreEvent.WaitOne(Timeout.Infinite);
+					m_mreEvent.WaitOne();
 					KeyValuePair<Action<object>, ManualResetEvent> kvpEvent = m_queEvents.Dequeue();
 					if (kvpEvent.Key == null)
 						break;
@@ -168,7 +168,7 @@ namespace Fomm.Util
 			ManualResetEvent mreDoneEvent = new ManualResetEvent(false);
 			m_queEvents.Enqueue(new KeyValuePair<Action<object>, ManualResetEvent>((o) => { m_szeExtractor.ExtractFile(p_intIndex, p_stmFile); }, mreDoneEvent));
 			m_mreEvent.Set();
-			mreDoneEvent.WaitOne(Timeout.Infinite);
+			mreDoneEvent.WaitOne();
 		}
 
 		#region IDisposable Members
