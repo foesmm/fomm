@@ -70,6 +70,7 @@ namespace Fomm.Games.FalloutNewVegas.Settings
 			tbxWorkingDirectory.Text = Properties.Settings.Default.falloutNewVegasWorkingDirectory;
 			tbxCommand.Text = Properties.Settings.Default.falloutNewVegasLaunchCommand;
 			tbxCommandArguments.Text = Properties.Settings.Default.falloutNewVegasLaunchCommandArgs;
+			cbxBoldifyESMs.Checked = Properties.Settings.Default.falloutNewVegasBoldifyESMs;
 		}
 
 		/// <summary>
@@ -85,6 +86,7 @@ namespace Fomm.Games.FalloutNewVegas.Settings
 				Properties.Settings.Default.falloutNewVegasLaunchCommand = tbxCommand.Text;
 				Properties.Settings.Default.falloutNewVegasLaunchCommandArgs = tbxCommandArguments.Text;
 				Properties.Settings.Default.falloutNewVegasWorkingDirectory = tbxWorkingDirectory.Text;
+				Properties.Settings.Default.falloutNewVegasBoldifyESMs = cbxBoldifyESMs.Checked;
 				return true;
 			}
 			return false;

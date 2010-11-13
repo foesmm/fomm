@@ -70,6 +70,7 @@ namespace Fomm.Games.Fallout3.Settings
 			tbxWorkingDirectory.Text = Properties.Settings.Default.fallout3WorkingDirectory;
 			tbxCommand.Text = Properties.Settings.Default.fallout3LaunchCommand;
 			tbxCommandArguments.Text = Properties.Settings.Default.fallout3LaunchCommandArgs;
+			cbxBoldifyESMs.Checked = Properties.Settings.Default.fallout3BoldifyESMs;
 		}
 
 		/// <summary>
@@ -85,6 +86,7 @@ namespace Fomm.Games.Fallout3.Settings
 				Properties.Settings.Default.fallout3LaunchCommand = tbxCommand.Text;
 				Properties.Settings.Default.fallout3LaunchCommandArgs = tbxCommandArguments.Text;
 				Properties.Settings.Default.fallout3WorkingDirectory = tbxWorkingDirectory.Text;
+				Properties.Settings.Default.fallout3BoldifyESMs = cbxBoldifyESMs.Checked;
 				return true;
 			}
 			return false;

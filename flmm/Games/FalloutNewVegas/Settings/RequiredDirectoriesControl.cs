@@ -36,6 +36,9 @@ namespace Fomm.Games.FalloutNewVegas.Settings
 		protected override void OnLoad(EventArgs e)
 		{
 			base.OnLoad(e);
+			//this check is need so the control can be viewed in the GUI editor when it is dropped on other controls
+			if (Program.GameMode == null)
+				return;
 			tbxModDirectory.Text = Properties.Settings.Default.falloutNewVegasModDirectory;
 			if (String.IsNullOrEmpty(tbxModDirectory.Text))
 			{

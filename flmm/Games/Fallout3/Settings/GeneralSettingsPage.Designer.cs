@@ -40,6 +40,7 @@
 			this.fbdWorkingDirectory = new System.Windows.Forms.FolderBrowserDialog();
 			this.rdcDirectories = new Fomm.Games.Fallout3.Settings.RequiredDirectoriesControl();
 			this.erpErrors = new System.Windows.Forms.ErrorProvider(this.components);
+			this.cbxBoldifyESMs = new System.Windows.Forms.CheckBox();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.erpErrors)).BeginInit();
 			this.SuspendLayout();
@@ -128,18 +129,29 @@
 			// 
 			this.erpErrors.ContainerControl = this;
 			// 
+			// cbxBoldifyESMs
+			// 
+			this.cbxBoldifyESMs.AutoSize = true;
+			this.cbxBoldifyESMs.Location = new System.Drawing.Point(24, 210);
+			this.cbxBoldifyESMs.Name = "cbxBoldifyESMs";
+			this.cbxBoldifyESMs.Size = new System.Drawing.Size(137, 17);
+			this.cbxBoldifyESMs.TabIndex = 4;
+			this.cbxBoldifyESMs.Text = "Show ESM files in bold.";
+			this.cbxBoldifyESMs.UseVisualStyleBackColor = true;
+			// 
 			// GeneralSettingsPage
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.Transparent;
+			this.Controls.Add(this.cbxBoldifyESMs);
 			this.Controls.Add(this.rdcDirectories);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.butSelectWorkingDirectory);
 			this.Controls.Add(this.tbxWorkingDirectory);
 			this.Controls.Add(this.label2);
 			this.Name = "GeneralSettingsPage";
-			this.Size = new System.Drawing.Size(403, 221);
+			this.Size = new System.Drawing.Size(403, 307);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.erpErrors)).EndInit();
@@ -161,6 +173,7 @@
 		private System.Windows.Forms.FolderBrowserDialog fbdWorkingDirectory;
 		private RequiredDirectoriesControl rdcDirectories;
 		private System.Windows.Forms.ErrorProvider erpErrors;
+		private System.Windows.Forms.CheckBox cbxBoldifyESMs;
 
 	}
 }
