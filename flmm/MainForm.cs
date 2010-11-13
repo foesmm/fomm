@@ -396,7 +396,7 @@ namespace Fomm
 				return;
 			}
 			((GameTool.LaunchToolMethod)((Button)sender).Tag)(this);
-			Close();
+			//Close();
 		}
 
 		private void bHelp_Click(object sender, EventArgs e)

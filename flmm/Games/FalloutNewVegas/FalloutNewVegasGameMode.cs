@@ -308,6 +308,55 @@ namespace Fomm.Games.FalloutNewVegas
 		#region Game Launch
 
 		/// <summary>
+		/// This ensures that the steam client has loaded.
+		/// </summary>
+		/// <param name="p_frmMainForm">The main mod management form.</param>
+		/// <returns><lang cref="true"/> if Steam is running;
+		/// <lang cref="false"/> otherwise.</returns>
+		public bool StartSteam(MainForm p_frmMainForm)
+		{
+			foreach (System.Diagnostics.Process clsProcess in System.Diagnostics.Process.GetProcesses())
+				if (clsProcess.ProcessName.ToLowerInvariant().Contains("steam"))
+					return true;
+
+			string strSteam = (string)Microsoft.Win32.Registry.GetValue(@"HKEY_CURRENT_USER\Software\Valve\Steam", "SteamExe", null);
+			if (!String.IsNullOrEmpty(strSteam))
+			{
+				try
+				{
+					System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
+					psi.FileName = strSteam;
+					psi.WorkingDirectory = Path.GetDirectoryName(strSteam);
+					psi.UseShellExecute = false;
+
+					using (FileSystemWatcher fswClientBlob = new FileSystemWatcher(psi.WorkingDirectory))
+					{
+						//isn't there a more elegant way of determining if Steam has loaded,
+						// rather than counting how many time the ClientRegistry.blob file
+						// has been modified?
+						fswClientBlob.EnableRaisingEvents = true;
+						fswClientBlob.Filter = "ClientRegistry.blob";
+						Int32 intSteamClientBlobChangeCount = 0;
+						fswClientBlob.Changed += new FileSystemEventHandler((s, e) => { intSteamClientBlobChangeCount++; });
+
+						if (System.Diagnostics.Process.Start(psi) != null)
+						{
+							for (Int32 i = 0; i < 120 && intSteamClientBlobChangeCount < 4; i++)
+								Thread.Sleep(500);
+							if (intSteamClientBlobChangeCount >= 4)
+								return true;
+						}
+					}
+				}
+				catch (Exception)
+				{
+				}
+			}
+			MessageBox.Show(p_frmMainForm, "Unable to start Steam automatically." + Environment.NewLine + "Please start Steam before launching Fallout: New Vegas.", "Steam", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+			return false;
+		}
+
+		/// <summary>
 		/// Launches the game with a custom command.
 		/// </summary>
 		/// <param name="p_frmMainForm">The main mod management form.</param>
@@ -325,6 +374,8 @@ namespace Fomm.Games.FalloutNewVegas
 				MessageBox.Show("No custom launch command has been set", "Error");
 				return;
 			}
+			if (!StartSteam(p_frmMainForm))
+				return;
 			try
 			{
 				System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
@@ -361,12 +412,25 @@ namespace Fomm.Games.FalloutNewVegas
 				MessageBox.Show("Please close all utility windows before launching Fallout");
 				return;
 			}
+			if (!StartSteam(p_frmMainForm))
+				return;
 			try
 			{
 				System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
 				psi.FileName = "nvse_loader.exe";
-				psi.EnvironmentVariables.Add("SteamAppID", "22380");
-				psi.EnvironmentVariables.Add("SteamGameId", "22380");
+				//this configuration skips the FO:NV launcher, which
+				// can cause NVSE problems
+				/*
+				if (!psi.EnvironmentVariables.ContainsKey("SteamAppID"))
+					psi.EnvironmentVariables.Add("SteamAppID", "22380");
+				if (!psi.EnvironmentVariables.ContainsKey("SteamGameId"))
+					psi.EnvironmentVariables.Add("SteamGameId", "22380");*/
+				//this configuration force the FO:NV launcher, which
+				// ensures NVSE loads
+				if (psi.EnvironmentVariables.ContainsKey("SteamAppID"))
+					psi.EnvironmentVariables.Remove("SteamAppID");
+				if (psi.EnvironmentVariables.ContainsKey("SteamGameId"))
+					psi.EnvironmentVariables.Remove("SteamGameId");
 				psi.UseShellExecute = false;
 				psi.WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath("nvse_loader.exe"));
 				if (System.Diagnostics.Process.Start(psi) == null)
@@ -399,10 +463,13 @@ namespace Fomm.Games.FalloutNewVegas
 				command = "falloutNV.exe";
 			else
 				command = "falloutNVng.exe";
+			if (!StartSteam(p_frmMainForm))
+				return;
 			try
 			{
 				System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
-				psi.EnvironmentVariables.Add("SteamAppID", "22380");
+				if (!psi.EnvironmentVariables.ContainsKey("SteamAppID"))
+					psi.EnvironmentVariables.Add("SteamAppID", "22380");
 				psi.FileName = command;
 				psi.UseShellExecute = false;
 				psi.WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath(command));
