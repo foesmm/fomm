@@ -34,7 +34,7 @@ namespace Fomm.Games.Fallout3.PluginFormatProviders
 		/// <lang cref="false"/> otherwise.</returns>
 		public virtual bool HasFormat(string p_strPluginName)
 		{
-			return Properties.Settings.Default.fallout3BoldifyESMs && Plugin.GetIsEsm(p_strPluginName);
+			return Properties.Settings.Default.fallout3BoldifyESMs && Plugin.GetIsEsm(Path.Combine(Program.GameMode.PluginsPath, p_strPluginName));
 		}
 
 		/// <summary>
