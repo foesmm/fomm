@@ -107,7 +107,7 @@ namespace Fomm.Games.Fallout3
 #if TRACE
 			Trace.Write("Copying Mods (");
 #endif
-			if (!Path.Combine(strOldFOMMLocation, "mods").Equals(Program.GameMode.ModDirectory))
+			if (!Path.Combine(strOldFOMMLocation, "mods").Equals(Program.GameMode.ModDirectory, StringComparison.InvariantCultureIgnoreCase))
 			{
 				List<string> lstModFiles = new List<string>();
 				lstModFiles.AddRange(Directory.GetFiles(Path.Combine(strOldFOMMLocation, "mods"), "*.fomod"));
@@ -156,7 +156,7 @@ namespace Fomm.Games.Fallout3
 #if TRACE
 			Trace.WriteLine("Copying overwrite files (");
 #endif
-			if (!Path.Combine(strOldFOMMLocation, "overwrites").Equals(((Fallout3GameMode)Program.GameMode).OverwriteDirectory))
+			if (!Path.Combine(strOldFOMMLocation, "overwrites").Equals(((Fallout3GameMode)Program.GameMode).OverwriteDirectory, StringComparison.InvariantCultureIgnoreCase))
 			{
 				string[] strOverwriteFiles = Directory.GetFiles(Path.Combine(strOldFOMMLocation, "overwrites"), "*.*", SearchOption.AllDirectories);
 				m_bwdProgress.ItemMessage = "Copying overwrites...";
@@ -184,7 +184,7 @@ namespace Fomm.Games.Fallout3
 #if TRACE
 			Trace.WriteLine("Copying install logs (");
 #endif
-			if (!Path.Combine(strOldFOMMLocation, "fomm").Equals(Program.GameMode.InstallInfoDirectory))
+			if (!Path.Combine(strOldFOMMLocation, "fomm").Equals(Program.GameMode.InstallInfoDirectory, StringComparison.InvariantCultureIgnoreCase))
 			{
 				string[] strMiscFiles = Directory.GetFiles(Path.Combine(strOldFOMMLocation, "fomm"), "InstallLog.xml*");
 				m_bwdProgress.ItemMessage = "Copying info files...";
