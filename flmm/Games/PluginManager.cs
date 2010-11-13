@@ -51,6 +51,14 @@ namespace Fomm.Games
 				DeactivatePlugin(strPath);
 		}
 
+		/// <summary>
+		/// Determines if the specified plugin is active.
+		/// </summary>
+		/// <param name="p_strPath">The path to the plugin whose active state is to be determined.</param>
+		/// <returns><lange cref="true"/> if the specified plugin is active;
+		/// <lang cref="false"/> otherwise.</returns>
+		public abstract bool IsPluginActive(string p_strPath);
+
 		#endregion
 
 		#region Plugin Ordering

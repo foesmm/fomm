@@ -793,9 +793,10 @@ namespace Fomm.Games.Fallout3
 			if (MessageBox.Show(p_frmMainForm, "This is currently a beta feature, and the load order template may not be optimal.\n" +
 				"Ensure you have a backup of your load order before running this tool.\n" +
 				"War you sure you wish to continue?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) return;
-			string[] plugins = new string[p_frmMainForm.PluginsListViewItems.Count];
+			
+			string[] plugins = PluginManager.OrderedPluginList;
 			for (int i = 0; i < plugins.Length; i++)
-				plugins[i] = p_frmMainForm.PluginsListViewItems[i].Text;
+				plugins[i] = Path.GetFileName(plugins[i]);
 			Tools.AutoSorter.LoadOrderSorter losSorter = new Tools.AutoSorter.LoadOrderSorter();
 			if (!losSorter.HasMasterList)
 			{
@@ -821,7 +822,7 @@ namespace Fomm.Games.Fallout3
 				return;
 			}
 
-			string[] plugins = new string[p_frmMainForm.PluginsListViewItems.Count];
+			string[] plugins = PluginManager.OrderedPluginList;
 			bool[] active = new bool[plugins.Length];
 			bool[] corrupt = new bool[plugins.Length];
 			string[][] masters = new string[plugins.Length][];
@@ -829,8 +830,8 @@ namespace Fomm.Games.Fallout3
 			List<string> mlist = new List<string>();
 			for (int i = 0; i < plugins.Length; i++)
 			{
-				plugins[i] = p_frmMainForm.PluginsListViewItems[i].Text;
-				active[i] = p_frmMainForm.PluginsListViewItems[i].Checked;
+				active[i] = PluginManager.IsPluginActive(plugins[i]);
+				plugins[i] = Path.GetFileName(plugins[i]);
 				try
 				{
 					p = new Tools.TESsnip.Plugin(Path.Combine(PluginsPath, plugins[i]), true);
@@ -956,12 +957,12 @@ namespace Fomm.Games.Fallout3
 			// we only populate it with inactive plugins - hopefully that's OK
 			List<string> lstInactive = new List<string>();
 
-			foreach (ListViewItem lviPlugin in p_frmMainForm.PluginsListViewItems)
+			foreach (string strPlugin in PluginManager.OrderedPluginList)
 			{
-				if (lviPlugin.Checked)
-					lstActive.Add(lviPlugin.Text);
+				if (PluginManager.IsPluginActive(strPlugin))
+					lstActive.Add(Path.GetFileName(strPlugin));
 				else
-					lstInactive.Add(lviPlugin.Text);
+					lstInactive.Add(Path.GetFileName(strPlugin));
 			}
 			(new Tools.SaveForm(lstActive.ToArray(), lstInactive.ToArray())).Show();
 		}

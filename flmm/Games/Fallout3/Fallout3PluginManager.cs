@@ -13,7 +13,39 @@ namespace Fomm.Games.Fallout3
 	/// </summary>
 	public class Fallout3PluginManager : PluginManager
 	{
+		private Set<string> m_setActivePlugins = null;
+
 		#region Plugin Activation/Deactivation
+
+		/// <summary>
+		/// Gets the list of active plugins.
+		/// </summary>
+		/// <returns>The list of active plugins.</returns>
+		protected Set<string> GetActivePluginList()
+		{
+			if (m_setActivePlugins != null)
+				return m_setActivePlugins;
+
+			string strPluginsFilePath = ((Fallout3GameMode)Program.GameMode).PluginsFilePath;
+
+			m_setActivePlugins = new Set<string>(StringComparer.InvariantCultureIgnoreCase);
+			if (File.Exists(strPluginsFilePath))
+			{
+				string[] strPlugins = File.ReadAllLines(strPluginsFilePath);
+				char[] strInvalidChars = Path.GetInvalidFileNameChars();
+				for (int i = 0; i < strPlugins.Length; i++)
+				{
+					strPlugins[i] = strPlugins[i].Trim();
+					if (strPlugins[i].Length == 0 || strPlugins[i][0] == '#' || strPlugins[i].IndexOfAny(strInvalidChars) != -1)
+						continue;
+					string strPluginPath = Path.Combine(Program.GameMode.PluginsPath, strPlugins[i]);
+					if (!File.Exists(strPluginPath))
+						continue;
+					m_setActivePlugins.Add(strPluginPath);
+				}
+			}
+			return m_setActivePlugins;
+		}
 
 		/// <summary>
 		/// Gets the list of active plugins.
@@ -23,25 +55,7 @@ namespace Fomm.Games.Fallout3
 		{
 			get
 			{
-				string strPluginsFilePath = ((Fallout3GameMode)Program.GameMode).PluginsFilePath;
-
-				Set<string> setActivePlugins = new Set<string>(StringComparer.InvariantCultureIgnoreCase);
-				if (File.Exists(strPluginsFilePath))
-				{
-					string[] strPlugins = File.ReadAllLines(strPluginsFilePath);
-					char[] strInvalidChars = Path.GetInvalidFileNameChars();
-					for (int i = 0; i < strPlugins.Length; i++)
-					{
-						strPlugins[i] = strPlugins[i].Trim();
-						if (strPlugins[i].Length == 0 || strPlugins[i][0] == '#' || strPlugins[i].IndexOfAny(strInvalidChars) != -1)
-							continue;
-						string strPluginPath = Path.Combine(Program.GameMode.PluginsPath, strPlugins[i]);
-						if (!File.Exists(strPluginPath))
-							continue;
-						setActivePlugins.Add(strPluginPath);
-					}
-				}
-				return setActivePlugins.ToArray();
+				return GetActivePluginList().ToArray();
 			}
 		}
 
@@ -63,6 +77,7 @@ namespace Fomm.Games.Fallout3
 				lstActivePlugins.Add(strPluginFilename);
 
 			File.WriteAllLines(strPluginsFilePath, lstActivePlugins.ToArray(), System.Text.Encoding.Default);
+			m_setActivePlugins = null;
 		}
 
 		/// <summary>
@@ -79,7 +94,21 @@ namespace Fomm.Games.Fallout3
 				lstActivePlugins.RemoveAll((s) => { return strPluginFilename.Equals(s, StringComparison.InvariantCultureIgnoreCase); });
 
 				File.WriteAllLines(strPluginsFilePath, lstActivePlugins.ToArray(), System.Text.Encoding.Default);
+				m_setActivePlugins = null;
 			}
+		}
+
+		/// <summary>
+		/// Determines if the specified plugin is active.
+		/// </summary>
+		/// <param name="p_strPath">The path to the plugin whose active state is to be determined.</param>
+		/// <returns><lange cref="true"/> if the specified plugin is active;
+		/// <lang cref="false"/> otherwise.</returns>
+		public override bool IsPluginActive(string p_strPath)
+		{
+			string strPluginFilename = Path.GetFileName(p_strPath);
+			string strPluginPath = Path.Combine(Program.GameMode.PluginsPath, strPluginFilename);
+			return GetActivePluginList().Contains(strPluginPath);
 		}
 
 		#endregion

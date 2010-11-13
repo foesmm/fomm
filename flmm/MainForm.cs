@@ -59,18 +59,6 @@ namespace Fomm
 		}
 
 		/// <summary>
-		/// Gets the list view items representing the currently installed plugins.
-		/// </summary>
-		/// <value>The list view items representing the currently installed plugins.</value>
-		public ListView.ListViewItemCollection PluginsListViewItems
-		{
-			get
-			{
-				return lvEspList.Items;
-			}
-		}
-
-		/// <summary>
 		/// Gets a list of currently selected plugins.
 		/// </summary>
 		/// <value>A list of currently selected plugins.</value>

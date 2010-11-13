@@ -480,12 +480,12 @@ namespace Fomm.Games.FalloutNewVegas
 			// we only populate it with inactive plugins - hopefully that's OK
 			List<string> lstInactive = new List<string>();
 
-			foreach (ListViewItem lviPlugin in p_frmMainForm.PluginsListViewItems)
+			foreach (string strPlugin in PluginManager.OrderedPluginList)
 			{
-				if (lviPlugin.Checked)
-					lstActive.Add(lviPlugin.Text);
+				if (PluginManager.IsPluginActive(strPlugin))
+					lstActive.Add(Path.GetFileName(strPlugin));
 				else
-					lstInactive.Add(lviPlugin.Text);
+					lstInactive.Add(Path.GetFileName(strPlugin));
 			}
 			(new Tools.SaveForm(lstActive.ToArray(), lstInactive.ToArray())).Show();
 		}
