@@ -14,6 +14,8 @@ using Fomm.Games.Fallout3.Script;
 using Fomm.Games.Fallout3.Script.XmlConfiguredInstall;
 using Fomm.Games.Fallout3.Script.XmlConfiguredInstall.Parsers;
 using WebsiteAPIs;
+using Fomm.Games.Fallout3.Tools.CriticalRecords;
+using Fomm.Games.Fallout3.PluginFormatProviders;
 #if TRACE
 using System.Diagnostics;
 #endif
@@ -107,6 +109,7 @@ namespace Fomm.Games.Fallout3
 		private string m_strSavesPath = null;
 		private Dictionary<string, string> m_dicAdditionalPaths = new Dictionary<string, string>();
 		private SettingsFilesSet m_sfsSettingsFiles = null;
+		private Dictionary<string, IPluginFormatProvider> m_dicPluginFormatProviders = new Dictionary<string, IPluginFormatProvider>();
 		private List<GameTool> m_lstTools = new List<GameTool>();
 		private List<GameTool> m_lstGameSettingsTools = new List<GameTool>();
 		private List<GameTool> m_lstRightClickTools = new List<GameTool>();
@@ -289,6 +292,18 @@ namespace Fomm.Games.Fallout3
 		}
 
 		/// <summary>
+		/// Gets the <see cref="IPluginFormatProvider"/>s provided by the game mode.
+		/// </summary>
+		/// <value>The <see cref="IPluginFormatProvider"/>s provided by the game mode.</value>
+		public override IList<IPluginFormatProvider> PluginFormatProviders
+		{
+			get
+			{
+				return new List<IPluginFormatProvider>(m_dicPluginFormatProviders.Values);
+			}
+		}
+
+		/// <summary>
 		/// Gets the path to the game's save game files.
 		/// </summary>
 		/// <value>The path to the game's save game files.</value>
@@ -309,6 +324,22 @@ namespace Fomm.Games.Fallout3
 			get
 			{
 				return m_dicAdditionalPaths["DLCDir"];
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the CriticalRecordPluginFormatProvider.
+		/// </summary>
+		/// <value>The CriticalRecordPluginFormatProvider.</value>
+		protected CriticalRecordPluginFormatProvider CriticalRecordPluginFormatProvider
+		{
+			get
+			{
+				return (CriticalRecordPluginFormatProvider)m_dicPluginFormatProviders["ConflictDetector"];
+			}
+			set
+			{
+				m_dicPluginFormatProviders["ConflictDetector"] = value;
 			}
 		}
 
@@ -451,6 +482,7 @@ namespace Fomm.Games.Fallout3
 		{
 			m_sfsSettingsFiles = CreateSettingsFileSet();
 			m_pmgPluginManager = CreatePluginManager();
+			SetupPluginFormatProviders();
 			SetupPaths();
 			SetupSettingsPages();
 			SetupTools();
@@ -519,6 +551,15 @@ namespace Fomm.Games.Fallout3
 		}
 
 		/// <summary>
+		/// Sets up the plugin format providers for this game mode.
+		/// </summary>
+		protected virtual void SetupPluginFormatProviders()
+		{
+			CriticalRecordPluginFormatProvider = new CriticalRecordPluginFormatProvider();
+			m_dicPluginFormatProviders["ESMBoldify"] = new BoldESMPluginFormatProvider();
+		}
+
+		/// <summary>
 		/// Sets up the paths for this game mode.
 		/// </summary>
 		protected virtual void SetupPaths()
@@ -566,7 +607,7 @@ namespace Fomm.Games.Fallout3
 			m_lstTools.Add(new GameTool("Install Tweaker", "Advanced Fallout 3 tweaking.", LaunchInstallTweakerTool));
 			m_lstTools.Add(new GameTool("Conflict Detector", "Checks for conflicts with mod-author specified critical records.", LaunchConflictDetector));
 			m_lstTools.Add(new GameTool("Save Games", "Save game info viewer.", LaunchSaveGamesViewer));
-			
+
 			m_lstGameSettingsTools.Add(new GameTool("Graphics Settings", "Changes the graphics settings.", LaunchGraphicsSettingsTool));
 
 			m_lstRightClickTools.Add(new GameTool("Open in TESsnip...", "Open the selected plugins in TESsnip.", LaunchTESsnipToolWithSelectedPlugins));
@@ -922,7 +963,7 @@ namespace Fomm.Games.Fallout3
 			string strMessage = "This is an experimental feature that relies on fomod authors specifying which parts of their plugins are critical." + Environment.NewLine + "Using this feature will not hurt anything, but it is not guaranteed to find any or all conflicts.";
 			if (MessageBox.Show(p_frmMainForm, strMessage, "Warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Information) == DialogResult.Cancel)
 				return;
-			Tools.PluginConflictDetector pcdDetector = new Tools.PluginConflictDetector(p_frmMainForm);
+			Tools.PluginConflictDetector pcdDetector = new Tools.PluginConflictDetector(CriticalRecordPluginFormatProvider);
 			pcdDetector.CheckForConflicts();
 			p_frmMainForm.LoadPluginInfo();
 		}

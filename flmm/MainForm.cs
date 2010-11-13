@@ -23,7 +23,7 @@ namespace Fomm
 		private bool m_booChangeGameMode = false;
 		private bool AlphaSortMode = false;
 		private List<string> m_lstIgnoreReadOnly = new List<string>();
-		private Dictionary<string, Dictionary<string, List<string>>> m_dicExtraInfo = new Dictionary<string, Dictionary<string, List<string>>>();
+		private PluginFormat.PluginFormatterManager m_pfmPluginFormatManager = new PluginFormat.PluginFormatterManager();
 
 		#region Properties
 
@@ -142,35 +142,13 @@ namespace Fomm
 			}
 
 			SetupTools();
+			SetupPluginFormatProviders();
 		}
 
-		#endregion
-
-		#region Extra Plugin Info
-
-		/// <summary>
-		/// Clears all current extra plugin info for the specified info provider.
-		/// </summary>
-		/// <param name="p_strInfoKey">The key of the info provider whose extra info should be cleared.</param>
-		public void ClearExtraInfo(string p_strInfoKey)
+		private void SetupPluginFormatProviders()
 		{
-			if (m_dicExtraInfo.ContainsKey(p_strInfoKey))
-				m_dicExtraInfo.Remove(p_strInfoKey);
-		}
-
-		/// <summary>
-		/// Adds extra info to be displayed in the description box for the specified plugin, from the specified provider.
-		/// </summary>
-		/// <param name="p_strInfoKey">The key of the info provider providing the extra info.</param>
-		/// <param name="p_strPluginName">The plugin for which the info is being provided.</param>
-		/// <param name="p_strMessage">The extra info about the plugin.</param>
-		public void AddExtraInfo(string p_strInfoKey, string p_strPluginName, string p_strMessage)
-		{
-			if (!m_dicExtraInfo.ContainsKey(p_strInfoKey))
-				m_dicExtraInfo[p_strInfoKey] = new Dictionary<string, List<string>>();
-			if (!m_dicExtraInfo[p_strInfoKey].ContainsKey(p_strPluginName))
-				m_dicExtraInfo[p_strInfoKey][p_strPluginName] = new List<string>();
-			m_dicExtraInfo[p_strInfoKey][p_strPluginName].Add(p_strMessage);
+			foreach (IPluginFormatProvider pfpProvider in Program.GameMode.PluginFormatProviders)
+				m_pfmPluginFormatManager.RegisterProvider(pfpProvider);
 		}
 
 		#endregion
@@ -272,18 +250,15 @@ namespace Fomm
 			if (lvEspList.SelectedItems.Count != 1)
 				return;
 
-			PluginInfo pifInfo = Program.GameMode.PluginManager.GetPluginInfo(Path.Combine(Program.GameMode.PluginsPath, lvEspList.SelectedItems[0].Text));
+			string strPluginName = lvEspList.SelectedItems[0].Text;
+			PluginInfo pifInfo = Program.GameMode.PluginManager.GetPluginInfo(Path.Combine(Program.GameMode.PluginsPath, strPluginName));
 			StringBuilder stbDescription = new StringBuilder(pifInfo.Description);
-			foreach (string strInfoOwner in m_dicExtraInfo.Keys)
+
+			PluginFormat pftFormat = m_pfmPluginFormatManager.GetFormat(strPluginName);
+			if (!String.IsNullOrEmpty(pftFormat.Message))
 			{
-				if (m_dicExtraInfo[strInfoOwner].ContainsKey(lvEspList.SelectedItems[0].Text))
-				{
-					foreach (string strExtraInfo in m_dicExtraInfo[strInfoOwner][lvEspList.SelectedItems[0].Text])
-					{
-						stbDescription.Append(@"\par ");
-						stbDescription.Append(strExtraInfo);
-					}
-				}
+				stbDescription.Append(@"\par ");
+				stbDescription.Append(pftFormat.Message);
 			}
 			stbDescription.AppendLine().Append("}");
 			rtbPluginInfo.Rtf = stbDescription.ToString();
@@ -391,13 +366,22 @@ namespace Fomm
 			}
 
 			List<ListViewItem> lstPluginViewItems = new List<ListViewItem>();
+			PluginFormat pftFormat = null;
+			ListViewItem lviPlugin = null;
 			foreach (string strPlugin in lstPluginFilenames)
 			{
 #if TRACE
 				if (!m_booListedPlugins)
 					Trace.WriteLine(strPlugin);
 #endif
-				lstPluginViewItems.Add(new ListViewItem(Path.GetFileName(strPlugin)));
+				pftFormat = m_pfmPluginFormatManager.GetFormat(Path.GetFileName(strPlugin));
+				lviPlugin = new ListViewItem(Path.GetFileName(strPlugin));
+				lviPlugin.Font = pftFormat.ResolveFont(lviPlugin.Font);
+				if (pftFormat.Colour.HasValue)
+					lviPlugin.ForeColor = pftFormat.Colour.Value;
+				if (pftFormat.Highlight.HasValue)
+					lviPlugin.BackColor = pftFormat.Highlight.Value;
+				lstPluginViewItems.Add(lviPlugin);
 			}
 
 			lvEspList.Items.AddRange(lstPluginViewItems.ToArray());

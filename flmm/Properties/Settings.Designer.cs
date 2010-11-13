@@ -622,5 +622,29 @@ namespace Fomm.Properties {
                 this["falloutNewVegasAskAboutReadOnlySettingsFiles"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool fallout3BoldifyESMs {
+            get {
+                return ((bool)(this["fallout3BoldifyESMs"]));
+            }
+            set {
+                this["fallout3BoldifyESMs"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool falloutNewVegasBoldifyESMs {
+            get {
+                return ((bool)(this["falloutNewVegasBoldifyESMs"]));
+            }
+            set {
+                this["falloutNewVegasBoldifyESMs"] = value;
+            }
+        }
     }
 }

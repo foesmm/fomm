@@ -131,6 +131,15 @@ namespace Fomm.Games
 		{
 			get;
 		}
+
+		/// <summary>
+		/// Gets the <see cref="IPluginFormatProvider"/>s provided by the game mode.
+		/// </summary>
+		/// <value>The <see cref="IPluginFormatProvider"/>s provided by the game mode.</value>
+		public abstract IList<IPluginFormatProvider> PluginFormatProviders
+		{
+			get;
+		}
 		
 		/// <summary>
 		/// Gets the path to the game's save game files.

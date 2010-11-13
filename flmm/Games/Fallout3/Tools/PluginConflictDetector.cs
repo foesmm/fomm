@@ -7,6 +7,7 @@ using Fomm.PackageManager.ModInstallLog;
 using Fomm.PackageManager;
 using System.IO;
 using System.Windows.Forms;
+using Fomm.Games.Fallout3.PluginFormatProviders;
 
 namespace Fomm.Games.Fallout3.Tools
 {
@@ -15,26 +16,8 @@ namespace Fomm.Games.Fallout3.Tools
 	/// </summary>
 	public class PluginConflictDetector
 	{
-		private const string EXTRA_INFO_CRITICAL_RECORDS = "CriticalRecords";
-		
-		private MainForm m_frmMainForm = null;
+		private CriticalRecordPluginFormatProvider m_pfpFormatProvider = null;
 		private BackgroundWorkerProgressDialog m_bwdProgress = null;
-
-		#region Properties
-
-		/// <summary>
-		/// Gets the main plugin management form.
-		/// </summary>
-		/// <value>The main plugin management form.</value>
-		protected MainForm MainForm
-		{
-			get
-			{
-				return m_frmMainForm;
-			}
-		}
-
-		#endregion
 
 		#region Constructors
 
@@ -42,9 +25,9 @@ namespace Fomm.Games.Fallout3.Tools
 		/// A simple constructor that initializes the obejct with the given values.
 		/// </summary>
 		/// <param name="p_frmMainForm">The main plugin management form.</param>
-		public PluginConflictDetector(MainForm p_frmMainForm)
+		public PluginConflictDetector(CriticalRecordPluginFormatProvider p_pfpFormatProvider)
 		{
-			m_frmMainForm = p_frmMainForm;
+			m_pfpFormatProvider = p_pfpFormatProvider;
 		}
 
 		#endregion
@@ -60,11 +43,7 @@ namespace Fomm.Games.Fallout3.Tools
 				m_bwdProgress.OverallProgressStep = 1;
 				m_bwdProgress.OverallMessage = "Checking for conflicts...";
 				if (m_bwdProgress.ShowDialog() == DialogResult.Cancel)
-				{
-					MainForm.ClearExtraInfo(EXTRA_INFO_CRITICAL_RECORDS);
-					foreach (ListViewItem lviItem in MainForm.PluginsListViewItems)
-						lviItem.BackColor = Color.Transparent;
-				}
+					m_pfpFormatProvider.Clear();
 			}
 		}
 
@@ -76,8 +55,7 @@ namespace Fomm.Games.Fallout3.Tools
 		/// </remarks>
 		private void CheckForCriticalRecordConflicts()
 		{
-			MainForm.ClearExtraInfo(EXTRA_INFO_CRITICAL_RECORDS);
-
+			m_pfpFormatProvider.Clear();
 			List<string> lstPlugins = new List<string>(Program.GameMode.PluginManager.SortPluginList(Program.GameMode.PluginManager.ActivePluginList));
 
 			m_bwdProgress.OverallProgressMaximum = lstPlugins.Count;
@@ -130,14 +108,12 @@ namespace Fomm.Games.Fallout3.Tools
 					intColourIndex = 0;
 					break;
 			}
-			foreach (ListViewItem lviItem in MainForm.PluginsListViewItems)
+			Color clrHighlight = lstBackgroundColours[intColourIndex];
+			if (m_pfpFormatProvider.HasFormat(e.ConflictedPlugin.Name))
 			{
-				if (lviItem.Text.Equals(e.ConflictedPlugin.Name))
-				{
-					if (lstBackgroundColours.IndexOf(lviItem.BackColor) < intColourIndex)
-						lviItem.BackColor = lstBackgroundColours[intColourIndex];
-					break;
-				}
+				PluginFormat pftFormat = m_pfpFormatProvider.GetFormat(e.ConflictedPlugin.Name);
+				if (pftFormat.Highlight.HasValue && (lstBackgroundColours.IndexOf(pftFormat.Highlight.Value) > intColourIndex))
+					clrHighlight = pftFormat.Highlight.Value;
 			}
 
 			if (InstallLog.Current.GetCurrentFileOwnerName(e.ConflictingPlugin.Name) == null)
@@ -147,7 +123,7 @@ namespace Fomm.Games.Fallout3.Tools
 				fomod fomodMod = new fomod(Path.Combine(Program.GameMode.ModDirectory, InstallLog.Current.GetCurrentFileOwnerName(e.ConflictingPlugin.Name) + ".fomod"));
 				stbMessage.AppendFormat("Form Id \\b {0:x8}\\b0  is overridden by \\b {1}\\b0  in \\b {2}\\b0 .\\par \\pard\\li720\\sl240\\slmult1 {3}\\par \\pard\\sl240\\slmult1 ", e.FormId, e.ConflictingPlugin.Name, fomodMod.ModName, e.ConflictInfo.Reason);
 			}
-			MainForm.AddExtraInfo(EXTRA_INFO_CRITICAL_RECORDS, e.ConflictedPlugin.Name, stbMessage.ToString());
+			m_pfpFormatProvider.AddFormat(e.ConflictedPlugin.Name, clrHighlight, stbMessage.ToString());
 		}
 	}
 }
