@@ -696,9 +696,10 @@ namespace Fomm
 
 		private void checkForUpdateToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			bool booWasUpdate = false;
+			bool booWasUpdate = Program.GameMode.CheckForUpdates();
+
 			DateTime dteLastUpdateCheck = Properties.Settings.Default.LastUpdateCheck;
-			if (dteLastUpdateCheck + TimeSpan.FromHours(2) > DateTime.Now)
+			if (!booWasUpdate && dteLastUpdateCheck + TimeSpan.FromHours(2) > DateTime.Now)
 			{
 				MessageBox.Show("No newer updates available");
 				return;
@@ -721,9 +722,7 @@ namespace Fomm
 				}
 				booWasUpdate = true;
 			}
-
-			booWasUpdate = booWasUpdate || Program.GameMode.CheckForUpdates();
-
+			
 			if (!booWasUpdate)
 			{
 				MessageBox.Show("No newer updates available");
