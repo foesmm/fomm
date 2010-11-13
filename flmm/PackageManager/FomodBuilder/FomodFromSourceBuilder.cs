@@ -108,11 +108,20 @@ namespace Fomm.PackageManager.FomodBuilder
 
 				string strPackedFomodPath = Path.GetFileNameWithoutExtension(strSource);
 				string strTesNexusUrl = null;
-				Int32 intFileId;
-				if (strPackedFomodPath.Contains("-") && int.TryParse(strPackedFomodPath.Substring(strPackedFomodPath.LastIndexOf('-') + 1), out intFileId))
+				Regex rgxFileId = new Regex(@"-(\d\d\d\d\d+)");
+				if (rgxFileId.IsMatch(strPackedFomodPath))
 				{
-					strPackedFomodPath = strPackedFomodPath.Remove(strPackedFomodPath.LastIndexOf('-')) + Path.GetExtension(strSource);
-					strTesNexusUrl = String.Format(@"http://{0}/downloads/file.php?id={1}", NexusAPI.GetWebsite(Program.GameMode.NexusSite), intFileId);
+					NexusAPI na = new NexusAPI(Program.GameMode.NexusSite);
+					foreach (Match mchFileId in rgxFileId.Matches(strPackedFomodPath))
+					{
+						string strId = mchFileId.Groups[1].Value;
+						if (na.GetFileExists(Int32.Parse(strId)))
+						{
+							strPackedFomodPath = strPackedFomodPath.Remove(mchFileId.Index, mchFileId.Length) + Path.GetExtension(strSource);
+							strTesNexusUrl = String.Format(@"http://{0}/downloads/file.php?id={1}", NexusAPI.GetWebsite(Program.GameMode.NexusSite), strId);
+							break;
+						}
+					}
 				}
 
 				string[] strFOMods = null;
