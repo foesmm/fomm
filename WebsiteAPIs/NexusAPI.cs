@@ -651,6 +651,39 @@ namespace WebsiteAPIs
 		}
 
 		/// <summary>
+		/// Determines if the specified file exists.
+		/// </summary>
+		/// <param name="p_intFileId">The id of the file whose existence is to be determined.</param>
+		/// <returns><lang cref="true"/> if the file exists;
+		/// <lang cref="false"/> otherwise.</returns>
+		public bool GetFileExists(Int32 p_intFileId)
+		{
+			string strURL = String.Format("http://{0}/downloads/file.php?id={1}", m_strSite, p_intFileId);
+
+			HttpWebRequest hwrFilePage = (HttpWebRequest)WebRequest.Create(strURL);
+			hwrFilePage.CookieContainer = m_ckcCookies;
+			hwrFilePage.Method = "GET";
+
+			string strFilePage = null;
+			using (WebResponse wrpFilePage = hwrFilePage.GetResponse())
+			{
+				if (((HttpWebResponse)wrpFilePage).StatusCode == HttpStatusCode.Found)
+					return true;
+				if (((HttpWebResponse)wrpFilePage).StatusCode != HttpStatusCode.OK)
+					return false;
+
+				Stream stmFilePage = wrpFilePage.GetResponseStream();
+				using (StreamReader srdFilePage = new StreamReader(stmFilePage))
+				{
+					strFilePage = srdFilePage.ReadToEnd();
+					srdFilePage.Close();
+				}
+				wrpFilePage.Close();
+			}
+			return !strFilePage.Contains("error=file_exist");
+		}
+
+		/// <summary>
 		/// Gets the current verison of the specified file.
 		/// </summary>
 		/// <param name="p_intFileId">The id of the file whose version is to be retrieved.</param>
