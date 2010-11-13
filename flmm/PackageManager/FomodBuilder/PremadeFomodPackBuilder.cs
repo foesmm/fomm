@@ -572,6 +572,8 @@ namespace Fomm.PackageManager.FomodBuilder
 			szcCompressor.CompressionMode = CompressionMode.Create;
 			szcCompressor.FileCompressionStarted += new EventHandler<FileNameEventArgs>(FileCompressionStarted);
 			szcCompressor.FileCompressionFinished += new EventHandler(FileCompressionFinished);
+			if (!Directory.Exists(Path.GetDirectoryName(p_strPackedPFPPath)))
+				Directory.CreateDirectory(Path.GetDirectoryName(p_strPackedPFPPath));
 			szcCompressor.CompressDirectory(p_strPFPFolder, p_strPackedPFPPath);
 		}
 	}
