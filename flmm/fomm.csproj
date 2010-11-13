@@ -224,6 +224,7 @@
     <Compile Include="Games\Fallout3\Tools\TESsnip\ScriptCompiler\Tokenizer.cs" />
     <Compile Include="Games\FalloutNewVegas\FalloutNewVegasPluginManager.cs" />
     <Compile Include="Games\FalloutNewVegas\FalloutNewVegasGameMode.cs" />
+    <Compile Include="Games\FalloutNewVegas\PluginFormatProviders\BoldESMPluginFormatProvider.cs" />
     <Compile Include="Games\FalloutNewVegas\Script\FalloutNewVegasModUpgradeScript.cs" />
     <Compile Include="Games\FalloutNewVegas\Script\FalloutNewVegasModInstallScript.cs" />
     <Compile Include="Games\FalloutNewVegas\Script\XmlConfiguredInstall\NvseDependency.cs" />

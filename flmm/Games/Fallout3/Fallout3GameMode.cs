@@ -343,6 +343,18 @@ namespace Fomm.Games.Fallout3
 			}
 		}
 
+		/// <summary>
+		/// Sets the BoldESMPluginFormatProvider.
+		/// </summary>
+		/// <value>The BoldESMPluginFormatProvider.</value>
+		protected BoldESMPluginFormatProvider BoldESMPluginFormatProvider
+		{
+			set
+			{
+				m_dicPluginFormatProviders["ESMBoldify"] = value;
+			}
+		}
+
 		#region Tool Injection
 
 		/// <summary>
@@ -556,7 +568,7 @@ namespace Fomm.Games.Fallout3
 		protected virtual void SetupPluginFormatProviders()
 		{
 			CriticalRecordPluginFormatProvider = new CriticalRecordPluginFormatProvider();
-			m_dicPluginFormatProviders["ESMBoldify"] = new BoldESMPluginFormatProvider();
+			BoldESMPluginFormatProvider = new BoldESMPluginFormatProvider();
 		}
 
 		/// <summary>

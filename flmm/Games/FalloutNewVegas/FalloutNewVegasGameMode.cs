@@ -14,6 +14,7 @@ using Fomm.Games.FalloutNewVegas.Script.XmlConfiguredInstall.Parsers;
 using Fomm.Games.FalloutNewVegas.Script;
 using Fomm.Games.Fallout3;
 using WebsiteAPIs;
+using Fomm.Games.FalloutNewVegas.PluginFormatProviders;
 #if TRACE
 using System.Diagnostics;
 #endif
@@ -238,6 +239,15 @@ namespace Fomm.Games.FalloutNewVegas
 		protected override Fallout3GameMode.SettingsFilesSet CreateSettingsFileSet()
 		{
 			return new SettingsFilesSet();
+		}
+
+		/// <summary>
+		/// Sets up the plugin format providers for this game mode.
+		/// </summary>
+		protected override void SetupPluginFormatProviders()
+		{
+			base.SetupPluginFormatProviders();
+			BoldESMPluginFormatProvider = new BoldESMPluginFormatProvider();
 		}
 
 		/// <summary>
