@@ -57,7 +57,7 @@ namespace Fomm
 
 	public static class Program
 	{
-		public const string Version = "0.13.16";
+		public const string Version = "0.13.17";
 		public static readonly Version MVersion = new Version(Version + ".0");
 
 #if TRACE
@@ -349,7 +349,14 @@ namespace Fomm
 					if (!GameMode.SetWorkingDirectory(out strErrorMessage))
 					{
 						MessageBox.Show(null, strErrorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-						return;
+						booChangeGameMode = false;
+						if (Properties.Settings.Default.rememberGameMode)
+						{
+							booChangeGameMode = true;
+							Properties.Settings.Default.rememberGameMode = false;
+							Properties.Settings.Default.Save();
+						}
+						continue;
 					}
 
 					//Check that we're in fallout's directory and that we have write access
