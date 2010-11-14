@@ -216,7 +216,7 @@ namespace Fomm.Games.FalloutNewVegas
 			if (File.Exists("FNVEdit.exe"))
 				Tools.Add(new Command<MainForm>("FNVEdit", "Launches FNVEdit, if it is installed.", LaunchFNVEdit));
 			Tools.Add(new CheckedCommand<MainForm>("Archive Invalidation", "Toggles Archive Invalidation.", Fallout3.Tools.ArchiveInvalidation.IsActive(), ToggleArchiveInvalidation));
-			
+
 			if (!File.Exists(((SettingsFilesSet)SettingsFiles).FOIniPath))
 				MessageBox.Show("You have no Fallout INI file. Please run Fallout: New Vegas to initialize the file before installing any mods or turning on Archive Invalidation.", "Missing INI", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
@@ -605,8 +605,8 @@ namespace Fomm.Games.FalloutNewVegas
 		/// main mod management form.</param>
 		public override void ToggleArchiveInvalidation(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
 		{
-			Fomm.Games.FalloutNewVegas.Tools.ArchiveInvalidation.Update();
-			((CheckedCommand<MainForm>)p_objCommand).IsChecked = Fomm.Games.FalloutNewVegas.Tools.ArchiveInvalidation.IsActive();
+			if (Fomm.Games.FalloutNewVegas.Tools.ArchiveInvalidation.Update())
+				((CheckedCommand<MainForm>)p_objCommand).IsChecked = Fomm.Games.FalloutNewVegas.Tools.ArchiveInvalidation.IsActive();
 		}
 
 		#endregion

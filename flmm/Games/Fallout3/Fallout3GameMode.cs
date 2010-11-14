@@ -1094,8 +1094,8 @@ namespace Fomm.Games.Fallout3
 		/// main mod management form.</param>
 		public virtual void ToggleArchiveInvalidation(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
 		{
-			Fomm.Games.Fallout3.Tools.ArchiveInvalidation.Update();
-			((CheckedCommand<MainForm>)p_objCommand).IsChecked = Fomm.Games.Fallout3.Tools.ArchiveInvalidation.IsActive();
+			if (Fomm.Games.Fallout3.Tools.ArchiveInvalidation.Update())
+				((CheckedCommand<MainForm>)p_objCommand).IsChecked = Fomm.Games.Fallout3.Tools.ArchiveInvalidation.IsActive();
 		}
 
 		#endregion

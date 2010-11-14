@@ -55,21 +55,30 @@ namespace Fomm.Games.Fallout3.Tools
 			NativeMethods.WritePrivateProfileStringA("Archive", "SArchiveList", GetBSAList(), ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOIniPath);
 		}
 
-		public static void Update()
+		public static bool Update()
 		{
 			if (!File.Exists(((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOIniPath))
 			{
 				MessageBox.Show("You have no Fallout INI file. Please run Fallout to initialize the file.", "Missing INI", MessageBoxButtons.OK, MessageBoxIcon.Information);
-				return;
+				return false;
 			}
 			if (NativeMethods.GetPrivateProfileIntA("Archive", "bInvalidateOlderFiles", 0, ((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOIniPath) == 0)
 			{
-				if (MessageBox.Show("Apply archive invalidation?", "", MessageBoxButtons.YesNo) == DialogResult.Yes) ApplyAI();
+				if (MessageBox.Show("Apply archive invalidation?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
+				{
+					ApplyAI();
+					return true;
+				}
 			}
 			else
 			{
-				if (MessageBox.Show("Remove archive invalidation?", "", MessageBoxButtons.YesNo) == DialogResult.Yes) RemoveAI();
-			}
+				if (MessageBox.Show("Remove archive invalidation?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
+				{
+					RemoveAI();
+					return true;
+				}
+			} 
+			return false;
 		}
 
 		public static bool IsActive()
