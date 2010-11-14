@@ -95,20 +95,6 @@ namespace Fomm.Commands
 			Executed += p_eehExecute;
 		}
 
-		/// <summary>
-		/// A simple constructor that initializes the object with the given values.
-		/// </summary>
-		/// <param name="p_strName">The name of the command.</param>
-		/// <param name="p_strDescription">The description of the command.</param>
-		/// <param name="p_booCanExecute">Whether the command can be executed.</param>
-		/// <param name="p_eehExecute">An <see cref="EventHandler<ExecutedEventArgs<T>>"/> that will be
-		/// perform the command work.</param>
-		public Command(string p_strName, string p_strDescription, bool p_booCanExecute, EventHandler<ExecutedEventArgs<T>> p_eehExecute)
-			:this(p_strName, p_strDescription, p_eehExecute)
-		{
-			CanExecute = p_booCanExecute;
-		}
-
 		#endregion
 
 		/// <summary>
