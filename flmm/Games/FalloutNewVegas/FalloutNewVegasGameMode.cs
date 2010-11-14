@@ -407,7 +407,8 @@ namespace Fomm.Games.FalloutNewVegas
 				MessageBox.Show("No custom launch command has been set", "Error");
 				return;
 			}
-			StartSteam(p_eeaArguments.Argument);
+			//this is only required if we are setting environment variables
+			//StartSteam(p_eeaArguments.Argument);
 			try
 			{
 				System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
@@ -446,7 +447,8 @@ namespace Fomm.Games.FalloutNewVegas
 				MessageBox.Show("Please close all utility windows before launching Fallout");
 				return;
 			}
-			StartSteam(p_eeaArguments.Argument);
+			//this is only required if we are setting environment variables
+			//StartSteam(p_eeaArguments.Argument);
 			try
 			{
 				System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
@@ -498,11 +500,11 @@ namespace Fomm.Games.FalloutNewVegas
 				command = "falloutNV.exe";
 			else
 				command = "falloutNVng.exe";
-			StartSteam(p_eeaArguments.Argument);
+			bool booSteamStarted = StartSteam(p_eeaArguments.Argument);
 			try
 			{
 				System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
-				if (!psi.EnvironmentVariables.ContainsKey("SteamAppID"))
+				if (booSteamStarted && !psi.EnvironmentVariables.ContainsKey("SteamAppID"))
 					psi.EnvironmentVariables.Add("SteamAppID", GetSteamAppId().ToString());
 				psi.FileName = command;
 				psi.UseShellExecute = false;
