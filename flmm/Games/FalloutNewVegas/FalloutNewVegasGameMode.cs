@@ -16,6 +16,7 @@ using Fomm.Games.Fallout3;
 using WebsiteAPIs;
 using Fomm.Games.FalloutNewVegas.PluginFormatProviders;
 using Microsoft.Win32;
+using Fomm.Commands;
 #if TRACE
 using System.Diagnostics;
 #endif
@@ -103,13 +104,13 @@ namespace Fomm.Games.FalloutNewVegas
 		/// Gets the game launch command.
 		/// </summary>
 		/// <value>The game launch command.</value>
-		public override GameTool LaunchCommand
+		public override Command<MainForm> LaunchCommand
 		{
 			get
 			{
 				if (String.IsNullOrEmpty(Properties.Settings.Default.falloutNewVegasLaunchCommand) && File.Exists("nvse_loader.exe"))
-					return new GameTool("Launch NVSE", "Launches Fallout: New Vegas using FOSE.", LaunchGame);
-				return new GameTool("Launch Fallout: NV", "Launches Fallout: New Vegas using FOSE.", LaunchGame);
+					return new Command<MainForm>("Launch NVSE", "Launches Fallout: New Vegas using FOSE.", LaunchGame);
+				return new Command<MainForm>("Launch Fallout: NV", "Launches Fallout: New Vegas using FOSE.", LaunchGame);
 			}
 		}
 
@@ -213,8 +214,9 @@ namespace Fomm.Games.FalloutNewVegas
 
 			((SettingsFilesSet)SettingsFiles).FODefaultIniPath = Path.Combine(PluginsPath, @"..\fallout_default.ini");
 			if (File.Exists("FNVEdit.exe"))
-				Tools.Add(new GameTool("FNVEdit", "Launches FNVEdit, if it is installed.", LaunchFNVEdit));
-
+				Tools.Add(new Command<MainForm>("FNVEdit", "Launches FNVEdit, if it is installed.", LaunchFNVEdit));
+			Tools.Add(new CheckedCommand<MainForm>("Archive Invalidation", "Toggles Archive Invalidation.", Fallout3.Tools.ArchiveInvalidation.IsActive(), ToggleArchiveInvalidation));
+			
 			if (!File.Exists(((SettingsFilesSet)SettingsFiles).FOIniPath))
 				MessageBox.Show("You have no Fallout INI file. Please run Fallout: New Vegas to initialize the file before installing any mods or turning on Archive Invalidation.", "Missing INI", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
@@ -274,9 +276,9 @@ namespace Fomm.Games.FalloutNewVegas
 		/// </summary>
 		protected override void SetupLaunchCommands()
 		{
-			GameLaunchCommands.Add(new GameTool("Launch Fallout: New Vegas", "Launches plain Fallout: New Vegas.", LaunchFalloutNVPlain));
-			GameLaunchCommands.Add(new GameTool("Launch NVSE", "Launches Fallout: New Vegas with NVSE.", LaunchFalloutNVNVSE));
-			GameLaunchCommands.Add(new GameTool("Launch Custom Fallout: New Vegas", "Launches Fallout: New Vegas with custom command.", LaunchFalloutNVCustom));
+			GameLaunchCommands.Add(new Command<MainForm>("Launch Fallout: New Vegas", "Launches plain Fallout: New Vegas.", LaunchFalloutNVPlain));
+			GameLaunchCommands.Add(new Command<MainForm>("Launch NVSE", "Launches Fallout: New Vegas with NVSE.", LaunchFalloutNVNVSE));
+			GameLaunchCommands.Add(new Command<MainForm>("Launch Custom Fallout: New Vegas", "Launches Fallout: New Vegas with custom command.", LaunchFalloutNVCustom));
 		}
 
 		/// <summary>
@@ -284,23 +286,21 @@ namespace Fomm.Games.FalloutNewVegas
 		/// </summary>
 		protected override void SetupTools()
 		{
-			Tools.Add(new GameTool("BSA Browser", "Views and unpacks BSA files.", LaunchBSABrowserTool));
-			Tools.Add(new GameTool("BSA Creator", "Creates BSA files.", LaunchBSACreatorTool));
-			Tools.Add(new GameTool("TESsnip", "An ESP/ESM editor.", LaunchTESsnipTool));
-			Tools.Add(new GameTool("Shader Editor", "A shader (SDP) editor.", LaunchShaderEditTool));
-			Tools.Add(new GameTool("CREditor", "Edits critical records in an ESP/ESM.", LaunchCREditorTool));
-			Tools.Add(new GameTool("Archive Invalidation", "Toggles Archive Invalidation.", ToggleArchiveInvalidation));
-			//m_lstTools.Add(new GameTool("Install Tweaker", "Advanced Fallout 3 tweaking.", LaunchInstallTweakerTool));
-			Tools.Add(new GameTool("Conflict Detector", "Checks for conflicts with mod-author specified critical records.", LaunchConflictDetector));
-			Tools.Add(new GameTool("Save Games", "Save game info viewer.", LaunchSaveGamesViewer));
+			Tools.Add(new Command<MainForm>("BSA Browser", "Views and unpacks BSA files.", LaunchBSABrowserTool));
+			Tools.Add(new Command<MainForm>("BSA Creator", "Creates BSA files.", LaunchBSACreatorTool));
+			Tools.Add(new Command<MainForm>("TESsnip", "An ESP/ESM editor.", LaunchTESsnipTool));
+			Tools.Add(new Command<MainForm>("Shader Editor", "A shader (SDP) editor.", LaunchShaderEditTool));
+			Tools.Add(new Command<MainForm>("CREditor", "Edits critical records in an ESP/ESM.", LaunchCREditorTool));
+			Tools.Add(new Command<MainForm>("Conflict Detector", "Checks for conflicts with mod-author specified critical records.", LaunchConflictDetector));
+			Tools.Add(new Command<MainForm>("Save Games", "Save game info viewer.", LaunchSaveGamesViewer));
 
-			GameSettingsTools.Add(new GameTool("Graphics Settings", "Changes the graphics settings.", LaunchGraphicsSettingsTool));
+			GameSettingsTools.Add(new Command<MainForm>("Graphics Settings", "Changes the graphics settings.", LaunchGraphicsSettingsTool));
 
-			RightClickTools.Add(new GameTool("Open in TESsnip...", "Open the selected plugins in TESsnip.", LaunchTESsnipToolWithSelectedPlugins));
-			RightClickTools.Add(new GameTool("Open in CREditor...", "Open the selected plugins in TESsnip.", LaunchCREditorToolWithSelectedPlugins));
+			RightClickTools.Add(new Command<MainForm>("Open in TESsnip...", "Open the selected plugins in TESsnip.", LaunchTESsnipToolWithSelectedPlugins));
+			RightClickTools.Add(new Command<MainForm>("Open in CREditor...", "Open the selected plugins in TESsnip.", LaunchCREditorToolWithSelectedPlugins));
 
-			LoadOrderTools.Add(new GameTool("Load Order Report...", "Generates a report on the current load order, as compared to the BOSS recomendation.", LaunchLoadOrderReport));
-			LoadOrderTools.Add(new GameTool("BOSS Auto Sort", "Auto-sorts the plugins using BOSS's masterlist.", LaunchSortPlugins));
+			LoadOrderTools.Add(new Command<MainForm>("Load Order Report...", "Generates a report on the current load order, as compared to the BOSS recomendation.", LaunchLoadOrderReport));
+			LoadOrderTools.Add(new Command<MainForm>("BOSS Auto Sort", "Auto-sorts the plugins using BOSS's masterlist.", LaunchSortPlugins));
 		}
 
 		#endregion
@@ -314,10 +314,10 @@ namespace Fomm.Games.FalloutNewVegas
 		/// <summary>
 		/// This ensures that the steam client has loaded.
 		/// </summary>
-		/// <param name="p_frmMainForm">The main mod management form.</param>
+		/// <param name="p_eeaArguments">The main mod management form.</param>
 		/// <returns><lang cref="true"/> if Steam is running;
 		/// <lang cref="false"/> otherwise.</returns>
-		public bool StartSteam(MainForm p_frmMainForm)
+		public bool StartSteam(MainForm p_eeaArguments)
 		{
 			foreach (System.Diagnostics.Process clsProcess in System.Diagnostics.Process.GetProcesses())
 				if (clsProcess.ProcessName.ToLowerInvariant().Contains("steam"))
@@ -356,7 +356,7 @@ namespace Fomm.Games.FalloutNewVegas
 				{
 				}
 			}
-			MessageBox.Show(p_frmMainForm, "Unable to start Steam automatically." + Environment.NewLine + "Your game may not launch correctly.", "Steam Missing", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+			MessageBox.Show(p_eeaArguments, "Unable to start Steam automatically." + Environment.NewLine + "Your game may not launch correctly.", "Steam Missing", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 			return false;
 		}
 
@@ -390,10 +390,12 @@ namespace Fomm.Games.FalloutNewVegas
 		/// <summary>
 		/// Launches the game with a custom command.
 		/// </summary>
-		/// <param name="p_frmMainForm">The main mod management form.</param>
-		public void LaunchFalloutNVCustom(MainForm p_frmMainForm)
+		/// <param name="p_objCommand">The command that is executing.</param>
+		/// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
+		/// main mod management form.</param>
+		public void LaunchFalloutNVCustom(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
 		{
-			if (p_frmMainForm.HasOpenUtilityWindows)
+			if (p_eeaArguments.Argument.HasOpenUtilityWindows)
 			{
 				MessageBox.Show("Please close all utility windows before launching Fallout");
 				return;
@@ -405,7 +407,7 @@ namespace Fomm.Games.FalloutNewVegas
 				MessageBox.Show("No custom launch command has been set", "Error");
 				return;
 			}
-			StartSteam(p_frmMainForm);
+			StartSteam(p_eeaArguments.Argument);
 			try
 			{
 				System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
@@ -423,26 +425,28 @@ namespace Fomm.Games.FalloutNewVegas
 				MessageBox.Show("Failed to launch '" + command + "'\n" + ex.Message);
 				return;
 			}
-			p_frmMainForm.Close();
+			p_eeaArguments.Argument.Close();
 		}
 
 		/// <summary>
 		/// Launches the game, with NVSE.
 		/// </summary>
-		/// <param name="p_frmMainForm">The main mod management form.</param>
-		public void LaunchFalloutNVNVSE(MainForm p_frmMainForm)
+		/// <param name="p_objCommand">The command that is executing.</param>
+		/// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
+		/// main mod management form.</param>
+		public void LaunchFalloutNVNVSE(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
 		{
 			if (!File.Exists("nvse_loader.exe"))
 			{
 				MessageBox.Show("NVSE does not appear to be installed");
 				return;
 			}
-			if (p_frmMainForm.HasOpenUtilityWindows)
+			if (p_eeaArguments.Argument.HasOpenUtilityWindows)
 			{
 				MessageBox.Show("Please close all utility windows before launching Fallout");
 				return;
 			}
-			StartSteam(p_frmMainForm);
+			StartSteam(p_eeaArguments.Argument);
 			try
 			{
 				System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
@@ -473,16 +477,18 @@ namespace Fomm.Games.FalloutNewVegas
 				MessageBox.Show("Failed to launch 'nvse_loader.exe'\n" + ex.Message);
 				return;
 			}
-			p_frmMainForm.Close();
+			p_eeaArguments.Argument.Close();
 		}
 
 		/// <summary>
 		/// Launches the game, without NVSE.
 		/// </summary>
-		/// <param name="p_frmMainForm">The main mod management form.</param>
-		public void LaunchFalloutNVPlain(MainForm p_frmMainForm)
+		/// <param name="p_objCommand">The command that is executing.</param>
+		/// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
+		/// main mod management form.</param>
+		public void LaunchFalloutNVPlain(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
 		{
-			if (p_frmMainForm.HasOpenUtilityWindows)
+			if (p_eeaArguments.Argument.HasOpenUtilityWindows)
 			{
 				MessageBox.Show("Please close all utility windows before launching fallout");
 				return;
@@ -492,7 +498,7 @@ namespace Fomm.Games.FalloutNewVegas
 				command = "falloutNV.exe";
 			else
 				command = "falloutNVng.exe";
-			StartSteam(p_frmMainForm);
+			StartSteam(p_eeaArguments.Argument);
 			try
 			{
 				System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
@@ -512,23 +518,25 @@ namespace Fomm.Games.FalloutNewVegas
 				MessageBox.Show("Failed to launch '" + command + "'\n" + ex.Message);
 				return;
 			}
-			p_frmMainForm.Close();
+			p_eeaArguments.Argument.Close();
 		}
 
 		/// <summary>
 		/// Launches the game, using NVSE if present.
 		/// </summary>
-		/// <param name="p_frmMainForm">The main mod management form.</param>
-		public override void LaunchGame(MainForm p_frmMainForm)
+		/// <param name="p_objCommand">The command that is executing.</param>
+		/// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
+		/// main mod management form.</param>
+		public override void LaunchGame(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
 		{
 			string command = Properties.Settings.Default.falloutNewVegasLaunchCommand;
 			string args = Properties.Settings.Default.falloutNewVegasLaunchCommandArgs;
 			if (!String.IsNullOrEmpty(command))
-				LaunchFalloutNVCustom(p_frmMainForm);
+				LaunchFalloutNVCustom(p_objCommand, p_eeaArguments);
 			else if (File.Exists("nvse_loader.exe"))
-				LaunchFalloutNVNVSE(p_frmMainForm);
+				LaunchFalloutNVNVSE(p_objCommand, p_eeaArguments);
 			else
-				LaunchFalloutNVPlain(p_frmMainForm);
+				LaunchFalloutNVPlain(p_objCommand, p_eeaArguments);
 		}
 
 		#endregion
@@ -538,12 +546,14 @@ namespace Fomm.Games.FalloutNewVegas
 		/// <summary>
 		/// Launches FNVEdit, if present.
 		/// </summary>
-		/// <param name="p_frmMainForm">The main mod management form.</param>
-		public virtual void LaunchFNVEdit(MainForm p_frmMainForm)
+		/// <param name="p_objCommand">The command that is executing.</param>
+		/// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
+		/// main mod management form.</param>
+		public virtual void LaunchFNVEdit(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
 		{
 			if (!File.Exists("FNVEdit.exe"))
 			{
-				MessageBox.Show(p_frmMainForm, "Could not find FNVEdit. Please install it.", "Missing FNVEdit", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+				MessageBox.Show(p_eeaArguments.Argument, "Could not find FNVEdit. Please install it.", "Missing FNVEdit", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 				return;
 			}
 			try
@@ -567,8 +577,10 @@ namespace Fomm.Games.FalloutNewVegas
 		/// <summary>
 		/// Launches the save games viewer.
 		/// </summary>
-		/// <param name="p_frmMainForm">The main mod management form.</param>
-		public override void LaunchSaveGamesViewer(MainForm p_frmMainForm)
+		/// <param name="p_objCommand">The command that is executing.</param>
+		/// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
+		/// main mod management form.</param>
+		public override void LaunchSaveGamesViewer(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
 		{
 			List<string> lstActive = new List<string>();
 			//the original implementation populated the inactive list with all plugins
@@ -588,10 +600,13 @@ namespace Fomm.Games.FalloutNewVegas
 		/// <summary>
 		/// Toggles archive invalidation.
 		/// </summary>
-		/// <param name="p_frmMainForm">The main mod management form.</param>
-		public override void ToggleArchiveInvalidation(MainForm p_frmMainForm)
+		/// <param name="p_objCommand">The command that is executing.</param>
+		/// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
+		/// main mod management form.</param>
+		public override void ToggleArchiveInvalidation(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
 		{
 			Fomm.Games.FalloutNewVegas.Tools.ArchiveInvalidation.Update();
+			((CheckedCommand<MainForm>)p_objCommand).IsChecked = Fomm.Games.FalloutNewVegas.Tools.ArchiveInvalidation.IsActive();
 		}
 
 		#endregion

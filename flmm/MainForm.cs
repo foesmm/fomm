@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Fomm.PackageManager.ModInstallLog;
 using Fomm.Games;
+using Fomm.Commands;
 #if TRACE
 using System.Diagnostics;
 #endif
@@ -106,9 +107,9 @@ namespace Fomm
 				if (fomod.Length > 0) PackageManagerForm.AddNewFomod(fomod);
 			}
 
-			GameTool gtlGameLaunch = Program.GameMode.LaunchCommand;
-			bLaunch.Text = gtlGameLaunch.Name;
-			bLaunch.Tag = gtlGameLaunch.Command;
+			Command<MainForm> cmdGameLaunch = Program.GameMode.LaunchCommand;
+			bLaunch.Text = cmdGameLaunch.Name;
+			bLaunch.Tag = cmdGameLaunch;
 
 			if (!Properties.Settings.Default.DisableIPC)
 			{
@@ -146,34 +147,39 @@ namespace Fomm
 		/// </summary>
 		protected void SetupTools()
 		{
-			foreach (GameTool gtlTool in Program.GameMode.Tools)
+			foreach (Command<MainForm> cmdTool in Program.GameMode.Tools)
 			{
-				ToolStripItem tsiMenuItem = toolsToolStripMenuItem.DropDownItems.Add(gtlTool.Name, null, (s, a) => { ((GameTool.LaunchToolMethod)((ToolStripItem)s).Tag)(this); });
-				tsiMenuItem.Tag = gtlTool.Command;
+				ToolStripMenuItem tsiMenuItem = new ToolStripMenuItem();
+				ToolStripMenuItemCommandBinding<MainForm> cbdCommandBinding = new ToolStripMenuItemCommandBinding<MainForm>(tsiMenuItem, cmdTool, () => { return this; });
+				toolsToolStripMenuItem.DropDownItems.Add(tsiMenuItem);
 			}
 
-			foreach (GameTool gtlTool in Program.GameMode.GameSettingsTools)
+			foreach (Command<MainForm> cmdTool in Program.GameMode.GameSettingsTools)
 			{
-				ToolStripItem tsiMenuItem = gameSettingsToolStripMenuItem.DropDownItems.Add(gtlTool.Name, null, (s, a) => { ((GameTool.LaunchToolMethod)((ToolStripItem)s).Tag)(this); });
-				tsiMenuItem.Tag = gtlTool.Command;
+				ToolStripMenuItem tsiMenuItem = new ToolStripMenuItem();
+				ToolStripMenuItemCommandBinding<MainForm> cbdCommandBinding = new ToolStripMenuItemCommandBinding<MainForm>(tsiMenuItem, cmdTool, () => { return this; });
+				gameSettingsToolStripMenuItem.DropDownItems.Add(tsiMenuItem);
 			}
 
-			foreach (GameTool gtlTool in Program.GameMode.RightClickTools)
+			foreach (Command<MainForm> cmdTool in Program.GameMode.RightClickTools)
 			{
-				ToolStripItem tsiMenuItem = cmsPlugins.Items.Add(gtlTool.Name, null, (s, a) => { ((GameTool.LaunchToolMethod)((ToolStripItem)s).Tag)(this); });
-				tsiMenuItem.Tag = gtlTool.Command;
+				ToolStripMenuItem tsiMenuItem = new ToolStripMenuItem();
+				ToolStripMenuItemCommandBinding<MainForm> cbdCommandBinding = new ToolStripMenuItemCommandBinding<MainForm>(tsiMenuItem, cmdTool, () => { return this; });
+				cmsPlugins.Items.Add(tsiMenuItem);
 			}
 
-			foreach (GameTool gtlTool in Program.GameMode.LoadOrderTools)
+			foreach (Command<MainForm> cmdTool in Program.GameMode.LoadOrderTools)
 			{
-				ToolStripItem tsiMenuItem = loadOrderToolStripMenuItem.DropDownItems.Add(gtlTool.Name, null, (s, a) => { ((GameTool.LaunchToolMethod)((ToolStripItem)s).Tag)(this); });
-				tsiMenuItem.Tag = gtlTool.Command;
+				ToolStripMenuItem tsiMenuItem = new ToolStripMenuItem();
+				ToolStripMenuItemCommandBinding<MainForm> cbdCommandBinding = new ToolStripMenuItemCommandBinding<MainForm>(tsiMenuItem, cmdTool, () => { return this; });
+				loadOrderToolStripMenuItem.DropDownItems.Add(tsiMenuItem);
 			}
 
-			foreach (GameTool gtlTool in Program.GameMode.GameLaunchCommands)
+			foreach (Command<MainForm> cmdTool in Program.GameMode.GameLaunchCommands)
 			{
-				ToolStripItem tsiMenuItem = launchGameToolStripMenuItem.DropDownItems.Add(gtlTool.Name, null, (s, a) => { ((GameTool.LaunchToolMethod)((ToolStripItem)s).Tag)(this); });
-				tsiMenuItem.Tag = gtlTool.Command;
+				ToolStripMenuItem tsiMenuItem = new ToolStripMenuItem();
+				ToolStripMenuItemCommandBinding<MainForm> cbdCommandBinding = new ToolStripMenuItemCommandBinding<MainForm>(tsiMenuItem, cmdTool, () => { return this; });
+				launchGameToolStripMenuItem.DropDownItems.Add(tsiMenuItem);
 			}
 		}
 
@@ -395,7 +401,7 @@ namespace Fomm
 				MessageBox.Show("Please close all utility windows before launching fallout");
 				return;
 			}
-			((GameTool.LaunchToolMethod)((Button)sender).Tag)(this);
+			((Command<MainForm>)((Button)sender).Tag).Execute(this);
 			//Close();
 		}
 

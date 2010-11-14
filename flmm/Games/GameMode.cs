@@ -9,6 +9,7 @@ using System.Drawing;
 using Fomm.Controls;
 using Microsoft.Win32;
 using WebsiteAPIs;
+using Fomm.Commands;
 
 namespace Fomm.Games
 {
@@ -55,7 +56,7 @@ namespace Fomm.Games
 		/// Gets the game launch command.
 		/// </summary>
 		/// <value>The game launch command.</value>
-		public abstract GameTool LaunchCommand
+		public abstract Command<MainForm> LaunchCommand
 		{
 			get;
 		}
@@ -156,7 +157,7 @@ namespace Fomm.Games
 		/// Gets the list of tools to add to the tools menu.
 		/// </summary>
 		/// <value>The list of tools to add to the tools menu.</value>
-		public abstract IList<GameTool> Tools
+		public abstract IList<Command<MainForm>> Tools
 		{
 			get;
 		}
@@ -165,7 +166,7 @@ namespace Fomm.Games
 		/// Gets the list of tools to add to the game settings menu.
 		/// </summary>
 		/// <value>The list of tools to add to the game settings menu.</value>
-		public abstract IList<GameTool> GameSettingsTools
+		public abstract IList<Command<MainForm>> GameSettingsTools
 		{
 			get;
 		}
@@ -174,7 +175,7 @@ namespace Fomm.Games
 		/// Gets the list of tools to add to the right-click menu.
 		/// </summary>
 		/// <value>The list of tools to add to the right-click menu.</value>
-		public abstract IList<GameTool> RightClickTools
+		public abstract IList<Command<MainForm>> RightClickTools
 		{
 			get;
 		}
@@ -183,7 +184,7 @@ namespace Fomm.Games
 		/// Gets the list of tools to add to the load order menu.
 		/// </summary>
 		/// <value>The list of tools to add to the load order menu.</value>
-		public abstract IList<GameTool> LoadOrderTools
+		public abstract IList<Command<MainForm>> LoadOrderTools
 		{
 			get;
 		}
@@ -192,7 +193,7 @@ namespace Fomm.Games
 		/// Gets the list of game launch commands.
 		/// </summary>
 		/// <value>The list of game launch commands.</value>
-		public abstract IList<GameTool> GameLaunchCommands
+		public abstract IList<Command<MainForm>> GameLaunchCommands
 		{
 			get;
 		}

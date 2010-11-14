@@ -86,6 +86,11 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\CheckedCommand.cs" />
+    <Compile Include="Commands\Command.cs" />
+    <Compile Include="Commands\CommandBinding.cs" />
+    <Compile Include="Commands\ButtonCommandBinding.cs" />
+    <Compile Include="Commands\ToolStripMenuItemCommandBinding.cs" />
     <Compile Include="Controls\SettingsPage.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -256,7 +261,6 @@
       <DependentUpon>SaveForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Games\GameMode.cs" />
-    <Compile Include="Games\GameTool.cs" />
     <Compile Include="Games\Fallout3\Tools\GraphicsSettings\GraphicsSettings.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -16,6 +16,7 @@ using Fomm.Games.Fallout3.Script.XmlConfiguredInstall.Parsers;
 using WebsiteAPIs;
 using Fomm.Games.Fallout3.Tools.CriticalRecords;
 using Fomm.Games.Fallout3.PluginFormatProviders;
+using Fomm.Commands;
 #if TRACE
 using System.Diagnostics;
 #endif
@@ -110,11 +111,11 @@ namespace Fomm.Games.Fallout3
 		private Dictionary<string, string> m_dicAdditionalPaths = new Dictionary<string, string>();
 		private SettingsFilesSet m_sfsSettingsFiles = null;
 		private Dictionary<string, IPluginFormatProvider> m_dicPluginFormatProviders = new Dictionary<string, IPluginFormatProvider>();
-		private List<GameTool> m_lstTools = new List<GameTool>();
-		private List<GameTool> m_lstGameSettingsTools = new List<GameTool>();
-		private List<GameTool> m_lstRightClickTools = new List<GameTool>();
-		private List<GameTool> m_lstLoadOrderTools = new List<GameTool>();
-		private List<GameTool> m_lstGameLaunchCommands = new List<GameTool>();
+		private List<Command<MainForm>> m_lstTools = new List<Command<MainForm>>();
+		private List<Command<MainForm>> m_lstGameSettingsTools = new List<Command<MainForm>>();
+		private List<Command<MainForm>> m_lstRightClickTools = new List<Command<MainForm>>();
+		private List<Command<MainForm>> m_lstLoadOrderTools = new List<Command<MainForm>>();
+		private List<Command<MainForm>> m_lstGameLaunchCommands = new List<Command<MainForm>>();
 		private List<SettingsPage> m_lstSettingsPages = new List<SettingsPage>();
 		private Fallout3PluginManager m_pmgPluginManager = null;
 
@@ -194,13 +195,13 @@ namespace Fomm.Games.Fallout3
 		/// Gets the game launch command.
 		/// </summary>
 		/// <value>The game launch command.</value>
-		public override GameTool LaunchCommand
+		public override Command<MainForm> LaunchCommand
 		{
 			get
 			{
 				if (String.IsNullOrEmpty(Properties.Settings.Default.fallout3LaunchCommand) && File.Exists("fose_loader.exe"))
-					return new GameTool("Launch FOSE", "Launches Fallout 3 using FOSE.", LaunchGame);
-				return new GameTool("Launch Fallout 3", "Launches Fallout 3 using FOSE.", LaunchGame);
+					return new Command<MainForm>("Launch FOSE", "Launches Fallout 3 using FOSE.", LaunchGame);
+				return new Command<MainForm>("Launch Fallout 3", "Launches Fallout 3 using FOSE.", LaunchGame);
 			}
 		}
 
@@ -361,7 +362,7 @@ namespace Fomm.Games.Fallout3
 		/// Gets the list of tools to add to the tools menu.
 		/// </summary>
 		/// <value>The list of tools to add to the tools menu.</value>
-		public override IList<GameTool> Tools
+		public override IList<Command<MainForm>> Tools
 		{
 			get
 			{
@@ -373,7 +374,7 @@ namespace Fomm.Games.Fallout3
 		/// Gets the list of tools to add to the game settings menu.
 		/// </summary>
 		/// <value>The list of tools to add to the game settings menu.</value>
-		public override IList<GameTool> GameSettingsTools
+		public override IList<Command<MainForm>> GameSettingsTools
 		{
 			get
 			{
@@ -385,7 +386,7 @@ namespace Fomm.Games.Fallout3
 		/// Gets the list of tools to add to the right-click menu.
 		/// </summary>
 		/// <value>The list of tools to add to the right-click menu.</value>
-		public override IList<GameTool> RightClickTools
+		public override IList<Command<MainForm>> RightClickTools
 		{
 			get
 			{
@@ -397,7 +398,7 @@ namespace Fomm.Games.Fallout3
 		/// Gets the list of tools to add to the load order menu.
 		/// </summary>
 		/// <value>The list of tools to add to the load order menu.</value>
-		public override IList<GameTool> LoadOrderTools
+		public override IList<Command<MainForm>> LoadOrderTools
 		{
 			get
 			{
@@ -409,7 +410,7 @@ namespace Fomm.Games.Fallout3
 		/// Gets the list of game launch commands.
 		/// </summary>
 		/// <value>The list of game launch commands.</value>
-		public override IList<GameTool> GameLaunchCommands
+		public override IList<Command<MainForm>> GameLaunchCommands
 		{
 			get
 			{
@@ -532,7 +533,8 @@ namespace Fomm.Games.Fallout3
 			if (!File.Exists(((SettingsFilesSet)SettingsFiles).FOIniPath))
 				MessageBox.Show("You have no Fallout INI file. Please run Fallout 3 to initialize the file before installing any mods or turning on Archive Invalidation.", "Missing INI", MessageBoxButtons.OK, MessageBoxIcon.Information);
 			if (File.Exists("FO3Edit.exe"))
-				m_lstTools.Add(new GameTool("FO3Edit", "Launches FO3Edit, if it is installed.", LaunchFO3Edit));
+				m_lstTools.Add(new Command<MainForm>("FO3Edit", "Launches FO3Edit, if it is installed.", LaunchFO3Edit));
+			m_lstTools.Add(new CheckedCommand<MainForm>("Archive Invalidation", "Toggles Archive Invalidation.", Fallout3.Tools.ArchiveInvalidation.IsActive(), ToggleArchiveInvalidation));
 
 			ScanForReadonlyPlugins();
 			ScanForReadonlySettingsFiles();
@@ -601,9 +603,9 @@ namespace Fomm.Games.Fallout3
 		/// </summary>
 		protected virtual void SetupLaunchCommands()
 		{
-			m_lstGameLaunchCommands.Add(new GameTool("Launch Fallout 3", "Launches plain Fallout 3.", LaunchFallout3Plain));
-			m_lstGameLaunchCommands.Add(new GameTool("Launch FOSE", "Launches Fallout 3 with FOSE.", LaunchFallout3FOSE));
-			m_lstGameLaunchCommands.Add(new GameTool("Launch Custom Fallout 3", "Launches Fallout 3 with custom command.", LaunchFallout3Custom));
+			m_lstGameLaunchCommands.Add(new Command<MainForm>("Launch Fallout 3", "Launches plain Fallout 3.", LaunchFallout3Plain));
+			m_lstGameLaunchCommands.Add(new Command<MainForm>("Launch FOSE", "Launches Fallout 3 with FOSE.", LaunchFallout3FOSE));
+			m_lstGameLaunchCommands.Add(new Command<MainForm>("Launch Custom Fallout 3", "Launches Fallout 3 with custom command.", LaunchFallout3Custom));
 		}
 
 		/// <summary>
@@ -611,23 +613,22 @@ namespace Fomm.Games.Fallout3
 		/// </summary>
 		protected virtual void SetupTools()
 		{
-			m_lstTools.Add(new GameTool("BSA Browser", "Views and unpacks BSA files.", LaunchBSABrowserTool));
-			m_lstTools.Add(new GameTool("BSA Creator", "Creates BSA files.", LaunchBSACreatorTool));
-			m_lstTools.Add(new GameTool("TESsnip", "An ESP/ESM editor.", LaunchTESsnipTool));
-			m_lstTools.Add(new GameTool("Shader Editor", "A shader (SDP) editor.", LaunchShaderEditTool));
-			m_lstTools.Add(new GameTool("CREditor", "Edits critical records in an ESP/ESM.", LaunchCREditorTool));
-			m_lstTools.Add(new GameTool("Archive Invalidation", "Toggles Archive Invalidation.", ToggleArchiveInvalidation));
-			m_lstTools.Add(new GameTool("Install Tweaker", "Advanced Fallout 3 tweaking.", LaunchInstallTweakerTool));
-			m_lstTools.Add(new GameTool("Conflict Detector", "Checks for conflicts with mod-author specified critical records.", LaunchConflictDetector));
-			m_lstTools.Add(new GameTool("Save Games", "Save game info viewer.", LaunchSaveGamesViewer));
+			m_lstTools.Add(new Command<MainForm>("BSA Browser", "Views and unpacks BSA files.", LaunchBSABrowserTool));
+			m_lstTools.Add(new Command<MainForm>("BSA Creator", "Creates BSA files.", LaunchBSACreatorTool));
+			m_lstTools.Add(new Command<MainForm>("TESsnip", "An ESP/ESM editor.", LaunchTESsnipTool));
+			m_lstTools.Add(new Command<MainForm>("Shader Editor", "A shader (SDP) editor.", LaunchShaderEditTool));
+			m_lstTools.Add(new Command<MainForm>("CREditor", "Edits critical records in an ESP/ESM.", LaunchCREditorTool));
+			m_lstTools.Add(new Command<MainForm>("Install Tweaker", "Advanced Fallout 3 tweaking.", LaunchInstallTweakerTool));
+			m_lstTools.Add(new Command<MainForm>("Conflict Detector", "Checks for conflicts with mod-author specified critical records.", LaunchConflictDetector));
+			m_lstTools.Add(new Command<MainForm>("Save Games", "Save game info viewer.", LaunchSaveGamesViewer));
 
-			m_lstGameSettingsTools.Add(new GameTool("Graphics Settings", "Changes the graphics settings.", LaunchGraphicsSettingsTool));
+			m_lstGameSettingsTools.Add(new Command<MainForm>("Graphics Settings", "Changes the graphics settings.", LaunchGraphicsSettingsTool));
 
-			m_lstRightClickTools.Add(new GameTool("Open in TESsnip...", "Open the selected plugins in TESsnip.", LaunchTESsnipToolWithSelectedPlugins));
-			m_lstRightClickTools.Add(new GameTool("Open in CREditor...", "Open the selected plugins in TESsnip.", LaunchCREditorToolWithSelectedPlugins));
+			m_lstRightClickTools.Add(new Command<MainForm>("Open in TESsnip...", "Open the selected plugins in TESsnip.", LaunchTESsnipToolWithSelectedPlugins));
+			m_lstRightClickTools.Add(new Command<MainForm>("Open in CREditor...", "Open the selected plugins in TESsnip.", LaunchCREditorToolWithSelectedPlugins));
 
-			m_lstLoadOrderTools.Add(new GameTool("Load Order Report...", "Generates a report on the current load order, as compared to the BOSS recomendation.", LaunchLoadOrderReport));
-			m_lstLoadOrderTools.Add(new GameTool("BOSS Auto Sort", "Auto-sorts the plugins using BOSS's masterlist.", LaunchSortPlugins));
+			m_lstLoadOrderTools.Add(new Command<MainForm>("Load Order Report...", "Generates a report on the current load order, as compared to the BOSS recomendation.", LaunchLoadOrderReport));
+			m_lstLoadOrderTools.Add(new Command<MainForm>("BOSS Auto Sort", "Auto-sorts the plugins using BOSS's masterlist.", LaunchSortPlugins));
 		}
 
 		#endregion
@@ -639,10 +640,12 @@ namespace Fomm.Games.Fallout3
 		/// <summary>
 		/// Launches the game with a custom command.
 		/// </summary>
-		/// <param name="p_frmMainForm">The main mod management form.</param>
-		public void LaunchFallout3Custom(MainForm p_frmMainForm)
+		/// <param name="p_objCommand">The command that is executing.</param>
+		/// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
+		/// main mod management form.</param>
+		public void LaunchFallout3Custom(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
 		{
-			if (p_frmMainForm.HasOpenUtilityWindows)
+			if (p_eeaArguments.Argument.HasOpenUtilityWindows)
 			{
 				MessageBox.Show("Please close all utility windows before launching fallout");
 				return;
@@ -671,21 +674,23 @@ namespace Fomm.Games.Fallout3
 				MessageBox.Show("Failed to launch '" + command + "'\n" + ex.Message);
 				return;
 			}
-			p_frmMainForm.Close();
+			p_eeaArguments.Argument.Close();
 		}
 
 		/// <summary>
 		/// Launches the game, with FOSE.
 		/// </summary>
-		/// <param name="p_frmMainForm">The main mod management form.</param>
-		public void LaunchFallout3FOSE(MainForm p_frmMainForm)
+		/// <param name="p_objCommand">The command that is executing.</param>
+		/// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
+		/// main mod management form.</param>
+		public void LaunchFallout3FOSE(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
 		{
 			if (!File.Exists("fose_loader.exe"))
 			{
 				MessageBox.Show("fose does not appear to be installed");
 				return;
 			}
-			if (p_frmMainForm.HasOpenUtilityWindows)
+			if (p_eeaArguments.Argument.HasOpenUtilityWindows)
 			{
 				MessageBox.Show("Please close all utility windows before launching fallout");
 				return;
@@ -706,16 +711,18 @@ namespace Fomm.Games.Fallout3
 				MessageBox.Show("Failed to launch 'fose_loader.exe'\n" + ex.Message);
 				return;
 			}
-			p_frmMainForm.Close();
+			p_eeaArguments.Argument.Close();
 		}
 
 		/// <summary>
 		/// Launches the game, without FOSE.
 		/// </summary>
-		/// <param name="p_frmMainForm">The main mod management form.</param>
-		public void LaunchFallout3Plain(MainForm p_frmMainForm)
+		/// <param name="p_objCommand">The command that is executing.</param>
+		/// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
+		/// main mod management form.</param>
+		public void LaunchFallout3Plain(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
 		{
-			if (p_frmMainForm.HasOpenUtilityWindows)
+			if (p_eeaArguments.Argument.HasOpenUtilityWindows)
 			{
 				MessageBox.Show("Please close all utility windows before launching fallout");
 				return;
@@ -741,14 +748,16 @@ namespace Fomm.Games.Fallout3
 				MessageBox.Show("Failed to launch '" + command + "'\n" + ex.Message);
 				return;
 			}
-			p_frmMainForm.Close();
+			p_eeaArguments.Argument.Close();
 		}
 
 		/// <summary>
 		/// Launches the game, using FOSE if present.
 		/// </summary>
-		/// <param name="p_frmMainForm">The main mod management form.</param>
-		public virtual void LaunchGame(MainForm p_frmMainForm)
+		/// <param name="p_objCommand">The command that is executing.</param>
+		/// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
+		/// main mod management form.</param>
+		public virtual void LaunchGame(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
 		{
 			string command = Properties.Settings.Default.fallout3LaunchCommand;
 			string args = Properties.Settings.Default.fallout3LaunchCommandArgs;
@@ -788,38 +797,42 @@ namespace Fomm.Games.Fallout3
 		/// <summary>
 		/// Auto-sorts the plugins using BOSS's masterlist.
 		/// </summary>
-		/// <param name="p_frmMainForm">The main mod management form.</param>
-		public void LaunchSortPlugins(MainForm p_frmMainForm)
+		/// <param name="p_objCommand">The command that is executing.</param>
+		/// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
+		/// main mod management form.</param>
+		public void LaunchSortPlugins(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
 		{
-			if (MessageBox.Show(p_frmMainForm, "This is currently a beta feature, and the load order template may not be optimal.\n" +
+			if (MessageBox.Show(p_eeaArguments.Argument, "This is currently a beta feature, and the load order template may not be optimal.\n" +
 				"Ensure you have a backup of your load order before running this tool.\n" +
 				"War you sure you wish to continue?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) return;
-			
+
 			string[] plugins = PluginManager.OrderedPluginList;
 			for (int i = 0; i < plugins.Length; i++)
 				plugins[i] = Path.GetFileName(plugins[i]);
 			Tools.AutoSorter.LoadOrderSorter losSorter = new Tools.AutoSorter.LoadOrderSorter();
 			if (!losSorter.HasMasterList)
 			{
-				MessageBox.Show(p_frmMainForm, "Unable to locate master list. Please update by clicking" + Environment.NewLine + "Help -> Check for update" + Environment.NewLine + "in the menu.", "Missing Master List", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show(p_eeaArguments.Argument, "Unable to locate master list. Please update by clicking" + Environment.NewLine + "Help -> Check for update" + Environment.NewLine + "in the menu.", "Missing Master List", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
 			losSorter.SortList(plugins);
 			for (int i = 0; i < plugins.Length; i++)
 				PluginManager.SetLoadOrder(Path.Combine(PluginsPath, plugins[i]), i);
-			p_frmMainForm.RefreshPluginList();
+			p_eeaArguments.Argument.RefreshPluginList();
 		}
 
 		/// <summary>
 		/// Generates a report on the current load order, as compared to the BOSS recomendation.
 		/// </summary>
-		/// <param name="p_frmMainForm">The main mod management form.</param>
-		public void LaunchLoadOrderReport(MainForm p_frmMainForm)
+		/// <param name="p_objCommand">The command that is executing.</param>
+		/// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
+		/// main mod management form.</param>
+		public void LaunchLoadOrderReport(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
 		{
 			Tools.AutoSorter.LoadOrderSorter losSorter = new Tools.AutoSorter.LoadOrderSorter();
 			if (!losSorter.HasMasterList)
 			{
-				MessageBox.Show(p_frmMainForm, "Unable to locate master list. Please update by clicking" + Environment.NewLine + "Help -> Check for update" + Environment.NewLine + "in the menu.", "Missing Master List", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show(p_eeaArguments.Argument, "Unable to locate master list. Please update by clicking" + Environment.NewLine + "Help -> Check for update" + Environment.NewLine + "in the menu.", "Missing Master List", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
 
@@ -868,18 +881,20 @@ namespace Fomm.Games.Fallout3
 		/// <summary>
 		/// Launches the TESsnip tool, passing it the given plugins.
 		/// </summary>
-		/// <param name="p_frmMainForm">The main mod management form.</param>
-		public void LaunchTESsnipToolWithSelectedPlugins(MainForm p_frmMainForm)
+		/// <param name="p_objCommand">The command that is executing.</param>
+		/// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
+		/// main mod management form.</param>
+		public void LaunchTESsnipToolWithSelectedPlugins(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
 		{
-			if (p_frmMainForm.SelectedPlugins.Count == 0)
+			if (p_eeaArguments.Argument.SelectedPlugins.Count == 0)
 				return;
 			List<string> lstPlugins = new List<string>();
-			foreach (string strPluginName in p_frmMainForm.SelectedPlugins)
+			foreach (string strPluginName in p_eeaArguments.Argument.SelectedPlugins)
 				lstPlugins.Add(Path.Combine(Program.GameMode.PluginsPath, strPluginName));
 			Tools.TESsnip.TESsnip tes = new Tools.TESsnip.TESsnip(lstPlugins.ToArray());
 			tes.FormClosed += delegate(object sender2, FormClosedEventArgs e2)
 			{
-				p_frmMainForm.RefreshPluginList();
+				p_eeaArguments.Argument.RefreshPluginList();
 				GC.Collect();
 			};
 			tes.Show();
@@ -888,13 +903,15 @@ namespace Fomm.Games.Fallout3
 		/// <summary>
 		/// Launches the CREditor tool, passing it the given plugins.
 		/// </summary>
-		/// <param name="p_frmMainForm">The main mod management form.</param>
-		public void LaunchCREditorToolWithSelectedPlugins(MainForm p_frmMainForm)
+		/// <param name="p_objCommand">The command that is executing.</param>
+		/// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
+		/// main mod management form.</param>
+		public void LaunchCREditorToolWithSelectedPlugins(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
 		{
-			if (p_frmMainForm.SelectedPlugins.Count == 0)
+			if (p_eeaArguments.Argument.SelectedPlugins.Count == 0)
 				return;
 			List<string> lstPlugins = new List<string>();
-			foreach (string strPluginName in p_frmMainForm.SelectedPlugins)
+			foreach (string strPluginName in p_eeaArguments.Argument.SelectedPlugins)
 				lstPlugins.Add(Path.Combine(Program.GameMode.PluginsPath, strPluginName));
 			Tools.CriticalRecords.CriticalRecordsForm crfEditor = new Tools.CriticalRecords.CriticalRecordsForm(lstPlugins.ToArray());
 			crfEditor.Show();
@@ -907,8 +924,10 @@ namespace Fomm.Games.Fallout3
 		/// <summary>
 		/// Launches the Graphics Settings tool.
 		/// </summary>
-		/// <param name="p_frmMainForm">The main mod management form.</param>
-		public void LaunchGraphicsSettingsTool(MainForm p_frmMainForm)
+		/// <param name="p_objCommand">The command that is executing.</param>
+		/// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
+		/// main mod management form.</param>
+		public void LaunchGraphicsSettingsTool(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
 		{
 			Tools.GraphicsSettings.GraphicsSettings gsfGraphicsSettingsForm = new Tools.GraphicsSettings.GraphicsSettings();
 			gsfGraphicsSettingsForm.ShowDialog();
@@ -921,12 +940,14 @@ namespace Fomm.Games.Fallout3
 		/// <summary>
 		/// Launches FO3Edit, if present.
 		/// </summary>
-		/// <param name="p_frmMainForm">The main mod management form.</param>
-		public virtual void LaunchFO3Edit(MainForm p_frmMainForm)
+		/// <param name="p_objCommand">The command that is executing.</param>
+		/// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
+		/// main mod management form.</param>
+		public virtual void LaunchFO3Edit(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
 		{
 			if (!File.Exists("FO3Edit.exe"))
 			{
-				MessageBox.Show(p_frmMainForm, "Could not find FO3Edit. Please install it.", "Missing FO3Edit", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+				MessageBox.Show(p_eeaArguments.Argument, "Could not find FO3Edit. Please install it.", "Missing FO3Edit", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 				return;
 			}
 			try
@@ -950,8 +971,10 @@ namespace Fomm.Games.Fallout3
 		/// <summary>
 		/// Launches the save games viewer.
 		/// </summary>
-		/// <param name="p_frmMainForm">The main mod management form.</param>
-		public virtual void LaunchSaveGamesViewer(MainForm p_frmMainForm)
+		/// <param name="p_objCommand">The command that is executing.</param>
+		/// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
+		/// main mod management form.</param>
+		public virtual void LaunchSaveGamesViewer(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
 		{
 			List<string> lstActive = new List<string>();
 			//the original implementation populated the inactive list with all plugins
@@ -971,22 +994,26 @@ namespace Fomm.Games.Fallout3
 		/// <summary>
 		/// Launches the conflict detector tool.
 		/// </summary>
-		/// <param name="p_frmMainForm">The main mod management form.</param>
-		public void LaunchConflictDetector(MainForm p_frmMainForm)
+		/// <param name="p_objCommand">The command that is executing.</param>
+		/// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
+		/// main mod management form.</param>
+		public void LaunchConflictDetector(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
 		{
 			string strMessage = "This is an experimental feature that relies on fomod authors specifying which parts of their plugins are critical." + Environment.NewLine + "Using this feature will not hurt anything, but it is not guaranteed to find any or all conflicts.";
-			if (MessageBox.Show(p_frmMainForm, strMessage, "Warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Information) == DialogResult.Cancel)
+			if (MessageBox.Show(p_eeaArguments.Argument, strMessage, "Warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Information) == DialogResult.Cancel)
 				return;
 			Tools.PluginConflictDetector pcdDetector = new Tools.PluginConflictDetector(CriticalRecordPluginFormatProvider);
 			pcdDetector.CheckForConflicts();
-			p_frmMainForm.LoadPluginInfo();
+			p_eeaArguments.Argument.LoadPluginInfo();
 		}
 
 		/// <summary>
 		/// Launches the BSA Browser.
 		/// </summary>
-		/// <param name="p_frmMainForm">The main mod management form.</param>
-		public void LaunchBSABrowserTool(MainForm p_frmMainForm)
+		/// <param name="p_objCommand">The command that is executing.</param>
+		/// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
+		/// main mod management form.</param>
+		public void LaunchBSABrowserTool(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
 		{
 			new Tools.BSA.BSABrowser().Show();
 		}
@@ -994,8 +1021,10 @@ namespace Fomm.Games.Fallout3
 		/// <summary>
 		/// Launches the BSA Creator.
 		/// </summary>
-		/// <param name="p_frmMainForm">The main mod management form.</param>
-		public void LaunchBSACreatorTool(MainForm p_frmMainForm)
+		/// <param name="p_objCommand">The command that is executing.</param>
+		/// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
+		/// main mod management form.</param>
+		public void LaunchBSACreatorTool(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
 		{
 			new Tools.BSA.BSACreator().Show();
 		}
@@ -1003,12 +1032,14 @@ namespace Fomm.Games.Fallout3
 		/// <summary>
 		/// Launches the Install Tweaker tool.
 		/// </summary>
-		/// <param name="p_frmMainForm">The main mod management form.</param>
-		public void LaunchInstallTweakerTool(MainForm p_frmMainForm)
+		/// <param name="p_objCommand">The command that is executing.</param>
+		/// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
+		/// main mod management form.</param>
+		public void LaunchInstallTweakerTool(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
 		{
-			if (p_frmMainForm.IsPackageManagerOpen)
+			if (p_eeaArguments.Argument.IsPackageManagerOpen)
 			{
-				MessageBox.Show(p_frmMainForm, "Please close the Package Manager before running the install tweaker.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+				MessageBox.Show(p_eeaArguments.Argument, "Please close the Package Manager before running the install tweaker.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 				return;
 			}
 			(new Tools.InstallTweaker.InstallationTweaker()).ShowDialog();
@@ -1017,13 +1048,15 @@ namespace Fomm.Games.Fallout3
 		/// <summary>
 		/// Launches the TESsnip tool.
 		/// </summary>
-		/// <param name="p_frmMainForm">The main mod management form.</param>
-		public void LaunchTESsnipTool(MainForm p_frmMainForm)
+		/// <param name="p_objCommand">The command that is executing.</param>
+		/// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
+		/// main mod management form.</param>
+		public void LaunchTESsnipTool(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
 		{
 			Tools.TESsnip.TESsnip tes = new Tools.TESsnip.TESsnip();
 			tes.FormClosed += delegate(object sender2, FormClosedEventArgs e2)
 			{
-				p_frmMainForm.RefreshPluginList();
+				p_eeaArguments.Argument.RefreshPluginList();
 				GC.Collect();
 			};
 			tes.Show();
@@ -1032,8 +1065,10 @@ namespace Fomm.Games.Fallout3
 		/// <summary>
 		/// Launches the Shader Edit tool.
 		/// </summary>
-		/// <param name="p_frmMainForm">The main mod management form.</param>
-		public void LaunchShaderEditTool(MainForm p_frmMainForm)
+		/// <param name="p_objCommand">The command that is executing.</param>
+		/// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
+		/// main mod management form.</param>
+		public void LaunchShaderEditTool(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
 		{
 			new Tools.ShaderEdit.MainForm().Show();
 		}
@@ -1041,22 +1076,26 @@ namespace Fomm.Games.Fallout3
 		/// <summary>
 		/// Launches the CREditor tool.
 		/// </summary>
-		/// <param name="p_frmMainForm">The main mod management form.</param>
-		public void LaunchCREditorTool(MainForm p_frmMainForm)
+		/// <param name="p_objCommand">The command that is executing.</param>
+		/// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
+		/// main mod management form.</param>
+		public void LaunchCREditorTool(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
 		{
 			Tools.CriticalRecords.CriticalRecordsForm crfEditor = new Tools.CriticalRecords.CriticalRecordsForm();
 			crfEditor.Show();
 			GC.Collect();
 		}
 
-
 		/// <summary>
 		/// Toggles archive invalidation.
 		/// </summary>
-		/// <param name="p_frmMainForm">The main mod management form.</param>
-		public virtual void ToggleArchiveInvalidation(MainForm p_frmMainForm)
+		/// <param name="p_objCommand">The command that is executing.</param>
+		/// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
+		/// main mod management form.</param>
+		public virtual void ToggleArchiveInvalidation(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
 		{
 			Fomm.Games.Fallout3.Tools.ArchiveInvalidation.Update();
+			((CheckedCommand<MainForm>)p_objCommand).IsChecked = Fomm.Games.Fallout3.Tools.ArchiveInvalidation.IsActive();
 		}
 
 		#endregion
