@@ -15,6 +15,7 @@ using Fomm.Games.FalloutNewVegas.Script;
 using Fomm.Games.Fallout3;
 using WebsiteAPIs;
 using Fomm.Games.FalloutNewVegas.PluginFormatProviders;
+using Microsoft.Win32;
 #if TRACE
 using System.Diagnostics;
 #endif
@@ -283,7 +284,8 @@ namespace Fomm.Games.FalloutNewVegas
 		/// </summary>
 		protected override void SetupTools()
 		{
-			Tools.Add(new GameTool("BSA Tool", "Creates and unpacks BSA files.", LaunchBSATool));
+			Tools.Add(new GameTool("BSA Browser", "Views and unpacks BSA files.", LaunchBSABrowserTool));
+			Tools.Add(new GameTool("BSA Creator", "Creates BSA files.", LaunchBSACreatorTool));
 			Tools.Add(new GameTool("TESsnip", "An ESP/ESM editor.", LaunchTESsnipTool));
 			Tools.Add(new GameTool("Shader Editor", "A shader (SDP) editor.", LaunchShaderEditTool));
 			Tools.Add(new GameTool("CREditor", "Edits critical records in an ESP/ESM.", LaunchCREditorTool));
@@ -306,6 +308,8 @@ namespace Fomm.Games.FalloutNewVegas
 		#region Tool Launch Methods
 
 		#region Game Launch
+
+		#region Steam Helpers
 
 		/// <summary>
 		/// This ensures that the steam client has loaded.
@@ -352,9 +356,36 @@ namespace Fomm.Games.FalloutNewVegas
 				{
 				}
 			}
-			MessageBox.Show(p_frmMainForm, "Unable to start Steam automatically." + Environment.NewLine + "Please start Steam before launching Fallout: New Vegas.", "Steam", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+			MessageBox.Show(p_frmMainForm, "Unable to start Steam automatically." + Environment.NewLine + "Your game may not launch correctly.", "Steam Missing", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 			return false;
 		}
+
+		/// <summary>
+		/// This finds the SteamAppId for FO:NV.
+		/// </summary>
+		/// <returns>The SteamAppId for FO:NV</returns>
+		/// <exception cref="Exception">Thrown is the id cannot be found.</exception>
+		protected Int32 GetSteamAppId()
+		{
+			RegistryKey keyUninstall = Registry.LocalMachine.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Uninstall");
+			string[] strNames = keyUninstall.GetSubKeyNames();
+			foreach (string strKeyName in strNames)
+			{
+				if (strKeyName.StartsWith("steam app", StringComparison.InvariantCultureIgnoreCase))
+				{
+					string strDisplayName = (string)keyUninstall.OpenSubKey(strKeyName).GetValue("Displayname");
+					if ("fallout: new vegas".Equals(strDisplayName, StringComparison.InvariantCultureIgnoreCase))
+					{
+						Int32 intAppId = -1;
+						if (Int32.TryParse(strKeyName.Split(' ')[2], out intAppId))
+							return intAppId;
+					}
+				}
+			}
+			throw new Exception("Unable to determine Steam App Id for Fallout: New Vegas.");
+		}
+
+		#endregion
 
 		/// <summary>
 		/// Launches the game with a custom command.
@@ -374,8 +405,7 @@ namespace Fomm.Games.FalloutNewVegas
 				MessageBox.Show("No custom launch command has been set", "Error");
 				return;
 			}
-			if (!StartSteam(p_frmMainForm))
-				return;
+			StartSteam(p_frmMainForm);
 			try
 			{
 				System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
@@ -412,8 +442,7 @@ namespace Fomm.Games.FalloutNewVegas
 				MessageBox.Show("Please close all utility windows before launching Fallout");
 				return;
 			}
-			if (!StartSteam(p_frmMainForm))
-				return;
+			StartSteam(p_frmMainForm);
 			try
 			{
 				System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
@@ -422,9 +451,9 @@ namespace Fomm.Games.FalloutNewVegas
 				// can cause NVSE problems
 				/*
 				if (!psi.EnvironmentVariables.ContainsKey("SteamAppID"))
-					psi.EnvironmentVariables.Add("SteamAppID", "22380");
+					psi.EnvironmentVariables.Add("SteamAppID", GetSteamAppId().ToString());
 				if (!psi.EnvironmentVariables.ContainsKey("SteamGameId"))
-					psi.EnvironmentVariables.Add("SteamGameId", "22380");*/
+					psi.EnvironmentVariables.Add("SteamGameId", GetSteamAppId().ToString());*/
 				//this configuration force the FO:NV launcher, which
 				// ensures NVSE loads
 				if (psi.EnvironmentVariables.ContainsKey("SteamAppID"))
@@ -463,13 +492,12 @@ namespace Fomm.Games.FalloutNewVegas
 				command = "falloutNV.exe";
 			else
 				command = "falloutNVng.exe";
-			if (!StartSteam(p_frmMainForm))
-				return;
+			StartSteam(p_frmMainForm);
 			try
 			{
 				System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
 				if (!psi.EnvironmentVariables.ContainsKey("SteamAppID"))
-					psi.EnvironmentVariables.Add("SteamAppID", "22380");
+					psi.EnvironmentVariables.Add("SteamAppID", GetSteamAppId().ToString());
 				psi.FileName = command;
 				psi.UseShellExecute = false;
 				psi.WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath(command));

@@ -611,7 +611,8 @@ namespace Fomm.Games.Fallout3
 		/// </summary>
 		protected virtual void SetupTools()
 		{
-			m_lstTools.Add(new GameTool("BSA Tool", "Creates and unpacks BSA files.", LaunchBSATool));
+			m_lstTools.Add(new GameTool("BSA Browser", "Views and unpacks BSA files.", LaunchBSABrowserTool));
+			m_lstTools.Add(new GameTool("BSA Creator", "Creates BSA files.", LaunchBSACreatorTool));
 			m_lstTools.Add(new GameTool("TESsnip", "An ESP/ESM editor.", LaunchTESsnipTool));
 			m_lstTools.Add(new GameTool("Shader Editor", "A shader (SDP) editor.", LaunchShaderEditTool));
 			m_lstTools.Add(new GameTool("CREditor", "Edits critical records in an ESP/ESM.", LaunchCREditorTool));
@@ -982,12 +983,21 @@ namespace Fomm.Games.Fallout3
 		}
 
 		/// <summary>
-		/// Launches the BSA tool.
+		/// Launches the BSA Browser.
 		/// </summary>
 		/// <param name="p_frmMainForm">The main mod management form.</param>
-		public void LaunchBSATool(MainForm p_frmMainForm)
+		public void LaunchBSABrowserTool(MainForm p_frmMainForm)
 		{
 			new Tools.BSA.BSABrowser().Show();
+		}
+
+		/// <summary>
+		/// Launches the BSA Creator.
+		/// </summary>
+		/// <param name="p_frmMainForm">The main mod management form.</param>
+		public void LaunchBSACreatorTool(MainForm p_frmMainForm)
+		{
+			new Tools.BSA.BSACreator().Show();
 		}
 
 		/// <summary>
