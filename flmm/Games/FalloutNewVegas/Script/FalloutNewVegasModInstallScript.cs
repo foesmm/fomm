@@ -53,15 +53,6 @@ namespace Fomm.Games.FalloutNewVegas.Script
 
 		#endregion
 
-		#region Plugin Activation
-
-		protected override void DoCommitActivePlugins()
-		{
-			File.WriteAllLines(((FalloutNewVegasGameMode)Program.GameMode).PluginsFilePath, GetActivePlugins());
-		}
-
-		#endregion
-
 		#region Ini Management
 		
 		#region Ini Editing

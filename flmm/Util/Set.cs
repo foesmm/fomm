@@ -466,5 +466,14 @@ namespace Fomm.Util
 		}
 
 		#endregion
+
+		/// <summary>
+		/// Returns a string representation of the set.
+		/// </summary>
+		/// <returns>A string representation of the set.</returns>
+		public override string ToString()
+		{
+			return String.Format("Count = {0}", Count);
+		}
 	}
 }

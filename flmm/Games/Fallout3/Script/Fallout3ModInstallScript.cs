@@ -129,15 +129,6 @@ namespace Fomm.Games.Fallout3.Script
 
 		#endregion
 
-		#region Plugin Activation
-
-		protected override void DoCommitActivePlugins()
-		{
-			File.WriteAllLines(((Fallout3GameMode)Program.GameMode).PluginsFilePath, GetActivePlugins());
-		}
-
-		#endregion
-
 		#region Load Order Management
 
 		/// <summary>

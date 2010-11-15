@@ -8,6 +8,7 @@ using System.Text;
 using Fomm.PackageManager.ModInstallLog;
 using System.ComponentModel;
 using System.Drawing;
+using Fomm.Util;
 
 namespace Fomm.PackageManager
 {
@@ -16,7 +17,7 @@ namespace Fomm.PackageManager
 	/// </summary>
 	public abstract class ModInstallScript : IDisposable
 	{
-		private List<string> m_lstActivePlugins = null;
+		private Set<string> m_setActivePlugins = null;
 		private fomod m_fomodMod = null;
 		private ModInstallerBase m_mibInstaller = null;
 		private List<string> m_lstOverwriteFolders = new List<string>();
@@ -32,16 +33,17 @@ namespace Fomm.PackageManager
 		/// Gets the list of active plugins.
 		/// </summary>
 		/// <value>The list of active plugins.</value>
-		protected List<string> ActivePlugins
+		protected Set<string> ActivePlugins
 		{
 			get
 			{
-				LoadActivePlugins();
-				return m_lstActivePlugins;
-			}
-			set
-			{
-				m_lstActivePlugins = value;
+				if (m_setActivePlugins == null)
+				{
+					PermissionsManager.CurrentPermissions.Assert();
+					m_setActivePlugins = new Set<string>(StringComparer.InvariantCultureIgnoreCase);
+					m_setActivePlugins.AddRange(Program.GameMode.PluginManager.ActivePluginList);
+				}
+				return m_setActivePlugins;
 			}
 		}
 
@@ -279,28 +281,13 @@ namespace Fomm.PackageManager
 		#region Plugin Activation Info
 
 		/// <summary>
-		/// Loads the list of active plugins.
-		/// </summary>
-		private void LoadActivePlugins()
-		{
-			if (m_lstActivePlugins != null)
-				return;
-			PermissionsManager.CurrentPermissions.Assert();
-			string[] strPlugins = Program.GameMode.PluginManager.ActivePluginList;
-			for (int i = 0; i < strPlugins.Length; i++)
-				strPlugins[i] = strPlugins[i].Trim().ToLowerInvariant();
-			m_lstActivePlugins = new List<string>(strPlugins);
-		}
-
-		/// <summary>
 		/// Retrieves a list of currently active plugins.
 		/// </summary>
 		/// <returns>A list of currently active plugins.</returns>
 		public string[] GetActivePlugins()
 		{
-			LoadActivePlugins();
 			PermissionsManager.CurrentPermissions.Assert();
-			string[] strPlugins = Program.GameMode.PluginManager.SortPluginList(m_lstActivePlugins.ToArray());
+			string[] strPlugins = Program.GameMode.PluginManager.SortPluginList(ActivePlugins.ToArray());
 			Int32 intTrimLength = Program.GameMode.PluginsPath.Trim(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).Length + 1;
 			for (int i = 0; i < strPlugins.Length; i++)
 				strPlugins[i] = strPlugins[i].Remove(0, intTrimLength);
@@ -390,29 +377,26 @@ namespace Fomm.PackageManager
 		/// is invalid or does not exist.</exception>
 		public void SetPluginActivation(string p_strName, bool p_booActivate)
 		{
-			PermissionsManager.CurrentPermissions.Assert();
 			if (p_strName.IndexOfAny(Path.GetInvalidFileNameChars()) != -1)
 				throw new IllegalFilePathException(p_strName);
-			string strLoweredFullPath = Path.Combine(Program.GameMode.PluginsPath, p_strName).ToLowerInvariant();
-			if (!File.Exists(strLoweredFullPath))
+			PermissionsManager.CurrentPermissions.Assert();
+			string strFullPath = Path.Combine(Program.GameMode.PluginsPath, p_strName);
+			if (!File.Exists(strFullPath))
 				throw new FileNotFoundException("Plugin does not exist", p_strName);
+
 			if (p_booActivate)
-			{
-				if (!ActivePlugins.Contains(strLoweredFullPath))
-					ActivePlugins.Add(strLoweredFullPath);
-			}
+				ActivePlugins.Add(strFullPath);
 			else
-				ActivePlugins.Remove(strLoweredFullPath);
+				ActivePlugins.Remove(strFullPath);
 		}
 
-		protected abstract void DoCommitActivePlugins();
-
+		/// <summary>
+		/// Commits the list of active plugins.
+		/// </summary>
 		public void CommitActivePlugins()
 		{
-			if (ActivePlugins == null)
-				return;
-			DoCommitActivePlugins();
-			ActivePlugins = null;
+			if (m_setActivePlugins != null)
+				Program.GameMode.PluginManager.SetActivePlugins(m_setActivePlugins);
 		}
 
 		#endregion
@@ -874,7 +858,6 @@ namespace Fomm.PackageManager
 			m_booOverwriteAll = false;
 			m_booDontOverwriteAllIni = false;
 			m_booOverwriteAllIni = false;
-			ActivePlugins = null;
 		}
 
 		#endregion

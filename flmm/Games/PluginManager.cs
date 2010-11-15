@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using Fomm.Util;
+using System.IO;
 
 namespace Fomm.Games
 {
@@ -14,41 +16,39 @@ namespace Fomm.Games
 		/// Gets the list of active plugins.
 		/// </summary>
 		/// <value>The list of active plugins.</value>
-		public abstract string[] ActivePluginList
+		public abstract Set<string> ActivePluginList
 		{
 			get;
 		}
 
+		public abstract void SetActivePlugins(Set<string> p_lstActivePlugins);
+
 		/// <summary>
-		/// Activates the specified plugin.
+		/// Activates the specified plugin, and immediately commits the change.
 		/// </summary>
 		/// <param name="p_strPath">The path to the plugin to activate.</param>
-		public abstract void ActivatePlugin(string p_strPath);
-
-		/// <summary>
-		/// Deactivates the specified plugin.
-		/// </summary>
-		/// <param name="p_strPath">The path to the plugin to deactivate.</param>
-		public abstract void DeactivatePlugin(string p_strPath);
-
-		/// <summary>
-		/// Activates the specified plugins.
-		/// </summary>
-		/// <param name="p_lstPaths">The paths to the plugins to activate.</param>
-		public void ActivatePlugins(IList<string> p_lstPaths)
+		public void ActivatePlugin(string p_strPath)
 		{
-			foreach (string strPath in p_lstPaths)
-				ActivatePlugin(strPath);
+			Set<string> setPlugins = ActivePluginList;
+			string strPath = p_strPath;
+			if (Path.GetFileName(strPath).Equals(strPath))
+				strPath = Path.Combine(Program.GameMode.PluginsPath, strPath);
+			setPlugins.Add(strPath);
+			SetActivePlugins(setPlugins);
 		}
 
 		/// <summary>
-		/// Deactivates the specified plugins.
+		/// Deactivates the specified plugin, and immediately commits the change.
 		/// </summary>
-		/// <param name="p_lstPaths">The paths to the plugins to deactivate.</param>
-		public void DeactivatePlugins(IList<string> p_lstPaths)
+		/// <param name="p_strPath">The path to the plugin to deactivate.</param>
+		public void DeactivatePlugin(string p_strPath)
 		{
-			foreach (string strPath in p_lstPaths)
-				DeactivatePlugin(strPath);
+			Set<string> setPlugins = ActivePluginList;
+			string strPath = p_strPath;
+			if (Path.GetFileName(strPath).Equals(strPath))
+				strPath = Path.Combine(Program.GameMode.PluginsPath, strPath);
+			setPlugins.Remove(strPath);
+			SetActivePlugins(setPlugins);
 		}
 
 		/// <summary>
@@ -81,6 +81,19 @@ namespace Fomm.Games
 		/// <param name="p_strPlugins">The list of plugin paths to sort.</param>
 		/// <returns>The sorted list of plugin paths.</returns>
 		public abstract string[] SortPluginList(string[] p_strPlugins);
+
+		/// <summary>
+		/// Sorts the list of plugins paths.
+		/// </summary>
+		/// <remarks>
+		/// This sorts the plugin paths based on the load order of the plugins the paths represent.
+		/// </remarks>
+		/// <param name="p_setPlugins">The set of plugin paths to sort.</param>
+		/// <returns>The sorted list of plugin paths.</returns>
+		public string[] SortPluginList(Set<string> p_setPlugins)
+		{
+			return SortPluginList(p_setPlugins.ToArray());
+		}
 
 		/// <summary>
 		/// Sets the load order of the specifid plugin.
