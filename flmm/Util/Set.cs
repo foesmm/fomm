@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections;
 
 namespace Fomm.Util
 {
@@ -7,10 +8,11 @@ namespace Fomm.Util
 	/// A Set implementation.
 	/// </summary>
 	/// <typeparam name="T">The type of objects in the Set.</typeparam>
-	public class Set<T> : List<T>
+	public class Set<T> : IList<T>, ICollection<T>, IEnumerable<T>, IList, ICollection, IEnumerable
 	{
+		private List<T> m_lstList = new List<T>();
 		private IComparer<T> m_cmpComparer = null;
-
+		
 		#region Constructors
 
 		/// <summary>
@@ -18,6 +20,26 @@ namespace Fomm.Util
 		/// </summary>
 		public Set()
 		{
+		}
+
+		/// <summary>
+		/// A constructor that fills the set with the given items.
+		/// </summary>
+		/// <param name="p_enmItems">the items to add to the set.</param>
+		public Set(IEnumerable<T> p_enmItems)
+		{
+			AddRange(p_enmItems);
+		}
+
+		/// <summary>
+		/// A constructor that fills the set with the given items, and allows the specification of a custom comparer.
+		/// </summary>
+		/// <param name="p_enmItems">the items to add to the set.</param>
+		/// <param name="p_cmpComparer">The comparer to use when determining if an item is already in the set.</param>
+		public Set(IEnumerable<T> p_enmItems, IComparer<T> p_cmpComparer)
+		{
+			AddRange(p_enmItems);
+			m_cmpComparer = p_cmpComparer;
 		}
 
 		/// <summary>
@@ -34,22 +56,57 @@ namespace Fomm.Util
 		/// </summary>
 		/// <param name="p_setCopy">The set to copy.</param>
 		public Set(Set<T> p_setCopy)
-			: base(p_setCopy)
 		{
+			AddRange(p_setCopy);
 			m_cmpComparer = p_setCopy.m_cmpComparer;
 		}
 
 		#endregion
 
 		/// <summary>
-		/// Determines the first index of the specified item.
+		/// Finds the first item that matches the given predicate.
 		/// </summary>
-		/// <param name="p_tItem">The item whose index in the set is to be found.</param>
-		/// <returns>The first index of the specified item, or -1 if the item is not in the set.</returns>
-		public new Int32 IndexOf(T p_tItem)
+		/// <param name="match">The predicate against which to match the items.</param>
+		/// <returns>The first item that matches the given predicate, or <lang cref="null"/>
+		/// if no matching item is found.</returns>
+		public T Find(Predicate<T> match)
 		{
-			return IndexOf(p_tItem, 0);
+			return m_lstList.Find(match);
 		}
+
+		/// <summary>
+		/// Gets an array containing the items in the set.
+		/// </summary>
+		/// <returns>An array containing the items in the set.</returns>
+		public T[] ToArray()
+		{
+			T[] tSet = new T[Count];
+			CopyTo(tSet, 0);
+			return tSet;
+		}
+
+		/// <summary>
+		/// Adds the given items to the set.
+		/// </summary>
+		/// <param name="p_enmItems">The items to add.</param>
+		public void AddRange(IEnumerable<T> p_enmItems)
+		{
+			foreach (T tItem in p_enmItems)
+				Add(tItem);
+		}
+
+		/// <summary>
+		/// Sorts the set.
+		/// </summary>
+		public void Sort()
+		{
+			if (m_cmpComparer != null)
+				m_lstList.Sort(m_cmpComparer);
+			else
+				m_lstList.Sort();
+		}
+
+		#region IndexOf
 
 		/// <summary>
 		/// Determines the first index of the specified item.
@@ -57,7 +114,7 @@ namespace Fomm.Util
 		/// <param name="p_tItem">The item whose index in the set is to be found.</param>
 		/// <param name="p_intStartIndex">The zero-based index where to start the search.</param>
 		/// <returns>The first index of the specified item, or -1 if the item is not in the set.</returns>
-		public new Int32 IndexOf(T p_tItem, Int32 p_intStartIndex)
+		public Int32 IndexOf(T p_tItem, Int32 p_intStartIndex)
 		{
 			if (m_cmpComparer != null)
 			{
@@ -66,7 +123,7 @@ namespace Fomm.Util
 						return i;
 				return -1;
 			}
-			return base.IndexOf(p_tItem, p_intStartIndex);
+			return m_lstList.IndexOf(p_tItem, p_intStartIndex);
 		}
 
 		/// <summary>
@@ -74,7 +131,7 @@ namespace Fomm.Util
 		/// </summary>
 		/// <param name="p_tItem">The item whose index in the set is to be found.</param>
 		/// <returns>The last index of the specified item, or -1 if the item is not in the set.</returns>
-		public new Int32 LastIndexOf(T p_tItem)
+		public Int32 LastIndexOf(T p_tItem)
 		{
 			return LastIndexOf(p_tItem, Count - 1);
 		}
@@ -85,7 +142,7 @@ namespace Fomm.Util
 		/// <param name="p_tItem">The item whose index in the set is to be found.</param>
 		/// <param name="p_intStartIndex">The zero-based index where to start the search.</param>
 		/// <returns>The last index of the specified item, or -1 if the item is not in the set.</returns>
-		public new Int32 LastIndexOf(T p_tItem, Int32 p_intStartIndex)
+		public Int32 LastIndexOf(T p_tItem, Int32 p_intStartIndex)
 		{
 			if (m_cmpComparer != null)
 			{
@@ -94,32 +151,141 @@ namespace Fomm.Util
 						return i;
 				return -1;
 			}
-			return base.LastIndexOf(p_tItem, p_intStartIndex);
+			return m_lstList.LastIndexOf(p_tItem, p_intStartIndex);
+		}
+
+		#endregion
+
+		#region IList<T> Members
+
+		/// <summary>
+		/// Determines the first index of the specified item.
+		/// </summary>
+		/// <param name="p_tItem">The item whose index in the set is to be found.</param>
+		/// <returns>The first index of the specified item, or -1 if the item is not in the set.</returns>
+		public Int32 IndexOf(T p_tItem)
+		{
+			return IndexOf(p_tItem, 0);
 		}
 
 		/// <summary>
-		/// Sorts the set.
+		/// Inserts the given item at the specifed index. Cannot be used with a set.
 		/// </summary>
-		public new void Sort()
+		/// <remarks>
+		/// This operation doesn't make sense in a set.
+		/// </remarks>
+		/// <param name="index">The index at which to insert the item.</param>
+		/// <param name="item">The item to insert.</param>
+		/// <exception cref="InvalidOperationException">Thrown always.</exception>
+		public void Insert(int index, T item)
 		{
-			if (m_cmpComparer != null)
-				this.Sort(m_cmpComparer);
-			else
-				base.Sort();
+			throw new InvalidOperationException("Cannot insert into a set.");
+		}
+
+		/// <summary>
+		/// Removes the item form the set at the given index.
+		/// </summary>
+		/// <param name="index">The index of the item to remove from the set.</param>
+		public void RemoveAt(int index)
+		{
+			m_lstList.RemoveAt(index);
+		}
+
+		/// <summary>
+		/// Gets or sets the item ate the specified index. Indexed setting cannot be used with a set.
+		/// </summary>
+		/// <remarks>
+		/// The setting of an indexed item doesn't make sense in a set.
+		/// </remarks>
+		/// <param name="index">The index of the item to get or set.</param>
+		/// <returns>Nothing.</returns>
+		/// <exception cref="InvalidOperationException">Thrown if the setting of an index item is attempted.</exception>
+		public T this[int index]
+		{
+			get
+			{
+				return m_lstList[index];
+			}
+			set
+			{
+				throw new InvalidOperationException("Cannot set an indexed item of a set.");
+			}
+		}
+
+		#endregion
+
+		#region ICollection<T> Members
+
+		/// <summary>
+		/// Adds the given item to the set.
+		/// </summary>
+		/// <param name="p_tItem">The item to add.</param>
+		public void Add(T p_tItem)
+		{
+			if (!Contains(p_tItem))
+				m_lstList.Add(p_tItem);
+		}
+
+		/// <summary>
+		/// Empties the set.
+		/// </summary>
+		public void Clear()
+		{
+			m_lstList.Clear();
 		}
 
 		/// <summary>
 		/// Determines if the given item is in the set.
 		/// </summary>
-		public new bool Contains(T p_tItem)
+		/// <param name="p_tItem">The item to look for in the set.</param>
+		/// <returns><lang cref="true"/> if the item is in the set;
+		/// <lang cref="false"/> otherwise.</returns>
+		public bool Contains(T p_tItem)
 		{
 			return IndexOf(p_tItem) > -1;
 		}
 
 		/// <summary>
+		/// Copies the contents of the set to the given array, starting at the given index.
+		/// </summary>
+		/// <param name="array">The array into which to copy the items.</param>
+		/// <param name="arrayIndex">The index in the array at which to start copying the items.</param>
+		public void CopyTo(T[] array, int arrayIndex)
+		{
+			m_lstList.CopyTo(array, arrayIndex);
+		}
+
+		/// <summary>
+		/// Gets the number of items in the set.
+		/// </summary>
+		/// <value>The number of items in the set.</value>
+		public int Count
+		{
+			get
+			{
+				return m_lstList.Count;
+			}
+		}
+
+		/// <summary>
+		/// Gets whether the set is read-only. Always <lang cref="false"/>.
+		/// </summary>
+		/// <value>Whether the set is read-only. Always <lang cref="false"/>.</value>
+		public bool IsReadOnly
+		{
+			get
+			{
+				return false;
+			}
+		}
+
+		/// <summary>
 		/// Removes the given item from the set.
 		/// </summary>
-		public new void Remove(T p_tItem)
+		/// <param name="p_tItem">The item to remove</param>
+		/// <returns><lang cref="true"/> if the item was removed;
+		/// <lang cref="false"/> otherwise.</returns>
+		public bool Remove(T p_tItem)
 		{
 			if (m_cmpComparer != null)
 			{
@@ -127,21 +293,178 @@ namespace Fomm.Util
 					if (m_cmpComparer.Compare(this[i], p_tItem) == 0)
 					{
 						RemoveAt(i);
-						return;
+						return true;
 					}
+				return false;
 			}
 			else
-				base.Remove(p_tItem);
+				return m_lstList.Remove(p_tItem);
 		}
+
+		#endregion
+
+		#region IEnumerable<T> Members
+
+		/// <summary>
+		/// Gets an enumerator for this items in the set.
+		/// </summary>
+		/// <returns>An enumerator for this items in the set.</returns>
+		public IEnumerator<T> GetEnumerator()
+		{
+			return m_lstList.GetEnumerator();
+		}
+
+		#endregion
+
+		#region IEnumerable Members
+
+		/// <summary>
+		/// Gets an enumerator for this items in the set.
+		/// </summary>
+		/// <returns>An enumerator for this items in the set.</returns>
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return ((IEnumerable)m_lstList).GetEnumerator();
+		}
+
+		#endregion
+
+		#region IList Members
 
 		/// <summary>
 		/// Adds the given item to the set.
 		/// </summary>
-		/// <param name="p_tItem">the item to add.</param>
-		public new void Add(T p_tItem)
+		/// <param name="value">The item to add.</param>
+		public int Add(object value)
 		{
-			if (!Contains(p_tItem))
-				base.Add(p_tItem);
+			if (!(value is T))
+				throw new InvalidOperationException("Can only add items of type " + typeof(T) + " to the Set.");
+			Add((T)value);
+			return IndexOf(value);
 		}
+
+		/// <summary>
+		/// Determines if the given item is in the set.
+		/// </summary>
+		/// <param name="value">The item to look for in the set.</param>
+		/// <returns><lang cref="true"/> if the item is in the set;
+		/// <lang cref="false"/> otherwise.</returns>
+		public bool Contains(object value)
+		{
+			if (!(value is T))
+				return false;
+			return Contains((T)value);
+		}
+
+		/// <summary>
+		/// Determines the first index of the specified item.
+		/// </summary>
+		/// <param name="value">The item whose index in the set is to be found.</param>
+		/// <returns>The first index of the specified item, or -1 if the item is not in the set.</returns>
+		public int IndexOf(object value)
+		{
+			if (!(value is T))
+				return -1;
+			return IndexOf((T)value);
+		}
+
+		/// <summary>
+		/// Inserts the given item at the specifed index. Cannot be used with a set.
+		/// </summary>
+		/// <remarks>
+		/// This operation doesn't make sense in a set.
+		/// </remarks>
+		/// <param name="index">The index at which to insert the item.</param>
+		/// <param name="value">The item to insert.</param>
+		/// <exception cref="InvalidOperationException">Thrown always.</exception>
+		public void Insert(int index, object value)
+		{
+			if (!(value is T))
+				throw new InvalidOperationException("Can only add items of type " + typeof(T) + " to the Set.");
+			Insert(index, (T)value);
+		}
+
+		/// <summary>
+		/// Gets whether the set is fixed size. Always <lang cref="false"/>.
+		/// </summary>
+		/// <value>Whether the set is fixed size. Always <lang cref="false"/>.</value>
+		public bool IsFixedSize
+		{
+			get
+			{
+				return false;
+			}
+		}
+
+		/// <summary>
+		/// Removes the given item from the set.
+		/// </summary>
+		/// <param name="value">The item to remove</param>
+		public void Remove(object value)
+		{
+			if (value is T)
+				Remove((T)value);
+		}
+
+		/// <summary>
+		/// Gets or sets the item ate the specified index. Indexed setting cannot be used with a set.
+		/// </summary>
+		/// <remarks>
+		/// The setting of an indexed item doesn't make sense in a set.
+		/// </remarks>
+		/// <param name="index">The index of the item to get or set.</param>
+		/// <returns>Nothing.</returns>
+		/// <exception cref="InvalidOperationException">Thrown if the setting of an index item is attempted.</exception>
+		object IList.this[int index]
+		{
+			get
+			{
+				return m_lstList[index];
+			}
+			set
+			{
+				throw new NotImplementedException();
+			}
+		}
+
+		#endregion
+
+		#region ICollection Members
+
+		/// <summary>
+		/// Copies the contents of the set to the given array, starting at the given index.
+		/// </summary>
+		/// <param name="array">The array into which to copy the items.</param>
+		/// <param name="arrayIndex">The index in the array at which to start copying the items.</param>
+		public void CopyTo(Array array, int index)
+		{
+			Array.Copy(ToArray(), array, index);
+		}
+
+		/// <summary>
+		/// Gets whether the set is synchronized.
+		/// </summary>
+		/// <value>Whether the set is synchronized.</value>
+		public bool IsSynchronized
+		{
+			get
+			{
+				return ((ICollection)m_lstList).IsSynchronized;
+			}
+		}
+
+		/// <summary>
+		/// Gets the sync root of the set.
+		/// </summary>
+		/// <value>The sync root of the set.</value>
+		public object SyncRoot
+		{
+			get
+			{
+				return ((ICollection)m_lstList).SyncRoot;
+			}
+		}
+
+		#endregion
 	}
 }
