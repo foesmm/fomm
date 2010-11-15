@@ -1121,6 +1121,59 @@ class Script : Fallout3BaseScript {
         PerformBasicInstall();
 		return true;
 	}
+
+	/// <summary>
+	/// Recursively copies all files and folders from one location to another.
+	/// </summary>
+	/// <param name=""p_strFrom"">The source from whence to copy the files.</param>
+	/// <param name=""p_strTo"">The destination for the copied files.</param>
+	protected static void InstallFolderFromFomod (string p_strFrom, string p_strTo)
+	{
+		List<string> lstFOMODFiles = GetFomodFolderFileList(p_strFrom);
+		m_bwdProgress.ItemProgress = 0;
+		m_bwdProgress.ItemProgressMaximum = lstFOMODFiles.Count;
+
+		String strFrom = p_strFrom.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).ToLowerInvariant();
+		if (!strFrom.EndsWith(Path.DirectorySeparatorChar.ToString()))
+			strFrom += Path.DirectorySeparatorChar;
+		String strTo = p_strTo.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+		if ((strTo.Length > 0) && (!strTo.EndsWith(Path.DirectorySeparatorChar.ToString())))
+			strTo += Path.DirectorySeparatorChar;
+		String strFOMODFile = null;
+		for (Int32 i = 0; i < lstFOMODFiles.Count; i++)
+		{
+			if (m_bwdProgress.Cancelled())
+				return;
+
+			strFOMODFile = lstFOMODFiles[i];
+			string strNewFileName = strFOMODFile.Substring(strFrom.Length, strFOMODFile.Length - strFrom.Length);
+			CopyDataFile(strFOMODFile, Path.Combine(strTo, strNewFileName));
+
+			m_bwdProgress.StepItemProgress();
+		}
+	}
+
+	/// <summary>
+	/// Gets a list of all files in the specified FOMOD folder.
+	/// </summary>
+	/// <param name=""p_strPath"">The FOMOD folder whose file list is to be retrieved.</param>
+	/// <returns>The list of all files in the specified FOMOD folder.</returns>
+	protected static List<string> GetFomodFolderFileList(string p_strPath)
+	{
+		if (m_strFomodFiles == null)
+		{
+			m_strFomodFiles = GetFomodFileList();
+			for (Int32 i = m_strFomodFiles.Length - 1; i >= 0; i--)
+				m_strFomodFiles[i] = m_strFomodFiles[i].Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+		}
+		String strPath = p_strPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).ToLowerInvariant();
+		List<string> lstFiles = new List<string>();
+		foreach (string strFile in m_strFomodFiles)
+			if (strFile.ToLowerInvariant().StartsWith(strPath))
+				lstFiles.Add(strFile);
+		return lstFiles;
+	}
+	static string[] m_strFomodFiles = null;
 }
 ";
 			}

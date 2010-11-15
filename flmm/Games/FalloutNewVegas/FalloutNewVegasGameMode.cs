@@ -691,17 +691,7 @@ namespace Fomm.Games.FalloutNewVegas
 		{
 			get
 			{
-				return @"using System;
-using fomm.Scripting;
-
-class Script : FalloutNewVegasBaseScript {
-	public static bool OnActivate() {
-        //Install all files from the fomod and activate any esps
-        PerformBasicInstall();
-		return true;
-	}
-}
-";
+				return base.DefaultCSharpScript.Replace(": Fallout3BaseScript", ": FalloutNewVegasBaseScript");
 			}
 		}
 
