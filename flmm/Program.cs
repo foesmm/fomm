@@ -396,7 +396,7 @@ namespace Fomm
 #if TRACE
 								Trace.WriteLine("Can't write to Fallout's directory.");
 #endif
-							MessageBox.Show("Unable to get write permissions for fallout's installation directory." + Environment.NewLine + "Please read the 'Readme - fomm.txt' file found in the fomm subfolder of your FOMM installation.", "Error");
+							MessageBox.Show("Unable to get write permissions for:" + Environment.NewLine + GameMode.PluginsPath + Environment.NewLine + "Please read" + Environment.NewLine + Path.Combine(Program.ProgrammeInfoDirectory,"Readme - fomm.txt") + Environment.NewLine + "for the solution.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 						}
 					}
 					else
