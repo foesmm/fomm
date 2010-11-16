@@ -537,7 +537,7 @@ namespace Fomm.Games.Fallout3
 			m_lstTools.Add(new CheckedCommand<MainForm>("Archive Invalidation", "Toggles Archive Invalidation.", Fallout3.Tools.ArchiveInvalidation.IsActive(), ToggleArchiveInvalidation));
 
 			ScanForReadonlyPlugins();
-			ScanForReadonlySettingsFiles();
+			ScanForReadonlyFiles();
 
 			FOMMMigrator m = new FOMMMigrator();
 			if (!m.Migrate())
@@ -1642,11 +1642,15 @@ class Script : Fallout3BaseScript {
 		}
 
 		/// <summary>
-		/// This chaecks for any INI files that are readonly.
+		/// This chaecks for any files that are readonly.
 		/// </summary>
-		protected void ScanForReadonlySettingsFiles()
+		protected void ScanForReadonlyFiles()
 		{
-			foreach (string strFile in SettingsFiles.Values)
+			List<string> lstFiles = new List<string>(SettingsFiles.Values);
+			foreach (string strPath in m_dicAdditionalPaths.Values)
+				if (File.Exists(strPath))
+					lstFiles.Add(strPath);
+			foreach (string strFile in lstFiles)
 			{
 				FileInfo fifPlugin = new FileInfo(strFile);
 				if (fifPlugin.Exists && ((fifPlugin.Attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly))

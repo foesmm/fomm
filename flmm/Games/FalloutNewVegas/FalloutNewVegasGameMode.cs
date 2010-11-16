@@ -222,7 +222,7 @@ namespace Fomm.Games.FalloutNewVegas
 				MessageBox.Show("You have no Fallout INI file. Please run Fallout: New Vegas to initialize the file before installing any mods or turning on Archive Invalidation.", "Missing INI", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
 			ScanForReadonlyPlugins();
-			ScanForReadonlySettingsFiles();
+			ScanForReadonlyFiles();
 
 			return true;
 		}
