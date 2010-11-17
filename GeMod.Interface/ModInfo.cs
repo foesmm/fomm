@@ -10,6 +10,12 @@ namespace GeMod.Interface
 		#region Properties
 
 		/// <summary>
+		/// Gets the name of the mod.
+		/// </summary>
+		/// <value>The name of the mod.</value>
+		public string Name { get; private set; }
+
+		/// <summary>
 		/// Gets the author of the mod.
 		/// </summary>
 		/// <value>The author of the mod.</value>
@@ -44,8 +50,9 @@ namespace GeMod.Interface
 		/// <param name="p_strVersion">The version of the mod.</param>
 		/// <param name="p_uriURL">The webpage of the mod.</param>
 		/// <param name="p_sstScreenshot">The mod's screenshot.</param>
-		public ModInfo(string p_strAuthor, string p_strVersion, Uri p_uriURL, Screenshot p_sstScreenshot)
+		public ModInfo(string p_strName, string p_strAuthor, string p_strVersion, Uri p_uriURL, Screenshot p_sstScreenshot)
 		{
+			Name = p_strName;
 			Author = p_strAuthor;
 			Version = p_strVersion;
 			URL = p_uriURL;
