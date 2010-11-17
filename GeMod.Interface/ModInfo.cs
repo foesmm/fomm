@@ -13,7 +13,7 @@ namespace GeMod.Interface
 		/// Gets the name of the mod.
 		/// </summary>
 		/// <value>The name of the mod.</value>
-		public string Name { get; private set; }
+		public string ModName { get; private set; }
 
 		/// <summary>
 		/// Gets the author of the mod.
@@ -52,7 +52,7 @@ namespace GeMod.Interface
 		/// <param name="p_sstScreenshot">The mod's screenshot.</param>
 		public ModInfo(string p_strName, string p_strAuthor, string p_strVersion, Uri p_uriURL, Screenshot p_sstScreenshot)
 		{
-			Name = p_strName;
+			ModName = p_strName;
 			Author = p_strAuthor;
 			Version = p_strVersion;
 			URL = p_uriURL;

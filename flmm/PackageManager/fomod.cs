@@ -9,6 +9,7 @@ using SevenZip;
 using System.ComponentModel;
 using WebsiteAPIs;
 using GeMod.Interface;
+using System.Text.RegularExpressions;
 
 /*
  * Installed data XML Structure
@@ -31,6 +32,7 @@ namespace Fomm.PackageManager
 	public class fomod : IFomodInfo
 	{
 		private const string DEFAULT_AUTHOR = "DEFAULT";
+		private const string DEFAULT_VERSION = "1.0";
 		class fomodLoadException : Exception { public fomodLoadException(string msg) : base(msg) { } }
 
 		private Archive m_arcFile;
@@ -395,7 +397,7 @@ namespace Fomm.PackageManager
 			baseName = ModName.ToLowerInvariant();
 			Author = DEFAULT_AUTHOR;
 			Description = Email = Website = string.Empty;
-			HumanReadableVersion = "1.0";
+			HumanReadableVersion = DEFAULT_VERSION;
 			MachineVersion = DefaultVersion;
 			MinFommVersion = DefaultMinFommVersion;
 			Groups = new string[0];
@@ -944,7 +946,7 @@ namespace Fomm.PackageManager
 			sb.AppendLine("Mod name: " + ModName);
 			sb.AppendLine("File name: " + baseName);
 			if (!DEFAULT_AUTHOR.Equals(Author)) sb.AppendLine("Author: " + Author);
-			if (HumanReadableVersion != "1.0") sb.AppendLine("Version: " + HumanReadableVersion);
+			if (HumanReadableVersion != DEFAULT_VERSION) sb.AppendLine("Version: " + HumanReadableVersion);
 			if (Email.Length > 0) sb.AppendLine("email: " + Email);
 			if (Website.Length > 0) sb.AppendLine("website: " + Website);
 			if (MinFommVersion != new Version(0, 0, 0, 0)) sb.AppendLine("Minimum required fomm version: " + MinFommVersion.ToString());
@@ -1097,10 +1099,24 @@ namespace Fomm.PackageManager
 			if (p_mifInfo == null)
 				return;
 			bool booUpdated = false;
+			if (ModName.Equals(Path.GetFileNameWithoutExtension(filepath)) && !String.IsNullOrEmpty(p_mifInfo.ModName))
+			{
+				booUpdated = true;
+				ModName = p_mifInfo.ModName;
+			}
 			if (DEFAULT_AUTHOR.Equals(Author) && !String.IsNullOrEmpty(p_mifInfo.Author))
 			{
 				booUpdated = true;
 				Author = p_mifInfo.Author;
+			}
+			if (HumanReadableVersion.Equals(DEFAULT_VERSION) && (MachineVersion == DefaultVersion) && !String.IsNullOrEmpty(p_mifInfo.Version))
+			{
+				string strVersionString = p_mifInfo.Version;
+				Regex rgxCleanVersion = new Regex(@"[^\d\.]");
+				strVersionString = rgxCleanVersion.Replace(strVersionString, "");
+				HumanReadableVersion = p_mifInfo.Version;
+				if (!String.IsNullOrEmpty(strVersionString))
+					MachineVersion = new Version(strVersionString);
 			}
 			if (!HasScreenshot && (p_mifInfo.Screenshot != null))
 				booUpdated = true;

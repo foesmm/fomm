@@ -832,14 +832,14 @@ namespace WebsiteAPIs
 						Match mchFileVersion = rgxFileVersion.Match(strFilesPage, mchFile.Groups[1].Index, mchFileDate.Groups[1].Index - mchFile.Groups[1].Index);
 						if (mchFileVersion.Success)
 						{
-							mifLastestInfo = new ModInfo(mifLastestInfo.Name, mifLastestInfo.Author, mchFileVersion.Groups[1].Value, mifLastestInfo.URL, mifLastestInfo.Screenshot);
+							mifLastestInfo = new ModInfo(mifLastestInfo.ModName, mifLastestInfo.Author, mchFileVersion.Groups[1].Value, mifLastestInfo.URL, mifLastestInfo.Screenshot);
 						}
 						else
 						{
 							DateTime dteFileDate = DateTime.Now;
 							DateTime.TryParse(mchFileDate.Groups[1].Value, out dteFileDate);
 							if (fifInfo.CreationTime <= dteFileDate)
-								mifLastestInfo = new ModInfo(mifLastestInfo.Name, mifLastestInfo.Author, null, mifLastestInfo.URL, mifLastestInfo.Screenshot);
+								mifLastestInfo = new ModInfo(mifLastestInfo.ModName, mifLastestInfo.Author, null, mifLastestInfo.URL, mifLastestInfo.Screenshot);
 						}
 						break;
 					}

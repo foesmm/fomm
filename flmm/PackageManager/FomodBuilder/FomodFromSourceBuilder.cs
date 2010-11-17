@@ -113,20 +113,9 @@ namespace Fomm.PackageManager.FomodBuilder
 				ModInfo mifInfo = null;
 				if (Properties.Settings.Default.addMissingInfoToMods)
 				{
-					Regex rgxFileId = new Regex(@"-(\d\d\d\d\d+)");
-					if (rgxFileId.IsMatch(strPackedFomodPath))
-					{
-						foreach (Match mchFileId in rgxFileId.Matches(strPackedFomodPath))
-						{
-							Int32 intId = Int32.Parse(mchFileId.Groups[1].Value);
-							if (p_nxaNexus.GetFileExists(intId))
-							{
-								strPackedFomodPath = strPackedFomodPath.Remove(mchFileId.Index, mchFileId.Length) + Path.GetExtension(strSource);
-								mifInfo = p_nxaNexus.GetFileInfo(intId, true);
-								break;
-							}
-						}
-					}
+					mifInfo = p_nxaNexus.GetFileInfoGuessVersion(p_strPath, true);
+					//what to do with strPackedFomodPath?
+					strPackedFomodPath = "delme";
 				}
 
 				string[] strFOMods = null;
