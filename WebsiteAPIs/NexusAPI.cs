@@ -150,6 +150,7 @@ namespace WebsiteAPIs
 
 		private static Regex m_rgxUploadProgressKey = new Regex("name=\"APC_UPLOAD_PROGRESS\".*?value=\"(.*?)\"");
 		private static Regex m_rgxVersion = new Regex("Version</div>.*?<div [^>]+>([^<]+)<", RegexOptions.Singleline);
+		private static Regex m_rgxName = new Regex("<h2>(.*?)</h2>\\s+<h3>", RegexOptions.Singleline);
 		private static Regex m_rgxAuthor = new Regex("Author</div>.*?<div [^>]+>([^<]+)<", RegexOptions.Singleline);
 		private static Regex m_rgxScreenshotUrl = new Regex("<div class=\"file_title\">Images</div>.*?<img src=\"(.*?)\"", RegexOptions.Singleline);
 
@@ -267,6 +268,33 @@ namespace WebsiteAPIs
 		}
 
 		/// <summary>
+		/// Tries to get the files id from the given filename.
+		/// </summary>
+		/// <param name="p_strFileName">The filename from which to parse the file id.</param>
+		/// <param name="p_intFileId">The out parameter that will contain the file id, if found.</param>
+		/// <returns><lang cref="true"/> if the file id was found;
+		/// <lang cref="false"/> otherwise.</returns>
+		protected bool TryParseFileId(string p_strFileName, out Int32 p_intFileId)
+		{
+			Regex rgxFileId = new Regex(@"-(\d\d\d\d\d+)");
+			if (rgxFileId.IsMatch(p_strFileName))
+			{
+				foreach (Match mchFileId in rgxFileId.Matches(p_strFileName))
+				{
+					Int32 intId = Int32.Parse(mchFileId.Groups[1].Value);
+					if (GetModExists(intId))
+					{
+						//strPackedFomodPath = strPackedFomodPath.Remove(mchFileId.Index, mchFileId.Length) + Path.GetExtension(strSource);
+						p_intFileId = intId;
+						return true;
+					}
+				}
+			}
+			p_intFileId = -1;
+			return false;
+		}
+
+		/// <summary>
 		/// Ensures that the API is logged in to the site.
 		/// </summary>
 		/// <exception cref="SiteLoginException">Thrown if the API can't login to the site.</exception>
@@ -322,6 +350,8 @@ namespace WebsiteAPIs
 			m_booLoggedIn = !strLoginResultPage.Contains("error.php?");
 			return m_booLoggedIn;
 		}
+
+		#region Mod File Management
 
 		/// <summary>
 		/// Gets the file upload page of the specified mod.
@@ -635,15 +665,17 @@ namespace WebsiteAPIs
 			return strReponse.Contains("File added successfully to");
 		}
 
+		#endregion
+
 		/// <summary>
 		/// Determines if the specified file exists.
 		/// </summary>
 		/// <param name="p_intFileId">The id of the file whose existence is to be determined.</param>
 		/// <returns><lang cref="true"/> if the file exists;
 		/// <lang cref="false"/> otherwise.</returns>
-		public bool GetFileExists(Int32 p_intFileId)
+		public bool GetModExists(Int32 p_intModKey)
 		{
-			string strURL = String.Format("http://{0}/downloads/file.php?id={1}", m_strSite, p_intFileId);
+			string strURL = String.Format("http://{0}/downloads/file.php?id={1}", m_strSite, p_intModKey);
 
 			HttpWebRequest hwrFilePage = (HttpWebRequest)WebRequest.Create(strURL);
 			hwrFilePage.CookieContainer = m_ckcCookies;
@@ -697,6 +729,19 @@ namespace WebsiteAPIs
 		}
 
 		/// <summary>
+		/// Parse the mod name out of the mod's info page.
+		/// </summary>
+		/// <param name="p_strInfoPage">The info page of the mod whose author is being parsed.</param>
+		/// <returns>The name from the given mod info page.</returns>
+		private string ParseModName(string p_strInfoPage)
+		{
+			if (!m_rgxName.IsMatch(p_strInfoPage))
+				return null;
+			string strName = m_rgxName.Match(p_strInfoPage).Groups[1].Value.Trim();
+			return strName;
+		}
+
+		/// <summary>
 		/// Parse the mod author out of the mod's info page.
 		/// </summary>
 		/// <param name="p_strInfoPage">The info page of the mod whose author is being parsed.</param>
@@ -731,6 +776,7 @@ namespace WebsiteAPIs
 		/// <returns>A <see cref="ModInfo"/> describing the mod's information.</returns>
 		protected ModInfo ParseModInfo(Uri p_uriModUrl, string p_strInfoPage, bool p_booIncludeScreenshot)
 		{
+			string strName = ParseModName(p_strInfoPage);
 			string strAuthor = ParseModAuthor(p_strInfoPage);
 			string strVersion = ParseModVersion(p_strInfoPage);
 			Screenshot sstScreenshot = null;
@@ -740,42 +786,100 @@ namespace WebsiteAPIs
 				if (uriScreenshotUrl != null)
 					sstScreenshot = new Screenshot(uriScreenshotUrl.ToString(), DownloadData(true, uriScreenshotUrl));
 			}
-			return new ModInfo(strAuthor, strVersion, p_uriModUrl, sstScreenshot);
+			return new ModInfo(strName, strAuthor, strVersion, p_uriModUrl, sstScreenshot);
 		}
 
 		#endregion
 
+		//private Int32 ParseMonth(
+
 		/// <summary>
-		/// Gets the current verison of the specified file.
+		/// Gets the mod info for the specified file, and tries to guess the version of
+		/// the given file.
 		/// </summary>
+		/// <remarks>
+		/// This method tries to guess the version of the given file. Note that this is a best guess,
+		/// and could be very wrong.
+		/// </remarks>
 		/// <param name="p_intFileId">The id of the file whose version is to be retrieved.</param>
 		/// <param name="p_booIncludeScreenshot">Whether or not to retrieve the mod's screenshot.</param>
 		/// <returns>The current verison of the specified file.</returns>
 		/// <exception cref="InvalidOperationException">Thrown if the API can't log in to the site.</exception>
-		public ModInfo GetFileInfo(Int32 p_intFileId, bool p_booIncludeScreenshot)
+		public ModInfo GetFileInfoGuessVersion(string p_strFileName, bool p_booIncludeScreenshot)
 		{
-			string strURL = String.Format("http://{0}/downloads/file.php?id={1}", m_strSite, p_intFileId);
+			Int32 intFileId = -1;
+			if (!TryParseFileId(p_strFileName, out intFileId))
+				return null;
+			string strURL = String.Format("http://{0}/downloads/file.php?id={1}", m_strSite, intFileId);
+			string strInfoPage = GetWebPage(true, strURL);
+			ModInfo mifLastestInfo = ParseModInfo(new Uri(strURL), strInfoPage, p_booIncludeScreenshot);
+
+			if (File.Exists(p_strFileName))
+			{
+				FileInfo fifInfo = new FileInfo(p_strFileName);
+				string strFilename = Path.GetFileName(p_strFileName);
+				strFilename = strFilename.Remove(strFilename.IndexOf("-" + intFileId));
+
+				string strFilesPage = GetWebPage(true, String.Format("http://{0}/downloads/file/files.php?id={1}", m_strSite, intFileId));
+				Regex rgxFiles = new Regex("\\s+(.*?)</a></h2>");
+				foreach (Match mchFile in rgxFiles.Matches(strFilesPage))
+				{
+					if (mchFile.Groups[1].Value.Replace(' ', '_').StartsWith(strFilename, StringComparison.InvariantCultureIgnoreCase))
+					{
+						Regex rgxFileVersion = new Regex(@"lightbulb.png""\s+/>\s+Version\s+(.*?)</div>");
+						Regex rgxFileDate = new Regex(@"calendar.png""\s+/>\s+(.*?)</div>");
+						Match mchFileDate = rgxFileDate.Match(strFilesPage, mchFile.Groups[1].Index);
+						Match mchFileVersion = rgxFileVersion.Match(strFilesPage, mchFile.Groups[1].Index, mchFileDate.Groups[1].Index - mchFile.Groups[1].Index);
+						if (mchFileVersion.Success)
+						{
+							mifLastestInfo = new ModInfo(mifLastestInfo.Name, mifLastestInfo.Author, mchFileVersion.Groups[1].Value, mifLastestInfo.URL, mifLastestInfo.Screenshot);
+						}
+						else
+						{
+							DateTime dteFileDate = DateTime.Now;
+							DateTime.TryParse(mchFileDate.Groups[1].Value, out dteFileDate);
+							if (fifInfo.CreationTime <= dteFileDate)
+								mifLastestInfo = new ModInfo(mifLastestInfo.Name, mifLastestInfo.Author, null, mifLastestInfo.URL, mifLastestInfo.Screenshot);
+						}
+						break;
+					}
+				}
+			}
+
+			return mifLastestInfo;
+		}
+
+		/// <summary>
+		/// Gets the current mod info of the specified file.
+		/// </summary>
+		/// <param name="p_intModKey">The key of the mod whose version is to be retrieved.</param>
+		/// <param name="p_booIncludeScreenshot">Whether or not to retrieve the mod's screenshot.</param>
+		/// <returns>The current verison of the specified file.</returns>
+		/// <exception cref="InvalidOperationException">Thrown if the API can't log in to the site.</exception>
+		public ModInfo GetModInfo(Int32 p_intModKey, bool p_booIncludeScreenshot)
+		{
+			string strURL = String.Format("http://{0}/downloads/file.php?id={1}", m_strSite, p_intModKey);
 			string strInfoPage = GetWebPage(true, strURL);
 			return ParseModInfo(new Uri(strURL), strInfoPage, p_booIncludeScreenshot);
 		}
 
 		/// <summary>
-		/// Gets the current info of the specified file in an asynchronous request.
+		/// Gets the current info of the specified mod in an asynchronous request.
 		/// </summary>
 		/// <remarks>
 		/// The given <see cref="Action{object, ModInfo}"/> is called upon completion of the retrieval of the
 		/// file version. The first parameter passed to the delegate is the user-supplied state. The second
 		/// parameter passed to the delegate is the string representation of the file version.
 		/// </remarks>
-		/// <param name="p_intFileId">The id of the file whose info is to be retrieved.</param>
+		/// <param name="p_intModKey">The id of the mod whose info is to be retrieved.</param>
 		/// <param name="p_booIncludeScreenshot">Whether or not to retrieve the mod's screenshot.</param>
 		/// <param name="p_actCallback">The method to call upon completion of the request.</param>
 		/// <param name="p_objState">User supplied state.</param>
 		/// <exception cref="InvalidOperationException">Thrown if the API can't log in to the site.</exception>
-		public void GetFileInfoAsync(Int32 p_intFileId, bool p_booIncludeScreenshot, Action<object, ModInfo> p_actCallback, object p_objState)
+		public void GetModInfoAsync(Int32 p_intModKey, bool p_booIncludeScreenshot, Action<object, ModInfo> p_actCallback, object p_objState)
 		{
 			AssertLoggedIn();
-			string strURL = String.Format("http://{0}/downloads/file.php?id={1}", m_strSite, p_intFileId);
+			string strURL = String.Format("http://{0}/downloads/file.php?id={1}", m_strSite, p_intModKey);
 
 			HttpWebRequest hwrFilePage = (HttpWebRequest)WebRequest.Create(strURL);
 			hwrFilePage.CookieContainer = m_ckcCookies;
@@ -830,7 +934,7 @@ namespace WebsiteAPIs
 			if (!"Error".Equals(strFilePage))
 				mifInfo = ParseModInfo(hwrFilePage.RequestUri, strFilePage, booIncludeScreenshot);
 			else
-				mifInfo = new ModInfo("Error", "Error", hwrFilePage.RequestUri, null);
+				mifInfo = new ModInfo("Error", "Error", "Error", hwrFilePage.RequestUri, null);
 
 			aopOperation.PostOperationCompleted((p_mifInfo) => { CallGetFileVersionAsyncCallback((KeyValuePair<Action<object, ModInfo>, object>)aopOperation.UserSuppliedState, (ModInfo)p_mifInfo); }, mifInfo);
 		}
