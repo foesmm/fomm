@@ -9,6 +9,8 @@ using System.Diagnostics;
 
 namespace WebsiteAPIs
 {
+	#region Supporting Data Structures
+
 	/// <summary>
 	/// The file categories.
 	/// </summary>
@@ -119,6 +121,8 @@ namespace WebsiteAPIs
 		#endregion
 	}
 
+	#endregion
+
 	/// <summary>
 	/// An API to the Nexus sites.
 	/// </summary>
@@ -145,6 +149,8 @@ namespace WebsiteAPIs
 
 		private static Regex m_rgxUploadProgressKey = new Regex("name=\"APC_UPLOAD_PROGRESS\".*?value=\"(.*?)\"");
 		private static Regex m_rgxVersion = new Regex("Version</div>.*?<div [^>]+>([^<]+)<", RegexOptions.Singleline);
+		private static Regex m_rgxAuthor = new Regex("Author</div>.*?<div [^>]+>([^<]+)<", RegexOptions.Singleline);
+		private static Regex m_rgxScreenshotUrl = new Regex("<div class=\"file_title\">Images</div>.*?<img src=\"(.*?)\"", RegexOptions.Singleline);
 
 		private CookieContainer m_ckcCookies = new CookieContainer();
 		private NexusSite m_nxsSite = NexusSite.Fallout3;
@@ -629,28 +635,6 @@ namespace WebsiteAPIs
 		}
 
 		/// <summary>
-		/// Parse the file version out of the file's info page.
-		/// </summary>
-		/// <param name="p_strVersionPage">The info page of the file whose version is being parsed.</param>
-		/// <returns>The version string from the given file info page.</returns>
-		protected string ParseFileVersion(string p_strVersionPage)
-		{
-			string strWebVersion = m_rgxVersion.Match(p_strVersionPage).Groups[1].Value.Trim().Trim(new char[] { '.' });
-			string strLoweredWebVersion = strWebVersion.ToLowerInvariant();
-			if (strWebVersion.StartsWith("ver. ", StringComparison.InvariantCultureIgnoreCase))
-				strWebVersion = strWebVersion.Substring(5);
-			else if (strWebVersion.StartsWith("ver.", StringComparison.InvariantCultureIgnoreCase))
-				strWebVersion = strWebVersion.Substring(4);
-			else if (strWebVersion.StartsWith("v. ", StringComparison.InvariantCultureIgnoreCase))
-				strWebVersion = strWebVersion.Substring(3);
-			else if (strWebVersion.StartsWith("v.", StringComparison.InvariantCultureIgnoreCase))
-				strWebVersion = strWebVersion.Substring(2);
-			else if (strWebVersion.StartsWith("v", StringComparison.InvariantCultureIgnoreCase))
-				strWebVersion = strWebVersion.Substring(1);
-			return strWebVersion;
-		}
-
-		/// <summary>
 		/// Determines if the specified file exists.
 		/// </summary>
 		/// <param name="p_intFileId">The id of the file whose existence is to be determined.</param>
@@ -683,13 +667,83 @@ namespace WebsiteAPIs
 			return !strFilePage.Contains("error=file_exist");
 		}
 
+		#region File Info
+
+		#region Info Page Parsing
+
+		/// <summary>
+		/// Parse the mod version out of the mod's info page.
+		/// </summary>
+		/// <param name="p_strInfoPage">The info page of the mod whose version is being parsed.</param>
+		/// <returns>The version string from the given mod info page.</returns>
+		private string ParseModVersion(string p_strInfoPage)
+		{
+			if (!m_rgxVersion.IsMatch(p_strInfoPage))
+				return null;
+			string strWebVersion = m_rgxVersion.Match(p_strInfoPage).Groups[1].Value.Trim().Trim(new char[] { '.' });
+			string strLoweredWebVersion = strWebVersion.ToLowerInvariant();
+			if (strWebVersion.StartsWith("ver. ", StringComparison.InvariantCultureIgnoreCase))
+				strWebVersion = strWebVersion.Substring(5);
+			else if (strWebVersion.StartsWith("ver.", StringComparison.InvariantCultureIgnoreCase))
+				strWebVersion = strWebVersion.Substring(4);
+			else if (strWebVersion.StartsWith("v. ", StringComparison.InvariantCultureIgnoreCase))
+				strWebVersion = strWebVersion.Substring(3);
+			else if (strWebVersion.StartsWith("v.", StringComparison.InvariantCultureIgnoreCase))
+				strWebVersion = strWebVersion.Substring(2);
+			else if (strWebVersion.StartsWith("v", StringComparison.InvariantCultureIgnoreCase))
+				strWebVersion = strWebVersion.Substring(1);
+			return strWebVersion;
+		}
+
+		/// <summary>
+		/// Parse the mod author out of the mod's info page.
+		/// </summary>
+		/// <param name="p_strInfoPage">The info page of the mod whose author is being parsed.</param>
+		/// <returns>The author string from the given mod info page.</returns>
+		private string ParseModAuthor(string p_strInfoPage)
+		{
+			if (!m_rgxAuthor.IsMatch(p_strInfoPage))
+				return null;
+			string strAuthor = m_rgxAuthor.Match(p_strInfoPage).Groups[1].Value.Trim();
+			return strAuthor;
+		}
+
+		/// <summary>
+		/// Parse the mod screenshot URL out of the mod's info page.
+		/// </summary>
+		/// <param name="p_strInfoPage">The info page of the mod whose screenshot url is being parsed.</param>
+		/// <returns>The screenshot url from the given mod info page.</returns>
+		private Uri ParseScreenshotUrl(string p_strInfoPage)
+		{
+			if (!m_rgxScreenshotUrl.IsMatch(p_strInfoPage))
+				return null;
+			string strURL = m_rgxScreenshotUrl.Match(p_strInfoPage).Groups[1].Value.Trim();
+			Uri uriScreenshot = new Uri(String.Format("http://{0}/{1}", m_strSite, strURL));
+			return uriScreenshot;
+		}
+
+		/// <summary>
+		/// Parse the mod info out of the mod's info page.
+		/// </summary>
+		/// <param name="p_strInfoPage">The info page of the mod whose information is being parsed.</param>
+		/// <returns>A <see cref="ModInfo"/> describing the mod's information.</returns>
+		protected ModInfo ParseModInfo(Uri p_uriModUrl, string p_strInfoPage)
+		{
+			string strAuthor = ParseModAuthor(p_strInfoPage);
+			string strVersion = ParseModVersion(p_strInfoPage);
+			Uri uriScreenshotUrl = ParseScreenshotUrl(p_strInfoPage);
+			return new ModInfo(strAuthor, strVersion, p_uriModUrl, uriScreenshotUrl);
+		}
+
+		#endregion
+
 		/// <summary>
 		/// Gets the current verison of the specified file.
 		/// </summary>
 		/// <param name="p_intFileId">The id of the file whose version is to be retrieved.</param>
 		/// <returns>The current verison of the specified file.</returns>
 		/// <exception cref="InvalidOperationException">Thrown if the API can't log in to the site.</exception>
-		public string GetFileVersion(Int32 p_intFileId)
+		public ModInfo GetFileInfo(Int32 p_intFileId)
 		{
 			AssertLoggedIn();
 			string strURL = String.Format("http://{0}/downloads/file.php?id={1}", m_strSite, p_intFileId);
@@ -698,39 +752,23 @@ namespace WebsiteAPIs
 			hwrFilePage.CookieContainer = m_ckcCookies;
 			hwrFilePage.Method = "GET";
 
-			string strFilePage = null;
-			using (WebResponse wrpFilePage = hwrFilePage.GetResponse())
-			{
-				if (((HttpWebResponse)wrpFilePage).StatusCode != HttpStatusCode.OK)
-					throw new HttpException("Request to the file page failed with HTTP error: " + ((HttpWebResponse)wrpFilePage).StatusCode);
-
-				Stream stmFilePage = wrpFilePage.GetResponseStream();
-				using (StreamReader srdFilePage = new StreamReader(stmFilePage))
-				{
-					strFilePage = srdFilePage.ReadToEnd();
-					srdFilePage.Close();
-				}
-				wrpFilePage.Close();
-			}
-
-			string strWebVersion = ParseFileVersion(strFilePage);
-
-			return strWebVersion;
+			string strFilePage = RetrievePage(hwrFilePage.GetResponse());
+			return ParseModInfo(hwrFilePage.RequestUri, strFilePage);
 		}
 
 		/// <summary>
-		/// Gets the current verison of the specified file in an asynchronous request.
+		/// Gets the current info of the specified file in an asynchronous request.
 		/// </summary>
 		/// <remarks>
-		/// The given <see cref="Action{object, string}"/> is called upon completion of the retrieval of the
-		/// file version. The first parameter passed to the delegat is the user-supplied state. The second
+		/// The given <see cref="Action{object, ModInfo}"/> is called upon completion of the retrieval of the
+		/// file version. The first parameter passed to the delegate is the user-supplied state. The second
 		/// parameter passed to the delegate is the string representation of the file version.
 		/// </remarks>
-		/// <param name="p_intFileId">The id of the file whose version is to be retrieved.</param>
+		/// <param name="p_intFileId">The id of the file whose info is to be retrieved.</param>
 		/// <param name="p_actCallback">The method to call upon completion of the request.</param>
 		/// <param name="p_objState">User supplied state.</param>
 		/// <exception cref="InvalidOperationException">Thrown if the API can't log in to the site.</exception>
-		public void GetFileVersionAsync(Int32 p_intFileId, Action<object, string> p_actCallback, object p_objState)
+		public void GetFileInfoAsync(Int32 p_intFileId, Action<object, ModInfo> p_actCallback, object p_objState)
 		{
 			AssertLoggedIn();
 			string strURL = String.Format("http://{0}/downloads/file.php?id={1}", m_strSite, p_intFileId);
@@ -739,7 +777,7 @@ namespace WebsiteAPIs
 			hwrFilePage.CookieContainer = m_ckcCookies;
 			hwrFilePage.Method = "GET";
 
-			AsyncOperation aopOperation = AsyncOperationManager.CreateOperation(new KeyValuePair<Action<object, string>, object>(p_actCallback, p_objState));
+			AsyncOperation aopOperation = AsyncOperationManager.CreateOperation(new KeyValuePair<Action<object, ModInfo>, object>(p_actCallback, p_objState));
 			hwrFilePage.BeginGetResponse(GetFilePageCallback, new object[] { hwrFilePage, aopOperation });
 		}
 
@@ -758,27 +796,14 @@ namespace WebsiteAPIs
 			HttpWebRequest hwrFilePage = (HttpWebRequest)objState[0];
 			AsyncOperation aopOperation = (AsyncOperation)objState[1];
 
-			string strWebVersion = null;
 			string strFilePage = null;
 			try
 			{
-				using (WebResponse wrpFilePage = hwrFilePage.EndGetResponse(p_asrResult))
-				{
-					if (((HttpWebResponse)wrpFilePage).StatusCode != HttpStatusCode.OK)
-						throw new HttpException("Request to the file page failed with HTTP error: " + ((HttpWebResponse)wrpFilePage).StatusCode);
-
-					Stream stmFilePage = wrpFilePage.GetResponseStream();
-					using (StreamReader srdFilePage = new StreamReader(stmFilePage))
-					{
-						strFilePage = srdFilePage.ReadToEnd();
-						srdFilePage.Close();
-					}
-					wrpFilePage.Close();
-				}
+				strFilePage = RetrievePage(hwrFilePage.EndGetResponse(p_asrResult));
 			}
 			catch (Exception e)
 			{
-				strWebVersion = "Error";				
+				strFilePage = "Error";				
 #if TRACE
 				Trace.WriteLine("Problem parsing the version HTTP response from " + hwrFilePage.Address);
 				Trace.Indent();
@@ -796,21 +821,50 @@ namespace WebsiteAPIs
 #endif
 			}
 
-			if (!"Error".Equals(strWebVersion))
-				strWebVersion = ParseFileVersion(strFilePage);
+			ModInfo mifInfo = null;
+			if (!"Error".Equals(strFilePage))
+				mifInfo = ParseModInfo(hwrFilePage.RequestUri, strFilePage);
+			else
+				mifInfo = new ModInfo("Error", "Error", hwrFilePage.RequestUri, null);
 
-			aopOperation.PostOperationCompleted((p_WebVersion) => { CallGetFileVersionAsyncCallback((KeyValuePair<Action<object, string>, object>)aopOperation.UserSuppliedState, (string)p_WebVersion); }, strWebVersion);
+			aopOperation.PostOperationCompleted((p_mifInfo) => { CallGetFileVersionAsyncCallback((KeyValuePair<Action<object, ModInfo>, object>)aopOperation.UserSuppliedState, (ModInfo)p_mifInfo); }, mifInfo);
 		}
 
 		/// <summary>
 		/// Calls the callback method for <see cref="GetVersionAsync"/>.
 		/// </summary>
 		/// <param name="p_kvpCallback">An object whose key is the callback method to call and whose value is the user-supplied state info to pass to the callback method.</param>
-		/// <param name="p_strWebVersion">The version of the file that was retrieved in the asynchronous call.</param>
-		private void CallGetFileVersionAsyncCallback(KeyValuePair<Action<object, string>, object> p_kvpCallback, string p_strWebVersion)
+		/// <param name="p_mifInfo">The info of the mod that was retrieved in the asynchronous call.</param>
+		private void CallGetFileVersionAsyncCallback(KeyValuePair<Action<object, ModInfo>, object> p_kvpCallback, ModInfo p_mifInfo)
 		{
 			if (p_kvpCallback.Key != null)
-				p_kvpCallback.Key(p_kvpCallback.Value, p_strWebVersion);
+				p_kvpCallback.Key(p_kvpCallback.Value, p_mifInfo);
+		}
+
+		#endregion
+
+		/// <summary>
+		/// Doanloads the web page from the given <see cref="WebResponse"/>.
+		/// </summary>
+		/// <param name="p_wrpInfoPage"></param>
+		/// <returns></returns>
+		private string RetrievePage(WebResponse p_wrpInfoPage)
+		{
+			string strPage = null;
+			using (WebResponse wrpFilePage = p_wrpInfoPage)
+			{
+				if (((HttpWebResponse)wrpFilePage).StatusCode != HttpStatusCode.OK)
+					throw new HttpException("Request to the page failed with HTTP error: " + ((HttpWebResponse)wrpFilePage).StatusCode);
+
+				Stream stmFilePage = wrpFilePage.GetResponseStream();
+				using (StreamReader srdFilePage = new StreamReader(stmFilePage))
+				{
+					strPage = srdFilePage.ReadToEnd();
+					srdFilePage.Close();
+				}
+				wrpFilePage.Close();
+			}
+			return strPage;
 		}
 	}
 }

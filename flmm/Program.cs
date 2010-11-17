@@ -64,7 +64,6 @@ namespace Fomm
 		public static string TRACE_FILE = "TraceLog" + DateTime.Now.ToString("yyyyMMddHHmm") + ".txt";
 #endif
 
-
 		private static readonly string m_strExecutableDirectory = Path.GetDirectoryName(Application.ExecutablePath);
 		public static readonly string tmpPath = Path.Combine(Path.GetTempPath(), ProgrammeAcronym);
 

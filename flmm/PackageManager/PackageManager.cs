@@ -82,18 +82,18 @@ namespace Fomm.PackageManager
 		/// The callback method for the call to retrieve a mod version from the Nexus website.
 		/// </summary>
 		/// <param name="p_objState">The base name of the mod whose version has been retrieved.</param>
-		/// <param name="p_strWebVersion">The version of the mod on the Nexus website.</param>
-		private void Nexus_GotFileVersion(object p_objState, string p_strWebVersion)
+		/// <param name="p_mifWebModInfo">The info of the mod on the Nexus website.</param>
+		private void Nexus_GotFileVersion(object p_objState, ModInfo p_mifWebModInfo)
 		{
 			if (!this.Visible)
 				return;
-			m_dicWebVersions[(string)p_objState] = p_strWebVersion;
+			m_dicWebVersions[(string)p_objState] = p_mifWebModInfo.Version;
 			ListViewItem lviMod = lvModList.Items[(string)p_objState];
 			lviMod.UseItemStyleForSubItems = false;
-			if (!String.IsNullOrEmpty(p_strWebVersion) && !p_strWebVersion.Equals(lviMod.SubItems["WebVersion"].Text))
+			if (!String.IsNullOrEmpty(p_mifWebModInfo.Version) && !p_mifWebModInfo.Version.Equals(lviMod.SubItems["WebVersion"].Text))
 			{
-				lviMod.SubItems["WebVersion"].Text = p_strWebVersion;
-				string strWebVersion = p_strWebVersion;
+				lviMod.SubItems["WebVersion"].Text = p_mifWebModInfo.Version;
+				string strWebVersion = p_mifWebModInfo.Version;
 				string strVersion = ((fomod)lviMod.Tag).HumanReadableVersion;
 				if (!strWebVersion.Equals(strVersion) && !strWebVersion.Equals(strVersion.Replace(".", "")))
 				{
@@ -124,7 +124,7 @@ namespace Fomm.PackageManager
 					try
 					{
 						if (Int32.TryParse(strFileId, out intFileId))
-							m_nxaNexus.GetFileVersionAsync(intFileId, Nexus_GotFileVersion, mod.BaseName);
+							m_nxaNexus.GetFileInfoAsync(intFileId, Nexus_GotFileVersion, mod.BaseName);
 					}
 					catch (Exception e)
 					{
