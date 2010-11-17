@@ -58,6 +58,7 @@ namespace Fomm {
 			this.butCancel = new System.Windows.Forms.Button();
 			this.butOK = new System.Windows.Forms.Button();
 			this.ttpTip = new System.Windows.Forms.ToolTip(this.components);
+			this.ckbAddMissingInfo = new System.Windows.Forms.CheckBox();
 			this.tbcTabs.SuspendLayout();
 			this.tpgGeneral.SuspendLayout();
 			this.groupBox5.SuspendLayout();
@@ -133,9 +134,9 @@ namespace Fomm {
 			this.ckbCheckFomodVersions.AutoSize = true;
 			this.ckbCheckFomodVersions.Location = new System.Drawing.Point(16, 65);
 			this.ckbCheckFomodVersions.Name = "ckbCheckFomodVersions";
-			this.ckbCheckFomodVersions.Size = new System.Drawing.Size(178, 17);
+			this.ckbCheckFomodVersions.Size = new System.Drawing.Size(175, 17);
 			this.ckbCheckFomodVersions.TabIndex = 6;
-			this.ckbCheckFomodVersions.Text = "Check for new FOMod versions.";
+			this.ckbCheckFomodVersions.Text = "Check for new FOMod versions";
 			this.ckbCheckFomodVersions.UseVisualStyleBackColor = true;
 			// 
 			// tbcTabs
@@ -165,12 +166,13 @@ namespace Fomm {
 			// 
 			// groupBox5
 			// 
+			this.groupBox5.Controls.Add(this.ckbAddMissingInfo);
 			this.groupBox5.Controls.Add(this.cbDisableIPC);
 			this.groupBox5.Controls.Add(this.cbDisableUAC);
 			this.groupBox5.Controls.Add(this.ckbCheckFomodVersions);
 			this.groupBox5.Location = new System.Drawing.Point(6, 126);
 			this.groupBox5.Name = "groupBox5";
-			this.groupBox5.Size = new System.Drawing.Size(384, 93);
+			this.groupBox5.Size = new System.Drawing.Size(384, 114);
 			this.groupBox5.TabIndex = 23;
 			this.groupBox5.TabStop = false;
 			this.groupBox5.Text = "Options";
@@ -396,6 +398,16 @@ namespace Fomm {
 			this.butOK.UseVisualStyleBackColor = true;
 			this.butOK.Click += new System.EventHandler(this.butOK_Click);
 			// 
+			// cbxAddMissingInfo
+			// 
+			this.ckbAddMissingInfo.AutoSize = true;
+			this.ckbAddMissingInfo.Location = new System.Drawing.Point(16, 88);
+			this.ckbAddMissingInfo.Name = "cbxAddMissingInfo";
+			this.ckbAddMissingInfo.Size = new System.Drawing.Size(157, 17);
+			this.ckbAddMissingInfo.TabIndex = 7;
+			this.ckbAddMissingInfo.Text = "Add missing info to FOMods";
+			this.ckbAddMissingInfo.UseVisualStyleBackColor = true;
+			// 
 			// SettingsForm
 			// 
 			this.AcceptButton = this.butOK;
@@ -462,5 +474,6 @@ namespace Fomm {
 		private System.Windows.Forms.Button butCancel;
 		private System.Windows.Forms.Button butOK;
 		private System.Windows.Forms.ToolTip ttpTip;
+		private System.Windows.Forms.CheckBox ckbAddMissingInfo;
     }
 }

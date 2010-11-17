@@ -81,6 +81,7 @@ namespace Fomm
 			cbDisableUAC.Checked = Properties.Settings.Default.NoUACCheck;
 			cbDisableIPC.Checked = Properties.Settings.Default.DisableIPC;
 			ckbCheckFomodVersions.Checked = Properties.Settings.Default.checkForNewModVersions;
+			ckbAddMissingInfo.Checked = Properties.Settings.Default.addMissingInfoToMods;
 
 			if (!UacUtil.IsElevated)
 			{
@@ -228,6 +229,7 @@ namespace Fomm
 			Properties.Settings.Default.NoUACCheck = cbDisableUAC.Checked;
 			Properties.Settings.Default.DisableIPC = cbDisableIPC.Checked;
 			Properties.Settings.Default.checkForNewModVersions = ckbCheckFomodVersions.Checked;
+			Properties.Settings.Default.addMissingInfoToMods = ckbAddMissingInfo.Checked;
 
 			if (UacUtil.IsElevated)
 			{

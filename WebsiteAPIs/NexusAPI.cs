@@ -430,7 +430,7 @@ namespace WebsiteAPIs
 			Regex rgxName = new Regex("^[a-zA-Z0-9 _-]+$");
 			return rgxName.IsMatch(p_strName);
 		}
-		
+
 		/// <summary>
 		/// Edits a file's info.
 		/// </summary>
@@ -727,13 +727,20 @@ namespace WebsiteAPIs
 		/// Parse the mod info out of the mod's info page.
 		/// </summary>
 		/// <param name="p_strInfoPage">The info page of the mod whose information is being parsed.</param>
+		/// <param name="p_booIncludeScreenshot">Whether or not to retrieve the mod's screenshot.</param>
 		/// <returns>A <see cref="ModInfo"/> describing the mod's information.</returns>
-		protected ModInfo ParseModInfo(Uri p_uriModUrl, string p_strInfoPage)
+		protected ModInfo ParseModInfo(Uri p_uriModUrl, string p_strInfoPage, bool p_booIncludeScreenshot)
 		{
 			string strAuthor = ParseModAuthor(p_strInfoPage);
 			string strVersion = ParseModVersion(p_strInfoPage);
-			Uri uriScreenshotUrl = ParseScreenshotUrl(p_strInfoPage);
-			return new ModInfo(strAuthor, strVersion, p_uriModUrl, null);
+			Screenshot sstScreenshot = null;
+			if (p_booIncludeScreenshot)
+			{
+				Uri uriScreenshotUrl = ParseScreenshotUrl(p_strInfoPage);
+				if (uriScreenshotUrl != null)
+					sstScreenshot = new Screenshot(uriScreenshotUrl.ToString(), DownloadData(true, uriScreenshotUrl));
+			}
+			return new ModInfo(strAuthor, strVersion, p_uriModUrl, sstScreenshot);
 		}
 
 		#endregion
@@ -742,19 +749,14 @@ namespace WebsiteAPIs
 		/// Gets the current verison of the specified file.
 		/// </summary>
 		/// <param name="p_intFileId">The id of the file whose version is to be retrieved.</param>
+		/// <param name="p_booIncludeScreenshot">Whether or not to retrieve the mod's screenshot.</param>
 		/// <returns>The current verison of the specified file.</returns>
 		/// <exception cref="InvalidOperationException">Thrown if the API can't log in to the site.</exception>
-		public ModInfo GetFileInfo(Int32 p_intFileId)
+		public ModInfo GetFileInfo(Int32 p_intFileId, bool p_booIncludeScreenshot)
 		{
-			AssertLoggedIn();
 			string strURL = String.Format("http://{0}/downloads/file.php?id={1}", m_strSite, p_intFileId);
-
-			HttpWebRequest hwrFilePage = (HttpWebRequest)WebRequest.Create(strURL);
-			hwrFilePage.CookieContainer = m_ckcCookies;
-			hwrFilePage.Method = "GET";
-
-			string strFilePage = RetrievePage(hwrFilePage.GetResponse());
-			return ParseModInfo(hwrFilePage.RequestUri, strFilePage);
+			string strInfoPage = GetWebPage(true, strURL);
+			return ParseModInfo(new Uri(strURL), strInfoPage, p_booIncludeScreenshot);
 		}
 
 		/// <summary>
@@ -766,10 +768,11 @@ namespace WebsiteAPIs
 		/// parameter passed to the delegate is the string representation of the file version.
 		/// </remarks>
 		/// <param name="p_intFileId">The id of the file whose info is to be retrieved.</param>
+		/// <param name="p_booIncludeScreenshot">Whether or not to retrieve the mod's screenshot.</param>
 		/// <param name="p_actCallback">The method to call upon completion of the request.</param>
 		/// <param name="p_objState">User supplied state.</param>
 		/// <exception cref="InvalidOperationException">Thrown if the API can't log in to the site.</exception>
-		public void GetFileInfoAsync(Int32 p_intFileId, Action<object, ModInfo> p_actCallback, object p_objState)
+		public void GetFileInfoAsync(Int32 p_intFileId, bool p_booIncludeScreenshot, Action<object, ModInfo> p_actCallback, object p_objState)
 		{
 			AssertLoggedIn();
 			string strURL = String.Format("http://{0}/downloads/file.php?id={1}", m_strSite, p_intFileId);
@@ -779,7 +782,7 @@ namespace WebsiteAPIs
 			hwrFilePage.Method = "GET";
 
 			AsyncOperation aopOperation = AsyncOperationManager.CreateOperation(new KeyValuePair<Action<object, ModInfo>, object>(p_actCallback, p_objState));
-			hwrFilePage.BeginGetResponse(GetFilePageCallback, new object[] { hwrFilePage, aopOperation });
+			hwrFilePage.BeginGetResponse(GetFilePageCallback, new object[] { hwrFilePage, aopOperation, p_booIncludeScreenshot });
 		}
 
 		/// <summary>
@@ -796,15 +799,16 @@ namespace WebsiteAPIs
 			object[] objState = (object[])p_asrResult.AsyncState;
 			HttpWebRequest hwrFilePage = (HttpWebRequest)objState[0];
 			AsyncOperation aopOperation = (AsyncOperation)objState[1];
+			bool booIncludeScreenshot = (bool)objState[2];
 
 			string strFilePage = null;
 			try
 			{
-				strFilePage = RetrievePage(hwrFilePage.EndGetResponse(p_asrResult));
+				strFilePage = RetrievePageResponse(hwrFilePage.EndGetResponse(p_asrResult));
 			}
 			catch (Exception e)
 			{
-				strFilePage = "Error";				
+				strFilePage = "Error";
 #if TRACE
 				Trace.WriteLine("Problem parsing the version HTTP response from " + hwrFilePage.Address);
 				Trace.Indent();
@@ -824,7 +828,7 @@ namespace WebsiteAPIs
 
 			ModInfo mifInfo = null;
 			if (!"Error".Equals(strFilePage))
-				mifInfo = ParseModInfo(hwrFilePage.RequestUri, strFilePage);
+				mifInfo = ParseModInfo(hwrFilePage.RequestUri, strFilePage, booIncludeScreenshot);
 			else
 				mifInfo = new ModInfo("Error", "Error", hwrFilePage.RequestUri, null);
 
@@ -845,11 +849,63 @@ namespace WebsiteAPIs
 		#endregion
 
 		/// <summary>
+		/// Downloads the specified page.
+		/// </summary>
+		/// <param name="p_booRequiresLogin">Whether or not the page requires the client to be logged in.</param>
+		/// <param name="p_strURL">The url of the page to download.</param>
+		/// <returns>The requested webpage.</returns>
+		protected string GetWebPage(bool p_booRequiresLogin, string p_strURL)
+		{
+			if (p_booRequiresLogin)
+				AssertLoggedIn();
+
+			HttpWebRequest hwrFilePage = (HttpWebRequest)WebRequest.Create(p_strURL);
+			hwrFilePage.CookieContainer = m_ckcCookies;
+			hwrFilePage.Method = "GET";
+
+			string strPage = RetrievePageResponse(hwrFilePage.GetResponse());
+			return strPage;
+		}
+
+		/// <summary>
+		/// Downloads the specified data..
+		/// </summary>
+		/// <param name="p_booRequiresLogin">Whether or not the request requires the client to be logged in.</param>
+		/// <param name="p_uriURL">The url of the data to download.</param>
+		/// <returns>The requested data.</returns>
+		protected byte[] DownloadData(bool p_booRequiresLogin, Uri p_uriURL)
+		{
+			if (p_booRequiresLogin)
+				AssertLoggedIn();
+
+			HttpWebRequest hwrFilePage = (HttpWebRequest)WebRequest.Create(p_uriURL);
+			hwrFilePage.CookieContainer = m_ckcCookies;
+			hwrFilePage.Method = "GET";
+
+			byte[] bteData = null;
+			using (WebResponse wrpFilePage = hwrFilePage.GetResponse())
+			{
+				if (((HttpWebResponse)wrpFilePage).StatusCode != HttpStatusCode.OK)
+					throw new HttpException("Request to the page failed with HTTP error: " + ((HttpWebResponse)wrpFilePage).StatusCode);
+
+				bteData = new byte[wrpFilePage.ContentLength];
+				using (Stream stmFilePage = wrpFilePage.GetResponseStream())
+				{
+					Int32 intReadCount = 0;
+					while (intReadCount < bteData.Length)
+						intReadCount += stmFilePage.Read(bteData, intReadCount, bteData.Length - intReadCount);
+				}
+				wrpFilePage.Close();
+			}
+			return bteData;
+		}
+
+		/// <summary>
 		/// Doanloads the web page from the given <see cref="WebResponse"/>.
 		/// </summary>
 		/// <param name="p_wrpInfoPage"></param>
 		/// <returns></returns>
-		private string RetrievePage(WebResponse p_wrpInfoPage)
+		private string RetrievePageResponse(WebResponse p_wrpInfoPage)
 		{
 			string strPage = null;
 			using (WebResponse wrpFilePage = p_wrpInfoPage)

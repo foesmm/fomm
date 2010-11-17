@@ -30,6 +30,7 @@ namespace Fomm.PackageManager
 {
 	public class fomod : IFomodInfo
 	{
+		private const string DEFAULT_AUTHOR = "DEFAULT";
 		class fomodLoadException : Exception { public fomodLoadException(string msg) : base(msg) { } }
 
 		private Archive m_arcFile;
@@ -392,7 +393,7 @@ namespace Fomm.PackageManager
 			FindPathPrefix();
 			m_arcFile.FilesChanged += new EventHandler(Archive_FilesChanged);
 			baseName = ModName.ToLowerInvariant();
-			Author = "DEFAULT";
+			Author = DEFAULT_AUTHOR;
 			Description = Email = Website = string.Empty;
 			HumanReadableVersion = "1.0";
 			MachineVersion = DefaultVersion;
@@ -757,7 +758,7 @@ namespace Fomm.PackageManager
 				xelTemp.InnerText = p_finFomodInfo.ModName;
 				xelRoot.AppendChild(xelTemp);
 			}
-			if (!String.IsNullOrEmpty(p_finFomodInfo.Author) && !p_finFomodInfo.Author.Equals("DEFAULT"))
+			if (!String.IsNullOrEmpty(p_finFomodInfo.Author) && !DEFAULT_AUTHOR.Equals(p_finFomodInfo.Author))
 			{
 				xelTemp = xmlInfo.CreateElement("Author");
 				xelTemp.InnerText = p_finFomodInfo.Author;
@@ -942,7 +943,7 @@ namespace Fomm.PackageManager
 			System.Text.StringBuilder sb = new System.Text.StringBuilder();
 			sb.AppendLine("Mod name: " + ModName);
 			sb.AppendLine("File name: " + baseName);
-			if (Author != "DEFAULT") sb.AppendLine("Author: " + Author);
+			if (!DEFAULT_AUTHOR.Equals(Author)) sb.AppendLine("Author: " + Author);
 			if (HumanReadableVersion != "1.0") sb.AppendLine("Version: " + HumanReadableVersion);
 			if (Email.Length > 0) sb.AppendLine("email: " + Email);
 			if (Website.Length > 0) sb.AppendLine("website: " + Website);
@@ -1093,26 +1094,23 @@ namespace Fomm.PackageManager
 		/// <param name="p_mifInfo">A <see cref="ModInfo"/> describing the info of the mod.</param>
 		public void SetMissingInfo(ModInfo p_mifInfo)
 		{
+			if (p_mifInfo == null)
+				return;
 			bool booUpdated = false;
-			if (String.IsNullOrEmpty(Author) && String.IsNullOrEmpty(p_mifInfo.Author))
+			if (DEFAULT_AUTHOR.Equals(Author) && !String.IsNullOrEmpty(p_mifInfo.Author))
 			{
 				booUpdated = true;
 				Author = p_mifInfo.Author;
 			}
-			Image imgScreenshot = null;
-			if (!HasScreenshot && (p_mifInfo.URL != null))
-			{
+			if (!HasScreenshot && (p_mifInfo.Screenshot != null))
 				booUpdated = true;
-				//Screenshot s = new Screenshot(
-				//imgScreenshot = Image.from
-			}
 			if (String.IsNullOrEmpty(Website) && (p_mifInfo.URL != null))
 			{
 				booUpdated = true;
 				Website = p_mifInfo.URL.ToString();
 			}
-
-			//CommitInfo(false, null);
+			if (booUpdated)
+				CommitInfo((p_mifInfo.Screenshot != null), p_mifInfo.Screenshot);
 		}
 
 		#endregion

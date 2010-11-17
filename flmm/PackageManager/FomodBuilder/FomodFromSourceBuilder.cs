@@ -122,7 +122,7 @@ namespace Fomm.PackageManager.FomodBuilder
 							if (p_nxaNexus.GetFileExists(intId))
 							{
 								strPackedFomodPath = strPackedFomodPath.Remove(mchFileId.Index, mchFileId.Length) + Path.GetExtension(strSource);
-								mifInfo = p_nxaNexus.GetFileInfo(intId);
+								mifInfo = p_nxaNexus.GetFileInfo(intId, true);
 								break;
 							}
 						}

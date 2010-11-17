@@ -125,7 +125,7 @@ namespace Fomm.PackageManager
 					try
 					{
 						if (Int32.TryParse(strFileId, out intFileId))
-							m_nxaNexus.GetFileInfoAsync(intFileId, Nexus_GotFileVersion, mod.BaseName);
+							m_nxaNexus.GetFileInfoAsync(intFileId, false, Nexus_GotFileVersion, mod.BaseName);
 					}
 					catch (Exception e)
 					{
