@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace WebsiteAPIs
+namespace GeMod.Interface
 {
 	/// <summary>
 	/// Encapsulates information about a mod.
@@ -33,7 +31,7 @@ namespace WebsiteAPIs
 		/// Gets the url to the mod's screenshot.
 		/// </summary>
 		/// <value>The url to the mod's screenshot.</value>
-		public Uri ScreenshotURL { get; private set; }
+		public Screenshot Screenshot { get; private set; }
 
 		#endregion
 
@@ -45,13 +43,13 @@ namespace WebsiteAPIs
 		/// <param name="p_strAuthor">The author of the mod.</param>
 		/// <param name="p_strVersion">The version of the mod.</param>
 		/// <param name="p_uriURL">The webpage of the mod.</param>
-		/// <param name="p_uriScreenshotURL">The url to the mod's screenshot.</param>
-		public ModInfo(string p_strAuthor, string p_strVersion, Uri p_uriURL, Uri p_uriScreenshotURL)
+		/// <param name="p_sstScreenshot">The mod's screenshot.</param>
+		public ModInfo(string p_strAuthor, string p_strVersion, Uri p_uriURL, Screenshot p_sstScreenshot)
 		{
 			Author = p_strAuthor;
 			Version = p_strVersion;
 			URL = p_uriURL;
-			ScreenshotURL = p_uriScreenshotURL;
+			Screenshot = p_sstScreenshot;
 		}
 
 		#endregion

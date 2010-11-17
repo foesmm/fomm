@@ -7,6 +7,8 @@ using System.IO;
 using Fomm.PackageManager.ModInstallLog;
 using SevenZip;
 using System.ComponentModel;
+using WebsiteAPIs;
+using GeMod.Interface;
 
 /*
  * Installed data XML Structure
@@ -1082,5 +1084,37 @@ namespace Fomm.PackageManager
 			}
 			return imgImage;
 		}
+
+		#region Mod Info
+
+		/// <summary>
+		/// Fills in missing info about the mod from the given info.
+		/// </summary>
+		/// <param name="p_mifInfo">A <see cref="ModInfo"/> describing the info of the mod.</param>
+		public void SetMissingInfo(ModInfo p_mifInfo)
+		{
+			bool booUpdated = false;
+			if (String.IsNullOrEmpty(Author) && String.IsNullOrEmpty(p_mifInfo.Author))
+			{
+				booUpdated = true;
+				Author = p_mifInfo.Author;
+			}
+			Image imgScreenshot = null;
+			if (!HasScreenshot && (p_mifInfo.URL != null))
+			{
+				booUpdated = true;
+				//Screenshot s = new Screenshot(
+				//imgScreenshot = Image.from
+			}
+			if (String.IsNullOrEmpty(Website) && (p_mifInfo.URL != null))
+			{
+				booUpdated = true;
+				Website = p_mifInfo.URL.ToString();
+			}
+
+			//CommitInfo(false, null);
+		}
+
+		#endregion
 	}
 }

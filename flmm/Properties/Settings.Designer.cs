@@ -646,5 +646,29 @@ namespace Fomm.Properties {
                 this["falloutNewVegasBoldifyESMs"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool addMissingInfoToMods {
+            get {
+                return ((bool)(this["addMissingInfoToMods"]));
+            }
+            set {
+                this["addMissingInfoToMods"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool addMissingInfoToModsInitialized {
+            get {
+                return ((bool)(this["addMissingInfoToModsInitialized"]));
+            }
+            set {
+                this["addMissingInfoToModsInitialized"] = value;
+            }
+        }
     }
 }

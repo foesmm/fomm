@@ -11,6 +11,7 @@ using System.Xml.Schema;
 using System.Xml;
 using System.Drawing;
 using Fomm.PackageManager.Controls;
+using GeMod.Interface;
 
 namespace Fomm.PackageManager.FomodBuilder
 {

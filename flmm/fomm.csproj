@@ -426,7 +426,6 @@
     <Compile Include="PackageManager\PermissionsManager.cs" />
     <Compile Include="PackageManager\PremadeFomodPack.cs" />
     <Compile Include="PackageManager\Readme.cs" />
-    <Compile Include="PackageManager\Screenshot.cs" />
     <Compile Include="PackageManager\SelectForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -998,6 +997,10 @@
     <ProjectReference Include="..\ChinhDo.Transactions.FileManager\ChinhDo.Transactions.FileManager.csproj">
       <Project>{E824ACBB-90C8-4C60-9D52-9C8020E98E3E}</Project>
       <Name>ChinhDo.Transactions.FileManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GeMod.Interface\GeMod.Interface.csproj">
+      <Project>{EDF2CF2D-47B1-4851-889E-7F365C9FDDA3}</Project>
+      <Name>GeMod.Interface</Name>
     </ProjectReference>
     <ProjectReference Include="..\Transactions\Transactions.csproj">
       <Project>{1C72A5C2-0BA6-44AD-A4ED-0F3FAB9C1E54}</Project>

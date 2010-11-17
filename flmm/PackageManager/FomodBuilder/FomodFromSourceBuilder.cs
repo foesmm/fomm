@@ -8,6 +8,7 @@ using Fomm.Util;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Text.RegularExpressions;
+using GeMod.Interface;
 using WebsiteAPIs;
 
 namespace Fomm.PackageManager.FomodBuilder
@@ -95,8 +96,9 @@ namespace Fomm.PackageManager.FomodBuilder
 		/// The source can be a folder or an archive.
 		/// </remarks>
 		/// <param name="p_strPath">The path to the source from which to create the fomod.</param>
+		/// <param name="p_nxaNexus">An initialized website API from which to retireve mod info.</param>
 		/// <returns>The path to the new fomod if it was successfully built; <lang cref="null"/> otherwise.</returns>
-		public IList<string> BuildFomodFromSource(string p_strPath)
+		public IList<string> BuildFomodFromSource(string p_strPath, NexusAPI p_nxaNexus)
 		{
 			string strSource = p_strPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
 
@@ -107,19 +109,22 @@ namespace Fomm.PackageManager.FomodBuilder
 					throw new ArgumentException("Unrecognized file format.", "p_strPath");
 
 				string strPackedFomodPath = Path.GetFileNameWithoutExtension(strSource);
-				string strTesNexusUrl = null;
-				Regex rgxFileId = new Regex(@"-(\d\d\d\d\d+)");
-				if (rgxFileId.IsMatch(strPackedFomodPath))
+
+				ModInfo mifInfo = null;
+				if (Properties.Settings.Default.addMissingInfoToMods)
 				{
-					NexusAPI na = new NexusAPI(Program.GameMode.NexusSite);
-					foreach (Match mchFileId in rgxFileId.Matches(strPackedFomodPath))
+					Regex rgxFileId = new Regex(@"-(\d\d\d\d\d+)");
+					if (rgxFileId.IsMatch(strPackedFomodPath))
 					{
-						string strId = mchFileId.Groups[1].Value;
-						if (na.GetFileExists(Int32.Parse(strId)))
+						foreach (Match mchFileId in rgxFileId.Matches(strPackedFomodPath))
 						{
-							strPackedFomodPath = strPackedFomodPath.Remove(mchFileId.Index, mchFileId.Length) + Path.GetExtension(strSource);
-							strTesNexusUrl = String.Format(@"http://{0}/downloads/file.php?id={1}", NexusAPI.GetWebsite(Program.GameMode.NexusSite), strId);
-							break;
+							Int32 intId = Int32.Parse(mchFileId.Groups[1].Value);
+							if (p_nxaNexus.GetFileExists(intId))
+							{
+								strPackedFomodPath = strPackedFomodPath.Remove(mchFileId.Index, mchFileId.Length) + Path.GetExtension(strSource);
+								mifInfo = p_nxaNexus.GetFileInfo(intId);
+								break;
+							}
 						}
 					}
 				}
@@ -140,11 +145,7 @@ namespace Fomm.PackageManager.FomodBuilder
 									szeExtractor.ExtractFile(strFOMod, fsmFOMod);
 							}
 							fomod fomodMod = new fomod(strNewPath);
-							if (String.IsNullOrEmpty(fomodMod.Website))
-							{
-								fomodMod.Website = strTesNexusUrl;
-								fomodMod.CommitInfo(false, null);
-							}
+							fomodMod.SetMissingInfo(mifInfo);
 							lstPackedFOModPaths.Add(strNewPath);
 						}
 					}
@@ -169,11 +170,7 @@ namespace Fomm.PackageManager.FomodBuilder
 						else
 							File.Copy(strSource, strNewPath, true);
 						fomod fomodMod = new fomod(strNewPath);
-						if (String.IsNullOrEmpty(fomodMod.Website))
-						{
-							fomodMod.Website = strTesNexusUrl;
-							fomodMod.CommitInfo(false, null);
-						}
+						fomodMod.SetMissingInfo(mifInfo);
 						lstPackedFOModPaths.Add(strNewPath);
 					}
 				}

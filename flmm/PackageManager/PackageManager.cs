@@ -12,6 +12,7 @@ using Fomm.PackageManager.FomodBuilder;
 using Fomm.PackageManager.Controls;
 using Fomm.Util;
 using System.ComponentModel;
+using GeMod.Interface;
 
 namespace Fomm.PackageManager
 {
@@ -275,7 +276,25 @@ namespace Fomm.PackageManager
 				Properties.Settings.Default.checkForNewModVersionsInitialized = true;
 				Properties.Settings.Default.Save();
 			}
-			if (Properties.Settings.Default.checkForNewModVersions)
+			if (!Properties.Settings.Default.addMissingInfoToModsInitialized)
+			{
+				string strMessage = "Would you like FOMM to add missing information to newly added mods?" +
+									Environment.NewLine +
+									"This may require you to login to some mod sites. You can change this " +
+									"setting in the Settings window.";
+				switch (MessageBox.Show(this, strMessage, "Add Missing Mod Info", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+				{
+					case DialogResult.Yes:
+						Properties.Settings.Default.addMissingInfoToMods = true;
+						break;
+					case DialogResult.No:
+						Properties.Settings.Default.addMissingInfoToMods = false;
+						break;
+				}
+				Properties.Settings.Default.addMissingInfoToModsInitialized = true;
+				Properties.Settings.Default.Save();
+			}
+			if (Properties.Settings.Default.checkForNewModVersions || Properties.Settings.Default.addMissingInfoToMods)
 			{
 				if (Program.GameMode.HasNexusSite)
 				{
@@ -514,7 +533,7 @@ namespace Fomm.PackageManager
 		public void AddNewFomod(string p_strPath)
 		{
 			FomodFromSourceBuilder ffbBuilder = new FomodFromSourceBuilder();
-			IList<string> lstFomodPaths = ffbBuilder.BuildFomodFromSource(p_strPath);
+			IList<string> lstFomodPaths = ffbBuilder.BuildFomodFromSource(p_strPath, m_nxaNexus);
 			foreach (string strFomodPath in lstFomodPaths)
 				AddFomod(strFomodPath, true);
 		}

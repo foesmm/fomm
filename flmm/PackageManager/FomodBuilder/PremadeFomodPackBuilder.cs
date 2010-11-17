@@ -7,6 +7,7 @@ using System.Text;
 using Fomm.PackageManager.XmlConfiguredInstall;
 using Fomm.Util;
 using Fomm.PackageManager.XmlConfiguredInstall.Parsers;
+using GeMod.Interface;
 
 namespace Fomm.PackageManager.FomodBuilder
 {

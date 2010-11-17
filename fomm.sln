@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Transactions", "Transaction
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebsiteAPIs", "WebsiteAPIs\WebsiteAPIs.csproj", "{C972F01F-2D05-4587-8E3B-53A18B9E1705}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeMod.Interface", "GeMod.Interface\GeMod.Interface.csproj", "{EDF2CF2D-47B1-4851-889E-7F365C9FDDA3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -129,6 +131,21 @@ Global
 		{C972F01F-2D05-4587-8E3B-53A18B9E1705}.Trace|Mixed Platforms.ActiveCfg = Trace|Any CPU
 		{C972F01F-2D05-4587-8E3B-53A18B9E1705}.Trace|Mixed Platforms.Build.0 = Trace|Any CPU
 		{C972F01F-2D05-4587-8E3B-53A18B9E1705}.Trace|Win32.ActiveCfg = Release|Any CPU
+		{EDF2CF2D-47B1-4851-889E-7F365C9FDDA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDF2CF2D-47B1-4851-889E-7F365C9FDDA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDF2CF2D-47B1-4851-889E-7F365C9FDDA3}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{EDF2CF2D-47B1-4851-889E-7F365C9FDDA3}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{EDF2CF2D-47B1-4851-889E-7F365C9FDDA3}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{EDF2CF2D-47B1-4851-889E-7F365C9FDDA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDF2CF2D-47B1-4851-889E-7F365C9FDDA3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EDF2CF2D-47B1-4851-889E-7F365C9FDDA3}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{EDF2CF2D-47B1-4851-889E-7F365C9FDDA3}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{EDF2CF2D-47B1-4851-889E-7F365C9FDDA3}.Release|Win32.ActiveCfg = Release|Any CPU
+		{EDF2CF2D-47B1-4851-889E-7F365C9FDDA3}.Trace|Any CPU.ActiveCfg = Release|Any CPU
+		{EDF2CF2D-47B1-4851-889E-7F365C9FDDA3}.Trace|Any CPU.Build.0 = Release|Any CPU
+		{EDF2CF2D-47B1-4851-889E-7F365C9FDDA3}.Trace|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{EDF2CF2D-47B1-4851-889E-7F365C9FDDA3}.Trace|Mixed Platforms.Build.0 = Release|Any CPU
+		{EDF2CF2D-47B1-4851-889E-7F365C9FDDA3}.Trace|Win32.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using GeMod.Interface;
 
 namespace WebsiteAPIs
 {
@@ -732,7 +733,7 @@ namespace WebsiteAPIs
 			string strAuthor = ParseModAuthor(p_strInfoPage);
 			string strVersion = ParseModVersion(p_strInfoPage);
 			Uri uriScreenshotUrl = ParseScreenshotUrl(p_strInfoPage);
-			return new ModInfo(strAuthor, strVersion, p_uriModUrl, uriScreenshotUrl);
+			return new ModInfo(strAuthor, strVersion, p_uriModUrl, null);
 		}
 
 		#endregion
