@@ -102,7 +102,7 @@ namespace Fomm.PackageManager
 			}
 			set
 			{
-				m_strText = value;
+				m_strText = value.Replace(": BaseScript", ": Fallout3BaseScript");			
 			}
 		}
 

@@ -138,7 +138,6 @@ class ScriptRunner {
 				if (fommScriptObject == null) LoadFommScriptObject();
 				return (bool)fommScriptObject.GetType().GetMethod("RunScript").Invoke(fommScriptObject, new object[] { script, p_midInstaller });
 			}
-			script = script.Replace(": BaseScript", ": Fallout3BaseScript");
 			byte[] data = Compile(script);
 			if (data == null)
 			{
