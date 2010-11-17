@@ -64,6 +64,7 @@ namespace Fomm.PackageManager
 			List<string> lstPaths = new List<string>(Program.GameMode.SettingsFiles.Values);
 			lstPaths.AddRange(Program.GameMode.AdditionalPaths.Values);
 			fipFilePermission.AddPathList(FileIOPermissionAccess.AllAccess, lstPaths.ToArray());
+			fipFilePermission.AddPathList(FileIOPermissionAccess.Read, Environment.CurrentDirectory);
 
 			permissions.AddPermission(fipFilePermission);
 			permissions.AddPermission(new SecurityPermission(SecurityPermissionFlag.UnmanagedCode));
