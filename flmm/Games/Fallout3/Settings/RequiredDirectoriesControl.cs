@@ -26,37 +26,6 @@ namespace Fomm.Games.Fallout3.Settings
 
 		#endregion
 
-		/// <summary>
-		/// Raised the <see cref="Control.Load"/> event.
-		/// </summary>
-		/// <remarks>
-		/// This loads defaults into the textboxes.
-		/// </remarks>
-		/// <param name="e">The <see cref="EventArgs"/> describing the event arguments.</param>
-		protected override void OnLoad(EventArgs e)
-		{
-			base.OnLoad(e);
-			//this check is need so the control can be viewed in the GUI editor when it is dropped on other controls
-			if (Program.GameMode == null)
-				return;
-			tbxModDirectory.Text = Properties.Settings.Default.fallout3ModDirectory;
-			if (String.IsNullOrEmpty(tbxModDirectory.Text))
-			{
-				string strDefault = Path.Combine(Path.GetDirectoryName(Program.GameMode.PluginsPath), "mods");
-				if (!strDefault.StartsWith(Path.Combine(Path.GetPathRoot(strDefault), "Program Files"), StringComparison.InvariantCultureIgnoreCase))
-					strDefault = Path.Combine(Path.GetPathRoot(Program.GameMode.PluginsPath), "Games\\Fallout 3\\mods"); ;
-				tbxModDirectory.Text = strDefault;
-			}
-			tbxInstallInfo.Text = Properties.Settings.Default.fallout3InstallInfoDirectory;
-			if (String.IsNullOrEmpty(tbxInstallInfo.Text))
-			{
-				string strDefault = Path.Combine(Path.GetDirectoryName(Program.GameMode.PluginsPath), "Install Info");
-				if (strDefault.StartsWith(Path.Combine(Path.GetPathRoot(strDefault), "Program Files"), StringComparison.InvariantCultureIgnoreCase))
-					strDefault = Path.Combine(Path.GetPathRoot(Program.GameMode.PluginsPath), "Games\\Fallout 3\\Install Info"); ;
-				tbxInstallInfo.Text = strDefault;
-			}
-		}
-
 		#region Validation
 
 		/// <summary>
@@ -117,6 +86,29 @@ namespace Fomm.Games.Fallout3.Settings
 
 
 		#endregion
+
+		/// <summary>
+		/// Loads the user's settings into the control.
+		/// </summary>
+		public void LoadSettings()
+		{
+			tbxModDirectory.Text = Properties.Settings.Default.fallout3ModDirectory;
+			if (String.IsNullOrEmpty(tbxModDirectory.Text))
+			{
+				string strDefault = Path.Combine(Path.GetDirectoryName(Program.GameMode.PluginsPath), "mods");
+				if (!strDefault.StartsWith(Path.Combine(Path.GetPathRoot(strDefault), "Program Files"), StringComparison.InvariantCultureIgnoreCase))
+					strDefault = Path.Combine(Path.GetPathRoot(Program.GameMode.PluginsPath), "Games\\Fallout 3\\mods"); ;
+				tbxModDirectory.Text = strDefault;
+			}
+			tbxInstallInfo.Text = Properties.Settings.Default.fallout3InstallInfoDirectory;
+			if (String.IsNullOrEmpty(tbxInstallInfo.Text))
+			{
+				string strDefault = Path.Combine(Path.GetDirectoryName(Program.GameMode.PluginsPath), "Install Info");
+				if (strDefault.StartsWith(Path.Combine(Path.GetPathRoot(strDefault), "Program Files"), StringComparison.InvariantCultureIgnoreCase))
+					strDefault = Path.Combine(Path.GetPathRoot(Program.GameMode.PluginsPath), "Games\\Fallout 3\\Install Info"); ;
+				tbxInstallInfo.Text = strDefault;
+			}
+		}
 
 		/// <summary>
 		/// Persists the settings on this control.

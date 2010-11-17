@@ -71,6 +71,7 @@ namespace Fomm.Games.FalloutNewVegas.Settings
 			tbxCommand.Text = Properties.Settings.Default.falloutNewVegasLaunchCommand;
 			tbxCommandArguments.Text = Properties.Settings.Default.falloutNewVegasLaunchCommandArgs;
 			cbxBoldifyESMs.Checked = Properties.Settings.Default.falloutNewVegasBoldifyESMs;
+			rdcDirectories.LoadSettings();
 		}
 
 		/// <summary>

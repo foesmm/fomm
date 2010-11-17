@@ -71,6 +71,7 @@ namespace Fomm.Games.Fallout3.Settings
 			tbxCommand.Text = Properties.Settings.Default.fallout3LaunchCommand;
 			tbxCommandArguments.Text = Properties.Settings.Default.fallout3LaunchCommandArgs;
 			cbxBoldifyESMs.Checked = Properties.Settings.Default.fallout3BoldifyESMs;
+			rdcDirectories.LoadSettings();
 		}
 
 		/// <summary>
