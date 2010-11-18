@@ -210,7 +210,8 @@ namespace Fomm.PackageManager.ModInstallLog
 				}
 				catch (XmlException e)
 				{
-					throw new Exception("Malformed InstallLog (" + xmlpath + ").", e);
+					Exception exContent = new Exception("Bad InstallLog:" + Environment.NewLine + File.ReadAllText(xmlpath), e);
+					throw new Exception("Malformed InstallLog (" + xmlpath + ")", exContent);
 				}
 				m_xelModListNode = (XmlElement)xmlDoc.SelectSingleNode("installLog/modList");
 				dataFilesNode = (XmlElement)xmlDoc.SelectSingleNode("installLog/dataFiles");
