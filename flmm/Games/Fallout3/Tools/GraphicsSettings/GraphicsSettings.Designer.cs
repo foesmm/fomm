@@ -1025,7 +1025,7 @@
 			this.Name = "GraphicsSettings";
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "GraphicsSettings";
+			this.Text = "Graphics Settings";
 			this.tabControl1.ResumeLayout(false);
 			this.tabPage1.ResumeLayout(false);
 			this.groupBox3.ResumeLayout(false);
