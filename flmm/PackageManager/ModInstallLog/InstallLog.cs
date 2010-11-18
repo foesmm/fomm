@@ -204,7 +204,14 @@ namespace Fomm.PackageManager.ModInstallLog
 			xmlDoc = new XmlDocument();
 			if (File.Exists(xmlpath))
 			{
-				xmlDoc.Load(xmlpath);
+				try
+				{
+					xmlDoc.Load(xmlpath);
+				}
+				catch (XmlException e)
+				{
+					throw new Exception("Malformed InstallLog (" + xmlpath + ").", e);
+				}
 				m_xelModListNode = (XmlElement)xmlDoc.SelectSingleNode("installLog/modList");
 				dataFilesNode = (XmlElement)xmlDoc.SelectSingleNode("installLog/dataFiles");
 				iniEditsNode = (XmlElement)xmlDoc.SelectSingleNode("installLog/iniEdits");
