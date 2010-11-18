@@ -103,74 +103,108 @@ namespace Fomm.PackageManager.FomodBuilder
 			string strSource = p_strPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
 
 			List<string> lstPackedFOModPaths = new List<string>();
+
+			bool booCreateFromFolder = true;
+
 			if (File.Exists(strSource))
 			{
+				booCreateFromFolder = false;
 				if (!Archive.IsArchive(strSource))
 					throw new ArgumentException("Unrecognized file format.", "p_strPath");
 
-				string strPackedFomodPath = Path.GetFileNameWithoutExtension(strSource);
-
-				ModInfo mifInfo = null;
-				if (Properties.Settings.Default.addMissingInfoToMods)
-				{
-					mifInfo = p_nxaNexus.GetFileInfoGuessVersion(p_strPath, true);
-					//what to do with strPackedFomodPath?
-				}
-
 				string[] strFOMods = null;
 				using (Archive arcMod = new Archive(strSource))
-					strFOMods = arcMod.GetFiles(null, "*.fomod");
-				if (strFOMods.Length > 0)
 				{
-					foreach (string strFOMod in strFOMods)
+					strFOMods = arcMod.GetFiles(null, "*.fomod");
+					if ((strFOMods.Length == 0) && (arcMod.VolumeFileNames.Length > 1))
 					{
-						string strNewPath = Path.Combine(Program.GameMode.ModDirectory, Path.GetFileName(strFOMod));
+						if (MessageBox.Show("This mod consists of " + arcMod.VolumeFileNames.Length + " files. It needs to be extracted and repacked.", "Repack Required", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.Cancel)
+							return lstPackedFOModPaths;
+						booCreateFromFolder = true;
+					}
+				}
+
+				if (!booCreateFromFolder)
+				{
+					if (strFOMods.Length > 0)
+					{
+						foreach (string strFOMod in strFOMods)
+						{
+							string strNewPath = Path.Combine(Program.GameMode.ModDirectory, Path.GetFileName(strFOMod));
+							if (CheckFileName(ref strNewPath))
+							{
+								using (SevenZipExtractor szeExtractor = Archive.GetExtractor(strSource))
+								{
+									using (FileStream fsmFOMod = new FileStream(strNewPath, FileMode.Create))
+										szeExtractor.ExtractFile(strFOMod, fsmFOMod);
+								}
+								lstPackedFOModPaths.Add(strNewPath);
+							}
+						}
+					}
+					else
+					{
+						fomod mof = new fomod(strSource, false);
+						if (!mof.HasInstallScript && mof.RequiresScript)
+						{
+							if (MessageBox.Show("This mod requires a script to install properly, but doesn't have one." + Environment.NewLine + "Would you like to continue?", "Missing Script", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.No)
+								return lstPackedFOModPaths;
+						}
+						//remove the file extension
+						string strPackedFomodPath = Path.GetFileNameWithoutExtension(strSource);
+						//remove the .part1 or what have for multipart files
+						strPackedFomodPath = Path.GetFileNameWithoutExtension(strPackedFomodPath);
+						strPackedFomodPath = Path.Combine(Program.GameMode.ModDirectory, strPackedFomodPath);
+						if (!strPackedFomodPath.EndsWith(".fomod", StringComparison.OrdinalIgnoreCase))
+							strPackedFomodPath += ".fomod";
+						string strNewPath = strPackedFomodPath;
 						if (CheckFileName(ref strNewPath))
 						{
-							using (SevenZipExtractor szeExtractor = Archive.GetExtractor(strSource))
-							{
-								using (FileStream fsmFOMod = new FileStream(strNewPath, FileMode.Create))
-									szeExtractor.ExtractFile(strFOMod, fsmFOMod);
-							}
-							fomod fomodMod = new fomod(strNewPath);
-							fomodMod.SetMissingInfo(mifInfo);
+							FileUtil.ForceDelete(strNewPath);
+							if (MessageBox.Show("Make a copy of the original file?", "", MessageBoxButtons.YesNo) != DialogResult.Yes)
+								File.Move(strSource, strNewPath);
+							else
+								File.Copy(strSource, strNewPath, true);
 							lstPackedFOModPaths.Add(strNewPath);
 						}
 					}
 				}
+			}
+
+			if (booCreateFromFolder)
+			{
+				string strFomodName = null;
+				if (File.Exists(strSource))
+				{
+					//remove the file extension
+					strFomodName = Path.GetFileNameWithoutExtension(strSource);
+					//remove the .part1 or what have for multipart files
+					strFomodName = Path.GetFileNameWithoutExtension(strFomodName);
+				}
 				else
 				{
-					fomod mof = new fomod(strSource, false);
-					if (!mof.HasInstallScript && mof.RequiresScript)
-					{
-						if (MessageBox.Show("This mod requires a script to install properly, but doesn't have one." + Environment.NewLine + "Would you like to continue?", "Missing Script", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.No)
-							return lstPackedFOModPaths;
-					}
-					strPackedFomodPath = Path.Combine(Program.GameMode.ModDirectory, Path.GetFileNameWithoutExtension(strPackedFomodPath));
-					if (!strPackedFomodPath.EndsWith(".fomod", StringComparison.OrdinalIgnoreCase))
-						strPackedFomodPath += ".fomod";
-					string strNewPath = strPackedFomodPath;
-					if (CheckFileName(ref strNewPath))
-					{
-						FileUtil.ForceDelete(strNewPath);
-						if (MessageBox.Show("Make a copy of the original file?", "", MessageBoxButtons.YesNo) != DialogResult.Yes)
-							File.Move(strSource, strNewPath);
-						else
-							File.Copy(strSource, strNewPath, true);
-						fomod fomodMod = new fomod(strNewPath);
-						fomodMod.SetMissingInfo(mifInfo);
-						lstPackedFOModPaths.Add(strNewPath);
-					}
+					Int32 intLastSeparatorPos = strSource.LastIndexOfAny(new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar });
+					strFomodName = strSource.Substring(intLastSeparatorPos + 1);
 				}
-			}
-			else
-			{
-				Int32 intLastSeparatorPos = strSource.LastIndexOfAny(new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar });
-				string strFomodName = strSource.Substring(intLastSeparatorPos + 1);
 
 				string strPackedFomodPath = Path.Combine(Program.GameMode.ModDirectory, strFomodName + ".fomod");
 				strPackedFomodPath = GenerateFomod(new BuildFomodArgs(strFomodName, strSource, null, strPackedFomodPath));
-				lstPackedFOModPaths.Add(strPackedFomodPath);
+				if (!String.IsNullOrEmpty(strPackedFomodPath))
+					lstPackedFOModPaths.Add(strPackedFomodPath);
+			}
+
+			ModInfo mifInfo = null;
+			if (Properties.Settings.Default.addMissingInfoToMods)
+			{
+				mifInfo = p_nxaNexus.GetFileInfoGuessVersion(strSource, true);
+				if (mifInfo != null)
+				{
+					foreach (string strFomod in lstPackedFOModPaths)
+					{
+						fomod fomodMod = new fomod(strFomod);
+						fomodMod.SetMissingInfo(mifInfo);
+					}
+				}
 			}
 
 			return lstPackedFOModPaths;
