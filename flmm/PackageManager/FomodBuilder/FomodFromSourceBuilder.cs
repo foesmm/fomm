@@ -115,7 +115,6 @@ namespace Fomm.PackageManager.FomodBuilder
 				{
 					mifInfo = p_nxaNexus.GetFileInfoGuessVersion(p_strPath, true);
 					//what to do with strPackedFomodPath?
-					strPackedFomodPath = "delme";
 				}
 
 				string[] strFOMods = null;
