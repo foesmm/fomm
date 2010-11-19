@@ -155,6 +155,7 @@ namespace Fomm.PackageManager {
 			this.tbModInfo.Multiline = true;
 			this.tbModInfo.Name = "tbModInfo";
 			this.tbModInfo.ReadOnly = true;
+			this.tbModInfo.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
 			this.tbModInfo.Size = new System.Drawing.Size(475, 168);
 			this.tbModInfo.TabIndex = 0;
 			// 
