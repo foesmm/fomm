@@ -446,7 +446,7 @@ namespace Fomm.PackageManager
 				if (fomodMod.ModName.Equals(mod.ModName) && fomodMod.IsActive && !fomodMod.BaseName.Equals(mod.BaseName))
 				{
 					//ask to do upgrade
-					string strUpgradeMessage = "A different verion of {0} has been detected. The installed verion is {1}, the new verion is {2}. Would you like to upgrade?" + Environment.NewLine + "Selecting No will install the new FOMod normally.";
+					string strUpgradeMessage = "A different version of {0} has been detected. The installed version is {1}, the new version is {2}. Would you like to upgrade?" + Environment.NewLine + "Selecting No will install the new FOMod normally.";
 					switch (MessageBox.Show(String.Format(strUpgradeMessage, fomodMod.ModName, fomodMod.HumanReadableVersion, mod.HumanReadableVersion), "Upgrade", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
 					{
 						case DialogResult.Yes:

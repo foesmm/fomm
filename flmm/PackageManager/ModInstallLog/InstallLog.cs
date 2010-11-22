@@ -14,7 +14,7 @@ namespace Fomm.PackageManager.ModInstallLog
 	 * <installLog>
 	 *   <modList>
 	 *	   <mod name="" key="">
-	 *       <verion machineVersion="">mod version</version>
+	 *       <version machineVersion="">mod version</version>
 	 *	   </mod>
 	 *   </modList>
 	 *   <dataFiles>

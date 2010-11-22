@@ -12,7 +12,7 @@ namespace Fomm.PackageManager.Upgrade
 	/// </summary>
 	public class UpgradeScanner
 	{
-		protected static readonly string m_strUpgradeMessage = "A different verion of {0} has been detected. The installed verion is {1}, the new verion is {2}. Would you like to upgrade?" + Environment.NewLine + "Selecting No will replace the FOMod in FOMM's plugin list, but won't change any files.";
+		protected static readonly string m_strUpgradeMessage = "A different version of {0} has been detected. The installed version is {1}, the new version is {2}. Would you like to upgrade?" + Environment.NewLine + "Selecting No will replace the FOMod in FOMM's plugin list, but won't change any files.";
 		
 		/// <summary>
 		/// Scans the mods folder for fomods that have versions that differ from their versions in the install log.
