@@ -1111,12 +1111,16 @@ namespace Fomm.PackageManager
 			}
 			if (HumanReadableVersion.Equals(DEFAULT_VERSION) && (MachineVersion == DefaultVersion) && !String.IsNullOrEmpty(p_mifInfo.Version))
 			{
+				HumanReadableVersion = p_mifInfo.Version;
 				string strVersionString = p_mifInfo.Version;
 				Regex rgxCleanVersion = new Regex(@"[^\d\.]");
 				strVersionString = rgxCleanVersion.Replace(strVersionString, "");
-				HumanReadableVersion = p_mifInfo.Version;
 				if (!String.IsNullOrEmpty(strVersionString))
+				{
+					if (!strVersionString.Contains("."))
+						strVersionString += ".0";
 					MachineVersion = new Version(strVersionString);
+				}
 			}
 			if (!HasScreenshot && (p_mifInfo.Screenshot != null))
 				booUpdated = true;
