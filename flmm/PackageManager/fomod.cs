@@ -1119,6 +1119,10 @@ namespace Fomm.PackageManager
 				{
 					if (!strVersionString.Contains("."))
 						strVersionString += ".0";
+					if (strVersionString.StartsWith("."))
+						strVersionString = "0" + strVersionString;
+					if (strVersionString.EndsWith("."))
+						strVersionString = strVersionString + "0";
 					MachineVersion = new Version(strVersionString);
 				}
 			}
