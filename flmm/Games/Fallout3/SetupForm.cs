@@ -24,6 +24,7 @@ namespace Fomm.Games.Fallout3
 		{
 			InitializeComponent();
 			this.Icon = Properties.Resources.fomm02;
+			rdcDirectories.LoadSettings();
 		}
 
 		#endregion

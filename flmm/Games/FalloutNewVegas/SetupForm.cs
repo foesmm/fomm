@@ -24,6 +24,7 @@ namespace Fomm.Games.FalloutNewVegas
 		{
 			InitializeComponent();
 			this.Icon = Properties.Resources.fomm02;
+			rdcDirectories.LoadSettings();
 		}
 
 		#endregion
