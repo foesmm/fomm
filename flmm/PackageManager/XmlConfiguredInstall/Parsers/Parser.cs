@@ -44,7 +44,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
 		public static Parser GetParser(XmlDocument p_xmlConfig, fomod p_fomodMod, DependencyStateManager p_dsmSate)
 		{
 			string strConfigVersion = "1.0";
-			string strSchemaName = p_xmlConfig.ChildNodes[1].Attributes["xsi:noNamespaceSchemaLocation"].InnerText.ToLowerInvariant();
+			string strSchemaName = p_xmlConfig.SelectSingleNode("config").Attributes["xsi:noNamespaceSchemaLocation"].InnerText.ToLowerInvariant();
 			Int32 intStartPos = strSchemaName.LastIndexOf("modconfig") + 9;
 			if (intStartPos > 8)
 			{
