@@ -55,6 +55,8 @@ namespace Fomm.Games.Fallout3
 			Set<string> setPluginFilenames = new Set<string>(StringComparer.InvariantCultureIgnoreCase);
 			foreach (string strPlugin in p_setActivePlugins)
 				setPluginFilenames.Add(Path.GetFileName(strPlugin));
+			if (!Directory.Exists(Path.GetDirectoryName(strPluginsFilePath)))
+				Directory.CreateDirectory(Path.GetDirectoryName(strPluginsFilePath));
 			File.WriteAllLines(strPluginsFilePath, setPluginFilenames.ToArray(), System.Text.Encoding.Default);
 		}
 
