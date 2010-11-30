@@ -60,7 +60,7 @@ namespace Fomm.PackageManager
 				Program.GameMode.InstallInfoDirectory,
 				Program.GameMode.PluginsPath
             });
-			
+
 			List<string> lstPaths = new List<string>(Program.GameMode.SettingsFiles.Values);
 			lstPaths.AddRange(Program.GameMode.AdditionalPaths.Values);
 			fipFilePermission.AddPathList(FileIOPermissionAccess.AllAccess, lstPaths.ToArray());
@@ -126,6 +126,18 @@ namespace Fomm.PackageManager
 				if (permissions == null)
 					throw new InvalidOperationException("You must call Init() before using the permissions manager.");
 				return permissions;
+			}
+		}
+
+		/// <summary>
+		/// Gets whether or not the permissions manager has been initialized.
+		/// </summary>
+		/// <value>Whether or not the permissions manager has been initialized.</value>
+		internal static bool IsInitialized
+		{
+			get
+			{
+				return (permissions != null);
 			}
 		}
 	}

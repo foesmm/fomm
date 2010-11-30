@@ -634,7 +634,8 @@ namespace Fomm
 #endif
 			if (ex != null)
 			{
-				PermissionsManager.CurrentPermissions.Assert();
+				if (PermissionsManager.IsInitialized)
+					PermissionsManager.CurrentPermissions.Assert();
 				string msg = DateTime.Now.ToLongDateString() + " - " + DateTime.Now.ToLongTimeString() + Environment.NewLine +
 					"Fomm " + Version + (monoMode ? " (Mono)" : "") + Environment.NewLine + "OS version: " + Environment.OSVersion.ToString() +
 					Environment.NewLine + Environment.NewLine + ex.ToString() + Environment.NewLine;
