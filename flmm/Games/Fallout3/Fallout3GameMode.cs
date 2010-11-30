@@ -493,13 +493,43 @@ namespace Fomm.Games.Fallout3
 		/// </summary>
 		public Fallout3GameMode()
 		{
+#if TRACE
+			Trace.Write("Creating Settings File Set...");
+#endif
 			m_sfsSettingsFiles = CreateSettingsFileSet();
+#if TRACE
+			Trace.WriteLine("Done.");
+			Trace.Write("Creating Plugin Manager...");
+#endif
 			m_pmgPluginManager = CreatePluginManager();
+#if TRACE
+			Trace.WriteLine("Done.");
+			Trace.Write("Setting up Plugin Format Providers...");
+#endif
 			SetupPluginFormatProviders();
+#if TRACE
+			Trace.WriteLine("Done.");
+			Trace.Write("Setting up paths...");
+#endif
 			SetupPaths();
+#if TRACE
+			Trace.WriteLine("Done.");
+			Trace.Write("Setting up Settings Pages...");
+#endif
 			SetupSettingsPages();
+#if TRACE
+			Trace.WriteLine("Done.");
+			Trace.Write("Setting up Tools...");
+#endif
 			SetupTools();
+#if TRACE
+			Trace.WriteLine("Done.");
+			Trace.Write("Setting up Launch Commands...");
+#endif
 			SetupLaunchCommands();
+#if TRACE
+			Trace.WriteLine("Done.");
+#endif
 		}
 
 		#endregion

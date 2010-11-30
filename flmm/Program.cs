@@ -230,6 +230,9 @@ namespace Fomm
 				return;
 			}
 
+#if TRACE
+			Trace.Write("Determining Game Mode: ");
+#endif
 			SupportedGameModes sgmSelectedGame = Properties.Settings.Default.rememberedGameMode;
 			bool booChooseGame = true;
 			if ((args.Length > 0) && args[0].StartsWith("-"))
@@ -239,6 +242,9 @@ namespace Fomm
 					case "-game":
 						try
 						{
+#if TRACE
+							Trace.Write("From Command line: " + args[1] + " => ");
+#endif
 							sgmSelectedGame = (SupportedGameModes)Enum.Parse(typeof(SupportedGameModes), args[1], true);
 							booChooseGame = false;
 						}
@@ -254,10 +260,18 @@ namespace Fomm
 			{
 				if (booChangeGameMode || (booChooseGame && !Properties.Settings.Default.rememberGameMode))
 				{
+#if TRACE
+					Trace.Write("From Selection Form: ");
+#endif
 					GameModeSelector gmsSelector = new GameModeSelector();
 					gmsSelector.ShowDialog();
 					sgmSelectedGame = gmsSelector.SelectedGameMode;
 				}
+#if TRACE
+				Trace.WriteLine(sgmSelectedGame.ToString());
+				Trace.WriteLine("Initializing Game Mode...");
+				Trace.Indent();
+#endif
 				switch (sgmSelectedGame)
 				{
 					case SupportedGameModes.Fallout3:
@@ -271,7 +285,9 @@ namespace Fomm
 						return;
 				}
 #if TRACE
-					Trace.WriteLine("We are managing mods for: " + GameMode.GameName);
+				Trace.Unindent();
+				Trace.WriteLine("Done Game Mode Initialization.");
+				Trace.WriteLine("We are managing mods for: " + GameMode.GameName);
 #endif
 				Mutex mutex;
 				bool booNewMutex;
@@ -631,7 +647,7 @@ namespace Fomm
 				while (ex.InnerException != null)
 				{
 					ex = ex.InnerException;
-					msg += ex.ToString() + Environment.NewLine;
+					msg += "Inner Exception:" + Environment.NewLine + ex.ToString() + Environment.NewLine;
 				}
 				string strDumpFile = Path.Combine(LocalApplicationDataPath, "crashdump.txt");
 				File.WriteAllText(strDumpFile, msg);
@@ -650,11 +666,11 @@ namespace Fomm
 				Trace.WriteLine("File Name:\t" + biex.FileName);
 				Trace.WriteLine("Fusion Log:\t" + biex.FusionLog);
 			}
-			if (e.InnerException != null)
+			while (e.InnerException != null)
 			{
-				Trace.WriteLine("Inner Exception: ");
-				Trace.WriteLine(e.InnerException.Message);
-				Trace.WriteLine(e.InnerException.ToString());
+				e = e.InnerException;
+				Trace.WriteLine("Inner Exception:");
+				Trace.WriteLine(e.ToString());
 			}
 		}
 #endif
