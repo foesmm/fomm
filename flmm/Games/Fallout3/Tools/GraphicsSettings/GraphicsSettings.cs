@@ -723,21 +723,27 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
 			private void SaveGeneralValues(GraphicsSettings p_gstSettings)
 			{
 				//aspect ratios
-				SaveValue("Launcher", "uLastAspectRatio", ((ComboBoxItem)p_gstSettings.cbxAspectRatio.SelectedItem).ValueAsString);
+				if (p_gstSettings.cbxAspectRatio.SelectedItem != null)
+					SaveValue("Launcher", "uLastAspectRatio", ((ComboBoxItem)p_gstSettings.cbxAspectRatio.SelectedItem).ValueAsString);
 
 				//screen resolutions
 				if (p_gstSettings.cbxResolution.SelectedItem != null)
 				{
 					Int32[] intResolution = (Int32[])((ComboBoxItem)(p_gstSettings.cbxResolution.SelectedItem)).Value;
-					SaveValue("Display", "iSize W", intResolution[0].ToString());
-					SaveValue("Display", "iSize H", intResolution[1].ToString());
+					if (intResolution != null)
+					{
+						SaveValue("Display", "iSize W", intResolution[0].ToString());
+						SaveValue("Display", "iSize H", intResolution[1].ToString());
+					}
 				}
 
 				//antialiasing
-				SaveValue("Display", "iMultiSample", ((ComboBoxItem)(p_gstSettings.cbxAntialiasing.SelectedItem)).ValueAsString);
+				if (p_gstSettings.cbxAntialiasing.SelectedItem != null)
+					SaveValue("Display", "iMultiSample", ((ComboBoxItem)(p_gstSettings.cbxAntialiasing.SelectedItem)).ValueAsString);
 
 				//ansio
-				SaveValue("Display", "iMaxAnisotropy", ((ComboBoxItem)(p_gstSettings.cbxAnisotropic.SelectedItem)).ValueAsString);
+				if (p_gstSettings.cbxAnisotropic.SelectedItem != null)
+					SaveValue("Display", "iMaxAnisotropy", ((ComboBoxItem)(p_gstSettings.cbxAnisotropic.SelectedItem)).ValueAsString);
 
 				//windowed
 				SaveValue("Display", "bFull Screen", (p_gstSettings.ckbWindowed.Checked ? "0" : "1"));
@@ -924,7 +930,7 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
 
 				TransactionalFileManager.Snapshot(((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOPrefsIniPath);
 				Fallout3Script.OverwriteAllIni = true;
-					
+
 				m_booChanged = false;
 				MergeModule = new InstallLogMergeModule();
 				SaveGeneralValues(m_gstSettings);
