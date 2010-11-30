@@ -807,13 +807,32 @@ namespace Fomm.PackageManager
 		/// <param name="p_strSettingsFileName">The name of the settings file to unedit.</param>
 		/// <param name="p_strSection">The section in the Ini file to unedit.</param>
 		/// <param name="p_strKey">The key in the Ini file to unedit.</param>
+		/// <seealso cref="UneditIni(string p_strFomodBaseName, string p_strSettingsFileName, string p_strSection, string p_strKey)"/>
 		public void UneditIni(string p_strSettingsFileName, string p_strSection, string p_strKey)
+		{
+			UneditIni(Fomod.BaseName, p_strSettingsFileName, p_strSection, p_strKey);
+		}
+
+		/// <summary>
+		/// Undoes the edit made to the spcified key.
+		/// </summary>
+		/// <remarks>
+		///  This variant of <see cref="UneditIni"/> is for use when uninstalling a file
+		/// for a mod whose FOMod is missing.
+		/// </remarks>
+		/// <param name="p_strFomodBaseName">The base name of the <see cref="fomod"/> whose file
+		/// is being uninstalled.</param>
+		/// <param name="p_strSettingsFileName">The name of the settings file to unedit.</param>
+		/// <param name="p_strSection">The section in the Ini file to unedit.</param>
+		/// <param name="p_strKey">The key in the Ini file to unedit.</param>
+		/// <seealso cref="UneditIni(string p_strSettingsFileName, string p_strSection, string p_strKey)"/>
+		public void UneditIni(string p_strFomodBaseName, string p_strSettingsFileName, string p_strSection, string p_strKey)
 		{
 			string strLoweredFile = p_strSettingsFileName.ToLowerInvariant();
 			string strLoweredSection = p_strSection.ToLowerInvariant();
 			string strLoweredKey = p_strKey.ToLowerInvariant();
 
-			string strKey = InstallLog.Current.GetModKey(Fomod.BaseName);
+			string strKey = InstallLog.Current.GetModKey(p_strFomodBaseName);
 			string strCurrentOwnerKey = InstallLog.Current.GetCurrentIniEditorModKey(strLoweredFile, strLoweredSection, strLoweredKey);
 			//if we didn't edit the value, then leave it alone
 			if (!strKey.Equals(strCurrentOwnerKey))
@@ -841,7 +860,24 @@ namespace Fomm.PackageManager
 		/// Undoes the edit made to the spcified game-specific value.
 		/// </summary>
 		/// <param name="p_strValueKey">The key of the game-specific value to unedit.</param>
-		public abstract bool UneditGameSpecificValue(string p_strValueKey);
+		/// <seealso cref="UneditGameSpecificValue(string p_strFomodBaseName, string p_strValueKey)"/>
+		public bool UneditGameSpecificValue(string p_strValueKey)
+		{
+			return UneditGameSpecificValue(Fomod.BaseName, p_strValueKey);
+		}
+
+		/// <summary>
+		/// Undoes the edit made to the spcified game-specific value.
+		/// </summary>
+		/// <remarks>
+		///  This variant of <see cref="UneditGameSpecificValue"/> is for use when uninstalling a file
+		/// for a mod whose FOMod is missing.
+		/// </remarks>
+		/// <param name="p_strFomodBaseName">The base name of the <see cref="fomod"/> whose file
+		/// is being uninstalled.</param>
+		/// <param name="p_strValueKey">The key of the game-specific value to unedit.</param>
+		/// <seealso cref="UneditGameSpecificValue(string p_strValueKey)"/>
+		public abstract bool UneditGameSpecificValue(string p_strFomodBaseName, string p_strValueKey);
 
 		#endregion
 

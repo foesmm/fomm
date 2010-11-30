@@ -225,7 +225,10 @@ namespace Fomm.PackageManager
 			{
 				if (m_bwdProgress.Cancelled())
 					return;
-				Script.UneditIni(iniEdit.File, iniEdit.Section, iniEdit.Key);
+				if (Fomod == null)
+					Script.UneditIni(m_strBaseName, iniEdit.File, iniEdit.Section, iniEdit.Key);
+				else
+					Script.UneditIni(iniEdit.File, iniEdit.Section, iniEdit.Key);
 				m_bwdProgress.StepItemProgress();
 				m_bwdProgress.StepOverallProgress();
 			}
@@ -236,7 +239,10 @@ namespace Fomm.PackageManager
 			{
 				if (m_bwdProgress.Cancelled())
 					return;
-				Script.UneditGameSpecificValue(gsvEdit.Key);
+				if (Fomod == null)
+					Script.UneditGameSpecificValue(m_strBaseName, gsvEdit.Key);
+				else
+					Script.UneditGameSpecificValue(gsvEdit.Key);
 				m_bwdProgress.StepItemProgress();
 				m_bwdProgress.StepOverallProgress();
 			}

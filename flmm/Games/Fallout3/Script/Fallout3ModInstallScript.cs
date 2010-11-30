@@ -332,8 +332,10 @@ namespace Fomm.Games.Fallout3.Script
 		/// <summary>
 		/// Undoes the edit made to the spcified game-specific value.
 		/// </summary>
+		/// <param name="p_strFomodBaseName">The base name of the <see cref="fomod"/> whose file
+		/// is being uninstalled.</param>
 		/// <param name="p_strValueKey">The key of the game-specific value to unedit.</param>
-		public override bool UneditGameSpecificValue(string p_strValueKey)
+		public override bool UneditGameSpecificValue(string p_strFomodBaseName, string p_strValueKey)
 		{
 			string[] strKey = p_strValueKey.Split(new char[] { ':' }, 2);
 			switch (strKey[0])
