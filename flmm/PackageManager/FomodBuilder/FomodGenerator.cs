@@ -231,7 +231,7 @@ namespace Fomm.PackageManager.FomodBuilder
 			}
 			szcCompressor.CompressionMode = CompressionMode.Create;
 			szcCompressor.FileCompressionStarted += new EventHandler<FileNameEventArgs>(FileCompressionStarted);
-			szcCompressor.FileCompressionFinished += new EventHandler(FileCompressionFinished);
+			szcCompressor.FileCompressionFinished += new EventHandler<EventArgs>(FileCompressionFinished);
 			szcCompressor.CompressDirectory(p_strFomodFolder, p_strPackedFomodPath);
 		}
 
