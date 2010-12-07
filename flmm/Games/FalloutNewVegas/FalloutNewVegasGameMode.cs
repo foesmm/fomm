@@ -278,7 +278,8 @@ namespace Fomm.Games.FalloutNewVegas
 		protected override void SetupLaunchCommands()
 		{
 			GameLaunchCommands.Add(new Command<MainForm>("Launch Fallout: New Vegas", "Launches plain Fallout: New Vegas.", LaunchFalloutNVPlain));
-			GameLaunchCommands.Add(new Command<MainForm>("Launch NVSE", "Launches Fallout: New Vegas with NVSE.", LaunchFalloutNVNVSE));
+			if (File.Exists("nvse_loader.exe"))
+				GameLaunchCommands.Add(new Command<MainForm>("Launch NVSE", "Launches Fallout: New Vegas with NVSE.", LaunchFalloutNVNVSE));
 			GameLaunchCommands.Add(new Command<MainForm>("Launch Custom Fallout: New Vegas", "Launches Fallout: New Vegas with custom command.", LaunchFalloutNVCustom));
 		}
 
@@ -430,15 +431,15 @@ namespace Fomm.Games.FalloutNewVegas
 #if TRACE
 						Trace.Write("Found FO:NV Id (" + rgxAppId.Match(strInstallScript).Groups[1].Value + "): ");
 #endif
-						Int32 intAppId = -1;
-						if (Int32.TryParse(rgxAppId.Match(strInstallScript).Groups[1].Value, out intAppId))
-						{
+					Int32 intAppId = -1;
+					if (Int32.TryParse(rgxAppId.Match(strInstallScript).Groups[1].Value, out intAppId))
+					{
 #if TRACE
 							Trace.WriteLine(intAppId.ToString());
 							Trace.Unindent();
 #endif
-							return intAppId;
-						}
+						return intAppId;
+					}
 #if TRACE
 						Trace.WriteLine("Unparsable");
 #endif

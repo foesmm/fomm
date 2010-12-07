@@ -634,7 +634,8 @@ namespace Fomm.Games.Fallout3
 		protected virtual void SetupLaunchCommands()
 		{
 			m_lstGameLaunchCommands.Add(new Command<MainForm>("Launch Fallout 3", "Launches plain Fallout 3.", LaunchFallout3Plain));
-			m_lstGameLaunchCommands.Add(new Command<MainForm>("Launch FOSE", "Launches Fallout 3 with FOSE.", LaunchFallout3FOSE));
+			if (File.Exists("fose_loader.exe"))
+				m_lstGameLaunchCommands.Add(new Command<MainForm>("Launch FOSE", "Launches Fallout 3 with FOSE.", LaunchFallout3FOSE));
 			m_lstGameLaunchCommands.Add(new Command<MainForm>("Launch Custom Fallout 3", "Launches Fallout 3 with custom command.", LaunchFallout3Custom));
 		}
 
