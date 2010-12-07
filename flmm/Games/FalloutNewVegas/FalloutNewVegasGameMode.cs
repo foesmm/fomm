@@ -109,9 +109,12 @@ namespace Fomm.Games.FalloutNewVegas
 		{
 			get
 			{
+#if TRACE
+				Trace.WriteLine("NVSE Path: " + Path.GetFullPath("nvse_loader.exe") + " => " + File.Exists("nvse_loader.exe"));
+#endif
 				if (String.IsNullOrEmpty(Properties.Settings.Default.falloutNewVegasLaunchCommand) && File.Exists("nvse_loader.exe"))
-					return new Command<MainForm>("Launch NVSE", "Launches Fallout: New Vegas using FOSE.", LaunchGame);
-				return new Command<MainForm>("Launch Fallout: NV", "Launches Fallout: New Vegas using FOSE.", LaunchGame);
+					return new Command<MainForm>("Launch NVSE", "Launches Fallout: New Vegas using NVSE.", LaunchGame);
+				return new Command<MainForm>("Launch Fallout: NV", "Launches Fallout: New Vegas using NVSE.", LaunchGame);
 			}
 		}
 
