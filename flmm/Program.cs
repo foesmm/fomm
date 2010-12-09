@@ -507,8 +507,9 @@ namespace Fomm
 					try
 					{
 #if TRACE
-							Trace.WriteLine("Done.");
-							Trace.Write("Scanning for upgraded FOMODs...");
+						Trace.WriteLine("Done.");
+						Trace.WriteLine("Scanning for upgraded FOMODs...");
+						Trace.Indent();
 #endif
 						//check to see if any fomod versions have changed, and whether to upgrade them
 						UpgradeScanner upsScanner = new UpgradeScanner();
@@ -517,16 +518,17 @@ namespace Fomm
 					catch (Exception e)
 					{
 #if TRACE
-							TraceException(e);
+						TraceException(e);
 #endif
 						HandleException(e, "An error occurred while scanning your fomods for new versions.", "Scan Error");
 						return;
 					}
 
 #if TRACE
-						Trace.WriteLine("Done.");
-						Trace.WriteLine("Running Application.");
-						Trace.Flush();
+					Trace.Unindent();
+					Trace.WriteLine("Done.");
+					Trace.WriteLine("Running Application.");
+					Trace.Flush();
 #endif
 					if (booChangeGameMode || !GameMode.HandleInAppArguments(args))
 					{

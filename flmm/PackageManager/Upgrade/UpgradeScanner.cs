@@ -4,6 +4,9 @@ using System.Text;
 using System.IO;
 using System.Windows.Forms;
 using Fomm.PackageManager.ModInstallLog;
+#if TRACE
+using System.Diagnostics;
+#endif
 
 namespace Fomm.PackageManager.Upgrade
 {
@@ -30,6 +33,9 @@ namespace Fomm.PackageManager.Upgrade
 			List<fomod> lstModsToReplace = new List<fomod>();
 			foreach (FomodInfo fifMod in lstMods)
 			{
+#if TRACE
+				Trace.WriteLine("Scanning " + Path.Combine(Program.GameMode.ModDirectory, fifMod.BaseName + ".fomod"));
+#endif
 				fomodMod = new fomod(Path.Combine(Program.GameMode.ModDirectory, fifMod.BaseName + ".fomod"));
 				if (!fomodMod.HumanReadableVersion.Equals(fifMod.Version))
 				{

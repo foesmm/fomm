@@ -185,7 +185,7 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
 			for (int i = 0; i < plugins.Length; i++) lplugins[i] = plugins[i].ToLowerInvariant();
 			double latestPosition = 0;
 			sb.AppendLine("Mod load order report");
-			if (duplicateCount > 0) sb.AppendLine("! Warning: current load order template contains " + duplicateCount + " duplicate entries");
+			if (duplicateCount > 0) sb.AppendLine("! Warning: current load order template contains " + duplicateCount + " duplicate entries. This warning can be ignored.");
 			sb.AppendLine();
 			bool LoadOrderWrong = false;
 			for (int i = 0; i < plugins.Length; i++)
