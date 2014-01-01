@@ -1,4 +1,5 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -12,13 +13,13 @@
     <ApplicationIcon>Resources\fomm02.ico</ApplicationIcon>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
-    <OldToolsVersion>2.0</OldToolsVersion>
+    <OldToolsVersion>3.5</OldToolsVersion>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <IsWebBootstrapper>false</IsWebBootstrapper>
-    <TargetFrameworkSubset>
-    </TargetFrameworkSubset>
+    <StartupObject>
+    </StartupObject>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -33,8 +34,6 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <StartupObject>
-    </StartupObject>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -70,11 +69,11 @@
   <ItemGroup>
     <Reference Include="ICSharpCode.TextEditor, Version=3.0.0.3437, Culture=neutral, PublicKeyToken=4d61825e8dd49f1a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\ICSharpCode.TextEditor.dll</HintPath>
+      <HintPath>..\externals\ICSharpCode.TextEditor.dll</HintPath>
     </Reference>
     <Reference Include="SevenZipSharp, Version=0.60.3695.26174, Culture=neutral, PublicKeyToken=20de82c62b055c88, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\SevenZipSharp.dll</HintPath>
+      <HintPath>..\externals\SevenZipSharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -412,12 +411,6 @@
     <Compile Include="PackageManager\ModInstallLog\InstallLogBase.cs" />
     <Compile Include="InstallLogUpgraders\InstallLogUpgrader.cs" />
     <Compile Include="PackageManager\ModInstallLog\InstallLogException.cs" />
-    <Compile Include="PackageManager\LoginForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PackageManager\LoginForm.Designer.cs">
-      <DependentUpon>LoginForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="PackageManager\ModInstaller.cs" />
     <Compile Include="PackageManager\ModInstallLog\InstallLogMergeModule.cs" />
     <Compile Include="PackageManager\ModInstallScript.cs" />
@@ -697,9 +690,6 @@
       <SubType>Designer</SubType>
       <DependentUpon>InfoEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PackageManager\LoginForm.resx">
-      <DependentUpon>LoginForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="PackageManager\SelectForm.resx">
       <DependentUpon>SelectForm.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -964,7 +954,7 @@
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>
-      <ProductName>.NET Framework Client Profile</ProductName>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
@@ -1005,10 +995,6 @@
     <ProjectReference Include="..\Transactions\Transactions.csproj">
       <Project>{1C72A5C2-0BA6-44AD-A4ED-0F3FAB9C1E54}</Project>
       <Name>Transactions</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\WebsiteAPIs\WebsiteAPIs.csproj">
-      <Project>{C972F01F-2D05-4587-8E3B-53A18B9E1705}</Project>
-      <Name>WebsiteAPIs</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

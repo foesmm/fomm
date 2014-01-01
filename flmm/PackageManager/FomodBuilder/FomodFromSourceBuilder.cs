@@ -9,7 +9,6 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Text.RegularExpressions;
 using GeMod.Interface;
-using WebsiteAPIs;
 
 namespace Fomm.PackageManager.FomodBuilder
 {
@@ -98,7 +97,7 @@ namespace Fomm.PackageManager.FomodBuilder
 		/// <param name="p_strPath">The path to the source from which to create the fomod.</param>
 		/// <param name="p_nxaNexus">An initialized website API from which to retireve mod info.</param>
 		/// <returns>The path to the new fomod if it was successfully built; <lang cref="null"/> otherwise.</returns>
-		public IList<string> BuildFomodFromSource(string p_strPath, NexusAPI p_nxaNexus)
+		public IList<string> BuildFomodFromSource(string p_strPath)
 		{
 			string strSource = p_strPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
 
@@ -193,21 +192,7 @@ namespace Fomm.PackageManager.FomodBuilder
 					lstPackedFOModPaths.Add(strPackedFomodPath);
 			}
 
-			ModInfo mifInfo = null;
-			if (Properties.Settings.Default.addMissingInfoToMods)
-			{
-				mifInfo = p_nxaNexus.GetFileInfoGuessVersion(strSource, true);
-				if (mifInfo != null)
-				{
-					foreach (string strFomod in lstPackedFOModPaths)
-					{
-						fomod fomodMod = new fomod(strFomod);
-						fomodMod.SetMissingInfo(mifInfo);
-					}
-				}
-			}
-
-			return lstPackedFOModPaths;
+      return lstPackedFOModPaths;
 		}
 
 		/// <summary>

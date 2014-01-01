@@ -1,0 +1,32 @@
+﻿Build started 6/3/2013 21:00:06.
+     1>Project "C:\projects\nvmm\xlive\xlive.vcxproj" on node 2 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating "Trace\xlive.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         All outputs are up-to-date.
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\projects\nvmm\Trace\fomm\xlive.dll" /INCREMENTAL:NO /NOLOGO kernel32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /NODEFAULTLIB /DEF:"exports.def" /MANIFEST:NO /PDB:"C:\projects\nvmm\Trace\fomm\xlive.pdb" /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /LTCG /TLBID:1 /ENTRY:"MyMain" /DYNAMICBASE:NO /IMPLIB:"C:\projects\nvmm\Trace\fomm\xlive.lib" /MACHINE:X86 /DLL Trace\codepatches.obj
+         Trace\d3dx.obj
+         Trace\SafeWrite.obj
+         Trace\xlive.obj
+         Trace\Main.obj
+            Creating library C:\projects\nvmm\Trace\fomm\xlive.lib and object C:\projects\nvmm\Trace\fomm\xlive.exp
+         Generating code
+         Finished generating code
+         xlive.vcxproj -> C:\projects\nvmm\Trace\fomm\xlive.dll
+       PostBuildEvent:
+         copy "C:\projects\nvmm\Trace\fomm\xlive.dll" "C:\games\fallout3\xlive.dll"
+         del "C:\projects\nvmm\Trace\fomm\xlive.exp"
+         del "C:\projects\nvmm\Trace\fomm\xlive.lib"
+         
+         :VCEnd
+         The system cannot find the path specified.
+                 0 file(s) copied.
+       FinalizeBuildStatus:
+         Deleting file "Trace\xlive.unsuccessfulbuild".
+         Touching "Trace\xlive.lastbuildstate".
+     1>Done Building Project "C:\projects\nvmm\xlive\xlive.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.26

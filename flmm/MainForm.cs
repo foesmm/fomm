@@ -402,13 +402,11 @@ namespace Fomm
 				return;
 			}
 			((Command<MainForm>)((Button)sender).Tag).Execute(this);
-			//Close();
 		}
 
 		private void bHelp_Click(object sender, EventArgs e)
 		{
 			System.Diagnostics.Process.Start(Path.Combine(Program.ProgrammeInfoDirectory, "fomm.chm"));
-			//System.Diagnostics.Process.Start(@"http://fomm.wiki.sourceforge.net/");
 		}
 		#endregion
 
@@ -693,48 +691,6 @@ namespace Fomm
 		private void closeToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Close();
-		}
-
-		private void visitForumsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			System.Diagnostics.Process.Start("http://sourceforge.net/projects/fomm/forums");
-		}
-
-		private void checkForUpdateToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			bool booWasUpdate = Program.GameMode.CheckForUpdates();
-
-			DateTime dteLastUpdateCheck = Properties.Settings.Default.LastUpdateCheck;
-			if (!booWasUpdate && dteLastUpdateCheck + TimeSpan.FromHours(2) > DateTime.Now)
-			{
-				MessageBox.Show("No newer updates available");
-				return;
-			}
-
-			//check for new FOMM
-			Regex rgxVersion = new Regex(@"Download Now!</strong>\s+fomm([\d\.]+)\.exe", System.Text.RegularExpressions.RegexOptions.Singleline);
-			string strVersionPage = null;
-			using (System.Net.WebClient wclGetter = new System.Net.WebClient())
-			{
-				strVersionPage = wclGetter.DownloadString("http://sf.net/projects/fomm");
-			}
-			string strWebVersion = rgxVersion.Match(strVersionPage).Groups[1].Value.Trim();
-			if (new Version(strWebVersion + ".0") > Program.MVersion)
-			{
-				if (MessageBox.Show("A new version of fomm is available: " + strWebVersion +
-					"\nDo you wish to download?", "Message", MessageBoxButtons.YesNo) == DialogResult.Yes)
-				{
-					System.Diagnostics.Process.Start("http://sf.net/projects/fomm");
-				}
-				booWasUpdate = true;
-			}
-			
-			if (!booWasUpdate)
-			{
-				MessageBox.Show("No newer updates available");
-				Properties.Settings.Default.LastUpdateCheck = DateTime.Now;
-				Properties.Settings.Default.Save();
-			}
 		}
 
 		/// <summary>

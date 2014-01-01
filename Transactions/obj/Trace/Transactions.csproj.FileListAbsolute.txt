@@ -1,0 +1,6 @@
+C:\projects\nvmm\Transactions\bin\Trace\fomm.Transactions.dll.config
+C:\projects\nvmm\Transactions\bin\Trace\fomm.Transactions.dll
+C:\projects\nvmm\Transactions\bin\Trace\fomm.Transactions.pdb
+C:\projects\nvmm\Transactions\obj\Trace\ResolveAssemblyReference.cache
+C:\projects\nvmm\Transactions\obj\Trace\fomm.Transactions.dll
+C:\projects\nvmm\Transactions\obj\Trace\fomm.Transactions.pdb

@@ -4,7 +4,6 @@ using System.Windows.Forms;
 using System.IO;
 using Fomm.PackageManager.Upgrade;
 using SevenZip;
-using WebsiteAPIs;
 using System.Text.RegularExpressions;
 using System.Drawing;
 using System.Diagnostics;
@@ -27,7 +26,6 @@ namespace Fomm.PackageManager
 		private readonly MainForm mf;
 		private BackgroundWorkerProgressDialog m_bwdProgress = null;
 		private string m_strLastFromFolderPath = null;
-		private NexusAPI m_nxaNexus = null;
 		private Regex m_rgxNexusFileId = new Regex(@"nexus\.com/downloads/file\.php\?id=(\d+)");
 		private Dictionary<string, string> m_dicWebVersions = new Dictionary<string, string>();
 
@@ -116,28 +114,6 @@ namespace Fomm.PackageManager
 
 		private void AddFomodToList(fomod mod)
 		{
-			if ((m_nxaNexus != null) && !String.IsNullOrEmpty(mod.Website) && m_rgxNexusFileId.IsMatch(mod.Website))
-			{
-				if (!m_dicWebVersions.ContainsKey(mod.BaseName))
-				{
-					string strFileId = m_rgxNexusFileId.Match(mod.Website).Groups[1].Value.Trim();
-					Int32 intFileId = -1;
-					try
-					{
-						if (Int32.TryParse(strFileId, out intFileId))
-							m_nxaNexus.GetModInfoAsync(intFileId, false, Nexus_GotFileVersion, mod.BaseName);
-					}
-					catch (Exception e)
-					{
-#if TRACE
-						Trace.WriteLine("Couldn't get version from " + mod.Website);
-						Program.TraceException(e);
-						Trace.Flush();
-#endif
-					}
-				}
-			}
-
 			string strWebVersion = "NA";
 			m_dicWebVersions.TryGetValue(mod.BaseName, out strWebVersion);
 
@@ -293,37 +269,6 @@ namespace Fomm.PackageManager
 				}
 				Properties.Settings.Default.addMissingInfoToModsInitialized = true;
 				Properties.Settings.Default.Save();
-			}
-			if (Properties.Settings.Default.checkForNewModVersions || Properties.Settings.Default.addMissingInfoToMods)
-			{
-				if (Program.GameMode.HasNexusSite)
-				{
-					string strNexusLoginKey = Properties.Settings.Default.nexusLoginKey;
-					if (String.IsNullOrEmpty(strNexusLoginKey))
-					{
-						string strMessage = "You must log into the Nexus website.";
-						LoginForm lgfLogin = new LoginForm(strMessage, Properties.Settings.Default.nexusUsername);
-						while (lgfLogin.ShowDialog(this) != DialogResult.Cancel)
-						{
-							Properties.Settings.Default.nexusUsername = lgfLogin.Username;
-							m_nxaNexus = new NexusAPI(Program.GameMode.NexusSite, lgfLogin.Username, lgfLogin.Password);
-							if (!m_nxaNexus.Login())
-							{
-								lgfLogin.ErrorMessage = "The given login information is invalid.";
-								continue;
-							}
-							if (lgfLogin.StayLoggedIn)
-							{
-								strNexusLoginKey = m_nxaNexus.LoginKey;
-								Properties.Settings.Default.nexusLoginKey = strNexusLoginKey;
-							}
-							Properties.Settings.Default.Save();
-							break;
-						}
-						return;
-					}
-					m_nxaNexus = new NexusAPI(Program.GameMode.NexusSite, strNexusLoginKey);
-				}
 			}
 		}
 
@@ -533,7 +478,7 @@ namespace Fomm.PackageManager
 		public void AddNewFomod(string p_strPath)
 		{
 			FomodFromSourceBuilder ffbBuilder = new FomodFromSourceBuilder();
-			IList<string> lstFomodPaths = ffbBuilder.BuildFomodFromSource(p_strPath, m_nxaNexus);
+			IList<string> lstFomodPaths = ffbBuilder.BuildFomodFromSource(p_strPath);
 			foreach (string strFomodPath in lstFomodPaths)
 				AddFomod(strFomodPath, true);
 		}

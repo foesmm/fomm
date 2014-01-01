@@ -1,0 +1,21 @@
+﻿Build started 12/29/2013 10:56:58.
+     1>Project "C:\projects\psmm\ShaderDisasm\ShaderDisasm.vcxproj" on node 3 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating "Release\ShaderDisasm.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         All outputs are up-to-date.
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\projects\psmm\Release\ShaderDisasm.dll" /INCREMENTAL:NO /NOLOGO d3d9.lib d3dx9.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /DEF:"exports.def" /MANIFEST:NO /PDB:"C:\projects\psmm\Release\ShaderDisasm.pdb" /SUBSYSTEM:CONSOLE /OPT:REF /OPT:ICF /LTCG /TLBID:1 /NOENTRY /DYNAMICBASE:NO /IMPLIB:"C:\projects\psmm\Release\ShaderDisasm.lib" /MACHINE:X86 /DLL Release\ddsShrinker.obj
+         Release\ShaderDisasm.obj
+            Creating library C:\projects\psmm\Release\ShaderDisasm.lib and object C:\projects\psmm\Release\ShaderDisasm.exp
+         Generating code
+         Finished generating code
+         ShaderDisasm.vcxproj -> C:\projects\psmm\Release\ShaderDisasm.dll
+       FinalizeBuildStatus:
+         Deleting file "Release\ShaderDisasm.unsuccessfulbuild".
+         Touching "Release\ShaderDisasm.lastbuildstate".
+     1>Done Building Project "C:\projects\psmm\ShaderDisasm\ShaderDisasm.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.50

@@ -13,7 +13,6 @@ using Fomm.PackageManager.XmlConfiguredInstall.Parsers;
 using Fomm.Games.FalloutNewVegas.Script.XmlConfiguredInstall.Parsers;
 using Fomm.Games.FalloutNewVegas.Script;
 using Fomm.Games.Fallout3;
-using WebsiteAPIs;
 using Fomm.Games.FalloutNewVegas.PluginFormatProviders;
 using Microsoft.Win32;
 using Fomm.Commands;
@@ -59,18 +58,6 @@ namespace Fomm.Games.FalloutNewVegas
 
 		#region Properties
 
-		/// <summary>
-		/// Gets the nexus site for this game.
-		/// </summary>
-		/// <value>The nexus site for this game.</value>
-		/// <seealso cref="HasNexusSite"/>
-		public override NexusSite NexusSite
-		{
-			get
-			{
-				return NexusSite.FalloutNV;
-			}
-		}
 
 		/// <summary>
 		/// Gets the name of the game whose plugins are being managed.
@@ -457,7 +444,7 @@ namespace Fomm.Games.FalloutNewVegas
 
 		#endregion
 
-		/// <summary>
+    /// <summary>
 		/// Launches the game with a custom command.
 		/// </summary>
 		/// <param name="p_objCommand">The command that is executing.</param>
@@ -465,38 +452,39 @@ namespace Fomm.Games.FalloutNewVegas
 		/// main mod management form.</param>
 		public void LaunchFalloutNVCustom(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
 		{
-			if (p_eeaArguments.Argument.HasOpenUtilityWindows)
-			{
-				MessageBox.Show("Please close all utility windows before launching Fallout");
-				return;
-			}
-			string command = Properties.Settings.Default.falloutNewVegasLaunchCommand;
-			string args = Properties.Settings.Default.falloutNewVegasLaunchCommandArgs;
-			if (String.IsNullOrEmpty(command))
-			{
-				MessageBox.Show("No custom launch command has been set", "Error");
-				return;
-			}
-			//this is only required if we are setting environment variables
-			//StartSteam(p_eeaArguments.Argument);
-			try
-			{
-				System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
-				psi.Arguments = args;
-				psi.FileName = command;
-				psi.WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath(command));
-				if (System.Diagnostics.Process.Start(psi) == null)
-				{
-					MessageBox.Show("Failed to launch '" + command + "'");
-					return;
-				}
-			}
-			catch (Exception ex)
-			{
-				MessageBox.Show("Failed to launch '" + command + "'\n" + ex.Message);
-				return;
-			}
-			p_eeaArguments.Argument.Close();
+      if (PrelaunchCheckOrder())
+      {
+        if (p_eeaArguments.Argument.HasOpenUtilityWindows)
+        {
+          MessageBox.Show("Please close all utility windows before launching Fallout");
+          return;
+        }
+        string command = Properties.Settings.Default.falloutNewVegasLaunchCommand;
+        string args = Properties.Settings.Default.falloutNewVegasLaunchCommandArgs;
+        if (String.IsNullOrEmpty(command))
+        {
+          MessageBox.Show("No custom launch command has been set", "Error");
+          return;
+        }
+
+        try
+        {
+          System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
+          psi.Arguments = args;
+          psi.FileName = command;
+          psi.WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath(command));
+          if (System.Diagnostics.Process.Start(psi) == null)
+          {
+            MessageBox.Show("Failed to launch '" + command + "'");
+            return;
+          }
+        }
+        catch (Exception ex)
+        {
+          MessageBox.Show("Failed to launch '" + command + "'\n" + ex.Message);
+          return;
+        }
+      }
 		}
 
 		/// <summary>
@@ -507,49 +495,44 @@ namespace Fomm.Games.FalloutNewVegas
 		/// main mod management form.</param>
 		public void LaunchFalloutNVNVSE(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
 		{
-			if (!File.Exists("nvse_loader.exe"))
-			{
-				MessageBox.Show("NVSE does not appear to be installed");
-				return;
-			}
-			if (p_eeaArguments.Argument.HasOpenUtilityWindows)
-			{
-				MessageBox.Show("Please close all utility windows before launching Fallout");
-				return;
-			}
-			//this is only required if we are setting environment variables
-			//StartSteam(p_eeaArguments.Argument);
-			try
-			{
-				System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
-				psi.FileName = "nvse_loader.exe";
-				//this configuration skips the FO:NV launcher, which
-				// can cause NVSE problems
-				/*
-				if (!psi.EnvironmentVariables.ContainsKey("SteamAppID"))
-					psi.EnvironmentVariables.Add("SteamAppID", GetSteamAppId().ToString());
-				if (!psi.EnvironmentVariables.ContainsKey("SteamGameId"))
-					psi.EnvironmentVariables.Add("SteamGameId", GetSteamAppId().ToString());*/
-				//this configuration force the FO:NV launcher, which
-				// ensures NVSE loads
-				if (psi.EnvironmentVariables.ContainsKey("SteamAppID"))
-					psi.EnvironmentVariables.Remove("SteamAppID");
-				if (psi.EnvironmentVariables.ContainsKey("SteamGameId"))
-					psi.EnvironmentVariables.Remove("SteamGameId");
-				psi.UseShellExecute = false;
-				psi.WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath("nvse_loader.exe"));
-				if (System.Diagnostics.Process.Start(psi) == null)
-				{
-					MessageBox.Show("Failed to launch 'nvse_loader.exe'");
-					return;
-				}
-			}
-			catch (Exception ex)
-			{
-				MessageBox.Show("Failed to launch 'nvse_loader.exe'\n" + ex.Message);
-				return;
-			}
-			p_eeaArguments.Argument.Close();
+      if (PrelaunchCheckOrder())
+      {
+
+        if (!File.Exists("nvse_loader.exe"))
+        {
+          MessageBox.Show("NVSE does not appear to be installed");
+          return;
+        }
+        if (p_eeaArguments.Argument.HasOpenUtilityWindows)
+        {
+          MessageBox.Show("Please close all utility windows before launching Fallout");
+          return;
+        }
+
+        try
+        {
+          System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
+          psi.FileName = "nvse_loader.exe";
+          //this configuration force the FO:NV launcher, which
+          // ensures NVSE loads
+          if (psi.EnvironmentVariables.ContainsKey("SteamAppID"))
+            psi.EnvironmentVariables.Remove("SteamAppID");
+          if (psi.EnvironmentVariables.ContainsKey("SteamGameId"))
+            psi.EnvironmentVariables.Remove("SteamGameId");
+          psi.UseShellExecute = false;
+          psi.WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath("nvse_loader.exe"));
+          if (System.Diagnostics.Process.Start(psi) == null)
+          {
+            MessageBox.Show("Failed to launch 'nvse_loader.exe'");
+            return;
+          }
+        }
+        catch (Exception ex)
+        {
+          MessageBox.Show("Failed to launch 'nvse_loader.exe'\n" + ex.Message);
+          return;
+        }
+      }
 		}
 
 		/// <summary>
@@ -560,37 +543,41 @@ namespace Fomm.Games.FalloutNewVegas
 		/// main mod management form.</param>
 		public void LaunchFalloutNVPlain(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
 		{
-			if (p_eeaArguments.Argument.HasOpenUtilityWindows)
-			{
-				MessageBox.Show("Please close all utility windows before launching fallout");
-				return;
-			}
-			string command;
-			if (File.Exists("falloutNV.exe"))
-				command = "falloutNV.exe";
-			else
-				command = "falloutNVng.exe";
-			bool booSteamStarted = StartSteam(p_eeaArguments.Argument);
-			try
-			{
-				System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
-				if (booSteamStarted && !psi.EnvironmentVariables.ContainsKey("SteamAppID"))
-					psi.EnvironmentVariables.Add("SteamAppID", GetSteamAppId().ToString());
-				psi.FileName = command;
-				psi.UseShellExecute = false;
-				psi.WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath(command));
-				if (System.Diagnostics.Process.Start(psi) == null)
-				{
-					MessageBox.Show("Failed to launch '" + command + "'");
-					return;
-				}
-			}
-			catch (Exception ex)
-			{
-				MessageBox.Show("Failed to launch '" + command + "'\n" + ex.Message);
-				return;
-			}
-			p_eeaArguments.Argument.Close();
+      if (PrelaunchCheckOrder())
+      {
+
+        if (p_eeaArguments.Argument.HasOpenUtilityWindows)
+        {
+          MessageBox.Show("Please close all utility windows before launching fallout");
+          return;
+        }
+        string command;
+        if (File.Exists("falloutNV.exe"))
+          command = "falloutNV.exe";
+        else
+          command = "falloutNVng.exe";
+        bool booSteamStarted = StartSteam(p_eeaArguments.Argument);
+
+        try
+        {
+          System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
+          if (booSteamStarted && !psi.EnvironmentVariables.ContainsKey("SteamAppID"))
+            psi.EnvironmentVariables.Add("SteamAppID", GetSteamAppId().ToString());
+          psi.FileName = command;
+          psi.UseShellExecute = false;
+          psi.WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath(command));
+          if (System.Diagnostics.Process.Start(psi) == null)
+          {
+            MessageBox.Show("Failed to launch '" + command + "'");
+            return;
+          }
+        }
+        catch (Exception ex)
+        {
+          MessageBox.Show("Failed to launch '" + command + "'\n" + ex.Message);
+          return;
+        }
+      }
 		}
 
 		/// <summary>

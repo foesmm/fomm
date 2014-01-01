@@ -13,9 +13,9 @@ using Fomm.Games.Fallout3.Settings;
 using Fomm.Games.Fallout3.Script;
 using Fomm.Games.Fallout3.Script.XmlConfiguredInstall;
 using Fomm.Games.Fallout3.Script.XmlConfiguredInstall.Parsers;
-using WebsiteAPIs;
 using Fomm.Games.Fallout3.Tools.CriticalRecords;
 using Fomm.Games.Fallout3.PluginFormatProviders;
+using Fomm.Games.Fallout3.Tools.TESsnip;
 using Fomm.Commands;
 #if TRACE
 using System.Diagnostics;
@@ -28,7 +28,13 @@ namespace Fomm.Games.Fallout3
 	/// </summary>
 	public class Fallout3GameMode : GameMode
 	{
-		/// <summary>
+    protected struct LoadOrderInfo
+    {
+      public bool active;
+      public int idx;
+    }
+
+    /// <summary>
 		/// This class provides strongly-typed access to this game mode's settings files.
 		/// </summary>
 		public class SettingsFilesSet : Dictionary<string, string>
@@ -121,31 +127,6 @@ namespace Fomm.Games.Fallout3
 
 		#region Properties
 
-		/// <summary>
-		/// Gets whether or not there is a Nexus site for this game.
-		/// </summary>
-		/// <value>Whether or not there is a Nexus site for this game.</value>
-		/// <seealso cref="NexusSite"/>
-		public override bool HasNexusSite
-		{
-			get
-			{
-				return true;
-			}
-		}
-
-		/// <summary>
-		/// Gets the nexus site for this game.
-		/// </summary>
-		/// <value>The nexus site for this game.</value>
-		/// <seealso cref="HasNexusSite"/>
-		public override NexusSite NexusSite
-		{
-			get
-			{
-				return NexusSite.Fallout3;
-			}
-		}
 
 		/// <summary>
 		/// Gets the name of the game whose plugins are being managed.
@@ -668,6 +649,85 @@ namespace Fomm.Games.Fallout3
 
 		#region Game Launch
 
+    public bool PrelaunchCheckOrder()
+    {
+      bool retVal = true;
+      LoadOrderInfo loi;
+      Dictionary<string, LoadOrderInfo> lois = new Dictionary<string, LoadOrderInfo>();
+      List<string> keys;
+      string key;
+      Plugin plgPlugin;
+      List<string> masters;
+      int i = 0;
+      int j = 0;
+
+      // Build our plugin list.
+      foreach (string s in PluginManager.OrderedPluginList)
+      {
+        loi.active = PluginManager.IsPluginActive(Path.Combine(Program.GameMode.PluginsPath, s));
+        loi.idx    = i;
+        lois.Add(Path.GetFileName(s).ToLower(), loi);
+        i++;
+      }
+
+      // Do checks
+      keys = new List<string>(lois.Keys);
+      for (i = 0; i < keys.Count; i++)
+      {
+        if (!retVal)
+        {
+          break;
+        }
+
+        masters = new List<string>();
+        key = keys[i];
+        if (lois[key].active)
+        {
+          // Get parent mods
+          plgPlugin = plgPlugin = new Plugin(Path.Combine(Program.GameMode.PluginsPath, key), true);
+          foreach (SubRecord sr in ((Record)plgPlugin.Records[0]).SubRecords)
+          {
+            switch (sr.Name)
+            {
+              case "MAST":
+                masters.Add(sr.GetStrData().ToLower());
+              break;
+            }
+          }
+
+          for (j = 0; j < masters.Count; j++)
+          {
+            if (lois.ContainsKey(masters[j]))
+            {
+              if (lois[masters[j]].active)
+              {
+                if (lois[masters[j]].idx > lois[key].idx)
+                {
+                  MessageBox.Show("The plugin '" + key + "'  is being loaded before its master '" + masters[j] + "'.  Fix the load order to continue.");
+                  retVal = false;
+                  break;
+                }
+              }
+              else
+              {
+                MessageBox.Show("The plugin '" + key + "'  master '" + masters[j] + "' is not active.  Activate it or disable this plugin.");
+                retVal = false;
+                break;
+              }
+            }
+            else
+            {
+              MessageBox.Show("The plugin '" + key + "' is missing a master, '" + masters[j] + "' which it requires.  Deactivate this plugin, or install the missing master.");
+              retVal = false;
+              break;
+            }
+          }
+        }
+      }
+
+      return retVal;
+    }
+
 		/// <summary>
 		/// Launches the game with a custom command.
 		/// </summary>
@@ -676,36 +736,39 @@ namespace Fomm.Games.Fallout3
 		/// main mod management form.</param>
 		public void LaunchFallout3Custom(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
 		{
-			if (p_eeaArguments.Argument.HasOpenUtilityWindows)
-			{
-				MessageBox.Show("Please close all utility windows before launching fallout");
-				return;
-			}
-			string command = Properties.Settings.Default.fallout3LaunchCommand;
-			string args = Properties.Settings.Default.fallout3LaunchCommandArgs;
-			if (String.IsNullOrEmpty(command))
-			{
-				MessageBox.Show("No custom launch command has been set", "Error");
-				return;
-			}
-			try
-			{
-				System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
-				psi.Arguments = args;
-				psi.FileName = command;
-				psi.WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath(command));
-				if (System.Diagnostics.Process.Start(psi) == null)
-				{
-					MessageBox.Show("Failed to launch '" + command + "'");
-					return;
-				}
-			}
-			catch (Exception ex)
-			{
-				MessageBox.Show("Failed to launch '" + command + "'\n" + ex.Message);
-				return;
-			}
-			p_eeaArguments.Argument.Close();
+      if (PrelaunchCheckOrder())
+      {
+
+        if (p_eeaArguments.Argument.HasOpenUtilityWindows)
+        {
+          MessageBox.Show("Please close all utility windows before launching fallout");
+          return;
+        }
+        string command = Properties.Settings.Default.fallout3LaunchCommand;
+        string args = Properties.Settings.Default.fallout3LaunchCommandArgs;
+        if (String.IsNullOrEmpty(command))
+        {
+          MessageBox.Show("No custom launch command has been set", "Error");
+          return;
+        }
+        try
+        {
+          System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
+          psi.Arguments = args;
+          psi.FileName = command;
+          psi.WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath(command));
+          if (System.Diagnostics.Process.Start(psi) == null)
+          {
+            MessageBox.Show("Failed to launch '" + command + "'");
+            return;
+          }
+        }
+        catch (Exception ex)
+        {
+          MessageBox.Show("Failed to launch '" + command + "'\n" + ex.Message);
+          return;
+        }
+      }
 		}
 
 		/// <summary>
@@ -714,36 +777,38 @@ namespace Fomm.Games.Fallout3
 		/// <param name="p_objCommand">The command that is executing.</param>
 		/// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
 		/// main mod management form.</param>
-		public void LaunchFallout3FOSE(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
-		{
-			if (!File.Exists("fose_loader.exe"))
-			{
-				MessageBox.Show("fose does not appear to be installed");
-				return;
-			}
-			if (p_eeaArguments.Argument.HasOpenUtilityWindows)
-			{
-				MessageBox.Show("Please close all utility windows before launching fallout");
-				return;
-			}
-			try
-			{
-				System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
-				psi.FileName = "fose_loader.exe";
-				psi.WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath("fose_loader.exe"));
-				if (System.Diagnostics.Process.Start(psi) == null)
-				{
-					MessageBox.Show("Failed to launch 'fose_loader.exe'");
-					return;
-				}
-			}
-			catch (Exception ex)
-			{
-				MessageBox.Show("Failed to launch 'fose_loader.exe'\n" + ex.Message);
-				return;
-			}
-			p_eeaArguments.Argument.Close();
-		}
+    public void LaunchFallout3FOSE(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
+    {
+      if (PrelaunchCheckOrder())
+      {
+        if (!File.Exists("fose_loader.exe"))
+        {
+          MessageBox.Show("fose does not appear to be installed");
+          return;
+        }
+        if (p_eeaArguments.Argument.HasOpenUtilityWindows)
+        {
+          MessageBox.Show("Please close all utility windows before launching fallout");
+          return;
+        }
+        try
+        {
+          System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
+          psi.FileName = "fose_loader.exe";
+          psi.WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath("fose_loader.exe"));
+          if (System.Diagnostics.Process.Start(psi) == null)
+          {
+            MessageBox.Show("Failed to launch 'fose_loader.exe'");
+            return;
+          }
+        }
+        catch (Exception ex)
+        {
+          MessageBox.Show("Failed to launch 'fose_loader.exe'\n" + ex.Message);
+          return;
+        }
+      }
+    }
 
 		/// <summary>
 		/// Launches the game, without FOSE.
@@ -753,33 +818,35 @@ namespace Fomm.Games.Fallout3
 		/// main mod management form.</param>
 		public void LaunchFallout3Plain(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
 		{
-			if (p_eeaArguments.Argument.HasOpenUtilityWindows)
-			{
-				MessageBox.Show("Please close all utility windows before launching fallout");
-				return;
-			}
-			string command;
-			if (File.Exists("fallout3.exe"))
-				command = "fallout3.exe";
-			else
-				command = "fallout3ng.exe";
-			try
-			{
-				System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
-				psi.FileName = command;
-				psi.WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath(command));
-				if (System.Diagnostics.Process.Start(psi) == null)
-				{
-					MessageBox.Show("Failed to launch '" + command + "'");
-					return;
-				}
-			}
-			catch (Exception ex)
-			{
-				MessageBox.Show("Failed to launch '" + command + "'\n" + ex.Message);
-				return;
-			}
-			p_eeaArguments.Argument.Close();
+      if (PrelaunchCheckOrder())
+      {
+        if (p_eeaArguments.Argument.HasOpenUtilityWindows)
+        {
+          MessageBox.Show("Please close all utility windows before launching fallout");
+          return;
+        }
+        string command;
+        if (File.Exists("fallout3.exe"))
+          command = "fallout3.exe";
+        else
+          command = "fallout3ng.exe";
+        try
+        {
+          System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
+          psi.FileName = command;
+          psi.WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath(command));
+          if (System.Diagnostics.Process.Start(psi) == null)
+          {
+            MessageBox.Show("Failed to launch '" + command + "'");
+            return;
+          }
+        }
+        catch (Exception ex)
+        {
+          MessageBox.Show("Failed to launch '" + command + "'\n" + ex.Message);
+          return;
+        }
+      }
 		}
 
 		/// <summary>
@@ -792,33 +859,37 @@ namespace Fomm.Games.Fallout3
 		{
 			string command = Properties.Settings.Default.fallout3LaunchCommand;
 			string args = Properties.Settings.Default.fallout3LaunchCommandArgs;
-			if (String.IsNullOrEmpty(command))
-			{
-				if (File.Exists("fose_loader.exe"))
-					command = "fose_loader.exe";
-				else if (File.Exists("fallout3.exe"))
-					command = "fallout3.exe";
-				else
-					command = "fallout3ng.exe";
-				args = null;
-			}
-			try
-			{
-				System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
-				psi.Arguments = args;
-				psi.FileName = command;
-				psi.WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath(command));
-				if (System.Diagnostics.Process.Start(psi) == null)
-				{
-					MessageBox.Show("Failed to launch '" + command + "'");
-					return;
-				}
-			}
-			catch (Exception ex)
-			{
-				MessageBox.Show("Failed to launch '" + command + "'\n" + ex.Message);
-				return;
-			}
+
+      if (PrelaunchCheckOrder())
+      {
+        if (String.IsNullOrEmpty(command))
+        {
+          if (File.Exists("fose_loader.exe"))
+            command = "fose_loader.exe";
+          else if (File.Exists("fallout3.exe"))
+            command = "fallout3.exe";
+          else
+            command = "fallout3ng.exe";
+          args = null;
+        }
+        try
+        {
+          System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
+          psi.Arguments = args;
+          psi.FileName = command;
+          psi.WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath(command));
+          if (System.Diagnostics.Process.Start(psi) == null)
+          {
+            MessageBox.Show("Failed to launch '" + command + "'");
+            return;
+          }
+        }
+        catch (Exception ex)
+        {
+          MessageBox.Show("Failed to launch '" + command + "'\n" + ex.Message);
+          return;
+        }
+      }
 		}
 
 		#endregion

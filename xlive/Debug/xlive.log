@@ -1,0 +1,20 @@
+﻿Build started 12/29/2013 10:54:03.
+     1>Project "C:\projects\psmm\xlive\xlive.vcxproj" on node 2 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating "Debug\xlive.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         All outputs are up-to-date.
+       ManifestResourceCompile:
+         All outputs are up-to-date.
+       Link:
+         All outputs are up-to-date.
+       Manifest:
+         All outputs are up-to-date.
+       FinalizeBuildStatus:
+         Deleting file "Debug\xlive.unsuccessfulbuild".
+         Touching "Debug\xlive.lastbuildstate".
+     1>Done Building Project "C:\projects\psmm\xlive\xlive.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.08

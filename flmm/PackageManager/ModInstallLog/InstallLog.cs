@@ -247,8 +247,13 @@ namespace Fomm.PackageManager.ModInstallLog
 		{
 			XmlNodeList xnlMods = m_xelModListNode.ChildNodes;
 			m_dicModList = new Dictionary<string, string>();
-			foreach (XmlNode xndMod in xnlMods)
-				m_dicModList[xndMod.Attributes["name"].InnerText] = xndMod.Attributes["key"].InnerText;
+      foreach (XmlNode xndMod in xnlMods)
+      {
+        if ((xndMod.Attributes["name"] != null) && (xndMod.Attributes["key"] != null))
+        {
+          m_dicModList[xndMod.Attributes["name"].InnerText] = xndMod.Attributes["key"].InnerText;
+        }
+      }
 
 			AddMod(ORIGINAL_VALUES);
 			AddMod(FOMM);
@@ -273,10 +278,30 @@ namespace Fomm.PackageManager.ModInstallLog
 		/// <returns>The version of the install log.</returns>
 		internal Version GetInstallLogVersion()
 		{
-			XmlAttribute xndVersion = xmlDoc.FirstChild.Attributes["fileVersion"];
-			if (xndVersion == null)
-				return new Version("0.0.0.0");
-			return new Version(xndVersion.InnerText);
+			XmlAttribute xndVersion;
+
+      if (xmlDoc.FirstChild.Attributes != null)
+      {
+        if (xmlDoc.FirstChild.Attributes["fileVersion"] != null)
+        {
+          xndVersion = xmlDoc.FirstChild.Attributes["fileVersion"];
+          return new Version(xndVersion.InnerText);
+        }
+      }
+
+      if (xmlDoc.ChildNodes.Count > 1)
+      {
+        if (xmlDoc.ChildNodes[1].Attributes != null)
+        {
+          if (xmlDoc.ChildNodes[1].Attributes["fileVersion"] != null)
+          {
+            xndVersion = xmlDoc.ChildNodes[1].Attributes["fileVersion"];
+            return new Version(xndVersion.InnerText);
+          }
+        }
+      }
+
+      return new Version("0.0.0.0");
 		}
 
 		/// <summary>

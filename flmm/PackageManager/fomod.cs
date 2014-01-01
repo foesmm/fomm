@@ -7,7 +7,6 @@ using System.IO;
 using Fomm.PackageManager.ModInstallLog;
 using SevenZip;
 using System.ComponentModel;
-using WebsiteAPIs;
 using GeMod.Interface;
 using System.Text.RegularExpressions;
 
