@@ -1,0 +1,19 @@
+LIBRARY ShaderDisasm
+EXPORTS
+Asm=Asm
+Disasm=Disasm
+Compile=Compile
+
+ddsInit=ddsInit
+ddsShrink=ddsShrink
+ddsClose=ddsClose
+
+ddsLoad=ddsLoad
+ddsCreate=ddsCreate
+ddsBlt=ddsBlt
+ddsSave=ddsSave
+ddsRelease=ddsRelease
+ddsGetSize=ddsGetSize
+ddsLock=ddsLock
+ddsUnlock=ddsUnlock
+ddsSetData=ddsSetData

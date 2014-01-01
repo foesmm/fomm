@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source">
+      <UniqueIdentifier>{ff3c3d17-330e-40ce-9c74-afed07eb58ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers">
+      <UniqueIdentifier>{4bba3d53-ca90-4cef-b56f-158cdf40e99b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="codepatches.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="d3dx.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="SafeWrite.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="xlive.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="codepatches.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="d3dx.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="SafeWrite.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="xlive.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="exports.def" />
+  </ItemGroup>
+</Project>

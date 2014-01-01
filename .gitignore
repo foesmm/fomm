@@ -1,0 +1,5 @@
+*.tlog
+*.obj
+/debug/
+/release/
+/_UpgradeReport_Files/

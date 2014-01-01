@@ -1,0 +1,1012 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{4A0302F4-DEA4-4753-98C8-3571742E4EB5}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Fomm</RootNamespace>
+    <AssemblyName>fomm</AssemblyName>
+    <ApplicationIcon>Resources\fomm02.ico</ApplicationIcon>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <StartupObject>
+    </StartupObject>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\debug\</OutputPath>
+    <DefineConstants>DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\release\</OutputPath>
+    <DefineConstants>
+    </DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PlatformTarget>x86</PlatformTarget>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Trace|AnyCPU' ">
+    <OutputPath>..\Trace\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>true</Optimize>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ICSharpCode.TextEditor, Version=3.0.0.3437, Culture=neutral, PublicKeyToken=4d61825e8dd49f1a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\externals\ICSharpCode.TextEditor.dll</HintPath>
+    </Reference>
+    <Reference Include="SevenZipSharp, Version=0.60.3695.26174, Culture=neutral, PublicKeyToken=20de82c62b055c88, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\externals\SevenZipSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Drawing.Design" />
+    <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.XML" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Commands\CheckedCommand.cs" />
+    <Compile Include="Commands\Command.cs" />
+    <Compile Include="Commands\CommandBinding.cs" />
+    <Compile Include="Commands\ButtonCommandBinding.cs" />
+    <Compile Include="Commands\ToolStripMenuItemCommandBinding.cs" />
+    <Compile Include="Controls\SettingsPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\WizardControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\WizardControlDesigner.cs" />
+    <Compile Include="GameModeSelector.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GameModeSelector.Designer.cs">
+      <DependentUpon>GameModeSelector.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Games\Fallout3\PluginFormatProviders\BoldESMPluginFormatProvider.cs" />
+    <Compile Include="Games\Fallout3\Fallout3PluginManager.cs" />
+    <Compile Include="Games\Fallout3\FOMMMigrator.cs" />
+    <Compile Include="Games\Fallout3\Script\XmlConfiguredInstall\Fallout3DependencyStateManager.cs" />
+    <Compile Include="Games\Fallout3\Script\Fallout3ModInstallScript.cs" />
+    <Compile Include="Games\Fallout3\Script\Fallout3ModUpgradeScript.cs" />
+    <Compile Include="Games\Fallout3\Script\XmlConfiguredInstall\Parsers\Fallout3Parser20Extension.cs" />
+    <Compile Include="Games\Fallout3\Script\XmlConfiguredInstall\Parsers\Fallout3Parser10Extension.cs" />
+    <Compile Include="Games\Fallout3\Settings\GeneralSettingsPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Games\Fallout3\Settings\GeneralSettingsPage.Designer.cs">
+      <DependentUpon>GeneralSettingsPage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Games\Fallout3\Settings\RequiredDirectoriesControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Games\Fallout3\Settings\RequiredDirectoriesControl.Designer.cs">
+      <DependentUpon>RequiredDirectoriesControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Games\Fallout3\SetupForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Games\Fallout3\SetupForm.Designer.cs">
+      <DependentUpon>SetupForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Games\Fallout3\Tools\ArchiveInvalidation.cs" />
+    <Compile Include="Games\Fallout3\Tools\AutoSorter\Fallout3BOSSUpdater.cs" />
+    <Compile Include="Games\Fallout3\Tools\BSA\BSAArchive.cs" />
+    <Compile Include="Games\Fallout3\Tools\BSA\BSABrowser.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Games\Fallout3\Tools\BSA\BSABrowser.Designer.cs">
+      <DependentUpon>BSABrowser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Games\Fallout3\Tools\BSA\BSACreator.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Games\Fallout3\Tools\BSA\BSACreator.Designer.cs">
+      <DependentUpon>BSACreator.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\AutosizeLabel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\CodeEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\CodeFoldingStrategy.cs" />
+    <Compile Include="Controls\DropDownTabControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\DropDownTabControlDesigner.cs" />
+    <Compile Include="Controls\DropDownTabPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\DropDownTabPageCollectionEditor.cs" />
+    <Compile Include="Controls\IStatusProviderAware.cs" />
+    <Compile Include="Controls\MultiSelectTreeView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\PanelToolStrip.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\PanelToolStripItem.cs" />
+    <Compile Include="Controls\RichTextEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\RichTextEditor.Designer.cs">
+      <DependentUpon>RichTextEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ScriptEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ScriptEditor.Designer.cs">
+      <DependentUpon>ScriptEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\SelectedDropDownTabPageConverter.cs" />
+    <Compile Include="Controls\SelectedVerticalTabPageConverter.cs" />
+    <Compile Include="Controls\SiteStatusProvider.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\SplitButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\StatusButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\VerticalTabButton.cs" />
+    <Compile Include="Controls\VerticalTabControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\VerticalTabControlDesigner.cs" />
+    <Compile Include="Controls\VerticalTabPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\VerticalTabPageCollectionEditor.cs" />
+    <Compile Include="Controls\XmlCompletionData.cs" />
+    <Compile Include="Controls\XmlCompletionProvider.cs" />
+    <Compile Include="Controls\XmlEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\XmlFoldingStrategy.cs" />
+    <Compile Include="Controls\XmlFormattingStrategy.cs" />
+    <Compile Include="Controls\XmlParser.cs" />
+    <Compile Include="Games\Fallout3\Tools\CriticalRecords\ConflictDetector.cs" />
+    <Compile Include="Games\Fallout3\Tools\CriticalRecords\CriticalRecordInfo.cs" />
+    <Compile Include="Games\Fallout3\Tools\CriticalRecords\CriticalRecordPlugin.cs" />
+    <Compile Include="Games\Fallout3\PluginFormatProviders\CriticalRecordPluginFormatProvider.cs" />
+    <Compile Include="Games\Fallout3\Tools\CriticalRecords\PluginFullException.cs" />
+    <Compile Include="Controls\DoubleBufferedListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="FileManager\FileManager.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FileManager\FileManager.Designer.cs">
+      <DependentUpon>FileManager.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FileManager\ModInstallReorderer.cs" />
+    <Compile Include="Games\Fallout3\Fallout3GameMode.cs" />
+    <Compile Include="Games\Fallout3\Tools\PluginConflictDetector.cs" />
+    <Compile Include="Games\Fallout3\Tools\TESsnip\ScriptCompiler\ScriptCompiler.cs" />
+    <Compile Include="Games\Fallout3\Tools\TESsnip\ScriptCompiler\Tokenizer.cs" />
+    <Compile Include="Games\FalloutNewVegas\FalloutNewVegasPluginManager.cs" />
+    <Compile Include="Games\FalloutNewVegas\FalloutNewVegasGameMode.cs" />
+    <Compile Include="Games\FalloutNewVegas\PluginFormatProviders\BoldESMPluginFormatProvider.cs" />
+    <Compile Include="Games\FalloutNewVegas\Script\FalloutNewVegasModUpgradeScript.cs" />
+    <Compile Include="Games\FalloutNewVegas\Script\FalloutNewVegasModInstallScript.cs" />
+    <Compile Include="Games\FalloutNewVegas\Script\XmlConfiguredInstall\NvseDependency.cs" />
+    <Compile Include="Games\FalloutNewVegas\Script\XmlConfiguredInstall\Parsers\FalloutNewVegasParser50Extension.cs" />
+    <Compile Include="Games\FalloutNewVegas\Settings\GeneralSettingsPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Games\FalloutNewVegas\Settings\GeneralSettingsPage.Designer.cs">
+      <DependentUpon>GeneralSettingsPage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Games\FalloutNewVegas\Settings\RequiredDirectoriesControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Games\FalloutNewVegas\Settings\RequiredDirectoriesControl.Designer.cs">
+      <DependentUpon>RequiredDirectoriesControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Games\FalloutNewVegas\SetupForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Games\FalloutNewVegas\SetupForm.Designer.cs">
+      <DependentUpon>SetupForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Games\FalloutNewVegas\Tools\ArchiveInvalidation.cs" />
+    <Compile Include="Games\FalloutNewVegas\Tools\AutoSorter\FalloutNewVegasBOSSUpdater.cs" />
+    <Compile Include="Games\FalloutNewVegas\Tools\SaveForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Games\FalloutNewVegas\Tools\SaveForm.Designer.cs">
+      <DependentUpon>SaveForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Games\GameMode.cs" />
+    <Compile Include="Games\Fallout3\Tools\GraphicsSettings\GraphicsSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Games\Fallout3\Tools\GraphicsSettings\GraphicsSettings.Designer.cs">
+      <DependentUpon>GraphicsSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Games\Fallout3\Tools\GraphicsSettings\OverrideSlider.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Games\Fallout3\Tools\GraphicsSettings\OverrideSlider.Designer.cs">
+      <DependentUpon>OverrideSlider.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Games\PluginInfo.cs" />
+    <Compile Include="Games\PluginManager.cs" />
+    <Compile Include="Games\SupportedGameModes.cs" />
+    <Compile Include="Games\WorkingDirectorySelectionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Games\WorkingDirectorySelectionForm.Designer.cs">
+      <DependentUpon>WorkingDirectorySelectionForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ImageForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ImageForm.Designer.cs">
+      <DependentUpon>ImageForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Imports.cs" />
+    <Compile Include="InstallLogUpgraders\Upgrader.cs" />
+    <Compile Include="InstallLogUpgraders\Upgrader0000.cs" />
+    <Compile Include="InstallLogUpgraders\Upgrader0100.cs" />
+    <Compile Include="Games\Fallout3\Tools\InstallTweaker\BsaTrimmer.cs" />
+    <Compile Include="Games\Fallout3\Tools\InstallTweaker\EsmTrimmer.cs" />
+    <Compile Include="Games\Fallout3\Tools\InstallTweaker\InstallationTweaker.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Games\Fallout3\Tools\InstallTweaker\InstallationTweaker.Designer.cs">
+      <DependentUpon>InstallationTweaker.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Games\Fallout3\Tools\InstallTweaker\xliveSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Games\Fallout3\Tools\InstallTweaker\xliveSettings.Designer.cs">
+      <DependentUpon>xliveSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Games\Fallout3\Tools\AutoSorter\LoadOrderSorter.cs" />
+    <Compile Include="InstallLogUpgraders\Upgrader0110.cs" />
+    <Compile Include="IPluginFormatProvider.cs" />
+    <Compile Include="Messaging.cs" />
+    <Compile Include="Games\Fallout3\Script\BsaManager.cs" />
+    <Compile Include="Games\Fallout3\Tools\CriticalRecords\CriticalRecordsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Games\Fallout3\Tools\CriticalRecords\CriticalRecordsForm.Designer.cs">
+      <DependentUpon>CriticalRecordsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PackageManager\Controls\FomodScriptEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PackageManager\Controls\FomodScriptEditor.Designer.cs">
+      <DependentUpon>FomodScriptEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PackageManager\Controls\ReadmeEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PackageManager\Controls\ReadmeEditor.Designer.cs">
+      <DependentUpon>ReadmeEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PackageManager\DecompressionException.cs" />
+    <Compile Include="PackageManager\EditReadmeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PackageManager\EditReadmeForm.Designer.cs">
+      <DependentUpon>EditReadmeForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PackageManager\EditScriptForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PackageManager\EditScriptForm.Designer.cs">
+      <DependentUpon>EditScriptForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PackageManager\FileManagement.cs" />
+    <Compile Include="PackageManager\Archive.cs" />
+    <Compile Include="PackageManager\FomodBuilder\FomodFromSourceBuilder.cs" />
+    <Compile Include="PackageManager\FomodBuilder\NewFomodBuilder.cs" />
+    <Compile Include="PackageManager\FomodBuilder\FileSystemTreeNode.cs" />
+    <Compile Include="PackageManager\FomodBuilder\FomodBuilderForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PackageManager\FomodBuilder\FomodBuilderForm.Designer.cs">
+      <DependentUpon>FomodBuilderForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PackageManager\FomodBuilder\FomodFileSelector.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PackageManager\FomodBuilder\FomodFileSelector.Designer.cs">
+      <DependentUpon>FomodFileSelector.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PackageManager\FomodBuilder\FomodGenerator.cs" />
+    <Compile Include="PackageManager\FomodBuilder\NodeComparer.cs" />
+    <Compile Include="PackageManager\FomodBuilder\PremadeFomodPackBuilder.cs" />
+    <Compile Include="PackageManager\FomodBuilder\PremadeFomodPackForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PackageManager\FomodBuilder\PremadeFomodPackForm.Designer.cs">
+      <DependentUpon>PremadeFomodPackForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PackageManager\FomodBuilder\ReadmeFileSelector.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PackageManager\FomodBuilder\ReadmeFileSelector.Designer.cs">
+      <DependentUpon>ReadmeFileSelector.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PackageManager\FomodBuilder\ReadmeGeneratorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PackageManager\FomodBuilder\ReadmeGeneratorForm.Designer.cs">
+      <DependentUpon>ReadmeGeneratorForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PackageManager\FomodBuilder\SourceDownloadSelector.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PackageManager\FomodBuilder\SourceDownloadSelector.Designer.cs">
+      <DependentUpon>SourceDownloadSelector.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PackageManager\FomodBuilder\SourceFileTree.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PackageManager\FomodBuilder\SourceFileTree.Designer.cs">
+      <DependentUpon>SourceFileTree.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PackageManager\FomodInfoControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PackageManager\FomodInfoControl.Designer.cs">
+      <DependentUpon>FomodInfoControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PackageManager\FomodScript.cs" />
+    <Compile Include="PackageManager\IFomodInfo.cs" />
+    <Compile Include="PackageManager\IllegalFilePathException.cs" />
+    <Compile Include="PackageManager\InfoEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PackageManager\InfoEditor.Designer.cs">
+      <DependentUpon>InfoEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PackageManager\ModInstallerBase.cs" />
+    <Compile Include="PackageManager\ModInstallLog\FomodInfo.cs" />
+    <Compile Include="PackageManager\ModInstallLog\InstallLogBase.cs" />
+    <Compile Include="InstallLogUpgraders\InstallLogUpgrader.cs" />
+    <Compile Include="PackageManager\ModInstallLog\InstallLogException.cs" />
+    <Compile Include="PackageManager\ModInstaller.cs" />
+    <Compile Include="PackageManager\ModInstallLog\InstallLogMergeModule.cs" />
+    <Compile Include="PackageManager\ModInstallScript.cs" />
+    <Compile Include="PackageManager\ModReactivator.cs" />
+    <Compile Include="PackageManager\ModUninstaller.cs" />
+    <Compile Include="PackageManager\PermissionsManager.cs" />
+    <Compile Include="PackageManager\PremadeFomodPack.cs" />
+    <Compile Include="PackageManager\Readme.cs" />
+    <Compile Include="PackageManager\SelectForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PackageManager\SelectForm.Designer.cs">
+      <DependentUpon>SelectForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PackageManager\ShaderException.cs" />
+    <Compile Include="PackageManager\SourceDownloadLocation.cs" />
+    <Compile Include="PackageManager\TextEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PackageManager\TextEditor.Designer.cs">
+      <DependentUpon>TextEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PackageManager\fomod.cs" />
+    <Compile Include="PackageManager\ModInstallLog\InstallLog.cs" />
+    <Compile Include="PackageManager\Overwriteform.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PackageManager\Overwriteform.Designer.cs">
+      <DependentUpon>Overwriteform.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PackageManager\PackageManager.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PackageManager\PackageManager.Designer.cs">
+      <DependentUpon>PackageManager.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PackageManager\ScriptCompiler.cs" />
+    <Compile Include="Games\Fallout3\Script\TextureManager.cs" />
+    <Compile Include="BackgroundWorkerProgressDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BackgroundWorkerProgressDialog.Designer.cs">
+      <DependentUpon>BackgroundWorkerProgressDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PackageManager\Upgrade\ModUpgrader.cs" />
+    <Compile Include="PackageManager\Upgrade\UpgradeFomod.cs" />
+    <Compile Include="PackageManager\Upgrade\UpgradeScanner.cs" />
+    <Compile Include="PackageManager\ViewReadmeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PackageManager\ViewReadmeForm.Designer.cs">
+      <DependentUpon>ViewReadmeForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PackageManager\XmlConfiguredInstall\CompositeDependency.cs" />
+    <Compile Include="PackageManager\XmlConfiguredInstall\ConditionalFlag.cs" />
+    <Compile Include="PackageManager\XmlConfiguredInstall\ConditionalFileInstallPattern.cs" />
+    <Compile Include="PackageManager\XmlConfiguredInstall\InstallStep.cs" />
+    <Compile Include="PackageManager\XmlConfiguredInstall\OptionFormStep.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PackageManager\XmlConfiguredInstall\OptionFormStep.Designer.cs">
+      <DependentUpon>OptionFormStep.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PackageManager\XmlConfiguredInstall\Parsers\Parser50.cs" />
+    <Compile Include="PackageManager\XmlConfiguredInstall\Parsers\Parser40.cs" />
+    <Compile Include="PackageManager\XmlConfiguredInstall\FommDependency.cs" />
+    <Compile Include="PackageManager\XmlConfiguredInstall\GameVersionDependency.cs" />
+    <Compile Include="Games\Fallout3\Script\XmlConfiguredInstall\FoseDependency.cs" />
+    <Compile Include="PackageManager\XmlConfiguredInstall\HeaderPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PackageManager\XmlConfiguredInstall\Parsers\Parser30.cs" />
+    <Compile Include="PackageManager\XmlConfiguredInstall\DependencyStateManager.cs" />
+    <Compile Include="PackageManager\XmlConfiguredInstall\FlagDependency.cs" />
+    <Compile Include="PackageManager\XmlConfiguredInstall\Parsers\Parser20.cs" />
+    <Compile Include="PackageManager\XmlConfiguredInstall\DependencyPluginType.cs" />
+    <Compile Include="PackageManager\XmlConfiguredInstall\FileDependency.cs" />
+    <Compile Include="PackageManager\XmlConfiguredInstall\IDependency.cs" />
+    <Compile Include="PackageManager\XmlConfiguredInstall\IPluginType.cs" />
+    <Compile Include="PackageManager\XmlConfiguredInstall\OptionsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PackageManager\XmlConfiguredInstall\OptionsForm.Designer.cs">
+      <DependentUpon>OptionsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PackageManager\XmlConfiguredInstall\Parsers\Parser.cs" />
+    <Compile Include="PackageManager\XmlConfiguredInstall\Parsers\Parser10.cs" />
+    <Compile Include="PackageManager\XmlConfiguredInstall\Parsers\ParserException.cs" />
+    <Compile Include="PackageManager\XmlConfiguredInstall\Parsers\ParserExtension.cs" />
+    <Compile Include="PackageManager\XmlConfiguredInstall\PluginFile.cs" />
+    <Compile Include="PackageManager\XmlConfiguredInstall\PluginGroup.cs" />
+    <Compile Include="PackageManager\XmlConfiguredInstall\PluginInfo.cs" />
+    <Compile Include="PackageManager\XmlConfiguredInstall\StaticPluginType.cs" />
+    <Compile Include="PackageManager\XmlConfiguredInstall\DependencyException.cs" />
+    <Compile Include="PackageManager\XmlConfiguredInstall\HeaderInfo.cs" />
+    <Compile Include="PackageManager\XmlConfiguredInstall\XmlConfiguredScript.cs" />
+    <Compile Include="PluginFormat.cs" />
+    <Compile Include="PluginFormatterManager.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ReorderableItemListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Games\Fallout3\Tools\SaveForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Games\Fallout3\Tools\SaveForm.Designer.cs">
+      <DependentUpon>SaveForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="RememberSelectionMessageBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RememberSelectionMessageBox.Designer.cs">
+      <DependentUpon>RememberSelectionMessageBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SettingsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SettingsForm.Designer.cs">
+      <DependentUpon>SettingsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Games\Fallout3\Tools\TESsnip\AddMasterForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Games\Fallout3\Tools\TESsnip\AddMasterForm.Designer.cs">
+      <DependentUpon>AddMasterForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Games\Fallout3\Tools\TESsnip\GroupEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Games\Fallout3\Tools\TESsnip\GroupEditor.Designer.cs">
+      <DependentUpon>GroupEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Games\Fallout3\Tools\TESsnip\HexBox\ByteCollection.cs" />
+    <Compile Include="Games\Fallout3\Tools\TESsnip\HexBox\DataBlock.cs" />
+    <Compile Include="Games\Fallout3\Tools\TESsnip\HexBox\DataMap.cs" />
+    <Compile Include="Games\Fallout3\Tools\TESsnip\HexBox\Design\HexFontEditor.cs" />
+    <Compile Include="Games\Fallout3\Tools\TESsnip\HexBox\DynamicByteProvider.cs" />
+    <Compile Include="Games\Fallout3\Tools\TESsnip\HexBox\FileByteProvider.cs" />
+    <Compile Include="Games\Fallout3\Tools\TESsnip\HexBox\HexBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Games\Fallout3\Tools\TESsnip\HexBox\IByteProvider.cs" />
+    <Compile Include="Games\Fallout3\Tools\TESsnip\HexBox\NativeMethods.cs" />
+    <Compile Include="Games\Fallout3\Tools\TESsnip\HexDataEdit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Games\Fallout3\Tools\TESsnip\HexDataEdit.Designer.cs">
+      <DependentUpon>HexDataEdit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Games\Fallout3\Tools\TESsnip\MediumLevelRecordEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Games\Fallout3\Tools\TESsnip\MediumLevelRecordEditor.Designer.cs">
+      <DependentUpon>MediumLevelRecordEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Games\Fallout3\Tools\TESsnip\RecordStructure.cs" />
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="ProgressForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="GameModeSelector.resx">
+      <DependentUpon>GameModeSelector.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Games\Fallout3\Settings\GeneralSettingsPage.resx">
+      <DependentUpon>GeneralSettingsPage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Games\Fallout3\Settings\RequiredDirectoriesControl.resx">
+      <DependentUpon>RequiredDirectoriesControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Games\Fallout3\SetupForm.resx">
+      <DependentUpon>SetupForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Games\Fallout3\Tools\BSA\BSABrowser.resx">
+      <DependentUpon>BSABrowser.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Games\Fallout3\Tools\BSA\BSACreator.resx">
+      <DependentUpon>BSACreator.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\RichTextEditor.resx">
+      <DependentUpon>RichTextEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ScriptEditor.resx">
+      <DependentUpon>ScriptEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FileManager\FileManager.resx">
+      <DependentUpon>FileManager.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Games\Fallout3\Tools\GraphicsSettings\GraphicsSettings.resx">
+      <DependentUpon>GraphicsSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Games\Fallout3\Tools\GraphicsSettings\OverrideSlider.resx">
+      <DependentUpon>OverrideSlider.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Games\FalloutNewVegas\Settings\GeneralSettingsPage.resx">
+      <DependentUpon>GeneralSettingsPage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Games\FalloutNewVegas\Settings\RequiredDirectoriesControl.resx">
+      <DependentUpon>RequiredDirectoriesControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Games\FalloutNewVegas\SetupForm.resx">
+      <DependentUpon>SetupForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Games\FalloutNewVegas\Tools\SaveForm.resx">
+      <DependentUpon>SaveForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Games\WorkingDirectorySelectionForm.resx">
+      <DependentUpon>WorkingDirectorySelectionForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ImageForm.resx">
+      <DependentUpon>ImageForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Games\Fallout3\Tools\InstallTweaker\InstallationTweaker.resx">
+      <DependentUpon>InstallationTweaker.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Games\Fallout3\Tools\InstallTweaker\xliveSettings.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>xliveSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Games\Fallout3\Tools\CriticalRecords\CriticalRecordsForm.resx">
+      <DependentUpon>CriticalRecordsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PackageManager\Controls\FomodScriptEditor.resx">
+      <DependentUpon>FomodScriptEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PackageManager\Controls\ReadmeEditor.resx">
+      <DependentUpon>ReadmeEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PackageManager\EditReadmeForm.resx">
+      <DependentUpon>EditReadmeForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PackageManager\FomodBuilder\FomodBuilderForm.resx">
+      <DependentUpon>FomodBuilderForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PackageManager\FomodBuilder\FomodFileSelector.resx">
+      <DependentUpon>FomodFileSelector.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PackageManager\FomodBuilder\PremadeFomodPackForm.resx">
+      <DependentUpon>PremadeFomodPackForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PackageManager\FomodBuilder\ReadmeFileSelector.resx">
+      <DependentUpon>ReadmeFileSelector.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PackageManager\FomodBuilder\ReadmeGeneratorForm.resx">
+      <DependentUpon>ReadmeGeneratorForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PackageManager\FomodBuilder\SourceDownloadSelector.resx">
+      <DependentUpon>SourceDownloadSelector.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PackageManager\FomodBuilder\SourceFileTree.resx">
+      <DependentUpon>SourceFileTree.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PackageManager\FomodInfoControl.resx">
+      <DependentUpon>FomodInfoControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PackageManager\InfoEditor.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>InfoEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PackageManager\SelectForm.resx">
+      <DependentUpon>SelectForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PackageManager\TextEditor.resx">
+      <DependentUpon>TextEditor.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PackageManager\Overwriteform.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>Overwriteform.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PackageManager\PackageManager.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>PackageManager.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BackgroundWorkerProgressDialog.resx">
+      <DependentUpon>BackgroundWorkerProgressDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PackageManager\ViewReadmeForm.resx">
+      <DependentUpon>ViewReadmeForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PackageManager\XmlConfiguredInstall\OptionFormStep.resx">
+      <DependentUpon>OptionFormStep.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PackageManager\XmlConfiguredInstall\OptionsForm.resx">
+      <DependentUpon>OptionsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Games\Fallout3\Tools\SaveForm.resx">
+      <DependentUpon>SaveForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RememberSelectionMessageBox.resx">
+      <DependentUpon>RememberSelectionMessageBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SettingsForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>SettingsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Games\Fallout3\Tools\TESsnip\AddMasterForm.resx">
+      <DependentUpon>AddMasterForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Games\Fallout3\Tools\TESsnip\GroupEditor.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>GroupEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Games\Fallout3\Tools\TESsnip\HexDataEdit.resx">
+      <DependentUpon>HexDataEdit.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Games\Fallout3\Tools\TESsnip\MediumLevelRecordEditor.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>MediumLevelRecordEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProgressForm.resx">
+      <DependentUpon>ProgressForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Games\Fallout3\Tools\ShaderEdit\HLSLImporter.resx">
+      <DependentUpon>HLSLImporter.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Games\Fallout3\Tools\ShaderEdit\MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Games\Fallout3\Tools\TESsnip\DataEdit.resx">
+      <DependentUpon>DataEdit.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Games\Fallout3\Tools\TESsnip\HeaderEditor.resx">
+      <DependentUpon>HeaderEditor.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Games\Fallout3\Tools\TESsnip\SearchForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>SearchForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Games\Fallout3\Tools\TESsnip\TESsnip.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>TESsnip.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="Games\Fallout3\Tools\ShaderEdit\HLSLImporter.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Games\Fallout3\Tools\ShaderEdit\HLSLImporter.Designer.cs">
+      <DependentUpon>HLSLImporter.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Games\Fallout3\Tools\ShaderEdit\MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Games\Fallout3\Tools\ShaderEdit\MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SharpZipLib\Checksums\Adler32.cs" />
+    <Compile Include="SharpZipLib\Checksums\CRC32.cs" />
+    <Compile Include="SharpZipLib\Checksums\IChecksum.cs" />
+    <Compile Include="SharpZipLib\Core\FileSystemScanner.cs" />
+    <Compile Include="SharpZipLib\Core\INameTransform.cs" />
+    <Compile Include="SharpZipLib\Core\IScanFilter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SharpZipLib\Core\NameFilter.cs" />
+    <Compile Include="SharpZipLib\Core\PathFilter.cs" />
+    <Compile Include="SharpZipLib\Core\StreamUtils.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SharpZipLib\Core\WindowsPathUtils.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SharpZipLib\SharpZipBaseException.cs" />
+    <Compile Include="SharpZipLib\Zip\Compression\Deflater.cs" />
+    <Compile Include="SharpZipLib\Zip\Compression\DeflaterConstants.cs" />
+    <Compile Include="SharpZipLib\Zip\Compression\DeflaterEngine.cs" />
+    <Compile Include="SharpZipLib\Zip\Compression\DeflaterHuffman.cs" />
+    <Compile Include="SharpZipLib\Zip\Compression\DeflaterPending.cs" />
+    <Compile Include="SharpZipLib\Zip\Compression\Inflater.cs" />
+    <Compile Include="SharpZipLib\Zip\Compression\InflaterDynHeader.cs" />
+    <Compile Include="SharpZipLib\Zip\Compression\InflaterHuffmanTree.cs" />
+    <Compile Include="SharpZipLib\Zip\Compression\PendingBuffer.cs" />
+    <Compile Include="SharpZipLib\Zip\Compression\Streams\DeflaterOutputStream.cs" />
+    <Compile Include="SharpZipLib\Zip\Compression\Streams\InflaterInputStream.cs" />
+    <Compile Include="SharpZipLib\Zip\Compression\Streams\OutputWindow.cs" />
+    <Compile Include="SharpZipLib\Zip\Compression\Streams\StreamManipulator.cs" />
+    <Compile Include="SharpZipLib\Zip\FastZip.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SharpZipLib\Zip\IEntryFactory.cs" />
+    <Compile Include="SharpZipLib\Zip\WindowsNameTransform.cs" />
+    <Compile Include="SharpZipLib\Zip\ZipConstants.cs" />
+    <Compile Include="SharpZipLib\Zip\ZipEntry.cs" />
+    <Compile Include="SharpZipLib\Zip\ZipEntryFactory.cs" />
+    <Compile Include="SharpZipLib\Zip\ZipException.cs" />
+    <Compile Include="SharpZipLib\Zip\ZipExtraData.cs" />
+    <Compile Include="SharpZipLib\Zip\ZipFile.cs" />
+    <Compile Include="SharpZipLib\Zip\ZipHelperStream.cs" />
+    <Compile Include="SharpZipLib\Zip\ZipNameTransform.cs" />
+    <Compile Include="SharpZipLib\Zip\ZipOutputStream.cs" />
+    <Compile Include="Games\Fallout3\Tools\TESsnip\DataEdit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Games\Fallout3\Tools\TESsnip\DataEdit.Designer.cs">
+      <DependentUpon>DataEdit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Games\Fallout3\Tools\TESsnip\HeaderEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Games\Fallout3\Tools\TESsnip\HeaderEditor.Designer.cs">
+      <DependentUpon>HeaderEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Games\Fallout3\Tools\TESsnip\SearchForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Games\Fallout3\Tools\TESsnip\SearchForm.Designer.cs">
+      <DependentUpon>SearchForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Games\Fallout3\Tools\TESsnip\TESsnip.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Games\Fallout3\Tools\TESsnip\TESsnip.Designer.cs">
+      <DependentUpon>TESsnip.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Games\Fallout3\Tools\TESsnip\TESsnipParser.cs" />
+    <Compile Include="TypeConverter.cs" />
+    <Compile Include="Util\FileUtil.cs" />
+    <Compile Include="Util\Set.cs" />
+    <Compile Include="Util\SettingsList.cs" />
+    <Compile Include="Util\SortedList.cs" />
+    <Compile Include="Util\SystemUtil.cs" />
+    <Compile Include="Util\TextUtil.cs" />
+    <Compile Include="Util\ThreadSafeSevenZipExtractor.cs" />
+    <Compile Include="Util\UacUtil.cs" />
+    <Compile Include="Util\WindowPositions.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="data\7z-32bit.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="data\fomm.chm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="app.config" />
+    <Content Include="data\Fallout3\ModConfig1.0.xsd">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="data\Fallout3\ModConfig2.0.xsd">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="data\Fallout3\ModConfig3.0.xsd">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="data\Fallout3\ModConfig4.0.xsd">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="data\ModConfig5.0.xsd">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="data\Fallout3\ModConfig5.0.xsd">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="data\FalloutNV\ModConfig5.0.xsd">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Resources\fomm02.ico" />
+    <None Include="Resources\RedSquare.png" />
+    <None Include="Resources\YellowSquare.png" />
+    <None Include="Resources\GreenSquare.png" />
+    <Content Include="data\Readme - ChinhDo Transactions.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="data\Readme - fomm.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="data\xlive.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="Resources\arrow_down_black_small.png" />
+    <None Include="Resources\arrow_up_black_small.png" />
+    <None Include="Resources\EnumItem.bmp" />
+    <None Include="Resources\Properties.bmp" />
+    <None Include="Resources\xml.bmp" />
+    <None Include="Resources\boldhs.png" />
+    <None Include="Resources\ItalicHS.png" />
+    <None Include="Resources\justify_centre.png" />
+    <None Include="Resources\justify_left.png" />
+    <None Include="Resources\justify_right.png" />
+    <None Include="Resources\strikeout.png" />
+    <None Include="Resources\underline.png" />
+    <Content Include="data\Fallout3\TESsnip\ScriptCompiler\ScriptFunctions.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="data\Fallout3\TESsnip\ScriptCompiler\ScriptFunctionsFormat.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="Resources\info.png" />
+    <None Include="Resources\error.png" />
+    <None Include="Resources\Warning.png" />
+    <None Include="Resources\help.png" />
+    <Content Include="ShaderDisasm.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="data\Fallout3\TESsnip\RecordStructure.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="data\Fallout3\TESsnip\RecordStructureFormat.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ChinhDo.Transactions.FileManager\ChinhDo.Transactions.FileManager.csproj">
+      <Project>{E824ACBB-90C8-4C60-9D52-9C8020E98E3E}</Project>
+      <Name>ChinhDo.Transactions.FileManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GeMod.Interface\GeMod.Interface.csproj">
+      <Project>{EDF2CF2D-47B1-4851-889E-7F365C9FDDA3}</Project>
+      <Name>GeMod.Interface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Transactions\Transactions.csproj">
+      <Project>{1C72A5C2-0BA6-44AD-A4ED-0F3FAB9C1E54}</Project>
+      <Name>Transactions</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

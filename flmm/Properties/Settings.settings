@@ -1,0 +1,198 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Fomm.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="fallout3LastBSAUnpackPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="fallout3BSABrowserPanelSplit" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="fallout3MasterListUpdateUrl" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">http://better-oblivion-sorting-software.googlecode.com/svn/data/boss-fallout/masterlist.txt</Value>
+    </Setting>
+    <Setting Name="LastBuildFOMODFromFolderPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="fallout3LaunchCommand" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="LastPFPPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="LastPFPSourcesPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="pfpOutputPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="fallout3LaunchCommandArgs" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="MainFormPanelSplit" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="MainFormColumnWidths" Type="Fomm.Util.SettingsList" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="fallout3ModDirectory" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="checkForNewModVersions" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="checkForNewModVersionsInitialized" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="nexusLoginKey" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="nexusUsername" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="PackageManagerPanelSplit" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="LastUpdateCheck" Type="System.DateTime" Scope="User">
+      <Value Profile="(Default)">2000-01-01</Value>
+    </Setting>
+    <Setting Name="fallout3IgnoreDLC" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="SelectedAddFomodAction" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="pfpCompressionFormat" Type="SevenZip.OutArchiveFormat" Scope="User">
+      <Value Profile="(Default)">SevenZip</Value>
+    </Setting>
+    <Setting Name="pfpCompressionLevel" Type="SevenZip.CompressionLevel" Scope="User">
+      <Value Profile="(Default)">Ultra</Value>
+    </Setting>
+    <Setting Name="fomodCompressionLevel" Type="SevenZip.CompressionLevel" Scope="User">
+      <Value Profile="(Default)">Ultra</Value>
+    </Setting>
+    <Setting Name="fomodCompressionFormat" Type="SevenZip.OutArchiveFormat" Scope="User">
+      <Value Profile="(Default)">SevenZip</Value>
+    </Setting>
+    <Setting Name="PackageManagerShowsGroups" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="DisableIPC" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="NoUACCheck" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="UseDocsFolder" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="fallout3WorkingDirectory" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="fallout3DoneSetup" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="pluginGroups" Type="Fomm.Util.SettingsList" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;string&gt;Items&lt;/string&gt;
+  &lt;string&gt;Items/Guns&lt;/string&gt;
+  &lt;string&gt;Items/Armor&lt;/string&gt;
+  &lt;string&gt;Items/Misc&lt;/string&gt;
+  &lt;string&gt;Locations&lt;/string&gt;
+  &lt;string&gt;Locations/Houses&lt;/string&gt;
+  &lt;string&gt;Locations/Interiors&lt;/string&gt;
+  &lt;string&gt;Locations/Exteriors&lt;/string&gt;
+  &lt;string&gt;Gameplay&lt;/string&gt;
+  &lt;string&gt;Gameplay/Perks&lt;/string&gt;
+  &lt;string&gt;Gameplay/Realism&lt;/string&gt;
+  &lt;string&gt;Gameplay/Combat&lt;/string&gt;
+  &lt;string&gt;Gameplay/Loot&lt;/string&gt;
+  &lt;string&gt;Gameplay/Enemies&lt;/string&gt;
+  &lt;string&gt;Quests&lt;/string&gt;
+  &lt;string&gt;Companions&lt;/string&gt;
+  &lt;string&gt;ModResource&lt;/string&gt;
+  &lt;string&gt;UI&lt;/string&gt;
+  &lt;string&gt;Music&lt;/string&gt;
+  &lt;string&gt;Replacers&lt;/string&gt;
+  &lt;string&gt;Replacers/Meshes&lt;/string&gt;
+  &lt;string&gt;Replacers/Textures&lt;/string&gt;
+  &lt;string&gt;Replacers/Sounds&lt;/string&gt;
+  &lt;string&gt;Replacers/Shaders&lt;/string&gt;
+  &lt;string&gt;Tweaks&lt;/string&gt;
+  &lt;string&gt;Fixes&lt;/string&gt;
+  &lt;string&gt;Cosmetic&lt;/string&gt;
+  &lt;string&gt;Cosmetic/Races&lt;/string&gt;
+  &lt;string&gt;Cosmetic/Eyes&lt;/string&gt;
+  &lt;string&gt;Cosmetic/Hair&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
+    </Setting>
+    <Setting Name="windowPositions" Type="Fomm.Util.WindowPositions" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;WindowPositions /&gt;</Value>
+    </Setting>
+    <Setting Name="PackageManagerColumnWidths" Type="Fomm.Util.SettingsList" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;string&gt;200&lt;/string&gt;
+  &lt;string&gt;100&lt;/string&gt;
+  &lt;string&gt;100&lt;/string&gt;
+  &lt;string&gt;100&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
+    </Setting>
+    <Setting Name="fallout3InstallInfoDirectory" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="migratedFromPre0130" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="falloutNewVegasModDirectory" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="falloutNewVegasInstallInfoDirectory" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="falloutNewVegasWorkingDirectory" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="falloutNewVegasLaunchCommand" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="falloutNewVegasLaunchCommandArgs" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="falloutNewVegasDoneSetup" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="falloutNewVegasMasterListUpdateUrl" Type="System.String" Scope="User">
+      <Value Profile="(Default)">http://better-oblivion-sorting-software.googlecode.com/svn/data/boss-fallout-nv/masterlist.txt</Value>
+    </Setting>
+    <Setting Name="rememberGameMode" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="rememberedGameMode" Type="Fomm.Games.SupportedGameModes" Scope="User">
+      <Value Profile="(Default)">Fallout3</Value>
+    </Setting>
+    <Setting Name="settingsUpgraded" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="falloutNewVegasUnReadOnlySettingsFiles" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="falloutNewVegasAskAboutReadOnlySettingsFiles" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="fallout3BoldifyESMs" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="falloutNewVegasBoldifyESMs" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="addMissingInfoToMods" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="addMissingInfoToModsInitialized" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
