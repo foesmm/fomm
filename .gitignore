@@ -1,5 +1,9 @@
 *.tlog
 *.obj
+*.sdf
+*.suo
+*.opensdf
+*.cache
 /debug/
 /release/
 /_UpgradeReport_Files/
