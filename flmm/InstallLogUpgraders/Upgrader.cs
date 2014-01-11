@@ -5,9 +5,6 @@ using Fomm.PackageManager;
 using fomm.Transactions;
 using System.Windows.Forms;
 using Fomm.PackageManager.ModInstallLog;
-#if TRACE
-using System.Diagnostics;
-#endif
 
 namespace Fomm.InstallLogUpgraders
 {
@@ -75,9 +72,6 @@ namespace Fomm.InstallLogUpgraders
 		/// if the user cancelled.</returns>
 		internal bool PerformUpgrade()
 		{
-#if TRACE 
-			Trace.WriteLine("Beginning Install Log Upgrade.");
-#endif
 			m_tfmFileManager = new TxFileManager();
 			bool booComplete = false;
 			using (TransactionScope tsTransaction = new TransactionScope())

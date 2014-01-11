@@ -6,9 +6,6 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
-#if TRACE
-using System.Diagnostics;
-#endif
 
 namespace Fomm.Games
 {
@@ -117,16 +114,8 @@ namespace Fomm.Games
 		{
 			DriveInfo[] difDrives = DriveInfo.GetDrives();
 
-#if TRACE
-			string strLastDrive = null;
-			try
-			{
-#endif
 			foreach (DriveInfo difDrive in difDrives)
 			{
-#if TRACE
-					strLastDrive = difDrive.Name;
-#endif
 				if (difDrive.DriveType == DriveType.CDRom)
 					continue;
 				string strFound = Search(difDrive.Name);
@@ -136,14 +125,6 @@ namespace Fomm.Games
 					return;
 				}
 			}
-#if TRACE
-			}
-			catch (Exception e)
-			{
-				Trace.WriteLine("Exception while searching " + strLastDrive + ":");
-				Program.TraceException(e);
-			}
-#endif
 		}
 
 		/// <summary>
@@ -169,13 +150,6 @@ namespace Fomm.Games
 					//we don't have access to the path we are trying to search, so let's bail
 					return null;
 				}
-#if TRACE
-				catch (Exception ex)
-				{
-					Trace.WriteLine("Exception while searching for " + strSearchFile + " in " + p_strPath + ":");
-					Program.TraceException(ex);
-				}
-#endif
 			}
 			string[] strDirectories = Directory.GetDirectories(p_strPath);
 			foreach (string strDirectory in strDirectories)

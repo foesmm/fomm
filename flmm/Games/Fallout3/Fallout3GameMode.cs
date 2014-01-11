@@ -17,9 +17,6 @@ using Fomm.Games.Fallout3.Tools.CriticalRecords;
 using Fomm.Games.Fallout3.PluginFormatProviders;
 using Fomm.Games.Fallout3.Tools.TESsnip;
 using Fomm.Commands;
-#if TRACE
-using System.Diagnostics;
-#endif
 
 namespace Fomm.Games.Fallout3
 {
@@ -474,43 +471,13 @@ namespace Fomm.Games.Fallout3
 		/// </summary>
 		public Fallout3GameMode()
 		{
-#if TRACE
-			Trace.Write("Creating Settings File Set...");
-#endif
 			m_sfsSettingsFiles = CreateSettingsFileSet();
-#if TRACE
-			Trace.WriteLine("Done.");
-			Trace.Write("Creating Plugin Manager...");
-#endif
 			m_pmgPluginManager = CreatePluginManager();
-#if TRACE
-			Trace.WriteLine("Done.");
-			Trace.Write("Setting up Plugin Format Providers...");
-#endif
 			SetupPluginFormatProviders();
-#if TRACE
-			Trace.WriteLine("Done.");
-			Trace.Write("Setting up paths...");
-#endif
 			SetupPaths();
-#if TRACE
-			Trace.WriteLine("Done.");
-			Trace.Write("Setting up Settings Pages...");
-#endif
 			SetupSettingsPages();
-#if TRACE
-			Trace.WriteLine("Done.");
-			Trace.Write("Setting up Tools...");
-#endif
 			SetupTools();
-#if TRACE
-			Trace.WriteLine("Done.");
-			Trace.Write("Setting up Launch Commands...");
-#endif
 			SetupLaunchCommands();
-#if TRACE
-			Trace.WriteLine("Done.");
-#endif
 		}
 
 		#endregion
@@ -1481,10 +1448,6 @@ class Script : Fallout3BaseScript {
 		/// <lang cref="false"/> otherwise.</returns>
 		public override bool SetWorkingDirectory(out string p_strErrorMessage)
 		{
-#if TRACE
-			Trace.WriteLine("Looking for Fallout 3.");
-			Trace.Indent();
-#endif
 			string strWorkingDirectory = Properties.Settings.Default.fallout3WorkingDirectory;
 
 			if (String.IsNullOrEmpty(strWorkingDirectory) || !Directory.Exists(strWorkingDirectory))
@@ -1520,10 +1483,6 @@ class Script : Fallout3BaseScript {
 			Directory.SetCurrentDirectory(strWorkingDirectory);
 			Properties.Settings.Default.fallout3WorkingDirectory = strWorkingDirectory;
 			Properties.Settings.Default.Save();
-#if TRACE
-			Trace.WriteLine("Found: " + Path.GetFullPath("."));
-			Trace.Unindent();
-#endif
 			p_strErrorMessage = null;
 			return true;
 		}
@@ -1534,16 +1493,8 @@ class Script : Fallout3BaseScript {
 		/// </summary>
 		protected void CheckForDLCs()
 		{
-#if TRACE
-			Trace.WriteLine("Checking DLC location.");
-			Trace.Indent();
-#endif
-
 			if (Directory.Exists(DLCDirectory) && !Properties.Settings.Default.fallout3IgnoreDLC)
 			{
-#if TRACE
-				Trace.Write("Anchorage...");
-#endif
 				if (Program.GetFiles(DLCDirectory, "Anchorage.esm", SearchOption.AllDirectories).Length == 1)
 				{
 					if (!File.Exists("data\\Anchorage.esm") && !File.Exists("data\\Anchorage - Main.bsa") && !File.Exists("data\\Anchorage - Sounds.bsa"))
@@ -1572,10 +1523,6 @@ class Script : Fallout3BaseScript {
 						}
 					}
 				}
-#if TRACE
-				Trace.WriteLine("Done");
-				Trace.Write("The Pitt...");
-#endif
 				if (Program.GetFiles(DLCDirectory, "ThePitt.esm", SearchOption.AllDirectories).Length == 1)
 				{
 					if (!File.Exists("data\\ThePitt.esm") && !File.Exists("data\\ThePitt - Main.bsa") && !File.Exists("data\\ThePitt - Sounds.bsa"))
@@ -1604,11 +1551,8 @@ class Script : Fallout3BaseScript {
 						}
 					}
 				}
-#if TRACE
-				Trace.WriteLine("Done.");
-				Trace.Write("Broken Steel...");
-#endif
-				if (Program.GetFiles(DLCDirectory, "BrokenSteel.esm", SearchOption.AllDirectories).Length == 1)
+
+        if (Program.GetFiles(DLCDirectory, "BrokenSteel.esm", SearchOption.AllDirectories).Length == 1)
 				{
 					if (!File.Exists("Data\\BrokenSteel.esm"))
 					{
@@ -1670,11 +1614,8 @@ class Script : Fallout3BaseScript {
 						}
 					}
 				}
-#if TRACE
-				Trace.WriteLine("Done.");
-				Trace.Write("Point Lookout...");
-#endif
-				if (Program.GetFiles(DLCDirectory, "PointLookout.esm ", SearchOption.AllDirectories).Length == 1)
+
+        if (Program.GetFiles(DLCDirectory, "PointLookout.esm ", SearchOption.AllDirectories).Length == 1)
 				{
 					if (!File.Exists("data\\PointLookout.esm ") && !File.Exists("data\\PointLookout - Main.bsa") && !File.Exists("data\\PointLookout - Sounds.bsa"))
 					{
@@ -1702,11 +1643,8 @@ class Script : Fallout3BaseScript {
 						}
 					}
 				}
-#if TRACE
-				Trace.WriteLine("Done.");
-				Trace.Write("Zeta...");
-#endif
-				if (Program.GetFiles(DLCDirectory, "Zeta.esm ", SearchOption.AllDirectories).Length == 1)
+
+        if (Program.GetFiles(DLCDirectory, "Zeta.esm ", SearchOption.AllDirectories).Length == 1)
 				{
 					if (!File.Exists("data\\Zeta.esm ") && !File.Exists("data\\Zeta - Main.bsa") && !File.Exists("data\\Zeta - Sounds.bsa"))
 					{
@@ -1734,13 +1672,7 @@ class Script : Fallout3BaseScript {
 						}
 					}
 				}
-#if TRACE
-				Trace.WriteLine("Done.");
-#endif
 			}
-#if TRACE
-			Trace.Unindent();
-#endif
 		}
 
 		/// <summary>

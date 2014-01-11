@@ -17,9 +17,6 @@ using Fomm.Games.FalloutNewVegas.PluginFormatProviders;
 using Microsoft.Win32;
 using Fomm.Commands;
 using System.Text.RegularExpressions;
-#if TRACE
-using System.Diagnostics;
-#endif
 
 namespace Fomm.Games.FalloutNewVegas
 {
@@ -96,9 +93,6 @@ namespace Fomm.Games.FalloutNewVegas
 		{
 			get
 			{
-#if TRACE
-				Trace.WriteLine("NVSE Path: " + Path.GetFullPath("nvse_loader.exe") + " => " + File.Exists("nvse_loader.exe"));
-#endif
 				if (String.IsNullOrEmpty(Properties.Settings.Default.falloutNewVegasLaunchCommand) && File.Exists("nvse_loader.exe"))
 					return new Command<MainForm>("Launch NVSE", "Launches Fallout: New Vegas using NVSE.", LaunchGame);
 				return new Command<MainForm>("Launch Fallout: NV", "Launches Fallout: New Vegas using NVSE.", LaunchGame);
@@ -359,86 +353,38 @@ namespace Fomm.Games.FalloutNewVegas
 		/// <exception cref="Exception">Thrown is the id cannot be found.</exception>
 		protected Int32 GetSteamAppId()
 		{
-#if TRACE
-			Trace.WriteLine("Looking for Steam App Id.");
-			Trace.Indent();
-#endif
 			RegistryKey keyUninstall = Registry.LocalMachine.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Uninstall");
-#if TRACE
-			Trace.WriteLine("Uninstall key: " + keyUninstall.ToString());
-			Trace.Indent();
-#endif
 			string[] strNames = keyUninstall.GetSubKeyNames();
 			foreach (string strKeyName in strNames)
 			{
-#if TRACE
-				Trace.WriteLine("App key: " + strKeyName);
-#endif
 				if (strKeyName.StartsWith("steam app", StringComparison.InvariantCultureIgnoreCase))
 				{
 					string strDisplayName = (string)keyUninstall.OpenSubKey(strKeyName).GetValue("Displayname");
-#if TRACE
-					Trace.Indent();
-					Trace.WriteLine("Found Steam App: " + strDisplayName);
-#endif
 					if ("fallout: new vegas".Equals(strDisplayName, StringComparison.InvariantCultureIgnoreCase))
 					{
-#if TRACE
-						Trace.Write("Found FO:NV Id (" + strKeyName.Split(' ')[2] + "): ");
-#endif
 						Int32 intAppId = -1;
 						if (Int32.TryParse(strKeyName.Split(' ')[2], out intAppId))
 						{
-#if TRACE
-							Trace.WriteLine(intAppId.ToString());
-							Trace.Unindent();
-							Trace.Unindent();
-							Trace.Unindent();
-#endif
 							return intAppId;
 						}
-#if TRACE
-						Trace.WriteLine("Unparsable");
-#endif
 					}
-#if TRACE
-					Trace.Unindent();
-#endif
 				}
 			}
-#if TRACE
-			Trace.Unindent();
-			Trace.WriteLine("Not Found.");
-			Trace.WriteLine("Check for VDF file.");
-#endif
-			string strInstallScriptPath = Path.Combine(Environment.CurrentDirectory, "InstallScript.vdf");
+
+      string strInstallScriptPath = Path.Combine(Environment.CurrentDirectory, "InstallScript.vdf");
 			if (File.Exists(strInstallScriptPath))
 			{
 				Regex rgxAppId = new Regex(@"HKEY_LOCAL_MACHINE\\\\Software\\\\Valve\\\\Steam\\\\Apps\\\\(\d+)");
 				string strInstallScript = File.ReadAllText(strInstallScriptPath);
 				if (rgxAppId.IsMatch(strInstallScript))
 				{
-#if TRACE
-						Trace.Write("Found FO:NV Id (" + rgxAppId.Match(strInstallScript).Groups[1].Value + "): ");
-#endif
 					Int32 intAppId = -1;
 					if (Int32.TryParse(rgxAppId.Match(strInstallScript).Groups[1].Value, out intAppId))
 					{
-#if TRACE
-							Trace.WriteLine(intAppId.ToString());
-							Trace.Unindent();
-#endif
 						return intAppId;
 					}
-#if TRACE
-						Trace.WriteLine("Unparsable");
-#endif
 				}
 			}
-#if TRACE
-			Trace.WriteLine("Not Found.");
-			Trace.Unindent();
-#endif
 			throw new Exception("Unable to determine Steam App Id for Fallout: New Vegas.");
 		}
 
@@ -865,10 +811,6 @@ namespace Fomm.Games.FalloutNewVegas
 		/// <lang cref="false"/> otherwise.</returns>
 		public override bool SetWorkingDirectory(out string p_strErrorMessage)
 		{
-#if TRACE
-			Trace.WriteLine("Looking for Fallout New Vegas.");
-			Trace.Indent();
-#endif
 			string strWorkingDirectory = Properties.Settings.Default.falloutNewVegasWorkingDirectory;
 
 			if (String.IsNullOrEmpty(strWorkingDirectory) || !Directory.Exists(strWorkingDirectory))
@@ -904,9 +846,6 @@ namespace Fomm.Games.FalloutNewVegas
 			Directory.SetCurrentDirectory(strWorkingDirectory);
 			Properties.Settings.Default.falloutNewVegasWorkingDirectory = strWorkingDirectory;
 			Properties.Settings.Default.Save();
-#if TRACE
-			Trace.WriteLine("Found: " + Path.GetFullPath("."));
-#endif
 			p_strErrorMessage = null;
 			return true;
 		}
