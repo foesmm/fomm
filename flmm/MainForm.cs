@@ -10,17 +10,11 @@ using System.Text.RegularExpressions;
 using Fomm.PackageManager.ModInstallLog;
 using Fomm.Games;
 using Fomm.Commands;
-#if TRACE
-using System.Diagnostics;
-#endif
 
 namespace Fomm
 {
 	public partial class MainForm : Form
 	{
-#if TRACE
-		private bool m_booListedPlugins = false;
-#endif
 		private bool m_booChangeGameMode = false;
 		private bool AlphaSortMode = false;
 		private List<string> m_lstIgnoreReadOnly = new List<string>();
@@ -97,9 +91,6 @@ namespace Fomm
 			Properties.Settings.Default.windowPositions.GetWindowPosition("MainForm", this);
 
 			Text += " (" + Program.Version + ") - " + Program.GameMode.GameName;
-#if TRACE
-			Text += " TRACE";
-#endif
 
 			if (fomod != null)
 			{
@@ -338,14 +329,6 @@ namespace Fomm
 
 		public void RefreshPluginList()
 		{
-#if TRACE
-			if (!m_booListedPlugins)
-			{
-				Trace.WriteLine("");
-				Trace.WriteLine("Refreshing Plugin List: ");
-				Trace.Indent();
-			}
-#endif
 			RefreshingList = true;
 			lvEspList.BeginUpdate();
 			lvEspList.Items.Clear();
@@ -364,10 +347,6 @@ namespace Fomm
 			ListViewItem lviPlugin = null;
 			foreach (string strPlugin in lstPluginFilenames)
 			{
-#if TRACE
-				if (!m_booListedPlugins)
-					Trace.WriteLine(strPlugin);
-#endif
 				pftFormat = m_pfmPluginFormatManager.GetFormat(Path.GetFileName(strPlugin));
 				lviPlugin = new ListViewItem(Path.GetFileName(strPlugin));
 				lviPlugin.Font = pftFormat.ResolveFont(lviPlugin.Font);
@@ -382,14 +361,6 @@ namespace Fomm
 			RefreshIndexCounts();
 			lvEspList.EndUpdate();
 			RefreshingList = false;
-#if TRACE
-			if (!m_booListedPlugins)
-			{
-				m_booListedPlugins = true;
-				Trace.Unindent();
-				Trace.Flush();
-			}
-#endif
 		}
 
 		#region toolbuttons
@@ -455,13 +426,18 @@ namespace Fomm
 		private bool RefreshingList;
 		private void lvEspList_ItemChecked(object sender, ItemCheckedEventArgs e)
 		{
-			if (RefreshingList)
-				return;
-			if (e.Item.Checked)
-				Program.GameMode.PluginManager.ActivatePlugin(e.Item.Text);
-			else
-				Program.GameMode.PluginManager.DeactivatePlugin(e.Item.Text);
-			RefreshIndexCounts();
+      if (!RefreshingList)
+      {
+        if (e.Item.Checked)
+        {
+          Program.GameMode.PluginManager.ActivatePlugin(e.Item.Text);
+        }
+        else
+        {
+          Program.GameMode.PluginManager.DeactivatePlugin(e.Item.Text);
+        }
+        RefreshIndexCounts();
+      }
 		}
 
 		private void sendToTopToolStripMenuItem_Click(object sender, EventArgs e)

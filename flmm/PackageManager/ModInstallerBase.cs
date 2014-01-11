@@ -232,9 +232,6 @@ namespace Fomm.PackageManager
 				}
 				catch (Exception e)
 				{
-#if TRACE
-					Program.TraceException(e);
-#endif
 					StringBuilder stbError = new StringBuilder(e.Message);
 					if (e is FileNotFoundException)
 						stbError.Append(" (" + ((FileNotFoundException)e).FileName + ")");

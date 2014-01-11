@@ -6,9 +6,6 @@ using System.Collections.Generic;
 using ICSharpCode.SharpZipLib.Checksums;
 using System.Text.RegularExpressions;
 using Fomm.PackageManager.ModInstallLog;
-#if TRACE
-using System.Diagnostics;
-#endif
 
 namespace Fomm.InstallLogUpgraders
 {
@@ -41,9 +38,6 @@ namespace Fomm.InstallLogUpgraders
 		/// </remarks>
 		protected override void DoUpgrade()
 		{
-#if TRACE
-			Trace.WriteLine("Upgrading from 0.0.0.0");
-#endif
 			InstallLog.Current.Reset();
 
 			string[] strModInstallFiles = Directory.GetFiles(Program.GameMode.ModDirectory, "*.XMl", SearchOption.TopDirectoryOnly);
@@ -56,10 +50,6 @@ namespace Fomm.InstallLogUpgraders
 			fomod fomodMod = null;
 			foreach (string strModInstallLog in strModInstallFiles)
 			{
-#if TRACE
-				Trace.WriteLine("Upgrading: " + strModInstallLog);
-				Trace.Indent();
-#endif
 				if (ProgressWorker.Cancelled())
 					return;
 
@@ -68,9 +58,6 @@ namespace Fomm.InstallLogUpgraders
 				{
 					xmlModInstallLog = new XmlDocument();
 					xmlModInstallLog.Load(strModInstallLog);
-#if TRACE
-				Trace.WriteLine("Parsed");
-#endif
 					//figure out how much work we need to do for this mod
 					XmlNodeList xnlFiles = xmlModInstallLog.SelectNodes("descendant::installedFiles/*");
 					XmlNodeList xnlIniEdits = xmlModInstallLog.SelectNodes("descendant::iniEdits/*");
@@ -84,38 +71,20 @@ namespace Fomm.InstallLogUpgraders
 					strModBaseName = fomodMod.BaseName;
 					InstallLog.Current.AddMod(fomodMod);
 
-#if TRACE
-				Trace.Write("Upgrading files...");
-#endif
 					m_dicDefaultFileOwners = new Dictionary<string, string>();
 					UpgradeInstalledFiles(xmlModInstallLog, fomodMod, strModBaseName);
 					//we now have to tell all the remaining default owners that are are indeed
 					// the owners
 					foreach (KeyValuePair<string, string> kvpOwner in m_dicDefaultFileOwners)
 						MakeOverwrittenModOwner(kvpOwner.Value, kvpOwner.Key);
-#if TRACE
-				Trace.WriteLine("Done.");
-#endif
 					if (ProgressWorker.Cancelled())
 						return;
 
-#if TRACE
-				Trace.Write("Upgrading INI edits...");
-#endif
 					UpgradeIniEdits(xmlModInstallLog, strModBaseName);
-#if TRACE
-				Trace.WriteLine("Done.");
-#endif
 					if (ProgressWorker.Cancelled())
 						return;
 
-#if TRACE
-				Trace.Write("Upgrading SDP edits...");
-#endif
 					UpgradeSdpEdits(xmlModInstallLog, strModBaseName);
-#if TRACE
-				Trace.WriteLine("Done.");
-#endif
 					if (ProgressWorker.Cancelled())
 						return;
 
@@ -124,10 +93,6 @@ namespace Fomm.InstallLogUpgraders
 					FileManager.Move(strModInstallLog, strModInstallLog + ".bak");
 				}
 				ProgressWorker.StepOverallProgress();
-#if TRACE
-				Trace.Unindent();
-				Trace.WriteLine("Done: " + strModInstallLog);
-#endif
 			}
 			InstallLog.Current.SetInstallLogVersion(InstallLog.CURRENT_VERSION);
 			InstallLog.Current.Save();

@@ -508,10 +508,6 @@ namespace Fomm.PackageManager
 			catch (Win32Exception ex)
 			{
 				MessageBox.Show(this, "Cannot find programme to open: " + mod.Website, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-#if TRACE
-				Trace.WriteLine("Cannot find programme to open: " + mod.Website);
-				Program.TraceException(ex);
-#endif
 			}
 		}
 

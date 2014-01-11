@@ -4,9 +4,6 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 using fomm.Transactions;
-#if TRACE
-using System.Diagnostics;
-#endif
 
 namespace ChinhDo.Transactions
 {
@@ -22,20 +19,9 @@ namespace ChinhDo.Transactions
 		static TxFileManager()
 		{
 			_tempFolder = Path.Combine(Path.GetTempPath(), "CdFileMgr");
-#if TRACE
-			Trace.WriteLine("Setting up the TX File Manager.");
-			Trace.WriteLine("Temp Directory: " + _tempFolder);
-			Trace.WriteLine("Temp Directory Exists: " + Directory.Exists(_tempFolder));
-#endif
 			if (!Directory.Exists(_tempFolder))
 			{
-#if TRACE
-				Trace.Write("Creating Temp Directory...");
-#endif
 				Directory.CreateDirectory(_tempFolder);
-#if TRACE
-				Trace.WriteLine("Created: " + Directory.Exists(_tempFolder));
-#endif
 			}
 		}
 
