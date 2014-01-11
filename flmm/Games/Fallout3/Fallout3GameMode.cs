@@ -25,12 +25,6 @@ namespace Fomm.Games.Fallout3
 	/// </summary>
 	public class Fallout3GameMode : GameMode
 	{
-    protected struct LoadOrderInfo
-    {
-      public bool active;
-      public int idx;
-    }
-
     /// <summary>
 		/// This class provides strongly-typed access to this game mode's settings files.
 		/// </summary>
@@ -334,6 +328,14 @@ namespace Fomm.Games.Fallout3
 			}
 		}
 
+    protected ColorizerPluginFormatProvider ColorizerPluginFormatProider
+    {
+      set
+      {
+        m_dicPluginFormatProviders["Colorize"] = value;
+      }
+    }
+
 		#region Tool Injection
 
 		/// <summary>
@@ -612,83 +614,36 @@ namespace Fomm.Games.Fallout3
 
 		#endregion
 
-		#region Tool Launch Methods
+    #region Tool Launch Methods
 
-		#region Game Launch
+    #region Game Launch
 
     public bool PrelaunchCheckOrder()
     {
       bool retVal = true;
-      LoadOrderInfo loi;
-      Dictionary<string, LoadOrderInfo> lois = new Dictionary<string, LoadOrderInfo>();
       List<string> keys;
       string key;
-      Plugin plgPlugin;
-      List<string> masters;
       int i = 0;
-      int j = 0;
-
-      // Build our plugin list.
-      foreach (string s in PluginManager.OrderedPluginList)
-      {
-        loi.active = PluginManager.IsPluginActive(Path.Combine(Program.GameMode.PluginsPath, s));
-        loi.idx    = i;
-        lois.Add(Path.GetFileName(s).ToLower(), loi);
-        i++;
-      }
 
       // Do checks
-      keys = new List<string>(lois.Keys);
+      keys = new List<string>(this.fullModList.Keys);
       for (i = 0; i < keys.Count; i++)
       {
         if (!retVal)
         {
           break;
         }
-
-        masters = new List<string>();
         key = keys[i];
-        if (lois[key].active)
-        {
-          // Get parent mods
-          plgPlugin = plgPlugin = new Plugin(Path.Combine(Program.GameMode.PluginsPath, key), true);
-          foreach (SubRecord sr in ((Record)plgPlugin.Records[0]).SubRecords)
-          {
-            switch (sr.Name)
-            {
-              case "MAST":
-                masters.Add(sr.GetStrData().ToLower());
-              break;
-            }
-          }
 
-          for (j = 0; j < masters.Count; j++)
-          {
-            if (lois.ContainsKey(masters[j]))
-            {
-              if (lois[masters[j]].active)
-              {
-                if (lois[masters[j]].idx > lois[key].idx)
-                {
-                  MessageBox.Show("The plugin '" + key + "'  is being loaded before its master '" + masters[j] + "'.  Fix the load order to continue.");
-                  retVal = false;
-                  break;
-                }
-              }
-              else
-              {
-                MessageBox.Show("The plugin '" + key + "'  master '" + masters[j] + "' is not active.  Activate it or disable this plugin.");
-                retVal = false;
-                break;
-              }
-            }
-            else
-            {
-              MessageBox.Show("The plugin '" + key + "' is missing a master, '" + masters[j] + "' which it requires.  Deactivate this plugin, or install the missing master.");
-              retVal = false;
-              break;
-            }
-          }
+        switch (getPluginDependencyStatus(key, true))
+        {
+          case 0:
+            retVal = true;
+          break;
+
+          default:
+            retVal = false;
+          break;
         }
       }
 
@@ -1736,28 +1691,6 @@ class Script : Fallout3BaseScript {
 		{
 			string strExt = Path.GetExtension(p_strPath).ToLowerInvariant();
 			return (strExt == ".esp" || strExt == ".esm");
-		}
-
-		/// <summary>
-		/// hecks for any updates that are available for any game-specific components.
-		/// </summary>
-		/// <remarks><lang cref="true"/> if updates were available; otherwise <lang cref="false"/>.</remarks>
-		public override bool CheckForUpdates()
-		{
-			//check for new load order tepmlate
-			Tools.AutoSorter.Fallout3BOSSUpdater bupUpdater = new Tools.AutoSorter.Fallout3BOSSUpdater();
-			Int32 intLOVersion = bupUpdater.GetMasterlistVersion();
-			if (intLOVersion > new Tools.AutoSorter.LoadOrderSorter().GetFileVersion())
-			{
-				if (MessageBox.Show("A new version of the load order template is available: Release " + intLOVersion +
-					"\nDo you wish to download?", "Message", MessageBoxButtons.YesNo) == DialogResult.Yes)
-				{
-					bupUpdater.UpdateMasterlist(Fomm.Games.Fallout3.Tools.AutoSorter.LoadOrderSorter.LoadOrderTemplatePath);
-					MessageBox.Show("The load order template was updated.", "Update Complete.", MessageBoxButtons.OK, MessageBoxIcon.Information);
-				}
-				return true;
-			}
-			return false;
 		}
 	}
 }

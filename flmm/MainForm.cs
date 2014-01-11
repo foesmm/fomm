@@ -193,24 +193,26 @@ namespace Fomm
         }
       }
 
+      Program.GameMode.buildPluginList();
       RefreshPluginList();
 			exportLoadOrder(Path.Combine(Program.GameMode.InstallInfoDirectory, "load order backup.txt"));
 		}
 
 		private void lvEspList_DragDrop(object sender, DragEventArgs e)
 		{
-			if (AlphaSortMode)
-			{
-				MessageBox.Show("Cannot change load order when sorting by file name", "Error");
-				return;
-			}
-
-      for (int i = 0; i < lvEspList.Items.Count; i++)
+      if (AlphaSortMode)
       {
-        Program.GameMode.PluginManager.SetLoadOrder(Path.Combine(Program.GameMode.PluginsPath, lvEspList.Items[i].Text), i);
+        MessageBox.Show("Cannot change load order when sorting by file name", "Error");
       }
+      else
+      {
+        for (int i = 0; i < lvEspList.Items.Count; i++)
+        {
+          Program.GameMode.PluginManager.SetLoadOrder(Path.Combine(Program.GameMode.PluginsPath, lvEspList.Items[i].Text), i);
+        }
 
-			RefreshIndexCounts();
+        RefreshIndexCounts();
+      }
 		}
 
 		private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -226,7 +228,7 @@ namespace Fomm
 			}
 			if (Application.OpenForms.Count > 1)
 			{
-				MessageBox.Show("Please close all utility windows before closing the programme.");
+				MessageBox.Show("Please close all utility windows before closing the program.");
 				e.Cancel = true;
 				return;
 			}
@@ -352,8 +354,34 @@ namespace Fomm
             }
           }
 				}
+        Program.GameMode.buildPluginList();
+        rerunPluginFormatters();
 			}
 		}
+
+    protected void rerunPluginFormatters()
+    {
+      PluginFormat pftFormat = null;
+
+      lvEspList.BeginUpdate();
+
+      foreach (ListViewItem lviPlugin in lvEspList.Items)
+      {
+        pftFormat = m_pfmPluginFormatManager.GetFormat(Path.GetFileName(lviPlugin.Text));
+
+        lviPlugin.Font = pftFormat.ResolveFont(lviPlugin.Font);
+        if (pftFormat.Colour.HasValue)
+        {
+          lviPlugin.ForeColor = pftFormat.Colour.Value;
+        }
+
+        if (pftFormat.Highlight.HasValue)
+        {
+          lviPlugin.BackColor = pftFormat.Highlight.Value;
+        }
+      }
+      lvEspList.EndUpdate();
+    }
 
 		public void RefreshPluginList()
 		{

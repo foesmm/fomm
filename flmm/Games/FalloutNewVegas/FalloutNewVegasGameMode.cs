@@ -236,6 +236,7 @@ namespace Fomm.Games.FalloutNewVegas
 		{
 			base.SetupPluginFormatProviders();
 			BoldESMPluginFormatProvider = new BoldESMPluginFormatProvider();
+      ColorizerPluginFormatProider = new ColorizerPluginFormatProvider();
 		}
 
 		/// <summary>
@@ -848,28 +849,6 @@ namespace Fomm.Games.FalloutNewVegas
 			Properties.Settings.Default.Save();
 			p_strErrorMessage = null;
 			return true;
-		}
-
-		/// <summary>
-		/// hecks for any updates that are available for any game-specific components.
-		/// </summary>
-		/// <remarks><lang cref="true"/> if updates were available; otherwise <lang cref="false"/>.</remarks>
-		public override bool CheckForUpdates()
-		{
-			//check for new load order tepmlate
-			Tools.AutoSorter.FalloutNewVegasBOSSUpdater bupUpdater = new Tools.AutoSorter.FalloutNewVegasBOSSUpdater();
-			Int32 intLOVersion = bupUpdater.GetMasterlistVersion();
-			if (intLOVersion > new Fallout3.Tools.AutoSorter.LoadOrderSorter().GetFileVersion())
-			{
-				if (MessageBox.Show("A new version of the load order template is available: Release " + intLOVersion +
-					"\nDo you wish to download?", "Message", MessageBoxButtons.YesNo) == DialogResult.Yes)
-				{
-					bupUpdater.UpdateMasterlist(Fomm.Games.Fallout3.Tools.AutoSorter.LoadOrderSorter.LoadOrderTemplatePath);
-					MessageBox.Show("The load order template was updated.", "Update Complete.", MessageBoxButtons.OK, MessageBoxIcon.Information);
-				}
-				return true;
-			}
-			return false;
 		}
 	}
 }
