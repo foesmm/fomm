@@ -2,7 +2,7 @@
  *    Fallout Mod Manager
  *    Copyright (C) 2008, 2009  Timeslip
  *    Copyright (C) 2010  Timeslip, Q
- *    Copyright (C) 2011, 2012  Prideslayer
+ *    Copyright (C) 2011, 2012, 2013, 2014  Prideslayer
  *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -58,7 +58,7 @@ namespace Fomm
 
 	public static class Program
 	{
-		public const string Version = "0.14.2";
+		public const string Version = "0.14.3";
 		public static readonly Version MVersion = new Version(Version + ".0");
 
 		private static readonly string m_strExecutableDirectory = Path.GetDirectoryName(Application.ExecutablePath);
@@ -246,13 +246,15 @@ namespace Fomm
 				{
 					case SupportedGameModes.Fallout3:
 						GameMode = new Fallout3GameMode();
-						break;
-					case SupportedGameModes.FalloutNV:
+					break;
+
+          case SupportedGameModes.FalloutNV:
 						GameMode = new FalloutNewVegasGameMode();
-						break;
-					default:
+					break;
+
+          default:
 						MessageBox.Show("Unrecognized game selection.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-						return;
+  					return;
 				}
 
         Mutex mutex;

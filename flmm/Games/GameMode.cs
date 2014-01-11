@@ -6,9 +6,11 @@ using Fomm.PackageManager;
 using Fomm.PackageManager.XmlConfiguredInstall;
 using Fomm.PackageManager.XmlConfiguredInstall.Parsers;
 using System.Drawing;
+using System.Windows.Forms;
 using Fomm.Controls;
 using Microsoft.Win32;
 using Fomm.Commands;
+using Fomm.Games.Fallout3.Tools.TESsnip;
 
 namespace Fomm.Games
 {
@@ -20,7 +22,7 @@ namespace Fomm.Games
 	/// </remarks>
 	public abstract class GameMode
 	{
-		#region Properties
+    #region Properties
 
 		/// <summary>
 		/// Gets the name of the game whose plugins are being managed.
@@ -341,7 +343,117 @@ class Script : GenericBaseScript {
 
 		#endregion
 
-		/// <summary>
+    #region plugin support
+
+    protected struct LoadOrderInfo
+    {
+      public bool active;
+      public int idx;
+    }
+
+    protected Dictionary<string, LoadOrderInfo> fullModList = new Dictionary<string, LoadOrderInfo>();
+
+    public void buildPluginList()
+    {
+      int i = 0;
+      LoadOrderInfo loi;
+      
+      this.fullModList.Clear();
+
+      foreach (string s in PluginManager.OrderedPluginList)
+      {
+        loi.active = PluginManager.IsPluginActive(Path.Combine(Program.GameMode.PluginsPath, s));
+        loi.idx = i;
+        this.fullModList.Add(Path.GetFileName(s).ToLower(), loi);
+        i++;
+      }
+
+      return;
+    }
+
+    /*
+     * Given a plugin name, evaluates that all required
+     * masters are present, active, and preceed the
+     * plugin.
+     * 
+     * Return values:
+     * 0 = OK
+     * 1 = A required master is missing
+     * 2 = A required master is present but disabled
+     * 3 = A required master is present and enabled but after this plugin
+     * 
+    */
+    public int getPluginDependencyStatus(string name, bool showMessage = false)
+    {
+      int ret = 0;
+      int i = 0;
+      Plugin plgPlugin;
+      List<string> masters;
+
+      Dictionary<string, LoadOrderInfo> allPlugins;
+
+      // Don't check dependency information if plugin is inactive.
+      if (PluginManager.IsPluginActive(Path.Combine(Program.GameMode.PluginsPath, name)))
+      {
+        // Get the list of masters of the queried plugin
+        plgPlugin = plgPlugin = new Plugin(Path.Combine(Program.GameMode.PluginsPath, name), true);
+        masters = new List<string>();
+        foreach (SubRecord sr in ((Record)plgPlugin.Records[0]).SubRecords)
+        {
+          switch (sr.Name)
+          {
+            case "MAST":
+              masters.Add(sr.GetStrData().ToLower());
+            break;
+          }
+        }
+
+        for (i = 0; i < masters.Count; i++)
+        {
+          if (this.fullModList.ContainsKey(masters[i]))
+          {
+            if (this.fullModList[masters[i]].active)
+            {
+              if (this.fullModList[masters[i]].idx > this.fullModList[name.ToLower()].idx)
+              {
+                // Master present and active but in wrong order.
+                ret = 3;
+                if (showMessage)
+                {
+                  MessageBox.Show("The plugin '" + name + "'  is being loaded before its master '" + masters[i] + "'.  Fix the load order to continue.");
+                }
+                break;
+              }
+            }
+            else
+            {
+              // Master present but inactive
+              ret = 2;
+              if (showMessage)
+              {
+                MessageBox.Show("The plugin '" + name + "'  requires master '" + masters[i] + "' To be active.  Activate it or disable this plugin.");
+              }
+              break;
+            }
+          }
+          else
+          {
+            // Missing master file
+            ret = 1;
+            if (showMessage)
+            {
+              MessageBox.Show("The plugin '" + name + "' is missing a master, '" + masters[i] + "' which it requires.  Deactivate this plugin, or install and activate the missing master.");
+            }
+            break;
+          }
+        }
+      }
+
+      return ret;
+    }
+    #endregion
+
+    /// <summary>
 		/// Sets the working directory for the programme.
 		/// </summary>
 		/// <remarks>
@@ -371,14 +483,5 @@ class Script : GenericBaseScript {
 		/// <returns><lang cref="true"/> if the specified file is a plugin file in the game mode;
 		/// <lang cref="false"/> otherwise.</returns>
 		public abstract bool IsPluginFile(string p_strPath);
-
-		/// <summary>
-		/// hecks for any updates that are available for any game-specific components.
-		/// </summary>
-		/// <remarks><lang cref="true"/> if updates were available; otherwise <lang cref="false"/>.</remarks>
-		public virtual bool CheckForUpdates()
-		{
-			return false;
-		}
 	}
 }
