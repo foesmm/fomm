@@ -236,37 +236,14 @@ namespace Fomm.PackageManager
 		{
 			if (!Properties.Settings.Default.checkForNewModVersionsInitialized)
 			{
-				string strMessage = "Would you like FOMM to check for new versions of your mods?" +
-									Environment.NewLine +
-									"This may require you to login to some mod sites. You can change this " +
-									"setting in the Settings window.";
-				switch (MessageBox.Show(this, strMessage, "Check For New Mods", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
-				{
-					case DialogResult.Yes:
-						Properties.Settings.Default.checkForNewModVersions = true;
-						break;
-					case DialogResult.No:
-						Properties.Settings.Default.checkForNewModVersions = false;
-						break;
-				}
+				Properties.Settings.Default.checkForNewModVersions = false;
 				Properties.Settings.Default.checkForNewModVersionsInitialized = true;
 				Properties.Settings.Default.Save();
 			}
-			if (!Properties.Settings.Default.addMissingInfoToModsInitialized)
+
+      if (!Properties.Settings.Default.addMissingInfoToModsInitialized)
 			{
-				string strMessage = "Would you like FOMM to add missing information to newly added mods?" +
-									Environment.NewLine +
-									"This may require you to login to some mod sites. You can change this " +
-									"setting in the Settings window.";
-				switch (MessageBox.Show(this, strMessage, "Add Missing Mod Info", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
-				{
-					case DialogResult.Yes:
-						Properties.Settings.Default.addMissingInfoToMods = true;
-						break;
-					case DialogResult.No:
-						Properties.Settings.Default.addMissingInfoToMods = false;
-						break;
-				}
+				Properties.Settings.Default.addMissingInfoToMods = false;
 				Properties.Settings.Default.addMissingInfoToModsInitialized = true;
 				Properties.Settings.Default.Save();
 			}
