@@ -834,12 +834,30 @@ namespace Fomm.Games.Fallout3
 			for (int i = 0; i < plugins.Length; i++)
 				plugins[i] = Path.GetFileName(plugins[i]);
 			Tools.AutoSorter.LoadOrderSorter losSorter = new Tools.AutoSorter.LoadOrderSorter();
-			if (!losSorter.HasMasterList)
-			{
-				MessageBox.Show(p_eeaArguments.Argument, "Unable to locate master list. Please update by clicking" + Environment.NewLine + "Help -> Check for update" + Environment.NewLine + "in the menu.", "Missing Master List", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return;
-			}
-			losSorter.SortList(plugins);
+      if (!losSorter.HasMasterList)
+      {
+        if (DialogResult.Yes == MessageBox.Show("There is no BOSS masterlist present, would you like to fetch the latest one?", "Update BOSS", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+        {
+          if (updateBOSS())
+          {
+            if (losSorter.HasMasterList)
+            {
+              losSorter.LoadList();
+            }
+            else
+            {
+              MessageBox.Show("BOSS masterlist still missing!", "BOSS update error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+              return;
+            }
+          }
+        }
+        else
+        {
+          return;
+        }
+      }
+
+      losSorter.SortList(plugins);
 			for (int i = 0; i < plugins.Length; i++)
 				PluginManager.SetLoadOrder(Path.Combine(PluginsPath, plugins[i]), i);
 			p_eeaArguments.Argument.RefreshPluginList();
