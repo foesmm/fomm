@@ -73,7 +73,7 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
 		/// <summary>
 		/// Loads the master list.
 		/// </summary>
-		protected void LoadList()
+		public void LoadList()
 		{
 			m_dicMasterList = new Dictionary<string, RecordInfo>();
 			if (!File.Exists(LoadOrderTemplatePath))

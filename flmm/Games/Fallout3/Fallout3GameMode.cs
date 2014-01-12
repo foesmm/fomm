@@ -845,6 +845,24 @@ namespace Fomm.Games.Fallout3
 			p_eeaArguments.Argument.RefreshPluginList();
 		}
 
+    public virtual bool updateBOSS()
+    {
+      bool ret = false;
+
+      try
+      {
+        Tools.AutoSorter.Fallout3BOSSUpdater bupUpdater = new Tools.AutoSorter.Fallout3BOSSUpdater();
+        bupUpdater.UpdateMasterlist(Fomm.Games.Fallout3.Tools.AutoSorter.LoadOrderSorter.LoadOrderTemplatePath);
+        ret = true;
+      }
+      catch (Exception e)
+      {
+        MessageBox.Show("There was an error updating BOSS\n" + e.Message, "BOSS update error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+      }
+
+      return ret;
+    }
+
 		/// <summary>
 		/// Generates a report on the current load order, as compared to the BOSS recomendation.
 		/// </summary>
@@ -853,11 +871,28 @@ namespace Fomm.Games.Fallout3
 		/// main mod management form.</param>
 		public void LaunchLoadOrderReport(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
 		{
-			Tools.AutoSorter.LoadOrderSorter losSorter = new Tools.AutoSorter.LoadOrderSorter();
+      Tools.AutoSorter.LoadOrderSorter losSorter = new Tools.AutoSorter.LoadOrderSorter();
 			if (!losSorter.HasMasterList)
 			{
-				MessageBox.Show(p_eeaArguments.Argument, "Unable to locate master list. Please update by clicking" + Environment.NewLine + "Help -> Check for update" + Environment.NewLine + "in the menu.", "Missing Master List", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return;
+        if (DialogResult.Yes == MessageBox.Show("There is no BOSS masterlist present, would you like to fetch the latest one?", "Update BOSS", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+        {
+          if (updateBOSS())
+          {
+            if (losSorter.HasMasterList)
+            {
+              losSorter.LoadList();
+            }
+            else
+            {
+              MessageBox.Show("BOSS masterlist still missing!", "BOSS update error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+              return;
+            }
+          }
+        }
+        else
+        {
+          return;
+        }
 			}
 
 			string[] plugins = PluginManager.OrderedPluginList;
