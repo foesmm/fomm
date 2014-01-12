@@ -428,7 +428,8 @@ namespace Fomm.PackageManager
 			if (!mod.IsActive) bActivate.Text = "Activate";
 			else bActivate.Text = "Reactivate";
 
-			mf.RefreshPluginList();
+      Program.GameMode.buildPluginList();
+      mf.RefreshPluginList();
 		}
 
 		private void bActivate_Click(object sender, EventArgs e)
