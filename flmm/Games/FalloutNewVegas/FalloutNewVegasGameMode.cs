@@ -292,6 +292,25 @@ namespace Fomm.Games.FalloutNewVegas
 
 		#endregion
 
+    public override bool updateBOSS()
+    {
+      bool ret = false;
+
+      try
+      {
+        Tools.AutoSorter.FalloutNewVegasBOSSUpdater bupUpdater = new Tools.AutoSorter.FalloutNewVegasBOSSUpdater();
+        bupUpdater.UpdateMasterlist(Fomm.Games.Fallout3.Tools.AutoSorter.LoadOrderSorter.LoadOrderTemplatePath);
+        ret = true;
+      }
+      catch (Exception e)
+      {
+        MessageBox.Show("There was an error updating BOSS\n" + e.Message, "BOSS update error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+      }
+
+      return ret;
+    }
+
+
 		#region Tool Launch Methods
 
 		#region Game Launch
