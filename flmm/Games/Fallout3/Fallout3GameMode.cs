@@ -551,6 +551,7 @@ namespace Fomm.Games.Fallout3
 		{
 			CriticalRecordPluginFormatProvider = new CriticalRecordPluginFormatProvider();
 			BoldESMPluginFormatProvider = new BoldESMPluginFormatProvider();
+      ColorizerPluginFormatProider = new ColorizerPluginFormatProvider();
 		}
 
 		/// <summary>

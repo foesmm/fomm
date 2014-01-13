@@ -145,7 +145,10 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
 			}
 		}
 
-		private ModInfo[] BuildModInfo(string[] plugins)
+		// Returns an array of ModInfo records, in the 'correct'
+    // order for the mod.
+    
+    private ModInfo[] BuildModInfo(string[] plugins)
 		{
 			ModInfo[] mi = new ModInfo[plugins.Length];
 			int addcount = 1;
