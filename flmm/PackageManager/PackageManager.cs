@@ -28,7 +28,7 @@ namespace Fomm.PackageManager
 		private BackgroundWorkerProgressDialog m_bwdProgress = null;
 		private string m_strLastFromFolderPath = null;
 		private NexusAPI m_nxaNexus = null;
-		private Regex m_rgxNexusFileId = new Regex(@"nexus\.com/downloads/file\.php\?id=(\d+)");
+		private Regex m_rgxNexusFileId = new Regex(@"nexus\.com/downloads/file\.php\?id=(\d+)"); //@todo: remove
 		private Dictionary<string, string> m_dicWebVersions = new Dictionary<string, string>();
 
 		public PackageManager(MainForm mf)
@@ -116,16 +116,14 @@ namespace Fomm.PackageManager
 
 		private void AddFomodToList(fomod mod)
 		{
-			if ((m_nxaNexus != null) && !String.IsNullOrEmpty(mod.Website) && m_rgxNexusFileId.IsMatch(mod.Website))
+			if ((m_nxaNexus != null) && !String.IsNullOrEmpty(mod.Website) && m_nxaNexus.IsNexusMod(mod.Website) != -1)
 			{
 				if (!m_dicWebVersions.ContainsKey(mod.BaseName))
 				{
-					string strFileId = m_rgxNexusFileId.Match(mod.Website).Groups[1].Value.Trim();
-					Int32 intFileId = -1;
+					Int32 intFileId = m_nxaNexus.IsNexusMod(mod.Website);
 					try
 					{
-						if (Int32.TryParse(strFileId, out intFileId))
-							m_nxaNexus.GetModInfoAsync(intFileId, false, Nexus_GotFileVersion, mod.BaseName);
+						m_nxaNexus.GetModInfoAsync(intFileId, false, Nexus_GotFileVersion, mod.BaseName);
 					}
 					catch (Exception e)
 					{

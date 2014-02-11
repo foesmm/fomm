@@ -18,6 +18,4 @@ LICENSE and COPYRIGHT
 
 [ICSharpCode.TextEditor](http://www.codeproject.com/Articles/30936/Using-ICSharpCode-TextEditor) is licensed under MIT.
 
-[SevenZipSharp](http://sevenzipsharp.codeplex.com/) is licensed under LGPLv3.
-
 All rights on source code and libraries belong to their respective owners.

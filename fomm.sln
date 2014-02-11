@@ -1,6 +1,7 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+# SharpDevelop 4.4
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fomm", "flmm\fomm.csproj", "{4A0302F4-DEA4-4753-98C8-3571742E4EB5}"
 	ProjectSection(ProjectDependencies) = postProject
 		{399F987B-6F9B-44A9-8AC8-BF5711AE8894} = {399F987B-6F9B-44A9-8AC8-BF5711AE8894}
@@ -126,7 +127,7 @@ Global
 		{C972F01F-2D05-4587-8E3B-53A18B9E1705}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{C972F01F-2D05-4587-8E3B-53A18B9E1705}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{C972F01F-2D05-4587-8E3B-53A18B9E1705}.Release|Win32.ActiveCfg = Release|Any CPU
-		{C972F01F-2D05-4587-8E3B-53A18B9E1705}.Trace|Any CPU.ActiveCfg = Release|Any CPU
+		{C972F01F-2D05-4587-8E3B-53A18B9E1705}.Trace|Any CPU.ActiveCfg = Debug|Any CPU
 		{C972F01F-2D05-4587-8E3B-53A18B9E1705}.Trace|Any CPU.Build.0 = Release|Any CPU
 		{C972F01F-2D05-4587-8E3B-53A18B9E1705}.Trace|Mixed Platforms.ActiveCfg = Trace|Any CPU
 		{C972F01F-2D05-4587-8E3B-53A18B9E1705}.Trace|Mixed Platforms.Build.0 = Trace|Any CPU
@@ -141,7 +142,7 @@ Global
 		{EDF2CF2D-47B1-4851-889E-7F365C9FDDA3}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{EDF2CF2D-47B1-4851-889E-7F365C9FDDA3}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{EDF2CF2D-47B1-4851-889E-7F365C9FDDA3}.Release|Win32.ActiveCfg = Release|Any CPU
-		{EDF2CF2D-47B1-4851-889E-7F365C9FDDA3}.Trace|Any CPU.ActiveCfg = Release|Any CPU
+		{EDF2CF2D-47B1-4851-889E-7F365C9FDDA3}.Trace|Any CPU.ActiveCfg = Debug|Any CPU
 		{EDF2CF2D-47B1-4851-889E-7F365C9FDDA3}.Trace|Any CPU.Build.0 = Release|Any CPU
 		{EDF2CF2D-47B1-4851-889E-7F365C9FDDA3}.Trace|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{EDF2CF2D-47B1-4851-889E-7F365C9FDDA3}.Trace|Mixed Platforms.Build.0 = Release|Any CPU

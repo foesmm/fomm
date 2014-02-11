@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using GeMod.Interface;
+using CsQuery;
 
 namespace WebsiteAPIs
 {
@@ -57,16 +58,6 @@ namespace WebsiteAPIs
 		/// The Fallout: New Vegas Nexus site.
 		/// </summary>
 		FalloutNV,
-
-		/// <summary>
-		/// The TES Nexus site.
-		/// </summary>
-		TES,
-
-		/// <summary>
-		/// The Dragon Age Nexus site.
-		/// </summary>
-		DragonAge
 	}
 
 	/// <summary>
@@ -173,18 +164,7 @@ namespace WebsiteAPIs
 			{
 				AssertLoggedIn();
 				CookieCollection cclCookies = m_ckcCookies.GetCookies(new Uri("http://" + m_strSite));
-				switch (m_nxsSite)
-				{
-					case NexusSite.DragonAge:
-						return cclCookies["DANEX_Member"].Value;
-					case NexusSite.Fallout3:
-						return cclCookies["FO3Nexus_Member"].Value;
-					case NexusSite.FalloutNV:
-						return cclCookies["NVNexus_Member"].Value;
-					case NexusSite.TES:
-						return cclCookies["TESNEX_Member"].Value;
-				}
-				return null;
+				return cclCookies["sid"].Value;
 			}
 		}
 
@@ -224,21 +204,7 @@ namespace WebsiteAPIs
 			: this(p_nxsSite)
 		{
 			Cookie ckeLoginCookie = null;
-			switch (p_nxsSite)
-			{
-				case NexusSite.DragonAge:
-					ckeLoginCookie = new Cookie("DANEX_Member", p_strLoginKey, "/", m_strSite);
-					break;
-				case NexusSite.Fallout3:
-					ckeLoginCookie = new Cookie("FO3Nexus_Member", p_strLoginKey, "/", m_strSite);
-					break;
-				case NexusSite.FalloutNV:
-					ckeLoginCookie = new Cookie("NVNexus_Member", p_strLoginKey, "/", m_strSite);
-					break;
-				case NexusSite.TES:
-					ckeLoginCookie = new Cookie("TESNEX_Member", p_strLoginKey, "/", m_strSite);
-					break;
-			}
+			ckeLoginCookie = new Cookie("sid", p_strLoginKey, "/", "www.nexusmods.com");
 			m_ckcCookies.Add(ckeLoginCookie);
 			m_booLoggedIn = true;
 		}
@@ -254,14 +220,10 @@ namespace WebsiteAPIs
 		{
 			switch (p_nstSite)
 			{
-				case NexusSite.DragonAge:
-					return "www.dragonagenexus.com";
 				case NexusSite.Fallout3:
-					return "www.fallout3nexus.com";
+					return "www.nexusmods.com/fallout3/";
 				case NexusSite.FalloutNV:
-					return "www.newvegasnexus.com";
-				case NexusSite.TES:
-					return "www.tesnexus.com";
+					return "www.nexusmods.com/newvegas/";
 				default:
 					throw new Exception("Unrecognized value for NexusSite.");
 			}
@@ -323,12 +285,12 @@ namespace WebsiteAPIs
 		/// <exception cref="HttpException">Thrown if the login page can't be accessed.</exception>
 		public bool Login(string p_strUsername, string p_strPassword)
 		{
-			HttpWebRequest hwrLogin = (HttpWebRequest)WebRequest.Create(String.Format("http://{0}/modules/login/do_login.php?server=&redirect=", m_strSite));
+			HttpWebRequest hwrLogin = (HttpWebRequest)WebRequest.Create(String.Format("http://www.nexusmods.com/games/sessions/?Login&uri={0}", m_strSite));
 			hwrLogin.CookieContainer = m_ckcCookies;
 			hwrLogin.Method = "POST";
 			hwrLogin.ContentType = "application/x-www-form-urlencoded";
 
-			string strFields = String.Format("user={0}&pass={1}&submit=Login", p_strUsername, p_strPassword);
+			string strFields = String.Format("username={0}&password={1}", p_strUsername, p_strPassword);
 			byte[] bteFields = System.Text.Encoding.UTF8.GetBytes(strFields);
 			hwrLogin.ContentLength = bteFields.Length;
 			hwrLogin.GetRequestStream().Write(bteFields, 0, bteFields.Length);
@@ -711,20 +673,9 @@ namespace WebsiteAPIs
 		/// <returns>The version string from the given mod info page.</returns>
 		private string ParseModVersion(string p_strInfoPage)
 		{
-			if (!m_rgxVersion.IsMatch(p_strInfoPage))
-				return null;
-			string strWebVersion = m_rgxVersion.Match(p_strInfoPage).Groups[1].Value.Trim().Trim(new char[] { '.' });
-			string strLoweredWebVersion = strWebVersion.ToLowerInvariant();
-			if (strWebVersion.StartsWith("ver. ", StringComparison.InvariantCultureIgnoreCase))
-				strWebVersion = strWebVersion.Substring(5);
-			else if (strWebVersion.StartsWith("ver.", StringComparison.InvariantCultureIgnoreCase))
-				strWebVersion = strWebVersion.Substring(4);
-			else if (strWebVersion.StartsWith("v. ", StringComparison.InvariantCultureIgnoreCase))
-				strWebVersion = strWebVersion.Substring(3);
-			else if (strWebVersion.StartsWith("v.", StringComparison.InvariantCultureIgnoreCase))
-				strWebVersion = strWebVersion.Substring(2);
-			else if (strWebVersion.StartsWith("v", StringComparison.InvariantCultureIgnoreCase))
-				strWebVersion = strWebVersion.Substring(1);
+			CQ dom = p_strInfoPage;
+			string strWebVersion = dom["p.file-version > strong"].Text();
+			
 			return strWebVersion;
 		}
 
@@ -858,7 +809,7 @@ namespace WebsiteAPIs
 		/// <exception cref="InvalidOperationException">Thrown if the API can't log in to the site.</exception>
 		public ModInfo GetModInfo(Int32 p_intModKey, bool p_booIncludeScreenshot)
 		{
-			string strURL = String.Format("http://{0}/downloads/file.php?id={1}", m_strSite, p_intModKey);
+			string strURL = String.Format("http://{0}mods/{1}/", m_strSite, p_intModKey);
 			string strInfoPage = GetWebPage(true, strURL);
 			return ParseModInfo(new Uri(strURL), strInfoPage, p_booIncludeScreenshot);
 		}
@@ -879,7 +830,7 @@ namespace WebsiteAPIs
 		public void GetModInfoAsync(Int32 p_intModKey, bool p_booIncludeScreenshot, Action<object, ModInfo> p_actCallback, object p_objState)
 		{
 			AssertLoggedIn();
-			string strURL = String.Format("http://{0}/downloads/file.php?id={1}", m_strSite, p_intModKey);
+			string strURL = String.Format("http://{0}mods/{1}/", m_strSite, p_intModKey);
 
 			HttpWebRequest hwrFilePage = (HttpWebRequest)WebRequest.Create(strURL);
 			hwrFilePage.CookieContainer = m_ckcCookies;
@@ -1026,6 +977,31 @@ namespace WebsiteAPIs
 				wrpFilePage.Close();
 			}
 			return strPage;
+		}
+		
+		public Int32 IsNexusMod(string p_strWebsite)
+		{
+			string[] arPatterns = new string[]{
+				@"nexus\.com/downloads/file\.php\?id=(?<id>\d+)",
+				@"nexusmods\.com/mods/(?<id>\d+)",
+				@"nexusmods\.com/newvegas/mods/(?<id>\d+)"
+			};
+			
+			Int32 intFileId;
+			string strFileId = "-1";
+				
+			foreach (string pattern in arPatterns) {
+				Match match = Regex.Match(p_strWebsite, pattern);
+				if (match.Success) {
+					strFileId = match.Groups["id"].Value.Trim();
+					break;
+				}
+			}
+			
+			if (!Int32.TryParse(strFileId, out intFileId))
+				intFileId = -1;
+					
+			return intFileId;
 		}
 	}
 }
