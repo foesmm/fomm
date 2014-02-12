@@ -431,6 +431,18 @@ namespace Fomm.PackageManager
 				tbWebsite.Text = value;
 			}
 		}
+		
+		public string NexusModsId
+		{
+			get
+			{
+				return "";
+			}
+			set
+			{
+				
+			}
+		}
 
 		/// <summary>
 		/// Gets or sets the Email of the mod.

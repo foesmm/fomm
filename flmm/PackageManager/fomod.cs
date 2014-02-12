@@ -66,6 +66,7 @@ namespace Fomm.PackageManager
 		private string m_strHumanVersion;
 		private string m_strEmail;
 		private string m_strWebsite;
+		private string m_strNexusModsId;
 		private Version m_verMinFommVersion;
 		private string[] m_strGroups;
 
@@ -224,6 +225,18 @@ namespace Fomm.PackageManager
 			set
 			{
 				m_strWebsite = value;
+			}
+		}
+		
+		public string NexusModsId
+		{
+			get
+			{
+				return m_strNexusModsId;
+			}
+			set
+			{
+				m_strNexusModsId = value;
 			}
 		}
 
@@ -734,6 +747,17 @@ namespace Fomm.PackageManager
 								strGroups[i] = xndNode.ChildNodes[i].InnerText;
 							p_finFomodInfo.Groups = strGroups;
 						}
+						break;
+					case "Id":
+						if (p_booOverwriteExisitngValues || String.IsNullOrEmpty(p_finFomodInfo.NexusModsId))
+						    p_finFomodInfo.NexusModsId = xndNode.InnerText;
+						break;
+					case "LatestKnownVersion":
+					case "CategoryId":
+					case "CustomCategoryId":
+					case "IsEndorsed":
+					case "UpdateWarningEnabled":
+						// Ignoring (as for now) this nodes added by Nexus Mod Manager
 						break;
 					default:
 						throw new fomodLoadException("Unexpected node type '" + xndNode.Name + "' in info.xml");

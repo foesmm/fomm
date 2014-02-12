@@ -54,6 +54,12 @@ namespace Fomm.PackageManager
 		/// </summary>
 		/// <value>The website of the fomod.</value>
 		string Website { get; set; }
+		
+		/// <summary>
+		/// Gets or sets the mod id on NexusMods website;
+		/// </summary>
+		/// <value>The NexusMods website mod id.</value>
+		string NexusModsId { get; set; }
 
 		/// <summary>
 		/// Gets or sets the FOMM groups to which the fomod belongs.
