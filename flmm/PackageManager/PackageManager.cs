@@ -28,7 +28,7 @@ namespace Fomm.PackageManager
 		private BackgroundWorkerProgressDialog m_bwdProgress = null;
 		private string m_strLastFromFolderPath = null;
 		private NexusAPI m_nxaNexus = null;
-		private Regex m_rgxNexusFileId = new Regex(@"nexus\.com/downloads/file\.php\?id=(\d+)"); //@todo: remove
+		private APIManager m_apiManager = null;
 		private Dictionary<string, string> m_dicWebVersions = new Dictionary<string, string>();
 
 		public PackageManager(MainForm mf)
@@ -88,28 +88,20 @@ namespace Fomm.PackageManager
 		{
 			if (!this.Visible)
 				return;
-			m_dicWebVersions[(string)p_objState] = p_mifWebModInfo.Version;
+			m_dicWebVersions[(string)p_objState] = p_mifWebModInfo.Version.ToString();
 			ListViewItem lviMod = lvModList.Items[(string)p_objState];
 			lviMod.UseItemStyleForSubItems = false;
-			if (!String.IsNullOrEmpty(p_mifWebModInfo.Version) && !p_mifWebModInfo.Version.Equals(lviMod.SubItems["WebVersion"].Text))
+			if (!String.IsNullOrEmpty(p_mifWebModInfo.Version.ToString()) && !p_mifWebModInfo.Version.Equals(lviMod.SubItems["WebVersion"].Text))
 			{
-				lviMod.SubItems["WebVersion"].Text = p_mifWebModInfo.Version;
-				string strWebVersion = p_mifWebModInfo.Version;
+				lviMod.SubItems["WebVersion"].Text = p_mifWebModInfo.Version.ToString();
+				string strWebVersion = p_mifWebModInfo.Version.ToString();
+				
+				ModVersion ver = ModVersion.Parse(strWebVersion);
+				
 				string strVersion = ((fomod)lviMod.Tag).HumanReadableVersion;
-				if (!strWebVersion.Equals(strVersion) && !strWebVersion.Equals(strVersion.Replace(".", "")))
+				if (!strWebVersion.Equals(strVersion))
 				{
-					if (strVersion.StartsWith("0.") && !strWebVersion.StartsWith("0."))
-						strVersion = strVersion.Substring(2);
-					if (strWebVersion.StartsWith("0.") && !strVersion.StartsWith("0."))
-						strWebVersion = strWebVersion.Substring(2);
-					if (strVersion.EndsWith(".0") && !strWebVersion.EndsWith(".0"))
-						strVersion = strVersion.Substring(0, strVersion.Length - 2);
-					if (strWebVersion.EndsWith(".0") && !strVersion.EndsWith(".0"))
-						strWebVersion = strWebVersion.Substring(0, strWebVersion.Length - 2);
-
-					if (!strWebVersion.Equals(strVersion))
-						lviMod.SubItems["WebVersion"].BackColor = Color.LightSalmon;
-
+					lviMod.SubItems["WebVersion"].BackColor = Color.LightSalmon;
 				}
 			}
 		}

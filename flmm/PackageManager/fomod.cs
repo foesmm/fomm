@@ -1109,10 +1109,10 @@ namespace Fomm.PackageManager
 				booUpdated = true;
 				Author = p_mifInfo.Author;
 			}
-			if (HumanReadableVersion.Equals(DEFAULT_VERSION) && (MachineVersion == DefaultVersion) && !String.IsNullOrEmpty(p_mifInfo.Version))
+			if (HumanReadableVersion.Equals(DEFAULT_VERSION) && (MachineVersion == DefaultVersion) && !String.IsNullOrEmpty(p_mifInfo.Version.ToString()))
 			{
-				HumanReadableVersion = p_mifInfo.Version;
-				string strVersionString = p_mifInfo.Version;
+		    	HumanReadableVersion = p_mifInfo.Version.ToString();
+		    	string strVersionString = p_mifInfo.Version.ToString();
 				Regex rgxCleanVersion = new Regex(@"[^\d\.]");
 				strVersionString = rgxCleanVersion.Replace(strVersionString, "");
 				if (!String.IsNullOrEmpty(strVersionString))
