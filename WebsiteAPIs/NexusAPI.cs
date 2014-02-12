@@ -324,6 +324,7 @@ namespace WebsiteAPIs
 		/// <exception cref="InvalidOperationException">Thrown if the API can't log in to the site.</exception>
 		protected string GetUploadPage(Int32 p_intModKey)
 		{
+			return null; // @fixme
 			AssertLoggedIn();
 			HttpWebRequest hwrFileUploadPage = (HttpWebRequest)WebRequest.Create(String.Format("http://{0}/members/addfile.php?id={1}", m_strSite, p_intModKey));
 			hwrFileUploadPage.CookieContainer = m_ckcCookies;
@@ -383,6 +384,7 @@ namespace WebsiteAPIs
 		/// <exception cref="HttpException">Thrown if the delete page can't be accessed.</exception>
 		protected void DeleteFile(Int32 p_intModKey, string p_strFileTitle)
 		{
+			return; // @fixme
 			string strFileKey = GetFileKey(p_intModKey, p_strFileTitle);
 			if (strFileKey == null)
 				return;
@@ -435,6 +437,7 @@ namespace WebsiteAPIs
 		/// <exception cref="FileNotFoundException">If the specified file does not exist on hte Nexus.</exception>
 		public bool EditFile(Int32 p_intModKey, string p_strOldFileTitle, string p_strNewFileTitle, FileCategory p_fctCategory, string p_strDescription)
 		{
+			return false; // @fixme
 			AssertLoggedIn();
 			if (!isFileTitleValid(p_strNewFileTitle))
 				throw new ArgumentException("The file title can only contain letters, numbers, spaces, hypens and underscores.", "p_strNewFileTitle");
@@ -528,6 +531,7 @@ namespace WebsiteAPIs
 		/// <exception cref="InvalidOperationException">Thrown if the API can't log in to the site.</exception>
 		public bool UploadFile(Int32 p_intModKey, string p_strFileTitle, FileCategory p_fctCategory, string p_strDescription, string p_strFilePath, bool p_booOverwrite)
 		{
+			return false; // @fixme
 			AssertLoggedIn();
 			if (!isFileTitleValid(p_strFileTitle))
 				throw new ArgumentException("The file title can only contain letters, numbers, spaces, hypens and underscores.", "p_strFileTitle");
@@ -637,7 +641,7 @@ namespace WebsiteAPIs
 		/// <lang cref="false"/> otherwise.</returns>
 		public bool GetModExists(Int32 p_intModKey)
 		{
-			string strURL = String.Format("http://{0}/downloads/file.php?id={1}", m_strSite, p_intModKey);
+			string strURL = String.Format("http://{0}mods/{1}/", m_strSite, p_intModKey);
 
 			HttpWebRequest hwrFilePage = (HttpWebRequest)WebRequest.Create(strURL);
 			hwrFilePage.CookieContainer = m_ckcCookies;
@@ -686,9 +690,10 @@ namespace WebsiteAPIs
 		/// <returns>The name from the given mod info page.</returns>
 		private string ParseModName(string p_strInfoPage)
 		{
-			if (!m_rgxName.IsMatch(p_strInfoPage))
-				return null;
-			string strName = m_rgxName.Match(p_strInfoPage).Groups[1].Value.Trim();
+			CQ dom = p_strInfoPage;
+			
+			string strName = dom["span.header-name"].Text();
+
 			return strName;
 		}
 
@@ -699,9 +704,10 @@ namespace WebsiteAPIs
 		/// <returns>The author string from the given mod info page.</returns>
 		private string ParseModAuthor(string p_strInfoPage)
 		{
-			if (!m_rgxAuthor.IsMatch(p_strInfoPage))
-				return null;
-			string strAuthor = m_rgxAuthor.Match(p_strInfoPage).Groups[1].Value.Trim();
+			CQ dom = p_strInfoPage;
+			
+			string strAuthor = dom["div.file-stats > div.uploader > a"].Text();
+			
 			return strAuthor;
 		}
 
@@ -712,10 +718,12 @@ namespace WebsiteAPIs
 		/// <returns>The screenshot url from the given mod info page.</returns>
 		private Uri ParseScreenshotUrl(string p_strInfoPage)
 		{
-			if (!m_rgxScreenshotUrl.IsMatch(p_strInfoPage))
-				return null;
-			string strURL = m_rgxScreenshotUrl.Match(p_strInfoPage).Groups[1].Value.Trim();
-			Uri uriScreenshot = new Uri(String.Format("http://{0}/{1}", m_strSite, strURL));
+			CQ dom = p_strInfoPage;
+			
+			string strURL = dom["#gallery-ul-0 > li:first > a"].Attr("href");
+			
+			Uri uriScreenshot = new Uri(strURL);
+			
 			return uriScreenshot;
 		}
 
@@ -761,41 +769,45 @@ namespace WebsiteAPIs
 			Int32 intFileId = -1;
 			if (!TryParseFileId(p_strFileName, out intFileId))
 				return null;
-			string strURL = String.Format("http://{0}/downloads/file.php?id={1}", m_strSite, intFileId);
+			string strURL = String.Format("http://{0}mods/{1}/", m_strSite, intFileId);
 			string strInfoPage = GetWebPage(true, strURL);
 			ModInfo mifLastestInfo = ParseModInfo(new Uri(strURL), strInfoPage, p_booIncludeScreenshot);
 
-			if (File.Exists(p_strFileName))
-			{
-				FileInfo fifInfo = new FileInfo(p_strFileName);
-				string strFilename = Path.GetFileName(p_strFileName);
-				strFilename = strFilename.Remove(strFilename.IndexOf("-" + intFileId));
-
-				string strFilesPage = GetWebPage(true, String.Format("http://{0}/downloads/file/files.php?id={1}", m_strSite, intFileId));
-				Regex rgxFiles = new Regex("\\s+(.*?)</a></h2>");
-				foreach (Match mchFile in rgxFiles.Matches(strFilesPage))
-				{
-					if (mchFile.Groups[1].Value.Replace(' ', '_').StartsWith(strFilename, StringComparison.InvariantCultureIgnoreCase))
-					{
-						Regex rgxFileVersion = new Regex(@"lightbulb.png""\s+/>\s+Version\s+(.*?)</div>");
-						Regex rgxFileDate = new Regex(@"calendar.png""\s+/>\s+(.*?)</div>");
-						Match mchFileDate = rgxFileDate.Match(strFilesPage, mchFile.Groups[1].Index);
-						Match mchFileVersion = rgxFileVersion.Match(strFilesPage, mchFile.Groups[1].Index, mchFileDate.Groups[1].Index - mchFile.Groups[1].Index);
-						if (mchFileVersion.Success)
-						{
-							mifLastestInfo = new ModInfo(mifLastestInfo.ModName, mifLastestInfo.Author, mchFileVersion.Groups[1].Value, mifLastestInfo.URL, mifLastestInfo.Screenshot);
-						}
-						else
-						{
-							DateTime dteFileDate = DateTime.Now;
-							DateTime.TryParse(mchFileDate.Groups[1].Value, out dteFileDate);
-							if (fifInfo.CreationTime <= dteFileDate)
-								mifLastestInfo = new ModInfo(mifLastestInfo.ModName, mifLastestInfo.Author, null, mifLastestInfo.URL, mifLastestInfo.Screenshot);
-						}
-						break;
-					}
-				}
-			}
+//			if (File.Exists(p_strFileName))
+//			{
+//				FileInfo fifInfo = new FileInfo(p_strFileName);
+//				string strFilename = Path.GetFileName(p_strFileName);
+//				strFilename = strFilename.Remove(strFilename.IndexOf("-" + intFileId));
+//
+//				string strFilesPage = GetWebPage(true, String.Format("http://{0}ajax/modfiles/?id={1}", m_strSite, intFileId));
+//				
+//				CQ dom = strFilesPage;
+//				
+//				
+//				Regex rgxFiles = new Regex("\\s+(.*?)</a></h2>");
+//				foreach (Match mchFile in rgxFiles.Matches(strFilesPage))
+//				{
+//					if (mchFile.Groups[1].Value.Replace(' ', '_').StartsWith(strFilename, StringComparison.InvariantCultureIgnoreCase))
+//					{
+//						Regex rgxFileVersion = new Regex(@"lightbulb.png""\s+/>\s+Version\s+(.*?)</div>");
+//						Regex rgxFileDate = new Regex(@"calendar.png""\s+/>\s+(.*?)</div>");
+//						Match mchFileDate = rgxFileDate.Match(strFilesPage, mchFile.Groups[1].Index);
+//						Match mchFileVersion = rgxFileVersion.Match(strFilesPage, mchFile.Groups[1].Index, mchFileDate.Groups[1].Index - mchFile.Groups[1].Index);
+//						if (mchFileVersion.Success)
+//						{
+//							mifLastestInfo = new ModInfo(mifLastestInfo.ModName, mifLastestInfo.Author, mchFileVersion.Groups[1].Value, mifLastestInfo.URL, mifLastestInfo.Screenshot);
+//						}
+//						else
+//						{
+//							DateTime dteFileDate = DateTime.Now;
+//							DateTime.TryParse(mchFileDate.Groups[1].Value, out dteFileDate);
+//							if (fifInfo.CreationTime <= dteFileDate)
+//								mifLastestInfo = new ModInfo(mifLastestInfo.ModName, mifLastestInfo.Author, null, mifLastestInfo.URL, mifLastestInfo.Screenshot);
+//						}
+//						break;
+//					}
+//				}
+//			}
 
 			return mifLastestInfo;
 		}
@@ -983,6 +995,7 @@ namespace WebsiteAPIs
 		{
 			string[] arPatterns = new string[]{
 				@"nexus\.com/downloads/file\.php\?id=(?<id>\d+)",
+				@"nexusmods\.com/downloads/file\.php\?id=(?<id>\d+)",
 				@"nexusmods\.com/mods/(?<id>\d+)",
 				@"nexusmods\.com/newvegas/mods/(?<id>\d+)"
 			};
