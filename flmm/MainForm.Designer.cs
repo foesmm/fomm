@@ -48,6 +48,7 @@ namespace Fomm
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.launchGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.changeGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.loadOrderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -57,12 +58,13 @@ namespace Fomm
 			this.gameSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.viewReadmeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.visitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.visitForumsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.checkForUpdateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.butFileManager = new System.Windows.Forms.Button();
-			this.changeGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.cmsPlugins.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
 			this.splitContainer1.SuspendLayout();
@@ -94,11 +96,11 @@ namespace Fomm
 			// cmsPlugins
 			// 
 			this.cmsPlugins.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.sendToTopToolStripMenuItem,
-            this.sendToBottomToolStripMenuItem,
-            this.uncheckAllToolStripMenuItem,
-            this.checkAllToolStripMenuItem,
-            this.deleteToolStripMenuItem});
+									this.sendToTopToolStripMenuItem,
+									this.sendToBottomToolStripMenuItem,
+									this.uncheckAllToolStripMenuItem,
+									this.checkAllToolStripMenuItem,
+									this.deleteToolStripMenuItem});
 			this.cmsPlugins.Name = "cmsPlugins";
 			this.cmsPlugins.Size = new System.Drawing.Size(136, 114);
 			// 
@@ -139,9 +141,9 @@ namespace Fomm
 			// 
 			// splitContainer1
 			// 
-			this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+									| System.Windows.Forms.AnchorStyles.Left) 
+									| System.Windows.Forms.AnchorStyles.Right)));
 			this.splitContainer1.Location = new System.Drawing.Point(12, 27);
 			this.splitContainer1.Name = "splitContainer1";
 			this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
@@ -162,8 +164,8 @@ namespace Fomm
 			this.lvEspList.AllowDrop = true;
 			this.lvEspList.CheckBoxes = true;
 			this.lvEspList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1,
-            this.columnHeader2});
+									this.columnHeader1,
+									this.columnHeader2});
 			this.lvEspList.ContextMenuStrip = this.cmsPlugins;
 			this.lvEspList.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.lvEspList.FullRowSelect = true;
@@ -174,10 +176,10 @@ namespace Fomm
 			this.lvEspList.TabIndex = 0;
 			this.lvEspList.UseCompatibleStateImageBehavior = false;
 			this.lvEspList.View = System.Windows.Forms.View.Details;
+			this.lvEspList.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.lvEspList_ColumnClick);
 			this.lvEspList.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.lvEspList_ItemChecked);
 			this.lvEspList.SelectedIndexChanged += new System.EventHandler(this.lvEspList_SelectedIndexChanged);
 			this.lvEspList.DragDrop += new System.Windows.Forms.DragEventHandler(this.lvEspList_DragDrop);
-			this.lvEspList.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.lvEspList_ColumnClick);
 			this.lvEspList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lvEspList_KeyDown);
 			// 
 			// columnHeader1
@@ -201,8 +203,8 @@ namespace Fomm
 			this.rtbPluginInfo.Size = new System.Drawing.Size(399, 156);
 			this.rtbPluginInfo.TabIndex = 0;
 			this.rtbPluginInfo.Text = "Drag/Drop to modify load order\nAlternatively, hold alt and use the arrow keys\nMod" +
-				"s towards the bottom override those above them\nRight click in the plugins list f" +
-				"or additional options";
+			"s towards the bottom override those above them\nRight click in the plugins list f" +
+			"or additional options";
 			this.rtbPluginInfo.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.rtbPluginInfo_LinkClicked);
 			// 
 			// bPackageManager
@@ -241,11 +243,11 @@ namespace Fomm
 			// menuStrip1
 			// 
 			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem,
-            this.toolsToolStripMenuItem,
-            this.loadOrderToolStripMenuItem,
-            this.gameSettingsToolStripMenuItem,
-            this.helpToolStripMenuItem});
+									this.fileToolStripMenuItem,
+									this.toolsToolStripMenuItem,
+									this.loadOrderToolStripMenuItem,
+									this.gameSettingsToolStripMenuItem,
+									this.helpToolStripMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
 			this.menuStrip1.Size = new System.Drawing.Size(549, 24);
@@ -255,9 +257,9 @@ namespace Fomm
 			// fileToolStripMenuItem
 			// 
 			this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.launchGameToolStripMenuItem,
-            this.changeGameToolStripMenuItem,
-            this.closeToolStripMenuItem});
+									this.launchGameToolStripMenuItem,
+									this.changeGameToolStripMenuItem,
+									this.closeToolStripMenuItem});
 			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
 			this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
 			this.fileToolStripMenuItem.Text = "File";
@@ -267,6 +269,13 @@ namespace Fomm
 			this.launchGameToolStripMenuItem.Name = "launchGameToolStripMenuItem";
 			this.launchGameToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
 			this.launchGameToolStripMenuItem.Text = "Launch Game";
+			// 
+			// changeGameToolStripMenuItem
+			// 
+			this.changeGameToolStripMenuItem.Name = "changeGameToolStripMenuItem";
+			this.changeGameToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+			this.changeGameToolStripMenuItem.Text = "Change Game...";
+			this.changeGameToolStripMenuItem.Click += new System.EventHandler(this.changeGameToolStripMenuItem_Click);
 			// 
 			// closeToolStripMenuItem
 			// 
@@ -284,9 +293,9 @@ namespace Fomm
 			// loadOrderToolStripMenuItem
 			// 
 			this.loadOrderToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.importToolStripMenuItem,
-            this.exportToolStripMenuItem,
-            this.copyToClipboardToolStripMenuItem});
+									this.importToolStripMenuItem,
+									this.exportToolStripMenuItem,
+									this.copyToClipboardToolStripMenuItem});
 			this.loadOrderToolStripMenuItem.Name = "loadOrderToolStripMenuItem";
 			this.loadOrderToolStripMenuItem.Size = new System.Drawing.Size(78, 20);
 			this.loadOrderToolStripMenuItem.Text = "Load Order";
@@ -321,9 +330,10 @@ namespace Fomm
 			// helpToolStripMenuItem
 			// 
 			this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.viewReadmeToolStripMenuItem,
-            this.visitForumsToolStripMenuItem,
-            this.checkForUpdateToolStripMenuItem});
+									this.viewReadmeToolStripMenuItem,
+									this.visitToolStripMenuItem,
+									this.visitForumsToolStripMenuItem,
+									this.checkForUpdateToolStripMenuItem});
 			this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
 			this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
 			this.helpToolStripMenuItem.Text = "Help";
@@ -331,21 +341,28 @@ namespace Fomm
 			// viewReadmeToolStripMenuItem
 			// 
 			this.viewReadmeToolStripMenuItem.Name = "viewReadmeToolStripMenuItem";
-			this.viewReadmeToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+			this.viewReadmeToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
 			this.viewReadmeToolStripMenuItem.Text = "View readme";
 			this.viewReadmeToolStripMenuItem.Click += new System.EventHandler(this.bHelp_Click);
+			// 
+			// visitToolStripMenuItem
+			// 
+			this.visitToolStripMenuItem.Name = "visitToolStripMenuItem";
+			this.visitToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+			this.visitToolStripMenuItem.Text = "Visit GitHub Page";
+			this.visitToolStripMenuItem.Click += new System.EventHandler(this.VisitToolStripMenuItemClick);
 			// 
 			// visitForumsToolStripMenuItem
 			// 
 			this.visitForumsToolStripMenuItem.Name = "visitForumsToolStripMenuItem";
-			this.visitForumsToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
-			this.visitForumsToolStripMenuItem.Text = "Visit forums";
+			this.visitForumsToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+			this.visitForumsToolStripMenuItem.Text = "Visit old forums";
 			this.visitForumsToolStripMenuItem.Click += new System.EventHandler(this.visitForumsToolStripMenuItem_Click);
 			// 
 			// checkForUpdateToolStripMenuItem
 			// 
 			this.checkForUpdateToolStripMenuItem.Name = "checkForUpdateToolStripMenuItem";
-			this.checkForUpdateToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+			this.checkForUpdateToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
 			this.checkForUpdateToolStripMenuItem.Text = "Check for update";
 			this.checkForUpdateToolStripMenuItem.Click += new System.EventHandler(this.checkForUpdateToolStripMenuItem_Click);
 			// 
@@ -359,13 +376,6 @@ namespace Fomm
 			this.butFileManager.Text = "File manager";
 			this.butFileManager.UseVisualStyleBackColor = true;
 			this.butFileManager.Click += new System.EventHandler(this.butFileManager_Click);
-			// 
-			// changeGameToolStripMenuItem
-			// 
-			this.changeGameToolStripMenuItem.Name = "changeGameToolStripMenuItem";
-			this.changeGameToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
-			this.changeGameToolStripMenuItem.Text = "Change Game...";
-			this.changeGameToolStripMenuItem.Click += new System.EventHandler(this.changeGameToolStripMenuItem_Click);
 			// 
 			// MainForm
 			// 
@@ -384,19 +394,20 @@ namespace Fomm
 			this.MinimumSize = new System.Drawing.Size(300, 457);
 			this.Name = "MainForm";
 			this.Text = "Fallout Mod Manager";
-			this.Load += new System.EventHandler(this.MainForm_Load);
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
+			this.Load += new System.EventHandler(this.MainForm_Load);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			this.cmsPlugins.ResumeLayout(false);
 			this.splitContainer1.Panel1.ResumeLayout(false);
 			this.splitContainer1.Panel2.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
 			this.splitContainer1.ResumeLayout(false);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
-
 		}
+		private System.Windows.Forms.ToolStripMenuItem visitToolStripMenuItem;
 
 		#endregion
 

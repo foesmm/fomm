@@ -61,6 +61,7 @@
     <Compile Include="APIManager.cs" />
     <Compile Include="API\TaleOfTwoWastelands.cs" />
     <Compile Include="BaseAPI.cs" />
+    <Compile Include="GitHub.cs" />
     <Compile Include="HttpException.cs" />
     <Compile Include="NexusAPI.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

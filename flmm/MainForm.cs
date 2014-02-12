@@ -712,19 +712,14 @@ namespace Fomm
 			}
 
 			//check for new FOMM
-			Regex rgxVersion = new Regex(@"Download Now!</strong>\s+fomm([\d\.]+)\.exe", System.Text.RegularExpressions.RegexOptions.Singleline);
-			string strVersionPage = null;
-			using (System.Net.WebClient wclGetter = new System.Net.WebClient())
+			Version githubLatestVersion = WebsiteAPIs.GitHub.GetLatestReleaseVersion();
+			
+			if (githubLatestVersion > Program.MVersion)
 			{
-				strVersionPage = wclGetter.DownloadString("http://sf.net/projects/fomm");
-			}
-			string strWebVersion = rgxVersion.Match(strVersionPage).Groups[1].Value.Trim();
-			if (new Version(strWebVersion + ".0") > Program.MVersion)
-			{
-				if (MessageBox.Show("A new version of fomm is available: " + strWebVersion +
+				if (MessageBox.Show("A new version of fomm is available: " + githubLatestVersion.ToString() +
 					"\nDo you wish to download?", "Message", MessageBoxButtons.YesNo) == DialogResult.Yes)
 				{
-					System.Diagnostics.Process.Start("http://sf.net/projects/fomm");
+					System.Diagnostics.Process.Start(WebsiteAPIs.GitHub.LatestReleaseURI);
 				}
 				booWasUpdate = true;
 			}
@@ -762,6 +757,11 @@ namespace Fomm
 		{
 			m_booChangeGameMode = true;
 			Close();
+		}
+		
+		void VisitToolStripMenuItemClick(object sender, EventArgs e)
+		{
+			System.Diagnostics.Process.Start(WebsiteAPIs.GitHub.ProjectPathURI);			
 		}
 	}
 }
