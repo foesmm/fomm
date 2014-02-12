@@ -997,7 +997,8 @@ namespace WebsiteAPIs
 				@"nexus\.com/downloads/file\.php\?id=(?<id>\d+)",
 				@"nexusmods\.com/downloads/file\.php\?id=(?<id>\d+)",
 				@"nexusmods\.com/mods/(?<id>\d+)",
-				@"nexusmods\.com/newvegas/mods/(?<id>\d+)"
+				@"nexusmods\.com/newvegas/mods/(?<id>\d+)",
+				@"nexusmods\.com/fallout3/mods/(?<id>\d+)",
 			};
 			
 			Int32 intFileId;
