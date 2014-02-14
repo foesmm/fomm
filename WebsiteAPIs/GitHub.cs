@@ -9,6 +9,22 @@ namespace WebsiteAPIs
 	/// </summary>
 	public static class GitHub
 	{
+		public static string APIURI
+		{
+			get
+			{
+				return "https://api.github.com/";
+			}
+		}
+		
+		public static string FommRepository
+		{
+			get
+			{
+				return "niveuseverto/fomm";
+			}
+		}
+		
 		public static string ProjectPathURI
 		{
 			get
