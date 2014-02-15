@@ -34,8 +34,8 @@ namespace Fomm.PackageManager
 		private const string DEFAULT_VERSION = "1.0";
 		class fomodLoadException : Exception { public fomodLoadException(string msg) : base(msg) { } }
 
-		private Archive m_arcFile;
-		private Archive m_arcCacheFile;
+		public Archive m_arcFile;
+		public Archive m_arcCacheFile;
 
 		internal readonly string filepath;
 
@@ -556,7 +556,7 @@ namespace Fomm.PackageManager
 		/// </summary>
 		/// <param name="p_strPath">The path to adjust.</param>
 		/// <returns>The adjusted path.</returns>
-		protected string GetPrefixAdjustedPath(string p_strPath)
+		public string GetPrefixAdjustedPath(string p_strPath)
 		{
 			string strPath = p_strPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
 			strPath = strPath.Trim(Path.DirectorySeparatorChar);

@@ -26,14 +26,14 @@ namespace Fomm.PackageManager
 		public const string ARCHIVE_PREFIX = "arch:";
 		protected static List<string> m_lstNonArchiveExtensions = new List<string> { ".esp", ".esm", ".txt", ".htm", ".html", ".nif", ".dds", ".png", ".rtf", ".jpg", ".bmp", ".cs", ".xml", ".xsd", ".ico" };
 
-		private string m_strPath = null;
+		public string m_strPath = null;
 		private SevenZipCompressor m_szcCompressor = null;
 		private List<string> m_strFiles = null;
-		private Dictionary<string, ArchiveFileInfo> m_dicFileInfo = null;
+		public Dictionary<string, ArchiveFileInfo> m_dicFileInfo = null;
 		private bool m_booCanEdit = false;
 		private bool m_booIsSolid = false;
-		private ThreadSafeSevenZipExtractor m_szeReadOnlyExtractor = null;
-		private string m_strReadOnlyTempDirectory = null;
+		public ThreadSafeSevenZipExtractor m_szeReadOnlyExtractor = null;
+		public string m_strReadOnlyTempDirectory = null;
 
 		#region Properties
 
@@ -325,7 +325,7 @@ namespace Fomm.PackageManager
 		/// in read-only mod the underlying file is left open (this class holds a handle to the file).
 		/// </remarks>
 		/// <value>Whether the archive is in read-only mode.</value>
-		protected bool IsReadonly
+		public bool IsReadonly
 		{
 			get
 			{

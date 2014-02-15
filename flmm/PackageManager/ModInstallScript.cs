@@ -2,6 +2,7 @@
 using ChinhDo.Transactions;
 using System.IO;
 using System.Collections.Generic;
+using SevenZip;
 using fomm.Transactions;
 using System.Windows.Forms;
 using System.Text;
@@ -502,10 +503,139 @@ namespace Fomm.PackageManager
 		/// not to overwrite an existing file.</returns>
 		public bool InstallFileFromFomod(string p_strFile)
 		{
+      bool ret = false;
+      string srcFN;
+      string dstFN;
+      bool deleteSrc = false;
+      FileStream fsTmp;
+
+      string strPath;
+      Archive arc;
+      ArchiveFileInfo afiFile;
+      SevenZipExtractor szeExtractor;
+      string strDataPath;
+      string strDirectory;
+      string strBackupPath;
+      string strOldModKey;
+      string strFile;
+
 			PermissionsManager.CurrentPermissions.Assert();
-			byte[] bteFomodFile = Fomod.GetFile(p_strFile);
-			return GenerateDataFile(p_strFile, bteFomodFile);
-		}
+
+      //			byte[] bteFomodFile = Fomod.GetFile(p_strFile);
+      // Replaced by:
+
+      if ((Fomod.m_arcCacheFile != null) && Fomod.m_arcCacheFile.ContainsFile(Fomod.GetPrefixAdjustedPath(p_strFile)))
+      {
+        arc = Fomod.m_arcCacheFile;
+      }
+      else if ((Fomod.m_arcFile != null) && Fomod.m_arcFile.ContainsFile(Fomod.GetPrefixAdjustedPath(p_strFile)))
+      {
+        arc = Fomod.m_arcFile;
+      }
+      else
+      {
+        throw new FileNotFoundException("File doesn't exist in fomod", p_strFile);
+      }
+
+      strPath = p_strFile.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).ToLowerInvariant();
+      FileManagement.AssertFilePathIsSafe(strPath);
+
+      if (!arc.m_dicFileInfo.ContainsKey(Fomod.GetPrefixAdjustedPath(strPath)))
+      {
+        throw new FileNotFoundException("The requested file does not exist in the archive.", p_strFile);
+      }
+      afiFile = arc.m_dicFileInfo[Fomod.GetPrefixAdjustedPath(strPath)];
+
+      //check to see if we are on the same thread as the extractor
+      // if not, then marshall the call to the extractor's thread.
+      // this needs to be done as the 7zip dll cannot handle calls from other
+      // threads.
+      if (arc.IsReadonly)
+      {
+        if (arc.m_szeReadOnlyExtractor == null)
+        {
+          srcFN = Path.Combine(arc.m_strReadOnlyTempDirectory, Fomod.GetPrefixAdjustedPath(strPath));
+        }
+        else
+        {
+          deleteSrc = true;
+          srcFN = Path.GetTempFileName();
+          fsTmp = new FileStream(srcFN, FileMode.Create);
+          arc.m_szeReadOnlyExtractor.ExtractFile(afiFile.Index, fsTmp);
+          fsTmp.Flush();
+          fsTmp.Close();
+        }
+      }
+      else
+      {
+        deleteSrc = true;
+        srcFN = Path.GetTempFileName();
+        fsTmp = new FileStream(srcFN, FileMode.Create);
+        szeExtractor = Archive.GetExtractor(arc.m_strPath);
+        szeExtractor.ExtractFile(afiFile.Index, fsTmp);
+        fsTmp.Flush();
+        fsTmp.Close();
+      }
+
+      // Replaced by:
+      //      return GenerateDataFile(p_strFile, bteFomodFile);
+      strDataPath = Path.Combine(Program.GameMode.PluginsPath, p_strFile);
+      if (!Directory.Exists(Path.GetDirectoryName(strDataPath)))
+      {
+        Installer.TransactionalFileManager.CreateDirectory(Path.GetDirectoryName(strDataPath));
+      }
+      else
+      {
+        if (!TestDoOverwrite(p_strFile))
+        {
+          if (deleteSrc)
+          {
+            File.Delete(srcFN);
+          }
+          return false;
+        }
+
+        if (File.Exists(strDataPath))
+        {
+          strDirectory = Path.GetDirectoryName(p_strFile);
+          strBackupPath = Path.Combine(Program.GameMode.OverwriteDirectory, strDirectory);
+          strOldModKey = InstallLog.Current.GetCurrentFileOwnerKey(p_strFile);
+          //if this mod installed a file, and now we are overwriting itm
+          // the install log will tell us no one owns the file, or the wrong mod owns the
+          // file. so, if this mod has installed this file already just replace it, don't
+          // back it up.
+          if (!Installer.MergeModule.ContainsFile(p_strFile))
+          {
+            if (!Directory.Exists(strBackupPath))
+            {
+              Installer.TransactionalFileManager.CreateDirectory(strBackupPath);
+            }
+
+            //if we are overwriting an original value, back it up
+            if (strOldModKey == null)
+            {
+              Installer.MergeModule.BackupOriginalDataFile(p_strFile);
+              strOldModKey = InstallLog.Current.OriginalValuesKey;
+            }
+            strFile = Path.GetFileName(Directory.GetFiles(Path.GetDirectoryName(strDataPath), Path.GetFileName(strDataPath))[0]);
+            strFile = strOldModKey + "_" + strFile;
+
+            strBackupPath = Path.Combine(strBackupPath, strFile);
+            Installer.TransactionalFileManager.Copy(strDataPath, strBackupPath, true);
+          }
+          Installer.TransactionalFileManager.Delete(strDataPath);
+        }
+      }
+
+      Installer.TransactionalFileManager.Copy(srcFN, strDataPath, true);
+      if (deleteSrc)
+      {
+        File.Delete(srcFN);
+      }
+      Installer.MergeModule.AddFile(p_strFile);
+
+      return ret;
+    }
 
 		/// <summary>
 		/// Installs the speified file from the FOMod to the specified location on the file system.
