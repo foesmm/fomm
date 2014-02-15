@@ -527,6 +527,7 @@
     <Compile Include="PackageManager\XmlConfiguredInstall\XmlConfiguredScript.cs" />
     <Compile Include="PluginFormat.cs" />
     <Compile Include="PluginFormatterManager.cs" />
+    <Compile Include="ProductInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

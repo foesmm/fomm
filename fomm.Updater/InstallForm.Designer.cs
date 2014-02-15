@@ -1,7 +1,7 @@
 ﻿
 namespace fomm.Updater
 {
-	partial class MainForm
+	partial class InstallForm
 	{
 		/// <summary>
 		/// Designer variable used to keep track of non-visual components.
@@ -30,11 +30,11 @@ namespace fomm.Updater
 		private void InitializeComponent()
 		{
 			// 
-			// MainForm
+			// InstallForm
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.Text = "fomm.Updater";
-			this.Name = "MainForm";
+			this.Text = "InstallForm";
+			this.Name = "InstallForm";
 		}
 	}
 }
