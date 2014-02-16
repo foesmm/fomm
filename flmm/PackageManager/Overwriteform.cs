@@ -3,28 +3,33 @@ using System.Windows.Forms;
 
 namespace Fomm.PackageManager
 {
-	enum OverwriteResult { YesToAll = 1, YesToFolder = 2, Yes = 3, NoToAll = 4, NoToFolder = 5, No = 6 }
+	enum OverwriteResult { YesToAll = 1, YesToFolder = 2, Yes = 3, NoToAll = 4, NoToFolder = 5, No = 6, YesToMod = 7, NoToMod = 8 }
 
 	partial class Overwriteform : Form
 	{
-		private Overwriteform(string msg, bool allowFolder)
+		private Overwriteform(string msg, bool allowFolder, bool allowMod)
 		{
 			InitializeComponent();
 			this.Icon = Fomm.Properties.Resources.fomm02;
-			Properties.Settings.Default.windowPositions.GetWindowPosition("OverwriteForm", this);
-			label1.Text = msg;
+      Properties.Settings.Default.windowPositions.GetWindowPosition("OverwriteForm", this);
+      label1.Text = msg;
 			if (!allowFolder)
 			{
 				bYesToFolder.Enabled = false;
 				bNoToFolder.Enabled = false;
 			}
+      if (!allowMod)
+      {
+        bYesToMod.Enabled = false;
+        bNoToMod.Enabled = false;
+      }
 		}
 
 		private OverwriteResult result;
 
-		public static OverwriteResult ShowDialog(string msg, bool allowFolder)
+		public static OverwriteResult ShowDialog(string msg, bool allowFolder, bool allowMod)
 		{
-			Overwriteform of = new Overwriteform(msg, allowFolder);
+			Overwriteform of = new Overwriteform(msg, allowFolder, allowMod);
 			of.ShowDialog();
 			return of.result;
 		}
@@ -65,10 +70,22 @@ namespace Fomm.PackageManager
 			Close();
 		}
 
-		private void Overwriteform_FormClosing(object sender, FormClosingEventArgs e)
-		{
-			Properties.Settings.Default.windowPositions.SetWindowPosition("OverwriteForm", this);
-			Properties.Settings.Default.Save(); 
-		}
+    private void bYesToMod_Click(object sender, EventArgs e)
+    {
+      result = OverwriteResult.YesToMod;
+      Close();
+    }
+
+    private void bNoToMod_Click(object sender, EventArgs e)
+    {
+      result = OverwriteResult.NoToMod;
+      Close();
+    }
+
+    private void Overwriteform_FormClosing(object sender, FormClosingEventArgs e)
+    {
+      Properties.Settings.Default.windowPositions.SetWindowPosition("OverwriteForm", this);
+      Properties.Settings.Default.Save();
+    }
 	}
 }
