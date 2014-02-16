@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace fomm.Updater
+namespace Fomm.Updater
 {
 	/// <summary>
 	/// Class with program entry point.

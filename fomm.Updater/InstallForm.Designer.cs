@@ -1,5 +1,5 @@
 ﻿
-namespace fomm.Updater
+namespace Fomm.Updater
 {
 	partial class InstallForm
 	{
@@ -29,12 +29,20 @@ namespace fomm.Updater
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.SuspendLayout();
 			// 
 			// InstallForm
 			// 
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.Text = "InstallForm";
+			this.ClientSize = new System.Drawing.Size(464, 281);
+			this.MaximizeBox = false;
+			this.MinimizeBox = false;
 			this.Name = "InstallForm";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+			this.Text = "InstallForm";
+			this.Shown += new System.EventHandler(this.InstallFormShown);
+			this.ResumeLayout(false);
 		}
 	}
 }

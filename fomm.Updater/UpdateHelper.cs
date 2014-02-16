@@ -8,7 +8,7 @@ using System.Security.AccessControl;
 
 using Microsoft.Win32;
 
-namespace fomm.Updater
+namespace Fomm.Updater
 {
 	/// <summary>
 	/// Description of Update.
@@ -18,13 +18,7 @@ namespace fomm.Updater
 	    private const string uacRegistryKey = "Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System";
 	    private const string uacRegistryValue = "EnableLUA";
 	    
-	    private static string uninstallRegistryKey
-	    {
-	    	get
-	    	{
-	    		return "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall";
-	    	}
-	    }
+	    private const string uninstallRegistryKey = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall";
 	    
 	    private static uint STANDARD_RIGHTS_READ = 0x00020000;
 	    private static uint TOKEN_QUERY = 0x0008;
@@ -173,16 +167,18 @@ namespace fomm.Updater
 			p.Start();
 		}
 		
+		
+		public static object[] LegacyIDs = {"Generic Mod Manager_is1", "{F97B1D1B-F722-4F37-902E-9FB501FADD0E}_is1"};
 		public static bool IsLegacyFommInstalled
 		{
 			get
 			{
 				bool bLegacyInstalled = false;
 				string SubKey;
-				SubKey = String.Format("{0}\\{{{1}}}_is1", uninstallRegistryKey, "Generic Mod Manager_is1");
+				SubKey = String.Format("{0}\\{1}_is1", uninstallRegistryKey, "Generic Mod Manager");
 				bLegacyInstalled |= (Registry.LocalMachine.OpenSubKey(SubKey, false) != null);
 				
-				SubKey = String.Format("{0}\\{{{1}}}_is1", uninstallRegistryKey, Fomm.ProductInfo.GUID);
+				SubKey = String.Format("{0}\\{{{1}}}_is1", uninstallRegistryKey, Fomm.ProductInfo.GUID.ToString());
 				bLegacyInstalled |= (Registry.LocalMachine.OpenSubKey(SubKey, false) != null);
 				
 				return bLegacyInstalled;
@@ -193,8 +189,7 @@ namespace fomm.Updater
 		{
 			get
 			{
-				return IsLegacyFommInstalled || 
-					(Registry.LocalMachine.OpenSubKey(String.Format("{0}\\{{{1}}}_is1", uninstallRegistryKey, Fomm.ProductInfo.GUID), false) != null);
+				return (Registry.LocalMachine.OpenSubKey(String.Format("{0}\\{{{1}}}", uninstallRegistryKey, Fomm.ProductInfo.GUID.ToString()), false) != null);
 			}
 		}
 		

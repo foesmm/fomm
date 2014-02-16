@@ -6,7 +6,7 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using MiniJSON;
 
-namespace fomm.Updater
+namespace Fomm.Updater
 {
 	/// <summary>
 	/// Description of MainForm.
@@ -24,10 +24,14 @@ namespace fomm.Updater
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//
 			
+			while (UpdateHelper.IsLegacyFommInstalled) {
+//				UpdateHelper.RemoveLegacy
+			}
+			
 			HttpWebRequest request = (HttpWebRequest) WebRequest.Create("https://api.github.com/repos/niveuseverto/fomm/releases");
 			request.KeepAlive = false;
             request.Accept = "*/*";
-            request.UserAgent = "FOMM Updater (0.13.22)";
+            request.UserAgent = String.Format("{0} Updater ({1})", Fomm.ProductInfo.ShortName, Fomm.ProductInfo.Version);
             request.Headers.Add(HttpRequestHeader.AcceptLanguage, "en-us");
             request.Headers.Add(HttpRequestHeader.AcceptEncoding, "gzip");
             request.UseDefaultCredentials = true;

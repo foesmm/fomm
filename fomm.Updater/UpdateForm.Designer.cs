@@ -1,5 +1,5 @@
 ﻿
-namespace fomm.Updater
+namespace Fomm.Updater
 {
 	partial class UpdateForm
 	{
