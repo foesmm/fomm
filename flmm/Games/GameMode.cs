@@ -11,6 +11,7 @@ using Fomm.Controls;
 using Microsoft.Win32;
 using Fomm.Commands;
 using Fomm.Games.Fallout3.Tools.TESsnip;
+using Fomm.Util;
 
 namespace Fomm.Games
 {
@@ -23,7 +24,7 @@ namespace Fomm.Games
   public abstract class GameMode
   {
     #region Properties
-
+    public piBAPI bapi;
     protected List<Command<MainForm>> m_lstTools = new List<Command<MainForm>>();
     protected List<Command<MainForm>> m_lstGameSettingsTools = new List<Command<MainForm>>();
     protected List<Command<MainForm>> m_lstLoadOrderTools = new List<Command<MainForm>>();
