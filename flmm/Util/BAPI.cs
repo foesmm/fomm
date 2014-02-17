@@ -19,6 +19,14 @@ namespace Fomm.Util
     [DllImport("boss64.dll", EntryPoint = "IsCompatibleVersion", CallingConvention = CallingConvention.Cdecl)]
     protected static extern bool bapi64_IsCompatibleVersion(UInt32 bossVersionMajor, UInt32 bossVersionMinor, UInt32 bossVersionPatch);
 
+    public bool? IsAvailable
+    {
+      get
+      {
+        return IsCompatibleVersion(2, 1, 0);
+      }
+    }
+    
     public piBAPI()
     {
       string bossPath;
@@ -36,8 +44,6 @@ namespace Fomm.Util
             bossPath + Path.DirectorySeparatorChar + "API" + Path.DirectorySeparatorChar);
         }
       }
-
-      
     }
     
     public bool Is64bitProcess()
@@ -54,24 +60,9 @@ namespace Fomm.Util
         ret = Is64bitProcess() ?
           bapi64_IsCompatibleVersion(bossVersionMajor, bossVersionMinor, bossVersionPatch) :
           bapi32_IsCompatibleVersion(bossVersionMajor, bossVersionMinor, bossVersionPatch);
-
-        if (!ret)
-        {
-          MessageBox.Show(
-            "BOSS error",
-            "BOSS 2.1.0 or compatible required for this functionality.",
-            MessageBoxButtons.OK,
-            MessageBoxIcon.Exclamation);
-        }
       }
       catch
       {
-        MessageBox.Show(
-          "BOSS error",
-          "BOSS not found!",
-          MessageBoxButtons.OK,
-          MessageBoxIcon.Exclamation);
-        ret = false;
       }
 
       return ret;
