@@ -227,7 +227,7 @@ namespace Fomm.PackageManager {
       this.Controls.Add(this.panel1);
       this.Controls.Add(this.panel2);
       this.KeyPreview = true;
-      this.MinimumSize = new System.Drawing.Size(400, 200);
+      this.MinimumSize = new System.Drawing.Size(456, 271);
       this.Name = "Overwriteform";
       this.Text = "Confirm Overwrite";
       this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Overwriteform_FormClosing);
