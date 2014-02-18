@@ -114,12 +114,19 @@ namespace Fomm.Util
     protected static extern UInt32 bapi32_GetLoadOrder(UInt32 boss_db, ref IntPtr plugins, ref IntPtr numPlugins);
     [DllImport("boss64.dll", EntryPoint = "GetLoadOrder")]
     protected static extern UInt32 bapi64_GetLoadOrder(UInt32 boss_db, ref IntPtr plugins, ref IntPtr numPlugins);
+
+    // UpdateMasterlist -- Fetches the latest masterlist to the path given
+    [DllImport("boss32.dll", EntryPoint = "UpdateMasterlist")]
+    protected static extern UInt32 bapi32_UpdateMasterlist(UInt32 boss_db, [MarshalAs(UnmanagedType.LPStr)] string listpath);
+    [DllImport("boss64.dll", EntryPoint = "UpdateMasterlist")]
+    protected static extern UInt32 bapi64_UpdateMasterlist(UInt32 boss_db, [MarshalAs(UnmanagedType.LPStr)] string listpath);
+
     
     public bool? IsAvailable
     {
       get
       {
-        return IsCompatibleVersion(2, 1, 0);
+        return IsCompatibleVersion(2, 1, 1);
       }
     }
     
@@ -145,6 +152,11 @@ namespace Fomm.Util
       }
 
       GetBossDb();
+
+      if (true == IsAvailable)
+      {
+        UpdateMasterlist();
+      }
     }
     
     public bool Is64bitProcess()
@@ -347,6 +359,31 @@ namespace Fomm.Util
       return ret;
     }
 
+    public bool UpdateMasterlist()
+    {
+      bool ret = false;
+      UInt32 boss_db;
+      UInt32 apiRet = BOSS_ERROR_UNKNOWN;
+
+      if (GetBossDb())
+      {
+        boss_db = _boss_db.GetValueOrDefault(0);
+        switch (Is64bitProcess())
+        {
+          case true:
+            apiRet = bapi64_UpdateMasterlist(boss_db, Path.Combine(_gm.InstallInfoDirectory, "lotemplate.txt"));
+            break;
+
+          case false:
+            apiRet = bapi32_UpdateMasterlist(boss_db, Path.Combine(_gm.InstallInfoDirectory, "lotemplate.txt"));
+            break;
+        }
+
+        ret = (apiRet == BOSS_OK);
+      }
+
+      return ret;
+    }
 
     #endregion
   }
