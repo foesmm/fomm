@@ -85,6 +85,12 @@ namespace Fomm.Util
     [DllImport("boss64.dll", EntryPoint = "IsCompatibleVersion")]
     protected static extern bool bapi64_IsCompatibleVersion(UInt32 bossVersionMajor, UInt32 bossVersionMinor, UInt32 bossVersionPatch);
 
+    // CleanUpApi -- frees memory allocated by GetVersionString and GetLastErrorDetails
+    [DllImport("boss32.dll", EntryPoint = "CleanUpAPI")]
+    protected static extern void bapi32_CleanUpAPI();
+    [DllImport("boss64.dll", EntryPoint = "CleanUpAPI")]
+    protected static extern void bapi64_CleanUpAPI();
+    
     // GetLastErrorDetails
     [DllImport("boss32.dll", EntryPoint = "GetLastErrorDetails")]
     protected static extern UInt32 bapi32_GetLastErrorDetails(ref IntPtr details);
@@ -148,6 +154,20 @@ namespace Fomm.Util
     }
 
     #region extern wrappers
+    public void CleanUpAPI()
+    {
+      switch (Is64bitProcess())
+      {
+        case true:
+          bapi64_CleanUpAPI();
+          break;
+
+        case false:
+          bapi32_CleanUpAPI();
+          break;
+      }
+    }
+
     public bool IsCompatibleVersion(UInt32 bossVersionMajor, UInt32 bossVersionMinor, UInt32 bossVersionPatch)
     {
       bool ret = false;
@@ -187,6 +207,7 @@ namespace Fomm.Util
         if (BOSS_OK == apiRet)
         {
           ret = Marshal.PtrToStringAnsi(pVersion);
+          CleanUpAPI();
         }
       }
       return ret;
@@ -214,6 +235,7 @@ namespace Fomm.Util
         if (BOSS_OK == apiRet)
         {
           ret = Marshal.PtrToStringAnsi(pVersion);
+          CleanUpAPI();
         }
       }
       return ret;
