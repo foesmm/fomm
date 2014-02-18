@@ -11,6 +11,7 @@ using Fomm.Controls;
 using Microsoft.Win32;
 using Fomm.Commands;
 using Fomm.Games.Fallout3.Tools.TESsnip;
+using Fomm.Util;
 
 namespace Fomm.Games
 {
@@ -23,6 +24,7 @@ namespace Fomm.Games
   public abstract class GameMode
   {
     #region Properties
+    public piBAPI bapi;
 
     protected List<Command<MainForm>> m_lstTools = new List<Command<MainForm>>();
     protected List<Command<MainForm>> m_lstGameSettingsTools = new List<Command<MainForm>>();
@@ -236,10 +238,7 @@ namespace Fomm.Games
     /// </summary>
     public GameMode()
     {
-      //this folder can't be created here, as the path may not be set
-      // further, this folder should be created by the game, so I don't think the appropriate way
-      // to handle thing if it's missing is to create it
-      //if (!Directory.Exists(UserSettingsPath)) Directory.CreateDirectory(UserSettingsPath);
+      
     }
 
     #endregion
@@ -496,24 +495,6 @@ class Script : GenericBaseScript {
 
     #region BOSS methods
 
-    public virtual bool updateBOSS()
-    {
-      bool ret = false;
-
-      try
-      {
-        Fomm.Games.Fallout3.Tools.AutoSorter.Fallout3BOSSUpdater bupUpdater = new Fomm.Games.Fallout3.Tools.AutoSorter.Fallout3BOSSUpdater();
-        bupUpdater.UpdateMasterlist(Fomm.Games.Fallout3.Tools.AutoSorter.LoadOrderSorter.LoadOrderTemplatePath);
-        ret = true;
-      }
-      catch (Exception e)
-      {
-        MessageBox.Show("There was an error updating BOSS\n" + e.Message, "BOSS update error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-      }
-
-      return ret;
-    }
-
     /// <summary>
     /// Generates a report on the current load order, as compared to the BOSS recomendation.
     /// </summary>
@@ -522,115 +503,29 @@ class Script : GenericBaseScript {
     /// main mod management form.</param>
     public void LaunchLoadOrderReport(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
-      Fomm.Games.Fallout3.Tools.AutoSorter.LoadOrderSorter losSorter = new Fomm.Games.Fallout3.Tools.AutoSorter.LoadOrderSorter();
-      if (!losSorter.HasMasterList)
-      {
-        if (DialogResult.Yes == MessageBox.Show("There is no BOSS masterlist present, would you like to fetch the latest one?", "Update BOSS", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
-        {
-          if (updateBOSS())
-          {
-            if (losSorter.HasMasterList)
-            {
-              losSorter.LoadList();
-            }
-            else
-            {
-              MessageBox.Show("BOSS masterlist still missing!", "BOSS update error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-              return;
-            }
-          }
-        }
-        else
-        {
-          return;
-        }
-      }
+      StringBuilder s = new StringBuilder(300);
+      string[] plugins = bapi.GetLoadOrder();
 
-      string[] plugins = PluginManager.OrderedPluginList;
-      bool[] active = new bool[plugins.Length];
-      bool[] corrupt = new bool[plugins.Length];
-      string[][] masters = new string[plugins.Length][];
-      Fomm.Games.Fallout3.Tools.TESsnip.Plugin p;
-      List<string> mlist = new List<string>();
+      // This needs all the TESsnip stuff added back in, removed for now as it requires
+      // the BOSS stuff to be completed, so for now, just a load order list from BOSS to
+      // prove it works.
       for (int i = 0; i < plugins.Length; i++)
       {
-        active[i] = PluginManager.IsPluginActive(plugins[i]);
-        plugins[i] = Path.GetFileName(plugins[i]);
-        try
-        {
-          p = new Fomm.Games.Fallout3.Tools.TESsnip.Plugin(Path.Combine(PluginsPath, plugins[i]), true);
-        }
-        catch
-        {
-          p = null;
-          corrupt[i] = true;
-        }
-        if (p != null)
-        {
-          foreach (Fomm.Games.Fallout3.Tools.TESsnip.SubRecord sr in ((Fomm.Games.Fallout3.Tools.TESsnip.Record)p.Records[0]).SubRecords)
-          {
-            if (sr.Name != "MAST") continue;
-            mlist.Add(sr.GetStrData().ToLowerInvariant());
-          }
-          if (mlist.Count > 0)
-          {
-            masters[i] = mlist.ToArray();
-            mlist.Clear();
-          }
-        }
+        s.Append(plugins[i]+"\n");
       }
 
-      string s = losSorter.GenerateReport(plugins, active, corrupt, masters);
-      PackageManager.TextEditor.ShowEditor(s, Fomm.PackageManager.TextEditorType.Text, false);
+      PackageManager.TextEditor.ShowEditor(s.ToString(), Fomm.PackageManager.TextEditorType.Text, false);
     }
 
     public virtual void LaunchSortPlugins(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
-      string msg = 
-        "This is currently a beta feature, and the load order template may not be optimal.\n" +
-        "Ensure you have a backup of your load order before running this tool.\n" +
-        "Are you sure you wish to continue?";
-
       if (MessageBox.Show(p_eeaArguments.Argument,
-        msg,
+        "This does not actually do anything yet / now.",
         "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
       {
         return;
       }
 
-      string[] plugins = PluginManager.OrderedPluginList;
-      for (int i = 0; i < plugins.Length; i++)
-      {
-        plugins[i] = Path.GetFileName(plugins[i]);
-      }
-
-      Fomm.Games.Fallout3.Tools.AutoSorter.LoadOrderSorter losSorter = new Fomm.Games.Fallout3.Tools.AutoSorter.LoadOrderSorter();
-      if (!losSorter.HasMasterList)
-      {
-        if (DialogResult.Yes == MessageBox.Show("There is no BOSS masterlist present, would you like to fetch the latest one?", "Update BOSS", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
-        {
-          if (updateBOSS())
-          {
-            if (losSorter.HasMasterList)
-            {
-              losSorter.LoadList();
-            }
-            else
-            {
-              MessageBox.Show("BOSS masterlist still missing!", "BOSS update error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-              return;
-            }
-          }
-        }
-        else
-        {
-          return;
-        }
-      }
-
-      losSorter.SortList(plugins);
-      for (int i = 0; i < plugins.Length; i++)
-        PluginManager.SetLoadOrder(Path.Combine(PluginsPath, plugins[i]), i);
       p_eeaArguments.Argument.RefreshPluginList();
     }
 

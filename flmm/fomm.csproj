@@ -865,6 +865,7 @@
     </Compile>
     <Compile Include="Games\Fallout3\Tools\TESsnip\TESsnipParser.cs" />
     <Compile Include="TypeConverter.cs" />
+    <Compile Include="Util\BAPI.cs" />
     <Compile Include="Util\FileUtil.cs" />
     <Compile Include="Util\Set.cs" />
     <Compile Include="Util\SettingsList.cs" />
@@ -943,8 +944,14 @@
     <None Include="Resources\error.png" />
     <None Include="Resources\Warning.png" />
     <None Include="Resources\help.png" />
+    <Content Include="ICSharpCode.TextEditor.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SevenZipSharp.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="ShaderDisasm.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="data\Fallout3\TESsnip\RecordStructure.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
