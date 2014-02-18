@@ -66,6 +66,7 @@ namespace Fomm.Util
     public const UInt32 BOSS_ERROR_NO_INTERNET_CONNECTION                = 36;
     public const UInt32 BOSS_ERROR_NO_TAG_MAP                            = 37;
     public const UInt32 BOSS_ERROR_PLUGINS_FULL                          = 38;
+    public const UInt32 BOSS_ERROR_UNKNOWN                               = 999999;
 
     public const UInt32 BOSS_GAME_AUTODETECT = 0;
     public const UInt32 BOSS_GAME_OBLIVION   = 1;
@@ -83,6 +84,18 @@ namespace Fomm.Util
     protected static extern bool bapi32_IsCompatibleVersion(UInt32 bossVersionMajor, UInt32 bossVersionMinor, UInt32 bossVersionPatch);
     [DllImport("boss64.dll", EntryPoint = "IsCompatibleVersion")]
     protected static extern bool bapi64_IsCompatibleVersion(UInt32 bossVersionMajor, UInt32 bossVersionMinor, UInt32 bossVersionPatch);
+
+    // GetLastErrorDetails
+    [DllImport("boss32.dll", EntryPoint = "GetLastErrorDetails")]
+    protected static extern UInt32 bapi32_GetLastErrorDetails(ref IntPtr details);
+    [DllImport("boss64.dll", EntryPoint = "GetLastErrorDetails")]
+    protected static extern UInt32 bapi64_GetLastErrorDetails(ref IntPtr details);
+
+    // GetVersionString
+    [DllImport("boss32.dll", EntryPoint = "GetVersionString")]
+    protected static extern UInt32 bapi32_GetVersionString(ref IntPtr pVersion);
+    [DllImport("boss64.dll", EntryPoint = "GetVersionString")]
+    protected static extern UInt32 bapi64_GetVersionString(ref IntPtr pVersion);
 
     // CreateBossDb
     [DllImport("boss32.dll", EntryPoint = "CreateBossDb")]
@@ -149,6 +162,60 @@ namespace Fomm.Util
       {
       }
 
+      return ret;
+    }
+
+    public string GetVersionString()
+    {
+      string ret = "";
+      IntPtr pVersion = new IntPtr();
+      UInt32 apiRet = BOSS_ERROR_UNKNOWN;
+
+      if (GetBossDb())
+      {
+        switch (Is64bitProcess())
+        {
+          case true:
+            apiRet = bapi64_GetVersionString(ref pVersion);
+            break;
+
+          case false:
+            apiRet = bapi32_GetVersionString(ref pVersion);
+            break;
+        }
+
+        if (BOSS_OK == apiRet)
+        {
+          ret = Marshal.PtrToStringAnsi(pVersion);
+        }
+      }
+      return ret;
+    }
+
+    public string GetLastErrorDetails()
+    {
+      string ret = "";
+      IntPtr pVersion = new IntPtr();
+      UInt32 apiRet = BOSS_ERROR_UNKNOWN;
+
+      if (GetBossDb())
+      {
+        switch (Is64bitProcess())
+        {
+          case true:
+            apiRet = bapi64_GetLastErrorDetails(ref pVersion);
+            break;
+
+          case false:
+            apiRet = bapi32_GetLastErrorDetails(ref pVersion);
+            break;
+        }
+
+        if (BOSS_OK == apiRet)
+        {
+          ret = Marshal.PtrToStringAnsi(pVersion);
+        }
+      }
       return ret;
     }
 
