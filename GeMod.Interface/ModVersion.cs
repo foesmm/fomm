@@ -325,5 +325,10 @@ namespace GeMod.Interface
 			
 			return version;
 		}
+
+        public static implicit operator String(ModVersion version)
+        {
+            return version.ToString();
+        }
 	}
 }
