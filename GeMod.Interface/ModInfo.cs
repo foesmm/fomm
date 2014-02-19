@@ -25,7 +25,7 @@ namespace GeMod.Interface
 		/// Gets the version of the mod.
 		/// </summary>
 		/// <value>The version of the mod.</value>
-		public string Version { get; private set; }
+		public ModVersion Version { get; private set; }
 
 		/// <summary>
 		/// Gets the webpage of the mod.
@@ -54,7 +54,7 @@ namespace GeMod.Interface
 		{
 			ModName = p_strName;
 			Author = p_strAuthor;
-			Version = p_strVersion;
+			Version = ModVersion.Parse(p_strVersion);
 			URL = p_uriURL;
 			Screenshot = p_sstScreenshot;
 		}
