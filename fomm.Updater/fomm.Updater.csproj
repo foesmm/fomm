@@ -69,14 +69,18 @@
       <Link>ProductInfo.cs</Link>
     </Compile>
     <Compile Include="GitHub.cs" />
-    <Compile Include="InstallForm.cs" />
+    <Compile Include="InstallForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="InstallForm.Designer.cs">
       <DependentUpon>InstallForm.cs</DependentUpon>
     </Compile>
     <Compile Include="MiniJSON.cs" />
     <Compile Include="UninstallInfo.cs" />
     <Compile Include="UpdateHelper.cs" />
-    <Compile Include="UpdateForm.cs" />
+    <Compile Include="UpdateForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="UpdateForm.Designer.cs">
       <DependentUpon>UpdateForm.cs</DependentUpon>
     </Compile>
