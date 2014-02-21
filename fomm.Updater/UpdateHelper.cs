@@ -157,12 +157,29 @@ namespace Fomm.Updater
 	            return false;
 	        }
 		}
-		
-		public static void RunElevated()
+
+
+        public static void RunElevated()
+        {
+            RunElevated(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, AppDomain.CurrentDomain.FriendlyName), "");
+        }
+
+        public static void RunElevated(string command)
+        {
+            RunElevated(command, "");
+        }
+
+        public static void RunElevated(string[] arguments)
+        {
+            RunElevated(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, AppDomain.CurrentDomain.FriendlyName), String.Join(" ", arguments));
+        }
+
+		public static void RunElevated(string command, string arguments)
 		{
 			Process p = new Process();
 			p.StartInfo.Verb = "runas";
-			p.StartInfo.FileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, AppDomain.CurrentDomain.FriendlyName);
+            p.StartInfo.FileName = command;
+            p.StartInfo.Arguments = arguments;
 			p.StartInfo.UseShellExecute = true;
 			p.Start();
 		}
@@ -184,18 +201,19 @@ namespace Fomm.Updater
 				return bLegacyInstalled;
 			}
 		}
-		
-		public static bool IsFommInstalled
+
+        private static UninstallInfo uiFomm = new UninstallInfo(Fomm.ProductInfo.GUID);
+		public static UninstallInfo FommUninstallInfo
 		{
 			get
 			{
-				return (Registry.LocalMachine.OpenSubKey(String.Format("{0}\\{{{1}}}", uninstallRegistryKey, Fomm.ProductInfo.GUID.ToString()), false) != null);
+                return uiFomm;
 			}
 		}
-		
-		public static bool WriteUninstallationInfo()
-		{
-			return false;
-		}
+
+        public static void Associate(string[] formats)
+        {
+
+        }
 	}
 }
