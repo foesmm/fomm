@@ -8,14 +8,14 @@ using Fomm.Games;
 
 /*
  * BOSS dll importer, refs:
- * 
+ *
  * http://msdn.microsoft.com/en-us/library/aa288468%28v=vs.71%29.aspx
  * http://stackoverflow.com/questions/10852634/using-a-32bit-or-64bit-dll-in-c-sharp-dllimport
  * http://code.google.com/p/better-oblivion-sorting-software/source/browse/code/tags/2.1.0/boss-api/BOSS-API.h
  */
 namespace Fomm.Util
 {
-  
+
   public class piBAPI
   {
     // http://code.google.com/p/better-oblivion-sorting-software/source/browse/code/tags/2.1.0/boss-common/Common/Error.cpp
@@ -90,7 +90,7 @@ namespace Fomm.Util
     protected static extern void bapi32_CleanUpAPI();
     [DllImport("boss64.dll", EntryPoint = "CleanUpAPI")]
     protected static extern void bapi64_CleanUpAPI();
-    
+
     // GetLastErrorDetails
     [DllImport("boss32.dll", EntryPoint = "GetLastErrorDetails")]
     protected static extern UInt32 bapi32_GetLastErrorDetails(ref IntPtr details);
@@ -109,7 +109,7 @@ namespace Fomm.Util
     [DllImport("boss64.dll", EntryPoint = "CreateBossDb")]
     protected static extern UInt32 bapi64_CreateBossDb(ref UInt32 boss_db, UInt32 clientGame, string dataPath);
 
-    // CreateBossDb
+    // GetLoadOrder
     [DllImport("boss32.dll", EntryPoint = "GetLoadOrder")]
     protected static extern UInt32 bapi32_GetLoadOrder(UInt32 boss_db, ref IntPtr plugins, ref IntPtr numPlugins);
     [DllImport("boss64.dll", EntryPoint = "GetLoadOrder")]
@@ -121,7 +121,7 @@ namespace Fomm.Util
     [DllImport("boss64.dll", EntryPoint = "UpdateMasterlist")]
     protected static extern UInt32 bapi64_UpdateMasterlist(UInt32 boss_db, [MarshalAs(UnmanagedType.LPStr)] string listpath);
 
-    
+
     public bool? IsAvailable
     {
       get
@@ -129,7 +129,7 @@ namespace Fomm.Util
         return IsCompatibleVersion(2, 1, 1);
       }
     }
-    
+
     // Constructor
     public piBAPI(GameMode gm)
     {
@@ -158,7 +158,7 @@ namespace Fomm.Util
         UpdateMasterlist();
       }
     }
-    
+
     public bool Is64bitProcess()
     {
       // This should be safe.  If not, can update to .Net 4.0.
@@ -315,7 +315,6 @@ namespace Fomm.Util
     {
       String[] ret;
       IntPtr[] pPluginArray;
-      string[] plugins;
       IntPtr cnt;
       IntPtr pPlugins;
       UInt32 boss_db;
@@ -339,9 +338,8 @@ namespace Fomm.Util
               bapi32_GetLoadOrder(boss_db, ref pPlugins, ref cnt);
               break;
           }
-          
+
           Array.Resize(ref ret, cnt.ToInt32());
-          plugins = new String[cnt.ToInt32()];
           pPluginArray = new IntPtr[cnt.ToInt32()];
           Marshal.Copy(pPlugins, pPluginArray, 0, cnt.ToInt32());
 
