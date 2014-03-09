@@ -598,7 +598,7 @@ namespace Fomm.PackageManager
 		/// </remarks> 
 		/// <param name="p_strPath">The path of the file whose contents are to be retrieved.</param>
 		/// <returns>The contents of the specified file.</returns>
-		protected byte[] GetFileContents(string p_strFile)
+		public byte[] GetFileContents(string p_strFile)
 		{
       PermissionsManager.CurrentPermissions.Assert();
       if (!ContainsFile(p_strFile))
@@ -934,7 +934,7 @@ namespace Fomm.PackageManager
 			if (!HasScreenshot)
 				return null;
 
-			Screenshot shtScreenshot = new Screenshot(m_strScreenshotPath, GetFile(m_strScreenshotPath));
+      Screenshot shtScreenshot = new Screenshot(m_strScreenshotPath, GetFileContents(m_strScreenshotPath));
 			return shtScreenshot;
 		}
 

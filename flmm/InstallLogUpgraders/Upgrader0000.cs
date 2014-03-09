@@ -307,7 +307,7 @@ namespace Fomm.InstallLogUpgraders
 						m_dicDefaultFileOwners[strDataRelativePath] = p_strModBaseName;
 					continue;
 				}
-				byte[] bteFomodFile = p_fomodMod.GetFile(strDataRelativePath);
+				byte[] bteFomodFile = p_fomodMod.GetFileContents(strDataRelativePath);
 				crcFomodFile.Update(bteFomodFile);
 				if (!crcDiskFile.Value.Equals(crcFomodFile.Value) || FileOwnerIsKnown(strDataRelativePath))
 				{
