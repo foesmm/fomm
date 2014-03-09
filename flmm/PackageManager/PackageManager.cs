@@ -821,9 +821,6 @@ namespace Fomm.PackageManager
 		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
 		private void createFromFolderToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-      MessageBox.Show("Create from folder is currently disabled.\n Please create a zip file and add that with Add Fomod.");
-      return;
-      /*
       FolderBrowserDialog fbd = new FolderBrowserDialog();
 			fbd.SelectedPath = m_strLastFromFolderPath;
 			fbd.ShowNewFolderButton = false;
@@ -833,7 +830,6 @@ namespace Fomm.PackageManager
 			Properties.Settings.Default.LastBuildFOMODFromFolderPath = Path.GetDirectoryName(m_strLastFromFolderPath);
 			Properties.Settings.Default.Save();
 			AddNewFomod(fbd.SelectedPath);
-      */
 		}
 
 		/// <summary>
