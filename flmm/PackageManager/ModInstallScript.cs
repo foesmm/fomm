@@ -541,15 +541,9 @@ namespace Fomm.PackageManager
       // Replaced by:
       strAdjustedPath = Fomod.GetPrefixAdjustedPath(p_strFile);
 
-      if ((Fomod.m_arcCacheFile != null) && Fomod.m_arcCacheFile.ContainsFile(strAdjustedPath))
-      {
-        arc = Fomod.m_arcCacheFile;
-      }
-      else if ((Fomod.m_arcFile != null) && Fomod.m_arcFile.ContainsFile(strAdjustedPath))
-      {
-        arc = Fomod.m_arcFile;
-      }
-      else
+      arc = Fomod.GetArchiveForFile(strAdjustedPath);
+
+      if (arc == null)
       {
         throw new FileNotFoundException("File doesn't exist in fomod", p_strFile);
       }
