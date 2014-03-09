@@ -604,7 +604,9 @@ namespace Fomm.PackageManager
 
       PermissionsManager.CurrentPermissions.Assert();
       if (!ContainsFile(p_strFile))
+      {
         throw new FileNotFoundException("File doesn't exist in fomod", p_strFile);
+      }
 
       if ((m_arcCacheFile != null) && m_arcCacheFile.ContainsFile(GetPrefixAdjustedPath(p_strFile)))
       {
