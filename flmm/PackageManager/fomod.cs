@@ -600,13 +600,22 @@ namespace Fomm.PackageManager
 		/// <returns>The contents of the specified file.</returns>
 		public byte[] GetFileContents(string p_strFile)
 		{
+      Archive arc;
+
       PermissionsManager.CurrentPermissions.Assert();
       if (!ContainsFile(p_strFile))
         throw new FileNotFoundException("File doesn't exist in fomod", p_strFile);
 
       if ((m_arcCacheFile != null) && m_arcCacheFile.ContainsFile(GetPrefixAdjustedPath(p_strFile)))
-        return m_arcCacheFile.GetFileContents(GetPrefixAdjustedPath(p_strFile));
-      return m_arcFile.GetFileContents(GetPrefixAdjustedPath(p_strFile));
+      {
+        arc = m_arcCacheFile;
+      }
+      else
+      {
+        arc = m_arcFile;
+      }
+
+      return arc.GetFileContents(GetPrefixAdjustedPath(p_strFile));
 		}
 
 		/// <summary>
