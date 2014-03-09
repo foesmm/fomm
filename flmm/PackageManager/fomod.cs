@@ -598,11 +598,15 @@ namespace Fomm.PackageManager
 		/// </remarks> 
 		/// <param name="p_strPath">The path of the file whose contents are to be retrieved.</param>
 		/// <returns>The contents of the specified file.</returns>
-		protected byte[] GetFileContents(string p_strPath)
+		protected byte[] GetFileContents(string p_strFile)
 		{
-			if ((m_arcCacheFile != null) && m_arcCacheFile.ContainsFile(GetPrefixAdjustedPath(p_strPath)))
-				return m_arcCacheFile.GetFileContents(GetPrefixAdjustedPath(p_strPath));
-			return m_arcFile.GetFileContents(GetPrefixAdjustedPath(p_strPath));
+      PermissionsManager.CurrentPermissions.Assert();
+      if (!ContainsFile(p_strFile))
+        throw new FileNotFoundException("File doesn't exist in fomod", p_strFile);
+
+      if ((m_arcCacheFile != null) && m_arcCacheFile.ContainsFile(GetPrefixAdjustedPath(p_strFile)))
+        return m_arcCacheFile.GetFileContents(GetPrefixAdjustedPath(p_strFile));
+      return m_arcFile.GetFileContents(GetPrefixAdjustedPath(p_strFile));
 		}
 
 		/// <summary>
@@ -1047,20 +1051,9 @@ namespace Fomm.PackageManager
 
 		#endregion
 
-		/// <summary>
-		/// Retrieves the specified file from the fomod.
-		/// </summary>
-		/// <param name="p_strFile">The file to retrieve.</param>
-		/// <returns>The requested file data.</returns>
-		/// <exception cref="FileNotFoundException">Thrown if the specified file
-		/// is not in the fomod.</exception>
-		/// <exception cref="DecompressionException">Thrown if the specified file
-		/// cannot be extracted from the zip.</exception>
-		public byte[] GetFile(string p_strFile)
+    // Now just an alias for GetFileContents
+    public byte[] GetFile(string p_strFile)
 		{
-			PermissionsManager.CurrentPermissions.Assert();
-			if (!ContainsFile(p_strFile))
-				throw new FileNotFoundException("File doesn't exist in fomod", p_strFile);
 			return GetFileContents(p_strFile);
 		}
 
