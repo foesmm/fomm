@@ -1064,6 +1064,88 @@ namespace Fomm.PackageManager
 			return GetFileContents(p_strFile);
 		}
 
+    // Copies a file from the fomod to the specified destination, if
+    // the user approves the copy.  Uses the transactional installer.
+    public bool CopyFile(ModInstallScript mis, string p_strFrom, string p_strTo)
+    {
+      bool ret = false;
+      string strAdjustedFromPath;
+      string strAdjustedToPath;
+      Archive arc;
+
+      PermissionsManager.CurrentPermissions.Assert();
+      FileManagement.AssertFilePathIsSafe(p_strTo);
+
+      strAdjustedFromPath = GetPrefixAdjustedPath(p_strFrom);
+      strAdjustedToPath = Path.Combine(Program.GameMode.PluginsPath, p_strTo);
+
+      if (!ContainsFile(p_strFrom))
+      {
+        throw new FileNotFoundException("File doesn't exist in fomod", p_strFrom);
+      }
+
+      strAdjustedFromPath = GetPrefixAdjustedPath(p_strFrom);
+      if ((m_arcCacheFile != null) && m_arcCacheFile.ContainsFile(strAdjustedFromPath))
+      {
+        arc = m_arcCacheFile;
+      }
+      else
+      {
+        arc = m_arcFile;
+      }
+
+      if (!Directory.Exists(Path.GetDirectoryName(strAdjustedToPath)))
+      {
+        mis.Installer.TransactionalFileManager.CreateDirectory(Path.GetDirectoryName(strAdjustedToPath));
+        ret = true;
+      }
+      else
+      {
+        // From ModInstallScript.GenerateDataFile
+        if (mis.TestDoOverwrite(p_strTo))
+        {
+          if (File.Exists(strAdjustedToPath))
+          {
+            string strDirectory = Path.GetDirectoryName(p_strTo);
+            string strBackupPath = Path.Combine(Program.GameMode.OverwriteDirectory, strDirectory);
+            string strOldModKey = InstallLog.Current.GetCurrentFileOwnerKey(p_strTo);
+            //if this mod installed a file, and now we are overwriting itm
+            // the install log will tell us no one owns the file, or the wrong mod owns the
+            // file. so, if this mod has installed this file already just replace it, don't
+            // back it up.
+            if (!mis.Installer.MergeModule.ContainsFile(p_strTo))
+            {
+              if (!Directory.Exists(strBackupPath))
+              {
+                mis.Installer.TransactionalFileManager.CreateDirectory(strBackupPath);
+              }
+
+              //if we are overwriting an original value, back it up
+              if (strOldModKey == null)
+              {
+                mis.Installer.MergeModule.BackupOriginalDataFile(p_strTo);
+                strOldModKey = InstallLog.Current.OriginalValuesKey;
+              }
+              string strFile = Path.GetFileName(Directory.GetFiles(Path.GetDirectoryName(strAdjustedToPath), Path.GetFileName(strAdjustedToPath))[0]);
+              strFile = strOldModKey + "_" + strFile;
+              strBackupPath = Path.Combine(strBackupPath, strFile);
+              mis.Installer.TransactionalFileManager.Copy(strAdjustedToPath, strBackupPath, true);
+            }
+            mis.Installer.TransactionalFileManager.Delete(strAdjustedToPath);
+          }
+          ret = true;
+        }
+      }
+
+      if (ret)
+      {
+        mis.Installer.TransactionalFileManager.Copy(strAdjustedFromPath, strAdjustedToPath, true);
+        mis.Installer.MergeModule.AddFile(p_strTo);
+      }
+
+      return ret;
+    }
+
 		/// <summary>
 		/// Retrieves the specified image from the fomod.
 		/// </summary>
