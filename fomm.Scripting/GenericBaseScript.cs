@@ -209,7 +209,7 @@ namespace fomm.Scripting
 		/// <seealso cref="fomod.GetFile(string p_strFile)"/>
 		public static byte[] GetFileFromFomod(string p_strFile)
 		{
-			return (byte[])ExecuteMethod(() => m_mdiScript.Fomod.GetFile(p_strFile));
+      return (byte[])ExecuteMethod(() => m_mdiScript.Fomod.GetFileContents(p_strFile));
 		}
 
 		/// <summary>

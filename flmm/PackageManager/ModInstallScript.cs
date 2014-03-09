@@ -98,7 +98,7 @@ namespace Fomm.PackageManager
       }
     }
 
-    protected ModInstallerBase Installer
+    public ModInstallerBase Installer
     {
       get
       {
@@ -411,7 +411,7 @@ namespace Fomm.PackageManager
     #region File Creation
 
     /// <summary>
-    /// Verifies if the given file can be written.
+    /// Asks user if the given file should be overwritten.
     /// </summary>
     /// <remarks>
     /// This method checks if the given path is valid. If so, and the file does not
@@ -421,7 +421,7 @@ namespace Fomm.PackageManager
     /// <param name="p_strPath">The file path, relative to the Data folder, whose writability is to be verified.</param>
     /// <returns><lang cref="true"/> if the location specified by <paramref name="p_strPath"/>
     /// can be written; <lang cref="false"/> otherwise.</returns>
-    protected bool TestDoOverwrite(string p_strPath)
+    public bool TestDoOverwrite(string p_strPath)
     {
       string strDataPath = Path.Combine(Program.GameMode.PluginsPath, p_strPath);
       string strOldMod = InstallLog.Current.GetCurrentFileOwnerName(p_strPath);
@@ -541,15 +541,9 @@ namespace Fomm.PackageManager
       // Replaced by:
       strAdjustedPath = Fomod.GetPrefixAdjustedPath(p_strFile);
 
-      if ((Fomod.m_arcCacheFile != null) && Fomod.m_arcCacheFile.ContainsFile(strAdjustedPath))
-      {
-        arc = Fomod.m_arcCacheFile;
-      }
-      else if ((Fomod.m_arcFile != null) && Fomod.m_arcFile.ContainsFile(strAdjustedPath))
-      {
-        arc = Fomod.m_arcFile;
-      }
-      else
+      arc = Fomod.GetArchiveForFile(strAdjustedPath);
+
+      if (arc == null)
       {
         throw new FileNotFoundException("File doesn't exist in fomod", p_strFile);
       }
@@ -667,8 +661,7 @@ namespace Fomm.PackageManager
     /// not safe.</exception>
     public bool CopyDataFile(string p_strFrom, string p_strTo)
     {
-      byte[] bteBytes = Fomod.GetFile(p_strFrom);
-      return GenerateDataFile(p_strTo, bteBytes);
+      return Fomod.CopyFile(this, p_strFrom, p_strTo);
     }
 
     /// <summary>

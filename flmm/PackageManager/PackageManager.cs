@@ -821,7 +821,7 @@ namespace Fomm.PackageManager
 		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
 		private void createFromFolderToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			FolderBrowserDialog fbd = new FolderBrowserDialog();
+      FolderBrowserDialog fbd = new FolderBrowserDialog();
 			fbd.SelectedPath = m_strLastFromFolderPath;
 			fbd.ShowNewFolderButton = false;
 			fbd.Description = "Pick a folder to convert to a fomod";

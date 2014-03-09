@@ -90,7 +90,7 @@ namespace Fomm
 			this.Icon = Fomm.Properties.Resources.fomm02;
 			Properties.Settings.Default.windowPositions.GetWindowPosition("MainForm", this);
 
-			Text += " (" + Program.Version + ") - " + Program.GameMode.GameName;
+      Text += " (" + Program.MVersion.ToString() + ") - " + Program.GameMode.GameName;
 
 			if (fomod != null)
 			{

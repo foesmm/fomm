@@ -573,7 +573,7 @@ namespace fomm.Scripting
 				return;
 			}
 			if (line.Length > 3) Warn("Unexpected extra arguments after CopyDataFile");
-			byte[] bteData = (byte[])ExecuteMethod(() => m_midInstaller.Fomod.GetFile(line[1]));
+      byte[] bteData = (byte[])ExecuteMethod(() => m_midInstaller.Fomod.GetFileContents(line[1]));
 			ExecuteMethod(() => Script.GenerateDataFile(line[2], bteData));
 		}
 
@@ -632,7 +632,7 @@ namespace fomm.Scripting
 				Warn("Invalid argument to function 'EditShader'\n'" + line[1] + "' is not a valid shader package ID");
 				return;
 			}
-			byte[] bteData = (byte[])ExecuteMethod(() => m_midInstaller.Fomod.GetFile(line[3]));
+      byte[] bteData = (byte[])ExecuteMethod(() => m_midInstaller.Fomod.GetFileContents(line[3]));
 			ExecuteMethod(() => Script.EditShader(package, line[2], bteData));
 		}
 
