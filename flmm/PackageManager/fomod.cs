@@ -1093,7 +1093,6 @@ namespace Fomm.PackageManager
       PermissionsManager.CurrentPermissions.Assert();
       FileManagement.AssertFilePathIsSafe(p_strTo);
 
-      strAdjustedFromPath = GetPrefixAdjustedPath(p_strFrom);
       strAdjustedToPath = Path.Combine(Program.GameMode.PluginsPath, p_strTo);
 
       if (!ContainsFile(p_strFrom))
@@ -1149,8 +1148,21 @@ namespace Fomm.PackageManager
 
       if (ret)
       {
-        mis.Installer.TransactionalFileManager.Copy(strAdjustedFromPath, strAdjustedToPath, true);
-        mis.Installer.MergeModule.AddFile(p_strTo);
+        // Good to go.  Extract file from archive to temp file, copy, and delete temp file
+        string tmpFN;
+
+        tmpFN = arc.ExtractToTempFile(GetPrefixAdjustedPath(p_strFrom));
+
+        if (tmpFN != "")
+        {
+          mis.Installer.TransactionalFileManager.Copy(tmpFN, strAdjustedToPath, true);
+          mis.Installer.MergeModule.AddFile(p_strTo);
+          File.Delete(tmpFN);
+        }
+        else
+        {
+          throw new System.Exception("Archive ExtractToTempFile failed for " + p_strFrom);
+        }
       }
 
       return ret;

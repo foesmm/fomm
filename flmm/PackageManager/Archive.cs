@@ -697,6 +697,36 @@ namespace Fomm.PackageManager
       LoadFileIndices();
     }
 
+    public string ExtractToTempFile(string filename)
+    {
+      string tmpFN = "";
+      FileStream tmpFS;
+      ArchiveFileInfo afiFile;
+      SevenZipExtractor szeExtractor;
+
+      afiFile = m_dicFileInfo[filename];
+      tmpFN = Path.GetTempFileName();
+      tmpFS = new FileStream(tmpFN, FileMode.Create);
+
+      if (this.IsReadonly)
+      {
+        if (m_szeReadOnlyExtractor == null)
+        {
+          m_szeReadOnlyExtractor = GetThreadSafeExtractor(m_strPath);
+        }
+        m_szeReadOnlyExtractor.ExtractFile(afiFile.Index, tmpFS);
+      }
+      else
+      {
+        szeExtractor = Archive.GetExtractor(m_strPath);
+        szeExtractor.ExtractFile(afiFile.Index, tmpFS);
+      }
+      tmpFS.Flush();
+      tmpFS.Close();
+
+      return tmpFN;
+    }
+
     #region IDisposable Members
 
     /// <summary>
