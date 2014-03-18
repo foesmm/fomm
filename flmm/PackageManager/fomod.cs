@@ -602,7 +602,7 @@ namespace Fomm.PackageManager
     {
       Archive arc;
       PermissionsManager.CurrentPermissions.Assert();
-      arc = GetArchiveForFile(p_strFile);
+      arc = GetArchiveForFile(GetPrefixAdjustedPath(p_strFile));
 
       return arc.GetFileContents(GetPrefixAdjustedPath(p_strFile));
     }
@@ -612,16 +612,16 @@ namespace Fomm.PackageManager
     {
       Archive arc;
 
-      if (!ContainsFile(p_strFile))
-      {
-        throw new FileNotFoundException("File doesn't exist in fomod", p_strFile);
-      }
+//      if (!ContainsFile(GetPrefixAdjustedPath(p_strFile)))
+//      {
+//        throw new FileNotFoundException("File doesn't exist in fomod", p_strFile);
+//      }
 
-      if ((m_arcCacheFile != null) && m_arcCacheFile.ContainsFile(GetPrefixAdjustedPath(p_strFile)))
+      if ((m_arcCacheFile != null) && m_arcCacheFile.ContainsFile(p_strFile))
       {
         arc = m_arcCacheFile;
       }
-      else if ((m_arcFile != null) && m_arcFile.ContainsFile(GetPrefixAdjustedPath(p_strFile)))
+      else if ((m_arcFile != null) && m_arcFile.ContainsFile(p_strFile))
       {
         arc = m_arcFile;
       }
@@ -1093,7 +1093,6 @@ namespace Fomm.PackageManager
       PermissionsManager.CurrentPermissions.Assert();
       FileManagement.AssertFilePathIsSafe(p_strTo);
 
-      strAdjustedFromPath = GetPrefixAdjustedPath(p_strFrom);
       strAdjustedToPath = Path.Combine(Program.GameMode.PluginsPath, p_strTo);
 
       if (!ContainsFile(p_strFrom))
@@ -1149,8 +1148,21 @@ namespace Fomm.PackageManager
 
       if (ret)
       {
-        mis.Installer.TransactionalFileManager.Copy(strAdjustedFromPath, strAdjustedToPath, true);
-        mis.Installer.MergeModule.AddFile(p_strTo);
+        // Good to go.  Extract file from archive to temp file, copy, and delete temp file
+        string tmpFN;
+
+        tmpFN = arc.ExtractToTempFile(GetPrefixAdjustedPath(p_strFrom));
+
+        if (tmpFN != "")
+        {
+          mis.Installer.TransactionalFileManager.Copy(tmpFN, strAdjustedToPath, true);
+          mis.Installer.MergeModule.AddFile(p_strTo);
+          File.Delete(tmpFN);
+        }
+        else
+        {
+          throw new System.Exception("Archive ExtractToTempFile failed for " + p_strFrom);
+        }
       }
 
       return ret;
