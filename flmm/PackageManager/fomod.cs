@@ -602,7 +602,7 @@ namespace Fomm.PackageManager
     {
       Archive arc;
       PermissionsManager.CurrentPermissions.Assert();
-      arc = GetArchiveForFile(p_strFile);
+      arc = GetArchiveForFile(GetPrefixAdjustedPath(p_strFile));
 
       return arc.GetFileContents(GetPrefixAdjustedPath(p_strFile));
     }
@@ -612,16 +612,16 @@ namespace Fomm.PackageManager
     {
       Archive arc;
 
-      if (!ContainsFile(p_strFile))
-      {
-        throw new FileNotFoundException("File doesn't exist in fomod", p_strFile);
-      }
+//      if (!ContainsFile(GetPrefixAdjustedPath(p_strFile)))
+//      {
+//        throw new FileNotFoundException("File doesn't exist in fomod", p_strFile);
+//      }
 
-      if ((m_arcCacheFile != null) && m_arcCacheFile.ContainsFile(GetPrefixAdjustedPath(p_strFile)))
+      if ((m_arcCacheFile != null) && m_arcCacheFile.ContainsFile(p_strFile))
       {
         arc = m_arcCacheFile;
       }
-      else if ((m_arcFile != null) && m_arcFile.ContainsFile(GetPrefixAdjustedPath(p_strFile)))
+      else if ((m_arcFile != null) && m_arcFile.ContainsFile(p_strFile))
       {
         arc = m_arcFile;
       }
