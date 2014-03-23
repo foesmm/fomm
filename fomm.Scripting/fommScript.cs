@@ -577,8 +577,8 @@ namespace fomm.Scripting
         {
           Warn("Unexpected extra arguments after CopyDataFile");
         }
-        byte[] bteData = (byte[])ExecuteMethod(() => m_midInstaller.Fomod.GetFile(line[1]));
-        ExecuteMethod(() => Script.GenerateDataFile(line[2], bteData));
+
+        ExecuteMethod(() => Script.CopyDataFile(line[1], line[2]));
       }
     }
 
