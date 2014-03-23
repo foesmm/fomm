@@ -652,6 +652,34 @@ namespace Fomm.PackageManager
         m_arcCacheFile.ReplaceFile(GetPrefixAdjustedPath(p_strPath), p_strData);
     }
 
+    public string ExtractToTemp(string srcFile)
+    {
+      string ret = null;
+      string tmpFN = "";
+
+      PermissionsManager.CurrentPermissions.Assert();
+
+      if (!ContainsFile(srcFile))
+      {
+        throw new FileNotFoundException("File doesn't exist in fomod", srcFile);
+      }
+
+      tmpFN = Path.GetTempFileName();
+
+      if ((m_arcCacheFile != null) && m_arcCacheFile.ContainsFile(GetPrefixAdjustedPath(srcFile)))
+      {
+        m_arcCacheFile.ExtractTo(GetPrefixAdjustedPath(srcFile), tmpFN);
+        ret = tmpFN;
+      }
+      else
+      {
+        m_arcFile.ExtractTo(GetPrefixAdjustedPath(srcFile), tmpFN);
+        ret = tmpFN;
+      }
+
+      return ret;
+    }
+
     #endregion
 
     #region Fomod Info Persistence
