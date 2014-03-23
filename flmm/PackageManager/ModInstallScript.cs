@@ -497,6 +497,8 @@ namespace Fomm.PackageManager
     public bool InstallFile(string fnFrom, string fnTo = "")
     {
       bool ret = false;
+      string tmpFN;
+      string strDataPath;
 
       /*
        * There were two differences between InstallFileFromFomod and CopyDataFile
@@ -504,14 +506,36 @@ namespace Fomm.PackageManager
        * 2. IFFF used the same src and dst filenames, CDF used different names.
        */
       PermissionsManager.CurrentPermissions.Assert();
+
       if (fnTo == "")
       {
         fnTo = fnFrom;
       }
 
+      FileManagement.AssertFilePathIsSafe(fnTo);
+
       #region refactor me
-        byte[] bteFomodFile = Fomod.GetFile(fnFrom);
-        ret = GenerateDataFile(fnTo, bteFomodFile);
+      #region original code
+//      byte[] bteFomodFile = Fomod.GetFile(fnFrom);
+//      ret = GenerateDataFile(fnTo, bteFomodFile);
+      #endregion
+
+      #region newcode
+      /*
+       * New code
+       * 1. Extract the file from the archive to the temp file
+       * 2. Copy the temp file to the destination
+       * 3. Delete the temp file
+       */
+
+      tmpFN = Fomod.ExtractToTemp(fnFrom);
+      if (GenerateDataFilePrep(fnTo, out strDataPath))
+      {
+        Installer.TransactionalFileManager.Copy(tmpFN, strDataPath, true);
+        Installer.MergeModule.AddFile(fnTo);
+        ret = true;
+      }
+      #endregion
       #endregion
 
       return ret;
@@ -561,7 +585,22 @@ namespace Fomm.PackageManager
     {
       PermissionsManager.CurrentPermissions.Assert();
       FileManagement.AssertFilePathIsSafe(p_strPath);
-      string strDataPath = Path.Combine(Program.GameMode.PluginsPath, p_strPath);
+      string strDataPath;
+      bool ret = false;
+
+      if (GenerateDataFilePrep(p_strPath, out strDataPath))
+      {
+        Installer.TransactionalFileManager.WriteAllBytes(strDataPath, p_bteData);
+        Installer.MergeModule.AddFile(p_strPath);
+        ret = true;
+      }
+
+      return ret;
+    }
+
+    private bool GenerateDataFilePrep(string p_strPath, out string strDataPath)
+    {
+      strDataPath = Path.Combine(Program.GameMode.PluginsPath, p_strPath);
       if (!Directory.Exists(Path.GetDirectoryName(strDataPath)))
         Installer.TransactionalFileManager.CreateDirectory(Path.GetDirectoryName(strDataPath));
       else
@@ -598,9 +637,6 @@ namespace Fomm.PackageManager
           Installer.TransactionalFileManager.Delete(strDataPath);
         }
       }
-
-      Installer.TransactionalFileManager.WriteAllBytes(strDataPath, p_bteData);
-      Installer.MergeModule.AddFile(p_strPath);
       return true;
     }
 
