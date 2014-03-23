@@ -15,8 +15,8 @@ using System.Security.Permissions;
 
 [assembly: ComVisible(false)]
 
-[assembly: AssemblyVersion(Fomm.Program.Version+".0")]
-[assembly: AssemblyFileVersion(Fomm.Program.Version+".0")]
+[assembly: AssemblyVersion(Fomm.Program.Version)]
+[assembly: AssemblyFileVersion(Fomm.Program.Version)]
 
 [assembly: CLSCompliant(false)]
 

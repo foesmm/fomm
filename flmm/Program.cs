@@ -58,8 +58,8 @@ namespace Fomm
 
 	public static class Program
 	{
-		public const string Version = "0.14.9";
-		public static readonly Version MVersion = new Version(Version + ".3");
+		public const string Version = "0.14.10.0";
+		public static readonly Version MVersion = new Version(Version);
 
 		private static readonly string m_strExecutableDirectory = Path.GetDirectoryName(Application.ExecutablePath);
 		public static readonly string tmpPath = Path.Combine(Path.GetTempPath(), ProgrammeAcronym);
