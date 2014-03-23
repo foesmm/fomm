@@ -570,11 +570,16 @@ namespace fomm.Scripting
       if (line.Length < 3)
       {
         Warn("Missing arguments to CopyDataFile");
-        return;
       }
-      if (line.Length > 3) Warn("Unexpected extra arguments after CopyDataFile");
-      byte[] bteData = (byte[])ExecuteMethod(() => m_midInstaller.Fomod.GetFile(line[1]));
-      ExecuteMethod(() => Script.GenerateDataFile(line[2], bteData));
+      else
+      {
+        if (line.Length > 3)
+        {
+          Warn("Unexpected extra arguments after CopyDataFile");
+        }
+        byte[] bteData = (byte[])ExecuteMethod(() => m_midInstaller.Fomod.GetFile(line[1]));
+        ExecuteMethod(() => Script.GenerateDataFile(line[2], bteData));
+      }
     }
 
     private static void FunctionSetPluginActivation(string[] line)
