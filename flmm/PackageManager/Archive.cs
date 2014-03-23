@@ -577,6 +577,44 @@ namespace Fomm.PackageManager
       return m_dicFileInfo.ContainsKey(strPath);
     }
 
+    // Based on Archive.GetFileContents.
+    public void ExtractTo(string srcFN, string dstFN)
+    {
+      string strPath;
+      ArchiveFileInfo afiFile;
+      FileStream fsOut;
+
+      strPath = srcFN.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).ToLowerInvariant();
+
+      if (!m_dicFileInfo.ContainsKey(strPath))
+        throw new FileNotFoundException("The requested file does not exist in the archive.", srcFN);
+
+      afiFile = m_dicFileInfo[strPath];
+
+      if (IsReadonly)
+      {
+        if (m_szeReadOnlyExtractor == null)
+        {
+          File.Copy(Path.Combine(m_strReadOnlyTempDirectory, strPath), dstFN, true);
+        }
+        else
+        {
+          fsOut = new FileStream(dstFN, FileMode.Truncate);
+          m_szeReadOnlyExtractor.ExtractFile(afiFile.Index, fsOut);
+          fsOut.Close();
+        }
+      }
+      else
+      {
+        using (SevenZipExtractor szeExtractor = GetExtractor(m_strPath))
+        {
+          fsOut = new FileStream(dstFN, FileMode.Truncate);
+          szeExtractor.ExtractFile(afiFile.Index, fsOut);
+          fsOut.Close();
+        }
+      }
+    }
+    
     /// <summary>
     /// Gets the contents of the specified file in the archive.
     /// </summary>
