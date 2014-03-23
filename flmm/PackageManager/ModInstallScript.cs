@@ -494,6 +494,29 @@ namespace Fomm.PackageManager
       }
     }
 
+    public bool InstallFile(string fnFrom, string fnTo = "")
+    {
+      bool ret = false;
+
+      /*
+       * There were two differences between InstallFileFromFomod and CopyDataFile
+       * 1. IFFF checked permissions, CDF did not.
+       * 2. IFFF used the same src and dst filenames, CDF used different names.
+       */
+      PermissionsManager.CurrentPermissions.Assert();
+      if (fnTo == "")
+      {
+        fnTo = fnFrom;
+      }
+
+      #region refactor me
+        byte[] bteFomodFile = Fomod.GetFile(fnFrom);
+        ret = GenerateDataFile(fnTo, bteFomodFile);
+      #endregion
+
+      return ret;
+    }
+
     /// <summary>
     /// Installs the speified file from the FOMod to the file system.
     /// </summary>
@@ -502,9 +525,7 @@ namespace Fomm.PackageManager
     /// not to overwrite an existing file.</returns>
     public bool InstallFileFromFomod(string p_strFile)
     {
-      PermissionsManager.CurrentPermissions.Assert();
-      byte[] bteFomodFile = Fomod.GetFile(p_strFile);
-      return GenerateDataFile(p_strFile, bteFomodFile);
+      return InstallFile(p_strFile);
     }
 
     /// <summary>
@@ -520,8 +541,7 @@ namespace Fomm.PackageManager
     /// not safe.</exception>
     public bool CopyDataFile(string p_strFrom, string p_strTo)
     {
-      byte[] bteBytes = Fomod.GetFile(p_strFrom);
-      return GenerateDataFile(p_strTo, bteBytes);
+      return InstallFile(p_strFrom, p_strTo);
     }
 
     /// <summary>
