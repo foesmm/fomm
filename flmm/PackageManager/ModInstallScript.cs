@@ -445,7 +445,7 @@ namespace Fomm.PackageManager
         strMessage = "Data file '{0}' already exists." + Environment.NewLine +
                 "Overwrite with this mod's file?";
       }
-      switch (Overwriteform.ShowDialog(String.Format(strMessage, p_strPath), true))
+      switch (Overwriteform.ShowDialog(String.Format(strMessage, p_strPath), true, (strOldMod != null)))
       {
         case OverwriteResult.Yes:
           return true;
@@ -773,7 +773,7 @@ namespace Fomm.PackageManager
                   "Allow the change?\n" +
                   "Current value '{3}', new value '{4}'";
         }
-        switch (Overwriteform.ShowDialog(String.Format(strMessage, p_strKey, p_strSection, strFile, strOldValue, p_strValue), false))
+        switch (Overwriteform.ShowDialog(String.Format(strMessage, p_strKey, p_strSection, strFile, strOldValue, p_strValue), false, (strOldMod != null)))
         {
           case OverwriteResult.YesToAll:
             m_booOverwriteAllIni = true;
