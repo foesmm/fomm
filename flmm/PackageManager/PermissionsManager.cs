@@ -40,6 +40,9 @@ namespace Fomm.PackageManager
       permissions.AddPermission(fipFilePermission);
       permissions.AddPermission(new SecurityPermission(SecurityPermissionFlag.UnmanagedCode));
       permissions.AddPermission(new UIPermission(UIPermissionWindow.AllWindows));
+
+      // Not sure what permissions are needed for GetTempFileName() to work, so we add them all.
+      permissions.AddPermission(new EnvironmentPermission(PermissionState.Unrestricted));
     }
 
     /// <summary>
