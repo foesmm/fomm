@@ -76,20 +76,6 @@ namespace Fomm.Games.FalloutNewVegas.Script
 
     #endregion
 
-    #region Misc Info
-
-    /// <summary>
-    /// Determines if archive invalidation is active.
-    /// </summary>
-    /// <returns><lang cref="true"/> if archive invalidation is active;
-    /// <lang cref="false"/> otherwise.</returns>
-    public override bool IsAIActive()
-    {
-      return Tools.ArchiveInvalidation.IsActive();
-    }
-
-    #endregion
-
     #region IDisposable Members
 
     /// <summary>
