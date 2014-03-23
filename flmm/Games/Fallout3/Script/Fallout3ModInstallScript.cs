@@ -516,5 +516,52 @@ namespace Fomm.Games.Fallout3.Script
     }
 
     #endregion
+
+    #region upgrade functions
+    /// <summary>
+    /// Writes the file represented by the given byte array to the given path.
+    /// </summary>
+    /// <remarks>
+    /// This method writes the given data as a file at the given path, if it is owned
+    /// by the fomod being upgraded. If the specified data file is not owned by the fomod
+    /// being upgraded, the file is instead written to the overwrites directory.
+    /// 
+    /// If the file was not previously installed by the fomod, then the normal install rules apply,
+    /// including confirming overwrite if applicable.
+    /// </remarks>
+    /// <param name="p_strPath">The path where the file is to be created.</param>
+    /// <param name="p_bteData">The data that is to make up the file.</param>
+    /// <returns><lang cref="true"/> if the file was written; <lang cref="false"/> if the user chose
+    /// not to overwrite an existing file.</returns>
+    /// <exception cref="IllegalFilePathException">Thrown if <paramref name="p_strPath"/> is
+    /// not safe.</exception>
+    public override bool GenerateDataFile(string p_strPath, byte[] p_bteData)
+    {
+      PermissionsManager.CurrentPermissions.Assert();
+      FileManagement.AssertFilePathIsSafe(p_strPath);
+
+      IList<string> lstInstallers = InstallLog.Current.GetInstallingMods(p_strPath);
+      if (lstInstallers.Contains(Fomod.BaseName))
+      {
+        string strWritePath = null;
+        if (!lstInstallers[lstInstallers.Count - 1].Equals(Fomod.BaseName))
+        {
+          string strDirectory = Path.GetDirectoryName(p_strPath);
+          string strBackupPath = Path.Combine(Program.GameMode.OverwriteDirectory, strDirectory);
+          string strOldModKey = InstallLog.Current.GetModKey(Fomod.BaseName);
+          string strFile = strOldModKey + "_" + Path.GetFileName(p_strPath);
+          strWritePath = Path.Combine(strBackupPath, strFile);
+        }
+        else
+          strWritePath = Path.Combine(Program.GameMode.PluginsPath, p_strPath);
+        Installer.TransactionalFileManager.WriteAllBytes(strWritePath, p_bteData);
+        Installer.MergeModule.AddFile(p_strPath);
+        return true;
+      }
+
+      return base.GenerateDataFile(p_strPath, p_bteData);
+    }
+
+    #endregion
   }
 }
