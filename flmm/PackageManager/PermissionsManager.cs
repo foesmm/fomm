@@ -24,11 +24,13 @@ namespace Fomm.PackageManager
       permissions = new PermissionSet(PermissionState.None);
       //do the following paths need to add to this?
       // savesPath - fallout 3
-      FileIOPermission fipFilePermission = new FileIOPermission(FileIOPermissionAccess.AllAccess, new string[] {
-                Program.tmpPath, Path.GetTempPath(),
+      FileIOPermission fipFilePermission = new FileIOPermission(FileIOPermissionAccess.AllAccess, new string[]
+      {
+        Program.tmpPath,
+        Path.GetTempPath(),
         Program.GameMode.InstallInfoDirectory,
         Program.GameMode.PluginsPath
-            });
+      });
 
       List<string> lstPaths = new List<string>(Program.GameMode.SettingsFiles.Values);
       lstPaths.AddRange(Program.GameMode.AdditionalPaths.Values);
