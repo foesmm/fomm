@@ -24,12 +24,13 @@ namespace Fomm.PackageManager
       permissions = new PermissionSet(PermissionState.None);
       //do the following paths need to add to this?
       // savesPath - fallout 3
-      FileIOPermission fipFilePermission = new FileIOPermission(FileIOPermissionAccess.AllAccess, new string[] {
+      FileIOPermission fipFilePermission = new FileIOPermission(FileIOPermissionAccess.AllAccess, new string[]
+      {
         Program.tmpPath,
         Path.GetTempPath(),
         Program.GameMode.InstallInfoDirectory,
         Program.GameMode.PluginsPath
-            });
+      });
 
       List<string> lstPaths = new List<string>(Program.GameMode.SettingsFiles.Values);
       lstPaths.AddRange(Program.GameMode.AdditionalPaths.Values);
@@ -40,11 +41,8 @@ namespace Fomm.PackageManager
       permissions.AddPermission(new SecurityPermission(SecurityPermissionFlag.UnmanagedCode));
       permissions.AddPermission(new UIPermission(UIPermissionWindow.AllWindows));
 
-      // This only actually needs whatever is required for GetTempFileName() to work, but I cannot
-      // determine what that is (the attempts below did not work) so, for now...
+      // Not sure what permissions are needed for GetTempFileName() to work, so we add them all.
       permissions.AddPermission(new EnvironmentPermission(PermissionState.Unrestricted));
-//      permissions.AddPermission(new EnvironmentPermission(EnvironmentPermissionAccess.Read, "TEMP"));
-//      permissions.AddPermission(new EnvironmentPermission(EnvironmentPermissionAccess.Read, "TMP"));
     }
 
     /// <summary>

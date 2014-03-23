@@ -26,14 +26,14 @@ namespace Fomm.PackageManager
     public const string ARCHIVE_PREFIX = "arch:";
     protected static List<string> m_lstNonArchiveExtensions = new List<string> { ".esp", ".esm", ".txt", ".htm", ".html", ".nif", ".dds", ".png", ".rtf", ".jpg", ".bmp", ".cs", ".xml", ".xsd", ".ico" };
 
-    public string m_strPath = null;
+    private string m_strPath = null;
     private SevenZipCompressor m_szcCompressor = null;
     private List<string> m_strFiles = null;
-    public Dictionary<string, ArchiveFileInfo> m_dicFileInfo = null;
+    private Dictionary<string, ArchiveFileInfo> m_dicFileInfo = null;
     private bool m_booCanEdit = false;
     private bool m_booIsSolid = false;
-    public ThreadSafeSevenZipExtractor m_szeReadOnlyExtractor = null;
-    public string m_strReadOnlyTempDirectory = null;
+    private ThreadSafeSevenZipExtractor m_szeReadOnlyExtractor = null;
+    private string m_strReadOnlyTempDirectory = null;
 
     #region Properties
 
@@ -325,7 +325,7 @@ namespace Fomm.PackageManager
     /// in read-only mod the underlying file is left open (this class holds a handle to the file).
     /// </remarks>
     /// <value>Whether the archive is in read-only mode.</value>
-    public bool IsReadonly
+    protected bool IsReadonly
     {
       get
       {
@@ -577,6 +577,44 @@ namespace Fomm.PackageManager
       return m_dicFileInfo.ContainsKey(strPath);
     }
 
+    // Based on Archive.GetFileContents.
+    public void ExtractTo(string srcFN, string dstFN)
+    {
+      string strPath;
+      ArchiveFileInfo afiFile;
+      FileStream fsOut;
+
+      strPath = srcFN.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).ToLowerInvariant();
+
+      if (!m_dicFileInfo.ContainsKey(strPath))
+        throw new FileNotFoundException("The requested file does not exist in the archive.", srcFN);
+
+      afiFile = m_dicFileInfo[strPath];
+
+      if (IsReadonly)
+      {
+        if (m_szeReadOnlyExtractor == null)
+        {
+          File.Copy(Path.Combine(m_strReadOnlyTempDirectory, strPath), dstFN, true);
+        }
+        else
+        {
+          fsOut = new FileStream(dstFN, FileMode.Truncate);
+          m_szeReadOnlyExtractor.ExtractFile(afiFile.Index, fsOut);
+          fsOut.Close();
+        }
+      }
+      else
+      {
+        using (SevenZipExtractor szeExtractor = GetExtractor(m_strPath))
+        {
+          fsOut = new FileStream(dstFN, FileMode.Truncate);
+          szeExtractor.ExtractFile(afiFile.Index, fsOut);
+          fsOut.Close();
+        }
+      }
+    }
+    
     /// <summary>
     /// Gets the contents of the specified file in the archive.
     /// </summary>

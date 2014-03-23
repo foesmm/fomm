@@ -34,8 +34,8 @@ namespace Fomm.PackageManager
     private const string DEFAULT_VERSION = "1.0";
     class fomodLoadException : Exception { public fomodLoadException(string msg) : base(msg) { } }
 
-    public Archive m_arcFile;
-    public Archive m_arcCacheFile;
+    private Archive m_arcFile;
+    private Archive m_arcCacheFile;
 
     internal readonly string filepath;
 
@@ -556,7 +556,7 @@ namespace Fomm.PackageManager
     /// </summary>
     /// <param name="p_strPath">The path to adjust.</param>
     /// <returns>The adjusted path.</returns>
-    public string GetPrefixAdjustedPath(string p_strPath)
+    protected string GetPrefixAdjustedPath(string p_strPath)
     {
       string strPath = p_strPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
       strPath = strPath.Trim(Path.DirectorySeparatorChar);
@@ -598,39 +598,11 @@ namespace Fomm.PackageManager
     /// </remarks> 
     /// <param name="p_strPath">The path of the file whose contents are to be retrieved.</param>
     /// <returns>The contents of the specified file.</returns>
-    public byte[] GetFileContents(string p_strFile)
+    public byte[] GetFileContents(string p_strPath)
     {
-      Archive arc;
-      PermissionsManager.CurrentPermissions.Assert();
-      arc = GetArchiveForFile(p_strFile);
-
-      return arc.GetFileContents(GetPrefixAdjustedPath(p_strFile));
-    }
-
-    // Given a filename, returns the archive handle containing the file, if any does.
-    public Archive GetArchiveForFile(string p_strFile)
-    {
-      Archive arc;
-
-      if (!ContainsFile(p_strFile))
-      {
-        throw new FileNotFoundException("File doesn't exist in fomod", p_strFile);
-      }
-
-      if ((m_arcCacheFile != null) && m_arcCacheFile.ContainsFile(GetPrefixAdjustedPath(p_strFile)))
-      {
-        arc = m_arcCacheFile;
-      }
-      else if ((m_arcFile != null) && m_arcFile.ContainsFile(GetPrefixAdjustedPath(p_strFile)))
-      {
-        arc = m_arcFile;
-      }
-      else
-      {
-        arc = null;
-      }
-
-      return arc;
+      if ((m_arcCacheFile != null) && m_arcCacheFile.ContainsFile(GetPrefixAdjustedPath(p_strPath)))
+        return m_arcCacheFile.GetFileContents(GetPrefixAdjustedPath(p_strPath));
+      return m_arcFile.GetFileContents(GetPrefixAdjustedPath(p_strPath));
     }
 
     /// <summary>
@@ -678,6 +650,34 @@ namespace Fomm.PackageManager
         m_arcFile.ReplaceFile(GetPrefixAdjustedPath(p_strPath), p_strData);
       if ((m_arcCacheFile != null) && (m_arcCacheFile.ContainsFile(GetPrefixAdjustedPath(p_strPath)) || m_arcFile.ReadOnly))
         m_arcCacheFile.ReplaceFile(GetPrefixAdjustedPath(p_strPath), p_strData);
+    }
+
+    public string ExtractToTemp(string srcFile)
+    {
+      string ret = null;
+      string tmpFN = "";
+
+      PermissionsManager.CurrentPermissions.Assert();
+
+      if (!ContainsFile(srcFile))
+      {
+        throw new FileNotFoundException("File doesn't exist in fomod", srcFile);
+      }
+
+      tmpFN = Path.GetTempFileName();
+
+      if ((m_arcCacheFile != null) && m_arcCacheFile.ContainsFile(GetPrefixAdjustedPath(srcFile)))
+      {
+        m_arcCacheFile.ExtractTo(GetPrefixAdjustedPath(srcFile), tmpFN);
+        ret = tmpFN;
+      }
+      else
+      {
+        m_arcFile.ExtractTo(GetPrefixAdjustedPath(srcFile), tmpFN);
+        ret = tmpFN;
+      }
+
+      return ret;
     }
 
     #endregion
@@ -958,7 +958,7 @@ namespace Fomm.PackageManager
       if (!HasScreenshot)
         return null;
 
-      Screenshot shtScreenshot = new Screenshot(m_strScreenshotPath, GetFileContents(m_strScreenshotPath));
+      Screenshot shtScreenshot = new Screenshot(m_strScreenshotPath, GetFile(m_strScreenshotPath));
       return shtScreenshot;
     }
 
@@ -1075,85 +1075,21 @@ namespace Fomm.PackageManager
 
     #endregion
 
-    // Now just an alias for GetFileContents
+    /// <summary>
+    /// Retrieves the specified file from the fomod.
+    /// </summary>
+    /// <param name="p_strFile">The file to retrieve.</param>
+    /// <returns>The requested file data.</returns>
+    /// <exception cref="FileNotFoundException">Thrown if the specified file
+    /// is not in the fomod.</exception>
+    /// <exception cref="DecompressionException">Thrown if the specified file
+    /// cannot be extracted from the zip.</exception>
     public byte[] GetFile(string p_strFile)
     {
-      return GetFileContents(p_strFile);
-    }
-
-    // Copies a file from the fomod to the specified destination, if
-    // the user approves the copy.  Uses the transactional installer.
-    public bool CopyFile(ModInstallScript mis, string p_strFrom, string p_strTo)
-    {
-      bool ret = false;
-      string strAdjustedFromPath;
-      string strAdjustedToPath;
-      Archive arc;
-
       PermissionsManager.CurrentPermissions.Assert();
-      FileManagement.AssertFilePathIsSafe(p_strTo);
-
-      strAdjustedFromPath = GetPrefixAdjustedPath(p_strFrom);
-      strAdjustedToPath = Path.Combine(Program.GameMode.PluginsPath, p_strTo);
-
-      if (!ContainsFile(p_strFrom))
-      {
-        throw new FileNotFoundException("File doesn't exist in fomod", p_strFrom);
-      }
-
-      strAdjustedFromPath = GetPrefixAdjustedPath(p_strFrom);
-      arc = GetArchiveForFile(strAdjustedFromPath);
-
-      if (!Directory.Exists(Path.GetDirectoryName(strAdjustedToPath)))
-      {
-        mis.Installer.TransactionalFileManager.CreateDirectory(Path.GetDirectoryName(strAdjustedToPath));
-        ret = true;
-      }
-      else
-      {
-        // From ModInstallScript.GenerateDataFile
-        if (mis.TestDoOverwrite(p_strTo))
-        {
-          if (File.Exists(strAdjustedToPath))
-          {
-            string strDirectory = Path.GetDirectoryName(p_strTo);
-            string strBackupPath = Path.Combine(Program.GameMode.OverwriteDirectory, strDirectory);
-            string strOldModKey = InstallLog.Current.GetCurrentFileOwnerKey(p_strTo);
-            //if this mod installed a file, and now we are overwriting itm
-            // the install log will tell us no one owns the file, or the wrong mod owns the
-            // file. so, if this mod has installed this file already just replace it, don't
-            // back it up.
-            if (!mis.Installer.MergeModule.ContainsFile(p_strTo))
-            {
-              if (!Directory.Exists(strBackupPath))
-              {
-                mis.Installer.TransactionalFileManager.CreateDirectory(strBackupPath);
-              }
-
-              //if we are overwriting an original value, back it up
-              if (strOldModKey == null)
-              {
-                mis.Installer.MergeModule.BackupOriginalDataFile(p_strTo);
-                strOldModKey = InstallLog.Current.OriginalValuesKey;
-              }
-              string strFile = Path.GetFileName(Directory.GetFiles(Path.GetDirectoryName(strAdjustedToPath), Path.GetFileName(strAdjustedToPath))[0]);
-              strFile = strOldModKey + "_" + strFile;
-              strBackupPath = Path.Combine(strBackupPath, strFile);
-              mis.Installer.TransactionalFileManager.Copy(strAdjustedToPath, strBackupPath, true);
-            }
-            mis.Installer.TransactionalFileManager.Delete(strAdjustedToPath);
-          }
-          ret = true;
-        }
-      }
-
-      if (ret)
-      {
-        mis.Installer.TransactionalFileManager.Copy(strAdjustedFromPath, strAdjustedToPath, true);
-        mis.Installer.MergeModule.AddFile(p_strTo);
-      }
-
-      return ret;
+      if (!ContainsFile(p_strFile))
+        throw new FileNotFoundException("File doesn't exist in fomod", p_strFile);
+      return GetFileContents(p_strFile);
     }
 
     /// <summary>
