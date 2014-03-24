@@ -41,11 +41,11 @@ using ICSharpCode.SharpZipLib.Core;
 
 namespace ICSharpCode.SharpZipLib.Zip
 {
-	/// <summary>
-	/// WindowsNameTransform transforms ZipFile names to windows compatible ones.
-	/// </summary>
-	class WindowsNameTransform : INameTransform
-	{
+  /// <summary>
+  /// WindowsNameTransform transforms ZipFile names to windows compatible ones.
+  /// </summary>
+  class WindowsNameTransform : INameTransform
+  {
         /// <summary>
         /// Initialises a new instance of <see cref="WindowsNameTransform"/>
         /// </summary>
@@ -57,31 +57,31 @@ namespace ICSharpCode.SharpZipLib.Zip
 
             this.baseDirectory_ = Path.GetFullPath(baseDirectory);
         }
-		
-		/// <summary>
-		/// Transform a Zip directory name to a windows directory name.
-		/// </summary>
-		/// <param name="name">The directory name to transform.</param>
-		/// <returns>The transformed name.</returns>
-		public string TransformDirectory(string name)
-		{
-			name = TransformFile(name);
-			if (name.Length > 0) {
-				while ( name.EndsWith(@"\") ) {
-					name = name.Remove(name.Length - 1, 1);
-				}
-			}
-			else {
-				throw new ZipException("Cannot have an empty directory name");
-			}
-			return name;
-		}
-		
-		/// <summary>
-		/// Transform a Zip format file name to a windows style one.
-		/// </summary>
-		/// <param name="name">The file name to transform.</param>
-		/// <returns>The transformed name.</returns>
+    
+    /// <summary>
+    /// Transform a Zip directory name to a windows directory name.
+    /// </summary>
+    /// <param name="name">The directory name to transform.</param>
+    /// <returns>The transformed name.</returns>
+    public string TransformDirectory(string name)
+    {
+      name = TransformFile(name);
+      if (name.Length > 0) {
+        while ( name.EndsWith(@"\") ) {
+          name = name.Remove(name.Length - 1, 1);
+        }
+      }
+      else {
+        throw new ZipException("Cannot have an empty directory name");
+      }
+      return name;
+    }
+    
+    /// <summary>
+    /// Transform a Zip format file name to a windows style one.
+    /// </summary>
+    /// <param name="name">The file name to transform.</param>
+    /// <returns>The transformed name.</returns>
         public string TransformFile(string name) {
             if(name != null) {
                 name = MakeValidName(name, replacementChar_);
@@ -95,98 +95,98 @@ namespace ICSharpCode.SharpZipLib.Zip
             return name;
         }
 
-		/// <summary>
-		/// Initialise static class information.
-		/// </summary>
-		static WindowsNameTransform()
-		{
-			char[] invalidPathChars;
+    /// <summary>
+    /// Initialise static class information.
+    /// </summary>
+    static WindowsNameTransform()
+    {
+      char[] invalidPathChars;
 
 #if NET_1_0 || NET_1_1 || NETCF_1_0
-			invalidPathChars = Path.InvalidPathChars;
+      invalidPathChars = Path.InvalidPathChars;
 #else
-			invalidPathChars = Path.GetInvalidPathChars();
+      invalidPathChars = Path.GetInvalidPathChars();
 #endif
-			int howMany = invalidPathChars.Length + 3;
+      int howMany = invalidPathChars.Length + 3;
 
-			InvalidEntryChars = new char[howMany];
-			Array.Copy(invalidPathChars, 0, InvalidEntryChars, 0, invalidPathChars.Length);
-			InvalidEntryChars[howMany - 1] = '*';
-			InvalidEntryChars[howMany - 2] = '?';
-			InvalidEntryChars[howMany - 2] = ':';
-		}
+      InvalidEntryChars = new char[howMany];
+      Array.Copy(invalidPathChars, 0, InvalidEntryChars, 0, invalidPathChars.Length);
+      InvalidEntryChars[howMany - 1] = '*';
+      InvalidEntryChars[howMany - 2] = '?';
+      InvalidEntryChars[howMany - 2] = ':';
+    }
 
-		/// <summary>
-		/// Force a name to be valid by replacing invalid characters with a fixed value
-		/// </summary>
-		/// <param name="name">The name to make valid</param>
-		/// <param name="replacement">The replacement character to use for any invalid characters.</param>
-		/// <returns>Returns a valid name</returns>
-		public static string MakeValidName(string name, char replacement)
-		{
-			if ( name == null ) {
-				throw new ArgumentNullException("name");
-			}
-			
-			name = WindowsPathUtils.DropPathRoot(name.Replace("/", @"\"));
+    /// <summary>
+    /// Force a name to be valid by replacing invalid characters with a fixed value
+    /// </summary>
+    /// <param name="name">The name to make valid</param>
+    /// <param name="replacement">The replacement character to use for any invalid characters.</param>
+    /// <returns>Returns a valid name</returns>
+    public static string MakeValidName(string name, char replacement)
+    {
+      if ( name == null ) {
+        throw new ArgumentNullException("name");
+      }
+      
+      name = WindowsPathUtils.DropPathRoot(name.Replace("/", @"\"));
 
-			// Drop any leading slashes.
-			while ( (name.Length > 0) && (name[0] == '\\')) {
-				name = name.Remove(0, 1);
-			}
+      // Drop any leading slashes.
+      while ( (name.Length > 0) && (name[0] == '\\')) {
+        name = name.Remove(0, 1);
+      }
 
-			// Drop any trailing slashes.
-			while ( (name.Length > 0) && (name[name.Length - 1] == '\\')) {
-				name = name.Remove(name.Length - 1, 1);
-			}
+      // Drop any trailing slashes.
+      while ( (name.Length > 0) && (name[name.Length - 1] == '\\')) {
+        name = name.Remove(name.Length - 1, 1);
+      }
 
-			// Convert consecutive \\ characters to \
-			int index = name.IndexOf(@"\\");
-			while (index >= 0) {
-				name = name.Remove(index, 1);
-				index = name.IndexOf(@"\\");
-			}
+      // Convert consecutive \\ characters to \
+      int index = name.IndexOf(@"\\");
+      while (index >= 0) {
+        name = name.Remove(index, 1);
+        index = name.IndexOf(@"\\");
+      }
 
-			// Convert any invalid characters using the replacement one.
-			index = name.IndexOfAny(InvalidEntryChars);
-			if (index >= 0) {
-				StringBuilder builder = new StringBuilder(name);
+      // Convert any invalid characters using the replacement one.
+      index = name.IndexOfAny(InvalidEntryChars);
+      if (index >= 0) {
+        StringBuilder builder = new StringBuilder(name);
 
-				while (index >= 0 ) {
-					builder[index] = replacement;
+        while (index >= 0 ) {
+          builder[index] = replacement;
 
-					if (index >= name.Length) {
-						index = -1;
-					}
-					else {
-						index = name.IndexOfAny(InvalidEntryChars, index + 1);
-					}
-				}
-				name = builder.ToString();
-			}
-			
-			// Check for names greater than MaxPath characters.
-			// TODO: Were is CLR version of MaxPath defined?  Can't find it in Environment.
-			if ( name.Length > MaxPath ) {
-				throw new PathTooLongException();
-			}
-					
-			return name;
-		}
-		
-		/// <summary>
-		///  The maximum windows path name permitted.
-		/// </summary>
-		/// <remarks>This may not valid for all windows systems - CE?, etc but I cant find the equivalent in the CLR.</remarks>
-		const int MaxPath = 260;
-		
-		#region Instance Fields
+          if (index >= name.Length) {
+            index = -1;
+          }
+          else {
+            index = name.IndexOfAny(InvalidEntryChars, index + 1);
+          }
+        }
+        name = builder.ToString();
+      }
+      
+      // Check for names greater than MaxPath characters.
+      // TODO: Were is CLR version of MaxPath defined?  Can't find it in Environment.
+      if ( name.Length > MaxPath ) {
+        throw new PathTooLongException();
+      }
+          
+      return name;
+    }
+    
+    /// <summary>
+    ///  The maximum windows path name permitted.
+    /// </summary>
+    /// <remarks>This may not valid for all windows systems - CE?, etc but I cant find the equivalent in the CLR.</remarks>
+    const int MaxPath = 260;
+    
+    #region Instance Fields
         string baseDirectory_;
-		char replacementChar_ = '_';
-		#endregion
-		
-		#region Class Fields
-		static readonly char[] InvalidEntryChars;
-		#endregion
-	}
+    char replacementChar_ = '_';
+    #endregion
+    
+    #region Class Fields
+    static readonly char[] InvalidEntryChars;
+    #endregion
+  }
 }
