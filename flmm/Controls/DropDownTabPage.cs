@@ -4,68 +4,68 @@ using System.ComponentModel;
 
 namespace Fomm.Controls
 {
-	/// <summary>
-	/// A page in a <see cref="DropDownTabControl"/>.
-	/// </summary>
-	public class DropDownTabPage : Panel
-	{
-		public event EventHandler PageIndexChanged;
+  /// <summary>
+  /// A page in a <see cref="DropDownTabControl"/>.
+  /// </summary>
+  public class DropDownTabPage : Panel
+  {
+    public event EventHandler PageIndexChanged;
 
-		private Int32 m_intIndex = -1;
+    private Int32 m_intIndex = -1;
 
-		#region Properties
+    #region Properties
 
-		/// <summary>
-		/// Gets or sets the index of this page in the <see cref="DropDownTabControl"/>.
-		/// </summary>
-		/// <value>The index of this page in the <see cref="DropDownTabControl"/>.</value>
-		[Category("Behavior")]
-		public Int32 PageIndex
-		{
-			get
-			{
-				return m_intIndex;
-			}
-			set
-			{
-				if (value != m_intIndex)
-				{
-					m_intIndex = value;
-					if (PageIndexChanged != null)
-						PageIndexChanged(this, new EventArgs());
-				}
-			}
-		}
+    /// <summary>
+    /// Gets or sets the index of this page in the <see cref="DropDownTabControl"/>.
+    /// </summary>
+    /// <value>The index of this page in the <see cref="DropDownTabControl"/>.</value>
+    [Category("Behavior")]
+    public Int32 PageIndex
+    {
+      get
+      {
+        return m_intIndex;
+      }
+      set
+      {
+        if (value != m_intIndex)
+        {
+          m_intIndex = value;
+          if (PageIndexChanged != null)
+            PageIndexChanged(this, new EventArgs());
+        }
+      }
+    }
 
-		/// <summary>
-		/// Gets or sets the text that appears in this page's tab.
-		/// </summary>
-		/// <value>The text that appears in this page's tab.</value>
-		[Browsable(true)]
-		[Category("Appearance")]
-		public override string Text
-		{
-			get
-			{
-				return base.Text;
-			}
-			set
-			{
-				base.Text = value;
-			}
-		}
+    /// <summary>
+    /// Gets or sets the text that appears in this page's tab.
+    /// </summary>
+    /// <value>The text that appears in this page's tab.</value>
+    [Browsable(true)]
+    [Category("Appearance")]
+    public override string Text
+    {
+      get
+      {
+        return base.Text;
+      }
+      set
+      {
+        base.Text = value;
+      }
+    }
 
-		#endregion
+    #endregion
 
-		#region Constructors
+    #region Constructors
 
-		/// <summary>
-		/// The default constructor.
-		/// </summary>
-		public DropDownTabPage()
-		{
-		}
+    /// <summary>
+    /// The default constructor.
+    /// </summary>
+    public DropDownTabPage()
+    {
+    }
 
-		#endregion
-	}
+    #endregion
+  }
 }

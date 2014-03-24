@@ -117,16 +117,16 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler {
 
         private static string xmlPath=System.IO.Path.Combine(Program.ProgrammeInfoDirectory, "Fallout3\\TESsnip\\ScriptCompiler\\ScriptFunctions.xml");
 
-		private static void AddFunction(string name, string sname, FunctionSig sig) {
+    private static void AddFunction(string name, string sname, FunctionSig sig) {
             name=name.ToLowerInvariant();
-			if (functionList.ContainsKey(name))
-				MessageBox.Show("Function " + name + " has already been added.");
+      if (functionList.ContainsKey(name))
+        MessageBox.Show("Function " + name + " has already been added.");
             functionList.Add(name, sig);
             TokenStream.AddFunction(name);
             if(sname!=null) {
-				sname = sname.ToLowerInvariant();
-				if (functionList.ContainsKey(sname))
-					MessageBox.Show("Function short name " + sname + " has already been added.");
+        sname = sname.ToLowerInvariant();
+        if (functionList.ContainsKey(sname))
+          MessageBox.Show("Function short name " + sname + " has already been added.");
                 functionList.Add(sname, sig);
                 TokenStream.AddFunction(sname);
             }

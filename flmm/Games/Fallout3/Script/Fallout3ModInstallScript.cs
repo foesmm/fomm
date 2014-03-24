@@ -418,37 +418,37 @@ namespace Fomm.Games.Fallout3.Script
         /*TODO: I'm not sure if this is the strictly correct way to unedit a shader
          * the original unedit code was:
          * 
-         *	if (m_xelModInstallLogSdpEdits != null)
-         *	{
-         *		foreach (XmlNode node in m_xelModInstallLogSdpEdits.ChildNodes)
-         *		{
-         *			//TODO: Remove this workaround for the release version
-         *			if (node.Attributes.GetNamedItem("crc") == null)
-         *			{
-         *				InstallLog.UndoShaderEdit(int.Parse(node.Attributes.GetNamedItem("package").Value), node.Attributes.GetNamedItem("shader").Value, 0);
-         *			}
-         *			else
-         *			{
-         *				InstallLog.UndoShaderEdit(int.Parse(node.Attributes.GetNamedItem("package").Value), node.Attributes.GetNamedItem("shader").Value,
-         *					uint.Parse(node.Attributes.GetNamedItem("crc").Value));
-         *			}
-         *		}
-         *	}
-         *	
+         *  if (m_xelModInstallLogSdpEdits != null)
+         *  {
+         *    foreach (XmlNode node in m_xelModInstallLogSdpEdits.ChildNodes)
+         *    {
+         *      //TODO: Remove this workaround for the release version
+         *      if (node.Attributes.GetNamedItem("crc") == null)
+         *      {
+         *        InstallLog.UndoShaderEdit(int.Parse(node.Attributes.GetNamedItem("package").Value), node.Attributes.GetNamedItem("shader").Value, 0);
+         *      }
+         *      else
+         *      {
+         *        InstallLog.UndoShaderEdit(int.Parse(node.Attributes.GetNamedItem("package").Value), node.Attributes.GetNamedItem("shader").Value,
+         *          uint.Parse(node.Attributes.GetNamedItem("crc").Value));
+         *      }
+         *    }
+         *  }
+         *  
          * where InstallLog.UndoShaderEdit was:
          * 
-         *	public void UndoShaderEdit(int package, string shader, uint crc)
-         *	{
-         *		XmlNode node = sdpEditsNode.SelectSingleNode("sdp[@package='" + package + "' and @shader='" + shader + "']");
-         *		if (node == null) return;
-         *		byte[] b = new byte[node.InnerText.Length / 2];
-         *		for (int i = 0; i < b.Length; i++)
-         *		{
-         *			b[i] = byte.Parse("" + node.InnerText[i * 2] + node.InnerText[i * 2 + 1], System.Globalization.NumberStyles.AllowHexSpecifier);
-         *		}
-         *		if (SDPArchives.RestoreShader(package, shader, b, crc)) sdpEditsNode.RemoveChild(node);
-         *	}
-         *	
+         *  public void UndoShaderEdit(int package, string shader, uint crc)
+         *  {
+         *    XmlNode node = sdpEditsNode.SelectSingleNode("sdp[@package='" + package + "' and @shader='" + shader + "']");
+         *    if (node == null) return;
+         *    byte[] b = new byte[node.InnerText.Length / 2];
+         *    for (int i = 0; i < b.Length; i++)
+         *    {
+         *      b[i] = byte.Parse("" + node.InnerText[i * 2] + node.InnerText[i * 2 + 1], System.Globalization.NumberStyles.AllowHexSpecifier);
+         *    }
+         *    if (SDPArchives.RestoreShader(package, shader, b, crc)) sdpEditsNode.RemoveChild(node);
+         *  }
+         *  
          * after looking at SDPArchives it is not clear to me why a crc was being used.
          * if ever it becomes evident that a crc is required, I will have to alter the log to store
          *  a crc and pass it to the RestoreShader method.

@@ -4,70 +4,70 @@ using System.Timers;
 
 namespace Fomm.Controls
 {
-	/// <summary>
-	/// An code text editor.
-	/// </summary>
-	/// <remarks>
-	/// This editor provides highlighting and code folding.
-	/// </remarks>
-	public class CodeEditor : TextEditorControl
-	{
-		private Timer m_tmrFoldUpdater = new Timer();
+  /// <summary>
+  /// An code text editor.
+  /// </summary>
+  /// <remarks>
+  /// This editor provides highlighting and code folding.
+  /// </remarks>
+  public class CodeEditor : TextEditorControl
+  {
+    private Timer m_tmrFoldUpdater = new Timer();
 
-		#region Constructors
+    #region Constructors
 
-		/// <summary>
-		/// The default constructor.
-		/// </summary>
-		public CodeEditor()
-		{
-			SetHighlighting("C#");
-			
-			Document.FoldingManager.FoldingStrategy = new CodeFoldingStrategy();
-			m_tmrFoldUpdater.Elapsed += new ElapsedEventHandler(UpdateFolds);
-			m_tmrFoldUpdater.Interval = 2000;
-		}
+    /// <summary>
+    /// The default constructor.
+    /// </summary>
+    public CodeEditor()
+    {
+      SetHighlighting("C#");
+      
+      Document.FoldingManager.FoldingStrategy = new CodeFoldingStrategy();
+      m_tmrFoldUpdater.Elapsed += new ElapsedEventHandler(UpdateFolds);
+      m_tmrFoldUpdater.Interval = 2000;
+    }
 
-		#endregion
+    #endregion
 
-		/// <summary>
-		/// Raises the <see cref="Control.Load"/> event.
-		/// </summary>
-		/// <remarks>
-		/// This sets the synchronizing object on the timers to our form. Doing so allows the timers
-		/// to update the UI.
-		/// </remarks>
-		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
-		protected override void OnLoad(EventArgs e)
-		{
-			m_tmrFoldUpdater.SynchronizingObject = this.FindForm();
-			base.OnLoad(e);
-		}
+    /// <summary>
+    /// Raises the <see cref="Control.Load"/> event.
+    /// </summary>
+    /// <remarks>
+    /// This sets the synchronizing object on the timers to our form. Doing so allows the timers
+    /// to update the UI.
+    /// </remarks>
+    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    protected override void OnLoad(EventArgs e)
+    {
+      m_tmrFoldUpdater.SynchronizingObject = this.FindForm();
+      base.OnLoad(e);
+    }
 
-		/// <summary>
-		/// Updates the code folds.
-		/// </summary>
-		/// <remarks>
-		/// This method is called by a timer after a set span after the text in the editor was last changed.
-		/// </remarks>
-		/// <param name="sender">The object that triggered the event.</param>
-		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
-		private void UpdateFolds(object sender, EventArgs e)
-		{
-			Document.FoldingManager.UpdateFoldings(null, null);
-			Document.FoldingManager.NotifyFoldingsChanged(null);
-			m_tmrFoldUpdater.Stop();
-		}
+    /// <summary>
+    /// Updates the code folds.
+    /// </summary>
+    /// <remarks>
+    /// This method is called by a timer after a set span after the text in the editor was last changed.
+    /// </remarks>
+    /// <param name="sender">The object that triggered the event.</param>
+    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    private void UpdateFolds(object sender, EventArgs e)
+    {
+      Document.FoldingManager.UpdateFoldings(null, null);
+      Document.FoldingManager.NotifyFoldingsChanged(null);
+      m_tmrFoldUpdater.Stop();
+    }
 
-		/// <summary>
-		/// Starts the timers to update the code folds and validate the XML.
-		/// </summary>
-		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
-		protected override void OnTextChanged(EventArgs e)
-		{
-			m_tmrFoldUpdater.Stop();
-			m_tmrFoldUpdater.Start();
-			base.OnTextChanged(e);
-		}
-	}
+    /// <summary>
+    /// Starts the timers to update the code folds and validate the XML.
+    /// </summary>
+    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    protected override void OnTextChanged(EventArgs e)
+    {
+      m_tmrFoldUpdater.Stop();
+      m_tmrFoldUpdater.Start();
+      base.OnTextChanged(e);
+    }
+  }
 }

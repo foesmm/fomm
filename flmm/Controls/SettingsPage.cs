@@ -4,43 +4,43 @@ using System.Drawing;
 
 namespace Fomm.Controls
 {
-	/// <summary>
-	/// A page that is injected into the <see cref="SettingsForm"/>.
-	/// </summary>
-	public class SettingsPage : UserControl
-	{
-		#region Constructors
+  /// <summary>
+  /// A page that is injected into the <see cref="SettingsForm"/>.
+  /// </summary>
+  public class SettingsPage : UserControl
+  {
+    #region Constructors
 
-		/// <summary>
-		/// The default constructor.
-		/// </summary>
-		public SettingsPage()
-		{
-			Text = "Settings";
-			BackColor = Color.FromKnownColor(KnownColor.Transparent);
-		}
+    /// <summary>
+    /// The default constructor.
+    /// </summary>
+    public SettingsPage()
+    {
+      Text = "Settings";
+      BackColor = Color.FromKnownColor(KnownColor.Transparent);
+    }
 
-		#endregion
+    #endregion
 
-		#region Settings Management
+    #region Settings Management
 
-		/// <summary>
-		/// Loads the settings into the page's controls.
-		/// </summary>
-		public virtual void LoadSettings()
-		{
-		}
+    /// <summary>
+    /// Loads the settings into the page's controls.
+    /// </summary>
+    public virtual void LoadSettings()
+    {
+    }
 
-		/// <summary>
-		/// Persists the settings from the page's controls.
-		/// </summary>
-		/// <returns><lang cref="true"/> if ettings were saved;
-		/// <lang cref="false"/> otherwise.</returns>
-		public virtual bool SaveSettings()
-		{
-			return false;
-		}
+    /// <summary>
+    /// Persists the settings from the page's controls.
+    /// </summary>
+    /// <returns><lang cref="true"/> if ettings were saved;
+    /// <lang cref="false"/> otherwise.</returns>
+    public virtual bool SaveSettings()
+    {
+      return false;
+    }
 
-		#endregion
-	}
+    #endregion
+  }
 }

@@ -9,31 +9,31 @@ using System.IO;
 
 namespace Fomm.Games.Fallout3.Tools.TESsnip
 {
-	public partial class AddMasterForm : Form
-	{
-		public string MasterName
-		{
-			get
-			{
-				return tbxMaster.Text;
-			}
-		}
+  public partial class AddMasterForm : Form
+  {
+    public string MasterName
+    {
+      get
+      {
+        return tbxMaster.Text;
+      }
+    }
 
-		public AddMasterForm()
-		{
-			InitializeComponent();
-			ofdChooseMaster.InitialDirectory = Program.GameMode.PluginsPath;
-		}
+    public AddMasterForm()
+    {
+      InitializeComponent();
+      ofdChooseMaster.InitialDirectory = Program.GameMode.PluginsPath;
+    }
 
-		private void butOK_Click(object sender, EventArgs e)
-		{
-			DialogResult = DialogResult.OK;
-		}
+    private void butOK_Click(object sender, EventArgs e)
+    {
+      DialogResult = DialogResult.OK;
+    }
 
-		private void butChooseMaster_Click(object sender, EventArgs e)
-		{
-			if (ofdChooseMaster.ShowDialog() == DialogResult.OK)
-				tbxMaster.Text = Path.GetFileName(ofdChooseMaster.FileName);
-		}
-	}
+    private void butChooseMaster_Click(object sender, EventArgs e)
+    {
+      if (ofdChooseMaster.ShowDialog() == DialogResult.OK)
+        tbxMaster.Text = Path.GetFileName(ofdChooseMaster.FileName);
+    }
+  }
 }

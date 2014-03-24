@@ -218,9 +218,9 @@ namespace Fomm.PackageManager
     /// </summary>
     /// <remarks>
     /// This changes something of the form:
-    ///		arch:old\path\archive.zip//interior/path/file.txt
-    ///	to:
-    ///		arch:new\path\archive.zip//interior/path/file.txt
+    ///    arch:old\path\archive.zip//interior/path/file.txt
+    ///  to:
+    ///    arch:new\path\archive.zip//interior/path/file.txt
     /// </remarks>
     /// <param name="p_strArchivePath">The archive path whose directory is to be replaced.</param>
     /// <param name="p_strNewArchiveDirectory">The new directory to put into the given archive path.</param>

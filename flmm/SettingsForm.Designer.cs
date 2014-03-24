@@ -416,38 +416,38 @@ namespace Fomm {
 
         #endregion
 
-		private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
+    private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
         private System.Windows.Forms.CheckBox cbAssociateFomod;
         private System.Windows.Forms.CheckBox cbAssociateBsa;
         private System.Windows.Forms.CheckBox cbAssociateSdp;
-		private System.Windows.Forms.CheckBox cbShellExtensions;
+    private System.Windows.Forms.CheckBox cbShellExtensions;
         private System.Windows.Forms.CheckBox cbDisableIPC;
         private System.Windows.Forms.CheckBox cbDisableUAC;
-		private System.Windows.Forms.TabControl tbcTabs;
-		private System.Windows.Forms.TabPage tpgGeneral;
-		private System.Windows.Forms.TabPage tabPage2;
-		private System.Windows.Forms.Label label5;
-		private System.Windows.Forms.ComboBox cbxFomodCompression;
-		private System.Windows.Forms.Label label6;
-		private System.Windows.Forms.ComboBox cbxFomodFormat;
-		private System.Windows.Forms.GroupBox groupBox2;
-		private System.Windows.Forms.GroupBox groupBox1;
-		private System.Windows.Forms.ComboBox cbxPFPFormat;
-		private System.Windows.Forms.ComboBox cbxPFPCompression;
-		private System.Windows.Forms.Label label7;
-		private System.Windows.Forms.Label label8;
-		private System.Windows.Forms.Label label9;
-		private System.Windows.Forms.Label label10;
-		private System.Windows.Forms.ComboBox comboBox1;
-		private System.Windows.Forms.ComboBox comboBox2;
-		private System.Windows.Forms.Label label11;
-		private System.Windows.Forms.Label label12;
-		private System.Windows.Forms.GroupBox groupBox5;
-		private System.Windows.Forms.GroupBox gbxAssociations;
-		private System.Windows.Forms.CheckBox cbUseDocs;
-		private System.Windows.Forms.Panel panel1;
-		private System.Windows.Forms.Button butCancel;
-		private System.Windows.Forms.Button butOK;
+    private System.Windows.Forms.TabControl tbcTabs;
+    private System.Windows.Forms.TabPage tpgGeneral;
+    private System.Windows.Forms.TabPage tabPage2;
+    private System.Windows.Forms.Label label5;
+    private System.Windows.Forms.ComboBox cbxFomodCompression;
+    private System.Windows.Forms.Label label6;
+    private System.Windows.Forms.ComboBox cbxFomodFormat;
+    private System.Windows.Forms.GroupBox groupBox2;
+    private System.Windows.Forms.GroupBox groupBox1;
+    private System.Windows.Forms.ComboBox cbxPFPFormat;
+    private System.Windows.Forms.ComboBox cbxPFPCompression;
+    private System.Windows.Forms.Label label7;
+    private System.Windows.Forms.Label label8;
+    private System.Windows.Forms.Label label9;
+    private System.Windows.Forms.Label label10;
+    private System.Windows.Forms.ComboBox comboBox1;
+    private System.Windows.Forms.ComboBox comboBox2;
+    private System.Windows.Forms.Label label11;
+    private System.Windows.Forms.Label label12;
+    private System.Windows.Forms.GroupBox groupBox5;
+    private System.Windows.Forms.GroupBox gbxAssociations;
+    private System.Windows.Forms.CheckBox cbUseDocs;
+    private System.Windows.Forms.Panel panel1;
+    private System.Windows.Forms.Button butCancel;
+    private System.Windows.Forms.Button butOK;
     private System.Windows.Forms.ToolTip ttpTip;
     }
 }
