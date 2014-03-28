@@ -51,7 +51,7 @@ namespace Fomm.PackageManager.ModInstallLog
    */
   internal class InstallLog : InstallLogBase
   {
-    public static readonly Version CURRENT_VERSION = new Version("0.2.0.0");
+    public static readonly Version CURRENT_VERSION = new Version("0.5.0.0");
     internal protected const string ORIGINAL_VALUES = "ORIGINAL_VALUES";
     internal protected const string FOMM = "FOMM";
     private static InstallLog m_ilgCurrent = null;
@@ -75,7 +75,7 @@ namespace Fomm.PackageManager.ModInstallLog
     }
 
     private readonly string xmlpath = Path.Combine(Program.GameMode.InstallInfoDirectory, "InstallLog.xml");
-    private XmlDocument xmlDoc;
+    public XmlDocument xmlDoc;
     private XmlElement m_xelModListNode;
     private XmlElement dataFilesNode;
     private XmlElement iniEditsNode;
@@ -455,6 +455,66 @@ namespace Fomm.PackageManager.ModInstallLog
       }
     }
 
+    internal protected bool UpdateMod(string modname)
+    {
+      bool ret = false;
+      XmlNode xndMod;
+      XmlNode tmpNode;
+      DateTime installed;
+
+      xndMod = m_xelModListNode.SelectSingleNode("mod[@name=\"" + modname + "\"]");
+      
+      switch (modname)
+      {
+        case InstallLog.ORIGINAL_VALUES:
+        case InstallLog.FOMM:
+          /*
+          Change
+            <mod name="ORIGINAL_VALUES" key="x2hrojjw" />
+          TO
+            <mod path="Dummy Mod: ORIGINAL_VALUE" key="j2hwar5e">
+              <version machineVersion="0.0"></version>
+              <name>ORIGINAL_VALUE</name>
+              <installDate>2/11/2014 16:55:34</installDate>
+            </mod>
+           
+           Same for FOMM
+          */
+
+          // Replace name attribute with path attribute
+          xndMod.Attributes.Remove(xndMod.Attributes["name"]);
+          xndMod.Attributes.Append(xmlDoc.CreateAttribute("path"));
+          xndMod.Attributes["path"].InnerText = "Dummy Mod: " + modname;
+
+          // Add version element
+          tmpNode = xmlDoc.CreateElement("version");
+          tmpNode.Attributes.Append(xmlDoc.CreateAttribute("machineVersion"));
+          tmpNode.Attributes["machineVersion"].InnerText = "0.0";
+          xndMod.AppendChild(tmpNode);
+
+          // Add name element
+          tmpNode = xmlDoc.CreateElement("name");
+          tmpNode.InnerText = modname;
+          xndMod.AppendChild(tmpNode);
+
+          // Add installDate
+          installed = DateTime.Now;
+          tmpNode = xmlDoc.CreateElement("installDate");
+          tmpNode.InnerText = installed.ToString("MM/dd/yyyy HH:mm:ss");
+          tmpNode.Attributes.Append(xmlDoc.CreateAttribute("unambiguousdate"));
+          tmpNode.Attributes["unambiguousdate"].InnerText = installed.ToString("yyyy-MMM-dd HH:mm:ss");
+          xndMod.AppendChild(tmpNode);
+
+        break;
+
+        default:
+          ret = false;
+        break;
+      }
+
+      return ret;
+    }
+
     /// <summary>
     /// Updates a mod's information in the install log.
     /// </summary>
@@ -466,20 +526,38 @@ namespace Fomm.PackageManager.ModInstallLog
     /// <lang cref="false"/> otherwise.</returns>
     internal protected bool UpdateMod(fomod p_fomodMod)
     {
+      bool ret = false;
+      XmlNode xndMod;
+      XmlNode tmpNode;
+      string sModName;
+      string sPath;
+
       if (m_dicModList.ContainsKey(p_fomodMod.BaseName))
       {
-        XmlNode xndMod = m_xelModListNode.SelectSingleNode("mod[@key=\"" + GetModKey(p_fomodMod.BaseName) + "\"]");
-        XmlNode xndVersion = xndMod.SelectSingleNode("version");
-        if (xndVersion == null)
-        {
-          xndVersion = xndMod.AppendChild(xmlDoc.CreateElement("version"));
-          xndVersion.Attributes.Append(xmlDoc.CreateAttribute("machineVersion"));
-        }
-        xndVersion.Attributes["machineVersion"].InnerText = p_fomodMod.MachineVersion.ToString();
-        xndVersion.InnerText = p_fomodMod.HumanReadableVersion;
-        return true;
+        xndMod = m_xelModListNode.SelectSingleNode("mod[@key=\"" + GetModKey(p_fomodMod.BaseName) + "\"]");
+            
+        // Save mod values for attributes and elements we may be deleting.
+        sModName = xndMod.Attributes["name"].Value;
+        sPath = System.IO.Path.GetFileName(p_fomodMod.filepath);
+
+        // Replace name attribute with path attribute
+        xndMod.Attributes.Remove(xndMod.Attributes["name"]);
+        xndMod.Attributes.Append(xmlDoc.CreateAttribute("path"));
+        xndMod.Attributes["path"].InnerText = sPath;
+
+        // Add name element
+        tmpNode = xmlDoc.CreateElement("name");
+        tmpNode.InnerText = sModName;
+        xndMod.AppendChild(tmpNode);
+
+        // Add installdate element
+        tmpNode = xmlDoc.CreateElement("installDate");
+        tmpNode.InnerText = System.IO.File.GetCreationTime(p_fomodMod.filepath).ToString("MM/dd/yyyy HH:mm:ss");
+        tmpNode.Attributes.Append(xmlDoc.CreateAttribute("unambiguousdate"));
+        tmpNode.Attributes["unambiguousdate"].InnerText = System.IO.File.GetCreationTime(p_fomodMod.filepath).ToString("yyyy-MMM-dd HH:mm:ss");
+        xndMod.AppendChild(tmpNode);
       }
-      return false;
+      return ret;
     }
 
     /// <summary>

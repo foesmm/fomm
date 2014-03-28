@@ -453,7 +453,7 @@ namespace Fomm
           //backup the install log
           if (File.Exists(InstallLog.Current.InstallLogPath))
           {
-            string strLogPath = InstallLog.Current.InstallLogPath + ".bak";
+            string strLogPath = InstallLog.Current.InstallLogPath + ".fomm.bak";
             FileInfo fifInstallLog = new FileInfo(InstallLog.Current.InstallLogPath);
             FileInfo fifInstallLogBak = null;
             if (File.Exists(strLogPath))
@@ -468,7 +468,7 @@ namespace Fomm
               }
               if (File.Exists(strLogPath))
                 File.Copy(strLogPath, strLogPath + "1", true);
-              File.Copy(InstallLog.Current.InstallLogPath, InstallLog.Current.InstallLogPath + ".bak", true);
+              File.Copy(InstallLog.Current.InstallLogPath, InstallLog.Current.InstallLogPath + ".fomm.bak", true);
             }
           }
 

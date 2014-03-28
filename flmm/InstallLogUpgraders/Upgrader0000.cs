@@ -90,7 +90,7 @@ namespace Fomm.InstallLogUpgraders
 
           if (File.Exists(strModInstallLog + ".bak"))
             FileManager.Delete(strModInstallLog + ".bak");
-          FileManager.Move(strModInstallLog, strModInstallLog + ".bak");
+          FileManager.Move(strModInstallLog, strModInstallLog + ".fomm.bak");
         }
         ProgressWorker.StepOverallProgress();
       }
