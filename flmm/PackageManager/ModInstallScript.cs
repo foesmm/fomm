@@ -24,6 +24,8 @@ namespace Fomm.PackageManager
     private List<string> m_lstDontOverwriteFolders = new List<string>();
     private bool m_booDontOverwriteAll = false;
     private bool m_booOverwriteAll = false;
+    private List<string> m_lstOverwriteMods = new List<string>();
+    private List<string> m_lstDontOverwriteMods = new List<string>();
     private bool m_booDontOverwriteAllIni = false;
     private bool m_booOverwriteAllIni = false;
 
@@ -421,6 +423,8 @@ namespace Fomm.PackageManager
     protected bool TestDoOverwrite(string p_strPath)
     {
       string strDataPath = Path.Combine(Program.GameMode.PluginsPath, p_strPath);
+      string strOldMod = InstallLog.Current.GetCurrentFileOwnerName(p_strPath);
+
       if (!File.Exists(strDataPath))
         return true;
       string strLoweredPath = strDataPath.ToLowerInvariant();
@@ -432,8 +436,11 @@ namespace Fomm.PackageManager
         return true;
       if (m_booDontOverwriteAll)
         return false;
+      if (m_lstOverwriteMods.Contains(strOldMod))
+        return true;
+      if (m_lstDontOverwriteMods.Contains(strOldMod))
+        return false;
 
-      string strOldMod = InstallLog.Current.GetCurrentFileOwnerName(p_strPath);
       string strMessage = null;
       if (strOldMod != null)
       {
@@ -456,6 +463,12 @@ namespace Fomm.PackageManager
           return false;
         case OverwriteResult.YesToAll:
           m_booOverwriteAll = true;
+          return true;
+        case OverwriteResult.NoToMod:
+          m_lstDontOverwriteMods.Add(strOldMod);
+          return false;
+        case OverwriteResult.YesToMod:
+          m_lstOverwriteMods.Add(strOldMod);
           return true;
         case OverwriteResult.NoToFolder:
           Queue<string> folders = new Queue<string>();
