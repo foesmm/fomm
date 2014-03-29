@@ -2,7 +2,6 @@
 using ChinhDo.Transactions;
 using System.IO;
 using System.Collections.Generic;
-using SevenZip;
 using fomm.Transactions;
 using System.Windows.Forms;
 using System.Text;
@@ -453,10 +452,8 @@ namespace Fomm.PackageManager
         strMessage = "Data file '{0}' already exists." + Environment.NewLine +
                 "Overwrite with this mod's file?";
       }
-
       switch (Overwriteform.ShowDialog(String.Format(strMessage, p_strPath), true, (strOldMod != null)))
       {
-
         case OverwriteResult.Yes:
           return true;
         case OverwriteResult.No:
@@ -510,6 +507,53 @@ namespace Fomm.PackageManager
       }
     }
 
+    public bool InstallFile(string fnFrom, string fnTo = "")
+    {
+      bool ret = false;
+      string tmpFN;
+      string strDataPath;
+
+      /*
+       * There were two differences between InstallFileFromFomod and CopyDataFile
+       * 1. IFFF checked permissions, CDF did not.
+       * 2. IFFF used the same src and dst filenames, CDF used different names.
+       */
+      PermissionsManager.CurrentPermissions.Assert();
+
+      if (fnTo == "")
+      {
+        fnTo = fnFrom;
+      }
+
+      FileManagement.AssertFilePathIsSafe(fnTo);
+
+      #region refactor me
+      #region original code
+//      byte[] bteFomodFile = Fomod.GetFile(fnFrom);
+//      ret = GenerateDataFile(fnTo, bteFomodFile);
+      #endregion
+
+      #region newcode
+      /*
+       * New code
+       * 1. Extract the file from the archive to the temp file
+       * 2. Copy the temp file to the destination
+       * 3. Delete the temp file
+       */
+
+      tmpFN = Fomod.ExtractToTemp(fnFrom);
+      if (GenerateDataFilePrep(fnTo, out strDataPath))
+      {
+        Installer.TransactionalFileManager.Copy(tmpFN, strDataPath, true);
+        Installer.MergeModule.AddFile(fnTo);
+        ret = true;
+      }
+      #endregion
+      #endregion
+
+      return ret;
+    }
+
     /// <summary>
     /// Installs the speified file from the FOMod to the file system.
     /// </summary>
@@ -518,140 +562,7 @@ namespace Fomm.PackageManager
     /// not to overwrite an existing file.</returns>
     public bool InstallFileFromFomod(string p_strFile)
     {
-      bool ret = false;
-      string srcFN;
-      string dstFN;
-      bool deleteSrc = false;
-      FileStream fsTmp;
-
-      string strPath;
-      string strAdjustedPath;
-      Archive arc;
-      ArchiveFileInfo afiFile;
-      SevenZipExtractor szeExtractor;
-      string strDataPath;
-      string strDirectory;
-      string strBackupPath;
-      string strOldModKey;
-      string strFile;
-
-      PermissionsManager.CurrentPermissions.Assert();
-
-      //			byte[] bteFomodFile = Fomod.GetFile(p_strFile);
-      // Replaced by:
-      strAdjustedPath = Fomod.GetPrefixAdjustedPath(p_strFile);
-
-      if ((Fomod.m_arcCacheFile != null) && Fomod.m_arcCacheFile.ContainsFile(strAdjustedPath))
-      {
-        arc = Fomod.m_arcCacheFile;
-      }
-      else if ((Fomod.m_arcFile != null) && Fomod.m_arcFile.ContainsFile(strAdjustedPath))
-      {
-        arc = Fomod.m_arcFile;
-      }
-      else
-      {
-        throw new FileNotFoundException("File doesn't exist in fomod", p_strFile);
-      }
-
-      strPath = strAdjustedPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).ToLowerInvariant();
-      FileManagement.AssertFilePathIsSafe(strPath);
-
-      if (!arc.m_dicFileInfo.ContainsKey(strPath))
-      {
-        throw new FileNotFoundException("The requested file does not exist in the archive.", p_strFile);
-      }
-      afiFile = arc.m_dicFileInfo[strPath];
-
-      //check to see if we are on the same thread as the extractor
-      // if not, then marshall the call to the extractor's thread.
-      // this needs to be done as the 7zip dll cannot handle calls from other
-      // threads.
-      if (arc.IsReadonly)
-      {
-        if (arc.m_szeReadOnlyExtractor == null)
-        {
-          srcFN = Path.Combine(arc.m_strReadOnlyTempDirectory, strPath);
-        }
-        else
-        {
-          deleteSrc = true;
-          srcFN = Path.GetTempFileName();
-          fsTmp = new FileStream(srcFN, FileMode.Create);
-          arc.m_szeReadOnlyExtractor.ExtractFile(afiFile.Index, fsTmp);
-          fsTmp.Flush();
-          fsTmp.Close();
-        }
-      }
-      else
-      {
-        deleteSrc = true;
-        srcFN = Path.GetTempFileName();
-        fsTmp = new FileStream(srcFN, FileMode.Create);
-        szeExtractor = Archive.GetExtractor(arc.m_strPath);
-        szeExtractor.ExtractFile(afiFile.Index, fsTmp);
-        fsTmp.Flush();
-        fsTmp.Close();
-      }
-
-      // Replaced by:
-      //      return GenerateDataFile(p_strFile, bteFomodFile);
-      strDataPath = Path.Combine(Program.GameMode.PluginsPath, p_strFile);
-      if (!Directory.Exists(Path.GetDirectoryName(strDataPath)))
-      {
-        Installer.TransactionalFileManager.CreateDirectory(Path.GetDirectoryName(strDataPath));
-      }
-      else
-      {
-        if (!TestDoOverwrite(p_strFile))
-        {
-          if (deleteSrc)
-          {
-            File.Delete(srcFN);
-          }
-          return false;
-        }
-
-        if (File.Exists(strDataPath))
-        {
-          strDirectory = Path.GetDirectoryName(p_strFile);
-          strBackupPath = Path.Combine(Program.GameMode.OverwriteDirectory, strDirectory);
-          strOldModKey = InstallLog.Current.GetCurrentFileOwnerKey(p_strFile);
-          //if this mod installed a file, and now we are overwriting itm
-          // the install log will tell us no one owns the file, or the wrong mod owns the
-          // file. so, if this mod has installed this file already just replace it, don't
-          // back it up.
-          if (!Installer.MergeModule.ContainsFile(p_strFile))
-          {
-            if (!Directory.Exists(strBackupPath))
-            {
-              Installer.TransactionalFileManager.CreateDirectory(strBackupPath);
-            }
-
-            //if we are overwriting an original value, back it up
-            if (strOldModKey == null)
-            {
-              Installer.MergeModule.BackupOriginalDataFile(p_strFile);
-              strOldModKey = InstallLog.Current.OriginalValuesKey;
-            }
-            strFile = Path.GetFileName(Directory.GetFiles(Path.GetDirectoryName(strDataPath), Path.GetFileName(strDataPath))[0]);
-            strFile = strOldModKey + "_" + strFile;
-
-            strBackupPath = Path.Combine(strBackupPath, strFile);
-            Installer.TransactionalFileManager.Copy(strDataPath, strBackupPath, true);
-          }
-          Installer.TransactionalFileManager.Delete(strDataPath);
-        }
-      }
-
-      Installer.TransactionalFileManager.Copy(srcFN, strDataPath, true);
-      if (deleteSrc)
-      {
-        File.Delete(srcFN);
-      }
-      Installer.MergeModule.AddFile(p_strFile);
-
-      return ret;
+      return InstallFile(p_strFile);
     }
 
     /// <summary>
@@ -667,8 +578,7 @@ namespace Fomm.PackageManager
     /// not safe.</exception>
     public bool CopyDataFile(string p_strFrom, string p_strTo)
     {
-      byte[] bteBytes = Fomod.GetFile(p_strFrom);
-      return GenerateDataFile(p_strTo, bteBytes);
+      return InstallFile(p_strFrom, p_strTo);
     }
 
     /// <summary>
@@ -688,7 +598,22 @@ namespace Fomm.PackageManager
     {
       PermissionsManager.CurrentPermissions.Assert();
       FileManagement.AssertFilePathIsSafe(p_strPath);
-      string strDataPath = Path.Combine(Program.GameMode.PluginsPath, p_strPath);
+      string strDataPath;
+      bool ret = false;
+
+      if (GenerateDataFilePrep(p_strPath, out strDataPath))
+      {
+        Installer.TransactionalFileManager.WriteAllBytes(strDataPath, p_bteData);
+        Installer.MergeModule.AddFile(p_strPath);
+        ret = true;
+      }
+
+      return ret;
+    }
+
+    private bool GenerateDataFilePrep(string p_strPath, out string strDataPath)
+    {
+      strDataPath = Path.Combine(Program.GameMode.PluginsPath, p_strPath);
       if (!Directory.Exists(Path.GetDirectoryName(strDataPath)))
         Installer.TransactionalFileManager.CreateDirectory(Path.GetDirectoryName(strDataPath));
       else
@@ -725,9 +650,6 @@ namespace Fomm.PackageManager
           Installer.TransactionalFileManager.Delete(strDataPath);
         }
       }
-
-      Installer.TransactionalFileManager.WriteAllBytes(strDataPath, p_bteData);
-      Installer.MergeModule.AddFile(p_strPath);
       return true;
     }
 
@@ -920,7 +842,7 @@ namespace Fomm.PackageManager
                   "Allow the change?\n" +
                   "Current value '{3}', new value '{4}'";
         }
-        switch (Overwriteform.ShowDialog(String.Format(strMessage, p_strKey, p_strSection, strFile, strOldValue, p_strValue), false, false))
+        switch (Overwriteform.ShowDialog(String.Format(strMessage, p_strKey, p_strSection, strFile, strOldValue, p_strValue), false, (strOldMod != null)))
         {
           case OverwriteResult.YesToAll:
             m_booOverwriteAllIni = true;

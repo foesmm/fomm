@@ -1,33 +1,33 @@
 namespace Fomm
 {
-	partial class MainForm
-	{
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
-		private System.ComponentModel.IContainer components = null;
+  partial class MainForm
+  {
+    /// <summary>
+    /// Required designer variable.
+    /// </summary>
+    private System.ComponentModel.IContainer components = null;
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-		protected override void Dispose(bool disposing)
-		{
-			if (disposing && (components != null))
-			{
-				components.Dispose();
-			}
-			base.Dispose(disposing);
-		}
+    /// <summary>
+    /// Clean up any resources being used.
+    /// </summary>
+    /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+    protected override void Dispose(bool disposing)
+    {
+      if (disposing && (components != null))
+      {
+        components.Dispose();
+      }
+      base.Dispose(disposing);
+    }
 
-		#region Windows Form Designer generated code
+    #region Windows Form Designer generated code
 
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
+    /// <summary>
+    /// Required method for Designer support - do not modify
+    /// the contents of this method with the code editor.
+    /// </summary>
+    private void InitializeComponent()
+    {
       this.components = new System.ComponentModel.Container();
       this.pictureBox1 = new System.Windows.Forms.PictureBox();
       this.bLaunch = new System.Windows.Forms.Button();
@@ -378,40 +378,40 @@ namespace Fomm
       this.ResumeLayout(false);
       this.PerformLayout();
 
-		}
+    }
 
-		#endregion
+    #endregion
 
-		private System.Windows.Forms.PictureBox pictureBox1;
+    private System.Windows.Forms.PictureBox pictureBox1;
     private System.Windows.Forms.Button bLaunch;
-		private System.Windows.Forms.ColumnHeader columnHeader1;
-		private System.Windows.Forms.SplitContainer splitContainer1;
-		private System.Windows.Forms.RichTextBox rtbPluginInfo;
-		private System.Windows.Forms.Button bPackageManager;
-		private System.Windows.Forms.ContextMenuStrip cmsPlugins;
-		private System.Windows.Forms.Button bHelp;
-		private System.Windows.Forms.ColumnHeader columnHeader2;
-		private System.Windows.Forms.ToolStripMenuItem sendToTopToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem sendToBottomToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem uncheckAllToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem checkAllToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
-		private System.Windows.Forms.Button bSettings;
-		private System.Windows.Forms.MenuStrip menuStrip1;
-		private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem launchGameToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem closeToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem loadOrderToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem importToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem exportToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem copyToClipboardToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem viewReadmeToolStripMenuItem;
-		private System.Windows.Forms.Button butFileManager;
-		private System.Windows.Forms.ToolStripMenuItem gameSettingsToolStripMenuItem;
+    private System.Windows.Forms.ColumnHeader columnHeader1;
+    private System.Windows.Forms.SplitContainer splitContainer1;
+    private System.Windows.Forms.RichTextBox rtbPluginInfo;
+    private System.Windows.Forms.Button bPackageManager;
+    private System.Windows.Forms.ContextMenuStrip cmsPlugins;
+    private System.Windows.Forms.Button bHelp;
+    private System.Windows.Forms.ColumnHeader columnHeader2;
+    private System.Windows.Forms.ToolStripMenuItem sendToTopToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem sendToBottomToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem uncheckAllToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem checkAllToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
+    private System.Windows.Forms.Button bSettings;
+    private System.Windows.Forms.MenuStrip menuStrip1;
+    private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem launchGameToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem closeToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem loadOrderToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem importToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem exportToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem copyToClipboardToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem viewReadmeToolStripMenuItem;
+    private System.Windows.Forms.Button butFileManager;
+    private System.Windows.Forms.ToolStripMenuItem gameSettingsToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem changeGameToolStripMenuItem;
     private L0ki.Controls.ReordableItemListView lvEspList;
-	}
+  }
 }
 

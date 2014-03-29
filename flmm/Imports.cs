@@ -62,16 +62,16 @@ namespace Fomm {
         [System.Security.SuppressUnmanagedCodeSecurity()]
         public static extern int GetPrivateProfileIntA(string section, string value, int def, string path);
 
-		public static UInt64 GetPrivateProfileUInt64(string section, string value, UInt64 def, string path)
-		{
-			string strValue = GetPrivateProfileString(section, value, null, path);
-			if (String.IsNullOrEmpty(strValue))
-				return def;
-			UInt64 ulngValue = 0;
-			if (UInt64.TryParse(strValue, out ulngValue))
-				return ulngValue;
-			return def;
-		}
+    public static UInt64 GetPrivateProfileUInt64(string section, string value, UInt64 def, string path)
+    {
+      string strValue = GetPrivateProfileString(section, value, null, path);
+      if (String.IsNullOrEmpty(strValue))
+        return def;
+      UInt64 ulngValue = 0;
+      if (UInt64.TryParse(strValue, out ulngValue))
+        return ulngValue;
+      return def;
+    }
 
         public static void WritePrivateProfileIntA(string section, string value, int val, string path) {
             WritePrivateProfileStringA(section, value, val.ToString(), path);

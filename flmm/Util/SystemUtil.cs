@@ -4,8 +4,8 @@ using System.Text;
 
 namespace Fomm.Util
 {
-	class SystemUtil
-	{
-		public delegate void Action();
-	}
+  class SystemUtil
+  {
+    public delegate void Action();
+  }
 }

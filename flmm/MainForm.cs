@@ -13,178 +13,178 @@ using Fomm.Commands;
 
 namespace Fomm
 {
-	public partial class MainForm : Form
-	{
-		private bool m_booChangeGameMode = false;
-		private bool AlphaSortMode = false;
-		private List<string> m_lstIgnoreReadOnly = new List<string>();
-		private PluginFormat.PluginFormatterManager m_pfmPluginFormatManager = new PluginFormat.PluginFormatterManager();
+  public partial class MainForm : Form
+  {
+    private bool m_booChangeGameMode = false;
+    private bool AlphaSortMode = false;
+    private List<string> m_lstIgnoreReadOnly = new List<string>();
+    private PluginFormat.PluginFormatterManager m_pfmPluginFormatManager = new PluginFormat.PluginFormatterManager();
 
-		#region Properties
+    #region Properties
 
-		/// <summary>
-		/// Gets whether or not to change the game mode.
-		/// </summary>
-		/// <value>Whether or not to change the game mode.</value>
-		public bool ChangeGameMode
-		{
-			get
-			{
-				return m_booChangeGameMode;
-			}
-		}
+    /// <summary>
+    /// Gets whether or not to change the game mode.
+    /// </summary>
+    /// <value>Whether or not to change the game mode.</value>
+    public bool ChangeGameMode
+    {
+      get
+      {
+        return m_booChangeGameMode;
+      }
+    }
 
-		/// <summary>
-		/// Gets whether there are any open utility windows.
-		/// </summary>
-		/// <value>Whether there are any open utility windows.</value>
-		public bool HasOpenUtilityWindows
-		{
-			get
-			{
-				Int32 intIngoredWindowCount = 0;
-				for (Int32 i = Application.OpenForms.Count - 1; i >= 0; i--)
-				{
-					Form frmForm = Application.OpenForms[i];
-					if (frmForm.GetType().Namespace.StartsWith("ICSharp", StringComparison.InvariantCultureIgnoreCase))
-						intIngoredWindowCount++;
-				}
-				return (Application.OpenForms.Count - intIngoredWindowCount > 1);
-			}
-		}
+    /// <summary>
+    /// Gets whether there are any open utility windows.
+    /// </summary>
+    /// <value>Whether there are any open utility windows.</value>
+    public bool HasOpenUtilityWindows
+    {
+      get
+      {
+        Int32 intIngoredWindowCount = 0;
+        for (Int32 i = Application.OpenForms.Count - 1; i >= 0; i--)
+        {
+          Form frmForm = Application.OpenForms[i];
+          if (frmForm.GetType().Namespace.StartsWith("ICSharp", StringComparison.InvariantCultureIgnoreCase))
+            intIngoredWindowCount++;
+        }
+        return (Application.OpenForms.Count - intIngoredWindowCount > 1);
+      }
+    }
 
-		/// <summary>
-		/// Gets a list of currently selected plugins.
-		/// </summary>
-		/// <value>A list of currently selected plugins.</value>
-		public IList<string> SelectedPlugins
-		{
-			get
-			{
-				List<string> lstSelectedPlugins = new List<string>();
-				foreach (ListViewItem lviPlugin in lvEspList.SelectedItems)
-					lstSelectedPlugins.Add(lviPlugin.Text);
-				return lstSelectedPlugins;
-			}
-		}
+    /// <summary>
+    /// Gets a list of currently selected plugins.
+    /// </summary>
+    /// <value>A list of currently selected plugins.</value>
+    public IList<string> SelectedPlugins
+    {
+      get
+      {
+        List<string> lstSelectedPlugins = new List<string>();
+        foreach (ListViewItem lviPlugin in lvEspList.SelectedItems)
+          lstSelectedPlugins.Add(lviPlugin.Text);
+        return lstSelectedPlugins;
+      }
+    }
 
-		/// <summary>
-		/// Gets whether the package manager is open.
-		/// </summary>
-		/// <value>Whether the package manager is open.</value>
-		public bool IsPackageManagerOpen
-		{
-			get
-			{
-				return PackageManagerForm != null;
-			}
-		}
+    /// <summary>
+    /// Gets whether the package manager is open.
+    /// </summary>
+    /// <value>Whether the package manager is open.</value>
+    public bool IsPackageManagerOpen
+    {
+      get
+      {
+        return PackageManagerForm != null;
+      }
+    }
 
-		#endregion
+    #endregion
 
-		#region Constructors
+    #region Constructors
 
-		public MainForm(string fomod)
-		{
-			InitializeComponent();
-			this.Icon = Fomm.Properties.Resources.fomm02;
-			Properties.Settings.Default.windowPositions.GetWindowPosition("MainForm", this);
+    public MainForm(string fomod)
+    {
+      InitializeComponent();
+      this.Icon = Fomm.Properties.Resources.fomm02;
+      Properties.Settings.Default.windowPositions.GetWindowPosition("MainForm", this);
 
-			Text += " (" + Program.Version + ") - " + Program.GameMode.GameName;
+      Text += " (" + Program.MVersion.ToString() + ") - " + Program.GameMode.GameName;
 
-			if (fomod != null)
-			{
-				bPackageManager_Click(null, null);
-				if (fomod.Length > 0) PackageManagerForm.AddNewFomod(fomod);
-			}
+      if (fomod != null)
+      {
+        bPackageManager_Click(null, null);
+        if (fomod.Length > 0) PackageManagerForm.AddNewFomod(fomod);
+      }
 
-			Command<MainForm> cmdGameLaunch = Program.GameMode.LaunchCommand;
-			bLaunch.Text = cmdGameLaunch.Name;
-			bLaunch.Tag = cmdGameLaunch;
+      Command<MainForm> cmdGameLaunch = Program.GameMode.LaunchCommand;
+      bLaunch.Text = cmdGameLaunch.Name;
+      bLaunch.Tag = cmdGameLaunch;
 
-			if (!Properties.Settings.Default.DisableIPC)
-			{
-				Timer newFommTimer = new Timer();
-				try
-				{
-					newFommTimer.Interval = 1000;
-					newFommTimer.Tick += new EventHandler(newFommTimer_Tick);
-					newFommTimer.Start();
-					Messaging.ServerSetup(RecieveMessage);
-				}
-				catch (RemotingException)
-				{
-					newFommTimer.Stop();
-					newFommTimer.Enabled = false;
-					Properties.Settings.Default.DisableIPC = true;
-					Properties.Settings.Default.Save();
-				}
-			}
+      if (!Properties.Settings.Default.DisableIPC)
+      {
+        Timer newFommTimer = new Timer();
+        try
+        {
+          newFommTimer.Interval = 1000;
+          newFommTimer.Tick += new EventHandler(newFommTimer_Tick);
+          newFommTimer.Start();
+          Messaging.ServerSetup(RecieveMessage);
+        }
+        catch (RemotingException)
+        {
+          newFommTimer.Stop();
+          newFommTimer.Enabled = false;
+          Properties.Settings.Default.DisableIPC = true;
+          Properties.Settings.Default.Save();
+        }
+      }
 
-			SetupTools();
-			SetupPluginFormatProviders();
-		}
+      SetupTools();
+      SetupPluginFormatProviders();
+    }
 
-		private void SetupPluginFormatProviders()
-		{
+    private void SetupPluginFormatProviders()
+    {
       foreach (IPluginFormatProvider pfpProvider in Program.GameMode.PluginFormatProviders)
       {
         m_pfmPluginFormatManager.RegisterProvider(pfpProvider);
       }
-		}
+    }
 
-		#endregion
+    #endregion
 
-		/// <summary>
-		/// Adds the game-specific tools to the Tool menu.
-		/// </summary>
-		protected void SetupTools()
-		{
-			foreach (Command<MainForm> cmdTool in Program.GameMode.Tools)
-			{
-				ToolStripMenuItem tsiMenuItem = new ToolStripMenuItem();
-				ToolStripMenuItemCommandBinding<MainForm> cbdCommandBinding = new ToolStripMenuItemCommandBinding<MainForm>(tsiMenuItem, cmdTool, () => { return this; });
-				toolsToolStripMenuItem.DropDownItems.Add(tsiMenuItem);
-			}
+    /// <summary>
+    /// Adds the game-specific tools to the Tool menu.
+    /// </summary>
+    protected void SetupTools()
+    {
+      foreach (Command<MainForm> cmdTool in Program.GameMode.Tools)
+      {
+        ToolStripMenuItem tsiMenuItem = new ToolStripMenuItem();
+        ToolStripMenuItemCommandBinding<MainForm> cbdCommandBinding = new ToolStripMenuItemCommandBinding<MainForm>(tsiMenuItem, cmdTool, () => { return this; });
+        toolsToolStripMenuItem.DropDownItems.Add(tsiMenuItem);
+      }
 
-			foreach (Command<MainForm> cmdTool in Program.GameMode.GameSettingsTools)
-			{
-				ToolStripMenuItem tsiMenuItem = new ToolStripMenuItem();
-				ToolStripMenuItemCommandBinding<MainForm> cbdCommandBinding = new ToolStripMenuItemCommandBinding<MainForm>(tsiMenuItem, cmdTool, () => { return this; });
-				gameSettingsToolStripMenuItem.DropDownItems.Add(tsiMenuItem);
-			}
+      foreach (Command<MainForm> cmdTool in Program.GameMode.GameSettingsTools)
+      {
+        ToolStripMenuItem tsiMenuItem = new ToolStripMenuItem();
+        ToolStripMenuItemCommandBinding<MainForm> cbdCommandBinding = new ToolStripMenuItemCommandBinding<MainForm>(tsiMenuItem, cmdTool, () => { return this; });
+        gameSettingsToolStripMenuItem.DropDownItems.Add(tsiMenuItem);
+      }
 
-			foreach (Command<MainForm> cmdTool in Program.GameMode.RightClickTools)
-			{
-				ToolStripMenuItem tsiMenuItem = new ToolStripMenuItem();
-				ToolStripMenuItemCommandBinding<MainForm> cbdCommandBinding = new ToolStripMenuItemCommandBinding<MainForm>(tsiMenuItem, cmdTool, () => { return this; });
-				cmsPlugins.Items.Add(tsiMenuItem);
-			}
+      foreach (Command<MainForm> cmdTool in Program.GameMode.RightClickTools)
+      {
+        ToolStripMenuItem tsiMenuItem = new ToolStripMenuItem();
+        ToolStripMenuItemCommandBinding<MainForm> cbdCommandBinding = new ToolStripMenuItemCommandBinding<MainForm>(tsiMenuItem, cmdTool, () => { return this; });
+        cmsPlugins.Items.Add(tsiMenuItem);
+      }
 
-			foreach (Command<MainForm> cmdTool in Program.GameMode.LoadOrderTools)
-			{
-				ToolStripMenuItem tsiMenuItem = new ToolStripMenuItem();
-				ToolStripMenuItemCommandBinding<MainForm> cbdCommandBinding = new ToolStripMenuItemCommandBinding<MainForm>(tsiMenuItem, cmdTool, () => { return this; });
-				loadOrderToolStripMenuItem.DropDownItems.Add(tsiMenuItem);
-			}
+      foreach (Command<MainForm> cmdTool in Program.GameMode.LoadOrderTools)
+      {
+        ToolStripMenuItem tsiMenuItem = new ToolStripMenuItem();
+        ToolStripMenuItemCommandBinding<MainForm> cbdCommandBinding = new ToolStripMenuItemCommandBinding<MainForm>(tsiMenuItem, cmdTool, () => { return this; });
+        loadOrderToolStripMenuItem.DropDownItems.Add(tsiMenuItem);
+      }
 
-			foreach (Command<MainForm> cmdTool in Program.GameMode.GameLaunchCommands)
-			{
-				ToolStripMenuItem tsiMenuItem = new ToolStripMenuItem();
-				ToolStripMenuItemCommandBinding<MainForm> cbdCommandBinding = new ToolStripMenuItemCommandBinding<MainForm>(tsiMenuItem, cmdTool, () => { return this; });
-				launchGameToolStripMenuItem.DropDownItems.Add(tsiMenuItem);
-			}
-		}
+      foreach (Command<MainForm> cmdTool in Program.GameMode.GameLaunchCommands)
+      {
+        ToolStripMenuItem tsiMenuItem = new ToolStripMenuItem();
+        ToolStripMenuItemCommandBinding<MainForm> cbdCommandBinding = new ToolStripMenuItemCommandBinding<MainForm>(tsiMenuItem, cmdTool, () => { return this; });
+        launchGameToolStripMenuItem.DropDownItems.Add(tsiMenuItem);
+      }
+    }
 
-		private void MainForm_Load(object sender, EventArgs e)
-		{
-			Int32 tmp = Properties.Settings.Default.MainFormPanelSplit;
+    private void MainForm_Load(object sender, EventArgs e)
+    {
+      Int32 tmp = Properties.Settings.Default.MainFormPanelSplit;
       if (tmp > 0)
       {
         splitContainer1.SplitterDistance = Math.Max(splitContainer1.Panel1MinSize + 1, Math.Min(splitContainer1.Height - (splitContainer1.Panel2MinSize + 1), tmp));
       }
 
-			Int32[] intColumnWidths = Properties.Settings.Default.MainFormColumnWidths;
+      Int32[] intColumnWidths = Properties.Settings.Default.MainFormColumnWidths;
       if (intColumnWidths != null)
       {
         for (Int32 i = 0; i < intColumnWidths.Length; i++)
@@ -195,11 +195,11 @@ namespace Fomm
 
       Program.GameMode.buildPluginList();
       RefreshPluginList();
-			exportLoadOrder(Path.Combine(Program.GameMode.InstallInfoDirectory, "load order backup.txt"));
-		}
+      exportLoadOrder(Path.Combine(Program.GameMode.InstallInfoDirectory, "load order backup.txt"));
+    }
 
-		private void lvEspList_DragDrop(object sender, DragEventArgs e)
-		{
+    private void lvEspList_DragDrop(object sender, DragEventArgs e)
+    {
       if (AlphaSortMode)
       {
         MessageBox.Show("Cannot change load order when sorting by file name", "Error");
@@ -213,40 +213,40 @@ namespace Fomm
 
         RefreshIndexCounts();
       }
-		}
+    }
 
-		private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
-		{
-			for (Int32 i = Application.OpenForms.Count - 1; i >= 0; i--)
-			{
-				Form frmForm = Application.OpenForms[i];
-				if (frmForm.GetType().Namespace.StartsWith("ICSharp", StringComparison.InvariantCultureIgnoreCase))
-				{
-					frmForm.Close();
-					frmForm.Dispose();
-				}
-			}
-			if (Application.OpenForms.Count > 1)
-			{
-				MessageBox.Show("Please close all utility windows before closing the program.");
-				e.Cancel = true;
-				return;
-			}
+    private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+    {
+      for (Int32 i = Application.OpenForms.Count - 1; i >= 0; i--)
+      {
+        Form frmForm = Application.OpenForms[i];
+        if (frmForm.GetType().Namespace.StartsWith("ICSharp", StringComparison.InvariantCultureIgnoreCase))
+        {
+          frmForm.Close();
+          frmForm.Dispose();
+        }
+      }
+      if (Application.OpenForms.Count > 1)
+      {
+        MessageBox.Show("Please close all utility windows before closing the program.");
+        e.Cancel = true;
+        return;
+      }
 
-			Properties.Settings.Default.windowPositions.SetWindowPosition("MainForm", this);
-			Properties.Settings.Default.MainFormPanelSplit = splitContainer1.SplitterDistance;
+      Properties.Settings.Default.windowPositions.SetWindowPosition("MainForm", this);
+      Properties.Settings.Default.MainFormPanelSplit = splitContainer1.SplitterDistance;
 
-			Int32[] intColumnWidths = new Int32[lvEspList.Columns.Count];
+      Int32[] intColumnWidths = new Int32[lvEspList.Columns.Count];
       foreach (ColumnHeader chdHeader in lvEspList.Columns)
       {
         intColumnWidths[chdHeader.Index] = chdHeader.Width;
       }
-			Properties.Settings.Default.MainFormColumnWidths = intColumnWidths;
-			Properties.Settings.Default.Save();
-		}
+      Properties.Settings.Default.MainFormColumnWidths = intColumnWidths;
+      Properties.Settings.Default.Save();
+    }
 
-		public void LoadPluginInfo()
-		{
+    public void LoadPluginInfo()
+    {
       if (lvEspList.SelectedItems.Count == 1)
       {
         string strPluginName = lvEspList.SelectedItems[0].Text;
@@ -263,16 +263,16 @@ namespace Fomm
         rtbPluginInfo.Rtf = stbDescription.ToString();
         pictureBox1.Image = pifInfo.Picture;
       }
-		}
+    }
 
-		private void lvEspList_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			LoadPluginInfo();
-		}
+    private void lvEspList_SelectedIndexChanged(object sender, EventArgs e)
+    {
+      LoadPluginInfo();
+    }
 
-		private PackageManager.PackageManager PackageManagerForm;
-		private void bPackageManager_Click(object sender, EventArgs e)
-		{
+    private PackageManager.PackageManager PackageManagerForm;
+    private void bPackageManager_Click(object sender, EventArgs e)
+    {
       if (PackageManagerForm != null)
       {
         PackageManagerForm.Focus();
@@ -287,19 +287,19 @@ namespace Fomm
         };
         PackageManagerForm.Show();
       }
-		}
+    }
 
-		private FileManager.FileManager m_fmgFileManagerForm = null;
-		/// <summary>
-		/// Handles the <see cref="Button.Click"/> event of the file manager button.
-		/// </summary>
-		/// <remarks>
-		/// Displays the file manager.
-		/// </remarks>
-		/// <param name="sender">The object that trigger the event.</param>
-		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
-		private void butFileManager_Click(object sender, EventArgs e)
-		{
+    private FileManager.FileManager m_fmgFileManagerForm = null;
+    /// <summary>
+    /// Handles the <see cref="Button.Click"/> event of the file manager button.
+    /// </summary>
+    /// <remarks>
+    /// Displays the file manager.
+    /// </remarks>
+    /// <param name="sender">The object that trigger the event.</param>
+    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    private void butFileManager_Click(object sender, EventArgs e)
+    {
       if (m_fmgFileManagerForm != null)
       {
         m_fmgFileManagerForm.Focus();
@@ -313,23 +313,23 @@ namespace Fomm
         };
         m_fmgFileManagerForm.Show();
       }
-		}
+    }
 
-		private void RefreshIndexCounts()
-		{
-			if (lvEspList.Items.Count != 0)
+    private void RefreshIndexCounts()
+    {
+      if (lvEspList.Items.Count != 0)
       {
-			  bool add = lvEspList.Items[0].SubItems.Count == 1;
-  			string[] strPlugins = Program.GameMode.PluginManager.SortPluginList(Program.GameMode.PluginManager.ActivePluginList);
+        bool add = lvEspList.Items[0].SubItems.Count == 1;
+        string[] strPlugins = Program.GameMode.PluginManager.SortPluginList(Program.GameMode.PluginManager.ActivePluginList);
 
-  			for (int i = 0; i < strPlugins.Length; i++)
+        for (int i = 0; i < strPlugins.Length; i++)
         {
-				  strPlugins[i] = Path.GetFileName(strPlugins[i].Trim()).ToLowerInvariant();
+          strPlugins[i] = Path.GetFileName(strPlugins[i].Trim()).ToLowerInvariant();
         }
 
         foreach (ListViewItem lvi in lvEspList.Items)
-			  {
-				  int i = Array.IndexOf<string>(strPlugins, lvi.Text.ToLowerInvariant());
+        {
+          int i = Array.IndexOf<string>(strPlugins, lvi.Text.ToLowerInvariant());
           if (i != -1)
           {
             if (add)
@@ -353,11 +353,11 @@ namespace Fomm
               lvi.SubItems[1].Text = "NA";
             }
           }
-				}
+        }
         Program.GameMode.buildPluginList();
         rerunPluginFormatters();
-			}
-		}
+      }
+    }
 
     protected void rerunPluginFormatters()
     {
@@ -383,29 +383,29 @@ namespace Fomm
       lvEspList.EndUpdate();
     }
 
-		public void RefreshPluginList()
-		{
-			RefreshingList = true;
-			lvEspList.BeginUpdate();
-			lvEspList.Items.Clear();
+    public void RefreshPluginList()
+    {
+      RefreshingList = true;
+      lvEspList.BeginUpdate();
+      lvEspList.Items.Clear();
 
-			List<string> lstPluginFilenames = new List<string>(Program.GameMode.PluginManager.OrderedPluginList);
-			if (AlphaSortMode)
-			{
-				lstPluginFilenames.Sort(delegate(string a, string b)
-				{
-					return Path.GetFileName(a).CompareTo(Path.GetFileName(b));
-				});
-			}
+      List<string> lstPluginFilenames = new List<string>(Program.GameMode.PluginManager.OrderedPluginList);
+      if (AlphaSortMode)
+      {
+        lstPluginFilenames.Sort(delegate(string a, string b)
+        {
+          return Path.GetFileName(a).CompareTo(Path.GetFileName(b));
+        });
+      }
 
-			List<ListViewItem> lstPluginViewItems = new List<ListViewItem>();
-			PluginFormat pftFormat = null;
-			ListViewItem lviPlugin = null;
-			foreach (string strPlugin in lstPluginFilenames)
-			{
-				pftFormat = m_pfmPluginFormatManager.GetFormat(Path.GetFileName(strPlugin));
-				lviPlugin = new ListViewItem(Path.GetFileName(strPlugin));
-				lviPlugin.Font = pftFormat.ResolveFont(lviPlugin.Font);
+      List<ListViewItem> lstPluginViewItems = new List<ListViewItem>();
+      PluginFormat pftFormat = null;
+      ListViewItem lviPlugin = null;
+      foreach (string strPlugin in lstPluginFilenames)
+      {
+        pftFormat = m_pfmPluginFormatManager.GetFormat(Path.GetFileName(strPlugin));
+        lviPlugin = new ListViewItem(Path.GetFileName(strPlugin));
+        lviPlugin.Font = pftFormat.ResolveFont(lviPlugin.Font);
         if (pftFormat.Colour.HasValue)
         {
           lviPlugin.ForeColor = pftFormat.Colour.Value;
@@ -416,35 +416,35 @@ namespace Fomm
           lviPlugin.BackColor = pftFormat.Highlight.Value;
         }
 
-				lstPluginViewItems.Add(lviPlugin);
-			}
+        lstPluginViewItems.Add(lviPlugin);
+      }
 
-			lvEspList.Items.AddRange(lstPluginViewItems.ToArray());
-			RefreshIndexCounts();
-			lvEspList.EndUpdate();
-			RefreshingList = false;
-		}
+      lvEspList.Items.AddRange(lstPluginViewItems.ToArray());
+      RefreshIndexCounts();
+      lvEspList.EndUpdate();
+      RefreshingList = false;
+    }
 
-		#region toolbuttons
+    #region toolbuttons
 
-		private void bLaunch_Click(object sender, EventArgs e)
-		{
-			if (Application.OpenForms.Count > 1)
-			{
-				MessageBox.Show("Please close all utility windows before launching fallout");
-				return;
-			}
-			((Command<MainForm>)((Button)sender).Tag).Execute(this);
-		}
+    private void bLaunch_Click(object sender, EventArgs e)
+    {
+      if (Application.OpenForms.Count > 1)
+      {
+        MessageBox.Show("Please close all utility windows before launching fallout");
+        return;
+      }
+      ((Command<MainForm>)((Button)sender).Tag).Execute(this);
+    }
 
-		private void bHelp_Click(object sender, EventArgs e)
-		{
-			System.Diagnostics.Process.Start(Path.Combine(Program.ProgrammeInfoDirectory, "fomm.chm"));
-		}
-		#endregion
+    private void bHelp_Click(object sender, EventArgs e)
+    {
+      System.Diagnostics.Process.Start(Path.Combine(Program.ProgrammeInfoDirectory, "fomm.chm"));
+    }
+    #endregion
 
-		private void CommitLoadOrder(int position, int[] indicies)
-		{
+    private void CommitLoadOrder(int position, int[] indicies)
+    {
       if (AlphaSortMode)
       {
         MessageBox.Show("Cannot change load order when sorting by file name", "Error");
@@ -489,11 +489,11 @@ namespace Fomm
         RefreshingList = false;
         lvEspList.EnsureVisible(position == lvEspList.Items.Count ? position - 1 : position);
       }
-		}
+    }
 
-		private bool RefreshingList;
-		private void lvEspList_ItemChecked(object sender, ItemCheckedEventArgs e)
-		{
+    private bool RefreshingList;
+    private void lvEspList_ItemChecked(object sender, ItemCheckedEventArgs e)
+    {
       if (!RefreshingList)
       {
         if (e.Item.Checked)
@@ -506,10 +506,10 @@ namespace Fomm
         }
         RefreshIndexCounts();
       }
-		}
+    }
 
-		private void sendToTopToolStripMenuItem_Click(object sender, EventArgs e)
-		{
+    private void sendToTopToolStripMenuItem_Click(object sender, EventArgs e)
+    {
       if (lvEspList.SelectedIndices.Count != 0)
       {
         int[] toswap = new int[lvEspList.SelectedIndices.Count];
@@ -520,10 +520,10 @@ namespace Fomm
         Array.Sort<int>(toswap);
         CommitLoadOrder(0, toswap);
       }
-		}
+    }
 
-		private void sendToBottomToolStripMenuItem_Click(object sender, EventArgs e)
-		{
+    private void sendToBottomToolStripMenuItem_Click(object sender, EventArgs e)
+    {
       if (lvEspList.SelectedIndices.Count != 0)
       {
         int[] toswap = new int[lvEspList.SelectedIndices.Count];
@@ -534,21 +534,21 @@ namespace Fomm
         Array.Sort<int>(toswap);
         CommitLoadOrder(lvEspList.Items.Count, toswap);
       }
-		}
+    }
 
-		private void copyLoadOrderToClipboardToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			System.Text.StringBuilder sb = new System.Text.StringBuilder();
-			ListViewItem[] lvis = new ListViewItem[lvEspList.CheckedItems.Count];
+    private void copyLoadOrderToClipboardToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+      System.Text.StringBuilder sb = new System.Text.StringBuilder();
+      ListViewItem[] lvis = new ListViewItem[lvEspList.CheckedItems.Count];
       for (int i = 0; i < lvEspList.CheckedItems.Count; i++)
       {
         lvis[i] = lvEspList.CheckedItems[i];
       }
 
       Array.Sort<ListViewItem>(lvis, delegate(ListViewItem a, ListViewItem b)
-			{
-				return int.Parse(a.SubItems[1].Text, System.Globalization.NumberStyles.AllowHexSpecifier).CompareTo(int.Parse(b.SubItems[1].Text, System.Globalization.NumberStyles.AllowHexSpecifier));
-			});
+      {
+        return int.Parse(a.SubItems[1].Text, System.Globalization.NumberStyles.AllowHexSpecifier).CompareTo(int.Parse(b.SubItems[1].Text, System.Globalization.NumberStyles.AllowHexSpecifier));
+      });
 
       for (int i = 0; i < lvis.Length; i++)
       {
@@ -556,16 +556,16 @@ namespace Fomm
       }
 
       sb.AppendLine();
-			sb.AppendLine("Total active plugins: " + lvEspList.CheckedItems.Count);
-			sb.AppendLine("Total plugins: " + lvEspList.Items.Count);
-			Clipboard.SetText(sb.ToString());
-		}
+      sb.AppendLine("Total active plugins: " + lvEspList.CheckedItems.Count);
+      sb.AppendLine("Total plugins: " + lvEspList.Items.Count);
+      Clipboard.SetText(sb.ToString());
+    }
 
-		private volatile string newFommMessage;
+    private volatile string newFommMessage;
 
-		private void newFommTimer_Tick(object sender, EventArgs e)
-		{
-			string tmp = newFommMessage;
+    private void newFommTimer_Tick(object sender, EventArgs e)
+    {
+      string tmp = newFommMessage;
       if (tmp != null)
       {
         newFommMessage = null;
@@ -575,78 +575,78 @@ namespace Fomm
         }
         PackageManagerForm.AddNewFomod(tmp);
       }
-		}
+    }
 
-		private void RecieveMessage(string msg)
+    private void RecieveMessage(string msg)
     {
       newFommMessage = msg;
     }
 
-		private void lvEspList_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.Alt && (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down))
-			{
-				e.Handled = true;
-				if (lvEspList.SelectedItems.Count > 0)
-				{
-					int[] indicies = new int[lvEspList.SelectedIndices.Count];
+    private void lvEspList_KeyDown(object sender, KeyEventArgs e)
+    {
+      if (e.Alt && (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down))
+      {
+        e.Handled = true;
+        if (lvEspList.SelectedItems.Count > 0)
+        {
+          int[] indicies = new int[lvEspList.SelectedIndices.Count];
           for (int i = 0; i < indicies.Length; i++)
           {
             indicies[i] = lvEspList.SelectedIndices[i];
           }
 
           Array.Sort<int>(indicies);
-					if (e.KeyCode == Keys.Up)
-					{
-						if (indicies[0] > 0)
-						{
-							CommitLoadOrder(indicies[0] - 1, indicies);
-						}
-					}
-					else
-					{
-						if (indicies[indicies.Length - 1] < lvEspList.Items.Count - 1)
-						{
-							CommitLoadOrder(indicies[indicies.Length - 1] + 2, indicies);
-						}
-					}
-				}
-			}
-			else if (e.KeyCode == Keys.Delete)
-			{
-				deleteToolStripMenuItem_Click(null, null);
-				e.Handled = true;
-			}
-		}
+          if (e.KeyCode == Keys.Up)
+          {
+            if (indicies[0] > 0)
+            {
+              CommitLoadOrder(indicies[0] - 1, indicies);
+            }
+          }
+          else
+          {
+            if (indicies[indicies.Length - 1] < lvEspList.Items.Count - 1)
+            {
+              CommitLoadOrder(indicies[indicies.Length - 1] + 2, indicies);
+            }
+          }
+        }
+      }
+      else if (e.KeyCode == Keys.Delete)
+      {
+        deleteToolStripMenuItem_Click(null, null);
+        e.Handled = true;
+      }
+    }
 
-		private void exportLoadOrder(string path)
-		{
-			StreamWriter sw = new StreamWriter(path);
-			for (int i = 0; i < lvEspList.Items.Count; i++)
-			{
-				sw.WriteLine("[" + (lvEspList.Items[i].Checked ? "X" : " ") + "] " + lvEspList.Items[i].Text);
-			}
-			sw.Close();
-		}
+    private void exportLoadOrder(string path)
+    {
+      StreamWriter sw = new StreamWriter(path);
+      for (int i = 0; i < lvEspList.Items.Count; i++)
+      {
+        sw.WriteLine("[" + (lvEspList.Items[i].Checked ? "X" : " ") + "] " + lvEspList.Items[i].Text);
+      }
+      sw.Close();
+    }
 
-		private void exportLoadOrderToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			SaveFileDialog ofd = new SaveFileDialog();
-			ofd.Filter = "Text file (*.txt)|*.txt";
-			ofd.AddExtension = true;
-			ofd.RestoreDirectory = true;
+    private void exportLoadOrderToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+      SaveFileDialog ofd = new SaveFileDialog();
+      ofd.Filter = "Text file (*.txt)|*.txt";
+      ofd.AddExtension = true;
+      ofd.RestoreDirectory = true;
       if (ofd.ShowDialog() == DialogResult.OK)
       {
         exportLoadOrder(ofd.FileName);
       }
-		}
+    }
 
-		private void importLoadOrderToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			OpenFileDialog ofd = new OpenFileDialog();
-			ofd.Filter = "Text file (*.txt)|*.txt";
-			ofd.AddExtension = true;
-			ofd.RestoreDirectory = true;
+    private void importLoadOrderToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+      OpenFileDialog ofd = new OpenFileDialog();
+      ofd.Filter = "Text file (*.txt)|*.txt";
+      ofd.AddExtension = true;
+      ofd.RestoreDirectory = true;
       if (ofd.ShowDialog() == DialogResult.OK)
       {
         string[] lines = File.ReadAllLines(ofd.FileName);
@@ -706,39 +706,39 @@ namespace Fomm
         }
         RefreshingList = false;
       }
-		}
+    }
 
-		private void uncheckAllToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			RefreshingList = true;
-			for (int i = 0; i < lvEspList.Items.Count; i++)
-			{
-				lvEspList.Items[i].Checked = false;
-				Program.GameMode.PluginManager.DeactivatePlugin(lvEspList.Items[i].Text);
-			}
-			RefreshIndexCounts();
-			RefreshingList = false;
-		}
+    private void uncheckAllToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+      RefreshingList = true;
+      for (int i = 0; i < lvEspList.Items.Count; i++)
+      {
+        lvEspList.Items[i].Checked = false;
+        Program.GameMode.PluginManager.DeactivatePlugin(lvEspList.Items[i].Text);
+      }
+      RefreshIndexCounts();
+      RefreshingList = false;
+    }
 
-		private void checkAllToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			RefreshingList = true;
-			for (int i = 0; i < lvEspList.Items.Count; i++)
-			{
-				lvEspList.Items[i].Checked = true;
-				Program.GameMode.PluginManager.ActivatePlugin(lvEspList.Items[i].Text);
-			}
-			RefreshIndexCounts();
-			RefreshingList = false;
-		}
+    private void checkAllToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+      RefreshingList = true;
+      for (int i = 0; i < lvEspList.Items.Count; i++)
+      {
+        lvEspList.Items[i].Checked = true;
+        Program.GameMode.PluginManager.ActivatePlugin(lvEspList.Items[i].Text);
+      }
+      RefreshIndexCounts();
+      RefreshingList = false;
+    }
 
-		private void pictureBox1_Click(object sender, EventArgs e)
-		{
-			if (pictureBox1.Image != null && (pictureBox1.Image.Size.Width > pictureBox1.Width || pictureBox1.Image.Size.Height > pictureBox1.Height))
-			{
-				(new ImageForm(pictureBox1.Image)).ShowDialog();
-			}
-		}
+    private void pictureBox1_Click(object sender, EventArgs e)
+    {
+      if (pictureBox1.Image != null && (pictureBox1.Image.Size.Width > pictureBox1.Width || pictureBox1.Image.Size.Height > pictureBox1.Height))
+      {
+        (new ImageForm(pictureBox1.Image)).ShowDialog();
+      }
+    }
 
     private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
     {
@@ -768,8 +768,8 @@ namespace Fomm
       }
     }
 
-		private void bSettings_Click(object sender, EventArgs e)
-		{
+    private void bSettings_Click(object sender, EventArgs e)
+    {
       if (Application.OpenForms.Count == 1)
       {
         SettingsForm sfmSettings = new SettingsForm();
@@ -779,48 +779,48 @@ namespace Fomm
         }
       }
       else
-			{
-				MessageBox.Show("Please close all utility windows before changing the settings");
-			}
-		}
+      {
+        MessageBox.Show("Please close all utility windows before changing the settings");
+      }
+    }
 
-		private void lvEspList_ColumnClick(object sender, ColumnClickEventArgs e)
-		{
-			AlphaSortMode = e.Column == 0;
+    private void lvEspList_ColumnClick(object sender, ColumnClickEventArgs e)
+    {
+      AlphaSortMode = e.Column == 0;
       lvEspList.AllowDrop = AlphaSortMode ? false : true;
-			RefreshPluginList();
-		}
+      RefreshPluginList();
+    }
 
-		private void closeToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
+    private void closeToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+      Close();
+    }
 
-		/// <summary>
-		/// Handles the <see cref="RichTextBox.LinkClicked"/> event of the plugin info text box.
-		/// </summary>
-		/// <remarks>
-		/// Launches clicked links using the default browser.
-		/// </remarks>
-		/// <param name="sender">The object that trigger the event.</param>
-		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
-		private void rtbPluginInfo_LinkClicked(object sender, LinkClickedEventArgs e)
-		{
-			System.Diagnostics.Process.Start(e.LinkText);
-		}
+    /// <summary>
+    /// Handles the <see cref="RichTextBox.LinkClicked"/> event of the plugin info text box.
+    /// </summary>
+    /// <remarks>
+    /// Launches clicked links using the default browser.
+    /// </remarks>
+    /// <param name="sender">The object that trigger the event.</param>
+    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    private void rtbPluginInfo_LinkClicked(object sender, LinkClickedEventArgs e)
+    {
+      System.Diagnostics.Process.Start(e.LinkText);
+    }
 
-		/// <summary>
-		/// Handles the <see cref="Control.Click"/> event of the change game mode menu item.
-		/// </summary>
-		/// <remarks>
-		/// Re-launched the mod manager and allows the selection of a new game mode.
-		/// </remarks>
-		/// <param name="sender">The object that trigger the event.</param>
-		/// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
-		private void changeGameToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			m_booChangeGameMode = true;
-			Close();
-		}
-	}
+    /// <summary>
+    /// Handles the <see cref="Control.Click"/> event of the change game mode menu item.
+    /// </summary>
+    /// <remarks>
+    /// Re-launched the mod manager and allows the selection of a new game mode.
+    /// </remarks>
+    /// <param name="sender">The object that trigger the event.</param>
+    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    private void changeGameToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+      m_booChangeGameMode = true;
+      Close();
+    }
+  }
 }

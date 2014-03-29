@@ -117,7 +117,7 @@ namespace Fomm {
         internal ProgressForm(string title,bool ShowRatio) {
             InitializeComponent();
             this.Icon=Fomm.Properties.Resources.fomm02;
-        	Application.UseWaitCursor=true;
+          Application.UseWaitCursor=true;
             Text=title;
             if(!ShowRatio) {
                 pbRatio.Visible=false;
@@ -145,11 +145,11 @@ namespace Fomm {
         }
 
         private void ProgressForm_FormClosing(object sender, CancelEventArgs e) {
-        	if(BlockClose) {
-            	e.Cancel=true;
-        	} else {
-        		Application.UseWaitCursor=false;
-        	}
+          if(BlockClose) {
+              e.Cancel=true;
+          } else {
+            Application.UseWaitCursor=false;
+          }
         }
 
         private void bCancel_Click(object sender, EventArgs e) {
