@@ -380,11 +380,9 @@ namespace Fomm
 
           if (InstallLog.Current.GetInstallLogVersion() > InstallLog.CURRENT_VERSION)
           {
-            MessageBox.Show("You have run another mod manager, likely NMM, that has corrupted InstallLog.xml.  Delete InstallLog.xml in '" + Program.GameMode.InstallInfoDirectory + "' and rename one of the backups there to fix.", "NMM Douchebaggery");
+            MessageBox.Show("You have run another mod manager, likely NMM, that has updated to a new version of InstallLog.xml.  Delete InstallLog.xml in '" + Program.GameMode.InstallInfoDirectory + "' and rename one of the FOMM backups there to fix.", "NMM Douchebaggery");
             return;
           }
-
-          InstallLog.Reload();
 
           //check to see if we need to upgrade the install log format
           if (InstallLog.Current.GetInstallLogVersion() < InstallLog.CURRENT_VERSION)
@@ -405,6 +403,8 @@ namespace Fomm
               return;
             }
           }
+
+          InstallLog.Reload();
 
           //let's uninstall any fomods that have been deleted since we last ran
           IList<FomodInfo> lstMods = InstallLog.Current.GetVersionedModList();
