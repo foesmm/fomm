@@ -291,8 +291,6 @@
     </Compile>
     <Compile Include="Imports.cs" />
     <Compile Include="InstallLogUpgraders\Upgrader.cs" />
-    <Compile Include="InstallLogUpgraders\Upgrader0000.cs" />
-    <Compile Include="InstallLogUpgraders\Upgrader0100.cs" />
     <Compile Include="Games\Fallout3\Tools\InstallTweaker\BsaTrimmer.cs" />
     <Compile Include="Games\Fallout3\Tools\InstallTweaker\EsmTrimmer.cs" />
     <Compile Include="Games\Fallout3\Tools\InstallTweaker\InstallationTweaker.cs">
@@ -308,7 +306,6 @@
       <DependentUpon>xliveSettings.cs</DependentUpon>
     </Compile>
     <Compile Include="Games\Fallout3\Tools\AutoSorter\LoadOrderSorter.cs" />
-    <Compile Include="InstallLogUpgraders\Upgrader0110.cs" />
     <Compile Include="InstallLogUpgraders\Upgrader0200.cs" />
     <Compile Include="IPluginFormatProvider.cs" />
     <Compile Include="Messaging.cs" />

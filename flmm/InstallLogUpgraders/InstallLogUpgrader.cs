@@ -25,9 +25,6 @@ namespace Fomm.InstallLogUpgraders
     internal InstallLogUpgrader()
     {
       m_dicUpgraders = new Dictionary<Version, Upgrader>();
-      m_dicUpgraders[new Version("0.0.0.0")] = new Upgrader0000();
-      m_dicUpgraders[new Version("0.1.0.0")] = new Upgrader0100();
-      m_dicUpgraders[new Version("0.1.1.0")] = new Upgrader0110();
       m_dicUpgraders[new Version("0.2.0.0")] = new Upgrader0200();
     }
 
@@ -41,19 +38,6 @@ namespace Fomm.InstallLogUpgraders
     /// <returns><lang cref="false"/> if the user cancelled the upgrade; <lang cref="true"/> otherwise.</returns>
     public bool UpgradeInstallLog()
     {
-      //this is to handle the few people who already installed a version that used
-      // the new-style install log, but before it had a version
-      if (InstallLog.Current.GetInstallLogVersion().ToString().Equals("0.0.0.0"))
-      {
-        XmlDocument xmlOldInstallLog = new XmlDocument();
-        xmlOldInstallLog.Load(InstallLog.Current.InstallLogPath);
-        if (xmlOldInstallLog.SelectNodes("descendant::installingMods").Count > 0)
-        {
-          InstallLog.Current.SetInstallLogVersion(new Version("0.1.0.0"));
-          InstallLog.Current.Save();
-        }
-      }
-
       Version verOldVersion = InstallLog.Current.GetInstallLogVersion();
       if (verOldVersion == InstallLog.CURRENT_VERSION)
         return true;

@@ -40,6 +40,7 @@ namespace Fomm.InstallLogUpgraders
 
       // Save the document with declaration
       xmlInstallLog.Save(InstallLog.Current.InstallLogPath);
+      InstallLog.Reload();
       
       lstMods = InstallLog.Current.GetModList();
       

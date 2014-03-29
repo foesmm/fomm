@@ -249,9 +249,9 @@ namespace Fomm.PackageManager.ModInstallLog
       m_dicModList = new Dictionary<string, string>();
       foreach (XmlNode xndMod in xnlMods)
       {
-        if ((xndMod.Attributes["name"] != null) && (xndMod.Attributes["key"] != null))
+        if ((xndMod.SelectSingleNode("name").InnerText != null) && (xndMod.Attributes["key"] != null))
         {
-          m_dicModList[xndMod.Attributes["name"].InnerText] = xndMod.Attributes["key"].InnerText;
+          m_dicModList[xndMod.SelectSingleNode("name").InnerText] = xndMod.Attributes["key"].InnerText;
         }
       }
 
@@ -310,9 +310,12 @@ namespace Fomm.PackageManager.ModInstallLog
     /// <param name="p_verFileVersion">The version of the install log.</param>
     internal protected void SetInstallLogVersion(Version p_verFileVersion)
     {
-      XmlAttribute xndVersion = xmlDoc.FirstChild.Attributes["fileVersion"];
+      XmlAttribute xndVersion = xmlDoc.DocumentElement.Attributes["fileVersion"];
+//      XmlAttribute xndVersion = xmlDoc.FirstChild.Attributes["fileVersion"];
       if (xndVersion == null)
+      {
         xndVersion = xmlDoc.FirstChild.Attributes.Append(xmlDoc.CreateAttribute("fileVersion"));
+      }
       xndVersion.InnerText = p_verFileVersion.ToString();
     }
 
@@ -351,12 +354,17 @@ namespace Fomm.PackageManager.ModInstallLog
       string strBaseName = null;
       foreach (XmlNode xndMod in xnlMods)
       {
-        strBaseName = xndMod.Attributes["name"].InnerText;
+        strBaseName = xndMod.SelectSingleNode("name").InnerText;
         if (strBaseName.Equals(ORIGINAL_VALUES) || strBaseName.Equals(FOMM))
+        {
           continue;
+        }
+
         xndVersion = xndMod.SelectSingleNode("version");
         if ((xndVersion == null) || (xndVersion.Attributes["machineVersion"] == null))
+        {
           throw new InstallLogException("Cannot find version for mod '" + strBaseName + "'. Install Log Version: " + GetInstallLogVersion());
+        }
         lstMods.Add(new FomodInfo(strBaseName, xndVersion.InnerText, new Version(xndVersion.Attributes["machineVersion"].InnerText)));
       }
       lstMods.Sort();
@@ -371,7 +379,7 @@ namespace Fomm.PackageManager.ModInstallLog
     /// specified fomod is not installed.</returns>
     internal FomodInfo GetModInfo(string p_strBaseName)
     {
-      XmlNode xndVersion = m_xelModListNode.SelectSingleNode("mod[@name=\"" + p_strBaseName + "\"]/version");
+      XmlNode xndVersion = m_xelModListNode.SelectSingleNode("mod[@key=\"" + GetModKey(p_strBaseName) + "\"]/version");
       if (xndVersion == null)
         return null;
       return new FomodInfo(p_strBaseName, xndVersion.InnerText, new Version(xndVersion.Attributes["machineVersion"].InnerText));
@@ -413,14 +421,32 @@ namespace Fomm.PackageManager.ModInstallLog
     /// <param name="p_strModName">The base name of the <see cref="fomod"/> being added.</param>
     protected XmlNode AddMod(string p_strModName)
     {
-      XmlNode xndMod = null;
+      XmlNode xndMod  = null;
+      XmlNode xndVer  = null;
+      XmlNode xndName = null;
+      XmlNode xndDate = null;
+      DateTime installed;
+      string strKey = null;
+
       if (!m_dicModList.ContainsKey(p_strModName))
       {
         xndMod = m_xelModListNode.AppendChild(xmlDoc.CreateElement("mod"));
-        xndMod.Attributes.Append(xmlDoc.CreateAttribute("name"));
+        xndMod.Attributes.Append(xmlDoc.CreateAttribute("path"));
         xndMod.Attributes.Append(xmlDoc.CreateAttribute("key"));
-        xndMod.Attributes["name"].InnerText = p_strModName;
-        string strKey = null;
+        xndMod.Attributes["path"].InnerText = p_strModName + ".fomod";
+
+        xndVer  = xndMod.AppendChild(xmlDoc.CreateElement("version"));
+        xndVer.Attributes.Append(xmlDoc.CreateAttribute("machineVersion"));
+        xndName = xndMod.AppendChild(xmlDoc.CreateElement("name"));
+        xndDate = xndMod.AppendChild(xmlDoc.CreateElement("installDate"));
+        xndDate.Attributes.Append(xmlDoc.CreateAttribute("unambiguousdate"));
+
+        xndVer.Attributes["machineVersion"].InnerText = "0.0";
+        xndName.InnerText = p_strModName;
+        installed = DateTime.Now;
+        xndDate.Attributes["unambiguousdate"].InnerText = installed.ToString("yyyy-MMM-dd HH:mm:ss");
+        xndDate.InnerText = installed.ToString("MM/dd/yyyy HH:mm:ss");
+
         do
         {
           strKey = Path.GetFileNameWithoutExtension(Path.GetRandomFileName());
@@ -442,16 +468,18 @@ namespace Fomm.PackageManager.ModInstallLog
     /// <param name="p_fomodMod">The <see cref="fomod"/> being added.</param>
     internal protected void AddMod(fomod p_fomodMod)
     {
+      XmlNode xndMod;
+      XmlNode xndVersion;
+
       if (!m_dicModList.ContainsKey(p_fomodMod.BaseName))
       {
-        XmlNode xndMod = AddMod(p_fomodMod.BaseName);
-        if (xndMod == null)
-          return;
-
-        XmlNode xndVersion = xndMod.AppendChild(xmlDoc.CreateElement("version"));
-        xndVersion.Attributes.Append(xmlDoc.CreateAttribute("machineVersion"));
-        xndVersion.Attributes["machineVersion"].InnerText = p_fomodMod.MachineVersion.ToString();
-        xndVersion.InnerText = p_fomodMod.HumanReadableVersion;
+        xndMod = AddMod(p_fomodMod.BaseName);
+        if (xndMod != null)
+        {
+          xndVersion = xndMod.SelectSingleNode("version");
+          xndVersion.Attributes["machineVersion"].InnerText = p_fomodMod.MachineVersion.ToString();
+          xndVersion.InnerText = p_fomodMod.HumanReadableVersion;
+        }
       }
     }
 
@@ -468,19 +496,6 @@ namespace Fomm.PackageManager.ModInstallLog
       {
         case InstallLog.ORIGINAL_VALUES:
         case InstallLog.FOMM:
-          /*
-          Change
-            <mod name="ORIGINAL_VALUES" key="x2hrojjw" />
-          TO
-            <mod path="Dummy Mod: ORIGINAL_VALUE" key="j2hwar5e">
-              <version machineVersion="0.0"></version>
-              <name>ORIGINAL_VALUE</name>
-              <installDate>2/11/2014 16:55:34</installDate>
-            </mod>
-           
-           Same for FOMM
-          */
-
           // Replace name attribute with path attribute
           xndMod.Attributes.Remove(xndMod.Attributes["name"]);
           xndMod.Attributes.Append(xmlDoc.CreateAttribute("path"));
