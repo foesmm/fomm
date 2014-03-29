@@ -9,51 +9,12 @@ using System.Threading;
 
 namespace Fomm.PackageManager.ModInstallLog
 {
-  /*
-   * InstallLog.xml structure
-   * <installLog>
-   *   <modList>
-   *     <mod name="" key="">
-   *       <version machineVersion="">mod version</version>
-   *     </mod>
-   *   </modList>
-   *   <dataFiles>
-   *     <file path="<filepath>">
-   *       <installingMods>
-   *         <mod key=""/>
-   *       </installingMods>
-   *     </file>
-   *   </dataFiles>
-   *   <iniEdits>
-   *     <ini file='' section='' key=''>
-   *       <installingMods>
-   *         <mod key="">old value</mod>
-   *       </installingMods>
-   *     </ini>
-   *   </iniEdits>
-   *   <gameSpecificEdits>
-   *     <edit key=''>
-   *       <installingMods>
-   *         <mod key="">old value</mod>
-   *       </installingMods>
-   *     </edit>
-   *   </gameSpecificEdits>
-   * </installLog>
-   * 
-   * Other data eg:
-   *   <gameSpecificEdits>
-   *     <edit key='spd:<package name>/<shader name>'>
-   *       <installingMods>
-   *         <mod key="">old shader value</mod>
-   *       </installingMods>
-   *     </edit>
-   *   </gameSpecificEdits>
-   */
   internal class InstallLog : InstallLogBase
   {
     public static readonly Version CURRENT_VERSION = new Version("0.5.0.0");
     internal protected const string ORIGINAL_VALUES = "ORIGINAL_VALUES";
     internal protected const string FOMM = "FOMM";
+    internal protected const string MOD_MANAGER_VALUE = "MOD_MANAGER_VALUE";
     private static InstallLog m_ilgCurrent = null;
 
     public static InstallLog Current
@@ -222,6 +183,7 @@ namespace Fomm.PackageManager.ModInstallLog
           XmlNode root = (XmlNode)xmlDoc.SelectSingleNode("installLog");
           root.InsertBefore(m_xelModListNode = xmlDoc.CreateElement("modList"), dataFilesNode);
         }
+
         InitMods();
       }
       else
@@ -247,16 +209,41 @@ namespace Fomm.PackageManager.ModInstallLog
     {
       XmlNodeList xnlMods = m_xelModListNode.ChildNodes;
       m_dicModList = new Dictionary<string, string>();
+      string currLogVer = GetInstallLogVersion().ToString();
+
       foreach (XmlNode xndMod in xnlMods)
       {
-        if ((xndMod.SelectSingleNode("name").InnerText != null) && (xndMod.Attributes["key"] != null))
+        switch (currLogVer)
         {
-          m_dicModList[xndMod.SelectSingleNode("name").InnerText] = xndMod.Attributes["key"].InnerText;
+          case "0.2.0.0":
+            if ((xndMod.Attributes["name"] != null) && (xndMod.Attributes["key"] != null))
+            {
+              m_dicModList[xndMod.Attributes["name"].InnerText] = xndMod.Attributes["key"].InnerText;
+            }
+          break;
+
+          case "0.5.0.0":
+            if ((xndMod.SelectSingleNode("name").InnerText != null) && (xndMod.Attributes["key"] != null))
+            {
+              m_dicModList[xndMod.SelectSingleNode("name").InnerText] = xndMod.Attributes["key"].InnerText;
+            }
+          break;
+
+          default:
+          break;
         }
       }
 
       AddMod(ORIGINAL_VALUES);
-      AddMod(FOMM);
+
+      if (currLogVer == "0.2.0.0")
+      {
+        AddMod(FOMM);
+      }
+      else
+      {
+        AddMod(MOD_MANAGER_VALUE);
+      }
     }
 
     #endregion
@@ -278,30 +265,18 @@ namespace Fomm.PackageManager.ModInstallLog
     /// <returns>The version of the install log.</returns>
     internal Version GetInstallLogVersion()
     {
-      XmlAttribute xndVersion;
+      string ver = "0.0.0.0";
 
-      if (xmlDoc.FirstChild.Attributes != null)
+      // xmlDoc.DocumentElement.Attributes["fileVersion"];
+      if (xmlDoc.DocumentElement.Name == "installLog")
       {
-        if (xmlDoc.FirstChild.Attributes["fileVersion"] != null)
+        if (xmlDoc.DocumentElement.Attributes["fileVersion"] != null)
         {
-          xndVersion = xmlDoc.FirstChild.Attributes["fileVersion"];
-          return new Version(xndVersion.InnerText);
+          ver = xmlDoc.DocumentElement.Attributes["fileVersion"].Value;
         }
       }
 
-      if (xmlDoc.ChildNodes.Count > 1)
-      {
-        if (xmlDoc.ChildNodes[1].Attributes != null)
-        {
-          if (xmlDoc.ChildNodes[1].Attributes["fileVersion"] != null)
-          {
-            xndVersion = xmlDoc.ChildNodes[1].Attributes["fileVersion"];
-            return new Version(xndVersion.InnerText);
-          }
-        }
-      }
-
-      return new Version("0.0.0.0");
+      return new Version(ver);
     }
 
     /// <summary>
@@ -311,7 +286,6 @@ namespace Fomm.PackageManager.ModInstallLog
     internal protected void SetInstallLogVersion(Version p_verFileVersion)
     {
       XmlAttribute xndVersion = xmlDoc.DocumentElement.Attributes["fileVersion"];
-//      XmlAttribute xndVersion = xmlDoc.FirstChild.Attributes["fileVersion"];
       if (xndVersion == null)
       {
         xndVersion = xmlDoc.FirstChild.Attributes.Append(xmlDoc.CreateAttribute("fileVersion"));
@@ -355,7 +329,7 @@ namespace Fomm.PackageManager.ModInstallLog
       foreach (XmlNode xndMod in xnlMods)
       {
         strBaseName = xndMod.SelectSingleNode("name").InnerText;
-        if (strBaseName.Equals(ORIGINAL_VALUES) || strBaseName.Equals(FOMM))
+        if (strBaseName.Equals(ORIGINAL_VALUES) || strBaseName.Equals(FOMM) || strBaseName.Equals(MOD_MANAGER_VALUE))
         {
           continue;
         }
@@ -495,11 +469,12 @@ namespace Fomm.PackageManager.ModInstallLog
       switch (modname)
       {
         case InstallLog.ORIGINAL_VALUES:
+        case InstallLog.MOD_MANAGER_VALUE:
         case InstallLog.FOMM:
           // Replace name attribute with path attribute
           xndMod.Attributes.Remove(xndMod.Attributes["name"]);
           xndMod.Attributes.Append(xmlDoc.CreateAttribute("path"));
-          xndMod.Attributes["path"].InnerText = "Dummy Mod: " + modname;
+          xndMod.Attributes["path"].InnerText = "Dummy Mod: " + modname == "FOMM" ? "MOD_MANAGER_VALUE" : modname;
 
           // Add version element
           tmpNode = xmlDoc.CreateElement("version");
@@ -509,7 +484,7 @@ namespace Fomm.PackageManager.ModInstallLog
 
           // Add name element
           tmpNode = xmlDoc.CreateElement("name");
-          tmpNode.InnerText = modname;
+          tmpNode.InnerText = modname == "FOMM" ? "MOD_MANAGER_VALUE" : modname;
           xndMod.AppendChild(tmpNode);
 
           // Add installDate
@@ -587,18 +562,21 @@ namespace Fomm.PackageManager.ModInstallLog
     /// <lang cref="false"/> otherwise.</returns>
     protected bool UpdateMod(string p_strOldBaseName, fomod p_fomodMod)
     {
+      bool ret = false;
       if (p_fomodMod.BaseName.Equals(p_strOldBaseName))
-        return UpdateMod(p_fomodMod);
-      if (m_dicModList.ContainsKey(p_strOldBaseName))
+      {
+        ret = UpdateMod(p_fomodMod);
+      }
+      else if (m_dicModList.ContainsKey(p_strOldBaseName))
       {
         string strKey = GetModKey(p_strOldBaseName);
         XmlNode xndMod = m_xelModListNode.SelectSingleNode("mod[@key=\"" + strKey + "\"]");
         xndMod.Attributes["name"].InnerText = p_fomodMod.BaseName;
         m_dicModList.Remove(p_strOldBaseName);
         m_dicModList.Add(p_fomodMod.BaseName, strKey);
-        return UpdateMod(p_fomodMod);
+        ret = UpdateMod(p_fomodMod);
       }
-      return false;
+      return ret;
     }
 
     /// <summary>
@@ -676,7 +654,9 @@ namespace Fomm.PackageManager.ModInstallLog
       List<string> lstInstallers = new List<string>();
       XmlNodeList xnlInstallingMods = dataFilesNode.SelectNodes("file[@path=\"" + strNormalizedPath.ToLowerInvariant() + "\"]/installingMods/*");
       foreach (XmlNode xndInallingMod in xnlInstallingMods)
+      {
         lstInstallers.Add(GetModName(xndInallingMod.Attributes["key"].InnerText));
+      }
       return lstInstallers;
     }
 
