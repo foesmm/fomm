@@ -615,7 +615,8 @@ namespace Fomm.PackageManager.ModInstallLog
     {
       if (m_dicModList.ContainsKey(p_strModName))
       {
-        XmlNode xndMod = m_xelModListNode.SelectSingleNode("mod[@name=\"" + p_strModName + "\"]");
+        XmlNode xndMod;
+        xndMod = m_xelModListNode.SelectSingleNode("mod[@key=\"" + GetModKey(p_strModName) + "\"]");
         m_xelModListNode.RemoveChild(xndMod);
         m_dicModList.Remove(p_strModName);
       }
