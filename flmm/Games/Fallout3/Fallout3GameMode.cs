@@ -200,8 +200,25 @@ namespace Fomm.Games.Fallout3
       get
       {
         if (pp == null)
-          pp = Path.Combine(Environment.CurrentDirectory, "Data");
+          pp = Path.Combine(GamePath, "Data");
         return pp;
+      }
+    }
+
+    string gp;
+    /// <summary>
+    /// Gets the path to the game directory
+    /// </summary>
+    /// <value>Gets the path to the game directory.</value>
+    public override string GamePath
+    {
+      get
+      {
+        if (gp == null)
+        {
+          gp = Environment.CurrentDirectory;
+        }
+        return gp;
       }
     }
 
