@@ -192,18 +192,24 @@ namespace Fomm.Games.FalloutNewVegas
       {
         SetupForm sfmSetup = new SetupForm();
         if (sfmSetup.ShowDialog() == DialogResult.Cancel)
+        {
           return false;
+        }
         Properties.Settings.Default.falloutNewVegasDoneSetup = true;
         Properties.Settings.Default.Save();
       }
 
-      ((SettingsFilesSet)SettingsFiles).FODefaultIniPath = Path.Combine(PluginsPath, @"..\fallout_default.ini");
+      ((SettingsFilesSet)SettingsFiles).FODefaultIniPath = Path.Combine(GamePath, @"fallout_default.ini");
       if (File.Exists("FNVEdit.exe"))
+      {
         Tools.Add(new Command<MainForm>("FNVEdit", "Launches FNVEdit, if it is installed.", LaunchFNVEdit));
+      }
       Tools.Add(new CheckedCommand<MainForm>("Archive Invalidation", "Toggles Archive Invalidation.", Fallout3.Tools.ArchiveInvalidation.IsActive(), ToggleArchiveInvalidation));
 
       if (!File.Exists(((SettingsFilesSet)SettingsFiles).FOIniPath))
+      {
         MessageBox.Show("You have no Fallout INI file. Please run Fallout: New Vegas to initialize the file before installing any mods or turning on Archive Invalidation.", "Missing INI", MessageBoxButtons.OK, MessageBoxIcon.Information);
+      }
 
       ScanForReadonlyPlugins();
       ScanForReadonlyFiles();

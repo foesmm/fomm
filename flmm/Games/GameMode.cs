@@ -191,10 +191,19 @@ namespace Fomm.Games
     }
 
     /// <summary>
-    /// Gets the path to the game directory were pluings are to be installed.
+    /// Gets the path to the game directory where plugins are to be installed.
     /// </summary>
-    /// <value>The path to the game directory were pluings are to be installed.</value>
+    /// <value>The path to the game directory where plugins are to be installed.</value>
     public abstract string PluginsPath
+    {
+      get;
+    }
+
+    /// <summary>
+    /// Gets the path to the game directory
+    /// </summary>
+    /// <value>Gets the path to the game directory.</value>
+    public abstract string GamePath
     {
       get;
     }

@@ -527,20 +527,6 @@ namespace Fomm.PackageManager
 
       FileManagement.AssertFilePathIsSafe(fnTo);
 
-      #region refactor me
-      #region original code
-//      byte[] bteFomodFile = Fomod.GetFile(fnFrom);
-//      ret = GenerateDataFile(fnTo, bteFomodFile);
-      #endregion
-
-      #region newcode
-      /*
-       * New code
-       * 1. Extract the file from the archive to the temp file
-       * 2. Copy the temp file to the destination
-       * 3. Delete the temp file
-       */
-
       tmpFN = Fomod.ExtractToTemp(fnFrom);
       if (GenerateDataFilePrep(fnTo, out strDataPath))
       {
@@ -548,8 +534,6 @@ namespace Fomm.PackageManager
         Installer.MergeModule.AddFile(fnTo);
         ret = true;
       }
-      #endregion
-      #endregion
 
       return ret;
     }
@@ -693,7 +677,7 @@ namespace Fomm.PackageManager
     {
       PermissionsManager.CurrentPermissions.Assert();
       FileManagement.AssertFilePathIsSafe(p_strFile);
-      string strDataPath = Path.Combine(Program.GameMode.PluginsPath, p_strFile);
+      string strDataPath = Path.Combine(Program.GameMode.GamePath, p_strFile);
       string strKey = InstallLog.Current.GetModKey(p_strFomodBaseName);
       string strDirectory = Path.GetDirectoryName(p_strFile);
       string strBackupDirectory = Path.Combine(Program.GameMode.OverwriteDirectory, strDirectory);
