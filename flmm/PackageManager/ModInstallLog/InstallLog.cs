@@ -518,34 +518,20 @@ namespace Fomm.PackageManager.ModInstallLog
     {
       bool ret = false;
       XmlNode xndMod;
-      XmlNode tmpNode;
-      string sModName;
-      string sPath;
+      XmlNode xndVersion;
 
       if (m_dicModList.ContainsKey(p_fomodMod.BaseName))
       {
         xndMod = m_xelModListNode.SelectSingleNode("mod[@key=\"" + GetModKey(p_fomodMod.BaseName) + "\"]");
-            
-        // Save mod values for attributes and elements we may be deleting.
-        sModName = xndMod.Attributes["name"].Value;
-        sPath = System.IO.Path.GetFileName(p_fomodMod.filepath);
-
-        // Replace name attribute with path attribute
-        xndMod.Attributes.Remove(xndMod.Attributes["name"]);
-        xndMod.Attributes.Append(xmlDoc.CreateAttribute("path"));
-        xndMod.Attributes["path"].InnerText = sPath;
-
-        // Add name element
-        tmpNode = xmlDoc.CreateElement("name");
-        tmpNode.InnerText = sModName;
-        xndMod.AppendChild(tmpNode);
-
-        // Add installdate element
-        tmpNode = xmlDoc.CreateElement("installDate");
-        tmpNode.InnerText = System.IO.File.GetCreationTime(p_fomodMod.filepath).ToString("MM/dd/yyyy HH:mm:ss");
-        tmpNode.Attributes.Append(xmlDoc.CreateAttribute("unambiguousdate"));
-        tmpNode.Attributes["unambiguousdate"].InnerText = System.IO.File.GetCreationTime(p_fomodMod.filepath).ToString("yyyy-MMM-dd HH:mm:ss");
-        xndMod.AppendChild(tmpNode);
+        xndVersion = xndMod.SelectSingleNode("version");
+        if (xndVersion == null)
+        {
+          xndVersion = xndMod.AppendChild(xmlDoc.CreateElement("version"));
+          xndVersion.Attributes.Append(xmlDoc.CreateAttribute("machineVersion"));
+        }
+        xndVersion.Attributes["machineVersion"].InnerText = p_fomodMod.MachineVersion.ToString();
+        xndVersion.InnerText = p_fomodMod.HumanReadableVersion;
+        ret = true;
       }
       return ret;
     }
@@ -571,7 +557,7 @@ namespace Fomm.PackageManager.ModInstallLog
       {
         string strKey = GetModKey(p_strOldBaseName);
         XmlNode xndMod = m_xelModListNode.SelectSingleNode("mod[@key=\"" + strKey + "\"]");
-        xndMod.Attributes["name"].InnerText = p_fomodMod.BaseName;
+        xndMod.SelectSingleNode("name").InnerText = p_fomodMod.BaseName;
         m_dicModList.Remove(p_strOldBaseName);
         m_dicModList.Add(p_fomodMod.BaseName, strKey);
         ret = UpdateMod(p_fomodMod);
