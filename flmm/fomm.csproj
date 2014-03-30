@@ -292,6 +292,7 @@
       <DependentUpon>ImageForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Imports.cs" />
+    <Compile Include="InstallLogUpgraders\Downgrader0500.cs" />
     <Compile Include="InstallLogUpgraders\Upgrader.cs" />
     <Compile Include="InstallLogUpgraders\Upgrader0000.cs" />
     <Compile Include="InstallLogUpgraders\Upgrader0100.cs" />
