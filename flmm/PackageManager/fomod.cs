@@ -506,14 +506,18 @@ namespace Fomm.PackageManager
           {
             string strNewFileName = Path.GetFileName(file);
             for (Int32 i = 1; m_dicMovedArchiveFiles.ContainsKey(strNewFileName); i++)
+            {
               strNewFileName = Path.GetFileNameWithoutExtension(file) + " " + i + Path.GetExtension(file);
+            }
             m_dicMovedArchiveFiles[strNewFileName] = file;
           }
           strSourcePath = Path.Combine(strSourcePath, name);
           directories = m_arcFile.GetDirectories(strSourcePath);
         }
         else
+        {
           break;
+        }
       }
       m_strPathPrefix = strSourcePath.Trim('/');
     }
