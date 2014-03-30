@@ -457,54 +457,6 @@ namespace Fomm.PackageManager.ModInstallLog
       }
     }
 
-    internal protected bool UpdateMod(string modname)
-    {
-      bool ret = false;
-      XmlNode xndMod;
-      XmlNode tmpNode;
-      DateTime installed;
-
-      xndMod = m_xelModListNode.SelectSingleNode("mod[@name=\"" + modname + "\"]");
-      
-      switch (modname)
-      {
-        case InstallLog.ORIGINAL_VALUES:
-        case InstallLog.MOD_MANAGER_VALUE:
-        case InstallLog.FOMM:
-          // Replace name attribute with path attribute
-          xndMod.Attributes.Remove(xndMod.Attributes["name"]);
-          xndMod.Attributes.Append(xmlDoc.CreateAttribute("path"));
-          xndMod.Attributes["path"].InnerText = "Dummy Mod: " + modname == "FOMM" ? "MOD_MANAGER_VALUE" : modname;
-
-          // Add version element
-          tmpNode = xmlDoc.CreateElement("version");
-          tmpNode.Attributes.Append(xmlDoc.CreateAttribute("machineVersion"));
-          tmpNode.Attributes["machineVersion"].InnerText = "0.0";
-          xndMod.AppendChild(tmpNode);
-
-          // Add name element
-          tmpNode = xmlDoc.CreateElement("name");
-          tmpNode.InnerText = modname == "FOMM" ? "MOD_MANAGER_VALUE" : modname;
-          xndMod.AppendChild(tmpNode);
-
-          // Add installDate
-          installed = DateTime.Now;
-          tmpNode = xmlDoc.CreateElement("installDate");
-          tmpNode.InnerText = installed.ToString("MM/dd/yyyy HH:mm:ss");
-          tmpNode.Attributes.Append(xmlDoc.CreateAttribute("unambiguousdate"));
-          tmpNode.Attributes["unambiguousdate"].InnerText = installed.ToString("yyyy-MMM-dd HH:mm:ss");
-          xndMod.AppendChild(tmpNode);
-
-        break;
-
-        default:
-          ret = false;
-        break;
-      }
-
-      return ret;
-    }
-
     /// <summary>
     /// Updates a mod's information in the install log.
     /// </summary>
@@ -659,7 +611,7 @@ namespace Fomm.PackageManager.ModInstallLog
         XmlNode xndInstallingMods = dataFilesNode.SelectSingleNode("file[@path=\"" + p_strPath.ToLowerInvariant() + "\"]/installingMods");
         xndInstallingMods.RemoveAll();
         foreach (string strMod in p_lstOrderedMods)
-          AddDataFile(strMod, "Data\\" + p_strPath);
+          AddDataFile(strMod, p_strPath);
         Save();
       }
     }
@@ -1304,9 +1256,9 @@ namespace Fomm.PackageManager.ModInstallLog
 
       //add/replace changes
       foreach (string strFile in p_ilmMergeModule.ReplacedOriginalDataFiles)
-        AddDataFile(ORIGINAL_VALUES, "Data\\" + strFile);
+        AddDataFile(ORIGINAL_VALUES, strFile);
       foreach (string strFile in p_ilmMergeModule.DataFiles)
-        ReplaceDataFile(p_fomodMod.BaseName, "Data\\" + strFile);
+        ReplaceDataFile(p_fomodMod.BaseName, strFile);
       foreach (InstallLogMergeModule.IniEdit iniEdit in p_ilmMergeModule.ReplacedOriginalIniValues)
         AddIniEdit(iniEdit.File, iniEdit.Section, iniEdit.Key, ORIGINAL_VALUES, iniEdit.Value);
       foreach (InstallLogMergeModule.IniEdit iniEdit in p_ilmMergeModule.IniEdits)
@@ -1344,9 +1296,9 @@ namespace Fomm.PackageManager.ModInstallLog
     private void processMergeModule(string p_strModName, InstallLogMergeModule p_ilmMergeModule)
     {
       foreach (string strFile in p_ilmMergeModule.ReplacedOriginalDataFiles)
-        AddDataFile(ORIGINAL_VALUES, "Data\\" + strFile);
+        AddDataFile(ORIGINAL_VALUES, strFile);
       foreach (string strFile in p_ilmMergeModule.DataFiles)
-        AddDataFile(p_strModName, "Data\\" + strFile);
+        AddDataFile(p_strModName, strFile);
       foreach (InstallLogMergeModule.IniEdit iniEdit in p_ilmMergeModule.ReplacedOriginalIniValues)
         AddIniEdit(iniEdit.File, iniEdit.Section, iniEdit.Key, ORIGINAL_VALUES, iniEdit.Value);
       foreach (InstallLogMergeModule.IniEdit iniEdit in p_ilmMergeModule.IniEdits)

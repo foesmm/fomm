@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
+using System.Xml.XPath;
+using System.Xml.Linq;
 using Fomm.PackageManager;
 using Fomm.PackageManager.ModInstallLog;
 
@@ -14,60 +17,89 @@ namespace Fomm.InstallLogUpgraders
   {
     protected override void DoUpgrade()
     {
-      fomod fomodMod = null;
-      XmlDocument xmlInstallLog;
-      XmlNode decNode;
-      XmlNode xndData;
+      XDocument doc       = null;
+      XElement  root      = null;
+      XElement  modlist   = null;
+      XElement  datafiles = null;
+      XElement  mod       = null;
       IList<string> lstMods;
+      fomod fomodMod = null;
+      string strModPath;
 
-      // Load the install log
-      xmlInstallLog = new XmlDocument();
-      xmlInstallLog.Load(InstallLog.Current.InstallLogPath);
+      // Load the document
+      doc       = XDocument.Load(InstallLog.Current.InstallLogPath);
+      root      = doc.Element("installLog");
+      modlist   = root.Element("modList");
+      datafiles = root.Element("dataFiles");
 
-      // Add a declaration if there isn't one.
-      if (xmlInstallLog.FirstChild.NodeType != XmlNodeType.XmlDeclaration)
+      // Set the declaration (missing in previous versions)
+      doc.Declaration = new XDeclaration("1.0", "UTF-8", null);
+
+      // Update file to new version
+      root.SetAttributeValue("fileVersion", InstallLog.CURRENT_VERSION);
+
+      // Upgrade datafile entries
+      foreach (XElement el in datafiles.Descendants("file"))
       {
-        decNode = xmlInstallLog.CreateXmlDeclaration("1.0", "UTF-8", null);
-        xmlInstallLog.PrependChild(decNode);
+        el.SetAttributeValue("path", Path.Combine("Data", el.Attribute("path").Value));
       }
 
-      // Fixup datafiles paths
-      xndData = xmlInstallLog.SelectSingleNode("descendant::dataFiles");
-      foreach (XmlNode tmpNode in xndData.SelectNodes("descendant::file"))
-      {
-        tmpNode.Attributes["path"].InnerText = Path.Combine("Data", tmpNode.Attributes["path"].InnerText);
-      }
-
-      // Save the document with declaration
-      xmlInstallLog.Save(InstallLog.Current.InstallLogPath);
-      InstallLog.Reload();
-      
+      // Upgrade mod entries
       lstMods = InstallLog.Current.GetModList();
-      
-      ProgressWorker.OverallProgressStep = 1;
+      ProgressWorker.OverallProgressStep = 0;
       ProgressWorker.OverallProgressMaximum = lstMods.Count;
       ProgressWorker.ShowItemProgress = false;
 
-      // now update the mod info
       foreach (string strMod in lstMods)
       {
         ProgressWorker.StepOverallProgress();
-
-        string strModPath = Path.Combine(Program.GameMode.ModDirectory, strMod + ".fomod");
+        strModPath = Path.Combine(Program.GameMode.ModDirectory, strMod + ".fomod");
         if (File.Exists(strModPath))
         {
           fomodMod = new fomod(strModPath);
-          InstallLog.Current.UpdateMod(fomodMod);
-        }
-        else
-        {
-          InstallLog.Current.UpdateMod(strMod);
+          // find the matching mod entry
+          mod = modlist.XPathSelectElement("mod[@name='" + strMod + "']");
+
+          // Add path attribute
+          mod.SetAttributeValue("path", Path.GetFileName(fomodMod.filepath));
+
+          // Remove name attribute
+          mod.SetAttributeValue("name", null);
+
+          // Add name element
+          mod.Add(new XElement("name", strMod));
+
+          // Add installdate element
+          mod.Add(new XElement("installDate", System.IO.File.GetCreationTime(fomodMod.filepath).ToString("MM/dd/yyyy HH:mm:ss")));
         }
       }
 
-      // Update the installlog version and save
-      InstallLog.Current.SetInstallLogVersion(InstallLog.CURRENT_VERSION);
-      InstallLog.Current.Save();
+      // Update ORIGNAL_VALUES
+      mod = modlist.XPathSelectElement("mod[@name='" + InstallLog.ORIGINAL_VALUES + "']");
+      if (mod != null)
+      {
+        mod.SetAttributeValue("path", "Dummy Mod: " + InstallLog.ORIGINAL_VALUES);
+        mod.SetAttributeValue("name", null);
+        mod.Add(new XElement("version", "0"));
+        mod.Element("version").SetAttributeValue("machineVersion", mod.Element("version").Value);
+        mod.Add(new XElement("name", InstallLog.ORIGINAL_VALUES));
+        mod.Add(new XElement("installDate", DateTime.Today.ToString("MM/dd/yyyy HH:mm:ss")));
+      }
+
+      // Update ORIGNAL_VALUES
+      mod = modlist.XPathSelectElement("mod[@name='" + InstallLog.FOMM + "']");
+      if (mod != null)
+      {
+        mod.SetAttributeValue("path", "Dummy Mod: " + InstallLog.MOD_MANAGER_VALUE);
+        mod.SetAttributeValue("name", null);
+        mod.Add(new XElement("version", "0"));
+        mod.Element("version").SetAttributeValue("machineVersion", mod.Element("version").Value);
+        mod.Add(new XElement("name", InstallLog.MOD_MANAGER_VALUE));
+        mod.Add(new XElement("installDate", DateTime.Today.ToString("MM/dd/yyyy HH:mm:ss")));
+      }
+
+//      doc.Save("C:\\games\\FalloutNV\\Install Info\\test.xml");
+      doc.Save(InstallLog.Current.InstallLogPath);
     }
   }
 }
