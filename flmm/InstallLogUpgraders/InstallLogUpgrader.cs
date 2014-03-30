@@ -13,7 +13,7 @@ using Fomm.PackageManager.ModInstallLog;
 namespace Fomm.InstallLogUpgraders
 {
   /// <summary>
-  /// Upgrades the install log.
+  /// Reverts the InstallLog to 2.0.0.0.
   /// </summary>
   internal class InstallLogUpgrader
   {
@@ -28,6 +28,7 @@ namespace Fomm.InstallLogUpgraders
       m_dicUpgraders[new Version("0.0.0.0")] = new Upgrader0000();
       m_dicUpgraders[new Version("0.1.0.0")] = new Upgrader0100();
       m_dicUpgraders[new Version("0.1.1.0")] = new Upgrader0110();
+      m_dicUpgraders[new Version("0.5.0.0")] = new Downgrader0500();
     }
 
     /// <summary>
@@ -64,7 +65,9 @@ namespace Fomm.InstallLogUpgraders
       {
         InstallLog.Current.EnableLogFileRefresh = false;
         if (!m_dicUpgraders.ContainsKey(verOldVersion))
-          throw new InvalidOperationException("No upgrader for Install Log Version " + verOldVersion + ".");
+        {
+          throw new InvalidOperationException("No upgrade or downgrade available for Install Log Version " + verOldVersion + ".");
+        }
 
         booUpgraded = m_dicUpgraders[verOldVersion].PerformUpgrade();
         InstallLog.Current.EnableLogFileRefresh = true;
