@@ -360,34 +360,6 @@ namespace Fomm.PackageManager
     /// <param name="mod">The fomod to activate.</param>
     private void ActivateFomod(fomod mod)
     {
-      bool booFound = false;
-      fomod fomodMod = null;
-      foreach (ListViewItem lviFomod in lvModList.Items)
-      {
-        fomodMod = (fomod)lviFomod.Tag;
-        if (fomodMod.ModName.Equals(mod.ModName) && fomodMod.IsActive && !fomodMod.BaseName.Equals(mod.BaseName))
-        {
-          //ask to do upgrade
-          string strUpgradeMessage = "A different version of {0} has been detected. The installed version is {1}, the new version is {2}. Would you like to upgrade?" + Environment.NewLine + "Selecting No will install the new FOMod normally.";
-          switch (MessageBox.Show(String.Format(strUpgradeMessage, fomodMod.ModName, fomodMod.HumanReadableVersion, mod.HumanReadableVersion), "Upgrade", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
-          {
-            case DialogResult.Yes:
-              ModUpgrader mduUpgrader = new ModUpgrader(mod, fomodMod.BaseName);
-              mduUpgrader.Upgrade();
-              if (mod.IsActive)
-              {
-                fomodMod.IsActive = false;
-                lviFomod.Checked = false;
-              }
-              return;
-            case DialogResult.No:
-              booFound = true;
-              break;
-          }
-        }
-        if (booFound)
-          break;
-      }
       ModInstaller mdiInstaller = new ModInstaller(mod);
       mdiInstaller.Install();
     }

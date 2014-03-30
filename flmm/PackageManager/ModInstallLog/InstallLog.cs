@@ -590,7 +590,7 @@ namespace Fomm.PackageManager.ModInstallLog
     {
       string strNormalizedPath = NormalizePath(p_strPath);
       List<string> lstInstallers = new List<string>();
-      XmlNodeList xnlInstallingMods = dataFilesNode.SelectNodes("file[@path='" + strNormalizedPath + "']/installingMods/*");
+      XmlNodeList xnlInstallingMods = dataFilesNode.SelectNodes("file[@path='" + strNormalizedPath.ToLowerInvariant() + "']/installingMods/*");
       foreach (XmlNode xndInallingMod in xnlInstallingMods)
       {
         lstInstallers.Add(GetModName(xndInallingMod.Attributes["key"].InnerText));
@@ -611,7 +611,7 @@ namespace Fomm.PackageManager.ModInstallLog
         XmlNode xndInstallingMods = dataFilesNode.SelectSingleNode("file[@path=\"" + p_strPath.ToLowerInvariant() + "\"]/installingMods");
         xndInstallingMods.RemoveAll();
         foreach (string strMod in p_lstOrderedMods)
-          AddDataFile(strMod, p_strPath);
+          AddDataFile(strMod, "data\\" + p_strPath);
         Save();
       }
     }
@@ -1256,9 +1256,9 @@ namespace Fomm.PackageManager.ModInstallLog
 
       //add/replace changes
       foreach (string strFile in p_ilmMergeModule.ReplacedOriginalDataFiles)
-        AddDataFile(ORIGINAL_VALUES, strFile);
+        AddDataFile(ORIGINAL_VALUES, "data\\" + strFile);
       foreach (string strFile in p_ilmMergeModule.DataFiles)
-        ReplaceDataFile(p_fomodMod.BaseName, strFile);
+        ReplaceDataFile(p_fomodMod.BaseName, "data\\" + strFile);
       foreach (InstallLogMergeModule.IniEdit iniEdit in p_ilmMergeModule.ReplacedOriginalIniValues)
         AddIniEdit(iniEdit.File, iniEdit.Section, iniEdit.Key, ORIGINAL_VALUES, iniEdit.Value);
       foreach (InstallLogMergeModule.IniEdit iniEdit in p_ilmMergeModule.IniEdits)
@@ -1296,9 +1296,9 @@ namespace Fomm.PackageManager.ModInstallLog
     private void processMergeModule(string p_strModName, InstallLogMergeModule p_ilmMergeModule)
     {
       foreach (string strFile in p_ilmMergeModule.ReplacedOriginalDataFiles)
-        AddDataFile(ORIGINAL_VALUES, strFile);
+        AddDataFile(ORIGINAL_VALUES, "data\\" + strFile);
       foreach (string strFile in p_ilmMergeModule.DataFiles)
-        AddDataFile(p_strModName, strFile);
+        AddDataFile(p_strModName, "data\\" + strFile);
       foreach (InstallLogMergeModule.IniEdit iniEdit in p_ilmMergeModule.ReplacedOriginalIniValues)
         AddIniEdit(iniEdit.File, iniEdit.Section, iniEdit.Key, ORIGINAL_VALUES, iniEdit.Value);
       foreach (InstallLogMergeModule.IniEdit iniEdit in p_ilmMergeModule.IniEdits)

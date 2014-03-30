@@ -41,7 +41,7 @@ namespace Fomm.InstallLogUpgraders
       // Upgrade datafile entries
       foreach (XElement el in datafiles.Descendants("file"))
       {
-        el.SetAttributeValue("path", Path.Combine("Data", el.Attribute("path").Value));
+        el.SetAttributeValue("path", Path.Combine("data", el.Attribute("path").Value.ToLowerInvariant()));
       }
 
       // Upgrade mod entries
