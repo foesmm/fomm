@@ -590,7 +590,7 @@ namespace Fomm.PackageManager.ModInstallLog
     {
       string strNormalizedPath = NormalizePath(p_strPath);
       List<string> lstInstallers = new List<string>();
-      XmlNodeList xnlInstallingMods = dataFilesNode.SelectNodes("file[@path=\"" + strNormalizedPath.ToLowerInvariant() + "\"]/installingMods/*");
+      XmlNodeList xnlInstallingMods = dataFilesNode.SelectNodes("file[@path='" + strNormalizedPath + "']/installingMods/*");
       foreach (XmlNode xndInallingMod in xnlInstallingMods)
       {
         lstInstallers.Add(GetModName(xndInallingMod.Attributes["key"].InnerText));

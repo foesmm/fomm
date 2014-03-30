@@ -35,7 +35,7 @@ namespace Fomm.FileManager
       if (radByFile.Checked)
       {
         List<string> lstInstalledFiles = InstallLog.Current.GetFileList();
-        TreeNode tndCurrentDirectory = new TreeNode(Path.GetFileName(Program.GameMode.PluginsPath));
+        TreeNode tndCurrentDirectory = new TreeNode(Path.GetFileName(Program.GameMode.GamePath));
         tndCurrentDirectory.Name = tndCurrentDirectory.Text;
         tvwFolders.Nodes.Add(tndCurrentDirectory);
         AddFilesToNode(tndCurrentDirectory, lstInstalledFiles);
@@ -53,7 +53,7 @@ namespace Fomm.FileManager
           tndCurrentDirectory.Name = tndCurrentDirectory.Text;
           tndCurrentDirectory.ImageKey = "mod";
           tndCurrentDirectory.SelectedImageKey = "mod";
-          tndCurrentDirectory = tndCurrentDirectory.Nodes.Add(Path.GetFileName(Program.GameMode.PluginsPath));
+          tndCurrentDirectory = tndCurrentDirectory.Nodes.Add(Path.GetFileName(Program.GameMode.GamePath));
           tndCurrentDirectory.Name = tndCurrentDirectory.Text;
           lstInstalledFiles = InstallLog.Current.GetFileList(strMod);
           AddFilesToNode(tndCurrentDirectory, lstInstalledFiles);
@@ -200,7 +200,7 @@ namespace Fomm.FileManager
         ListViewItem lviFile = new ListViewItem(Path.GetFileName(strFile));
         lviFile.Name = lviFile.Text;
         lviFile.Tag = strFile;
-        FileInfo fliFile = new FileInfo(Path.Combine(Program.GameMode.PluginsPath, strFile));
+        FileInfo fliFile = new FileInfo(Path.Combine(Program.GameMode.GamePath, strFile));
         lviFile.SubItems.Add(fliFile.CreationTime.ToString("g"));
         lviFile.SubItems.Add(fliFile.LastWriteTime.ToString("g"));
         if (fliFile.Exists)
