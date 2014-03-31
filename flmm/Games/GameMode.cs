@@ -390,8 +390,6 @@ class Script : GenericBaseScript {
       Plugin plgPlugin;
       List<string> masters;
 
-      Dictionary<string, LoadOrderInfo> allPlugins;
-
       // Don't check dependency information if plugin is inactive.
       if (PluginManager.IsPluginActive(Path.Combine(Program.GameMode.PluginsPath, name)))
       {

@@ -59,9 +59,6 @@ namespace Fomm.InstallLogUpgraders
       XElement  root      = null;
       XElement  modlist   = null;
       XElement  datafiles = null;
-      IList<string> lstMods;
-      fomod fomodMod = null;
-      string strModPath;
 
       // Load the document
       doc = XDocument.Load(InstallLog.Current.InstallLogPath);
