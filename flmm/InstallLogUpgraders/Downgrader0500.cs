@@ -16,7 +16,7 @@ namespace Fomm.InstallLogUpgraders
   internal class Downgrader0500 : Upgrader
   {
     /// <summary>
-    /// Downgrades the Install Log to the current version from version 5.0.0.0.
+    /// Downgrades the Install Log to the current version from version 0.5.0.0.
     /// </summary>
     /// <remarks>
     /// NMM pointlessly changed the XML format in a way incompatible with FOMM
