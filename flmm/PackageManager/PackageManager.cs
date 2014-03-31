@@ -449,7 +449,7 @@ namespace Fomm.PackageManager
       }
       catch (Win32Exception ex)
       {
-        MessageBox.Show(this, "Cannot find programme to open: " + mod.Website, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        MessageBox.Show(this, "Error launching site: " + mod.Website + "\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
     }
 
