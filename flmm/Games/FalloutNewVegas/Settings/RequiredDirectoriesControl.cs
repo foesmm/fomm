@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Text;
-using System.Windows.Forms;
 using System.IO;
+using System.Windows.Forms;
 
 namespace Fomm.Games.FalloutNewVegas.Settings
 {
@@ -43,7 +38,11 @@ namespace Fomm.Games.FalloutNewVegas.Settings
       }
       if (!Directory.Exists(p_strPath))
       {
-        if (MessageBox.Show(this, String.Format("The selected {0} does not exist.{1}Would you like to create it?", p_strPathName, Environment.NewLine), "Missing Directory", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+        if (
+          MessageBox.Show(this,
+                          String.Format("The selected {0} does not exist.{1}Would you like to create it?", p_strPathName,
+                                        Environment.NewLine), "Missing Directory", MessageBoxButtons.YesNo,
+                          MessageBoxIcon.Question) == DialogResult.Yes)
         {
           Directory.CreateDirectory(p_strPath);
           return true;
@@ -84,7 +83,6 @@ namespace Fomm.Games.FalloutNewVegas.Settings
       return ValidateModDirectory() && ValidateInstallInfoDirectory();
     }
 
-
     #endregion
 
     /// <summary>
@@ -96,16 +94,22 @@ namespace Fomm.Games.FalloutNewVegas.Settings
       if (String.IsNullOrEmpty(tbxModDirectory.Text))
       {
         string strDefault = Path.Combine(Path.GetDirectoryName(Program.GameMode.PluginsPath), "mods");
-        if (strDefault.StartsWith(Path.Combine(Path.GetPathRoot(strDefault), "Program Files"), StringComparison.InvariantCultureIgnoreCase))
-          strDefault = Path.Combine(Path.GetPathRoot(Program.GameMode.PluginsPath), "Games\\FalloutNV\\mods"); ;
+        if (strDefault.StartsWith(Path.Combine(Path.GetPathRoot(strDefault), "Program Files"),
+                                  StringComparison.InvariantCultureIgnoreCase))
+        {
+          strDefault = Path.Combine(Path.GetPathRoot(Program.GameMode.PluginsPath), "Games\\FalloutNV\\mods");
+        }
         tbxModDirectory.Text = strDefault;
       }
       tbxInstallInfo.Text = Properties.Settings.Default.falloutNewVegasInstallInfoDirectory;
       if (String.IsNullOrEmpty(tbxInstallInfo.Text))
       {
         string strDefault = Path.Combine(Path.GetDirectoryName(Program.GameMode.PluginsPath), "Install Info");
-        if (strDefault.StartsWith(Path.Combine(Path.GetPathRoot(strDefault), "Program Files"), StringComparison.InvariantCultureIgnoreCase))
-          strDefault = Path.Combine(Path.GetPathRoot(Program.GameMode.PluginsPath), "Games\\FalloutNV\\Install Info"); ;
+        if (strDefault.StartsWith(Path.Combine(Path.GetPathRoot(strDefault), "Program Files"),
+                                  StringComparison.InvariantCultureIgnoreCase))
+        {
+          strDefault = Path.Combine(Path.GetPathRoot(Program.GameMode.PluginsPath), "Games\\FalloutNV\\Install Info");
+        }
         tbxInstallInfo.Text = strDefault;
       }
     }
@@ -131,7 +135,9 @@ namespace Fomm.Games.FalloutNewVegas.Settings
     {
       fbdDirectory.SelectedPath = tbxModDirectory.Text;
       if (fbdDirectory.ShowDialog(this) == DialogResult.OK)
+      {
         tbxModDirectory.Text = fbdDirectory.SelectedPath;
+      }
     }
 
     /// <summary>
@@ -146,7 +152,9 @@ namespace Fomm.Games.FalloutNewVegas.Settings
     {
       fbdDirectory.SelectedPath = tbxInstallInfo.Text;
       if (fbdDirectory.ShowDialog(this) == DialogResult.OK)
+      {
         tbxInstallInfo.Text = fbdDirectory.SelectedPath;
+      }
     }
   }
 }

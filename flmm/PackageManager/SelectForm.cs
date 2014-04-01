@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
-using Image = System.Drawing.Image;
+using Fomm.Properties;
 
 namespace Fomm.PackageManager
 {
@@ -9,20 +11,26 @@ namespace Fomm.PackageManager
     internal SelectForm(string[] items, string title, bool multi, Image[] previews, string[] tooltips)
     {
       InitializeComponent();
-      this.Icon = Fomm.Properties.Resources.fomm02;
-      Properties.Settings.Default.windowPositions.GetWindowPosition("PackageManagerSelectForm", this);
+      Icon = Resources.fomm02;
+      Settings.Default.windowPositions.GetWindowPosition("PackageManagerSelectForm", this);
       Text = title;
       toolTips = tooltips;
       Multi = multi;
-      System.Collections.Generic.List<int> selected = new System.Collections.Generic.List<int>();
+      List<int> lSelected = new List<int>();
       for (int i = 0; i < items.Length; i++)
       {
-        if (items[i].Length == 0) continue;
+        if (items[i].Length == 0)
+        {
+          continue;
+        }
         if (items[i][0] == '|')
         {
           items[i] = items[i].Substring(1);
-          selected.Add(i);
-          if (!Multi) break;
+          lSelected.Add(i);
+          if (!Multi)
+          {
+            break;
+          }
         }
       }
       lbSelect.Items.AddRange(items);
@@ -30,44 +38,73 @@ namespace Fomm.PackageManager
       {
         lbSelect.SelectionMode = SelectionMode.MultiExtended;
         label1.Text = "Select any number of options (Use ctrl and shift for multiselect)";
-        if (selected.Count > 0) foreach (int i in selected) lbSelect.SetSelected(i, true);
+        if (lSelected.Count > 0)
+        {
+          foreach (int i in lSelected)
+          {
+            lbSelect.SetSelected(i, true);
+          }
+        }
       }
       else
       {
-        if (selected.Count == 0) lbSelect.SelectedIndex = 0; else lbSelect.SelectedIndex = selected[0];
+        lbSelect.SelectedIndex = lSelected.Count == 0 ? 0 : lSelected[0];
       }
-      if (toolTips == null) bDescription.Visible = false;
-      if (previews != null) Previews = previews;
-      else bPreview.Visible = false;
+      if (toolTips == null)
+      {
+        bDescription.Visible = false;
+      }
+      if (previews != null)
+      {
+        Previews = previews;
+      }
+      else
+      {
+        bPreview.Visible = false;
+      }
       lbSelect_SelectedIndexChanged(null, null);
     }
 
     private bool blockClose = true;
-    internal int[] SelectedIndex = { 0 };
-    private System.Drawing.Image[] Previews;
+
+    internal int[] SelectedIndex =
+    {
+      0
+    };
+
+    private Image[] Previews;
     private string[] toolTips;
     private bool ShowingDesc;
     private bool Multi;
 
     private int selectedIndex;
-    private System.Collections.Generic.List<int> selected = new System.Collections.Generic.List<int>();
+    private List<int> selected = new List<int>();
 
     private void bOK_Click(object sender, EventArgs e)
     {
       blockClose = false;
       SelectedIndex = new int[lbSelect.SelectedIndices.Count];
-      for (int i = 0; i < SelectedIndex.Length; i++) SelectedIndex[i] = lbSelect.SelectedIndices[i];
+      for (int i = 0; i < SelectedIndex.Length; i++)
+      {
+        SelectedIndex[i] = lbSelect.SelectedIndices[i];
+      }
       if (Previews != null)
       {
-        foreach (System.Drawing.Image i in Previews) if (i != null) i.Dispose();
+        foreach (Image i in Previews)
+        {
+          if (i != null)
+          {
+            i.Dispose();
+          }
+        }
       }
       Close();
     }
 
     private void SelectForm_FormClosing(object sender, FormClosingEventArgs e)
     {
-      Properties.Settings.Default.windowPositions.SetWindowPosition("PackageManagerSelectForm", this);
-      Properties.Settings.Default.Save(); 
+      Settings.Default.windowPositions.SetWindowPosition("PackageManagerSelectForm", this);
+      Settings.Default.Save();
       e.Cancel = blockClose;
     }
 
@@ -81,8 +118,17 @@ namespace Fomm.PackageManager
         bPreview.Enabled = false;
         return;
       }
-      if (selectedIndex != -1 && !lbSelect.SelectedIndices.Contains(selectedIndex)) selectedIndex = -1;
-      for (int i = 0; i < selected.Count; i++) { if (!lbSelect.SelectedIndices.Contains(selected[i])) selected.RemoveAt(i--); }
+      if (selectedIndex != -1 && !lbSelect.SelectedIndices.Contains(selectedIndex))
+      {
+        selectedIndex = -1;
+      }
+      for (int i = 0; i < selected.Count; i++)
+      {
+        if (!lbSelect.SelectedIndices.Contains(selected[i]))
+        {
+          selected.RemoveAt(i--);
+        }
+      }
       for (int i = 0; i < lbSelect.SelectedIndices.Count; i++)
       {
         if (!selected.Contains(lbSelect.SelectedIndices[i]))
@@ -117,7 +163,7 @@ namespace Fomm.PackageManager
 
     private void bPreview_Click(object sender, EventArgs e)
     {
-      (new ImageForm(Previews[selectedIndex], (string)lbSelect.SelectedItem)).ShowDialog();
+      (new ImageForm(Previews[selectedIndex], (string) lbSelect.SelectedItem)).ShowDialog();
     }
 
     private void bDescription_Click(object sender, EventArgs e)
@@ -139,7 +185,10 @@ namespace Fomm.PackageManager
         bDescription.Text = "Options";
         ShowingDesc = true;
       }
-      else bDescription.Enabled = false;
+      else
+      {
+        bDescription.Enabled = false;
+      }
     }
 
     private void lbSelect_KeyDown(object sender, KeyEventArgs e)

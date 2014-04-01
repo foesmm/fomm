@@ -1,38 +1,34 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Forms;
-using System.Drawing;
 using System.ComponentModel;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace Fomm.Controls
 {
   /// <summary>
   /// A wizard control.
   /// </summary>
-  [DefaultProperty("SelectedPage")]
-  [DefaultEvent("SelectedTabPageChanged")]
-  [Designer(typeof(WizardControlDesigner))]
+  [DefaultProperty("SelectedPage"), DefaultEvent("SelectedTabPageChanged"), Designer(typeof (WizardControlDesigner))]
   public class WizardControl : VerticalTabControl
   {
     /// <summary>
     /// Raised when the finish button is clicked.
     /// </summary>
     [Category("Action")]
-    public event EventHandler Finished = delegate { };
+    public event EventHandler Finished = delegate
+    {
+    };
 
     /// <summary>
     /// Raised when the cancel button is clicked.
     /// </summary>
     [Category("Action")]
-    public event EventHandler Cancelled = delegate { };
+    public event EventHandler Cancelled = delegate
+    {
+    };
 
-    private Panel m_pnlNavigation = null;
-    private Panel m_pnlNavigationShadow = null;
-    private Panel m_pnlNavigationLight = null;
-    private Button m_butPrevious = null;
-    private Button m_butNext = null;
-    private Button m_butCancel = null;
+    private readonly Button m_butPrevious;
+    private readonly Button m_butNext;
 
     #region Properties
 
@@ -66,8 +62,7 @@ namespace Fomm.Controls
     /// Gets or sets whether the tabs are visible.
     /// </summary>
     /// <value>Whether the tabs are visible.</value>
-    [Category("Appearance")]
-    [DefaultValue(false)]
+    [Category("Appearance"), DefaultValue(false)]
     public override bool TabsVisible
     {
       get
@@ -92,55 +87,55 @@ namespace Fomm.Controls
       TabsVisible = false;
       BackColor = Color.FromKnownColor(KnownColor.Control);
 
-      m_pnlNavigation = new Panel();
-      m_pnlNavigation.Dock = DockStyle.Bottom;
-      m_pnlNavigation.Height = 23 + 2 * 12;
-      m_pnlNavigation.DataBindings.Add("BackColor", this, "BackColor");
+      Panel mPnlNavigation = new Panel();
+      mPnlNavigation.Dock = DockStyle.Bottom;
+      mPnlNavigation.Height = 23 + 2*12;
+      mPnlNavigation.DataBindings.Add("BackColor", this, "BackColor");
 
-      m_pnlNavigationLight = new Panel();
-      m_pnlNavigationLight.BackColor = System.Drawing.SystemColors.ControlLightLight;
-      m_pnlNavigationLight.Dock = System.Windows.Forms.DockStyle.Top;
-      m_pnlNavigationLight.Location = new System.Drawing.Point(0, 1);
-      m_pnlNavigationLight.Size = new System.Drawing.Size(444, 1);
-      m_pnlNavigationLight.TabIndex = 1;
+      Panel mPnlNavigationLight = new Panel();
+      mPnlNavigationLight.BackColor = SystemColors.ControlLightLight;
+      mPnlNavigationLight.Dock = DockStyle.Top;
+      mPnlNavigationLight.Location = new Point(0, 1);
+      mPnlNavigationLight.Size = new Size(444, 1);
+      mPnlNavigationLight.TabIndex = 1;
 
-      m_pnlNavigationShadow = new Panel();
-      m_pnlNavigationShadow.BackColor = System.Drawing.SystemColors.ControlDark;
-      m_pnlNavigationShadow.Dock = System.Windows.Forms.DockStyle.Top;
-      m_pnlNavigationShadow.Location = new System.Drawing.Point(0, 0);
-      m_pnlNavigationShadow.Size = new System.Drawing.Size(444, 1);
-      m_pnlNavigationShadow.TabIndex = 2;
+      Panel mPnlNavigationShadow = new Panel();
+      mPnlNavigationShadow.BackColor = SystemColors.ControlDark;
+      mPnlNavigationShadow.Dock = DockStyle.Top;
+      mPnlNavigationShadow.Location = new Point(0, 0);
+      mPnlNavigationShadow.Size = new Size(444, 1);
+      mPnlNavigationShadow.TabIndex = 2;
 
-      m_pnlNavigation.Controls.Add(m_pnlNavigationLight);
-      m_pnlNavigation.Controls.Add(m_pnlNavigationShadow);
+      mPnlNavigation.Controls.Add(mPnlNavigationLight);
+      mPnlNavigation.Controls.Add(mPnlNavigationShadow);
 
-      Controls.Add(m_pnlNavigation);
+      Controls.Add(mPnlNavigation);
 
-      m_butCancel = new Button();
-      m_butCancel.Text = "Cancel";
-      m_butCancel.Anchor = AnchorStyles.Right | AnchorStyles.Bottom;
-      m_butCancel.Size = new Size(75, 23);
-      m_butCancel.Location = new Point(m_pnlNavigation.Width - 12 - m_butCancel.Width, 12);
-      m_butCancel.Click += new EventHandler(Cancel_Click);
-      m_pnlNavigation.Controls.Add(m_butCancel);
+      Button mButCancel = new Button();
+      mButCancel.Text = "Cancel";
+      mButCancel.Anchor = AnchorStyles.Right | AnchorStyles.Bottom;
+      mButCancel.Size = new Size(75, 23);
+      mButCancel.Location = new Point(mPnlNavigation.Width - 12 - mButCancel.Width, 12);
+      mButCancel.Click += Cancel_Click;
+      mPnlNavigation.Controls.Add(mButCancel);
 
       m_butNext = new Button();
       m_butNext.Text = "Next >>";
       m_butNext.Anchor = AnchorStyles.Right | AnchorStyles.Bottom;
       m_butNext.Size = new Size(75, 23);
-      m_butNext.Location = new Point(m_butCancel.Left - 12 - m_butNext.Width, 12);
-      m_butNext.Click += new EventHandler(Next_Click);
-      m_pnlNavigation.Controls.Add(m_butNext);
+      m_butNext.Location = new Point(mButCancel.Left - 12 - m_butNext.Width, 12);
+      m_butNext.Click += Next_Click;
+      mPnlNavigation.Controls.Add(m_butNext);
 
       m_butPrevious = new Button();
       m_butPrevious.Text = "<< Back";
       m_butPrevious.Anchor = AnchorStyles.Right | AnchorStyles.Bottom;
       m_butPrevious.Size = new Size(75, 23);
       m_butPrevious.Location = new Point(m_butNext.Left - 6 - m_butPrevious.Width, 12);
-      m_butPrevious.Click += new EventHandler(Previous_Click);
-      m_pnlNavigation.Controls.Add(m_butPrevious);
+      m_butPrevious.Click += Previous_Click;
+      mPnlNavigation.Controls.Add(m_butPrevious);
 
-      this.Dock = DockStyle.Fill;
+      Dock = DockStyle.Fill;
     }
 
     #endregion
@@ -156,7 +151,9 @@ namespace Fomm.Controls
     {
       base.OnControlAdded(e);
       if (e.Control is VerticalTabPage)
+      {
         MovePage(0);
+      }
     }
 
     /// <summary>
@@ -170,7 +167,9 @@ namespace Fomm.Controls
     {
       base.OnControlRemoved(e);
       if (e.Control is VerticalTabPage)
+      {
         MovePage(0);
+      }
     }
 
     #region Page Navigation
@@ -202,15 +201,16 @@ namespace Fomm.Controls
     {
       Int32 intNewIndex = SelectedIndex + p_intJumpSize;
       if (intNewIndex < 0)
+      {
         intNewIndex = 0;
+      }
       else if (intNewIndex >= TabPages.Count)
+      {
         intNewIndex = TabPages.Count - 1;
+      }
 
       m_butPrevious.Enabled = (intNewIndex > 0);
-      if (intNewIndex == TabPages.Count - 1)
-        m_butNext.Text = "Finish";
-      else
-        m_butNext.Text = "Next >>";
+      m_butNext.Text = intNewIndex == TabPages.Count - 1 ? "Finish" : "Next >>";
       SelectedIndex = intNewIndex;
     }
 
@@ -238,9 +238,13 @@ namespace Fomm.Controls
     private void Next_Click(object sender, EventArgs e)
     {
       if (m_butNext.Text.Equals("Finish"))
+      {
         Finished(this, new EventArgs());
+      }
       else
+      {
         MovePage(1);
+      }
     }
 
     #endregion

@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Fomm.Util
 {
@@ -8,11 +8,11 @@ namespace Fomm.Util
   /// A Set implementation.
   /// </summary>
   /// <typeparam name="T">The type of objects in the Set.</typeparam>
-  public class Set<T> : IList<T>, ICollection<T>, IEnumerable<T>, IList, ICollection, IEnumerable
+  public class Set<T> : IList<T>, IList
   {
     private List<T> m_lstList = new List<T>();
-    private IComparer<T> m_cmpComparer = null;
-    
+    private IComparer<T> m_cmpComparer;
+
     #region Constructors
 
     /// <summary>
@@ -92,7 +92,9 @@ namespace Fomm.Util
     public void AddRange(IEnumerable<T> p_enmItems)
     {
       foreach (T tItem in p_enmItems)
+      {
         Add(tItem);
+      }
     }
 
     /// <summary>
@@ -101,9 +103,13 @@ namespace Fomm.Util
     public void Sort()
     {
       if (m_cmpComparer != null)
+      {
         m_lstList.Sort(m_cmpComparer);
+      }
       else
+      {
         m_lstList.Sort();
+      }
     }
 
     #region IndexOf
@@ -118,9 +124,13 @@ namespace Fomm.Util
     {
       if (m_cmpComparer != null)
       {
-        for (Int32 i = p_intStartIndex; i < this.Count; i++)
+        for (Int32 i = p_intStartIndex; i < Count; i++)
+        {
           if (m_cmpComparer.Compare(this[i], p_tItem) == 0)
+          {
             return i;
+          }
+        }
         return -1;
       }
       return m_lstList.IndexOf(p_tItem, p_intStartIndex);
@@ -147,8 +157,12 @@ namespace Fomm.Util
       if (m_cmpComparer != null)
       {
         for (Int32 i = p_intStartIndex; i > 0; i++)
+        {
           if (m_cmpComparer.Compare(this[i], p_tItem) == 0)
+          {
             return i;
+          }
+        }
         return -1;
       }
       return m_lstList.LastIndexOf(p_tItem, p_intStartIndex);
@@ -223,7 +237,9 @@ namespace Fomm.Util
     public void Add(T p_tItem)
     {
       if (!Contains(p_tItem))
+      {
         m_lstList.Add(p_tItem);
+      }
     }
 
     /// <summary>
@@ -289,16 +305,17 @@ namespace Fomm.Util
     {
       if (m_cmpComparer != null)
       {
-        for (Int32 i = this.Count - 1; i > 0; i--)
+        for (Int32 i = Count - 1; i > 0; i--)
+        {
           if (m_cmpComparer.Compare(this[i], p_tItem) == 0)
           {
             RemoveAt(i);
             return true;
           }
+        }
         return false;
       }
-      else
-        return m_lstList.Remove(p_tItem);
+      return m_lstList.Remove(p_tItem);
     }
 
     #endregion
@@ -324,7 +341,7 @@ namespace Fomm.Util
     /// <returns>An enumerator for this items in the set.</returns>
     IEnumerator IEnumerable.GetEnumerator()
     {
-      return ((IEnumerable)m_lstList).GetEnumerator();
+      return ((IEnumerable) m_lstList).GetEnumerator();
     }
 
     #endregion
@@ -338,8 +355,10 @@ namespace Fomm.Util
     public int Add(object value)
     {
       if (!(value is T))
-        throw new InvalidOperationException("Can only add items of type " + typeof(T) + " to the Set.");
-      Add((T)value);
+      {
+        throw new InvalidOperationException("Can only add items of type " + typeof (T) + " to the Set.");
+      }
+      Add((T) value);
       return IndexOf(value);
     }
 
@@ -352,8 +371,10 @@ namespace Fomm.Util
     public bool Contains(object value)
     {
       if (!(value is T))
+      {
         return false;
-      return Contains((T)value);
+      }
+      return Contains((T) value);
     }
 
     /// <summary>
@@ -364,8 +385,10 @@ namespace Fomm.Util
     public int IndexOf(object value)
     {
       if (!(value is T))
+      {
         return -1;
-      return IndexOf((T)value);
+      }
+      return IndexOf((T) value);
     }
 
     /// <summary>
@@ -380,8 +403,10 @@ namespace Fomm.Util
     public void Insert(int index, object value)
     {
       if (!(value is T))
-        throw new InvalidOperationException("Can only add items of type " + typeof(T) + " to the Set.");
-      Insert(index, (T)value);
+      {
+        throw new InvalidOperationException("Can only add items of type " + typeof (T) + " to the Set.");
+      }
+      Insert(index, (T) value);
     }
 
     /// <summary>
@@ -403,7 +428,9 @@ namespace Fomm.Util
     public void Remove(object value)
     {
       if (value is T)
-        Remove((T)value);
+      {
+        Remove((T) value);
+      }
     }
 
     /// <summary>
@@ -449,7 +476,7 @@ namespace Fomm.Util
     {
       get
       {
-        return ((ICollection)m_lstList).IsSynchronized;
+        return ((ICollection) m_lstList).IsSynchronized;
       }
     }
 
@@ -461,7 +488,7 @@ namespace Fomm.Util
     {
       get
       {
-        return ((ICollection)m_lstList).SyncRoot;
+        return ((ICollection) m_lstList).SyncRoot;
       }
     }
 

@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Drawing;
 using System.IO;
+using System.Windows.Forms;
+using Fomm.Commands;
+using Fomm.Controls;
+using Fomm.Games.Fallout3.Tools.TESsnip;
 using Fomm.PackageManager;
 using Fomm.PackageManager.XmlConfiguredInstall;
 using Fomm.PackageManager.XmlConfiguredInstall.Parsers;
-using System.Drawing;
-using System.Windows.Forms;
-using Fomm.Controls;
-using Microsoft.Win32;
-using Fomm.Commands;
-using Fomm.Games.Fallout3.Tools.TESsnip;
 
 namespace Fomm.Games
 {
@@ -28,46 +26,31 @@ namespace Fomm.Games
     /// Gets the name of the game whose plugins are being managed.
     /// </summary>
     /// <value>The name of the game whose plugins are being managed.</value>
-    public abstract string GameName
-    {
-      get;
-    }
+    public abstract string GameName { get; }
 
     /// <summary>
     /// Gets the game launch command.
     /// </summary>
     /// <value>The game launch command.</value>
-    public abstract Command<MainForm> LaunchCommand
-    {
-      get;
-    }
+    public abstract Command<MainForm> LaunchCommand { get; }
 
     /// <summary>
     /// Gets the icon used for the plugin file type.
     /// </summary>
     /// <value>The icon used for the plugin file type.</value>
-    public abstract Icon PluginFileIcon
-    {
-      get;
-    }
+    public abstract Icon PluginFileIcon { get; }
 
     /// <summary>
     /// Gets the modDirectory of the GameMode.
     /// </summary>
     /// <value>The modDirectory of the GameMode.</value>
-    public abstract string ModDirectory
-    {
-      get;
-    }
+    public abstract string ModDirectory { get; }
 
     /// <summary>
     /// Gets the modInfoCacheDirectory of the GameMode.
     /// </summary>
     /// <value>The modInfoCacheDirectory of the GameMode.</value>
-    public abstract string ModInfoCacheDirectory
-    {
-      get;
-    }
+    public abstract string ModInfoCacheDirectory { get; }
 
     /// <summary>
     /// Gets the directory where installation information is stored for this game mode.
@@ -76,10 +59,7 @@ namespace Fomm.Games
     /// This is where install logs, overwrites, and the like are stored.
     /// </remarks>
     /// <value>The directory where installation information is stored for this game mode.</value>
-    public abstract string InstallInfoDirectory
-    {
-      get;
-    }
+    public abstract string InstallInfoDirectory { get; }
 
     /// <summary>
     /// Gets the directory where overwrites are stored for this game mode.
@@ -91,46 +71,36 @@ namespace Fomm.Games
       {
         string strDirectory = Path.Combine(InstallInfoDirectory, "overwrites");
         if (!Directory.Exists(strDirectory))
+        {
           Directory.CreateDirectory(strDirectory);
+        }
         return strDirectory;
       }
     }
-    
+
     /// <summary>
     /// Gets the settings files used in the game mode.
     /// </summary>
     /// <value>The settings files used in the game mode.</value>
-    public abstract IDictionary<string, string> SettingsFiles
-    {
-      get;
-    }
+    public abstract IDictionary<string, string> SettingsFiles { get; }
 
     /// <summary>
     /// Gets any other paths used in the game mode.
     /// </summary>
     /// <value>Any other paths used in the game mode.</value>
-    public abstract IDictionary<string, string> AdditionalPaths
-    {
-      get;
-    }
+    public abstract IDictionary<string, string> AdditionalPaths { get; }
 
     /// <summary>
     /// Gets the <see cref="IPluginFormatProvider"/>s provided by the game mode.
     /// </summary>
     /// <value>The <see cref="IPluginFormatProvider"/>s provided by the game mode.</value>
-    public abstract IList<IPluginFormatProvider> PluginFormatProviders
-    {
-      get;
-    }
-    
+    public abstract IList<IPluginFormatProvider> PluginFormatProviders { get; }
+
     /// <summary>
     /// Gets the path to the game's save game files.
     /// </summary>
     /// <value>The path to the game's save game files.</value>
-    public abstract string SavesPath
-    {
-      get;
-    }    
+    public abstract string SavesPath { get; }
 
     #region Tool Injection
 
@@ -138,46 +108,31 @@ namespace Fomm.Games
     /// Gets the list of tools to add to the tools menu.
     /// </summary>
     /// <value>The list of tools to add to the tools menu.</value>
-    public abstract IList<Command<MainForm>> Tools
-    {
-      get;
-    }
+    public abstract IList<Command<MainForm>> Tools { get; }
 
     /// <summary>
     /// Gets the list of tools to add to the game settings menu.
     /// </summary>
     /// <value>The list of tools to add to the game settings menu.</value>
-    public abstract IList<Command<MainForm>> GameSettingsTools
-    {
-      get;
-    }
+    public abstract IList<Command<MainForm>> GameSettingsTools { get; }
 
     /// <summary>
     /// Gets the list of tools to add to the right-click menu.
     /// </summary>
     /// <value>The list of tools to add to the right-click menu.</value>
-    public abstract IList<Command<MainForm>> RightClickTools
-    {
-      get;
-    }
+    public abstract IList<Command<MainForm>> RightClickTools { get; }
 
     /// <summary>
     /// Gets the list of tools to add to the load order menu.
     /// </summary>
     /// <value>The list of tools to add to the load order menu.</value>
-    public abstract IList<Command<MainForm>> LoadOrderTools
-    {
-      get;
-    }
+    public abstract IList<Command<MainForm>> LoadOrderTools { get; }
 
     /// <summary>
     /// Gets the list of game launch commands.
     /// </summary>
     /// <value>The list of game launch commands.</value>
-    public abstract IList<Command<MainForm>> GameLaunchCommands
-    {
-      get;
-    }
+    public abstract IList<Command<MainForm>> GameLaunchCommands { get; }
 
     #endregion
 
@@ -185,52 +140,29 @@ namespace Fomm.Games
     /// Gets the settings pages that privode management of game mode-specific settings.
     /// </summary>
     /// <value>The settings pages that privode management of game mode-specific settings.</value>
-    public abstract IList<SettingsPage> SettingsPages
-    {
-      get;
-    }
+    public abstract IList<SettingsPage> SettingsPages { get; }
 
     /// <summary>
     /// Gets the path to the game directory were pluings are to be installed.
     /// </summary>
     /// <value>The path to the game directory were pluings are to be installed.</value>
-    public abstract string PluginsPath
-    {
-      get;
-    }
+    public abstract string PluginsPath { get; }
 
     /// <summary>
     /// Gets the plugin manager for this game mode.
     /// </summary>
     /// <value>The plugin manager for this game mode.</value>
-    public abstract PluginManager PluginManager
-    {
-      get;
-    }
+    public abstract PluginManager PluginManager { get; }
 
     /// <summary>
     /// Gets the version of the installed game.
     /// </summary>
     /// <value>The version of the installed game.</value>
-    public abstract Version GameVersion
-    {
-      get;
-    }
+    public abstract Version GameVersion { get; }
 
     #endregion
 
     #region Constructors
-
-    /// <summary>
-    /// The default constructor.
-    /// </summary>
-    public GameMode()
-    {
-      //this folder can't be created here, as the path may not be set
-      // further, this folder should be created by the game, so I don't think the appropriate way
-      // to handle thing if it's missing is to create it
-      //if (!Directory.Exists(UserSettingsPath)) Directory.CreateDirectory(UserSettingsPath);
-    }
 
     #endregion
 
@@ -318,7 +250,8 @@ class Script : GenericBaseScript {
     public string GetXMLConfigSchemaPath(string p_strVersion)
     {
       string strSchemaPath = GetGameSpecificXMLConfigSchemaPath(p_strVersion);
-      return strSchemaPath ?? Path.Combine(Program.ProgrammeInfoDirectory, String.Format("ModConfig{0}.xsd", p_strVersion));
+      return strSchemaPath ??
+             Path.Combine(Program.ProgrammeInfoDirectory, String.Format("ModConfig{0}.xsd", p_strVersion));
     }
 
     #endregion
@@ -357,18 +290,16 @@ class Script : GenericBaseScript {
     {
       int i = 0;
       LoadOrderInfo loi;
-      
-      this.fullModList.Clear();
+
+      fullModList.Clear();
 
       foreach (string s in PluginManager.OrderedPluginList)
       {
         loi.active = PluginManager.IsPluginActive(Path.Combine(Program.GameMode.PluginsPath, s));
         loi.idx = i;
-        this.fullModList.Add(Path.GetFileName(s).ToLower(), loi);
+        fullModList.Add(Path.GetFileName(s).ToLower(), loi);
         i++;
       }
-
-      return;
     }
 
     /*
@@ -383,6 +314,7 @@ class Script : GenericBaseScript {
      * 3 = A required master is present and enabled but after this plugin
      * 
     */
+
     public int getPluginDependencyStatus(string name, bool showMessage = false)
     {
       int ret = 0;
@@ -396,29 +328,30 @@ class Script : GenericBaseScript {
         // Get the list of masters of the queried plugin
         plgPlugin = plgPlugin = new Plugin(Path.Combine(Program.GameMode.PluginsPath, name), true);
         masters = new List<string>();
-        foreach (SubRecord sr in ((Record)plgPlugin.Records[0]).SubRecords)
+        foreach (SubRecord sr in ((Record) plgPlugin.Records[0]).SubRecords)
         {
           switch (sr.Name)
           {
             case "MAST":
               masters.Add(sr.GetStrData().ToLower());
-            break;
+              break;
           }
         }
 
         for (i = 0; i < masters.Count; i++)
         {
-          if (this.fullModList.ContainsKey(masters[i]))
+          if (fullModList.ContainsKey(masters[i]))
           {
-            if (this.fullModList[masters[i]].active)
+            if (fullModList[masters[i]].active)
             {
-              if (this.fullModList[masters[i]].idx > this.fullModList[name.ToLower()].idx)
+              if (fullModList[masters[i]].idx > fullModList[name.ToLower()].idx)
               {
                 // Master present and active but in wrong order.
                 ret = 3;
                 if (showMessage)
                 {
-                  MessageBox.Show("The plugin '" + name + "'  is being loaded before its master '" + masters[i] + "'.  Fix the load order to continue.");
+                  MessageBox.Show("The plugin '" + name + "'  is being loaded before its master '" + masters[i] +
+                                  "'.  Fix the load order to continue.");
                 }
                 break;
               }
@@ -429,7 +362,8 @@ class Script : GenericBaseScript {
               ret = 2;
               if (showMessage)
               {
-                MessageBox.Show("The plugin '" + name + "'  requires master '" + masters[i] + "' To be active.  Activate it or disable this plugin.");
+                MessageBox.Show("The plugin '" + name + "'  requires master '" + masters[i] +
+                                "' To be active.  Activate it or disable this plugin.");
               }
               break;
             }
@@ -440,7 +374,8 @@ class Script : GenericBaseScript {
             ret = 1;
             if (showMessage)
             {
-              MessageBox.Show("The plugin '" + name + "' is missing a master, '" + masters[i] + "' which it requires.  Deactivate this plugin, or install and activate the missing master.");
+              MessageBox.Show("The plugin '" + name + "' is missing a master, '" + masters[i] +
+                              "' which it requires.  Deactivate this plugin, or install and activate the missing master.");
             }
             break;
           }
@@ -449,6 +384,7 @@ class Script : GenericBaseScript {
 
       return ret;
     }
+
     #endregion
 
     /// <summary>

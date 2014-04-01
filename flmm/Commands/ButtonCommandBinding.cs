@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Windows.Forms;
 using System.ComponentModel;
+using System.Windows.Forms;
 
 namespace Fomm.Commands
 {
@@ -20,7 +20,7 @@ namespace Fomm.Commands
     {
       get
       {
-        return (Button)Trigger;
+        return (Button) Trigger;
       }
     }
 
@@ -39,7 +39,7 @@ namespace Fomm.Commands
     {
       p_butButton.Text = p_cmdCommand.Name;
       p_butButton.Enabled = Command.CanExecute;
-      p_butButton.Click += new EventHandler(Button_Click);
+      p_butButton.Click += Button_Click;
     }
 
     #endregion

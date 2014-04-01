@@ -1,13 +1,8 @@
 ﻿using System;
-using Fomm.PackageManager;
+using System.Diagnostics;
 using System.IO;
-using Fomm.Games.Fallout3.Tools.TESsnip;
-using Fomm.PackageManager.ModInstallLog;
-using System.Windows.Forms;
-using Fomm.Games.Fallout3.Tools.BSA;
-using System.Collections.Generic;
-using Fomm.Games.Fallout3.Tools.AutoSorter;
 using Fomm.Games.Fallout3.Script;
+using Fomm.PackageManager;
 
 namespace Fomm.Games.FalloutNewVegas.Script
 {
@@ -47,14 +42,16 @@ namespace Fomm.Games.FalloutNewVegas.Script
     {
       PermissionsManager.CurrentPermissions.Assert();
       if (!File.Exists("nvse_loader.exe"))
+      {
         return null;
-      return new Version(System.Diagnostics.FileVersionInfo.GetVersionInfo("nvse_loader.exe").FileVersion.Replace(", ", "."));
+      }
+      return new Version(FileVersionInfo.GetVersionInfo("nvse_loader.exe").FileVersion.Replace(", ", "."));
     }
 
     #endregion
 
     #region Ini Management
-    
+
     #region Ini Editing
 
     /// <summary>
@@ -68,8 +65,10 @@ namespace Fomm.Games.FalloutNewVegas.Script
     /// if the user chose not to overwrite the existing value.</returns>
     public override bool EditFalloutINI(string p_strSection, string p_strKey, string p_strValue, bool p_booSaveOld)
     {
-      EditINI(((FalloutNewVegasGameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FODefaultIniPath, p_strSection, p_strKey, p_strValue);
-      return EditINI(((FalloutNewVegasGameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOIniPath, p_strSection, p_strKey, p_strValue);
+      EditINI(((FalloutNewVegasGameMode.SettingsFilesSet) Program.GameMode.SettingsFiles).FODefaultIniPath, p_strSection,
+              p_strKey, p_strValue);
+      return EditINI(((FalloutNewVegasGameMode.SettingsFilesSet) Program.GameMode.SettingsFiles).FOIniPath, p_strSection,
+                     p_strKey, p_strValue);
     }
 
     #endregion
@@ -77,14 +76,6 @@ namespace Fomm.Games.FalloutNewVegas.Script
     #endregion
 
     #region IDisposable Members
-
-    /// <summary>
-    /// Cleans up used resources.
-    /// </summary>
-    public override void Dispose()
-    {
-      base.Dispose();
-    }
 
     #endregion
   }

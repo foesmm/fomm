@@ -178,4 +178,35 @@
   <data name="Warning" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Warning.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="No_Fallout_INI_file" xml:space="preserve">
+    <value>You have no Fallout INI file. Please run Fallout 3 to initialize the file before installing any mods or turning on Archive Invalidation.</value>
+  </data>
+  <data name="Missing_INI" xml:space="preserve">
+    <value>Missing INI</value>
+  </data>
+  <data name="FO_Close_All_Windows" xml:space="preserve">
+    <value>Please close all utility windows before launching fallout</value>
+  </data>
+  <data name="No_Custom_Launch" xml:space="preserve">
+    <value>No custom launch command has been set</value>
+  </data>
+  <data name="Failed_To_Launch" xml:space="preserve">
+    <value>Failed to launch '</value>
+  </data>
+  <data name="ErrorStr" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="errstr_End_Line" xml:space="preserve">
+    <value>The given end line paramater is outside of the range of lines in the given document.</value>
+  </data>
+  <data name="No_Boss_Masterlist" xml:space="preserve">
+    <value>There is no BOSS masterlist present, would you like to fetch the latest one?</value>
+  </data>
+  <data name="Error_Updating_Boss" xml:space="preserve">
+    <value>There was an error updating BOSS
+</value>
+  </data>
+  <data name="Boss_Error_Title" xml:space="preserve">
+    <value>BOSS update error</value>
+  </data>
 </root>

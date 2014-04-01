@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Security;
 using System.Security.Permissions;
-using System.IO;
-using System.Collections.Generic;
 
 namespace Fomm.PackageManager
 {
@@ -24,7 +24,7 @@ namespace Fomm.PackageManager
       permissions = new PermissionSet(PermissionState.None);
       //do the following paths need to add to this?
       // savesPath - fallout 3
-      FileIOPermission fipFilePermission = new FileIOPermission(FileIOPermissionAccess.AllAccess, new string[]
+      FileIOPermission fipFilePermission = new FileIOPermission(FileIOPermissionAccess.AllAccess, new[]
       {
         Program.tmpPath,
         Path.GetTempPath(),
@@ -54,7 +54,9 @@ namespace Fomm.PackageManager
       get
       {
         if (permissions == null)
+        {
           throw new InvalidOperationException("You must call Init() before using the permissions manager.");
+        }
         return permissions;
       }
     }

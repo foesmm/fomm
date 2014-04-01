@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Windows.Forms;
 using System.IO;
-using System.Xml.Schema;
-using Fomm.PackageManager.XmlConfiguredInstall;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
+using System.Xml;
+using System.Xml.Schema;
 using Fomm.Controls;
 using Fomm.PackageManager.XmlConfiguredInstall.Parsers;
-using System.Xml;
 
 namespace Fomm.PackageManager.Controls
 {
@@ -42,8 +41,8 @@ namespace Fomm.PackageManager.Controls
           {
             fscScript.Type = FomodScriptType.XMLConfig;
             string strHeader = "<?xml version=\"1.0\" encoding=\"UTF-16\" ?>" + Environment.NewLine +
-                      "<config xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"http://qconsulting.ca/fo3/ModConfig{0}.xsd\">";
-            strHeader = String.Format(strHeader, cbxVersion.SelectedItem.ToString());
+                               "<config xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"http://qconsulting.ca/fo3/ModConfig{0}.xsd\">";
+            strHeader = String.Format(strHeader, cbxVersion.SelectedItem);
             fscScript.Text = xedScript.Text.Replace("<config>", strHeader);
           }
         }
@@ -107,8 +106,10 @@ namespace Fomm.PackageManager.Controls
       get
       {
         if (((ddtScript.SelectedTabPage == dtpCSharp) && !sedScript.ValidateSyntax()) ||
-          ((ddtScript.SelectedTabPage == dtpXML) && !xedScript.ValidateXml()))
+            ((ddtScript.SelectedTabPage == dtpXML) && !xedScript.ValidateXml()))
+        {
           return false;
+        }
         return true;
       }
     }
@@ -164,7 +165,10 @@ namespace Fomm.PackageManager.Controls
           xrsSettings.IgnoreWhitespace = true;
           using (XmlReader xrdSchemaReader = XmlReader.Create(strSchemaPath, xrsSettings))
           {
-            xedScript.Schema = XmlSchema.Read(xrdSchemaReader, delegate(object sender, ValidationEventArgs e) { throw e.Exception; });
+            xedScript.Schema = XmlSchema.Read(xrdSchemaReader, delegate(object sender, ValidationEventArgs e)
+            {
+              throw e.Exception;
+            });
           }
         }
       }
@@ -182,7 +186,9 @@ namespace Fomm.PackageManager.Controls
     private void xedScript_GotAutoCompleteList(object sender, RegeneratableAutoCompleteListEventArgs e)
     {
       if (GotXMLAutoCompleteList != null)
+      {
         GotXMLAutoCompleteList(this, e);
+      }
     }
   }
 }

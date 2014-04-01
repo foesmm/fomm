@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Xml;
-using System.IO;
-using System.Text;
 using System.Collections.Generic;
 
 namespace Fomm.PackageManager.ModInstallLog
@@ -17,10 +14,9 @@ namespace Fomm.PackageManager.ModInstallLog
     /// </summary>
     internal class IniEdit : IComparable<IniEdit>
     {
-      private string m_strFile = null;
-      private string m_strSection = null;
-      private string m_strKey = null;
-      private string m_strValue;
+      private string m_strFile;
+      private string m_strSection;
+      private string m_strKey;
 
       #region Properties
 
@@ -64,17 +60,7 @@ namespace Fomm.PackageManager.ModInstallLog
       /// Gets or sets the value to which the key was set.
       /// </summary>
       /// <value>The value to which the key was set.</value>
-      public string Value
-      {
-        get
-        {
-          return m_strValue;
-        }
-        set
-        {
-          m_strValue = value;
-        }
-      }
+      public string Value { get; set; }
 
       #endregion
 
@@ -112,12 +98,14 @@ namespace Fomm.PackageManager.ModInstallLog
       /// instance.</returns>
       public int CompareTo(IniEdit other)
       {
-        Int32 intResult = m_strFile.CompareTo(other.m_strFile);
+        Int32 intResult = String.Compare(m_strFile, other.m_strFile, StringComparison.Ordinal);
         if (intResult == 0)
         {
-          intResult = m_strSection.CompareTo(other.m_strSection);
+          intResult = String.Compare(m_strSection, other.m_strSection, StringComparison.Ordinal);
           if (intResult == 0)
-            intResult = m_strKey.CompareTo(other.m_strKey);
+          {
+            intResult = String.Compare(m_strKey, other.m_strKey, StringComparison.Ordinal);
+          }
         }
         return intResult;
       }
@@ -130,8 +118,7 @@ namespace Fomm.PackageManager.ModInstallLog
     /// </summary>
     internal class GameSpecificValueEdit : IComparable<GameSpecificValueEdit>
     {
-      private string m_strKey = null;
-      private byte[] m_bteData;
+      private string m_strKey;
 
       #region Properties
 
@@ -151,17 +138,7 @@ namespace Fomm.PackageManager.ModInstallLog
       /// Gets or sets the data to which the game-specific value was set.
       /// </summary>
       /// <value>The data to which the game-specific value was set.</value>
-      public byte[] Data
-      {
-        get
-        {
-          return m_bteData;
-        }
-        set
-        {
-          m_bteData = value;
-        }
-      }
+      public byte[] Data { get; set; }
 
       #endregion
 
@@ -194,7 +171,7 @@ namespace Fomm.PackageManager.ModInstallLog
       /// instance.</returns>
       public int CompareTo(GameSpecificValueEdit other)
       {
-        Int32 intResult = m_strKey.CompareTo(other.m_strKey);
+        Int32 intResult = String.Compare(m_strKey, other.m_strKey, StringComparison.Ordinal);
         return intResult;
       }
 
@@ -294,13 +271,13 @@ namespace Fomm.PackageManager.ModInstallLog
 
       #endregion
     }*/
-  
-    private List<string> m_lstDataFiles = null;
-    private List<string> m_lstReplacedDataFiles = null;
-    private List<IniEdit> m_lstIniEdits = null;
-    private List<IniEdit> m_lstReplacedIniValues = null;
-    private List<GameSpecificValueEdit> m_lstGameSpecificValueEdits = null;
-    private List<GameSpecificValueEdit> m_lstReplacedGameSpecificValues = null;
+    private List<string> m_lstDataFiles;
+
+    private List<string> m_lstReplacedDataFiles;
+    private List<IniEdit> m_lstIniEdits;
+    private List<IniEdit> m_lstReplacedIniValues;
+    private List<GameSpecificValueEdit> m_lstGameSpecificValueEdits;
+    private List<GameSpecificValueEdit> m_lstReplacedGameSpecificValues;
 
     #region Properties
 
@@ -406,8 +383,12 @@ namespace Fomm.PackageManager.ModInstallLog
     {
       string strLoweredSearchString = p_strSearchString.ToLowerInvariant();
       for (Int32 i = p_lstValues.Count - 1; i >= 0; i--)
+      {
         if (p_lstValues[i].ToLowerInvariant().Equals(strLoweredSearchString))
+        {
           return true;
+        }
+      }
       return false;
     }
 
@@ -437,7 +418,9 @@ namespace Fomm.PackageManager.ModInstallLog
     {
       string strNormalizedPath = NormalizePath(p_strDataPath);
       if (!ListContains(m_lstDataFiles, strNormalizedPath))
+      {
         m_lstDataFiles.Add(strNormalizedPath);
+      }
     }
 
     /// <summary>
@@ -450,7 +433,9 @@ namespace Fomm.PackageManager.ModInstallLog
     internal void BackupOriginalDataFile(string p_strDataPath)
     {
       if (!ListContains(m_lstReplacedDataFiles, p_strDataPath))
+      {
         m_lstReplacedDataFiles.Add(p_strDataPath);
+      }
     }
 
     #endregion
@@ -476,9 +461,13 @@ namespace Fomm.PackageManager.ModInstallLog
       IniEdit iniEdit = new IniEdit(strLoweredFile, strLoweredSection, strLoweredKey);
       Int32 intIndex = m_lstIniEdits.IndexOf(iniEdit);
       if (intIndex == -1)
+      {
         m_lstIniEdits.Add(iniEdit);
+      }
       else
+      {
         iniEdit = m_lstIniEdits[intIndex];
+      }
       iniEdit.Value = p_strValue;
     }
 
@@ -500,9 +489,13 @@ namespace Fomm.PackageManager.ModInstallLog
       IniEdit iniEdit = new IniEdit(strLoweredFile, strLoweredSection, strLoweredKey);
       Int32 intIndex = m_lstReplacedIniValues.IndexOf(iniEdit);
       if (intIndex == -1)
+      {
         m_lstReplacedIniValues.Add(iniEdit);
+      }
       else
+      {
         iniEdit = m_lstReplacedIniValues[intIndex];
+      }
       iniEdit.Value = p_strValue;
     }
 
@@ -525,9 +518,13 @@ namespace Fomm.PackageManager.ModInstallLog
       GameSpecificValueEdit gseEdit = new GameSpecificValueEdit(strLoweredKey);
       Int32 intIndex = m_lstGameSpecificValueEdits.IndexOf(gseEdit);
       if (intIndex == -1)
+      {
         m_lstGameSpecificValueEdits.Add(gseEdit);
+      }
       else
+      {
         gseEdit = m_lstGameSpecificValueEdits[intIndex];
+      }
       gseEdit.Data = p_bteData;
     }
 
@@ -545,9 +542,13 @@ namespace Fomm.PackageManager.ModInstallLog
       GameSpecificValueEdit oetEdit = new GameSpecificValueEdit(strLoweredKey);
       Int32 intIndex = m_lstReplacedGameSpecificValues.IndexOf(oetEdit);
       if (intIndex == -1)
+      {
         m_lstReplacedGameSpecificValues.Add(oetEdit);
+      }
       else
+      {
         oetEdit = m_lstReplacedGameSpecificValues[intIndex];
+      }
       oetEdit.Data = p_bteData;
     }
 

@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Xml.Serialization;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using System.Xml.Schema;
 using System.Xml;
+using System.Xml.Schema;
+using System.Xml.Serialization;
 
 namespace Fomm.Util
 {
@@ -84,21 +83,23 @@ namespace Fomm.Util
         bool booIsEmpty = reader.IsEmptyElement;
         reader.ReadStartElement();
         if (booIsEmpty)
+        {
           return;
+        }
 
         reader.ReadStartElement("location");
         XmlSerializer xsrSerializer = new XmlSerializer(Location.GetType());
-        Location = (Point)xsrSerializer.Deserialize(reader);
+        Location = (Point) xsrSerializer.Deserialize(reader);
         reader.ReadEndElement();
 
         reader.ReadStartElement("size");
         xsrSerializer = new XmlSerializer(Size.GetType());
-        Size = (Size)xsrSerializer.Deserialize(reader);
+        Size = (Size) xsrSerializer.Deserialize(reader);
         reader.ReadEndElement();
 
         reader.ReadStartElement("isMaximized");
         xsrSerializer = new XmlSerializer(IsMaximized.GetType());
-        IsMaximized = (bool)xsrSerializer.Deserialize(reader);
+        IsMaximized = (bool) xsrSerializer.Deserialize(reader);
         reader.ReadEndElement();
 
         reader.ReadEndElement();
@@ -139,20 +140,26 @@ namespace Fomm.Util
     public void GetWindowPosition(string p_strWindowName, Form p_frmWindow)
     {
       if (!m_dicPositions.ContainsKey(p_strWindowName))
+      {
         return;
+      }
       LocationInfo lifPosition = m_dicPositions[p_strWindowName];
       if (lifPosition.IsMaximized)
+      {
         p_frmWindow.WindowState = FormWindowState.Maximized;
+      }
       else
       {
         Screen[] scrScreens = Screen.AllScreens;
         foreach (Screen scrScreen in scrScreens)
+        {
           if (scrScreen.WorkingArea.Contains(lifPosition.Location))
           {
             p_frmWindow.Location = lifPosition.Location;
             p_frmWindow.StartPosition = FormStartPosition.Manual;
             break;
           }
+        }
         p_frmWindow.ClientSize = lifPosition.Size;
       }
     }
@@ -165,8 +172,11 @@ namespace Fomm.Util
     public void SetWindowPosition(string p_strWindowName, Form p_frmWindow)
     {
       if (p_frmWindow.WindowState == FormWindowState.Minimized)
+      {
         return;
-      m_dicPositions[p_strWindowName] = new LocationInfo(p_frmWindow.Location, p_frmWindow.ClientSize, p_frmWindow.WindowState == FormWindowState.Maximized);
+      }
+      m_dicPositions[p_strWindowName] = new LocationInfo(p_frmWindow.Location, p_frmWindow.ClientSize,
+                                                         p_frmWindow.WindowState == FormWindowState.Maximized);
     }
 
     #region IXmlSerializable Members
@@ -189,14 +199,16 @@ namespace Fomm.Util
       bool booIsEmpty = reader.IsEmptyElement;
       reader.ReadStartElement();
       if (booIsEmpty)
+      {
         return;
+      }
       while (reader.MoveToContent() == XmlNodeType.Element && reader.LocalName == "position")
       {
         string strWindowName = reader["window"];
         reader.ReadStartElement("position");
 
-        XmlSerializer xsrLocationInfo = new XmlSerializer(typeof(LocationInfo));
-        m_dicPositions[strWindowName] = (LocationInfo)xsrLocationInfo.Deserialize(reader);
+        XmlSerializer xsrLocationInfo = new XmlSerializer(typeof (LocationInfo));
+        m_dicPositions[strWindowName] = (LocationInfo) xsrLocationInfo.Deserialize(reader);
 
         reader.ReadEndElement();
       }
@@ -214,7 +226,7 @@ namespace Fomm.Util
         writer.WriteStartElement("position");
         writer.WriteAttributeString("window", kvpPosition.Key);
 
-        XmlSerializer xsrLocationInfo = new XmlSerializer(typeof(LocationInfo));
+        XmlSerializer xsrLocationInfo = new XmlSerializer(typeof (LocationInfo));
         xsrLocationInfo.Serialize(writer, kvpPosition.Value);
 
         writer.WriteEndElement();

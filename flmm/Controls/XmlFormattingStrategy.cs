@@ -1,7 +1,7 @@
 ﻿using System;
-using ICSharpCode.TextEditor.Document;
 using System.Text;
 using ICSharpCode.TextEditor;
+using ICSharpCode.TextEditor.Document;
 
 namespace Fomm.Controls
 {
@@ -33,7 +33,9 @@ namespace Fomm.Controls
 
       StringBuilder stbLineWithIndent = new StringBuilder();
       for (Int32 i = 0; i < intDepth; i++)
+      {
         stbLineWithIndent.Append("\t");
+      }
       stbLineWithIndent.Append(TextUtilities.GetLineAsString(p_txaTextArea.Document, p_intLineNumber).Trim());
       LineSegment oldLine = p_txaTextArea.Document.GetLineSegment(p_intLineNumber);
       Int32 intCaretOffset = stbLineWithIndent.Length - oldLine.Length;

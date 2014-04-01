@@ -1,10 +1,7 @@
-﻿using System;
+﻿using System.Windows.Forms;
 using ChinhDo.Transactions;
-using System.Xml;
-using Fomm.PackageManager;
-using fomm.Transactions;
-using System.Windows.Forms;
 using Fomm.PackageManager.ModInstallLog;
+using fomm.Transactions;
 
 namespace Fomm.InstallLogUpgraders
 {
@@ -17,9 +14,8 @@ namespace Fomm.InstallLogUpgraders
   /// </remarks>
   internal abstract class Upgrader
   {
-    private static object m_objLock = new object();
-    private BackgroundWorkerProgressDialog m_pgdProgress = null;
-    private TxFileManager m_tfmFileManager = null;
+    private BackgroundWorkerProgressDialog m_pgdProgress;
+    private TxFileManager m_tfmFileManager;
 
     #region Properties
 
@@ -51,13 +47,6 @@ namespace Fomm.InstallLogUpgraders
     #endregion
 
     #region Constructor
-
-    /// <summary>
-    /// The deafult constructor.
-    /// </summary>
-    internal Upgrader()
-    {
-    }
 
     #endregion
 

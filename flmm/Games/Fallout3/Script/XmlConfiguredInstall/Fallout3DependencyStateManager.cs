@@ -1,6 +1,6 @@
 ﻿using System;
-using Fomm.PackageManager.XmlConfiguredInstall;
 using Fomm.PackageManager;
+using Fomm.PackageManager.XmlConfiguredInstall;
 
 namespace Fomm.Games.Fallout3.Script.XmlConfiguredInstall
 {
@@ -22,7 +22,7 @@ namespace Fomm.Games.Fallout3.Script.XmlConfiguredInstall
     {
       get
       {
-        return ((Fallout3ModInstallScript)Script).GetScriptExtenderVersion();
+        return ((Fallout3ModInstallScript) Script).GetScriptExtenderVersion();
       }
     }
 

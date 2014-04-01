@@ -1,17 +1,28 @@
 using System;
 using System.Windows.Forms;
+using Fomm.Properties;
 
 namespace Fomm.PackageManager
 {
-  enum OverwriteResult { YesToAll = 1, YesToFolder = 2, Yes = 3, NoToAll = 4, NoToFolder = 5, No = 6, YesToMod = 7, NoToMod = 8 }
+  internal enum OverwriteResult
+  {
+    YesToAll = 1,
+    YesToFolder = 2,
+    Yes = 3,
+    NoToAll = 4,
+    NoToFolder = 5,
+    No = 6,
+    YesToMod = 7,
+    NoToMod = 8
+  }
 
   partial class Overwriteform : Form
   {
     private Overwriteform(string msg, bool allowFolder, bool allowMod)
     {
       InitializeComponent();
-      this.Icon = Fomm.Properties.Resources.fomm02;
-      Properties.Settings.Default.windowPositions.GetWindowPosition("OverwriteForm", this);
+      Icon = Resources.fomm02;
+      Settings.Default.windowPositions.GetWindowPosition("OverwriteForm", this);
       label1.Text = msg;
       if (!allowFolder)
       {
@@ -84,15 +95,15 @@ namespace Fomm.PackageManager
 
     private void Overwriteform_FormClosing(object sender, FormClosingEventArgs e)
     {
-      Properties.Settings.Default.windowPositions.SetWindowPosition("OverwriteForm", this);
-      Properties.Settings.Default.Save();
+      Settings.Default.windowPositions.SetWindowPosition("OverwriteForm", this);
+      Settings.Default.Save();
     }
 
     private void panel1_Layout(object sender, LayoutEventArgs e)
     {
-      panel6.Width = panel1.Width / 4;
-      panel5.Width = panel1.Width / 4;
-      panel4.Width = panel1.Width / 4;
+      panel6.Width = panel1.Width/4;
+      panel5.Width = panel1.Width/4;
+      panel4.Width = panel1.Width/4;
     }
   }
 }

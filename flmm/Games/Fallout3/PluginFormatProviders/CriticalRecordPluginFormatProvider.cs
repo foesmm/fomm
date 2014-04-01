@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 
 namespace Fomm.Games.Fallout3.PluginFormatProviders
@@ -9,7 +8,7 @@ namespace Fomm.Games.Fallout3.PluginFormatProviders
   /// </summary>
   public class CriticalRecordPluginFormatProvider : IPluginFormatProvider
   {
-    private PluginFormat.PluginFormatterManager m_pfmManager = null;
+    private PluginFormat.PluginFormatterManager m_pfmManager;
     private Dictionary<string, PluginFormat> m_dicFormat = new Dictionary<string, PluginFormat>();
 
     /// <summary>
@@ -66,7 +65,9 @@ namespace Fomm.Games.Fallout3.PluginFormatProviders
     public PluginFormat GetFormat(string p_strPluginName)
     {
       if (!m_dicFormat.ContainsKey(p_strPluginName))
+      {
         return null;
+      }
       return m_dicFormat[p_strPluginName];
     }
 

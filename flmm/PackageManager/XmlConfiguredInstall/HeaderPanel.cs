@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Windows.Forms;
-using System.Drawing;
 using System.ComponentModel;
+using System.Drawing;
 using System.Drawing.Imaging;
+using System.Windows.Forms;
 
 namespace Fomm.PackageManager.XmlConfiguredInstall
 {
@@ -38,7 +38,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     private class TransparentLabel : UserControl
     {
       private Label m_lblLabel = new Label();
-      private bool m_booPaintOnce = false;
+      private bool m_booPaintOnce;
 
       #region Properties
 
@@ -97,16 +97,18 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
       /// We don't want a backgroun, so this method does nothing.
       /// </remarks>
       /// <param name="e">A <see cref="PaintEventArgs"/> describing the event arguments.</param>
-      protected override void OnPaintBackground(PaintEventArgs e) { }
+      protected override void OnPaintBackground(PaintEventArgs e)
+      {
+      }
 
       /// <summary>
       /// Adjusts the size of the label whenever properties affecting size change.
       /// </summary>
       private void updateLayout()
       {
-        using (Graphics g = this.CreateGraphics())
+        using (Graphics g = CreateGraphics())
         {
-          this.Size = g.MeasureString(m_lblLabel.Text, m_lblLabel.Font).ToSize();
+          Size = g.MeasureString(m_lblLabel.Text, m_lblLabel.Font).ToSize();
         }
       }
 
@@ -122,20 +124,16 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
         if (!m_booPaintOnce)
         {
           m_booPaintOnce = true;
-          this.Visible = false;
-          this.Parent.Invalidate(this.Bounds);
-          this.Parent.Update();
-          this.Visible = true;
-          return;
+          Visible = false;
+          Parent.Invalidate(Bounds);
+          Parent.Update();
+          Visible = true;
         }
-        else
+        m_booPaintOnce = false;
+        using (Graphics g = e.Graphics)
         {
-          m_booPaintOnce = false;
-          using (Graphics g = e.Graphics)
-          {
-            SolidBrush brush = new SolidBrush(this.ForeColor);
-            g.DrawString(this.Text, this.Font, brush, 1, 1);
-          }
+          SolidBrush brush = new SolidBrush(ForeColor);
+          g.DrawString(Text, Font, brush, 1, 1);
         }
       }
     }
@@ -146,8 +144,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     private PictureBox m_pbxGradient = new PictureBox();
     private TextPosition m_tpsPosition = TextPosition.RightOfImage;
     private TransparentLabel m_tlbLabel = new TransparentLabel();
-    private string m_strImageLocation = null;
-    private Bitmap m_bmpOriginalImage = null;
+    private string m_strImageLocation;
+    private Bitmap m_bmpOriginalImage;
     private bool m_booShowFade = true;
 
     #region Properties
@@ -156,10 +154,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// Gets or sets whether to show the fade effect.
     /// </summary>
     /// <value>Whether to show the fade effect.</value>
-    [Browsable(true)]
-    [Category("Appearance")]
-    [DefaultValue(true)]
-    [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+    [Browsable(true), Category("Appearance"), DefaultValue(true),
+     DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
     public bool ShowFade
     {
       get
@@ -180,10 +176,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// Gets or sets where to position the title text.
     /// </summary>
     /// <value>Where to position the title text.</value>
-    [Browsable(true)]
-    [Category("Appearance")]
-    [DefaultValue(TextPosition.RightOfImage)]
-    [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+    [Browsable(true), Category("Appearance"), DefaultValue(TextPosition.RightOfImage),
+     DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
     public TextPosition TextPosition
     {
       get
@@ -204,8 +198,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// Gets or sets the title text.
     /// </summary>
     /// <value>The title text.</value>
-    [Browsable(true)]
-    [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+    [Browsable(true), DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
     public override string Text
     {
       get
@@ -226,9 +219,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// Gets or sets the source location of the image to display.
     /// </summary>
     /// <value>The source location of the image to display.</value>
-    [Browsable(true)]
-    [Category("Appearance")]
-    [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+    [Browsable(true), Category("Appearance"), DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
     public string ImageLocation
     {
       get
@@ -251,9 +242,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// Gets or sets the image to display.
     /// </summary>
     /// <value>The image to display.</value>
-    [Browsable(true)]
-    [Category("Appearance")]
-    [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+    [Browsable(true), Category("Appearance"), DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
     public Image Image
     {
       get
@@ -264,7 +253,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
       {
         Bitmap bmpValue = null;
         if (value != null)
+        {
           bmpValue = new Bitmap(value);
+        }
         if (m_bmpOriginalImage != bmpValue)
         {
           m_bmpOriginalImage = bmpValue;
@@ -304,8 +295,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// </summary>
     public HeaderPanel()
     {
-      this.DoubleBuffered = true;
-      this.SuspendLayout();
+      DoubleBuffered = true;
+      SuspendLayout();
       Controls.Add(m_pbxImage);
       Controls.Add(m_pbxGradient);
       Controls.Add(m_tlbLabel);
@@ -313,7 +304,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
       m_pbxGradient.Dock = DockStyle.Fill;
       m_pbxGradient.SizeMode = PictureBoxSizeMode.StretchImage;
       m_booShowFade = !String.IsNullOrEmpty(m_strImageLocation) || (m_bmpOriginalImage != null);
-      this.ResumeLayout();
+      ResumeLayout();
       updateLayout();
     }
 
@@ -324,11 +315,11 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// </summary>
     private void updateLayout()
     {
-      this.SuspendLayout();
+      SuspendLayout();
       m_pbxImage.Dock = (m_tpsPosition == TextPosition.Left) ? DockStyle.Right : DockStyle.Left;
       m_pbxGradient.BringToFront();
       loadImage();
-      m_tlbLabel.Top = (this.ClientSize.Height - m_tlbLabel.Height) / 2;
+      m_tlbLabel.Top = (ClientSize.Height - m_tlbLabel.Height)/2;
       switch (m_tpsPosition)
       {
         case TextPosition.Left:
@@ -340,12 +331,12 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
           m_tlbLabel.Anchor = AnchorStyles.Top | AnchorStyles.Left;
           break;
         default:
-          m_tlbLabel.Left = this.ClientSize.Width - m_tlbLabel.Width - 15;
+          m_tlbLabel.Left = ClientSize.Width - m_tlbLabel.Width - 15;
           m_tlbLabel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
           break;
       }
       m_tlbLabel.BringToFront();
-      this.ResumeLayout();
+      ResumeLayout();
 
       Fade();
     }
@@ -360,7 +351,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     protected override void OnFontChanged(EventArgs e)
     {
       base.OnFontChanged(e);
-      m_tlbLabel.Font = this.Font;
+      m_tlbLabel.Font = Font;
       updateLayout();
     }
 
@@ -375,7 +366,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     {
       base.OnResize(e);
       if (((m_tlbLabel.Anchor & AnchorStyles.Left) == AnchorStyles.Left) && m_booShowFade)
+      {
         m_tlbLabel.Refresh();
+      }
     }
 
     /// <summary>
@@ -392,7 +385,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     {
       Bitmap bmpSmallPicture = new Bitmap(p_szeSize.Width, p_szeSize.Height, PixelFormat.Format32bppArgb);
       Graphics grpPhoto = Graphics.FromImage(bmpSmallPicture);
-      grpPhoto.DrawImage(p_imgSource, new Rectangle(0, 0, p_szeSize.Width, p_szeSize.Height), new Rectangle(0, 0, p_imgSource.Width, p_imgSource.Height), GraphicsUnit.Pixel);
+      grpPhoto.DrawImage(p_imgSource, new Rectangle(0, 0, p_szeSize.Width, p_szeSize.Height),
+                         new Rectangle(0, 0, p_imgSource.Width, p_imgSource.Height), GraphicsUnit.Pixel);
       return bmpSmallPicture;
     }
 
@@ -408,11 +402,11 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
         m_bmpOriginalImage = new Bitmap(120, 90);
         using (Graphics g = Graphics.FromImage(m_bmpOriginalImage))
         {
-          g.FillRectangle(new SolidBrush(this.BackColor), 0, 0, 120, 90);
+          g.FillRectangle(new SolidBrush(BackColor), 0, 0, 120, 90);
         }
       }
-      float fltScale = (float)pbxImage.ClientSize.Height / (float)m_bmpOriginalImage.Height;
-      pbxImage.ClientSize = new Size((Int32)(Math.Round(fltScale * m_bmpOriginalImage.Width)), pbxImage.ClientSize.Height);
+      float fltScale = pbxImage.ClientSize.Height/(float) m_bmpOriginalImage.Height;
+      pbxImage.ClientSize = new Size((Int32) (Math.Round(fltScale*m_bmpOriginalImage.Width)), pbxImage.ClientSize.Height);
       Bitmap bmpImage = resize(m_bmpOriginalImage, pbxImage.ClientSize);
       pbxImage.Image = bmpImage;
     }
@@ -430,7 +424,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 
       PictureBox pbxImage = m_pbxImage;
       PictureBox pbxGradient = m_pbxGradient;
-      Bitmap bmpImage = (Bitmap)pbxImage.Image;
+      Bitmap bmpImage = (Bitmap) pbxImage.Image;
 
       //set background of picture box to average colour of the image
       Int32 intR = 0;
@@ -454,13 +448,13 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
       pbxImage.BackColor = Color.FromArgb(255, intR, intG, intB);
 
       //fade out the edge of the image
-      Int32 intRange = bmpImage.Width / 4;
+      Int32 intRange = bmpImage.Width/4;
       double dblA = 0;
       for (Int32 i = 0; i < bmpImage.Height; i++)
       {
         Color clrPixel = bmpImage.GetPixel(bmpImage.Width - intRange, i);
-        dblA = (double)clrPixel.A;
-        double dblADelta = dblA / (double)intRange;
+        dblA = clrPixel.A;
+        double dblADelta = dblA/intRange;
         for (Int32 j = intRange; j > 0; j--)
         {
           Int32 intX = (m_tpsPosition == TextPosition.Left) ? j - 1 : bmpImage.Width - j;
@@ -469,7 +463,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
           intG = clrPixel.G;
           intB = clrPixel.B;
           dblA -= dblADelta;
-          Color clrTmp = Color.FromArgb((Int32)dblA, intR, intG, intB);
+          Color clrTmp = Color.FromArgb((Int32) dblA, intR, intG, intB);
           bmpImage.SetPixel(intX, i, clrTmp);
         }
       }
@@ -479,17 +473,33 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
       intR = clrBackColour.R;
       intG = clrBackColour.G;
       intB = clrBackColour.B;
-      Bitmap bmpGradient = new Bitmap(256 * GRADIENT_SIZE_MULT, bmpImage.Height);
+      Bitmap bmpGradient = new Bitmap(256*GRADIENT_SIZE_MULT, bmpImage.Height);
       if (m_tpsPosition == TextPosition.Left)
+      {
         for (Int32 i = 0; i < bmpImage.Height; i++)
-          for (Int32 j = 0; j < 256 * GRADIENT_SIZE_MULT; j += GRADIENT_SIZE_MULT)
+        {
+          for (Int32 j = 0; j < 256*GRADIENT_SIZE_MULT; j += GRADIENT_SIZE_MULT)
+          {
             for (Int32 n = 0; n < GRADIENT_SIZE_MULT; n++)
-              bmpGradient.SetPixel(j + n, i, Color.FromArgb(j / GRADIENT_SIZE_MULT, intR, intG, intB));
+            {
+              bmpGradient.SetPixel(j + n, i, Color.FromArgb(j/GRADIENT_SIZE_MULT, intR, intG, intB));
+            }
+          }
+        }
+      }
       else
+      {
         for (Int32 i = 0; i < bmpImage.Height; i++)
-          for (Int32 j = 0; j < 256 * GRADIENT_SIZE_MULT; j += GRADIENT_SIZE_MULT)
+        {
+          for (Int32 j = 0; j < 256*GRADIENT_SIZE_MULT; j += GRADIENT_SIZE_MULT)
+          {
             for (Int32 n = 0; n < GRADIENT_SIZE_MULT; n++)
-              bmpGradient.SetPixel(j + n, i, Color.FromArgb(255 - j / GRADIENT_SIZE_MULT, intR, intG, intB));
+            {
+              bmpGradient.SetPixel(j + n, i, Color.FromArgb(255 - j/GRADIENT_SIZE_MULT, intR, intG, intB));
+            }
+          }
+        }
+      }
       pbxGradient.Image = bmpGradient;
       m_tlbLabel.Refresh();
     }

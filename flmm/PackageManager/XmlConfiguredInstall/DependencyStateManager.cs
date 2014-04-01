@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.IO;
 
 namespace Fomm.PackageManager.XmlConfiguredInstall
 {
@@ -26,9 +24,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
       public PluginInfo Owner;
     }
 
-    private ModInstallScript m_misInstallScript = null;
+    private ModInstallScript m_misInstallScript;
     private Dictionary<string, FlagValue> m_dicFlags = new Dictionary<string, FlagValue>();
-    private Dictionary<string, bool> m_dicInstalledPlugins = null;
 
     #region Properties
 
@@ -47,17 +44,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// <summary>
     /// A dictionary listed all installed plugins, and indicating which are active.
     /// </summary>
-    public Dictionary<string, bool> InstalledPlugins
-    {
-      get
-      {
-        return m_dicInstalledPlugins;
-      }
-      protected set
-      {
-        m_dicInstalledPlugins = value;
-      }
-    }
+    public Dictionary<string, bool> InstalledPlugins { get; protected set; }
 
     /// <summary>
     /// Gets the current values of the flags that have been set.
@@ -69,7 +56,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
       {
         Dictionary<string, string> dicValues = new Dictionary<string, string>();
         foreach (KeyValuePair<string, FlagValue> kvpValue in m_dicFlags)
+        {
           dicValues[kvpValue.Key] = kvpValue.Value.Value;
+        }
         return dicValues;
       }
     }
@@ -112,14 +101,16 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// A simple constructor that initializes the object with the given values.
     /// </summary>
     /// <param name="p_misInstallScript">The install script.</param>
-    public DependencyStateManager(ModInstallScript p_misInstallScript)
+    protected DependencyStateManager(ModInstallScript p_misInstallScript)
     {
       m_misInstallScript = p_misInstallScript;
 
       Dictionary<string, bool> dicPlugins = new Dictionary<string, bool>();
       string[] strPlugins = m_misInstallScript.GetAllPlugins();
       foreach (string strPlugin in strPlugins)
+      {
         dicPlugins.Add(strPlugin.ToLowerInvariant(), IsPluginActive(strPlugin));
+      }
       InstalledPlugins = dicPlugins;
     }
 
@@ -134,8 +125,12 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     {
       string[] strAtiveInstalledPlugins = GetActiveInstalledPlugins();
       foreach (string strActivePlugin in strAtiveInstalledPlugins)
+      {
         if (strActivePlugin.Equals(p_strFile.ToLowerInvariant()))
+        {
           return true;
+        }
+      }
       return false;
     }
 
@@ -150,13 +145,18 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
         string[] strActivePlugins = m_misInstallScript.GetActivePlugins();
         List<string> lstActiveInstalled = new List<string>();
         foreach (string strActivePlugin in strActivePlugins)
+        {
           if (FileManagement.DataFileExists(strActivePlugin))
+          {
             lstActiveInstalled.Add(strActivePlugin.ToLowerInvariant());
+          }
+        }
         m_strActiveInstalledPlugins = lstActiveInstalled.ToArray();
       }
       return m_strActiveInstalledPlugins;
     }
-    string[] m_strActiveInstalledPlugins = null;
+
+    private string[] m_strActiveInstalledPlugins;
 
     /// <summary>
     /// Sets the value of a conditional flag.
@@ -167,7 +167,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     public void SetFlagValue(string p_strFlagName, string p_strValue, PluginInfo p_pifPlugin)
     {
       if (!m_dicFlags.ContainsKey(p_strFlagName))
+      {
         m_dicFlags[p_strFlagName] = new FlagValue();
+      }
       m_dicFlags[p_strFlagName].Value = p_strValue;
       m_dicFlags[p_strFlagName].Owner = p_pifPlugin;
     }
@@ -181,8 +183,12 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     {
       List<string> lstFlags = new List<string>(m_dicFlags.Keys);
       foreach (string strFlag in lstFlags)
+      {
         if (m_dicFlags[strFlag].Owner == p_pifPlugin)
+        {
           m_dicFlags.Remove(strFlag);
+        }
+      }
     }
   }
 }

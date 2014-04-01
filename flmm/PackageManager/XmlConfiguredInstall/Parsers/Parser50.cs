@@ -1,11 +1,5 @@
 ﻿using System;
 using System.Xml;
-using System.Collections.Generic;
-using System.Xml.Schema;
-using System.IO;
-using System.Drawing;
-using System.Windows.Forms;
-using System.Globalization;
 
 namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
 {
@@ -36,7 +30,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     /// <param name="p_fomodMod">The mod whose configuration file we are parsing.</param>
     /// <param name="p_dsmSate">The state of the install.</param>
     /// <param name="p_pexParserExtension">The parser extension that provides game-specific config file parsing.</param>
-    public Parser50(XmlDocument p_xmlConfig, fomod p_fomodMod, DependencyStateManager p_dsmSate, ParserExtension p_pexParserExtension)
+    public Parser50(XmlDocument p_xmlConfig, fomod p_fomodMod, DependencyStateManager p_dsmSate,
+                    ParserExtension p_pexParserExtension)
       : base(p_xmlConfig, p_fomodMod, p_dsmSate, p_pexParserExtension)
     {
     }
@@ -53,8 +48,12 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     protected override CompositeDependency loadDependency(XmlNode p_xndCompositeDependency)
     {
       if (p_xndCompositeDependency == null)
+      {
         return null;
-      DependencyOperator dopOperator = (DependencyOperator)Enum.Parse(typeof(DependencyOperator), p_xndCompositeDependency.Attributes["operator"].InnerText);
+      }
+      DependencyOperator dopOperator =
+        (DependencyOperator)
+          Enum.Parse(typeof (DependencyOperator), p_xndCompositeDependency.Attributes["operator"].InnerText);
       CompositeDependency cpdDependency = new CompositeDependency(dopOperator);
       XmlNodeList xnlDependencies = p_xndCompositeDependency.ChildNodes;
       foreach (XmlNode xndDependency in xnlDependencies)
@@ -66,7 +65,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
             break;
           case "fileDependency":
             string strDependency = xndDependency.Attributes["file"].InnerText.ToLower();
-            ModFileState mfsModState = (ModFileState)Enum.Parse(typeof(ModFileState), xndDependency.Attributes["state"].InnerText);
+            ModFileState mfsModState =
+              (ModFileState) Enum.Parse(typeof (ModFileState), xndDependency.Attributes["state"].InnerText);
             cpdDependency.Dependencies.Add(new FileDependency(strDependency, mfsModState, StateManager));
             break;
           case "flagDependency":
@@ -85,9 +85,14 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
           default:
             IDependency dpnExtensionDependency = ParserExtension.ParseDependency(xndDependency, StateManager);
             if (dpnExtensionDependency != null)
+            {
               cpdDependency.Dependencies.Add(dpnExtensionDependency);
+            }
             else
-              throw new ParserException("Invalid dependency node: " + xndDependency.Name + ". At this point the config file has been validated against the schema, so there's something wrong with the parser.");
+            {
+              throw new ParserException("Invalid dependency node: " + xndDependency.Name +
+                                        ". At this point the config file has been validated against the schema, so there's something wrong with the parser.");
+            }
             break;
         }
       }

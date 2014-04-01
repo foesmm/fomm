@@ -91,6 +91,15 @@ namespace Fomm.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to BOSS update error.
+        /// </summary>
+        internal static string Boss_Error_Title {
+            get {
+                return ResourceManager.GetString("Boss_Error_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap EnumItem {
@@ -107,6 +116,52 @@ namespace Fomm.Properties {
             get {
                 object obj = ResourceManager.GetObject("error", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There was an error updating BOSS
+        ///.
+        /// </summary>
+        internal static string Error_Updating_Boss {
+            get {
+                return ResourceManager.GetString("Error_Updating_Boss", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        internal static string ErrorStr {
+            get {
+                return ResourceManager.GetString("ErrorStr", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The given end line paramater is outside of the range of lines in the given document..
+        /// </summary>
+        internal static string errstr_End_Line {
+            get {
+                return ResourceManager.GetString("errstr_End_Line", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to launch &apos;.
+        /// </summary>
+        internal static string Failed_To_Launch {
+            get {
+                return ResourceManager.GetString("Failed_To_Launch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please close all utility windows before launching fallout.
+        /// </summary>
+        internal static string FO_Close_All_Windows {
+            get {
+                return ResourceManager.GetString("FO_Close_All_Windows", resourceCulture);
             }
         }
         
@@ -187,6 +242,42 @@ namespace Fomm.Properties {
             get {
                 object obj = ResourceManager.GetObject("justify_right", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing INI.
+        /// </summary>
+        internal static string Missing_INI {
+            get {
+                return ResourceManager.GetString("Missing_INI", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There is no BOSS masterlist present, would you like to fetch the latest one?.
+        /// </summary>
+        internal static string No_Boss_Masterlist {
+            get {
+                return ResourceManager.GetString("No_Boss_Masterlist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No custom launch command has been set.
+        /// </summary>
+        internal static string No_Custom_Launch {
+            get {
+                return ResourceManager.GetString("No_Custom_Launch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have no Fallout INI file. Please run Fallout 3 to initialize the file before installing any mods or turning on Archive Invalidation..
+        /// </summary>
+        internal static string No_Fallout_INI_file {
+            get {
+                return ResourceManager.GetString("No_Fallout_INI_file", resourceCulture);
             }
         }
         

@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using Fomm.Games.Fallout3.Tools.TESsnip;
 
 namespace Fomm.Games.FalloutNewVegas.PluginFormatProviders
@@ -17,8 +16,8 @@ namespace Fomm.Games.FalloutNewVegas.PluginFormatProviders
     /// <lang cref="false"/> otherwise.</returns>
     public override bool HasFormat(string p_strPluginName)
     {
-      return Properties.Settings.Default.falloutNewVegasBoldifyESMs && Plugin.GetIsEsm(Path.Combine(Program.GameMode.PluginsPath, p_strPluginName));
+      return Properties.Settings.Default.falloutNewVegasBoldifyESMs &&
+             Plugin.GetIsEsm(Path.Combine(Program.GameMode.PluginsPath, p_strPluginName));
     }
   }
 }
-

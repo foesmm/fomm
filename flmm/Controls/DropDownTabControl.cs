@@ -1,19 +1,17 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Windows.Forms;
-using System.Collections.Generic;
 using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
+using System.Windows.Forms;
 
 namespace Fomm.Controls
 {
   /// <summary>
   /// A tab control whose tabs are in a drop down box.
   /// </summary>
-  [DefaultProperty("SelectedPage")]
-  [DefaultEvent("SelectedIndexChanged")]
-  [Designer(typeof(DropDownTabControlDesigner))]
+  [DefaultProperty("SelectedPage"), DefaultEvent("SelectedIndexChanged"), Designer(typeof (DropDownTabControlDesigner))]
   public class DropDownTabControl : ScrollableControl
   {
     /// <summary>
@@ -37,7 +35,7 @@ namespace Fomm.Controls
     /// </summary>
     public class TabPageEventArgs : EventArgs
     {
-      private DropDownTabPage m_tpgPage = null;
+      private readonly DropDownTabPage m_tpgPage;
 
       #region Properties
 
@@ -72,7 +70,7 @@ namespace Fomm.Controls
     /// <summary>
     /// A collection of <see cref="DropDownTabPage"/>s.
     /// </summary>
-    public class TabPageCollection : IList<DropDownTabPage>, ICollection<DropDownTabPage>, IEnumerable<DropDownTabPage>, ICollection, IList
+    public class TabPageCollection : IList<DropDownTabPage>, IList
     {
       #region Events
 
@@ -88,7 +86,7 @@ namespace Fomm.Controls
 
       #endregion
 
-      private List<DropDownTabPage> m_lstPages = new List<DropDownTabPage>();
+      private readonly List<DropDownTabPage> m_lstPages = new List<DropDownTabPage>();
 
       #region Event Raising
 
@@ -99,7 +97,9 @@ namespace Fomm.Controls
       protected void OnTabPageAdded(DropDownTabPage p_tpgPage)
       {
         if (TabPageAdded != null)
+        {
           TabPageAdded(this, new TabPageEventArgs(p_tpgPage));
+        }
       }
 
       /// <summary>
@@ -109,7 +109,9 @@ namespace Fomm.Controls
       protected void OnTabPageRemoved(DropDownTabPage p_tpgPage)
       {
         if (TabPageRemoved != null)
+        {
           TabPageRemoved(this, new TabPageEventArgs(p_tpgPage));
+        }
       }
 
       #endregion
@@ -164,10 +166,8 @@ namespace Fomm.Controls
       /// <seealso cref="ICollection{DropDownTabPage}.Clear"/>
       public void Clear()
       {
-        DropDownTabPage tpgPage = null;
         for (Int32 i = m_lstPages.Count - 1; i >= 0; i--)
         {
-          tpgPage = m_lstPages[i];
           RemoveAt(i);
         }
       }
@@ -241,13 +241,21 @@ namespace Fomm.Controls
       public void CopyTo(Array array, int index)
       {
         if (array == null)
+        {
           throw new ArgumentNullException("array is null.");
+        }
         if (index < 0)
-          throw new ArgumentOutOfRangeException("index", index, "index is less than 0.");
+        {
+          throw new ArgumentOutOfRangeException("index", index, @"index is less than 0.");
+        }
         if (array.Length - index < m_lstPages.Count)
+        {
           throw new ArgumentException("Insufficient space in target array.");
+        }
         for (Int32 i = index; i < m_lstPages.Count + index; i++)
+        {
           array.SetValue(m_lstPages[i - index], i);
+        }
       }
 
       /// <seealso cref="ICollection.IsSynchronized"/>
@@ -277,7 +285,11 @@ namespace Fomm.Controls
       {
         DropDownTabPage vtpPage = value as DropDownTabPage;
         if (vtpPage == null)
-          throw new ArgumentException(String.Format("Cannot add item of type '{0}'. Expecting '{1}'.", value.GetType(), typeof(DropDownTabPage)), "value");
+        {
+          throw new ArgumentException(
+            String.Format("Cannot add item of type '{0}'. Expecting '{1}'.", value.GetType(), typeof (DropDownTabPage)),
+            "value");
+        }
         Add(vtpPage);
         return Count - 1;
       }
@@ -287,7 +299,9 @@ namespace Fomm.Controls
       {
         DropDownTabPage vtpPage = value as DropDownTabPage;
         if (vtpPage == null)
+        {
           return false;
+        }
         return Contains(vtpPage);
       }
 
@@ -296,7 +310,9 @@ namespace Fomm.Controls
       {
         DropDownTabPage vtpPage = value as DropDownTabPage;
         if (vtpPage == null)
+        {
           return -1;
+        }
         return IndexOf(vtpPage);
       }
 
@@ -305,7 +321,11 @@ namespace Fomm.Controls
       {
         DropDownTabPage vtpPage = value as DropDownTabPage;
         if (vtpPage == null)
-          throw new ArgumentException(String.Format("Cannot insert item of type '{0}'. Expecting '{1}'.", value.GetType(), typeof(DropDownTabPage)), "value");
+        {
+          throw new ArgumentException(
+            String.Format("Cannot insert item of type '{0}'. Expecting '{1}'.", value.GetType(),
+                          typeof (DropDownTabPage)), "value");
+        }
         Insert(index, vtpPage);
       }
 
@@ -323,7 +343,9 @@ namespace Fomm.Controls
       {
         DropDownTabPage vtpPage = value as DropDownTabPage;
         if (vtpPage != null)
+        {
           Remove(vtpPage);
+        }
       }
 
       /// <seealso cref="IList.this"/>
@@ -337,7 +359,11 @@ namespace Fomm.Controls
         {
           DropDownTabPage vtpPage = value as DropDownTabPage;
           if (vtpPage == null)
-            throw new ArgumentException(String.Format("Cannot set item of type '{0}'. Expecting '{1}'.", value.GetType(), typeof(DropDownTabPage)), "value");
+          {
+            throw new ArgumentException(
+              String.Format("Cannot set item of type '{0}'. Expecting '{1}'.", value.GetType(), typeof (DropDownTabPage)),
+              "value");
+          }
           this[index] = vtpPage;
         }
       }
@@ -345,11 +371,10 @@ namespace Fomm.Controls
       #endregion
     }
 
-    private Panel m_pnlDropDownPanel = null;
-    private ComboBox m_cbxSelector = null;
-    private Label m_lblLabel = null;
-    private TabPageCollection m_tpcPages = null;
-    private DropDownTabPage m_tpgSelected = null;
+    private readonly ComboBox m_cbxSelector;
+    private readonly Label m_lblLabel;
+    private readonly TabPageCollection m_tpcPages;
+    private DropDownTabPage m_tpgSelected;
 
     #region Properties
 
@@ -384,7 +409,7 @@ namespace Fomm.Controls
     /// Gets the tab pages of this control.
     /// </summary>
     /// <value>The tab pages of this control.</value>
-    [Editor(typeof(DropDownTabPageCollectionEditor), typeof(UITypeEditor))]
+    [Editor(typeof (DropDownTabPageCollectionEditor), typeof (UITypeEditor))]
     public TabPageCollection TabPages
     {
       get
@@ -397,7 +422,7 @@ namespace Fomm.Controls
     /// Gets or sets the currently selected tab page.
     /// </summary>
     /// <value>The currently selected tab page.</value>
-    [TypeConverter(typeof(SelectedDropDownTabPageConverter))]
+    [TypeConverter(typeof (SelectedDropDownTabPageConverter))]
     public DropDownTabPage SelectedTabPage
     {
       get
@@ -407,7 +432,9 @@ namespace Fomm.Controls
       set
       {
         if (m_tpgSelected == value)
+        {
           return;
+        }
         m_tpgSelected = value;
         if (m_tpgSelected != null)
         {
@@ -426,14 +453,11 @@ namespace Fomm.Controls
     {
       get
       {
-        return this.TabPages.IndexOf(SelectedTabPage);
+        return TabPages.IndexOf(SelectedTabPage);
       }
       set
       {
-        if (value == -1)
-          SelectedTabPage = null;
-        else
-          SelectedTabPage = TabPages[value];
+        SelectedTabPage = value == -1 ? null : TabPages[value];
       }
     }
 
@@ -441,8 +465,7 @@ namespace Fomm.Controls
     /// Gets or sets the width of the tabs.
     /// </summary>
     /// <value>The width of the tabs.</value>
-    [Category("Appearance")]
-    [DefaultValue(150)]
+    [Category("Appearance"), DefaultValue(150)]
     public Int32 TabWidth
     {
       get
@@ -481,12 +504,12 @@ namespace Fomm.Controls
     public DropDownTabControl()
     {
       m_tpcPages = new TabPageCollection();
-      m_tpcPages.TabPageAdded += new EventHandler<TabPageEventArgs>(AddTabPage);
-      m_tpcPages.TabPageRemoved += new EventHandler<TabPageEventArgs>(RemoveTabPage);
+      m_tpcPages.TabPageAdded += AddTabPage;
+      m_tpcPages.TabPageRemoved += RemoveTabPage;
 
-      m_pnlDropDownPanel = new Panel();
-      m_pnlDropDownPanel.Dock = DockStyle.Top;
-      m_pnlDropDownPanel.DataBindings.Add("BackColor", this, "BackColor");
+      Panel mPnlDropDownPanel = new Panel();
+      mPnlDropDownPanel.Dock = DockStyle.Top;
+      mPnlDropDownPanel.DataBindings.Add("BackColor", this, "BackColor");
 
       m_lblLabel = new Label();
       m_lblLabel.AutoSize = true;
@@ -496,12 +519,12 @@ namespace Fomm.Controls
       m_cbxSelector = new ComboBox();
       m_cbxSelector.Location = new Point(13, m_lblLabel.Top + 13 + 4);
       m_cbxSelector.DisplayMember = "Text";
-      m_cbxSelector.SelectedIndexChanged += new EventHandler(TabSelected);
+      m_cbxSelector.SelectedIndexChanged += TabSelected;
 
-      m_pnlDropDownPanel.Height = m_cbxSelector.Location.Y + m_cbxSelector.Height + 4;
-      m_pnlDropDownPanel.Controls.Add(m_lblLabel);
-      m_pnlDropDownPanel.Controls.Add(m_cbxSelector);
-      Controls.Add(m_pnlDropDownPanel);
+      mPnlDropDownPanel.Height = m_cbxSelector.Location.Y + m_cbxSelector.Height + 4;
+      mPnlDropDownPanel.Controls.Add(m_lblLabel);
+      mPnlDropDownPanel.Controls.Add(m_cbxSelector);
+      Controls.Add(mPnlDropDownPanel);
     }
 
     #endregion
@@ -518,9 +541,10 @@ namespace Fomm.Controls
     {
       base.OnCreateControl();
       if (!DesignMode)
+      {
         m_cbxSelector.DropDownStyle = ComboBoxStyle.DropDownList;
+      }
     }
-
 
     /// <summary>
     /// Handles the <see cref="DropDownTabButton.Selected"/> event of the tabs.
@@ -533,8 +557,7 @@ namespace Fomm.Controls
     /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
     protected void TabSelected(object sender, EventArgs e)
     {
-
-      SelectedTabPage = (DropDownTabPage)m_cbxSelector.SelectedItem;
+      SelectedTabPage = (DropDownTabPage) m_cbxSelector.SelectedItem;
     }
 
     /// <summary>
@@ -547,15 +570,19 @@ namespace Fomm.Controls
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
     /// <param name="e">A <see cref="DropDownTabControl.TabPageEventArgs"/> describing the event arguments.</param>
-    private void AddTabPage(object sender, DropDownTabControl.TabPageEventArgs e)
+    private void AddTabPage(object sender, TabPageEventArgs e)
     {
       DropDownTabPage ctlPage = e.TabPage;
       if (ctlPage.PageIndex == -1)
+      {
         ctlPage.PageIndex = m_tpcPages.Count - 1;
+      }
       if (!m_tpcPages.Contains(ctlPage))
+      {
         m_tpcPages.Add(ctlPage);
-      ctlPage.PageIndexChanged += new EventHandler(PageIndexChanged);
-      ctlPage.TextChanged += new EventHandler(PageTextChanged);
+      }
+      ctlPage.PageIndexChanged += PageIndexChanged;
+      ctlPage.TextChanged += PageTextChanged;
       InsertTabPageInSelector(ctlPage);
       ctlPage.Dock = DockStyle.Fill;
       Controls.Add(e.TabPage);
@@ -572,23 +599,33 @@ namespace Fomm.Controls
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
     /// <param name="e">A <see cref="DropDownTabControl.TabPageEventArgs"/> describing the event arguments.</param>
-    private void RemoveTabPage(object sender, DropDownTabControl.TabPageEventArgs e)
+    private void RemoveTabPage(object sender, TabPageEventArgs e)
     {
       DropDownTabPage ctlPage = e.TabPage;
-      ctlPage.PageIndexChanged -= new EventHandler(PageIndexChanged);
-      ctlPage.TextChanged -= new EventHandler(PageTextChanged);
+      ctlPage.PageIndexChanged -= PageIndexChanged;
+      ctlPage.TextChanged -= PageTextChanged;
       m_cbxSelector.Items.Remove(ctlPage);
-      for (Int32 i = 0; i < m_tpcPages.Count; i++)
-        if (m_tpcPages[i].PageIndex > ctlPage.PageIndex)
-          m_tpcPages[i].PageIndex--;
+      foreach (DropDownTabPage page in m_tpcPages)
+      {
+        if (page.PageIndex > ctlPage.PageIndex)
+        {
+          page.PageIndex--;
+        }
+      }
       if (SelectedTabPage == ctlPage)
       {
         if (m_tpcPages.Count == 0)
+        {
           SelectedTabPage = null;
+        }
         else if (SelectedIndex == m_tpcPages.Count)
+        {
           SelectedIndex--;
+        }
         else
+        {
           SelectedIndex++;
+        }
       }
       Controls.Remove(e.TabPage);
     }
@@ -606,9 +643,11 @@ namespace Fomm.Controls
       base.OnControlAdded(e);
       if (e.Control is DropDownTabPage)
       {
-        DropDownTabPage ctlPage = (DropDownTabPage)e.Control;
+        DropDownTabPage ctlPage = (DropDownTabPage) e.Control;
         if (!m_tpcPages.Contains(ctlPage))
+        {
           m_tpcPages.Add(ctlPage);
+        }
       }
     }
 
@@ -625,7 +664,7 @@ namespace Fomm.Controls
       base.OnControlRemoved(e);
       if (e.Control is DropDownTabPage)
       {
-        DropDownTabPage ctlPage = (DropDownTabPage)e.Control;
+        DropDownTabPage ctlPage = (DropDownTabPage) e.Control;
         m_tpcPages.Remove(ctlPage);
       }
     }
@@ -637,10 +676,9 @@ namespace Fomm.Controls
     /// <param name="p_ddpPage">The <see cref="DropDownTabPage"/> to insert.</param>
     protected void InsertTabPageInSelector(DropDownTabPage p_ddpPage)
     {
-      DropDownTabPage ddpCurrent = null;
       for (Int32 i = 0; i < m_cbxSelector.Items.Count; i++)
       {
-        ddpCurrent = (DropDownTabPage)m_cbxSelector.Items[i];
+        DropDownTabPage ddpCurrent = (DropDownTabPage) m_cbxSelector.Items[i];
         if (ddpCurrent.PageIndex > p_ddpPage.PageIndex)
         {
           m_cbxSelector.Items.Insert(i, p_ddpPage);
@@ -659,7 +697,9 @@ namespace Fomm.Controls
       m_cbxSelector.BeginUpdate();
       m_cbxSelector.Items.Clear();
       foreach (DropDownTabPage ddpPage in m_tpcPages)
+      {
         InsertTabPageInSelector(ddpPage);
+      }
       m_cbxSelector.SelectedItem = SelectedTabPage;
       m_cbxSelector.EndUpdate();
     }

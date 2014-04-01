@@ -1,7 +1,8 @@
 ﻿using System;
-using System.Windows.Forms;
-using System.Drawing.Text;
 using System.Drawing;
+using System.Drawing.Text;
+using System.Globalization;
+using System.Windows.Forms;
 
 namespace Fomm.Controls
 {
@@ -13,9 +14,13 @@ namespace Fomm.Controls
     /// <summary>
     /// The default picklist of font sizes.
     /// </summary>
-    private readonly Int32[] FONT_SIZES = { 8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72 };
-    private ToolStripButton[] m_tsbJustifications = null;
-    private RichTextBox rtbTemp = new RichTextBox();
+    private readonly Int32[] FONT_SIZES =
+    {
+      8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72
+    };
+
+    private readonly ToolStripButton[] m_tsbJustifications;
+    private readonly RichTextBox rtbTemp = new RichTextBox();
     private Int32 m_intLastFontIndex = -1;
     private float m_fltLastFontSize = -1;
 
@@ -64,7 +69,10 @@ namespace Fomm.Controls
     {
       InitializeComponent();
 
-      m_tsbJustifications = new ToolStripButton[] { tsbJustifyLeft, tsbJustifyCentre, tsbJustifyRight };
+      m_tsbJustifications = new[]
+      {
+        tsbJustifyLeft, tsbJustifyCentre, tsbJustifyRight
+      };
       tsbJustifyLeft.Tag = HorizontalAlignment.Left;
       tsbJustifyCentre.Tag = HorizontalAlignment.Center;
       tsbJustifyRight.Tag = HorizontalAlignment.Right;
@@ -72,12 +80,16 @@ namespace Fomm.Controls
 
       InstalledFontCollection ifcInstalledFonts = new InstalledFontCollection();
       foreach (FontFamily ffmFont in ifcInstalledFonts.Families)
+      {
         if (ffmFont.IsStyleAvailable(FontStyle.Regular))
         {
           tscbFont.Items.Add(ffmFont);
           if (ffmFont.Name.Equals(rtbTextbox.SelectionFont.Name))
+          {
             tscbFont.SelectedItem = ffmFont;
+          }
         }
+      }
       tscbFont.ComboBox.DisplayMember = "Name";
       tscbFont.ComboBox.ValueMember = "Name";
       m_intLastFontIndex = tscbFont.SelectedIndex;
@@ -101,7 +113,9 @@ namespace Fomm.Controls
     protected void ChangeFont(string p_strFontFamilyName, float p_fltFontSize)
     {
       if (p_fltFontSize <= 0.0)
-        throw new ArgumentOutOfRangeException("Invalid font size parameter to ChangeFontSize");
+      {
+        throw new ArgumentOutOfRangeException(@"Invalid font size parameter to ChangeFontSize");
+      }
 
       // setting the font style using the SelectionFont doen't work because
       // a null selection font is returned for a selection with more 
@@ -109,7 +123,7 @@ namespace Fomm.Controls
 
       Int32 intSelectionStart = rtbTextbox.SelectionStart;
       Int32 intSelectionLength = rtbTextbox.SelectionLength;
-      Int32 intTempStart = 0;
+      const int intTempStart = 0;
 
       // if there is text selected, and only one style in the selection, change it
       if (intSelectionLength <= 1 && rtbTextbox.SelectionFont != null)
@@ -130,7 +144,6 @@ namespace Fomm.Controls
       rtbTemp.Select(intTempStart, intSelectionLength);
       rtbTextbox.SelectedRtf = rtbTemp.SelectedRtf;
       rtbTextbox.Select(intSelectionStart, intSelectionLength);
-      return;
     }
 
     /// <summary>
@@ -141,8 +154,10 @@ namespace Fomm.Controls
     private void tscbFont_SelectedIndexChanged(object sender, EventArgs e)
     {
       m_intLastFontIndex = tscbFont.SelectedIndex;
-      float fltFontSize = (rtbTextbox.SelectionFont == null) ? float.Parse(tscbFontSize.Text) : rtbTextbox.SelectionFont.Size;
-      ChangeFont(((FontFamily)tscbFont.SelectedItem).Name, fltFontSize);
+      float fltFontSize = (rtbTextbox.SelectionFont == null)
+        ? float.Parse(tscbFontSize.Text)
+        : rtbTextbox.SelectionFont.Size;
+      ChangeFont(((FontFamily) tscbFont.SelectedItem).Name, fltFontSize);
     }
 
     /// <summary>
@@ -157,7 +172,9 @@ namespace Fomm.Controls
     private void tscbFont_Leave(object sender, EventArgs e)
     {
       if (tscbFont.SelectedIndex < 0)
+      {
         tscbFont.SelectedIndex = m_intLastFontIndex;
+      }
     }
 
     /// <summary>
@@ -171,7 +188,7 @@ namespace Fomm.Controls
       if (float.TryParse(tscbFontSize.Text, out fltFontSize))
       {
         m_fltLastFontSize = fltFontSize;
-        ChangeFont(((FontFamily)tscbFont.SelectedItem).Name, fltFontSize);
+        ChangeFont(((FontFamily) tscbFont.SelectedItem).Name, fltFontSize);
       }
     }
 
@@ -188,7 +205,9 @@ namespace Fomm.Controls
     {
       float fltFontSize = -1;
       if (!float.TryParse(tscbFontSize.Text, out fltFontSize))
-        tscbFontSize.Text = m_fltLastFontSize.ToString();
+      {
+        tscbFontSize.Text = m_fltLastFontSize.ToString(CultureInfo.InvariantCulture);
+      }
     }
 
     #endregion
@@ -202,15 +221,16 @@ namespace Fomm.Controls
     {
       int rtb1start = rtbTextbox.SelectionStart;
       int len = rtbTextbox.SelectionLength;
-      int rtbTempStart = 0;
+      const int rtbTempStart = 0;
 
       // if there is text selected, and only one style in the selection, change it
       if (len <= 1 && rtbTextbox.SelectionFont != null)
       {
-        if (p_booAddStyle)
-          rtbTextbox.SelectionFont = new Font(rtbTextbox.SelectionFont, rtbTextbox.SelectionFont.Style | p_fstStyle);
-        else
-          rtbTextbox.SelectionFont = new Font(rtbTextbox.SelectionFont, rtbTextbox.SelectionFont.Style & ~p_fstStyle);
+        rtbTextbox.SelectionFont = new Font(rtbTextbox.SelectionFont,
+                                            p_booAddStyle
+                                              ? rtbTextbox.SelectionFont.Style | p_fstStyle
+                                              : rtbTextbox.SelectionFont.Style & ~p_fstStyle);
+
         return;
       }
 
@@ -219,17 +239,16 @@ namespace Fomm.Controls
       for (int i = 0; i < len; ++i)
       {
         rtbTemp.Select(rtbTempStart + i, 1);
-        if (p_booAddStyle)
-          rtbTemp.SelectionFont = new Font(rtbTemp.SelectionFont, rtbTemp.SelectionFont.Style | p_fstStyle);
-        else
-          rtbTemp.SelectionFont = new Font(rtbTemp.SelectionFont, rtbTemp.SelectionFont.Style & ~p_fstStyle);
+        rtbTemp.SelectionFont = new Font(rtbTemp.SelectionFont,
+                                         p_booAddStyle
+                                           ? rtbTemp.SelectionFont.Style | p_fstStyle
+                                           : rtbTemp.SelectionFont.Style & ~p_fstStyle);
       }
 
       // replace and reselect
       rtbTemp.Select(rtbTempStart, len);
       rtbTextbox.SelectedRtf = rtbTemp.SelectedRtf;
       rtbTextbox.Select(rtb1start, len);
-      return;
     }
 
     /// <summary>
@@ -239,8 +258,8 @@ namespace Fomm.Controls
     /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
     private void FontStyleChanged(object sender, EventArgs e)
     {
-      ToolStripButton tsbFontStyle = (ToolStripButton)sender;
-      ChangeFontStyle((FontStyle)tsbFontStyle.Tag, tsbFontStyle.Checked);
+      ToolStripButton tsbFontStyle = (ToolStripButton) sender;
+      ChangeFontStyle((FontStyle) tsbFontStyle.Tag, tsbFontStyle.Checked);
     }
 
     #endregion
@@ -258,8 +277,10 @@ namespace Fomm.Controls
     private void JustifyText(object sender, EventArgs e)
     {
       foreach (ToolStripButton tsbJustification in m_tsbJustifications)
+      {
         tsbJustification.Checked = (tsbJustification == sender);
-      rtbTextbox.SelectionAlignment = (HorizontalAlignment)((ToolStripButton)sender).Tag;
+      }
+      rtbTextbox.SelectionAlignment = (HorizontalAlignment) ((ToolStripButton) sender).Tag;
     }
 
     #endregion
@@ -274,17 +295,17 @@ namespace Fomm.Controls
     {
       //This method should handle cases that occur when multiple fonts/styles are selected
 
-      Int32 intSelectionStart = rtbTextbox.SelectionStart;
       Int32 intSelectionLength = rtbTextbox.SelectionLength;
-      Int32 intTempStart = 0;
+      const int intTempStart = 0;
 
       if (intSelectionLength <= 1)
       {
         // Return the selection or default font
         if (rtbTextbox.SelectionFont != null)
+        {
           return rtbTextbox.SelectionFont;
-        else
-          return rtbTextbox.Font;
+        }
+        return rtbTextbox.Font;
       }
 
       // Step through the selected text one char at a time  
@@ -311,19 +332,27 @@ namespace Fomm.Controls
 
         // Check font
         if (replyfont != rtbTemp.SelectionFont.FontFamily.Name)
+        {
           replyfont = "";
+        }
 
         // Check font size
         if (replyfontsize != rtbTemp.SelectionFont.Size)
-          replyfontsize = (float)0.0;
+        {
+          replyfontsize = (float) 0.0;
+        }
       }
 
       // Now set font and size if more than one font or font size was selected
       if (replyfont == "")
+      {
         replyfont = rtbTemp.Font.FontFamily.Name;
+      }
 
       if (replyfontsize == 0.0)
+      {
         replyfontsize = rtbTemp.Font.Size;
+      }
 
       // generate reply font
       Font reply
@@ -338,7 +367,6 @@ namespace Fomm.Controls
     public void UpdateToolbar()
     {
       Font fnt = GetFontDetails();
-      FontStyle style = fnt.Style;
 
       tsbBold.Checked = fnt.Bold;
       tsbItalic.Checked = fnt.Italic;
@@ -354,13 +382,15 @@ namespace Fomm.Controls
 
       //Check the correct font
       foreach (FontFamily ffmFont in tscbFont.Items)
+      {
         if (ffmFont.Name.Equals(fnt.FontFamily.Name))
         {
           tscbFont.SelectedItem = ffmFont;
           break;
         }
+      }
 
-      tscbFontSize.Text = fnt.SizeInPoints.ToString();
+      tscbFontSize.Text = fnt.SizeInPoints.ToString(CultureInfo.InvariantCulture);
     }
 
     /// <summary>
@@ -386,6 +416,7 @@ namespace Fomm.Controls
     private void rtbTextbox_KeyDown(object sender, KeyEventArgs e)
     {
       if (e.Control)
+      {
         switch (e.KeyCode)
         {
           case Keys.A:
@@ -409,6 +440,7 @@ namespace Fomm.Controls
             e.Handled = true;
             break;
         }
+      }
     }
   }
 }

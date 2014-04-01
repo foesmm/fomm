@@ -37,21 +37,17 @@
 // exception statement from your version.
 
 using System;
-
-#if !NETCF_1_0 && !NETCF_2_0
 using System.Runtime.Serialization;
-#endif
 
-namespace ICSharpCode.SharpZipLib.Zip 
+namespace Fomm.SharpZipLib.Zip
 {
-  
   /// <summary>
   /// Represents exception conditions specific to Zip archive handling
   /// </summary>
 #if !NETCF_1_0 && !NETCF_2_0
   [Serializable]
 #endif
-  class ZipException : SharpZipBaseException
+  internal class ZipException : SharpZipBaseException
   {
 #if !NETCF_1_0 && !NETCF_2_0
     /// <summary>
@@ -59,8 +55,8 @@ namespace ICSharpCode.SharpZipLib.Zip
     /// </summary>
     /// <param name="info"><see cref="SerializationInfo"/> for this constructor</param>
     /// <param name="context"><see cref="StreamingContext"/> for this constructor</param>
-    protected ZipException(SerializationInfo info, StreamingContext context )
-      : base( info, context )
+    protected ZipException(SerializationInfo info, StreamingContext context)
+      : base(info, context)
     {
     }
 #endif
@@ -71,7 +67,7 @@ namespace ICSharpCode.SharpZipLib.Zip
     public ZipException()
     {
     }
-    
+
     /// <summary>
     /// Initializes a new instance of the ZipException class with a specified error message.
     /// </summary>

@@ -21,7 +21,8 @@ namespace Fomm.PackageManager
     {
       get
       {
-        return "A problem occurred during reactivation: " + Environment.NewLine + "{0}" + Environment.NewLine + "The mod was not reactivated.";
+        return "A problem occurred during reactivation: " + Environment.NewLine + "{0}" + Environment.NewLine +
+               "The mod was not reactivated.";
       }
     }
 

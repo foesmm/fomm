@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 using Fomm.Controls;
-using System.IO;
+using Fomm.Properties;
 
 namespace Fomm.Games.Fallout3
 {
@@ -23,7 +18,7 @@ namespace Fomm.Games.Fallout3
     public SetupForm()
     {
       InitializeComponent();
-      this.Icon = Properties.Resources.fomm02;
+      Icon = Resources.fomm02;
       rdcDirectories.LoadSettings();
     }
 
@@ -44,7 +39,9 @@ namespace Fomm.Games.Fallout3
       if (e.TabPage == vtpDirectories)
       {
         if (!rdcDirectories.ValidateSettings())
+        {
           wizSetup.SelectedTabPage = e.TabPage;
+        }
       }
     }
 
@@ -58,8 +55,12 @@ namespace Fomm.Games.Fallout3
     /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
     private void wizSetup_Cancelled(object sender, EventArgs e)
     {
-      if (MessageBox.Show(this, "If you cancel the setup FOMM will close.", "Confirm", MessageBoxButtons.OKCancel, MessageBoxIcon.Information) == DialogResult.OK)
+      if (
+        MessageBox.Show(this, "If you cancel the setup FOMM will close.", "Confirm", MessageBoxButtons.OKCancel,
+                        MessageBoxIcon.Information) == DialogResult.OK)
+      {
         DialogResult = DialogResult.Cancel;
+      }
     }
 
     /// <summary>

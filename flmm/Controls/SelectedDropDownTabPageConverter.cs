@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
 namespace Fomm.Controls
 {
@@ -19,7 +18,7 @@ namespace Fomm.Controls
     /// The default constructor.
     /// </summary>
     public SelectedDropDownTabPageConverter()
-      : base(typeof(DropDownTabPage))
+      : base(typeof (DropDownTabPage))
     {
     }
 
@@ -36,11 +35,10 @@ namespace Fomm.Controls
     {
       if (context != null)
       {
-        DropDownTabControl ddtTabControl = (DropDownTabControl)context.Instance;
-        return ddtTabControl.TabPages.Contains((DropDownTabPage)value);
+        DropDownTabControl ddtTabControl = (DropDownTabControl) context.Instance;
+        return ddtTabControl.TabPages.Contains((DropDownTabPage) value);
       }
       return false;
-
     }
   }
 }

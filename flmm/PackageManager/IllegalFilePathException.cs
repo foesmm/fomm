@@ -7,7 +7,7 @@ namespace Fomm.PackageManager
   /// </summary>
   public class IllegalFilePathException : Exception
   {
-    private string m_strPath = null;
+    private string m_strPath;
 
     /// <summary>
     /// Gets the illegal path.

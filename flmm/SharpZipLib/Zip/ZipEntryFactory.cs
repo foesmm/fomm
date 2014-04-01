@@ -35,62 +35,18 @@
 // obligated to do so.  If you do not wish to do so, delete this
 // exception statement from your version.
 
-using System;
 using System.IO;
-using System.Text;
+using Fomm.SharpZipLib.Core;
 
-using ICSharpCode.SharpZipLib.Core;
-
-namespace ICSharpCode.SharpZipLib.Zip
+namespace Fomm.SharpZipLib.Zip
 {
   /// <summary>
   /// Basic implementation of <see cref="IEntryFactory"></see>
   /// </summary>
-  class ZipEntryFactory : IEntryFactory
+  internal class ZipEntryFactory : IEntryFactory
   {
-    #region Enumerations
-    /// <summary>
-    /// Defines the possible values to be used for the <see cref="ZipEntry.DateTime"/>.
-    /// </summary>
-    enum TimeSetting
-    {
-      /// <summary>
-      /// Use the recorded LastWriteTime value for the file.
-      /// </summary>
-      LastWriteTime,
-      /// <summary>
-      /// Use the recorded LastWriteTimeUtc value for the file
-      /// </summary>
-      LastWriteTimeUtc,
-      /// <summary>
-      /// Use the recorded CreateTime value for the file.
-      /// </summary>
-      CreateTime,
-      /// <summary>
-      /// Use the recorded CreateTimeUtc value for the file.
-      /// </summary>
-      CreateTimeUtc,
-      /// <summary>
-      /// Use the recorded LastAccessTime value for the file.
-      /// </summary>
-      LastAccessTime,
-      /// <summary>
-      /// Use the recorded LastAccessTimeUtc value for the file.
-      /// </summary>
-      LastAccessTimeUtc,
-      /// <summary>
-      /// Use a fixed value.
-      /// </summary>
-      /// <remarks>The actual <see cref="DateTime"/> value used can be
-      /// specified via the <see cref="ZipEntryFactory(DateTime)"/> constructor or 
-      /// using the <see cref="ZipEntryFactory(TimeSetting)"/> with the setting set
-      /// to <see cref="TimeSetting.Fixed"/> which will use the <see cref="DateTime"/> when this class was constructed.
-      /// The <see cref="FixedDateTime"/> property can also be used to set this value.</remarks>
-      Fixed,
-    }
-    #endregion
-
     #region Constructors
+
     /// <summary>
     /// Initialise a new instance of the <see cref="ZipEntryFactory"/> class.
     /// </summary>
@@ -103,6 +59,7 @@ namespace ICSharpCode.SharpZipLib.Zip
     #endregion
 
     #region Properties
+
     /// <summary>
     /// Get / set the <see cref="INameTransform"/> to be used when creating new <see cref="ZipEntry"/> values.
     /// </summary>
@@ -111,15 +68,13 @@ namespace ICSharpCode.SharpZipLib.Zip
     /// </remarks>
     public INameTransform NameTransform
     {
-      get { return nameTransform_; }
-      set 
+      get
       {
-        if (value == null) {
-          nameTransform_ = new ZipNameTransform();
-        }
-        else {
-          nameTransform_ = value;
-        }
+        return nameTransform_;
+      }
+      set
+      {
+        nameTransform_ = value ?? new ZipNameTransform();
       }
     }
 
@@ -157,20 +112,21 @@ namespace ICSharpCode.SharpZipLib.Zip
         fi = new FileInfo(fileName);
       }
 
-            if((fi != null) && fi.Exists) {
-                result.DateTime = fi.LastWriteTime;
+      if ((fi != null) && fi.Exists)
+      {
+        result.DateTime = fi.LastWriteTime;
 
-                result.Size = fi.Length;
+        result.Size = fi.Length;
 
-                useAttributes = true;
-                externalAttributes = ((int)fi.Attributes & getAttributes_);
-            }
+        useAttributes = true;
+        externalAttributes = ((int) fi.Attributes & getAttributes_);
+      }
 
       if (useAttributes)
       {
         result.ExternalFileAttributes = externalAttributes;
       }
-      
+
       return result;
     }
 
@@ -192,10 +148,9 @@ namespace ICSharpCode.SharpZipLib.Zip
     /// <returns>Returns a new <see cref="ZipEntry"></see> representing a directory.</returns>
     public ZipEntry MakeDirectoryEntry(string directoryName, bool useFileSystem)
     {
-      
       ZipEntry result = new ZipEntry(nameTransform_.TransformDirectory(directoryName));
-      result.Size=0;
-      
+      result.Size = 0;
+
       int externalAttributes = 0;
 
       DirectoryInfo di = null;
@@ -205,12 +160,12 @@ namespace ICSharpCode.SharpZipLib.Zip
         di = new DirectoryInfo(directoryName);
       }
 
+      if ((di != null) && di.Exists)
+      {
+        result.DateTime = di.LastWriteTime;
 
-            if((di != null) && di.Exists) {
-                result.DateTime = di.LastWriteTime;
-
-                externalAttributes = ((int)di.Attributes & getAttributes_);
-            }
+        externalAttributes = ((int) di.Attributes & getAttributes_);
+      }
 
       // Always set directory attribute on.
       externalAttributes |= 16;
@@ -218,13 +173,15 @@ namespace ICSharpCode.SharpZipLib.Zip
 
       return result;
     }
-    
+
     #endregion
 
     #region Instance Fields
-    INameTransform nameTransform_;
 
-    int getAttributes_ = -1;
+    private INameTransform nameTransform_;
+
+    private int getAttributes_ = -1;
+
     #endregion
   }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
-using ICSharpCode.TextEditor.Document;
 using System.Collections.Generic;
 using ICSharpCode.TextEditor;
+using ICSharpCode.TextEditor.Document;
 
 namespace Fomm.Controls
 {
@@ -10,7 +10,7 @@ namespace Fomm.Controls
   /// </summary>
   public class XmlFoldingStrategy : IFoldingStrategy
   {
-    private List<FoldMarker> m_lstFolds = new List<FoldMarker>();
+    private readonly List<FoldMarker> m_lstFolds = new List<FoldMarker>();
 
     #region IFoldingStrategy Members
 
@@ -43,13 +43,19 @@ namespace Fomm.Controls
     protected void AddFold(IDocument p_docDocument, string p_strTagName, TextLocation p_tlcStart, TextLocation p_tlcEnd)
     {
       if (p_tlcStart.Line == p_tlcEnd.Line)
+      {
         return;
+      }
       string strStartLine = p_docDocument.GetText(p_docDocument.GetLineSegment(p_tlcStart.Line));
-      Int32 intStartFoldPos = strStartLine.IndexOf(">", p_tlcStart.Column);
+      Int32 intStartFoldPos = strStartLine.IndexOf(">", p_tlcStart.Column, StringComparison.Ordinal);
       if (intStartFoldPos < 0)
+      {
         intStartFoldPos = strStartLine.Length;
+      }
       else
+      {
         intStartFoldPos++;
+      }
       m_lstFolds.Add(new FoldMarker(p_docDocument, p_tlcStart.Line, intStartFoldPos, p_tlcEnd.Line, p_tlcEnd.Column - 1));
     }
 

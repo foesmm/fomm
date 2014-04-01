@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
 using System.IO;
+using System.Windows.Forms;
 using Fomm.Games.Fallout3.Tools.TESsnip;
+using Fomm.Properties;
 
 namespace Fomm.Games.Fallout3.Tools.CriticalRecords
 {
@@ -16,7 +15,7 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
   /// <seealso cref="fomod.CriticalRecords"/>
   public partial class CriticalRecordsForm : Form
   {
-    private bool m_booPopulatingForm = false;
+    private bool m_booPopulatingForm;
 
     #region Constructors
 
@@ -33,12 +32,13 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
         }
         catch (Exception ex)
         {
-          MessageBox.Show("Could not parse RecordStructure.xml. Record-at-once editing will be unavailable.\n" + ex.Message, "Warning");
+          MessageBox.Show(
+            "Could not parse RecordStructure.xml. Record-at-once editing will be unavailable.\n" + ex.Message, "Warning");
         }
       }
       InitializeComponent();
 
-      cbxSeverity.DataSource = Enum.GetValues(typeof(CriticalRecordInfo.ConflictSeverity));
+      cbxSeverity.DataSource = Enum.GetValues(typeof (CriticalRecordInfo.ConflictSeverity));
       cbxSeverity.SelectedItem = CriticalRecordInfo.ConflictSeverity.Conflict;
 
       Properties.Settings.Default.windowPositions.GetWindowPosition("CREditor", this);
@@ -48,12 +48,16 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     /// A simple constructor that initializes the form with the given values.
     /// </summary>
     /// <param name="p_fomodMod">The mod whose plugins are going to have records marked as critical.</param>
-    public CriticalRecordsForm(string[] p_strPlugins)
+    public CriticalRecordsForm(IEnumerable<string> p_strPlugins)
       : this()
-    {      
+    {
       foreach (string strFile in p_strPlugins)
+      {
         if (strFile.ToLowerInvariant().EndsWith(".esm") || strFile.ToLowerInvariant().EndsWith(".esp"))
+        {
           LoadPlugin(strFile);
+        }
+      }
     }
 
     #endregion
@@ -83,9 +87,11 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     {
       TreeNode tndPluginRoot = p_tndPluginNode;
       while (!(tndPluginRoot.Tag is Plugin))
+      {
         tndPluginRoot = tndPluginRoot.Parent;
+      }
 
-      CriticalRecordPlugin crpPlugin = (CriticalRecordPlugin)tndPluginRoot.Tag;
+      CriticalRecordPlugin crpPlugin = (CriticalRecordPlugin) tndPluginRoot.Tag;
       tvwRecords.BeginUpdate();
       tndPluginRoot.Nodes.Clear();
       CreatePluginTree(crpPlugin, tndPluginRoot);
@@ -101,7 +107,9 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     {
       p_tndNode.Tag = p_crpPlugin;
       foreach (Rec recRecord in p_crpPlugin.Records)
+      {
         WalkPluginTree(p_crpPlugin, recRecord, p_tndNode);
+      }
     }
 
     /// <summary>
@@ -113,20 +121,31 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     private void WalkPluginTree(CriticalRecordPlugin p_crpPlugin, Rec p_recRecord, TreeNode p_tndNode)
     {
       if (p_recRecord.Name.Equals("TES4"))
+      {
         return;
+      }
       TreeNode tndSubNode = null;
       if (p_recRecord is Record)
       {
-        tndSubNode = new TreeNode(String.Format("{0:x8}: {1}", ((Record)p_recRecord).FormID, p_recRecord.DescriptiveName));
-        if (p_crpPlugin.IsRecordCritical(((Record)p_recRecord).FormID))
+        tndSubNode =
+          new TreeNode(String.Format("{0:x8}: {1}", ((Record) p_recRecord).FormID, p_recRecord.DescriptiveName));
+        if (p_crpPlugin.IsRecordCritical(((Record) p_recRecord).FormID))
+        {
           tndSubNode.BackColor = Color.Red;
+        }
       }
       else
+      {
         tndSubNode = new TreeNode(p_recRecord.DescriptiveName);
+      }
       tndSubNode.Tag = p_recRecord;
       if (p_recRecord is GroupRecord)
-        foreach (Rec recSubRecord in ((GroupRecord)p_recRecord).Records)
+      {
+        foreach (Rec recSubRecord in ((GroupRecord) p_recRecord).Records)
+        {
           WalkPluginTree(p_crpPlugin, recSubRecord, tndSubNode);
+        }
+      }
       p_tndNode.Nodes.Add(tndSubNode);
     }
 
@@ -145,7 +164,9 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     {
       TreeNode tndRoot = e.Node;
       while (tndRoot.Parent != null)
+      {
         tndRoot = tndRoot.Parent;
+      }
       CriticalRecordPlugin crpPlugin = tndRoot.Tag as CriticalRecordPlugin;
 
       Record recRecord = e.Node.Tag as Record;
@@ -164,7 +185,9 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
         cbxSeverity.SelectedItem = crpPlugin.GetCriticalRecordInfo(recRecord.FormID).Severity;
       }
       else
+      {
         tbxReason.Text = null;
+      }
       m_booPopulatingForm = false;
     }
 
@@ -179,21 +202,34 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     private void criticalInfoChanged(object sender, EventArgs e)
     {
       if (m_booPopulatingForm)
+      {
         return;
+      }
 
       TreeNode tndRoot = tvwRecords.SelectedNode;
       if (tndRoot == null)
+      {
         return;
+      }
       Record recRecord = tndRoot.Tag as Record;
       if (recRecord == null)
+      {
         return;
+      }
       while (tndRoot.Parent != null)
+      {
         tndRoot = tndRoot.Parent;
+      }
       CriticalRecordPlugin crpPlugin = tndRoot.Tag as CriticalRecordPlugin;
       if (ckbIsCritical.Checked)
-        crpPlugin.SetCriticalRecord(recRecord.FormID, (CriticalRecordInfo.ConflictSeverity)cbxSeverity.SelectedItem, tbxReason.Text);
+      {
+        crpPlugin.SetCriticalRecord(recRecord.FormID, (CriticalRecordInfo.ConflictSeverity) cbxSeverity.SelectedItem,
+                                    tbxReason.Text);
+      }
       else
+      {
         crpPlugin.UnsetCriticalRecord(recRecord.FormID);
+      }
       tvwRecords.SelectedNode.BackColor = ckbIsCritical.Checked ? Color.Red : Color.Transparent;
     }
 
@@ -210,8 +246,12 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     private void openNewPluginToolStripMenuItem_Click(object sender, EventArgs e)
     {
       if (OpenModDialog.ShowDialog() == DialogResult.OK)
+      {
         foreach (string strPlugin in OpenModDialog.FileNames)
+        {
           LoadPlugin(strPlugin);
+        }
+      }
     }
 
     /// <summary>
@@ -226,13 +266,15 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     {
       if (tvwRecords.SelectedNode == null)
       {
-        MessageBox.Show("No plugin selected to save.", "Error");
+        MessageBox.Show("No plugin selected to save.", Resources.ErrorStr);
         return;
       }
       TreeNode tndPlugin = tvwRecords.SelectedNode;
       while (!(tndPlugin.Tag is Plugin))
+      {
         tndPlugin = tndPlugin.Parent;
-      CriticalRecordPlugin crpPlugin = (CriticalRecordPlugin)tndPlugin.Tag;
+      }
+      CriticalRecordPlugin crpPlugin = (CriticalRecordPlugin) tndPlugin.Tag;
       crpPlugin.Save(tndPlugin.Text);
       crpPlugin.Name = tndPlugin.Text;
       ReloadPlugin(tndPlugin);
@@ -251,13 +293,15 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     {
       if (tvwRecords.SelectedNode == null)
       {
-        MessageBox.Show("No plugin selected to close.", "Error");
+        MessageBox.Show("No plugin selected to close.", Resources.ErrorStr);
         return;
       }
 
       TreeNode tndPlugin = tvwRecords.SelectedNode;
       while (!(tndPlugin.Tag is Plugin))
+      {
         tndPlugin = tndPlugin.Parent;
+      }
       tndPlugin.Tag = null;
       tvwRecords.Nodes.Remove(tndPlugin);
     }
@@ -273,7 +317,11 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     private void closeAllToolStripMenuItem_Click(object sender, EventArgs e)
     {
       if (MessageBox.Show(this, "This will close all open plugins, and you will lose any unsaved changes.\n" +
-        "Are you sure you wish to continue", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) return;
+                                "Are you sure you wish to continue", "Warning", MessageBoxButtons.YesNo,
+                          MessageBoxIcon.Warning) != DialogResult.Yes)
+      {
+        return;
+      }
       tvwRecords.Nodes.Clear();
       GC.Collect();
     }
@@ -291,7 +339,7 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     {
       tvwRecords.Nodes.Clear();
       Properties.Settings.Default.windowPositions.SetWindowPosition("CREditor", this);
-      Properties.Settings.Default.Save(); 
+      Properties.Settings.Default.Save();
       base.OnClosing(e);
     }
   }

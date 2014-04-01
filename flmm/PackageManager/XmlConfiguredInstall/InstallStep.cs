@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Fomm.PackageManager.XmlConfiguredInstall
 {
@@ -9,9 +7,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
   /// </summary>
   public class InstallStep
   {
-    private string m_strName = null;
-    private CompositeDependency m_cdpVisibilityDependency = null;
-    private IList<PluginGroup> m_lstGroupedPlugins = null;
+    private string m_strName;
+    private CompositeDependency m_cdpVisibilityDependency;
+    private IList<PluginGroup> m_lstGroupedPlugins;
 
     #region Properties
 
@@ -36,7 +34,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
       get
       {
         if (m_cdpVisibilityDependency == null)
+        {
           return true;
+        }
         return m_cdpVisibilityDependency.IsFufilled;
       }
     }
@@ -63,7 +63,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// <param name="p_strName">The name of the install step.</param>
     /// <param name="p_cdpVisibilityDependency">The <see cref="CompositeDependency"/> that determines the visibility of this step.</param>
     /// <param name="p_lstGroupedPlugins">The grouped list of plugins to display in this step.</param>
-    public InstallStep(string p_strName, CompositeDependency p_cdpVisibilityDependency, IList<PluginGroup> p_lstGroupedPlugins)
+    public InstallStep(string p_strName, CompositeDependency p_cdpVisibilityDependency,
+                       IList<PluginGroup> p_lstGroupedPlugins)
     {
       m_strName = p_strName;
       m_cdpVisibilityDependency = p_cdpVisibilityDependency;

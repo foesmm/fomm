@@ -1,6 +1,5 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using ICSharpCode.TextEditor.Document;
-using System.Collections.Generic;
 
 namespace Fomm.Controls
 {

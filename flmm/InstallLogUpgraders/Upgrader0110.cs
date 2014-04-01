@@ -25,7 +25,7 @@ namespace Fomm.InstallLogUpgraders
 
       XmlNode xndRoot = xmlInstallLog.SelectSingleNode("installLog");
       XmlNode xndSdpEdits = xndRoot.SelectSingleNode("sdpEdits");
-      
+
       ProgressWorker.OverallProgressStep = 1;
       ProgressWorker.OverallProgressMaximum = xndSdpEdits.ChildNodes.Count;
       ProgressWorker.ShowItemProgress = false;
@@ -38,7 +38,8 @@ namespace Fomm.InstallLogUpgraders
       {
         ProgressWorker.StepOverallProgress();
         XmlNode xndGameSpecificsValueEdit = xndGameSpecificsValueEdits.AppendChild(xmlInstallLog.CreateElement("edit"));
-        string strValueKey = String.Format("sdp:{0}/{1}", xndGameSpecificsValueEdits.Attributes["package"].Value, xndGameSpecificsValueEdits.Attributes["shader"].Value);
+        string strValueKey = String.Format("sdp:{0}/{1}", xndGameSpecificsValueEdits.Attributes["package"].Value,
+                                           xndGameSpecificsValueEdits.Attributes["shader"].Value);
         xndGameSpecificsValueEdit.Attributes.Append(xmlInstallLog.CreateAttribute("key")).Value = strValueKey;
         xndGameSpecificsValueEdit.AppendChild(xndSdpEdit.FirstChild.Clone());
       }

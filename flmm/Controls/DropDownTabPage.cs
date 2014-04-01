@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Windows.Forms;
 using System.ComponentModel;
+using System.Windows.Forms;
 
 namespace Fomm.Controls
 {
@@ -32,7 +32,9 @@ namespace Fomm.Controls
         {
           m_intIndex = value;
           if (PageIndexChanged != null)
+          {
             PageIndexChanged(this, new EventArgs());
+          }
         }
       }
     }
@@ -41,8 +43,7 @@ namespace Fomm.Controls
     /// Gets or sets the text that appears in this page's tab.
     /// </summary>
     /// <value>The text that appears in this page's tab.</value>
-    [Browsable(true)]
-    [Category("Appearance")]
+    [Browsable(true), Category("Appearance")]
     public override string Text
     {
       get
@@ -58,13 +59,6 @@ namespace Fomm.Controls
     #endregion
 
     #region Constructors
-
-    /// <summary>
-    /// The default constructor.
-    /// </summary>
-    public DropDownTabPage()
-    {
-    }
 
     #endregion
   }

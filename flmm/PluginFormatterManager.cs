@@ -12,7 +12,7 @@ namespace Fomm
     /// </summary>
     public class PluginFormatterManager
     {
-      private Int32 m_intIndex = 0;
+      private Int32 m_intIndex;
       private Set<IPluginFormatProvider> m_setProviders = new Set<IPluginFormatProvider>();
 
       /// <summary>
@@ -40,9 +40,11 @@ namespace Fomm
       /// <param name="p_clrHighlight">The desired highlight colour, or <lang cref="null"/> if the format won't affect the highlight colour.</param>
       /// <param name="p_strMessage">The desired message, or <lang cref="null"/> if the format won't affect the message.</param>
       /// <returns>A <see cref="PluginFormat"/> representing the given values.</returns>
-      public PluginFormat CreateFormat(FontFamily p_ffmFontFamily, float? p_fltFontSizeEM, FontStyle? p_fstFontStyle, Color? p_clrColour, Color? p_clrHighlight, string p_strMessage)
+      public PluginFormat CreateFormat(FontFamily p_ffmFontFamily, float? p_fltFontSizeEM, FontStyle? p_fstFontStyle,
+                                       Color? p_clrColour, Color? p_clrHighlight, string p_strMessage)
       {
-        return new PluginFormat(m_intIndex++, p_ffmFontFamily, p_fltFontSizeEM, p_fstFontStyle, p_clrColour, p_clrHighlight, p_strMessage);
+        return new PluginFormat(m_intIndex++, p_ffmFontFamily, p_fltFontSizeEM, p_fstFontStyle, p_clrColour,
+                                p_clrHighlight, p_strMessage);
       }
 
       /// <summary>
@@ -59,11 +61,18 @@ namespace Fomm
       {
         List<PluginFormat> lstFormats = new List<PluginFormat>();
         foreach (IPluginFormatProvider pfpProvider in m_setProviders)
+        {
           if (pfpProvider.HasFormat(p_strPluginName))
+          {
             lstFormats.Add(pfpProvider.GetFormat(p_strPluginName));
+          }
+        }
         lstFormats.Sort();
         PluginFormat pftMergedFormat = new PluginFormat();
-        for (Int32 i = 0; i < lstFormats.Count; pftMergedFormat.Merge(lstFormats[i++])) ;
+        for (Int32 i = 0; i < lstFormats.Count; pftMergedFormat.Merge(lstFormats[i++]))
+        {
+          ;
+        }
         return pftMergedFormat;
       }
     }

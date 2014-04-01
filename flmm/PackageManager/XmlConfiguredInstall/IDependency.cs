@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Fomm.PackageManager.XmlConfiguredInstall
+﻿namespace Fomm.PackageManager.XmlConfiguredInstall
 {
   /// <summary>
   /// Defines the interface for a dependency

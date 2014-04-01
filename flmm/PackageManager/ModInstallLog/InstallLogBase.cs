@@ -1,13 +1,13 @@
-﻿using System;
+﻿using System.IO;
 using System.Text.RegularExpressions;
-using System.IO;
 
 namespace Fomm.PackageManager.ModInstallLog
 {
   public abstract class InstallLogBase
   {
-    private static readonly Regex m_rgxCleanPath = new Regex("[" + Path.DirectorySeparatorChar + Path.AltDirectorySeparatorChar + "]{2,}");
-    
+    private static readonly Regex m_rgxCleanPath =
+      new Regex("[" + Path.DirectorySeparatorChar + Path.AltDirectorySeparatorChar + "]{2,}");
+
     /// <summary>
     /// Normalizes the given path.
     /// </summary>

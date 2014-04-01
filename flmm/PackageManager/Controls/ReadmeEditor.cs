@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Data;
-using System.Text;
 using System.Windows.Forms;
 
 namespace Fomm.PackageManager.Controls
@@ -104,7 +101,7 @@ namespace Fomm.PackageManager.Controls
       WebBrowser wbrBrowser = new WebBrowser();
       frmHTMLPreview.Controls.Add(wbrBrowser);
       wbrBrowser.Dock = DockStyle.Fill;
-      wbrBrowser.DocumentCompleted += delegate(object o, WebBrowserDocumentCompletedEventArgs arg)
+      wbrBrowser.DocumentCompleted += delegate
       {
         frmHTMLPreview.Text = String.IsNullOrEmpty(wbrBrowser.DocumentTitle) ? "Readme" : wbrBrowser.DocumentTitle;
       };
@@ -112,7 +109,7 @@ namespace Fomm.PackageManager.Controls
       wbrBrowser.AllowWebBrowserDrop = false;
       wbrBrowser.AllowNavigation = false;
       wbrBrowser.DocumentText = xedReadme.Text;
-      frmHTMLPreview.ShowDialog(this.FindForm());
+      frmHTMLPreview.ShowDialog(FindForm());
     }
 
     /// <summary>
@@ -136,9 +133,9 @@ namespace Fomm.PackageManager.Controls
     private void tbxReadme_KeyPress(object sender, KeyPressEventArgs e)
     {
       //character 1 is equivalent to Ctrl-A
-      if (e.KeyChar=='\x01')
+      if (e.KeyChar == '\x01')
       {
-        ((TextBox)sender).SelectAll();
+        ((TextBox) sender).SelectAll();
         e.Handled = true;
       }
     }

@@ -1,6 +1,6 @@
 ﻿using System;
-using ICSharpCode.TextEditor;
 using System.Timers;
+using ICSharpCode.TextEditor;
 
 namespace Fomm.Controls
 {
@@ -12,7 +12,7 @@ namespace Fomm.Controls
   /// </remarks>
   public class CodeEditor : TextEditorControl
   {
-    private Timer m_tmrFoldUpdater = new Timer();
+    private readonly Timer m_tmrFoldUpdater = new Timer();
 
     #region Constructors
 
@@ -22,9 +22,9 @@ namespace Fomm.Controls
     public CodeEditor()
     {
       SetHighlighting("C#");
-      
+
       Document.FoldingManager.FoldingStrategy = new CodeFoldingStrategy();
-      m_tmrFoldUpdater.Elapsed += new ElapsedEventHandler(UpdateFolds);
+      m_tmrFoldUpdater.Elapsed += UpdateFolds;
       m_tmrFoldUpdater.Interval = 2000;
     }
 
@@ -40,7 +40,7 @@ namespace Fomm.Controls
     /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
     protected override void OnLoad(EventArgs e)
     {
-      m_tmrFoldUpdater.SynchronizingObject = this.FindForm();
+      m_tmrFoldUpdater.SynchronizingObject = FindForm();
       base.OnLoad(e);
     }
 

@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Windows.Forms;
 using System.ComponentModel;
+using System.Windows.Forms;
 
 namespace Fomm.Controls
 {
@@ -9,7 +9,7 @@ namespace Fomm.Controls
   /// </summary>
   public class VerticalTabPage : Panel, IStatusProviderAware
   {
-    private VerticalTabButton m_vtbTab = null;
+    private readonly VerticalTabButton m_vtbTab;
 
     #region Properties
 
@@ -33,8 +33,7 @@ namespace Fomm.Controls
     /// Gets or sets the text that appears in this page's tab.
     /// </summary>
     /// <value>The text that appears in this page's tab.</value>
-    [Browsable(true)]
-    [Category("Appearance")]
+    [Browsable(true), Category("Appearance")]
     public override string Text
     {
       get

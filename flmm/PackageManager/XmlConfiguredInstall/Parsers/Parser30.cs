@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Xml;
 using System.Collections.Generic;
-using System.Xml.Schema;
-using System.IO;
 using System.Drawing;
-using System.Windows.Forms;
 using System.Globalization;
+using System.Windows.Forms;
+using System.Xml;
 
 namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
 {
@@ -36,7 +34,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     /// <param name="p_fomodMod">The mod whose configuration file we are parsing.</param>
     /// <param name="p_dsmSate">The state of the install.</param>
     /// <param name="p_pexParserExtension">The parser extension that provides game-specific config file parsing.</param>
-    public Parser30(XmlDocument p_xmlConfig, fomod p_fomodMod, DependencyStateManager p_dsmSate, ParserExtension p_pexParserExtension)
+    public Parser30(XmlDocument p_xmlConfig, fomod p_fomodMod, DependencyStateManager p_dsmSate,
+                    ParserExtension p_pexParserExtension)
       : base(p_xmlConfig, p_fomodMod, p_dsmSate, p_pexParserExtension)
     {
     }
@@ -50,7 +49,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     {
       XmlNode xndModDependencies = XmlConfig.SelectSingleNode("/config/moduleDependencies");
       if (xndModDependencies == null)
+      {
         return null;
+      }
       return loadDependency(xndModDependencies);
     }
 
@@ -59,23 +60,30 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     {
       XmlNode xndTitle = XmlConfig.SelectSingleNode("/config/moduleName");
       string strTitle = xndTitle.InnerText;
-      Color clrColour = Color.FromArgb((Int32)(UInt32.Parse(xndTitle.Attributes["colour"].Value, NumberStyles.HexNumber, null) | 0xff000000));
-      TextPosition tpsPosition = (TextPosition)Enum.Parse(typeof(TextPosition), xndTitle.Attributes["position"].Value);
+      Color clrColour =
+        Color.FromArgb(
+          (Int32) (UInt32.Parse(xndTitle.Attributes["colour"].Value, NumberStyles.HexNumber, null) | 0xff000000));
+      TextPosition tpsPosition = (TextPosition) Enum.Parse(typeof (TextPosition), xndTitle.Attributes["position"].Value);
 
       XmlNode xndImage = XmlConfig.SelectSingleNode("/config/moduleImage");
       if (xndImage != null)
       {
         string strImagePath = xndImage.Attributes["path"].Value;
-        Image imgImage = String.IsNullOrEmpty(strImagePath) ? Fomod.GetScreenshotImage() : new Bitmap(Fomod.GetImage(strImagePath));
+        Image imgImage = String.IsNullOrEmpty(strImagePath)
+          ? Fomod.GetScreenshotImage()
+          : new Bitmap(Fomod.GetImage(strImagePath));
         bool booShowImage = Boolean.Parse(xndImage.Attributes["showImage"].Value) && (imgImage != null);
         bool booShowFade = Boolean.Parse(xndImage.Attributes["showFade"].Value);
         Int32 intHeight = Int32.Parse(xndImage.Attributes["height"].Value);
         if ((intHeight == -1) && booShowImage)
+        {
           intHeight = 75;
+        }
         return new HeaderInfo(strTitle, clrColour, tpsPosition, imgImage, booShowImage, booShowFade, intHeight);
       }
       Image imgScreenshot = Fomod.GetScreenshotImage();
-      return new HeaderInfo(strTitle, clrColour, tpsPosition, imgScreenshot, imgScreenshot != null, true, (imgScreenshot != null) ? 75 : -1);
+      return new HeaderInfo(strTitle, clrColour, tpsPosition, imgScreenshot, imgScreenshot != null, true,
+                            (imgScreenshot != null) ? 75 : -1);
     }
 
     #endregion
@@ -92,7 +100,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
       if (p_xndFileGroups != null)
       {
         foreach (XmlNode xndGroup in p_xndFileGroups.ChildNodes)
+        {
           lstGroups.Add(parseGroup(xndGroup));
+        }
         switch (p_xndFileGroups.Attributes["order"].InnerText)
         {
           case "Ascending":
@@ -101,10 +111,12 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
               if (String.IsNullOrEmpty(x.Name))
               {
                 if (String.IsNullOrEmpty(y.Name))
+                {
                   return 0;
+                }
                 return -1;
               }
-              return x.Name.CompareTo(y.Name);
+              return String.Compare(x.Name, y.Name, StringComparison.Ordinal);
             });
             break;
           case "Descending":
@@ -113,10 +125,12 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
               if (String.IsNullOrEmpty(y.Name))
               {
                 if (String.IsNullOrEmpty(x.Name))
+                {
                   return 0;
+                }
                 return -1;
               }
-              return y.Name.CompareTo(x.Name);
+              return String.Compare(y.Name, x.Name, StringComparison.Ordinal);
             });
             break;
         }
@@ -132,7 +146,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     protected override PluginGroup parseGroup(XmlNode p_xndGroup)
     {
       string strName = p_xndGroup.Attributes["name"].InnerText;
-      GroupType gtpType = (GroupType)Enum.Parse(typeof(GroupType), p_xndGroup.Attributes["type"].InnerText);
+      GroupType gtpType = (GroupType) Enum.Parse(typeof (GroupType), p_xndGroup.Attributes["type"].InnerText);
       SortOrder strPluginOrder = SortOrder.None;
       switch (p_xndGroup.FirstChild.Attributes["order"].InnerText)
       {
@@ -161,8 +175,12 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     protected override CompositeDependency loadDependency(XmlNode p_xndCompositeDependency)
     {
       if (p_xndCompositeDependency == null)
+      {
         return null;
-      DependencyOperator dopOperator = (DependencyOperator)Enum.Parse(typeof(DependencyOperator), p_xndCompositeDependency.Attributes["operator"].InnerText);
+      }
+      DependencyOperator dopOperator =
+        (DependencyOperator)
+          Enum.Parse(typeof (DependencyOperator), p_xndCompositeDependency.Attributes["operator"].InnerText);
       CompositeDependency cpdDependency = new CompositeDependency(dopOperator);
       XmlNodeList xnlDependencies = p_xndCompositeDependency.ChildNodes;
       foreach (XmlNode xndDependency in xnlDependencies)
@@ -174,7 +192,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
             break;
           case "fileDependency":
             string strDependency = xndDependency.Attributes["file"].InnerText.ToLower();
-            ModFileState mfsModState = (ModFileState)Enum.Parse(typeof(ModFileState), xndDependency.Attributes["state"].InnerText);
+            ModFileState mfsModState =
+              (ModFileState) Enum.Parse(typeof (ModFileState), xndDependency.Attributes["state"].InnerText);
             cpdDependency.Dependencies.Add(new FileDependency(strDependency, mfsModState, StateManager));
             break;
           case "flagDependency":
@@ -193,9 +212,14 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
           default:
             IDependency dpnExtensionDependency = ParserExtension.ParseDependency(xndDependency, StateManager);
             if (dpnExtensionDependency != null)
+            {
               cpdDependency.Dependencies.Add(dpnExtensionDependency);
+            }
             else
-              throw new ParserException("Invalid dependency node: " + xndDependency.Name + ". At this point the config file has been validated against the schema, so there's something wrong with the parser.");
+            {
+              throw new ParserException("Invalid dependency node: " + xndDependency.Name +
+                                        ". At this point the config file has been validated against the schema, so there's something wrong with the parser.");
+            }
             break;
         }
       }

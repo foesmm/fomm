@@ -37,28 +37,23 @@
 // obligated to do so.  If you do not wish to do so, delete this
 // exception statement from your version.
 
+#if !NETCF_1_0
+#endif
 using System;
 using System.IO;
 
-#if !NETCF_1_0
-using System.Security.Cryptography;
-#endif
-
-using ICSharpCode.SharpZipLib.Zip.Compression;
-using ICSharpCode.SharpZipLib.Checksums;
-
-namespace ICSharpCode.SharpZipLib.Zip.Compression.Streams 
+namespace Fomm.SharpZipLib.Zip.Compression.Streams
 {
-
   /// <summary>
   /// An input buffer customised for use by <see cref="InflaterInputStream"/>
   /// </summary>
   /// <remarks>
   /// The buffer supports decryption of incoming data.
   /// </remarks>
-  class InflaterInputBuffer
+  internal class InflaterInputBuffer
   {
     #region Constructors
+
     /// <summary>
     /// Initialise a new instance of <see cref="InflaterInputBuffer"/>
     /// </summary>
@@ -68,12 +63,14 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression.Streams
     public InflaterInputBuffer(Stream stream, int bufferSize)
     {
       inputStream = stream;
-      if ( bufferSize < 1024 ) {
+      if (bufferSize < 1024)
+      {
         bufferSize = 1024;
       }
       rawData = new byte[bufferSize];
       clearText = rawData;
     }
+
     #endregion
 
     /// <summary>
@@ -81,8 +78,9 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression.Streams
     /// </summary>
     public int RawLength
     {
-      get { 
-        return rawLength; 
+      get
+      {
+        return rawLength;
       }
     }
 
@@ -92,7 +90,8 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression.Streams
     /// <param name="inflater">The inflater to set input for.</param>
     public void SetInflaterInput(Inflater inflater)
     {
-      if ( available > 0 ) {
+      if (available > 0)
+      {
         inflater.SetInput(clearText, clearTextLength - available, available);
         available = 0;
       }
@@ -105,37 +104,42 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression.Streams
     {
       rawLength = 0;
       int toRead = rawData.Length;
-      
-      while (toRead > 0) {
+
+      while (toRead > 0)
+      {
         int count = inputStream.Read(rawData, rawLength, toRead);
-        if ( count <= 0 ) {
-          if (rawLength == 0) {
-            throw new SharpZipBaseException("Unexpected EOF"); 
+        if (count <= 0)
+        {
+          if (rawLength == 0)
+          {
+            throw new SharpZipBaseException("Unexpected EOF");
           }
           break;
         }
         rawLength += count;
         toRead -= count;
       }
-      
+
       clearTextLength = rawLength;
 
       available = clearTextLength;
     }
 
     #region Instance Fields
-    int rawLength;
-    byte[] rawData;
-    
-    int clearTextLength;
-    byte[] clearText;
-    
-    int available;
-      
-    Stream inputStream;
+
+    private int rawLength;
+    private byte[] rawData;
+
+    private int clearTextLength;
+    private byte[] clearText;
+
+    private int available;
+
+    private Stream inputStream;
+
     #endregion
   }
-  
+
   /// <summary>
   /// This filter stream is used to decompress data compressed using the "deflate"
   /// format. The "deflate" format is described in RFC 1951.
@@ -145,9 +149,10 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression.Streams
   ///
   /// Author of the original java version : John Leuner.
   /// </summary>
-  class InflaterInputStream : Stream
+  internal class InflaterInputStream : Stream
   {
     #region Constructors
+
     /// <summary>
     /// Create an InflaterInputStream with the specified decompressor
     /// and a default buffer size of 4KB.
@@ -162,7 +167,7 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression.Streams
       : this(baseInputStream, inf, 4096)
     {
     }
-    
+
     /// <summary>
     /// Create an InflaterInputStream with the specified decompressor
     /// and the specified buffer size.
@@ -178,37 +183,41 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression.Streams
     /// </param>
     public InflaterInputStream(Stream baseInputStream, Inflater inflater, int bufferSize)
     {
-      if (baseInputStream == null) {
+      if (baseInputStream == null)
+      {
         throw new ArgumentNullException("baseInputStream");
       }
-      
-      if (inflater == null) {
+
+      if (inflater == null)
+      {
         throw new ArgumentNullException("inflater");
       }
-      
-      if (bufferSize <= 0) {
+
+      if (bufferSize <= 0)
+      {
         throw new ArgumentOutOfRangeException("bufferSize");
       }
-      
+
       this.baseInputStream = baseInputStream;
-      this.inf = inflater;
-      
+      inf = inflater;
+
       inputBuffer = new InflaterInputBuffer(baseInputStream, bufferSize);
     }
-    
+
     #endregion
-    
+
     /// <summary>
     /// Returns 0 once the end of the stream (EOF) has been reached.
     /// Otherwise returns 1.
     /// </summary>
-    public virtual int Available 
+    public virtual int Available
     {
-      get {
+      get
+      {
         return inf.IsFinished ? 0 : 1;
       }
     }
-    
+
     /// <summary>
     /// Fills the buffer with more data to decompress.
     /// </summary>
@@ -222,57 +231,68 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression.Streams
     }
 
     #region Stream Overrides
+
     /// <summary>
     /// Gets a value indicating whether the current stream supports reading
     /// </summary>
-    public override bool CanRead 
+    public override bool CanRead
     {
-      get {
+      get
+      {
         return baseInputStream.CanRead;
       }
     }
-    
+
     /// <summary>
     /// Gets a value of false indicating seeking is not supported for this stream.
     /// </summary>
-    public override bool CanSeek {
-      get {
+    public override bool CanSeek
+    {
+      get
+      {
         return false;
       }
     }
-    
+
     /// <summary>
     /// Gets a value of false indicating that this stream is not writeable.
     /// </summary>
-    public override bool CanWrite {
-      get {
+    public override bool CanWrite
+    {
+      get
+      {
         return false;
       }
     }
-    
+
     /// <summary>
     /// A value representing the length of the stream in bytes.
     /// </summary>
-    public override long Length {
-      get {
+    public override long Length
+    {
+      get
+      {
         return inputBuffer.RawLength;
       }
     }
-    
+
     /// <summary>
     /// The current position within the stream.
     /// Throws a NotSupportedException when attempting to set the position
     /// </summary>
     /// <exception cref="NotSupportedException">Attempting to set the position</exception>
-    public override long Position {
-      get {
+    public override long Position
+    {
+      get
+      {
         return baseInputStream.Position;
       }
-      set {
+      set
+      {
         throw new NotSupportedException("InflaterInputStream Position not supported");
       }
     }
-    
+
     /// <summary>
     /// Flushes the baseInputStream
     /// </summary>
@@ -280,7 +300,7 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression.Streams
     {
       baseInputStream.Flush();
     }
-    
+
     /// <summary>
     /// Sets the position within the current stream
     /// Always throws a NotSupportedException
@@ -293,7 +313,7 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression.Streams
     {
       throw new NotSupportedException("Seek not supported");
     }
-    
+
     /// <summary>
     /// Set the length of the current stream
     /// Always throws a NotSupportedException
@@ -304,7 +324,7 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression.Streams
     {
       throw new NotSupportedException("InflaterInputStream SetLength not supported");
     }
-    
+
     /// <summary>
     /// Writes a sequence of bytes to stream and advances the current position
     /// This method always throws a NotSupportedException
@@ -317,7 +337,7 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression.Streams
     {
       throw new NotSupportedException("InflaterInputStream Write not supported");
     }
-    
+
     /// <summary>
     /// Writes one byte to the current stream and advances the current position
     /// Always throws a NotSupportedException
@@ -328,7 +348,7 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression.Streams
     {
       throw new NotSupportedException("InflaterInputStream WriteByte not supported");
     }
-    
+
     /// <summary>
     /// Entry point to begin an asynchronous write.  Always throws a NotSupportedException.
     /// </summary>
@@ -343,16 +363,18 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression.Streams
     {
       throw new NotSupportedException("InflaterInputStream BeginWrite not supported");
     }
-    
+
     /// <summary>
     /// Closes the input stream.  When <see cref="IsStreamOwner"></see>
     /// is true the underlying stream is also closed.
     /// </summary>
     public override void Close()
     {
-      if ( !isClosed ) {
+      if (!isClosed)
+      {
         isClosed = true;
-        if ( isStreamOwner ) {
+        if (isStreamOwner)
+        {
           baseInputStream.Close();
         }
       }
@@ -374,7 +396,7 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression.Streams
     /// <exception cref="SharpZipBaseException">
     /// Inflater needs a dictionary
     /// </exception>
-    public override int Read(byte[] buffer, int offset, int count) 
+    public override int Read(byte[] buffer, int offset, int count)
     {
       if (inf.IsNeedingDictionary)
       {
@@ -382,26 +404,33 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression.Streams
       }
 
       int remainingBytes = count;
-      while (true) {
-        int bytesRead = inf.Inflate(buffer, offset, remainingBytes); 
+      while (true)
+      {
+        int bytesRead = inf.Inflate(buffer, offset, remainingBytes);
         offset += bytesRead;
         remainingBytes -= bytesRead;
 
-        if (remainingBytes == 0 || inf.IsFinished) {
-          break; 
+        if (remainingBytes == 0 || inf.IsFinished)
+        {
+          break;
         }
 
-        if ( inf.IsNeedingInput ) {
+        if (inf.IsNeedingInput)
+        {
           Fill();
         }
-        else if ( bytesRead == 0 ) {
+        else if (bytesRead == 0)
+        {
           throw new ZipException("Dont know what to do");
         }
       }
       return count - remainingBytes;
     }
+
     #endregion
+
     #region Instance Fields
+
     /// <summary>
     /// Decompressor for this stream
     /// </summary>
@@ -420,13 +449,14 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression.Streams
     /// <summary>
     /// Flag indicating wether this instance has been closed or not.
     /// </summary>
-    bool isClosed;
+    private bool isClosed;
 
     /// <summary>
     /// Flag indicating wether this instance is designated the stream owner.
     /// When closing if this flag is true the underlying stream is closed.
     /// </summary>
-    bool isStreamOwner = true;
+    private bool isStreamOwner = true;
+
     #endregion
   }
 }

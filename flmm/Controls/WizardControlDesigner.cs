@@ -1,5 +1,4 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 
 namespace Fomm.Controls
 {
@@ -18,13 +17,19 @@ namespace Fomm.Controls
     protected override bool GetHitTest(Point point)
     {
       if (base.GetHitTest(point))
+      {
         return true;
+      }
 
-      WizardControl wizWizardControl = (WizardControl)Control;
+      WizardControl wizWizardControl = (WizardControl) Control;
       if (wizWizardControl.PreviousButton.ClientRectangle.Contains(wizWizardControl.PreviousButton.PointToClient(point)))
+      {
         return true;
+      }
       if (wizWizardControl.NextButton.ClientRectangle.Contains(wizWizardControl.NextButton.PointToClient(point)))
+      {
         return true;
+      }
       return false;
     }
   }

@@ -57,9 +57,11 @@ namespace Fomm.PackageManager.ModInstallLog
     /// or, a value greater than 0 if this fomod is greater then the given fomod info.</returns>
     public int CompareTo(FomodInfo other)
     {
-      Int32 intResult = BaseName.CompareTo(other.BaseName);
+      Int32 intResult = String.Compare(BaseName, other.BaseName, StringComparison.Ordinal);
       if (intResult == 0)
+      {
         intResult = MachineVersion.CompareTo(other.MachineVersion);
+      }
       return intResult;
     }
 

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Fomm.PackageManager.XmlConfiguredInstall
 {
@@ -13,12 +11,12 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
   /// </remarks>
   public class PluginFile : IComparable<PluginFile>
   {
-    private string m_strSource = null;
-    private string m_strDest = null;
-    private bool m_booIsFolder = false;
-    private bool m_booAlwaysInstall = false;
-    private bool m_booInstallIfUsable = false;
-    private Int32 m_intPriority = 0;
+    private string m_strSource;
+    private string m_strDest;
+    private bool m_booIsFolder;
+    private bool m_booAlwaysInstall;
+    private bool m_booInstallIfUsable;
+    private Int32 m_intPriority;
 
     #region Properties
 
@@ -111,7 +109,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// <param name="p_intPriority">The priority of the item.</param>
     /// <param name="p_booAlwaysInstall">Whether this item should always be installed, regardless of whether or not the plugin is selected.</param>
     /// <param name="p_booInstallIfUsable">Whether this item should be installed when the plugin is not <see cref="PluginType.NotUsable"/>, regardless of whether or not the plugin is selected.</param>
-    public PluginFile(string p_strSource, string p_strDest, bool p_booIsFolder, Int32 p_intPriority, bool p_booAlwaysInstall, bool p_booInstallIfUsable)
+    public PluginFile(string p_strSource, string p_strDest, bool p_booIsFolder, Int32 p_intPriority,
+                      bool p_booAlwaysInstall, bool p_booInstallIfUsable)
     {
       m_strSource = p_strSource;
       m_strDest = p_strDest;
@@ -141,9 +140,11 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
         intResult = m_booIsFolder.CompareTo(other.IsFolder);
         if (intResult == 0)
         {
-          intResult = m_strSource.CompareTo(other.Source);
+          intResult = String.Compare(m_strSource, other.Source, StringComparison.Ordinal);
           if (intResult == 0)
-            intResult = m_strDest.CompareTo(other.Destination);
+          {
+            intResult = String.Compare(m_strDest, other.Destination, StringComparison.Ordinal);
+          }
         }
       }
       return intResult;

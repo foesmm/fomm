@@ -1,24 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
+using System.Text;
+using System.Windows.Forms;
 using ChinhDo.Transactions;
 using Fomm.PackageManager.ModInstallLog;
+using Fomm.Properties;
 using fomm.Transactions;
-using System.Windows.Forms;
-using System.Text;
-using System.IO;
 
 namespace Fomm.PackageManager
 {
   public abstract class ModInstallerBase : IDisposable
   {
     protected static readonly object objInstallLock = new object();
-    private BackgroundWorkerProgressDialog m_bwdProgress = null;
-    private TxFileManager m_tfmFileManager = null;
-    private InstallLogMergeModule m_ilmModInstallLog = null;    
-    private fomod m_fomodMod = null;
-    private ModInstallScript m_misScript = null;
-    
+    private BackgroundWorkerProgressDialog m_bwdProgress;
+    private TxFileManager m_tfmFileManager;
+    private InstallLogMergeModule m_ilmModInstallLog;
+    private fomod m_fomodMod;
+    private ModInstallScript m_misScript;
+
     #region Properties
 
     public ModInstallScript Script
@@ -38,7 +38,10 @@ namespace Fomm.PackageManager
       get
       {
         if (m_tfmFileManager == null)
-          throw new InvalidOperationException("The transactional file manager must be initialized by calling InitTransactionalFileManager() before it is used.");
+        {
+          throw new InvalidOperationException(
+            "The transactional file manager must be initialized by calling InitTransactionalFileManager() before it is used.");
+        }
         return m_tfmFileManager;
       }
     }
@@ -78,10 +81,7 @@ namespace Fomm.PackageManager
     /// In order to display the exception message, the placeholder {0} should be used.
     /// </remarks>
     /// <value>The message to display to the user when an exception is caught.</value>
-    protected abstract string ExceptionMessage
-    {
-      get;
-    }
+    protected abstract string ExceptionMessage { get; }
 
     /// <summary>
     /// Gets the message to display upon failure of the script.
@@ -91,10 +91,7 @@ namespace Fomm.PackageManager
     /// displayed.
     /// </remarks>
     /// <value>The message to display upon failure of the script.</value>
-    protected abstract string FailMessage
-    {
-      get;
-    }
+    protected abstract string FailMessage { get; }
 
     /// <summary>
     /// Gets the message to display upon success of the script.
@@ -104,10 +101,7 @@ namespace Fomm.PackageManager
     /// displayed.
     /// </remarks>
     /// <value>The message to display upon success of the script.</value>
-    protected abstract string SuccessMessage
-    {
-      get;
-    }
+    protected abstract string SuccessMessage { get; }
 
     #endregion
 
@@ -117,7 +111,7 @@ namespace Fomm.PackageManager
     /// A simple constructor that initializes the object.
     /// </summary>
     /// <param name="p_fomodMod">The <see cref="fomod"/> to be installed or uninstalled.</param>
-    public ModInstallerBase(fomod p_fomodMod)
+    protected ModInstallerBase(fomod p_fomodMod)
     {
       m_fomodMod = p_fomodMod;
     }
@@ -168,9 +162,7 @@ namespace Fomm.PackageManager
     /// <seealso cref="DoScript()"/>
     protected bool Run(bool p_booSuppressSuccessMessage, bool p_booSetFOModReadOnly)
     {
-      bool booSuccess = false;
-      if (CheckAlreadyDone())
-        booSuccess = true;
+      bool booSuccess = CheckAlreadyDone();
 
       if (!booSuccess)
       {
@@ -185,7 +177,7 @@ namespace Fomm.PackageManager
           // not clear what the value of SETTING1 will be).
           // as a result, we only allow one mod to be installed at a time,
           // hence the lock.
-          lock (ModInstallerBase.objInstallLock)
+          lock (objInstallLock)
           {
             using (TransactionScope tsTransaction = new TransactionScope())
             {
@@ -205,26 +197,32 @@ namespace Fomm.PackageManager
                       m_bwdProgress.OverallProgressStep = 1;
                       try
                       {
-                        Fomod.ReadOnlyInitStepStarted += new CancelEventHandler(Fomod_ReadOnlyInitStepStarted);
-                        Fomod.ReadOnlyInitStepFinished += new CancelEventHandler(Fomod_ReadOnlyInitStepFinished);
+                        Fomod.ReadOnlyInitStepStarted += Fomod_ReadOnlyInitStepStarted;
+                        Fomod.ReadOnlyInitStepFinished += Fomod_ReadOnlyInitStepFinished;
                         if (m_bwdProgress.ShowDialog() == DialogResult.Cancel)
+                        {
                           booCancelled = true;
+                        }
                       }
                       finally
                       {
-                        Fomod.ReadOnlyInitStepStarted -= new CancelEventHandler(Fomod_ReadOnlyInitStepStarted);
-                        Fomod.ReadOnlyInitStepFinished -= new CancelEventHandler(Fomod_ReadOnlyInitStepFinished);
+                        Fomod.ReadOnlyInitStepStarted -= Fomod_ReadOnlyInitStepStarted;
+                        Fomod.ReadOnlyInitStepFinished -= Fomod_ReadOnlyInitStepFinished;
                       }
                     }
                   }
                   else
+                  {
                     Fomod.BeginReadOnlyTransaction();
+                  }
                 }
                 if (!booCancelled)
                 {
                   booSuccess = DoScript();
                   if (booSuccess)
+                  {
                     tsTransaction.Complete();
+                  }
                 }
               }
             }
@@ -234,21 +232,31 @@ namespace Fomm.PackageManager
         {
           StringBuilder stbError = new StringBuilder(e.Message);
           if (e is FileNotFoundException)
-            stbError.Append(" (" + ((FileNotFoundException)e).FileName + ")");
+          {
+            stbError.Append(" (" + ((FileNotFoundException) e).FileName + ")");
+          }
           if (e is IllegalFilePathException)
-            stbError.Append(" (" + ((IllegalFilePathException)e).Path + ")");
+          {
+            stbError.Append(" (" + ((IllegalFilePathException) e).Path + ")");
+          }
           if (e.InnerException != null)
+          {
             stbError.AppendLine().AppendLine(e.InnerException.Message);
+          }
           if (e is RollbackException)
-            foreach (RollbackException.ExceptedResourceManager erm in ((RollbackException)e).ExceptedResourceManagers)
+          {
+            foreach (RollbackException.ExceptedResourceManager erm in ((RollbackException) e).ExceptedResourceManagers)
             {
               stbError.AppendLine(erm.ResourceManager.ToString());
               stbError.AppendLine(erm.Exception.Message);
               if (erm.Exception.InnerException != null)
+              {
                 stbError.AppendLine(erm.Exception.InnerException.Message);
+              }
             }
-          string strMessage = String.Format(ExceptionMessage, stbError.ToString());
-          System.Windows.Forms.MessageBox.Show(strMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+          }
+          string strMessage = String.Format(ExceptionMessage, stbError);
+          MessageBox.Show(strMessage, Resources.ErrorStr, MessageBoxButtons.OK, MessageBoxIcon.Error);
           return false;
         }
         finally
@@ -256,13 +264,19 @@ namespace Fomm.PackageManager
           m_tfmFileManager = null;
           m_ilmModInstallLog = null;
           if (Fomod != null)
+          {
             Fomod.EndReadOnlyTransaction();
+          }
         }
       }
       if (booSuccess && !p_booSuppressSuccessMessage && !String.IsNullOrEmpty(SuccessMessage))
-        System.Windows.Forms.MessageBox.Show(SuccessMessage, "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+      {
+        MessageBox.Show(SuccessMessage, "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+      }
       else if (!booSuccess && !String.IsNullOrEmpty(FailMessage))
-        System.Windows.Forms.MessageBox.Show(FailMessage, "Failure", MessageBoxButtons.OK, MessageBoxIcon.Error);
+      {
+        MessageBox.Show(FailMessage, "Failure", MessageBoxButtons.OK, MessageBoxIcon.Error);
+      }
       return booSuccess;
     }
 
@@ -315,7 +329,9 @@ namespace Fomm.PackageManager
     public void Dispose()
     {
       if (m_misScript != null)
+      {
         m_misScript.Dispose();
+      }
     }
 
     #endregion

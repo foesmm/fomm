@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 
 namespace Fomm.PackageManager.XmlConfiguredInstall
@@ -12,12 +11,12 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
   /// </remarks>
   public class PluginInfo
   {
-    private string m_strName = null;
-    private string m_strDesc = null;
-    private Image m_imgImage = null;
-    private IPluginType m_ptpType = null;
-    private List<PluginFile> m_lstFiles = null;
-    private List<ConditionalFlag> m_lstFlags = null;
+    private string m_strName;
+    private string m_strDesc;
+    private Image m_imgImage;
+    private IPluginType m_ptpType;
+    private List<PluginFile> m_lstFiles;
+    private List<ConditionalFlag> m_lstFlags;
 
     #region Properties
 

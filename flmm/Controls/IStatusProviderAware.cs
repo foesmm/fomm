@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
 namespace Fomm.Controls
 {
@@ -13,9 +12,6 @@ namespace Fomm.Controls
     /// Gets the child control next to which to display the icon.
     /// </summary>
     /// <value>The child control next to which to display the icon.</value>
-    Control StatusProviderSite
-    {
-      get;
-    }
+    Control StatusProviderSite { get; }
   }
 }

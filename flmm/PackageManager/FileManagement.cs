@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 
 namespace Fomm.PackageManager
 {
@@ -19,13 +18,21 @@ namespace Fomm.PackageManager
     private static bool IsSafeFilePath(string p_strPath)
     {
       if (p_strPath.IndexOfAny(Path.GetInvalidPathChars()) != -1)
+      {
         return false;
+      }
       if (Path.IsPathRooted(p_strPath))
+      {
         return false;
+      }
       if (p_strPath.Contains(".." + Path.AltDirectorySeparatorChar))
+      {
         return false;
+      }
       if (p_strPath.Contains(".." + Path.DirectorySeparatorChar))
+      {
         return false;
+      }
       return true;
     }
 
@@ -38,7 +45,9 @@ namespace Fomm.PackageManager
     internal static void AssertFilePathIsSafe(string p_strPath)
     {
       if (!IsSafeFilePath(p_strPath))
+      {
         throw new IllegalFilePathException(p_strPath);
+      }
     }
 
     /// <summary>
@@ -68,7 +77,8 @@ namespace Fomm.PackageManager
     {
       AssertFilePathIsSafe(p_strPath);
       PermissionsManager.CurrentPermissions.Assert();
-      return Directory.GetFiles(Path.Combine(Program.GameMode.PluginsPath, p_strPath), p_strPattern, p_booAllFolders ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
+      return Directory.GetFiles(Path.Combine(Program.GameMode.PluginsPath, p_strPath), p_strPattern,
+                                p_booAllFolders ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
     }
 
     /// <summary>
@@ -84,7 +94,9 @@ namespace Fomm.PackageManager
       PermissionsManager.CurrentPermissions.Assert();
       string datapath = Path.Combine(Program.GameMode.PluginsPath, p_strPath);
       if (!File.Exists(datapath))
+      {
         throw new FileNotFoundException();
+      }
       return File.ReadAllBytes(datapath);
     }
   }

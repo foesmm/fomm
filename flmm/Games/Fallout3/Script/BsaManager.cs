@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.IO;
 using Fomm.Games.Fallout3.Tools.BSA;
 using Fomm.PackageManager;
@@ -13,7 +12,7 @@ namespace Fomm.Games.Fallout3.Script
   public class BsaManager : IDisposable
   {
     private static readonly Dictionary<string, BSAArchive> m_dicBSAs = new Dictionary<string, BSAArchive>();
-    
+
     /// <summary>
     /// Gets the specified file from the specified BSA.
     /// </summary>
@@ -29,11 +28,15 @@ namespace Fomm.Games.Fallout3.Script
       FileManagement.AssertFilePathIsSafe(p_strBsa);
       FileManagement.AssertFilePathIsSafe(p_strFile);
       if (Path.GetDirectoryName(p_strBsa).Length > 0)
+      {
         throw new IllegalFilePathException(p_strBsa);
+      }
       PermissionsManager.CurrentPermissions.Assert();
       string strLoweredBsa = p_strBsa.ToLowerInvariant();
       if (!m_dicBSAs.ContainsKey(strLoweredBsa))
+      {
         m_dicBSAs[strLoweredBsa] = new BSAArchive(Path.Combine(Program.GameMode.PluginsPath, strLoweredBsa));
+      }
       return m_dicBSAs[strLoweredBsa].GetFile(p_strFile);
     }
 
@@ -49,11 +52,15 @@ namespace Fomm.Games.Fallout3.Script
     {
       FileManagement.AssertFilePathIsSafe(p_strBsa);
       if (Path.GetDirectoryName(p_strBsa).Length > 0)
+      {
         throw new IllegalFilePathException(p_strBsa);
+      }
       PermissionsManager.CurrentPermissions.Assert();
       if (!m_dicBSAs.ContainsKey(p_strBsa))
+      {
         m_dicBSAs[p_strBsa] = new BSAArchive(Path.Combine(Program.GameMode.PluginsPath, p_strBsa));
-      return (string[])m_dicBSAs[p_strBsa].FileNames.Clone();
+      }
+      return (string[]) m_dicBSAs[p_strBsa].FileNames.Clone();
     }
 
     #region IDisposable Members
@@ -67,7 +74,9 @@ namespace Fomm.Games.Fallout3.Script
     public void Dispose()
     {
       foreach (BSAArchive bsaBSA in m_dicBSAs.Values)
+      {
         bsaBSA.Dispose();
+      }
       m_dicBSAs.Clear();
     }
 

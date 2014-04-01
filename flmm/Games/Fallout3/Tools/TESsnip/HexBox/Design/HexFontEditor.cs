@@ -1,34 +1,29 @@
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
 
-namespace Be.Windows.Forms.Design
+namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox.Design
 {
   /// <summary>
   /// Display only fixed-piched fonts
   /// </summary>
   internal class HexFontEditor : FontEditor
   {
-    object value;
+    private object value;
 
     /// <summary>
-    /// Initializes an instance of HexFontEditor class.
+    /// Edits the pValue
     /// </summary>
-    public HexFontEditor()
+    public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider, object pValue)
     {
-    }
-
-    /// <summary>
-    /// Edits the value
-    /// </summary>
-    public override object EditValue(System.ComponentModel.ITypeDescriptorContext context, IServiceProvider provider, object value)
-    {
-      this.value = value;
+      value = pValue;
       if (provider != null)
       {
-        IWindowsFormsEditorService service1 = (IWindowsFormsEditorService) provider.GetService(typeof(IWindowsFormsEditorService));
+        IWindowsFormsEditorService service1 =
+          (IWindowsFormsEditorService) provider.GetService(typeof (IWindowsFormsEditorService));
         if (service1 != null)
         {
           FontDialog fontDialog = new FontDialog();
@@ -40,31 +35,28 @@ namespace Be.Windows.Forms.Design
           fontDialog.ShowEffects = false;
           fontDialog.ShowHelp = false;
 
-          Font font = value as Font;
-          if(font != null)
+          Font font = pValue as Font;
+          if (font != null)
           {
             fontDialog.Font = font;
           }
           if (fontDialog.ShowDialog() == DialogResult.OK)
           {
-            this.value = fontDialog.Font;
+            value = fontDialog.Font;
           }
 
           fontDialog.Dispose();
         }
       }
 
-      value = this.value;
-      this.value = null;
-      return value;
-
+      pValue = value;
+      value = null;
+      return pValue;
     }
 
-    public override UITypeEditorEditStyle GetEditStyle(System.ComponentModel.ITypeDescriptorContext context)
+    public override UITypeEditorEditStyle GetEditStyle(ITypeDescriptorContext context)
     {
       return UITypeEditorEditStyle.Modal;
     }
-
-
   }
 }

@@ -1,6 +1,14 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Diagnostics;
 using System.IO;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using Fomm.Properties;
+using Fomm.SharpZipLib.Zip.Compression;
 
 namespace Fomm.Games.Fallout3.Tools.BSA
 {
@@ -9,10 +17,12 @@ namespace Fomm.Games.Fallout3.Tools.BSA
     internal BSABrowser()
     {
       InitializeComponent();
-      this.Icon = Fomm.Properties.Resources.fomm02;
+      Icon = Resources.fomm02;
       string path = Properties.Settings.Default.fallout3LastBSAUnpackPath;
       if (!String.IsNullOrEmpty(path))
+      {
         SaveAllDialog.SelectedPath = path;
+      }
       OpenBSA.InitialDirectory = Program.GameMode.PluginsPath;
 
       Properties.Settings.Default.windowPositions.GetWindowPosition("BSABrowser", this);
@@ -21,7 +31,9 @@ namespace Fomm.Games.Fallout3.Tools.BSA
     private void BSABrowser_Load(object sender, EventArgs e)
     {
       Int32 tmp = Properties.Settings.Default.fallout3BSABrowserPanelSplit;
-      splitContainer1.SplitterDistance = Math.Max(splitContainer1.Panel1MinSize + 1, Math.Min(splitContainer1.Width - (splitContainer1.Panel2MinSize + 1), tmp));
+      splitContainer1.SplitterDistance = Math.Max(splitContainer1.Panel1MinSize + 1,
+                                                  Math.Min(splitContainer1.Width - (splitContainer1.Panel2MinSize + 1),
+                                                           tmp));
     }
 
     internal BSABrowser(string BSAPath)
@@ -32,25 +44,37 @@ namespace Fomm.Games.Fallout3.Tools.BSA
 
     private class BSAFileEntry
     {
-      private static readonly ICSharpCode.SharpZipLib.Zip.Compression.Inflater inf = new ICSharpCode.SharpZipLib.Zip.Compression.Inflater();
+      private static readonly Inflater inf = new Inflater();
       internal readonly bool Compressed;
       private string fileName;
       private string lowername;
+
       internal string FileName
       {
-        get { return fileName; }
+        get
+        {
+          return fileName;
+        }
         set
         {
-          if (value == null) return;
+          if (value == null)
+          {
+            return;
+          }
           fileName = value;
           //lowername=Folder.ToLower()+"\\"+fileName.ToLower();
           lowername = Path.Combine(Folder.ToLower(), fileName.ToLower());
         }
       }
+
       internal string LowerName
       {
-        get { return lowername; }
+        get
+        {
+          return lowername;
+        }
       }
+
       internal readonly string Folder;
       internal readonly uint Offset;
       internal readonly uint Size;
@@ -89,23 +113,27 @@ namespace Fomm.Games.Fallout3.Tools.BSA
           path += "\\" + Folder + "\\" + FileName;
         }
         if (!Directory.Exists(Path.GetDirectoryName(path)))
+        {
           Directory.CreateDirectory(Path.GetDirectoryName(path));
+        }
         FileStream fs = File.Create(path);
         br.BaseStream.Position = Offset;
-        if (SkipName) br.BaseStream.Position += br.ReadByte() + 1;
+        if (SkipName)
+        {
+          br.BaseStream.Position += br.ReadByte() + 1;
+        }
         if (!Compressed)
         {
           byte[] bytes = new byte[Size];
-          br.Read(bytes, 0, (int)Size);
-          fs.Write(bytes, 0, (int)Size);
+          br.Read(bytes, 0, (int) Size);
+          fs.Write(bytes, 0, (int) Size);
         }
         else
         {
           byte[] uncompressed;
-          if (RealSize == 0) uncompressed = new byte[br.ReadUInt32()];
-          else uncompressed = new byte[RealSize];
+          uncompressed = RealSize == 0 ? new byte[br.ReadUInt32()] : new byte[RealSize];
           byte[] compressed = new byte[Size - 4];
-          br.Read(compressed, 0, (int)(Size - 4));
+          br.Read(compressed, 0, (int) (Size - 4));
           inf.Reset();
           inf.SetInput(compressed);
           inf.Inflate(uncompressed);
@@ -123,22 +151,37 @@ namespace Fomm.Games.Fallout3.Tools.BSA
     private ListViewItem[] lvItems;
     private ListViewItem[] lvAllItems;
 
-    private enum BSASortOrder { FolderName, FileName, FileSize, Offset, FileType }
-    private class BSASorter : System.Collections.IComparer
+    private enum BSASortOrder
+    {
+      FolderName,
+      FileName,
+      FileSize,
+      Offset,
+      FileType
+    }
+
+    private class BSASorter : IComparer
     {
       internal static BSASortOrder order = 0;
+
       public int Compare(object a, object b)
       {
-        BSAFileEntry fa = (BSAFileEntry)((ListViewItem)a).Tag;
-        BSAFileEntry fb = (BSAFileEntry)((ListViewItem)b).Tag;
+        BSAFileEntry fa = (BSAFileEntry) ((ListViewItem) a).Tag;
+        BSAFileEntry fb = (BSAFileEntry) ((ListViewItem) b).Tag;
         switch (order)
         {
-          case BSASortOrder.FolderName: return string.Compare(fa.LowerName, fb.LowerName);
-          case BSASortOrder.FileName: return string.Compare(fa.FileName, fb.FileName);
-          case BSASortOrder.FileSize: return fa.Size.CompareTo(fb.Size);
-          case BSASortOrder.Offset: return fa.Offset.CompareTo(fb.Offset);
-          case BSASortOrder.FileType: return string.Compare(Path.GetExtension(fa.FileName), Path.GetExtension(fb.FileName));
-          default: return 0;
+          case BSASortOrder.FolderName:
+            return String.CompareOrdinal(fa.LowerName, fb.LowerName);
+          case BSASortOrder.FileName:
+            return String.CompareOrdinal(fa.FileName, fb.FileName);
+          case BSASortOrder.FileSize:
+            return fa.Size.CompareTo(fb.Size);
+          case BSASortOrder.Offset:
+            return fa.Offset.CompareTo(fb.Offset);
+          case BSASortOrder.FileType:
+            return String.CompareOrdinal(Path.GetExtension(fa.FileName), Path.GetExtension(fb.FileName));
+          default:
+            return 0;
         }
       }
     }
@@ -155,7 +198,10 @@ namespace Fomm.Games.Fallout3.Tools.BSA
       bExtract.Enabled = false;
       bExtractAll.Enabled = false;
       bPreview.Enabled = false;
-      if (br != null) br.Close();
+      if (br != null)
+      {
+        br.Close();
+      }
       br = null;
     }
 
@@ -163,10 +209,10 @@ namespace Fomm.Games.Fallout3.Tools.BSA
     {
       try
       {
-        br = new BinaryReader(File.OpenRead(path), System.Text.Encoding.Default);
+        br = new BinaryReader(File.OpenRead(path), Encoding.Default);
         //if(Program.ReadCString(br)!="BSA") throw new fommException("File was not a valid BSA archive");
         uint type = br.ReadUInt32();
-        System.Text.StringBuilder sb = new System.Text.StringBuilder(64);
+        StringBuilder sb = new StringBuilder(64);
         if (type != 0x00415342 && type != 0x00000100)
         {
           //Might be a fallout 2 dat
@@ -185,12 +231,18 @@ namespace Fomm.Games.Fallout3.Tools.BSA
           for (int i = 0; i < FileCount; i++)
           {
             int fileLen = br.ReadInt32();
-            for (int j = 0; j < fileLen; j++) sb.Append(br.ReadChar());
+            for (int j = 0; j < fileLen; j++)
+            {
+              sb.Append(br.ReadChar());
+            }
             byte comp = br.ReadByte();
             uint realSize = br.ReadUInt32();
             uint compSize = br.ReadUInt32();
             uint offset = br.ReadUInt32();
-            if (sb[0] == '\\') sb.Remove(0, 1);
+            if (sb[0] == '\\')
+            {
+              sb.Remove(0, 1);
+            }
             Files[i] = new BSAFileEntry(sb.ToString(), offset, compSize, comp == 0 ? 0 : realSize);
             sb.Length = 0;
           }
@@ -201,23 +253,26 @@ namespace Fomm.Games.Fallout3.Tools.BSA
           uint FileCount = br.ReadUInt32();
           Files = new BSAFileEntry[FileCount];
 
-          uint dataoffset = 12 + hashoffset + FileCount * 8;
-          uint fnameOffset1 = 12 + FileCount * 8;
-          uint fnameOffset2 = 12 + FileCount * 12;
+          uint dataoffset = 12 + hashoffset + FileCount*8;
+          uint fnameOffset1 = 12 + FileCount*8;
+          uint fnameOffset2 = 12 + FileCount*12;
 
           for (int i = 0; i < FileCount; i++)
           {
-            br.BaseStream.Position = 12 + i * 8;
+            br.BaseStream.Position = 12 + i*8;
             uint size = br.ReadUInt32();
             uint offset = br.ReadUInt32() + dataoffset;
-            br.BaseStream.Position = fnameOffset1 + i * 4;
+            br.BaseStream.Position = fnameOffset1 + i*4;
             br.BaseStream.Position = br.ReadInt32() + fnameOffset2;
 
             sb.Length = 0;
             while (true)
             {
               char b = br.ReadChar();
-              if (b == '\0') break;
+              if (b == '\0')
+              {
+                break;
+              }
               sb.Append(b);
             }
             Files[i] = new BSAFileEntry(sb.ToString(), offset, size);
@@ -229,7 +284,7 @@ namespace Fomm.Games.Fallout3.Tools.BSA
           if (version != 0x67 && version != 0x68)
           {
             if (MessageBox.Show("This BSA archive has an unknown version number.\n" +
-          "Attempt to open anyway?", "Warning", MessageBoxButtons.YesNo) != DialogResult.Yes)
+                                "Attempt to open anyway?", "Warning", MessageBoxButtons.YesNo) != DialogResult.Yes)
             {
               br.Close();
               return;
@@ -237,8 +292,15 @@ namespace Fomm.Games.Fallout3.Tools.BSA
           }
           br.BaseStream.Position += 4;
           uint flags = br.ReadUInt32();
-          if ((flags & 0x004) > 0) Compressed = true; else Compressed = false;
-          if ((flags & 0x100) > 0 && version == 0x68) ContainsFileNameBlobs = true; else ContainsFileNameBlobs = false;
+          Compressed = (flags & 0x004) > 0;
+          if ((flags & 0x100) > 0 && version == 0x68)
+          {
+            ContainsFileNameBlobs = true;
+          }
+          else
+          {
+            ContainsFileNameBlobs = false;
+          }
           int FolderCount = br.ReadInt32();
           int FileCount = br.ReadInt32();
           br.BaseStream.Position += 12;
@@ -255,7 +317,10 @@ namespace Fomm.Games.Fallout3.Tools.BSA
           for (int i = 0; i < FolderCount; i++)
           {
             int k = br.ReadByte();
-            while (--k > 0) sb.Append(br.ReadChar());
+            while (--k > 0)
+            {
+              sb.Append(br.ReadChar());
+            }
             br.BaseStream.Position++;
             string folder = sb.ToString();
             for (int j = 0; j < numfiles[i]; j++)
@@ -277,7 +342,10 @@ namespace Fomm.Games.Fallout3.Tools.BSA
             while (true)
             {
               char c = br.ReadChar();
-              if (c == '\0') break;
+              if (c == '\0')
+              {
+                break;
+              }
               sb.Append(c);
             }
             Files[i].FileName = sb.ToString();
@@ -287,7 +355,10 @@ namespace Fomm.Games.Fallout3.Tools.BSA
       }
       catch (Exception ex)
       {
-        if (br != null) br.Close();
+        if (br != null)
+        {
+          br.Close();
+        }
         br = null;
         MessageBox.Show("An error occured trying to open the archive.\n" + ex.Message);
         return;
@@ -295,7 +366,10 @@ namespace Fomm.Games.Fallout3.Tools.BSA
 
       tvFolders.Nodes.Add(Path.GetFileNameWithoutExtension(path));
       tvFolders.Nodes[0].Nodes.Add("empty");
-      if (tvFolders.Nodes[0].IsExpanded) tvFolders.Nodes[0].Collapse();
+      if (tvFolders.Nodes[0].IsExpanded)
+      {
+        tvFolders.Nodes[0].Collapse();
+      }
       tbSearch.Text = "";
       UpdateFileList();
       bOpen.Text = "Close";
@@ -314,7 +388,8 @@ namespace Fomm.Games.Fallout3.Tools.BSA
         //ListViewItem lvi=new ListViewItem(Files[i].Folder+"\\"+Files[i].FileName);
         ListViewItem lvi = new ListViewItem(Path.Combine(Files[i].Folder, Files[i].FileName));
         lvi.Tag = Files[i];
-        lvi.ToolTipText = "File size: " + Files[i].Size + " bytes\nFile offset: " + Files[i].Offset + " bytes\n" + (Files[i].Compressed ? "Compressed" : "Uncompressed");
+        lvi.ToolTipText = "File size: " + Files[i].Size + " bytes\nFile offset: " + Files[i].Offset + " bytes\n" +
+                          (Files[i].Compressed ? "Compressed" : "Uncompressed");
         lvItems[i] = lvi;
       }
       lvFiles.Items.AddRange(lvItems);
@@ -340,10 +415,13 @@ namespace Fomm.Games.Fallout3.Tools.BSA
 
     private void bExtract_Click(object sender, EventArgs e)
     {
-      if (lvFiles.SelectedItems.Count == 0) return;
+      if (lvFiles.SelectedItems.Count == 0)
+      {
+        return;
+      }
       if (lvFiles.SelectedItems.Count == 1)
       {
-        BSAFileEntry fe = (BSAFileEntry)lvFiles.SelectedItems[0].Tag;
+        BSAFileEntry fe = (BSAFileEntry) lvFiles.SelectedItems[0].Tag;
         SaveSingleDialog.FileName = fe.FileName;
         if (SaveSingleDialog.ShowDialog() == DialogResult.OK)
         {
@@ -364,7 +442,7 @@ namespace Fomm.Games.Fallout3.Tools.BSA
           {
             foreach (ListViewItem lvi in lvFiles.SelectedItems)
             {
-              BSAFileEntry fe = (BSAFileEntry)lvi.Tag;
+              BSAFileEntry fe = (BSAFileEntry) lvi.Tag;
               fe.Extract(SaveAllDialog.SelectedPath, true, br, ContainsFileNameBlobs);
               pf.UpdateProgress(count++);
               Application.DoEvents();
@@ -376,7 +454,7 @@ namespace Fomm.Games.Fallout3.Tools.BSA
           }
           catch (Exception ex)
           {
-            MessageBox.Show(ex.Message, "Error");
+            MessageBox.Show(ex.Message, Resources.ErrorStr);
           }
           pf.Unblock();
           pf.Close();
@@ -408,7 +486,7 @@ namespace Fomm.Games.Fallout3.Tools.BSA
         }
         catch (Exception ex)
         {
-          MessageBox.Show(ex.Message, "Error");
+          MessageBox.Show(ex.Message, Resources.ErrorStr);
         }
         pf.Unblock();
         pf.Close();
@@ -417,7 +495,7 @@ namespace Fomm.Games.Fallout3.Tools.BSA
 
     private void cmbSortOrder_SelectedIndexChanged(object sender, EventArgs e)
     {
-      BSASorter.order = (BSASortOrder)cmbSortOrder.SelectedIndex;
+      BSASorter.order = (BSASortOrder) cmbSortOrder.SelectedIndex;
     }
 
     private void cmbSortOrder_KeyPress(object sender, KeyPressEventArgs e)
@@ -433,7 +511,10 @@ namespace Fomm.Games.Fallout3.Tools.BSA
 
     private void BSABrowser_FormClosing(object sender, FormClosingEventArgs e)
     {
-      if (ArchiveOpen) CloseArchive();
+      if (ArchiveOpen)
+      {
+        CloseArchive();
+      }
       Properties.Settings.Default.windowPositions.SetWindowPosition("BSABrowser", this);
       Properties.Settings.Default.fallout3LastBSAUnpackPath = SaveAllDialog.SelectedPath;
       Properties.Settings.Default.fallout3BSABrowserPanelSplit = splitContainer1.SplitterDistance;
@@ -442,13 +523,16 @@ namespace Fomm.Games.Fallout3.Tools.BSA
 
     private void bPreview_Click(object sender, EventArgs e)
     {
-      if (lvFiles.SelectedItems.Count == 0) return;
+      if (lvFiles.SelectedItems.Count == 0)
+      {
+        return;
+      }
       if (lvFiles.SelectedItems.Count == 1)
       {
-        BSAFileEntry fe = (BSAFileEntry)lvFiles.SelectedItems[0].Tag;
+        BSAFileEntry fe = (BSAFileEntry) lvFiles.SelectedItems[0].Tag;
         switch (Path.GetExtension(fe.LowerName))
         {
-          /*case ".nif":
+            /*case ".nif":
             MessageBox.Show("Viewing of nif's disabled as their format differs from oblivion");
             return;
           case ".dds":
@@ -462,29 +546,32 @@ namespace Fomm.Games.Fallout3.Tools.BSA
           case ".xml":
             string path = Program.CreateTempDirectory();
             fe.Extract(Path.Combine(path, fe.FileName), false, br, ContainsFileNameBlobs);
-            System.Diagnostics.Process.Start(Path.Combine(path, fe.FileName));
+            Process.Start(Path.Combine(path, fe.FileName));
             break;
           default:
             MessageBox.Show("Filetype not supported.\n" +
-              "Currently only txt or xml files can be previewed", "Error");
+                            "Currently only txt or xml files can be previewed", Resources.ErrorStr);
             break;
         }
       }
       else
       {
-        MessageBox.Show("Can only preview one file at a time", "Error");
+        MessageBox.Show("Can only preview one file at a time", Resources.ErrorStr);
       }
     }
 
     private void lvFiles_ItemDrag(object sender, ItemDragEventArgs e)
     {
-      if (lvFiles.SelectedItems.Count != 1) return;
-      BSAFileEntry fe = (BSAFileEntry)lvFiles.SelectedItems[0].Tag;
+      if (lvFiles.SelectedItems.Count != 1)
+      {
+        return;
+      }
+      BSAFileEntry fe = (BSAFileEntry) lvFiles.SelectedItems[0].Tag;
       string path = Path.Combine(Program.CreateTempDirectory(), fe.FileName);
       fe.Extract(path, false, br, ContainsFileNameBlobs);
 
       DataObject obj = new DataObject();
-      System.Collections.Specialized.StringCollection sc = new System.Collections.Specialized.StringCollection();
+      StringCollection sc = new StringCollection();
       sc.Add(path);
       obj.SetFileDropList(sc);
       lvFiles.DoDragDrop(obj, DragDropEffects.Move);
@@ -492,22 +579,31 @@ namespace Fomm.Games.Fallout3.Tools.BSA
 
     private void tbSearch_TextChanged(object sender, EventArgs e)
     {
-      if (!ArchiveOpen) return;
+      if (!ArchiveOpen)
+      {
+        return;
+      }
       string str = tbSearch.Text;
       if (cbRegex.Checked && str.Length > 0)
       {
-        System.Text.RegularExpressions.Regex regex;
+        Regex regex;
         try
         {
-          regex = new System.Text.RegularExpressions.Regex(str, System.Text.RegularExpressions.RegexOptions.Singleline);
+          regex = new Regex(str, RegexOptions.Singleline);
         }
-        catch { return; }
+        catch
+        {
+          return;
+        }
         lvFiles.BeginUpdate();
         lvFiles.Items.Clear();
-        System.Collections.Generic.List<ListViewItem> lvis = new System.Collections.Generic.List<ListViewItem>(Files.Length);
+        List<ListViewItem> lvis = new List<ListViewItem>(Files.Length);
         for (int i = 0; i < lvItems.Length; i++)
         {
-          if (regex.IsMatch(lvItems[i].Text)) lvis.Add(lvItems[i]);
+          if (regex.IsMatch(lvItems[i].Text))
+          {
+            lvis.Add(lvItems[i]);
+          }
         }
         lvFiles.Items.AddRange(lvis.ToArray());
         lvFiles.EndUpdate();
@@ -523,10 +619,13 @@ namespace Fomm.Games.Fallout3.Tools.BSA
         }
         else
         {
-          System.Collections.Generic.List<ListViewItem> lvis = new System.Collections.Generic.List<ListViewItem>(Files.Length);
+          List<ListViewItem> lvis = new List<ListViewItem>(Files.Length);
           for (int i = 0; i < lvItems.Length; i++)
           {
-            if (lvItems[i].Text.Contains(str)) lvis.Add(lvItems[i]);
+            if (lvItems[i].Text.Contains(str))
+            {
+              lvis.Add(lvItems[i]);
+            }
           }
           lvFiles.Items.AddRange(lvis.ToArray());
         }
@@ -536,14 +635,20 @@ namespace Fomm.Games.Fallout3.Tools.BSA
 
     private void tvFolders_BeforeExpand(object sender, TreeViewCancelEventArgs e)
     {
-      if (!ArchiveOpen || lvAllItems != null) return;
+      if (!ArchiveOpen || lvAllItems != null)
+      {
+        return;
+      }
       tvFolders.Nodes[0].Nodes.Clear();
-      System.Collections.Generic.Dictionary<string, TreeNode> nodes = new System.Collections.Generic.Dictionary<string, TreeNode>();
-      lvAllItems = (ListViewItem[])lvItems.Clone();
+      Dictionary<string, TreeNode> nodes = new Dictionary<string, TreeNode>();
+      lvAllItems = (ListViewItem[]) lvItems.Clone();
       foreach (ListViewItem lvi in lvAllItems)
       {
         string path = Path.GetDirectoryName(lvi.Text);
-        if (path == string.Empty || nodes.ContainsKey(path)) continue;
+        if (path == string.Empty || nodes.ContainsKey(path))
+        {
+          continue;
+        }
         string[] dirs = path.Split('\\');
         for (int i = 0; i < dirs.Length; i++)
         {
@@ -569,7 +674,10 @@ namespace Fomm.Games.Fallout3.Tools.BSA
 
     private void tvFolders_AfterSelect(object sender, TreeViewEventArgs e)
     {
-      if (lvAllItems == null) return;
+      if (lvAllItems == null)
+      {
+        return;
+      }
       string s = e.Node.Tag as string;
       if (s == null)
       {
@@ -577,10 +685,13 @@ namespace Fomm.Games.Fallout3.Tools.BSA
       }
       else
       {
-        System.Collections.Generic.List<ListViewItem> lvis = new System.Collections.Generic.List<ListViewItem>(lvAllItems.Length);
+        List<ListViewItem> lvis = new List<ListViewItem>(lvAllItems.Length);
         foreach (ListViewItem lvi in lvAllItems)
         {
-          if (lvi.Text.StartsWith(s)) lvis.Add(lvi);
+          if (lvi.Text.StartsWith(s))
+          {
+            lvis.Add(lvi);
+          }
         }
         lvItems = lvis.ToArray();
       }

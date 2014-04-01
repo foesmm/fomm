@@ -16,9 +16,9 @@ namespace Fomm.Controls
   {
     public event EventHandler IndexChanged;
 
-    private Control m_ctlButton = null;
-    private Int32 m_intIndex = 0;
-    private ToolTip m_ttpToolTip = new ToolTip();
+    private readonly Control m_ctlButton;
+    private Int32 m_intIndex;
+    private readonly ToolTip m_ttpToolTip = new ToolTip();
     private ToolStripItemDisplayStyle m_tdsDisplayStyle = ToolStripItemDisplayStyle.Image;
 
     #region Properties
@@ -35,11 +35,7 @@ namespace Fomm.Controls
       }
       set
       {
-        if (m_tdsDisplayStyle != value)
-        {
-          m_tdsDisplayStyle = value;
-          //setDisplayStyle();
-        }
+        m_tdsDisplayStyle = value;
       }
     }
 
@@ -59,7 +55,9 @@ namespace Fomm.Controls
         {
           m_intIndex = value;
           if (IndexChanged != null)
+          {
             IndexChanged(this, new EventArgs());
+          }
         }
       }
     }
@@ -124,7 +122,8 @@ namespace Fomm.Controls
     /// <param name="p_intIndex">The index of this item in the panel.</param>
     /// <param name="p_tdsDisplayStyle">The <see cref="ToolStripItemDisplayStyle"/> indicating how text and
     /// images are displayed on this item.</param>
-    public PanelToolStripItem(Control p_ctlButton, string p_strEvent, Int32 p_intIndex, ToolStripItemDisplayStyle p_tdsDisplayStyle)
+    public PanelToolStripItem(Control p_ctlButton, string p_strEvent, Int32 p_intIndex,
+                              ToolStripItemDisplayStyle p_tdsDisplayStyle)
     {
       m_ctlButton = p_ctlButton;
       m_tdsDisplayStyle = p_tdsDisplayStyle;
@@ -135,7 +134,8 @@ namespace Fomm.Controls
       m_intIndex = p_intIndex;
       m_ttpToolTip.SetToolTip(m_ctlButton, m_ctlButton.Text);
 
-      tpeButtonType.GetEvent(p_strEvent).AddEventHandler(p_ctlButton, Delegate.CreateDelegate(typeof(EventHandler), this, "OnSelected"));
+      tpeButtonType.GetEvent(p_strEvent)
+                   .AddEventHandler(p_ctlButton, Delegate.CreateDelegate(typeof (EventHandler), this, "OnSelected"));
     }
 
     #endregion
@@ -153,7 +153,9 @@ namespace Fomm.Controls
     protected virtual void OnSelected(object sender, EventArgs e)
     {
       if (Selected != null)
+      {
         Selected(this, e);
+      }
     }
 
     /// <summary>

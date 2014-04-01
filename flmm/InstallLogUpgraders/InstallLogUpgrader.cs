@@ -1,13 +1,6 @@
 ﻿using System;
-using System.IO;
-using System.Xml;
-using ICSharpCode.SharpZipLib.Checksums;
-using ChinhDo.Transactions;
 using System.Collections.Generic;
-using System.Windows.Forms;
-using fomm.Transactions;
-using System.ComponentModel;
-using Fomm.PackageManager;
+using System.Xml;
 using Fomm.PackageManager.ModInstallLog;
 
 namespace Fomm.InstallLogUpgraders
@@ -17,7 +10,7 @@ namespace Fomm.InstallLogUpgraders
   /// </summary>
   internal class InstallLogUpgrader
   {
-    private Dictionary<Version, Upgrader> m_dicUpgraders = null;
+    private Dictionary<Version, Upgrader> m_dicUpgraders;
 
     /// <summary>
     /// The default constructor.
@@ -56,8 +49,10 @@ namespace Fomm.InstallLogUpgraders
 
       Version verOldVersion = InstallLog.Current.GetInstallLogVersion();
       if (verOldVersion == InstallLog.CURRENT_VERSION)
+      {
         return true;
-    
+      }
+
       //we only want one upgrade at a time happening to minimize the chances of
       // messed up install logs.
       bool booUpgraded = false;
@@ -66,7 +61,8 @@ namespace Fomm.InstallLogUpgraders
         InstallLog.Current.EnableLogFileRefresh = false;
         if (!m_dicUpgraders.ContainsKey(verOldVersion))
         {
-          throw new InvalidOperationException("No upgrade or downgrade available for Install Log Version " + verOldVersion + ".");
+          throw new InvalidOperationException("No upgrade or downgrade available for Install Log Version " +
+                                              verOldVersion + ".");
         }
 
         booUpgraded = m_dicUpgraders[verOldVersion].PerformUpgrade();

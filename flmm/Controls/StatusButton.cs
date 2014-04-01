@@ -8,8 +8,8 @@ namespace Fomm.Controls
   /// </summary>
   public class StatusButton : Control, IStatusProviderAware
   {
-    private Button m_butButton = new Button();
-    private Panel m_pnlSpacer = new Panel();
+    private readonly Button m_butButton = new Button();
+    private readonly Panel m_pnlSpacer = new Panel();
 
     #region Properties
 
@@ -50,8 +50,8 @@ namespace Fomm.Controls
     /// </summary>
     public StatusButton()
     {
-      this.Height = m_butButton.Height;
-      m_butButton.Click += new EventHandler(m_butButton_Click);
+      Height = m_butButton.Height;
+      m_butButton.Click += m_butButton_Click;
       m_butButton.Dock = DockStyle.Fill;
 
       m_pnlSpacer.Dock = DockStyle.Right;
@@ -98,7 +98,6 @@ namespace Fomm.Controls
     /// <value>The button upon which to display status message from <see cref="SiteStatusProvider"/>s.</value>
     public Control StatusProviderSite
     {
-
       get
       {
         return Button;

@@ -1,14 +1,16 @@
 using System;
-using System.Xml;
-using System.Drawing;
 using System.Collections.Generic;
-using Fomm.Util;
-using System.IO;
-using Fomm.PackageManager.ModInstallLog;
-using SevenZip;
 using System.ComponentModel;
-using GeMod.Interface;
+using System.Drawing;
+using System.IO;
+using System.Text;
 using System.Text.RegularExpressions;
+using System.Xml;
+using Fomm.PackageManager.ModInstallLog;
+using Fomm.Properties;
+using Fomm.Util;
+using GeMod.Interface;
+using SevenZip;
 
 /*
  * Installed data XML Structure
@@ -32,7 +34,13 @@ namespace Fomm.PackageManager
   {
     private const string DEFAULT_AUTHOR = "DEFAULT";
     private const string DEFAULT_VERSION = "1.0";
-    class fomodLoadException : Exception { public fomodLoadException(string msg) : base(msg) { } }
+
+    private class fomodLoadException : Exception
+    {
+      public fomodLoadException(string msg) : base(msg)
+      {
+      }
+    }
 
     private Archive m_arcFile;
     private Archive m_arcCacheFile;
@@ -41,32 +49,36 @@ namespace Fomm.PackageManager
 
     public static readonly Version DefaultVersion = new Version(1, 0);
     public static readonly Version DefaultMinFommVersion = new Version(0, 0, 0, 0);
-    private static readonly List<string> StopFolders = new List<string>() { "fomod", "textures",
-                                  "meshes", "music", "shaders", "video",
-                                  "facegen", "menus", "lodsettings", "lsdata",
-                                  "sound" };
+
+    private static readonly List<string> StopFolders = new List<string>
+    {
+      "fomod",
+      "textures",
+      "meshes",
+      "music",
+      "shaders",
+      "video",
+      "facegen",
+      "menus",
+      "lodsettings",
+      "lsdata",
+      "sound"
+    };
 
     private bool hasInfo;
     private bool isActive;
 
-    private string m_strPathPrefix = null;
-    private Dictionary<string, string> m_dicMovedArchiveFiles = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
+    private string m_strPathPrefix;
 
-    private string m_strCachePath = null;
-    private string m_strScreenshotPath = null;
-    private string m_strScriptPath = null;
-    private string m_strReadmePath = null;
+    private Dictionary<string, string> m_dicMovedArchiveFiles =
+      new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
+
+    private string m_strCachePath;
+    private string m_strScreenshotPath;
+    private string m_strScriptPath;
+    private string m_strReadmePath;
 
     private readonly string baseName;
-    private string m_strName;
-    private string m_strAuthor;
-    private string m_strDescription;
-    private Version m_verVersion;
-    private string m_strHumanVersion;
-    private string m_strEmail;
-    private string m_strWebsite;
-    private Version m_verMinFommVersion;
-    private string[] m_strGroups;
 
     #region Properties
 
@@ -102,145 +114,55 @@ namespace Fomm.PackageManager
     /// Gets or sets the name of the fomod.
     /// </summary>
     /// <value>The name of the fomod.</value>
-    public string ModName
-    {
-      get
-      {
-        return m_strName;
-      }
-      set
-      {
-        m_strName = value;
-      }
-    }
+    public string ModName { get; set; }
 
     /// <summary>
     /// Gets or sets the human readable form of the fomod's version.
     /// </summary>
     /// <value>The human readable form of the fomod's version.</value>
-    public string HumanReadableVersion
-    {
-      get
-      {
-        return m_strHumanVersion;
-      }
-      set
-      {
-        m_strHumanVersion = value;
-      }
-    }
+    public string HumanReadableVersion { get; set; }
 
     /// <summary>
     /// Gets or sets the version of the fomod.
     /// </summary>
     /// <value>The version of the fomod.</value>
-    public Version MachineVersion
-    {
-      get
-      {
-        return m_verVersion;
-      }
-      set
-      {
-        m_verVersion = value;
-      }
-    }
+    public Version MachineVersion { get; set; }
 
     /// <summary>
     /// Gets or sets the author of the fomod.
     /// </summary>
     /// <value>The author of the fomod.</value>
-    public string Author
-    {
-      get
-      {
-        return m_strAuthor;
-      }
-      set
-      {
-        m_strAuthor = value;
-      }
-    }
+    public string Author { get; set; }
 
     /// <summary>
     /// Gets or sets the description of the fomod.
     /// </summary>
     /// <value>The description of the fomod.</value>
-    public string Description
-    {
-      get
-      {
-        return m_strDescription;
-      }
-      set
-      {
-        m_strDescription = value;
-      }
-    }
+    public string Description { get; set; }
 
     /// <summary>
     /// Gets or sets the minimum version of FOMM required to load the fomod.
     /// </summary>
     /// <value>The minimum version of FOMM required to load the fomod.</value>
-    public Version MinFommVersion
-    {
-      get
-      {
-        return m_verMinFommVersion;
-      }
-      set
-      {
-        m_verMinFommVersion = value;
-      }
-    }
+    public Version MinFommVersion { get; set; }
 
     /// <summary>
     /// Gets or sets the contact email of the fomod.
     /// </summary>
     /// <value>The contact email of the fomod.</value>
-    public string Email
-    {
-      get
-      {
-        return m_strEmail;
-      }
-      set
-      {
-        m_strEmail = value;
-      }
-    }
+    public string Email { get; set; }
 
     /// <summary>
     /// Gets or sets the website of the fomod.
     /// </summary>
     /// <value>The website of the fomod.</value>
-    public string Website
-    {
-      get
-      {
-        return m_strWebsite;
-      }
-      set
-      {
-        m_strWebsite = value;
-      }
-    }
+    public string Website { get; set; }
 
     /// <summary>
     /// Gets or sets the FOMM groups to which the fomod belongs.
     /// </summary>
     /// <value>The FOMM groups to which the fomod belongs.</value>
-    public string[] Groups
-    {
-      get
-      {
-        return m_strGroups;
-      }
-      set
-      {
-        m_strGroups = value;
-      }
-    }
+    public string[] Groups { get; set; }
 
     /// <summary>
     /// Gets the base name of the fomod.
@@ -273,7 +195,13 @@ namespace Fomm.PackageManager
     /// Gets whether the mod has metadata.
     /// </summary>
     /// <value>Whether the mod has metadata.</value>
-    public bool HasInfo { get { return hasInfo; } }
+    public bool HasInfo
+    {
+      get
+      {
+        return hasInfo;
+      }
+    }
 
     /// <summary>
     /// Gets or sets whether the mod is active.
@@ -316,8 +244,12 @@ namespace Fomm.PackageManager
       {
         List<string> lstFiles = GetFileList();
         foreach (string strFile in lstFiles)
+        {
           if (Program.GameMode.IsPluginFile(strFile) && !Path.GetFileName(strFile).Equals(strFile))
+          {
             return true;
+          }
+        }
         return false;
       }
     }
@@ -338,7 +270,13 @@ namespace Fomm.PackageManager
     /// Gets whether the mod has a custom uninstall script.
     /// </summary>
     /// <value>Whether the mod has a custom uninstall script.</value>
-    public bool HasUninstallScript { get { return false; } }
+    public bool HasUninstallScript
+    {
+      get
+      {
+        return false;
+      }
+    }
 
     /// <summary>
     /// Gets whether the mod has a readme file.
@@ -383,16 +321,18 @@ namespace Fomm.PackageManager
     /// <param name="path">The path to the fomod file.</param>
     internal fomod(string path, bool p_booUseCache)
     {
-      this.filepath = path;
-      ModName = System.IO.Path.GetFileNameWithoutExtension(path);
+      filepath = path;
+      ModName = Path.GetFileNameWithoutExtension(path);
 
       m_arcFile = new Archive(path);
       m_strCachePath = Path.Combine(Program.GameMode.ModInfoCacheDirectory, ModName + ".zip");
       if (p_booUseCache && File.Exists(m_strCachePath))
+      {
         m_arcCacheFile = new Archive(m_strCachePath);
+      }
 
       FindPathPrefix();
-      m_arcFile.FilesChanged += new EventHandler(Archive_FilesChanged);
+      m_arcFile.FilesChanged += Archive_FilesChanged;
       baseName = ModName.ToLowerInvariant();
       Author = DEFAULT_AUTHOR;
       Description = Email = Website = string.Empty;
@@ -400,39 +340,52 @@ namespace Fomm.PackageManager
       MachineVersion = DefaultVersion;
       MinFommVersion = DefaultMinFommVersion;
       Groups = new string[0];
-      isActive = (InstallLog.Current.GetModKey(this.baseName) != null);
+      isActive = (InstallLog.Current.GetModKey(baseName) != null);
 
       //check for script
-      for (int i = 0; i < FomodScript.ScriptNames.Length; i++)
-        if (ContainsFile("fomod/" + FomodScript.ScriptNames[i]))
+      foreach (string scriptName in FomodScript.ScriptNames)
+      {
+        if (ContainsFile("fomod/" + scriptName))
         {
-          m_strScriptPath = "fomod/" + FomodScript.ScriptNames[i];
+          m_strScriptPath = "fomod/" + scriptName;
           break;
         }
+      }
 
       //check for readme
-      for (int i = 0; i < Readme.ValidExtensions.Length; i++)
-        if (ContainsFile("readme - " + baseName + Readme.ValidExtensions[i]))
+      foreach (string extension in Readme.ValidExtensions)
+      {
+        if (ContainsFile("readme - " + baseName + extension))
         {
-          m_strReadmePath = "Readme - " + Path.GetFileNameWithoutExtension(path) + Readme.ValidExtensions[i];
+          m_strReadmePath = "Readme - " + Path.GetFileNameWithoutExtension(path) + extension;
           break;
         }
+      }
       if (String.IsNullOrEmpty(m_strReadmePath))
-        for (int i = 0; i < Readme.ValidExtensions.Length; i++)
-          if (ContainsFile("docs/readme - " + baseName + Readme.ValidExtensions[i]))
+      {
+        foreach (string extension in Readme.ValidExtensions)
+        {
+          if (ContainsFile("docs/readme - " + baseName + extension))
           {
-            m_strReadmePath = "docs/Readme - " + Path.GetFileNameWithoutExtension(path) + Readme.ValidExtensions[i];
+            m_strReadmePath = "docs/Readme - " + Path.GetFileNameWithoutExtension(path) + extension;
             break;
           }
+        }
+      }
 
       //check for screenshot
-      string[] extensions = new string[] { ".png", ".jpg", ".bmp" };
-      for (int i = 0; i < extensions.Length; i++)
-        if (ContainsFile("fomod/screenshot" + extensions[i]))
+      string[] extensions =
+      {
+        ".png", ".jpg", ".bmp"
+      };
+      foreach (string extension in extensions)
+      {
+        if (ContainsFile("fomod/screenshot" + extension))
         {
-          m_strScreenshotPath = "fomod/screenshot" + extensions[i];
+          m_strScreenshotPath = "fomod/screenshot" + extension;
           break;
         }
+      }
 
       if (p_booUseCache && !File.Exists(m_strCachePath) && (m_arcFile.IsSolid || m_arcFile.ReadOnly))
       {
@@ -442,15 +395,26 @@ namespace Fomm.PackageManager
           Directory.CreateDirectory(Path.Combine(strTmpInfo, GetPrefixAdjustedPath("fomod")));
 
           if (ContainsFile("fomod/info.xml"))
-            File.WriteAllBytes(Path.Combine(strTmpInfo, GetPrefixAdjustedPath("fomod/info.xml")), GetFileContents("fomod/info.xml"));
+          {
+            File.WriteAllBytes(Path.Combine(strTmpInfo, GetPrefixAdjustedPath("fomod/info.xml")),
+                               GetFileContents("fomod/info.xml"));
+          }
           else
+          {
             File.WriteAllText(Path.Combine(strTmpInfo, GetPrefixAdjustedPath("fomod/info.xml")), "<fomod/>");
+          }
 
           if (!String.IsNullOrEmpty(m_strReadmePath))
-            File.WriteAllBytes(Path.Combine(strTmpInfo, GetPrefixAdjustedPath(m_strReadmePath)), GetFileContents(m_strReadmePath));
+          {
+            File.WriteAllBytes(Path.Combine(strTmpInfo, GetPrefixAdjustedPath(m_strReadmePath)),
+                               GetFileContents(m_strReadmePath));
+          }
 
           if (!String.IsNullOrEmpty(m_strScreenshotPath))
-            File.WriteAllBytes(Path.Combine(strTmpInfo, GetPrefixAdjustedPath(m_strScreenshotPath)), GetFileContents(m_strScreenshotPath));
+          {
+            File.WriteAllBytes(Path.Combine(strTmpInfo, GetPrefixAdjustedPath(m_strScreenshotPath)),
+                               GetFileContents(m_strScreenshotPath));
+          }
 
           string[] strFilesToCompress = Directory.GetFiles(strTmpInfo, "*.*", SearchOption.AllDirectories);
           if (strFilesToCompress.Length > 0)
@@ -466,7 +430,9 @@ namespace Fomm.PackageManager
           FileUtil.ForceDelete(strTmpInfo);
         }
         if (File.Exists(m_strCachePath))
+        {
           m_arcCacheFile = new Archive(m_strCachePath);
+        }
       }
 
       LoadInfo();
@@ -493,10 +459,10 @@ namespace Fomm.PackageManager
       // is a fomod/textures/meshes/music/shaders/video/facegen/menus/lodsettings/lsdata/sound folder.
       string[] directories = m_arcFile.GetDirectories(strSourcePath);
       while (directories.Length == 1 &&
-          ((m_arcFile.GetFiles(strSourcePath, "*.esp").Length == 0 &&
-          m_arcFile.GetFiles(strSourcePath, "*.esm").Length == 0 &&
-          m_arcFile.GetFiles(strSourcePath, "*.bsa").Length == 0) ||
-          Path.GetFileName(directories[0]).Equals("data", StringComparison.InvariantCultureIgnoreCase)))
+             ((m_arcFile.GetFiles(strSourcePath, "*.esp").Length == 0 &&
+               m_arcFile.GetFiles(strSourcePath, "*.esm").Length == 0 &&
+               m_arcFile.GetFiles(strSourcePath, "*.bsa").Length == 0) ||
+              Path.GetFileName(directories[0]).Equals("data", StringComparison.InvariantCultureIgnoreCase)))
       {
         directories = directories[0].Split(Path.DirectorySeparatorChar);
         string name = directories[directories.Length - 1].ToLowerInvariant();
@@ -506,14 +472,18 @@ namespace Fomm.PackageManager
           {
             string strNewFileName = Path.GetFileName(file);
             for (Int32 i = 1; m_dicMovedArchiveFiles.ContainsKey(strNewFileName); i++)
+            {
               strNewFileName = Path.GetFileNameWithoutExtension(file) + " " + i + Path.GetExtension(file);
+            }
             m_dicMovedArchiveFiles[strNewFileName] = file;
           }
           strSourcePath = Path.Combine(strSourcePath, name);
           directories = m_arcFile.GetDirectories(strSourcePath);
         }
         else
+        {
           break;
+        }
       }
       m_strPathPrefix = strSourcePath.Trim('/');
     }
@@ -527,7 +497,7 @@ namespace Fomm.PackageManager
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
     /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
-    void Archive_FilesChanged(object sender, EventArgs e)
+    private void Archive_FilesChanged(object sender, EventArgs e)
     {
       FindPathPrefix();
     }
@@ -545,9 +515,13 @@ namespace Fomm.PackageManager
       string strPath = p_strPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
       strPath = strPath.Trim(Path.DirectorySeparatorChar);
       if (m_dicMovedArchiveFiles.ContainsKey(strPath))
+      {
         return true;
+      }
       if (m_arcFile.ContainsFile(GetPrefixAdjustedPath(strPath)))
+      {
         return true;
+      }
       return ((m_arcCacheFile != null) && m_arcCacheFile.ContainsFile(GetPrefixAdjustedPath(strPath)));
     }
 
@@ -562,7 +536,9 @@ namespace Fomm.PackageManager
       strPath = strPath.Trim(Path.DirectorySeparatorChar);
       string strAdjustedPath = null;
       if (!m_dicMovedArchiveFiles.TryGetValue(strPath, out strAdjustedPath))
+      {
         strAdjustedPath = Path.Combine(PathPrefix, strPath);
+      }
       return strAdjustedPath;
     }
 
@@ -579,14 +555,20 @@ namespace Fomm.PackageManager
       List<string> lstFiles = new List<string>();
       Int32 intTrimLength = (PathPrefix.Length == 0) ? 0 : PathPrefix.Length + 1;
       foreach (string strFile in m_arcFile.GetFiles(null))
+      {
         if (strFile.StartsWith(PathPrefix, StringComparison.InvariantCultureIgnoreCase))
         {
           string strAdjustedFileName = strFile.Remove(0, intTrimLength);
           if (!strAdjustedFileName.StartsWith("fomod", StringComparison.OrdinalIgnoreCase))
+          {
             lstFiles.Add(strAdjustedFileName);
+          }
         }
+      }
       foreach (string strFile in m_dicMovedArchiveFiles.Keys)
+      {
         lstFiles.Add(strFile);
+      }
       return lstFiles;
     }
 
@@ -601,7 +583,9 @@ namespace Fomm.PackageManager
     public byte[] GetFileContents(string p_strPath)
     {
       if ((m_arcCacheFile != null) && m_arcCacheFile.ContainsFile(GetPrefixAdjustedPath(p_strPath)))
+      {
         return m_arcCacheFile.GetFileContents(GetPrefixAdjustedPath(p_strPath));
+      }
       return m_arcFile.GetFileContents(GetPrefixAdjustedPath(p_strPath));
     }
 
@@ -615,9 +599,13 @@ namespace Fomm.PackageManager
     protected void DeleteFile(string p_strPath)
     {
       if (!m_arcFile.ReadOnly)
+      {
         m_arcFile.DeleteFile(GetPrefixAdjustedPath(p_strPath));
+      }
       if ((m_arcCacheFile != null) && m_arcCacheFile.ContainsFile(GetPrefixAdjustedPath(p_strPath)))
+      {
         m_arcCacheFile.DeleteFile(GetPrefixAdjustedPath(p_strPath));
+      }
     }
 
     /// <summary>
@@ -631,9 +619,14 @@ namespace Fomm.PackageManager
     protected void ReplaceFile(string p_strPath, byte[] p_bteData)
     {
       if (!m_arcFile.ReadOnly)
+      {
         m_arcFile.ReplaceFile(GetPrefixAdjustedPath(p_strPath), p_bteData);
-      if ((m_arcCacheFile != null) && (m_arcCacheFile.ContainsFile(GetPrefixAdjustedPath(p_strPath)) || m_arcFile.ReadOnly))
+      }
+      if ((m_arcCacheFile != null) &&
+          (m_arcCacheFile.ContainsFile(GetPrefixAdjustedPath(p_strPath)) || m_arcFile.ReadOnly))
+      {
         m_arcCacheFile.ReplaceFile(GetPrefixAdjustedPath(p_strPath), p_bteData);
+      }
     }
 
     /// <summary>
@@ -647,9 +640,14 @@ namespace Fomm.PackageManager
     protected void ReplaceFile(string p_strPath, string p_strData)
     {
       if (!m_arcFile.ReadOnly)
+      {
         m_arcFile.ReplaceFile(GetPrefixAdjustedPath(p_strPath), p_strData);
-      if ((m_arcCacheFile != null) && (m_arcCacheFile.ContainsFile(GetPrefixAdjustedPath(p_strPath)) || m_arcFile.ReadOnly))
+      }
+      if ((m_arcCacheFile != null) &&
+          (m_arcCacheFile.ContainsFile(GetPrefixAdjustedPath(p_strPath)) || m_arcFile.ReadOnly))
+      {
         m_arcCacheFile.ReplaceFile(GetPrefixAdjustedPath(p_strPath), p_strData);
+      }
     }
 
     public string ExtractToTemp(string srcFile)
@@ -705,60 +703,87 @@ namespace Fomm.PackageManager
     {
       XmlNode xndRoot = null;
       foreach (XmlNode xndNode in p_xmlInfo.ChildNodes)
+      {
         if (xndNode.NodeType == XmlNodeType.Element)
         {
           xndRoot = xndNode;
           break;
         }
+      }
       if (xndRoot == null)
+      {
         throw new fomodLoadException("Root node was missing from fomod info.xml");
+      }
       if (xndRoot.Name != "fomod")
+      {
         throw new fomodLoadException("Unexpected root node type in info.xml");
+      }
       foreach (XmlNode xndNode in xndRoot.ChildNodes)
       {
-        if (xndNode.NodeType == XmlNodeType.Comment) continue;
+        if (xndNode.NodeType == XmlNodeType.Comment)
+        {
+          continue;
+        }
         switch (xndNode.Name)
         {
           case "Name":
             if (p_booOverwriteExisitngValues || String.IsNullOrEmpty(p_finFomodInfo.ModName))
+            {
               p_finFomodInfo.ModName = xndNode.InnerText;
+            }
             break;
           case "Version":
             if (p_booOverwriteExisitngValues || String.IsNullOrEmpty(p_finFomodInfo.HumanReadableVersion))
+            {
               p_finFomodInfo.HumanReadableVersion = xndNode.InnerText;
+            }
             if (p_booOverwriteExisitngValues || (p_finFomodInfo.MachineVersion == DefaultVersion))
             {
               XmlNode xndMachineVersion = xndNode.Attributes.GetNamedItem("MachineVersion");
               if (xndMachineVersion != null)
+              {
                 p_finFomodInfo.MachineVersion = new Version(xndMachineVersion.Value);
+              }
             }
             break;
           case "Author":
             if (p_booOverwriteExisitngValues || String.IsNullOrEmpty(p_finFomodInfo.Author))
+            {
               p_finFomodInfo.Author = xndNode.InnerText;
+            }
             break;
           case "Description":
             if (p_booOverwriteExisitngValues || String.IsNullOrEmpty(p_finFomodInfo.Description))
+            {
               p_finFomodInfo.Description = xndNode.InnerText;
+            }
             break;
           case "MinFommVersion":
             if (p_booOverwriteExisitngValues || (p_finFomodInfo.MachineVersion == DefaultMinFommVersion))
+            {
               p_finFomodInfo.MinFommVersion = new Version(xndNode.InnerText);
+            }
             break;
           case "Email":
             if (p_booOverwriteExisitngValues || String.IsNullOrEmpty(p_finFomodInfo.Email))
+            {
               p_finFomodInfo.Email = xndNode.InnerText;
+            }
             break;
           case "Website":
             if (p_booOverwriteExisitngValues || String.IsNullOrEmpty(p_finFomodInfo.Website))
+            {
               p_finFomodInfo.Website = xndNode.InnerText;
+            }
             break;
           case "Groups":
             if (p_booOverwriteExisitngValues || (p_finFomodInfo.Groups.Length == 0))
             {
               string[] strGroups = new string[xndNode.ChildNodes.Count];
               for (int i = 0; i < xndNode.ChildNodes.Count; i++)
+              {
                 strGroups[i] = xndNode.ChildNodes[i].InnerText;
+              }
               p_finFomodInfo.Groups = strGroups;
             }
             break;
@@ -793,10 +818,13 @@ namespace Fomm.PackageManager
         xelTemp.InnerText = p_finFomodInfo.Author;
         xelRoot.AppendChild(xelTemp);
       }
-      if (!String.IsNullOrEmpty(p_finFomodInfo.HumanReadableVersion) || (p_finFomodInfo.MachineVersion != DefaultVersion))
+      if (!String.IsNullOrEmpty(p_finFomodInfo.HumanReadableVersion) ||
+          (p_finFomodInfo.MachineVersion != DefaultVersion))
       {
         xelTemp = xmlInfo.CreateElement("Version");
-        xelTemp.InnerText = String.IsNullOrEmpty(p_finFomodInfo.HumanReadableVersion) ? p_finFomodInfo.MachineVersion.ToString() : p_finFomodInfo.HumanReadableVersion;
+        xelTemp.InnerText = String.IsNullOrEmpty(p_finFomodInfo.HumanReadableVersion)
+          ? p_finFomodInfo.MachineVersion.ToString()
+          : p_finFomodInfo.HumanReadableVersion;
         xelTemp.Attributes.Append(xmlInfo.CreateAttribute("MachineVersion"));
         xelTemp.Attributes[0].Value = p_finFomodInfo.MachineVersion.ToString();
         xelRoot.AppendChild(xelTemp);
@@ -828,8 +856,10 @@ namespace Fomm.PackageManager
       if ((p_finFomodInfo.Groups != null) && (p_finFomodInfo.Groups.Length > 0))
       {
         xelTemp = xmlInfo.CreateElement("Groups");
-        for (int i = 0; i < p_finFomodInfo.Groups.Length; i++)
-          xelTemp.AppendChild(xmlInfo.CreateElement("element")).InnerText = p_finFomodInfo.Groups[i];
+        foreach (string group in p_finFomodInfo.Groups)
+        {
+          xelTemp.AppendChild(xmlInfo.CreateElement("element")).InnerText = group;
+        }
         xelRoot.AppendChild(xelTemp);
       }
 
@@ -847,14 +877,19 @@ namespace Fomm.PackageManager
         doc.LoadXml(TextUtil.ByteToString(GetFileContents("fomod/info.xml")));
         LoadInfo(doc, this);
         if (Program.MVersion < MinFommVersion)
-          throw new fomodLoadException("This fomod requires a newer version of Fallout mod manager to load." + Environment.NewLine + "Expected " + MachineVersion);
+        {
+          throw new fomodLoadException("This fomod requires a newer version of Fallout mod manager to load." +
+                                       Environment.NewLine + "Expected " + MachineVersion);
+        }
       }
     }
 
     internal FomodScript GetInstallScript()
     {
       if (!HasInstallScript)
+      {
         return null;
+      }
       return new FomodScript(m_strScriptPath, TextUtil.ByteToString(GetFileContents(m_strScriptPath)));
     }
 
@@ -893,7 +928,9 @@ namespace Fomm.PackageManager
       else
       {
         if (m_strScriptPath == null)
+        {
           m_strScriptPath = Path.Combine("fomod", p_fscScript.FileName);
+        }
         ReplaceFile(m_strScriptPath, p_fscScript.Text);
       }
     }
@@ -901,20 +938,29 @@ namespace Fomm.PackageManager
     public Readme GetReadme()
     {
       if (String.IsNullOrEmpty(m_strReadmePath) || !Readme.IsValidReadme(m_strReadmePath))
+      {
         return null;
+      }
       return new Readme(m_strReadmePath, TextUtil.ByteToString(GetFileContents(m_strReadmePath)));
     }
 
     internal void SetReadme(Readme p_rmeReadme)
     {
       if (HasReadme)
+      {
         DeleteFile(m_strReadmePath);
+      }
       if (p_rmeReadme == null)
+      {
         m_strReadmePath = null;
+      }
       else
       {
         if (m_strReadmePath == null)
-          m_strReadmePath = (Properties.Settings.Default.UseDocsFolder ? "docs/" : "") + "Readme - " + Path.GetFileNameWithoutExtension(filepath) + ".rtf";
+        {
+          m_strReadmePath = (Settings.Default.UseDocsFolder ? "docs/" : "") + "Readme - " +
+                            Path.GetFileNameWithoutExtension(filepath) + ".rtf";
+        }
         m_strReadmePath = Path.ChangeExtension(m_strReadmePath, p_rmeReadme.Extension);
         ReplaceFile(m_strReadmePath, p_rmeReadme.Text);
       }
@@ -941,7 +987,9 @@ namespace Fomm.PackageManager
         else
         {
           if (!HasScreenshot)
+          {
             m_strScreenshotPath = "fomod/screenshot.jpg";
+          }
           m_strScreenshotPath = Path.ChangeExtension(m_strScreenshotPath, p_shtScreenshot.Extension).ToLowerInvariant();
           ReplaceFile(m_strScreenshotPath, p_shtScreenshot.Data);
         }
@@ -956,7 +1004,9 @@ namespace Fomm.PackageManager
     public Screenshot GetScreenshot()
     {
       if (!HasScreenshot)
+      {
         return null;
+      }
 
       Screenshot shtScreenshot = new Screenshot(m_strScreenshotPath, GetFile(m_strScreenshotPath));
       return shtScreenshot;
@@ -969,16 +1019,37 @@ namespace Fomm.PackageManager
 
     internal string GetStatusString()
     {
-      System.Text.StringBuilder sb = new System.Text.StringBuilder();
+      StringBuilder sb = new StringBuilder();
       sb.AppendLine("Mod name: " + ModName);
       sb.AppendLine("File name: " + baseName);
-      if (!DEFAULT_AUTHOR.Equals(Author)) sb.AppendLine("Author: " + Author);
-      if (HumanReadableVersion != DEFAULT_VERSION) sb.AppendLine("Version: " + HumanReadableVersion);
-      if (Email.Length > 0) sb.AppendLine("email: " + Email);
-      if (Website.Length > 0) sb.AppendLine("website: " + Website);
-      if (MinFommVersion != new Version(0, 0, 0, 0)) sb.AppendLine("Minimum required fomm version: " + MinFommVersion.ToString());
-      if (Description.Length > 0) sb.AppendLine("Description:" + Environment.NewLine + Description);
-      if (Groups.Length > 0) sb.AppendLine(Environment.NewLine + "Group tags: " + string.Join(", ", Groups));
+      if (!DEFAULT_AUTHOR.Equals(Author))
+      {
+        sb.AppendLine("Author: " + Author);
+      }
+      if (HumanReadableVersion != DEFAULT_VERSION)
+      {
+        sb.AppendLine("Version: " + HumanReadableVersion);
+      }
+      if (Email.Length > 0)
+      {
+        sb.AppendLine("email: " + Email);
+      }
+      if (Website.Length > 0)
+      {
+        sb.AppendLine("website: " + Website);
+      }
+      if (MinFommVersion != new Version(0, 0, 0, 0))
+      {
+        sb.AppendLine("Minimum required fomm version: " + MinFommVersion);
+      }
+      if (Description.Length > 0)
+      {
+        sb.AppendLine("Description:" + Environment.NewLine + Description);
+      }
+      if (Groups.Length > 0)
+      {
+        sb.AppendLine(Environment.NewLine + "Group tags: " + string.Join(", ", Groups));
+      }
       sb.AppendLine();
       sb.AppendLine("Has readme: " + (HasReadme ? ("Yes (" + GetReadme().Format + ")") : "No"));
       sb.AppendLine("Has script: " + (HasInstallScript ? "Yes" : "No"));
@@ -992,12 +1063,14 @@ namespace Fomm.PackageManager
         sb.AppendLine();
         sb.AppendLine("Activation data" + Environment.NewLine);
 
-        InstallLogMergeModule ilmMergeModule = InstallLog.Current.GetMergeModule(this.baseName);
+        InstallLogMergeModule ilmMergeModule = InstallLog.Current.GetMergeModule(baseName);
         if (ilmMergeModule.DataFiles.Count > 0)
         {
           sb.AppendLine("-- Installed data files");
           foreach (string strFile in ilmMergeModule.DataFiles)
+          {
             sb.AppendLine(strFile);
+          }
           sb.AppendLine();
         }
         if (ilmMergeModule.IniEdits.Count > 0)
@@ -1088,7 +1161,9 @@ namespace Fomm.PackageManager
     {
       PermissionsManager.CurrentPermissions.Assert();
       if (!ContainsFile(p_strFile))
+      {
         throw new FileNotFoundException("File doesn't exist in fomod", p_strFile);
+      }
       return GetFileContents(p_strFile);
     }
 
@@ -1105,7 +1180,9 @@ namespace Fomm.PackageManager
     {
       PermissionsManager.CurrentPermissions.Assert();
       if (!ContainsFile(p_strFile))
+      {
         throw new FileNotFoundException("File doesn't exist in fomod", p_strFile);
+      }
       Image imgImage = null;
       using (MemoryStream msmImage = new MemoryStream(GetFileContents(p_strFile)))
       {
@@ -1124,7 +1201,9 @@ namespace Fomm.PackageManager
     public void SetMissingInfo(ModInfo p_mifInfo)
     {
       if (p_mifInfo == null)
+      {
         return;
+      }
       bool booUpdated = false;
       if (ModName.Equals(Path.GetFileNameWithoutExtension(filepath)) && !String.IsNullOrEmpty(p_mifInfo.ModName))
       {
@@ -1136,7 +1215,8 @@ namespace Fomm.PackageManager
         booUpdated = true;
         Author = p_mifInfo.Author;
       }
-      if (HumanReadableVersion.Equals(DEFAULT_VERSION) && (MachineVersion == DefaultVersion) && !String.IsNullOrEmpty(p_mifInfo.Version))
+      if (HumanReadableVersion.Equals(DEFAULT_VERSION) && (MachineVersion == DefaultVersion) &&
+          !String.IsNullOrEmpty(p_mifInfo.Version))
       {
         HumanReadableVersion = p_mifInfo.Version;
         string strVersionString = p_mifInfo.Version;
@@ -1145,23 +1225,33 @@ namespace Fomm.PackageManager
         if (!String.IsNullOrEmpty(strVersionString))
         {
           if (!strVersionString.Contains("."))
+          {
             strVersionString += ".0";
+          }
           if (strVersionString.StartsWith("."))
+          {
             strVersionString = "0" + strVersionString;
+          }
           if (strVersionString.EndsWith("."))
+          {
             strVersionString = strVersionString + "0";
+          }
           MachineVersion = new Version(strVersionString);
         }
       }
       if (!HasScreenshot && (p_mifInfo.Screenshot != null))
+      {
         booUpdated = true;
+      }
       if (String.IsNullOrEmpty(Website) && (p_mifInfo.URL != null))
       {
         booUpdated = true;
         Website = p_mifInfo.URL.ToString();
       }
       if (booUpdated)
+      {
         CommitInfo((p_mifInfo.Screenshot != null), p_mifInfo.Screenshot);
+      }
     }
 
     #endregion

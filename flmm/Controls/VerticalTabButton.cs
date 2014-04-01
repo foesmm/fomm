@@ -10,7 +10,7 @@ namespace Fomm.Controls
   /// <see cref="<see cref="PanelToolStripItem"/>"/>
   public class VerticalTabButton : PanelToolStripItem
   {
-    private VerticalTabPage m_tpgPage = null;
+    private readonly VerticalTabPage m_tpgPage;
 
     #region Properties
 
@@ -22,7 +22,7 @@ namespace Fomm.Controls
     {
       get
       {
-        return (StatusButton)Button;
+        return (StatusButton) Button;
       }
     }
 
@@ -68,7 +68,7 @@ namespace Fomm.Controls
       m_tpgPage = p_tpgPage;
       StatusButton.Button.FlatStyle = FlatStyle.Flat;
       StatusButton.Button.FlatAppearance.BorderSize = 0;
-      m_tpgPage.BackColorChanged += new EventHandler(m_tpgPage_BackColorChanged);
+      m_tpgPage.BackColorChanged += m_tpgPage_BackColorChanged;
     }
 
     #endregion
@@ -79,7 +79,9 @@ namespace Fomm.Controls
     public override void SetUnselected()
     {
       if (TabPage.Parent != null)
+      {
         StatusButton.BackColor = TabPage.Parent.BackColor;
+      }
     }
 
     /// <summary>
@@ -101,10 +103,12 @@ namespace Fomm.Controls
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
     /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
-    void m_tpgPage_BackColorChanged(object sender, EventArgs e)
+    private void m_tpgPage_BackColorChanged(object sender, EventArgs e)
     {
-      if ((TabPage.Parent != null) && (((VerticalTabControl)TabPage.Parent).SelectedTabPage == TabPage))
+      if ((TabPage.Parent != null) && (((VerticalTabControl) TabPage.Parent).SelectedTabPage == TabPage))
+      {
         StatusButton.BackColor = TabPage.BackColor;
+      }
     }
   }
 }

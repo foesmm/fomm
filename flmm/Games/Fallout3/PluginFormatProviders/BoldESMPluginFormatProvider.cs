@@ -1,6 +1,5 @@
-﻿using System;
+﻿using System.Drawing;
 using System.IO;
-using System.Drawing;
 using Fomm.Games.Fallout3.Tools.TESsnip;
 
 namespace Fomm.Games.Fallout3.PluginFormatProviders
@@ -10,7 +9,7 @@ namespace Fomm.Games.Fallout3.PluginFormatProviders
   /// </summary>
   public class BoldESMPluginFormatProvider : IPluginFormatProvider
   {
-    private PluginFormat.PluginFormatterManager m_pfmManager = null;
+    private PluginFormat.PluginFormatterManager m_pfmManager;
 
     #region IPluginFormatProvider Members
 
@@ -34,7 +33,8 @@ namespace Fomm.Games.Fallout3.PluginFormatProviders
     /// <lang cref="false"/> otherwise.</returns>
     public virtual bool HasFormat(string p_strPluginName)
     {
-      return Properties.Settings.Default.fallout3BoldifyESMs && Plugin.GetIsEsm(Path.Combine(Program.GameMode.PluginsPath, p_strPluginName));
+      return Properties.Settings.Default.fallout3BoldifyESMs &&
+             Plugin.GetIsEsm(Path.Combine(Program.GameMode.PluginsPath, p_strPluginName));
     }
 
     /// <summary>

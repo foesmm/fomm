@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Xml;
-using SevenZip;
 using System.IO;
-using System.Windows.Forms;
+using System.Xml;
 using Fomm.Util;
-using System.Drawing;
-using System.Drawing.Imaging;
 using GeMod.Interface;
 
 namespace Fomm.PackageManager.FomodBuilder
@@ -21,13 +17,13 @@ namespace Fomm.PackageManager.FomodBuilder
     /// </summary>
     protected class BuildFomodArgs : GenerateFomodArgs
     {
-      private string m_strFomodName = null;
-      private IList<KeyValuePair<string, string>> m_lstCopyInstructions = null;
-      private Readme m_rmeReadme = null;
-      private XmlDocument m_xmlInfo = null;
-      private bool m_booSetScreenshot = false;
-      private Screenshot m_shtScreenshot = null;
-      private FomodScript m_fscScript = null;
+      private string m_strFomodName;
+      private IList<KeyValuePair<string, string>> m_lstCopyInstructions;
+      private Readme m_rmeReadme;
+      private XmlDocument m_xmlInfo;
+      private bool m_booSetScreenshot;
+      private Screenshot m_shtScreenshot;
+      private FomodScript m_fscScript;
 
       #region Properties
 
@@ -130,7 +126,9 @@ namespace Fomm.PackageManager.FomodBuilder
       /// <param name="p_shtScreenshot">The value with which to initialize the <see cref="Screenshot"/> property.</param>
       /// <param name="p_fscScript">The value with which to initialize the <see cref="Script"/> property.</param>
       /// <param name="p_strPackedPath">The value with which to initialize the <see cref="PackedPath"/> property.</param>
-      public BuildFomodArgs(string p_strFomodName, IList<KeyValuePair<string, string>> p_lstCopyPaths, Readme p_rmeReadme, XmlDocument p_xmlInfo, bool p_booSetScreenshot, Screenshot p_shtScreenshot, FomodScript p_fscScript, string p_strPackedPath)
+      public BuildFomodArgs(string p_strFomodName, IList<KeyValuePair<string, string>> p_lstCopyPaths,
+                            Readme p_rmeReadme, XmlDocument p_xmlInfo, bool p_booSetScreenshot,
+                            Screenshot p_shtScreenshot, FomodScript p_fscScript, string p_strPackedPath)
         : base(p_strPackedPath)
       {
         m_strFomodName = p_strFomodName;
@@ -162,18 +160,20 @@ namespace Fomm.PackageManager.FomodBuilder
     /// <param name="p_shtScreenshot">The fomod screenshot.</param>
     /// <param name="p_fscScript">The fomod install script.</param>
     /// <returns>The path to the new fomod if it was successfully built; <lang cref="null"/> otherwise.</returns>
-    public string BuildFomod(string p_strFileName, IList<KeyValuePair<string, string>> p_lstCopyInstructions, Readme p_rmeReadme, XmlDocument p_xmlInfo, bool p_booSetScreenshot, Screenshot p_shtScreenshot, FomodScript p_fscScript)
+    public string BuildFomod(string p_strFileName, IList<KeyValuePair<string, string>> p_lstCopyInstructions,
+                             Readme p_rmeReadme, XmlDocument p_xmlInfo, bool p_booSetScreenshot,
+                             Screenshot p_shtScreenshot, FomodScript p_fscScript)
     {
       string strFomodPath = Path.Combine(Program.GameMode.ModDirectory, p_strFileName + ".fomod");
       strFomodPath = GenerateFomod(new BuildFomodArgs(p_strFileName,
-                                p_lstCopyInstructions,
-                                p_rmeReadme,
-                                p_xmlInfo,
-                                p_booSetScreenshot,
-                                p_shtScreenshot,
-                                p_fscScript,
-                                strFomodPath
-                                ));
+                                                      p_lstCopyInstructions,
+                                                      p_rmeReadme,
+                                                      p_xmlInfo,
+                                                      p_booSetScreenshot,
+                                                      p_shtScreenshot,
+                                                      p_fscScript,
+                                                      strFomodPath
+                                     ));
       return strFomodPath;
     }
 
@@ -188,7 +188,9 @@ namespace Fomm.PackageManager.FomodBuilder
     {
       BuildFomodArgs bfaArgs = p_objArgs as BuildFomodArgs;
       if (bfaArgs == null)
+      {
         throw new ArgumentException("The given argument must be a BuildFomodArgs.", "p_objArgs");
+      }
 
       /**
        * 1) Create tmp dirs for source extraction
@@ -210,7 +212,9 @@ namespace Fomm.PackageManager.FomodBuilder
       Dictionary<string, string> dicSources = CreateExtractionDirectories(bfaArgs.CopyInstructions);
       ProgressDialog.OverallProgressMaximum = intBaseStepCount + dicSources.Count + bfaArgs.CopyInstructions.Count;
       if (ProgressDialog.Cancelled())
+      {
         return;
+      }
       ProgressDialog.StepOverallProgress();
 
       // 2) Extract sources
@@ -218,7 +222,9 @@ namespace Fomm.PackageManager.FomodBuilder
       {
         UnpackArchive(kvpArchive.Key, kvpArchive.Value);
         if (ProgressDialog.Cancelled())
+        {
           return;
+        }
         ProgressDialog.StepOverallProgress();
       }
 
@@ -226,7 +232,9 @@ namespace Fomm.PackageManager.FomodBuilder
       string strTempFomodFolder = CreateFomodDirectory();
       string strTempFomodFomodFolder = Path.Combine(strTempFomodFolder, "fomod");
       if (ProgressDialog.Cancelled())
+      {
         return;
+      }
       ProgressDialog.StepOverallProgress();
 
       // 4) Copy sources to dest fomod dir
@@ -234,34 +242,46 @@ namespace Fomm.PackageManager.FomodBuilder
       {
         CopyFiles(strTempFomodFolder, dicSources, kvpCopyInstruction);
         if (ProgressDialog.Cancelled())
+        {
           return;
+        }
         ProgressDialog.StepOverallProgress();
       }
       if (!Directory.Exists(strTempFomodFomodFolder))
+      {
         Directory.CreateDirectory(strTempFomodFomodFolder);
+      }
 
       // 5) Create readme
       CreateReadmeFile(strTempFomodFolder, bfaArgs.FomodName, bfaArgs.Readme);
       if (ProgressDialog.Cancelled())
+      {
         return;
+      }
       ProgressDialog.StepOverallProgress();
 
       // 6) Create info.xml
       CreateInfoFile(strTempFomodFomodFolder, bfaArgs.InfoFile);
       if (ProgressDialog.Cancelled())
+      {
         return;
+      }
       ProgressDialog.StepOverallProgress();
 
       // 7) Create screenshot
       CreateScreenshot(strTempFomodFomodFolder, bfaArgs.SetScreenshot, bfaArgs.Screenshot);
       if (ProgressDialog.Cancelled())
+      {
         return;
+      }
       ProgressDialog.StepOverallProgress();
 
       // 8) Create script
       CreateScriptFile(strTempFomodFomodFolder, bfaArgs.Script);
       if (ProgressDialog.Cancelled())
+      {
         return;
+      }
       ProgressDialog.StepOverallProgress();
 
       // 9) Pack fomod
@@ -295,7 +315,9 @@ namespace Fomm.PackageManager.FomodBuilder
         {
           KeyValuePair<string, string> kvpArchive = Archive.ParseArchivePath(kvpCopyPath.Key);
           if (!dicSources.ContainsKey(kvpArchive.Key))
+          {
             dicSources[kvpArchive.Key] = CreateTemporaryDirectory();
+          }
         }
         ProgressDialog.StepItemProgress();
       }
@@ -323,7 +345,8 @@ namespace Fomm.PackageManager.FomodBuilder
     /// <param name="p_strFomodFolder">The destination folder for the copy instruction.</param>
     /// <param name="p_dicSources">The list of sources and the directories to which they are extracted.</param>
     /// <param name="p_kvpCopyInstruction">The copy instruction to execute.</param>
-    protected void CopyFiles(string p_strFomodFolder, Dictionary<string, string> p_dicSources, KeyValuePair<string, string> p_kvpCopyInstruction)
+    protected void CopyFiles(string p_strFomodFolder, Dictionary<string, string> p_dicSources,
+                             KeyValuePair<string, string> p_kvpCopyInstruction)
     {
       ProgressDialog.ItemProgress = 0;
       ProgressDialog.ItemProgressStep = 1;
@@ -335,11 +358,16 @@ namespace Fomm.PackageManager.FomodBuilder
         strSource = Path.Combine(p_dicSources[kvpArchive.Key], kvpArchive.Value);
       }
       ProgressDialog.ItemMessage = String.Format("Copying Source Files: {0}...", Path.GetFileName(strSource));
-      ProgressDialog.ItemProgressMaximum = File.Exists(strSource) ? 1 : Directory.GetFiles(strSource, "*", SearchOption.AllDirectories).Length;
+      ProgressDialog.ItemProgressMaximum = File.Exists(strSource)
+        ? 1
+        : Directory.GetFiles(strSource, "*", SearchOption.AllDirectories).Length;
 
       string strDestination = p_kvpCopyInstruction.Value;
       strDestination = strDestination.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
-      strDestination = strDestination.Trim(new char[] { Path.DirectorySeparatorChar });
+      strDestination = strDestination.Trim(new[]
+      {
+        Path.DirectorySeparatorChar
+      });
       strDestination = Path.Combine(p_strFomodFolder, strDestination);
       FileUtil.Copy(strSource, strDestination, FileCopied);
     }

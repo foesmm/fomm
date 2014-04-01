@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
 using System.IO;
+using System.Windows.Forms;
 
 namespace Fomm.Games.Fallout3.Tools.TESsnip
 {
@@ -33,7 +28,9 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
     private void butChooseMaster_Click(object sender, EventArgs e)
     {
       if (ofdChooseMaster.ShowDialog() == DialogResult.OK)
+      {
         tbxMaster.Text = Path.GetFileName(ofdChooseMaster.FileName);
+      }
     }
   }
 }

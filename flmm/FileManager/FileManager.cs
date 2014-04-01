@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
-using Fomm.PackageManager;
-using System.IO;
-using ChinhDo.Transactions;
 using System.Drawing;
+using System.IO;
+using System.Windows.Forms;
 using Fomm.PackageManager.ModInstallLog;
 
 namespace Fomm.FileManager
@@ -40,29 +38,32 @@ namespace Fomm.FileManager
         tvwFolders.Nodes.Add(tndCurrentDirectory);
         AddFilesToNode(tndCurrentDirectory, lstInstalledFiles);
         if (lvwFiles.SelectedItems.Count > 0)
-          SelectNodeContainingFile(tndCurrentDirectory, (string)lvwFiles.SelectedItems[0].Tag);
+        {
+          SelectNodeContainingFile(tndCurrentDirectory, (string) lvwFiles.SelectedItems[0].Tag);
+        }
       }
       else
       {
         IList<string> lstInstalledMods = InstallLog.Current.GetModList();
         TreeNode tndCurrentDirectory = null;
-        List<string> lstInstalledFiles = null;
         foreach (string strMod in lstInstalledMods)
         {
           tndCurrentDirectory = tvwFolders.Nodes.Add(strMod);
           tndCurrentDirectory.Name = tndCurrentDirectory.Text;
-          tndCurrentDirectory.ImageKey = "mod";
-          tndCurrentDirectory.SelectedImageKey = "mod";
+          tndCurrentDirectory.ImageKey = @"mod";
+          tndCurrentDirectory.SelectedImageKey = @"mod";
           tndCurrentDirectory = tndCurrentDirectory.Nodes.Add(Path.GetFileName(Program.GameMode.PluginsPath));
           tndCurrentDirectory.Name = tndCurrentDirectory.Text;
-          lstInstalledFiles = InstallLog.Current.GetFileList(strMod);
+          List<string> lstInstalledFiles = InstallLog.Current.GetFileList(strMod);
           AddFilesToNode(tndCurrentDirectory, lstInstalledFiles);
         }
         if (rlvOverwrites.SelectedItems.Count > 0)
         {
           tndCurrentDirectory = tvwFolders.Nodes[rlvOverwrites.SelectedItems[0].Name];
           if (lvwFiles.SelectedItems.Count > 0)
-            SelectNodeContainingFile(tndCurrentDirectory.Nodes[0], (string)lvwFiles.SelectedItems[0].Tag);
+          {
+            SelectNodeContainingFile(tndCurrentDirectory.Nodes[0], (string) lvwFiles.SelectedItems[0].Tag);
+          }
         }
       }
     }
@@ -75,11 +76,16 @@ namespace Fomm.FileManager
     /// <param name="p_strFile">The file path whose containing directory node is to be selected.</param>
     protected void SelectNodeContainingFile(TreeNode p_tndNode, string p_strFile)
     {
-      char[] chrDirecotrySeparators = new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar };
+      char[] chrDirecotrySeparators =
+      {
+        Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar
+      };
       string[] strDirectories = p_strFile.Split(chrDirecotrySeparators);
       TreeNode tndCurrentDirectory = p_tndNode;
       for (Int32 i = 0; i < strDirectories.Length - 1; i++)
+      {
         tndCurrentDirectory = tndCurrentDirectory.Nodes[strDirectories[i]];
+      }
       tvwFolders.SelectedNode = tndCurrentDirectory;
     }
 
@@ -91,32 +97,37 @@ namespace Fomm.FileManager
     protected void AddFilesToNode(TreeNode p_tndNode, IList<string> p_strFiles)
     {
       TreeNode tndCurrentDirectory = p_tndNode;
-      char[] chrDirecotrySeparators = new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar };
-      string strDirectory = null;
-      List<string> lstDirectoryFiles = null;
+      char[] chrDirecotrySeparators =
+      {
+        Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar
+      };
       foreach (string strFile in p_strFiles)
       {
         tndCurrentDirectory = p_tndNode;
         string[] strDirectories = strFile.Split(chrDirecotrySeparators);
         for (Int32 i = 0; i < strDirectories.Length - 1; i++)
         {
-          strDirectory = strDirectories[i];
+          string strDirectory = strDirectories[i];
           if (!tndCurrentDirectory.Nodes.ContainsKey(strDirectory))
           {
             tndCurrentDirectory = tndCurrentDirectory.Nodes.Add(strDirectory);
             tndCurrentDirectory.Name = tndCurrentDirectory.Text;
           }
           else
+          {
             tndCurrentDirectory = tndCurrentDirectory.Nodes[strDirectory];
+          }
         }
-        lstDirectoryFiles = (List<string>)tndCurrentDirectory.Tag;
+        List<string> lstDirectoryFiles = (List<string>) tndCurrentDirectory.Tag;
         if (lstDirectoryFiles == null)
         {
           lstDirectoryFiles = new List<string>();
           tndCurrentDirectory.Tag = lstDirectoryFiles;
         }
         if (!lstDirectoryFiles.Contains(strFile))
+        {
           lstDirectoryFiles.Add(strFile);
+        }
       }
     }
 
@@ -126,58 +137,20 @@ namespace Fomm.FileManager
     protected void loadInstallingMods()
     {
       if (lvwFiles.SelectedItems.Count == 0)
+      {
         return;
+      }
       rlvOverwrites.Items.Clear();
-      string strFile = (string)lvwFiles.SelectedItems[0].Tag;
+      string strFile = (string) lvwFiles.SelectedItems[0].Tag;
       IList<string> lstInstallers = InstallLog.Current.GetInstallingMods(strFile);
-      ListViewItem lviMod = null;
       foreach (string strMod in lstInstallers)
       {
-        lviMod = rlvOverwrites.Items.Add(strMod);
+        ListViewItem lviMod = rlvOverwrites.Items.Add(strMod);
         lviMod.Name = lviMod.Text;
       }
 
       rlvOverwrites.Items[rlvOverwrites.Items.Count - 1].BackColor = Color.LightGreen;
       rlvOverwrites.Items[rlvOverwrites.Items.Count - 1].Selected = true;
-    }
-
-    private void highlightMissing(TreeNode thisRoot)
-    {
-      foreach (TreeNode tndHere in thisRoot.Nodes)
-      {
-        highlightMissing(tndHere);
-      }
-
-      TreeNode tndDirectory = thisRoot;
-      List<string> lstDirectoryFiles = (List<string>)tndDirectory.Tag;
-      if ((lstDirectoryFiles == null) || (lstDirectoryFiles.Count == 0))
-        return;
-      foreach (string strFile in lstDirectoryFiles)
-      {
-        IList<string> lstInstallers = InstallLog.Current.GetInstallingMods(strFile);
-        bool booMissing = false;
-        string currentOwner = InstallLog.Current.GetCurrentFileOwnerKey(strFile);
-        foreach (string strMod in lstInstallers)
-        {
-          string strModKey = InstallLog.Current.GetModKey(strMod);
-          string strDirectory = Path.GetDirectoryName(strFile);
-          string strBackupPath = Path.Combine(Program.GameMode.OverwriteDirectory, strDirectory);
-          strBackupPath = Path.Combine(strBackupPath, strModKey + "_" + Path.GetFileName(strFile));
-          if (!File.Exists(strBackupPath) && !currentOwner.Equals(strModKey))
-            booMissing = true;
-          else if (File.Exists(strBackupPath) && currentOwner.Equals(strModKey))
-            booMissing = true;
-        }
-        if (booMissing)
-        {
-          TreeNode upwego = tndDirectory;
-          do
-          {
-            upwego.BackColor = Color.Red;
-            upwego = upwego.Parent;
-          } while (upwego != null);
-        }
-      }
     }
 
     /// <summary>
@@ -191,10 +164,12 @@ namespace Fomm.FileManager
     private void tvwFolders_AfterSelect(object sender, TreeViewEventArgs e)
     {
       TreeNode tndDirectory = e.Node;
-      List<string> lstDirectoryFiles = (List<string>)tndDirectory.Tag;
+      List<string> lstDirectoryFiles = (List<string>) tndDirectory.Tag;
       lvwFiles.Items.Clear();
       if ((lstDirectoryFiles == null) || (lstDirectoryFiles.Count == 0))
+      {
         return;
+      }
       foreach (string strFile in lstDirectoryFiles)
       {
         ListViewItem lviFile = new ListViewItem(Path.GetFileName(strFile));
@@ -205,13 +180,15 @@ namespace Fomm.FileManager
         lviFile.SubItems.Add(fliFile.LastWriteTime.ToString("g"));
         if (fliFile.Exists)
         {
-          lviFile.SubItems.Add(((Int64)Math.Ceiling(fliFile.Length / 1024.0)) + " KB");
+          lviFile.SubItems.Add(((Int64) Math.Ceiling(fliFile.Length/1024.0)) + " KB");
           if (!imlFiles.Images.ContainsKey(fliFile.Extension))
-            imlFiles.Images.Add(fliFile.Extension, System.Drawing.Icon.ExtractAssociatedIcon(fliFile.FullName));
+          {
+            imlFiles.Images.Add(fliFile.Extension, Icon.ExtractAssociatedIcon(fliFile.FullName));
+          }
         }
         else
         {
-          ListViewItem.ListViewSubItem lsiSubItem = lviFile.SubItems.Add("0 KB");
+          lviFile.SubItems.Add("0 KB");
           lviFile.Font = new Font(lviFile.Font, FontStyle.Strikeout);
         }
         lviFile.ImageKey = fliFile.Extension;
@@ -245,16 +222,22 @@ namespace Fomm.FileManager
     {
       List<string> lstOrderedMods = new List<string>();
       foreach (ListViewItem lviMod in rlvOverwrites.Items)
+      {
         lstOrderedMods.Add(lviMod.Text);
+      }
 
-      string strFile = (string)lvwFiles.SelectedItems[0].Tag;
+      string strFile = (string) lvwFiles.SelectedItems[0].Tag;
       ModInstallReorderer mirReorderer = new ModInstallReorderer();
       if (!mirReorderer.ReorderFileInstallers(strFile, lstOrderedMods))
+      {
         loadInstallingMods();
+      }
       else
       {
         for (Int32 i = rlvOverwrites.Items.Count - 2; i >= 0; i--)
+        {
           rlvOverwrites.Items[i].BackColor = SystemColors.Window;
+        }
         rlvOverwrites.Items[rlvOverwrites.Items.Count - 1].BackColor = Color.LightGreen;
       }
     }

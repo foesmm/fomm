@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Xml;
-using SevenZip;
 using System.IO;
 using System.Windows.Forms;
+using System.Xml;
+using Fomm.Properties;
 using Fomm.Util;
-using System.Drawing;
-using System.Drawing.Imaging;
 using GeMod.Interface;
+using SevenZip;
 
 namespace Fomm.PackageManager.FomodBuilder
 {
@@ -21,25 +20,13 @@ namespace Fomm.PackageManager.FomodBuilder
     /// </summary>
     protected abstract class GenerateFomodArgs
     {
-      private string m_strPackedPath = null;
-
       #region Properties
 
       /// <summary>
       /// Gets or sets the path where the packed file will be created.
       /// </summary>
       /// <value>The path where the packed file will be created.</value>
-      public string PackedPath
-      {
-        get
-        {
-          return m_strPackedPath;
-        }
-        set
-        {
-          m_strPackedPath = value;
-        }
-      }
+      public string PackedPath { get; set; }
 
       #endregion
 
@@ -49,15 +36,15 @@ namespace Fomm.PackageManager.FomodBuilder
       /// A simple constructor that initializes the object with the given values.
       /// </summary>
       /// <param name="p_strPackedPath">The value with which to initialize the <see cref="PackedPath"/> property.</param>
-      public GenerateFomodArgs(string p_strPackedPath)
+      protected GenerateFomodArgs(string p_strPackedPath)
       {
-        m_strPackedPath = p_strPackedPath;
+        PackedPath = p_strPackedPath;
       }
 
       #endregion
     }
 
-    private BackgroundWorkerProgressDialog m_bwdProgress = null;
+    private BackgroundWorkerProgressDialog m_bwdProgress;
     private LinkedList<string> m_lltTempFolders = new LinkedList<string>();
 
     #region Properties
@@ -111,7 +98,9 @@ namespace Fomm.PackageManager.FomodBuilder
     {
       string strPackedPath = p_gfaArgs.PackedPath;
       if (!CheckFileName(ref strPackedPath))
+      {
         return null;
+      }
       p_gfaArgs.PackedPath = strPackedPath;
 
       try
@@ -132,7 +121,9 @@ namespace Fomm.PackageManager.FomodBuilder
       finally
       {
         foreach (string strFolder in m_lltTempFolders)
+        {
           FileUtil.ForceDelete(strFolder);
+        }
       }
       return strPackedPath;
     }
@@ -141,7 +132,7 @@ namespace Fomm.PackageManager.FomodBuilder
     /// This method is overridden by implementers to perform the actual fomod generation.
     /// </summary>
     /// <param name="p_objArgs">The arguments the implementer passed to
-    /// <see cref="GenerateFomod(string p_strPackedFomodPath, object p_objArgs)"/>.</param>
+    /// <see cref="GenerateFomod(object p_objArgs)"/>.</param>
     protected abstract void DoGenerateFomod(object p_objArgs);
 
     #endregion
@@ -181,12 +172,16 @@ namespace Fomm.PackageManager.FomodBuilder
       }
       if (File.Exists(strNewPath))
       {
-        MessageBox.Show("File '" + newpath + "' already exists.", "Error");
+        MessageBox.Show("File '" + newpath + "' already exists.", Resources.ErrorStr);
         return false;
       }
       if (!newpath.Equals(strNewPath))
       {
-        switch (MessageBox.Show("File '" + newpath + "' already exists. The old file can be replaced, or the new file can be named '" + strNewPath + "'." + Environment.NewLine + "Do you want to overwrite the old file?", "Warning", MessageBoxButtons.YesNoCancel))
+        switch (
+          MessageBox.Show(
+            "File '" + newpath + "' already exists. The old file can be replaced, or the new file can be named '" +
+            strNewPath + "'." + Environment.NewLine + "Do you want to overwrite the old file?", "Warning",
+            MessageBoxButtons.YesNoCancel))
         {
           case DialogResult.Yes:
             return true;
@@ -213,8 +208,8 @@ namespace Fomm.PackageManager.FomodBuilder
       ProgressDialog.ItemMessage = String.Format("Compressing FOMod...");
 
       SevenZipCompressor szcCompressor = new SevenZipCompressor();
-      szcCompressor.CompressionLevel = Properties.Settings.Default.fomodCompressionLevel;
-      szcCompressor.ArchiveFormat = Properties.Settings.Default.fomodCompressionFormat;
+      szcCompressor.CompressionLevel = Settings.Default.fomodCompressionLevel;
+      szcCompressor.ArchiveFormat = Settings.Default.fomodCompressionFormat;
       szcCompressor.CompressionMethod = CompressionMethod.Default;
       switch (szcCompressor.ArchiveFormat)
       {
@@ -230,8 +225,8 @@ namespace Fomm.PackageManager.FomodBuilder
           break;
       }
       szcCompressor.CompressionMode = CompressionMode.Create;
-      szcCompressor.FileCompressionStarted += new EventHandler<FileNameEventArgs>(FileCompressionStarted);
-      szcCompressor.FileCompressionFinished += new EventHandler<EventArgs>(FileCompressionFinished);
+      szcCompressor.FileCompressionStarted += FileCompressionStarted;
+      szcCompressor.FileCompressionFinished += FileCompressionFinished;
       szcCompressor.CompressDirectory(p_strFomodFolder, p_strPackedFomodPath);
     }
 
@@ -248,7 +243,9 @@ namespace Fomm.PackageManager.FomodBuilder
       ProgressDialog.ItemProgressStep = 1;
       ProgressDialog.ItemMessage = String.Format("Creating Script File...");
       if ((p_fscScript != null) && !String.IsNullOrEmpty(p_fscScript.Text))
+      {
         File.WriteAllText(Path.Combine(p_strFomodFomodFolder, p_fscScript.FileName), p_fscScript.Text);
+      }
       ProgressDialog.StepItemProgress();
     }
 
@@ -272,11 +269,17 @@ namespace Fomm.PackageManager.FomodBuilder
       ProgressDialog.ItemMessage = String.Format("Creating Screenshot...");
       if (p_booSetScreenshot)
       {
-        string[] strScreenshots = Directory.GetFiles(p_strFomodFomodFolder, "screenshot.*", SearchOption.TopDirectoryOnly);
+        string[] strScreenshots = Directory.GetFiles(p_strFomodFomodFolder, "screenshot.*",
+                                                     SearchOption.TopDirectoryOnly);
         foreach (String strScreenshot in strScreenshots)
+        {
           FileUtil.ForceDelete(strScreenshot);
+        }
         if (p_shtScreenshot != null)
-          File.WriteAllBytes(Path.Combine(p_strFomodFomodFolder, "screenshot" + p_shtScreenshot.Extension), p_shtScreenshot.Data);
+        {
+          File.WriteAllBytes(Path.Combine(p_strFomodFomodFolder, "screenshot" + p_shtScreenshot.Extension),
+                             p_shtScreenshot.Data);
+        }
       }
       ProgressDialog.StepItemProgress();
     }
@@ -293,7 +296,9 @@ namespace Fomm.PackageManager.FomodBuilder
       ProgressDialog.ItemProgressStep = 1;
       ProgressDialog.ItemMessage = String.Format("Creating Info File...");
       if (p_xmlInfo != null)
+      {
         p_xmlInfo.Save(Path.Combine(p_strFomodFomodFolder, "info.xml"));
+      }
       ProgressDialog.StepItemProgress();
     }
 
@@ -312,8 +317,10 @@ namespace Fomm.PackageManager.FomodBuilder
       if ((p_rmeReadme != null) && !String.IsNullOrEmpty(p_rmeReadme.Text))
       {
         string strReadmeFileName = String.Format("Readme - {0}{1}", p_strFomodName, p_rmeReadme.Extension);
-        if (Properties.Settings.Default.UseDocsFolder)
+        if (Settings.Default.UseDocsFolder)
+        {
           strReadmeFileName = Path.Combine("docs", strReadmeFileName);
+        }
         File.WriteAllText(Path.Combine(p_strFomodFolder, strReadmeFileName), p_rmeReadme.Text);
       }
       ProgressDialog.StepItemProgress();
@@ -328,12 +335,13 @@ namespace Fomm.PackageManager.FomodBuilder
     {
       using (SevenZipExtractor szeExtractor = Archive.GetExtractor(p_strArchivePath))
       {
-        szeExtractor.FileExtractionFinished += new EventHandler<FileInfoEventArgs>(FileExtractionFinished);
-        szeExtractor.FileExtractionStarted += new EventHandler<FileInfoEventArgs>(FileExtractionStarted);
+        szeExtractor.FileExtractionFinished += FileExtractionFinished;
+        szeExtractor.FileExtractionStarted += FileExtractionStarted;
         ProgressDialog.ItemProgress = 0;
-        ProgressDialog.ItemProgressMaximum = (Int32)szeExtractor.FilesCount;
+        ProgressDialog.ItemProgressMaximum = (Int32) szeExtractor.FilesCount;
         ProgressDialog.ItemProgressStep = 1;
-        ProgressDialog.ItemMessage = String.Format("Extracting Source Files ({0})...", Path.GetFileName(p_strArchivePath));
+        ProgressDialog.ItemMessage = String.Format("Extracting Source Files ({0})...",
+                                                   Path.GetFileName(p_strArchivePath));
         szeExtractor.ExtractArchive(p_strExtractionPath);
       }
     }

@@ -1,14 +1,9 @@
 ﻿using System;
-using ChinhDo.Transactions;
-using System.Xml;
-using System.Security;
-using System.Security.Permissions;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
 using System.Windows.Forms;
-using fomm.Transactions;
-using Fomm.PackageManager.XmlConfiguredInstall;
 using Fomm.PackageManager.ModInstallLog;
+using Fomm.PackageManager.XmlConfiguredInstall;
 
 namespace Fomm.PackageManager
 {
@@ -17,7 +12,7 @@ namespace Fomm.PackageManager
   /// </summary>
   public class ModInstaller : ModInstallerBase
   {
-    private BackgroundWorkerProgressDialog m_bwdProgress = null;
+    private BackgroundWorkerProgressDialog m_bwdProgress;
 
     #region Properties
 
@@ -34,7 +29,8 @@ namespace Fomm.PackageManager
     {
       get
       {
-        return "A problem occurred during install: " + Environment.NewLine + "{0}" + Environment.NewLine + "The mod was not installed.";
+        return "A problem occurred during install: " + Environment.NewLine + "{0}" + Environment.NewLine +
+               "The mod was not installed.";
       }
     }
 
@@ -99,10 +95,16 @@ namespace Fomm.PackageManager
     protected override bool DoScript()
     {
       foreach (string strSettingsFile in Program.GameMode.SettingsFiles.Values)
+      {
         TransactionalFileManager.Snapshot(strSettingsFile);
+      }
       foreach (string strAdditionalFile in Program.GameMode.AdditionalPaths.Values)
+      {
         if (File.Exists(strAdditionalFile))
+        {
           TransactionalFileManager.Snapshot(strAdditionalFile);
+        }
+      }
       TransactionalFileManager.Snapshot(InstallLog.Current.InstallLogPath);
 
       try
@@ -138,7 +140,9 @@ namespace Fomm.PackageManager
         throw e;
       }
       if (!Fomod.IsActive)
+      {
         return false;
+      }
       return true;
     }
 
@@ -180,7 +184,9 @@ namespace Fomm.PackageManager
           m_bwdProgress.ShowItemProgress = false;
           m_bwdProgress.OverallProgressStep = 1;
           if (m_bwdProgress.ShowDialog() == DialogResult.Cancel)
+          {
             return false;
+          }
         }
       }
       finally
@@ -199,19 +205,30 @@ namespace Fomm.PackageManager
     /// </remarks>
     public void PerformBasicInstall()
     {
-      char[] chrDirectorySeperators = new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar };
+      char[] chrDirectorySeperators =
+      {
+        Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar
+      };
       List<string> lstFiles = Fomod.GetFileList();
       if (m_bwdProgress != null)
+      {
         m_bwdProgress.OverallProgressMaximum = lstFiles.Count;
+      }
       foreach (string strFile in lstFiles)
       {
         if ((m_bwdProgress != null) && m_bwdProgress.Cancelled())
+        {
           return;
+        }
         Script.InstallFileFromFomod(strFile);
         if (Program.GameMode.IsPluginFile(strFile) && strFile.IndexOfAny(chrDirectorySeperators) == -1)
+        {
           Script.SetPluginActivation(strFile, true);
+        }
         if (m_bwdProgress != null)
+        {
           m_bwdProgress.StepOverallProgress();
+        }
       }
     }
 

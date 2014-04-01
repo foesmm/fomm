@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Fomm
+﻿namespace Fomm
 {
   /// <summary>
   /// The interface for plugin format providers.
@@ -14,10 +10,7 @@ namespace Fomm
     /// Sets the <see cref="PluginFormat.PluginFormatterManager"/> to use.
     /// </summary>
     /// <value>The <see cref="PluginFormat.PluginFormatterManager"/> to use.</value>
-    PluginFormat.PluginFormatterManager PluginFormatterManager
-    {
-      set;
-    }
+    PluginFormat.PluginFormatterManager PluginFormatterManager { set; }
 
     /// <summary>
     /// Determins if the provider has a format for the specified plugin.

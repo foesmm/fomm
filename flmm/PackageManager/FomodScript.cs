@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.IO;
 
 namespace Fomm.PackageManager
@@ -29,11 +28,16 @@ namespace Fomm.PackageManager
     /// <summary>
     /// The mapping of valid script names to their respective script formats.
     /// </summary>
-    private static Dictionary<string, FomodScriptType> m_dicFormats = new Dictionary<string, FomodScriptType>(StringComparer.InvariantCultureIgnoreCase)
-                                    {
-                                      {"script.cs", FomodScriptType.CSharp},
-                                      {"ModuleConfig.xml", FomodScriptType.XMLConfig}
-                                    };
+    private static Dictionary<string, FomodScriptType> m_dicFormats =
+      new Dictionary<string, FomodScriptType>(StringComparer.InvariantCultureIgnoreCase)
+      {
+        {
+          "script.cs", FomodScriptType.CSharp
+        },
+        {
+          "ModuleConfig.xml", FomodScriptType.XMLConfig
+        }
+      };
 
     /// <summary>
     /// Get the list of valid script names.
@@ -48,7 +52,7 @@ namespace Fomm.PackageManager
     }
 
     private FomodScriptType m_fstType = FomodScriptType.CSharp;
-    private string m_strText = null;
+    private string m_strText;
 
     #region Properties
 
@@ -61,15 +65,21 @@ namespace Fomm.PackageManager
       get
       {
         foreach (KeyValuePair<string, FomodScriptType> kvpFormat in m_dicFormats)
+        {
           if (kvpFormat.Value.Equals(m_fstType))
+          {
             return kvpFormat.Key;
+          }
+        }
         throw new Exception("Unexpected value for FomodScriptType enum.");
       }
       set
       {
         string strLoweredValue = (value ?? "").ToLowerInvariant();
         if (!m_dicFormats.ContainsKey(strLoweredValue))
+        {
           throw new ArgumentException("Unrecognized script name: " + value);
+        }
         m_fstType = m_dicFormats[strLoweredValue];
       }
     }
@@ -102,10 +112,7 @@ namespace Fomm.PackageManager
       }
       set
       {
-        if (value == null)
-          m_strText = null;
-        else
-          m_strText = value.Replace(": BaseScript", ": Fallout3BaseScript");
+        m_strText = value == null ? null : value.Replace(": BaseScript", ": Fallout3BaseScript");
       }
     }
 

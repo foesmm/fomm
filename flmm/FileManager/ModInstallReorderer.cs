@@ -1,20 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using Fomm.PackageManager;
 using System.IO;
-using System.Windows.Forms;
-using fomm.Transactions;
-using System.Text;
+using Fomm.PackageManager;
 using Fomm.PackageManager.ModInstallLog;
 
 namespace Fomm.FileManager
 {
   public class ModInstallReorderer : ModInstallerBase
   {
-    private string m_strFailMessage = null;
-    private string m_strFile = null;
-    private IList<string> m_lstOrderedMods = null;
-      
+    private string m_strFailMessage;
+    private string m_strFile;
+    private IList<string> m_lstOrderedMods;
+
     #region Properties
 
     /// <seealso cref="ModInstallScript.ExceptionMessage"/>
@@ -99,7 +96,10 @@ namespace Fomm.FileManager
     protected override bool DoScript()
     {
       if ((m_strFile == null) || (m_lstOrderedMods == null))
-        throw new InvalidOperationException("The File and OrderedMods properties must be set before calling Run(); or Run(string, IList<string>) can be used instead.");
+      {
+        throw new InvalidOperationException(
+          "The File and OrderedMods properties must be set before calling Run(); or Run(string, IList<string>) can be used instead.");
+      }
 
       TransactionalFileManager.Snapshot(InstallLog.Current.InstallLogPath);
 
@@ -111,7 +111,7 @@ namespace Fomm.FileManager
       {
         string strDataPath = Path.Combine(Program.GameMode.PluginsPath, m_strFile);
         strDataPath = Directory.GetFiles(Path.GetDirectoryName(strDataPath), Path.GetFileName(strDataPath))[0];
-        
+
         string strDirectory = Path.GetDirectoryName(m_strFile);
         string strBackupPath = Path.Combine(Program.GameMode.OverwriteDirectory, strDirectory);
         //the old backup file is becoming the new file
@@ -120,10 +120,11 @@ namespace Fomm.FileManager
         string strNewBackupFile = strOldOwner + "_" + Path.GetFileName(strDataPath);
 
         string strNewBackupPath = Path.Combine(strBackupPath, strNewBackupFile);
-        string strOldBackupPath = Path.Combine(strBackupPath, strOldBackupFile);      
+        string strOldBackupPath = Path.Combine(strBackupPath, strOldBackupFile);
         if (!TransactionalFileManager.FileExists(strOldBackupPath))
         {
-          m_strFailMessage = "The version of the file for " + InstallLog.Current.GetModName(strNewOwner) + " does not exist. This is likely because files in the data folder have been altered manually.";
+          m_strFailMessage = "The version of the file for " + InstallLog.Current.GetModName(strNewOwner) +
+                             " does not exist. This is likely because files in the data folder have been altered manually.";
           return false;
         }
         TransactionalFileManager.Copy(strDataPath, strNewBackupPath, true);

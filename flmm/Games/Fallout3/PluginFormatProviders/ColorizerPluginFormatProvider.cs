@@ -1,14 +1,11 @@
-﻿using System;
-using System.IO;
-using System.Drawing;
-using Fomm.Games.Fallout3.Tools.TESsnip;
+﻿using System.Drawing;
 
 namespace Fomm.Games.Fallout3.PluginFormatProviders
 {
   // Colorizes plugins based on their dependency status.
   public class ColorizerPluginFormatProvider : IPluginFormatProvider
   {
-    private PluginFormat.PluginFormatterManager m_pfmManager = null;
+    private PluginFormat.PluginFormatterManager m_pfmManager;
 
     #region IPluginFormatProvider Members
 
@@ -37,22 +34,21 @@ namespace Fomm.Games.Fallout3.PluginFormatProviders
         case 1:
           // Missing master
           clr = Color.DarkRed;
-        break;
+          break;
 
         case 2:
           // Present but disabled
           clr = Color.DarkOrange;
-        break;
+          break;
 
         case 3:
           // Present and active but in wrong order
           clr = Color.Sienna;
-        break;
+          break;
 
         default:
-        case 0:
           clr = Color.Black;
-        break;
+          break;
       }
 
       return m_pfmManager.CreateFormat(null, null, null, clr, null, null);

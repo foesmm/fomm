@@ -1,7 +1,7 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 using System.Text.RegularExpressions;
-using System.IO;
 using Fomm.Util;
 
 namespace Fomm.Games.Fallout3.Tools.AutoSorter
@@ -36,7 +36,10 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
       using (WebClient wclGetter = new WebClient())
       {
         string strMasterListUrl = MasterListURL;
-        Int32 intLastDividerPos = strMasterListUrl.LastIndexOfAny(new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar });
+        Int32 intLastDividerPos = strMasterListUrl.LastIndexOfAny(new[]
+        {
+          Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar
+        });
         string strVersionUrl = strMasterListUrl.Substring(0, intLastDividerPos);
         strVersionPage = wclGetter.DownloadString(strVersionUrl);
       }
@@ -56,7 +59,7 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
         //the substring is to remove the 3byte EFBBBF Byte Order Mark (BOM)
         strMasterlist = TextUtil.ByteToString(wclGetter.DownloadData(MasterListURL));
       }
-      File.WriteAllText(p_strPath, GetMasterlistVersion().ToString() + Environment.NewLine + strMasterlist);
+      File.WriteAllText(p_strPath, GetMasterlistVersion() + Environment.NewLine + strMasterlist);
     }
   }
 }

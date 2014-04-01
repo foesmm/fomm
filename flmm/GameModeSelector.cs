@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 using Fomm.Games;
+using Fomm.Properties;
 
 namespace Fomm
 {
@@ -25,9 +21,13 @@ namespace Fomm
       get
       {
         if (radFallout3.Checked)
+        {
           return SupportedGameModes.Fallout3;
+        }
         if (radFalloutNV.Checked)
+        {
           return SupportedGameModes.FalloutNV;
+        }
         throw new Exception("Unrecognized game selection.");
       }
     }
@@ -42,8 +42,8 @@ namespace Fomm
     public GameModeSelector()
     {
       InitializeComponent();
-      this.Icon = Properties.Resources.fomm02;
-      switch (Properties.Settings.Default.rememberedGameMode)
+      Icon = Resources.fomm02;
+      switch (Settings.Default.rememberedGameMode)
       {
         case SupportedGameModes.Fallout3:
           radFallout3.Checked = true;
@@ -68,9 +68,9 @@ namespace Fomm
     /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
     private void butOK_Click(object sender, EventArgs e)
     {
-      Properties.Settings.Default.rememberGameMode = cbxRemember.Checked;
-      Properties.Settings.Default.rememberedGameMode = SelectedGameMode;
-      Properties.Settings.Default.Save();
+      Settings.Default.rememberGameMode = cbxRemember.Checked;
+      Settings.Default.rememberedGameMode = SelectedGameMode;
+      Settings.Default.Save();
       DialogResult = DialogResult.OK;
     }
   }

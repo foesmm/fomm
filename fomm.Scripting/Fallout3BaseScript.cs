@@ -1,7 +1,7 @@
 using System;
+using System.Drawing;
 using Fomm.Games.Fallout3.Script;
 using Fomm.Games.Fallout3.Tools.TESsnip;
-using System.Drawing;
 
 namespace fomm.Scripting
 {
@@ -14,7 +14,7 @@ namespace fomm.Scripting
     {
       get
       {
-        return (Fallout3ModInstallScript)Installer.Script;
+        return (Fallout3ModInstallScript) Installer.Script;
       }
     }
 
@@ -27,7 +27,7 @@ namespace fomm.Scripting
     /// <seealso cref="ModScript.ScriptExtenderPresent()"/>
     public static bool ScriptExtenderPresent()
     {
-      return (bool)(ExecuteMethod(() => Script.ScriptExtenderPresent()) ?? false);
+      return (bool) (ExecuteMethod(() => Script.ScriptExtenderPresent()) ?? false);
     }
 
     /// <summary>
@@ -38,7 +38,7 @@ namespace fomm.Scripting
     /// <seealso cref="ModScript.GetFoseVersion()"/>
     public static Version GetFoseVersion()
     {
-      return (Version)ExecuteMethod(() => Script.GetScriptExtenderVersion());
+      return (Version) ExecuteMethod(() => Script.GetScriptExtenderVersion());
     }
 
     /// <summary>
@@ -60,7 +60,7 @@ namespace fomm.Scripting
     /// <seealso cref="ModScript.GetGeckVersion()"/>
     public static Version GetGeckVersion()
     {
-      return (Version)ExecuteMethod(() => Script.GetGeckVersion());
+      return (Version) ExecuteMethod(() => Script.GetGeckVersion());
     }
 
     #endregion
@@ -75,7 +75,7 @@ namespace fomm.Scripting
     /// <seealso cref="BsaManager.GetBSAFileList(string p_strBsa)"/>
     public static string[] GetBSAFileList(string p_strBsa)
     {
-      return (string[])ExecuteMethod(() => Script.BsaManager.GetBSAFileList(p_strBsa));
+      return (string[]) ExecuteMethod(() => Script.BsaManager.GetBSAFileList(p_strBsa));
     }
 
     /// <summary>
@@ -87,7 +87,7 @@ namespace fomm.Scripting
     /// <seealso cref="BsaManager.GetDataFileFromBSA(string p_strBsa, string p_strFile)"/>
     public static byte[] GetDataFileFromBSA(string p_strBsa, string p_strFile)
     {
-      return (byte[])ExecuteMethod(() => Script.BsaManager.GetDataFileFromBSA(p_strBsa, p_strFile));
+      return (byte[]) ExecuteMethod(() => Script.BsaManager.GetDataFileFromBSA(p_strBsa, p_strFile));
     }
 
     #endregion
@@ -105,7 +105,7 @@ namespace fomm.Scripting
     /// <seealso cref="ModScript.GetFalloutIniString(string p_strSection, string p_strKey)"/>
     public static string GetFalloutIniString(string p_strSection, string p_strKey)
     {
-      return (string)ExecuteMethod(() => Script.GetFalloutIniString(p_strSection, p_strKey));
+      return (string) ExecuteMethod(() => Script.GetFalloutIniString(p_strSection, p_strKey));
     }
 
     /// <summary>
@@ -116,7 +116,7 @@ namespace fomm.Scripting
     /// <seealso cref="ModScript.GetFalloutIniInt(string p_strSection, string p_strKey)"/>
     public static int GetFalloutIniInt(string p_strSection, string p_strKey)
     {
-      return (int)ExecuteMethod(() => Script.GetFalloutIniInt(p_strSection, p_strKey));
+      return (int) ExecuteMethod(() => Script.GetFalloutIniInt(p_strSection, p_strKey));
     }
 
     /// <summary>
@@ -128,7 +128,7 @@ namespace fomm.Scripting
     /// <seealso cref="ModScript.GetPrefsIniString(string p_strSection, string p_strKey)"/>
     public static string GetPrefsIniString(string p_strSection, string p_strKey)
     {
-      return (string)ExecuteMethod(() => Script.GetPrefsIniString(p_strSection, p_strKey));
+      return (string) ExecuteMethod(() => Script.GetPrefsIniString(p_strSection, p_strKey));
     }
 
     /// <summary>
@@ -140,7 +140,7 @@ namespace fomm.Scripting
     /// <seealso cref="ModScript.GetPrefsIniInt(string p_strSection, string p_strKey)"/>
     public static int GetPrefsIniInt(string p_strSection, string p_strKey)
     {
-      return (int)ExecuteMethod(() => Script.GetPrefsIniInt(p_strSection, p_strKey));
+      return (int) ExecuteMethod(() => Script.GetPrefsIniInt(p_strSection, p_strKey));
     }
 
     /// <summary>
@@ -152,7 +152,7 @@ namespace fomm.Scripting
     /// <seealso cref="ModScript.GetGeckIniString(string p_strSection, string p_strKey)"/>
     public static string GetGeckIniString(string p_strSection, string p_strKey)
     {
-      return (string)ExecuteMethod(() => Script.GetGeckIniString(p_strSection, p_strKey));
+      return (string) ExecuteMethod(() => Script.GetGeckIniString(p_strSection, p_strKey));
     }
 
     /// <summary>
@@ -164,7 +164,7 @@ namespace fomm.Scripting
     /// <seealso cref="ModScript.GetGeckIniInt(string p_strSection, string p_strKey)"/>
     public static int GetGeckIniInt(string p_strSection, string p_strKey)
     {
-      return (int)ExecuteMethod(() => Script.GetGeckIniInt(p_strSection, p_strKey));
+      return (int) ExecuteMethod(() => Script.GetGeckIniInt(p_strSection, p_strKey));
     }
 
     /// <summary>
@@ -176,7 +176,7 @@ namespace fomm.Scripting
     /// <seealso cref="ModScript.GetGeckPrefsIniString(string p_strSection, string p_strKey)"/>
     public static string GetGeckPrefsIniString(string p_strSection, string p_strKey)
     {
-      return (string)ExecuteMethod(() => Script.GetGeckPrefsIniString(p_strSection, p_strKey));
+      return (string) ExecuteMethod(() => Script.GetGeckPrefsIniString(p_strSection, p_strKey));
     }
 
     /// <summary>
@@ -188,7 +188,7 @@ namespace fomm.Scripting
     /// <seealso cref="ModScript.GetGeckPrefsIniInt(string p_strSection, string p_strKey)"/>
     public static int GetGeckPrefsIniInt(string p_strSection, string p_strKey)
     {
-      return (int)ExecuteMethod(() => Script.GetGeckPrefsIniInt(p_strSection, p_strKey));
+      return (int) ExecuteMethod(() => Script.GetGeckPrefsIniInt(p_strSection, p_strKey));
     }
 
     #endregion
@@ -207,7 +207,8 @@ namespace fomm.Scripting
     /// <seealso cref="ModInstaller.EditFalloutINI(string p_strSection, string p_strKey, string p_strValue, bool p_booSaveOld)"/>
     public static bool EditFalloutINI(string p_strSection, string p_strKey, string p_strValue, bool p_booSaveOld)
     {
-      return (bool)(ExecuteMethod(() => Script.EditFalloutINI(p_strSection, p_strKey, p_strValue, p_booSaveOld)) ?? false);
+      return
+        (bool) (ExecuteMethod(() => Script.EditFalloutINI(p_strSection, p_strKey, p_strValue, p_booSaveOld)) ?? false);
     }
 
     /// <summary>
@@ -222,7 +223,8 @@ namespace fomm.Scripting
     /// <seealso cref="ModInstaller.EditPrefsINI(string p_strSection, string p_strKey, string p_strValue, bool p_booSaveOld)"/>
     public static bool EditPrefsINI(string p_strSection, string p_strKey, string p_strValue, bool p_booSaveOld)
     {
-      return (bool)(ExecuteMethod(() => Script.EditPrefsINI(p_strSection, p_strKey, p_strValue, p_booSaveOld)) ?? false);
+      return
+        (bool) (ExecuteMethod(() => Script.EditPrefsINI(p_strSection, p_strKey, p_strValue, p_booSaveOld)) ?? false);
     }
 
     /// <summary>
@@ -237,7 +239,7 @@ namespace fomm.Scripting
     /// <seealso cref="ModInstaller.EditGeckINI(string p_strSection, string p_strKey, string p_strValue, bool p_booSaveOld)"/>
     public static bool EditGeckINI(string p_strSection, string p_strKey, string p_strValue, bool p_booSaveOld)
     {
-      return (bool)(ExecuteMethod(() => Script.EditGeckINI(p_strSection, p_strKey, p_strValue, p_booSaveOld)) ?? false);
+      return (bool) (ExecuteMethod(() => Script.EditGeckINI(p_strSection, p_strKey, p_strValue, p_booSaveOld)) ?? false);
     }
 
     /// <summary>
@@ -252,7 +254,8 @@ namespace fomm.Scripting
     /// <seealso cref="ModInstaller.EditGeckPrefsINI(string p_strSection, string p_strKey, string p_strValue, bool p_booSaveOld)"/>
     public static bool EditGeckPrefsINI(string p_strSection, string p_strKey, string p_strValue, bool p_booSaveOld)
     {
-      return (bool)(ExecuteMethod(() => Script.EditGeckPrefsINI(p_strSection, p_strKey, p_strValue, p_booSaveOld)) ?? false);
+      return
+        (bool) (ExecuteMethod(() => Script.EditGeckPrefsINI(p_strSection, p_strKey, p_strValue, p_booSaveOld)) ?? false);
     }
 
     #endregion
@@ -270,7 +273,7 @@ namespace fomm.Scripting
     /// <seealso cref="ModScript.GetRendererInfo(string p_strValue)"/>
     public static string GetRendererInfo(string p_strValue)
     {
-      return (string)ExecuteMethod(() => Script.GetRendererInfo(p_strValue));
+      return (string) ExecuteMethod(() => Script.GetRendererInfo(p_strValue));
     }
 
     /// <summary>
@@ -281,7 +284,7 @@ namespace fomm.Scripting
     /// <seealso cref="ModScript.IsAIActive()"/>
     public static bool IsAIActive()
     {
-      return (bool)(ExecuteMethod(() => Script.IsAIActive()) ?? false);
+      return (bool) (ExecuteMethod(() => Script.IsAIActive()) ?? false);
     }
 
     #endregion
@@ -299,7 +302,7 @@ namespace fomm.Scripting
     /// <seealso cref="ModInstaller.EditShader(int p_intPackage, string p_strShaderName, byte[] p_bteData)"/>
     public static bool EditShader(int p_intPackage, string p_strShaderName, byte[] p_bteData)
     {
-      return (bool)(ExecuteMethod(() => Script.EditShader(p_intPackage, p_strShaderName, p_bteData)) ?? false);
+      return (bool) (ExecuteMethod(() => Script.EditShader(p_intPackage, p_strShaderName, p_bteData)) ?? false);
     }
 
     #endregion
@@ -315,7 +318,9 @@ namespace fomm.Scripting
     {
       Plugin[] tspPlugins = new Plugin[p_plgPlugins.Length];
       for (int i = 0; i < p_plgPlugins.Length; i++)
+      {
         tspPlugins[i] = p_plgPlugins[i];
+      }
       ExecuteMethod(() => Script.SetupScriptCompiler(tspPlugins));
     }
 
@@ -337,11 +342,14 @@ namespace fomm.Scripting
         msg = null;
       }
       if (r != null)
-        r2 = (Record)r.Clone();
+      {
+        r2 = (Record) r.Clone();
+      }
       else
+      {
         r2 = null;
+      }
     }
-
 
     /// <summary>
     /// Compiles a script.
@@ -354,7 +362,9 @@ namespace fomm.Scripting
         Script.CompileScript(r2, out msg);
         r2.SubRecords.Clear();
         for (int i = 0; i < r2.SubRecords.Count; i++)
-          r2.SubRecords.Add((SubRecord)r2.SubRecords[i].Clone());
+        {
+          r2.SubRecords.Add((SubRecord) r2.SubRecords[i].Clone());
+        }
       }
       catch (Exception e)
       {
@@ -375,7 +385,7 @@ namespace fomm.Scripting
     /// <seealso cref="TextureManager.LoadTexture(byte[] p_bteTexture)"/>
     public static IntPtr LoadTexture(byte[] p_bteTexture)
     {
-      return (IntPtr)ExecuteMethod(() => Script.TextureManager.LoadTexture(p_bteTexture));
+      return (IntPtr) ExecuteMethod(() => Script.TextureManager.LoadTexture(p_bteTexture));
     }
 
     /// <summary>
@@ -387,7 +397,7 @@ namespace fomm.Scripting
     /// <seealso cref="TextureManager.CreateTexture(int p_intWidth, int p_intHeight)"/>
     public static IntPtr CreateTexture(int p_intWidth, int p_intHeight)
     {
-      return (IntPtr)ExecuteMethod(() => Script.TextureManager.CreateTexture(p_intWidth, p_intHeight));
+      return (IntPtr) ExecuteMethod(() => Script.TextureManager.CreateTexture(p_intWidth, p_intHeight));
     }
 
     /// <summary>
@@ -401,7 +411,7 @@ namespace fomm.Scripting
     /// <seealso cref="TextureManager.SaveTexture(IntPtr p_ptrTexture, int p_intFormat, bool p_booMipmaps)"/>
     public static byte[] SaveTexture(IntPtr p_ptrTexture, int p_intFormat, bool p_booMipmaps)
     {
-      return (byte[])ExecuteMethod(() => Script.TextureManager.SaveTexture(p_ptrTexture, p_intFormat, p_booMipmaps));
+      return (byte[]) ExecuteMethod(() => Script.TextureManager.SaveTexture(p_ptrTexture, p_intFormat, p_booMipmaps));
     }
 
     /// <summary>
@@ -412,9 +422,11 @@ namespace fomm.Scripting
     /// <param name="p_ptrDestination">A pointer to the texture to which to make the copy.</param>
     /// <param name="p_rctDestinationRect">The area of the destination texture to which to make the copy.</param>
     /// <seealso cref="TextureManager.CopyTexture(IntPtr p_ptrSource, Rectangle p_rctSourceRect, IntPtr p_ptrDestination, Rectangle p_rctDestinationRect)"/>
-    public static void CopyTexture(IntPtr p_ptrSource, Rectangle p_rctSourceRect, IntPtr p_ptrDestination, Rectangle p_rctDestinationRect)
+    public static void CopyTexture(IntPtr p_ptrSource, Rectangle p_rctSourceRect, IntPtr p_ptrDestination,
+                                   Rectangle p_rctDestinationRect)
     {
-      ExecuteMethod(() => Script.TextureManager.CopyTexture(p_ptrSource, p_rctSourceRect, p_ptrDestination, p_rctDestinationRect));
+      ExecuteMethod(
+        () => Script.TextureManager.CopyTexture(p_ptrSource, p_rctSourceRect, p_ptrDestination, p_rctDestinationRect));
     }
 
     /// <summary>
@@ -494,7 +506,7 @@ namespace fomm.Scripting
     /// <seealso cref="ModScript.IsLoadOrderAutoSorted()"/>
     public static bool IsLoadOrderAutoSorted()
     {
-      return (bool)(ExecuteMethod(() => Script.IsLoadOrderAutoSorted()) ?? false);
+      return (bool) (ExecuteMethod(() => Script.IsLoadOrderAutoSorted()) ?? false);
     }
 
     /// <summary>
@@ -508,7 +520,7 @@ namespace fomm.Scripting
     /// <seealso cref="ModScript.GetAutoInsertionPoint(string p_strPlugin)"/>
     public static int GetAutoInsertionPoint(string p_strPlugin)
     {
-      return (int)ExecuteMethod(() => Script.GetAutoInsertionPoint(p_strPlugin));
+      return (int) ExecuteMethod(() => Script.GetAutoInsertionPoint(p_strPlugin));
     }
 
     /// <summary>

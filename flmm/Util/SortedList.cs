@@ -1,18 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Fomm.Util
 {
   public class SortedList<T> : IList<T>
   {
     private List<T> m_lstItems = new List<T>();
-    private IComparer<T> m_cmpComparer = null;
+    private IComparer<T> m_cmpComparer;
 
     public SortedList()
     {
-      if (!typeof(IComparable<T>).IsAssignableFrom(typeof(T)))
-        throw new ArgumentException("Type " + typeof(T).Name + " is not IComparable. Use SortedList(IComparer) to supply a comparer.");
+      if (!typeof (IComparable<T>).IsAssignableFrom(typeof (T)))
+      {
+        throw new ArgumentException("Type " + typeof (T).Name +
+                                    " is not IComparable. Use SortedList(IComparer) to supply a comparer.");
+      }
     }
 
     public SortedList(IComparer<T> p_cmpComparer)
@@ -25,7 +28,9 @@ namespace Fomm.Util
     public int IndexOf(T item)
     {
       if (m_cmpComparer == null)
+      {
         return m_lstItems.BinarySearch(item);
+      }
       return m_lstItems.BinarySearch(item, m_cmpComparer);
     }
 
@@ -59,11 +64,15 @@ namespace Fomm.Util
     {
       Int32 intIndex = -1;
       if (m_cmpComparer == null)
+      {
         intIndex = m_lstItems.BinarySearch(item);
+      }
       intIndex = m_lstItems.BinarySearch(item, m_cmpComparer);
 
       if (intIndex < 0)
+      {
         intIndex = ~intIndex;
+      }
 
       m_lstItems.Insert(intIndex, item);
     }
@@ -77,7 +86,9 @@ namespace Fomm.Util
     {
       Int32 intIndex = -1;
       if (m_cmpComparer == null)
+      {
         intIndex = m_lstItems.BinarySearch(item);
+      }
       intIndex = m_lstItems.BinarySearch(item, m_cmpComparer);
       return intIndex > -1;
     }
@@ -107,7 +118,9 @@ namespace Fomm.Util
     {
       Int32 intIndex = -1;
       if (m_cmpComparer == null)
+      {
         intIndex = m_lstItems.BinarySearch(item);
+      }
       intIndex = m_lstItems.BinarySearch(item, m_cmpComparer);
       if (intIndex > -1)
       {
@@ -132,11 +145,9 @@ namespace Fomm.Util
 
     IEnumerator IEnumerable.GetEnumerator()
     {
-      return ((IEnumerable)m_lstItems).GetEnumerator();
+      return ((IEnumerable) m_lstItems).GetEnumerator();
     }
 
     #endregion
-
   }
 }
-

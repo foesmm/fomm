@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.IO;
 using System.Windows.Forms;
 using Fomm.PackageManager.ModInstallLog;
@@ -12,8 +11,10 @@ namespace Fomm.PackageManager.Upgrade
   /// </summary>
   public class UpgradeScanner
   {
-    protected static readonly string m_strUpgradeMessage = "A different version of {0} has been detected. The installed version is {1}, the new version is {2}. Would you like to upgrade?" + Environment.NewLine + "Selecting No will replace the FOMod in FOMM's plugin list, but won't change any files.";
-    
+    protected static readonly string m_strUpgradeMessage =
+      "A different version of {0} has been detected. The installed version is {1}, the new version is {2}. Would you like to upgrade?" +
+      Environment.NewLine + "Selecting No will replace the FOMod in FOMM's plugin list, but won't change any files.";
+
     /// <summary>
     /// Scans the mods folder for fomods that have versions that differ from their versions in the install log.
     /// </summary>
@@ -33,7 +34,10 @@ namespace Fomm.PackageManager.Upgrade
         fomodMod = new fomod(Path.Combine(Program.GameMode.ModDirectory, fifMod.BaseName + ".fomod"));
         if (!fomodMod.HumanReadableVersion.Equals(fifMod.Version))
         {
-          switch (MessageBox.Show(String.Format(m_strUpgradeMessage, fomodMod.ModName, fifMod.Version, fomodMod.HumanReadableVersion), "Upgrade", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+          switch (
+            MessageBox.Show(
+              String.Format(m_strUpgradeMessage, fomodMod.ModName, fifMod.Version, fomodMod.HumanReadableVersion),
+              "Upgrade", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
           {
             case DialogResult.Yes:
               lstModsToUpgrade.Add(fomodMod);
@@ -53,7 +57,7 @@ namespace Fomm.PackageManager.Upgrade
     /// Upgrades the given fomods.
     /// </summary>
     /// <param name="p_lstModsToUpgrade">The list of fomods to upgrade.</param>
-    private void Upgrade(IList<fomod> p_lstModsToUpgrade)
+    private void Upgrade(IEnumerable<fomod> p_lstModsToUpgrade)
     {
       ModUpgrader mduUpgrader = null;
       foreach (fomod fomodMod in p_lstModsToUpgrade)
@@ -72,7 +76,9 @@ namespace Fomm.PackageManager.Upgrade
       if (p_lstModsToReplace.Count > 0)
       {
         foreach (fomod fomodMod in p_lstModsToReplace)
+        {
           InstallLog.Current.UpdateMod(fomodMod);
+        }
         InstallLog.Current.Save();
       }
     }

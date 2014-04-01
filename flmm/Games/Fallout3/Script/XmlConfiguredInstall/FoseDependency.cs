@@ -8,8 +8,8 @@ namespace Fomm.Games.Fallout3.Script.XmlConfiguredInstall
   /// </summary>
   public class FoseDependency : IDependency
   {
-    private Fallout3DependencyStateManager m_dsmStateManager = null;
-    private Version m_verMinVersion = null;
+    private Fallout3DependencyStateManager m_dsmStateManager;
+    private Version m_verMinVersion;
 
     #region IDependency Members
 
@@ -47,11 +47,18 @@ namespace Fomm.Games.Fallout3.Script.XmlConfiguredInstall
       {
         Version verInstalledVersion = m_dsmStateManager.ScriptExtenderVersion;
         if (verInstalledVersion == null)
-          return String.Format("This mod requires FOSE v{0} or higher. Please download from http://silverlock.org", m_verMinVersion);
-        else if (verInstalledVersion < m_verMinVersion)
-          return String.Format("This mod requires FOSE v{0} or higher. You have {1}. Please update from http://silverlock.org", m_verMinVersion, verInstalledVersion);
-        else
-          return "Passed";
+        {
+          return String.Format("This mod requires FOSE v{0} or higher. Please download from http://silverlock.org",
+                               m_verMinVersion);
+        }
+        if (verInstalledVersion < m_verMinVersion)
+        {
+          return
+            String.Format(
+              "This mod requires FOSE v{0} or higher. You have {1}. Please update from http://silverlock.org",
+              m_verMinVersion, verInstalledVersion);
+        }
+        return "Passed";
       }
     }
 

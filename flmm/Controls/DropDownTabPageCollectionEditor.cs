@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.Design;
+using System.Diagnostics;
 
 namespace Fomm.Controls
 {
@@ -28,7 +29,7 @@ namespace Fomm.Controls
     /// <returns>The type of the item in the collection being edited.</returns>
     protected override Type CreateCollectionItemType()
     {
-      return typeof(DropDownTabPage);
+      return typeof (DropDownTabPage);
     }
 
     /// <summary>
@@ -39,9 +40,13 @@ namespace Fomm.Controls
     /// <returns>The resulting colletion with the new items.</returns>
     protected override object SetItems(object p_objTabPages, object[] p_objValues)
     {
-      DropDownTabControl.TabPageCollection tpcPages = (DropDownTabControl.TabPageCollection)base.SetItems(p_objTabPages, p_objValues);
+      DropDownTabControl.TabPageCollection tpcPages =
+        (DropDownTabControl.TabPageCollection) base.SetItems(p_objTabPages, p_objValues);
+      Debug.Assert(tpcPages != null, @"tpcPages != null");
       for (Int32 i = 0; i < tpcPages.Count; i++)
+      {
         tpcPages[i].PageIndex = i;
+      }
       return tpcPages;
     }
 
@@ -59,7 +64,9 @@ namespace Fomm.Controls
       object objNew = base.CreateInstance(p_tpeItemType);
       DropDownTabPage dtpPage = objNew as DropDownTabPage;
       if (dtpPage != null)
+      {
         dtpPage.Text = dtpPage.Name;
+      }
       return objNew;
     }
   }

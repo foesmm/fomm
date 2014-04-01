@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using Fomm.Games.Fallout3.Tools.CriticalRecords;
-using System.Text;
-using Fomm.PackageManager.ModInstallLog;
-using Fomm.PackageManager;
 using System.IO;
+using System.Text;
 using System.Windows.Forms;
 using Fomm.Games.Fallout3.PluginFormatProviders;
+using Fomm.Games.Fallout3.Tools.CriticalRecords;
+using Fomm.PackageManager;
+using Fomm.PackageManager.ModInstallLog;
 
 namespace Fomm.Games.Fallout3.Tools
 {
@@ -16,8 +16,8 @@ namespace Fomm.Games.Fallout3.Tools
   /// </summary>
   public class PluginConflictDetector
   {
-    private CriticalRecordPluginFormatProvider m_pfpFormatProvider = null;
-    private BackgroundWorkerProgressDialog m_bwdProgress = null;
+    private CriticalRecordPluginFormatProvider m_pfpFormatProvider;
+    private BackgroundWorkerProgressDialog m_bwdProgress;
 
     #region Constructors
 
@@ -43,7 +43,9 @@ namespace Fomm.Games.Fallout3.Tools
         m_bwdProgress.OverallProgressStep = 1;
         m_bwdProgress.OverallMessage = "Checking for conflicts...";
         if (m_bwdProgress.ShowDialog() == DialogResult.Cancel)
+        {
           m_pfpFormatProvider.Clear();
+        }
       }
     }
 
@@ -56,12 +58,13 @@ namespace Fomm.Games.Fallout3.Tools
     private void CheckForCriticalRecordConflicts()
     {
       m_pfpFormatProvider.Clear();
-      List<string> lstPlugins = new List<string>(Program.GameMode.PluginManager.SortPluginList(Program.GameMode.PluginManager.ActivePluginList));
+      List<string> lstPlugins =
+        new List<string>(Program.GameMode.PluginManager.SortPluginList(Program.GameMode.PluginManager.ActivePluginList));
 
       m_bwdProgress.OverallProgressMaximum = lstPlugins.Count;
       ConflictDetector cdrDetector = new ConflictDetector();
-      cdrDetector.ConflictDetected += new EventHandler<ConflictDetectedEventArgs>(cdrDetector_ConflictDetected);
-      cdrDetector.PluginProcessed += new EventHandler<PluginProcessedEventArgs>(cdrDetector_PluginProcessed);
+      cdrDetector.ConflictDetected += cdrDetector_ConflictDetected;
+      cdrDetector.PluginProcessed += cdrDetector_PluginProcessed;
       cdrDetector.DetectConflicts(lstPlugins);
     }
 
@@ -91,7 +94,12 @@ namespace Fomm.Games.Fallout3.Tools
     private void cdrDetector_ConflictDetected(object sender, ConflictDetectedEventArgs e)
     {
       StringBuilder stbMessage = new StringBuilder();
-      List<Color> lstBackgroundColours = new List<Color> { Color.LightSkyBlue, Color.Yellow, Color.Red };
+      List<Color> lstBackgroundColours = new List<Color>
+      {
+        Color.LightSkyBlue,
+        Color.Yellow,
+        Color.Red
+      };
       Int32 intColourIndex = 0;
       switch (e.ConflictInfo.Severity)
       {
@@ -113,15 +121,25 @@ namespace Fomm.Games.Fallout3.Tools
       {
         PluginFormat pftFormat = m_pfpFormatProvider.GetFormat(e.ConflictedPlugin.Name);
         if (pftFormat.Highlight.HasValue && (lstBackgroundColours.IndexOf(pftFormat.Highlight.Value) > intColourIndex))
+        {
           clrHighlight = pftFormat.Highlight.Value;
+        }
       }
 
       if (InstallLog.Current.GetCurrentFileOwnerName(e.ConflictingPlugin.Name) == null)
-        stbMessage.AppendFormat("Form Id \\b {0:x8}\\b0  is overridden by \\b {1}\\b0 .\\par \\pard\\li720\\sl240\\slmult1 {2}\\par \\pard\\sl240\\slmult1 ", e.FormId, e.ConflictingPlugin.Name, e.ConflictInfo.Reason);
+      {
+        stbMessage.AppendFormat(
+          "Form Id \\b {0:x8}\\b0  is overridden by \\b {1}\\b0 .\\par \\pard\\li720\\sl240\\slmult1 {2}\\par \\pard\\sl240\\slmult1 ",
+          e.FormId, e.ConflictingPlugin.Name, e.ConflictInfo.Reason);
+      }
       else
       {
-        fomod fomodMod = new fomod(Path.Combine(Program.GameMode.ModDirectory, InstallLog.Current.GetCurrentFileOwnerName(e.ConflictingPlugin.Name) + ".fomod"));
-        stbMessage.AppendFormat("Form Id \\b {0:x8}\\b0  is overridden by \\b {1}\\b0  in \\b {2}\\b0 .\\par \\pard\\li720\\sl240\\slmult1 {3}\\par \\pard\\sl240\\slmult1 ", e.FormId, e.ConflictingPlugin.Name, fomodMod.ModName, e.ConflictInfo.Reason);
+        fomod fomodMod =
+          new fomod(Path.Combine(Program.GameMode.ModDirectory,
+                                 InstallLog.Current.GetCurrentFileOwnerName(e.ConflictingPlugin.Name) + ".fomod"));
+        stbMessage.AppendFormat(
+          "Form Id \\b {0:x8}\\b0  is overridden by \\b {1}\\b0  in \\b {2}\\b0 .\\par \\pard\\li720\\sl240\\slmult1 {3}\\par \\pard\\sl240\\slmult1 ",
+          e.FormId, e.ConflictingPlugin.Name, fomodMod.ModName, e.ConflictInfo.Reason);
       }
       m_pfpFormatProvider.AddFormat(e.ConflictedPlugin.Name, clrHighlight, stbMessage.ToString());
     }

@@ -21,13 +21,13 @@ namespace Fomm.Commands
     {
       get
       {
-        return this.m_booIsChecked;
+        return m_booIsChecked;
       }
       set
       {
-        if (this.m_booIsChecked != value)
+        if (m_booIsChecked != value)
         {
-          this.m_booIsChecked = value;
+          m_booIsChecked = value;
           OnPropertyChanged(new PropertyChangedEventArgs("IsChecked"));
         }
       }
@@ -42,8 +42,7 @@ namespace Fomm.Commands
     /// </summary>
     /// <param name="p_strName">The name of the command.</param>
     /// <param name="p_strDescription">The description of the command.</param>
-    /// <param name="p_eehExecute">An <see cref="EventHandler<ExecutedEventArgs<T>>"/> that will be
-    /// perform the command work.</param>
+    /// <param name="p_eehExecute">An EventHandler that will perform the command work.</param>
     public CheckedCommand(string p_strName, string p_strDescription, EventHandler<ExecutedEventArgs<T>> p_eehExecute)
       : base(p_strName, p_strDescription, p_eehExecute)
     {
@@ -57,7 +56,8 @@ namespace Fomm.Commands
     /// <param name="p_booIsChecked">Whether the command is checked.</param>
     /// <param name="p_eehExecute">An <see cref="EventHandler<ExecutedEventArgs<T>>"/> that will be
     /// perform the command work.</param>
-    public CheckedCommand(string p_strName, string p_strDescription, bool p_booIsChecked, EventHandler<ExecutedEventArgs<T>> p_eehExecute)
+    public CheckedCommand(string p_strName, string p_strDescription, bool p_booIsChecked,
+                          EventHandler<ExecutedEventArgs<T>> p_eehExecute)
       : base(p_strName, p_strDescription, p_eehExecute)
     {
       IsChecked = p_booIsChecked;
