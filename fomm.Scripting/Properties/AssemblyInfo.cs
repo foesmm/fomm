@@ -11,9 +11,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("Copyright ©  2009 Timeslip")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-
 [assembly: AssemblyVersion(Fomm.Program.Version)]
 [assembly: AssemblyFileVersion(Fomm.Program.Version)]
-
 [assembly: ComVisible(false)]
 [assembly: CLSCompliant(false)]

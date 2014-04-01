@@ -139,10 +139,12 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     protected void InstallFiles(object p_ifaArgs)
     {
       if (!(p_ifaArgs is InstallFilesArguments))
+      {
         throw new ArgumentException("The given argument obejct is not of type InstallFilesArguments.", "p_ifaArgs");
+      }
 
-      Parser prsParser = ((InstallFilesArguments)p_ifaArgs).Parser;
-      OptionsForm ofmOptions = ((InstallFilesArguments)p_ifaArgs).Form;
+      Parser prsParser = ((InstallFilesArguments) p_ifaArgs).Parser;
+      OptionsForm ofmOptions = ((InstallFilesArguments) p_ifaArgs).Form;
 
       IList<PluginFile> lstRequiredFiles = prsParser.GetRequiredInstallFiles();
       List<PluginFile> lstInstallFiles = ofmOptions.FilesToInstall;
@@ -151,9 +153,13 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
       foreach (PluginFile pflRequiredFile in lstRequiredFiles)
       {
         if (m_bwdProgress.Cancelled())
+        {
           return;
+        }
         if (!InstallPluginFile(pflRequiredFile, true))
+        {
           return;
+        }
         m_bwdProgress.StepOverallProgress();
       }
 
@@ -161,9 +167,13 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
       foreach (PluginFile plfFile in lstInstallFiles)
       {
         if (m_bwdProgress.Cancelled())
+        {
           return;
+        }
         if (!InstallPluginFile(plfFile, lstActivateFiles.Contains(plfFile)))
+        {
           return;
+        }
         m_bwdProgress.StepOverallProgress();
       }
 
@@ -171,14 +181,20 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
       foreach (ConditionalFileInstallPattern cipPattern in lstConditionInstallPatterns)
       {
         if (cipPattern.Dependency.IsFufilled)
+        {
           foreach (PluginFile plfFile in cipPattern.Files)
           {
             if (m_bwdProgress.Cancelled())
+            {
               return;
+            }
             if (!InstallPluginFile(plfFile, true))
+            {
               return;
+            }
             m_bwdProgress.StepOverallProgress();
           }
+        }
       }
     }
 
@@ -200,7 +216,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
         CopyDataFolder(strSource, strDest);
 
         if (m_bwdProgress.Cancelled())
+        {
           return false;
+        }
 
         //if the destination length is greater than 0, then nothing in
         // this folder is directly in the Data folder as so cannot be
@@ -213,7 +231,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
           m_bwdProgress.ItemProgressMaximum = lstFiles.Count;
 
           if (!strSource.EndsWith("/"))
+          {
             strSource += "/";
+          }
           foreach (string strFile in lstFiles)
           {
             if (strFile.ToLowerInvariant().EndsWith(".esm") || strFile.ToLowerInvariant().EndsWith(".esp"))
@@ -222,7 +242,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
               m_misInstallScript.SetPluginActivation(strNewFileName, booActivate);
             }
             if (m_bwdProgress.Cancelled())
+            {
               return false;
+            }
             m_bwdProgress.StepItemProgress();
           }
         }
@@ -239,10 +261,14 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
         if (String.IsNullOrEmpty(strDest))
         {
           if (strSource.ToLowerInvariant().EndsWith(".esm") || strSource.ToLowerInvariant().EndsWith(".esp"))
+          {
             m_misInstallScript.SetPluginActivation(strSource, booActivate);
+          }
         }
         else if (strDest.ToLowerInvariant().EndsWith(".esm") || strDest.ToLowerInvariant().EndsWith(".esp"))
+        {
           m_misInstallScript.SetPluginActivation(strDest, booActivate);
+        }
 
         m_bwdProgress.StepItemProgress();
       }
@@ -266,15 +292,21 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 
       String strFrom = p_strFrom.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).ToLowerInvariant();
       if (!strFrom.EndsWith(Path.DirectorySeparatorChar.ToString()))
+      {
         strFrom += Path.DirectorySeparatorChar;
+      }
       String strTo = p_strTo.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
       if ((strTo.Length > 0) && (!strTo.EndsWith(Path.DirectorySeparatorChar.ToString())))
+      {
         strTo += Path.DirectorySeparatorChar;
+      }
       String strFOMODFile = null;
       for (Int32 i = 0; i < lstFOMODFiles.Count; i++)
       {
         if (m_bwdProgress.Cancelled())
+        {
           return;
+        }
 
         strFOMODFile = lstFOMODFiles[i];
         string strNewFileName = strFOMODFile.Substring(strFrom.Length, strFOMODFile.Length - strFrom.Length);
@@ -295,16 +327,23 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
       {
         m_strFomodFiles = m_misInstallScript.Fomod.GetFileList().ToArray();
         for (Int32 i = m_strFomodFiles.Length - 1; i >= 0; i--)
+        {
           m_strFomodFiles[i] = m_strFomodFiles[i].Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+        }
       }
       String strPath = p_strPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).ToLowerInvariant();
       List<string> lstFiles = new List<string>();
       foreach (string strFile in m_strFomodFiles)
+      {
         if (strFile.ToLowerInvariant().StartsWith(strPath))
+        {
           lstFiles.Add(strFile);
+        }
+      }
       return lstFiles;
     }
-    string[] m_strFomodFiles = null;
+
+    private string[] m_strFomodFiles = null;
 
     #endregion
   }

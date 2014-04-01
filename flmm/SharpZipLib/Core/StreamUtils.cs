@@ -41,7 +41,7 @@ namespace ICSharpCode.SharpZipLib.Core
   /// <summary>
   /// Provides simple <see cref="Stream"/>" utilities.
   /// </summary>
-  sealed class StreamUtils
+  internal sealed class StreamUtils
   {
     /// <summary>
     /// Read from a <see cref="Stream"/> ensuring all the required data is read.
@@ -49,7 +49,7 @@ namespace ICSharpCode.SharpZipLib.Core
     /// <param name="stream">The stream to read.</param>
     /// <param name="buffer">The buffer to fill.</param>
     /// <seealso cref="ReadFully(Stream,byte[],int,int)"/>
-    static public void ReadFully(Stream stream, byte[] buffer)
+    public static void ReadFully(Stream stream, byte[] buffer)
     {
       ReadFully(stream, buffer, 0, buffer.Length);
     }
@@ -64,28 +64,34 @@ namespace ICSharpCode.SharpZipLib.Core
     /// <exception cref="ArgumentNullException">Required parameter is null</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="offset"/> and or <paramref name="count"/> are invalid.</exception>
     /// <exception cref="EndOfStreamException">End of stream is encountered before all the data has been read.</exception>
-    static public void ReadFully(Stream stream, byte[] buffer, int offset, int count)
+    public static void ReadFully(Stream stream, byte[] buffer, int offset, int count)
     {
-      if ( stream == null ) {
+      if (stream == null)
+      {
         throw new ArgumentNullException("stream");
       }
 
-      if ( buffer == null ) {
+      if (buffer == null)
+      {
         throw new ArgumentNullException("buffer");
       }
 
       // Offset can equal length when buffer and count are 0.
-      if ( (offset < 0) || (offset > buffer.Length) ) {
+      if ((offset < 0) || (offset > buffer.Length))
+      {
         throw new ArgumentOutOfRangeException("offset");
       }
 
-      if ( (count < 0) || (offset + count > buffer.Length) ) {
+      if ((count < 0) || (offset + count > buffer.Length))
+      {
         throw new ArgumentOutOfRangeException("count");
       }
 
-      while ( count > 0 ) {
+      while (count > 0)
+      {
         int readCount = stream.Read(buffer, offset, count);
-        if ( readCount <= 0 ) {
+        if (readCount <= 0)
+        {
           throw new EndOfStreamException();
         }
         offset += readCount;
@@ -99,33 +105,40 @@ namespace ICSharpCode.SharpZipLib.Core
     /// <param name="source">The stream to source data from.</param>
     /// <param name="destination">The stream to write data to.</param>
     /// <param name="buffer">The buffer to use during copying.</param>
-    static public void Copy(Stream source, Stream destination, byte[] buffer)
+    public static void Copy(Stream source, Stream destination, byte[] buffer)
     {
-      if (source == null) {
+      if (source == null)
+      {
         throw new ArgumentNullException("source");
       }
 
-      if (destination == null) {
+      if (destination == null)
+      {
         throw new ArgumentNullException("destination");
       }
 
-      if (buffer == null) {
+      if (buffer == null)
+      {
         throw new ArgumentNullException("buffer");
       }
 
       // Ensure a reasonable size of buffer is used without being prohibitive.
-      if (buffer.Length < 128) {
+      if (buffer.Length < 128)
+      {
         throw new ArgumentException("Buffer is too small", "buffer");
       }
 
       bool copying = true;
 
-      while (copying) {
+      while (copying)
+      {
         int bytesRead = source.Read(buffer, 0, buffer.Length);
-        if (bytesRead > 0) {
+        if (bytesRead > 0)
+        {
           destination.Write(buffer, 0, bytesRead);
         }
-        else {
+        else
+        {
           destination.Flush();
           copying = false;
         }

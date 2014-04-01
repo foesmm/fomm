@@ -7,7 +7,7 @@ namespace Fomm.PackageManager.ModInstallLog
   /// <summary>
   /// The exception that is thrown if a there is a problem with the install log.
   /// </summary>
-  class InstallLogException: Exception
+  internal class InstallLogException : Exception
   {
     /// <summary>
     /// The default constructor.

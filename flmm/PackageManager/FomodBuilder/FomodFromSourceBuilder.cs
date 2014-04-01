@@ -108,7 +108,9 @@ namespace Fomm.PackageManager.FomodBuilder
       {
         booCreateFromFolder = false;
         if (!Archive.IsArchive(strSource))
+        {
           throw new ArgumentException("Unrecognized file format.", "p_strPath");
+        }
 
         string[] strFOMods = null;
         using (Archive arcMod = new Archive(strSource))
@@ -116,8 +118,14 @@ namespace Fomm.PackageManager.FomodBuilder
           strFOMods = arcMod.GetFiles(null, "*.fomod");
           if ((strFOMods.Length == 0) && (arcMod.VolumeFileNames.Length > 1))
           {
-            if (MessageBox.Show("This mod consists of " + arcMod.VolumeFileNames.Length + " files. It needs to be extracted and repacked.", "Repack Required", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.Cancel)
+            if (
+              MessageBox.Show(
+                "This mod consists of " + arcMod.VolumeFileNames.Length +
+                " files. It needs to be extracted and repacked.", "Repack Required", MessageBoxButtons.OKCancel,
+                MessageBoxIcon.Warning) == DialogResult.Cancel)
+            {
               return lstPackedFOModPaths;
+            }
             booCreateFromFolder = true;
           }
         }
@@ -134,7 +142,9 @@ namespace Fomm.PackageManager.FomodBuilder
                 using (SevenZipExtractor szeExtractor = Archive.GetExtractor(strSource))
                 {
                   using (FileStream fsmFOMod = new FileStream(strNewPath, FileMode.Create))
+                  {
                     szeExtractor.ExtractFile(strFOMod, fsmFOMod);
+                  }
                 }
                 lstPackedFOModPaths.Add(strNewPath);
               }
@@ -145,8 +155,14 @@ namespace Fomm.PackageManager.FomodBuilder
             fomod mof = new fomod(strSource, false);
             if (!mof.HasInstallScript && mof.RequiresScript)
             {
-              if (MessageBox.Show("This mod requires a script to install properly, but doesn't have one." + Environment.NewLine + "Would you like to continue?", "Missing Script", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.No)
+              if (
+                MessageBox.Show(
+                  "This mod requires a script to install properly, but doesn't have one." + Environment.NewLine +
+                  "Would you like to continue?", "Missing Script", MessageBoxButtons.YesNo, MessageBoxIcon.Information) ==
+                DialogResult.No)
+              {
                 return lstPackedFOModPaths;
+              }
             }
             //remove the file extension
             string strPackedFomodPath = Path.GetFileNameWithoutExtension(strSource);
@@ -154,15 +170,21 @@ namespace Fomm.PackageManager.FomodBuilder
             strPackedFomodPath = Path.GetFileNameWithoutExtension(strPackedFomodPath);
             strPackedFomodPath = Path.Combine(Program.GameMode.ModDirectory, strPackedFomodPath);
             if (!strPackedFomodPath.EndsWith(".fomod", StringComparison.OrdinalIgnoreCase))
+            {
               strPackedFomodPath += ".fomod";
+            }
             string strNewPath = strPackedFomodPath;
             if (CheckFileName(ref strNewPath))
             {
               FileUtil.ForceDelete(strNewPath);
               if (MessageBox.Show("Make a copy of the original file?", "", MessageBoxButtons.YesNo) != DialogResult.Yes)
+              {
                 File.Move(strSource, strNewPath);
+              }
               else
+              {
                 File.Copy(strSource, strNewPath, true);
+              }
               lstPackedFOModPaths.Add(strNewPath);
             }
           }
@@ -181,14 +203,19 @@ namespace Fomm.PackageManager.FomodBuilder
         }
         else
         {
-          Int32 intLastSeparatorPos = strSource.LastIndexOfAny(new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar });
+          Int32 intLastSeparatorPos = strSource.LastIndexOfAny(new char[]
+          {
+            Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar
+          });
           strFomodName = strSource.Substring(intLastSeparatorPos + 1);
         }
 
         string strPackedFomodPath = Path.Combine(Program.GameMode.ModDirectory, strFomodName + ".fomod");
         strPackedFomodPath = GenerateFomod(new BuildFomodArgs(strFomodName, strSource, null, strPackedFomodPath));
         if (!String.IsNullOrEmpty(strPackedFomodPath))
+        {
           lstPackedFOModPaths.Add(strPackedFomodPath);
+        }
       }
 
       return lstPackedFOModPaths;
@@ -205,7 +232,9 @@ namespace Fomm.PackageManager.FomodBuilder
     {
       BuildFomodArgs bfaArgs = p_objArgs as BuildFomodArgs;
       if (bfaArgs == null)
+      {
         throw new ArgumentException("The given argument must be a BuildFomodArgs.", "p_objArgs");
+      }
 
       string strSource = bfaArgs.SourcePath;
 
@@ -228,47 +257,64 @@ namespace Fomm.PackageManager.FomodBuilder
         strSource = CreateTemporaryDirectory();
         UnpackArchive(bfaArgs.SourcePath, strSource);
         if (ProgressDialog.Cancelled())
+        {
           return;
+        }
         ProgressDialog.StepOverallProgress();
       }
 
       // 2) Delete unwanted files
       DeleteUnwantedFiles(strSource);
       if (ProgressDialog.Cancelled())
+      {
         return;
+      }
       ProgressDialog.StepOverallProgress();
 
       // 3) Remove extraneous top-level folders
       strSource = DescendToFomodFolder(strSource);
       if (ProgressDialog.Cancelled())
+      {
         return;
+      }
       ProgressDialog.StepOverallProgress();
 
       //warn if script is required but missing
-      if (Program.GetFiles(strSource, "*.esp", SearchOption.AllDirectories).Length + Program.GetFiles(strSource, "*.esm", SearchOption.AllDirectories).Length >
-          Program.GetFiles(strSource, "*.esp", SearchOption.TopDirectoryOnly).Length + Program.GetFiles(strSource, "*.esm", SearchOption.TopDirectoryOnly).Length)
+      if (Program.GetFiles(strSource, "*.esp", SearchOption.AllDirectories).Length +
+          Program.GetFiles(strSource, "*.esm", SearchOption.AllDirectories).Length >
+          Program.GetFiles(strSource, "*.esp", SearchOption.TopDirectoryOnly).Length +
+          Program.GetFiles(strSource, "*.esm", SearchOption.TopDirectoryOnly).Length)
       {
         bool booHasScript = false;
         foreach (string strScriptName in FomodScript.ScriptNames)
+        {
           if (File.Exists(Path.Combine(strSource, "fomod\\" + strScriptName)))
           {
             booHasScript = true;
             break;
           }
+        }
         if (!booHasScript &&
-          (MessageBox.Show("This archive contains plugins in subdirectories, and will need a script attached for fomm to install it correctly.", "Warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.Cancel))
+            (MessageBox.Show(
+              "This archive contains plugins in subdirectories, and will need a script attached for fomm to install it correctly.",
+              "Warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.Cancel))
+        {
           return;
+        }
       }
 
       // 4) Create readme
-      string[] strReadmes = Directory.GetFiles(strSource, "readme - " + bfaArgs.FomodName + ".*", SearchOption.TopDirectoryOnly);
+      string[] strReadmes = Directory.GetFiles(strSource, "readme - " + bfaArgs.FomodName + ".*",
+                                               SearchOption.TopDirectoryOnly);
       if (strReadmes.Length == 0)
       {
         strReadmes = Directory.GetFiles(strSource, "*readme*.*", SearchOption.AllDirectories);
         foreach (string strExtension in Readme.ValidExtensions)
         {
           if (strReadmes.Length > 0)
+          {
             break;
+          }
           strReadmes = Program.GetFiles(strSource, "*" + strExtension, SearchOption.AllDirectories);
         }
         Readme rmeReadme = null;
@@ -283,7 +329,9 @@ namespace Fomm.PackageManager.FomodBuilder
         CreateReadmeFile(strSource, bfaArgs.FomodName, rmeReadme);
       }
       if (ProgressDialog.Cancelled())
+      {
         return;
+      }
       ProgressDialog.StepOverallProgress();
 
       // 5) Create info.xml
@@ -291,7 +339,9 @@ namespace Fomm.PackageManager.FomodBuilder
       {
         string strFomodFomodPath = Path.Combine(strSource, "fomod");
         if (!Directory.Exists(strFomodFomodPath))
+        {
           Directory.CreateDirectory(strFomodFomodPath);
+        }
         if (!File.Exists(Path.Combine(strFomodFomodPath, "info.xml")))
         {
           XmlDocument xmlInfo = new XmlDocument();
@@ -303,7 +353,9 @@ namespace Fomm.PackageManager.FomodBuilder
         }
       }
       if (ProgressDialog.Cancelled())
+      {
         return;
+      }
       ProgressDialog.StepOverallProgress();
 
       // 6) Pack fomod
@@ -362,28 +414,32 @@ namespace Fomm.PackageManager.FomodBuilder
       // is a fomod/textures/meshes/music/shaders/video/facegen/menus/lodsettings/lsdata/sound folder.
       string[] directories = Directory.GetDirectories(strSourcePath);
       while (directories.Length == 1 &&
-          ((Program.GetFiles(strSourcePath, "*.esp").Length == 0 &&
-          Program.GetFiles(strSourcePath, "*.esm").Length == 0 &&
-          Program.GetFiles(strSourcePath, "*.bsa").Length == 0) ||
-          Path.GetFileName(directories[0]).Equals("data", StringComparison.InvariantCultureIgnoreCase)))
+             ((Program.GetFiles(strSourcePath, "*.esp").Length == 0 &&
+               Program.GetFiles(strSourcePath, "*.esm").Length == 0 &&
+               Program.GetFiles(strSourcePath, "*.bsa").Length == 0) ||
+              Path.GetFileName(directories[0]).Equals("data", StringComparison.InvariantCultureIgnoreCase)))
       {
         directories = directories[0].Split(Path.DirectorySeparatorChar);
         string name = directories[directories.Length - 1].ToLowerInvariant();
         if ((name != "fomod") && (name != "textures") && (name != "meshes") && (name != "music") &&
-          (name != "shaders") && (name != "video") && (name != "facegen") && (name != "menus") &&
-          (name != "lodsettings") && (name != "lsdata") && (name != "sound"))
+            (name != "shaders") && (name != "video") && (name != "facegen") && (name != "menus") &&
+            (name != "lodsettings") && (name != "lsdata") && (name != "sound"))
         {
           foreach (string file in Directory.GetFiles(strSourcePath))
           {
             string newpath2 = Path.Combine(Path.Combine(Path.GetDirectoryName(file), name), Path.GetFileName(file));
             if (!File.Exists(newpath2))
+            {
               File.Move(file, newpath2);
+            }
           }
           strSourcePath = Path.Combine(strSourcePath, name);
           directories = Directory.GetDirectories(strSourcePath);
         }
         else
+        {
           break;
+        }
         ProgressDialog.StepItemProgress();
       }
       return strSourcePath;

@@ -11,6 +11,7 @@ namespace Fomm
   public partial class BackgroundWorkerProgressDialog : Form, IDisposable
   {
     public delegate void WorkerMethod();
+
     public delegate void ParamWorkerMethod(object p_objArgument);
 
     private WorkerMethod m_wkmWorkMethod = null;
@@ -59,9 +60,16 @@ namespace Fomm
       set
       {
         if (pnlItemProgress.InvokeRequired)
-          pnlItemProgress.Invoke(new Action(() => { pnlItemProgress.Visible = value; }));
+        {
+          pnlItemProgress.Invoke(new Action(() =>
+          {
+            pnlItemProgress.Visible = value;
+          }));
+        }
         else
+        {
           pnlItemProgress.Visible = value;
+        }
       }
     }
 
@@ -74,9 +82,16 @@ namespace Fomm
       set
       {
         if (lblItemMessage.InvokeRequired)
-          lblItemMessage.Invoke(new Action(() => { lblItemMessage.Text = value; }));
+        {
+          lblItemMessage.Invoke(new Action(() =>
+          {
+            lblItemMessage.Text = value;
+          }));
+        }
         else
+        {
           lblItemMessage.Text = value;
+        }
       }
     }
 
@@ -89,9 +104,16 @@ namespace Fomm
       set
       {
         if (lblTotalMessage.InvokeRequired)
-          lblTotalMessage.Invoke(new Action(() => { lblTotalMessage.Text = value; }));
+        {
+          lblTotalMessage.Invoke(new Action(() =>
+          {
+            lblTotalMessage.Text = value;
+          }));
+        }
         else
+        {
           lblTotalMessage.Text = value;
+        }
       }
     }
 
@@ -104,9 +126,16 @@ namespace Fomm
       set
       {
         if (pbrItemProgress.InvokeRequired)
-          pbrItemProgress.Invoke(new Action(() => { pbrItemProgress.Value = value; }));
+        {
+          pbrItemProgress.Invoke(new Action(() =>
+          {
+            pbrItemProgress.Value = value;
+          }));
+        }
         else
+        {
           pbrItemProgress.Value = value;
+        }
       }
     }
 
@@ -119,9 +148,16 @@ namespace Fomm
       set
       {
         if (pbrTotalProgress.InvokeRequired)
-          pbrTotalProgress.Invoke(new Action(() => { pbrTotalProgress.Value = value; }));
+        {
+          pbrTotalProgress.Invoke(new Action(() =>
+          {
+            pbrTotalProgress.Value = value;
+          }));
+        }
         else
+        {
           pbrTotalProgress.Value = value;
+        }
       }
     }
 
@@ -134,9 +170,16 @@ namespace Fomm
       set
       {
         if (pbrItemProgress.InvokeRequired)
-          pbrItemProgress.Invoke(new Action(() => { pbrItemProgress.Minimum = value; }));
+        {
+          pbrItemProgress.Invoke(new Action(() =>
+          {
+            pbrItemProgress.Minimum = value;
+          }));
+        }
         else
+        {
           pbrItemProgress.Minimum = value;
+        }
       }
     }
 
@@ -149,9 +192,16 @@ namespace Fomm
       set
       {
         if (pbrTotalProgress.InvokeRequired)
-          pbrTotalProgress.Invoke(new Action(() => { pbrTotalProgress.Minimum = value; }));
+        {
+          pbrTotalProgress.Invoke(new Action(() =>
+          {
+            pbrTotalProgress.Minimum = value;
+          }));
+        }
         else
+        {
           pbrTotalProgress.Minimum = value;
+        }
       }
     }
 
@@ -164,9 +214,16 @@ namespace Fomm
       set
       {
         if (pbrItemProgress.InvokeRequired)
-          pbrItemProgress.Invoke(new Action(() => { pbrItemProgress.Maximum = value; }));
+        {
+          pbrItemProgress.Invoke(new Action(() =>
+          {
+            pbrItemProgress.Maximum = value;
+          }));
+        }
         else
+        {
           pbrItemProgress.Maximum = value;
+        }
       }
     }
 
@@ -179,9 +236,16 @@ namespace Fomm
       set
       {
         if (pbrTotalProgress.InvokeRequired)
-          pbrTotalProgress.Invoke(new Action(() => { pbrTotalProgress.Maximum = value; }));
+        {
+          pbrTotalProgress.Invoke(new Action(() =>
+          {
+            pbrTotalProgress.Maximum = value;
+          }));
+        }
         else
+        {
           pbrTotalProgress.Maximum = value;
+        }
       }
     }
 
@@ -206,9 +270,16 @@ namespace Fomm
       set
       {
         if (pbrItemProgress.InvokeRequired)
-          pbrTotalProgress.Invoke(new Action(() => { pbrItemProgress.Step = value; }));
+        {
+          pbrTotalProgress.Invoke(new Action(() =>
+          {
+            pbrItemProgress.Step = value;
+          }));
+        }
         else
+        {
           pbrItemProgress.Step = value;
+        }
       }
     }
 
@@ -221,9 +292,16 @@ namespace Fomm
       set
       {
         if (pbrTotalProgress.InvokeRequired)
-          pbrTotalProgress.Invoke(new Action(() => { pbrTotalProgress.Step = value; }));
+        {
+          pbrTotalProgress.Invoke(new Action(() =>
+          {
+            pbrTotalProgress.Step = value;
+          }));
+        }
         else
+        {
           pbrTotalProgress.Step = value;
+        }
       }
     }
 
@@ -314,7 +392,9 @@ namespace Fomm
     protected override void OnClosing(CancelEventArgs e)
     {
       if (m_bgwWorker.IsBusy)
+      {
         e.Cancel = true;
+      }
       base.OnClosing(e);
     }
 
@@ -388,9 +468,13 @@ namespace Fomm
     {
       m_weaDoWorkEventArgs = e;
       if (m_wkmWorkMethod != null)
+      {
         m_wkmWorkMethod();
+      }
       else if (m_pwmWorkerMethod != null)
+      {
         m_pwmWorkerMethod(e.Argument);
+      }
     }
 
     /// <summary>
@@ -403,12 +487,16 @@ namespace Fomm
     /// </remarks>
     /// <param name="sender">The object that triggered the event.</param>
     /// <param name="e">An <see cref="RunWorkerCompletedEventArgs"/> that describes the event arguments.</param>
-    void m_bgwWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+    private void m_bgwWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
     {
       if (e.Cancelled)
+      {
         DialogResult = DialogResult.Cancel;
+      }
       else
+      {
         DialogResult = DialogResult.OK;
+      }
       m_exError = e.Error;
       this.Close();
     }
@@ -422,21 +510,31 @@ namespace Fomm
     /// </remarks>
     /// <param name="sender">The object that triggered the event.</param>
     /// <param name="e">An <see cref="ProgressChangedEventArgs"/> that describes the event arguments.</param>
-    void m_bgwWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+    private void m_bgwWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
     {
-      if ((bool)e.UserState)
+      if ((bool) e.UserState)
       {
         if (e.ProgressPercentage < 0)
+        {
           pbrTotalProgress.PerformStep();
+        }
         else
-          pbrTotalProgress.Value = (Int32)(e.ProgressPercentage / 100m * (pbrTotalProgress.Maximum - pbrTotalProgress.Minimum));
+        {
+          pbrTotalProgress.Value =
+            (Int32) (e.ProgressPercentage/100m*(pbrTotalProgress.Maximum - pbrTotalProgress.Minimum));
+        }
       }
       else
       {
         if (e.ProgressPercentage < 0)
+        {
           pbrItemProgress.PerformStep();
+        }
         else
-          pbrItemProgress.Value = (Int32)(e.ProgressPercentage / 100m * (pbrItemProgress.Maximum - pbrItemProgress.Minimum));
+        {
+          pbrItemProgress.Value =
+            (Int32) (e.ProgressPercentage/100m*(pbrItemProgress.Maximum - pbrItemProgress.Minimum));
+        }
       }
     }
 
@@ -451,7 +549,9 @@ namespace Fomm
     {
       base.Dispose();
       if (Error != null)
+      {
         throw Error;
+      }
     }
 
     #endregion

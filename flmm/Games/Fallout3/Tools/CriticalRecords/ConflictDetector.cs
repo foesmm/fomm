@@ -77,7 +77,8 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     /// <param name="p_plgConflictingPlugin">The plugin that is conflicting.</param>
     /// <param name="p_uintFormId">The form id that is overridden.</param>
     /// <param name="p_criInfo">The <see cref="CriticalRecordInfo"/> describing the conflict.</param>
-    public ConflictDetectedEventArgs(Plugin p_plgConflictedPlugin, Plugin p_plgConflictingPlugin, UInt32 p_uintFormId, CriticalRecordInfo p_criInfo)
+    public ConflictDetectedEventArgs(Plugin p_plgConflictedPlugin, Plugin p_plgConflictingPlugin, UInt32 p_uintFormId,
+                                     CriticalRecordInfo p_criInfo)
     {
       ConflictedPlugin = p_plgConflictedPlugin;
       ConflictingPlugin = p_plgConflictingPlugin;
@@ -96,12 +97,16 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     /// <summary>
     /// The list of plugins not to process.
     /// </summary>
-    protected List<string> SKIP_PLUGINS = new List<string> { "fallout3.esm",
-                                "anchorage.esm",
-                                "thepitt.esm",
-                                "brokensteel.esm",
-                                "zeta.esm",
-                                "pointlookout.esm" };
+    protected List<string> SKIP_PLUGINS = new List<string>
+    {
+      "fallout3.esm",
+      "anchorage.esm",
+      "thepitt.esm",
+      "brokensteel.esm",
+      "zeta.esm",
+      "pointlookout.esm"
+    };
+
     #region Events
 
     /// <summary>
@@ -134,11 +139,13 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     /// <param name="p_plgConflictingPlugin">The plugin that is conflicting.</param>
     /// <param name="p_uintFormId">The form id that is overridden.</param>
     /// <param name="p_criInfo">The <see cref="CriticalRecordInfo"/> describing the conflict.</param>
-    protected void OnConflictDetected(Plugin p_plgConflictedPlugin, Plugin p_plgConflictingPlugin, UInt32 p_uintFormId, CriticalRecordInfo p_criInfo)
+    protected void OnConflictDetected(Plugin p_plgConflictedPlugin, Plugin p_plgConflictingPlugin, UInt32 p_uintFormId,
+                                      CriticalRecordInfo p_criInfo)
     {
       if (ConflictDetected != null)
       {
-        ConflictDetectedEventArgs cdaArgs = new ConflictDetectedEventArgs(p_plgConflictedPlugin, p_plgConflictingPlugin, p_uintFormId, p_criInfo);
+        ConflictDetectedEventArgs cdaArgs = new ConflictDetectedEventArgs(p_plgConflictedPlugin, p_plgConflictingPlugin,
+                                                                          p_uintFormId, p_criInfo);
         ConflictDetected(this, cdaArgs);
       }
     }
@@ -163,29 +170,39 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
       {
         strBasePlugin = p_lstOrderedPlugins[intIndex];
         if (m_booCancelled)
+        {
           return;
+        }
 
         OnPluginProcessed();
 
         if (SKIP_PLUGINS.Contains(strBasePlugin.ToLowerInvariant()))
+        {
           continue;
+        }
 
         crpBasePlugin = new CriticalRecordPlugin(Path.Combine(Program.GameMode.PluginsPath, strBasePlugin), false);
         if (!crpBasePlugin.HasCriticalRecordData)
+        {
           continue;
+        }
         for (Int32 i = intIndex + 1; i < p_lstOrderedPlugins.Count; i++)
         {
           strPlugin = p_lstOrderedPlugins[i];
           plgPlugin = new Plugin(Path.Combine(Program.GameMode.PluginsPath, strPlugin), false);
           foreach (UInt32 uintFormId in crpBasePlugin.CriticalRecordFormIds)
           {
-            strMasterPlugin = crpBasePlugin.GetMaster((Int32)uintFormId >> 24) ?? strBasePlugin;
+            strMasterPlugin = crpBasePlugin.GetMaster((Int32) uintFormId >> 24) ?? strBasePlugin;
             if (plgPlugin.GetMasterIndex(strMasterPlugin) < 0)
+            {
               continue;
-            uintAdjustedFormId = ((UInt32)plgPlugin.GetMasterIndex(strMasterPlugin) << 24);
+            }
+            uintAdjustedFormId = ((UInt32) plgPlugin.GetMasterIndex(strMasterPlugin) << 24);
             uintAdjustedFormId = uintAdjustedFormId + (uintFormId & 0x00ffffff);
             if (plgPlugin.ContainsFormId(uintAdjustedFormId))
+            {
               OnConflictDetected(crpBasePlugin, plgPlugin, uintFormId, crpBasePlugin.GetCriticalRecordInfo(uintFormId));
+            }
           }
         }
       }

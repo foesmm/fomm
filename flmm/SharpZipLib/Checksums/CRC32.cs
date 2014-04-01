@@ -37,9 +37,8 @@
 
 using System;
 
-namespace ICSharpCode.SharpZipLib.Checksums 
+namespace ICSharpCode.SharpZipLib.Checksums
 {
-  
   /// <summary>
   /// Generate a table for a byte-wise 32-bit CRC calculation on the polynomial:
   /// x^32+x^26+x^23+x^22+x^16+x^12+x^11+x^10+x^8+x^7+x^5+x^4+x^2+x+1.
@@ -64,11 +63,12 @@ namespace ICSharpCode.SharpZipLib.Checksums
   /// the information needed to generate CRC's on data a byte at a time for all
   /// combinations of CRC register values and incoming bytes.
   /// </summary>
-  sealed class Crc32 : IChecksum
+  internal sealed class Crc32 : IChecksum
   {
-    const uint CrcSeed = 0xFFFFFFFF;
-    
-    readonly static uint[] CrcTable = new uint[] {
+    private const uint CrcSeed = 0xFFFFFFFF;
+
+    private static readonly uint[] CrcTable = new uint[]
+    {
       0x00000000, 0x77073096, 0xEE0E612C, 0x990951BA, 0x076DC419,
       0x706AF48F, 0xE963A535, 0x9E6495A3, 0x0EDB8832, 0x79DCB8A4,
       0xE0D5E91E, 0x97D2D988, 0x09B64C2B, 0x7EB17CBD, 0xE7B82D07,
@@ -122,29 +122,31 @@ namespace ICSharpCode.SharpZipLib.Checksums
       0x5D681B02, 0x2A6F2B94, 0xB40BBE37, 0xC30C8EA1, 0x5A05DF1B,
       0x2D02EF8D
     };
-    
+
     /// <summary>
     /// The crc data checksum so far.
     /// </summary>
-    uint crc;
-    
+    private uint crc;
+
     /// <summary>
     /// Returns the CRC32 data checksum computed so far.
     /// </summary>
-    public long Value {
-      get {
-        return (long)crc;
+    public long Value
+    {
+      get
+      {
+        return (long) crc;
       }
     }
-    
+
     /// <summary>
     /// Resets the CRC32 data checksum as if no update was ever called.
     /// </summary>
-    public void Reset() 
-    { 
-      crc = 0; 
+    public void Reset()
+    {
+      crc = 0;
     }
-    
+
     /// <summary>
     /// Updates the checksum with the int bval.
     /// </summary>
@@ -154,10 +156,10 @@ namespace ICSharpCode.SharpZipLib.Checksums
     public void Update(int value)
     {
       crc ^= CrcSeed;
-      crc  = CrcTable[(crc ^ value) & 0xFF] ^ (crc >> 8);
+      crc = CrcTable[(crc ^ value) & 0xFF] ^ (crc >> 8);
       crc ^= CrcSeed;
     }
-    
+
     /// <summary>
     /// Updates the checksum with the bytes taken from the array.
     /// </summary>
@@ -166,13 +168,14 @@ namespace ICSharpCode.SharpZipLib.Checksums
     /// </param>
     public void Update(byte[] buffer)
     {
-      if (buffer == null) {
+      if (buffer == null)
+      {
         throw new ArgumentNullException("buffer");
       }
-      
+
       Update(buffer, 0, buffer.Length);
     }
-    
+
     /// <summary>
     /// Adds the byte array to the data checksum.
     /// </summary>
@@ -187,28 +190,32 @@ namespace ICSharpCode.SharpZipLib.Checksums
     /// </param>
     public void Update(byte[] buffer, int offset, int count)
     {
-      if (buffer == null) {
+      if (buffer == null)
+      {
         throw new ArgumentNullException("buffer");
       }
-      
-      if ( count < 0 ) {
+
+      if (count < 0)
+      {
 #if NETCF_1_0
         throw new ArgumentOutOfRangeException("count");
 #else
         throw new ArgumentOutOfRangeException("count", "Count cannot be less than zero");
-#endif        
+#endif
       }
-      
-      if (offset < 0 || offset + count > buffer.Length) {
+
+      if (offset < 0 || offset + count > buffer.Length)
+      {
         throw new ArgumentOutOfRangeException("offset");
       }
-      
+
       crc ^= CrcSeed;
-      
-      while (--count >= 0) {
+
+      while (--count >= 0)
+      {
         crc = CrcTable[(crc ^ buffer[offset++]) & 0xFF] ^ (crc >> 8);
       }
-      
+
       crc ^= CrcSeed;
     }
   }

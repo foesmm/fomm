@@ -66,7 +66,9 @@ namespace Fomm.Games.Fallout3.PluginFormatProviders
     public PluginFormat GetFormat(string p_strPluginName)
     {
       if (!m_dicFormat.ContainsKey(p_strPluginName))
+      {
         return null;
+      }
       return m_dicFormat[p_strPluginName];
     }
 

@@ -102,7 +102,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
                 if (String.IsNullOrEmpty(x.Name))
                 {
                   if (String.IsNullOrEmpty(y.Name))
+                  {
                     return 0;
+                  }
                   return -1;
                 }
                 return x.Name.CompareTo(y.Name);
@@ -110,10 +112,12 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
                 if (String.IsNullOrEmpty(y.Name))
                 {
                   if (String.IsNullOrEmpty(x.Name))
+                  {
                     return 0;
+                  }
                   return -1;
                 }
-                return y.Name.CompareTo(x.Name);              
+                return y.Name.CompareTo(x.Name);
             }
             return 0;
           });

@@ -33,7 +33,9 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
     private void butChooseMaster_Click(object sender, EventArgs e)
     {
       if (ofdChooseMaster.ShowDialog() == DialogResult.OK)
+      {
         tbxMaster.Text = Path.GetFileName(ofdChooseMaster.FileName);
+      }
     }
   }
 }

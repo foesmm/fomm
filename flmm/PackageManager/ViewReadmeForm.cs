@@ -38,10 +38,12 @@ namespace Fomm.PackageManager
           if (p_rmeReadme.Format == ReadmeFormat.PlainText)
           {
             rtbReadme.Font = new Font(FontFamily.GenericMonospace, rtbReadme.Font.Size, rtbReadme.Font.Style);
-            rtbReadme.Text = p_rmeReadme.Text;            
+            rtbReadme.Text = p_rmeReadme.Text;
           }
           else
+          {
             rtbReadme.Rtf = p_rmeReadme.Text;
+          }
           rtbReadme.Dock = DockStyle.Fill;
           Controls.Add(rtbReadme);
           break;
@@ -69,7 +71,7 @@ namespace Fomm.PackageManager
     /// </remarks>
     /// <param name="sender">The object that trigger the event.</param>
     /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
-    void rtbReadme_LinkClicked(object sender, LinkClickedEventArgs e)
+    private void rtbReadme_LinkClicked(object sender, LinkClickedEventArgs e)
     {
       System.Diagnostics.Process.Start(e.LinkText);
     }
@@ -86,7 +88,7 @@ namespace Fomm.PackageManager
     protected override void OnClosing(CancelEventArgs e)
     {
       Properties.Settings.Default.windowPositions.SetWindowPosition("ReadmeViewer", this);
-      Properties.Settings.Default.Save(); 
+      Properties.Settings.Default.Save();
       base.OnClosing(e);
     }
   }

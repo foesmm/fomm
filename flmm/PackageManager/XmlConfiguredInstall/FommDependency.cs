@@ -46,10 +46,14 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     {
       get
       {
-
         Version verInstalledVersion = m_dsmStateManager.FommVersion;
         if (verInstalledVersion < m_verMinVersion)
-          return String.Format("This mod requires FOMM v{0} or higher. You have {1}. Please update from http://sourceforge.net/projects/fomm", m_verMinVersion, verInstalledVersion);
+        {
+          return
+            String.Format(
+              "This mod requires FOMM v{0} or higher. You have {1}. Please update from http://sourceforge.net/projects/fomm",
+              m_verMinVersion, verInstalledVersion);
+        }
         return "Passed";
       }
     }

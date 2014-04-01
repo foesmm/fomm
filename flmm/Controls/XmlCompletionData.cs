@@ -36,7 +36,9 @@ namespace Fomm.Controls
     /// <param name="p_strName">The name of the selection.</param>
     /// <param name="p_strDescription">The description of the selection.</param>
     public XmlCompletionData(AutoCompleteType p_actType, string p_strName, string p_strDescription)
-      : base(p_strName, p_strDescription, (p_actType == AutoCompleteType.AttributeValues) ? 2 : ((p_actType == AutoCompleteType.Attribute) ? 1 : 0))
+      : base(
+        p_strName, p_strDescription,
+        (p_actType == AutoCompleteType.AttributeValues) ? 2 : ((p_actType == AutoCompleteType.Attribute) ? 1 : 0))
     {
       m_actCompletionType = p_actType;
     }

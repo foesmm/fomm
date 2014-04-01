@@ -3,7 +3,17 @@ using System.Windows.Forms;
 
 namespace Fomm.PackageManager
 {
-  enum OverwriteResult { YesToAll = 1, YesToFolder = 2, Yes = 3, NoToAll = 4, NoToFolder = 5, No = 6, YesToMod = 7, NoToMod = 8 }
+  internal enum OverwriteResult
+  {
+    YesToAll = 1,
+    YesToFolder = 2,
+    Yes = 3,
+    NoToAll = 4,
+    NoToFolder = 5,
+    No = 6,
+    YesToMod = 7,
+    NoToMod = 8
+  }
 
   partial class Overwriteform : Form
   {
@@ -90,9 +100,9 @@ namespace Fomm.PackageManager
 
     private void panel1_Layout(object sender, LayoutEventArgs e)
     {
-      panel6.Width = panel1.Width / 4;
-      panel5.Width = panel1.Width / 4;
-      panel4.Width = panel1.Width / 4;
+      panel6.Width = panel1.Width/4;
+      panel5.Width = panel1.Width/4;
+      panel4.Width = panel1.Width/4;
     }
   }
 }

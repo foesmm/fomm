@@ -61,7 +61,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
         string strValue = null;
         m_dsmStateManager.FlagValues.TryGetValue(FlagName, out strValue);
         if (String.IsNullOrEmpty(Value))
+        {
           return String.IsNullOrEmpty(strValue);
+        }
         return Value.Equals(strValue);
       }
     }
@@ -81,7 +83,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
       get
       {
         if (IsFufilled)
+        {
           return "Passed";
+        }
         return String.Format("Flag '{0}' is not {1}.", FlagName, Value);
       }
     }

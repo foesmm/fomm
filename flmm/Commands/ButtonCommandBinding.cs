@@ -20,7 +20,7 @@ namespace Fomm.Commands
     {
       get
       {
-        return (Button)Trigger;
+        return (Button) Trigger;
       }
     }
 

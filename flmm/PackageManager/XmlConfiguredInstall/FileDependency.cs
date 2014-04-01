@@ -74,9 +74,11 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
         switch (m_mfsState)
         {
           case ModFileState.Active:
-            return (m_dsmStateManager.InstalledPlugins.ContainsKey(m_strFile) && m_dsmStateManager.InstalledPlugins[m_strFile]);
+            return (m_dsmStateManager.InstalledPlugins.ContainsKey(m_strFile) &&
+                    m_dsmStateManager.InstalledPlugins[m_strFile]);
           case ModFileState.Inactive:
-            return (m_dsmStateManager.InstalledPlugins.ContainsKey(m_strFile) && !m_dsmStateManager.InstalledPlugins[m_strFile]);
+            return (m_dsmStateManager.InstalledPlugins.ContainsKey(m_strFile) &&
+                    !m_dsmStateManager.InstalledPlugins[m_strFile]);
           case ModFileState.Missing:
             return (!m_dsmStateManager.InstalledPlugins.ContainsKey(m_strFile));
         }
@@ -99,7 +101,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
       get
       {
         if (IsFufilled)
+        {
           return "Passed";
+        }
         return String.Format("File '{0}' is not {1}.", File, State.ToString());
       }
     }

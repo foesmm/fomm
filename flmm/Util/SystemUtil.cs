@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Fomm.Util
 {
-  class SystemUtil
+  internal class SystemUtil
   {
     public delegate void Action();
   }

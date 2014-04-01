@@ -55,6 +55,7 @@ namespace fomm.Scripting
         this.var = var;
       }
     }
+
     private static Dictionary<string, string> variables;
     private static ModInstaller m_midInstaller = null;
 
@@ -62,13 +63,14 @@ namespace fomm.Scripting
     {
       get
       {
-        return (Fallout3ModInstallScript)m_midInstaller.Script;
+        return (Fallout3ModInstallScript) m_midInstaller.Script;
       }
     }
 
     #region Method Execution
 
     private delegate void GenereicVoidMethodDelegate();
+
     private delegate object GenereicReturnMethodDelegate();
 
     /// <summary>
@@ -94,7 +96,9 @@ namespace fomm.Scripting
       {
         string strError = e.Message;
         if (e.InnerException != null)
+        {
           strError += "\n" + e.InnerException.Message;
+        }
         Warn(strError);
       }
     }
@@ -122,7 +126,9 @@ namespace fomm.Scripting
       {
         string strError = e.Message;
         if (e.InnerException != null)
+        {
           strError += "\n" + e.InnerException.Message;
+        }
         Warn(strError);
       }
       return null;
@@ -131,6 +137,7 @@ namespace fomm.Scripting
     #endregion
 
     private static string cLine = "0";
+
     private static string[] SplitLine(string s)
     {
       List<string> temp = new List<string>();
@@ -142,7 +149,10 @@ namespace fomm.Scripting
       string CurrentWord = "";
       string CurrentVar = "";
 
-      if (s.Length == 0) return new string[0];
+      if (s.Length == 0)
+      {
+        return new string[0];
+      }
       s += " ";
       for (int i = 0; i < s.Length; i++)
       {
@@ -152,8 +162,14 @@ namespace fomm.Scripting
             WasLastSpace = false;
             if (InVar)
             {
-              if (variables.ContainsKey(CurrentWord)) CurrentWord = CurrentVar + variables[CurrentWord];
-              else CurrentWord = CurrentVar + "%" + CurrentWord + "%";
+              if (variables.ContainsKey(CurrentWord))
+              {
+                CurrentWord = CurrentVar + variables[CurrentWord];
+              }
+              else
+              {
+                CurrentWord = CurrentVar + "%" + CurrentWord + "%";
+              }
               CurrentVar = "";
               InVar = false;
             }
@@ -189,11 +205,20 @@ namespace fomm.Scripting
             {
               if (InVar)
               {
-                if (!variables.ContainsKey(CurrentWord)) temp.Add("");
-                else temp.Add(variables[CurrentWord]);
+                if (!variables.ContainsKey(CurrentWord))
+                {
+                  temp.Add("");
+                }
+                else
+                {
+                  temp.Add(variables[CurrentWord]);
+                }
                 InVar = false;
               }
-              else temp.Add(CurrentWord);
+              else
+              {
+                temp.Add(CurrentWord);
+              }
               CurrentWord = "";
               WasLastSpace = true;
             }
@@ -204,7 +229,10 @@ namespace fomm.Scripting
             {
               DoubleBreak = true;
             }
-            else CurrentWord += s[i];
+            else
+            {
+              CurrentWord += s[i];
+            }
             break;
           case '"':
             if (InQuotes && WasLastEscape)
@@ -213,7 +241,10 @@ namespace fomm.Scripting
             }
             else
             {
-              if (InVar) Warn("String marker found in the middle of a variable name");
+              if (InVar)
+              {
+                Warn("String marker found in the middle of a variable name");
+              }
               if (InQuotes)
               {
                 InQuotes = false;
@@ -248,10 +279,19 @@ namespace fomm.Scripting
             CurrentWord += s[i];
             break;
         }
-        if (DoubleBreak) break;
+        if (DoubleBreak)
+        {
+          break;
+        }
       }
-      if (InVar) Warn("Unterminated variable");
-      if (InQuotes) Warn("Unterminated quote");
+      if (InVar)
+      {
+        Warn("Unterminated variable");
+      }
+      if (InQuotes)
+      {
+        Warn("Unterminated quote");
+      }
       return temp.ToArray();
     }
 
@@ -290,7 +330,12 @@ namespace fomm.Scripting
             Warn("Missing arguments to function 'If DataFileExists'");
             return false;
           }
-          return ((string[])ExecuteMethod(() => FileManagement.GetExistingDataFileList(Path.GetDirectoryName(line[2]), Path.GetFileName(line[2]), false))).Length == 1;
+          return
+            ((string[])
+              ExecuteMethod(
+                () =>
+                  FileManagement.GetExistingDataFileList(Path.GetDirectoryName(line[2]), Path.GetFileName(line[2]),
+                                                         false))).Length == 1;
         case "FommNewerThan":
           if (line.Length == 2)
           {
@@ -299,7 +344,8 @@ namespace fomm.Scripting
           }
           try
           {
-            return ((Version)ExecuteMethod(() => m_midInstaller.Script.GetGameVersion())) >= new Version(line[2] + ".0");
+            return ((Version) ExecuteMethod(() => m_midInstaller.Script.GetGameVersion())) >=
+                   new Version(line[2] + ".0");
           }
           catch
           {
@@ -307,19 +353,28 @@ namespace fomm.Scripting
             return false;
           }
         case "ScriptExtenderPresent":
-          if (line.Length > 2) Warn("Unexpected arguments to 'If ScriptExtenderPresent'");
-          return (bool)(ExecuteMethod(() => Script.ScriptExtenderPresent()) ?? false);
+          if (line.Length > 2)
+          {
+            Warn("Unexpected arguments to 'If ScriptExtenderPresent'");
+          }
+          return (bool) (ExecuteMethod(() => Script.ScriptExtenderPresent()) ?? false);
         case "ScriptExtenderNewerThan":
           if (line.Length == 2)
           {
             Warn("Missing arguments to function 'If ScriptExtenderNewerThan'");
             return false;
           }
-          if (line.Length > 3) Warn("Unexpected arguments to 'If ScriptExtenderNewerThan'");
-          if (!(bool)(ExecuteMethod(() => Script.ScriptExtenderPresent()) ?? false)) return false;
+          if (line.Length > 3)
+          {
+            Warn("Unexpected arguments to 'If ScriptExtenderNewerThan'");
+          }
+          if (!(bool) (ExecuteMethod(() => Script.ScriptExtenderPresent()) ?? false))
+          {
+            return false;
+          }
           try
           {
-            return ((Version)ExecuteMethod(() => Script.GetScriptExtenderVersion())) >= new Version(line[2] + ".0");
+            return ((Version) ExecuteMethod(() => Script.GetScriptExtenderVersion())) >= new Version(line[2] + ".0");
           }
           catch
           {
@@ -332,10 +387,13 @@ namespace fomm.Scripting
             Warn("Missing arguments to function 'If FalloutNewerThan'");
             return false;
           }
-          if (line.Length > 3) Warn("Unexpected arguments to 'If FalloutNewerThan'");
+          if (line.Length > 3)
+          {
+            Warn("Unexpected arguments to 'If FalloutNewerThan'");
+          }
           try
           {
-            return ((Version)ExecuteMethod(() => Script.GetGameVersion())) >= new Version(line[2] + ".0");
+            return ((Version) ExecuteMethod(() => Script.GetGameVersion())) >= new Version(line[2] + ".0");
           }
           catch
           {
@@ -348,49 +406,69 @@ namespace fomm.Scripting
             Warn("Missing arguments to function 'If Equal'");
             return false;
           }
-          if (line.Length > 4) Warn("Unexpected arguments to 'If Equal'");
+          if (line.Length > 4)
+          {
+            Warn("Unexpected arguments to 'If Equal'");
+          }
           return line[2] == line[3];
         case "GreaterEqual":
         case "GreaterThan":
+        {
+          if (line.Length < 4)
           {
-            if (line.Length < 4)
-            {
-              Warn("Missing arguments to function 'If Greater'");
-              return false;
-            }
-            if (line.Length > 4) Warn("Unexpected arguments to 'If Greater'");
-            int arg1, arg2;
-            if (!int.TryParse(line[2], out arg1) || !int.TryParse(line[3], out arg2))
-            {
-              Warn("Invalid argument upplied to function 'If Greater'");
-              return false;
-            }
-            if (line[1] == "GreaterEqual") return arg1 >= arg2;
-            else return arg1 > arg2;
+            Warn("Missing arguments to function 'If Greater'");
+            return false;
           }
+          if (line.Length > 4)
+          {
+            Warn("Unexpected arguments to 'If Greater'");
+          }
+          int arg1, arg2;
+          if (!int.TryParse(line[2], out arg1) || !int.TryParse(line[3], out arg2))
+          {
+            Warn("Invalid argument upplied to function 'If Greater'");
+            return false;
+          }
+          if (line[1] == "GreaterEqual")
+          {
+            return arg1 >= arg2;
+          }
+          else
+          {
+            return arg1 > arg2;
+          }
+        }
         case "fGreaterEqual":
         case "fGreaterThan":
+        {
+          if (line.Length < 4)
           {
-            if (line.Length < 4)
-            {
-              Warn("Missing arguments to function 'If fGreater'");
-              return false;
-            }
-            if (line.Length > 4) Warn("Unexpected arguments to 'If fGreater'");
-            double arg1, arg2;
-            if (!double.TryParse(line[2], out arg1) || !double.TryParse(line[3], out arg2))
-            {
-              Warn("Invalid argument upplied to function 'If fGreater'");
-              return false;
-            }
-            if (line[1] == "fGreaterEqual") return arg1 >= arg2;
-            else return arg1 > arg2;
+            Warn("Missing arguments to function 'If fGreater'");
+            return false;
           }
+          if (line.Length > 4)
+          {
+            Warn("Unexpected arguments to 'If fGreater'");
+          }
+          double arg1, arg2;
+          if (!double.TryParse(line[2], out arg1) || !double.TryParse(line[3], out arg2))
+          {
+            Warn("Invalid argument upplied to function 'If fGreater'");
+            return false;
+          }
+          if (line[1] == "fGreaterEqual")
+          {
+            return arg1 >= arg2;
+          }
+          else
+          {
+            return arg1 > arg2;
+          }
+        }
         default:
           Warn("Unknown argument '" + line[1] + "' supplied to 'If'");
           return false;
       }
-
     }
 
     private static string[] FunctionSelect(string[] line, bool many, bool Previews, bool Descriptions)
@@ -411,26 +489,32 @@ namespace fomm.Scripting
       Array.Copy(line, 2, items, 0, line.Length - 2);
       line = items;
       //Check for incorrect number of arguments
-      if (line.Length % argsperoption != 0)
+      if (line.Length%argsperoption != 0)
       {
         Warn("Unexpected extra arguments to 'Select'");
-        Array.Resize<string>(ref line, line.Length - line.Length % argsperoption);
+        Array.Resize<string>(ref line, line.Length - line.Length%argsperoption);
       }
       //Create arrays to pass to the select form
-      items = new string[line.Length / argsperoption];
-      previews = Previews ? new string[line.Length / argsperoption] : null;
-      descs = Descriptions ? new string[line.Length / argsperoption] : null;
-      for (int i = 0; i < line.Length / argsperoption; i++)
+      items = new string[line.Length/argsperoption];
+      previews = Previews ? new string[line.Length/argsperoption] : null;
+      descs = Descriptions ? new string[line.Length/argsperoption] : null;
+      for (int i = 0; i < line.Length/argsperoption; i++)
       {
-        items[i] = line[i * argsperoption];
+        items[i] = line[i*argsperoption];
         if (Previews)
         {
-          previews[i] = line[i * argsperoption + 1];
-          if (Descriptions) descs[i] = line[i * argsperoption + 2];
+          previews[i] = line[i*argsperoption + 1];
+          if (Descriptions)
+          {
+            descs[i] = line[i*argsperoption + 2];
+          }
         }
         else
         {
-          if (Descriptions) descs[i] = line[i * argsperoption + 1];
+          if (Descriptions)
+          {
+            descs[i] = line[i*argsperoption + 1];
+          }
         }
       }
       //Check for previews
@@ -445,7 +529,7 @@ namespace fomm.Scripting
         }
       }
       //Display select form
-      int[] indices = (int[])ExecuteMethod(() => m_midInstaller.Script.Select(items, previews, descs, title, many));
+      int[] indices = (int[]) ExecuteMethod(() => m_midInstaller.Script.Select(items, previews, descs, title, many));
       string[] result = new string[indices.Length];
       for (int i = 0; i < indices.Length; i++)
       {
@@ -457,13 +541,23 @@ namespace fomm.Scripting
     private static string[] FunctionSelectVar(string[] line, bool IsVariable)
     {
       string Func;
-      if (IsVariable) Func = " to function 'SelectVar'"; else Func = "to function 'SelectString'";
+      if (IsVariable)
+      {
+        Func = " to function 'SelectVar'";
+      }
+      else
+      {
+        Func = "to function 'SelectString'";
+      }
       if (line.Length < 2)
       {
         Warn("Missing arguments" + Func);
         return new string[0];
       }
-      if (line.Length > 2) Warn("Unexpected arguments" + Func);
+      if (line.Length > 2)
+      {
+        Warn("Unexpected arguments" + Func);
+      }
       if (IsVariable)
       {
         if (!variables.ContainsKey(line[1]))
@@ -471,11 +565,20 @@ namespace fomm.Scripting
           Warn("Invalid argument" + Func + "\nVariable '" + line[1] + "' does not exist");
           return new string[0];
         }
-        else return new string[] { "Case " + variables[line[1]] };
+        else
+        {
+          return new string[]
+          {
+            "Case " + variables[line[1]]
+          };
+        }
       }
       else
       {
-        return new string[] { "Case " + line[1] };
+        return new string[]
+        {
+          "Case " + line[1]
+        };
       }
     }
 
@@ -487,51 +590,66 @@ namespace fomm.Scripting
         Warn("Missing arguments to function 'For'");
         return NullLoop;
       }
-      if (line[1] == "Each") line[1] = line[2];
+      if (line[1] == "Each")
+      {
+        line[1] = line[2];
+      }
       switch (line[1])
       {
         case "Count":
+        {
+          if (line.Length < 5)
           {
-            if (line.Length < 5)
-            {
-              Warn("Missing arguments to function 'For Count'");
-              return NullLoop;
-            }
-            if (line.Length > 6) Warn("Unexpected extra arguments to 'For Count'");
-            int start, end, step = 1;
-            if (!int.TryParse(line[3], out start) || !int.TryParse(line[4], out end) || (line.Length >= 6 && !int.TryParse(line[5], out step)))
-            {
-              Warn("Invalid argument to 'For Count'");
-              return NullLoop;
-            }
-            List<string> steps = new List<string>();
-            for (int i = start; i <= end; i += step)
-            {
-              steps.Add(i.ToString());
-            }
-            return new FlowControlStruct(steps.ToArray(), line[2], LineNo);
+            Warn("Missing arguments to function 'For Count'");
+            return NullLoop;
           }
+          if (line.Length > 6)
+          {
+            Warn("Unexpected extra arguments to 'For Count'");
+          }
+          int start, end, step = 1;
+          if (!int.TryParse(line[3], out start) || !int.TryParse(line[4], out end) ||
+              (line.Length >= 6 && !int.TryParse(line[5], out step)))
+          {
+            Warn("Invalid argument to 'For Count'");
+            return NullLoop;
+          }
+          List<string> steps = new List<string>();
+          for (int i = start; i <= end; i += step)
+          {
+            steps.Add(i.ToString());
+          }
+          return new FlowControlStruct(steps.ToArray(), line[2], LineNo);
+        }
         case "DataFile":
+        {
+          if (line.Length < 4)
           {
-            if (line.Length < 4)
-            {
-              Warn("Missing arguments to function 'For Each DataFile'");
-              return NullLoop;
-            }
-            if (line.Length > 4) Warn("Unexpected extra arguments to 'For Each DataFile'");
-
-            string[] strFiles = (string[])ExecuteMethod(() => m_midInstaller.Fomod.GetFileList().ToArray());
-            for (Int32 i = strFiles.Length - 1; i >= 0; i--)
-              strFiles[i] = strFiles[i].Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-            return new FlowControlStruct(strFiles, line[3], LineNo);
+            Warn("Missing arguments to function 'For Each DataFile'");
+            return NullLoop;
           }
+          if (line.Length > 4)
+          {
+            Warn("Unexpected extra arguments to 'For Each DataFile'");
+          }
+
+          string[] strFiles = (string[]) ExecuteMethod(() => m_midInstaller.Fomod.GetFileList().ToArray());
+          for (Int32 i = strFiles.Length - 1; i >= 0; i--)
+          {
+            strFiles[i] = strFiles[i].Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+          }
+          return new FlowControlStruct(strFiles, line[3], LineNo);
+        }
       }
       return NullLoop;
     }
 
     private static void FunctionPerformBasicInstall(string[] line)
     {
-      if (line.Length > 1) Warn("Unexpected extra arguments to function PerformBasicInstall");
+      if (line.Length > 1)
+      {
+        Warn("Unexpected extra arguments to function PerformBasicInstall");
+      }
       Fallout3BaseScript.PerformBasicInstall();
     }
 
@@ -561,7 +679,10 @@ namespace fomm.Scripting
         Warn("Missing arguments to InstallDataFile");
         return;
       }
-      if (line.Length > 2) Warn("Unexpected arguments after InstallDataFile");
+      if (line.Length > 2)
+      {
+        Warn("Unexpected arguments after InstallDataFile");
+      }
       ExecuteMethod(() => Script.InstallFileFromFomod(line[1]));
     }
 
@@ -589,15 +710,32 @@ namespace fomm.Scripting
         Warn("Missing arguments to function SetPluginActivation");
         return;
       }
-      if (line.Length > 3) Warn("Unexpected extra arguments to function SetPluginActivation");
+      if (line.Length > 3)
+      {
+        Warn("Unexpected extra arguments to function SetPluginActivation");
+      }
       if (line[2] == "True")
+      {
         ExecuteMethod(() => Script.SetPluginActivation(line[1], true));
+      }
       else if (line[2] == "False")
+      {
         ExecuteMethod(() => Script.SetPluginActivation(line[1], false));
-      else Warn("Expected 'True' or 'False', but got '" + line[2] + "'");
+      }
+      else
+      {
+        Warn("Expected 'True' or 'False', but got '" + line[2] + "'");
+      }
     }
 
-    private enum IniType { Fallout, FalloutPrefs, Geck, GeckPrefs }
+    private enum IniType
+    {
+      Fallout,
+      FalloutPrefs,
+      Geck,
+      GeckPrefs
+    }
+
     private static void FunctionEditINI(string[] line, IniType type)
     {
       if (line.Length < 4)
@@ -605,7 +743,10 @@ namespace fomm.Scripting
         Warn("Missing arguments to EditINI");
         return;
       }
-      if (line.Length > 4) Warn("Unexpected arguments to EditINI");
+      if (line.Length > 4)
+      {
+        Warn("Unexpected arguments to EditINI");
+      }
       switch (type)
       {
         case IniType.Fallout:
@@ -630,14 +771,17 @@ namespace fomm.Scripting
         Warn("Missing arguments to 'EditShader'");
         return;
       }
-      if (line.Length > 4) Warn("Unexpected arguments to 'EditShader'");
+      if (line.Length > 4)
+      {
+        Warn("Unexpected arguments to 'EditShader'");
+      }
       int package;
       if (!int.TryParse(line[1], out package))
       {
         Warn("Invalid argument to function 'EditShader'\n'" + line[1] + "' is not a valid shader package ID");
         return;
       }
-      byte[] bteData = (byte[])ExecuteMethod(() => m_midInstaller.Fomod.GetFile(line[3]));
+      byte[] bteData = (byte[]) ExecuteMethod(() => m_midInstaller.Fomod.GetFile(line[3]));
       ExecuteMethod(() => Script.EditShader(package, line[2], bteData));
     }
 
@@ -648,7 +792,10 @@ namespace fomm.Scripting
         Warn("Missing arguments to function SetVar");
         return;
       }
-      if (line.Length > 3) Warn("Unexpected extra arguments to function SetVar");
+      if (line.Length > 3)
+      {
+        Warn("Unexpected extra arguments to function SetVar");
+      }
       variables[line[1]] = line[2];
     }
 
@@ -659,7 +806,10 @@ namespace fomm.Scripting
         Warn("Missing arguments to GetDirectoryName");
         return;
       }
-      if (line.Length > 3) Warn("Unexpected arguments to GetDirectoryName");
+      if (line.Length > 3)
+      {
+        Warn("Unexpected arguments to GetDirectoryName");
+      }
       try
       {
         variables[line[1]] = Path.GetDirectoryName(line[2]);
@@ -677,7 +827,10 @@ namespace fomm.Scripting
         Warn("Missing arguments to GetFileName");
         return;
       }
-      if (line.Length > 3) Warn("Unexpected arguments to GetFileName");
+      if (line.Length > 3)
+      {
+        Warn("Unexpected arguments to GetFileName");
+      }
       try
       {
         variables[line[1]] = Path.GetFileName(line[2]);
@@ -695,7 +848,10 @@ namespace fomm.Scripting
         Warn("Missing arguments to GetFileNameWithoutExtension");
         return;
       }
-      if (line.Length > 3) Warn("Unexpected arguments to GetFileNameWithoutExtension");
+      if (line.Length > 3)
+      {
+        Warn("Unexpected arguments to GetFileNameWithoutExtension");
+      }
       try
       {
         variables[line[1]] = Path.GetFileNameWithoutExtension(line[2]);
@@ -713,7 +869,10 @@ namespace fomm.Scripting
         Warn("Missing arguments to CombinePaths");
         return;
       }
-      if (line.Length > 4) Warn("Unexpected arguments to CombinePaths");
+      if (line.Length > 4)
+      {
+        Warn("Unexpected arguments to CombinePaths");
+      }
       try
       {
         variables[line[1]] = Path.Combine(line[2], line[3]);
@@ -731,7 +890,10 @@ namespace fomm.Scripting
         Warn("Missing arguments to Substring");
         return;
       }
-      if (line.Length > 5) Warn("Unexpected extra arguments to Substring");
+      if (line.Length > 5)
+      {
+        Warn("Unexpected extra arguments to Substring");
+      }
       if (line.Length == 4)
       {
         int start;
@@ -761,7 +923,10 @@ namespace fomm.Scripting
         Warn("Missing arguments to RemoveString");
         return;
       }
-      if (line.Length > 5) Warn("Unexpected extra arguments to RemoveString");
+      if (line.Length > 5)
+      {
+        Warn("Unexpected extra arguments to RemoveString");
+      }
       if (line.Length == 4)
       {
         int start;
@@ -791,7 +956,10 @@ namespace fomm.Scripting
         Warn("Missing arguments to StringLength");
         return;
       }
-      if (line.Length > 3) Warn("Unexpected extra arguments to StringLength");
+      if (line.Length > 3)
+      {
+        Warn("Unexpected extra arguments to StringLength");
+      }
       variables[line[1]] = line[2].Length.ToString();
     }
 
@@ -802,20 +970,23 @@ namespace fomm.Scripting
         Warn("Missing arguments to function ReadINI");
         return;
       }
-      if (line.Length > 4) Warn("Unexpected extra arguments to function ReadINI");
+      if (line.Length > 4)
+      {
+        Warn("Unexpected extra arguments to function ReadINI");
+      }
       switch (type)
       {
         case IniType.Fallout:
-          variables[line[1]] = (string)ExecuteMethod(() => Script.GetFalloutIniString(line[2], line[3]));
+          variables[line[1]] = (string) ExecuteMethod(() => Script.GetFalloutIniString(line[2], line[3]));
           break;
         case IniType.FalloutPrefs:
-          variables[line[1]] = (string)ExecuteMethod(() => Script.GetPrefsIniString(line[2], line[3]));
+          variables[line[1]] = (string) ExecuteMethod(() => Script.GetPrefsIniString(line[2], line[3]));
           break;
         case IniType.Geck:
-          variables[line[1]] = (string)ExecuteMethod(() => Script.GetGeckIniString(line[2], line[3]));
+          variables[line[1]] = (string) ExecuteMethod(() => Script.GetGeckIniString(line[2], line[3]));
           break;
         case IniType.GeckPrefs:
-          variables[line[1]] = (string)ExecuteMethod(() => Script.GetGeckPrefsIniString(line[2], line[3]));
+          variables[line[1]] = (string) ExecuteMethod(() => Script.GetGeckPrefsIniString(line[2], line[3]));
           break;
       }
     }
@@ -827,8 +998,11 @@ namespace fomm.Scripting
         Warn("Missing arguments to function 'ReadRendererInfo'");
         return;
       }
-      if (line.Length > 3) Warn("Unexpected extra arguments to function 'ReadRendererInfo'");
-      variables[line[1]] = (string)ExecuteMethod(() => Script.GetRendererInfo(line[2]));
+      if (line.Length > 3)
+      {
+        Warn("Unexpected extra arguments to function 'ReadRendererInfo'");
+      }
+      variables[line[1]] = (string) ExecuteMethod(() => Script.GetRendererInfo(line[2]));
     }
 
     private static void FunctionExecLines(string[] line, Queue<string> queue)
@@ -838,16 +1012,37 @@ namespace fomm.Scripting
         Warn("Missing arguments to function 'ExecLines'");
         return;
       }
-      if (line.Length > 2) Warn("Unexpected extra arguments to function 'ExecLines'");
-      string[] lines = line[1].Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
-      foreach (string s in lines) queue.Enqueue(s);
+      if (line.Length > 2)
+      {
+        Warn("Unexpected extra arguments to function 'ExecLines'");
+      }
+      string[] lines = line[1].Split(new string[]
+      {
+        Environment.NewLine
+      }, StringSplitOptions.RemoveEmptyEntries);
+      foreach (string s in lines)
+      {
+        queue.Enqueue(s);
+      }
     }
 
-    private class SetException : Exception { public SetException(string msg) : base(msg) { } }
+    private class SetException : Exception
+    {
+      public SetException(string msg) : base(msg)
+      {
+      }
+    }
+
     private static int iSet(List<string> func)
     {
-      if (func.Count == 0) throw new SetException("Empty iSet");
-      if (func.Count == 1) return int.Parse(func[0]);
+      if (func.Count == 0)
+      {
+        throw new SetException("Empty iSet");
+      }
+      if (func.Count == 1)
+      {
+        return int.Parse(func[0]);
+      }
       //check for brackets
       int index;
 
@@ -858,17 +1053,29 @@ namespace fomm.Scripting
         List<string> newfunc = new List<string>();
         for (int i = index + 1; i < func.Count; i++)
         {
-          if (func[i] == "(") count++;
-          else if (func[i] == ")") count--;
+          if (func[i] == "(")
+          {
+            count++;
+          }
+          else if (func[i] == ")")
+          {
+            count--;
+          }
           if (count == 0)
           {
             func.RemoveRange(index, (i - index) + 1);
             func.Insert(index, iSet(newfunc).ToString());
             break;
           }
-          else newfunc.Add(func[i]);
+          else
+          {
+            newfunc.Add(func[i]);
+          }
         }
-        if (count != 0) throw new SetException("Mismatched brackets");
+        if (count != 0)
+        {
+          throw new SetException("Mismatched brackets");
+        }
         index = func.IndexOf("(");
       }
 
@@ -917,7 +1124,7 @@ namespace fomm.Scripting
       index = func.IndexOf("mod");
       while (index != -1)
       {
-        int i = int.Parse(func[index - 1]) % int.Parse(func[index + 1]);
+        int i = int.Parse(func[index - 1])%int.Parse(func[index + 1]);
         func[index + 1] = i.ToString();
         func.RemoveRange(index - 1, 2);
         index = func.IndexOf("mod");
@@ -927,7 +1134,7 @@ namespace fomm.Scripting
       index = func.IndexOf("%");
       while (index != -1)
       {
-        int i = int.Parse(func[index - 1]) % int.Parse(func[index + 1]);
+        int i = int.Parse(func[index - 1])%int.Parse(func[index + 1]);
         func[index + 1] = i.ToString();
         func.RemoveRange(index - 1, 2);
         index = func.IndexOf("%");
@@ -937,7 +1144,7 @@ namespace fomm.Scripting
       index = func.IndexOf("^");
       while (index != -1)
       {
-        int i = (int)Math.Pow(int.Parse(func[index - 1]), int.Parse(func[index + 1]));
+        int i = (int) Math.Pow(int.Parse(func[index - 1]), int.Parse(func[index + 1]));
         func[index + 1] = i.ToString();
         func.RemoveRange(index - 1, 2);
         index = func.IndexOf("^");
@@ -947,7 +1154,7 @@ namespace fomm.Scripting
       index = func.IndexOf("/");
       while (index != -1)
       {
-        int i = int.Parse(func[index - 1]) / int.Parse(func[index + 1]);
+        int i = int.Parse(func[index - 1])/int.Parse(func[index + 1]);
         func[index + 1] = i.ToString();
         func.RemoveRange(index - 1, 2);
         index = func.IndexOf("/");
@@ -957,7 +1164,7 @@ namespace fomm.Scripting
       index = func.IndexOf("*");
       while (index != -1)
       {
-        int i = int.Parse(func[index - 1]) * int.Parse(func[index + 1]);
+        int i = int.Parse(func[index - 1])*int.Parse(func[index + 1]);
         func[index + 1] = i.ToString();
         func.RemoveRange(index - 1, 2);
         index = func.IndexOf("*");
@@ -983,13 +1190,23 @@ namespace fomm.Scripting
         index = func.IndexOf("-");
       }
 
-      if (func.Count != 1) throw new SetException("leftovers in function");
+      if (func.Count != 1)
+      {
+        throw new SetException("leftovers in function");
+      }
       return int.Parse(func[0]);
     }
+
     private static double fSet(List<string> func)
     {
-      if (func.Count == 0) throw new SetException("Empty fSet");
-      if (func.Count == 1) return int.Parse(func[0]);
+      if (func.Count == 0)
+      {
+        throw new SetException("Empty fSet");
+      }
+      if (func.Count == 1)
+      {
+        return int.Parse(func[0]);
+      }
       //check for brackets
       int index;
 
@@ -1000,17 +1217,29 @@ namespace fomm.Scripting
         List<string> newfunc = new List<string>();
         for (int i = index; i < func.Count; i++)
         {
-          if (func[i] == "(") count++;
-          else if (func[i] == ")") count--;
+          if (func[i] == "(")
+          {
+            count++;
+          }
+          else if (func[i] == ")")
+          {
+            count--;
+          }
           if (count == 0)
           {
             func.RemoveRange(index, i - index);
             func.Insert(index, fSet(newfunc).ToString());
             break;
           }
-          else newfunc.Add(func[i]);
+          else
+          {
+            newfunc.Add(func[i]);
+          }
         }
-        if (count != 0) throw new SetException("Mismatched brackets");
+        if (count != 0)
+        {
+          throw new SetException("Mismatched brackets");
+        }
         index = func.IndexOf("(");
       }
 
@@ -1099,7 +1328,7 @@ namespace fomm.Scripting
       index = func.IndexOf("mod");
       while (index != -1)
       {
-        double i = double.Parse(func[index - 1]) % double.Parse(func[index + 1]);
+        double i = double.Parse(func[index - 1])%double.Parse(func[index + 1]);
         func[index + 1] = i.ToString();
         func.RemoveRange(index - 1, 2);
         index = func.IndexOf("mod");
@@ -1109,7 +1338,7 @@ namespace fomm.Scripting
       index = func.IndexOf("%");
       while (index != -1)
       {
-        double i = double.Parse(func[index - 1]) % double.Parse(func[index + 1]);
+        double i = double.Parse(func[index - 1])%double.Parse(func[index + 1]);
         func[index + 1] = i.ToString();
         func.RemoveRange(index - 1, 2);
         index = func.IndexOf("%");
@@ -1129,7 +1358,7 @@ namespace fomm.Scripting
       index = func.IndexOf("/");
       while (index != -1)
       {
-        double i = double.Parse(func[index - 1]) / double.Parse(func[index + 1]);
+        double i = double.Parse(func[index - 1])/double.Parse(func[index + 1]);
         func[index + 1] = i.ToString();
         func.RemoveRange(index - 1, 2);
         index = func.IndexOf("/");
@@ -1139,7 +1368,7 @@ namespace fomm.Scripting
       index = func.IndexOf("*");
       while (index != -1)
       {
-        double i = double.Parse(func[index - 1]) * double.Parse(func[index + 1]);
+        double i = double.Parse(func[index - 1])*double.Parse(func[index + 1]);
         func[index + 1] = i.ToString();
         func.RemoveRange(index - 1, 2);
         index = func.IndexOf("*");
@@ -1165,9 +1394,13 @@ namespace fomm.Scripting
         index = func.IndexOf("-");
       }
 
-      if (func.Count != 1) throw new SetException("leftovers in function");
+      if (func.Count != 1)
+      {
+        throw new SetException("leftovers in function");
+      }
       return double.Parse(func[0]);
     }
+
     private static void FunctionSet(string[] line, bool integer)
     {
       if (line.Length < 3)
@@ -1176,7 +1409,10 @@ namespace fomm.Scripting
         return;
       }
       List<string> func = new List<string>();
-      for (int i = 2; i < line.Length; i++) func.Add(line[i]);
+      for (int i = 2; i < line.Length; i++)
+      {
+        func.Add(line[i]);
+      }
       string result;
       try
       {
@@ -1187,7 +1423,7 @@ namespace fomm.Scripting
         }
         else
         {
-          float f = (float)fSet(func);
+          float f = (float) fSet(func);
           result = f.ToString();
         }
         variables[line[1]] = result;
@@ -1234,19 +1470,34 @@ namespace fomm.Scripting
           }
           else
           {
-            if (++i == script.Length) Warn("Run-on line passed end of script");
-            else s += script[i].Replace('\t', ' ').Trim();
+            if (++i == script.Length)
+            {
+              Warn("Run-on line passed end of script");
+            }
+            else
+            {
+              s += script[i].Replace('\t', ' ').Trim();
+            }
           }
         }
 
         if (SkipTo != null)
         {
-          if (s == SkipTo) SkipTo = null;
-          else continue;
+          if (s == SkipTo)
+          {
+            SkipTo = null;
+          }
+          else
+          {
+            continue;
+          }
         }
 
         line = SplitLine(s);
-        if (line.Length == 0) continue;
+        if (line.Length == 0)
+        {
+          continue;
+        }
 
         if (FlowControl.Count != 0 && !FlowControl.Peek().active)
         {
@@ -1264,11 +1515,20 @@ namespace fomm.Scripting
               {
                 FlowControl.Peek().active = FlowControl.Peek().line != -1;
               }
-              else Warn("Unexpected Else");
+              else
+              {
+                Warn("Unexpected Else");
+              }
               break;
             case "EndIf":
-              if (FlowControl.Count != 0 && FlowControl.Peek().type == 0) FlowControl.Pop();
-              else Warn("Unexpected EndIf");
+              if (FlowControl.Count != 0 && FlowControl.Peek().type == 0)
+              {
+                FlowControl.Pop();
+              }
+              else
+              {
+                Warn("Unexpected EndIf");
+              }
               break;
             case "Select":
             case "SelectMany":
@@ -1291,25 +1551,46 @@ namespace fomm.Scripting
                   FlowControl.Peek().hitCase = true;
                 }
               }
-              else Warn("Unexpected Break");
+              else
+              {
+                Warn("Unexpected Break");
+              }
               break;
             case "Default":
               if (FlowControl.Count != 0 && FlowControl.Peek().type == 1)
               {
-                if (FlowControl.Peek().line != -1 && !FlowControl.Peek().hitCase) FlowControl.Peek().active = true;
+                if (FlowControl.Peek().line != -1 && !FlowControl.Peek().hitCase)
+                {
+                  FlowControl.Peek().active = true;
+                }
               }
-              else Warn("Unexpected Default");
+              else
+              {
+                Warn("Unexpected Default");
+              }
               break;
             case "EndSelect":
-              if (FlowControl.Count != 0 && FlowControl.Peek().type == 1) FlowControl.Pop();
-              else Warn("Unexpected EndSelect");
+              if (FlowControl.Count != 0 && FlowControl.Peek().type == 1)
+              {
+                FlowControl.Pop();
+              }
+              else
+              {
+                Warn("Unexpected EndSelect");
+              }
               break;
             case "For":
               FlowControl.Push(new FlowControlStruct(2));
               break;
             case "EndFor":
-              if (FlowControl.Count != 0 && FlowControl.Peek().type == 2) FlowControl.Pop();
-              else Warn("Unexpected EndFor");
+              if (FlowControl.Count != 0 && FlowControl.Peek().type == 2)
+              {
+                FlowControl.Pop();
+              }
+              else
+              {
+                Warn("Unexpected EndFor");
+              }
               break;
             case "Break":
             case "Continue":
@@ -1324,7 +1605,7 @@ namespace fomm.Scripting
             case "":
               Warn("Empty function");
               break;
-            //Control structures
+              //Control structures
             case "Goto":
               if (line.Length < 2)
               {
@@ -1332,7 +1613,10 @@ namespace fomm.Scripting
               }
               else
               {
-                if (line.Length > 2) Warn("Unexpected extra arguments to function 'Goto'");
+                if (line.Length > 2)
+                {
+                  Warn("Unexpected extra arguments to function 'Goto'");
+                }
                 SkipTo = "Label " + line[1];
                 FlowControl.Clear();
               }
@@ -1346,12 +1630,24 @@ namespace fomm.Scripting
               FlowControl.Push(new FlowControlStruct(i, !FunctionIf(line)));
               break;
             case "Else":
-              if (FlowControl.Count != 0 && FlowControl.Peek().type == 0) FlowControl.Peek().active = false;
-              else Warn("Unexpected Else");
+              if (FlowControl.Count != 0 && FlowControl.Peek().type == 0)
+              {
+                FlowControl.Peek().active = false;
+              }
+              else
+              {
+                Warn("Unexpected Else");
+              }
               break;
             case "EndIf":
-              if (FlowControl.Count != 0 && FlowControl.Peek().type == 0) FlowControl.Pop();
-              else Warn("Unexpected EndIf");
+              if (FlowControl.Count != 0 && FlowControl.Peek().type == 0)
+              {
+                FlowControl.Pop();
+              }
+              else
+              {
+                Warn("Unexpected EndIf");
+              }
               break;
             case "Select":
               FlowControl.Push(new FlowControlStruct(i, FunctionSelect(line, false, false, false)));
@@ -1384,99 +1680,138 @@ namespace fomm.Scripting
               FlowControl.Push(new FlowControlStruct(i, FunctionSelectVar(line, false)));
               break;
             case "Break":
+            {
+              bool found = false;
+              FlowControlStruct[] fcs = FlowControl.ToArray();
+              for (int k = 0; k < fcs.Length; k++)
               {
-                bool found = false;
-                FlowControlStruct[] fcs = FlowControl.ToArray();
-                for (int k = 0; k < fcs.Length; k++)
+                if (fcs[k].type == 1)
                 {
-                  if (fcs[k].type == 1)
+                  for (int j = 0; j <= k; j++)
                   {
-                    for (int j = 0; j <= k; j++) fcs[j].active = false;
-                    found = true;
-                    break;
+                    fcs[j].active = false;
                   }
+                  found = true;
+                  break;
                 }
-                if (!found) Warn("Unexpected Break");
-                break;
               }
+              if (!found)
+              {
+                Warn("Unexpected Break");
+              }
+              break;
+            }
             case "Case":
-              if (FlowControl.Count == 0 || FlowControl.Peek().type != 1) Warn("Unexpected Case");
+              if (FlowControl.Count == 0 || FlowControl.Peek().type != 1)
+              {
+                Warn("Unexpected Case");
+              }
               break;
             case "Default":
-              if (FlowControl.Count == 0 || FlowControl.Peek().type != 1) Warn("Unexpected Default");
+              if (FlowControl.Count == 0 || FlowControl.Peek().type != 1)
+              {
+                Warn("Unexpected Default");
+              }
               break;
             case "EndSelect":
-              if (FlowControl.Count != 0 && FlowControl.Peek().type == 1) FlowControl.Pop();
-              else Warn("Unexpected EndSelect");
+              if (FlowControl.Count != 0 && FlowControl.Peek().type == 1)
+              {
+                FlowControl.Pop();
+              }
+              else
+              {
+                Warn("Unexpected EndSelect");
+              }
               break;
             case "For":
+            {
+              FlowControlStruct fc = FunctionFor(line, i);
+              FlowControl.Push(fc);
+              if (fc.line != -1 && fc.values.Length > 0)
               {
-                FlowControlStruct fc = FunctionFor(line, i);
-                FlowControl.Push(fc);
-                if (fc.line != -1 && fc.values.Length > 0)
-                {
-                  variables[fc.var] = fc.values[0];
-                  fc.active = true;
-                }
-                break;
+                variables[fc.var] = fc.values[0];
+                fc.active = true;
               }
+              break;
+            }
             case "Continue":
+            {
+              bool found = false;
+              FlowControlStruct[] fcs = FlowControl.ToArray();
+              for (int k = 0; k < fcs.Length; k++)
               {
-                bool found = false;
-                FlowControlStruct[] fcs = FlowControl.ToArray();
-                for (int k = 0; k < fcs.Length; k++)
+                if (fcs[k].type == 2)
                 {
-                  if (fcs[k].type == 2)
+                  fcs[k].forCount++;
+                  if (fcs[k].forCount == fcs[k].values.Length)
                   {
-                    fcs[k].forCount++;
-                    if (fcs[k].forCount == fcs[k].values.Length)
+                    for (int j = 0; j <= k; j++)
                     {
-                      for (int j = 0; j <= k; j++) fcs[j].active = false;
+                      fcs[j].active = false;
                     }
-                    else
-                    {
-                      i = fcs[k].line;
-                      variables[fcs[k].var] = fcs[k].values[fcs[k].forCount];
-                      for (int j = 0; j < k; j++) FlowControl.Pop();
-                    }
-                    found = true;
-                    break;
                   }
+                  else
+                  {
+                    i = fcs[k].line;
+                    variables[fcs[k].var] = fcs[k].values[fcs[k].forCount];
+                    for (int j = 0; j < k; j++)
+                    {
+                      FlowControl.Pop();
+                    }
+                  }
+                  found = true;
+                  break;
                 }
-                if (!found) Warn("Unexpected Continue");
-                break;
               }
+              if (!found)
+              {
+                Warn("Unexpected Continue");
+              }
+              break;
+            }
             case "Exit":
+            {
+              bool found = false;
+              FlowControlStruct[] fcs = FlowControl.ToArray();
+              for (int k = 0; k < fcs.Length; k++)
               {
-                bool found = false;
-                FlowControlStruct[] fcs = FlowControl.ToArray();
-                for (int k = 0; k < fcs.Length; k++)
+                if (fcs[k].type == 2)
                 {
-                  if (fcs[k].type == 2)
+                  for (int j = 0; j <= k; j++)
                   {
-                    for (int j = 0; j <= k; j++) FlowControl.Peek().active = false;
-                    found = true;
-                    break;
+                    FlowControl.Peek().active = false;
                   }
+                  found = true;
+                  break;
                 }
-                if (!found) Warn("Unexpected Exit");
-                break;
               }
+              if (!found)
+              {
+                Warn("Unexpected Exit");
+              }
+              break;
+            }
             case "EndFor":
               if (FlowControl.Count != 0 && FlowControl.Peek().type == 2)
               {
                 FlowControlStruct fc = FlowControl.Peek();
                 fc.forCount++;
-                if (fc.forCount == fc.values.Length) FlowControl.Pop();
+                if (fc.forCount == fc.values.Length)
+                {
+                  FlowControl.Pop();
+                }
                 else
                 {
                   i = fc.line;
                   variables[fc.var] = fc.values[fc.forCount];
                 }
               }
-              else Warn("Unexpected EndFor");
+              else
+              {
+                Warn("Unexpected EndFor");
+              }
               break;
-            //Functions
+              //Functions
             case "Message":
               FunctionMessage(line);
               break;
@@ -1569,9 +1904,15 @@ namespace fomm.Scripting
               break;
           }
         }
-        if (Break) break;
+        if (Break)
+        {
+          break;
+        }
       }
-      if (SkipTo != null) Warn("Expected " + SkipTo);
+      if (SkipTo != null)
+      {
+        Warn("Expected " + SkipTo);
+      }
       variables = null;
       return !Fatal;
     }

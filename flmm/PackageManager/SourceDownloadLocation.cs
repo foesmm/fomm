@@ -94,7 +94,9 @@ namespace Fomm.PackageManager
     public bool Equals(SourceFile other)
     {
       if (other == null)
+      {
         return false;
+      }
       return this.Source.Equals(other.Source);
     }
 

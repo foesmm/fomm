@@ -23,7 +23,7 @@ namespace Fomm.Games.Fallout3
     {
       get
       {
-        string strPluginsFilePath = ((Fallout3GameMode)Program.GameMode).PluginsFilePath;
+        string strPluginsFilePath = ((Fallout3GameMode) Program.GameMode).PluginsFilePath;
 
         Set<string> setActivePlugins = new Set<string>(StringComparer.InvariantCultureIgnoreCase);
         if (File.Exists(strPluginsFilePath))
@@ -34,10 +34,14 @@ namespace Fomm.Games.Fallout3
           {
             strPlugins[i] = strPlugins[i].Trim();
             if (strPlugins[i].Length == 0 || strPlugins[i][0] == '#' || strPlugins[i].IndexOfAny(strInvalidChars) != -1)
+            {
               continue;
+            }
             string strPluginPath = Path.Combine(Program.GameMode.PluginsPath, strPlugins[i]);
             if (!File.Exists(strPluginPath))
+            {
               continue;
+            }
             setActivePlugins.Add(strPluginPath);
           }
         }
@@ -51,12 +55,16 @@ namespace Fomm.Games.Fallout3
     /// <param name="p_setActivePlugins">The complete set of active plugins.</param>
     public override void SetActivePlugins(Set<string> p_setActivePlugins)
     {
-      string strPluginsFilePath = ((Fallout3GameMode)Program.GameMode).PluginsFilePath;
+      string strPluginsFilePath = ((Fallout3GameMode) Program.GameMode).PluginsFilePath;
       Set<string> setPluginFilenames = new Set<string>(StringComparer.InvariantCultureIgnoreCase);
       foreach (string strPlugin in p_setActivePlugins)
+      {
         setPluginFilenames.Add(Path.GetFileName(strPlugin));
+      }
       if (!Directory.Exists(Path.GetDirectoryName(strPluginsFilePath)))
+      {
         Directory.CreateDirectory(Path.GetDirectoryName(strPluginsFilePath));
+      }
       File.WriteAllLines(strPluginsFilePath, setPluginFilenames.ToArray(), System.Text.Encoding.Default);
     }
 
@@ -92,13 +100,17 @@ namespace Fomm.Games.Fallout3
         lstPlugins.Sort(delegate(FileInfo a, FileInfo b)
         {
           if (Tools.TESsnip.Plugin.GetIsEsm(a.FullName) == Tools.TESsnip.Plugin.GetIsEsm(b.FullName))
+          {
             return a.LastWriteTime.CompareTo(b.LastWriteTime);
+          }
           return Tools.TESsnip.Plugin.GetIsEsm(a.FullName) ? -1 : 1;
         });
 
         List<string> lstPluginPaths = new List<string>();
         for (Int32 i = 0; i < lstPlugins.Count; i++)
+        {
           lstPluginPaths.Add(lstPlugins[i].FullName);
+        }
 
         return lstPluginPaths.ToArray();
       }
@@ -119,20 +131,29 @@ namespace Fomm.Games.Fallout3
       for (Int32 i = 0; i < p_strPlugins.Length; i++)
       {
         strPlugin = p_strPlugins[i];
-        if (!strPlugin.StartsWith(Program.GameMode.PluginsPath, StringComparison.InvariantCultureIgnoreCase) && !File.Exists(strPlugin))
+        if (!strPlugin.StartsWith(Program.GameMode.PluginsPath, StringComparison.InvariantCultureIgnoreCase) &&
+            !File.Exists(strPlugin))
+        {
           strPlugin = Path.Combine(Program.GameMode.PluginsPath, strPlugin);
+        }
         if (File.Exists(strPlugin))
+        {
           lstPlugins.Add(new FileInfo(strPlugin));
+        }
       }
       lstPlugins.Sort(delegate(FileInfo a, FileInfo b)
       {
         if (Tools.TESsnip.Plugin.GetIsEsm(a.FullName) == Tools.TESsnip.Plugin.GetIsEsm(b.FullName))
+        {
           return a.LastWriteTime.CompareTo(b.LastWriteTime);
+        }
         return Tools.TESsnip.Plugin.GetIsEsm(a.FullName) ? -1 : 1;
       });
       List<string> lstPluginPaths = new List<string>();
       foreach (FileInfo fifPlugin in lstPlugins)
+      {
         lstPluginPaths.Add(fifPlugin.FullName);
+      }
       return lstPluginPaths.ToArray();
     }
 
@@ -160,7 +181,9 @@ namespace Fomm.Games.Fallout3
     public override PluginInfo GetPluginInfo(string p_strPluginPath)
     {
       if (!File.Exists(p_strPluginPath))
+      {
         throw new FileNotFoundException("The specified plugin does not exist.", p_strPluginPath);
+      }
 
       string strPluginName = Path.GetFileName(p_strPluginPath);
       Plugin plgPlugin;
@@ -178,14 +201,18 @@ namespace Fomm.Games.Fallout3
         return new PluginInfo(strDescription, null);
       }
 
-      StringBuilder stbDescription = new StringBuilder(@"{\rtf1\ansi\ansicpg1252\deff0\deflang4105{\fonttbl{\f0\fnil\fcharset0 MS Sans Serif;}{\f1\fnil\fcharset2 Symbol;}}");
-      stbDescription.AppendLine().AppendLine(@"{\colortbl ;\red255\green0\blue0;\red255\green215\blue0;\red51\green153\blue255;}");
-      stbDescription.AppendLine().Append(@"{\*\generator Msftedit 5.41.21.2509;}\viewkind4\uc1\pard\sl240\slmult1\lang9\f0\fs17 ");
+      StringBuilder stbDescription =
+        new StringBuilder(
+          @"{\rtf1\ansi\ansicpg1252\deff0\deflang4105{\fonttbl{\f0\fnil\fcharset0 MS Sans Serif;}{\f1\fnil\fcharset2 Symbol;}}");
+      stbDescription.AppendLine()
+                    .AppendLine(@"{\colortbl ;\red255\green0\blue0;\red255\green215\blue0;\red51\green153\blue255;}");
+      stbDescription.AppendLine()
+                    .Append(@"{\*\generator Msftedit 5.41.21.2509;}\viewkind4\uc1\pard\sl240\slmult1\lang9\f0\fs17 ");
       string name = null;
       string desc = null;
       byte[] pic = null;
       List<string> masters = new List<string>();
-      foreach (SubRecord sr in ((Record)plgPlugin.Records[0]).SubRecords)
+      foreach (SubRecord sr in ((Record) plgPlugin.Records[0]).SubRecords)
       {
         switch (sr.Name)
         {
@@ -203,16 +230,25 @@ namespace Fomm.Games.Fallout3
             break;
         }
       }
-      if ((Path.GetExtension(p_strPluginPath).CompareTo(".esp") == 0) != ((((Record)plgPlugin.Records[0]).Flags1 & 1) == 0))
+      if ((Path.GetExtension(p_strPluginPath).CompareTo(".esp") == 0) !=
+          ((((Record) plgPlugin.Records[0]).Flags1 & 1) == 0))
       {
-        if ((((Record)plgPlugin.Records[0]).Flags1 & 1) == 0)
-          stbDescription.Append(@"\cf1 \b WARNING: This plugin has the file extension .esm, but its file header marks it as an esp! \b0 \cf0 \line \line ");
+        if ((((Record) plgPlugin.Records[0]).Flags1 & 1) == 0)
+        {
+          stbDescription.Append(
+            @"\cf1 \b WARNING: This plugin has the file extension .esm, but its file header marks it as an esp! \b0 \cf0 \line \line ");
+        }
         else
-          stbDescription.Append(@"\cf1 \b WARNING: This plugin has the file extension .esp, but its file header marks it as an esm! \b0 \cf0 \line \line ");
+        {
+          stbDescription.Append(
+            @"\cf1 \b WARNING: This plugin has the file extension .esp, but its file header marks it as an esm! \b0 \cf0 \line \line ");
+        }
       }
       stbDescription.AppendFormat(@"\b \ul {0} \ulnone \b0 \line ", strPluginName);
       if (name != null)
+      {
         stbDescription.AppendFormat(@"\b Author: \b0 {0} \line ", name);
+      }
       if (desc != null)
       {
         desc = desc.Replace("\r\n", "\n").Replace("\n\r", "\n").Replace("\n", "\\line ");
@@ -220,7 +256,8 @@ namespace Fomm.Games.Fallout3
       }
       if (masters.Count > 0)
       {
-        stbDescription.Append(@"\b Masters: \b0 \par \pard{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\sl240\slmult1 ");
+        stbDescription.Append(
+          @"\b Masters: \b0 \par \pard{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\sl240\slmult1 ");
         for (int i = 0; i < masters.Count; i++)
         {
           stbDescription.AppendFormat("{{\\pntext\\f1\\'B7\\tab}}{0}\\par ", masters[i]);
@@ -231,7 +268,9 @@ namespace Fomm.Games.Fallout3
 
       PluginInfo pifInfo = new PluginInfo(stbDescription.ToString(), null);
       if (pic != null)
+      {
         pifInfo.Picture = System.Drawing.Bitmap.FromStream(new MemoryStream(pic));
+      }
       return pifInfo;
     }
 

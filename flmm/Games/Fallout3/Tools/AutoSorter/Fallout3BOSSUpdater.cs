@@ -36,7 +36,10 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
       using (WebClient wclGetter = new WebClient())
       {
         string strMasterListUrl = MasterListURL;
-        Int32 intLastDividerPos = strMasterListUrl.LastIndexOfAny(new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar });
+        Int32 intLastDividerPos = strMasterListUrl.LastIndexOfAny(new char[]
+        {
+          Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar
+        });
         string strVersionUrl = strMasterListUrl.Substring(0, intLastDividerPos);
         strVersionPage = wclGetter.DownloadString(strVersionUrl);
       }

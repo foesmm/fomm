@@ -17,7 +17,6 @@ namespace Fomm.Util
   /// <returns>A value of type <typeparamref name="TResult"/>.</returns>
   public delegate TResult Func<T, TResult>(T p_tValue);
 
-
   /// <summary>
   /// Utility functions to work with files.
   /// </summary>
@@ -35,31 +34,44 @@ namespace Fomm.Util
     /// <param name="p_fncCopyCallback">A callback method that notifies the caller when a file has been copied,
     /// and provides the opportunity to cancel the copy operation.</param>
     /// <returns><lang cref="true"/> if the copy operation wasn't cancelled; <lang cref="false"/> otherwise.</returns>
-    public static bool Copy(TxFileManager p_tfmFileManager, string p_strSource, string p_strDestination, Func<string, bool> p_fncCopyCallback)
+    public static bool Copy(TxFileManager p_tfmFileManager, string p_strSource, string p_strDestination,
+                            Func<string, bool> p_fncCopyCallback)
     {
       if (File.Exists(p_strSource))
       {
         if (!Directory.Exists(Path.GetDirectoryName(p_strDestination)))
+        {
           p_tfmFileManager.CreateDirectory(Path.GetDirectoryName(p_strDestination));
+        }
         p_tfmFileManager.Copy(p_strSource, p_strDestination, true);
         if ((p_fncCopyCallback != null) && p_fncCopyCallback(p_strSource))
+        {
           return false;
+        }
       }
       else if (Directory.Exists(p_strSource))
       {
         if (!Directory.Exists(p_strDestination))
+        {
           p_tfmFileManager.CreateDirectory(p_strDestination);
+        }
         string[] strFiles = Directory.GetFiles(p_strSource);
         foreach (string strFile in strFiles)
         {
           p_tfmFileManager.Copy(strFile, Path.Combine(p_strDestination, Path.GetFileName(strFile)), true);
           if ((p_fncCopyCallback != null) && p_fncCopyCallback(strFile))
+          {
             return false;
+          }
         }
         string[] strDirectories = Directory.GetDirectories(p_strSource);
         foreach (string strDirectory in strDirectories)
+        {
           if (!Copy(strDirectory, Path.Combine(p_strDestination, Path.GetFileName(strDirectory)), p_fncCopyCallback))
+          {
             return false;
+          }
+        }
       }
       return true;
     }
@@ -80,26 +92,38 @@ namespace Fomm.Util
       if (File.Exists(p_strSource))
       {
         if (!Directory.Exists(Path.GetDirectoryName(p_strDestination)))
+        {
           Directory.CreateDirectory(Path.GetDirectoryName(p_strDestination));
+        }
         File.Copy(p_strSource, p_strDestination, true);
         if ((p_fncCopyCallback != null) && p_fncCopyCallback(p_strSource))
+        {
           return false;
+        }
       }
       else if (Directory.Exists(p_strSource))
       {
         if (!Directory.Exists(p_strDestination))
+        {
           Directory.CreateDirectory(p_strDestination);
+        }
         string[] strFiles = Directory.GetFiles(p_strSource);
         foreach (string strFile in strFiles)
         {
           File.Copy(strFile, Path.Combine(p_strDestination, Path.GetFileName(strFile)), true);
           if ((p_fncCopyCallback != null) && p_fncCopyCallback(strFile))
+          {
             return false;
+          }
         }
         string[] strDirectories = Directory.GetDirectories(p_strSource);
         foreach (string strDirectory in strDirectories)
+        {
           if (!Copy(strDirectory, Path.Combine(p_strDestination, Path.GetFileName(strDirectory)), p_fncCopyCallback))
+          {
             return false;
+          }
+        }
       }
       return true;
     }
@@ -117,19 +141,29 @@ namespace Fomm.Util
       try
       {
         if (File.Exists(p_strPath))
+        {
           File.Delete(p_strPath);
+        }
         else if (Directory.Exists(p_strPath))
+        {
           Directory.Delete(p_strPath, true);
+        }
       }
       catch (Exception e)
       {
         if (!(e is IOException || e is UnauthorizedAccessException))
+        {
           throw;
+        }
         ClearAttributes(p_strPath, true);
         if (File.Exists(p_strPath))
+        {
           File.Delete(p_strPath);
+        }
         else if (Directory.Exists(p_strPath))
+        {
           Directory.Delete(p_strPath, true);
+        }
       }
     }
 
@@ -150,8 +184,9 @@ namespace Fomm.Util
         fifFile.Attributes = FileAttributes.Normal;
       }
       else if (Directory.Exists(p_strPath))
+      {
         ClearAttributes(new DirectoryInfo(p_strPath), p_booRecurse);
-      
+      }
     }
 
     /// <summary>
@@ -169,9 +204,13 @@ namespace Fomm.Util
       if (p_booRecurse)
       {
         foreach (DirectoryInfo difDirectory in p_difPath.GetDirectories())
+        {
           ClearAttributes(difDirectory, p_booRecurse);
+        }
         foreach (FileInfo fifFile in p_difPath.GetFiles())
+        {
           fifFile.Attributes = FileAttributes.Normal;
+        }
       }
     }
   }

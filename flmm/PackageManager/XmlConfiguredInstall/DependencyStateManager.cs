@@ -69,7 +69,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
       {
         Dictionary<string, string> dicValues = new Dictionary<string, string>();
         foreach (KeyValuePair<string, FlagValue> kvpValue in m_dicFlags)
+        {
           dicValues[kvpValue.Key] = kvpValue.Value.Value;
+        }
         return dicValues;
       }
     }
@@ -119,7 +121,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
       Dictionary<string, bool> dicPlugins = new Dictionary<string, bool>();
       string[] strPlugins = m_misInstallScript.GetAllPlugins();
       foreach (string strPlugin in strPlugins)
+      {
         dicPlugins.Add(strPlugin.ToLowerInvariant(), IsPluginActive(strPlugin));
+      }
       InstalledPlugins = dicPlugins;
     }
 
@@ -134,8 +138,12 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     {
       string[] strAtiveInstalledPlugins = GetActiveInstalledPlugins();
       foreach (string strActivePlugin in strAtiveInstalledPlugins)
+      {
         if (strActivePlugin.Equals(p_strFile.ToLowerInvariant()))
+        {
           return true;
+        }
+      }
       return false;
     }
 
@@ -150,13 +158,18 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
         string[] strActivePlugins = m_misInstallScript.GetActivePlugins();
         List<string> lstActiveInstalled = new List<string>();
         foreach (string strActivePlugin in strActivePlugins)
+        {
           if (FileManagement.DataFileExists(strActivePlugin))
+          {
             lstActiveInstalled.Add(strActivePlugin.ToLowerInvariant());
+          }
+        }
         m_strActiveInstalledPlugins = lstActiveInstalled.ToArray();
       }
       return m_strActiveInstalledPlugins;
     }
-    string[] m_strActiveInstalledPlugins = null;
+
+    private string[] m_strActiveInstalledPlugins = null;
 
     /// <summary>
     /// Sets the value of a conditional flag.
@@ -167,7 +180,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     public void SetFlagValue(string p_strFlagName, string p_strValue, PluginInfo p_pifPlugin)
     {
       if (!m_dicFlags.ContainsKey(p_strFlagName))
+      {
         m_dicFlags[p_strFlagName] = new FlagValue();
+      }
       m_dicFlags[p_strFlagName].Value = p_strValue;
       m_dicFlags[p_strFlagName].Owner = p_pifPlugin;
     }
@@ -181,8 +196,12 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     {
       List<string> lstFlags = new List<string>(m_dicFlags.Keys);
       foreach (string strFlag in lstFlags)
+      {
         if (m_dicFlags[strFlag].Owner == p_pifPlugin)
+        {
           m_dicFlags.Remove(strFlag);
+        }
+      }
     }
   }
 }

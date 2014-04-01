@@ -25,6 +25,7 @@ namespace Fomm.PackageManager.FomodBuilder
 {\pntext\f0 4.\tab}Select the format you would like to use for your Readme file.\par
 }
  ";
+
     #region Properties
 
     /// <summary>
@@ -37,7 +38,9 @@ namespace Fomm.PackageManager.FomodBuilder
       {
         List<string> lstFiles = new List<string>();
         foreach (ListViewItem lviFile in lvwReadmeFiles.Items)
+        {
           lstFiles.Add(lviFile.Name);
+        }
         return lstFiles;
       }
     }
@@ -50,7 +53,7 @@ namespace Fomm.PackageManager.FomodBuilder
     {
       get
       {
-        return ((KeyValuePair<string, ReadmeFormat>)cbxFormat.SelectedItem).Value;
+        return ((KeyValuePair<string, ReadmeFormat>) cbxFormat.SelectedItem).Value;
       }
     }
 
@@ -116,18 +119,26 @@ namespace Fomm.PackageManager.FomodBuilder
     /// <param name="e">A <see cref="DragEventArgs"/> that describes the event arguments.</param>
     private void lvwReadmeFiles_DragOver(object sender, DragEventArgs e)
     {
-      if (!e.Data.GetDataPresent(typeof(List<SourceFileTree.SourceFileSystemDragData>)))
+      if (!e.Data.GetDataPresent(typeof (List<SourceFileTree.SourceFileSystemDragData>)))
+      {
         return;
-      List<SourceFileTree.SourceFileSystemDragData> lstData = (List<SourceFileTree.SourceFileSystemDragData>)e.Data.GetData(typeof(List<SourceFileTree.SourceFileSystemDragData>));
+      }
+      List<SourceFileTree.SourceFileSystemDragData> lstData =
+        (List<SourceFileTree.SourceFileSystemDragData>)
+          e.Data.GetData(typeof (List<SourceFileTree.SourceFileSystemDragData>));
       bool booFoundFile = false;
       foreach (SourceFileTree.SourceFileSystemDragData sddData in lstData)
+      {
         if (!sddData.IsDirectory)
         {
           booFoundFile = true;
           break;
         }
+      }
       if (!booFoundFile)
+      {
         return;
+      }
       e.Effect = DragDropEffects.Copy;
     }
 
@@ -141,12 +152,20 @@ namespace Fomm.PackageManager.FomodBuilder
     /// <param name="e">A <see cref="DragEventArgs"/> that describes the event arguments.</param>
     private void lvwReadmeFiles_DragDrop(object sender, DragEventArgs e)
     {
-      if (!e.Data.GetDataPresent(typeof(List<SourceFileTree.SourceFileSystemDragData>)))
+      if (!e.Data.GetDataPresent(typeof (List<SourceFileTree.SourceFileSystemDragData>)))
+      {
         return;
-      List<SourceFileTree.SourceFileSystemDragData> lstData = (List<SourceFileTree.SourceFileSystemDragData>)e.Data.GetData(typeof(List<SourceFileTree.SourceFileSystemDragData>));
+      }
+      List<SourceFileTree.SourceFileSystemDragData> lstData =
+        (List<SourceFileTree.SourceFileSystemDragData>)
+          e.Data.GetData(typeof (List<SourceFileTree.SourceFileSystemDragData>));
       foreach (SourceFileTree.SourceFileSystemDragData sddData in lstData)
+      {
         if (!sddData.IsDirectory)
+        {
           lvwReadmeFiles.Items.Add(sddData.Path, Path.GetFileName(sddData.Path), 0);
+        }
+      }
     }
 
     #endregion
@@ -172,7 +191,9 @@ namespace Fomm.PackageManager.FomodBuilder
         else
         {
           if (!File.Exists(strFileName))
+          {
             continue;
+          }
           stbReadme.Append(File.ReadAllText(strFileName)).AppendLine().AppendLine();
         }
       }

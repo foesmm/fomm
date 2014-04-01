@@ -74,7 +74,9 @@ namespace Fomm.PackageManager.FomodBuilder
       {
         List<string> lstSource = new List<string>();
         foreach (FileSystemTreeNode tndSource in tvwSource.Nodes)
+        {
           lstSource.Add(tndSource.LastSource);
+        }
         return lstSource.ToArray();
       }
       set
@@ -113,10 +115,12 @@ namespace Fomm.PackageManager.FomodBuilder
     {
       if (e.Data.GetDataPresent(DataFormats.FileDrop))
       {
-        string[] strFileNames = (string[])e.Data.GetData(DataFormats.FileDrop);
+        string[] strFileNames = (string[]) e.Data.GetData(DataFormats.FileDrop);
         foreach (string strFile in strFileNames)
         {
-          if (!tvwSource.Nodes.ContainsKey(strFile) && (Directory.Exists(strFile) || (File.Exists(strFile) && !".lnk".Equals(Path.GetExtension(strFile).ToLowerInvariant()))))
+          if (!tvwSource.Nodes.ContainsKey(strFile) &&
+              (Directory.Exists(strFile) ||
+               (File.Exists(strFile) && !".lnk".Equals(Path.GetExtension(strFile).ToLowerInvariant()))))
           {
             e.Effect = DragDropEffects.Copy;
             return;
@@ -135,7 +139,9 @@ namespace Fomm.PackageManager.FomodBuilder
       Cursor crsOldCursor = Cursor;
       Cursor = Cursors.WaitCursor;
       foreach (string strFile in p_strFileNames)
+      {
         AddFileToSource(strFile);
+      }
       Cursor = crsOldCursor;
     }
 
@@ -150,8 +156,10 @@ namespace Fomm.PackageManager.FomodBuilder
     private void tvwSource_DragDrop(object sender, DragEventArgs e)
     {
       if (!e.Data.GetDataPresent(DataFormats.FileDrop))
+      {
         return;
-      string[] strFileNames = (string[])e.Data.GetData(DataFormats.FileDrop);
+      }
+      string[] strFileNames = (string[]) e.Data.GetData(DataFormats.FileDrop);
       AddSourceFiles(strFileNames);
     }
 
@@ -163,8 +171,11 @@ namespace Fomm.PackageManager.FomodBuilder
     {
       Cursor crsOldCursor = Cursor;
       Cursor = Cursors.WaitCursor;
-      if (Directory.Exists(p_strFile) || (File.Exists(p_strFile) && !".lnk".Equals(Path.GetExtension(p_strFile).ToLowerInvariant())))
+      if (Directory.Exists(p_strFile) ||
+          (File.Exists(p_strFile) && !".lnk".Equals(Path.GetExtension(p_strFile).ToLowerInvariant())))
+      {
         addSourceFile(null, p_strFile);
+      }
       Cursor = crsOldCursor;
     }
 
@@ -179,19 +190,29 @@ namespace Fomm.PackageManager.FomodBuilder
       {
         FileSystemInfo fsiInfo = null;
         if (Directory.Exists(p_strFile))
+        {
           fsiInfo = new DirectoryInfo(p_strFile);
+        }
         else if (File.Exists(p_strFile))
+        {
           fsiInfo = new FileInfo(p_strFile);
+        }
         else
+        {
           return;
+        }
         if ((fsiInfo.Attributes & FileAttributes.System) > 0)
+        {
           return;
+        }
       }
 
       FileSystemTreeNode tndFile = null;
       TreeNodeCollection tncSiblings = (p_tndRoot == null) ? tvwSource.Nodes : p_tndRoot.Nodes;
       if (tncSiblings.ContainsKey(p_strFile))
-        tndFile = (FileSystemTreeNode)tncSiblings[p_strFile];
+      {
+        tndFile = (FileSystemTreeNode) tncSiblings[p_strFile];
+      }
       else
       {
         tndFile = new FileSystemTreeNode(Path.GetFileName(p_strFile), p_strFile);
@@ -211,19 +232,27 @@ namespace Fomm.PackageManager.FomodBuilder
             Archive arcArchive = new Archive(kvpPath.Key);
             string[] strFolders = arcArchive.GetDirectories(kvpPath.Value);
             for (Int32 i = 0; i < strFolders.Length; i++)
+            {
               addSourceFile(tndFile, Archive.GenerateArchivePath(kvpPath.Key, strFolders[i]));
+            }
             string[] strFiles = arcArchive.GetFiles(kvpPath.Value);
             for (Int32 i = 0; i < strFiles.Length; i++)
+            {
               addSourceFile(tndFile, Archive.GenerateArchivePath(kvpPath.Key, strFiles[i]));
+            }
           }
           else if (!p_strFile.StartsWith(FileSystemTreeNode.NEW_PREFIX))
           {
             string[] strFolders = Directory.GetDirectories(p_strFile);
             for (Int32 i = 0; i < strFolders.Length; i++)
+            {
               addSourceFile(tndFile, strFolders[i]);
+            }
             string[] strFiles = Directory.GetFiles(p_strFile);
             for (Int32 i = 0; i < strFiles.Length; i++)
+            {
               addSourceFile(tndFile, strFiles[i]);
+            }
           }
         }
       }
@@ -245,10 +274,14 @@ namespace Fomm.PackageManager.FomodBuilder
           Archive arcArchive = new Archive(p_strFile);
           string[] strFolders = arcArchive.GetDirectories("/");
           for (Int32 i = 0; i < strFolders.Length; i++)
+          {
             addSourceFile(tndFile, Archive.GenerateArchivePath(p_strFile, strFolders[i]));
+          }
           string[] strFiles = arcArchive.GetFiles("/");
           for (Int32 i = 0; i < strFiles.Length; i++)
+          {
             addSourceFile(tndFile, Archive.GenerateArchivePath(p_strFile, strFiles[i]));
+          }
         }
       }
     }
@@ -264,12 +297,16 @@ namespace Fomm.PackageManager.FomodBuilder
     private void tvwSource_ItemDrag(object sender, ItemDragEventArgs e)
     {
       List<SourceFileSystemDragData> lstData = new List<SourceFileSystemDragData>();
-      if (tvwSource.SelectedNodes.Contains((FileSystemTreeNode)e.Item))
+      if (tvwSource.SelectedNodes.Contains((FileSystemTreeNode) e.Item))
+      {
         foreach (FileSystemTreeNode tndNode in tvwSource.SelectedNodes)
+        {
           lstData.Add(new SourceFileSystemDragData(tndNode.Name, tndNode.IsDirectory));
+        }
+      }
       else
       {
-        FileSystemTreeNode tndNode = (FileSystemTreeNode)e.Item;
+        FileSystemTreeNode tndNode = (FileSystemTreeNode) e.Item;
         lstData.Add(new SourceFileSystemDragData(tndNode.Name, tndNode.IsDirectory));
       }
       tvwSource.DoDragDrop(lstData, DragDropEffects.Copy);
@@ -287,7 +324,9 @@ namespace Fomm.PackageManager.FomodBuilder
     private void tvwSource_QueryContinueDrag(object sender, QueryContinueDragEventArgs e)
     {
       if ((e.Action != DragAction.Drop) && ((Control.MouseButtons & MouseButtons.Left) != MouseButtons.Left))
+      {
         e.Action = DragAction.Cancel;
+      }
     }
 
     /// <summary>
@@ -306,7 +345,9 @@ namespace Fomm.PackageManager.FomodBuilder
       foreach (FileSystemTreeNode tndFolder in e.Node.Nodes)
       {
         if (tndFolder.LastSource.IsLoaded || !tndFolder.IsDirectory)
+        {
           continue;
+        }
         tndFolder.LastSource.IsLoaded = true;
         strPath = tndFolder.LastSource;
         if (strPath.StartsWith(Archive.ARCHIVE_PREFIX))
@@ -315,19 +356,27 @@ namespace Fomm.PackageManager.FomodBuilder
           Archive arcArchive = new Archive(kvpPath.Key);
           string[] strFolders = arcArchive.GetDirectories(kvpPath.Value);
           for (Int32 i = 0; i < strFolders.Length; i++)
+          {
             addSourceFile(tndFolder, Archive.GenerateArchivePath(kvpPath.Key, strFolders[i]));
+          }
           string[] strFiles = arcArchive.GetFiles(kvpPath.Value);
           for (Int32 i = 0; i < strFiles.Length; i++)
+          {
             addSourceFile(tndFolder, Archive.GenerateArchivePath(kvpPath.Key, strFiles[i]));
+          }
         }
         else if (!strPath.StartsWith(FileSystemTreeNode.NEW_PREFIX))
         {
           string[] strFolders = Directory.GetDirectories(strPath);
           for (Int32 i = 0; i < strFolders.Length; i++)
+          {
             addSourceFile(tndFolder, strFolders[i]);
+          }
           string[] strFiles = Directory.GetFiles(strPath);
           for (Int32 i = 0; i < strFiles.Length; i++)
+          {
             addSourceFile(tndFolder, strFiles[i]);
+          }
         }
       }
       Cursor = crsOldCursor;
@@ -343,8 +392,12 @@ namespace Fomm.PackageManager.FomodBuilder
     private void butAddFiles_Click(object sender, EventArgs e)
     {
       if (ofdFileChooser.ShowDialog(this) == DialogResult.OK)
+      {
         foreach (string strFile in ofdFileChooser.FileNames)
+        {
           AddFileToSource(strFile);
+        }
+      }
     }
 
     /// <summary>
@@ -355,7 +408,9 @@ namespace Fomm.PackageManager.FomodBuilder
     private void butAddFolder_Click(object sender, EventArgs e)
     {
       if (fbdFolderChooser.ShowDialog(this) == DialogResult.OK)
+      {
         AddFileToSource(fbdFolderChooser.SelectedPath);
+      }
     }
   }
 }

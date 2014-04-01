@@ -187,7 +187,8 @@ namespace Fomm.PackageManager
     /// <param name="p_strTitle">The title of the selection form.</param>
     /// <param name="p_booSelectMany">Whether more than one item can be selected.</param>
     /// <returns>The indices of the selected items.</returns>
-    public int[] Select(string[] p_strItems, string[] p_strPreviews, string[] p_strDescriptions, string p_strTitle, bool p_booSelectMany)
+    public int[] Select(string[] p_strItems, string[] p_strPreviews, string[] p_strDescriptions, string p_strTitle,
+                        bool p_booSelectMany)
     {
       PermissionsManager.CurrentPermissions.Assert();
       Image[] imgPreviews = null;
@@ -198,7 +199,9 @@ namespace Fomm.PackageManager
         for (int i = 0; i < p_strPreviews.Length; i++)
         {
           if (p_strPreviews[i] == null)
+          {
             continue;
+          }
           try
           {
             imgPreviews[i] = Fomod.GetImage(p_strPreviews[i]);
@@ -206,9 +209,13 @@ namespace Fomm.PackageManager
           catch (Exception e)
           {
             if ((e is FileNotFoundException) || (e is DecompressionException))
+            {
               intMissingImages++;
+            }
             else
+            {
               throw e;
+            }
           }
         }
         //for now I don't think the user needs to be able to detect this.
@@ -224,7 +231,9 @@ namespace Fomm.PackageManager
       sfmSelectForm.ShowDialog();
       int[] intResults = new int[sfmSelectForm.SelectedIndex.Length];
       for (int i = 0; i < sfmSelectForm.SelectedIndex.Length; i++)
+      {
         intResults[i] = sfmSelectForm.SelectedIndex[i];
+      }
       return intResults;
     }
 
@@ -274,9 +283,12 @@ namespace Fomm.PackageManager
     {
       PermissionsManager.CurrentPermissions.Assert();
       string[] strPlugins = Program.GameMode.PluginManager.OrderedPluginList;
-      Int32 intTrimLength = Program.GameMode.PluginsPath.Trim(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).Length + 1;
+      Int32 intTrimLength =
+        Program.GameMode.PluginsPath.Trim(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).Length + 1;
       for (int i = 0; i < strPlugins.Length; i++)
+      {
         strPlugins[i] = strPlugins[i].Remove(0, intTrimLength);
+      }
       return strPlugins;
     }
 
@@ -290,9 +302,12 @@ namespace Fomm.PackageManager
     {
       PermissionsManager.CurrentPermissions.Assert();
       string[] strPlugins = Program.GameMode.PluginManager.SortPluginList(ActivePlugins.ToArray());
-      Int32 intTrimLength = Program.GameMode.PluginsPath.Trim(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).Length + 1;
+      Int32 intTrimLength =
+        Program.GameMode.PluginsPath.Trim(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).Length + 1;
       for (int i = 0; i < strPlugins.Length; i++)
+      {
         strPlugins[i] = strPlugins[i].Remove(0, intTrimLength);
+      }
       return strPlugins;
     }
 
@@ -318,15 +333,24 @@ namespace Fomm.PackageManager
     {
       string[] strPluginNames = GetAllPlugins();
       if (p_intPlugins.Length != strPluginNames.Length)
+      {
         throw new ArgumentException("Length of new load order array was different to the total number of plugins");
+      }
 
       for (int i = 0; i < p_intPlugins.Length; i++)
+      {
         if (p_intPlugins[i] < 0 || p_intPlugins[i] >= p_intPlugins.Length)
+        {
           throw new IndexOutOfRangeException("A plugin index was out of range");
+        }
+      }
 
       PermissionsManager.CurrentPermissions.Assert();
       for (int i = 0; i < strPluginNames.Length; i++)
-        Program.GameMode.PluginManager.SetLoadOrder(Path.Combine(Program.GameMode.PluginsPath, strPluginNames[p_intPlugins[i]]), i);
+      {
+        Program.GameMode.PluginManager.SetLoadOrder(
+          Path.Combine(Program.GameMode.PluginsPath, strPluginNames[p_intPlugins[i]]), i);
+      }
     }
 
     /// <summary>
@@ -352,16 +376,25 @@ namespace Fomm.PackageManager
       for (int i = 0; i < p_intPosition; i++)
       {
         if (Array.BinarySearch<int>(p_intPlugins, i) >= 0)
+        {
           continue;
-        Program.GameMode.PluginManager.SetLoadOrder(Path.Combine(Program.GameMode.PluginsPath, strPluginNames[i]), intLoadOrder++);
+        }
+        Program.GameMode.PluginManager.SetLoadOrder(Path.Combine(Program.GameMode.PluginsPath, strPluginNames[i]),
+                                                    intLoadOrder++);
       }
       for (int i = 0; i < p_intPlugins.Length; i++)
-        Program.GameMode.PluginManager.SetLoadOrder(Path.Combine(Program.GameMode.PluginsPath, strPluginNames[p_intPlugins[i]]), intLoadOrder++);
+      {
+        Program.GameMode.PluginManager.SetLoadOrder(
+          Path.Combine(Program.GameMode.PluginsPath, strPluginNames[p_intPlugins[i]]), intLoadOrder++);
+      }
       for (int i = p_intPosition; i < strPluginNames.Length; i++)
       {
         if (Array.BinarySearch<int>(p_intPlugins, i) >= 0)
+        {
           continue;
-        Program.GameMode.PluginManager.SetLoadOrder(Path.Combine(Program.GameMode.PluginsPath, strPluginNames[i]), intLoadOrder++);
+        }
+        Program.GameMode.PluginManager.SetLoadOrder(Path.Combine(Program.GameMode.PluginsPath, strPluginNames[i]),
+                                                    intLoadOrder++);
       }
     }
 
@@ -380,16 +413,24 @@ namespace Fomm.PackageManager
     public void SetPluginActivation(string p_strName, bool p_booActivate)
     {
       if (p_strName.IndexOfAny(Path.GetInvalidFileNameChars()) != -1)
+      {
         throw new IllegalFilePathException(p_strName);
+      }
       PermissionsManager.CurrentPermissions.Assert();
       string strFullPath = Path.Combine(Program.GameMode.PluginsPath, p_strName);
       if (!File.Exists(strFullPath))
+      {
         throw new FileNotFoundException("Plugin does not exist", p_strName);
+      }
 
       if (p_booActivate)
+      {
         ActivePlugins.Add(strFullPath);
+      }
       else
+      {
         ActivePlugins.Remove(strFullPath);
+      }
     }
 
     /// <summary>
@@ -398,7 +439,9 @@ namespace Fomm.PackageManager
     public void CommitActivePlugins()
     {
       if (m_setActivePlugins != null)
+      {
         Program.GameMode.PluginManager.SetActivePlugins(m_setActivePlugins);
+      }
     }
 
     #endregion
@@ -426,31 +469,45 @@ namespace Fomm.PackageManager
       string strOldMod = InstallLog.Current.GetCurrentFileOwnerName(p_strPath);
 
       if (!File.Exists(strDataPath))
+      {
         return true;
+      }
       string strLoweredPath = strDataPath.ToLowerInvariant();
       if (m_lstOverwriteFolders.Contains(Path.GetDirectoryName(strLoweredPath)))
+      {
         return true;
+      }
       if (m_lstDontOverwriteFolders.Contains(Path.GetDirectoryName(strLoweredPath)))
+      {
         return false;
+      }
       if (m_booOverwriteAll)
+      {
         return true;
+      }
       if (m_booDontOverwriteAll)
+      {
         return false;
+      }
       if (m_lstOverwriteMods.Contains(strOldMod))
+      {
         return true;
+      }
       if (m_lstDontOverwriteMods.Contains(strOldMod))
+      {
         return false;
+      }
 
       string strMessage = null;
       if (strOldMod != null)
       {
         strMessage = String.Format("Data file '{{0}}' has already been installed by '{0}'" + Environment.NewLine +
-                "Overwrite with this mod's file?", strOldMod);
+                                   "Overwrite with this mod's file?", strOldMod);
       }
       else
       {
         strMessage = "Data file '{0}' already exists." + Environment.NewLine +
-                "Overwrite with this mod's file?";
+                     "Overwrite with this mod's file?";
       }
       switch (Overwriteform.ShowDialog(String.Format(strMessage, p_strPath), true, (strOldMod != null)))
       {
@@ -503,7 +560,8 @@ namespace Fomm.PackageManager
           }
           return true;
         default:
-          throw new Exception("Sanity check failed: OverwriteDialog returned a value not present in the OverwriteResult enum");
+          throw new Exception(
+            "Sanity check failed: OverwriteDialog returned a value not present in the OverwriteResult enum");
       }
     }
 
@@ -528,12 +586,16 @@ namespace Fomm.PackageManager
       FileManagement.AssertFilePathIsSafe(fnTo);
 
       #region refactor me
+
       #region original code
-//      byte[] bteFomodFile = Fomod.GetFile(fnFrom);
-//      ret = GenerateDataFile(fnTo, bteFomodFile);
+
+      //      byte[] bteFomodFile = Fomod.GetFile(fnFrom);
+      //      ret = GenerateDataFile(fnTo, bteFomodFile);
+
       #endregion
 
       #region newcode
+
       /*
        * New code
        * 1. Extract the file from the archive to the temp file
@@ -548,7 +610,9 @@ namespace Fomm.PackageManager
         Installer.MergeModule.AddFile(fnTo);
         ret = true;
       }
+
       #endregion
+
       #endregion
 
       return ret;
@@ -615,11 +679,15 @@ namespace Fomm.PackageManager
     {
       strDataPath = Path.Combine(Program.GameMode.PluginsPath, p_strPath);
       if (!Directory.Exists(Path.GetDirectoryName(strDataPath)))
+      {
         Installer.TransactionalFileManager.CreateDirectory(Path.GetDirectoryName(strDataPath));
+      }
       else
       {
         if (!TestDoOverwrite(p_strPath))
+        {
           return false;
+        }
 
         if (File.Exists(strDataPath))
         {
@@ -633,7 +701,9 @@ namespace Fomm.PackageManager
           if (!Installer.MergeModule.ContainsFile(p_strPath))
           {
             if (!Directory.Exists(strBackupPath))
+            {
               Installer.TransactionalFileManager.CreateDirectory(strBackupPath);
+            }
 
             //if we are overwriting an original value, back it up
             if (strOldModKey == null)
@@ -641,7 +711,8 @@ namespace Fomm.PackageManager
               Installer.MergeModule.BackupOriginalDataFile(p_strPath);
               strOldModKey = InstallLog.Current.OriginalValuesKey;
             }
-            string strFile = Path.GetFileName(Directory.GetFiles(Path.GetDirectoryName(strDataPath), Path.GetFileName(strDataPath))[0]);
+            string strFile =
+              Path.GetFileName(Directory.GetFiles(Path.GetDirectoryName(strDataPath), Path.GetFileName(strDataPath))[0]);
             strFile = strOldModKey + "_" + strFile;
 
             strBackupPath = Path.Combine(strBackupPath, strFile);
@@ -714,7 +785,9 @@ namespace Fomm.PackageManager
             string strRestoreFromPath = Path.Combine(strBackupDirectory, strFile);
             if (File.Exists(strRestoreFromPath))
             {
-              string strBackupFileName = Path.GetFileName(Directory.GetFiles(Path.GetDirectoryName(strRestoreFromPath), Path.GetFileName(strRestoreFromPath))[0]);
+              string strBackupFileName =
+                Path.GetFileName(
+                  Directory.GetFiles(Path.GetDirectoryName(strRestoreFromPath), Path.GetFileName(strRestoreFromPath))[0]);
               string strCasedFileName = strBackupFileName.Substring(strBackupFileName.IndexOf('_') + 1);
               string strNewDataPath = Path.Combine(Path.GetDirectoryName(strDataPath), strCasedFileName);
               Installer.TransactionalFileManager.Copy(strRestoreFromPath, strNewDataPath, true);
@@ -723,14 +796,20 @@ namespace Fomm.PackageManager
 
             //remove anny empty directories from the overwrite folder we may have created
             string strStopDirectory = Program.GameMode.OverwriteDirectory;
-            strStopDirectory = strStopDirectory.Remove(0, strStopDirectory.LastIndexOfAny(new char[] { Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar }));
+            strStopDirectory = strStopDirectory.Remove(0, strStopDirectory.LastIndexOfAny(new char[]
+            {
+              Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar
+            }));
             TrimEmptyDirectories(strRestoreFromPath, strStopDirectory);
           }
           else
           {
             //remove any empty directories from the data folder we may have created
             string strStopDirectory = Program.GameMode.PluginsPath;
-            strStopDirectory = strStopDirectory.Remove(0, strStopDirectory.LastIndexOfAny(new char[] { Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar }));
+            strStopDirectory = strStopDirectory.Remove(0, strStopDirectory.LastIndexOfAny(new char[]
+            {
+              Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar
+            }));
             TrimEmptyDirectories(strDataPath, strStopDirectory);
           }
         }
@@ -756,14 +835,20 @@ namespace Fomm.PackageManager
     {
       string strEmptyDirectory = Path.GetDirectoryName(p_strStartPath).ToLowerInvariant();
       if (!Directory.Exists(strEmptyDirectory))
+      {
         return;
+      }
       while (true)
       {
         if ((Directory.GetFiles(strEmptyDirectory).Length + Directory.GetDirectories(strEmptyDirectory).Length == 0) &&
-          !strEmptyDirectory.EndsWith(p_strStopDirectory.ToLowerInvariant()))
+            !strEmptyDirectory.EndsWith(p_strStopDirectory.ToLowerInvariant()))
+        {
           Directory.Delete(strEmptyDirectory);
+        }
         else
+        {
           break;
+        }
         strEmptyDirectory = Path.GetDirectoryName(strEmptyDirectory);
       }
     }
@@ -819,7 +904,9 @@ namespace Fomm.PackageManager
     {
       string strFile = p_strSettingsFileName;
       if (m_booDontOverwriteAllIni)
+      {
         return false;
+      }
 
       PermissionsManager.CurrentPermissions.Assert();
       string strLoweredFile = strFile.ToLowerInvariant();
@@ -832,17 +919,20 @@ namespace Fomm.PackageManager
         string strMessage = null;
         if (strOldMod != null)
         {
-          strMessage = String.Format("Key '{{0}}' in section '{{1}}' of {{2}}} has already been overwritten by '{0}'\n" +
-                  "Overwrite again with this mod?\n" +
-                  "Current value '{{3}}', new value '{{4}}'", strOldMod);
+          strMessage =
+            String.Format("Key '{{0}}' in section '{{1}}' of {{2}}} has already been overwritten by '{0}'\n" +
+                          "Overwrite again with this mod?\n" +
+                          "Current value '{{3}}', new value '{{4}}'", strOldMod);
         }
         else
         {
           strMessage = "The mod wants to modify key '{0}' in section '{1}' of {2}.\n" +
-                  "Allow the change?\n" +
-                  "Current value '{3}', new value '{4}'";
+                       "Allow the change?\n" +
+                       "Current value '{3}', new value '{4}'";
         }
-        switch (Overwriteform.ShowDialog(String.Format(strMessage, p_strKey, p_strSection, strFile, strOldValue, p_strValue), false, (strOldMod != null)))
+        switch (
+          Overwriteform.ShowDialog(String.Format(strMessage, p_strKey, p_strSection, strFile, strOldValue, p_strValue),
+                                   false, (strOldMod != null)))
         {
           case OverwriteResult.YesToAll:
             m_booOverwriteAllIni = true;
@@ -859,7 +949,9 @@ namespace Fomm.PackageManager
 
       //if we are overwriting an original value, back it up
       if ((strOldMod == null) || (strOldValue != null))
+      {
         Installer.MergeModule.BackupOriginalIniValue(strLoweredFile, strLoweredSection, strLoweredKey, strOldValue);
+      }
 
       NativeMethods.WritePrivateProfileStringA(strLoweredSection, strLoweredKey, p_strValue, strLoweredFile);
       Installer.MergeModule.AddIniEdit(strLoweredFile, strLoweredSection, strLoweredKey, p_strValue);
@@ -902,10 +994,13 @@ namespace Fomm.PackageManager
       string strLoweredKey = p_strKey.ToLowerInvariant();
 
       string strKey = InstallLog.Current.GetModKey(p_strFomodBaseName);
-      string strCurrentOwnerKey = InstallLog.Current.GetCurrentIniEditorModKey(strLoweredFile, strLoweredSection, strLoweredKey);
+      string strCurrentOwnerKey = InstallLog.Current.GetCurrentIniEditorModKey(strLoweredFile, strLoweredSection,
+                                                                               strLoweredKey);
       //if we didn't edit the value, then leave it alone
       if (!strKey.Equals(strCurrentOwnerKey))
+      {
         return;
+      }
 
       //if we did edit the value, replace if with the value we overwrote
       // if we didn't overwrite a value, then just delete it

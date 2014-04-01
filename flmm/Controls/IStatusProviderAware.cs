@@ -13,9 +13,6 @@ namespace Fomm.Controls
     /// Gets the child control next to which to display the icon.
     /// </summary>
     /// <value>The child control next to which to display the icon.</value>
-    Control StatusProviderSite
-    {
-      get;
-    }
+    Control StatusProviderSite { get; }
   }
 }

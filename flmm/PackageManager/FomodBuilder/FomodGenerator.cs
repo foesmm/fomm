@@ -111,7 +111,9 @@ namespace Fomm.PackageManager.FomodBuilder
     {
       string strPackedPath = p_gfaArgs.PackedPath;
       if (!CheckFileName(ref strPackedPath))
+      {
         return null;
+      }
       p_gfaArgs.PackedPath = strPackedPath;
 
       try
@@ -132,7 +134,9 @@ namespace Fomm.PackageManager.FomodBuilder
       finally
       {
         foreach (string strFolder in m_lltTempFolders)
+        {
           FileUtil.ForceDelete(strFolder);
+        }
       }
       return strPackedPath;
     }
@@ -186,7 +190,11 @@ namespace Fomm.PackageManager.FomodBuilder
       }
       if (!newpath.Equals(strNewPath))
       {
-        switch (MessageBox.Show("File '" + newpath + "' already exists. The old file can be replaced, or the new file can be named '" + strNewPath + "'." + Environment.NewLine + "Do you want to overwrite the old file?", "Warning", MessageBoxButtons.YesNoCancel))
+        switch (
+          MessageBox.Show(
+            "File '" + newpath + "' already exists. The old file can be replaced, or the new file can be named '" +
+            strNewPath + "'." + Environment.NewLine + "Do you want to overwrite the old file?", "Warning",
+            MessageBoxButtons.YesNoCancel))
         {
           case DialogResult.Yes:
             return true;
@@ -248,7 +256,9 @@ namespace Fomm.PackageManager.FomodBuilder
       ProgressDialog.ItemProgressStep = 1;
       ProgressDialog.ItemMessage = String.Format("Creating Script File...");
       if ((p_fscScript != null) && !String.IsNullOrEmpty(p_fscScript.Text))
+      {
         File.WriteAllText(Path.Combine(p_strFomodFomodFolder, p_fscScript.FileName), p_fscScript.Text);
+      }
       ProgressDialog.StepItemProgress();
     }
 
@@ -272,11 +282,17 @@ namespace Fomm.PackageManager.FomodBuilder
       ProgressDialog.ItemMessage = String.Format("Creating Screenshot...");
       if (p_booSetScreenshot)
       {
-        string[] strScreenshots = Directory.GetFiles(p_strFomodFomodFolder, "screenshot.*", SearchOption.TopDirectoryOnly);
+        string[] strScreenshots = Directory.GetFiles(p_strFomodFomodFolder, "screenshot.*",
+                                                     SearchOption.TopDirectoryOnly);
         foreach (String strScreenshot in strScreenshots)
+        {
           FileUtil.ForceDelete(strScreenshot);
+        }
         if (p_shtScreenshot != null)
-          File.WriteAllBytes(Path.Combine(p_strFomodFomodFolder, "screenshot" + p_shtScreenshot.Extension), p_shtScreenshot.Data);
+        {
+          File.WriteAllBytes(Path.Combine(p_strFomodFomodFolder, "screenshot" + p_shtScreenshot.Extension),
+                             p_shtScreenshot.Data);
+        }
       }
       ProgressDialog.StepItemProgress();
     }
@@ -293,7 +309,9 @@ namespace Fomm.PackageManager.FomodBuilder
       ProgressDialog.ItemProgressStep = 1;
       ProgressDialog.ItemMessage = String.Format("Creating Info File...");
       if (p_xmlInfo != null)
+      {
         p_xmlInfo.Save(Path.Combine(p_strFomodFomodFolder, "info.xml"));
+      }
       ProgressDialog.StepItemProgress();
     }
 
@@ -313,7 +331,9 @@ namespace Fomm.PackageManager.FomodBuilder
       {
         string strReadmeFileName = String.Format("Readme - {0}{1}", p_strFomodName, p_rmeReadme.Extension);
         if (Properties.Settings.Default.UseDocsFolder)
+        {
           strReadmeFileName = Path.Combine("docs", strReadmeFileName);
+        }
         File.WriteAllText(Path.Combine(p_strFomodFolder, strReadmeFileName), p_rmeReadme.Text);
       }
       ProgressDialog.StepItemProgress();
@@ -331,9 +351,10 @@ namespace Fomm.PackageManager.FomodBuilder
         szeExtractor.FileExtractionFinished += new EventHandler<FileInfoEventArgs>(FileExtractionFinished);
         szeExtractor.FileExtractionStarted += new EventHandler<FileInfoEventArgs>(FileExtractionStarted);
         ProgressDialog.ItemProgress = 0;
-        ProgressDialog.ItemProgressMaximum = (Int32)szeExtractor.FilesCount;
+        ProgressDialog.ItemProgressMaximum = (Int32) szeExtractor.FilesCount;
         ProgressDialog.ItemProgressStep = 1;
-        ProgressDialog.ItemMessage = String.Format("Extracting Source Files ({0})...", Path.GetFileName(p_strArchivePath));
+        ProgressDialog.ItemMessage = String.Format("Extracting Source Files ({0})...",
+                                                   Path.GetFileName(p_strArchivePath));
         szeExtractor.ExtractArchive(p_strExtractionPath);
       }
     }

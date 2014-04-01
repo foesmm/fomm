@@ -61,9 +61,13 @@ namespace Fomm.Commands
     {
       m_dlgGetArgument = p_dlgGetArgument;
       if (p_objTrigger == null)
+      {
         throw new ArgumentNullException("p_objTrigger");
+      }
       if (p_cmdCommand == null)
+      {
         throw new ArgumentNullException("p_cmdCommand");
+      }
       m_objTrigger = p_objTrigger;
       m_cmdCommand = p_cmdCommand;
       m_cmdCommand.PropertyChanged += new PropertyChangedEventHandler(CommandPropertyChanged);

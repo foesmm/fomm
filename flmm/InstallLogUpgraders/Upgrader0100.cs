@@ -39,18 +39,21 @@ namespace Fomm.InstallLogUpgraders
       {
         ProgressWorker.StepOverallProgress();
         XmlNode xndGameSpecificsValueEdit = xndGameSpecificsValueEdits.AppendChild(xmlInstallLog.CreateElement("edit"));
-        string strValueKey = String.Format("sdp:{0}/{1}", xndGameSpecificsValueEdits.Attributes["package"].Value, xndGameSpecificsValueEdits.Attributes["shader"].Value);
+        string strValueKey = String.Format("sdp:{0}/{1}", xndGameSpecificsValueEdits.Attributes["package"].Value,
+                                           xndGameSpecificsValueEdits.Attributes["shader"].Value);
         xndGameSpecificsValueEdit.Attributes.Append(xmlInstallLog.CreateAttribute("key")).Value = strValueKey;
         xndGameSpecificsValueEdit.AppendChild(xndSdpEdit.FirstChild.Clone());
       }
       xmlInstallLog.Save(InstallLog.Current.InstallLogPath);
-      
+
       //now update the mod info
       foreach (string strMod in lstMods)
       {
         ProgressWorker.StepOverallProgress();
         if (strMod.Equals(InstallLog.ORIGINAL_VALUES) || strMod.Equals(InstallLog.FOMM))
+        {
           continue;
+        }
         string strModPath = Path.Combine(Program.GameMode.ModDirectory, strMod + ".fomod");
         fomod fomodMod = new fomod(strModPath);
         InstallLog.Current.UpdateMod(fomodMod);

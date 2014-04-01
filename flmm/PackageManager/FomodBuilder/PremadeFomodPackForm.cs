@@ -97,7 +97,9 @@ namespace Fomm.PackageManager.FomodBuilder
     private void butPFP_Click(object sender, EventArgs e)
     {
       if (ofdPFP.ShowDialog(this) == DialogResult.OK)
+      {
         tbxPFP.Text = ofdPFP.FileName;
+      }
     }
 
     /// <summary>
@@ -109,7 +111,9 @@ namespace Fomm.PackageManager.FomodBuilder
     private void butSources_Click(object sender, EventArgs e)
     {
       if (fbdSources.ShowDialog(this) == DialogResult.OK)
+      {
         tbxSources.Text = fbdSources.SelectedPath;
+      }
     }
 
     /// <summary>
@@ -158,11 +162,16 @@ namespace Fomm.PackageManager.FomodBuilder
         bool booSourceMissing = false;
         foreach (SourceFile sflSource in lstSources)
         {
-          booSourceMissing = !File.Exists(Path.Combine(tbxSources.Text, sflSource.Source)) && !Directory.Exists(Path.Combine(tbxSources.Text, sflSource.Source));
+          booSourceMissing = !File.Exists(Path.Combine(tbxSources.Text, sflSource.Source)) &&
+                             !Directory.Exists(Path.Combine(tbxSources.Text, sflSource.Source));
           if ((!sflSource.Hidden || sflSource.Generated) && booSourceMissing)
+          {
             lstMissingSources.Add(sflSource);
+          }
           if ((sflSource.Hidden && !sflSource.Generated) && booSourceMissing)
+          {
             lstMissingHiddenSources.Add(sflSource);
+          }
         }
         if ((lstMissingSources.Count > 0) || ((m_omdMode == OpenPFPMode.Edit) && (lstMissingHiddenSources.Count > 0)))
         {
@@ -178,7 +187,10 @@ namespace Fomm.PackageManager.FomodBuilder
             foreach (SourceFile sflSource in lstMissingSources)
             {
               if (!sflSource.Generated)
-                stbErrorHtml.AppendFormat("<li><a href=\"{0}\">{1}</a></li>", sflSource.URL, sflSource.SourceFileName).AppendLine();
+              {
+                stbErrorHtml.AppendFormat("<li><a href=\"{0}\">{1}</a></li>", sflSource.URL, sflSource.SourceFileName)
+                            .AppendLine();
+              }
               else
               {
                 booMissingGeneratedFiles = true;
@@ -191,12 +203,16 @@ namespace Fomm.PackageManager.FomodBuilder
           {
             stbErrorHtml.Append("Some of the missing sources require the following files to be downloaded:<ul>");
             foreach (SourceFile sflSource in lstMissingHiddenSources)
-              stbErrorHtml.AppendFormat("<li><a href=\"{0}\">{1}</a></li>", sflSource.URL, sflSource.SourceFileName).AppendLine();
+            {
+              stbErrorHtml.AppendFormat("<li><a href=\"{0}\">{1}</a></li>", sflSource.URL, sflSource.SourceFileName)
+                          .AppendLine();
+            }
             stbErrorHtml.AppendLine("</ul>");
           }
           if (booMissingGeneratedFiles)
           {
-            stbErrorHtml.Append("You are missing some files that need to be created before FOMM can open the Premade FOMod Pack (PFP). ");
+            stbErrorHtml.Append(
+              "You are missing some files that need to be created before FOMM can open the Premade FOMod Pack (PFP). ");
             stbErrorHtml.Append("Please read the <b>howto.txt</b> file included in the PFP.");
           }
 
@@ -238,10 +254,14 @@ namespace Fomm.PackageManager.FomodBuilder
     {
       Properties.Settings.Default.LastPFPPath = Path.GetDirectoryName(tbxPFP.Text);
       if (!String.IsNullOrEmpty(tbxSources.Text))
+      {
         Properties.Settings.Default.LastPFPSourcesPath = Path.GetDirectoryName(tbxSources.Text);
+      }
       Properties.Settings.Default.Save();
       if (ValidateFiles())
+      {
         DialogResult = DialogResult.OK;
+      }
     }
   }
 }

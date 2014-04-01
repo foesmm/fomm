@@ -34,12 +34,16 @@ namespace Fomm.Commands
     /// <summary>
     /// Raised when a property changes value.
     /// </summary>
-    public event PropertyChangedEventHandler PropertyChanged = delegate { };
+    public event PropertyChangedEventHandler PropertyChanged = delegate
+    {
+    };
 
     /// <summary>
     /// Raised when the command has been executed.
     /// </summary>
-    public event EventHandler<ExecutedEventArgs<T>> Executed = delegate { };
+    public event EventHandler<ExecutedEventArgs<T>> Executed = delegate
+    {
+    };
 
     private bool m_booCanExecute = true;
 

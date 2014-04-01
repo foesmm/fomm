@@ -21,11 +21,11 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
     {
       get
       {
-        return tkbSlider.Minimum / m_intDivisor;
+        return tkbSlider.Minimum/m_intDivisor;
       }
       set
       {
-        tkbSlider.Minimum = value * m_intDivisor;
+        tkbSlider.Minimum = value*m_intDivisor;
       }
     }
 
@@ -33,11 +33,11 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
     {
       get
       {
-        return tkbSlider.Maximum / m_intDivisor;
+        return tkbSlider.Maximum/m_intDivisor;
       }
       set
       {
-        tkbSlider.Maximum = value * m_intDivisor;
+        tkbSlider.Maximum = value*m_intDivisor;
       }
     }
 
@@ -62,16 +62,22 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
       set
       {
         if (value == 0)
+        {
           return;
+        }
         Int32 intMax = Maximum;
         Int32 intMin = Minimum;
         m_intDivisor = value;
         Maximum = intMax;
         Minimum = intMin;
         if (m_intDivisor > 1)
+        {
           nudValue.DecimalPlaces = 1;
+        }
         else
+        {
           nudValue.DecimalPlaces = 0;
+        }
       }
     }
 
@@ -84,11 +90,13 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
       set
       {
         if ((value > Maximum) || (value < Minimum))
+        {
           ckbOverride.Checked = true;
+        }
         else
         {
           ckbOverride.Checked = false;
-          tkbSlider.Value = (Int32)(value * m_intDivisor);
+          tkbSlider.Value = (Int32) (value*m_intDivisor);
         }
         nudValue.Value = value;
         RefreshEnabledStates();
@@ -97,7 +105,7 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
 
     private void tkbSlider_Scroll(object sender, EventArgs e)
     {
-      nudValue.Value = (decimal)tkbSlider.Value / (decimal)m_intDivisor;
+      nudValue.Value = (decimal) tkbSlider.Value/(decimal) m_intDivisor;
     }
 
     private void ckbOverride_CheckedChanged(object sender, EventArgs e)

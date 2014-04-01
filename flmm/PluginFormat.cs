@@ -140,7 +140,8 @@ namespace Fomm
     /// <param name="p_clrColour">The font colour to apply to the plugin item.</param>
     /// <param name="p_clrHighlight">The highlight to apply to the plugin item.</param>
     /// <param name="p_strMessage">The message to show for the plugin.</param>
-    protected PluginFormat(Int32 p_intIndex, FontFamily p_ffmFontFamily, float? p_fltFontSizeEM, FontStyle? p_fstFontStyle, Color? p_clrColour, Color? p_clrHighlight, string p_strMessage)
+    protected PluginFormat(Int32 p_intIndex, FontFamily p_ffmFontFamily, float? p_fltFontSizeEM,
+                           FontStyle? p_fstFontStyle, Color? p_clrColour, Color? p_clrHighlight, string p_strMessage)
     {
       m_intIndex = p_intIndex;
       m_ffmFontFamily = p_ffmFontFamily;
@@ -162,8 +163,10 @@ namespace Fomm
     {
       FontStyle fstStyle = p_fntBaseFont.Style;
       if (FontStyle.HasValue)
+      {
         fstStyle |= FontStyle.Value;
-      return new Font(FontFamily ?? p_fntBaseFont.FontFamily, FontSizeEM ?? p_fntBaseFont.SizeInPoints, fstStyle);      
+      }
+      return new Font(FontFamily ?? p_fntBaseFont.FontFamily, FontSizeEM ?? p_fntBaseFont.SizeInPoints, fstStyle);
     }
 
     /// <summary>
@@ -175,13 +178,19 @@ namespace Fomm
       m_ffmFontFamily = p_pftFormat.FontFamily ?? m_ffmFontFamily;
       m_fltFontSizeEM = p_pftFormat.FontSizeEM ?? m_fltFontSizeEM;
       if (FontStyle.HasValue && p_pftFormat.FontStyle.HasValue)
+      {
         m_fstFontStyle = FontStyle.Value | p_pftFormat.FontStyle.Value;
+      }
       else
+      {
         m_fstFontStyle = p_pftFormat.FontStyle ?? m_fstFontStyle;
+      }
       m_clrColour = p_pftFormat.Colour ?? m_clrColour;
       m_clrHighlight = p_pftFormat.Highlight ?? m_clrHighlight;
       if (!String.IsNullOrEmpty(m_strMessage) && !String.IsNullOrEmpty(p_pftFormat.Message))
+      {
         m_strMessage += @"\par ";
+      }
       m_strMessage += p_pftFormat.Message;
     }
 

@@ -36,7 +36,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     /// <param name="p_fomodMod">The mod whose configuration file we are parsing.</param>
     /// <param name="p_dsmSate">The state of the install.</param>
     /// <param name="p_pexParserExtension">The parser extension that provides game-specific config file parsing.</param>
-    public Parser40(XmlDocument p_xmlConfig, fomod p_fomodMod, DependencyStateManager p_dsmSate, ParserExtension p_pexParserExtension)
+    public Parser40(XmlDocument p_xmlConfig, fomod p_fomodMod, DependencyStateManager p_dsmSate,
+                    ParserExtension p_pexParserExtension)
       : base(p_xmlConfig, p_fomodMod, p_dsmSate, p_pexParserExtension)
     {
     }
@@ -53,7 +54,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
       if (xndSteps != null)
       {
         foreach (XmlNode xndStep in xndSteps.ChildNodes)
+        {
           lstSteps.Add(parseInstallStep(xndStep));
+        }
         switch (xndSteps.Attributes["order"].InnerText)
         {
           case "Ascending":
@@ -62,7 +65,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
               if (String.IsNullOrEmpty(x.Name))
               {
                 if (String.IsNullOrEmpty(y.Name))
+                {
                   return 0;
+                }
                 return -1;
               }
               return x.Name.CompareTo(y.Name);
@@ -74,7 +79,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
               if (String.IsNullOrEmpty(y.Name))
               {
                 if (String.IsNullOrEmpty(x.Name))
+                {
                   return 0;
+                }
                 return -1;
               }
               return y.Name.CompareTo(x.Name);

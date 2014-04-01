@@ -85,8 +85,12 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
       get
       {
         foreach (DependencyTypePattern dtpPattern in m_lstPatterns)
+        {
           if (dtpPattern.Dependency.IsFufilled)
+          {
             return dtpPattern.Type;
+          }
+        }
         return m_ptpDefaultType;
       }
     }

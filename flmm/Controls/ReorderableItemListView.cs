@@ -13,6 +13,7 @@
  *    http://www.codeproject.com/KB/list/LVCustomReordering.aspx
  * 
  * */
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -26,7 +27,7 @@ namespace L0ki.Controls
   /// to reorder items in the control by drag and drop.
   /// </summary>
   /// <see cref="ListView"/>
-  class ReordableItemListView : ListView
+  internal class ReordableItemListView : ListView
   {
     #region Constants
 
@@ -93,15 +94,17 @@ namespace L0ki.Controls
       {
         g.DrawLine(new Pen(Color.Red), X1, Y, X2 - 1, Y);
 
-        Point[] leftTriangle = new Point[3] {
-          new Point(X1,      Y-4),
-          new Point(X1 + 7,  Y),
-          new Point(X1,      Y+4)
+        Point[] leftTriangle = new Point[3]
+        {
+          new Point(X1, Y - 4),
+          new Point(X1 + 7, Y),
+          new Point(X1, Y + 4)
         };
-        Point[] rightTriangle = new Point[3] {
-          new Point(X2,     Y-4),
+        Point[] rightTriangle = new Point[3]
+        {
+          new Point(X2, Y - 4),
           new Point(X2 - 8, Y),
-          new Point(X2,     Y+4)
+          new Point(X2, Y + 4)
         };
 
         Brush br = new SolidBrush(Color.Red);
@@ -120,7 +123,7 @@ namespace L0ki.Controls
     {
       Point pt = this.PointToClient(location);
       Rectangle rc = itemToCheck.GetBounds(ItemBoundsPortion.Entire);
-      return (pt.Y < (rc.Top + (rc.Height / 2)));
+      return (pt.Y < (rc.Top + (rc.Height/2)));
     }
 
     /// <summary>
@@ -134,7 +137,8 @@ namespace L0ki.Controls
     private ListViewItem GetItemAtPoint(Point location)
     {
       Point pt = this.PointToClient(location);
-      int lastItemBottom = Math.Min(pt.Y, this.Items[this.Items.Count - 1].GetBounds(ItemBoundsPortion.Entire).Bottom - 1);
+      int lastItemBottom = Math.Min(pt.Y,
+                                    this.Items[this.Items.Count - 1].GetBounds(ItemBoundsPortion.Entire).Bottom - 1);
       return this.GetItemAt(0, lastItemBottom);
     }
 
@@ -160,11 +164,19 @@ namespace L0ki.Controls
     #endregion
 
     #region Properties
+
     private bool allowDrop = true;
+
     public override bool AllowDrop
     {
-      get { return allowDrop; }
-      set { allowDrop = value; }
+      get
+      {
+        return allowDrop;
+      }
+      set
+      {
+        allowDrop = value;
+      }
     }
 
     #endregion
@@ -184,20 +196,27 @@ namespace L0ki.Controls
 
     protected override void OnItemChecked(ItemCheckedEventArgs e)
     {
-      if (_ItemsToMove.Count > 0) return;
+      if (_ItemsToMove.Count > 0)
+      {
+        return;
+      }
       base.OnItemChecked(e);
     }
 
     protected override void OnItemDrag(ItemDragEventArgs e)
     {
       if ((this.SelectedItems.Count == 0) || (e.Button != MouseButtons.Left) || !allowDrop)
+      {
         return;
+      }
 
       ResetDragIndicator();
 
       this._ItemsToMove.Clear();
       for (int index = 0; index < this.SelectedItems.Count; index++)
+      {
         this._ItemsToMove.Add(this.SelectedItems[index]);
+      }
 
       base.DoDragDrop(this._DragKey, DragDropEffects.Move);
     }
@@ -265,28 +284,40 @@ namespace L0ki.Controls
 
       int insertIndex;
       if (IsPointInTopHalfOfItem(pt, itemOver))
+      {
         insertIndex = itemOver.Index;
+      }
       else
+      {
         insertIndex = itemOver.Index + 1;
+      }
 
       Int32 intSelectionStartIndex = this.Items.IndexOf(_ItemsToMove[0]);
       Int32 intSelectionEndIndex = this.Items.IndexOf(_ItemsToMove[_ItemsToMove.Count - 1]);
       //if we are dragging to a point in the selection being dragged, don't bother as the order won't change
       if ((insertIndex >= intSelectionStartIndex) && (insertIndex <= intSelectionEndIndex))
+      {
         return;
+      }
       //if we are inserting at a point after the selection being dragged, offset the insert index to account
       // the the seleciton having been removed
       if (insertIndex > intSelectionEndIndex)
+      {
         insertIndex -= _ItemsToMove.Count;
-      
+      }
+
       // Remove old items
       for (int index = 0; index < this._ItemsToMove.Count; index++)
+      {
         this.Items.Remove(this._ItemsToMove[index]);
+      }
 
       // Insert new items
       for (int index = 0; index < this._ItemsToMove.Count; index++)
+      {
         this.Items.Insert(Math.Min(insertIndex + index, this.Items.Count), _ItemsToMove[index]);
-      
+      }
+
       ResetDragItems();
 
       base.OnDragDrop(drgevent);

@@ -116,7 +116,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// <param name="p_booShowImage">Whether or not to display the image in the header.</param>
     /// <param name="p_booShowFade">Whether or not to display the fade effect in the header.</param>
     /// <param name="p_intHeight">The desired height of the header.</param>
-    public HeaderInfo(string p_strTitle, Color p_clrColour, TextPosition p_tpsTitlePosition, Image p_imgImage, bool p_booShowImage, bool p_booShowFade, Int32 p_intHeight)
+    public HeaderInfo(string p_strTitle, Color p_clrColour, TextPosition p_tpsTitlePosition, Image p_imgImage,
+                      bool p_booShowImage, bool p_booShowFade, Int32 p_intHeight)
     {
       m_strTitle = p_strTitle;
       m_clrColour = p_clrColour;

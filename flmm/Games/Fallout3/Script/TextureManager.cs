@@ -40,7 +40,10 @@ namespace Fomm.Games.Fallout3.Script
         m_booDdsParserInited = true;
       }
       IntPtr ptr = NativeMethods.ddsLoad(p_bteTexture, p_bteTexture.Length);
-      if (ptr != IntPtr.Zero) m_lstTextures.Add(ptr);
+      if (ptr != IntPtr.Zero)
+      {
+        m_lstTextures.Add(ptr);
+      }
       return ptr;
     }
 
@@ -59,7 +62,10 @@ namespace Fomm.Games.Fallout3.Script
         m_booDdsParserInited = true;
       }
       IntPtr ptr = NativeMethods.ddsCreate(p_intWidth, p_intHeight);
-      if (ptr != IntPtr.Zero) m_lstTextures.Add(ptr);
+      if (ptr != IntPtr.Zero)
+      {
+        m_lstTextures.Add(ptr);
+      }
       return ptr;
     }
 
@@ -73,11 +79,17 @@ namespace Fomm.Games.Fallout3.Script
     /// <returns>The saved texture.</returns>
     public byte[] SaveTexture(IntPtr p_ptrTexture, int p_intFormat, bool p_booMipmaps)
     {
-      if (!m_booDdsParserInited || !m_lstTextures.Contains(p_ptrTexture)) return null;
+      if (!m_booDdsParserInited || !m_lstTextures.Contains(p_ptrTexture))
+      {
+        return null;
+      }
       PermissionsManager.CurrentPermissions.Assert();
       int length;
       IntPtr data = NativeMethods.ddsSave(p_ptrTexture, p_intFormat, p_booMipmaps ? 1 : 0, out length);
-      if (data == IntPtr.Zero) return null;
+      if (data == IntPtr.Zero)
+      {
+        return null;
+      }
       byte[] result = new byte[length];
       System.Runtime.InteropServices.Marshal.Copy(data, result, 0, length);
       return result;
@@ -90,12 +102,17 @@ namespace Fomm.Games.Fallout3.Script
     /// <param name="p_rctSourceRect">The area of the source texture from which to make the copy.</param>
     /// <param name="p_ptrDestination">A pointer to the texture to which to make the copy.</param>
     /// <param name="p_rctDestinationRect">The area of the destination texture to which to make the copy.</param>
-    public void CopyTexture(IntPtr p_ptrSource, Rectangle p_rctSourceRect, IntPtr p_ptrDestination, Rectangle p_rctDestinationRect)
+    public void CopyTexture(IntPtr p_ptrSource, Rectangle p_rctSourceRect, IntPtr p_ptrDestination,
+                            Rectangle p_rctDestinationRect)
     {
-      if (!m_booDdsParserInited || !m_lstTextures.Contains(p_ptrSource) || !m_lstTextures.Contains(p_ptrDestination)) return;
+      if (!m_booDdsParserInited || !m_lstTextures.Contains(p_ptrSource) || !m_lstTextures.Contains(p_ptrDestination))
+      {
+        return;
+      }
       PermissionsManager.CurrentPermissions.Assert();
-      NativeMethods.ddsBlt(p_ptrSource, p_rctSourceRect.Left, p_rctSourceRect.Top, p_rctSourceRect.Width, p_rctSourceRect.Height, p_ptrDestination, p_rctDestinationRect.Left,
-        p_rctDestinationRect.Top, p_rctDestinationRect.Width, p_rctDestinationRect.Height);
+      NativeMethods.ddsBlt(p_ptrSource, p_rctSourceRect.Left, p_rctSourceRect.Top, p_rctSourceRect.Width,
+                           p_rctSourceRect.Height, p_ptrDestination, p_rctDestinationRect.Left,
+                           p_rctDestinationRect.Top, p_rctDestinationRect.Width, p_rctDestinationRect.Height);
     }
 
     /// <summary>
@@ -108,7 +125,10 @@ namespace Fomm.Games.Fallout3.Script
     {
       p_intWidth = 0;
       p_intHeight = 0;
-      if (!m_booDdsParserInited || !m_lstTextures.Contains(p_ptrTexture)) return;
+      if (!m_booDdsParserInited || !m_lstTextures.Contains(p_ptrTexture))
+      {
+        return;
+      }
       PermissionsManager.CurrentPermissions.Assert();
       NativeMethods.ddsGetSize(p_ptrTexture, out p_intWidth, out p_intHeight);
     }
@@ -122,11 +142,17 @@ namespace Fomm.Games.Fallout3.Script
     public byte[] GetTextureData(IntPtr p_ptrTexture, out int p_intPitch)
     {
       p_intPitch = 0;
-      if (!m_booDdsParserInited || !m_lstTextures.Contains(p_ptrTexture)) return null;
+      if (!m_booDdsParserInited || !m_lstTextures.Contains(p_ptrTexture))
+      {
+        return null;
+      }
       PermissionsManager.CurrentPermissions.Assert();
       int length;
       IntPtr ptr = NativeMethods.ddsLock(p_ptrTexture, out length, out p_intPitch);
-      if (ptr == IntPtr.Zero) return null;
+      if (ptr == IntPtr.Zero)
+      {
+        return null;
+      }
       byte[] result = new byte[length];
       System.Runtime.InteropServices.Marshal.Copy(ptr, result, 0, length);
       NativeMethods.ddsUnlock(p_ptrTexture);
@@ -140,7 +166,10 @@ namespace Fomm.Games.Fallout3.Script
     /// <param name="p_bteData">The data to which to set the texture.</param>
     public void SetTextureData(IntPtr p_ptrTexture, byte[] p_bteData)
     {
-      if (!m_booDdsParserInited || !m_lstTextures.Contains(p_ptrTexture)) return;
+      if (!m_booDdsParserInited || !m_lstTextures.Contains(p_ptrTexture))
+      {
+        return;
+      }
       PermissionsManager.CurrentPermissions.Assert();
       NativeMethods.ddsSetData(p_ptrTexture, p_bteData, p_bteData.Length);
     }
@@ -151,7 +180,10 @@ namespace Fomm.Games.Fallout3.Script
     /// <param name="p_ptrTexture">A pointer to the texture to release.</param>
     public void ReleaseTexture(IntPtr p_ptrTexture)
     {
-      if (!m_booDdsParserInited || !m_lstTextures.Contains(p_ptrTexture)) return;
+      if (!m_booDdsParserInited || !m_lstTextures.Contains(p_ptrTexture))
+      {
+        return;
+      }
       PermissionsManager.CurrentPermissions.Assert();
       NativeMethods.ddsRelease(p_ptrTexture);
       m_lstTextures.Remove(p_ptrTexture);
@@ -170,7 +202,9 @@ namespace Fomm.Games.Fallout3.Script
       if (m_booDdsParserInited)
       {
         for (int i = 0; i < m_lstTextures.Count; i++)
+        {
           NativeMethods.ddsRelease(m_lstTextures[i]);
+        }
         m_lstTextures = null;
         NativeMethods.ddsClose();
         m_booDdsParserInited = false;

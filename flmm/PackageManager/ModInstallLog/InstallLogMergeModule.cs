@@ -117,7 +117,9 @@ namespace Fomm.PackageManager.ModInstallLog
         {
           intResult = m_strSection.CompareTo(other.m_strSection);
           if (intResult == 0)
+          {
             intResult = m_strKey.CompareTo(other.m_strKey);
+          }
         }
         return intResult;
       }
@@ -294,8 +296,8 @@ namespace Fomm.PackageManager.ModInstallLog
 
       #endregion
     }*/
-  
     private List<string> m_lstDataFiles = null;
+
     private List<string> m_lstReplacedDataFiles = null;
     private List<IniEdit> m_lstIniEdits = null;
     private List<IniEdit> m_lstReplacedIniValues = null;
@@ -406,8 +408,12 @@ namespace Fomm.PackageManager.ModInstallLog
     {
       string strLoweredSearchString = p_strSearchString.ToLowerInvariant();
       for (Int32 i = p_lstValues.Count - 1; i >= 0; i--)
+      {
         if (p_lstValues[i].ToLowerInvariant().Equals(strLoweredSearchString))
+        {
           return true;
+        }
+      }
       return false;
     }
 
@@ -437,7 +443,9 @@ namespace Fomm.PackageManager.ModInstallLog
     {
       string strNormalizedPath = NormalizePath(p_strDataPath);
       if (!ListContains(m_lstDataFiles, strNormalizedPath))
+      {
         m_lstDataFiles.Add(strNormalizedPath);
+      }
     }
 
     /// <summary>
@@ -450,7 +458,9 @@ namespace Fomm.PackageManager.ModInstallLog
     internal void BackupOriginalDataFile(string p_strDataPath)
     {
       if (!ListContains(m_lstReplacedDataFiles, p_strDataPath))
+      {
         m_lstReplacedDataFiles.Add(p_strDataPath);
+      }
     }
 
     #endregion
@@ -476,9 +486,13 @@ namespace Fomm.PackageManager.ModInstallLog
       IniEdit iniEdit = new IniEdit(strLoweredFile, strLoweredSection, strLoweredKey);
       Int32 intIndex = m_lstIniEdits.IndexOf(iniEdit);
       if (intIndex == -1)
+      {
         m_lstIniEdits.Add(iniEdit);
+      }
       else
+      {
         iniEdit = m_lstIniEdits[intIndex];
+      }
       iniEdit.Value = p_strValue;
     }
 
@@ -500,9 +514,13 @@ namespace Fomm.PackageManager.ModInstallLog
       IniEdit iniEdit = new IniEdit(strLoweredFile, strLoweredSection, strLoweredKey);
       Int32 intIndex = m_lstReplacedIniValues.IndexOf(iniEdit);
       if (intIndex == -1)
+      {
         m_lstReplacedIniValues.Add(iniEdit);
+      }
       else
+      {
         iniEdit = m_lstReplacedIniValues[intIndex];
+      }
       iniEdit.Value = p_strValue;
     }
 
@@ -525,9 +543,13 @@ namespace Fomm.PackageManager.ModInstallLog
       GameSpecificValueEdit gseEdit = new GameSpecificValueEdit(strLoweredKey);
       Int32 intIndex = m_lstGameSpecificValueEdits.IndexOf(gseEdit);
       if (intIndex == -1)
+      {
         m_lstGameSpecificValueEdits.Add(gseEdit);
+      }
       else
+      {
         gseEdit = m_lstGameSpecificValueEdits[intIndex];
+      }
       gseEdit.Data = p_bteData;
     }
 
@@ -545,9 +567,13 @@ namespace Fomm.PackageManager.ModInstallLog
       GameSpecificValueEdit oetEdit = new GameSpecificValueEdit(strLoweredKey);
       Int32 intIndex = m_lstReplacedGameSpecificValues.IndexOf(oetEdit);
       if (intIndex == -1)
+      {
         m_lstReplacedGameSpecificValues.Add(oetEdit);
+      }
       else
+      {
         oetEdit = m_lstReplacedGameSpecificValues[intIndex];
+      }
       oetEdit.Data = p_bteData;
     }
 

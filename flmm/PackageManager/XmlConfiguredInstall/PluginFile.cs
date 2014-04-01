@@ -111,7 +111,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// <param name="p_intPriority">The priority of the item.</param>
     /// <param name="p_booAlwaysInstall">Whether this item should always be installed, regardless of whether or not the plugin is selected.</param>
     /// <param name="p_booInstallIfUsable">Whether this item should be installed when the plugin is not <see cref="PluginType.NotUsable"/>, regardless of whether or not the plugin is selected.</param>
-    public PluginFile(string p_strSource, string p_strDest, bool p_booIsFolder, Int32 p_intPriority, bool p_booAlwaysInstall, bool p_booInstallIfUsable)
+    public PluginFile(string p_strSource, string p_strDest, bool p_booIsFolder, Int32 p_intPriority,
+                      bool p_booAlwaysInstall, bool p_booInstallIfUsable)
     {
       m_strSource = p_strSource;
       m_strDest = p_strDest;
@@ -143,7 +144,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
         {
           intResult = m_strSource.CompareTo(other.Source);
           if (intResult == 0)
+          {
             intResult = m_strDest.CompareTo(other.Destination);
+          }
         }
       }
       return intResult;

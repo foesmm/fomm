@@ -58,7 +58,9 @@ namespace Fomm.PackageManager
         {
           clbGroups.SuspendLayout();
           foreach (string strGroup in strGroups)
+          {
             clbGroups.Items.Add(strGroup, 0);
+          }
           clbGroups.ResumeLayout();
         }
       }
@@ -150,7 +152,8 @@ namespace Fomm.PackageManager
       if (!String.IsNullOrEmpty(tbWebsite.Text))
       {
         Uri uri;
-        if (!Uri.TryCreate(tbWebsite.Text, UriKind.Absolute, out uri) || uri.IsFile || (uri.Scheme != "http" && uri.Scheme != "https"))
+        if (!Uri.TryCreate(tbWebsite.Text, UriKind.Absolute, out uri) || uri.IsFile ||
+            (uri.Scheme != "http" && uri.Scheme != "https"))
         {
           erpErrors.SetError(tbWebsite, "Invalid web address specified.\nDid you miss the 'http://'?");
           return false;
@@ -236,7 +239,9 @@ namespace Fomm.PackageManager
     {
       ModName = p_fomodMod.ModName;
       Author = p_fomodMod.Author;
-      HumanReadableVersion = String.IsNullOrEmpty(p_fomodMod.HumanReadableVersion) ? p_fomodMod.MachineVersion.ToString() : p_fomodMod.HumanReadableVersion;
+      HumanReadableVersion = String.IsNullOrEmpty(p_fomodMod.HumanReadableVersion)
+        ? p_fomodMod.MachineVersion.ToString()
+        : p_fomodMod.HumanReadableVersion;
       MachineVersion = p_fomodMod.MachineVersion;
       Description = p_fomodMod.Description;
       Website = p_fomodMod.Website;
@@ -255,7 +260,9 @@ namespace Fomm.PackageManager
     public bool SaveFomod(fomod p_fomodMod)
     {
       if (!this.ValidateChildren())
+      {
         return false;
+      }
 
       if (!String.IsNullOrEmpty(tbVersion.Text) && String.IsNullOrEmpty(tbMVersion.Text))
       {
@@ -265,7 +272,9 @@ namespace Fomm.PackageManager
 
       p_fomodMod.ModName = ModName;
       p_fomodMod.Author = Author;
-      p_fomodMod.HumanReadableVersion = String.IsNullOrEmpty(HumanReadableVersion) ? MachineVersion.ToString() : HumanReadableVersion;
+      p_fomodMod.HumanReadableVersion = String.IsNullOrEmpty(HumanReadableVersion)
+        ? MachineVersion.ToString()
+        : HumanReadableVersion;
       p_fomodMod.MachineVersion = MachineVersion;
       p_fomodMod.Description = Description;
       p_fomodMod.Website = Website;
@@ -319,7 +328,9 @@ namespace Fomm.PackageManager
       get
       {
         if (String.IsNullOrEmpty(tbMVersion.Text) || !ValidateMachineVersion())
+        {
           return fomod.DefaultVersion;
+        }
         return new Version(tbMVersion.Text);
       }
       set
@@ -337,7 +348,9 @@ namespace Fomm.PackageManager
       get
       {
         if (String.IsNullOrEmpty(tbMinFommVersion.Text) || !ValidateMinFommVersion())
+        {
           return fomod.DefaultMinFommVersion;
+        }
         return new Version(tbMinFommVersion.Text);
       }
       set
@@ -356,14 +369,19 @@ namespace Fomm.PackageManager
       {
         string[] strGroups = new string[clbGroups.CheckedItems.Count];
         for (Int32 i = 0; i < strGroups.Length; i++)
-          strGroups[i] = ((string)clbGroups.CheckedItems[i]).ToLowerInvariant();
+        {
+          strGroups[i] = ((string) clbGroups.CheckedItems[i]).ToLowerInvariant();
+        }
         return strGroups;
       }
       set
       {
         clbGroups.SuspendLayout();
         for (Int32 i = 0; i < clbGroups.Items.Count; i++)
-          clbGroups.SetItemChecked(i, Array.IndexOf<string>(value, ((string)clbGroups.Items[i]).ToLowerInvariant()) != -1);
+        {
+          clbGroups.SetItemChecked(i,
+                                   Array.IndexOf<string>(value, ((string) clbGroups.Items[i]).ToLowerInvariant()) != -1);
+        }
         clbGroups.ResumeLayout();
       }
     }

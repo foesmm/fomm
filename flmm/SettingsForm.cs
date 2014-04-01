@@ -44,11 +44,13 @@ namespace Fomm
     /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
     private void tpgGeneral_MouseHover(object sender, EventArgs e)
     {
-      if (!gbxAssociations.Enabled && gbxAssociations.ClientRectangle.Contains(gbxAssociations.PointToClient(Cursor.Position)))
+      if (!gbxAssociations.Enabled &&
+          gbxAssociations.ClientRectangle.Contains(gbxAssociations.PointToClient(Cursor.Position)))
       {
         booToolTipShown = true;
         Point pntToolTipLocation = gbxAssociations.PointToClient(Cursor.Position);
-        ttpTip.Show(ttpTip.GetToolTip(gbxAssociations), gbxAssociations, pntToolTipLocation.X, pntToolTipLocation.Y + Cursor.Current.Size.Height);
+        ttpTip.Show(ttpTip.GetToolTip(gbxAssociations), gbxAssociations, pntToolTipLocation.X,
+                    pntToolTipLocation.Y + Cursor.Current.Size.Height);
       }
     }
 
@@ -128,11 +130,15 @@ namespace Fomm
 
       key = Registry.GetValue(@"HKEY_CLASSES_ROOT\.zip", null, null) as string;
       if (key == null)
+      {
         cbShellExtensions.Enabled = false;
+      }
       else
       {
         if (Registry.GetValue("HKEY_CLASSES_ROOT\\" + key + "\\Shell\\Convert_to_fomod\\command", null, null) != null)
+        {
           cbShellExtensions.Checked = true;
+        }
       }
     }
 
@@ -141,13 +147,13 @@ namespace Fomm
     /// </summary>
     protected void LoadFOMODSettings()
     {
-      cbxFomodCompression.DataSource = Enum.GetValues(typeof(CompressionLevel));
-      cbxFomodFormat.DataSource = Enum.GetValues(typeof(OutArchiveFormat));
+      cbxFomodCompression.DataSource = Enum.GetValues(typeof (CompressionLevel));
+      cbxFomodFormat.DataSource = Enum.GetValues(typeof (OutArchiveFormat));
       cbxFomodCompression.SelectedItem = Properties.Settings.Default.fomodCompressionLevel;
       cbxFomodFormat.SelectedItem = Properties.Settings.Default.fomodCompressionFormat;
 
-      cbxPFPCompression.DataSource = Enum.GetValues(typeof(CompressionLevel));
-      cbxPFPFormat.DataSource = Enum.GetValues(typeof(OutArchiveFormat));
+      cbxPFPCompression.DataSource = Enum.GetValues(typeof (CompressionLevel));
+      cbxPFPFormat.DataSource = Enum.GetValues(typeof (OutArchiveFormat));
       cbxPFPCompression.SelectedItem = Properties.Settings.Default.pfpCompressionLevel;
       cbxPFPFormat.SelectedItem = Properties.Settings.Default.pfpCompressionFormat;
 
@@ -183,7 +189,9 @@ namespace Fomm
     private void butOK_Click(object sender, EventArgs e)
     {
       if (!SaveGameModeSettings())
+      {
         return;
+      }
 
       SaveGeneralSettings();
       SaveFOMODSettings();
@@ -201,9 +209,12 @@ namespace Fomm
     private void AddShellExtension(string key)
     {
       if (key == null)
+      {
         return;
+      }
       Registry.SetValue("HKEY_CLASSES_ROOT\\" + key + "\\Shell\\Convert_to_fomod", null, "Convert to fomod");
-      Registry.SetValue("HKEY_CLASSES_ROOT\\" + key + "\\Shell\\Convert_to_fomod\\command", null, "\"" + Application.ExecutablePath + "\" \"%1\"", RegistryValueKind.String);
+      Registry.SetValue("HKEY_CLASSES_ROOT\\" + key + "\\Shell\\Convert_to_fomod\\command", null,
+                        "\"" + Application.ExecutablePath + "\" \"%1\"", RegistryValueKind.String);
     }
 
     /// <summary>
@@ -212,10 +223,15 @@ namespace Fomm
     /// <param name="key">The key representing the file type for which to remove a shell extension.</param>
     private void RemoveShellExtension(string key)
     {
-      if (key == null) return;
+      if (key == null)
+      {
+        return;
+      }
       RegistryKey rk = Registry.ClassesRoot.OpenSubKey(key + "\\Shell", true);
       if (Array.IndexOf<string>(rk.GetSubKeyNames(), "Convert_to_fomod") != -1)
+      {
         rk.DeleteSubKeyTree("Convert_to_fomod");
+      }
       rk.Close();
     }
 
@@ -241,9 +257,12 @@ namespace Fomm
         else
         {
           Registry.SetValue(@"HKEY_CLASSES_ROOT\.bsa", null, "BethesdaSoftworks_Archive");
-          Registry.SetValue(@"HKEY_CLASSES_ROOT\BethesdaSoftworks_Archive", null, "Bethesda File Archive", RegistryValueKind.String);
-          Registry.SetValue(@"HKEY_CLASSES_ROOT\BethesdaSoftworks_Archive\DefaultIcon", null, Application.ExecutablePath + ",0", RegistryValueKind.String);
-          Registry.SetValue(@"HKEY_CLASSES_ROOT\BethesdaSoftworks_Archive\shell\open\command", null, "\"" + Application.ExecutablePath + "\" \"%1\"", RegistryValueKind.String);
+          Registry.SetValue(@"HKEY_CLASSES_ROOT\BethesdaSoftworks_Archive", null, "Bethesda File Archive",
+                            RegistryValueKind.String);
+          Registry.SetValue(@"HKEY_CLASSES_ROOT\BethesdaSoftworks_Archive\DefaultIcon", null,
+                            Application.ExecutablePath + ",0", RegistryValueKind.String);
+          Registry.SetValue(@"HKEY_CLASSES_ROOT\BethesdaSoftworks_Archive\shell\open\command", null,
+                            "\"" + Application.ExecutablePath + "\" \"%1\"", RegistryValueKind.String);
         }
 
         if (!cbAssociateSdp.Checked)
@@ -257,9 +276,12 @@ namespace Fomm
         else
         {
           Registry.SetValue(@"HKEY_CLASSES_ROOT\.sdp", null, "BethesdaSoftworks_ShaderPackage");
-          Registry.SetValue(@"HKEY_CLASSES_ROOT\BethesdaSoftworks_ShaderPackage", null, "Bethesda Shader Package", RegistryValueKind.String);
-          Registry.SetValue(@"HKEY_CLASSES_ROOT\BethesdaSoftworks_ShaderPackage\DefaultIcon", null, Application.ExecutablePath + ",0", RegistryValueKind.String);
-          Registry.SetValue(@"HKEY_CLASSES_ROOT\BethesdaSoftworks_ShaderPackage\shell\open\command", null, "\"" + Application.ExecutablePath + "\" \"%1\"", RegistryValueKind.String);
+          Registry.SetValue(@"HKEY_CLASSES_ROOT\BethesdaSoftworks_ShaderPackage", null, "Bethesda Shader Package",
+                            RegistryValueKind.String);
+          Registry.SetValue(@"HKEY_CLASSES_ROOT\BethesdaSoftworks_ShaderPackage\DefaultIcon", null,
+                            Application.ExecutablePath + ",0", RegistryValueKind.String);
+          Registry.SetValue(@"HKEY_CLASSES_ROOT\BethesdaSoftworks_ShaderPackage\shell\open\command", null,
+                            "\"" + Application.ExecutablePath + "\" \"%1\"", RegistryValueKind.String);
         }
 
         if (!cbAssociateFomod.Checked)
@@ -273,9 +295,12 @@ namespace Fomm
         else
         {
           Registry.SetValue(@"HKEY_CLASSES_ROOT\.fomod", null, "FOMM_Mod_Archive");
-          Registry.SetValue(@"HKEY_CLASSES_ROOT\FOMM_Mod_Archive", null, "Fallout Mod Manager Archive", RegistryValueKind.String);
-          Registry.SetValue(@"HKEY_CLASSES_ROOT\FOMM_Mod_Archive\DefaultIcon", null, Application.ExecutablePath + ",0", RegistryValueKind.String);
-          Registry.SetValue(@"HKEY_CLASSES_ROOT\FOMM_Mod_Archive\shell\open\command", null, "\"" + Application.ExecutablePath + "\" \"%1\"", RegistryValueKind.String);
+          Registry.SetValue(@"HKEY_CLASSES_ROOT\FOMM_Mod_Archive", null, "Fallout Mod Manager Archive",
+                            RegistryValueKind.String);
+          Registry.SetValue(@"HKEY_CLASSES_ROOT\FOMM_Mod_Archive\DefaultIcon", null, Application.ExecutablePath + ",0",
+                            RegistryValueKind.String);
+          Registry.SetValue(@"HKEY_CLASSES_ROOT\FOMM_Mod_Archive\shell\open\command", null,
+                            "\"" + Application.ExecutablePath + "\" \"%1\"", RegistryValueKind.String);
         }
 
         if (cbShellExtensions.Checked)
@@ -298,11 +323,11 @@ namespace Fomm
     /// </summary>
     protected void SaveFOMODSettings()
     {
-      Properties.Settings.Default.fomodCompressionLevel = (CompressionLevel)cbxFomodCompression.SelectedItem;
-      Properties.Settings.Default.fomodCompressionFormat = (OutArchiveFormat)cbxFomodFormat.SelectedItem;
+      Properties.Settings.Default.fomodCompressionLevel = (CompressionLevel) cbxFomodCompression.SelectedItem;
+      Properties.Settings.Default.fomodCompressionFormat = (OutArchiveFormat) cbxFomodFormat.SelectedItem;
 
-      Properties.Settings.Default.pfpCompressionLevel = (CompressionLevel)cbxPFPCompression.SelectedItem;
-      Properties.Settings.Default.pfpCompressionFormat = (OutArchiveFormat)cbxPFPFormat.SelectedItem;
+      Properties.Settings.Default.pfpCompressionLevel = (CompressionLevel) cbxPFPCompression.SelectedItem;
+      Properties.Settings.Default.pfpCompressionFormat = (OutArchiveFormat) cbxPFPFormat.SelectedItem;
 
       Properties.Settings.Default.UseDocsFolder = cbUseDocs.Checked;
     }
@@ -317,13 +342,17 @@ namespace Fomm
       bool booIsValid = true;
       bool booIsPageValid = true;
       foreach (TabPage tpgSettings in tbcTabs.TabPages)
+      {
         if (tpgSettings.Tag is SettingsPage)
         {
-          booIsPageValid = ((SettingsPage)tpgSettings.Tag).SaveSettings();
+          booIsPageValid = ((SettingsPage) tpgSettings.Tag).SaveSettings();
           booIsValid &= booIsPageValid;
           if (!booIsPageValid)
+          {
             tbcTabs.SelectedTab = tpgSettings;
+          }
         }
+      }
       return booIsValid;
     }
 

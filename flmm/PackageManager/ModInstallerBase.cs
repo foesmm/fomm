@@ -15,10 +15,10 @@ namespace Fomm.PackageManager
     protected static readonly object objInstallLock = new object();
     private BackgroundWorkerProgressDialog m_bwdProgress = null;
     private TxFileManager m_tfmFileManager = null;
-    private InstallLogMergeModule m_ilmModInstallLog = null;    
+    private InstallLogMergeModule m_ilmModInstallLog = null;
     private fomod m_fomodMod = null;
     private ModInstallScript m_misScript = null;
-    
+
     #region Properties
 
     public ModInstallScript Script
@@ -38,7 +38,10 @@ namespace Fomm.PackageManager
       get
       {
         if (m_tfmFileManager == null)
-          throw new InvalidOperationException("The transactional file manager must be initialized by calling InitTransactionalFileManager() before it is used.");
+        {
+          throw new InvalidOperationException(
+            "The transactional file manager must be initialized by calling InitTransactionalFileManager() before it is used.");
+        }
         return m_tfmFileManager;
       }
     }
@@ -78,10 +81,7 @@ namespace Fomm.PackageManager
     /// In order to display the exception message, the placeholder {0} should be used.
     /// </remarks>
     /// <value>The message to display to the user when an exception is caught.</value>
-    protected abstract string ExceptionMessage
-    {
-      get;
-    }
+    protected abstract string ExceptionMessage { get; }
 
     /// <summary>
     /// Gets the message to display upon failure of the script.
@@ -91,10 +91,7 @@ namespace Fomm.PackageManager
     /// displayed.
     /// </remarks>
     /// <value>The message to display upon failure of the script.</value>
-    protected abstract string FailMessage
-    {
-      get;
-    }
+    protected abstract string FailMessage { get; }
 
     /// <summary>
     /// Gets the message to display upon success of the script.
@@ -104,10 +101,7 @@ namespace Fomm.PackageManager
     /// displayed.
     /// </remarks>
     /// <value>The message to display upon success of the script.</value>
-    protected abstract string SuccessMessage
-    {
-      get;
-    }
+    protected abstract string SuccessMessage { get; }
 
     #endregion
 
@@ -170,7 +164,9 @@ namespace Fomm.PackageManager
     {
       bool booSuccess = false;
       if (CheckAlreadyDone())
+      {
         booSuccess = true;
+      }
 
       if (!booSuccess)
       {
@@ -208,7 +204,9 @@ namespace Fomm.PackageManager
                         Fomod.ReadOnlyInitStepStarted += new CancelEventHandler(Fomod_ReadOnlyInitStepStarted);
                         Fomod.ReadOnlyInitStepFinished += new CancelEventHandler(Fomod_ReadOnlyInitStepFinished);
                         if (m_bwdProgress.ShowDialog() == DialogResult.Cancel)
+                        {
                           booCancelled = true;
+                        }
                       }
                       finally
                       {
@@ -218,13 +216,17 @@ namespace Fomm.PackageManager
                     }
                   }
                   else
+                  {
                     Fomod.BeginReadOnlyTransaction();
+                  }
                 }
                 if (!booCancelled)
                 {
                   booSuccess = DoScript();
                   if (booSuccess)
+                  {
                     tsTransaction.Complete();
+                  }
                 }
               }
             }
@@ -234,19 +236,29 @@ namespace Fomm.PackageManager
         {
           StringBuilder stbError = new StringBuilder(e.Message);
           if (e is FileNotFoundException)
-            stbError.Append(" (" + ((FileNotFoundException)e).FileName + ")");
+          {
+            stbError.Append(" (" + ((FileNotFoundException) e).FileName + ")");
+          }
           if (e is IllegalFilePathException)
-            stbError.Append(" (" + ((IllegalFilePathException)e).Path + ")");
+          {
+            stbError.Append(" (" + ((IllegalFilePathException) e).Path + ")");
+          }
           if (e.InnerException != null)
+          {
             stbError.AppendLine().AppendLine(e.InnerException.Message);
+          }
           if (e is RollbackException)
-            foreach (RollbackException.ExceptedResourceManager erm in ((RollbackException)e).ExceptedResourceManagers)
+          {
+            foreach (RollbackException.ExceptedResourceManager erm in ((RollbackException) e).ExceptedResourceManagers)
             {
               stbError.AppendLine(erm.ResourceManager.ToString());
               stbError.AppendLine(erm.Exception.Message);
               if (erm.Exception.InnerException != null)
+              {
                 stbError.AppendLine(erm.Exception.InnerException.Message);
+              }
             }
+          }
           string strMessage = String.Format(ExceptionMessage, stbError.ToString());
           System.Windows.Forms.MessageBox.Show(strMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
           return false;
@@ -256,13 +268,19 @@ namespace Fomm.PackageManager
           m_tfmFileManager = null;
           m_ilmModInstallLog = null;
           if (Fomod != null)
+          {
             Fomod.EndReadOnlyTransaction();
+          }
         }
       }
       if (booSuccess && !p_booSuppressSuccessMessage && !String.IsNullOrEmpty(SuccessMessage))
+      {
         System.Windows.Forms.MessageBox.Show(SuccessMessage, "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+      }
       else if (!booSuccess && !String.IsNullOrEmpty(FailMessage))
+      {
         System.Windows.Forms.MessageBox.Show(FailMessage, "Failure", MessageBoxButtons.OK, MessageBoxIcon.Error);
+      }
       return booSuccess;
     }
 
@@ -315,7 +333,9 @@ namespace Fomm.PackageManager
     public void Dispose()
     {
       if (m_misScript != null)
+      {
         m_misScript.Dispose();
+      }
     }
 
     #endregion

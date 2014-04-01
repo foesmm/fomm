@@ -25,9 +25,13 @@ namespace Fomm
       get
       {
         if (radFallout3.Checked)
+        {
           return SupportedGameModes.Fallout3;
+        }
         if (radFalloutNV.Checked)
+        {
           return SupportedGameModes.FalloutNV;
+        }
         throw new Exception("Unrecognized game selection.");
       }
     }

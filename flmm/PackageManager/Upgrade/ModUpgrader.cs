@@ -32,7 +32,8 @@ namespace Fomm.PackageManager.Upgrade
     {
       get
       {
-        return "A problem occurred during in-place upgrade: " + Environment.NewLine + "{0}" + Environment.NewLine + "The mod was not upgraded.";
+        return "A problem occurred during in-place upgrade: " + Environment.NewLine + "{0}" + Environment.NewLine +
+               "The mod was not upgraded.";
       }
     }
 
@@ -87,7 +88,7 @@ namespace Fomm.PackageManager.Upgrade
       : base(new UpgradeFomod(p_fomodMod.filepath))
     {
       m_fomodOriginalMod = p_fomodMod;
-      ((UpgradeFomod)Fomod).SetBaseName(p_strOldBaseName);
+      ((UpgradeFomod) Fomod).SetBaseName(p_strOldBaseName);
     }
 
     #endregion
@@ -105,7 +106,7 @@ namespace Fomm.PackageManager.Upgrade
     protected override bool CheckAlreadyDone()
     {
       FomodInfo fifInfo = InstallLog.Current.GetModInfo(Fomod.BaseName);
-      string strCurrentVersion =  (fifInfo == null) ? null : fifInfo.Version;
+      string strCurrentVersion = (fifInfo == null) ? null : fifInfo.Version;
       return Fomod.HumanReadableVersion.Equals(strCurrentVersion);
     }
 
@@ -123,10 +124,16 @@ namespace Fomm.PackageManager.Upgrade
     protected override bool DoScript()
     {
       foreach (string strSettingsFile in Program.GameMode.SettingsFiles.Values)
+      {
         TransactionalFileManager.Snapshot(strSettingsFile);
+      }
       foreach (string strAdditionalFile in Program.GameMode.AdditionalPaths.Values)
+      {
         if (File.Exists(strAdditionalFile))
+        {
           TransactionalFileManager.Snapshot(strAdditionalFile);
+        }
+      }
       TransactionalFileManager.Snapshot(InstallLog.Current.InstallLogPath);
 
       bool booUpgraded = false;
@@ -147,7 +154,9 @@ namespace Fomm.PackageManager.Upgrade
           }
         }
         else
+        {
           booUpgraded = RunBasicInstallScript(ProgressMessage);
+        }
         if (booUpgraded)
         {
           using (m_bwdProgress = new BackgroundWorkerProgressDialog(ReconcileDifferences))
@@ -156,12 +165,14 @@ namespace Fomm.PackageManager.Upgrade
             m_bwdProgress.ItemProgressStep = 1;
             m_bwdProgress.OverallProgressStep = 1;
             if (m_bwdProgress.ShowDialog() == DialogResult.Cancel)
+            {
               return false;
+            }
           }
           string strOldBaseName = Fomod.BaseName;
-          ((UpgradeFomod)Fomod).SetBaseName(((UpgradeFomod)Fomod).OriginalBaseName);
+          ((UpgradeFomod) Fomod).SetBaseName(((UpgradeFomod) Fomod).OriginalBaseName);
           InstallLog.Current.MergeUpgrade(Fomod, strOldBaseName, MergeModule);
-          ((UpgradeFomod)Fomod).SetBaseName(strOldBaseName);
+          ((UpgradeFomod) Fomod).SetBaseName(strOldBaseName);
           Script.CommitActivePlugins();
         }
       }
@@ -209,9 +220,13 @@ namespace Fomm.PackageManager.Upgrade
       foreach (string strFile in ilmPreviousChanges.DataFiles)
       {
         if (!MergeModule.ContainsFile(strFile))
+        {
           Script.UninstallDataFile(strFile);
+        }
         if (m_bwdProgress.Cancelled())
+        {
           return;
+        }
         m_bwdProgress.StepItemProgress();
       }
       m_bwdProgress.StepOverallProgress();
@@ -221,9 +236,13 @@ namespace Fomm.PackageManager.Upgrade
       foreach (InstallLogMergeModule.IniEdit iniEdit in ilmPreviousChanges.IniEdits)
       {
         if (!MergeModule.IniEdits.Contains(iniEdit))
+        {
           Script.UneditIni(iniEdit.File, iniEdit.Section, iniEdit.Key);
+        }
         if (m_bwdProgress.Cancelled())
+        {
           return;
+        }
         m_bwdProgress.StepItemProgress();
       }
       m_bwdProgress.StepOverallProgress();
@@ -233,9 +252,13 @@ namespace Fomm.PackageManager.Upgrade
       foreach (InstallLogMergeModule.GameSpecificValueEdit gsvEdit in ilmPreviousChanges.GameSpecificValueEdits)
       {
         if (!MergeModule.GameSpecificValueEdits.Contains(gsvEdit))
+        {
           Script.UneditGameSpecificValue(gsvEdit.Key);
+        }
         if (m_bwdProgress.Cancelled())
+        {
           return;
+        }
         m_bwdProgress.StepItemProgress();
       }
       m_bwdProgress.StepOverallProgress();

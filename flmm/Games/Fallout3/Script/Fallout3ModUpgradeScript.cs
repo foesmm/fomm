@@ -52,7 +52,9 @@ namespace Fomm.Games.Fallout3.Script
         string strLoweredSection = p_strSection.ToLowerInvariant();
         string strLoweredKey = p_strKey.ToLowerInvariant();
         if (lstInstallers[lstInstallers.Count - 1].Equals(Fomod.BaseName))
+        {
           NativeMethods.WritePrivateProfileStringA(strLoweredSection, strLoweredKey, p_strValue, strLoweredFile);
+        }
         Installer.MergeModule.AddIniEdit(strLoweredFile, strLoweredSection, strLoweredKey, p_strValue);
         return true;
       }
@@ -94,7 +96,9 @@ namespace Fomm.Games.Fallout3.Script
         {
           byte[] oldData;
           if (!Tools.BSA.SDPArchives.EditShader(p_intPackage, p_strShaderName, p_bteData, out oldData))
+          {
             throw new ShaderException("Failed to edit the shader");
+          }
         }
         Installer.MergeModule.AddGameSpecificValueEdit(strShaderKey, p_bteData);
         return true;

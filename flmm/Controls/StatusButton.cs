@@ -98,7 +98,6 @@ namespace Fomm.Controls
     /// <value>The button upon which to display status message from <see cref="SiteStatusProvider"/>s.</value>
     public Control StatusProviderSite
     {
-
       get
       {
         return Button;

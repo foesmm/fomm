@@ -33,8 +33,7 @@ namespace Fomm.Controls
     /// Gets or sets the text that appears in this page's tab.
     /// </summary>
     /// <value>The text that appears in this page's tab.</value>
-    [Browsable(true)]
-    [Category("Appearance")]
+    [Browsable(true), Category("Appearance")]
     public override string Text
     {
       get

@@ -34,7 +34,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     /// <param name="p_fomodMod">The mod whose configuration file we are parsing.</param>
     /// <param name="p_dsmSate">The state of the install.</param>
     /// <param name="p_pexParserExtension">The parser extension that provides game-specific config file parsing.</param>
-    public Parser20(XmlDocument p_xmlConfig, fomod p_fomodMod, DependencyStateManager p_dsmSate, ParserExtension p_pexParserExtension)
+    public Parser20(XmlDocument p_xmlConfig, fomod p_fomodMod, DependencyStateManager p_dsmSate,
+                    ParserExtension p_pexParserExtension)
       : base(p_xmlConfig, p_fomodMod, p_dsmSate, p_pexParserExtension)
     {
     }
@@ -67,9 +68,14 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
           default:
             IDependency dpnExtensionDependency = ParserExtension.ParseDependency(xndDependency, StateManager);
             if (dpnExtensionDependency != null)
+            {
               cpdDependency.Dependencies.Add(dpnExtensionDependency);
+            }
             else
-              throw new ParserException("Invalid dependency node: " + xndDependency.Name + ". At this point the config file has been validated against the schema, so there's something wrong with the parser.");
+            {
+              throw new ParserException("Invalid dependency node: " + xndDependency.Name +
+                                        ". At this point the config file has been validated against the schema, so there's something wrong with the parser.");
+            }
             break;
         }
       }
@@ -101,23 +107,31 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
       switch (xndTypeDescriptor.Name)
       {
         case "type":
-          iptType = new StaticPluginType((PluginType)Enum.Parse(typeof(PluginType), xndTypeDescriptor.Attributes["name"].InnerText));
+          iptType =
+            new StaticPluginType(
+              (PluginType) Enum.Parse(typeof (PluginType), xndTypeDescriptor.Attributes["name"].InnerText));
           break;
         case "dependencyType":
-          PluginType ptpDefaultType = (PluginType)Enum.Parse(typeof(PluginType), xndTypeDescriptor.SelectSingleNode("defaultType").Attributes["name"].InnerText);
+          PluginType ptpDefaultType =
+            (PluginType)
+              Enum.Parse(typeof (PluginType),
+                         xndTypeDescriptor.SelectSingleNode("defaultType").Attributes["name"].InnerText);
           iptType = new DependencyPluginType(ptpDefaultType);
-          DependencyPluginType dptDependentType = (DependencyPluginType)iptType;
+          DependencyPluginType dptDependentType = (DependencyPluginType) iptType;
 
           XmlNodeList xnlPatterns = xndTypeDescriptor.SelectNodes("patterns/*");
           foreach (XmlNode xndPattern in xnlPatterns)
           {
-            PluginType ptpType = (PluginType)Enum.Parse(typeof(PluginType), xndPattern.SelectSingleNode("type").Attributes["name"].InnerText);
+            PluginType ptpType =
+              (PluginType)
+                Enum.Parse(typeof (PluginType), xndPattern.SelectSingleNode("type").Attributes["name"].InnerText);
             CompositeDependency cdpDependency = loadDependency(xndPattern.SelectSingleNode("dependencies"));
             dptDependentType.AddPattern(ptpType, cdpDependency);
           }
           break;
         default:
-          throw new ParserException("Invalid plaug type descriptor node: " + xndTypeDescriptor.Name + ". At this point the config file has been validated against the schema, so there's something wrong with the parser.");
+          throw new ParserException("Invalid plaug type descriptor node: " + xndTypeDescriptor.Name +
+                                    ". At this point the config file has been validated against the schema, so there's something wrong with the parser.");
       }
       XmlNode xndImage = p_xndPlugin.SelectSingleNode("image");
       Image imgImage = null;
@@ -144,7 +158,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     /// <returns>A <see cref="CompositeDependency"/> representing the dependency described in the given node.</returns>
     protected override CompositeDependency loadDependency(XmlNode p_xndCompositeDependency)
     {
-      DependencyOperator dopOperator = (DependencyOperator)Enum.Parse(typeof(DependencyOperator), p_xndCompositeDependency.Attributes["operator"].InnerText);
+      DependencyOperator dopOperator =
+        (DependencyOperator)
+          Enum.Parse(typeof (DependencyOperator), p_xndCompositeDependency.Attributes["operator"].InnerText);
       CompositeDependency cpdDependency = new CompositeDependency(dopOperator);
       XmlNodeList xnlDependencies = p_xndCompositeDependency.ChildNodes;
       foreach (XmlNode xndDependency in xnlDependencies)
@@ -156,7 +172,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
             break;
           case "fileDependency":
             string strDependency = xndDependency.Attributes["file"].InnerText.ToLower();
-            ModFileState mfsModState = (ModFileState)Enum.Parse(typeof(ModFileState), xndDependency.Attributes["state"].InnerText);
+            ModFileState mfsModState =
+              (ModFileState) Enum.Parse(typeof (ModFileState), xndDependency.Attributes["state"].InnerText);
             cpdDependency.Dependencies.Add(new FileDependency(strDependency, mfsModState, StateManager));
             break;
           case "flagDependency":
@@ -165,7 +182,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
             cpdDependency.Dependencies.Add(new FlagDependency(strFlagName, strValue, StateManager));
             break;
           default:
-            throw new ParserException("Invalid plugin dependency node: " + xndDependency.Name + ". At this point the config file has been validated against the schema, so there's something wrong with the parser.");
+            throw new ParserException("Invalid plugin dependency node: " + xndDependency.Name +
+                                      ". At this point the config file has been validated against the schema, so there's something wrong with the parser.");
         }
       }
       return cpdDependency;

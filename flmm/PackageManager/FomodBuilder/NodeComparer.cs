@@ -21,7 +21,7 @@ namespace Fomm.PackageManager.FomodBuilder
     /// A value greater than 0 if <paramref name="x"/> is greater than <paramref name="y"/>.</returns>
     public int Compare(object x, object y)
     {
-      return ((FileSystemTreeNode)x).CompareTo((FileSystemTreeNode)y);
+      return ((FileSystemTreeNode) x).CompareTo((FileSystemTreeNode) y);
     }
 
     #endregion

@@ -59,7 +59,9 @@ namespace Fomm.PackageManager.ModInstallLog
     {
       Int32 intResult = BaseName.CompareTo(other.BaseName);
       if (intResult == 0)
+      {
         intResult = MachineVersion.CompareTo(other.MachineVersion);
+      }
       return intResult;
     }
 

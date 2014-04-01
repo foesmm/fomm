@@ -11,7 +11,7 @@ namespace Be.Windows.Forms.Design
   /// </summary>
   internal class HexFontEditor : FontEditor
   {
-    object value;
+    private object value;
 
     /// <summary>
     /// Initializes an instance of HexFontEditor class.
@@ -23,12 +23,14 @@ namespace Be.Windows.Forms.Design
     /// <summary>
     /// Edits the value
     /// </summary>
-    public override object EditValue(System.ComponentModel.ITypeDescriptorContext context, IServiceProvider provider, object value)
+    public override object EditValue(System.ComponentModel.ITypeDescriptorContext context, IServiceProvider provider,
+                                     object value)
     {
       this.value = value;
       if (provider != null)
       {
-        IWindowsFormsEditorService service1 = (IWindowsFormsEditorService) provider.GetService(typeof(IWindowsFormsEditorService));
+        IWindowsFormsEditorService service1 =
+          (IWindowsFormsEditorService) provider.GetService(typeof (IWindowsFormsEditorService));
         if (service1 != null)
         {
           FontDialog fontDialog = new FontDialog();
@@ -41,7 +43,7 @@ namespace Be.Windows.Forms.Design
           fontDialog.ShowHelp = false;
 
           Font font = value as Font;
-          if(font != null)
+          if (font != null)
           {
             fontDialog.Font = font;
           }
@@ -57,14 +59,11 @@ namespace Be.Windows.Forms.Design
       value = this.value;
       this.value = null;
       return value;
-
     }
 
     public override UITypeEditorEditStyle GetEditStyle(System.ComponentModel.ITypeDescriptorContext context)
     {
       return UITypeEditorEditStyle.Modal;
     }
-
-
   }
 }

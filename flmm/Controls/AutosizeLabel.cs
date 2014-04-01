@@ -21,7 +21,10 @@ namespace Fomm.Controls
       this.ReadOnly = true;
       this.TabStop = false;
       this.Cursor = Cursors.Arrow;
-      this.Enter += delegate { FindForm().Controls["nonExistant"].Focus(); };
+      this.Enter += delegate
+      {
+        FindForm().Controls["nonExistant"].Focus();
+      };
       SetTextColor();
     }
 

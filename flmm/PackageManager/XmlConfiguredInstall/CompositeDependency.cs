@@ -104,7 +104,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
       {
         StringBuilder stbMessage = new StringBuilder();
         if (m_dopOperator == DependencyOperator.Or)
+        {
           stbMessage.Append("(");
+        }
 
         bool booAllFufilled = (m_dopOperator == DependencyOperator.And) ? true : false;
         bool booThisFufilled = true;
@@ -114,23 +116,31 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
           dpnDependency = m_lstDependencies[i];
           booThisFufilled = dpnDependency.IsFufilled;
           if (!booThisFufilled)
+          {
             stbMessage.Append(dpnDependency.Message);
+          }
           switch (m_dopOperator)
           {
             case DependencyOperator.And:
               if (i < m_lstDependencies.Count - 1)
+              {
                 stbMessage.AppendLine();
+              }
               booAllFufilled &= booThisFufilled;
               break;
             case DependencyOperator.Or:
               if (i < m_lstDependencies.Count - 1)
+              {
                 stbMessage.AppendLine(" OR");
+              }
               booAllFufilled |= booThisFufilled;
               break;
           }
         }
         if (m_dopOperator == DependencyOperator.Or)
+        {
           stbMessage.Append(")");
+        }
         return booAllFufilled ? "Passed" : stbMessage.ToString();
       }
     }
@@ -164,7 +174,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
         dpdDependency = m_lstDependencies[i];
         stbString.Append(dpdDependency);
         if (i < m_lstDependencies.Count - 1)
+        {
           stbString.Append(" ").AppendLine(m_dopOperator.ToString());
+        }
       }
       stbString.Append(") => ").Append(IsFufilled);
       return stbString.ToString();

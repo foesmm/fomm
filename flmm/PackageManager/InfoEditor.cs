@@ -21,9 +21,14 @@ namespace Fomm.PackageManager
     private void butSave_Click(object sender, EventArgs e)
     {
       if (!finInfo.SaveFomod(m_fomodMod))
-        MessageBox.Show(this, "You must correct the errors before saving.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+      {
+        MessageBox.Show(this, "You must correct the errors before saving.", "Error", MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+      }
       else
+      {
         DialogResult = DialogResult.OK;
+      }
     }
 
     private void InfoEditor_FormClosing(object sender, FormClosingEventArgs e)
@@ -36,11 +41,17 @@ namespace Fomm.PackageManager
     {
       EditReadmeForm erfEditor = new EditReadmeForm();
       if (!m_fomodMod.HasReadme)
+      {
         erfEditor.Readme = new Readme(ReadmeFormat.PlainText, "");
+      }
       else
+      {
         erfEditor.Readme = m_fomodMod.GetReadme();
+      }
       if (erfEditor.ShowDialog(this) == DialogResult.OK)
+      {
         m_fomodMod.SetReadme(erfEditor.Readme);
+      }
     }
   }
 }

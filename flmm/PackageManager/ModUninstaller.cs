@@ -8,7 +8,7 @@ using Fomm.PackageManager.ModInstallLog;
 
 namespace Fomm.PackageManager
 {
-  class ModUninstaller : ModInstallerBase
+  internal class ModUninstaller : ModInstallerBase
   {
     private BackgroundWorkerProgressDialog m_bwdProgress = null;
     private string m_strBaseName = null;
@@ -20,7 +20,8 @@ namespace Fomm.PackageManager
     {
       get
       {
-        return "A problem occurred during uninstall: " + Environment.NewLine + "{0}" + Environment.NewLine + "The mod was not uninstalled.";
+        return "A problem occurred during uninstall: " + Environment.NewLine + "{0}" + Environment.NewLine +
+               "The mod was not uninstalled.";
       }
     }
 
@@ -79,7 +80,9 @@ namespace Fomm.PackageManager
     protected override bool CheckAlreadyDone()
     {
       if (Fomod == null)
+      {
         return false;
+      }
       return !Fomod.IsActive;
     }
 
@@ -113,10 +116,16 @@ namespace Fomm.PackageManager
     protected override bool DoScript()
     {
       foreach (string strSettingsFile in Program.GameMode.SettingsFiles.Values)
+      {
         TransactionalFileManager.Snapshot(strSettingsFile);
+      }
       foreach (string strAdditionalFile in Program.GameMode.AdditionalPaths.Values)
+      {
         if (File.Exists(strAdditionalFile))
+        {
           TransactionalFileManager.Snapshot(strAdditionalFile);
+        }
+      }
       TransactionalFileManager.Snapshot(InstallLog.Current.InstallLogPath);
 
       bool booIsActive = true;
@@ -126,11 +135,17 @@ namespace Fomm.PackageManager
         {
           MergeModule = InstallLog.Current.GetMergeModule(Fomod.BaseName);
           if (Fomod.HasUninstallScript)
+          {
             Fomod.IsActive = !RunCustomUninstallScript();
+          }
           else
+          {
             Fomod.IsActive = !RunBasicUninstallScript();
+          }
           if (!Fomod.IsActive)
+          {
             InstallLog.Current.UnmergeModule(Fomod.BaseName);
+          }
           booIsActive = Fomod.IsActive;
         }
         else
@@ -143,11 +158,15 @@ namespace Fomm.PackageManager
       catch (Exception e)
       {
         if (Fomod != null)
+        {
           Fomod.IsActive = true;
+        }
         throw e;
       }
       if (booIsActive)
+      {
         return false;
+      }
       return true;
     }
 
@@ -162,7 +181,9 @@ namespace Fomm.PackageManager
     {
       string strScript = Fomod.GetUninstallScript();
       if (strScript == null)
+      {
         throw new FileNotFoundException("No uninstall script found, even though fomod claimed to have one.");
+      }
       return false;
     }
 
@@ -181,7 +202,9 @@ namespace Fomm.PackageManager
           m_bwdProgress.ItemProgressStep = 1;
           m_bwdProgress.OverallProgressStep = 1;
           if (m_bwdProgress.ShowDialog() == DialogResult.Cancel)
+          {
             return false;
+          }
         }
       }
       finally
@@ -210,11 +233,17 @@ namespace Fomm.PackageManager
       foreach (string strFile in lstFiles)
       {
         if (m_bwdProgress.Cancelled())
+        {
           return;
+        }
         if (Fomod == null)
+        {
           Script.UninstallDataFile(m_strBaseName, strFile);
+        }
         else
+        {
           Script.UninstallDataFile(strFile);
+        }
         m_bwdProgress.StepItemProgress();
         m_bwdProgress.StepOverallProgress();
       }
@@ -224,11 +253,17 @@ namespace Fomm.PackageManager
       foreach (InstallLogMergeModule.IniEdit iniEdit in lstIniEdits)
       {
         if (m_bwdProgress.Cancelled())
+        {
           return;
+        }
         if (Fomod == null)
+        {
           Script.UneditIni(m_strBaseName, iniEdit.File, iniEdit.Section, iniEdit.Key);
+        }
         else
+        {
           Script.UneditIni(iniEdit.File, iniEdit.Section, iniEdit.Key);
+        }
         m_bwdProgress.StepItemProgress();
         m_bwdProgress.StepOverallProgress();
       }
@@ -238,11 +273,17 @@ namespace Fomm.PackageManager
       foreach (InstallLogMergeModule.GameSpecificValueEdit gsvEdit in lstGameSpecificValueEdits)
       {
         if (m_bwdProgress.Cancelled())
+        {
           return;
+        }
         if (Fomod == null)
+        {
           Script.UneditGameSpecificValue(m_strBaseName, gsvEdit.Key);
+        }
         else
+        {
           Script.UneditGameSpecificValue(gsvEdit.Key);
+        }
         m_bwdProgress.StepItemProgress();
         m_bwdProgress.StepOverallProgress();
       }

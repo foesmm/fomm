@@ -54,7 +54,9 @@ namespace Fomm.PackageManager
       get
       {
         if (permissions == null)
+        {
           throw new InvalidOperationException("You must call Init() before using the permissions manager.");
+        }
         return permissions;
       }
     }

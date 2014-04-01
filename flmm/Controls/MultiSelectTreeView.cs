@@ -59,8 +59,13 @@ namespace Fomm.Controls
 
       #region Events
 
-      public event EventHandler<TreeNodeEventArgs> ItemRemoved = delegate { };
-      public event EventHandler<TreeNodeEventArgs> ItemAdded = delegate { };
+      public event EventHandler<TreeNodeEventArgs> ItemRemoved = delegate
+      {
+      };
+
+      public event EventHandler<TreeNodeEventArgs> ItemAdded = delegate
+      {
+      };
 
       /// <summary>
       /// Raises the <see cref="ItemRemoved"/> event.
@@ -68,7 +73,6 @@ namespace Fomm.Controls
       /// <param name="p_tndNode">The <see cref="TreeNode"/> that was removed.</param>
       protected void OnItemRemoved(TreeNode p_tndNode)
       {
-
         ItemRemoved(this, new TreeNodeEventArgs(p_tndNode));
       }
 
@@ -108,8 +112,12 @@ namespace Fomm.Controls
       {
         LinkedListNode<TreeNode> lndNode = m_lklNodes.First;
         for (Int32 i = 0; lndNode != null; i++, lndNode = lndNode.Next)
+        {
           if (lndNode.Value == item)
+          {
             return i;
+          }
+        }
         return -1;
       }
 
@@ -123,13 +131,22 @@ namespace Fomm.Controls
       public void Insert(int index, TreeNode item)
       {
         if ((index < 0) || (index > m_lklNodes.Count))
+        {
           throw new IndexOutOfRangeException("Index " + index + " is out of range.");
+        }
         LinkedListNode<TreeNode> lndNode = m_lklNodes.First;
-        for (Int32 i = 0; lndNode != null && i < index; i++, lndNode = lndNode.Next) ;
+        for (Int32 i = 0; lndNode != null && i < index; i++, lndNode = lndNode.Next)
+        {
+          ;
+        }
         if (lndNode == null)
+        {
           m_lklNodes.AddLast(item);
+        }
         else
+        {
           m_lklNodes.AddBefore(lndNode, item);
+        }
         OnItemAdded(item);
       }
 
@@ -142,9 +159,14 @@ namespace Fomm.Controls
       public void RemoveAt(int index)
       {
         if ((index < 0) || (index >= m_lklNodes.Count))
+        {
           throw new IndexOutOfRangeException("Index " + index + " is out of range.");
+        }
         LinkedListNode<TreeNode> lndNode = m_lklNodes.First;
-        for (Int32 i = 0; lndNode != null && i < index; i++, lndNode = lndNode.Next) ;
+        for (Int32 i = 0; lndNode != null && i < index; i++, lndNode = lndNode.Next)
+        {
+          ;
+        }
         if (lndNode != null)
         {
           m_lklNodes.Remove(lndNode);
@@ -164,23 +186,36 @@ namespace Fomm.Controls
         get
         {
           if ((index < 0) || (index >= m_lklNodes.Count))
+          {
             throw new IndexOutOfRangeException("Index " + index + " is out of range.");
+          }
           LinkedListNode<TreeNode> lndNode = m_lklNodes.First;
-          for (Int32 i = 0; lndNode != null && i < index; i++, lndNode = lndNode.Next) ;
+          for (Int32 i = 0; lndNode != null && i < index; i++, lndNode = lndNode.Next)
+          {
+            ;
+          }
           return lndNode.Value;
         }
         set
         {
-
           if ((index < 0) || (index >= m_lklNodes.Count))
+          {
             throw new IndexOutOfRangeException("Index " + index + " is out of range.");
+          }
           LinkedListNode<TreeNode> lndNode = m_lklNodes.First;
-          for (Int32 i = 0; lndNode != null && i < index; i++, lndNode = lndNode.Next) ;
+          for (Int32 i = 0; lndNode != null && i < index; i++, lndNode = lndNode.Next)
+          {
+            ;
+          }
           if (value == null)
+          {
             OnItemRemoved(lndNode.Value);
+          }
           lndNode.Value = value;
           if (value != null)
+          {
             OnItemAdded(value);
+          }
         }
       }
 
@@ -234,10 +269,14 @@ namespace Fomm.Controls
       public void CopyTo(TreeNode[] array, int arrayIndex)
       {
         if (arrayIndex + m_lklNodes.Count > array.Length)
+        {
           throw new ArgumentException("Given array is too small");
+        }
         LinkedListNode<TreeNode> lndNode = m_lklNodes.First;
         for (Int32 i = arrayIndex; lndNode != null; i++, lndNode = lndNode.Next)
+        {
           array[i] = lndNode.Value;
+        }
       }
 
       /// <summary>
@@ -274,8 +313,12 @@ namespace Fomm.Controls
       {
         LinkedListNode<TreeNode> lndNode = m_lklNodes.First;
         for (Int32 i = 0; lndNode != null; i++, lndNode = lndNode.Next)
+        {
           if (lndNode.Value == item)
+          {
             break;
+          }
+        }
         if (lndNode != null)
         {
           m_lklNodes.Remove(lndNode);
@@ -333,8 +376,10 @@ namespace Fomm.Controls
     {
       DoubleBuffered = true;
       m_tncSelectedNodes = new TreeNodeCollection();
-      m_tncSelectedNodes.ItemAdded += new EventHandler<TreeNodeCollection.TreeNodeEventArgs>(m_tncSelectedNodes_ItemAdded);
-      m_tncSelectedNodes.ItemRemoved += new EventHandler<TreeNodeCollection.TreeNodeEventArgs>(m_tncSelectedNodes_ItemRemoved);
+      m_tncSelectedNodes.ItemAdded +=
+        new EventHandler<TreeNodeCollection.TreeNodeEventArgs>(m_tncSelectedNodes_ItemAdded);
+      m_tncSelectedNodes.ItemRemoved +=
+        new EventHandler<TreeNodeCollection.TreeNodeEventArgs>(m_tncSelectedNodes_ItemRemoved);
     }
 
     #endregion
@@ -347,7 +392,8 @@ namespace Fomm.Controls
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
     /// <param name="e">A <see cref="TreeNodeCollection.TreeNodeEventArgs"/> describing the event arguments.</param>
-    private void m_tncSelectedNodes_ItemRemoved(object sender, MultiSelectTreeView.TreeNodeCollection.TreeNodeEventArgs e)
+    private void m_tncSelectedNodes_ItemRemoved(object sender,
+                                                MultiSelectTreeView.TreeNodeCollection.TreeNodeEventArgs e)
     {
       e.TreeNode.BackColor = Color.Empty;
       e.TreeNode.ForeColor = Color.Empty;
@@ -398,7 +444,9 @@ namespace Fomm.Controls
       }
 
       if (ModifierKeys != Keys.Shift)
+      {
         m_tndFirst = e.Node;
+      }
     }
 
     /// <summary>
@@ -413,9 +461,13 @@ namespace Fomm.Controls
       if (((ModifierKeys & Keys.Control) > 0))
       {
         if (!SelectedNodes.Contains(e.Node))
+        {
           SelectedNodes.Add(e.Node);
+        }
         else
+        {
           SelectedNodes.Remove(e.Node);
+        }
       }
       else
       {
@@ -427,7 +479,9 @@ namespace Fomm.Controls
         else
         {
           if (SelectedNodes.Count > 0)
+          {
             SelectedNodes.Clear();
+          }
           SelectedNodes.Add(e.Node);
         }
       }

@@ -49,11 +49,12 @@ namespace Fomm.PackageManager.ModInstallLog
    *     </edit>
    *   </gameSpecificEdits>
    */
+
   internal class InstallLog : InstallLogBase
   {
     public static readonly Version CURRENT_VERSION = new Version("0.2.0.0");
-    internal protected const string ORIGINAL_VALUES = "ORIGINAL_VALUES";
-    internal protected const string FOMM = "FOMM";
+    protected internal const string ORIGINAL_VALUES = "ORIGINAL_VALUES";
+    protected internal const string FOMM = "FOMM";
     private static InstallLog m_ilgCurrent = null;
 
     public static InstallLog Current
@@ -61,7 +62,9 @@ namespace Fomm.PackageManager.ModInstallLog
       get
       {
         if (m_ilgCurrent == null)
+        {
           Reload();
+        }
         return m_ilgCurrent;
       }
     }
@@ -137,7 +140,7 @@ namespace Fomm.PackageManager.ModInstallLog
     /// Sets whether or not the install log watches for external changes to the xml file.
     /// </summary>
     /// <value>Whether or not the install log watches for external changes to the xml file.</value>
-    internal protected bool EnableLogFileRefresh
+    protected internal bool EnableLogFileRefresh
     {
       set
       {
@@ -181,7 +184,7 @@ namespace Fomm.PackageManager.ModInstallLog
       // the result is an IOException. so, if we get an IOException lets what for
       // a fraction of a second and try again. but let's only try 3 times: we don't
       // want to get into an infinite loop.
-      for (Int32 i = 0; i < 3; )
+      for (Int32 i = 0; i < 3;)
       {
         try
         {
@@ -213,13 +216,13 @@ namespace Fomm.PackageManager.ModInstallLog
           Exception exContent = new Exception("Bad InstallLog:" + Environment.NewLine + File.ReadAllText(xmlpath), e);
           throw new Exception("Malformed InstallLog (" + xmlpath + ")", exContent);
         }
-        m_xelModListNode = (XmlElement)xmlDoc.SelectSingleNode("installLog/modList");
-        dataFilesNode = (XmlElement)xmlDoc.SelectSingleNode("installLog/dataFiles");
-        iniEditsNode = (XmlElement)xmlDoc.SelectSingleNode("installLog/iniEdits");
-        gameSpecificValueEditsNode = (XmlElement)xmlDoc.SelectSingleNode("installLog/gameSpecificEdits");
+        m_xelModListNode = (XmlElement) xmlDoc.SelectSingleNode("installLog/modList");
+        dataFilesNode = (XmlElement) xmlDoc.SelectSingleNode("installLog/dataFiles");
+        iniEditsNode = (XmlElement) xmlDoc.SelectSingleNode("installLog/iniEdits");
+        gameSpecificValueEditsNode = (XmlElement) xmlDoc.SelectSingleNode("installLog/gameSpecificEdits");
         if (m_xelModListNode == null)
         {
-          XmlNode root = (XmlNode)xmlDoc.SelectSingleNode("installLog");
+          XmlNode root = (XmlNode) xmlDoc.SelectSingleNode("installLog");
           root.InsertBefore(m_xelModListNode = xmlDoc.CreateElement("modList"), dataFilesNode);
         }
         InitMods();
@@ -232,7 +235,7 @@ namespace Fomm.PackageManager.ModInstallLog
       }
     }
 
-    internal protected void Reset()
+    protected internal void Reset()
     {
       xmlDoc.RemoveAll();
       XmlNode root = xmlDoc.AppendChild(xmlDoc.CreateElement("installLog"));
@@ -264,7 +267,7 @@ namespace Fomm.PackageManager.ModInstallLog
     /// <summary>
     /// Saves the Install Log.
     /// </summary>
-    internal protected void Save()
+    protected internal void Save()
     {
       bool boolWasWatching = m_fswLogWatcher.EnableRaisingEvents;
       m_fswLogWatcher.EnableRaisingEvents = false;
@@ -308,11 +311,13 @@ namespace Fomm.PackageManager.ModInstallLog
     /// Sets the version of the install log.
     /// </summary>
     /// <param name="p_verFileVersion">The version of the install log.</param>
-    internal protected void SetInstallLogVersion(Version p_verFileVersion)
+    protected internal void SetInstallLogVersion(Version p_verFileVersion)
     {
       XmlAttribute xndVersion = xmlDoc.FirstChild.Attributes["fileVersion"];
       if (xndVersion == null)
+      {
         xndVersion = xmlDoc.FirstChild.Attributes.Append(xmlDoc.CreateAttribute("fileVersion"));
+      }
       xndVersion.InnerText = p_verFileVersion.ToString();
     }
 
@@ -329,7 +334,9 @@ namespace Fomm.PackageManager.ModInstallLog
     {
       List<string> lstMods = new List<string>();
       foreach (string strMod in m_dicModList.Keys)
+      {
         lstMods.Add(strMod);
+      }
       lstMods.Sort();
       return lstMods;
     }
@@ -353,11 +360,17 @@ namespace Fomm.PackageManager.ModInstallLog
       {
         strBaseName = xndMod.Attributes["name"].InnerText;
         if (strBaseName.Equals(ORIGINAL_VALUES) || strBaseName.Equals(FOMM))
+        {
           continue;
+        }
         xndVersion = xndMod.SelectSingleNode("version");
         if ((xndVersion == null) || (xndVersion.Attributes["machineVersion"] == null))
-          throw new InstallLogException("Cannot find version for mod '" + strBaseName + "'. Install Log Version: " + GetInstallLogVersion());
-        lstMods.Add(new FomodInfo(strBaseName, xndVersion.InnerText, new Version(xndVersion.Attributes["machineVersion"].InnerText)));
+        {
+          throw new InstallLogException("Cannot find version for mod '" + strBaseName + "'. Install Log Version: " +
+                                        GetInstallLogVersion());
+        }
+        lstMods.Add(new FomodInfo(strBaseName, xndVersion.InnerText,
+                                  new Version(xndVersion.Attributes["machineVersion"].InnerText)));
       }
       lstMods.Sort();
       return lstMods;
@@ -373,8 +386,11 @@ namespace Fomm.PackageManager.ModInstallLog
     {
       XmlNode xndVersion = m_xelModListNode.SelectSingleNode("mod[@name=\"" + p_strBaseName + "\"]/version");
       if (xndVersion == null)
+      {
         return null;
-      return new FomodInfo(p_strBaseName, xndVersion.InnerText, new Version(xndVersion.Attributes["machineVersion"].InnerText));
+      }
+      return new FomodInfo(p_strBaseName, xndVersion.InnerText,
+                           new Version(xndVersion.Attributes["machineVersion"].InnerText));
     }
 
     /// <summary>
@@ -398,8 +414,12 @@ namespace Fomm.PackageManager.ModInstallLog
     internal string GetModName(string p_strModKey)
     {
       foreach (KeyValuePair<string, string> kvpMod in m_dicModList)
+      {
         if (kvpMod.Value.Equals(p_strModKey))
+        {
           return kvpMod.Key;
+        }
+      }
       return null;
     }
 
@@ -424,7 +444,8 @@ namespace Fomm.PackageManager.ModInstallLog
         do
         {
           strKey = Path.GetFileNameWithoutExtension(Path.GetRandomFileName());
-        } while (m_dicModList.ContainsValue(strKey));
+        }
+        while (m_dicModList.ContainsValue(strKey));
         xndMod.Attributes["key"].InnerText = strKey;
 
         m_dicModList[p_strModName] = strKey;
@@ -440,13 +461,15 @@ namespace Fomm.PackageManager.ModInstallLog
     /// edit versions.
     /// </remarks>
     /// <param name="p_fomodMod">The <see cref="fomod"/> being added.</param>
-    internal protected void AddMod(fomod p_fomodMod)
+    protected internal void AddMod(fomod p_fomodMod)
     {
       if (!m_dicModList.ContainsKey(p_fomodMod.BaseName))
       {
         XmlNode xndMod = AddMod(p_fomodMod.BaseName);
         if (xndMod == null)
+        {
           return;
+        }
 
         XmlNode xndVersion = xndMod.AppendChild(xmlDoc.CreateElement("version"));
         xndVersion.Attributes.Append(xmlDoc.CreateAttribute("machineVersion"));
@@ -464,7 +487,7 @@ namespace Fomm.PackageManager.ModInstallLog
     /// <param name="p_fomodMod">The <see cref="fomod"/> being updated.</param>
     /// <returns><lang cref="true"/> if the given fomod was found and it's information updated;
     /// <lang cref="false"/> otherwise.</returns>
-    internal protected bool UpdateMod(fomod p_fomodMod)
+    protected internal bool UpdateMod(fomod p_fomodMod)
     {
       if (m_dicModList.ContainsKey(p_fomodMod.BaseName))
       {
@@ -495,7 +518,9 @@ namespace Fomm.PackageManager.ModInstallLog
     protected bool UpdateMod(string p_strOldBaseName, fomod p_fomodMod)
     {
       if (p_fomodMod.BaseName.Equals(p_strOldBaseName))
+      {
         return UpdateMod(p_fomodMod);
+      }
       if (m_dicModList.ContainsKey(p_strOldBaseName))
       {
         string strKey = GetModKey(p_strOldBaseName);
@@ -544,7 +569,9 @@ namespace Fomm.PackageManager.ModInstallLog
       List<string> lstFiles = new List<string>();
 
       foreach (XmlNode xndFile in dataFilesNode.ChildNodes)
+      {
         lstFiles.Add(xndFile.Attributes["path"].InnerText);
+      }
       lstFiles.Sort();
 
       return lstFiles;
@@ -580,9 +607,12 @@ namespace Fomm.PackageManager.ModInstallLog
     {
       string strNormalizedPath = NormalizePath(p_strPath);
       List<string> lstInstallers = new List<string>();
-      XmlNodeList xnlInstallingMods = dataFilesNode.SelectNodes("file[@path=\"" + strNormalizedPath.ToLowerInvariant() + "\"]/installingMods/*");
+      XmlNodeList xnlInstallingMods =
+        dataFilesNode.SelectNodes("file[@path=\"" + strNormalizedPath.ToLowerInvariant() + "\"]/installingMods/*");
       foreach (XmlNode xndInallingMod in xnlInstallingMods)
+      {
         lstInstallers.Add(GetModName(xndInallingMod.Attributes["key"].InnerText));
+      }
       return lstInstallers;
     }
 
@@ -592,14 +622,24 @@ namespace Fomm.PackageManager.ModInstallLog
       {
         IList<string> lstCurrentOrder = GetInstallingMods(p_strPath);
         if (lstCurrentOrder.Count != p_lstOrderedMods.Count)
+        {
           throw new ArgumentException("The given list mods order must include all installing mods.", "p_lstOrderedMods");
+        }
         foreach (string strMod in p_lstOrderedMods)
+        {
           if (!lstCurrentOrder.Contains(strMod))
-            throw new ArgumentException("The given list mods order must include all installing mods.", "p_lstOrderedMods");
-        XmlNode xndInstallingMods = dataFilesNode.SelectSingleNode("file[@path=\"" + p_strPath.ToLowerInvariant() + "\"]/installingMods");
+          {
+            throw new ArgumentException("The given list mods order must include all installing mods.",
+                                        "p_lstOrderedMods");
+          }
+        }
+        XmlNode xndInstallingMods =
+          dataFilesNode.SelectSingleNode("file[@path=\"" + p_strPath.ToLowerInvariant() + "\"]/installingMods");
         xndInstallingMods.RemoveAll();
         foreach (string strMod in p_lstOrderedMods)
+        {
           AddDataFile(strMod, p_strPath);
+        }
         Save();
       }
     }
@@ -607,9 +647,12 @@ namespace Fomm.PackageManager.ModInstallLog
     public string GetCurrentFileOwnerKey(string p_strPath)
     {
       string strNormalizedPath = NormalizePath(p_strPath);
-      XmlNode xndModList = dataFilesNode.SelectSingleNode("file[@path=\"" + strNormalizedPath.ToLowerInvariant() + "\"]/installingMods");
+      XmlNode xndModList =
+        dataFilesNode.SelectSingleNode("file[@path=\"" + strNormalizedPath.ToLowerInvariant() + "\"]/installingMods");
       if (xndModList == null)
+      {
         return null;
+      }
       XmlNode xndInstallingMod = xndModList.LastChild;
       return xndInstallingMod.Attributes["key"].InnerText;
     }
@@ -618,7 +661,9 @@ namespace Fomm.PackageManager.ModInstallLog
     {
       string strKey = GetCurrentFileOwnerKey(p_strPath);
       if (strKey == null)
+      {
         return null;
+      }
       return GetModName(strKey);
     }
 
@@ -631,13 +676,18 @@ namespace Fomm.PackageManager.ModInstallLog
     public string GetPreviousFileOwnerKey(string p_strPath)
     {
       string strNormalizedPath = NormalizePath(p_strPath);
-      XmlNode xndModList = dataFilesNode.SelectSingleNode("file[@path=\"" + strNormalizedPath.ToLowerInvariant() + "\"]/installingMods");
+      XmlNode xndModList =
+        dataFilesNode.SelectSingleNode("file[@path=\"" + strNormalizedPath.ToLowerInvariant() + "\"]/installingMods");
       if (xndModList == null)
+      {
         return null;
+      }
       XmlNode xndInstallingMod = xndModList.LastChild;
       xndInstallingMod = xndInstallingMod.PreviousSibling;
       if (xndInstallingMod == null)
+      {
         return null;
+      }
       return xndInstallingMod.Attributes["key"].InnerText;
     }
 
@@ -674,7 +724,9 @@ namespace Fomm.PackageManager.ModInstallLog
           p_xndModList = xndFile.SelectSingleNode("installingMods");
           xndInstallingMod = p_xndModList.SelectSingleNode("mod[@key=\"" + p_strModKey + "\"]");
           if (xndInstallingMod != null)
+          {
             p_xndModList.RemoveChild(xndInstallingMod);
+          }
         }
         if (xndInstallingMod == null)
         {
@@ -698,7 +750,7 @@ namespace Fomm.PackageManager.ModInstallLog
     /// </remarks>
     /// <param name="p_strModName">The base name of the mod that installed the file.</param>
     /// <param name="p_strPath">The path of the file that was installed.</param>
-    internal protected void AddDataFile(string p_strModName, string p_strPath)
+    protected internal void AddDataFile(string p_strModName, string p_strPath)
     {
       XmlNode xndModList = null;
       XmlNode xndInstallingMod = CreateDataFileNode(m_dicModList[p_strModName], p_strPath, out xndModList);
@@ -722,9 +774,13 @@ namespace Fomm.PackageManager.ModInstallLog
     protected void ReplaceDataFile(string p_strModName, string p_strPath)
     {
       p_strPath = NormalizePath(p_strPath.ToLowerInvariant());
-      XmlNode xndInstallingMod = dataFilesNode.SelectSingleNode("file[@path=\"" + p_strPath + "\"]/installingMods/mod[@key=\"" + GetModKey(p_strModName) + "\"]");
+      XmlNode xndInstallingMod =
+        dataFilesNode.SelectSingleNode("file[@path=\"" + p_strPath + "\"]/installingMods/mod[@key=\"" +
+                                       GetModKey(p_strModName) + "\"]");
       if (xndInstallingMod == null)
+      {
         AddDataFile(p_strModName, p_strPath);
+      }
     }
 
     /// <summary>
@@ -736,7 +792,7 @@ namespace Fomm.PackageManager.ModInstallLog
     /// </remarks>
     /// <param name="p_strModName">The base name of the mod that installed the file.</param>
     /// <param name="p_strPath">The path of the file that was installed.</param>
-    internal protected void PrependDataFile(string p_strModName, string p_strPath)
+    protected internal void PrependDataFile(string p_strModName, string p_strPath)
     {
       XmlNode xndModList = null;
       XmlNode xndInstallingMod = CreateDataFileNode(GetModKey(p_strModName), p_strPath, out xndModList);
@@ -753,14 +809,19 @@ namespace Fomm.PackageManager.ModInstallLog
       p_strPath = NormalizePath(p_strPath.ToLowerInvariant());
       lock (dataFilesNode)
       {
-        XmlNode xndInstallingMod = dataFilesNode.SelectSingleNode("file[@path=\"" + p_strPath + "\"]/installingMods/mod[@key=\"" + GetModKey(p_strModName) + "\"]");
+        XmlNode xndInstallingMod =
+          dataFilesNode.SelectSingleNode("file[@path=\"" + p_strPath + "\"]/installingMods/mod[@key=\"" +
+                                         GetModKey(p_strModName) + "\"]");
         if (xndInstallingMod != null)
         {
           XmlNode xndInstallingMods = xndInstallingMod.ParentNode;
           XmlNode xndFile = xndInstallingMods.ParentNode;
           xndInstallingMods.RemoveChild(xndInstallingMod);
-          if ((xndInstallingMods.ChildNodes.Count == 0) || (xndInstallingMods.LastChild.Attributes["key"].InnerText.Equals(GetModKey(ORIGINAL_VALUES))))
+          if ((xndInstallingMods.ChildNodes.Count == 0) ||
+              (xndInstallingMods.LastChild.Attributes["key"].InnerText.Equals(GetModKey(ORIGINAL_VALUES))))
+          {
             xndFile.ParentNode.RemoveChild(xndFile);
+          }
         }
       }
     }
@@ -785,9 +846,14 @@ namespace Fomm.PackageManager.ModInstallLog
     internal List<string> GetInstallingMods(string p_strFile, string p_strSection, string p_strKey)
     {
       List<string> lstInstallers = new List<string>();
-      XmlNodeList xnlInstallingMods = iniEditsNode.SelectNodes("ini[@file=\"" + p_strFile.ToLowerInvariant() + "\" and @section=\"" + p_strSection.ToLowerInvariant() + "\" and @key=\"" + p_strKey.ToLowerInvariant() + "\"]/installingMods/*");
+      XmlNodeList xnlInstallingMods =
+        iniEditsNode.SelectNodes("ini[@file=\"" + p_strFile.ToLowerInvariant() + "\" and @section=\"" +
+                                 p_strSection.ToLowerInvariant() + "\" and @key=\"" + p_strKey.ToLowerInvariant() +
+                                 "\"]/installingMods/*");
       foreach (XmlNode xndInallingMod in xnlInstallingMods)
+      {
         lstInstallers.Add(GetModName(xndInallingMod.Attributes["key"].InnerText));
+      }
       return lstInstallers;
     }
 
@@ -795,15 +861,22 @@ namespace Fomm.PackageManager.ModInstallLog
     {
       string strKey = GetCurrentIniEditorModKey(file, section, key);
       if (strKey == null)
+      {
         return null;
+      }
       return GetModName(strKey);
     }
 
     public string GetCurrentIniEditorModKey(string file, string section, string key)
     {
-      XmlNode xndModList = iniEditsNode.SelectSingleNode("ini[@file=\"" + file.ToLowerInvariant() + "\" and @section=\"" + section.ToLowerInvariant() + "\" and @key=\"" + key.ToLowerInvariant() + "\"]/installingMods");
+      XmlNode xndModList =
+        iniEditsNode.SelectSingleNode("ini[@file=\"" + file.ToLowerInvariant() + "\" and @section=\"" +
+                                      section.ToLowerInvariant() + "\" and @key=\"" + key.ToLowerInvariant() +
+                                      "\"]/installingMods");
       if (xndModList == null)
+      {
         return null;
+      }
       XmlNode xndInstallingMod = xndModList.LastChild;
       return xndInstallingMod.Attributes["key"].InnerText;
     }
@@ -818,13 +891,20 @@ namespace Fomm.PackageManager.ModInstallLog
     /// <lang cref="null"/> if there was no previous value.</returns>
     public string GetPreviousIniValue(string file, string section, string key)
     {
-      XmlNode xndModList = iniEditsNode.SelectSingleNode("ini[@file=\"" + file.ToLowerInvariant() + "\" and @section=\"" + section.ToLowerInvariant() + "\" and @key=\"" + key.ToLowerInvariant() + "\"]/installingMods");
+      XmlNode xndModList =
+        iniEditsNode.SelectSingleNode("ini[@file=\"" + file.ToLowerInvariant() + "\" and @section=\"" +
+                                      section.ToLowerInvariant() + "\" and @key=\"" + key.ToLowerInvariant() +
+                                      "\"]/installingMods");
       if (xndModList == null)
+      {
         return null;
+      }
       XmlNode xndInstallingMod = xndModList.LastChild;
       xndInstallingMod = xndInstallingMod.PreviousSibling;
       if (xndInstallingMod == null)
+      {
         return null;
+      }
       return xndInstallingMod.InnerText;
     }
 
@@ -845,7 +925,8 @@ namespace Fomm.PackageManager.ModInstallLog
     /// <returns>A node representing that the specified mod made the specified Ini edit. The out
     /// parameter <paramref name="p_xndModList"/> returns the node containing the list of mods that
     /// have edited the specified key.</returns>
-    protected XmlNode CreateIniEditNode(string p_strModKey, string p_strFile, string p_strSection, string p_strKey, string p_strValue, out XmlNode p_xndModList)
+    protected XmlNode CreateIniEditNode(string p_strModKey, string p_strFile, string p_strSection, string p_strKey,
+                                        string p_strValue, out XmlNode p_xndModList)
     {
       p_strFile = p_strFile.ToLowerInvariant();
       p_strSection = p_strSection.ToLowerInvariant();
@@ -853,7 +934,9 @@ namespace Fomm.PackageManager.ModInstallLog
       XmlNode xndInstallingMod = null;
       lock (iniEditsNode)
       {
-        XmlNode xndIni = iniEditsNode.SelectSingleNode("ini[@file=\"" + p_strFile + "\" and @section=\"" + p_strSection + "\" and @key=\"" + p_strKey + "\"]");
+        XmlNode xndIni =
+          iniEditsNode.SelectSingleNode("ini[@file=\"" + p_strFile + "\" and @section=\"" + p_strSection +
+                                        "\" and @key=\"" + p_strKey + "\"]");
         if (xndIni == null)
         {
           xndIni = iniEditsNode.AppendChild(xmlDoc.CreateElement("ini"));
@@ -870,7 +953,9 @@ namespace Fomm.PackageManager.ModInstallLog
           p_xndModList = xndIni.SelectSingleNode("installingMods");
           xndInstallingMod = p_xndModList.SelectSingleNode("mod[@key=\"" + p_strModKey + "\"]");
           if (xndInstallingMod != null)
+          {
             p_xndModList.RemoveChild(xndInstallingMod);
+          }
         }
         if (xndInstallingMod == null)
         {
@@ -895,10 +980,12 @@ namespace Fomm.PackageManager.ModInstallLog
     /// <param name="p_strKey">The key in the Ini file that was edited.</param>
     /// <param name="p_strModName">The base name of the mod that made the edit.</param>
     /// <param name="p_strValue">The value to which to the key was set.</param>
-    internal protected void AddIniEdit(string p_strFile, string p_strSection, string p_strKey, string p_strModName, string p_strValue)
+    protected internal void AddIniEdit(string p_strFile, string p_strSection, string p_strKey, string p_strModName,
+                                       string p_strValue)
     {
       XmlNode xndModList = null;
-      XmlNode xndInstallingMod = CreateIniEditNode(m_dicModList[p_strModName], p_strFile, p_strSection, p_strKey, p_strValue, out xndModList);
+      XmlNode xndInstallingMod = CreateIniEditNode(m_dicModList[p_strModName], p_strFile, p_strSection, p_strKey,
+                                                   p_strValue, out xndModList);
       lock (iniEditsNode)
       {
         xndModList.AppendChild(xndInstallingMod);
@@ -920,16 +1007,24 @@ namespace Fomm.PackageManager.ModInstallLog
     /// <param name="p_strModName">The base name of the mod that made the edit.</param>
     /// <param name="p_strValue">The value to which to the key was set.</param>
     /// <seealso cref="AddIniEdit(string p_strFile, string p_strSection, string p_strKey, string p_strModName, string p_strValue)"/>
-    internal protected void ReplaceIniEdit(string p_strFile, string p_strSection, string p_strKey, string p_strModName, string p_strValue)
+    protected internal void ReplaceIniEdit(string p_strFile, string p_strSection, string p_strKey, string p_strModName,
+                                           string p_strValue)
     {
       p_strFile = p_strFile.ToLowerInvariant();
       p_strSection = p_strSection.ToLowerInvariant();
       p_strKey = p_strKey.ToLowerInvariant();
-      XmlNode xndInstallingMod = iniEditsNode.SelectSingleNode("ini[@file=\"" + p_strFile + "\" and @section=\"" + p_strSection + "\" and @key=\"" + p_strKey + "\"]/installingMods/mod[@key=\"" + GetModKey(p_strModName) + "\"]");
+      XmlNode xndInstallingMod =
+        iniEditsNode.SelectSingleNode("ini[@file=\"" + p_strFile + "\" and @section=\"" + p_strSection +
+                                      "\" and @key=\"" + p_strKey + "\"]/installingMods/mod[@key=\"" +
+                                      GetModKey(p_strModName) + "\"]");
       if (xndInstallingMod != null)
+      {
         xndInstallingMod.InnerText = p_strValue;
+      }
       else
+      {
         AddIniEdit(p_strFile, p_strSection, p_strKey, p_strModName, p_strValue);
+      }
     }
 
     /// <summary>
@@ -945,14 +1040,21 @@ namespace Fomm.PackageManager.ModInstallLog
     /// <param name="p_strKey">The key in the Ini file that was edited.</param>
     /// <param name="p_strModName">The base name of the mod that made the edit.</param>
     /// <param name="p_strValue">The value to which to the key was set.</param>
-    internal protected void PrependAfterOriginalIniEdit(string p_strFile, string p_strSection, string p_strKey, string p_strModName, string p_strValue)
+    protected internal void PrependAfterOriginalIniEdit(string p_strFile, string p_strSection, string p_strKey,
+                                                        string p_strModName, string p_strValue)
     {
       XmlNode xndModList = null;
-      XmlNode xndInstallingMod = CreateIniEditNode(GetModKey(p_strModName), p_strFile, p_strSection, p_strKey, p_strValue, out xndModList);
-      if ((xndModList.FirstChild != null) && (xndModList.FirstChild.Attributes["key"].InnerText.Equals(OriginalValuesKey)))
+      XmlNode xndInstallingMod = CreateIniEditNode(GetModKey(p_strModName), p_strFile, p_strSection, p_strKey,
+                                                   p_strValue, out xndModList);
+      if ((xndModList.FirstChild != null) &&
+          (xndModList.FirstChild.Attributes["key"].InnerText.Equals(OriginalValuesKey)))
+      {
         xndModList.InsertAfter(xndInstallingMod, xndModList.FirstChild);
+      }
       else
+      {
         xndModList.PrependChild(xndInstallingMod);
+      }
     }
 
     /// <summary>
@@ -969,14 +1071,20 @@ namespace Fomm.PackageManager.ModInstallLog
       p_strKey = p_strKey.ToLowerInvariant();
       lock (iniEditsNode)
       {
-        XmlNode xndInstallingMod = iniEditsNode.SelectSingleNode("ini[@file=\"" + p_strFile + "\" and @section=\"" + p_strSection + "\" and @key=\"" + p_strKey + "\"]/installingMods/mod[@key=\"" + GetModKey(p_strModName) + "\"]");
+        XmlNode xndInstallingMod =
+          iniEditsNode.SelectSingleNode("ini[@file=\"" + p_strFile + "\" and @section=\"" + p_strSection +
+                                        "\" and @key=\"" + p_strKey + "\"]/installingMods/mod[@key=\"" +
+                                        GetModKey(p_strModName) + "\"]");
         if (xndInstallingMod != null)
         {
           XmlNode xndInstallingMods = xndInstallingMod.ParentNode;
           XmlNode xndIniEdit = xndInstallingMods.ParentNode;
           xndInstallingMods.RemoveChild(xndInstallingMod);
-          if ((xndInstallingMods.ChildNodes.Count == 0) || (xndInstallingMods.LastChild.Attributes["key"].InnerText.Equals(GetModKey(ORIGINAL_VALUES))))
+          if ((xndInstallingMods.ChildNodes.Count == 0) ||
+              (xndInstallingMods.LastChild.Attributes["key"].InnerText.Equals(GetModKey(ORIGINAL_VALUES))))
+          {
             xndIniEdit.ParentNode.RemoveChild(xndIniEdit);
+          }
         }
       }
     }
@@ -999,9 +1107,13 @@ namespace Fomm.PackageManager.ModInstallLog
     internal List<string> GetGameSpecifcValueInstallingMods(string p_strValueKey)
     {
       List<string> lstInstallers = new List<string>();
-      XmlNodeList xnlInstallingMods = gameSpecificValueEditsNode.SelectNodes("edit[@key=\"" + p_strValueKey.ToLowerInvariant() + "\"]/installingMods/*");
+      XmlNodeList xnlInstallingMods =
+        gameSpecificValueEditsNode.SelectNodes("edit[@key=\"" + p_strValueKey.ToLowerInvariant() +
+                                               "\"]/installingMods/*");
       foreach (XmlNode xndInallingMod in xnlInstallingMods)
+      {
         lstInstallers.Add(GetModName(xndInallingMod.Attributes["key"].InnerText));
+      }
       return lstInstallers;
     }
 
@@ -1009,15 +1121,21 @@ namespace Fomm.PackageManager.ModInstallLog
     {
       string strKey = GetCurrentGameSpecifcValueEditorModKey(p_strValueKey);
       if (strKey == null)
+      {
         return null;
+      }
       return GetModName(strKey);
     }
 
     public string GetCurrentGameSpecifcValueEditorModKey(string p_strValueKey)
     {
-      XmlNode xndModList = gameSpecificValueEditsNode.SelectSingleNode("edit[@key=\"" + p_strValueKey.ToLowerInvariant() + "\"]/installingMods");
+      XmlNode xndModList =
+        gameSpecificValueEditsNode.SelectSingleNode("edit[@key=\"" + p_strValueKey.ToLowerInvariant() +
+                                                    "\"]/installingMods");
       if (xndModList == null)
+      {
         return null;
+      }
       XmlNode xndInstallingMod = xndModList.LastChild;
       return xndInstallingMod.Attributes["key"].InnerText;
     }
@@ -1030,17 +1148,26 @@ namespace Fomm.PackageManager.ModInstallLog
     /// <lang cref="null"/> if there was no previous value.</returns>
     public byte[] GetPreviousGameSpecifcValueData(string p_strValueKey)
     {
-      XmlNode xndModList = gameSpecificValueEditsNode.SelectSingleNode("edit[@key=\"" + p_strValueKey.ToLowerInvariant() + "\"]/installingMods");
+      XmlNode xndModList =
+        gameSpecificValueEditsNode.SelectSingleNode("edit[@key=\"" + p_strValueKey.ToLowerInvariant() +
+                                                    "\"]/installingMods");
       if (xndModList == null)
+      {
         return null;
+      }
       XmlNode xndInstallingMod = xndModList.LastChild;
       xndInstallingMod = xndInstallingMod.PreviousSibling;
       if (xndInstallingMod == null)
+      {
         return null;
+      }
       string strData = xndInstallingMod.InnerText;
-      byte[] bteData = new byte[strData.Length / 2];
+      byte[] bteData = new byte[strData.Length/2];
       for (int i = 0; i < bteData.Length; i++)
-        bteData[i] = byte.Parse("" + strData[i * 2] + strData[i * 2 + 1], System.Globalization.NumberStyles.AllowHexSpecifier);
+      {
+        bteData[i] = byte.Parse("" + strData[i*2] + strData[i*2 + 1],
+                                System.Globalization.NumberStyles.AllowHexSpecifier);
+      }
       return bteData;
     }
 
@@ -1059,13 +1186,15 @@ namespace Fomm.PackageManager.ModInstallLog
     /// <returns>A node representing the specified mod that made the specified game-specific edit. The out
     /// parameter <paramref name="p_xndModList"/> returns the node containing the list of mods that
     /// have edited the specified game-specific value.</returns>
-    protected XmlNode CreateGameSpecificValueEditNode(string p_strModKey, string p_strValueKey, byte[] p_bteData, out XmlNode p_xndModList)
+    protected XmlNode CreateGameSpecificValueEditNode(string p_strModKey, string p_strValueKey, byte[] p_bteData,
+                                                      out XmlNode p_xndModList)
     {
       string strLoweredValueKey = p_strValueKey.ToLowerInvariant();
       XmlNode xndInstallingMod = null;
       lock (gameSpecificValueEditsNode)
       {
-        XmlNode xndGameSpecificValueEdit = gameSpecificValueEditsNode.SelectSingleNode("edit[@key=\"" + strLoweredValueKey + "\"]");
+        XmlNode xndGameSpecificValueEdit =
+          gameSpecificValueEditsNode.SelectSingleNode("edit[@key=\"" + strLoweredValueKey + "\"]");
         if (xndGameSpecificValueEdit == null)
         {
           xndGameSpecificValueEdit = gameSpecificValueEditsNode.AppendChild(xmlDoc.CreateElement("edit"));
@@ -1078,7 +1207,9 @@ namespace Fomm.PackageManager.ModInstallLog
           p_xndModList = xndGameSpecificValueEdit.SelectSingleNode("installingMods");
           xndInstallingMod = p_xndModList.SelectSingleNode("mod[@key=\"" + p_strModKey + "\"]");
           if (xndInstallingMod != null)
+          {
             p_xndModList.RemoveChild(xndInstallingMod);
+          }
         }
         if (xndInstallingMod == null)
         {
@@ -1086,9 +1217,11 @@ namespace Fomm.PackageManager.ModInstallLog
           xndInstallingMod.Attributes.Append(xmlDoc.CreateAttribute("key"));
           xndInstallingMod.Attributes["key"].InnerText = p_strModKey;
         }
-        StringBuilder stbData = new StringBuilder(p_bteData.Length * 2);
+        StringBuilder stbData = new StringBuilder(p_bteData.Length*2);
         for (int i = 0; i < p_bteData.Length; i++)
+        {
           stbData.Append(p_bteData[i].ToString("x2"));
+        }
         xndInstallingMod.InnerText = stbData.ToString();
       }
       return xndInstallingMod;
@@ -1104,10 +1237,11 @@ namespace Fomm.PackageManager.ModInstallLog
     /// <param name="p_strModName">The base name of the mod that made the edit.</param>
     /// <param name="p_strValueKey">The key of the game-specific value that was edited.</param>
     /// <param name="p_bteData">The data to which to the value was set.</param>
-    internal protected void AddGameSpecificValueEdit(string p_strModName, string p_strValueKey, byte[] p_bteData)
+    protected internal void AddGameSpecificValueEdit(string p_strModName, string p_strValueKey, byte[] p_bteData)
     {
       XmlNode xndModList = null;
-      XmlNode xndInstallingMod = CreateGameSpecificValueEditNode(GetModKey(p_strModName), p_strValueKey, p_bteData, out xndModList);
+      XmlNode xndInstallingMod = CreateGameSpecificValueEditNode(GetModKey(p_strModName), p_strValueKey, p_bteData,
+                                                                 out xndModList);
       lock (gameSpecificValueEditsNode)
       {
         xndModList.AppendChild(xndInstallingMod);
@@ -1127,19 +1261,25 @@ namespace Fomm.PackageManager.ModInstallLog
     /// <param name="p_strValueKey">The key of the game-specific value that was edited.</param>
     /// <param name="p_bteData">The data to which to the value was set.</param>
     /// <seealso cref="AddGameSpecificValueEdit(string p_strModName, string p_strValueKey, byte[] p_bteData)"/>
-    internal protected void ReplaceGameSpecificValueEdit(string p_strModName, string p_strValueKey, byte[] p_bteData)
+    protected internal void ReplaceGameSpecificValueEdit(string p_strModName, string p_strValueKey, byte[] p_bteData)
     {
       string strLoweredValueKey = p_strValueKey.ToLowerInvariant();
-      XmlNode xndInstallingMod = gameSpecificValueEditsNode.SelectSingleNode("edit[@key=\"" + strLoweredValueKey + "\"]/installingMods/mod[@key=\"" + GetModKey(p_strModName) + "\"]");
+      XmlNode xndInstallingMod =
+        gameSpecificValueEditsNode.SelectSingleNode("edit[@key=\"" + strLoweredValueKey +
+                                                    "\"]/installingMods/mod[@key=\"" + GetModKey(p_strModName) + "\"]");
       if (xndInstallingMod != null)
       {
-        StringBuilder stbData = new StringBuilder(p_bteData.Length * 2);
+        StringBuilder stbData = new StringBuilder(p_bteData.Length*2);
         for (int i = 0; i < p_bteData.Length; i++)
+        {
           stbData.Append(p_bteData[i].ToString("x2"));
+        }
         xndInstallingMod.InnerText = stbData.ToString();
       }
       else
+      {
         AddGameSpecificValueEdit(p_strModName, p_strValueKey, p_bteData);
+      }
     }
 
     /// <summary>
@@ -1153,14 +1293,21 @@ namespace Fomm.PackageManager.ModInstallLog
     /// <param name="p_strModName">The base name of the mod that made the edit.</param>
     /// <param name="p_strValueKey">The key of the game-specific value that was edited.</param>
     /// <param name="p_bteData">The data to which to the value was set.</param>
-    internal protected void PrependAfterOriginalGameSpecificValueEdit(string p_strModName, string p_strValueKey, byte[] p_bteData)
+    protected internal void PrependAfterOriginalGameSpecificValueEdit(string p_strModName, string p_strValueKey,
+                                                                      byte[] p_bteData)
     {
       XmlNode xndModList = null;
-      XmlNode xndInstallingMod = CreateGameSpecificValueEditNode(GetModKey(p_strModName), p_strValueKey, p_bteData, out xndModList);
-      if ((xndModList.FirstChild != null) && (xndModList.FirstChild.Attributes["key"].InnerText.Equals(OriginalValuesKey)))
+      XmlNode xndInstallingMod = CreateGameSpecificValueEditNode(GetModKey(p_strModName), p_strValueKey, p_bteData,
+                                                                 out xndModList);
+      if ((xndModList.FirstChild != null) &&
+          (xndModList.FirstChild.Attributes["key"].InnerText.Equals(OriginalValuesKey)))
+      {
         xndModList.InsertAfter(xndInstallingMod, xndModList.FirstChild);
+      }
       else
+      {
         xndModList.PrependChild(xndInstallingMod);
+      }
     }
 
     /// <summary>
@@ -1173,14 +1320,19 @@ namespace Fomm.PackageManager.ModInstallLog
       string strLoweredValueKey = p_strValueKey.ToLowerInvariant();
       lock (gameSpecificValueEditsNode)
       {
-        XmlNode xndInstallingMod = gameSpecificValueEditsNode.SelectSingleNode("edit[@key=\"" + strLoweredValueKey + "\"]/installingMods/mod[@key=\"" + GetModKey(p_strModName) + "\"]");
+        XmlNode xndInstallingMod =
+          gameSpecificValueEditsNode.SelectSingleNode("edit[@key=\"" + strLoweredValueKey +
+                                                      "\"]/installingMods/mod[@key=\"" + GetModKey(p_strModName) + "\"]");
         if (xndInstallingMod != null)
         {
           XmlNode xndInstallingMods = xndInstallingMod.ParentNode;
           XmlNode xndGameSpecificValueEdit = xndInstallingMods.ParentNode;
           xndInstallingMods.RemoveChild(xndInstallingMod);
-          if ((xndInstallingMods.ChildNodes.Count == 0) || (xndInstallingMods.LastChild.Attributes["key"].InnerText.Equals(GetModKey(ORIGINAL_VALUES))))
+          if ((xndInstallingMods.ChildNodes.Count == 0) ||
+              (xndInstallingMods.LastChild.Attributes["key"].InnerText.Equals(GetModKey(ORIGINAL_VALUES))))
+          {
             xndGameSpecificValueEdit.ParentNode.RemoveChild(xndGameSpecificValueEdit);
+          }
         }
       }
     }
@@ -1226,33 +1378,59 @@ namespace Fomm.PackageManager.ModInstallLog
     public void MergeUpgrade(fomod p_fomodMod, string p_strOldBaseName, InstallLogMergeModule p_ilmMergeModule)
     {
       if (!UpdateMod(p_strOldBaseName, p_fomodMod))
+      {
         AddMod(p_fomodMod);
+      }
 
       //remove changes that were not made in the upgrade
       InstallLogMergeModule ilmPreviousChanges = GetMergeModule(p_fomodMod.BaseName);
       foreach (string strFile in ilmPreviousChanges.DataFiles)
+      {
         if (!p_ilmMergeModule.ContainsFile(strFile))
+        {
           RemoveDataFile(p_fomodMod.BaseName, strFile);
+        }
+      }
       foreach (InstallLogMergeModule.IniEdit iniEdit in ilmPreviousChanges.IniEdits)
+      {
         if (!p_ilmMergeModule.IniEdits.Contains(iniEdit))
+        {
           RemoveIniEdit(p_fomodMod.BaseName, iniEdit.File, iniEdit.Section, iniEdit.Key);
+        }
+      }
       foreach (InstallLogMergeModule.GameSpecificValueEdit gsvEdit in ilmPreviousChanges.GameSpecificValueEdits)
+      {
         if (!p_ilmMergeModule.GameSpecificValueEdits.Contains(gsvEdit))
+        {
           RemoveGameSpecificValueEdit(p_fomodMod.BaseName, gsvEdit.Key);
+        }
+      }
 
       //add/replace changes
       foreach (string strFile in p_ilmMergeModule.ReplacedOriginalDataFiles)
+      {
         AddDataFile(ORIGINAL_VALUES, strFile);
+      }
       foreach (string strFile in p_ilmMergeModule.DataFiles)
+      {
         ReplaceDataFile(p_fomodMod.BaseName, strFile);
+      }
       foreach (InstallLogMergeModule.IniEdit iniEdit in p_ilmMergeModule.ReplacedOriginalIniValues)
+      {
         AddIniEdit(iniEdit.File, iniEdit.Section, iniEdit.Key, ORIGINAL_VALUES, iniEdit.Value);
+      }
       foreach (InstallLogMergeModule.IniEdit iniEdit in p_ilmMergeModule.IniEdits)
+      {
         ReplaceIniEdit(iniEdit.File, iniEdit.Section, iniEdit.Key, p_fomodMod.BaseName, iniEdit.Value);
+      }
       foreach (InstallLogMergeModule.GameSpecificValueEdit gsvEdit in p_ilmMergeModule.ReplacedGameSpecificValueData)
+      {
         AddGameSpecificValueEdit(ORIGINAL_VALUES, gsvEdit.Key, gsvEdit.Data);
+      }
       foreach (InstallLogMergeModule.GameSpecificValueEdit gsvEdit in p_ilmMergeModule.GameSpecificValueEdits)
+      {
         ReplaceGameSpecificValueEdit(p_fomodMod.BaseName, gsvEdit.Key, gsvEdit.Data);
+      }
 
       Save();
     }
@@ -1282,17 +1460,29 @@ namespace Fomm.PackageManager.ModInstallLog
     private void processMergeModule(string p_strModName, InstallLogMergeModule p_ilmMergeModule)
     {
       foreach (string strFile in p_ilmMergeModule.ReplacedOriginalDataFiles)
+      {
         AddDataFile(ORIGINAL_VALUES, strFile);
+      }
       foreach (string strFile in p_ilmMergeModule.DataFiles)
+      {
         AddDataFile(p_strModName, strFile);
+      }
       foreach (InstallLogMergeModule.IniEdit iniEdit in p_ilmMergeModule.ReplacedOriginalIniValues)
+      {
         AddIniEdit(iniEdit.File, iniEdit.Section, iniEdit.Key, ORIGINAL_VALUES, iniEdit.Value);
+      }
       foreach (InstallLogMergeModule.IniEdit iniEdit in p_ilmMergeModule.IniEdits)
+      {
         AddIniEdit(iniEdit.File, iniEdit.Section, iniEdit.Key, p_strModName, iniEdit.Value);
+      }
       foreach (InstallLogMergeModule.GameSpecificValueEdit gsvEdit in p_ilmMergeModule.ReplacedGameSpecificValueData)
+      {
         AddGameSpecificValueEdit(ORIGINAL_VALUES, gsvEdit.Key, gsvEdit.Data);
+      }
       foreach (InstallLogMergeModule.GameSpecificValueEdit gsvEdit in p_ilmMergeModule.GameSpecificValueEdits)
+      {
         AddGameSpecificValueEdit(p_strModName, gsvEdit.Key, gsvEdit.Data);
+      }
       Save();
     }
 
@@ -1316,8 +1506,11 @@ namespace Fomm.PackageManager.ModInstallLog
           xndInstallingMods = xndFile.ParentNode;
           xndComponent = xndInstallingMods.ParentNode;
           xndInstallingMods.RemoveChild(xndFile);
-          if ((xndInstallingMods.ChildNodes.Count == 0) || (xndInstallingMods.LastChild.Attributes["key"].InnerText.Equals(GetModKey(ORIGINAL_VALUES))))
+          if ((xndInstallingMods.ChildNodes.Count == 0) ||
+              (xndInstallingMods.LastChild.Attributes["key"].InnerText.Equals(GetModKey(ORIGINAL_VALUES))))
+          {
             xndComponent.ParentNode.RemoveChild(xndComponent);
+          }
         }
       }
       lock (iniEditsNode)
@@ -1328,20 +1521,27 @@ namespace Fomm.PackageManager.ModInstallLog
           xndInstallingMods = xndIniEdit.ParentNode;
           xndComponent = xndInstallingMods.ParentNode;
           xndInstallingMods.RemoveChild(xndIniEdit);
-          if ((xndInstallingMods.ChildNodes.Count == 0) || (xndInstallingMods.LastChild.Attributes["key"].InnerText.Equals(GetModKey(ORIGINAL_VALUES))))
+          if ((xndInstallingMods.ChildNodes.Count == 0) ||
+              (xndInstallingMods.LastChild.Attributes["key"].InnerText.Equals(GetModKey(ORIGINAL_VALUES))))
+          {
             xndComponent.ParentNode.RemoveChild(xndComponent);
+          }
         }
       }
       lock (gameSpecificValueEditsNode)
       {
-        xnlComponentMods = gameSpecificValueEditsNode.SelectNodes("descendant::mod[@key=\"" + m_dicModList[p_strModName] + "\"]");
+        xnlComponentMods =
+          gameSpecificValueEditsNode.SelectNodes("descendant::mod[@key=\"" + m_dicModList[p_strModName] + "\"]");
         foreach (XmlNode xndSdpEdit in xnlComponentMods)
         {
           xndInstallingMods = xndSdpEdit.ParentNode;
           xndComponent = xndInstallingMods.ParentNode;
           xndInstallingMods.RemoveChild(xndSdpEdit);
-          if ((xndInstallingMods.ChildNodes.Count == 0) || (xndInstallingMods.LastChild.Attributes["key"].InnerText.Equals(GetModKey(ORIGINAL_VALUES))))
+          if ((xndInstallingMods.ChildNodes.Count == 0) ||
+              (xndInstallingMods.LastChild.Attributes["key"].InnerText.Equals(GetModKey(ORIGINAL_VALUES))))
+          {
             xndComponent.ParentNode.RemoveChild(xndComponent);
+          }
         }
       }
       RemoveMod(p_strModName);
@@ -1360,7 +1560,8 @@ namespace Fomm.PackageManager.ModInstallLog
     {
       InstallLogMergeModule ilmMergeModule = new InstallLogMergeModule();
       XmlNode xndComponent = null;
-      XmlNodeList xnlComponentMods = dataFilesNode.SelectNodes("descendant::mod[@key=\"" + m_dicModList[p_strModName] + "\"]");
+      XmlNodeList xnlComponentMods =
+        dataFilesNode.SelectNodes("descendant::mod[@key=\"" + m_dicModList[p_strModName] + "\"]");
       foreach (XmlNode xndFile in xnlComponentMods)
       {
         xndComponent = xndFile.ParentNode.ParentNode;
@@ -1371,19 +1572,23 @@ namespace Fomm.PackageManager.ModInstallLog
       {
         xndComponent = xndIniEdit.ParentNode.ParentNode;
         ilmMergeModule.AddIniEdit(xndComponent.Attributes["file"].InnerText,
-                      xndComponent.Attributes["section"].InnerText,
-                      xndComponent.Attributes["key"].InnerText,
-                      xndIniEdit.InnerText);
+                                  xndComponent.Attributes["section"].InnerText,
+                                  xndComponent.Attributes["key"].InnerText,
+                                  xndIniEdit.InnerText);
       }
-      xnlComponentMods = gameSpecificValueEditsNode.SelectNodes("descendant::mod[@key=\"" + m_dicModList[p_strModName] + "\"]");
+      xnlComponentMods =
+        gameSpecificValueEditsNode.SelectNodes("descendant::mod[@key=\"" + m_dicModList[p_strModName] + "\"]");
       foreach (XmlNode xndGameSpecificValueEdit in xnlComponentMods)
       {
         xndComponent = xndGameSpecificValueEdit.ParentNode.ParentNode;
 
         string strData = xndGameSpecificValueEdit.InnerText;
-        byte[] bteData = new byte[strData.Length / 2];
+        byte[] bteData = new byte[strData.Length/2];
         for (int i = 0; i < bteData.Length; i++)
-          bteData[i] = byte.Parse("" + strData[i * 2] + strData[i * 2 + 1], System.Globalization.NumberStyles.AllowHexSpecifier);
+        {
+          bteData[i] = byte.Parse("" + strData[i*2] + strData[i*2 + 1],
+                                  System.Globalization.NumberStyles.AllowHexSpecifier);
+        }
 
         ilmMergeModule.AddGameSpecificValueEdit(xndComponent.Attributes["key"].InnerText, bteData);
       }
@@ -1392,6 +1597,5 @@ namespace Fomm.PackageManager.ModInstallLog
     }
 
     #endregion
-
   }
 }

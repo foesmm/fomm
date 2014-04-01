@@ -136,9 +136,9 @@ namespace Fomm.PackageManager.Controls
     private void tbxReadme_KeyPress(object sender, KeyPressEventArgs e)
     {
       //character 1 is equivalent to Ctrl-A
-      if (e.KeyChar=='\x01')
+      if (e.KeyChar == '\x01')
       {
-        ((TextBox)sender).SelectAll();
+        ((TextBox) sender).SelectAll();
         e.Handled = true;
       }
     }

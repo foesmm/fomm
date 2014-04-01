@@ -48,11 +48,21 @@ namespace Fomm.Games.FalloutNewVegas.Script.XmlConfiguredInstall
       {
         Version verInstalledVersion = m_dsmStateManager.ScriptExtenderVersion;
         if (verInstalledVersion == null)
-          return String.Format("This mod requires NVSE v{0} or higher. Please download from http://nvse.silverlock.org", m_verMinVersion);
+        {
+          return String.Format(
+            "This mod requires NVSE v{0} or higher. Please download from http://nvse.silverlock.org", m_verMinVersion);
+        }
         else if (verInstalledVersion < m_verMinVersion)
-          return String.Format("This mod requires NVSE v{0} or higher. You have {1}. Please update from http://nvse.silverlock.org", m_verMinVersion, verInstalledVersion);
+        {
+          return
+            String.Format(
+              "This mod requires NVSE v{0} or higher. You have {1}. Please update from http://nvse.silverlock.org",
+              m_verMinVersion, verInstalledVersion);
+        }
         else
+        {
           return "Passed";
+        }
       }
     }
 

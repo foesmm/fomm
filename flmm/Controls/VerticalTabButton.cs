@@ -22,7 +22,7 @@ namespace Fomm.Controls
     {
       get
       {
-        return (StatusButton)Button;
+        return (StatusButton) Button;
       }
     }
 
@@ -79,7 +79,9 @@ namespace Fomm.Controls
     public override void SetUnselected()
     {
       if (TabPage.Parent != null)
+      {
         StatusButton.BackColor = TabPage.Parent.BackColor;
+      }
     }
 
     /// <summary>
@@ -101,10 +103,12 @@ namespace Fomm.Controls
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
     /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
-    void m_tpgPage_BackColorChanged(object sender, EventArgs e)
+    private void m_tpgPage_BackColorChanged(object sender, EventArgs e)
     {
-      if ((TabPage.Parent != null) && (((VerticalTabControl)TabPage.Parent).SelectedTabPage == TabPage))
+      if ((TabPage.Parent != null) && (((VerticalTabControl) TabPage.Parent).SelectedTabPage == TabPage))
+      {
         StatusButton.BackColor = TabPage.BackColor;
+      }
     }
   }
 }

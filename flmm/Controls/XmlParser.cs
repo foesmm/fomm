@@ -19,7 +19,8 @@ namespace Fomm.Controls
     /// <param name="p_strTagName">The name of the complete tag that was parsed.</param>
     /// <param name="p_tlcStart">The location of the start of the tag.</param>
     /// <param name="p_tlcEnd">The location of the end of the tag.</param>
-    public delegate void ParsedTag(IDocument p_docDocument, string p_strTagName, TextLocation p_tlcStart, TextLocation p_tlcEnd);
+    public delegate void ParsedTag(
+      IDocument p_docDocument, string p_strTagName, TextLocation p_tlcStart, TextLocation p_tlcEnd);
 
     /// <summary>
     /// A regular expression that extracts the contents of a tag.
@@ -119,7 +120,9 @@ namespace Fomm.Controls
           if (String.IsNullOrEmpty(Name))
           {
             if (String.IsNullOrEmpty(other))
+            {
               return true;
+            }
             return other.Equals(Name);
           }
           return Name.Equals(other);
@@ -137,8 +140,12 @@ namespace Fomm.Controls
       public bool Contains(string p_strTagName)
       {
         for (LinkedListNode<TagPosition> llnCurrent = Last; llnCurrent != null; llnCurrent = llnCurrent.Previous)
+        {
           if (llnCurrent.Value.Equals(p_strTagName))
+          {
             return true;
+          }
+        }
         return false;
       }
 
@@ -190,10 +197,14 @@ namespace Fomm.Controls
     /// <returns>A stack containing all the unclosed tags found.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="p_intEndLine"/> is greater than
     /// or equal to the <see cref="IDocument.TotalNumberOfLines"/> of <paramref name="p_docDocument"/>.</exception>
-    public static TagStack ParseTags(IDocument p_docDocument, Int32 p_intEndLine, ParsedTag p_pctCompleteTagCallback, ParsedTag p_pctUnclosedTagCallback)
+    public static TagStack ParseTags(IDocument p_docDocument, Int32 p_intEndLine, ParsedTag p_pctCompleteTagCallback,
+                                     ParsedTag p_pctUnclosedTagCallback)
     {
       if (p_intEndLine >= p_docDocument.TotalNumberOfLines)
-        throw new ArgumentOutOfRangeException("p_intEndLine", p_intEndLine, "The given end line paramater is outside of the range of lines in the given document.");
+      {
+        throw new ArgumentOutOfRangeException("p_intEndLine", p_intEndLine,
+                                              "The given end line paramater is outside of the range of lines in the given document.");
+      }
       //parse the buffer
       TagStack stkTags = new TagStack();
       for (Int32 i = 0; i <= p_intEndLine; i++)
@@ -202,7 +213,9 @@ namespace Fomm.Controls
         Int32 intLineNum = i;
         Int32 intLastOpenPos = strLine.LastIndexOf('<');
         if (intLastOpenPos < 0)
+        {
           continue;
+        }
         Int32 intLastClosePos = strLine.LastIndexOf('>');
         if ((intLastClosePos > -1) && (intLastOpenPos > intLastClosePos))
         {
@@ -238,7 +251,9 @@ namespace Fomm.Controls
                 TextLocation tlcStart = new TextLocation(tpsTag.Column, tpsTag.LineNumber);
                 TextLocation tlcEnd = new TextLocation(tpsTag.Column + tpsTag.Name.Length, tpsTag.LineNumber);
                 if (p_pctUnclosedTagCallback != null)
+                {
                   p_pctUnclosedTagCallback(p_docDocument, tpsTag.Name, tlcStart, tlcEnd);
+                }
               }
               TagStack.TagPosition tpsCompleteTag = stkTags.Pop();
               if (p_pctCompleteTagCallback != null)
@@ -253,7 +268,9 @@ namespace Fomm.Controls
           else
           {
             if (!strTag.EndsWith("/"))
+            {
               stkTags.Push(strTagName, intLineNum, mtcTag.Groups[1].Index);
+            }
           }
         }
       }

@@ -10,22 +10,24 @@ namespace Fomm.Controls
   /// <summary>
   /// A wizard control.
   /// </summary>
-  [DefaultProperty("SelectedPage")]
-  [DefaultEvent("SelectedTabPageChanged")]
-  [Designer(typeof(WizardControlDesigner))]
+  [DefaultProperty("SelectedPage"), DefaultEvent("SelectedTabPageChanged"), Designer(typeof (WizardControlDesigner))]
   public class WizardControl : VerticalTabControl
   {
     /// <summary>
     /// Raised when the finish button is clicked.
     /// </summary>
     [Category("Action")]
-    public event EventHandler Finished = delegate { };
+    public event EventHandler Finished = delegate
+    {
+    };
 
     /// <summary>
     /// Raised when the cancel button is clicked.
     /// </summary>
     [Category("Action")]
-    public event EventHandler Cancelled = delegate { };
+    public event EventHandler Cancelled = delegate
+    {
+    };
 
     private Panel m_pnlNavigation = null;
     private Panel m_pnlNavigationShadow = null;
@@ -66,8 +68,7 @@ namespace Fomm.Controls
     /// Gets or sets whether the tabs are visible.
     /// </summary>
     /// <value>Whether the tabs are visible.</value>
-    [Category("Appearance")]
-    [DefaultValue(false)]
+    [Category("Appearance"), DefaultValue(false)]
     public override bool TabsVisible
     {
       get
@@ -94,7 +95,7 @@ namespace Fomm.Controls
 
       m_pnlNavigation = new Panel();
       m_pnlNavigation.Dock = DockStyle.Bottom;
-      m_pnlNavigation.Height = 23 + 2 * 12;
+      m_pnlNavigation.Height = 23 + 2*12;
       m_pnlNavigation.DataBindings.Add("BackColor", this, "BackColor");
 
       m_pnlNavigationLight = new Panel();
@@ -156,7 +157,9 @@ namespace Fomm.Controls
     {
       base.OnControlAdded(e);
       if (e.Control is VerticalTabPage)
+      {
         MovePage(0);
+      }
     }
 
     /// <summary>
@@ -170,7 +173,9 @@ namespace Fomm.Controls
     {
       base.OnControlRemoved(e);
       if (e.Control is VerticalTabPage)
+      {
         MovePage(0);
+      }
     }
 
     #region Page Navigation
@@ -202,15 +207,23 @@ namespace Fomm.Controls
     {
       Int32 intNewIndex = SelectedIndex + p_intJumpSize;
       if (intNewIndex < 0)
+      {
         intNewIndex = 0;
+      }
       else if (intNewIndex >= TabPages.Count)
+      {
         intNewIndex = TabPages.Count - 1;
+      }
 
       m_butPrevious.Enabled = (intNewIndex > 0);
       if (intNewIndex == TabPages.Count - 1)
+      {
         m_butNext.Text = "Finish";
+      }
       else
+      {
         m_butNext.Text = "Next >>";
+      }
       SelectedIndex = intNewIndex;
     }
 
@@ -238,9 +251,13 @@ namespace Fomm.Controls
     private void Next_Click(object sender, EventArgs e)
     {
       if (m_butNext.Text.Equals("Finish"))
+      {
         Finished(this, new EventArgs());
+      }
       else
+      {
         MovePage(1);
+      }
     }
 
     #endregion

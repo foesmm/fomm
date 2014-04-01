@@ -20,7 +20,7 @@ namespace Fomm.Commands
     {
       get
       {
-        return (ToolStripMenuItem)Trigger;
+        return (ToolStripMenuItem) Trigger;
       }
     }
 
@@ -34,13 +34,16 @@ namespace Fomm.Commands
     /// <param name="p_tsiMenuItem">The menu item to bind to the command.</param>
     /// <param name="p_cmdCommand">The command to bind to the trigger.</param>
     /// <param name="p_dlgGetArgument">The method that returns the command argument.</param>
-    public ToolStripMenuItemCommandBinding(ToolStripMenuItem p_tsiMenuItem, Command<T> p_cmdCommand, GetCommandArgument p_dlgGetArgument)
+    public ToolStripMenuItemCommandBinding(ToolStripMenuItem p_tsiMenuItem, Command<T> p_cmdCommand,
+                                           GetCommandArgument p_dlgGetArgument)
       : base(p_tsiMenuItem, p_cmdCommand, p_dlgGetArgument)
     {
       p_tsiMenuItem.Text = p_cmdCommand.Name;
       p_tsiMenuItem.Enabled = Command.CanExecute;
       if (Command is CheckedCommand<T>)
-        p_tsiMenuItem.Checked = ((CheckedCommand<T>)Command).IsChecked;
+      {
+        p_tsiMenuItem.Checked = ((CheckedCommand<T>) Command).IsChecked;
+      }
       p_tsiMenuItem.Click += new EventHandler(ToolStripMenuItem_Click);
     }
 
@@ -60,7 +63,7 @@ namespace Fomm.Commands
         case "IsChecked":
           if (Command is CheckedCommand<T>)
           {
-            ToolStripMenuItem.Checked = ((CheckedCommand<T>)Command).IsChecked;
+            ToolStripMenuItem.Checked = ((CheckedCommand<T>) Command).IsChecked;
           }
           break;
       }

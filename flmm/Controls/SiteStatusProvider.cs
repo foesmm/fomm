@@ -22,7 +22,9 @@ namespace Fomm.Controls
     {
       Control ctlSite = p_ctlControl;
       while (ctlSite is IStatusProviderAware)
-        ctlSite = ((IStatusProviderAware)ctlSite).StatusProviderSite;
+      {
+        ctlSite = ((IStatusProviderAware) ctlSite).StatusProviderSite;
+      }
       base.SetError(ctlSite, p_strMessage);
     }
 
@@ -39,7 +41,9 @@ namespace Fomm.Controls
     {
       Control ctlSite = p_ctlControl;
       while (ctlSite is IStatusProviderAware)
-        ctlSite = ((IStatusProviderAware)ctlSite).StatusProviderSite;
+      {
+        ctlSite = ((IStatusProviderAware) ctlSite).StatusProviderSite;
+      }
       base.SetError(ctlSite, p_strMessage);
     }
   }

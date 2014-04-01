@@ -40,7 +40,7 @@ namespace ICSharpCode.SharpZipLib.Core
   /// <summary>
   /// WindowsPathUtils provides simple utilities for handling windows paths.
   /// </summary>
-  abstract class WindowsPathUtils
+  internal abstract class WindowsPathUtils
   {
     /// <summary>
     /// Initializes a new instance of the <see cref="WindowsPathUtils"/> class.
@@ -48,7 +48,7 @@ namespace ICSharpCode.SharpZipLib.Core
     internal WindowsPathUtils()
     {
     }
-    
+
     /// <summary>
     /// Remove any path root present in the path
     /// </summary>
@@ -58,33 +58,41 @@ namespace ICSharpCode.SharpZipLib.Core
     public static string DropPathRoot(string path)
     {
       string result = path;
-      
-      if ( (path != null) && (path.Length > 0) ) {
-        if ((path[0] == '\\') || (path[0] == '/')) {
+
+      if ((path != null) && (path.Length > 0))
+      {
+        if ((path[0] == '\\') || (path[0] == '/'))
+        {
           // UNC name ?
-          if ((path.Length > 1) && ((path[1] == '\\') || (path[1] == '/'))) {
+          if ((path.Length > 1) && ((path[1] == '\\') || (path[1] == '/')))
+          {
             int index = 2;
             int elements = 2;
 
             // Scan for two separate elements \\machine\share\restofpath
             while ((index <= path.Length) &&
-              (((path[index] != '\\') && (path[index] != '/')) || (--elements > 0))) {
+                   (((path[index] != '\\') && (path[index] != '/')) || (--elements > 0)))
+            {
               index++;
             }
 
             index++;
 
-            if (index < path.Length) {
+            if (index < path.Length)
+            {
               result = path.Substring(index);
             }
-            else {
+            else
+            {
               result = "";
             }
           }
         }
-        else if ((path.Length > 1) && (path[1] == ':')) {
+        else if ((path.Length > 1) && (path[1] == ':'))
+        {
           int dropCount = 2;
-          if ((path.Length > 2) && ((path[2] == '\\') || (path[2] == '/'))) {
+          if ((path.Length > 2) && ((path[2] == '\\') || (path[2] == '/')))
+          {
             dropCount = 3;
           }
           result = result.Remove(0, dropCount);

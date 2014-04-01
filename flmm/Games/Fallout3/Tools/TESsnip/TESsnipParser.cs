@@ -4,7 +4,12 @@ using System.IO;
 
 namespace Fomm.Games.Fallout3.Tools.TESsnip
 {
-  public class TESParserException : Exception { public TESParserException(string msg) : base(msg) { } }
+  public class TESParserException : Exception
+  {
+    public TESParserException(string msg) : base(msg)
+    {
+    }
+  }
 
   public abstract class BaseRecord
   {
@@ -18,6 +23,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
     private static MemoryStream ms;
     private static BinaryReader compReader;
     private static ICSharpCode.SharpZipLib.Zip.Compression.Inflater inf;
+
     protected static BinaryReader Decompress(BinaryReader br, int size, int outsize)
     {
       if (input.Length < size)
@@ -40,7 +46,9 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         //we ignore adler checksum mismatches, as I have a notion that they aren't always correctly
         // stored in the records.
         if (!e.Message.StartsWith("Adler"))
+        {
           throw e;
+        }
       }
       inf.Reset();
 
@@ -50,6 +58,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
       return compReader;
     }
+
     protected static void InitDecompressor()
     {
       inf = new ICSharpCode.SharpZipLib.Zip.Compression.Inflater(false);
@@ -58,6 +67,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       input = new byte[0x1000];
       output = new byte[0x4000];
     }
+
     protected static void CloseDecompressor()
     {
       compReader.Close();
@@ -74,15 +84,20 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
     internal abstract void SaveData(BinaryWriter bw);
 
     private static readonly byte[] RecByte = new byte[4];
+
     protected static string ReadRecName(BinaryReader br)
     {
       br.Read(RecByte, 0, 4);
-      return "" + ((char)RecByte[0]) + ((char)RecByte[1]) + ((char)RecByte[2]) + ((char)RecByte[3]);
+      return "" + ((char) RecByte[0]) + ((char) RecByte[1]) + ((char) RecByte[2]) + ((char) RecByte[3]);
     }
+
     protected static void WriteString(BinaryWriter bw, string s)
     {
       byte[] b = new byte[s.Length];
-      for (int i = 0; i < s.Length; i++) b[i] = (byte)s[i];
+      for (int i = 0; i < s.Length; i++)
+      {
+        b[i] = (byte) s[i];
+      }
       bw.Write(b, 0, s.Length);
     }
 
@@ -95,15 +110,31 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     public override long Size
     {
-      get { long size = 0; foreach (Rec rec in Records) size += rec.Size2; return size; }
+      get
+      {
+        long size = 0;
+        foreach (Rec rec in Records)
+        {
+          size += rec.Size2;
+        }
+        return size;
+      }
     }
-    public override long Size2 { get { return Size; } }
+
+    public override long Size2
+    {
+      get
+      {
+        return Size;
+      }
+    }
+
     public IList<string> Masters
     {
       get
       {
         List<string> lstMasters = new List<string>();
-        foreach (SubRecord sr in ((Record)Records[0]).SubRecords)
+        foreach (SubRecord sr in ((Record) Records[0]).SubRecords)
         {
           switch (sr.Name)
           {
@@ -119,14 +150,21 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
     public override void DeleteRecord(BaseRecord br)
     {
       Rec r = br as Rec;
-      if (r == null) return;
+      if (r == null)
+      {
+        return;
+      }
       Records.Remove(r);
     }
+
     public override void AddRecord(BaseRecord br)
     {
       Rec r = br as Rec;
-      if (r == null) throw new TESParserException("Record to add was not of the correct type." +
-           Environment.NewLine + "Plugins can only hold Groups or Records.");
+      if (r == null)
+      {
+        throw new TESParserException("Record to add was not of the correct type." +
+                                     Environment.NewLine + "Plugins can only hold Groups or Records.");
+      }
       Records.Add(r);
     }
 
@@ -139,7 +177,10 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       InitDecompressor();
 
       s = ReadRecName(br);
-      if (s != "TES4") throw new Exception("File is not a valid TES4 plugin (Missing TES4 record)");
+      if (s != "TES4")
+      {
+        throw new Exception("File is not a valid TES4 plugin (Missing TES4 record)");
+      }
       br.BaseStream.Position = 20;
       s = ReadRecName(br);
       if (s == "HEDR")
@@ -149,7 +190,10 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       else
       {
         s = ReadRecName(br);
-        if (s != "HEDR") throw new Exception("File is not a valid TES4 plugin (Missing HEDR subrecord in the TES4 record)");
+        if (s != "HEDR")
+        {
+          throw new Exception("File is not a valid TES4 plugin (Missing HEDR subrecord in the TES4 record)");
+        }
       }
       br.BaseStream.Position = 4;
       recsize = br.ReadUInt32();
@@ -160,8 +204,14 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         {
           s = ReadRecName(br);
           recsize = br.ReadUInt32();
-          if (s == "GRUP") Records.Add(new GroupRecord(recsize, br, IsOblivion));
-          else Records.Add(new Record(s, recsize, br, IsOblivion));
+          if (s == "GRUP")
+          {
+            Records.Add(new GroupRecord(recsize, br, IsOblivion));
+          }
+          else
+          {
+            Records.Add(new Record(s, recsize, br, IsOblivion));
+          }
         }
       }
 
@@ -174,7 +224,10 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       try
       {
         string s = ReadRecName(br);
-        if (s != "TES4") return false;
+        if (s != "TES4")
+        {
+          return false;
+        }
         br.ReadInt32();
         return (br.ReadInt32() & 1) != 0;
       }
@@ -201,6 +254,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         br.Close();
       }
     }
+
     internal Plugin(string FilePath, bool headerOnly)
     {
       Name = Path.GetFileName(FilePath);
@@ -215,6 +269,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         br.Close();
       }
     }
+
     public Plugin()
     {
       Name = "New plugin";
@@ -223,9 +278,9 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
     public override string GetDesc()
     {
       return "[Fallout3 plugin]" + Environment.NewLine +
-        "Filename: " + Name + Environment.NewLine +
-        "File size: " + Size + Environment.NewLine +
-        "Records: " + Records.Count;
+             "Filename: " + Name + Environment.NewLine +
+             "File size: " + Size + Environment.NewLine +
+             "Records: " + Records.Count;
     }
 
     public byte[] Save()
@@ -265,18 +320,26 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
           new FileInfo(FilePath).LastWriteTime = timestamp;
         }
       }
-      catch { }
+      catch
+      {
+      }
     }
 
     internal override void SaveData(BinaryWriter bw)
     {
-      foreach (Rec r in Records) r.SaveData(bw);
+      foreach (Rec r in Records)
+      {
+        r.SaveData(bw);
+      }
     }
 
     internal override List<string> GetIDs(bool lower)
     {
       List<string> list = new List<string>();
-      foreach (Rec r in Records) list.AddRange(r.GetIDs(lower));
+      foreach (Rec r in Records)
+      {
+        list.AddRange(r.GetIDs(lower));
+      }
       return list;
     }
 
@@ -296,13 +359,17 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       {
         if (rec is GroupRecord)
         {
-          if (ContainsFormId(p_uintFormId, ((GroupRecord)rec).Records))
+          if (ContainsFormId(p_uintFormId, ((GroupRecord) rec).Records))
+          {
             return true;
+          }
         }
         else if (rec is Record)
         {
-          if (((Record)rec).FormID == p_uintFormId)
+          if (((Record) rec).FormID == p_uintFormId)
+          {
             return true;
+          }
         }
       }
       return false;
@@ -312,8 +379,12 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
     {
       IList<string> lstMaster = Masters;
       for (Int32 i = 0; i < lstMaster.Count; i++)
+      {
         if (lstMaster[i].ToLowerInvariant().Equals(p_strPluginName.ToLowerInvariant()))
+        {
           return i;
+        }
+      }
       return -1;
     }
 
@@ -321,7 +392,9 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
     {
       IList<string> lstMasters = Masters;
       if ((p_intIndex < 0) || (p_intIndex >= lstMasters.Count))
+      {
         return null;
+      }
       return lstMasters[p_intIndex];
     }
   }
@@ -329,7 +402,14 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
   public abstract class Rec : BaseRecord
   {
     public string descriptiveName;
-    public string DescriptiveName { get { return descriptiveName == null ? Name : (Name + descriptiveName); } }
+
+    public string DescriptiveName
+    {
+      get
+      {
+        return descriptiveName == null ? Name : (Name + descriptiveName);
+      }
+    }
   }
 
   public sealed class GroupRecord : Rec
@@ -342,26 +422,51 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     public string ContentsType
     {
-      get { return "" + (char)data[0] + (char)data[1] + (char)data[2] + (char)data[3]; }
+      get
+      {
+        return "" + (char) data[0] + (char) data[1] + (char) data[2] + (char) data[3];
+      }
     }
 
     public override long Size
     {
-      get { long size = 24; foreach (Rec rec in Records) size += rec.Size2; return size; }
+      get
+      {
+        long size = 24;
+        foreach (Rec rec in Records)
+        {
+          size += rec.Size2;
+        }
+        return size;
+      }
     }
-    public override long Size2 { get { return Size; } }
+
+    public override long Size2
+    {
+      get
+      {
+        return Size;
+      }
+    }
 
     public override void DeleteRecord(BaseRecord br)
     {
       Rec r = br as Rec;
-      if (r == null) return;
+      if (r == null)
+      {
+        return;
+      }
       Records.Remove(r);
     }
+
     public override void AddRecord(BaseRecord br)
     {
       Rec r = br as Rec;
-      if (r == null) throw new TESParserException("Record to add was not of the correct type." +
-           Environment.NewLine + "Groups can only hold records or other groups.");
+      if (r == null)
+      {
+        throw new TESParserException("Record to add was not of the correct type." +
+                                     Environment.NewLine + "Groups can only hold records or other groups.");
+      }
       Records.Add(r);
     }
 
@@ -371,7 +476,10 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       data = br.ReadBytes(4);
       groupType = br.ReadUInt32();
       dateStamp = br.ReadUInt32();
-      if (!Oblivion) flags = br.ReadUInt32();
+      if (!Oblivion)
+      {
+        flags = br.ReadUInt32();
+      }
       uint AmountRead = 0;
       while (AmountRead < Size - (Oblivion ? 20 : 24))
       {
@@ -386,7 +494,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         else
         {
           Record r = new Record(s, recsize, br, Oblivion);
-          AmountRead += (uint)(recsize + (Oblivion ? 20 : 24));
+          AmountRead += (uint) (recsize + (Oblivion ? 20 : 24));
           Records.Add(r);
         }
       }
@@ -396,7 +504,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       }
       if (groupType == 0)
       {
-        descriptiveName = " (" + (char)data[0] + (char)data[1] + (char)data[2] + (char)data[3] + ")";
+        descriptiveName = " (" + (char) data[0] + (char) data[1] + (char) data[2] + (char) data[3] + ")";
       }
     }
 
@@ -404,19 +512,25 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
     {
       Name = "GRUP";
       this.data = new byte[4];
-      for (int i = 0; i < 4; i++) this.data[i] = (byte)data[i];
+      for (int i = 0; i < 4; i++)
+      {
+        this.data[i] = (byte) data[i];
+      }
       descriptiveName = " (" + data + ")";
     }
 
     private GroupRecord(GroupRecord gr)
     {
       Name = "GRUP";
-      data = (byte[])gr.data.Clone();
+      data = (byte[]) gr.data.Clone();
       groupType = gr.groupType;
       dateStamp = gr.dateStamp;
       flags = gr.flags;
       Records = new List<Rec>(gr.Records.Count);
-      for (int i = 0; i < gr.Records.Count; i++) Records.Add((Rec)gr.Records[i].Clone());
+      for (int i = 0; i < gr.Records.Count; i++)
+      {
+        Records.Add((Rec) gr.Records[i].Clone());
+      }
       Name = gr.Name;
       descriptiveName = gr.descriptiveName;
     }
@@ -426,20 +540,21 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       switch (groupType)
       {
         case 0:
-          return "(Contains: " + (char)data[0] + (char)data[1] + (char)data[2] + (char)data[3] + ")";
+          return "(Contains: " + (char) data[0] + (char) data[1] + (char) data[2] + (char) data[3] + ")";
         case 2:
         case 3:
-          return "(Block number: " + (data[0] + data[1] * 256 + data[2] * 256 * 256 + data[3] * 256 * 256 * 256).ToString() + ")";
+          return "(Block number: " + (data[0] + data[1]*256 + data[2]*256*256 + data[3]*256*256*256).ToString() + ")";
         case 4:
         case 5:
-          return "(Coordinates: [" + (data[0] + data[1] * 256) + ", " + data[2] + data[3] * 256 + "])";
+          return "(Coordinates: [" + (data[0] + data[1]*256) + ", " + data[2] + data[3]*256 + "])";
         case 1:
         case 6:
         case 7:
         case 8:
         case 9:
         case 10:
-          return "(Parent FormID: 0x" + data[3].ToString("x2") + data[2].ToString("x2") + data[1].ToString("x2") + data[0].ToString("x2") + ")";
+          return "(Parent FormID: 0x" + data[3].ToString("x2") + data[2].ToString("x2") + data[1].ToString("x2") +
+                 data[0].ToString("x2") + ")";
       }
       return null;
     }
@@ -487,25 +602,31 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
           break;
       }
       return desc + Environment.NewLine +
-        "Records: " + Records.Count.ToString() + Environment.NewLine +
-        "Size: " + Size.ToString() + " bytes (including header)";
+             "Records: " + Records.Count.ToString() + Environment.NewLine +
+             "Size: " + Size.ToString() + " bytes (including header)";
     }
 
     internal override void SaveData(BinaryWriter bw)
     {
       WriteString(bw, "GRUP");
-      bw.Write((uint)Size);
+      bw.Write((uint) Size);
       bw.Write(data);
       bw.Write(groupType);
       bw.Write(dateStamp);
       bw.Write(flags);
-      foreach (Rec r in Records) r.SaveData(bw);
+      foreach (Rec r in Records)
+      {
+        r.SaveData(bw);
+      }
     }
 
     internal override List<string> GetIDs(bool lower)
     {
       List<string> list = new List<string>();
-      foreach (Record r in Records) list.AddRange(r.GetIDs(lower));
+      foreach (Record r in Records)
+      {
+        list.AddRange(r.GetIDs(lower));
+      }
       return list;
     }
 
@@ -514,12 +635,26 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       return new GroupRecord(this);
     }
 
-    public byte[] GetData() { return (byte[])data.Clone(); }
-    internal byte[] GetReadonlyData() { return data; }
+    public byte[] GetData()
+    {
+      return (byte[]) data.Clone();
+    }
+
+    internal byte[] GetReadonlyData()
+    {
+      return data;
+    }
+
     public void SetData(byte[] data)
     {
-      if (data.Length != 4) throw new ArgumentException("data length must be 4");
-      for (int i = 0; i < 4; i++) this.data[i] = data[i];
+      if (data.Length != 4)
+      {
+        throw new ArgumentException("data length must be 4");
+      }
+      for (int i = 0; i < 4; i++)
+      {
+        this.data[i] = data[i];
+      }
     }
   }
 
@@ -536,16 +671,23 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       get
       {
         long size = 0;
-        foreach (SubRecord rec in SubRecords) size += rec.Size2;
+        foreach (SubRecord rec in SubRecords)
+        {
+          size += rec.Size2;
+        }
         return size;
       }
     }
+
     public override long Size2
     {
       get
       {
         long size = 24;
-        foreach (SubRecord rec in SubRecords) size += rec.Size2;
+        foreach (SubRecord rec in SubRecords)
+        {
+          size += rec.Size2;
+        }
         return size;
       }
     }
@@ -553,14 +695,21 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
     public override void DeleteRecord(BaseRecord br)
     {
       SubRecord sr = br as SubRecord;
-      if (sr == null) return;
+      if (sr == null)
+      {
+        return;
+      }
       SubRecords.Remove(sr);
     }
+
     public override void AddRecord(BaseRecord br)
     {
       SubRecord sr = br as SubRecord;
-      if (sr == null) throw new TESParserException("Record to add was not of the correct type." +
-           Environment.NewLine + "Records can only hold Subrecords.");
+      if (sr == null)
+      {
+        throw new TESParserException("Record to add was not of the correct type." +
+                                     Environment.NewLine + "Records can only hold Subrecords.");
+      }
       SubRecords.Add(sr);
     }
 
@@ -570,12 +719,15 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       Flags1 = br.ReadUInt32();
       FormID = br.ReadUInt32();
       Flags2 = br.ReadUInt32();
-      if (!Oblivion) Flags3 = br.ReadUInt32();
+      if (!Oblivion)
+      {
+        Flags3 = br.ReadUInt32();
+      }
       if ((Flags1 & 0x00040000) > 0)
       {
         Flags1 ^= 0x00040000;
         uint newSize = br.ReadUInt32();
-        br = Decompress(br, (int)(Size - 4), (int)newSize);
+        br = Decompress(br, (int) (Size - 4), (int) newSize);
         Size = newSize;
       }
       uint AmountRead = 0;
@@ -590,7 +742,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
           s = ReadRecName(br);
         }
         SubRecord r = new SubRecord(s, br, i);
-        AmountRead += (uint)(r.Size2);
+        AmountRead += (uint) (r.Size2);
         SubRecords.Add(r);
       }
       if (AmountRead > Size)
@@ -599,13 +751,19 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       }
 
       //br.BaseStream.Position+=Size;
-      if (SubRecords.Count > 0 && SubRecords[0].Name == "EDID") descriptiveName = " (" + SubRecords[0].GetStrData() + ")";
+      if (SubRecords.Count > 0 && SubRecords[0].Name == "EDID")
+      {
+        descriptiveName = " (" + SubRecords[0].GetStrData() + ")";
+      }
     }
 
     private Record(Record r)
     {
       SubRecords = new List<SubRecord>(r.SubRecords.Count);
-      for (int i = 0; i < r.SubRecords.Count; i++) SubRecords.Add((SubRecord)r.SubRecords[i].Clone());
+      for (int i = 0; i < r.SubRecords.Count; i++)
+      {
+        SubRecords.Add((SubRecord) r.SubRecords[i].Clone());
+      }
       Flags1 = r.Flags1;
       Flags2 = r.Flags2;
       Flags3 = r.Flags3;
@@ -627,24 +785,33 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
     private string GetBaseDesc()
     {
       return "Type: " + Name + Environment.NewLine +
-        "FormID: " + FormID.ToString("x8") + Environment.NewLine +
-        "Flags 1: " + Flags1.ToString("x8") +
-        (Flags1 == 0 ? "" : " (" + FlagDefs.GetRecFlags1Desc(Flags1) + ")") +
-        Environment.NewLine +
-        "Flags 2: " + Flags2.ToString("x8") + Environment.NewLine +
-        "Flags 3: " + Flags3.ToString("x8") + Environment.NewLine +
-        "Subrecords: " + SubRecords.Count.ToString() + Environment.NewLine +
-        "Size: " + Size.ToString() + " bytes (excluding header)";
+             "FormID: " + FormID.ToString("x8") + Environment.NewLine +
+             "Flags 1: " + Flags1.ToString("x8") +
+             (Flags1 == 0 ? "" : " (" + FlagDefs.GetRecFlags1Desc(Flags1) + ")") +
+             Environment.NewLine +
+             "Flags 2: " + Flags2.ToString("x8") + Environment.NewLine +
+             "Flags 3: " + Flags3.ToString("x8") + Environment.NewLine +
+             "Subrecords: " + SubRecords.Count.ToString() + Environment.NewLine +
+             "Size: " + Size.ToString() + " bytes (excluding header)";
     }
 
     private string GetExtendedDesc(SubrecordStructure[] sss, dFormIDLookupI formIDLookup)
     {
-      if (sss == null) return null;
+      if (sss == null)
+      {
+        return null;
+      }
       string s = RecordStructure.Records[Name].description + Environment.NewLine;
       for (int i = 0; i < sss.Length; i++)
       {
-        if (sss[i].elements == null) return s;
-        if (sss[i].notininfo) continue;
+        if (sss[i].elements == null)
+        {
+          return s;
+        }
+        if (sss[i].notininfo)
+        {
+          continue;
+        }
         s += Environment.NewLine + SubRecords[i].GetFormattedData(sss[i], formIDLookup);
       }
       return s;
@@ -665,27 +832,40 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       }
       catch
       {
-        end = "Warning: An error occured while processing the record. It may not conform to the strucure defined in RecordStructure.xml";
+        end =
+          "Warning: An error occured while processing the record. It may not conform to the strucure defined in RecordStructure.xml";
       }
-      if (end == null) return start;
-      else return start + Environment.NewLine + Environment.NewLine + "[Formatted information]" + Environment.NewLine + end;
+      if (end == null)
+      {
+        return start;
+      }
+      else
+      {
+        return start + Environment.NewLine + Environment.NewLine + "[Formatted information]" + Environment.NewLine + end;
+      }
     }
 
     internal override void SaveData(BinaryWriter bw)
     {
       WriteString(bw, Name);
-      bw.Write((uint)Size);
+      bw.Write((uint) Size);
       bw.Write(Flags1);
       bw.Write(FormID);
       bw.Write(Flags2);
       bw.Write(Flags3);
-      foreach (SubRecord sr in SubRecords) sr.SaveData(bw);
+      foreach (SubRecord sr in SubRecords)
+      {
+        sr.SaveData(bw);
+      }
     }
 
     internal override List<string> GetIDs(bool lower)
     {
       List<string> list = new List<string>();
-      foreach (SubRecord sr in SubRecords) list.AddRange(sr.GetIDs(lower));
+      foreach (SubRecord sr in SubRecords)
+      {
+        list.AddRange(sr.GetIDs(lower));
+      }
       return list;
     }
   }
@@ -693,28 +873,58 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
   public sealed class SubRecord : BaseRecord
   {
     private byte[] Data;
-    public override long Size { get { return Data.Length; } }
-    public override long Size2 { get { return 6 + Data.Length + (Data.Length > ushort.MaxValue ? 10 : 0); } }
+
+    public override long Size
+    {
+      get
+      {
+        return Data.Length;
+      }
+    }
+
+    public override long Size2
+    {
+      get
+      {
+        return 6 + Data.Length + (Data.Length > ushort.MaxValue ? 10 : 0);
+      }
+    }
 
     public byte[] GetData()
     {
-      return (byte[])Data.Clone();
+      return (byte[]) Data.Clone();
     }
-    internal byte[] GetReadonlyData() { return Data; }
+
+    internal byte[] GetReadonlyData()
+    {
+      return Data;
+    }
+
     public void SetData(byte[] data)
     {
-      Data = (byte[])data.Clone();
+      Data = (byte[]) data.Clone();
     }
+
     public void SetStrData(string s, bool nullTerminate)
     {
-      if (nullTerminate) s += '\0';
+      if (nullTerminate)
+      {
+        s += '\0';
+      }
       Data = System.Text.Encoding.Default.GetBytes(s);
     }
 
     internal SubRecord(string name, BinaryReader br, uint size)
     {
       Name = name;
-      if (size == 0) size = br.ReadUInt16(); else br.BaseStream.Position += 2;
+      if (size == 0)
+      {
+        size = br.ReadUInt16();
+      }
+      else
+      {
+        br.BaseStream.Position += 2;
+      }
       Data = new byte[size];
       br.Read(Data, 0, Data.Length);
     }
@@ -722,7 +932,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
     private SubRecord(SubRecord sr)
     {
       Name = sr.Name;
-      Data = (byte[])sr.Data.Clone();
+      Data = (byte[]) sr.Data.Clone();
     }
 
     public override BaseRecord Clone()
@@ -741,16 +951,16 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       if (Data.Length > ushort.MaxValue)
       {
         WriteString(bw, "XXXX");
-        bw.Write((ushort)4);
+        bw.Write((ushort) 4);
         bw.Write(Data.Length);
         WriteString(bw, Name);
-        bw.Write((ushort)0);
+        bw.Write((ushort) 0);
         bw.Write(Data, 0, Data.Length);
       }
       else
       {
         WriteString(bw, Name);
-        bw.Write((ushort)Data.Length);
+        bw.Write((ushort) Data.Length);
         bw.Write(Data, 0, Data.Length);
       }
     }
@@ -758,30 +968,43 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
     public override string GetDesc()
     {
       return "[Subrecord]" + Environment.NewLine +
-        "Name: " + Name + Environment.NewLine +
-        "Size: " + Size.ToString() + " bytes (Excluding header)";
+             "Name: " + Name + Environment.NewLine +
+             "Size: " + Size.ToString() + " bytes (Excluding header)";
     }
-    public override void DeleteRecord(BaseRecord br) { }
+
+    public override void DeleteRecord(BaseRecord br)
+    {
+    }
+
     public override void AddRecord(BaseRecord br)
     {
       throw new TESParserException("Subrecords cannot contain additional data.");
     }
+
     public string GetStrData()
     {
       string s = "";
       foreach (byte b in Data)
       {
-        if (b == 0) break;
-        s += (char)b;
+        if (b == 0)
+        {
+          break;
+        }
+        s += (char) b;
       }
       return s;
     }
+
     public string GetHexData()
     {
       string s = "";
-      foreach (byte b in Data) s += b.ToString("X").PadLeft(2, '0') + " ";
+      foreach (byte b in Data)
+      {
+        s += b.ToString("X").PadLeft(2, '0') + " ";
+      }
       return s;
     }
+
     internal string GetFormattedData(SubrecordStructure ss, dFormIDLookupI formIDLookup)
     {
       int offset = 0;
@@ -790,22 +1013,39 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       {
         for (int j = 0; j < ss.elements.Length; j++)
         {
-          if (offset == Data.Length && j == ss.elements.Length - 1 && ss.elements[j].optional) break;
+          if (offset == Data.Length && j == ss.elements.Length - 1 && ss.elements[j].optional)
+          {
+            break;
+          }
           string s2 = "";
-          if (!ss.elements[j].notininfo) s2 += ss.elements[j].name + ": ";
+          if (!ss.elements[j].notininfo)
+          {
+            s2 += ss.elements[j].name + ": ";
+          }
           switch (ss.elements[j].type)
           {
             case ElementValueType.Int:
-              string tmps = TypeConverter.h2si(Data[offset], Data[offset + 1], Data[offset + 2], Data[offset + 3]).ToString();
+              string tmps =
+                TypeConverter.h2si(Data[offset], Data[offset + 1], Data[offset + 2], Data[offset + 3]).ToString();
               if (!ss.elements[j].notininfo)
               {
-                if (ss.elements[j].hexview) s2 += TypeConverter.h2i(Data[offset], Data[offset + 1], Data[offset + 2], Data[offset + 3]).ToString("X8");
-                else s2 += tmps;
+                if (ss.elements[j].hexview)
+                {
+                  s2 +=
+                    TypeConverter.h2i(Data[offset], Data[offset + 1], Data[offset + 2], Data[offset + 3]).ToString("X8");
+                }
+                else
+                {
+                  s2 += tmps;
+                }
                 if (ss.elements[j].options != null)
                 {
                   for (int k = 0; k < ss.elements[j].options.Length; k += 2)
                   {
-                    if (tmps == ss.elements[j].options[k + 1]) s2 += " (" + ss.elements[j].options[k] + ")";
+                    if (tmps == ss.elements[j].options[k + 1])
+                    {
+                      s2 += " (" + ss.elements[j].options[k] + ")";
+                    }
                   }
                 }
                 else if (ss.elements[j].flags != null)
@@ -816,11 +1056,17 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
                   {
                     if ((val & (1 << k)) != 0)
                     {
-                      if (tmp2.Length > 0) tmp2 += ", ";
+                      if (tmp2.Length > 0)
+                      {
+                        tmp2 += ", ";
+                      }
                       tmp2 += ss.elements[j].flags[k];
                     }
                   }
-                  if (tmp2.Length > 0) s2 += " (" + tmp2 + ")";
+                  if (tmp2.Length > 0)
+                  {
+                    s2 += " (" + tmp2 + ")";
+                  }
                 }
               }
               offset += 4;
@@ -829,13 +1075,22 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
               tmps = TypeConverter.h2ss(Data[offset], Data[offset + 1]).ToString();
               if (!ss.elements[j].notininfo)
               {
-                if (ss.elements[j].hexview) s2 += TypeConverter.h2ss(Data[offset], Data[offset + 1]).ToString("X4");
-                else s2 += tmps;
+                if (ss.elements[j].hexview)
+                {
+                  s2 += TypeConverter.h2ss(Data[offset], Data[offset + 1]).ToString("X4");
+                }
+                else
+                {
+                  s2 += tmps;
+                }
                 if (ss.elements[j].options != null)
                 {
                   for (int k = 0; k < ss.elements[j].options.Length; k += 2)
                   {
-                    if (tmps == ss.elements[j].options[k + 1]) s2 += " (" + ss.elements[j].options[k] + ")";
+                    if (tmps == ss.elements[j].options[k + 1])
+                    {
+                      s2 += " (" + ss.elements[j].options[k] + ")";
+                    }
                   }
                 }
                 else if (ss.elements[j].flags != null)
@@ -846,11 +1101,17 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
                   {
                     if ((val & (1 << k)) != 0)
                     {
-                      if (tmp2.Length > 0) tmp2 += ", ";
+                      if (tmp2.Length > 0)
+                      {
+                        tmp2 += ", ";
+                      }
                       tmp2 += ss.elements[j].flags[k];
                     }
                   }
-                  if (tmp2.Length > 0) s2 += " (" + tmp2 + ")";
+                  if (tmp2.Length > 0)
+                  {
+                    s2 += " (" + tmp2 + ")";
+                  }
                 }
               }
               offset += 2;
@@ -859,13 +1120,22 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
               tmps = Data[offset].ToString();
               if (!ss.elements[j].notininfo)
               {
-                if (ss.elements[j].hexview) s2 += Data[offset].ToString("X2");
-                else s2 += tmps;
+                if (ss.elements[j].hexview)
+                {
+                  s2 += Data[offset].ToString("X2");
+                }
+                else
+                {
+                  s2 += tmps;
+                }
                 if (ss.elements[j].options != null)
                 {
                   for (int k = 0; k < ss.elements[j].options.Length; k += 2)
                   {
-                    if (tmps == ss.elements[j].options[k + 1]) s2 += " (" + ss.elements[j].options[k] + ")";
+                    if (tmps == ss.elements[j].options[k + 1])
+                    {
+                      s2 += " (" + ss.elements[j].options[k] + ")";
+                    }
                   }
                 }
                 else if (ss.elements[j].flags != null)
@@ -876,33 +1146,54 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
                   {
                     if ((val & (1 << k)) != 0)
                     {
-                      if (tmp2.Length > 0) tmp2 += ", ";
+                      if (tmp2.Length > 0)
+                      {
+                        tmp2 += ", ";
+                      }
                       tmp2 += ss.elements[j].flags[k];
                     }
                   }
-                  if (tmp2.Length > 0) s2 += " (" + tmp2 + ")";
+                  if (tmp2.Length > 0)
+                  {
+                    s2 += " (" + tmp2 + ")";
+                  }
                 }
               }
               offset++;
               break;
             case ElementValueType.FormID:
               uint id = TypeConverter.h2i(Data[offset], Data[offset + 1], Data[offset + 2], Data[offset + 3]);
-              if (!ss.elements[j].notininfo) s2 += id.ToString("X8");
-              if (formIDLookup != null) s2 += ": " + formIDLookup(id);
+              if (!ss.elements[j].notininfo)
+              {
+                s2 += id.ToString("X8");
+              }
+              if (formIDLookup != null)
+              {
+                s2 += ": " + formIDLookup(id);
+              }
               offset += 4;
               break;
             case ElementValueType.Float:
-              if (!ss.elements[j].notininfo) s2 += TypeConverter.h2f(Data[offset], Data[offset + 1], Data[offset + 2], Data[offset + 3]).ToString();
+              if (!ss.elements[j].notininfo)
+              {
+                s2 += TypeConverter.h2f(Data[offset], Data[offset + 1], Data[offset + 2], Data[offset + 3]).ToString();
+              }
               offset += 4;
               break;
             case ElementValueType.String:
               if (!ss.elements[j].notininfo)
               {
-                while (Data[offset] != 0) s2 += (char)Data[offset++];
+                while (Data[offset] != 0)
+                {
+                  s2 += (char) Data[offset++];
+                }
               }
               else
               {
-                while (Data[offset] != 0) offset++;
+                while (Data[offset] != 0)
+                {
+                  offset++;
+                }
               }
               offset++;
               break;
@@ -915,8 +1206,14 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
             default:
               throw new ApplicationException();
           }
-          if (!ss.elements[j].notininfo) s2 += Environment.NewLine;
-          if (offset < Data.Length && j == ss.elements.Length - 1 && ss.elements[j].repeat) j--;
+          if (!ss.elements[j].notininfo)
+          {
+            s2 += Environment.NewLine;
+          }
+          if (offset < Data.Length && j == ss.elements.Length - 1 && ss.elements[j].repeat)
+          {
+            j--;
+          }
           s += s2;
         }
       }
@@ -926,6 +1223,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       }
       return s;
     }
+
     internal override List<string> GetIDs(bool lower)
     {
       List<string> list = new List<string>();
@@ -946,40 +1244,41 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
   internal static class FlagDefs
   {
-    public static readonly string[] RecFlags1 = {
-            "ESM file",
-            null,
-            null,
-            null,
-            null,
-            "Deleted",
-            null,
-            null,
-            null,
-            "Casts shadows",
-            "Quest item / Persistent reference",
-            "Initially disabled",
-            "Ignored",
-            null,
-            null,
-            "Visible when distant",
-            null,
-            "Dangerous / Off limits (Interior cell)",
-            "Data is compressed",
-            "Can't wait",
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-        };
+    public static readonly string[] RecFlags1 =
+    {
+      "ESM file",
+      null,
+      null,
+      null,
+      null,
+      "Deleted",
+      null,
+      null,
+      null,
+      "Casts shadows",
+      "Quest item / Persistent reference",
+      "Initially disabled",
+      "Ignored",
+      null,
+      null,
+      "Visible when distant",
+      null,
+      "Dangerous / Off limits (Interior cell)",
+      "Data is compressed",
+      "Can't wait",
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+    };
 
     public static string GetRecFlags1Desc(uint flags)
     {
@@ -987,11 +1286,14 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       bool b = false;
       for (int i = 0; i < 32; i++)
       {
-        if ((flags & (uint)(1 << i)) > 0)
+        if ((flags & (uint) (1 << i)) > 0)
         {
-          if (b) desc += ", ";
+          if (b)
+          {
+            desc += ", ";
+          }
           b = true;
-          desc += (RecFlags1[i] == null ? "Unknown (" + ((uint)(1 << i)).ToString("x") + ")" : RecFlags1[i]);
+          desc += (RecFlags1[i] == null ? "Unknown (" + ((uint) (1 << i)).ToString("x") + ")" : RecFlags1[i]);
         }
       }
       return desc;

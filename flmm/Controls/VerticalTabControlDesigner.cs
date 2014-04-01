@@ -27,7 +27,7 @@ namespace Fomm.Controls
     {
       get
       {
-        return (VerticalTabControl)Control;
+        return (VerticalTabControl) Control;
       }
     }
 
@@ -53,7 +53,9 @@ namespace Fomm.Controls
       get
       {
         if (m_dhtDesignerHost == null)
-          m_dhtDesignerHost = (IDesignerHost)GetService(typeof(IDesignerHost));
+        {
+          m_dhtDesignerHost = (IDesignerHost) GetService(typeof (IDesignerHost));
+        }
         return m_dhtDesignerHost;
       }
     }
@@ -67,7 +69,9 @@ namespace Fomm.Controls
       get
       {
         if (m_slsSelectionService == null)
-          m_slsSelectionService = (ISelectionService)GetService(typeof(ISelectionService));
+        {
+          m_slsSelectionService = (ISelectionService) GetService(typeof (ISelectionService));
+        }
         return m_slsSelectionService;
       }
     }
@@ -84,7 +88,10 @@ namespace Fomm.Controls
     {
       DesignerVerb dvbAddPage = new DesignerVerb("Add Tab Page", new EventHandler(AddTabPage));
       DesignerVerb dvbRemovePage = new DesignerVerb("Remove Tab Page", new EventHandler(RemoveTabPage));
-      m_dvcVerbs.AddRange(new DesignerVerb[] { dvbAddPage, dvbRemovePage });
+      m_dvcVerbs.AddRange(new DesignerVerb[]
+      {
+        dvbAddPage, dvbRemovePage
+      });
     }
 
     #endregion
@@ -111,17 +118,17 @@ namespace Fomm.Controls
 
       RaiseComponentChanging(TypeDescriptor.GetProperties(DesignedTabControl)["TabPages"]);
 
-      VerticalTabPage tpgPage = (VerticalTabPage)DesignerHost.CreateComponent(typeof(VerticalTabPage));
+      VerticalTabPage tpgPage = (VerticalTabPage) DesignerHost.CreateComponent(typeof (VerticalTabPage));
       tpgPage.Text = tpgPage.Name;
       tpgPage.BackColor = Color.FromKnownColor(KnownColor.Control);
       DesignedTabControl.TabPages.Add(tpgPage);
 
-      RaiseComponentChanged(TypeDescriptor.GetProperties(DesignedTabControl)["TabPages"], tpcOldPages, DesignedTabControl.TabPages);
+      RaiseComponentChanged(TypeDescriptor.GetProperties(DesignedTabControl)["TabPages"], tpcOldPages,
+                            DesignedTabControl.TabPages);
 
       DesignedTabControl.SelectedTabPage = tpgPage;
       EnableVerbs();
     }
-
 
     /// <summary>
     /// The event handler for the "Remove Tab Page" verb.
@@ -134,15 +141,21 @@ namespace Fomm.Controls
     private void RemoveTabPage(object sender, EventArgs e)
     {
       if (DesignedTabControl.SelectedIndex < 0)
+      {
         return;
+      }
 
       VerticalTabControl.TabPageCollection tpcOldPages = DesignedTabControl.TabPages;
 
       RaiseComponentChanging(TypeDescriptor.GetProperties(DesignedTabControl)["TabPages"]);
-      DesignerHost.DestroyComponent((VerticalTabPage)(DesignedTabControl.TabPages[DesignedTabControl.SelectedIndex]));
-      RaiseComponentChanged(TypeDescriptor.GetProperties(DesignedTabControl)["TabPages"], tpcOldPages, DesignedTabControl.TabPages);
+      DesignerHost.DestroyComponent((VerticalTabPage) (DesignedTabControl.TabPages[DesignedTabControl.SelectedIndex]));
+      RaiseComponentChanged(TypeDescriptor.GetProperties(DesignedTabControl)["TabPages"], tpcOldPages,
+                            DesignedTabControl.TabPages);
 
-      SelectionService.SetSelectedComponents(new IComponent[] { DesignedTabControl }, SelectionTypes.Auto);
+      SelectionService.SetSelectedComponents(new IComponent[]
+      {
+        DesignedTabControl
+      }, SelectionTypes.Auto);
       EnableVerbs();
     }
 
@@ -154,10 +167,14 @@ namespace Fomm.Controls
     /// <lang cref="false"/> otherwise.</returns>
     protected override bool GetHitTest(Point point)
     {
-      VerticalTabControl vtcTabControl = (VerticalTabControl)Control;
+      VerticalTabControl vtcTabControl = (VerticalTabControl) Control;
       foreach (VerticalTabPage vtpPage in vtcTabControl.TabPages)
+      {
         if (vtpPage.TabButton.Button.ClientRectangle.Contains(vtpPage.TabButton.Button.PointToClient(point)))
+        {
           return true;
+        }
+      }
       return false;
     }
 
@@ -169,12 +186,12 @@ namespace Fomm.Controls
     {
       base.InitializeNewComponent(defaultValues);
 
-      VerticalTabPage tpgPage = (VerticalTabPage)DesignerHost.CreateComponent(typeof(VerticalTabPage));
+      VerticalTabPage tpgPage = (VerticalTabPage) DesignerHost.CreateComponent(typeof (VerticalTabPage));
       tpgPage.Text = tpgPage.Name;
       tpgPage.BackColor = Color.FromKnownColor(KnownColor.Control);
       DesignedTabControl.TabPages.Add(tpgPage);
 
-      tpgPage = (VerticalTabPage)DesignerHost.CreateComponent(typeof(VerticalTabPage));
+      tpgPage = (VerticalTabPage) DesignerHost.CreateComponent(typeof (VerticalTabPage));
       tpgPage.Text = tpgPage.Name;
       tpgPage.BackColor = Color.FromKnownColor(KnownColor.Control);
       DesignedTabControl.TabPages.Add(tpgPage);

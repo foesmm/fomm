@@ -15,7 +15,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     /// <summary>
     /// Extracts the config version from a XML configuration file.
     /// </summary>
-    protected readonly static Regex m_rgxVersion = new Regex("xsi:noNamespaceSchemaLocation=\"[^\"]*ModConfig(.*?).xsd", RegexOptions.Singleline);
+    protected static readonly Regex m_rgxVersion = new Regex(
+      "xsi:noNamespaceSchemaLocation=\"[^\"]*ModConfig(.*?).xsd", RegexOptions.Singleline);
 
     /// <summary>
     /// Gets the config version used by the given XML configuration file.
@@ -26,10 +27,14 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     public static string GetConfigVersion(string p_strXml)
     {
       if (!m_rgxVersion.IsMatch(p_strXml))
+      {
         return null;
+      }
       string strConfigVersion = m_rgxVersion.Match(p_strXml).Groups[1].Value;
       if (String.IsNullOrEmpty(strConfigVersion))
+      {
         strConfigVersion = "1.0";
+      }
       return strConfigVersion;
     }
 
@@ -44,13 +49,16 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     public static Parser GetParser(XmlDocument p_xmlConfig, fomod p_fomodMod, DependencyStateManager p_dsmSate)
     {
       string strConfigVersion = "1.0";
-      string strSchemaName = p_xmlConfig.SelectSingleNode("config").Attributes["xsi:noNamespaceSchemaLocation"].InnerText.ToLowerInvariant();
+      string strSchemaName =
+        p_xmlConfig.SelectSingleNode("config").Attributes["xsi:noNamespaceSchemaLocation"].InnerText.ToLowerInvariant();
       Int32 intStartPos = strSchemaName.LastIndexOf("modconfig") + 9;
       if (intStartPos > 8)
       {
         Int32 intLength = strSchemaName.Length - intStartPos - 4;
         if (intLength > 0)
+        {
           strConfigVersion = strSchemaName.Substring(intStartPos, intLength);
+        }
       }
       ParserExtension pexParserExtension = Program.GameMode.GetParserExtension(strConfigVersion);
       switch (strConfigVersion)
@@ -66,7 +74,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
         case "5.0":
           return new Parser50(p_xmlConfig, p_fomodMod, p_dsmSate, pexParserExtension);
       }
-      throw new ParserException("Unrecognized Module Configuration version (" + strConfigVersion + "). Perhaps a newer version of FOMM is required.");
+      throw new ParserException("Unrecognized Module Configuration version (" + strConfigVersion +
+                                "). Perhaps a newer version of FOMM is required.");
     }
 
     public ParserExtension m_pexParserExtension = null;
@@ -141,7 +150,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     /// <param name="p_fomodMod">The mod whose configuration file we are parsing.</param>
     /// <param name="p_dsmSate">The state of the install.</param>
     /// <param name="p_pexParserExtension">The parser extension that provides game-specific config file parsing.</param>
-    public Parser(XmlDocument p_xmlConfig, fomod p_fomodMod, DependencyStateManager p_dsmSate, ParserExtension p_pexParserExtension)
+    public Parser(XmlDocument p_xmlConfig, fomod p_fomodMod, DependencyStateManager p_dsmSate,
+                  ParserExtension p_pexParserExtension)
     {
       m_pexParserExtension = p_pexParserExtension;
       m_xmlConfig = p_xmlConfig;
@@ -164,7 +174,10 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     {
       XmlSchema xscSchema = loadModuleConfigSchema();
       m_xmlConfig.Schemas.Add(xscSchema);
-      m_xmlConfig.Validate((s, e) => { throw e.Exception; });
+      m_xmlConfig.Validate((s, e) =>
+      {
+        throw e.Exception;
+      });
     }
 
     /// <summary>
@@ -183,7 +196,10 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
         xrsSettings.IgnoreWhitespace = true;
         using (XmlReader xrdSchemaReader = XmlReader.Create(stmSchema, xrsSettings, strSchemaPath))
         {
-          xscSchema = XmlSchema.Read(xrdSchemaReader, delegate(object sender, ValidationEventArgs e) { throw e.Exception; });
+          xscSchema = XmlSchema.Read(xrdSchemaReader, delegate(object sender, ValidationEventArgs e)
+          {
+            throw e.Exception;
+          });
         }
         stmSchema.Close();
       }

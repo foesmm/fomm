@@ -16,7 +16,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// <summary>
     /// Raised when an option is checked.
     /// </summary>
-    public event EventHandler ItemChecked = delegate {};
+    public event EventHandler ItemChecked = delegate
+    {
+    };
 
     private DependencyStateManager m_dsmStateManager = null;
 
@@ -35,7 +37,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 
       loadPlugins(p_lstGroups);
       if (lvwPlugins.Items.Count > 0)
+      {
         lvwPlugins.Items[0].Selected = true;
+      }
     }
 
     #endregion
@@ -56,15 +60,23 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
         List<PluginFile> lstInstall = new List<PluginFile>();
         foreach (ListViewItem lviItem in lvwPlugins.Items)
         {
-          PluginInfo pifPlugin = (PluginInfo)lviItem.Tag;
+          PluginInfo pifPlugin = (PluginInfo) lviItem.Tag;
           PluginType ptpPluginType = pifPlugin.Type;
-          GroupType gtpGroupType = (GroupType)lviItem.Group.Tag;
+          GroupType gtpGroupType = (GroupType) lviItem.Group.Tag;
           if (lviItem.Checked)
+          {
             lstInstall.AddRange(pifPlugin.Files);
+          }
           else
+          {
             foreach (PluginFile pflFile in pifPlugin.Files)
+            {
               if (pflFile.AlwaysInstall || (pflFile.InstallIfUsable && (pifPlugin.Type != PluginType.NotUsable)))
+              {
                 lstInstall.Add(pflFile);
+              }
+            }
+          }
         }
         lstInstall.Sort();
         return lstInstall;
@@ -85,23 +97,31 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
         List<PluginFile> lstActivate = new List<PluginFile>();
         foreach (ListViewItem lviItem in lvwPlugins.Items)
         {
-          PluginInfo pifPlugin = (PluginInfo)lviItem.Tag;
+          PluginInfo pifPlugin = (PluginInfo) lviItem.Tag;
           if (lviItem.Checked)
+          {
             foreach (PluginFile pflFile in pifPlugin.Files)
             {
               if (pflFile.IsFolder)
               {
                 if (pflFile.Destination.Length == 0)
+                {
                   lstActivate.Add(pflFile);
+                }
               }
               else if (String.IsNullOrEmpty(pflFile.Destination))
               {
                 if (pflFile.Source.ToLower().EndsWith(".esm") || pflFile.Source.ToLower().EndsWith(".esp"))
+                {
                   lstActivate.Add(pflFile);
+                }
               }
               else if (pflFile.Destination.ToLower().EndsWith(".esm") || pflFile.Destination.ToLower().EndsWith(".esp"))
+              {
                 lstActivate.Add(pflFile);
+              }
             }
+          }
         }
         lstActivate.Sort();
         return lstActivate;
@@ -119,7 +139,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
       {
         ListViewGroup lvgGroup = addGroup(pgpGroup);
         foreach (PluginInfo pifPlugin in pgpGroup.Plugins)
+        {
           addPlugin(lvgGroup, pifPlugin);
+        }
       }
       checkDefaults();
     }
@@ -134,18 +156,20 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
       PluginInfo pifPlugin = null;
       foreach (ListViewGroup lvgGroup in lvwPlugins.Groups)
       {
-        switch ((GroupType)lvgGroup.Tag)
+        switch ((GroupType) lvgGroup.Tag)
         {
           case GroupType.SelectAll:
             foreach (ListViewItem lviPlugin in lvgGroup.Items)
+            {
               lviPlugin.Checked = true;
+            }
             break;
           case GroupType.SelectExactlyOne:
             lviRequired = null;
             lviRecommended = null;
             foreach (ListViewItem lviPlugin in lvgGroup.Items)
             {
-              pifPlugin = (PluginInfo)lviPlugin.Tag;
+              pifPlugin = (PluginInfo) lviPlugin.Tag;
               switch (pifPlugin.Type)
               {
                 case PluginType.Recommended:
@@ -157,18 +181,24 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
               }
             }
             if (lviRequired != null)
+            {
               lviRequired.Checked = true;
+            }
             else if (lviRecommended != null)
+            {
               lviRecommended.Checked = true;
+            }
             else if (lvgGroup.Items.Count > 0)
+            {
               lvgGroup.Items[0].Checked = true;
+            }
             break;
           case GroupType.SelectAtLeastOne:
           default:
             bool booOneSelected = false;
             foreach (ListViewItem lviPlugin in lvgGroup.Items)
             {
-              pifPlugin = (PluginInfo)lviPlugin.Tag;
+              pifPlugin = (PluginInfo) lviPlugin.Tag;
               switch (pifPlugin.Type)
               {
                 case PluginType.Recommended:
@@ -178,8 +208,11 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
                   break;
               }
             }
-            if ((GroupType.SelectAtLeastOne == (GroupType)lvgGroup.Tag) && !booOneSelected && (lvgGroup.Items.Count > 0))
+            if ((GroupType.SelectAtLeastOne == (GroupType) lvgGroup.Tag) && !booOneSelected &&
+                (lvgGroup.Items.Count > 0))
+            {
               lvgGroup.Items[0].Checked = true;
+            }
             break;
         }
       }
@@ -202,11 +235,13 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     {
       ListViewGroup lvgGroup = null;
       foreach (ListViewGroup lvgExistingGroup in lvwPlugins.Groups)
+      {
         if (lvgExistingGroup.Name.Equals(p_pgpGroup.Name))
         {
           lvgGroup = lvgExistingGroup;
           break;
         }
+      }
       if (lvgGroup == null)
       {
         lvgGroup = new ListViewGroup();
@@ -245,11 +280,13 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
       string strName = p_pifPlugin.Name;
       ListViewItem lviPlugin = null;
       foreach (ListViewItem lviExistingPlugin in p_lvgGroup.Items)
+      {
         if (lviExistingPlugin.Text.Equals(strName))
         {
           lviPlugin = lviExistingPlugin;
           break;
         }
+      }
       if (lviPlugin == null)
       {
         lviPlugin = new ListViewItem();
@@ -287,7 +324,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     {
       if (lvwPlugins.SelectedItems.Count > 0)
       {
-        PluginInfo pifPlugin = (PluginInfo)lvwPlugins.SelectedItems[0].Tag;
+        PluginInfo pifPlugin = (PluginInfo) lvwPlugins.SelectedItems[0].Tag;
         tbxDescription.Text = pifPlugin.Description;
         pbxImage.Image = pifPlugin.Image;
       }
@@ -309,38 +346,54 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
     private void lvwPlugins_ItemCheck(object sender, ItemCheckEventArgs e)
     {
-      PluginInfo pifPlugin = (PluginInfo)lvwPlugins.Items[e.Index].Tag;
+      PluginInfo pifPlugin = (PluginInfo) lvwPlugins.Items[e.Index].Tag;
       switch (pifPlugin.Type)
       {
         case PluginType.Required:
           if (e.NewValue != CheckState.Checked)
+          {
             MessageBox.Show(this, pifPlugin.Name + " is required. You cannot unselect it.");
+          }
           e.NewValue = CheckState.Checked;
           return;
         case PluginType.Recommended:
           if (e.NewValue != CheckState.Checked)
-            if (MessageBox.Show(this, pifPlugin.Name + " is recommended. Disabling it may result in game instability. Are you sure you want to continue?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
+          {
+            if (
+              MessageBox.Show(this,
+                              pifPlugin.Name +
+                              " is recommended. Disabling it may result in game instability. Are you sure you want to continue?",
+                              "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
             {
               e.NewValue = CheckState.Checked;
               return;
             }
+          }
           break;
         case PluginType.NotUsable:
         case PluginType.CouldBeUsable:
           if (e.NewValue == CheckState.Checked)
-            if (MessageBox.Show(this, pifPlugin.Name + " is not usable with your loaded mods. Enabling it may result in game instability. Are you sure you want to continue?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
+          {
+            if (
+              MessageBox.Show(this,
+                              pifPlugin.Name +
+                              " is not usable with your loaded mods. Enabling it may result in game instability. Are you sure you want to continue?",
+                              "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
             {
               e.NewValue = CheckState.Unchecked;
               return;
             }
+          }
           break;
       }
       ListViewGroup lvgGroup = lvwPlugins.Items[e.Index].Group;
-      switch ((GroupType)lvgGroup.Tag)
+      switch ((GroupType) lvgGroup.Tag)
       {
         case GroupType.SelectAll:
           if (e.NewValue != CheckState.Checked)
+          {
             MessageBox.Show(this, pifPlugin.Name + " is required. You cannot unselect it.");
+          }
           e.NewValue = CheckState.Checked;
           break;
         case GroupType.SelectAtLeastOne:
@@ -348,11 +401,13 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
           {
             bool booOtherChecked = false;
             foreach (ListViewItem lviGroupItem in lvgGroup.Items)
+            {
               if ((lviGroupItem.Index != e.Index) && (lviGroupItem.Checked))
               {
                 booOtherChecked = true;
                 break;
               }
+            }
             if (!booOtherChecked)
             {
               MessageBox.Show(this, "You must select at least one plugin in this group.");
@@ -365,11 +420,13 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
           {
             bool booOtherChecked = false;
             foreach (ListViewItem lviGroupItem in lvgGroup.Items)
+            {
               if ((lviGroupItem.Index != e.Index) && (lviGroupItem.Checked))
               {
                 booOtherChecked = true;
                 break;
               }
+            }
             if (!booOtherChecked)
             {
               MessageBox.Show(this, "You must select one plugin in this group.");
@@ -392,24 +449,34 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     {
       ListViewItem lviItem = e.Item;
       ListViewGroup lvgGroup = lviItem.Group;
-      switch ((GroupType)lvgGroup.Tag)
+      switch ((GroupType) lvgGroup.Tag)
       {
         case GroupType.SelectAtMostOne:
         case GroupType.SelectExactlyOne:
           if (lviItem.Checked)
+          {
             foreach (ListViewItem lviGroupItem in lvgGroup.Items)
+            {
               if ((lviGroupItem != lviItem) && (lviGroupItem.Index > -1))
+              {
                 lviGroupItem.Checked = false;
+              }
+            }
+          }
           break;
       }
-      PluginInfo pifPlugin = (PluginInfo)e.Item.Tag;
+      PluginInfo pifPlugin = (PluginInfo) e.Item.Tag;
       if (lviItem.Checked)
       {
         foreach (ConditionalFlag cfgFlag in pifPlugin.Flags)
+        {
           m_dsmStateManager.SetFlagValue(cfgFlag.Name, cfgFlag.ConditionalValue, pifPlugin);
+        }
       }
       else
+      {
         m_dsmStateManager.RemoveFlags(pifPlugin);
+      }
       ItemChecked(this, new EventArgs());
     }
 

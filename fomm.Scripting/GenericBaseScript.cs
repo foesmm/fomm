@@ -60,7 +60,6 @@ namespace fomm.Scripting
       }
     }
 
-
     /// <summary>
     /// Sets up the script.
     /// </summary>
@@ -78,6 +77,7 @@ namespace fomm.Scripting
     #region Method Execution
 
     protected delegate void GenereicVoidMethodDelegate();
+
     protected delegate object GenereicReturnMethodDelegate();
 
     /// <summary>
@@ -103,7 +103,9 @@ namespace fomm.Scripting
       {
         m_strLastError = e.Message;
         if (e.InnerException != null)
+        {
           m_strLastError += "\n" + e.InnerException.Message;
+        }
       }
     }
 
@@ -130,7 +132,9 @@ namespace fomm.Scripting
       {
         m_strLastError = e.Message;
         if (e.InnerException != null)
+        {
           m_strLastError += "\n" + e.InnerException.Message;
+        }
       }
       return null;
     }
@@ -174,7 +178,7 @@ namespace fomm.Scripting
     /// <seealso cref="ModInstaller.CopyDataFile(string p_strFrom, string p_strTo)"/>
     public static bool CopyDataFile(string p_strFrom, string p_strTo)
     {
-      return (bool)(ExecuteMethod(() => m_mdiScript.Script.CopyDataFile(p_strFrom, p_strTo)) ?? false);
+      return (bool) (ExecuteMethod(() => m_mdiScript.Script.CopyDataFile(p_strFrom, p_strTo)) ?? false);
     }
 
     /// <summary>
@@ -184,9 +188,11 @@ namespace fomm.Scripting
     /// <seealso cref="fomod.GetFileList()"/>
     public static string[] GetFomodFileList()
     {
-      string[] strFiles = (string[])ExecuteMethod(() => m_mdiScript.Fomod.GetFileList().ToArray());
+      string[] strFiles = (string[]) ExecuteMethod(() => m_mdiScript.Fomod.GetFileList().ToArray());
       for (Int32 i = strFiles.Length - 1; i >= 0; i--)
+      {
         strFiles[i] = strFiles[i].Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+      }
       return strFiles;
     }
 
@@ -198,7 +204,7 @@ namespace fomm.Scripting
     /// <seealso cref="ModInstaller.InstallFileFromFomod(string p_strFile)"/>
     public static bool InstallFileFromFomod(string p_strFile)
     {
-      return (bool)(ExecuteMethod(() => m_mdiScript.Script.InstallFileFromFomod(p_strFile)) ?? false);
+      return (bool) (ExecuteMethod(() => m_mdiScript.Script.InstallFileFromFomod(p_strFile)) ?? false);
     }
 
     /// <summary>
@@ -209,7 +215,7 @@ namespace fomm.Scripting
     /// <seealso cref="fomod.GetFile(string p_strFile)"/>
     public static byte[] GetFileFromFomod(string p_strFile)
     {
-      return (byte[])ExecuteMethod(() => m_mdiScript.Fomod.GetFile(p_strFile));
+      return (byte[]) ExecuteMethod(() => m_mdiScript.Fomod.GetFile(p_strFile));
     }
 
     /// <summary>
@@ -222,7 +228,8 @@ namespace fomm.Scripting
     /// <seealso cref="FileManagement.GetExistingDataFileList(string p_strPath, string p_strPattern, bool p_booAllFolders)"/>
     public static string[] GetExistingDataFileList(string p_strPath, string p_strPattern, bool p_booAllFolders)
     {
-      return (string[])ExecuteMethod(() => FileManagement.GetExistingDataFileList(p_strPath, p_strPattern, p_booAllFolders));
+      return
+        (string[]) ExecuteMethod(() => FileManagement.GetExistingDataFileList(p_strPath, p_strPattern, p_booAllFolders));
     }
 
     /// <summary>
@@ -234,7 +241,7 @@ namespace fomm.Scripting
     /// <see cref="FileManagement.DataFileExists(string p_strPath)"/>
     public static bool DataFileExists(string p_strPath)
     {
-      return (bool)(ExecuteMethod(() => FileManagement.DataFileExists(p_strPath)) ?? false);
+      return (bool) (ExecuteMethod(() => FileManagement.DataFileExists(p_strPath)) ?? false);
     }
 
     /// <summary>
@@ -245,7 +252,7 @@ namespace fomm.Scripting
     /// <see cref="FileManagement.GetExistingDataFile(string p_strPath)"/>
     public static byte[] GetExistingDataFile(string p_strPath)
     {
-      return (byte[])ExecuteMethod(() => FileManagement.GetExistingDataFile(p_strPath));
+      return (byte[]) ExecuteMethod(() => FileManagement.GetExistingDataFile(p_strPath));
     }
 
     /// <summary>
@@ -261,7 +268,7 @@ namespace fomm.Scripting
     /// <seealso cref="ModInstaller.GenerateDataFile(string p_strPath, byte[] p_bteData)"/>
     public static bool GenerateDataFile(string p_strPath, byte[] p_bteData)
     {
-      return (bool)(ExecuteMethod(() => m_mdiScript.Script.GenerateDataFile(p_strPath, p_bteData)) ?? false);
+      return (bool) (ExecuteMethod(() => m_mdiScript.Script.GenerateDataFile(p_strPath, p_bteData)) ?? false);
     }
 
     #endregion
@@ -300,7 +307,7 @@ namespace fomm.Scripting
     /// <seealso cref="ModScript.MessageBox(string p_strMessage, string p_strTitle, MessageBoxButtons p_mbbButtons)"/>
     public static DialogResult MessageBox(string p_strMessage, string p_strTitle, MessageBoxButtons p_mbbButtons)
     {
-      return (DialogResult)ExecuteMethod(() => m_mdiScript.Script.MessageBox(p_strMessage, p_strTitle, p_mbbButtons));
+      return (DialogResult) ExecuteMethod(() => m_mdiScript.Script.MessageBox(p_strMessage, p_strTitle, p_mbbButtons));
     }
 
     #endregion
@@ -320,9 +327,13 @@ namespace fomm.Scripting
       foreach (SelectOption so in p_sopOptions)
       {
         if (so.Preview != null)
+        {
           booHasPreviews = true;
+        }
         if (so.Desc != null)
+        {
           booHasDescriptions = true;
+        }
       }
       string[] strItems = new string[p_sopOptions.Length];
       string[] strPreviews = booHasPreviews ? new string[p_sopOptions.Length] : null;
@@ -331,9 +342,13 @@ namespace fomm.Scripting
       {
         strItems[i] = p_sopOptions[i].Item;
         if (booHasPreviews)
+        {
           strPreviews[i] = p_sopOptions[i].Preview;
+        }
         if (booHasDescriptions)
+        {
           strDescriptions[i] = p_sopOptions[i].Desc;
+        }
       }
       return Select(strItems, strPreviews, strDescriptions, p_strTitle, p_booSelectMany);
     }
@@ -356,9 +371,13 @@ namespace fomm.Scripting
     /// <param name="p_booSelectMany">Whether more than one item can be selected.</param>
     /// <returns>The indices of the selected items.</returns>
     /// <seealso cref="ModScript.Select(string[] p_strItems, string[] p_strPreviews, string[] p_strDescriptions, string p_strTitle, bool p_booSelectMany)"/>
-    public static int[] Select(string[] p_strItems, string[] p_strPreviews, string[] p_strDescriptions, string p_strTitle, bool p_booSelectMany)
+    public static int[] Select(string[] p_strItems, string[] p_strPreviews, string[] p_strDescriptions,
+                               string p_strTitle, bool p_booSelectMany)
     {
-      return (int[])ExecuteMethod(() => m_mdiScript.Script.Select(p_strItems, p_strPreviews, p_strDescriptions, p_strTitle, p_booSelectMany));
+      return
+        (int[])
+          ExecuteMethod(
+            () => m_mdiScript.Script.Select(p_strItems, p_strPreviews, p_strDescriptions, p_strTitle, p_booSelectMany));
     }
 
     /// <summary>
@@ -368,7 +387,7 @@ namespace fomm.Scripting
     /// <seealso cref="ModScript.CreateCustomForm()"/>
     public static Form CreateCustomForm()
     {
-      return (Form)ExecuteMethod(() => m_mdiScript.Script.CreateCustomForm());
+      return (Form) ExecuteMethod(() => m_mdiScript.Script.CreateCustomForm());
     }
 
     #endregion
@@ -382,7 +401,7 @@ namespace fomm.Scripting
     /// <seealso cref="ModScript.GetFommVersion()"/>
     public static Version GetFommVersion()
     {
-      return (Version)ExecuteMethod(() => m_mdiScript.Script.GetFommVersion());
+      return (Version) ExecuteMethod(() => m_mdiScript.Script.GetFommVersion());
     }
 
     /// <summary>
@@ -393,7 +412,7 @@ namespace fomm.Scripting
     /// <seealso cref="ModScript.GetGameVersion()"/>
     public static Version GetGameVersion()
     {
-      return (Version)ExecuteMethod(() => m_mdiScript.Script.GetGameVersion());
+      return (Version) ExecuteMethod(() => m_mdiScript.Script.GetGameVersion());
     }
 
     #endregion
@@ -407,7 +426,7 @@ namespace fomm.Scripting
     /// <seealso cref="ModScript.GetAllPlugins()"/>
     public static string[] GetAllPlugins()
     {
-      return (string[])ExecuteMethod(() => m_mdiScript.Script.GetAllPlugins());
+      return (string[]) ExecuteMethod(() => m_mdiScript.Script.GetAllPlugins());
     }
 
     #region Plugin Activation Management
@@ -419,7 +438,7 @@ namespace fomm.Scripting
     /// <seealso cref="ModScript.GetActivePlugins()"/>
     public static string[] GetActivePlugins()
     {
-      return (string[])ExecuteMethod(() => m_mdiScript.Script.GetActivePlugins());
+      return (string[]) ExecuteMethod(() => m_mdiScript.Script.GetActivePlugins());
     }
 
     /// <summary>

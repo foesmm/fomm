@@ -44,7 +44,9 @@ namespace Fomm.Games.Fallout3
       if (e.TabPage == vtpDirectories)
       {
         if (!rdcDirectories.ValidateSettings())
+        {
           wizSetup.SelectedTabPage = e.TabPage;
+        }
       }
     }
 
@@ -58,8 +60,12 @@ namespace Fomm.Games.Fallout3
     /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
     private void wizSetup_Cancelled(object sender, EventArgs e)
     {
-      if (MessageBox.Show(this, "If you cancel the setup FOMM will close.", "Confirm", MessageBoxButtons.OKCancel, MessageBoxIcon.Information) == DialogResult.OK)
+      if (
+        MessageBox.Show(this, "If you cancel the setup FOMM will close.", "Confirm", MessageBoxButtons.OKCancel,
+                        MessageBoxIcon.Information) == DialogResult.OK)
+      {
         DialogResult = DialogResult.Cancel;
+      }
     }
 
     /// <summary>

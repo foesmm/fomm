@@ -8,4 +8,3 @@ namespace Fomm.Games.FalloutNewVegas.PluginFormatProviders
   {
   }
 }
-

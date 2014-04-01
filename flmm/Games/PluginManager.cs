@@ -16,10 +16,7 @@ namespace Fomm.Games
     /// Gets the list of active plugins.
     /// </summary>
     /// <value>The list of active plugins.</value>
-    public abstract Set<string> ActivePluginList
-    {
-      get;
-    }
+    public abstract Set<string> ActivePluginList { get; }
 
     public abstract void SetActivePlugins(Set<string> p_lstActivePlugins);
 
@@ -32,7 +29,9 @@ namespace Fomm.Games
       Set<string> setPlugins = ActivePluginList;
       string strPath = p_strPath;
       if (Path.GetFileName(strPath).Equals(strPath))
+      {
         strPath = Path.Combine(Program.GameMode.PluginsPath, strPath);
+      }
       setPlugins.Add(strPath);
       SetActivePlugins(setPlugins);
     }
@@ -46,7 +45,9 @@ namespace Fomm.Games
       Set<string> setPlugins = ActivePluginList;
       string strPath = p_strPath;
       if (Path.GetFileName(strPath).Equals(strPath))
+      {
         strPath = Path.Combine(Program.GameMode.PluginsPath, strPath);
+      }
       setPlugins.Remove(strPath);
       SetActivePlugins(setPlugins);
     }
@@ -67,10 +68,7 @@ namespace Fomm.Games
     /// Gets an ordered list of plugins.
     /// </summary>
     /// <value>An ordered list of plugins.</value>
-    public abstract string[] OrderedPluginList
-    {
-      get;
-    }
+    public abstract string[] OrderedPluginList { get; }
 
     /// <summary>
     /// Sorts the list of plugins paths.

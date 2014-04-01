@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Fomm.Util
 {
+
   #region Enumerations
 
   /// <summary>
@@ -71,14 +72,14 @@ namespace Fomm.Util
     /// <lang cref="false"/> otherwise.</returns>
     [DllImport("advapi32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
-    static extern bool OpenProcessToken(IntPtr ProcessHandle, UInt32 DesiredAccess, out IntPtr TokenHandle);
+    private static extern bool OpenProcessToken(IntPtr ProcessHandle, UInt32 DesiredAccess, out IntPtr TokenHandle);
 
     /// <summary>
     /// Gets the current process's handle.
     /// </summary>
     /// <returns>The cur</returns>
     [DllImport("kernel32.dll", SetLastError = true)]
-    static extern IntPtr GetCurrentProcess();
+    private static extern IntPtr GetCurrentProcess();
 
     /// <summary>
     /// Gets information about the specified process access token.
@@ -92,7 +93,7 @@ namespace Fomm.Util
     /// <lang cref="false"/> otherwise.</returns>
     [DllImport("advapi32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
-    static extern bool GetTokenInformation(
+    private static extern bool GetTokenInformation(
       IntPtr TokenHandle,
       TOKEN_INFORMATION_CLASS TokenInformationClass,
       IntPtr TokenInformation,
@@ -107,7 +108,7 @@ namespace Fomm.Util
     /// <lang cref="false"/> otherwise.</returns>
     [DllImport("kernel32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
-    static extern bool CloseHandle(IntPtr hObject);
+    private static extern bool CloseHandle(IntPtr hObject);
 
     /// <summary>
     /// Loads the specified library.
@@ -156,17 +157,23 @@ namespace Fomm.Util
       get
       {
         if (!IsUACOperatingSystem)
+        {
           return true;
+        }
 
         bool booCallSucceeded = false;
         IntPtr hToken = IntPtr.Zero;
 
         IntPtr ptrProcessHandle = GetCurrentProcess();
         if (ptrProcessHandle == IntPtr.Zero)
+        {
           throw new Exception("Could not get hanlde to current process.");
+        }
 
         if (!(booCallSucceeded = OpenProcessToken(ptrProcessHandle, TOKEN_QUERY, out hToken)))
+        {
           throw new Exception("Could not open process token.");
+        }
 
         try
         {
@@ -179,10 +186,13 @@ namespace Fomm.Util
           try
           {
             Marshal.StructureToPtr(tevTokenElevation, pteTokenElevation, true);
-            booCallSucceeded = GetTokenInformation(hToken, TOKEN_INFORMATION_CLASS.TokenElevation, pteTokenElevation, (UInt32)intTokenElevationSize, out uintReturnLength);
+            booCallSucceeded = GetTokenInformation(hToken, TOKEN_INFORMATION_CLASS.TokenElevation, pteTokenElevation,
+                                                   (UInt32) intTokenElevationSize, out uintReturnLength);
             if ((!booCallSucceeded) || (intTokenElevationSize != uintReturnLength))
+            {
               throw new Exception("Could not get token information.");
-            tevTokenElevation = (TOKEN_ELEVATION)Marshal.PtrToStructure(pteTokenElevation, typeof(TOKEN_ELEVATION));
+            }
+            tevTokenElevation = (TOKEN_ELEVATION) Marshal.PtrToStructure(pteTokenElevation, typeof (TOKEN_ELEVATION));
           }
           finally
           {

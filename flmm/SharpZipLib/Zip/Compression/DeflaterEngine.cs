@@ -38,29 +38,26 @@
 // exception statement from your version.
 
 using System;
-
 using ICSharpCode.SharpZipLib.Checksums;
 
-namespace ICSharpCode.SharpZipLib.Zip.Compression 
+namespace ICSharpCode.SharpZipLib.Zip.Compression
 {
-  
   /// <summary>
   /// Strategies for deflater
   /// </summary>
-  enum DeflateStrategy 
+  internal enum DeflateStrategy
   {
     /// <summary>
     /// The default strategy
     /// </summary>
-    Default  = 0,
-    
+    Default = 0,
+
     /// <summary>
     /// This strategy will only allow longer string repetitions.  It is
     /// useful for random data with a small character set.
     /// </summary>
     Filtered = 1,
 
-      
     /// <summary>
     /// This strategy will not look for string repetitions at all.  It
     /// only encodes with Huffman trees (which means, that more common
@@ -82,34 +79,36 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
   // to the previous index with the same hash.
   // 
 
-  
   /// <summary>
   /// Low level compression engine for deflate algorithm which uses a 32K sliding window
   /// with secondary compression from Huffman/Shannon-Fano codes.
   /// </summary>
-  class DeflaterEngine  
+  internal class DeflaterEngine
   {
     #region Constants
-    const int TooFar = 4096;
+
+    private const int TooFar = 4096;
+
     #endregion
-    
+
     #region Constructors
+
     /// <summary>
     /// Construct instance with pending buffer
     /// </summary>
     /// <param name="pending">
     /// Pending buffer to use
     /// </param>>
-    public DeflaterEngine(DeflaterPending pending) 
+    public DeflaterEngine(DeflaterPending pending)
     {
       this.pending = pending;
       huffman = new DeflaterHuffman(pending);
       adler = new Adler32();
 
-            window = new byte[2 * DeflaterConstants.WSIZE];
-            head   = new short[DeflaterConstants.HASH_SIZE];
-            prev   = new short[DeflaterConstants.WSIZE];
-      
+      window = new byte[2*DeflaterConstants.WSIZE];
+      head = new short[DeflaterConstants.HASH_SIZE];
+      prev = new short[DeflaterConstants.WSIZE];
+
       // We start at index 1, to avoid an implementation deficiency, that
       // we cannot build a repeat pattern at index 0.
       blockStart = strstart = 1;
@@ -126,7 +125,7 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
     public bool Deflate(bool flush, bool finish)
     {
       bool progress;
-      do 
+      do
       {
         FillWindow();
         bool canFlush = flush && (inputOff == inputEnd);
@@ -137,21 +136,22 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
                 + lookahead + "], " + compressionFunction + "," + canFlush);
         }
 #endif
-        switch (compressionFunction) 
+        switch (compressionFunction)
         {
-                case DeflaterConstants.DEFLATE_STORED:
+          case DeflaterConstants.DEFLATE_STORED:
             progress = DeflateStored(canFlush, finish);
             break;
-                case DeflaterConstants.DEFLATE_FAST:
+          case DeflaterConstants.DEFLATE_FAST:
             progress = DeflateFast(canFlush, finish);
             break;
-                case DeflaterConstants.DEFLATE_SLOW:
+          case DeflaterConstants.DEFLATE_SLOW:
             progress = DeflateSlow(canFlush, finish);
             break;
           default:
             throw new InvalidOperationException("unknown compressionFunction");
         }
-      } while (pending.IsFlushed && progress); // repeat while we have no pending output and progress was made
+      }
+      while (pending.IsFlushed && progress); // repeat while we have no pending output and progress was made
       return progress;
     }
 
@@ -164,36 +164,36 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
     /// <param name="count">The number of bytes of data to use as input.</param>
     public void SetInput(byte[] buffer, int offset, int count)
     {
-      if ( buffer == null ) 
+      if (buffer == null)
       {
         throw new ArgumentNullException("buffer");
       }
 
-      if ( offset < 0 ) 
+      if (offset < 0)
       {
         throw new ArgumentOutOfRangeException("offset");
       }
 
-      if ( count < 0 ) 
+      if (count < 0)
       {
         throw new ArgumentOutOfRangeException("count");
       }
 
-      if (inputOff < inputEnd) 
+      if (inputOff < inputEnd)
       {
         throw new InvalidOperationException("Old input was not completely processed");
       }
-      
+
       int end = offset + count;
-      
+
       /* We want to throw an ArrayIndexOutOfBoundsException early.  The
       * check is very tricky: it also handles integer wrap around.
       */
-      if ((offset > end) || (end > buffer.Length) ) 
+      if ((offset > end) || (end > buffer.Length))
       {
         throw new ArgumentOutOfRangeException("count");
       }
-      
+
       inputBuf = buffer;
       inputOff = offset;
       inputEnd = end;
@@ -217,15 +217,17 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
       adler.Reset();
       blockStart = strstart = 1;
       lookahead = 0;
-      totalIn   = 0;
+      totalIn = 0;
       prevAvailable = false;
-            matchLen = DeflaterConstants.MIN_MATCH - 1;
+      matchLen = DeflaterConstants.MIN_MATCH - 1;
 
-            for(int i = 0;i < DeflaterConstants.HASH_SIZE;i++) {
+      for (int i = 0; i < DeflaterConstants.HASH_SIZE; i++)
+      {
         head[i] = 0;
       }
 
-            for(int i = 0;i < DeflaterConstants.WSIZE;i++) {
+      for (int i = 0; i < DeflaterConstants.WSIZE; i++)
+      {
         prev[i] = 0;
       }
     }
@@ -241,72 +243,82 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
     /// <summary>
     /// Get current value of Adler checksum
     /// </summary>    
-    public int Adler {
-      get {
-        return unchecked((int)adler.Value);
+    public int Adler
+    {
+      get
+      {
+        return unchecked((int) adler.Value);
       }
     }
 
     /// <summary>
     /// Get/set the <see cref="DeflateStrategy">deflate strategy</see>
     /// </summary>    
-    public DeflateStrategy Strategy {
-      set {
+    public DeflateStrategy Strategy
+    {
+      set
+      {
         strategy = value;
       }
     }
-    
+
     /// <summary>
     /// Set the deflate level (0-9)
     /// </summary>
     /// <param name="level">The value to set the level to.</param>
     public void SetLevel(int level)
     {
-      if ( (level < 0) || (level > 9) )
+      if ((level < 0) || (level > 9))
       {
         throw new ArgumentOutOfRangeException("level");
       }
 
       goodLength = DeflaterConstants.GOOD_LENGTH[level];
-      max_lazy   = DeflaterConstants.MAX_LAZY[level];
+      max_lazy = DeflaterConstants.MAX_LAZY[level];
       niceLength = DeflaterConstants.NICE_LENGTH[level];
-      max_chain  = DeflaterConstants.MAX_CHAIN[level];
-      
-      if (DeflaterConstants.COMPR_FUNC[level] != compressionFunction) {
-        switch (compressionFunction) {
-                case DeflaterConstants.DEFLATE_STORED:
-            if (strstart > blockStart) {
+      max_chain = DeflaterConstants.MAX_CHAIN[level];
+
+      if (DeflaterConstants.COMPR_FUNC[level] != compressionFunction)
+      {
+        switch (compressionFunction)
+        {
+          case DeflaterConstants.DEFLATE_STORED:
+            if (strstart > blockStart)
+            {
               huffman.FlushStoredBlock(window, blockStart,
-                strstart - blockStart, false);
+                                       strstart - blockStart, false);
               blockStart = strstart;
             }
             UpdateHash();
             break;
 
-                case DeflaterConstants.DEFLATE_FAST:
-            if (strstart > blockStart) {
+          case DeflaterConstants.DEFLATE_FAST:
+            if (strstart > blockStart)
+            {
               huffman.FlushBlock(window, blockStart, strstart - blockStart,
-                false);
+                                 false);
               blockStart = strstart;
             }
             break;
 
-                case DeflaterConstants.DEFLATE_SLOW:
-            if (prevAvailable) {
-              huffman.TallyLit(window[strstart-1] & 0xff);
+          case DeflaterConstants.DEFLATE_SLOW:
+            if (prevAvailable)
+            {
+              huffman.TallyLit(window[strstart - 1] & 0xff);
             }
-            if (strstart > blockStart) {
+            if (strstart > blockStart)
+            {
               huffman.FlushBlock(window, blockStart, strstart - blockStart, false);
               blockStart = strstart;
             }
             prevAvailable = false;
-                        matchLen = DeflaterConstants.MIN_MATCH - 1;
+            matchLen = DeflaterConstants.MIN_MATCH - 1;
             break;
         }
-                compressionFunction = DeflaterConstants.COMPR_FUNC[level];
+        compressionFunction = DeflaterConstants.COMPR_FUNC[level];
       }
     }
-    
+
     /// <summary>
     /// Fill the window
     /// </summary>
@@ -315,56 +327,57 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
       /* If the window is almost full and there is insufficient lookahead,
        * move the upper half to the lower one to make room in the upper half.
        */
-            if(strstart >= DeflaterConstants.WSIZE + DeflaterConstants.MAX_DIST) 
+      if (strstart >= DeflaterConstants.WSIZE + DeflaterConstants.MAX_DIST)
       {
         SlideWindow();
       }
-      
+
       /* If there is not enough lookahead, but still some input left,
        * read in the input
        */
-      while (lookahead < DeflaterConstants.MIN_LOOKAHEAD && inputOff < inputEnd) 
+      while (lookahead < DeflaterConstants.MIN_LOOKAHEAD && inputOff < inputEnd)
       {
-                int more = 2 * DeflaterConstants.WSIZE - lookahead - strstart;
-        
-        if (more > inputEnd - inputOff) 
+        int more = 2*DeflaterConstants.WSIZE - lookahead - strstart;
+
+        if (more > inputEnd - inputOff)
         {
           more = inputEnd - inputOff;
         }
-        
+
         System.Array.Copy(inputBuf, inputOff, window, strstart + lookahead, more);
         adler.Update(inputBuf, inputOff, more);
-        
+
         inputOff += more;
-        totalIn  += more;
+        totalIn += more;
         lookahead += more;
       }
 
-            if(lookahead >= DeflaterConstants.MIN_MATCH) 
+      if (lookahead >= DeflaterConstants.MIN_MATCH)
       {
         UpdateHash();
       }
     }
-    
-    void UpdateHash() 
+
+    private void UpdateHash()
     {
-/*
+      /*
       if (DEBUGGING) {
         Console.WriteLine("updateHash: "+strstart);
       }
 */
-            ins_h = (window[strstart] << DeflaterConstants.HASH_SHIFT) ^ window[strstart + 1];
+      ins_h = (window[strstart] << DeflaterConstants.HASH_SHIFT) ^ window[strstart + 1];
     }
-    
+
     /// <summary>
     /// Inserts the current string in the head hash and returns the previous
     /// value for this hash.
     /// </summary>
     /// <returns>The previous hash value</returns>
-    int InsertString() 
+    private int InsertString()
     {
       short match;
-            int hash = ((ins_h << DeflaterConstants.HASH_SHIFT) ^ window[strstart + (DeflaterConstants.MIN_MATCH -1)]) & DeflaterConstants.HASH_MASK;
+      int hash = ((ins_h << DeflaterConstants.HASH_SHIFT) ^ window[strstart + (DeflaterConstants.MIN_MATCH - 1)]) &
+                 DeflaterConstants.HASH_MASK;
 
 #if DebugDeflation
       if (DeflaterConstants.DEBUGGING) 
@@ -379,33 +392,35 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
           }
       }
 #endif
-            prev[strstart & DeflaterConstants.WMASK] = match = head[hash];
-      head[hash] = unchecked((short)strstart);
+      prev[strstart & DeflaterConstants.WMASK] = match = head[hash];
+      head[hash] = unchecked((short) strstart);
       ins_h = hash;
       return match & 0xffff;
     }
-    
-    void SlideWindow()
+
+    private void SlideWindow()
     {
-            Array.Copy(window, DeflaterConstants.WSIZE, window, 0, DeflaterConstants.WSIZE);
-            matchStart -= DeflaterConstants.WSIZE;
-            strstart   -= DeflaterConstants.WSIZE;
-            blockStart -= DeflaterConstants.WSIZE;
-      
+      Array.Copy(window, DeflaterConstants.WSIZE, window, 0, DeflaterConstants.WSIZE);
+      matchStart -= DeflaterConstants.WSIZE;
+      strstart -= DeflaterConstants.WSIZE;
+      blockStart -= DeflaterConstants.WSIZE;
+
       // Slide the hash table (could be avoided with 32 bit values
       // at the expense of memory usage).
-            for(int i = 0;i < DeflaterConstants.HASH_SIZE;++i) {
+      for (int i = 0; i < DeflaterConstants.HASH_SIZE; ++i)
+      {
         int m = head[i] & 0xffff;
-                head[i] = (short)(m >= DeflaterConstants.WSIZE ? (m - DeflaterConstants.WSIZE) : 0);
+        head[i] = (short) (m >= DeflaterConstants.WSIZE ? (m - DeflaterConstants.WSIZE) : 0);
       }
-      
+
       // Slide the prev table.
-            for(int i = 0;i < DeflaterConstants.WSIZE;i++) {
+      for (int i = 0; i < DeflaterConstants.WSIZE; i++)
+      {
         int m = prev[i] & 0xffff;
-                prev[i] = (short)(m >= DeflaterConstants.WSIZE ? (m - DeflaterConstants.WSIZE) : 0);
+        prev[i] = (short) (m >= DeflaterConstants.WSIZE ? (m - DeflaterConstants.WSIZE) : 0);
       }
     }
-    
+
     /// <summary>
     /// Find the best (longest) string in the window matching the 
     /// string starting at strstart.
@@ -416,97 +431,108 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
     /// </summary>
     /// <param name="curMatch"></param>
     /// <returns>True if a match greater than the minimum length is found</returns>
-    bool FindLongestMatch(int curMatch) 
+    private bool FindLongestMatch(int curMatch)
     {
       int chainLength = this.max_chain;
-      int niceLength  = this.niceLength;
-      short[] prev    = this.prev;
-      int scan        = this.strstart;
+      int niceLength = this.niceLength;
+      short[] prev = this.prev;
+      int scan = this.strstart;
       int match;
       int best_end = this.strstart + matchLen;
-            int best_len = Math.Max(matchLen, DeflaterConstants.MIN_MATCH - 1);
+      int best_len = Math.Max(matchLen, DeflaterConstants.MIN_MATCH - 1);
 
-            int limit = Math.Max(strstart - DeflaterConstants.MAX_DIST, 0);
+      int limit = Math.Max(strstart - DeflaterConstants.MAX_DIST, 0);
 
-            int strend = strstart + DeflaterConstants.MAX_MATCH - 1;
+      int strend = strstart + DeflaterConstants.MAX_MATCH - 1;
       byte scan_end1 = window[best_end - 1];
-      byte scan_end  = window[best_end];
-      
+      byte scan_end = window[best_end];
+
       // Do not waste too much time if we already have a good match:
-      if (best_len >= this.goodLength) {
+      if (best_len >= this.goodLength)
+      {
         chainLength >>= 2;
       }
-      
+
       /* Do not look for matches beyond the end of the input. This is necessary
       * to make deflate deterministic.
       */
-      if (niceLength > lookahead) {
+      if (niceLength > lookahead)
+      {
         niceLength = lookahead;
-      }    
-  
-      do {          
-        if (window[curMatch + best_len] != scan_end      || 
-          window[curMatch + best_len - 1] != scan_end1 || 
-          window[curMatch] != window[scan]             || 
-          window[curMatch + 1] != window[scan + 1]) {
+      }
+
+      do
+      {
+        if (window[curMatch + best_len] != scan_end ||
+            window[curMatch + best_len - 1] != scan_end1 ||
+            window[curMatch] != window[scan] ||
+            window[curMatch + 1] != window[scan + 1])
+        {
           continue;
         }
-        
+
         match = curMatch + 2;
         scan += 2;
-        
+
         /* We check for insufficient lookahead only every 8th comparison;
         * the 256th check will be made at strstart + 258.
         */
         while (
-          window[++scan] == window[++match] && 
-          window[++scan] == window[++match] && 
-          window[++scan] == window[++match] && 
-          window[++scan] == window[++match] && 
-          window[++scan] == window[++match] && 
-          window[++scan] == window[++match] && 
-          window[++scan] == window[++match] && 
+          window[++scan] == window[++match] &&
+          window[++scan] == window[++match] &&
+          window[++scan] == window[++match] &&
+          window[++scan] == window[++match] &&
+          window[++scan] == window[++match] &&
+          window[++scan] == window[++match] &&
+          window[++scan] == window[++match] &&
           window[++scan] == window[++match] &&
           (scan < strend))
         {
           // Do nothing
         }
-        
-        if (scan > best_end) {
+
+        if (scan > best_end)
+        {
           matchStart = curMatch;
           best_end = scan;
           best_len = scan - strstart;
-          
-          if (best_len >= niceLength) {
+
+          if (best_len >= niceLength)
+          {
             break;
           }
-          
-          scan_end1  = window[best_end - 1];
-          scan_end   = window[best_end];
+
+          scan_end1 = window[best_end - 1];
+          scan_end = window[best_end];
         }
         scan = strstart;
-            } while((curMatch = (prev[curMatch & DeflaterConstants.WMASK] & 0xffff)) > limit && --chainLength != 0);
-      
+      }
+      while ((curMatch = (prev[curMatch & DeflaterConstants.WMASK] & 0xffff)) > limit && --chainLength != 0);
+
       matchLen = Math.Min(best_len, lookahead);
-            return matchLen >= DeflaterConstants.MIN_MATCH;
+      return matchLen >= DeflaterConstants.MIN_MATCH;
     }
-    
-    bool DeflateStored(bool flush, bool finish)
+
+    private bool DeflateStored(bool flush, bool finish)
     {
-      if (!flush && (lookahead == 0)) {
+      if (!flush && (lookahead == 0))
+      {
         return false;
       }
-      
+
       strstart += lookahead;
       lookahead = 0;
-      
+
       int storedLength = strstart - blockStart;
-      
+
       if ((storedLength >= DeflaterConstants.MAX_BLOCK_SIZE) || // Block is full
-        (blockStart < DeflaterConstants.WSIZE && storedLength >= DeflaterConstants.MAX_DIST) ||   // Block may move out of window
-        flush) {
+          (blockStart < DeflaterConstants.WSIZE && storedLength >= DeflaterConstants.MAX_DIST) ||
+          // Block may move out of window
+          flush)
+      {
         bool lastBlock = finish;
-        if (storedLength > DeflaterConstants.MAX_BLOCK_SIZE) {
+        if (storedLength > DeflaterConstants.MAX_BLOCK_SIZE)
+        {
           storedLength = DeflaterConstants.MAX_BLOCK_SIZE;
           lastBlock = false;
         }
@@ -517,64 +543,78 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
       }
       return true;
     }
-    
-    bool DeflateFast(bool flush, bool finish)
+
+    private bool DeflateFast(bool flush, bool finish)
     {
-            if(lookahead < DeflaterConstants.MIN_LOOKAHEAD && !flush) {
+      if (lookahead < DeflaterConstants.MIN_LOOKAHEAD && !flush)
+      {
         return false;
       }
 
-            while(lookahead >= DeflaterConstants.MIN_LOOKAHEAD || flush) {
-        if (lookahead == 0) {
+      while (lookahead >= DeflaterConstants.MIN_LOOKAHEAD || flush)
+      {
+        if (lookahead == 0)
+        {
           // We are flushing everything
           huffman.FlushBlock(window, blockStart, strstart - blockStart, finish);
           blockStart = strstart;
           return false;
         }
 
-                if(strstart > 2 * DeflaterConstants.WSIZE - DeflaterConstants.MIN_LOOKAHEAD) {
+        if (strstart > 2*DeflaterConstants.WSIZE - DeflaterConstants.MIN_LOOKAHEAD)
+        {
           /* slide window, as FindLongestMatch needs this.
            * This should only happen when flushing and the window
            * is almost full.
            */
           SlideWindow();
         }
-        
+
         int hashHead;
-                if(lookahead >= DeflaterConstants.MIN_MATCH && 
-          (hashHead = InsertString()) != 0 && 
-          strategy != DeflateStrategy.HuffmanOnly &&
-          strstart - hashHead <= DeflaterConstants.MAX_DIST && 
-          FindLongestMatch(hashHead)) {
+        if (lookahead >= DeflaterConstants.MIN_MATCH &&
+            (hashHead = InsertString()) != 0 &&
+            strategy != DeflateStrategy.HuffmanOnly &&
+            strstart - hashHead <= DeflaterConstants.MAX_DIST &&
+            FindLongestMatch(hashHead))
+        {
           // longestMatch sets matchStart and matchLen
 
           bool full = huffman.TallyDist(strstart - matchStart, matchLen);
 
           lookahead -= matchLen;
-                    if(matchLen <= max_lazy && lookahead >= DeflaterConstants.MIN_MATCH) {
-            while (--matchLen > 0) {
+          if (matchLen <= max_lazy && lookahead >= DeflaterConstants.MIN_MATCH)
+          {
+            while (--matchLen > 0)
+            {
               ++strstart;
               InsertString();
             }
             ++strstart;
-          } else {
+          }
+          else
+          {
             strstart += matchLen;
-                        if(lookahead >= DeflaterConstants.MIN_MATCH - 1) {
+            if (lookahead >= DeflaterConstants.MIN_MATCH - 1)
+            {
               UpdateHash();
             }
           }
-                    matchLen = DeflaterConstants.MIN_MATCH - 1;
-          if (!full) {
+          matchLen = DeflaterConstants.MIN_MATCH - 1;
+          if (!full)
+          {
             continue;
           }
-        } else {
+        }
+        else
+        {
           // No match found
           huffman.TallyLit(window[strstart] & 0xff);
           ++strstart;
           --lookahead;
         }
-        
-        if (huffman.IsFull()) {
+
+        if (huffman.IsFull())
+        {
           bool lastBlock = finish && (lookahead == 0);
           huffman.FlushBlock(window, blockStart, strstart - blockStart, lastBlock);
           blockStart = strstart;
@@ -583,89 +623,106 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
       }
       return true;
     }
-    
-    bool DeflateSlow(bool flush, bool finish)
+
+    private bool DeflateSlow(bool flush, bool finish)
     {
-            if(lookahead < DeflaterConstants.MIN_LOOKAHEAD && !flush) {
+      if (lookahead < DeflaterConstants.MIN_LOOKAHEAD && !flush)
+      {
         return false;
       }
 
-            while(lookahead >= DeflaterConstants.MIN_LOOKAHEAD || flush) {
-        if (lookahead == 0) {
-          if (prevAvailable) {
-            huffman.TallyLit(window[strstart-1] & 0xff);
+      while (lookahead >= DeflaterConstants.MIN_LOOKAHEAD || flush)
+      {
+        if (lookahead == 0)
+        {
+          if (prevAvailable)
+          {
+            huffman.TallyLit(window[strstart - 1] & 0xff);
           }
           prevAvailable = false;
-          
+
           // We are flushing everything
 #if DebugDeflation
           if (DeflaterConstants.DEBUGGING && !flush) 
           {
             throw new SharpZipBaseException("Not flushing, but no lookahead");
           }
-#endif               
+#endif
           huffman.FlushBlock(window, blockStart, strstart - blockStart,
-            finish);
+                             finish);
           blockStart = strstart;
           return false;
         }
 
-                if(strstart >= 2 * DeflaterConstants.WSIZE - DeflaterConstants.MIN_LOOKAHEAD) {
+        if (strstart >= 2*DeflaterConstants.WSIZE - DeflaterConstants.MIN_LOOKAHEAD)
+        {
           /* slide window, as FindLongestMatch needs this.
            * This should only happen when flushing and the window
            * is almost full.
            */
           SlideWindow();
         }
-        
+
         int prevMatch = matchStart;
         int prevLen = matchLen;
-                if(lookahead >= DeflaterConstants.MIN_MATCH) {
-
+        if (lookahead >= DeflaterConstants.MIN_MATCH)
+        {
           int hashHead = InsertString();
 
           if (strategy != DeflateStrategy.HuffmanOnly &&
-            hashHead != 0 &&
-            strstart - hashHead <= DeflaterConstants.MAX_DIST &&
-            FindLongestMatch(hashHead)) {
-            
+              hashHead != 0 &&
+              strstart - hashHead <= DeflaterConstants.MAX_DIST &&
+              FindLongestMatch(hashHead))
+          {
             // longestMatch sets matchStart and matchLen
-              
+
             // Discard match if too small and too far away
-                        if(matchLen <= 5 && (strategy == DeflateStrategy.Filtered || (matchLen == DeflaterConstants.MIN_MATCH && strstart - matchStart > TooFar))) {
-                            matchLen = DeflaterConstants.MIN_MATCH - 1;
+            if (matchLen <= 5 &&
+                (strategy == DeflateStrategy.Filtered ||
+                 (matchLen == DeflaterConstants.MIN_MATCH && strstart - matchStart > TooFar)))
+            {
+              matchLen = DeflaterConstants.MIN_MATCH - 1;
             }
           }
         }
-        
+
         // previous match was better
-                if((prevLen >= DeflaterConstants.MIN_MATCH) && (matchLen <= prevLen)) {
+        if ((prevLen >= DeflaterConstants.MIN_MATCH) && (matchLen <= prevLen))
+        {
           huffman.TallyDist(strstart - 1 - prevMatch, prevLen);
           prevLen -= 2;
-          do {
+          do
+          {
             strstart++;
             lookahead--;
-                        if(lookahead >= DeflaterConstants.MIN_MATCH) {
+            if (lookahead >= DeflaterConstants.MIN_MATCH)
+            {
               InsertString();
             }
-          } while (--prevLen > 0);
+          }
+          while (--prevLen > 0);
 
           strstart ++;
           lookahead--;
           prevAvailable = false;
-                    matchLen = DeflaterConstants.MIN_MATCH - 1;
-        } else {
-          if (prevAvailable) {
-            huffman.TallyLit(window[strstart-1] & 0xff);
+          matchLen = DeflaterConstants.MIN_MATCH - 1;
+        }
+        else
+        {
+          if (prevAvailable)
+          {
+            huffman.TallyLit(window[strstart - 1] & 0xff);
           }
           prevAvailable = true;
           strstart++;
           lookahead--;
         }
-        
-        if (huffman.IsFull()) {
+
+        if (huffman.IsFull())
+        {
           int len = strstart - blockStart;
-          if (prevAvailable) {
+          if (prevAvailable)
+          {
             len--;
           }
           bool lastBlock = (finish && (lookahead == 0) && !prevAvailable);
@@ -676,11 +733,11 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
       }
       return true;
     }
-    
+
     #region Instance Fields
 
     // Hash index of string to be inserted
-    int ins_h;
+    private int ins_h;
 
     /// <summary>
     /// Hashtable, hashing three characters to an index for window, so
@@ -688,7 +745,7 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
     /// Note that the array should really be unsigned short, so you need
     /// to and the values with 0xffff.
     /// </summary>
-    short[] head;
+    private short[] head;
 
     /// <summary>
     /// <code>prev[index &amp; WMASK]</code> points to the previous index that has the
@@ -697,19 +754,19 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
     /// Note that the array should really be unsigned short, so you need
     /// to and the values with 0xffff.
     /// </summary>
-    short[] prev;
-    
-    int    matchStart;
+    private short[] prev;
+
+    private int matchStart;
     // Length of best match
-    int    matchLen;
+    private int matchLen;
     // Set if previous match exists
-    bool   prevAvailable;
-    int    blockStart;
+    private bool prevAvailable;
+    private int blockStart;
 
     /// <summary>
     /// Points to the current character in the window.
     /// </summary>
-    int    strstart;
+    private int strstart;
 
     /// <summary>
     /// lookahead is the number of characters starting at strstart in
@@ -717,49 +774,50 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
     /// So window[strstart] until window[strstart+lookahead-1] are valid
     /// characters.
     /// </summary>
-    int    lookahead;
+    private int lookahead;
 
     /// <summary>
     /// This array contains the part of the uncompressed stream that 
     /// is of relevance.  The current character is indexed by strstart.
     /// </summary>
-    byte[] window;
-    
-    DeflateStrategy strategy;
-    int max_chain, max_lazy, niceLength, goodLength;
-    
+    private byte[] window;
+
+    private DeflateStrategy strategy;
+    private int max_chain, max_lazy, niceLength, goodLength;
+
     /// <summary>
     /// The current compression function.
     /// </summary>
-    int compressionFunction;
-    
+    private int compressionFunction;
+
     /// <summary>
     /// The input data for compression.
     /// </summary>
-    byte[] inputBuf;
-    
+    private byte[] inputBuf;
+
     /// <summary>
     /// The total bytes of input read.
     /// </summary>
-    long totalIn;
-    
+    private long totalIn;
+
     /// <summary>
     /// The offset into inputBuf, where input data starts.
     /// </summary>
-    int inputOff;
-    
+    private int inputOff;
+
     /// <summary>
     /// The end offset of the input data.
     /// </summary>
-    int inputEnd;
-    
-    DeflaterPending pending;
-    DeflaterHuffman huffman;
-    
+    private int inputEnd;
+
+    private DeflaterPending pending;
+    private DeflaterHuffman huffman;
+
     /// <summary>
     /// The adler checksum
     /// </summary>
-    Adler32 adler;
+    private Adler32 adler;
+
     #endregion
   }
 }

@@ -43,9 +43,10 @@ namespace ICSharpCode.SharpZipLib.Core
   /// by full path name.
   /// See <see cref="NameFilter">NameFilter</see> for more detail on filtering.
   /// </summary>
-  class PathFilter : IScanFilter
+  internal class PathFilter : IScanFilter
   {
     #region Constructors
+
     /// <summary>
     /// Initialise a new instance of <see cref="PathFilter"></see>.
     /// </summary>
@@ -54,9 +55,11 @@ namespace ICSharpCode.SharpZipLib.Core
     {
       nameFilter_ = new NameFilter(filter);
     }
+
     #endregion
 
     #region IScanFilter Members
+
     /// <summary>
     /// Test a name to see if it matches the filter.
     /// </summary>
@@ -67,16 +70,20 @@ namespace ICSharpCode.SharpZipLib.Core
     {
       bool result = false;
 
-      if ( name != null ) {
+      if (name != null)
+      {
         string cooked = (name.Length > 0) ? Path.GetFullPath(name) : "";
         result = nameFilter_.IsMatch(cooked);
       }
       return result;
     }
+
     #endregion
 
     #region Instance Fields
-    NameFilter nameFilter_;
+
+    private NameFilter nameFilter_;
+
     #endregion
   }
 }

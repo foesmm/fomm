@@ -35,12 +35,20 @@ namespace Fomm.PackageManager
     /// The mapping of valid extensions to their respective readme formats.
     /// </summary>
     private static Dictionary<string, ReadmeFormat> m_dicFormats = new Dictionary<string, ReadmeFormat>()
-                                    {
-                                      {".txt", ReadmeFormat.PlainText},
-                                      {".rtf", ReadmeFormat.RichText},
-                                      {".html", ReadmeFormat.HTML},
-                                      {".htm", ReadmeFormat.HTML}
-                                    };
+    {
+      {
+        ".txt", ReadmeFormat.PlainText
+      },
+      {
+        ".rtf", ReadmeFormat.RichText
+      },
+      {
+        ".html", ReadmeFormat.HTML
+      },
+      {
+        ".htm", ReadmeFormat.HTML
+      }
+    };
 
     /// <summary>
     /// Get the list of valid extensions.
@@ -68,17 +76,25 @@ namespace Fomm.PackageManager
       get
       {
         foreach (KeyValuePair<string, ReadmeFormat> kvpFormat in m_dicFormats)
+        {
           if (kvpFormat.Value.Equals(m_fmtFormat))
+          {
             return kvpFormat.Key;
+          }
+        }
         throw new Exception("Unexpected value for ReadmeFormat enum.");
       }
       set
       {
         string strLoweredValue = (value ?? "").ToLowerInvariant();
         if (!strLoweredValue.StartsWith("."))
+        {
           strLoweredValue = "." + strLoweredValue;
+        }
         if (!m_dicFormats.ContainsKey(strLoweredValue))
+        {
           throw new ArgumentException("Unrecognized extension: " + value);
+        }
         m_fmtFormat = m_dicFormats[strLoweredValue];
       }
     }
@@ -152,7 +168,9 @@ namespace Fomm.PackageManager
     public static bool IsValidReadme(string p_strPath)
     {
       if (String.IsNullOrEmpty(p_strPath))
+      {
         return false;
+      }
       return IsValidExtension(Path.GetExtension(p_strPath));
     }
 
@@ -166,7 +184,9 @@ namespace Fomm.PackageManager
     {
       string strLoweredValue = (p_strExtension ?? "").ToLowerInvariant();
       if (!strLoweredValue.StartsWith("."))
+      {
         strLoweredValue = "." + strLoweredValue;
+      }
       return m_dicFormats.ContainsKey(strLoweredValue);
     }
   }

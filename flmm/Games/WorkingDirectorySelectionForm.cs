@@ -69,7 +69,9 @@ namespace Fomm.Games
     {
       fbdWorkingDirectory.SelectedPath = tbxWorkingDirectory.Text;
       if (fbdWorkingDirectory.ShowDialog() != DialogResult.Cancel)
+      {
         tbxWorkingDirectory.Text = fbdWorkingDirectory.SelectedPath;
+      }
     }
 
     /// <summary>
@@ -99,12 +101,18 @@ namespace Fomm.Games
         m_bwdProgress.OverallProgressMarquee = true;
         m_strFoundWorkingDirectory = null;
         if (m_bwdProgress.ShowDialog(this) == DialogResult.Cancel)
+        {
           m_strFoundWorkingDirectory = null;
+        }
       }
       if (!String.IsNullOrEmpty(m_strFoundWorkingDirectory))
+      {
         tbxWorkingDirectory.Text = m_strFoundWorkingDirectory;
+      }
       else
+      {
         MessageBox.Show(this, "Could not find Fallout 3.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+      }
     }
 
     /// <summary>
@@ -117,7 +125,9 @@ namespace Fomm.Games
       foreach (DriveInfo difDrive in difDrives)
       {
         if (difDrive.DriveType == DriveType.CDRom)
+        {
           continue;
+        }
         string strFound = Search(difDrive.Name);
         if (!String.IsNullOrEmpty(strFound))
         {
@@ -137,13 +147,22 @@ namespace Fomm.Games
       foreach (string strSearchFile in m_strSearchFiles)
       {
         if (m_bwdProgress.Cancelled())
+        {
           return null;
+        }
         try
         {
           string[] strFoundFiles = Directory.GetFiles(p_strPath, strSearchFile, SearchOption.TopDirectoryOnly);
           foreach (string strFoundFile in strFoundFiles)
-            if (MessageBox.Show(m_bwdProgress, "Found: " + Path.GetDirectoryName(strFoundFile) + Environment.NewLine + "Is this correct?", "Found File", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+          {
+            if (
+              MessageBox.Show(m_bwdProgress,
+                              "Found: " + Path.GetDirectoryName(strFoundFile) + Environment.NewLine + "Is this correct?",
+                              "Found File", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
               return Path.GetDirectoryName(strFoundFile);
+            }
+          }
         }
         catch (UnauthorizedAccessException e)
         {
@@ -155,12 +174,18 @@ namespace Fomm.Games
       foreach (string strDirectory in strDirectories)
       {
         if (m_bwdProgress.Cancelled())
+        {
           return null;
+        }
         if (Path.GetFileName(p_strPath).StartsWith("$"))
+        {
           continue;
+        }
         string strFound = Search(strDirectory);
         if (!String.IsNullOrEmpty(strFound))
+        {
           return strFound;
+        }
       }
       return null;
     }

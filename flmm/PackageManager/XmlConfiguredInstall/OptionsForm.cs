@@ -15,7 +15,10 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
   {
     private XmlConfiguredScript m_xcsScript = null;
     private DependencyStateManager m_dsmStateManager = null;
-    private List<KeyValuePair<InstallStep, OptionFormStep>> m_lstInstallSteps = new List<KeyValuePair<InstallStep, OptionFormStep>>();
+
+    private List<KeyValuePair<InstallStep, OptionFormStep>> m_lstInstallSteps =
+      new List<KeyValuePair<InstallStep, OptionFormStep>>();
+
     private Int32 m_intCurrentStep = 0;
 
     /// <summary>
@@ -25,7 +28,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// <param name="p_hifHeaderInfo">Information describing the form header.</param>
     /// <param name="p_dsmStateManager">The install state manager.</param>
     /// <param name="p_lstInstallSteps">The install steps.</param>
-    public OptionsForm(XmlConfiguredScript p_xcsScript, HeaderInfo p_hifHeaderInfo, DependencyStateManager p_dsmStateManager, IList<InstallStep> p_lstInstallSteps)
+    public OptionsForm(XmlConfiguredScript p_xcsScript, HeaderInfo p_hifHeaderInfo,
+                       DependencyStateManager p_dsmStateManager, IList<InstallStep> p_lstInstallSteps)
     {
       m_xcsScript = p_xcsScript;
       m_dsmStateManager = p_dsmStateManager;
@@ -36,7 +40,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
       hplTitle.ForeColor = p_hifHeaderInfo.TextColour;
       hplTitle.TextPosition = p_hifHeaderInfo.TextPosition;
       if (p_hifHeaderInfo.Height > hplTitle.Height)
+      {
         hplTitle.Height = p_hifHeaderInfo.Height;
+      }
 
       foreach (InstallStep stpStep in p_lstInstallSteps)
       {
@@ -132,9 +138,13 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
         }
       }
       if (booLast)
+      {
         butNext.Text = "Finish";
+      }
       else
+      {
         butNext.Text = "Next >";
+      }
 
       bool booFirst = true;
       for (Int32 i = m_intCurrentStep - 1; i >= 0; i--)
@@ -166,7 +176,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
         if (kvpStep.Key.Visible)
         {
           if (m_intCurrentStep >= 0)
+          {
             m_lstInstallSteps[m_intCurrentStep].Value.Visible = false;
+          }
           kvpStep.Value.Visible = true;
           m_intCurrentStep = i;
           break;
@@ -186,7 +198,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
         if (kvpStep.Key.Visible)
         {
           if (m_intCurrentStep < m_lstInstallSteps.Count)
+          {
             m_lstInstallSteps[m_intCurrentStep].Value.Visible = false;
+          }
           kvpStep.Value.Visible = true;
           m_intCurrentStep = i;
           break;

@@ -33,7 +33,6 @@
 // obligated to do so.  If you do not wish to do so, delete this
 // exception statement from your version.
 
-
 using System;
 using System.Collections;
 using System.Text;
@@ -55,9 +54,10 @@ namespace ICSharpCode.SharpZipLib.Core
   /// <example>The following expression includes all name ending in '.dat' with the exception of 'dummy.dat'
   /// "+\.dat$;-^dummy\.dat$"
   /// </example>
-  class NameFilter : IScanFilter
+  internal class NameFilter : IScanFilter
   {
     #region Constructors
+
     /// <summary>
     /// Construct an instance based on the filter expression passed
     /// </summary>
@@ -69,6 +69,7 @@ namespace ICSharpCode.SharpZipLib.Core
       exclusions_ = new ArrayList();
       Compile();
     }
+
     #endregion
 
     /// <summary>
@@ -79,22 +80,30 @@ namespace ICSharpCode.SharpZipLib.Core
     public static string[] SplitQuoted(string original)
     {
       char escape = '\\';
-      char[] separators = { ';' };
+      char[] separators =
+      {
+        ';'
+      };
 
       ArrayList result = new ArrayList();
 
-      if ((original != null) && (original.Length > 0)) {
+      if ((original != null) && (original.Length > 0))
+      {
         int endIndex = -1;
         StringBuilder b = new StringBuilder();
 
-        while (endIndex < original.Length) {
+        while (endIndex < original.Length)
+        {
           endIndex += 1;
-          if (endIndex >= original.Length) {
+          if (endIndex >= original.Length)
+          {
             result.Add(b.ToString());
           }
-          else if (original[endIndex] == escape) {
+          else if (original[endIndex] == escape)
+          {
             endIndex += 1;
-            if (endIndex >= original.Length) {
+            if (endIndex >= original.Length)
+            {
 #if NETCF_1_0
               throw new ArgumentException("Missing terminating escape character");
 #else
@@ -104,19 +113,22 @@ namespace ICSharpCode.SharpZipLib.Core
 
             b.Append(original[endIndex]);
           }
-          else {
-            if (Array.IndexOf(separators, original[endIndex]) >= 0) {
+          else
+          {
+            if (Array.IndexOf(separators, original[endIndex]) >= 0)
+            {
               result.Add(b.ToString());
               b.Length = 0;
             }
-            else {
+            else
+            {
               b.Append(original[endIndex]);
             }
           }
         }
       }
 
-      return (string[])result.ToArray(typeof(string));
+      return (string[]) result.ToArray(typeof (string));
     }
 
     /// <summary>
@@ -136,12 +148,16 @@ namespace ICSharpCode.SharpZipLib.Core
     public bool IsIncluded(string name)
     {
       bool result = false;
-      if ( inclusions_.Count == 0 ) {
+      if (inclusions_.Count == 0)
+      {
         result = true;
       }
-      else {
-        foreach ( Regex r in inclusions_ ) {
-          if ( r.IsMatch(name) ) {
+      else
+      {
+        foreach (Regex r in inclusions_)
+        {
+          if (r.IsMatch(name))
+          {
             result = true;
             break;
           }
@@ -158,8 +174,10 @@ namespace ICSharpCode.SharpZipLib.Core
     public bool IsExcluded(string name)
     {
       bool result = false;
-      foreach ( Regex r in exclusions_ ) {
-        if ( r.IsMatch(name) ) {
+      foreach (Regex r in exclusions_)
+      {
+        if (r.IsMatch(name))
+        {
           result = true;
           break;
         }
@@ -168,6 +186,7 @@ namespace ICSharpCode.SharpZipLib.Core
     }
 
     #region IScanFilter Members
+
     /// <summary>
     /// Test a value to see if it matches the filter.
     /// </summary>
@@ -177,52 +196,65 @@ namespace ICSharpCode.SharpZipLib.Core
     {
       return (IsIncluded(name) == true) && (IsExcluded(name) == false);
     }
+
     #endregion
 
     /// <summary>
     /// Compile this filter.
     /// </summary>
-    void Compile()
+    private void Compile()
     {
       // TODO: Check to see if combining RE's makes it faster/smaller.
       // simple scheme would be to have one RE for inclusion and one for exclusion.
-      if ( filter_ == null ) {
+      if (filter_ == null)
+      {
         return;
       }
 
       string[] items = SplitQuoted(filter_);
-      for ( int i = 0; i < items.Length; ++i ) {
-        if ( (items[i] != null) && (items[i].Length > 0) ) {
+      for (int i = 0; i < items.Length; ++i)
+      {
+        if ((items[i] != null) && (items[i].Length > 0))
+        {
           bool include = (items[i][0] != '-');
           string toCompile;
 
-          if ( items[i][0] == '+' ) {
+          if (items[i][0] == '+')
+          {
             toCompile = items[i].Substring(1, items[i].Length - 1);
           }
-          else if ( items[i][0] == '-' ) {
+          else if (items[i][0] == '-')
+          {
             toCompile = items[i].Substring(1, items[i].Length - 1);
           }
-          else {
+          else
+          {
             toCompile = items[i];
           }
 
           // NOTE: Regular expressions can fail to compile here for a number of reasons that cause an exception
           // these are left unhandled here as the caller is responsible for ensuring all is valid.
           // several functions IsValidFilterExpression and IsValidExpression are provided for such checking
-          if ( include ) {
-            inclusions_.Add(new Regex(toCompile, RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.Singleline));
+          if (include)
+          {
+            inclusions_.Add(new Regex(toCompile,
+                                      RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.Singleline));
           }
-          else {
-            exclusions_.Add(new Regex(toCompile, RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.Singleline));
+          else
+          {
+            exclusions_.Add(new Regex(toCompile,
+                                      RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.Singleline));
           }
         }
       }
     }
 
     #region Instance Fields
-    string filter_;
-    ArrayList inclusions_;
-    ArrayList exclusions_;
+
+    private string filter_;
+    private ArrayList inclusions_;
+    private ArrayList exclusions_;
+
     #endregion
   }
 }

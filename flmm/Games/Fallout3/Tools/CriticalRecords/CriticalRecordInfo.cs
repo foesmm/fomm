@@ -17,7 +17,7 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
       /// <summary>
       /// Info only; conflict is not serious.
       /// </summary>
-      Info=0,
+      Info = 0,
 
       /// <summary>
       /// Warning only; conflict is not serious, but may cause problems under certain circumstances.
@@ -78,7 +78,7 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     /// <returns>The string representation of the info.</returns>
     public override string ToString()
     {
-      return ((Int32)Severity).ToString() + " " + Reason;
+      return ((Int32) Severity).ToString() + " " + Reason;
     }
   }
 }

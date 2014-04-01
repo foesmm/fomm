@@ -55,7 +55,7 @@ namespace Fomm.PackageManager
     protected override void OnClosing(CancelEventArgs e)
     {
       Properties.Settings.Default.windowPositions.SetWindowPosition("EditScriptForm", this);
-      Properties.Settings.Default.Save(); 
+      Properties.Settings.Default.Save();
       base.OnClosing(e);
     }
 
@@ -66,8 +66,12 @@ namespace Fomm.PackageManager
     /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
     private void butOK_Click(object sender, EventArgs e)
     {
-      if (fseScriptEditor.IsValid || (MessageBox.Show(this, "The script is not valid." + Environment.NewLine + "Are you sure you want to save?", "Invalid Script", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.OK))
+      if (fseScriptEditor.IsValid ||
+          (MessageBox.Show(this, "The script is not valid." + Environment.NewLine + "Are you sure you want to save?",
+                           "Invalid Script", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.OK))
+      {
         DialogResult = DialogResult.OK;
+      }
     }
   }
 }

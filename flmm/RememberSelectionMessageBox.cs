@@ -24,7 +24,8 @@ namespace Fomm
     /// <param name="p_mbbButtons">The buttons to display.</param>
     /// <param name="p_mbiIcon">The icon to display.</param>
     /// <param name="p_booRemember">Indicates whether the selected button should be remembered.</param>
-    public static DialogResult Show(Control p_ctlParent, string p_strMessage, string p_strCaption, MessageBoxButtons p_mbbButtons, MessageBoxIcon p_mbiIcon, out bool p_booRemember)
+    public static DialogResult Show(Control p_ctlParent, string p_strMessage, string p_strCaption,
+                                    MessageBoxButtons p_mbbButtons, MessageBoxIcon p_mbiIcon, out bool p_booRemember)
     {
       RememberSelectionMessageBox mbxBox = new RememberSelectionMessageBox();
       mbxBox.Init(p_strMessage, p_strCaption, p_mbbButtons, p_mbiIcon);
@@ -35,7 +36,9 @@ namespace Fomm
         drsResult = mbxBox.ShowDialog();
       }
       else
+      {
         drsResult = mbxBox.ShowDialog(p_ctlParent);
+      }
       p_booRemember = mbxBox.RememberSelection;
       return drsResult;
     }
@@ -77,7 +80,8 @@ namespace Fomm
     /// <param name="p_strCaption">The windows title.</param>
     /// <param name="p_mbbButtons">The buttons to display.</param>
     /// <param name="p_mbiIcon">The icon to display.</param>
-    protected void Init(string p_strMessage, string p_strCaption, MessageBoxButtons p_mbbButtons, MessageBoxIcon p_mbiIcon)
+    protected void Init(string p_strMessage, string p_strCaption, MessageBoxButtons p_mbbButtons,
+                        MessageBoxIcon p_mbiIcon)
     {
       bool booShowIcon = true;
       switch (p_mbiIcon)
@@ -100,7 +104,8 @@ namespace Fomm
       }
       if (booShowIcon)
       {
-        pbxIcon.MinimumSize = new Size(pbxIcon.Padding.Left + pbxIcon.Padding.Right + pbxIcon.Image.Width, pbxIcon.Padding.Top + pbxIcon.Padding.Bottom + pbxIcon.Image.Height);
+        pbxIcon.MinimumSize = new Size(pbxIcon.Padding.Left + pbxIcon.Padding.Right + pbxIcon.Image.Width,
+                                       pbxIcon.Padding.Top + pbxIcon.Padding.Bottom + pbxIcon.Image.Height);
         pnlMessage.MinimumSize = new Size(0, pbxIcon.MinimumSize.Height);
       }
       pbxIcon.Visible = booShowIcon;
@@ -111,18 +116,23 @@ namespace Fomm
       albPrompt.Text = p_strMessage;
       SizeF szeTextSize = gphGraphics.MeasureString(albPrompt.Text, albPrompt.Font);
 
-      Int32 intWindowWidth = (Int32)szeTextSize.Width + (booShowIcon ? pbxIcon.MinimumSize.Width : 0);
+      Int32 intWindowWidth = (Int32) szeTextSize.Width + (booShowIcon ? pbxIcon.MinimumSize.Width : 0);
       if (intWindowWidth > 460)
+      {
         intWindowWidth = 460;
+      }
       MinimumSize = new Size(intWindowWidth, 0);
       MaximumSize = new Size(intWindowWidth, Int32.MaxValue);
 
       if (booShowIcon)
       {
-        szeTextSize = gphGraphics.MeasureString(albPrompt.Text, albPrompt.Font, intWindowWidth - pbxIcon.MinimumSize.Width);
-        Int32 intLabelPadding = (pbxIcon.MinimumSize.Height - (Int32)szeTextSize.Height) / 2;
+        szeTextSize = gphGraphics.MeasureString(albPrompt.Text, albPrompt.Font,
+                                                intWindowWidth - pbxIcon.MinimumSize.Width);
+        Int32 intLabelPadding = (pbxIcon.MinimumSize.Height - (Int32) szeTextSize.Height)/2;
         if (intLabelPadding > pnlLabel.Padding.Top)
+        {
           pnlLabel.Padding = new Padding(pnlLabel.Padding.Left, intLabelPadding, pnlLabel.Padding.Right, 0);
+        }
       }
 
       Int32 intLastButtonLeft = pnlButtons.Right - 6;
@@ -160,7 +170,9 @@ namespace Fomm
           intLastButtonLeft = butNo.Left;
           pnlButtons.Controls.Add(butNo);
           if (p_mbbButtons == MessageBoxButtons.YesNo)
+          {
             this.CancelButton = butNo;
+          }
           break;
       }
 
@@ -263,7 +275,7 @@ namespace Fomm
     /// <param name="e">An <see cref="EventArgs"/> describing the event properties.</param>
     private void Button_Click(object sender, EventArgs e)
     {
-      DialogResult = (DialogResult)((Button)sender).Tag;
+      DialogResult = (DialogResult) ((Button) sender).Tag;
     }
   }
 }

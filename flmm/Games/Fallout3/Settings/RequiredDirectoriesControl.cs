@@ -43,7 +43,11 @@ namespace Fomm.Games.Fallout3.Settings
       }
       if (!Directory.Exists(p_strPath))
       {
-        if (MessageBox.Show(this, String.Format("The selected {0} does not exist.{1}Would you like to create it?", p_strPathName, Environment.NewLine), "Missing Directory", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+        if (
+          MessageBox.Show(this,
+                          String.Format("The selected {0} does not exist.{1}Would you like to create it?", p_strPathName,
+                                        Environment.NewLine), "Missing Directory", MessageBoxButtons.YesNo,
+                          MessageBoxIcon.Question) == DialogResult.Yes)
         {
           Directory.CreateDirectory(p_strPath);
           return true;
@@ -84,7 +88,6 @@ namespace Fomm.Games.Fallout3.Settings
       return ValidateModDirectory() && ValidateInstallInfoDirectory();
     }
 
-
     #endregion
 
     /// <summary>
@@ -96,16 +99,24 @@ namespace Fomm.Games.Fallout3.Settings
       if (String.IsNullOrEmpty(tbxModDirectory.Text))
       {
         string strDefault = Path.Combine(Path.GetDirectoryName(Program.GameMode.PluginsPath), "mods");
-        if (strDefault.StartsWith(Path.Combine(Path.GetPathRoot(strDefault), "Program Files"), StringComparison.InvariantCultureIgnoreCase))
-          strDefault = Path.Combine(Path.GetPathRoot(Program.GameMode.PluginsPath), "Games\\Fallout 3\\mods"); ;
+        if (strDefault.StartsWith(Path.Combine(Path.GetPathRoot(strDefault), "Program Files"),
+                                  StringComparison.InvariantCultureIgnoreCase))
+        {
+          strDefault = Path.Combine(Path.GetPathRoot(Program.GameMode.PluginsPath), "Games\\Fallout 3\\mods");
+        }
+        ;
         tbxModDirectory.Text = strDefault;
       }
       tbxInstallInfo.Text = Properties.Settings.Default.fallout3InstallInfoDirectory;
       if (String.IsNullOrEmpty(tbxInstallInfo.Text))
       {
         string strDefault = Path.Combine(Path.GetDirectoryName(Program.GameMode.PluginsPath), "Install Info");
-        if (strDefault.StartsWith(Path.Combine(Path.GetPathRoot(strDefault), "Program Files"), StringComparison.InvariantCultureIgnoreCase))
-          strDefault = Path.Combine(Path.GetPathRoot(Program.GameMode.PluginsPath), "Games\\Fallout 3\\Install Info"); ;
+        if (strDefault.StartsWith(Path.Combine(Path.GetPathRoot(strDefault), "Program Files"),
+                                  StringComparison.InvariantCultureIgnoreCase))
+        {
+          strDefault = Path.Combine(Path.GetPathRoot(Program.GameMode.PluginsPath), "Games\\Fallout 3\\Install Info");
+        }
+        ;
         tbxInstallInfo.Text = strDefault;
       }
     }
@@ -131,7 +142,9 @@ namespace Fomm.Games.Fallout3.Settings
     {
       fbdDirectory.SelectedPath = tbxModDirectory.Text;
       if (fbdDirectory.ShowDialog(this) == DialogResult.OK)
+      {
         tbxModDirectory.Text = fbdDirectory.SelectedPath;
+      }
     }
 
     /// <summary>
@@ -146,7 +159,9 @@ namespace Fomm.Games.Fallout3.Settings
     {
       fbdDirectory.SelectedPath = tbxInstallInfo.Text;
       if (fbdDirectory.ShowDialog(this) == DialogResult.OK)
+      {
         tbxInstallInfo.Text = fbdDirectory.SelectedPath;
+      }
     }
   }
 }

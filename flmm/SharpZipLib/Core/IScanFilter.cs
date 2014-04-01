@@ -40,7 +40,7 @@ namespace ICSharpCode.SharpZipLib.Core
   /// <summary>
   /// Scanning filters support filtering of names.
   /// </summary>
-  interface IScanFilter
+  internal interface IScanFilter
   {
     /// <summary>
     /// Test a name to see if it 'matches' the filter.

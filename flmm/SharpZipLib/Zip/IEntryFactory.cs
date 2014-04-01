@@ -36,7 +36,6 @@
 // exception statement from your version.
 
 using System;
-
 using ICSharpCode.SharpZipLib.Core;
 
 namespace ICSharpCode.SharpZipLib.Zip
@@ -44,7 +43,7 @@ namespace ICSharpCode.SharpZipLib.Zip
   /// <summary>
   /// Defines factory methods for creating new <see cref="ZipEntry"></see> values.
   /// </summary>
-  interface IEntryFactory
+  internal interface IEntryFactory
   {
     /// <summary>
     /// Create a <see cref="ZipEntry"/> for a file given its name
@@ -75,10 +74,10 @@ namespace ICSharpCode.SharpZipLib.Zip
     /// <param name="useFileSystem">If true get details from the file system for this directory if it exists.</param>
     /// <returns>Returns a <see cref="ZipEntry">directory entry</see> based on the <paramref name="directoryName"/> passed.</returns>
     ZipEntry MakeDirectoryEntry(string directoryName, bool useFileSystem);
-    
+
     /// <summary>
     /// Get/set the <see cref="INameTransform"></see> applicable.
     /// </summary>
-    INameTransform NameTransform { get; set;  }
+    INameTransform NameTransform { get; set; }
   }
 }

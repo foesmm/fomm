@@ -55,10 +55,10 @@ namespace Fomm.InstallLogUpgraders
         </file>
        *** This is simply removing 'data\' from the path in each file element.
        */
-      XDocument doc       = null;
-      XElement  root      = null;
-      XElement  modlist   = null;
-      XElement  datafiles = null;
+      XDocument doc = null;
+      XElement root = null;
+      XElement modlist = null;
+      XElement datafiles = null;
 
       // Load the document
       doc = XDocument.Load(InstallLog.Current.InstallLogPath);
@@ -77,10 +77,10 @@ namespace Fomm.InstallLogUpgraders
         // presently uninstall/deactivate mods that operate in the game folder above the data
         // folder.
 
-        string strPath =  el.Attribute("path").Value.ToLowerInvariant();
+        string strPath = el.Attribute("path").Value.ToLowerInvariant();
         string strData = "data" + Path.DirectorySeparatorChar;
         strPath = strPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
-        if (strPath.IndexOf(strData) ==  0)
+        if (strPath.IndexOf(strData) == 0)
         {
           strPath = strPath.Substring(strData.Length);
           el.SetAttributeValue("path", strPath);
@@ -90,7 +90,7 @@ namespace Fomm.InstallLogUpgraders
           throw new Exception(
             "NMM or another mod manager installed the file " + strPath + " which FOMM cannot uninstall.\n" +
             "The upgrade cannot proceed.\nPlease deactivate the mod which installed that file in NMM and try again."
-          );
+            );
         }
       }
 

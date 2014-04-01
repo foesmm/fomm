@@ -22,7 +22,7 @@ namespace Fomm.Games.Fallout3.Script.XmlConfiguredInstall
     {
       get
       {
-        return ((Fallout3ModInstallScript)Script).GetScriptExtenderVersion();
+        return ((Fallout3ModInstallScript) Script).GetScriptExtenderVersion();
       }
     }
 

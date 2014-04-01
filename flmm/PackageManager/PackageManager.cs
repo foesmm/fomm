@@ -44,20 +44,28 @@ namespace Fomm.PackageManager
 
       foreach (string modpath in Program.GetFiles(Program.GameMode.ModDirectory, "*.fomod.zip"))
       {
-        if (!File.Exists(Path.ChangeExtension(modpath, null))) File.Move(modpath, Path.ChangeExtension(modpath, null));
+        if (!File.Exists(Path.ChangeExtension(modpath, null)))
+        {
+          File.Move(modpath, Path.ChangeExtension(modpath, null));
+        }
       }
 
       string[] groups = Properties.Settings.Default.pluginGroups;
       this.groups = new List<string>(groups);
       this.lgroups = new List<string>(groups.Length);
-      for (int i = 0; i < groups.Length; i++) lgroups.Add(groups[i].ToLowerInvariant());
+      for (int i = 0; i < groups.Length; i++)
+      {
+        lgroups.Add(groups[i].ToLowerInvariant());
+      }
 
       cbGroups.Checked = Properties.Settings.Default.PackageManagerShowsGroups;
 
       WebsiteLogin();
 
       foreach (string modpath in Program.GetFiles(Program.GameMode.ModDirectory, "*.fomod"))
+      {
         AddFomod(modpath, false);
+      }
 
       RebuildListView();
     }
@@ -70,9 +78,12 @@ namespace Fomm.PackageManager
       string[] strCaches = Directory.GetFiles(Program.GameMode.ModInfoCacheDirectory);
       foreach (string strCache in strCaches)
       {
-        string strFOModPath = Path.Combine(Program.GameMode.ModDirectory, Path.GetFileNameWithoutExtension(strCache) + ".fomod");
+        string strFOModPath = Path.Combine(Program.GameMode.ModDirectory,
+                                           Path.GetFileNameWithoutExtension(strCache) + ".fomod");
         if (!File.Exists(strFOModPath) || (File.GetLastWriteTimeUtc(strCache) < File.GetLastWriteTimeUtc(strFOModPath)))
+        {
           FileUtil.ForceDelete(strCache);
+        }
       }
     }
 
@@ -82,11 +93,16 @@ namespace Fomm.PackageManager
       m_dicWebVersions.TryGetValue(mod.BaseName, out strWebVersion);
 
       if (lvModList.Items.ContainsKey(mod.BaseName))
+      {
         lvModList.Items.RemoveByKey(mod.BaseName);
+      }
 
       if (!cbGroups.Checked)
       {
-        ListViewItem lvi = new ListViewItem(new string[] { mod.ModName, mod.HumanReadableVersion, strWebVersion, mod.Author });
+        ListViewItem lvi = new ListViewItem(new string[]
+        {
+          mod.ModName, mod.HumanReadableVersion, strWebVersion, mod.Author
+        });
         lvi.Tag = mod;
         lvi.Name = mod.BaseName;
         lvi.Checked = mod.IsActive;
@@ -100,7 +116,10 @@ namespace Fomm.PackageManager
         if (Array.IndexOf<string>(mod.Groups, lgroups[i]) != -1)
         {
           added = true;
-          ListViewItem lvi = new ListViewItem(new string[] { mod.ModName, mod.HumanReadableVersion, strWebVersion, mod.Author });
+          ListViewItem lvi = new ListViewItem(new string[]
+          {
+            mod.ModName, mod.HumanReadableVersion, strWebVersion, mod.Author
+          });
           lvi.Tag = mod;
           lvi.Name = mod.BaseName;
           lvi.Checked = mod.IsActive;
@@ -111,7 +130,10 @@ namespace Fomm.PackageManager
       }
       if (!added)
       {
-        ListViewItem lvi = new ListViewItem(new string[] { mod.ModName, mod.HumanReadableVersion, strWebVersion, mod.Author });
+        ListViewItem lvi = new ListViewItem(new string[]
+        {
+          mod.ModName, mod.HumanReadableVersion, strWebVersion, mod.Author
+        });
         lvi.Tag = mod;
         lvi.Name = mod.BaseName;
         lvi.Checked = mod.IsActive;
@@ -152,18 +174,29 @@ namespace Fomm.PackageManager
         lvModList.Columns.Add("Author");
         Int32[] intColumnWidths = Properties.Settings.Default.PackageManagerColumnWidths;
         for (Int32 i = 0; i < intColumnWidths.Length; i++)
+        {
           lvModList.Columns[i].Width = intColumnWidths[i];
+        }
       }
 
       foreach (fomod mod in mods)
+      {
         AddFomodToList(mod);
+      }
 
       lvModList.ResumeLayout();
     }
+
     private void ReaddFomodToList(fomod mod)
     {
       lvModList.SuspendLayout();
-      for (int i = 0; i < lvModList.Items.Count; i++) if (lvModList.Items[i].Tag == mod) lvModList.Items.RemoveAt(i--);
+      for (int i = 0; i < lvModList.Items.Count; i++)
+      {
+        if (lvModList.Items[i].Tag == mod)
+        {
+          lvModList.Items.RemoveAt(i--);
+        }
+      }
       AddFomodToList(mod);
       lvModList.ResumeLayout();
     }
@@ -181,13 +214,18 @@ namespace Fomm.PackageManager
         return;
       }
       for (Int32 i = mods.Count - 1; i >= 0; i--)
+      {
         if (mods[i].filepath.Equals(mod.filepath))
         {
           mods.RemoveAt(i);
           break;
         }
+      }
       mods.Add(mod);
-      if (addToList) AddFomodToList(mod);
+      if (addToList)
+      {
+        AddFomodToList(mod);
+      }
     }
 
     /// <summary>
@@ -217,7 +255,11 @@ namespace Fomm.PackageManager
     {
       Int32 tmp = Properties.Settings.Default.PackageManagerPanelSplit;
       if (tmp > 0)
-        splitContainer1.SplitterDistance = Math.Max(splitContainer1.Panel1MinSize + 1, Math.Min(splitContainer1.Height - (splitContainer1.Panel2MinSize + 1), tmp));
+      {
+        splitContainer1.SplitterDistance = Math.Max(splitContainer1.Panel1MinSize + 1,
+                                                    Math.Min(
+                                                      splitContainer1.Height - (splitContainer1.Panel2MinSize + 1), tmp));
+      }
     }
 
     private void lvModList_SelectedIndexChanged(object sender, EventArgs e)
@@ -234,9 +276,13 @@ namespace Fomm.PackageManager
     protected void UpdateModStateText()
     {
       if (lvModList.SelectedItems.Count == 0)
+      {
         return;
-      fomod mod = (fomod)lvModList.SelectedItems[0].Tag;
-      tbModInfo.Text = mod.HasInfo ? mod.Description : "No description is associaited with this fomod. Click 'edit info' if you want to add one.";
+      }
+      fomod mod = (fomod) lvModList.SelectedItems[0].Tag;
+      tbModInfo.Text = mod.HasInfo
+        ? mod.Description
+        : "No description is associaited with this fomod. Click 'edit info' if you want to add one.";
 
       butDeactivate.Enabled = mod.IsActive;
       butViewReadme.Enabled = mod.HasReadme;
@@ -247,30 +293,46 @@ namespace Fomm.PackageManager
 
     private void lvModList_ItemCheck(object sender, ItemCheckEventArgs e)
     {
-      if (((fomod)lvModList.Items[e.Index].Tag).IsActive) e.NewValue = CheckState.Checked;
-      else e.NewValue = CheckState.Unchecked;
+      if (((fomod) lvModList.Items[e.Index].Tag).IsActive)
+      {
+        e.NewValue = CheckState.Checked;
+      }
+      else
+      {
+        e.NewValue = CheckState.Unchecked;
+      }
     }
 
     private void bEditScript_Click(object sender, EventArgs e)
     {
       if (lvModList.SelectedItems.Count != 1)
+      {
         return;
-      fomod mod = (fomod)lvModList.SelectedItems[0].Tag;
+      }
+      fomod mod = (fomod) lvModList.SelectedItems[0].Tag;
       EditScriptForm esfEditor = new EditScriptForm();
       if (!mod.HasInstallScript)
+      {
         esfEditor.Script = new FomodScript(FomodScriptType.CSharp, Program.GameMode.DefaultCSharpScript);
+      }
       else
+      {
         esfEditor.Script = mod.GetInstallScript();
+      }
       if (esfEditor.ShowDialog(this) == DialogResult.OK)
+      {
         mod.SetScript(esfEditor.Script);
+      }
       UpdateModStateText();
     }
 
     private void butViewReadme_Click(object sender, EventArgs e)
     {
       if (lvModList.SelectedItems.Count != 1)
+      {
         return;
-      fomod mod = (fomod)lvModList.SelectedItems[0].Tag;
+      }
+      fomod mod = (fomod) lvModList.SelectedItems[0].Tag;
       if (mod.HasReadme)
       {
         ViewReadmeForm vrfEditor = new ViewReadmeForm(mod.GetReadme());
@@ -285,23 +347,31 @@ namespace Fomm.PackageManager
       Properties.Settings.Default.PackageManagerPanelSplit = splitContainer1.SplitterDistance;
       Int32[] intColumnWidths = new Int32[lvModList.Columns.Count];
       for (Int32 i = 0; i < lvModList.Columns.Count; i++)
+      {
         intColumnWidths[i] = lvModList.Columns[i].Width;
+      }
       Properties.Settings.Default.PackageManagerColumnWidths = intColumnWidths;
       Properties.Settings.Default.Save();
 
       foreach (ListViewItem lvi in lvModList.Items)
       {
-        ((fomod)lvi.Tag).Dispose();
+        ((fomod) lvi.Tag).Dispose();
       }
     }
 
     private void bEditInfo_Click(object sender, EventArgs e)
     {
-      if (lvModList.SelectedItems.Count != 1) return;
-      fomod mod = (fomod)lvModList.SelectedItems[0].Tag;
+      if (lvModList.SelectedItems.Count != 1)
+      {
+        return;
+      }
+      fomod mod = (fomod) lvModList.SelectedItems[0].Tag;
       if ((new InfoEditor(mod)).ShowDialog() == DialogResult.OK)
       {
-        if (cbGroups.Checked) ReaddFomodToList(mod);
+        if (cbGroups.Checked)
+        {
+          ReaddFomodToList(mod);
+        }
         else
         {
           ListViewItem lvi = lvModList.SelectedItems[0];
@@ -328,12 +398,17 @@ namespace Fomm.PackageManager
       fomod fomodMod = null;
       foreach (ListViewItem lviFomod in lvModList.Items)
       {
-        fomodMod = (fomod)lviFomod.Tag;
+        fomodMod = (fomod) lviFomod.Tag;
         if (fomodMod.ModName.Equals(mod.ModName) && fomodMod.IsActive && !fomodMod.BaseName.Equals(mod.BaseName))
         {
           //ask to do upgrade
-          string strUpgradeMessage = "A different version of {0} has been detected. The installed version is {1}, the new version is {2}. Would you like to upgrade?" + Environment.NewLine + "Selecting No will install the new FOMod normally.";
-          switch (MessageBox.Show(String.Format(strUpgradeMessage, fomodMod.ModName, fomodMod.HumanReadableVersion, mod.HumanReadableVersion), "Upgrade", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+          string strUpgradeMessage =
+            "A different version of {0} has been detected. The installed version is {1}, the new version is {2}. Would you like to upgrade?" +
+            Environment.NewLine + "Selecting No will install the new FOMod normally.";
+          switch (
+            MessageBox.Show(
+              String.Format(strUpgradeMessage, fomodMod.ModName, fomodMod.HumanReadableVersion, mod.HumanReadableVersion),
+              "Upgrade", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
           {
             case DialogResult.Yes:
               ModUpgrader mduUpgrader = new ModUpgrader(mod, fomodMod.BaseName);
@@ -350,7 +425,9 @@ namespace Fomm.PackageManager
           }
         }
         if (booFound)
+        {
           break;
+        }
       }
       ModInstaller mdiInstaller = new ModInstaller(mod);
       mdiInstaller.Install();
@@ -381,7 +458,10 @@ namespace Fomm.PackageManager
       {
         foreach (ListViewItem lvi in lvModList.Items)
         {
-          if (lvi.Tag == mod) lvi.Checked = mod.IsActive;
+          if (lvi.Tag == mod)
+          {
+            lvi.Checked = mod.IsActive;
+          }
         }
       }
       else
@@ -389,8 +469,14 @@ namespace Fomm.PackageManager
         lvModList.SelectedItems[0].Checked = mod.IsActive;
       }
       butDeactivate.Enabled = mod.IsActive;
-      if (!mod.IsActive) bActivate.Text = "Activate";
-      else bActivate.Text = "Reactivate";
+      if (!mod.IsActive)
+      {
+        bActivate.Text = "Activate";
+      }
+      else
+      {
+        bActivate.Text = "Reactivate";
+      }
 
       Program.GameMode.buildPluginList();
       mf.RefreshPluginList();
@@ -398,18 +484,28 @@ namespace Fomm.PackageManager
 
     private void bActivate_Click(object sender, EventArgs e)
     {
-      if (lvModList.SelectedItems.Count != 1) return;
-      fomod mod = (fomod)lvModList.SelectedItems[0].Tag;
+      if (lvModList.SelectedItems.Count != 1)
+      {
+        return;
+      }
+      fomod mod = (fomod) lvModList.SelectedItems[0].Tag;
       if (!mod.IsActive)
+      {
         ToggleActivation(mod, false);
+      }
       else
+      {
         ToggleActivation(mod, true);
+      }
     }
 
     private void butDeactivate_Click(object sender, EventArgs e)
     {
-      if (lvModList.SelectedItems.Count != 1) return;
-      fomod mod = (fomod)lvModList.SelectedItems[0].Tag;
+      if (lvModList.SelectedItems.Count != 1)
+      {
+        return;
+      }
+      fomod mod = (fomod) lvModList.SelectedItems[0].Tag;
       ToggleActivation(mod, false);
     }
 
@@ -422,7 +518,9 @@ namespace Fomm.PackageManager
       FomodFromSourceBuilder ffbBuilder = new FomodFromSourceBuilder();
       IList<string> lstFomodPaths = ffbBuilder.BuildFomodFromSource(p_strPath);
       foreach (string strFomodPath in lstFomodPaths)
+      {
         AddFomod(strFomodPath, true);
+      }
     }
 
     private void fomodContextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
@@ -432,31 +530,50 @@ namespace Fomm.PackageManager
         e.Cancel = true;
         return;
       }
-      fomod mod = (fomod)lvModList.SelectedItems[0].Tag;
-      if (mod.Email.Length == 0) emailAuthorToolStripMenuItem.Visible = false;
-      else emailAuthorToolStripMenuItem.Visible = true;
-      if (mod.Website.Length == 0) visitWebsiteToolStripMenuItem.Visible = false;
-      else visitWebsiteToolStripMenuItem.Visible = true;
+      fomod mod = (fomod) lvModList.SelectedItems[0].Tag;
+      if (mod.Email.Length == 0)
+      {
+        emailAuthorToolStripMenuItem.Visible = false;
+      }
+      else
+      {
+        emailAuthorToolStripMenuItem.Visible = true;
+      }
+      if (mod.Website.Length == 0)
+      {
+        visitWebsiteToolStripMenuItem.Visible = false;
+      }
+      else
+      {
+        visitWebsiteToolStripMenuItem.Visible = true;
+      }
     }
 
     private void visitWebsiteToolStripMenuItem_Click(object sender, EventArgs e)
     {
-      if (lvModList.SelectedItems.Count != 1) return;
-      fomod mod = (fomod)lvModList.SelectedItems[0].Tag;
+      if (lvModList.SelectedItems.Count != 1)
+      {
+        return;
+      }
+      fomod mod = (fomod) lvModList.SelectedItems[0].Tag;
       try
       {
         System.Diagnostics.Process.Start(mod.Website);
       }
       catch (Win32Exception ex)
       {
-        MessageBox.Show(this, "Error launching site: " + mod.Website + "\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        MessageBox.Show(this, "Error launching site: " + mod.Website + "\n" + ex.Message, "Error", MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
       }
     }
 
     private void emailAuthorToolStripMenuItem_Click(object sender, EventArgs e)
     {
-      if (lvModList.SelectedItems.Count != 1) return;
-      fomod mod = (fomod)lvModList.SelectedItems[0].Tag;
+      if (lvModList.SelectedItems.Count != 1)
+      {
+        return;
+      }
+      fomod mod = (fomod) lvModList.SelectedItems[0].Tag;
       System.Diagnostics.Process.Start("mailto://" + mod.Email, "");
     }
 
@@ -493,10 +610,16 @@ namespace Fomm.PackageManager
       groups.AddRange(tb.Lines);
       for (int i = 0; i < groups.Count; i++)
       {
-        if (groups[i].Length == 0) groups.RemoveAt(i--);
+        if (groups[i].Length == 0)
+        {
+          groups.RemoveAt(i--);
+        }
       }
       lgroups.Clear();
-      for (int i = 0; i < groups.Count; i++) lgroups.Add(groups[i].ToLowerInvariant());
+      for (int i = 0; i < groups.Count; i++)
+      {
+        lgroups.Add(groups[i].ToLowerInvariant());
+      }
       RebuildListView();
       Properties.Settings.Default.pluginGroups = groups;
       Properties.Settings.Default.Save();
@@ -504,8 +627,11 @@ namespace Fomm.PackageManager
 
     private void fomodStatusToolStripMenuItem_Click(object sender, EventArgs e)
     {
-      if (lvModList.SelectedItems.Count != 1) return;
-      fomod mod = (fomod)lvModList.SelectedItems[0].Tag;
+      if (lvModList.SelectedItems.Count != 1)
+      {
+        return;
+      }
+      fomod mod = (fomod) lvModList.SelectedItems[0].Tag;
       Form f = new Form();
       Properties.Settings.Default.windowPositions.GetWindowPosition("FomodStatus", f);
       f.Text = "Fomod status";
@@ -525,16 +651,23 @@ namespace Fomm.PackageManager
 
     private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
     {
-      if (lvModList.SelectedItems.Count != 1) return;
-      fomod mod = (fomod)lvModList.SelectedItems[0].Tag;
+      if (lvModList.SelectedItems.Count != 1)
+      {
+        return;
+      }
+      fomod mod = (fomod) lvModList.SelectedItems[0].Tag;
       if (mod.IsActive)
       {
         MessageBox.Show("Cannot delete an active fomod");
         return;
       }
       for (int i = 0; i < lvModList.Items.Count; i++)
+      {
         if (lvModList.Items[i].Tag == mod)
+        {
           lvModList.Items.RemoveAt(i--);
+        }
+      }
       mod.Dispose();
       File.Delete(mod.filepath);
       File.Delete(mod.CachePath);
@@ -543,18 +676,30 @@ namespace Fomm.PackageManager
 
     private void bActivateGroup_Click(object sender, EventArgs e)
     {
-      if (lvModList.SelectedItems.Count != 1) return;
-      if (!cbGroups.Checked) return;
+      if (lvModList.SelectedItems.Count != 1)
+      {
+        return;
+      }
+      if (!cbGroups.Checked)
+      {
+        return;
+      }
       foreach (ListViewItem lvi in lvModList.SelectedItems[0].Group.Items)
       {
-        fomod mod = (fomod)lvi.Tag;
-        if (mod.IsActive) continue;
+        fomod mod = (fomod) lvi.Tag;
+        if (mod.IsActive)
+        {
+          continue;
+        }
         ActivateFomod(mod);
         if (cbGroups.Checked)
         {
           foreach (ListViewItem lvi2 in lvModList.Items)
           {
-            if (lvi2.Tag == mod) lvi2.Checked = mod.IsActive;
+            if (lvi2.Tag == mod)
+            {
+              lvi2.Checked = mod.IsActive;
+            }
           }
         }
         else
@@ -568,19 +713,31 @@ namespace Fomm.PackageManager
 
     private void bDeactivateGroup_Click(object sender, EventArgs e)
     {
-      if (lvModList.SelectedItems.Count != 1) return;
-      if (!cbGroups.Checked) return;
+      if (lvModList.SelectedItems.Count != 1)
+      {
+        return;
+      }
+      if (!cbGroups.Checked)
+      {
+        return;
+      }
       foreach (ListViewItem lvi in lvModList.SelectedItems[0].Group.Items)
       {
-        fomod mod = (fomod)lvi.Tag;
-        if (!mod.IsActive) continue;
+        fomod mod = (fomod) lvi.Tag;
+        if (!mod.IsActive)
+        {
+          continue;
+        }
         ModUninstaller mduUninstaller = new ModUninstaller(mod);
         mduUninstaller.Uninstall(true);
         if (cbGroups.Checked)
         {
           foreach (ListViewItem lvi2 in lvModList.Items)
           {
-            if (lvi2.Tag == mod) lvi2.Checked = mod.IsActive;
+            if (lvi2.Tag == mod)
+            {
+              lvi2.Checked = mod.IsActive;
+            }
           }
         }
         else
@@ -594,16 +751,26 @@ namespace Fomm.PackageManager
 
     private void bDeactivateAll_Click(object sender, EventArgs e)
     {
-      if (MessageBox.Show("This will deactivate all fomods.\nAre you sure you want to continue?", "Warning", MessageBoxButtons.YesNo) != DialogResult.Yes) return;
+      if (
+        MessageBox.Show("This will deactivate all fomods.\nAre you sure you want to continue?", "Warning",
+                        MessageBoxButtons.YesNo) != DialogResult.Yes)
+      {
+        return;
+      }
       foreach (ListViewItem lvi in lvModList.Items)
       {
-        fomod mod = (fomod)lvi.Tag;
+        fomod mod = (fomod) lvi.Tag;
         if (!mod.IsActive)
+        {
           continue;
+        }
         ModUninstaller mduUninstaller = new ModUninstaller(mod);
         mduUninstaller.Uninstall(true);
       }
-      foreach (ListViewItem lvi in lvModList.Items) lvi.Checked = false;
+      foreach (ListViewItem lvi in lvModList.Items)
+      {
+        lvi.Checked = false;
+      }
 
       mf.RefreshPluginList();
     }
@@ -611,10 +778,11 @@ namespace Fomm.PackageManager
     private class FomodSorter : System.Collections.IComparer
     {
       public static int Mode;
+
       public int Compare(object a, object b)
       {
-        fomod m1 = (fomod)((ListViewItem)a).Tag;
-        fomod m2 = (fomod)((ListViewItem)b).Tag;
+        fomod m1 = (fomod) ((ListViewItem) a).Tag;
+        fomod m2 = (fomod) ((ListViewItem) b).Tag;
 
         switch (Mode)
         {
@@ -633,7 +801,10 @@ namespace Fomm.PackageManager
 
     private void cmbSortOrder_SelectedIndexChanged(object sender, EventArgs e)
     {
-      if (cmbSortOrder.SelectedIndex < 0) return;
+      if (cmbSortOrder.SelectedIndex < 0)
+      {
+        return;
+      }
       FomodSorter.Mode = cmbSortOrder.SelectedIndex + 1;
       lvModList.Sort();
       cmbSortOrder.Text = "Sort order";
@@ -646,7 +817,10 @@ namespace Fomm.PackageManager
 
     private void lvModList_ColumnClick(object sender, ColumnClickEventArgs e)
     {
-      if (cbGroups.Checked) return;
+      if (cbGroups.Checked)
+      {
+        return;
+      }
       switch (e.Column)
       {
         case 0:
@@ -660,14 +834,18 @@ namespace Fomm.PackageManager
 
     private void lvModList_ItemActivate(object sender, EventArgs e)
     {
-      if (lvModList.SelectedItems.Count != 1) return;
-      fomod mod = (fomod)lvModList.SelectedItems[0].Tag;
+      if (lvModList.SelectedItems.Count != 1)
+      {
+        return;
+      }
+      fomod mod = (fomod) lvModList.SelectedItems[0].Tag;
       ToggleActivation(mod, false);
     }
 
     private void pictureBox1_Click(object sender, EventArgs e)
     {
-      if (pictureBox1.Image != null && (pictureBox1.Image.Size.Width > pictureBox1.Width || pictureBox1.Image.Size.Height > pictureBox1.Height))
+      if (pictureBox1.Image != null &&
+          (pictureBox1.Image.Size.Width > pictureBox1.Width || pictureBox1.Image.Size.Height > pictureBox1.Height))
       {
         (new ImageForm(pictureBox1.Image)).ShowDialog();
       }
@@ -687,16 +865,21 @@ namespace Fomm.PackageManager
     private void butExtractFomod_Click(object sender, EventArgs e)
     {
       if (lvModList.SelectedItems.Count != 1)
+      {
         return;
-      fomod fomodMod = (fomod)lvModList.SelectedItems[0].Tag;
+      }
+      fomod fomodMod = (fomod) lvModList.SelectedItems[0].Tag;
 
       if (fbdExtractFomod.ShowDialog(this) == DialogResult.OK)
       {
         using (m_bwdProgress = new BackgroundWorkerProgressDialog(UnpackFomod))
         {
-          string strOutput = Path.Combine(fbdExtractFomod.SelectedPath, Path.GetFileNameWithoutExtension(fomodMod.filepath));
+          string strOutput = Path.Combine(fbdExtractFomod.SelectedPath,
+                                          Path.GetFileNameWithoutExtension(fomodMod.filepath));
           if (!Directory.Exists(strOutput))
+          {
             Directory.CreateDirectory(strOutput);
+          }
           m_bwdProgress.WorkMethodArguments = new Pair<fomod, string>(fomodMod, strOutput);
           m_bwdProgress.ShowDialog();
         }
@@ -715,9 +898,11 @@ namespace Fomm.PackageManager
     private void UnpackFomod(object p_objArgs)
     {
       if (!(p_objArgs is Pair<fomod, string>))
+      {
         throw new ArgumentException("Given argument is not a Pair<fomod,string>.", "p_objArgs");
-      fomod fomodMod = ((Pair<fomod, string>)p_objArgs).Key;
-      string strOutput = ((Pair<fomod, string>)p_objArgs).Value;
+      }
+      fomod fomodMod = ((Pair<fomod, string>) p_objArgs).Key;
+      string strOutput = ((Pair<fomod, string>) p_objArgs).Value;
       List<string> lstFiles = fomodMod.GetFileList();
 
       m_bwdProgress.ShowItemProgress = false;
@@ -741,7 +926,7 @@ namespace Fomm.PackageManager
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
     /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
-    void UnpackFomod_FileExtractionFinished(object sender, FileInfoEventArgs e)
+    private void UnpackFomod_FileExtractionFinished(object sender, FileInfoEventArgs e)
     {
       m_bwdProgress.StepItemProgress();
     }
@@ -754,7 +939,7 @@ namespace Fomm.PackageManager
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
     /// <param name="e">A <see cref="FileNameEventArgs"/> describing the event arguments.</param>
-    void UnpackFomod_FileExtractionStarted(object sender, FileInfoEventArgs e)
+    private void UnpackFomod_FileExtractionStarted(object sender, FileInfoEventArgs e)
     {
       e.Cancel = m_bwdProgress.Cancelled();
     }
@@ -771,7 +956,10 @@ namespace Fomm.PackageManager
     /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
     private void addFOMODToolStripMenuItem_Click(object sender, EventArgs e)
     {
-      if (openFileDialog1.ShowDialog() != DialogResult.OK) return;
+      if (openFileDialog1.ShowDialog() != DialogResult.OK)
+      {
+        return;
+      }
       AddNewFomod(openFileDialog1.FileName);
     }
 
@@ -789,7 +977,10 @@ namespace Fomm.PackageManager
       fbd.SelectedPath = m_strLastFromFolderPath;
       fbd.ShowNewFolderButton = false;
       fbd.Description = "Pick a folder to convert to a fomod";
-      if (fbd.ShowDialog() != DialogResult.OK) return;
+      if (fbd.ShowDialog() != DialogResult.OK)
+      {
+        return;
+      }
       m_strLastFromFolderPath = fbd.SelectedPath;
       Properties.Settings.Default.LastBuildFOMODFromFolderPath = Path.GetDirectoryName(m_strLastFromFolderPath);
       Properties.Settings.Default.Save();
@@ -810,7 +1001,9 @@ namespace Fomm.PackageManager
       if (fbfBuilder.ShowDialog(this) == DialogResult.OK)
       {
         if (!String.IsNullOrEmpty(fbfBuilder.FomodPath))
+        {
           AddFomod(fbfBuilder.FomodPath, true);
+        }
       }
     }
 
@@ -826,7 +1019,9 @@ namespace Fomm.PackageManager
     {
       PremadeFomodPackForm pkfPFPForm = new PremadeFomodPackForm(PremadeFomodPackForm.OpenPFPMode.Install);
       if (pkfPFPForm.ShowDialog(this) == DialogResult.Cancel)
+      {
         return;
+      }
 
       PremadeFomodPack pfpPack = new PremadeFomodPack(pkfPFPForm.PFPPath);
       List<KeyValuePair<string, string>> lstCopyInstructions = pfpPack.GetCopyInstructions(pkfPFPForm.SourcesPath);
@@ -834,9 +1029,12 @@ namespace Fomm.PackageManager
       lstCopyInstructions.Add(new KeyValuePair<string, string>(strPremadeSource, "/"));
 
       NewFomodBuilder fgnGenerator = new NewFomodBuilder();
-      string strNewFomodPath = fgnGenerator.BuildFomod(pfpPack.FomodName, lstCopyInstructions, null, null, false, null, null);
+      string strNewFomodPath = fgnGenerator.BuildFomod(pfpPack.FomodName, lstCopyInstructions, null, null, false, null,
+                                                       null);
       if (!String.IsNullOrEmpty(strNewFomodPath))
+      {
         AddFomod(strNewFomodPath, true);
+      }
     }
 
     /// <summary>
@@ -851,14 +1049,18 @@ namespace Fomm.PackageManager
     {
       PremadeFomodPackForm pkfPFPForm = new PremadeFomodPackForm(PremadeFomodPackForm.OpenPFPMode.Edit);
       if (pkfPFPForm.ShowDialog(this) == DialogResult.Cancel)
+      {
         return;
+      }
 
       PremadeFomodPack pfpPack = new PremadeFomodPack(pkfPFPForm.PFPPath);
       FomodBuilderForm fbfBuilder = new FomodBuilderForm(pfpPack, pkfPFPForm.SourcesPath);
       if (fbfBuilder.ShowDialog(this) == DialogResult.OK)
       {
         if (!String.IsNullOrEmpty(fbfBuilder.FomodPath))
+        {
           AddFomod(fbfBuilder.FomodPath, true);
+        }
       }
     }
 
@@ -877,25 +1079,40 @@ namespace Fomm.PackageManager
       sfdModList.AddExtension = true;
       sfdModList.RestoreDirectory = true;
       if (sfdModList.ShowDialog() != DialogResult.OK)
+      {
         return;
+      }
 
       Int32 intMaxNameLength = 0;
       Int32 intMaxVersionLength = 0;
       for (int i = 0; i < lvModList.Items.Count; i++)
+      {
         if (lvModList.Items[i].Checked || !p_booActiveOnly)
         {
           if (lvModList.Items[i].Text.Length > intMaxNameLength)
+          {
             intMaxNameLength = lvModList.Items[i].Text.Length;
+          }
           if (lvModList.Items[i].SubItems[1].Text.Length > intMaxVersionLength)
+          {
             intMaxVersionLength = lvModList.Items[i].SubItems[1].Text.Length;
+          }
         }
+      }
 
       StreamWriter swrModList = new StreamWriter(sfdModList.FileName);
       try
       {
         for (int i = 0; i < lvModList.Items.Count; i++)
+        {
           if (lvModList.Items[i].Checked || !p_booActiveOnly)
-            swrModList.WriteLine(String.Format("[{0}] {1,-" + intMaxNameLength + "}\t{2,-" + intMaxVersionLength + "}\t{3}", (lvModList.Items[i].Checked ? "X" : " "), lvModList.Items[i].Text, lvModList.Items[i].SubItems[1].Text, ((fomod)lvModList.Items[i].Tag).filepath));
+          {
+            swrModList.WriteLine(
+              String.Format("[{0}] {1,-" + intMaxNameLength + "}\t{2,-" + intMaxVersionLength + "}\t{3}",
+                            (lvModList.Items[i].Checked ? "X" : " "), lvModList.Items[i].Text,
+                            lvModList.Items[i].SubItems[1].Text, ((fomod) lvModList.Items[i].Tag).filepath));
+          }
+        }
       }
       finally
       {

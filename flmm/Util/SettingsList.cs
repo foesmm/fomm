@@ -9,7 +9,7 @@ namespace Fomm.Util
   /// Extends the <see cref="StringCollection"/> to add implicit conversions to and from
   /// similar data structures.
   /// </summary>
-  [Editor("System.Windows.Forms.Design.StringCollectionEditor", typeof(System.Drawing.Design.UITypeEditor))]
+  [Editor("System.Windows.Forms.Design.StringCollectionEditor", typeof (System.Drawing.Design.UITypeEditor))]
   public class SettingsList : StringCollection, IEnumerable<string>
   {
     #region String List Conversions
@@ -105,7 +105,9 @@ namespace Fomm.Util
     public static implicit operator string[](SettingsList arr)
     {
       if (arr == null)
+      {
         return null;
+      }
       List<string> lstValues = new List<string>(arr);
       return lstValues.ToArray();
     }
@@ -118,7 +120,9 @@ namespace Fomm.Util
     public static implicit operator SettingsList(string[] values)
     {
       if (values == null)
+      {
         return null;
+      }
       SettingsList sslValues = new SettingsList();
       sslValues.AddRange(values);
       return sslValues;
@@ -132,7 +136,9 @@ namespace Fomm.Util
     public static implicit operator SettingsList(List<string> values)
     {
       if (values == null)
+      {
         return null;
+      }
       SettingsList sslValues = new SettingsList();
       sslValues.AddRange(values.ToArray());
       return sslValues;
@@ -146,7 +152,6 @@ namespace Fomm.Util
     /// <returns></returns>
     public new IEnumerator<string> GetEnumerator()
     {
-
       return new EnumeratorOfString(base.GetEnumerator());
     }
 
@@ -164,7 +169,9 @@ namespace Fomm.Util
     public static implicit operator Int32[](SettingsList arr)
     {
       if (arr == null)
+      {
         return null;
+      }
       List<Int32> lstValues = new List<Int32>();
       Int32 intValue = 0;
       for (Int32 i = 0; i < arr.Count; i++)
@@ -184,10 +191,14 @@ namespace Fomm.Util
     public static implicit operator SettingsList(Int32[] values)
     {
       if (values == null)
+      {
         return null;
+      }
       SettingsList sslValues = new SettingsList();
       foreach (Int32 intValue in values)
+      {
         sslValues.Add(intValue.ToString());
+      }
       return sslValues;
     }
 

@@ -19,7 +19,7 @@ namespace Fomm.Controls
     /// The default constructor.
     /// </summary>
     public SelectedVerticalTabPageConverter()
-      : base(typeof(VerticalTabPage))
+      : base(typeof (VerticalTabPage))
     {
     }
 
@@ -36,11 +36,10 @@ namespace Fomm.Controls
     {
       if (context != null)
       {
-        VerticalTabControl vtcTabControl = (VerticalTabControl)context.Instance;
-        return vtcTabControl.TabPages.Contains((VerticalTabPage)value);
+        VerticalTabControl vtcTabControl = (VerticalTabControl) context.Instance;
+        return vtcTabControl.TabPages.Contains((VerticalTabPage) value);
       }
       return false;
-
     }
   }
 }

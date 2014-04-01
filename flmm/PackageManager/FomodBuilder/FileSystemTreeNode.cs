@@ -45,7 +45,10 @@ namespace Fomm.PackageManager.FomodBuilder
       {
         get
         {
-          return this.Find((s) => { return s.Equals(p_strPath); });
+          return this.Find((s) =>
+          {
+            return s.Equals(p_strPath);
+          });
         }
       }
 
@@ -57,11 +60,13 @@ namespace Fomm.PackageManager.FomodBuilder
       public bool Remove(string p_strPath)
       {
         for (Int32 i = Count - 1; i >= 0; i--)
+        {
           if (this[i].Equals(p_strPath))
           {
             RemoveAt(i);
             return true;
           }
+        }
         return false;
       }
 
@@ -75,8 +80,12 @@ namespace Fomm.PackageManager.FomodBuilder
       public bool Contains(string p_strSourcePath)
       {
         for (Int32 i = Count - 1; i >= 0; i--)
+        {
           if (this[i].Equals(p_strSourcePath))
+          {
             return true;
+          }
+        }
         return false;
       }
     }
@@ -190,7 +199,8 @@ namespace Fomm.PackageManager.FomodBuilder
     /// </summary>
     public const string NEW_PREFIX = "new:";
 
-    private static Dictionary<string, Archive> m_dicArchiveCache = new Dictionary<string, Archive>(StringComparer.InvariantCultureIgnoreCase);
+    private static Dictionary<string, Archive> m_dicArchiveCache =
+      new Dictionary<string, Archive>(StringComparer.InvariantCultureIgnoreCase);
 
     private SourceSet m_sstSources = new SourceSet();
     private bool? m_booIsAchive = null;
@@ -207,20 +217,25 @@ namespace Fomm.PackageManager.FomodBuilder
       get
       {
         if (TreeView != null)
+        {
           return base.FullPath;
+        }
         Stack<string> stkPath = new Stack<string>();
         TreeNode tndParent = this;
         do
         {
           stkPath.Push(tndParent.Text);
           tndParent = tndParent.Parent;
-        } while (tndParent != null);
+        }
+        while (tndParent != null);
         StringBuilder stbPath = new StringBuilder();
         while (stkPath.Count > 0)
         {
           stbPath.Append(stkPath.Pop());
           if (stkPath.Count > 0)
+          {
             stbPath.Append(Path.DirectorySeparatorChar);
+          }
         }
         return stbPath.ToString();
       }
@@ -235,11 +250,14 @@ namespace Fomm.PackageManager.FomodBuilder
       get
       {
         if (m_booIsDirectory.HasValue)
+        {
           return m_booIsDirectory.Value;
-
+        }
 
         if ((m_sstSources.Count == 0) || LastSource.Path.StartsWith(NEW_PREFIX))
+        {
           m_booIsDirectory = true;
+        }
         else if (LastSource.Path.StartsWith(Archive.ARCHIVE_PREFIX))
         {
           KeyValuePair<string, string> kvpArchive = Archive.ParseArchivePath(LastSource);
@@ -247,13 +265,17 @@ namespace Fomm.PackageManager.FomodBuilder
           lock (m_dicArchiveCache)
           {
             if (!m_dicArchiveCache.ContainsKey(kvpArchive.Key))
+            {
               m_dicArchiveCache[kvpArchive.Key] = new Archive(kvpArchive.Key);
+            }
             arcArchive = m_dicArchiveCache[kvpArchive.Key];
           }
           m_booIsDirectory = arcArchive.IsDirectory(kvpArchive.Value);
         }
         else
+        {
           m_booIsDirectory = Directory.Exists(LastSource);
+        }
         return m_booIsDirectory.Value;
       }
     }
@@ -267,10 +289,14 @@ namespace Fomm.PackageManager.FomodBuilder
       get
       {
         if (m_booIsAchive.HasValue)
+        {
           return m_booIsAchive.Value;
+        }
 
         if ((m_sstSources.Count == 0) || LastSource.Path.StartsWith(NEW_PREFIX))
+        {
           m_booIsAchive = false;
+        }
         else
         {
           m_booIsAchive = Archive.IsArchive(LastSource);
@@ -290,7 +316,7 @@ namespace Fomm.PackageManager.FomodBuilder
     {
       get
       {
-        return (FileSystemTreeNode)base.Parent;
+        return (FileSystemTreeNode) base.Parent;
       }
     }
 
@@ -319,7 +345,9 @@ namespace Fomm.PackageManager.FomodBuilder
       get
       {
         if (m_sstSources.Count > 0)
+        {
           return m_sstSources[m_sstSources.Count - 1];
+        }
         return null;
       }
     }
@@ -347,8 +375,11 @@ namespace Fomm.PackageManager.FomodBuilder
     public FileSystemTreeNode(string p_strName, string p_strPath)
       : base(p_strName)
     {
-      if (!p_strPath.StartsWith(Archive.ARCHIVE_PREFIX) && !p_strPath.StartsWith(NEW_PREFIX) && !Directory.Exists(p_strPath) && !File.Exists(p_strPath))
+      if (!p_strPath.StartsWith(Archive.ARCHIVE_PREFIX) && !p_strPath.StartsWith(NEW_PREFIX) &&
+          !Directory.Exists(p_strPath) && !File.Exists(p_strPath))
+      {
         throw new FileNotFoundException("The given path is not valid.", p_strPath);
+      }
       m_sstSources.Add(p_strPath, false);
     }
 
@@ -382,7 +413,9 @@ namespace Fomm.PackageManager.FomodBuilder
     {
       Int32 intResult = other.IsDirectory.CompareTo(this.IsDirectory);
       if (intResult == 0)
+      {
         intResult = this.Text.CompareTo(other.Text);
+      }
       return intResult;
     }
 

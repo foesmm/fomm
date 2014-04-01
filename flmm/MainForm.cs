@@ -47,7 +47,9 @@ namespace Fomm
         {
           Form frmForm = Application.OpenForms[i];
           if (frmForm.GetType().Namespace.StartsWith("ICSharp", StringComparison.InvariantCultureIgnoreCase))
+          {
             intIngoredWindowCount++;
+          }
         }
         return (Application.OpenForms.Count - intIngoredWindowCount > 1);
       }
@@ -63,7 +65,9 @@ namespace Fomm
       {
         List<string> lstSelectedPlugins = new List<string>();
         foreach (ListViewItem lviPlugin in lvEspList.SelectedItems)
+        {
           lstSelectedPlugins.Add(lviPlugin.Text);
+        }
         return lstSelectedPlugins;
       }
     }
@@ -95,7 +99,10 @@ namespace Fomm
       if (fomod != null)
       {
         bPackageManager_Click(null, null);
-        if (fomod.Length > 0) PackageManagerForm.AddNewFomod(fomod);
+        if (fomod.Length > 0)
+        {
+          PackageManagerForm.AddNewFomod(fomod);
+        }
       }
 
       Command<MainForm> cmdGameLaunch = Program.GameMode.LaunchCommand;
@@ -143,35 +150,55 @@ namespace Fomm
       foreach (Command<MainForm> cmdTool in Program.GameMode.Tools)
       {
         ToolStripMenuItem tsiMenuItem = new ToolStripMenuItem();
-        ToolStripMenuItemCommandBinding<MainForm> cbdCommandBinding = new ToolStripMenuItemCommandBinding<MainForm>(tsiMenuItem, cmdTool, () => { return this; });
+        ToolStripMenuItemCommandBinding<MainForm> cbdCommandBinding =
+          new ToolStripMenuItemCommandBinding<MainForm>(tsiMenuItem, cmdTool, () =>
+          {
+            return this;
+          });
         toolsToolStripMenuItem.DropDownItems.Add(tsiMenuItem);
       }
 
       foreach (Command<MainForm> cmdTool in Program.GameMode.GameSettingsTools)
       {
         ToolStripMenuItem tsiMenuItem = new ToolStripMenuItem();
-        ToolStripMenuItemCommandBinding<MainForm> cbdCommandBinding = new ToolStripMenuItemCommandBinding<MainForm>(tsiMenuItem, cmdTool, () => { return this; });
+        ToolStripMenuItemCommandBinding<MainForm> cbdCommandBinding =
+          new ToolStripMenuItemCommandBinding<MainForm>(tsiMenuItem, cmdTool, () =>
+          {
+            return this;
+          });
         gameSettingsToolStripMenuItem.DropDownItems.Add(tsiMenuItem);
       }
 
       foreach (Command<MainForm> cmdTool in Program.GameMode.RightClickTools)
       {
         ToolStripMenuItem tsiMenuItem = new ToolStripMenuItem();
-        ToolStripMenuItemCommandBinding<MainForm> cbdCommandBinding = new ToolStripMenuItemCommandBinding<MainForm>(tsiMenuItem, cmdTool, () => { return this; });
+        ToolStripMenuItemCommandBinding<MainForm> cbdCommandBinding =
+          new ToolStripMenuItemCommandBinding<MainForm>(tsiMenuItem, cmdTool, () =>
+          {
+            return this;
+          });
         cmsPlugins.Items.Add(tsiMenuItem);
       }
 
       foreach (Command<MainForm> cmdTool in Program.GameMode.LoadOrderTools)
       {
         ToolStripMenuItem tsiMenuItem = new ToolStripMenuItem();
-        ToolStripMenuItemCommandBinding<MainForm> cbdCommandBinding = new ToolStripMenuItemCommandBinding<MainForm>(tsiMenuItem, cmdTool, () => { return this; });
+        ToolStripMenuItemCommandBinding<MainForm> cbdCommandBinding =
+          new ToolStripMenuItemCommandBinding<MainForm>(tsiMenuItem, cmdTool, () =>
+          {
+            return this;
+          });
         loadOrderToolStripMenuItem.DropDownItems.Add(tsiMenuItem);
       }
 
       foreach (Command<MainForm> cmdTool in Program.GameMode.GameLaunchCommands)
       {
         ToolStripMenuItem tsiMenuItem = new ToolStripMenuItem();
-        ToolStripMenuItemCommandBinding<MainForm> cbdCommandBinding = new ToolStripMenuItemCommandBinding<MainForm>(tsiMenuItem, cmdTool, () => { return this; });
+        ToolStripMenuItemCommandBinding<MainForm> cbdCommandBinding =
+          new ToolStripMenuItemCommandBinding<MainForm>(tsiMenuItem, cmdTool, () =>
+          {
+            return this;
+          });
         launchGameToolStripMenuItem.DropDownItems.Add(tsiMenuItem);
       }
     }
@@ -181,7 +208,9 @@ namespace Fomm
       Int32 tmp = Properties.Settings.Default.MainFormPanelSplit;
       if (tmp > 0)
       {
-        splitContainer1.SplitterDistance = Math.Max(splitContainer1.Panel1MinSize + 1, Math.Min(splitContainer1.Height - (splitContainer1.Panel2MinSize + 1), tmp));
+        splitContainer1.SplitterDistance = Math.Max(splitContainer1.Panel1MinSize + 1,
+                                                    Math.Min(
+                                                      splitContainer1.Height - (splitContainer1.Panel2MinSize + 1), tmp));
       }
 
       Int32[] intColumnWidths = Properties.Settings.Default.MainFormColumnWidths;
@@ -208,7 +237,8 @@ namespace Fomm
       {
         for (int i = 0; i < lvEspList.Items.Count; i++)
         {
-          Program.GameMode.PluginManager.SetLoadOrder(Path.Combine(Program.GameMode.PluginsPath, lvEspList.Items[i].Text), i);
+          Program.GameMode.PluginManager.SetLoadOrder(
+            Path.Combine(Program.GameMode.PluginsPath, lvEspList.Items[i].Text), i);
         }
 
         RefreshIndexCounts();
@@ -250,7 +280,8 @@ namespace Fomm
       if (lvEspList.SelectedItems.Count == 1)
       {
         string strPluginName = lvEspList.SelectedItems[0].Text;
-        PluginInfo pifInfo = Program.GameMode.PluginManager.GetPluginInfo(Path.Combine(Program.GameMode.PluginsPath, strPluginName));
+        PluginInfo pifInfo =
+          Program.GameMode.PluginManager.GetPluginInfo(Path.Combine(Program.GameMode.PluginsPath, strPluginName));
         StringBuilder stbDescription = new StringBuilder(pifInfo.Description);
 
         PluginFormat pftFormat = m_pfmPluginFormatManager.GetFormat(strPluginName);
@@ -271,6 +302,7 @@ namespace Fomm
     }
 
     private PackageManager.PackageManager PackageManagerForm;
+
     private void bPackageManager_Click(object sender, EventArgs e)
     {
       if (PackageManagerForm != null)
@@ -290,6 +322,7 @@ namespace Fomm
     }
 
     private FileManager.FileManager m_fmgFileManagerForm = null;
+
     /// <summary>
     /// Handles the <see cref="Button.Click"/> event of the file manager button.
     /// </summary>
@@ -320,7 +353,8 @@ namespace Fomm
       if (lvEspList.Items.Count != 0)
       {
         bool add = lvEspList.Items[0].SubItems.Count == 1;
-        string[] strPlugins = Program.GameMode.PluginManager.SortPluginList(Program.GameMode.PluginManager.ActivePluginList);
+        string[] strPlugins =
+          Program.GameMode.PluginManager.SortPluginList(Program.GameMode.PluginManager.ActivePluginList);
 
         for (int i = 0; i < strPlugins.Length; i++)
         {
@@ -434,13 +468,14 @@ namespace Fomm
         MessageBox.Show("Please close all utility windows before launching fallout");
         return;
       }
-      ((Command<MainForm>)((Button)sender).Tag).Execute(this);
+      ((Command<MainForm>) ((Button) sender).Tag).Execute(this);
     }
 
     private void bHelp_Click(object sender, EventArgs e)
     {
       System.Diagnostics.Process.Start(Path.Combine(Program.ProgrammeInfoDirectory, "fomm.chm"));
     }
+
     #endregion
 
     private void CommitLoadOrder(int position, int[] indicies)
@@ -460,7 +495,8 @@ namespace Fomm
         {
           if (Array.BinarySearch<int>(indicies, i) < 0)
           {
-            Program.GameMode.PluginManager.SetLoadOrder(Path.Combine(Program.GameMode.PluginsPath, lvEspList.Items[i].Text), intLoadOrder++);
+            Program.GameMode.PluginManager.SetLoadOrder(
+              Path.Combine(Program.GameMode.PluginsPath, lvEspList.Items[i].Text), intLoadOrder++);
             items.Add(lvEspList.Items[i]);
             items[items.Count - 1].Selected = false;
           }
@@ -468,7 +504,8 @@ namespace Fomm
 
         for (int i = 0; i < indicies.Length; i++)
         {
-          Program.GameMode.PluginManager.SetLoadOrder(Path.Combine(Program.GameMode.PluginsPath, lvEspList.Items[indicies[i]].Text), intLoadOrder++);
+          Program.GameMode.PluginManager.SetLoadOrder(
+            Path.Combine(Program.GameMode.PluginsPath, lvEspList.Items[indicies[i]].Text), intLoadOrder++);
           items.Add(lvEspList.Items[indicies[i]]);
           items[items.Count - 1].Selected = true;
         }
@@ -477,7 +514,8 @@ namespace Fomm
         {
           if (Array.BinarySearch<int>(indicies, i) < 0)
           {
-            Program.GameMode.PluginManager.SetLoadOrder(Path.Combine(Program.GameMode.PluginsPath, lvEspList.Items[i].Text), intLoadOrder++);
+            Program.GameMode.PluginManager.SetLoadOrder(
+              Path.Combine(Program.GameMode.PluginsPath, lvEspList.Items[i].Text), intLoadOrder++);
             items.Add(lvEspList.Items[i]);
             items[items.Count - 1].Selected = false;
           }
@@ -492,6 +530,7 @@ namespace Fomm
     }
 
     private bool RefreshingList;
+
     private void lvEspList_ItemChecked(object sender, ItemCheckedEventArgs e)
     {
       if (!RefreshingList)
@@ -547,7 +586,9 @@ namespace Fomm
 
       Array.Sort<ListViewItem>(lvis, delegate(ListViewItem a, ListViewItem b)
       {
-        return int.Parse(a.SubItems[1].Text, System.Globalization.NumberStyles.AllowHexSpecifier).CompareTo(int.Parse(b.SubItems[1].Text, System.Globalization.NumberStyles.AllowHexSpecifier));
+        return
+          int.Parse(a.SubItems[1].Text, System.Globalization.NumberStyles.AllowHexSpecifier)
+             .CompareTo(int.Parse(b.SubItems[1].Text, System.Globalization.NumberStyles.AllowHexSpecifier));
       });
 
       for (int i = 0; i < lvis.Length; i++)
@@ -734,7 +775,8 @@ namespace Fomm
 
     private void pictureBox1_Click(object sender, EventArgs e)
     {
-      if (pictureBox1.Image != null && (pictureBox1.Image.Size.Width > pictureBox1.Width || pictureBox1.Image.Size.Height > pictureBox1.Height))
+      if (pictureBox1.Image != null &&
+          (pictureBox1.Image.Size.Width > pictureBox1.Width || pictureBox1.Image.Size.Height > pictureBox1.Height))
       {
         (new ImageForm(pictureBox1.Image)).ShowDialog();
       }
@@ -755,7 +797,9 @@ namespace Fomm
           }
         }
 
-        if (MessageBox.Show(this, "Are you sure you want to delete the selected plugins?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+        if (
+          MessageBox.Show(this, "Are you sure you want to delete the selected plugins?", "Warning",
+                          MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
         {
           lvEspList.SelectedItems.Clear();
           for (int i = 0; i < files.Length; i++)

@@ -47,14 +47,17 @@ namespace Fomm.Games.FalloutNewVegas.Script
     {
       PermissionsManager.CurrentPermissions.Assert();
       if (!File.Exists("nvse_loader.exe"))
+      {
         return null;
-      return new Version(System.Diagnostics.FileVersionInfo.GetVersionInfo("nvse_loader.exe").FileVersion.Replace(", ", "."));
+      }
+      return
+        new Version(System.Diagnostics.FileVersionInfo.GetVersionInfo("nvse_loader.exe").FileVersion.Replace(", ", "."));
     }
 
     #endregion
 
     #region Ini Management
-    
+
     #region Ini Editing
 
     /// <summary>
@@ -68,8 +71,10 @@ namespace Fomm.Games.FalloutNewVegas.Script
     /// if the user chose not to overwrite the existing value.</returns>
     public override bool EditFalloutINI(string p_strSection, string p_strKey, string p_strValue, bool p_booSaveOld)
     {
-      EditINI(((FalloutNewVegasGameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FODefaultIniPath, p_strSection, p_strKey, p_strValue);
-      return EditINI(((FalloutNewVegasGameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOIniPath, p_strSection, p_strKey, p_strValue);
+      EditINI(((FalloutNewVegasGameMode.SettingsFilesSet) Program.GameMode.SettingsFiles).FODefaultIniPath, p_strSection,
+              p_strKey, p_strValue);
+      return EditINI(((FalloutNewVegasGameMode.SettingsFilesSet) Program.GameMode.SettingsFiles).FOIniPath, p_strSection,
+                     p_strKey, p_strValue);
     }
 
     #endregion

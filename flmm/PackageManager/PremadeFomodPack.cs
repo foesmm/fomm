@@ -36,7 +36,9 @@ namespace Fomm.PackageManager
     protected static string ValidatePFP(Archive p_arcPFP)
     {
       if (!p_arcPFP.ContainsFile("metadata.xml"))
+      {
         return "Missing metadata.xml file.";
+      }
 
       XmlDocument xmlMeta = new XmlDocument();
       using (MemoryStream msmMeta = new MemoryStream(p_arcPFP.GetFileContents("metadata.xml")))
@@ -49,8 +51,10 @@ namespace Fomm.PackageManager
       foreach (XmlNode xndSource in xndSources.ChildNodes)
       {
         if ((xndSource.Attributes["name"] == null) || String.IsNullOrEmpty(xndSource.Attributes["name"].Value) ||
-          (xndSource.Attributes["url"] == null) || String.IsNullOrEmpty(xndSource.Attributes["url"].Value))
+            (xndSource.Attributes["url"] == null) || String.IsNullOrEmpty(xndSource.Attributes["url"].Value))
+        {
           return "Invalid metadata.xml file.";
+        }
       }
       return null;
     }
@@ -108,7 +112,9 @@ namespace Fomm.PackageManager
       m_arcPFP = new Archive(p_strPFPPath);
       string strError = ValidatePFP(m_arcPFP);
       if (!String.IsNullOrEmpty(strError))
+      {
         throw new ArgumentException("Specified Premade FOMod Pack is not valid: " + strError, "p_strPFPPath");
+      }
       m_xmlMeta = new XmlDocument();
       using (MemoryStream msmMeta = new MemoryStream(m_arcPFP.GetFileContents("metadata.xml")))
       {
@@ -116,11 +122,13 @@ namespace Fomm.PackageManager
         msmMeta.Close();
       }
       foreach (string strDirectory in m_arcPFP.GetDirectories("/"))
+      {
         if (strDirectory.StartsWith("Premade", StringComparison.InvariantCultureIgnoreCase))
         {
           m_strPremadePath = strDirectory;
           break;
         }
+      }
     }
 
     #endregion
@@ -146,9 +154,13 @@ namespace Fomm.PackageManager
       {
         string strSource = xndInstruction.Attributes["source"].Value;
         if (strSource.StartsWith(Archive.ARCHIVE_PREFIX))
+        {
           strSource = Archive.ChangeArchiveDirectory(strSource, p_strSourcesPath);
+        }
         else
+        {
           strSource = Path.Combine(p_strSourcesPath, strSource);
+        }
         string strDestination = xndInstruction.Attributes["destination"].Value;
         lstCopyInstructions.Add(new KeyValuePair<string, string>(strSource, strDestination));
       }
@@ -169,10 +181,14 @@ namespace Fomm.PackageManager
         string strUrl = xndSource.Attributes["url"].Value;
         bool booHidden = false;
         if (xndSource.Attributes["hidden"] != null)
+        {
           Boolean.TryParse(xndSource.Attributes["hidden"].Value, out booHidden);
+        }
         bool booGenerated = false;
         if (xndSource.Attributes["generated"] != null)
+        {
           Boolean.TryParse(xndSource.Attributes["generated"].Value, out booGenerated);
+        }
         lstSources.Add(new SourceFile(strSource, strUrl, String.IsNullOrEmpty(strUrl), booHidden, booGenerated));
       }
       return lstSources;
@@ -186,7 +202,9 @@ namespace Fomm.PackageManager
     {
       XmlNode xndCustomHowToSteps = m_xmlMeta.SelectSingleNode("premadeFomodPack/customHowToSteps");
       if (xndCustomHowToSteps != null)
+      {
         return xndCustomHowToSteps.InnerXml;
+      }
       return null;
     }
   }

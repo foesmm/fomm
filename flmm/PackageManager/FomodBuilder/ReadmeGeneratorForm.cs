@@ -78,7 +78,7 @@ namespace Fomm.PackageManager.FomodBuilder
     protected override void OnClosing(CancelEventArgs e)
     {
       Properties.Settings.Default.windowPositions.SetWindowPosition("ReadmeGeneratorForm", this);
-      Properties.Settings.Default.Save(); 
+      Properties.Settings.Default.Save();
       base.OnClosing(e);
     }
 

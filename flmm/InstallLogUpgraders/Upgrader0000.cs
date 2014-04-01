@@ -40,7 +40,8 @@ namespace Fomm.InstallLogUpgraders
     {
       InstallLog.Current.Reset();
 
-      string[] strModInstallFiles = Directory.GetFiles(Program.GameMode.ModDirectory, "*.XMl", SearchOption.TopDirectoryOnly);
+      string[] strModInstallFiles = Directory.GetFiles(Program.GameMode.ModDirectory, "*.XMl",
+                                                       SearchOption.TopDirectoryOnly);
       ProgressWorker.OverallProgressStep = 1;
       ProgressWorker.OverallProgressMaximum = strModInstallFiles.Length;
       ProgressWorker.ItemProgressStep = 1;
@@ -51,7 +52,9 @@ namespace Fomm.InstallLogUpgraders
       foreach (string strModInstallLog in strModInstallFiles)
       {
         if (ProgressWorker.Cancelled())
+        {
           return;
+        }
 
         string strFomodPath = Path.ChangeExtension(strModInstallLog, ".fomod");
         if (File.Exists(strFomodPath))
@@ -66,7 +69,7 @@ namespace Fomm.InstallLogUpgraders
           ProgressWorker.ItemMessage = Path.GetFileNameWithoutExtension(strModInstallLog);
           ProgressWorker.ItemProgress = 0;
           ProgressWorker.ItemProgressMaximum = intItemCount;
-          
+
           fomodMod = new fomod(strFomodPath);
           strModBaseName = fomodMod.BaseName;
           InstallLog.Current.AddMod(fomodMod);
@@ -76,20 +79,30 @@ namespace Fomm.InstallLogUpgraders
           //we now have to tell all the remaining default owners that are are indeed
           // the owners
           foreach (KeyValuePair<string, string> kvpOwner in m_dicDefaultFileOwners)
+          {
             MakeOverwrittenModOwner(kvpOwner.Value, kvpOwner.Key);
+          }
           if (ProgressWorker.Cancelled())
+          {
             return;
+          }
 
           UpgradeIniEdits(xmlModInstallLog, strModBaseName);
           if (ProgressWorker.Cancelled())
+          {
             return;
+          }
 
           UpgradeSdpEdits(xmlModInstallLog, strModBaseName);
           if (ProgressWorker.Cancelled())
+          {
             return;
+          }
 
           if (File.Exists(strModInstallLog + ".bak"))
+          {
             FileManager.Delete(strModInstallLog + ".bak");
+          }
           FileManager.Move(strModInstallLog, strModInstallLog + ".bak");
         }
         ProgressWorker.StepOverallProgress();
@@ -102,18 +115,24 @@ namespace Fomm.InstallLogUpgraders
 
     private byte[] GetOldSdpValue(Int32 p_intPackage, string p_strShader)
     {
-      XmlNode node = m_xmlOldInstallLog.SelectSingleNode("descendant::sdp[@package=\"" + p_intPackage + "\" and @shader=\"" + p_strShader + "\"]");
+      XmlNode node =
+        m_xmlOldInstallLog.SelectSingleNode("descendant::sdp[@package=\"" + p_intPackage + "\" and @shader=\"" +
+                                            p_strShader + "\"]");
       if (node == null)
+      {
         return null;
-      byte[] b = new byte[node.InnerText.Length / 2];
+      }
+      byte[] b = new byte[node.InnerText.Length/2];
       for (int i = 0; i < b.Length; i++)
       {
-        b[i] = byte.Parse("" + node.InnerText[i * 2] + node.InnerText[i * 2 + 1], System.Globalization.NumberStyles.AllowHexSpecifier);
+        b[i] = byte.Parse("" + node.InnerText[i*2] + node.InnerText[i*2 + 1],
+                          System.Globalization.NumberStyles.AllowHexSpecifier);
       }
       return b;
     }
 
     private List<string> m_lstSeenShader = new List<string>();
+
     /// <summary>
     /// Upgrades the sdp edits log entries.
     /// </summary>
@@ -139,9 +158,12 @@ namespace Fomm.InstallLogUpgraders
         {
           //this is the first mod we have encountered that edited this shader,
           // so let's assume it is the lastest mod to have made the edit...
-          InstallLog.Current.AddGameSpecificValueEdit(p_strModBaseName, strShaderKey, Fomm.Games.Fallout3.Tools.BSA.SDPArchives.GetShader(intPackage, strShader));
+          InstallLog.Current.AddGameSpecificValueEdit(p_strModBaseName, strShaderKey,
+                                                      Fomm.Games.Fallout3.Tools.BSA.SDPArchives.GetShader(intPackage,
+                                                                                                          strShader));
           //...and backup the old value as the original value
-          InstallLog.Current.PrependAfterOriginalGameSpecificValueEdit(InstallLog.ORIGINAL_VALUES, strShaderKey, bteOldValue);
+          InstallLog.Current.PrependAfterOriginalGameSpecificValueEdit(InstallLog.ORIGINAL_VALUES, strShaderKey,
+                                                                       bteOldValue);
           m_lstSeenShader.Add(intPackage + "~" + strShader.ToLowerInvariant());
         }
         else
@@ -153,7 +175,9 @@ namespace Fomm.InstallLogUpgraders
         }
 
         if (ProgressWorker.Cancelled())
+        {
           return;
+        }
         ProgressWorker.StepItemProgress();
       }
     }
@@ -165,12 +189,18 @@ namespace Fomm.InstallLogUpgraders
     private string GetOldIniValue(string p_strFile, string p_strSection, string p_strKey, out string p_strModName)
     {
       p_strModName = null;
-      XmlNode node = m_xmlOldInstallLog.SelectSingleNode("descendant::ini[@file=\"" + p_strFile + "\" and @section=\"" + p_strSection + "\" and @key=\"" + p_strKey + "\"]");
+      XmlNode node =
+        m_xmlOldInstallLog.SelectSingleNode("descendant::ini[@file=\"" + p_strFile + "\" and @section=\"" + p_strSection +
+                                            "\" and @key=\"" + p_strKey + "\"]");
       if (node == null)
+      {
         return null;
+      }
       XmlNode modnode = node.Attributes.GetNamedItem("mod");
       if (modnode != null)
+      {
         p_strModName = modnode.Value;
+      }
       return node.InnerText;
     }
 
@@ -196,9 +226,11 @@ namespace Fomm.InstallLogUpgraders
         if (p_strModBaseName.Equals(strOldIniEditor))
         {
           //this mod owns the ini edit, so append it to the list of editing mods...
-          InstallLog.Current.AddIniEdit(strFile, strSection, strKey, p_strModBaseName, NativeMethods.GetPrivateProfileString(strSection, strKey, "", strFile));
+          InstallLog.Current.AddIniEdit(strFile, strSection, strKey, p_strModBaseName,
+                                        NativeMethods.GetPrivateProfileString(strSection, strKey, "", strFile));
           //...and backup the old value as the original value
-          InstallLog.Current.PrependAfterOriginalIniEdit(strFile, strSection, strKey, InstallLog.ORIGINAL_VALUES, strOldValue);
+          InstallLog.Current.PrependAfterOriginalIniEdit(strFile, strSection, strKey, InstallLog.ORIGINAL_VALUES,
+                                                         strOldValue);
         }
         else
         {
@@ -209,7 +241,9 @@ namespace Fomm.InstallLogUpgraders
         }
 
         if (ProgressWorker.Cancelled())
+        {
           return;
+        }
         ProgressWorker.StepItemProgress();
       }
     }
@@ -251,7 +285,9 @@ namespace Fomm.InstallLogUpgraders
     {
       string strModKey = InstallLog.Current.GetCurrentFileOwnerKey(p_strDataRelativePath);
       if (strModKey == null)
+      {
         return false;
+      }
       string strDirectory = Path.GetDirectoryName(p_strDataRelativePath);
       string strBackupPath = Path.Combine(Program.GameMode.OverwriteDirectory, strDirectory);
       strBackupPath = Path.Combine(strBackupPath, strModKey + "_" + Path.GetFileName(p_strDataRelativePath));
@@ -271,13 +307,16 @@ namespace Fomm.InstallLogUpgraders
     /// <param name="p_strModBaseName">The base name of the mod whose install log is being parsed.</param>
     private void UpgradeInstalledFiles(XmlDocument p_xmlModInstallLog, fomod p_fomodMod, string p_strModBaseName)
     {
-      Int32 intDataPathStartPos = Program.GameMode.PluginsPath.Trim(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).Length + 1;
+      Int32 intDataPathStartPos =
+        Program.GameMode.PluginsPath.Trim(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).Length + 1;
       XmlNodeList xnlFiles = p_xmlModInstallLog.SelectNodes("descendant::installedFiles/*");
       foreach (XmlNode xndFile in xnlFiles)
       {
         string strFile = xndFile.InnerText;
         if (!File.Exists(strFile))
+        {
           continue;
+        }
         string strDataRelativePath = strFile.Substring(intDataPathStartPos);
 
         Crc32 crcDiskFile = new Crc32();
@@ -296,7 +335,9 @@ namespace Fomm.InstallLogUpgraders
           string strBackupPath = Path.Combine(Program.GameMode.OverwriteDirectory, strDirectory);
           string strModKey = InstallLog.Current.GetModKey(p_strModBaseName);
           if (!Directory.Exists(strBackupPath))
+          {
             FileManager.CreateDirectory(strBackupPath);
+          }
           strBackupPath = Path.Combine(strBackupPath, strModKey + "_" + Path.GetFileName(strDataRelativePath));
           FileManager.Copy(Path.Combine(Program.GameMode.PluginsPath, strDataRelativePath), strBackupPath, true);
           InstallLog.Current.PrependDataFile(p_strModBaseName, strDataRelativePath);
@@ -304,7 +345,9 @@ namespace Fomm.InstallLogUpgraders
           //however, it may own the file, so let's make it the default owner for now
           // unless we already know who the owner is
           if (!FileOwnerIsKnown(strDataRelativePath))
+          {
             m_dicDefaultFileOwners[strDataRelativePath] = p_strModBaseName;
+          }
           continue;
         }
         byte[] bteFomodFile = p_fomodMod.GetFileContents(strDataRelativePath);
@@ -322,7 +365,9 @@ namespace Fomm.InstallLogUpgraders
           string strBackupPath = Path.Combine(Program.GameMode.OverwriteDirectory, strDirectory);
           string strModKey = InstallLog.Current.GetModKey(p_strModBaseName);
           if (!Directory.Exists(strBackupPath))
+          {
             FileManager.CreateDirectory(strBackupPath);
+          }
           strBackupPath = Path.Combine(strBackupPath, strModKey + "_" + Path.GetFileName(strDataRelativePath));
           FileManager.WriteAllBytes(strBackupPath, bteFomodFile);
           InstallLog.Current.PrependDataFile(p_strModBaseName, strDataRelativePath);
@@ -334,11 +379,15 @@ namespace Fomm.InstallLogUpgraders
 
           //we also have to displace the mod that is currently the default owner
           if (m_dicDefaultFileOwners.ContainsKey(strDataRelativePath))
+          {
             m_dicDefaultFileOwners.Remove(strDataRelativePath);
+          }
         }
 
         if (ProgressWorker.Cancelled())
+        {
           return;
+        }
         ProgressWorker.StepItemProgress();
       }
     }

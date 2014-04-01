@@ -6,7 +6,10 @@ using Fomm.Controls;
 
 namespace Fomm.PackageManager
 {
-  enum TextEditorType { Text }
+  internal enum TextEditorType
+  {
+    Text
+  }
 
   partial class TextEditor : Form
   {
@@ -32,6 +35,7 @@ namespace Fomm.PackageManager
     }
 
     private bool changed;
+
     private void textChanged(object sender, EventArgs e)
     {
       changed = true;
@@ -41,15 +45,27 @@ namespace Fomm.PackageManager
     public static string ShowEditor(string initial, TextEditorType type, bool dialog)
     {
       TextEditor se = new TextEditor(initial, type);
-      if (dialog) se.ShowDialog();
-      else se.Show();
+      if (dialog)
+      {
+        se.ShowDialog();
+      }
+      else
+      {
+        se.Show();
+      }
       return se.saved;
     }
 
     private void bSave_Click(object sender, EventArgs e)
     {
-      if (rtbEdit.TextLength == 0) saved = "";
-      else saved = rtbEdit.Rtf;
+      if (rtbEdit.TextLength == 0)
+      {
+        saved = "";
+      }
+      else
+      {
+        saved = rtbEdit.Rtf;
+      }
       rtbEdit.TextChanged += textChanged;
       changed = false;
     }
@@ -71,7 +87,7 @@ namespace Fomm.PackageManager
         }
       }
       Properties.Settings.Default.windowPositions.SetWindowPosition("TextEditor", this);
-      Properties.Settings.Default.Save(); 
+      Properties.Settings.Default.Save();
     }
   }
 }
