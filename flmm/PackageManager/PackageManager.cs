@@ -26,7 +26,6 @@ namespace Fomm.PackageManager
     private readonly MainForm mf;
     private BackgroundWorkerProgressDialog m_bwdProgress = null;
     private string m_strLastFromFolderPath = null;
-    private Regex m_rgxNexusFileId = new Regex(@"nexus\.com/downloads/file\.php\?id=(\d+)");
     private Dictionary<string, string> m_dicWebVersions = new Dictionary<string, string>();
 
     public PackageManager(MainForm mf)
@@ -74,41 +73,6 @@ namespace Fomm.PackageManager
         string strFOModPath = Path.Combine(Program.GameMode.ModDirectory, Path.GetFileNameWithoutExtension(strCache) + ".fomod");
         if (!File.Exists(strFOModPath) || (File.GetLastWriteTimeUtc(strCache) < File.GetLastWriteTimeUtc(strFOModPath)))
           FileUtil.ForceDelete(strCache);
-      }
-    }
-
-    /// <summary>
-    /// The callback method for the call to retrieve a mod version from the Nexus website.
-    /// </summary>
-    /// <param name="p_objState">The base name of the mod whose version has been retrieved.</param>
-    /// <param name="p_mifWebModInfo">The info of the mod on the Nexus website.</param>
-    private void Nexus_GotFileVersion(object p_objState, ModInfo p_mifWebModInfo)
-    {
-      if (!this.Visible)
-        return;
-      m_dicWebVersions[(string)p_objState] = p_mifWebModInfo.Version;
-      ListViewItem lviMod = lvModList.Items[(string)p_objState];
-      lviMod.UseItemStyleForSubItems = false;
-      if (!String.IsNullOrEmpty(p_mifWebModInfo.Version) && !p_mifWebModInfo.Version.Equals(lviMod.SubItems["WebVersion"].Text))
-      {
-        lviMod.SubItems["WebVersion"].Text = p_mifWebModInfo.Version;
-        string strWebVersion = p_mifWebModInfo.Version;
-        string strVersion = ((fomod)lviMod.Tag).HumanReadableVersion;
-        if (!strWebVersion.Equals(strVersion) && !strWebVersion.Equals(strVersion.Replace(".", "")))
-        {
-          if (strVersion.StartsWith("0.") && !strWebVersion.StartsWith("0."))
-            strVersion = strVersion.Substring(2);
-          if (strWebVersion.StartsWith("0.") && !strVersion.StartsWith("0."))
-            strWebVersion = strWebVersion.Substring(2);
-          if (strVersion.EndsWith(".0") && !strWebVersion.EndsWith(".0"))
-            strVersion = strVersion.Substring(0, strVersion.Length - 2);
-          if (strWebVersion.EndsWith(".0") && !strVersion.EndsWith(".0"))
-            strWebVersion = strWebVersion.Substring(0, strWebVersion.Length - 2);
-
-          if (!strWebVersion.Equals(strVersion))
-            lviMod.SubItems["WebVersion"].BackColor = Color.LightSalmon;
-
-        }
       }
     }
 
@@ -485,7 +449,7 @@ namespace Fomm.PackageManager
       }
       catch (Win32Exception ex)
       {
-        MessageBox.Show(this, "Cannot find programme to open: " + mod.Website, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        MessageBox.Show(this, "Error launching site: " + mod.Website + "\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
     }
 

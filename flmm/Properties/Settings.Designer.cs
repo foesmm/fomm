@@ -382,80 +382,6 @@ namespace Fomm.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
-<ArrayOfString xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
-  <string>Items</string>
-  <string>Items/Guns</string>
-  <string>Items/Armor</string>
-  <string>Items/Misc</string>
-  <string>Locations</string>
-  <string>Locations/Houses</string>
-  <string>Locations/Interiors</string>
-  <string>Locations/Exteriors</string>
-  <string>Gameplay</string>
-  <string>Gameplay/Perks</string>
-  <string>Gameplay/Realism</string>
-  <string>Gameplay/Combat</string>
-  <string>Gameplay/Loot</string>
-  <string>Gameplay/Enemies</string>
-  <string>Quests</string>
-  <string>Companions</string>
-  <string>ModResource</string>
-  <string>UI</string>
-  <string>Music</string>
-  <string>Replacers</string>
-  <string>Replacers/Meshes</string>
-  <string>Replacers/Textures</string>
-  <string>Replacers/Sounds</string>
-  <string>Replacers/Shaders</string>
-  <string>Tweaks</string>
-  <string>Fixes</string>
-  <string>Cosmetic</string>
-  <string>Cosmetic/Races</string>
-  <string>Cosmetic/Eyes</string>
-  <string>Cosmetic/Hair</string>
-</ArrayOfString>")]
-        public global::Fomm.Util.SettingsList pluginGroups {
-            get {
-                return ((global::Fomm.Util.SettingsList)(this["pluginGroups"]));
-            }
-            set {
-                this["pluginGroups"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<WindowPositions />")]
-        public global::Fomm.Util.WindowPositions windowPositions {
-            get {
-                return ((global::Fomm.Util.WindowPositions)(this["windowPositions"]));
-            }
-            set {
-                this["windowPositions"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
-<ArrayOfString xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
-  <string>200</string>
-  <string>100</string>
-  <string>100</string>
-  <string>100</string>
-</ArrayOfString>")]
-        public global::Fomm.Util.SettingsList PackageManagerColumnWidths {
-            get {
-                return ((global::Fomm.Util.SettingsList)(this["PackageManagerColumnWidths"]));
-            }
-            set {
-                this["PackageManagerColumnWidths"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string fallout3InstallInfoDirectory {
             get {
@@ -668,6 +594,82 @@ namespace Fomm.Properties {
             }
             set {
                 this["addMissingInfoToModsInitialized"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"
+     <ArrayOfString xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+      <string>Items</string>
+      <string>Items/Guns</string>
+      <string>Items/Armor</string>
+      <string>Items/Misc</string>
+      <string>Locations</string>
+      <string>Locations/Houses</string>
+      <string>Locations/Interiors</string>
+      <string>Locations/Exteriors</string>
+      <string>Gameplay</string>
+      <string>Gameplay/Perks</string>
+      <string>Gameplay/Realism</string>
+      <string>Gameplay/Combat</string>
+      <string>Gameplay/Loot</string>
+      <string>Gameplay/Enemies</string>
+      <string>Quests</string>
+      <string>Companions</string>
+      <string>ModResource</string>
+      <string>UI</string>
+      <string>Music</string>
+      <string>Replacers</string>
+      <string>Replacers/Meshes</string>
+      <string>Replacers/Textures</string>
+      <string>Replacers/Sounds</string>
+      <string>Replacers/Shaders</string>
+      <string>Tweaks</string>
+      <string>Fixes</string>
+      <string>Cosmetic</string>
+      <string>Cosmetic/Races</string>
+      <string>Cosmetic/Eyes</string>
+      <string>Cosmetic/Hair</string>
+     </ArrayOfString>
+    ")]
+        public global::Fomm.Util.SettingsList pluginGroups {
+            get {
+                return ((global::Fomm.Util.SettingsList)(this["pluginGroups"]));
+            }
+            set {
+                this["pluginGroups"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("\r\n     <WindowPositions />\r\n    ")]
+        public global::Fomm.Util.WindowPositions windowPositions {
+            get {
+                return ((global::Fomm.Util.WindowPositions)(this["windowPositions"]));
+            }
+            set {
+                this["windowPositions"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"
+     <ArrayOfString xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+      <string>200</string>
+      <string>100</string>
+      <string>100</string>
+      <string>100</string>
+     </ArrayOfString>
+    ")]
+        public global::Fomm.Util.SettingsList PackageManagerColumnWidths {
+            get {
+                return ((global::Fomm.Util.SettingsList)(this["PackageManagerColumnWidths"]));
+            }
+            set {
+                this["PackageManagerColumnWidths"] = value;
             }
         }
     }

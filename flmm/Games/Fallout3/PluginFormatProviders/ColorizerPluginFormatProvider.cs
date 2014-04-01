@@ -29,7 +29,6 @@ namespace Fomm.Games.Fallout3.PluginFormatProviders
     // Gets the provider color for the specified plugin.
     public virtual PluginFormat GetFormat(string p_strPluginName)
     {
-      PluginFormat ret;
       Color clr;
 
       clr = Color.Black;
