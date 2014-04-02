@@ -2711,8 +2711,7 @@ namespace Fomm.SharpZipLib.Zip
         // ZipFile z = new ZipFile (stream);
         // Stream reader = z.GetInputStream(0);
         // uses reader here....
-        zipFile_ = zipFile;
-        baseStream_ = zipFile_.baseStream_;
+        baseStream_ = zipFile.baseStream_;
         readPos_ = start;
         end_ = start + length;
       }
@@ -2970,7 +2969,6 @@ namespace Fomm.SharpZipLib.Zip
 
       #region Instance Fields
 
-      private ZipFile zipFile_;
       private Stream baseStream_;
       private long start_;
       private long length_;

@@ -13,7 +13,6 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
     public static byte[] result;
     public static string resultName;
 
-    private DynamicByteProvider dbytes;
     private ByteCollection bytes;
 
     private dFormIDLookupS formIDLookup;
@@ -26,7 +25,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       Text += RecName;
       tbName.Text = RecName;
       Text += " (hex mode)";
-      dbytes = new DynamicByteProvider(data);
+      DynamicByteProvider dbytes = new DynamicByteProvider(data);
       bytes = dbytes.Bytes;
       hexBox1.ByteProvider = dbytes;
       Canceled = true;

@@ -373,7 +373,6 @@ namespace Fomm.Controls
       #endregion
     }
 
-    private Panel m_pnlDropDownPanel;
     private ComboBox m_cbxSelector;
     private Label m_lblLabel;
     private TabPageCollection m_tpcPages;
@@ -510,9 +509,9 @@ namespace Fomm.Controls
       m_tpcPages.TabPageAdded += AddTabPage;
       m_tpcPages.TabPageRemoved += RemoveTabPage;
 
-      m_pnlDropDownPanel = new Panel();
-      m_pnlDropDownPanel.Dock = DockStyle.Top;
-      m_pnlDropDownPanel.DataBindings.Add("BackColor", this, "BackColor");
+      Panel mPnlDropDownPanel = new Panel();
+      mPnlDropDownPanel.Dock = DockStyle.Top;
+      mPnlDropDownPanel.DataBindings.Add("BackColor", this, "BackColor");
 
       m_lblLabel = new Label();
       m_lblLabel.AutoSize = true;
@@ -524,10 +523,10 @@ namespace Fomm.Controls
       m_cbxSelector.DisplayMember = "Text";
       m_cbxSelector.SelectedIndexChanged += TabSelected;
 
-      m_pnlDropDownPanel.Height = m_cbxSelector.Location.Y + m_cbxSelector.Height + 4;
-      m_pnlDropDownPanel.Controls.Add(m_lblLabel);
-      m_pnlDropDownPanel.Controls.Add(m_cbxSelector);
-      Controls.Add(m_pnlDropDownPanel);
+      mPnlDropDownPanel.Height = m_cbxSelector.Location.Y + m_cbxSelector.Height + 4;
+      mPnlDropDownPanel.Controls.Add(m_lblLabel);
+      mPnlDropDownPanel.Controls.Add(m_cbxSelector);
+      Controls.Add(mPnlDropDownPanel);
     }
 
     #endregion

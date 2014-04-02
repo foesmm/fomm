@@ -27,12 +27,8 @@ namespace Fomm.Controls
     {
     };
 
-    private Panel m_pnlNavigation;
-    private Panel m_pnlNavigationShadow;
-    private Panel m_pnlNavigationLight;
     private Button m_butPrevious;
     private Button m_butNext;
-    private Button m_butCancel;
 
     #region Properties
 
@@ -91,45 +87,45 @@ namespace Fomm.Controls
       TabsVisible = false;
       BackColor = Color.FromKnownColor(KnownColor.Control);
 
-      m_pnlNavigation = new Panel();
-      m_pnlNavigation.Dock = DockStyle.Bottom;
-      m_pnlNavigation.Height = 23 + 2*12;
-      m_pnlNavigation.DataBindings.Add("BackColor", this, "BackColor");
+      Panel mPnlNavigation = new Panel();
+      mPnlNavigation.Dock = DockStyle.Bottom;
+      mPnlNavigation.Height = 23 + 2*12;
+      mPnlNavigation.DataBindings.Add("BackColor", this, "BackColor");
 
-      m_pnlNavigationLight = new Panel();
-      m_pnlNavigationLight.BackColor = SystemColors.ControlLightLight;
-      m_pnlNavigationLight.Dock = DockStyle.Top;
-      m_pnlNavigationLight.Location = new Point(0, 1);
-      m_pnlNavigationLight.Size = new Size(444, 1);
-      m_pnlNavigationLight.TabIndex = 1;
+      Panel mPnlNavigationLight = new Panel();
+      mPnlNavigationLight.BackColor = SystemColors.ControlLightLight;
+      mPnlNavigationLight.Dock = DockStyle.Top;
+      mPnlNavigationLight.Location = new Point(0, 1);
+      mPnlNavigationLight.Size = new Size(444, 1);
+      mPnlNavigationLight.TabIndex = 1;
 
-      m_pnlNavigationShadow = new Panel();
-      m_pnlNavigationShadow.BackColor = SystemColors.ControlDark;
-      m_pnlNavigationShadow.Dock = DockStyle.Top;
-      m_pnlNavigationShadow.Location = new Point(0, 0);
-      m_pnlNavigationShadow.Size = new Size(444, 1);
-      m_pnlNavigationShadow.TabIndex = 2;
+      Panel mPnlNavigationShadow = new Panel();
+      mPnlNavigationShadow.BackColor = SystemColors.ControlDark;
+      mPnlNavigationShadow.Dock = DockStyle.Top;
+      mPnlNavigationShadow.Location = new Point(0, 0);
+      mPnlNavigationShadow.Size = new Size(444, 1);
+      mPnlNavigationShadow.TabIndex = 2;
 
-      m_pnlNavigation.Controls.Add(m_pnlNavigationLight);
-      m_pnlNavigation.Controls.Add(m_pnlNavigationShadow);
+      mPnlNavigation.Controls.Add(mPnlNavigationLight);
+      mPnlNavigation.Controls.Add(mPnlNavigationShadow);
 
-      Controls.Add(m_pnlNavigation);
+      Controls.Add(mPnlNavigation);
 
-      m_butCancel = new Button();
-      m_butCancel.Text = "Cancel";
-      m_butCancel.Anchor = AnchorStyles.Right | AnchorStyles.Bottom;
-      m_butCancel.Size = new Size(75, 23);
-      m_butCancel.Location = new Point(m_pnlNavigation.Width - 12 - m_butCancel.Width, 12);
-      m_butCancel.Click += Cancel_Click;
-      m_pnlNavigation.Controls.Add(m_butCancel);
+      Button mButCancel = new Button();
+      mButCancel.Text = "Cancel";
+      mButCancel.Anchor = AnchorStyles.Right | AnchorStyles.Bottom;
+      mButCancel.Size = new Size(75, 23);
+      mButCancel.Location = new Point(mPnlNavigation.Width - 12 - mButCancel.Width, 12);
+      mButCancel.Click += Cancel_Click;
+      mPnlNavigation.Controls.Add(mButCancel);
 
       m_butNext = new Button();
       m_butNext.Text = "Next >>";
       m_butNext.Anchor = AnchorStyles.Right | AnchorStyles.Bottom;
       m_butNext.Size = new Size(75, 23);
-      m_butNext.Location = new Point(m_butCancel.Left - 12 - m_butNext.Width, 12);
+      m_butNext.Location = new Point(mButCancel.Left - 12 - m_butNext.Width, 12);
       m_butNext.Click += Next_Click;
-      m_pnlNavigation.Controls.Add(m_butNext);
+      mPnlNavigation.Controls.Add(m_butNext);
 
       m_butPrevious = new Button();
       m_butPrevious.Text = "<< Back";
@@ -137,7 +133,7 @@ namespace Fomm.Controls
       m_butPrevious.Size = new Size(75, 23);
       m_butPrevious.Location = new Point(m_butNext.Left - 6 - m_butPrevious.Width, 12);
       m_butPrevious.Click += Previous_Click;
-      m_pnlNavigation.Controls.Add(m_butPrevious);
+      mPnlNavigation.Controls.Add(m_butPrevious);
 
       Dock = DockStyle.Fill;
     }

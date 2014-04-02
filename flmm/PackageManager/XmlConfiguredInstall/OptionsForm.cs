@@ -10,7 +10,6 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
   public partial class OptionsForm : Form
   {
     private XmlConfiguredScript m_xcsScript;
-    private DependencyStateManager m_dsmStateManager;
 
     private List<KeyValuePair<InstallStep, OptionFormStep>> m_lstInstallSteps =
       new List<KeyValuePair<InstallStep, OptionFormStep>>();
@@ -28,7 +27,6 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
                        DependencyStateManager p_dsmStateManager, IList<InstallStep> p_lstInstallSteps)
     {
       m_xcsScript = p_xcsScript;
-      m_dsmStateManager = p_dsmStateManager;
       InitializeComponent();
       hplTitle.Text = p_hifHeaderInfo.Title;
       hplTitle.Image = p_hifHeaderInfo.ShowImage ? p_hifHeaderInfo.Image : null;
@@ -42,7 +40,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 
       foreach (var stpStep in p_lstInstallSteps)
       {
-        var ofsStep = new OptionFormStep(m_dsmStateManager, stpStep.GroupedPlugins);
+        var ofsStep = new OptionFormStep(p_dsmStateManager, stpStep.GroupedPlugins);
         ofsStep.Dock = DockStyle.Fill;
         ofsStep.Visible = false;
         ofsStep.ItemChecked += ofsStep_ItemChecked;
