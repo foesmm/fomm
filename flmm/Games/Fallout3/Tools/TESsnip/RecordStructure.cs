@@ -66,32 +66,11 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       name = node.Attributes.GetNamedItem("name").Value;
       desc = node.Attributes.GetNamedItem("desc").Value;
       var node2 = node.Attributes.GetNamedItem("repeat");
-      if (node2 != null)
-      {
-        repeat = int.Parse(node2.Value);
-      }
-      else
-      {
-        repeat = 0;
-      }
+      repeat = node2 != null ? int.Parse(node2.Value) : 0;
       node2 = node.Attributes.GetNamedItem("optional");
-      if (node2 != null)
-      {
-        optional = int.Parse(node2.Value);
-      }
-      else
-      {
-        optional = 0;
-      }
+      optional = node2 != null ? int.Parse(node2.Value) : 0;
       node2 = node.Attributes.GetNamedItem("size");
-      if (node2 != null)
-      {
-        size = int.Parse(node2.Value);
-      }
-      else
-      {
-        size = 0;
-      }
+      size = node2 != null ? int.Parse(node2.Value) : 0;
       node2 = node.Attributes.GetNamedItem("notininfo");
       if (node2 != null && node2.Value == "true")
       {
@@ -230,23 +209,9 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
       name = node.Attributes.GetNamedItem("name").Value;
       var node2 = node.Attributes.GetNamedItem("group");
-      if (node2 != null)
-      {
-        group = int.Parse(node2.Value);
-      }
-      else
-      {
-        group = 0;
-      }
+      @group = node2 != null ? int.Parse(node2.Value) : 0;
       node2 = node.Attributes.GetNamedItem("condid");
-      if (node2 != null)
-      {
-        CondID = int.Parse(node2.Value);
-      }
-      else
-      {
-        CondID = 0;
-      }
+      CondID = node2 != null ? int.Parse(node2.Value) : 0;
       node2 = node.Attributes.GetNamedItem("notininfo");
       if (node2 != null && node2.Value == "true")
       {
@@ -257,14 +222,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         notininfo = false;
       }
       node2 = node.Attributes.GetNamedItem("desc");
-      if (node2 != null)
-      {
-        desc = node2.Value;
-      }
-      else
-      {
-        desc = null;
-      }
+      desc = node2 != null ? node2.Value : null;
       node2 = node.Attributes.GetNamedItem("hexview");
       if (node2 != null && node2.Value == "true")
       {
@@ -275,24 +233,10 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         hexview = false;
       }
       node2 = node.Attributes.GetNamedItem("flags");
-      if (node2 != null)
-      {
-        flags = node2.Value.Split(';');
-      }
-      else
-      {
-        flags = null;
-      }
+      flags = node2 != null ? node2.Value.Split(';') : null;
 
       node2 = node.Attributes.GetNamedItem("options");
-      if (node2 != null)
-      {
-        options = node2.Value.Split(';');
-      }
-      else
-      {
-        options = null;
-      }
+      options = node2 != null ? node2.Value.Split(';') : null;
       node2 = node.Attributes.GetNamedItem("repeat");
       if (node2 != null && node2.Value == "1")
       {

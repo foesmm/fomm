@@ -314,14 +314,7 @@ namespace Fomm.SharpZipLib.Zip
 
       if (doExtraction)
       {
-        if (entry.IsDirectory)
-        {
-          dirName = targetName;
-        }
-        else
-        {
-          dirName = Path.GetDirectoryName(Path.GetFullPath(targetName));
-        }
+        dirName = entry.IsDirectory ? targetName : Path.GetDirectoryName(Path.GetFullPath(targetName));
       }
 
       if (doExtraction && !Directory.Exists(dirName))

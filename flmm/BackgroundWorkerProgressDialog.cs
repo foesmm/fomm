@@ -489,14 +489,7 @@ namespace Fomm
     /// <param name="e">An <see cref="RunWorkerCompletedEventArgs"/> that describes the event arguments.</param>
     private void m_bgwWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
     {
-      if (e.Cancelled)
-      {
-        DialogResult = DialogResult.Cancel;
-      }
-      else
-      {
-        DialogResult = DialogResult.OK;
-      }
+      DialogResult = e.Cancelled ? DialogResult.Cancel : DialogResult.OK;
       m_exError = e.Error;
       Close();
     }

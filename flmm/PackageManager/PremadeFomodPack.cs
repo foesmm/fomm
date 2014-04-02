@@ -153,14 +153,7 @@ namespace Fomm.PackageManager
       foreach (XmlNode xndInstruction in xndIntructions.ChildNodes)
       {
         var strSource = xndInstruction.Attributes["source"].Value;
-        if (strSource.StartsWith(Archive.ARCHIVE_PREFIX))
-        {
-          strSource = Archive.ChangeArchiveDirectory(strSource, p_strSourcesPath);
-        }
-        else
-        {
-          strSource = Path.Combine(p_strSourcesPath, strSource);
-        }
+        strSource = strSource.StartsWith(Archive.ARCHIVE_PREFIX) ? Archive.ChangeArchiveDirectory(strSource, p_strSourcesPath) : Path.Combine(p_strSourcesPath, strSource);
         var strDestination = xndInstruction.Attributes["destination"].Value;
         lstCopyInstructions.Add(new KeyValuePair<string, string>(strSource, strDestination));
       }

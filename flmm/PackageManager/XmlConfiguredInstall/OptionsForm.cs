@@ -133,14 +133,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
           break;
         }
       }
-      if (booLast)
-      {
-        butNext.Text = "Finish";
-      }
-      else
-      {
-        butNext.Text = "Next >";
-      }
+      butNext.Text = booLast ? "Finish" : "Next >";
 
       var booFirst = true;
       for (var i = m_intCurrentStep - 1; i >= 0; i--)

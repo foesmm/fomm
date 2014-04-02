@@ -226,14 +226,9 @@ namespace Fomm.Controls
       // if there is text selected, and only one style in the selection, change it
       if (len <= 1 && rtbTextbox.SelectionFont != null)
       {
-        if (p_booAddStyle)
-        {
-          rtbTextbox.SelectionFont = new Font(rtbTextbox.SelectionFont, rtbTextbox.SelectionFont.Style | p_fstStyle);
-        }
-        else
-        {
-          rtbTextbox.SelectionFont = new Font(rtbTextbox.SelectionFont, rtbTextbox.SelectionFont.Style & ~p_fstStyle);
-        }
+        rtbTextbox.SelectionFont = p_booAddStyle ?
+          new Font(rtbTextbox.SelectionFont, rtbTextbox.SelectionFont.Style | p_fstStyle) :
+          new Font(rtbTextbox.SelectionFont, rtbTextbox.SelectionFont.Style & ~p_fstStyle);
         return;
       }
 
@@ -242,14 +237,9 @@ namespace Fomm.Controls
       for (var i = 0; i < len; ++i)
       {
         rtbTemp.Select(rtbTempStart + i, 1);
-        if (p_booAddStyle)
-        {
-          rtbTemp.SelectionFont = new Font(rtbTemp.SelectionFont, rtbTemp.SelectionFont.Style | p_fstStyle);
-        }
-        else
-        {
-          rtbTemp.SelectionFont = new Font(rtbTemp.SelectionFont, rtbTemp.SelectionFont.Style & ~p_fstStyle);
-        }
+        rtbTemp.SelectionFont = p_booAddStyle ?
+          new Font(rtbTemp.SelectionFont, rtbTemp.SelectionFont.Style | p_fstStyle) :
+          new Font(rtbTemp.SelectionFont, rtbTemp.SelectionFont.Style & ~p_fstStyle);
       }
 
       // replace and reselect

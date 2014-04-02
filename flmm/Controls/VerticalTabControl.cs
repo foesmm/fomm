@@ -427,14 +427,7 @@ namespace Fomm.Controls
       }
       set
       {
-        if (value == -1)
-        {
-          SelectedTabPage = null;
-        }
-        else
-        {
-          SelectedTabPage = TabPages[value];
-        }
+        SelectedTabPage = value == -1 ? null : TabPages[value];
       }
     }
 

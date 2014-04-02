@@ -575,14 +575,7 @@ namespace Fomm.Games.FalloutNewVegas
           return;
         }
         string command;
-        if (File.Exists("falloutNV.exe"))
-        {
-          command = "falloutNV.exe";
-        }
-        else
-        {
-          command = "falloutNVng.exe";
-        }
+        command = File.Exists("falloutNV.exe") ? "falloutNV.exe" : "falloutNVng.exe";
         var booSteamStarted = StartSteam(p_eeaArguments.Argument);
 
         try

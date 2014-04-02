@@ -214,14 +214,7 @@ namespace Fomm.Controls
       }
 
       m_butPrevious.Enabled = (intNewIndex > 0);
-      if (intNewIndex == TabPages.Count - 1)
-      {
-        m_butNext.Text = "Finish";
-      }
-      else
-      {
-        m_butNext.Text = "Next >>";
-      }
+      m_butNext.Text = intNewIndex == TabPages.Count - 1 ? "Finish" : "Next >>";
       SelectedIndex = intNewIndex;
     }
 

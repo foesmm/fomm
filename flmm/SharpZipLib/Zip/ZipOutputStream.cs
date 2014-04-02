@@ -675,15 +675,7 @@ namespace Fomm.SharpZipLib.Zip
         }
         else
         {
-          if (entry.IsDirectory)
-          {
-            // mark entry as directory (from nikolam.AT.perfectinfo.com)
-            WriteLeInt(16);
-          }
-          else
-          {
-            WriteLeInt(0);
-          }
+          WriteLeInt(entry.IsDirectory ? 16 : 0);
         }
 
         if (entry.Offset >= uint.MaxValue)

@@ -1291,14 +1291,7 @@ namespace Fomm.SharpZipLib.Zip
       }
       else
       {
-        if (entry.IsDirectory)
-        {
-          WriteLEUint(16);
-        }
-        else
-        {
-          WriteLEUint(0);
-        }
+        WriteLEUint(entry.IsDirectory ? (uint)16 : 0);
       }
 
       if (entry.Offset >= 0xffffffff)

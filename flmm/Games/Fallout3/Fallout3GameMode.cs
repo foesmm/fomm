@@ -807,14 +807,7 @@ namespace Fomm.Games.Fallout3
           return;
         }
         string command;
-        if (File.Exists("fallout3.exe"))
-        {
-          command = "fallout3.exe";
-        }
-        else
-        {
-          command = "fallout3ng.exe";
-        }
+        command = File.Exists("fallout3.exe") ? "fallout3.exe" : "fallout3ng.exe";
         try
         {
           var psi = new ProcessStartInfo();

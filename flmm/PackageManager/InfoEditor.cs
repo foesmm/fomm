@@ -40,14 +40,7 @@ namespace Fomm.PackageManager
     private void butEditReadme_Click(object sender, EventArgs e)
     {
       var erfEditor = new EditReadmeForm();
-      if (!m_fomodMod.HasReadme)
-      {
-        erfEditor.Readme = new Readme(ReadmeFormat.PlainText, "");
-      }
-      else
-      {
-        erfEditor.Readme = m_fomodMod.GetReadme();
-      }
+      erfEditor.Readme = !m_fomodMod.HasReadme ? new Readme(ReadmeFormat.PlainText, "") : m_fomodMod.GetReadme();
       if (erfEditor.ShowDialog(this) == DialogResult.OK)
       {
         m_fomodMod.SetReadme(erfEditor.Readme);

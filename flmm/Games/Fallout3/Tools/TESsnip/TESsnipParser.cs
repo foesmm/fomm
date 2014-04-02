@@ -1232,14 +1232,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       var list = new List<string>();
       if (Name == "EDID")
       {
-        if (lower)
-        {
-          list.Add(GetStrData().ToLower());
-        }
-        else
-        {
-          list.Add(GetStrData());
-        }
+        list.Add(lower ? GetStrData().ToLower() : GetStrData());
       }
       return list;
     }

@@ -301,14 +301,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
         if (char.IsLetterOrDigit(c) || c == '_' || ((c == '.' || c == '~') && char.IsDigit(SafePeek())))
         {
           builder.Length = 0;
-          if (c == '~')
-          {
-            builder.Append('-');
-          }
-          else
-          {
-            builder.Append(c);
-          }
+          builder.Append(c == '~' ? '-' : c);
           var numeric = char.IsDigit(c);
           while (true)
           {

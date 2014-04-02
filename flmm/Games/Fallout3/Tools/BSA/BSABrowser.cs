@@ -133,14 +133,7 @@ namespace Fomm.Games.Fallout3.Tools.BSA
         else
         {
           byte[] uncompressed;
-          if (RealSize == 0)
-          {
-            uncompressed = new byte[br.ReadUInt32()];
-          }
-          else
-          {
-            uncompressed = new byte[RealSize];
-          }
+          uncompressed = RealSize == 0 ? new byte[br.ReadUInt32()] : new byte[RealSize];
           var compressed = new byte[Size - 4];
           br.Read(compressed, 0, (int) (Size - 4));
           inf.Reset();
@@ -301,14 +294,7 @@ namespace Fomm.Games.Fallout3.Tools.BSA
           }
           br.BaseStream.Position += 4;
           var flags = br.ReadUInt32();
-          if ((flags & 0x004) > 0)
-          {
-            Compressed = true;
-          }
-          else
-          {
-            Compressed = false;
-          }
+          Compressed = (flags & 0x004) > 0;
           if ((flags & 0x100) > 0 && version == 0x68)
           {
             ContainsFileNameBlobs = true;

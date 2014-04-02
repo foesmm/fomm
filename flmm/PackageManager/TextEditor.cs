@@ -56,14 +56,7 @@ namespace Fomm.PackageManager
 
     private void bSave_Click(object sender, EventArgs e)
     {
-      if (rtbEdit.TextLength == 0)
-      {
-        saved = "";
-      }
-      else
-      {
-        saved = rtbEdit.Rtf;
-      }
+      saved = rtbEdit.TextLength == 0 ? "" : rtbEdit.Rtf;
       rtbEdit.TextChanged += textChanged;
       changed = false;
     }

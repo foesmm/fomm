@@ -292,14 +292,7 @@ namespace Fomm.PackageManager
 
     private void lvModList_ItemCheck(object sender, ItemCheckEventArgs e)
     {
-      if (((fomod) lvModList.Items[e.Index].Tag).IsActive)
-      {
-        e.NewValue = CheckState.Checked;
-      }
-      else
-      {
-        e.NewValue = CheckState.Unchecked;
-      }
+      e.NewValue = ((fomod) lvModList.Items[e.Index].Tag).IsActive ? CheckState.Checked : CheckState.Unchecked;
     }
 
     private void bEditScript_Click(object sender, EventArgs e)
@@ -310,14 +303,7 @@ namespace Fomm.PackageManager
       }
       var mod = (fomod) lvModList.SelectedItems[0].Tag;
       var esfEditor = new EditScriptForm();
-      if (!mod.HasInstallScript)
-      {
-        esfEditor.Script = new FomodScript(FomodScriptType.CSharp, Program.GameMode.DefaultCSharpScript);
-      }
-      else
-      {
-        esfEditor.Script = mod.GetInstallScript();
-      }
+      esfEditor.Script = !mod.HasInstallScript ? new FomodScript(FomodScriptType.CSharp, Program.GameMode.DefaultCSharpScript) : mod.GetInstallScript();
       if (esfEditor.ShowDialog(this) == DialogResult.OK)
       {
         mod.SetScript(esfEditor.Script);
@@ -467,14 +453,7 @@ namespace Fomm.PackageManager
         lvModList.SelectedItems[0].Checked = mod.IsActive;
       }
       butDeactivate.Enabled = mod.IsActive;
-      if (!mod.IsActive)
-      {
-        bActivate.Text = "Activate";
-      }
-      else
-      {
-        bActivate.Text = "Reactivate";
-      }
+      bActivate.Text = !mod.IsActive ? "Activate" : "Reactivate";
 
       Program.GameMode.buildPluginList();
       mf.RefreshPluginList();
@@ -487,14 +466,7 @@ namespace Fomm.PackageManager
         return;
       }
       var mod = (fomod) lvModList.SelectedItems[0].Tag;
-      if (!mod.IsActive)
-      {
-        ToggleActivation(mod, false);
-      }
-      else
-      {
-        ToggleActivation(mod, true);
-      }
+      ToggleActivation(mod, mod.IsActive);
     }
 
     private void butDeactivate_Click(object sender, EventArgs e)
@@ -529,22 +501,8 @@ namespace Fomm.PackageManager
         return;
       }
       var mod = (fomod) lvModList.SelectedItems[0].Tag;
-      if (mod.Email.Length == 0)
-      {
-        emailAuthorToolStripMenuItem.Visible = false;
-      }
-      else
-      {
-        emailAuthorToolStripMenuItem.Visible = true;
-      }
-      if (mod.Website.Length == 0)
-      {
-        visitWebsiteToolStripMenuItem.Visible = false;
-      }
-      else
-      {
-        visitWebsiteToolStripMenuItem.Visible = true;
-      }
+      emailAuthorToolStripMenuItem.Visible = mod.Email.Length != 0;
+      visitWebsiteToolStripMenuItem.Visible = mod.Website.Length != 0;
     }
 
     private void visitWebsiteToolStripMenuItem_Click(object sender, EventArgs e)

@@ -69,14 +69,7 @@ namespace Fomm.SharpZipLib.Core
 
             index++;
 
-            if (index < path.Length)
-            {
-              result = path.Substring(index);
-            }
-            else
-            {
-              result = "";
-            }
+            result = index < path.Length ? path.Substring(index) : "";
           }
         }
         else if ((path.Length > 1) && (path[1] == ':'))

@@ -463,14 +463,7 @@ namespace Fomm.PackageManager.FomodBuilder
         .AppendLine();
       foreach (var kvpSource in dicSources)
       {
-        if (kvpSource.Value.Count > 1)
-        {
-          stbHowTo.AppendLine("\tThese files:");
-        }
-        else
-        {
-          stbHowTo.AppendLine("\tThis file:");
-        }
+        stbHowTo.AppendLine(kvpSource.Value.Count > 1 ? "\tThese files:" : "\tThis file:");
         foreach (var strSource in kvpSource.Value)
         {
           stbHowTo.Append("\t\t").AppendLine(strSource);

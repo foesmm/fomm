@@ -898,14 +898,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
           _hexBox.ReleaseSelection();
 
           byte currentByte;
-          if (isInsertMode)
-          {
-            currentByte = 0;
-          }
-          else
-          {
-            currentByte = _hexBox._byteProvider.ReadByte(pos);
-          }
+          currentByte = isInsertMode ? (byte)0 : _hexBox._byteProvider.ReadByte(pos);
 
           var sCb = currentByte.ToString("X", Thread.CurrentThread.CurrentCulture);
           if (sCb.Length == 1)
@@ -3421,14 +3414,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
       set
       {
         string format;
-        if (value == HexCasing.Upper)
-        {
-          format = "X";
-        }
-        else
-        {
-          format = "x";
-        }
+        format = value == HexCasing.Upper ? "X" : "x";
 
         if (_hexStringFormat == format)
         {

@@ -14,14 +14,7 @@ namespace Fomm.Games.Fallout3.Tools.InstallTweaker
     {
       var newsize = 0;
       IntPtr pdata;
-      if (parse)
-      {
-        pdata = NativeMethods.ddsShrink(data, data.Length, out newsize);
-      }
-      else
-      {
-        pdata = IntPtr.Zero;
-      }
+      pdata = parse ? NativeMethods.ddsShrink(data, data.Length, out newsize) : IntPtr.Zero;
       byte[] newdata;
       if (pdata == IntPtr.Zero)
       {

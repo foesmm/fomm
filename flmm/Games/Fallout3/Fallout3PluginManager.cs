@@ -232,16 +232,10 @@ namespace Fomm.Games.Fallout3
       if ((Path.GetExtension(p_strPluginPath).CompareTo(".esp") == 0) !=
           ((((Record) plgPlugin.Records[0]).Flags1 & 1) == 0))
       {
-        if ((((Record) plgPlugin.Records[0]).Flags1 & 1) == 0)
-        {
-          stbDescription.Append(
-            @"\cf1 \b WARNING: This plugin has the file extension .esm, but its file header marks it as an esp! \b0 \cf0 \line \line ");
-        }
-        else
-        {
-          stbDescription.Append(
-            @"\cf1 \b WARNING: This plugin has the file extension .esp, but its file header marks it as an esm! \b0 \cf0 \line \line ");
-        }
+        stbDescription.Append(
+          (((Record) plgPlugin.Records[0]).Flags1 & 1) == 0
+            ? @"\cf1 \b WARNING: This plugin has the file extension .esm, but its file header marks it as an esp! \b0 \cf0 \line \line "
+            : @"\cf1 \b WARNING: This plugin has the file extension .esp, but its file header marks it as an esm! \b0 \cf0 \line \line ");
       }
       stbDescription.AppendFormat(@"\b \ul {0} \ulnone \b0 \line ", strPluginName);
       if (name != null)

@@ -65,14 +65,7 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
         m_intDivisor = value;
         Maximum = intMax;
         Minimum = intMin;
-        if (m_intDivisor > 1)
-        {
-          nudValue.DecimalPlaces = 1;
-        }
-        else
-        {
-          nudValue.DecimalPlaces = 0;
-        }
+        nudValue.DecimalPlaces = m_intDivisor > 1 ? 1 : 0;
       }
     }
 

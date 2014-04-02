@@ -238,14 +238,7 @@ namespace Fomm.Games.Fallout3.Tools.BSA
         /*if(path.StartsWith(Program.CurrentDir+"data\\")) {
                     path=path.Substring((Program.CurrentDir+"data\\").Length);
                 } else*/
-        if (path.StartsWith("data\\"))
-        {
-          path = path.Substring(5);
-        }
-        else
-        {
-          path = Path.GetFileName(path);
-        }
+        path = path.StartsWith("data\\") ? path.Substring(5) : Path.GetFileName(path);
         var lvi = new ListViewItem(new string[]
         {
           path, s
@@ -576,22 +569,8 @@ namespace Fomm.Games.Fallout3.Tools.BSA
 
     private void cmbCompression_SelectedIndexChanged(object sender, EventArgs e)
     {
-      if (cmbCompression.SelectedIndex == 6)
-      {
-        lvFiles.CheckBoxes = true;
-      }
-      else
-      {
-        lvFiles.CheckBoxes = false;
-      }
-      if (cmbCompression.SelectedIndex == 0)
-      {
-        cmbCompLevel.Enabled = false;
-      }
-      else
-      {
-        cmbCompLevel.Enabled = true;
-      }
+      lvFiles.CheckBoxes = cmbCompression.SelectedIndex == 6;
+      cmbCompLevel.Enabled = cmbCompression.SelectedIndex != 0;
     }
 
     private void lvFiles_AfterLabelEdit(object sender, LabelEditEventArgs e)

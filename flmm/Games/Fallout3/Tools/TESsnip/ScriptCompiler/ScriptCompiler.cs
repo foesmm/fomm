@@ -80,14 +80,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
                               NumberStyles.AllowHexSpecifier, null);
         XmlNode n2;
         n2 = n.Attributes.GetNamedItem("desc");
-        if (n2 == null)
-        {
-          desc = "";
-        }
-        else
-        {
-          desc = n2.Value;
-        }
+        desc = n2 == null ? "" : n2.Value;
         n2 = n.Attributes.GetNamedItem("fose");
         if (n2 != null && n2.Value == "true")
         {
@@ -109,14 +102,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
         if (!block)
         {
           n2 = n.Attributes.GetNamedItem("ret");
-          if (n2 == null)
-          {
-            ret = VarType.None;
-          }
-          else
-          {
-            ret = GetVarType(n2.Value);
-          }
+          ret = n2 == null ? VarType.None : GetVarType(n2.Value);
           n2 = n.Attributes.GetNamedItem("allowref");
           if (n2 != null && n2.Value == "false")
           {
@@ -159,14 +145,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
           }
         }
         n2 = n.Attributes.GetNamedItem("requiredargs");
-        if (n2 == null)
-        {
-          requiredArgs = args.Length;
-        }
-        else
-        {
-          requiredArgs = int.Parse(n2.Value);
-        }
+        requiredArgs = n2 == null ? args.Length : int.Parse(n2.Value);
       }
     }
 
@@ -293,14 +272,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
           {
             var n2 = n.Attributes.GetNamedItem("short");
             string sname;
-            if (n2 != null)
-            {
-              sname = n2.Value;
-            }
-            else
-            {
-              sname = null;
-            }
+            sname = n2 != null ? n2.Value : null;
             AddFunction(n.Attributes.GetNamedItem("name").Value, sname, new FunctionSig(n, false));
           }
           else if (n.Name == "Block")
@@ -726,14 +698,9 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
         {
           var sr = new SubRecord();
           sr.Name = "SCRO";
-          if (t.type == TokenType.edid)
-          {
-            sr.SetData(TypeConverter.i2h(edidList[t.token].Key));
-          }
-          else
-          {
-            sr.SetData(TypeConverter.i2h(globals[t.token]));
-          }
+          sr.SetData(t.type == TokenType.edid
+            ? TypeConverter.i2h(edidList[t.token].Key)
+            : TypeConverter.i2h(globals[t.token]));
           r.AddRecord(sr);
           refcount++;
           edidRefs[t.token] = (ushort) refcount;
@@ -885,14 +852,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
           {
             AddError("A reference assignment must consist of a single edid or function");
           }
-          if (lv.type == VarType.Int)
-          {
-            EmitByte(0x73);
-          }
-          else
-          {
-            EmitByte(0x66);
-          }
+          EmitByte(lv.type == VarType.Int ? (byte)0x73 : (byte)0x66);
           Emit((ushort) lv.index);
           break;
         case TokenType.Global:
@@ -1463,14 +1423,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
         if (smt[1].type == TokenType.Local)
         {
           var lv = locals[smt[1].token];
-          if (lv.type == VarType.Int)
-          {
-            EmitByte(0x73);
-          }
-          else
-          {
-            EmitByte(0x66);
-          }
+          EmitByte(lv.type == VarType.Int ? (byte)0x73 : (byte)0x66);
           Emit((ushort) lv.index);
           EmitExpression(TrimStatement(smt, 3), (lv.type == VarType.Ref) ? ExpressionType.Ref : ExpressionType.Numeric);
         }

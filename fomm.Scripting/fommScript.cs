@@ -231,14 +231,7 @@ namespace fomm.Scripting
               {
                 Warn("String marker found in the middle of a variable name");
               }
-              if (InQuotes)
-              {
-                InQuotes = false;
-              }
-              else
-              {
-                InQuotes = true;
-              }
+              InQuotes = !InQuotes;
             }
             WasLastSpace = false;
             WasLastEscape = false;
@@ -527,14 +520,7 @@ namespace fomm.Scripting
     private static string[] FunctionSelectVar(string[] line, bool IsVariable)
     {
       string Func;
-      if (IsVariable)
-      {
-        Func = " to function 'SelectVar'";
-      }
-      else
-      {
-        Func = "to function 'SelectString'";
-      }
+      Func = IsVariable ? " to function 'SelectVar'" : "to function 'SelectString'";
       if (line.Length < 2)
       {
         Warn("Missing arguments" + Func);

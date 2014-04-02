@@ -48,14 +48,7 @@ namespace Fomm.PackageManager
       }
       else
       {
-        if (selected.Count == 0)
-        {
-          lbSelect.SelectedIndex = 0;
-        }
-        else
-        {
-          lbSelect.SelectedIndex = selected[0];
-        }
+        lbSelect.SelectedIndex = selected.Count == 0 ? 0 : selected[0];
       }
       if (toolTips == null)
       {
