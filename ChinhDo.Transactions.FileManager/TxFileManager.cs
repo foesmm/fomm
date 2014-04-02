@@ -41,17 +41,7 @@ namespace ChinhDo.Transactions
     /// <summary>
     /// Gets or sets a value indicating whether to ignore exceptions during Rollback.
     /// </summary>
-    public bool IgnoreExceptionsInRollback
-    {
-      get
-      {
-        return _ignoreExceptionsInRollback;
-      }
-      set
-      {
-        _ignoreExceptionsInRollback = value;
-      }
-    }
+    public bool IgnoreExceptionsInRollback { get; set; }
 
     #region IFileOperations
 
@@ -263,7 +253,6 @@ namespace ChinhDo.Transactions
     private bool _txEnabled = true;
     private static readonly string _tempFolder;
     private static readonly string _tempFilesPrefix = "";
-    private bool _ignoreExceptionsInRollback;
 
     private TxEnlistment GetEnlistment()
     {

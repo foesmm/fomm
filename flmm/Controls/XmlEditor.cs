@@ -18,25 +18,13 @@ namespace Fomm.Controls
   /// </summary>
   public class RegeneratableAutoCompleteListEventArgs : AutoCompleteListEventArgs
   {
-    private bool m_booGenerateOnNextKey;
-
     #region Properties
 
     /// <summary>
     /// Gets or sets whether the next keys press should cause the code completion list to regenerate.
     /// </summary>
     /// <value>Whether the next keys press should cause the code completion list to regenerate.</value>
-    public bool GenerateOnNextKey
-    {
-      get
-      {
-        return m_booGenerateOnNextKey;
-      }
-      set
-      {
-        m_booGenerateOnNextKey = value;
-      }
-    }
+    public bool GenerateOnNextKey { get; set; }
 
     #endregion
 
