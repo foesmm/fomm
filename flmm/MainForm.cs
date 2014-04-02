@@ -6,7 +6,6 @@ using System.Windows.Forms;
 using System.IO;
 using System.Runtime.Remoting;
 using System.Text;
-using Fomm.Games;
 using Fomm.Commands;
 using Fomm.Properties;
 

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using Fomm.Games.Fallout3.Tools.CriticalRecords;
 using System.Text;

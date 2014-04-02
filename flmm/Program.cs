@@ -29,7 +29,6 @@ using Fomm.Properties;
 using SevenZip;
 using Microsoft.Win32;
 using Fomm.Util;
-using System.Collections.Generic;
 using Fomm.PackageManager.ModInstallLog;
 using Fomm.Games;
 using Fomm.Games.Fallout3;

@@ -7,10 +7,8 @@ using System.Xml.Schema;
 using System.Windows.Forms;
 using ICSharpCode.TextEditor;
 using System.Text;
-using System.Xml;
 using System.Drawing;
 using System.IO;
-using ICSharpCode.TextEditor.Document;
 
 namespace Fomm.Controls
 {

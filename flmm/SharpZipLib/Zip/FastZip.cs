@@ -34,7 +34,6 @@
 // exception statement from your version.
 
 using System;
-using System.Collections;
 using System.IO;
 using Fomm.SharpZipLib.Core;
 

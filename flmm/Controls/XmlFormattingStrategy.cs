@@ -1,5 +1,4 @@
-﻿using System;
-using ICSharpCode.TextEditor.Document;
+﻿using ICSharpCode.TextEditor.Document;
 using System.Text;
 using ICSharpCode.TextEditor;
 

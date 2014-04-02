@@ -4,7 +4,6 @@ using Fomm.Properties;
 using Microsoft.Win32;
 using SevenZip;
 using Fomm.Controls;
-using System.Drawing;
 using Fomm.Util;
 
 namespace Fomm

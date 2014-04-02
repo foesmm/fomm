@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using Fomm.PackageManager.ModInstallLog;
 using Fomm.PackageManager;
