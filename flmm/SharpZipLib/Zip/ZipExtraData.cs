@@ -423,7 +423,9 @@ namespace Fomm.SharpZipLib.Zip
       index_ += amount;
     }
 
+    // ReSharper disable UnusedParameter.Local
     private void ReadCheck(int length)
+    // ReSharper restore UnusedParameter.Local
     {
       if ((readValueStart_ > data_.Length) ||
           (readValueStart_ < 4))

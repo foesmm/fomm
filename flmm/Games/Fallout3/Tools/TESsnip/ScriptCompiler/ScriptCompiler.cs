@@ -156,7 +156,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
       //public readonly bool rtl;
       public readonly byte[] opcode;
 
-      public Operator(string end, int precedence, bool rtl, string opcode)
+      public Operator(string end, int precedence, string opcode)
       {
         this.end = end;
         this.precedence = precedence;
@@ -211,21 +211,21 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
     {
       Inited = true;
 
-      biOps.Add("*", new Operator(null, 4, false, "*"));
-      biOps.Add("/", new Operator(null, 4, false, "/"));
-      biOps.Add("+", new Operator(null, 5, false, "+"));
-      biOps.Add("-", new Operator(null, 5, false, "-"));
-      biOps.Add("<", new Operator(null, 7, false, "<"));
-      biOps.Add("<=", new Operator(null, 7, false, "<="));
-      biOps.Add(">=", new Operator(null, 7, false, ">="));
-      biOps.Add(">", new Operator(null, 7, false, ">"));
-      biOps.Add("==", new Operator(null, 8, false, "=="));
-      biOps.Add("!=", new Operator(null, 8, false, "!="));
-      biOps.Add("&&", new Operator(null, 12, false, "&&"));
-      biOps.Add("||", new Operator(null, 13, false, "||"));
+      biOps.Add("*", new Operator(null, 4, "*"));
+      biOps.Add("/", new Operator(null, 4, "/"));
+      biOps.Add("+", new Operator(null, 5, "+"));
+      biOps.Add("-", new Operator(null, 5, "-"));
+      biOps.Add("<", new Operator(null, 7, "<"));
+      biOps.Add("<=", new Operator(null, 7, "<="));
+      biOps.Add(">=", new Operator(null, 7, ">="));
+      biOps.Add(">", new Operator(null, 7, ">"));
+      biOps.Add("==", new Operator(null, 8, "=="));
+      biOps.Add("!=", new Operator(null, 8, "!="));
+      biOps.Add("&&", new Operator(null, 12, "&&"));
+      biOps.Add("||", new Operator(null, 13, "||"));
 
       //rtl should be false for all uni ops
-      uniOps.Add("-", new Operator(null, 3, false, "~"));
+      uniOps.Add("-", new Operator(null, 3, "~"));
 
       try
       {
@@ -881,7 +881,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
           {
             args[i] = smt.Dequeue();
           }
-          EmitFunctionCall(ref args, true, hadRef, type == ExpressionType.Ref);
+          EmitFunctionCall(ref args, true, hadRef);
           for (var i = 0; i < args.Length; i++)
           {
             smt.Enqueue(args[i]);
@@ -1013,7 +1013,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
       bw.BaseStream.Position = bw.BaseStream.Length;
     }
 
-    private static void EmitFunctionCall(ref Token[] smt, bool expression, bool hadref, bool requiresRef)
+    private static void EmitFunctionCall(ref Token[] smt, bool expression, bool hadref)
     {
       var fs = functionList[smt[0].token];
       if (hadref && !fs.allowref)
@@ -1403,7 +1403,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
     {
       if (smt[0].type == TokenType.Function)
       {
-        EmitFunctionCall(ref smt, false, false, false);
+        EmitFunctionCall(ref smt, false, false);
       }
       else if (smt[0].IsKeyword(Keywords.ShowMessage))
       {
@@ -1468,7 +1468,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
         }
         EmitRefLabel(smt[0], RefType.Standard);
         smt = TrimStatement(smt, 2);
-        EmitFunctionCall(ref smt, false, true, false);
+        EmitFunctionCall(ref smt, false, true);
       }
       else if (smt[0].type == TokenType.Local)
       {
@@ -1485,7 +1485,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
         }
         EmitRefLabel(smt[0], RefType.Standard);
         smt = TrimStatement(smt, 2);
-        EmitFunctionCall(ref smt, false, true, false);
+        EmitFunctionCall(ref smt, false, true);
       }
       else
       {
