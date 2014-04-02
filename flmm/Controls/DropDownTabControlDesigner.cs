@@ -84,7 +84,6 @@ namespace Fomm.Controls
     /// The default constructor.
     /// </summary>
     public DropDownTabControlDesigner()
-      : base()
     {
       var dvbAddPage = new DesignerVerb("Add Tab Page", AddTabPage);
       var dvbRemovePage = new DesignerVerb("Remove Tab Page", RemoveTabPage);

@@ -38,7 +38,6 @@ namespace Fomm.Controls
     #region Constructor
 
     public ReordableItemListView()
-      : base()
     {
       // Reduce flicker
       SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
