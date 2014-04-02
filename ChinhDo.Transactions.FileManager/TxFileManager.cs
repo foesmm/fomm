@@ -179,7 +179,7 @@ namespace ChinhDo.Transactions
       {
         foreach (string folderName in Directory.GetDirectories(path))
         {
-          GetFiles(folderName, handler, recursive);
+          GetFiles(folderName, handler, true);
         }
       }
     }

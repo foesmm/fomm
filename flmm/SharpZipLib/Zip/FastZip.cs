@@ -267,29 +267,24 @@ namespace Fomm.SharpZipLib.Zip
 
     private void ExtractFileEntry(ZipEntry entry, string targetName)
     {
-      bool proceed = true;
-
-      if (proceed)
+      if (continueRunning_)
       {
-        if (continueRunning_)
+        try
         {
-          try
+          using (FileStream outputStream = File.Create(targetName))
           {
-            using (FileStream outputStream = File.Create(targetName))
+            if (buffer_ == null)
             {
-              if (buffer_ == null)
-              {
-                buffer_ = new byte[4096];
-              }
-              StreamUtils.Copy(zipFile_.GetInputStream(entry), outputStream, buffer_);
+              buffer_ = new byte[4096];
             }
-            File.SetLastWriteTime(targetName, entry.DateTime);
+            StreamUtils.Copy(zipFile_.GetInputStream(entry), outputStream, buffer_);
           }
-          catch (Exception)
-          {
-            continueRunning_ = false;
-            throw;
-          }
+          File.SetLastWriteTime(targetName, entry.DateTime);
+        }
+        catch (Exception)
+        {
+          continueRunning_ = false;
+          throw;
         }
       }
     }

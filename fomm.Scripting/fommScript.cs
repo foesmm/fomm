@@ -197,28 +197,14 @@ namespace fomm.Scripting
               CurrentVar = "";
               InVar = false;
             }
+
             if (InQuotes)
             {
               CurrentWord += s[i];
             }
             else if (!WasLastSpace)
             {
-              if (InVar)
-              {
-                if (!variables.ContainsKey(CurrentWord))
-                {
-                  temp.Add("");
-                }
-                else
-                {
-                  temp.Add(variables[CurrentWord]);
-                }
-                InVar = false;
-              }
-              else
-              {
-                temp.Add(CurrentWord);
-              }
+              temp.Add(CurrentWord);
               CurrentWord = "";
               WasLastSpace = true;
             }

@@ -205,7 +205,7 @@ namespace Fomm.Util
       {
         foreach (DirectoryInfo difDirectory in p_difPath.GetDirectories())
         {
-          ClearAttributes(difDirectory, p_booRecurse);
+          ClearAttributes(difDirectory, true);
         }
         foreach (FileInfo fifFile in p_difPath.GetFiles())
         {

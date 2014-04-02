@@ -542,7 +542,7 @@ namespace Fomm.PackageManager
           }
         }
       }
-      return (afiFile == null) ? false : afiFile.IsDirectory;
+      return afiFile.IsDirectory;
     }
 
     /// <summary>
