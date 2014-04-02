@@ -72,11 +72,10 @@ namespace Fomm.SharpZipLib.Zip
     /// </summary>
     static ZipNameTransform()
     {
-      char[] invalidPathChars;
 #if NET_1_0 || NET_1_1 || NETCF_1_0
       invalidPathChars = Path.InvalidPathChars;
 #else
-      invalidPathChars = Path.GetInvalidPathChars();
+      char[] invalidPathChars = Path.GetInvalidPathChars();
 #endif
       var howMany = invalidPathChars.Length + 2;
 

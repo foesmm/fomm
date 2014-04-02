@@ -682,11 +682,10 @@ namespace Fomm.Games.Fallout3
     public bool PrelaunchCheckOrder()
     {
       var retVal = true;
-      List<string> keys;
       int i;
 
       // Do checks
-      keys = new List<string>(fullModList.Keys);
+      List<string> keys = new List<string>(fullModList.Keys);
       for (i = 0; i < keys.Count; i++)
       {
         if (!retVal)
@@ -793,8 +792,7 @@ namespace Fomm.Games.Fallout3
           MessageBox.Show("Please close all utility windows before launching fallout");
           return;
         }
-        string command;
-        command = File.Exists("fallout3.exe") ? "fallout3.exe" : "fallout3ng.exe";
+        string command = File.Exists("fallout3.exe") ? "fallout3.exe" : "fallout3ng.exe";
         try
         {
           var psi = new ProcessStartInfo();

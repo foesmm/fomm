@@ -1692,8 +1692,6 @@ namespace Fomm.SharpZipLib.Zip
         destinationPosition = baseStream_.Position;
       }
 
-      long sourcePosition;
-
       const int NameLengthOffset = 26;
 
       // TODO: Add base for SFX friendly handling
@@ -1706,7 +1704,7 @@ namespace Fomm.SharpZipLib.Zip
       uint nameLength = ReadLEUshort();
       uint extraLength = ReadLEUshort();
 
-      sourcePosition = baseStream_.Position + nameLength + extraLength;
+      long sourcePosition = baseStream_.Position + nameLength + extraLength;
 
       if (skipOver)
       {

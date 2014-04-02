@@ -452,13 +452,10 @@ namespace fomm.Scripting
         return new string[0];
       }
       //variables
-      string[] items;
-      string[] previews;
-      string[] descs;
       var argsperoption = 1 + (Previews ? 1 : 0) + (Descriptions ? 1 : 0);
       //Remove first 2 arguments
       var title = line[1];
-      items = new string[line.Length - 2];
+      string[] items = new string[line.Length - 2];
       Array.Copy(line, 2, items, 0, line.Length - 2);
       line = items;
       //Check for incorrect number of arguments
@@ -469,8 +466,8 @@ namespace fomm.Scripting
       }
       //Create arrays to pass to the select form
       items = new string[line.Length/argsperoption];
-      previews = Previews ? new string[line.Length/argsperoption] : null;
-      descs = Descriptions ? new string[line.Length/argsperoption] : null;
+      string[] previews = Previews ? new string[line.Length/argsperoption] : null;
+      string[] descs = Descriptions ? new string[line.Length/argsperoption] : null;
       for (var i = 0; i < line.Length/argsperoption; i++)
       {
         items[i] = line[i*argsperoption];
@@ -513,8 +510,7 @@ namespace fomm.Scripting
 
     private static string[] FunctionSelectVar(string[] line, bool IsVariable)
     {
-      string Func;
-      Func = IsVariable ? " to function 'SelectVar'" : "to function 'SelectString'";
+      string Func = IsVariable ? " to function 'SelectVar'" : "to function 'SelectString'";
       if (line.Length < 2)
       {
         Warn("Missing arguments" + Func);
@@ -1004,9 +1000,8 @@ namespace fomm.Scripting
         return int.Parse(func[0]);
       }
       //check for brackets
-      int index;
 
-      index = func.IndexOf("(");
+      int index = func.IndexOf("(");
       while (index != -1)
       {
         var count = 1;
@@ -1165,9 +1160,8 @@ namespace fomm.Scripting
         return int.Parse(func[0]);
       }
       //check for brackets
-      int index;
 
-      index = func.IndexOf("(");
+      int index = func.IndexOf("(");
       while (index != -1)
       {
         var count = 1;

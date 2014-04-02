@@ -653,7 +653,6 @@ namespace Fomm.PackageManager
     public string ExtractToTemp(string srcFile)
     {
       string ret;
-      string tmpFN;
 
       PermissionsManager.CurrentPermissions.Assert();
 
@@ -662,7 +661,7 @@ namespace Fomm.PackageManager
         throw new FileNotFoundException("File doesn't exist in fomod", srcFile);
       }
 
-      tmpFN = Path.GetTempFileName();
+      string tmpFN = Path.GetTempFileName();
 
       if ((m_arcCacheFile != null) && m_arcCacheFile.ContainsFile(GetPrefixAdjustedPath(srcFile)))
       {

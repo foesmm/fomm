@@ -759,7 +759,6 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
       protected virtual bool PreProcessWmKeyDown_Home(ref Message m)
       {
         var pos = _hexBox._bytePos;
-        int cp;
 
         if (pos < 1)
         {
@@ -767,7 +766,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
         }
 
         pos = 0;
-        cp = 0;
+        int cp = 0;
         _hexBox.SetPosition(pos, cp);
 
         _hexBox.ScrollByteIntoView();
@@ -780,7 +779,6 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
       protected virtual bool PreProcessWmKeyDown_End(ref Message m)
       {
         var pos = _hexBox._bytePos;
-        int cp;
 
         if (pos >= _hexBox._byteProvider.Length - 1)
         {
@@ -788,7 +786,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
         }
 
         pos = _hexBox._byteProvider.Length;
-        cp = 0;
+        int cp = 0;
         _hexBox.SetPosition(pos, cp);
 
         _hexBox.ScrollByteIntoView();
@@ -897,8 +895,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 
           _hexBox.ReleaseSelection();
 
-          byte currentByte;
-          currentByte = isInsertMode ? (byte)0 : _hexBox._byteProvider.ReadByte(pos);
+          byte currentByte = isInsertMode ? (byte)0 : _hexBox._byteProvider.ReadByte(pos);
 
           var sCb = currentByte.ToString("X", Thread.CurrentThread.CurrentCulture);
           if (sCb.Length == 1)
@@ -1085,7 +1082,6 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
       protected virtual bool PerformPosMoveLeftByte()
       {
         var pos = _hexBox._bytePos;
-        int cp;
 
         if (pos == 0)
         {
@@ -1093,7 +1089,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
         }
 
         pos = Math.Max(0, pos - 1);
-        cp = 0;
+        int cp = 0;
 
         _hexBox.SetPosition(pos, cp);
 
@@ -1111,7 +1107,6 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
       protected virtual bool PerformPosMoveRightByte()
       {
         var pos = _hexBox._bytePos;
-        int cp;
 
         if (pos == _hexBox._byteProvider.Length)
         {
@@ -1119,7 +1114,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
         }
 
         pos = Math.Min(_hexBox._byteProvider.Length, pos + 1);
-        cp = 0;
+        int cp = 0;
 
         _hexBox.SetPosition(pos, cp);
 
@@ -2088,9 +2083,6 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     {
       Debug.WriteLine("GetHexBytePositionInfo()", "HexBox");
 
-      long bytePos;
-      int byteCharaterPos;
-
       var x = ((p.X - _recHex.X)/_charSize.Width);
       var y = ((p.Y - _recHex.Y)/_charSize.Height);
       var iX = (int) x;
@@ -2098,9 +2090,9 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 
       var hPos = (iX/3 + 1);
 
-      bytePos = Math.Min(_byteProvider.Length,
-                         _startByte + (_iHexMaxHBytes*(iY + 1) - _iHexMaxHBytes) + hPos - 1);
-      byteCharaterPos = (iX%3);
+      long bytePos = Math.Min(_byteProvider.Length,
+                              _startByte + (_iHexMaxHBytes*(iY + 1) - _iHexMaxHBytes) + hPos - 1);
+      int byteCharaterPos = (iX%3);
       if (byteCharaterPos > 1)
       {
         byteCharaterPos = 1;
@@ -2122,9 +2114,6 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     {
       Debug.WriteLine("GetStringBytePositionInfo()", "HexBox");
 
-      long bytePos;
-      int byteCharacterPos;
-
       var x = ((p.X - _recStringView.X)/_charSize.Width);
       var y = ((p.Y - _recStringView.Y)/_charSize.Height);
       var iX = (int) x;
@@ -2132,9 +2121,9 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 
       var hPos = iX + 1;
 
-      bytePos = Math.Min(_byteProvider.Length,
-                         _startByte + (_iHexMaxHBytes*(iY + 1) - _iHexMaxHBytes) + hPos - 1);
-      byteCharacterPos = 0;
+      long bytePos = Math.Min(_byteProvider.Length,
+                              _startByte + (_iHexMaxHBytes*(iY + 1) - _iHexMaxHBytes) + hPos - 1);
+      int byteCharacterPos = 0;
 
       if (bytePos < 0)
       {
@@ -3394,8 +3383,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
       }
       set
       {
-        string format;
-        format = value == HexCasing.Upper ? "X" : "x";
+        string format = value == HexCasing.Upper ? "X" : "x";
 
         if (_hexStringFormat == format)
         {

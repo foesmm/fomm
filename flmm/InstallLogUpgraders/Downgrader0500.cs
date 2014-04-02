@@ -50,16 +50,12 @@ namespace Fomm.InstallLogUpgraders
         </file>
        *** This is simply removing 'data\' from the path in each file element.
        */
-      XDocument doc;
-      XElement root;
-      XElement modlist;
-      XElement datafiles;
 
       // Load the document
-      doc = XDocument.Load(InstallLog.Current.InstallLogPath);
-      root = doc.Element("installLog");
-      modlist = root.Element("modList");
-      datafiles = root.Element("dataFiles");
+      XDocument doc = XDocument.Load(InstallLog.Current.InstallLogPath);
+      XElement root = doc.Element("installLog");
+      XElement modlist = root.Element("modList");
+      XElement datafiles = root.Element("dataFiles");
 
       // Set current version
       root.SetAttributeValue("fileVersion", InstallLog.CURRENT_VERSION);

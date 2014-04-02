@@ -148,9 +148,8 @@ namespace Fomm.Games.Fallout3.Tools.BSA
 
     internal BSAArchive(string path)
     {
-      BSAHeader4 header;
       br = new BinaryReader(File.OpenRead(path), Encoding.Default);
-      header = new BSAHeader4(br);
+      BSAHeader4 header = new BSAHeader4(br);
       if (header.bsaVersion != 0x68 && header.bsaVersion != 0x67)
       {
         throw new BSALoadException();

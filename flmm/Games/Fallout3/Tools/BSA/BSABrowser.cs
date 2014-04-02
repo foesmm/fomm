@@ -132,8 +132,7 @@ namespace Fomm.Games.Fallout3.Tools.BSA
         }
         else
         {
-          byte[] uncompressed;
-          uncompressed = RealSize == 0 ? new byte[br.ReadUInt32()] : new byte[RealSize];
+          byte[] uncompressed = RealSize == 0 ? new byte[br.ReadUInt32()] : new byte[RealSize];
           var compressed = new byte[Size - 4];
           br.Read(compressed, 0, (int) (Size - 4));
           inf.Reset();

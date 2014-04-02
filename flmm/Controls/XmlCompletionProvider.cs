@@ -806,7 +806,6 @@ namespace Fomm.Controls
         stkAncestors.Push(llnLast.Value.Key);
       }
 
-      List<KeyValuePair<string, string>> lstComplete;
       var lstSiblings = dicSiblings[intDepth];
       m_actCompleteType = AutoCompleteType.Element;
 
@@ -836,7 +835,7 @@ namespace Fomm.Controls
         }
         m_actCompleteType = AutoCompleteType.Attribute;
       }
-      lstComplete = ParseSchema(stkAncestors, lstSiblings, m_actCompleteType);
+      List<KeyValuePair<string, string>> lstComplete = ParseSchema(stkAncestors, lstSiblings, m_actCompleteType);
 
       var k = new List<XmlCompletionData>();
       if (lstComplete.Count > 0)

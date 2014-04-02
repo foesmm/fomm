@@ -562,7 +562,6 @@ namespace Fomm.PackageManager
     public bool InstallFile(string fnFrom, string fnTo = "")
     {
       var ret = false;
-      string tmpFN;
       string strDataPath;
 
       /*
@@ -597,7 +596,7 @@ namespace Fomm.PackageManager
        * 3. Delete the temp file
        */
 
-      tmpFN = Fomod.ExtractToTemp(fnFrom);
+      string tmpFN = Fomod.ExtractToTemp(fnFrom);
       if (GenerateDataFilePrep(fnTo, out strDataPath))
       {
         Installer.TransactionalFileManager.Copy(tmpFN, strDataPath, true);
