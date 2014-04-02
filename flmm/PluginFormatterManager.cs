@@ -71,7 +71,6 @@ namespace Fomm
         var pftMergedFormat = new PluginFormat();
         for (var i = 0; i < lstFormats.Count; pftMergedFormat.Merge(lstFormats[i++]))
         {
-          ;
         }
         return pftMergedFormat;
       }

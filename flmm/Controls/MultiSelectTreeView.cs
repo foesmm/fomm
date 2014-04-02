@@ -138,7 +138,6 @@ namespace Fomm.Controls
         var lndNode = m_lklNodes.First;
         for (var i = 0; lndNode != null && i < index; i++, lndNode = lndNode.Next)
         {
-          ;
         }
         if (lndNode == null)
         {
@@ -166,7 +165,6 @@ namespace Fomm.Controls
         var lndNode = m_lklNodes.First;
         for (var i = 0; lndNode != null && i < index; i++, lndNode = lndNode.Next)
         {
-          ;
         }
         if (lndNode != null)
         {
@@ -193,7 +191,6 @@ namespace Fomm.Controls
           var lndNode = m_lklNodes.First;
           for (var i = 0; lndNode != null && i < index; i++, lndNode = lndNode.Next)
           {
-            ;
           }
           return lndNode.Value;
         }
@@ -206,7 +203,6 @@ namespace Fomm.Controls
           var lndNode = m_lklNodes.First;
           for (var i = 0; lndNode != null && i < index; i++, lndNode = lndNode.Next)
           {
-            ;
           }
           if (value == null)
           {

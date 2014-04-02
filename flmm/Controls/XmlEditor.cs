@@ -335,7 +335,6 @@ namespace Fomm.Controls
         {
           while (xrdValidator.Read())
           {
-            ;
           }
           if (m_booMalformedXml)
           {

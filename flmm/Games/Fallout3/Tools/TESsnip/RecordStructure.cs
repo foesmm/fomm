@@ -371,7 +371,6 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       foreach (XmlNode n in root.ChildNodes)
       {
         var err = n.OuterXml.Remove(n.OuterXml.IndexOf('>') + 1);
-        ;
         try
         {
           if (n.NodeType == XmlNodeType.Comment)

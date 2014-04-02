@@ -99,7 +99,6 @@ namespace Fomm.Games.Fallout3.Settings
         {
           strDefault = Path.Combine(Path.GetPathRoot(Program.GameMode.PluginsPath), "Games\\Fallout 3\\mods");
         }
-        ;
         tbxModDirectory.Text = strDefault;
       }
       tbxInstallInfo.Text = Properties.Settings.Default.fallout3InstallInfoDirectory;
@@ -111,7 +110,6 @@ namespace Fomm.Games.Fallout3.Settings
         {
           strDefault = Path.Combine(Path.GetPathRoot(Program.GameMode.PluginsPath), "Games\\Fallout 3\\Install Info");
         }
-        ;
         tbxInstallInfo.Text = strDefault;
       }
     }

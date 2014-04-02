@@ -189,7 +189,6 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
     {
       while (input.Count > 0 && input.Dequeue() != '\n')
       {
-        ;
       }
       line++;
     }

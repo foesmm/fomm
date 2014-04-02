@@ -1390,7 +1390,6 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
       else if (smt[0].IsKeyword(Keywords.ShowMessage))
       {
         EmitShowMessage(smt);
-        ;
       }
       else if (smt[0].IsKeyword(Keywords.Set))
       {

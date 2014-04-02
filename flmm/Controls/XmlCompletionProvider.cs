@@ -398,7 +398,6 @@ namespace Fomm.Controls
                  p_lstSiblings[intLastSiblingCount].Equals(p_lstSiblings[p_lstSiblings.Count - 1]);
                  intLastSiblingCount--)
             {
-              ;
             }
             intLastSiblingCount = p_lstSiblings.Count - intLastSiblingCount - 1;
 
@@ -733,7 +732,6 @@ namespace Fomm.Controls
              (intStartPos = strText.IndexOf('"', intStartPos + 1)) > -1;
              intQuoteCount++)
         {
-          ;
         }
         booInsideValue = (intQuoteCount%2 == 1);
       }

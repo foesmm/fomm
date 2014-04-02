@@ -99,7 +99,6 @@ namespace Fomm.Games.FalloutNewVegas.Settings
         {
           strDefault = Path.Combine(Path.GetPathRoot(Program.GameMode.PluginsPath), "Games\\FalloutNV\\mods");
         }
-        ;
         tbxModDirectory.Text = strDefault;
       }
       tbxInstallInfo.Text = Properties.Settings.Default.falloutNewVegasInstallInfoDirectory;
@@ -111,7 +110,6 @@ namespace Fomm.Games.FalloutNewVegas.Settings
         {
           strDefault = Path.Combine(Path.GetPathRoot(Program.GameMode.PluginsPath), "Games\\FalloutNV\\Install Info");
         }
-        ;
         tbxInstallInfo.Text = strDefault;
       }
     }

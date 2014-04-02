@@ -541,7 +541,6 @@ namespace Fomm.SharpZipLib.Zip.Compression
           // Find the first bit length which could increase:
           while (bl_counts[--incrBitLen] == 0)
           {
-            ;
           }
 
           // Move this node one down and remove a corresponding
