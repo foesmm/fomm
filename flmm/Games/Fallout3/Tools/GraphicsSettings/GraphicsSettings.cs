@@ -1,14 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
-using ChinhDo.Transactions;
 using Fomm.PackageManager;
-using fomm.Transactions;
 using Fomm.PackageManager.ModInstallLog;
 using Fomm.Games.Fallout3.Script;
 

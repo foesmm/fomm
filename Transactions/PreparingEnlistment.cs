@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace fomm.Transactions
+﻿namespace fomm.Transactions
 {
   /// <summary>
   /// This class is used to communicate 

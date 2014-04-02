@@ -1,6 +1,5 @@
 using System;
 using System.Windows.Forms;
-using System.Collections.Generic;
 
 namespace Fomm.Games.Fallout3.Tools.TESsnip
 {

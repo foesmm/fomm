@@ -1,8 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.Windows.Forms;
-using ICSharpCode.TextEditor.Document;
-using Fomm.Controls;
 
 namespace Fomm.PackageManager
 {

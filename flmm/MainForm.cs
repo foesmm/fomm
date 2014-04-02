@@ -3,11 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using System.IO;
 using System.Runtime.Remoting;
-using Fomm.PackageManager;
-using System.Drawing;
 using System.Text;
-using System.Text.RegularExpressions;
-using Fomm.PackageManager.ModInstallLog;
 using Fomm.Games;
 using Fomm.Commands;
 

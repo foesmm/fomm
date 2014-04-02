@@ -4,7 +4,6 @@ using System.Text;
 using System.IO;
 using System.Windows.Forms;
 using System.Collections.Generic;
-using SevenZip;
 
 namespace Fomm.PackageManager.FomodBuilder
 {

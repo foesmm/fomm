@@ -2,9 +2,7 @@
 using Fomm.PackageManager;
 using DialogResult = System.Windows.Forms.DialogResult;
 using System.Windows.Forms;
-using System.Drawing;
 using System.IO;
-using Fomm.Games.Fallout3.Tools.TESsnip;
 
 namespace fomm.Scripting
 {

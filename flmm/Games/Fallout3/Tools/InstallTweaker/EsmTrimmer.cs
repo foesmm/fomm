@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Fomm.Games.Fallout3.Tools.TESsnip;
 using System.IO;
 

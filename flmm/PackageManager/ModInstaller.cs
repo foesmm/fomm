@@ -1,12 +1,7 @@
 ﻿using System;
-using ChinhDo.Transactions;
-using System.Xml;
-using System.Security;
-using System.Security.Permissions;
 using System.IO;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using fomm.Transactions;
 using Fomm.PackageManager.XmlConfiguredInstall;
 using Fomm.PackageManager.ModInstallLog;
 

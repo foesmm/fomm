@@ -2,7 +2,6 @@
 using System.Windows.Forms;
 using System.IO;
 using System.Xml.Schema;
-using Fomm.PackageManager.XmlConfiguredInstall;
 using System.Text.RegularExpressions;
 using Fomm.Controls;
 using Fomm.PackageManager.XmlConfiguredInstall.Parsers;

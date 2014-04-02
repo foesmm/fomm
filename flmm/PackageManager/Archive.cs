@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using Fomm.Util;
 using System.Text;
-using System.Threading;
 using System.Text.RegularExpressions;
 using System.ComponentModel;
 

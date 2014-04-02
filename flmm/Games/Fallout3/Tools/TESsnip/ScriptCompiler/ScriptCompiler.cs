@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Xml;
-using Fomm.Games.Fallout3.Tools.TESsnip;
 using BinaryWriter = System.IO.BinaryWriter;
 using MemoryStream = System.IO.MemoryStream;
 using System.Windows.Forms;

@@ -13,9 +13,7 @@ using Fomm.Games.Fallout3.Settings;
 using Fomm.Games.Fallout3.Script;
 using Fomm.Games.Fallout3.Script.XmlConfiguredInstall;
 using Fomm.Games.Fallout3.Script.XmlConfiguredInstall.Parsers;
-using Fomm.Games.Fallout3.Tools.CriticalRecords;
 using Fomm.Games.Fallout3.PluginFormatProviders;
-using Fomm.Games.Fallout3.Tools.TESsnip;
 using Fomm.Commands;
 
 namespace Fomm.Games.Fallout3

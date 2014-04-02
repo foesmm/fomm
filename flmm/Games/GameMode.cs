@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.IO;
 using Fomm.PackageManager;
 using Fomm.PackageManager.XmlConfiguredInstall;
@@ -8,7 +7,6 @@ using Fomm.PackageManager.XmlConfiguredInstall.Parsers;
 using System.Drawing;
 using System.Windows.Forms;
 using Fomm.Controls;
-using Microsoft.Win32;
 using Fomm.Commands;
 using Fomm.Games.Fallout3.Tools.TESsnip;
 

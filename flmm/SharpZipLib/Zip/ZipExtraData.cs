@@ -35,7 +35,6 @@
 // exception statement from your version.
 
 using System;
-using System.Collections;
 using System.IO;
 
 namespace ICSharpCode.SharpZipLib.Zip

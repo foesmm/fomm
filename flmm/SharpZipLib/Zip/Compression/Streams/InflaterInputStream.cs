@@ -40,10 +40,7 @@
 using System;
 using System.IO;
 #if !NETCF_1_0
-using System.Security.Cryptography;
 #endif
-using ICSharpCode.SharpZipLib.Zip.Compression;
-using ICSharpCode.SharpZipLib.Checksums;
 
 namespace ICSharpCode.SharpZipLib.Zip.Compression.Streams
 {

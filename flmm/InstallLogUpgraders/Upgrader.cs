@@ -1,7 +1,4 @@
-﻿using System;
-using ChinhDo.Transactions;
-using System.Xml;
-using Fomm.PackageManager;
+﻿using ChinhDo.Transactions;
 using fomm.Transactions;
 using System.Windows.Forms;
 using Fomm.PackageManager.ModInstallLog;

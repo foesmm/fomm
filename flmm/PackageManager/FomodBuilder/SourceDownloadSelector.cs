@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.Drawing;
-using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
 

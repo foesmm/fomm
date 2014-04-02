@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Drawing;
-using Fomm.Games.Fallout3.Tools.TESsnip;
+﻿using System.Drawing;
 
 namespace Fomm.Games.Fallout3.PluginFormatProviders
 {

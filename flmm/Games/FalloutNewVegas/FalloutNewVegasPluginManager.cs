@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Windows.Forms;
-using Fomm.Games.Fallout3.Tools.TESsnip;
-using System.Text;
-using Fomm.Util;
 
 namespace Fomm.Games.Fallout3
 {

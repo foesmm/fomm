@@ -1,12 +1,6 @@
 ﻿using System;
 using Fomm.PackageManager;
 using System.IO;
-using Fomm.Games.Fallout3.Tools.TESsnip;
-using Fomm.PackageManager.ModInstallLog;
-using System.Windows.Forms;
-using Fomm.Games.Fallout3.Tools.BSA;
-using System.Collections.Generic;
-using Fomm.Games.Fallout3.Tools.AutoSorter;
 using Fomm.Games.Fallout3.Script;
 
 namespace Fomm.Games.FalloutNewVegas.Script

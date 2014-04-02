@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.Collections.Generic;
-using SevenZip;
 using System.Collections;
-using System.Text;
 using System.IO;
 using System.Drawing;
 using Fomm.Controls;
 using System.Text.RegularExpressions;
-using Fomm.Util;
 using System.ComponentModel;
 
 namespace Fomm.PackageManager.FomodBuilder

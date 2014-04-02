@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using Fomm.Games.Fallout3.Tools.TESsnip;
 
 namespace Fomm.Games.FalloutNewVegas.PluginFormatProviders

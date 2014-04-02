@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.IO;
-using Fomm.PackageManager;
 using Fomm.Games.Fallout3.Tools.TESsnip;
 
 namespace Fomm.Games.Fallout3.Tools.CriticalRecords

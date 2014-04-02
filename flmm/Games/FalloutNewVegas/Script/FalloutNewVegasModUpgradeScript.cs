@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Fomm.PackageManager;
 using Fomm.PackageManager.ModInstallLog;
-using System.IO;
 
 namespace Fomm.Games.FalloutNewVegas.Script
 {

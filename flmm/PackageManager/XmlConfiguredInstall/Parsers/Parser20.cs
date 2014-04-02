@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Xml;
 using System.Collections.Generic;
-using System.Xml.Schema;
-using System.IO;
 using System.Drawing;
 
 namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers

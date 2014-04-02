@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace fomm.Transactions
+﻿namespace fomm.Transactions
 {
   /// <summary>
   /// An interface used by resource managers that want to participate in a transaction.

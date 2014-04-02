@@ -3,13 +3,9 @@ using System.Windows.Forms;
 using Fomm.Controls;
 using System.ComponentModel;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using System.IO;
 using Fomm.Util;
-using Fomm.PackageManager.XmlConfiguredInstall;
-using System.Xml.Schema;
 using System.Xml;
-using System.Drawing;
 using Fomm.PackageManager.Controls;
 using GeMod.Interface;
 

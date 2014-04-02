@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Fomm.Games.Fallout3.Tools.CriticalRecords
 {

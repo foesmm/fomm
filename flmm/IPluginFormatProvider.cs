@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Fomm
+﻿namespace Fomm
 {
   /// <summary>
   /// The interface for plugin format providers.

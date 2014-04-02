@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Xml;
-using SevenZip;
 using System.IO;
-using System.Windows.Forms;
 using Fomm.Util;
-using System.Drawing;
-using System.Drawing.Imaging;
 using GeMod.Interface;
 
 namespace Fomm.PackageManager.FomodBuilder

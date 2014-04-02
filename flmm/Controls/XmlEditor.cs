@@ -8,7 +8,6 @@ using System.Xml;
 using ICSharpCode.TextEditor.Document;
 using System.IO;
 using System.Text;
-using System.Collections.Generic;
 
 namespace Fomm.Controls
 {

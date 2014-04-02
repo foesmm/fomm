@@ -1,13 +1,6 @@
 ﻿using System;
-using System.IO;
 using System.Xml;
-using ICSharpCode.SharpZipLib.Checksums;
-using ChinhDo.Transactions;
 using System.Collections.Generic;
-using System.Windows.Forms;
-using fomm.Transactions;
-using System.ComponentModel;
-using Fomm.PackageManager;
 using Fomm.PackageManager.ModInstallLog;
 
 namespace Fomm.InstallLogUpgraders

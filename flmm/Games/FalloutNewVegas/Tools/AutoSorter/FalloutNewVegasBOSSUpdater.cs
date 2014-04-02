@@ -1,8 +1,4 @@
-﻿using System;
-using System.Net;
-using System.Text.RegularExpressions;
-using System.IO;
-using Fomm.Games.Fallout3.Tools.AutoSorter;
+﻿using Fomm.Games.Fallout3.Tools.AutoSorter;
 
 namespace Fomm.Games.FalloutNewVegas.Tools.AutoSorter
 {

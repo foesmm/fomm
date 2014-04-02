@@ -4,7 +4,6 @@ using System.Xml;
 using System.IO;
 using SevenZip;
 using System.Text;
-using Fomm.PackageManager.XmlConfiguredInstall;
 using Fomm.Util;
 using Fomm.PackageManager.XmlConfiguredInstall.Parsers;
 using GeMod.Interface;

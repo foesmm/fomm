@@ -1,12 +1,8 @@
 ﻿using System;
-using ChinhDo.Transactions;
 using System.IO;
 using System.Collections.Generic;
-using fomm.Transactions;
 using System.Windows.Forms;
-using System.Text;
 using Fomm.PackageManager.ModInstallLog;
-using System.ComponentModel;
 using System.Drawing;
 using Fomm.Util;
 

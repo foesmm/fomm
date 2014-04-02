@@ -4,14 +4,9 @@ using System.Windows.Forms;
 using System.IO;
 using Fomm.PackageManager.Upgrade;
 using SevenZip;
-using System.Text.RegularExpressions;
-using System.Drawing;
-using System.Diagnostics;
 using Fomm.PackageManager.FomodBuilder;
-using Fomm.PackageManager.Controls;
 using Fomm.Util;
 using System.ComponentModel;
-using GeMod.Interface;
 
 namespace Fomm.PackageManager
 {

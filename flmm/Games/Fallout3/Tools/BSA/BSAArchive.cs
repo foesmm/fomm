@@ -1,9 +1,7 @@
 using System;
-using System.Collections.Generic;
 using StringList = System.Collections.Generic.List<string>;
 using HashTable = System.Collections.Generic.Dictionary<ulong, Fomm.Games.Fallout3.Tools.BSA.BSAArchive.BSAFileInfo>;
 using System.IO;
-using System.IO.Compression;
 
 namespace Fomm.Games.Fallout3.Tools.BSA
 {

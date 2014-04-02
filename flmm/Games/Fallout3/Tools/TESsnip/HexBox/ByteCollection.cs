@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 
 namespace Be.Windows.Forms
