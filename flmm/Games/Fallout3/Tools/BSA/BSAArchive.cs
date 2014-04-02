@@ -1,6 +1,6 @@
 using System;
 using System.Text;
-using Fomm.Annotations;
+using Fomm.Properties;
 using Fomm.SharpZipLib.Checksums;
 using Fomm.SharpZipLib.Zip.Compression;
 using StringList = System.Collections.Generic.List<string>;
