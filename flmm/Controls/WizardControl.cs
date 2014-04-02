@@ -120,7 +120,7 @@ namespace Fomm.Controls
       m_butCancel.Anchor = AnchorStyles.Right | AnchorStyles.Bottom;
       m_butCancel.Size = new Size(75, 23);
       m_butCancel.Location = new Point(m_pnlNavigation.Width - 12 - m_butCancel.Width, 12);
-      m_butCancel.Click += new EventHandler(Cancel_Click);
+      m_butCancel.Click += Cancel_Click;
       m_pnlNavigation.Controls.Add(m_butCancel);
 
       m_butNext = new Button();
@@ -128,7 +128,7 @@ namespace Fomm.Controls
       m_butNext.Anchor = AnchorStyles.Right | AnchorStyles.Bottom;
       m_butNext.Size = new Size(75, 23);
       m_butNext.Location = new Point(m_butCancel.Left - 12 - m_butNext.Width, 12);
-      m_butNext.Click += new EventHandler(Next_Click);
+      m_butNext.Click += Next_Click;
       m_pnlNavigation.Controls.Add(m_butNext);
 
       m_butPrevious = new Button();
@@ -136,7 +136,7 @@ namespace Fomm.Controls
       m_butPrevious.Anchor = AnchorStyles.Right | AnchorStyles.Bottom;
       m_butPrevious.Size = new Size(75, 23);
       m_butPrevious.Location = new Point(m_butNext.Left - 6 - m_butPrevious.Width, 12);
-      m_butPrevious.Click += new EventHandler(Previous_Click);
+      m_butPrevious.Click += Previous_Click;
       m_pnlNavigation.Controls.Add(m_butPrevious);
 
       Dock = DockStyle.Fill;

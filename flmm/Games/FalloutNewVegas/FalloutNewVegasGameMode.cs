@@ -392,10 +392,10 @@ namespace Fomm.Games.FalloutNewVegas
             fswClientBlob.EnableRaisingEvents = true;
             fswClientBlob.Filter = "ClientRegistry.blob";
             var intSteamClientBlobChangeCount = 0;
-            fswClientBlob.Changed += new FileSystemEventHandler((s, e) =>
+            fswClientBlob.Changed += (s, e) =>
             {
               intSteamClientBlobChangeCount++;
-            });
+            };
 
             if (Process.Start(psi) != null)
             {

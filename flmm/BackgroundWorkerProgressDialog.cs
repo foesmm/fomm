@@ -316,9 +316,9 @@ namespace Fomm
       m_bgwWorker = new BackgroundWorker();
       m_bgwWorker.WorkerReportsProgress = true;
       m_bgwWorker.WorkerSupportsCancellation = true;
-      m_bgwWorker.DoWork += new DoWorkEventHandler(m_bgwWorker_DoWork);
-      m_bgwWorker.ProgressChanged += new ProgressChangedEventHandler(m_bgwWorker_ProgressChanged);
-      m_bgwWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(m_bgwWorker_RunWorkerCompleted);
+      m_bgwWorker.DoWork += m_bgwWorker_DoWork;
+      m_bgwWorker.ProgressChanged += m_bgwWorker_ProgressChanged;
+      m_bgwWorker.RunWorkerCompleted += m_bgwWorker_RunWorkerCompleted;
     }
 
     /// <summary>

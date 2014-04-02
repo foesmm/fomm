@@ -109,7 +109,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         {
           tb.Enabled = false;
         }
-        cb.CheckedChanged += new EventHandler(CheckBox_CheckedChanged);
+        cb.CheckedChanged += CheckBox_CheckedChanged;
       }
       if (es.optional || es.repeat && repeatcount > 0)
       {
@@ -127,7 +127,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         {
           cb.Checked = true;
         }
-        cb.CheckedChanged += new EventHandler(RepeatCheckBox_CheckedChanged);
+        cb.CheckedChanged += RepeatCheckBox_CheckedChanged;
       }
       if ((CurrentGroup == 0 && es.group != 0) || (CurrentGroup != 0 && es.group != 0 && CurrentGroup != es.group))
       {
@@ -217,7 +217,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         ypos += 28;
         var b = new Button();
         b.Text = "FormID lookup";
-        b.Click += new EventHandler(LookupFormID_Click);
+        b.Click += LookupFormID_Click;
         panel1.Controls.Add(b);
         b.Location = new Point(20, ypos);
         var tb2 = new TextBox();
@@ -253,9 +253,9 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         {
           cmb.Items.Add(new comboBoxItem(options[j], options[j + 1]));
         }
-        cmb.KeyPress += new KeyPressEventHandler(cb_KeyPress);
+        cmb.KeyPress += cb_KeyPress;
         cmb.ContextMenu = new ContextMenu();
-        cmb.SelectedIndexChanged += new EventHandler(cb_SelectedIndexChanged);
+        cmb.SelectedIndexChanged += cb_SelectedIndexChanged;
         panel1.Controls.Add(cmb);
         cmb.Location = new Point(20, ypos);
       }

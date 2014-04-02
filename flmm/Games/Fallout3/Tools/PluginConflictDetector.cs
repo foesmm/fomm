@@ -63,8 +63,8 @@ namespace Fomm.Games.Fallout3.Tools
 
       m_bwdProgress.OverallProgressMaximum = lstPlugins.Count;
       var cdrDetector = new ConflictDetector();
-      cdrDetector.ConflictDetected += new EventHandler<ConflictDetectedEventArgs>(cdrDetector_ConflictDetected);
-      cdrDetector.PluginProcessed += new EventHandler<PluginProcessedEventArgs>(cdrDetector_PluginProcessed);
+      cdrDetector.ConflictDetected += cdrDetector_ConflictDetected;
+      cdrDetector.PluginProcessed += cdrDetector_PluginProcessed;
       cdrDetector.DetectConflicts(lstPlugins);
     }
 

@@ -248,8 +248,8 @@ namespace Fomm
         Settings.Default.Save();
       }
 
-      AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
-      Application.ThreadException += new ThreadExceptionEventHandler(Application_ThreadException);
+      AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+      Application.ThreadException += Application_ThreadException;
       if (Array.IndexOf<string>(args, "-mono") != -1)
       {
         monoMode = true;

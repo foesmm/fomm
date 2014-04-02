@@ -868,8 +868,8 @@ namespace Fomm.PackageManager
 
       using (var szeExtractor = new SevenZipExtractor(fomodMod.filepath))
       {
-        szeExtractor.FileExtractionFinished += new EventHandler<FileInfoEventArgs>(UnpackFomod_FileExtractionFinished);
-        szeExtractor.FileExtractionStarted += new EventHandler<FileInfoEventArgs>(UnpackFomod_FileExtractionStarted);
+        szeExtractor.FileExtractionFinished += UnpackFomod_FileExtractionFinished;
+        szeExtractor.FileExtractionStarted += UnpackFomod_FileExtractionStarted;
         szeExtractor.ExtractArchive(strOutput);
       }
     }

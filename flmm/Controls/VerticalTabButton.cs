@@ -68,7 +68,7 @@ namespace Fomm.Controls
       m_tpgPage = p_tpgPage;
       StatusButton.Button.FlatStyle = FlatStyle.Flat;
       StatusButton.Button.FlatAppearance.BorderSize = 0;
-      m_tpgPage.BackColorChanged += new EventHandler(m_tpgPage_BackColorChanged);
+      m_tpgPage.BackColorChanged += m_tpgPage_BackColorChanged;
     }
 
     #endregion

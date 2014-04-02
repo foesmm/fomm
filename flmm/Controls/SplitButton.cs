@@ -83,12 +83,12 @@ namespace Fomm.Controls
         {
           if (base.ContextMenuStrip != null)
           {
-            base.ContextMenuStrip.ItemClicked -= new ToolStripItemClickedEventHandler(ContextMenuStrip_ItemClicked);
+            base.ContextMenuStrip.ItemClicked -= ContextMenuStrip_ItemClicked;
           }
           base.ContextMenuStrip = value;
           if (base.ContextMenuStrip != null)
           {
-            base.ContextMenuStrip.ItemClicked += new ToolStripItemClickedEventHandler(ContextMenuStrip_ItemClicked);
+            base.ContextMenuStrip.ItemClicked += ContextMenuStrip_ItemClicked;
             if (m_intSelectedItemIndex >= base.ContextMenuStrip.Items.Count)
             {
               m_intSelectedItemIndex = 0;
@@ -536,7 +536,7 @@ namespace Fomm.Controls
 
       if (ContextMenuStrip != null)
       {
-        ContextMenuStrip.Closing += new ToolStripDropDownClosingEventHandler(ContextMenuStrip_Closing);
+        ContextMenuStrip.Closing += ContextMenuStrip_Closing;
         ContextMenuStrip.Show(this, new Point(0, Height), ToolStripDropDownDirection.BelowRight);
       }
     }
@@ -565,7 +565,7 @@ namespace Fomm.Controls
       var cmsDropDownItems = sender as ContextMenuStrip;
       if (cmsDropDownItems != null)
       {
-        cmsDropDownItems.Closing -= new ToolStripDropDownClosingEventHandler(ContextMenuStrip_Closing);
+        cmsDropDownItems.Closing -= ContextMenuStrip_Closing;
       }
 
       SetButtonDrawState();

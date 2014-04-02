@@ -68,7 +68,7 @@ namespace Fomm.Commands
       }
       m_objTrigger = p_objTrigger;
       m_cmdCommand = p_cmdCommand;
-      m_cmdCommand.PropertyChanged += new PropertyChangedEventHandler(CommandPropertyChanged);
+      m_cmdCommand.PropertyChanged += CommandPropertyChanged;
     }
 
     #endregion

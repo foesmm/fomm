@@ -377,9 +377,9 @@ namespace Fomm.Controls
       DoubleBuffered = true;
       m_tncSelectedNodes = new TreeNodeCollection();
       m_tncSelectedNodes.ItemAdded +=
-        new EventHandler<TreeNodeCollection.TreeNodeEventArgs>(m_tncSelectedNodes_ItemAdded);
+        m_tncSelectedNodes_ItemAdded;
       m_tncSelectedNodes.ItemRemoved +=
-        new EventHandler<TreeNodeCollection.TreeNodeEventArgs>(m_tncSelectedNodes_ItemRemoved);
+        m_tncSelectedNodes_ItemRemoved;
     }
 
     #endregion

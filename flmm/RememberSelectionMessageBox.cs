@@ -143,7 +143,7 @@ namespace Fomm
           butCancel.Text = "Cancel";
           butCancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
           butCancel.Location = new Point(intLastButtonLeft - butCancel.Width - 6, 12);
-          butCancel.Click += new EventHandler(Button_Click);
+          butCancel.Click += Button_Click;
           butCancel.Tag = DialogResult.Cancel;
           butCancel.TabIndex = 6;
           pnlButtons.Controls.Add(butCancel);
@@ -161,7 +161,7 @@ namespace Fomm
           butNo.Text = "No";
           butNo.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
           butNo.Location = new Point(intLastButtonLeft - butNo.Width - 6, 12);
-          butNo.Click += new EventHandler(Button_Click);
+          butNo.Click += Button_Click;
           butNo.Tag = DialogResult.No;
           butNo.TabIndex = 5;
           intLastButtonLeft = butNo.Left;
@@ -182,7 +182,7 @@ namespace Fomm
           butYes.Text = "Yes";
           butYes.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
           butYes.Location = new Point(intLastButtonLeft - butYes.Width - 6, 12);
-          butYes.Click += new EventHandler(Button_Click);
+          butYes.Click += Button_Click;
           butYes.Tag = DialogResult.Yes;
           butYes.TabIndex = 4;
           intLastButtonLeft = butYes.Left;
@@ -200,7 +200,7 @@ namespace Fomm
           butOk.Text = "OK";
           butOk.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
           butOk.Location = new Point(intLastButtonLeft - butOk.Width - 6, 12);
-          butOk.Click += new EventHandler(Button_Click);
+          butOk.Click += Button_Click;
           butOk.Tag = DialogResult.OK;
           butOk.TabIndex = 3;
           intLastButtonLeft = butOk.Left;
@@ -217,7 +217,7 @@ namespace Fomm
           butIgnore.Text = "Ignore";
           butIgnore.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
           butIgnore.Location = new Point(intLastButtonLeft - butIgnore.Width - 6, 12);
-          butIgnore.Click += new EventHandler(Button_Click);
+          butIgnore.Click += Button_Click;
           butIgnore.Tag = DialogResult.Ignore;
           butIgnore.TabIndex = 2;
           intLastButtonLeft = butIgnore.Left;
@@ -235,7 +235,7 @@ namespace Fomm
           butRetry.Text = "Retry";
           butRetry.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
           butRetry.Location = new Point(intLastButtonLeft - butRetry.Width - 6, 12);
-          butRetry.Click += new EventHandler(Button_Click);
+          butRetry.Click += Button_Click;
           butRetry.Tag = DialogResult.Retry;
           butRetry.TabIndex = 1;
           intLastButtonLeft = butRetry.Left;
@@ -252,7 +252,7 @@ namespace Fomm
           butAbort.Text = "Abort";
           butAbort.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
           butAbort.Location = new Point(intLastButtonLeft - butAbort.Width - 6, 12);
-          butAbort.Click += new EventHandler(Button_Click);
+          butAbort.Click += Button_Click;
           butAbort.Tag = DialogResult.Abort;
           butAbort.TabIndex = 0;
           intLastButtonLeft = butAbort.Left;

@@ -160,7 +160,7 @@ namespace Fomm.PackageManager.ModInstallLog
     {
       m_fswLogWatcher = new FileSystemWatcher(Path.GetDirectoryName(xmlpath));
       m_fswLogWatcher.Filter = Path.GetFileName(xmlpath);
-      m_fswLogWatcher.Changed += new FileSystemEventHandler(InstallLogWatcher_Changed);
+      m_fswLogWatcher.Changed += InstallLogWatcher_Changed;
       m_fswLogWatcher.EnableRaisingEvents = true;
       Load();
     }

@@ -45,7 +45,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
         var ofsStep = new OptionFormStep(m_dsmStateManager, stpStep.GroupedPlugins);
         ofsStep.Dock = DockStyle.Fill;
         ofsStep.Visible = false;
-        ofsStep.ItemChecked += new EventHandler(ofsStep_ItemChecked);
+        ofsStep.ItemChecked += ofsStep_ItemChecked;
         pnlWizardSteps.Controls.Add(ofsStep);
         m_lstInstallSteps.Add(new KeyValuePair<InstallStep, OptionFormStep>(stpStep, ofsStep));
       }

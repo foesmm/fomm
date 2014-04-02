@@ -86,8 +86,8 @@ namespace Fomm.Controls
     public DropDownTabControlDesigner()
       : base()
     {
-      var dvbAddPage = new DesignerVerb("Add Tab Page", new EventHandler(AddTabPage));
-      var dvbRemovePage = new DesignerVerb("Remove Tab Page", new EventHandler(RemoveTabPage));
+      var dvbAddPage = new DesignerVerb("Add Tab Page", AddTabPage);
+      var dvbRemovePage = new DesignerVerb("Remove Tab Page", RemoveTabPage);
       m_dvcVerbs.AddRange(new DesignerVerb[]
       {
         dvbAddPage, dvbRemovePage

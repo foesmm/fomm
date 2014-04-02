@@ -35,7 +35,7 @@ namespace Fomm.PackageManager
           rtbReadme.BackColor = SystemColors.Control;
           rtbReadme.ReadOnly = true;
           rtbReadme.TabStop = false;
-          rtbReadme.LinkClicked += new LinkClickedEventHandler(rtbReadme_LinkClicked);
+          rtbReadme.LinkClicked += rtbReadme_LinkClicked;
           if (p_rmeReadme.Format == ReadmeFormat.PlainText)
           {
             rtbReadme.Font = new Font(FontFamily.GenericMonospace, rtbReadme.Font.Size, rtbReadme.Font.Style);

@@ -226,16 +226,16 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 
       public virtual void Activate()
       {
-        _hexBox.MouseDown += new MouseEventHandler(BeginMouseSelection);
-        _hexBox.MouseMove += new MouseEventHandler(UpdateMouseSelection);
-        _hexBox.MouseUp += new MouseEventHandler(EndMouseSelection);
+        _hexBox.MouseDown += BeginMouseSelection;
+        _hexBox.MouseMove += UpdateMouseSelection;
+        _hexBox.MouseUp += EndMouseSelection;
       }
 
       public virtual void Deactivate()
       {
-        _hexBox.MouseDown -= new MouseEventHandler(BeginMouseSelection);
-        _hexBox.MouseMove -= new MouseEventHandler(UpdateMouseSelection);
-        _hexBox.MouseUp -= new MouseEventHandler(EndMouseSelection);
+        _hexBox.MouseDown -= BeginMouseSelection;
+        _hexBox.MouseMove -= UpdateMouseSelection;
+        _hexBox.MouseUp -= EndMouseSelection;
       }
 
       #endregion
@@ -1593,7 +1593,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     public HexBox()
     {
       _vScrollBar = new VScrollBar();
-      _vScrollBar.Scroll += new ScrollEventHandler(_vScrollBar_Scroll);
+      _vScrollBar.Scroll += _vScrollBar_Scroll;
 
       BackColor = Color.White;
       Font = new Font("Courier New", 9F, FontStyle.Regular, GraphicsUnit.Point, ((byte) (0)));
@@ -1608,7 +1608,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
       SetStyle(ControlStyles.ResizeRedraw, true);
 
       _thumbTrackTimer.Interval = 50;
-      _thumbTrackTimer.Tick += new EventHandler(PerformScrollThumbTrack);
+      _thumbTrackTimer.Tick += PerformScrollThumbTrack;
     }
 
     #endregion
@@ -3250,13 +3250,13 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 
         if (_byteProvider != null)
         {
-          _byteProvider.LengthChanged -= new EventHandler(_byteProvider_LengthChanged);
+          _byteProvider.LengthChanged -= _byteProvider_LengthChanged;
         }
 
         _byteProvider = value;
         if (_byteProvider != null)
         {
-          _byteProvider.LengthChanged += new EventHandler(_byteProvider_LengthChanged);
+          _byteProvider.LengthChanged += _byteProvider_LengthChanged;
         }
 
         OnByteProviderChanged(EventArgs.Empty);

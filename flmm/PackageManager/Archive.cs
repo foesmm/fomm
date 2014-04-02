@@ -413,8 +413,8 @@ namespace Fomm.PackageManager
           m_strReadOnlyTempDirectory = Program.CreateTempDirectory();
           using (var szeExtractor = GetExtractor(m_strPath))
           {
-            szeExtractor.FileExtractionFinished += new EventHandler<FileInfoEventArgs>(FileExtractionFinished);
-            szeExtractor.FileExtractionStarted += new EventHandler<FileInfoEventArgs>(FileExtractionStarted);
+            szeExtractor.FileExtractionFinished += FileExtractionFinished;
+            szeExtractor.FileExtractionStarted += FileExtractionStarted;
             szeExtractor.ExtractArchive(m_strReadOnlyTempDirectory);
           }
         }

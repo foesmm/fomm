@@ -492,8 +492,8 @@ namespace Fomm.Controls
     {
       BackColor = Color.FromKnownColor(KnownColor.Window);
       m_tpcPages = new TabPageCollection();
-      m_tpcPages.TabPageAdded += new EventHandler<TabPageEventArgs>(AddTabPage);
-      m_tpcPages.TabPageRemoved += new EventHandler<TabPageEventArgs>(RemoveTabPage);
+      m_tpcPages.TabPageAdded += AddTabPage;
+      m_tpcPages.TabPageRemoved += RemoveTabPage;
 
       m_ptsTabContainer = new PanelToolStrip();
       m_ptsTabContainer.BorderStyle = BorderStyle.Fixed3D;

@@ -114,7 +114,7 @@ namespace Fomm
         try
         {
           newFommTimer.Interval = 1000;
-          newFommTimer.Tick += new EventHandler(newFommTimer_Tick);
+          newFommTimer.Tick += newFommTimer_Tick;
           newFommTimer.Start();
           Messaging.ServerSetup(RecieveMessage);
         }

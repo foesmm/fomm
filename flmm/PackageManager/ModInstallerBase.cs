@@ -200,8 +200,8 @@ namespace Fomm.PackageManager
                       m_bwdProgress.OverallProgressStep = 1;
                       try
                       {
-                        Fomod.ReadOnlyInitStepStarted += new CancelEventHandler(Fomod_ReadOnlyInitStepStarted);
-                        Fomod.ReadOnlyInitStepFinished += new CancelEventHandler(Fomod_ReadOnlyInitStepFinished);
+                        Fomod.ReadOnlyInitStepStarted += Fomod_ReadOnlyInitStepStarted;
+                        Fomod.ReadOnlyInitStepFinished += Fomod_ReadOnlyInitStepFinished;
                         if (m_bwdProgress.ShowDialog() == DialogResult.Cancel)
                         {
                           booCancelled = true;
@@ -209,8 +209,8 @@ namespace Fomm.PackageManager
                       }
                       finally
                       {
-                        Fomod.ReadOnlyInitStepStarted -= new CancelEventHandler(Fomod_ReadOnlyInitStepStarted);
-                        Fomod.ReadOnlyInitStepFinished -= new CancelEventHandler(Fomod_ReadOnlyInitStepFinished);
+                        Fomod.ReadOnlyInitStepStarted -= Fomod_ReadOnlyInitStepStarted;
+                        Fomod.ReadOnlyInitStepFinished -= Fomod_ReadOnlyInitStepFinished;
                       }
                     }
                   }

@@ -225,8 +225,8 @@ namespace Fomm.PackageManager.FomodBuilder
           break;
       }
       szcCompressor.CompressionMode = CompressionMode.Create;
-      szcCompressor.FileCompressionStarted += new EventHandler<FileNameEventArgs>(FileCompressionStarted);
-      szcCompressor.FileCompressionFinished += new EventHandler<EventArgs>(FileCompressionFinished);
+      szcCompressor.FileCompressionStarted += FileCompressionStarted;
+      szcCompressor.FileCompressionFinished += FileCompressionFinished;
       szcCompressor.CompressDirectory(p_strFomodFolder, p_strPackedFomodPath);
     }
 
@@ -335,8 +335,8 @@ namespace Fomm.PackageManager.FomodBuilder
     {
       using (var szeExtractor = Archive.GetExtractor(p_strArchivePath))
       {
-        szeExtractor.FileExtractionFinished += new EventHandler<FileInfoEventArgs>(FileExtractionFinished);
-        szeExtractor.FileExtractionStarted += new EventHandler<FileInfoEventArgs>(FileExtractionStarted);
+        szeExtractor.FileExtractionFinished += FileExtractionFinished;
+        szeExtractor.FileExtractionStarted += FileExtractionStarted;
         ProgressDialog.ItemProgress = 0;
         ProgressDialog.ItemProgressMaximum = (Int32) szeExtractor.FilesCount;
         ProgressDialog.ItemProgressStep = 1;

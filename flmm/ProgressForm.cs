@@ -138,7 +138,7 @@ namespace Fomm
         pbProgress.Height += 21;
         lProgress.Top += 10;
       }
-      Closing += new CancelEventHandler(ProgressForm_FormClosing);
+      Closing += ProgressForm_FormClosing;
     }
 
     internal void SetProgressRange(int high)

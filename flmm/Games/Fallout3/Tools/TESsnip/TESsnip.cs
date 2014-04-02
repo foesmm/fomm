@@ -808,7 +808,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       {
         spellsToolStripMenuItem.Enabled = false;
         searchForm = new SearchForm(PluginTree);
-        searchForm.FormClosed += new FormClosedEventHandler(searchForm_FormClosed);
+        searchForm.FormClosed += searchForm_FormClosed;
         searchForm.Show();
       }
     }

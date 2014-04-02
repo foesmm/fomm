@@ -176,7 +176,7 @@ namespace Fomm.SharpZipLib.Zip
       using (outputStream_ = new ZipOutputStream(outputStream))
       {
         var scanner = new FileSystemScanner(fileFilter, directoryFilter);
-        scanner.ProcessFile += new ProcessFileHandler(ProcessFile);
+        scanner.ProcessFile += ProcessFile;
 
         scanner.Scan(sourceDirectory, recurse);
       }

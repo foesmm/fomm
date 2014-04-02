@@ -508,8 +508,8 @@ namespace Fomm.Controls
     public DropDownTabControl()
     {
       m_tpcPages = new TabPageCollection();
-      m_tpcPages.TabPageAdded += new EventHandler<TabPageEventArgs>(AddTabPage);
-      m_tpcPages.TabPageRemoved += new EventHandler<TabPageEventArgs>(RemoveTabPage);
+      m_tpcPages.TabPageAdded += AddTabPage;
+      m_tpcPages.TabPageRemoved += RemoveTabPage;
 
       m_pnlDropDownPanel = new Panel();
       m_pnlDropDownPanel.Dock = DockStyle.Top;
@@ -523,7 +523,7 @@ namespace Fomm.Controls
       m_cbxSelector = new ComboBox();
       m_cbxSelector.Location = new Point(13, m_lblLabel.Top + 13 + 4);
       m_cbxSelector.DisplayMember = "Text";
-      m_cbxSelector.SelectedIndexChanged += new EventHandler(TabSelected);
+      m_cbxSelector.SelectedIndexChanged += TabSelected;
 
       m_pnlDropDownPanel.Height = m_cbxSelector.Location.Y + m_cbxSelector.Height + 4;
       m_pnlDropDownPanel.Controls.Add(m_lblLabel);
@@ -585,8 +585,8 @@ namespace Fomm.Controls
       {
         m_tpcPages.Add(ctlPage);
       }
-      ctlPage.PageIndexChanged += new EventHandler(PageIndexChanged);
-      ctlPage.TextChanged += new EventHandler(PageTextChanged);
+      ctlPage.PageIndexChanged += PageIndexChanged;
+      ctlPage.TextChanged += PageTextChanged;
       InsertTabPageInSelector(ctlPage);
       ctlPage.Dock = DockStyle.Fill;
       Controls.Add(e.TabPage);
@@ -606,8 +606,8 @@ namespace Fomm.Controls
     private void RemoveTabPage(object sender, TabPageEventArgs e)
     {
       var ctlPage = e.TabPage;
-      ctlPage.PageIndexChanged -= new EventHandler(PageIndexChanged);
-      ctlPage.TextChanged -= new EventHandler(PageTextChanged);
+      ctlPage.PageIndexChanged -= PageIndexChanged;
+      ctlPage.TextChanged -= PageTextChanged;
       m_cbxSelector.Items.Remove(ctlPage);
       for (var i = 0; i < m_tpcPages.Count; i++)
       {

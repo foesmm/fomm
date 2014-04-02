@@ -255,7 +255,7 @@ namespace Fomm.Controls
         {
           var tsiStripItem = (PanelToolStripItem) ctlButton.Tag;
           m_lstOrderAdded.Add(ctlButton);
-          ((PanelToolStripItem) ctlButton.Tag).IndexChanged += new EventHandler(ToolStripPanel_IndexChanged);
+          ((PanelToolStripItem) ctlButton.Tag).IndexChanged += ToolStripPanel_IndexChanged;
 
           ctlButton.Dock = (m_otnDirection == Orientation.Horizontal) ? DockStyle.Left : DockStyle.Top;
           tsiStripItem.SetUnselected();
@@ -270,7 +270,7 @@ namespace Fomm.Controls
         var ctlButton = e.Control;
         if (ctlButton.Tag is PanelToolStripItem)
         {
-          ((PanelToolStripItem) ctlButton.Tag).IndexChanged -= new EventHandler(ToolStripPanel_IndexChanged);
+          ((PanelToolStripItem) ctlButton.Tag).IndexChanged -= ToolStripPanel_IndexChanged;
         }
         base.OnControlRemoved(e);
       }
@@ -286,7 +286,7 @@ namespace Fomm.Controls
       /// <param name="p_pdiItem">The <see cref="PanelToolStripItem"/> to add.</param>
       public void addToolStripItem(PanelToolStripItem p_pdiItem)
       {
-        p_pdiItem.Selected += new EventHandler<EventArgs>(psiButton_Selected);
+        p_pdiItem.Selected += psiButton_Selected;
         Controls.Add(p_pdiItem.Button);
       }
 
@@ -296,7 +296,7 @@ namespace Fomm.Controls
       /// <param name="p_pdiItem">The <see cref="PanelToolStripItem"/> to remove.</param>
       public void removeToolStripItem(PanelToolStripItem p_pdiItem)
       {
-        p_pdiItem.Selected -= new EventHandler<EventArgs>(psiButton_Selected);
+        p_pdiItem.Selected -= psiButton_Selected;
         Controls.Remove(p_pdiItem.Button);
       }
 
@@ -754,7 +754,7 @@ namespace Fomm.Controls
     {
       BackColor = m_pnlToolStrip.BackColor;
       Controls.Add(m_pnlToolStrip);
-      m_pnlToolStrip.ControlAdded += new ControlEventHandler(m_pnlToolStrip_ControlAdded);
+      m_pnlToolStrip.ControlAdded += m_pnlToolStrip_ControlAdded;
       m_pnlToolStrip.Width = Width;
       m_pnlToolStrip.Height = Height;
 
@@ -768,8 +768,8 @@ namespace Fomm.Controls
       m_butDown.MinimumSize = (m_pnlToolStrip.Direction == Orientation.Horizontal)
         ? new Size(m_intMinScrollButtonWidth, 0)
         : new Size(0, m_intMinScrollButtonWidth);
-      m_butDown.MouseEnter += new EventHandler(scrollStart);
-      m_butDown.MouseLeave += new EventHandler(scrollStop);
+      m_butDown.MouseEnter += scrollStart;
+      m_butDown.MouseLeave += scrollStop;
       Controls.Add(m_butDown);
 
       m_butUp = new Button();
@@ -782,15 +782,15 @@ namespace Fomm.Controls
       m_butUp.MinimumSize = (m_pnlToolStrip.Direction == Orientation.Horizontal)
         ? new Size(m_intMinScrollButtonWidth, 0)
         : new Size(0, m_intMinScrollButtonWidth);
-      m_butUp.MouseEnter += new EventHandler(scrollStart);
-      m_butUp.MouseLeave += new EventHandler(scrollStop);
+      m_butUp.MouseEnter += scrollStart;
+      m_butUp.MouseLeave += scrollStop;
       Controls.Add(m_butUp);
 
       m_butDown.Dock = (m_pnlToolStrip.Direction == Orientation.Horizontal) ? DockStyle.Left : DockStyle.Bottom;
       m_butUp.Dock = (m_pnlToolStrip.Direction == Orientation.Horizontal) ? DockStyle.Right : DockStyle.Top;
 
       m_tmrScrollTimer.Interval = m_intScrollTimerInterval;
-      m_tmrScrollTimer.Tick += new EventHandler(m_tmrScrollTimer_Tick);
+      m_tmrScrollTimer.Tick += m_tmrScrollTimer_Tick;
     }
 
     #endregion

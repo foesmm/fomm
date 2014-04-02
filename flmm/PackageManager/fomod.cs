@@ -332,7 +332,7 @@ namespace Fomm.PackageManager
       }
 
       FindPathPrefix();
-      m_arcFile.FilesChanged += new EventHandler(Archive_FilesChanged);
+      m_arcFile.FilesChanged += Archive_FilesChanged;
       baseName = ModName.ToLowerInvariant();
       Author = DEFAULT_AUTHOR;
       Description = Email = Website = string.Empty;

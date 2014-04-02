@@ -44,7 +44,7 @@ namespace Fomm.Commands
       {
         p_tsiMenuItem.Checked = ((CheckedCommand<T>) Command).IsChecked;
       }
-      p_tsiMenuItem.Click += new EventHandler(ToolStripMenuItem_Click);
+      p_tsiMenuItem.Click += ToolStripMenuItem_Click;
     }
 
     #endregion

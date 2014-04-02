@@ -97,7 +97,7 @@ namespace Fomm.Controls
           m_xrsSettings = new XmlReaderSettings();
           m_xrsSettings.ConformanceLevel = ConformanceLevel.Document;
           m_xrsSettings.ValidationType = ValidationType.Schema;
-          m_xrsSettings.ValidationEventHandler += new ValidationEventHandler(HighlightValidationErrors);
+          m_xrsSettings.ValidationEventHandler += HighlightValidationErrors;
         }
         if (m_xshSchema != null)
         {
@@ -126,7 +126,7 @@ namespace Fomm.Controls
 
       SetHighlighting("XML");
       ActiveTextAreaControl.TextArea.KeyEventHandler +=
-        new KeyEventHandler(TextArea_KeyEventHandler);
+        TextArea_KeyEventHandler;
       Disposed += DisposeCodeCompletionWindow;
 
       Document.FoldingManager.FoldingStrategy = new XmlFoldingStrategy();
@@ -139,7 +139,7 @@ namespace Fomm.Controls
       m_tmrValidator.Interval = 2000;
 
       m_cdpXmlCompletionProvider.GotAutoCompleteList +=
-        new EventHandler<AutoCompleteListEventArgs>(m_cdpXmlCompletionProvider_GotAutoCompleteList);
+        m_cdpXmlCompletionProvider_GotAutoCompleteList;
     }
 
     #endregion
@@ -198,7 +198,7 @@ namespace Fomm.Controls
       //m_ccwCodeCompletionWindow is null if there are no valid completions
       if (m_ccwCodeCompletionWindow != null)
       {
-        m_ccwCodeCompletionWindow.Closed += new EventHandler(DisposeCodeCompletionWindow);
+        m_ccwCodeCompletionWindow.Closed += DisposeCodeCompletionWindow;
       }
     }
 
@@ -211,7 +211,7 @@ namespace Fomm.Controls
     {
       if (m_ccwCodeCompletionWindow != null)
       {
-        m_ccwCodeCompletionWindow.Closed -= new EventHandler(DisposeCodeCompletionWindow);
+        m_ccwCodeCompletionWindow.Closed -= DisposeCodeCompletionWindow;
         m_ccwCodeCompletionWindow.Dispose();
         m_ccwCodeCompletionWindow = null;
       }
