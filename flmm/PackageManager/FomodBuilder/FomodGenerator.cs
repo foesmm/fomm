@@ -20,25 +20,13 @@ namespace Fomm.PackageManager.FomodBuilder
     /// </summary>
     protected abstract class GenerateFomodArgs
     {
-      private string m_strPackedPath;
-
       #region Properties
 
       /// <summary>
       /// Gets or sets the path where the packed file will be created.
       /// </summary>
       /// <value>The path where the packed file will be created.</value>
-      public string PackedPath
-      {
-        get
-        {
-          return m_strPackedPath;
-        }
-        set
-        {
-          m_strPackedPath = value;
-        }
-      }
+      public string PackedPath { get; set; }
 
       #endregion
 
@@ -50,7 +38,7 @@ namespace Fomm.PackageManager.FomodBuilder
       /// <param name="p_strPackedPath">The value with which to initialize the <see cref="PackedPath"/> property.</param>
       public GenerateFomodArgs(string p_strPackedPath)
       {
-        m_strPackedPath = p_strPackedPath;
+        PackedPath = p_strPackedPath;
       }
 
       #endregion

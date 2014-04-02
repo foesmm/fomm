@@ -79,15 +79,6 @@ namespace Fomm.PackageManager
     private string m_strReadmePath;
 
     private readonly string baseName;
-    private string m_strName;
-    private string m_strAuthor;
-    private string m_strDescription;
-    private Version m_verVersion;
-    private string m_strHumanVersion;
-    private string m_strEmail;
-    private string m_strWebsite;
-    private Version m_verMinFommVersion;
-    private string[] m_strGroups;
 
     #region Properties
 
@@ -123,145 +114,55 @@ namespace Fomm.PackageManager
     /// Gets or sets the name of the fomod.
     /// </summary>
     /// <value>The name of the fomod.</value>
-    public string ModName
-    {
-      get
-      {
-        return m_strName;
-      }
-      set
-      {
-        m_strName = value;
-      }
-    }
+    public string ModName { get; set; }
 
     /// <summary>
     /// Gets or sets the human readable form of the fomod's version.
     /// </summary>
     /// <value>The human readable form of the fomod's version.</value>
-    public string HumanReadableVersion
-    {
-      get
-      {
-        return m_strHumanVersion;
-      }
-      set
-      {
-        m_strHumanVersion = value;
-      }
-    }
+    public string HumanReadableVersion { get; set; }
 
     /// <summary>
     /// Gets or sets the version of the fomod.
     /// </summary>
     /// <value>The version of the fomod.</value>
-    public Version MachineVersion
-    {
-      get
-      {
-        return m_verVersion;
-      }
-      set
-      {
-        m_verVersion = value;
-      }
-    }
+    public Version MachineVersion { get; set; }
 
     /// <summary>
     /// Gets or sets the author of the fomod.
     /// </summary>
     /// <value>The author of the fomod.</value>
-    public string Author
-    {
-      get
-      {
-        return m_strAuthor;
-      }
-      set
-      {
-        m_strAuthor = value;
-      }
-    }
+    public string Author { get; set; }
 
     /// <summary>
     /// Gets or sets the description of the fomod.
     /// </summary>
     /// <value>The description of the fomod.</value>
-    public string Description
-    {
-      get
-      {
-        return m_strDescription;
-      }
-      set
-      {
-        m_strDescription = value;
-      }
-    }
+    public string Description { get; set; }
 
     /// <summary>
     /// Gets or sets the minimum version of FOMM required to load the fomod.
     /// </summary>
     /// <value>The minimum version of FOMM required to load the fomod.</value>
-    public Version MinFommVersion
-    {
-      get
-      {
-        return m_verMinFommVersion;
-      }
-      set
-      {
-        m_verMinFommVersion = value;
-      }
-    }
+    public Version MinFommVersion { get; set; }
 
     /// <summary>
     /// Gets or sets the contact email of the fomod.
     /// </summary>
     /// <value>The contact email of the fomod.</value>
-    public string Email
-    {
-      get
-      {
-        return m_strEmail;
-      }
-      set
-      {
-        m_strEmail = value;
-      }
-    }
+    public string Email { get; set; }
 
     /// <summary>
     /// Gets or sets the website of the fomod.
     /// </summary>
     /// <value>The website of the fomod.</value>
-    public string Website
-    {
-      get
-      {
-        return m_strWebsite;
-      }
-      set
-      {
-        m_strWebsite = value;
-      }
-    }
+    public string Website { get; set; }
 
     /// <summary>
     /// Gets or sets the FOMM groups to which the fomod belongs.
     /// </summary>
     /// <value>The FOMM groups to which the fomod belongs.</value>
-    public string[] Groups
-    {
-      get
-      {
-        return m_strGroups;
-      }
-      set
-      {
-        m_strGroups = value;
-      }
-    }
+    public string[] Groups { get; set; }
 
     /// <summary>
     /// Gets the base name of the fomod.

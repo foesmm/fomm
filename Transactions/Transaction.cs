@@ -19,23 +19,11 @@ namespace fomm.Transactions
   /// </remarks>
   public class Transaction : IDisposable
   {
-    private static Transaction m_trnAmbient;
-
     /// <summary>
     /// Gets or sets the ambient transaction.
     /// </summary>
     /// <value>The ambient transaction.</value>
-    public static Transaction Current
-    {
-      get
-      {
-        return m_trnAmbient;
-      }
-      internal set
-      {
-        m_trnAmbient = value;
-      }
-    }
+    public static Transaction Current { get; set; }
 
     private List<IEnlistmentNotification> m_lstNotifications = new List<IEnlistmentNotification>();
     private TransactionInformation m_tinInfo = new TransactionInformation();

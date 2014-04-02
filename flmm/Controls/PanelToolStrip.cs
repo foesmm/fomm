@@ -83,7 +83,6 @@ namespace Fomm.Controls
       private bool m_booEnableDownScroll;
       private Int32 m_intScrollAmount = 5;
       private FlatStyle m_fstFlatStyle = FlatStyle.Flat;
-      private Int32 m_intItemBorderWidth;
 
       #region Properties
 
@@ -175,17 +174,7 @@ namespace Fomm.Controls
       /// Gets or sets the BorderWidth of the ToolStripItems.
       /// </summary>
       /// <value>The BorderWidth of the ToolStripItems.</value>
-      public Int32 ButtonBorderWidth
-      {
-        get
-        {
-          return m_intItemBorderWidth;
-        }
-        set
-        {
-          m_intItemBorderWidth = value;
-        }
-      }
+      public int ButtonBorderWidth { get; set; }
 
       #endregion
 

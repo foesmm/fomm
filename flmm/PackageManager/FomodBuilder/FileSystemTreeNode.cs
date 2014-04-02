@@ -95,7 +95,6 @@ namespace Fomm.PackageManager.FomodBuilder
     public class Source : IEquatable<Source>, IEquatable<string>
     {
       private string m_strPath;
-      private bool m_booIsLoaded;
 
       #region Properties
 
@@ -117,17 +116,7 @@ namespace Fomm.PackageManager.FomodBuilder
       /// </summary>
       /// <value>Whether the source has been loaded for the
       /// current node.</value>
-      public bool IsLoaded
-      {
-        get
-        {
-          return m_booIsLoaded;
-        }
-        set
-        {
-          m_booIsLoaded = value;
-        }
-      }
+      public bool IsLoaded { get; set; }
 
       #endregion
 
@@ -142,7 +131,7 @@ namespace Fomm.PackageManager.FomodBuilder
       public Source(string p_strPath, bool p_booIsLoaded)
       {
         m_strPath = p_strPath;
-        m_booIsLoaded = p_booIsLoaded;
+        IsLoaded = p_booIsLoaded;
       }
 
       #endregion

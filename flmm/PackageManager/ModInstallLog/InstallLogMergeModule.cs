@@ -17,7 +17,6 @@ namespace Fomm.PackageManager.ModInstallLog
       private string m_strFile;
       private string m_strSection;
       private string m_strKey;
-      private string m_strValue;
 
       #region Properties
 
@@ -61,17 +60,7 @@ namespace Fomm.PackageManager.ModInstallLog
       /// Gets or sets the value to which the key was set.
       /// </summary>
       /// <value>The value to which the key was set.</value>
-      public string Value
-      {
-        get
-        {
-          return m_strValue;
-        }
-        set
-        {
-          m_strValue = value;
-        }
-      }
+      public string Value { get; set; }
 
       #endregion
 
@@ -130,7 +119,6 @@ namespace Fomm.PackageManager.ModInstallLog
     internal class GameSpecificValueEdit : IComparable<GameSpecificValueEdit>
     {
       private string m_strKey;
-      private byte[] m_bteData;
 
       #region Properties
 
@@ -150,17 +138,7 @@ namespace Fomm.PackageManager.ModInstallLog
       /// Gets or sets the data to which the game-specific value was set.
       /// </summary>
       /// <value>The data to which the game-specific value was set.</value>
-      public byte[] Data
-      {
-        get
-        {
-          return m_bteData;
-        }
-        set
-        {
-          m_bteData = value;
-        }
-      }
+      public byte[] Data { get; set; }
 
       #endregion
 

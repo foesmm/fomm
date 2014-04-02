@@ -37,17 +37,7 @@ namespace ChinhDo.Transactions
       /// <summary>
       /// Gets or sets a value indicating whether to ignore exceptions during Rollback.
       /// </summary>
-      public bool IgnoreExceptionsInRollback
-      {
-        get
-        {
-          return _ignoreExceptionsInRollback;
-        }
-        set
-        {
-          _ignoreExceptionsInRollback = value;
-        }
-      }
+      public bool IgnoreExceptionsInRollback { get; set; }
 
       #region IFileOperations
 
@@ -408,7 +398,6 @@ namespace ChinhDo.Transactions
       private readonly Transaction _tx;
       private readonly List<RollbackOperation> _journal;
       private bool _enlisted;
-      private bool _ignoreExceptionsInRollback;
 
       private void Enlist()
       {

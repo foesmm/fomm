@@ -62,7 +62,6 @@ namespace Fomm.PackageManager
     }
 
     private ReadmeFormat m_fmtFormat = ReadmeFormat.PlainText;
-    private string m_strText;
 
     #region Properties
 
@@ -118,17 +117,7 @@ namespace Fomm.PackageManager
     /// Gets or sets the readme text.
     /// </summary>
     /// <value>The readme text.</value>
-    public string Text
-    {
-      get
-      {
-        return m_strText;
-      }
-      set
-      {
-        m_strText = value;
-      }
-    }
+    public string Text { get; set; }
 
     #endregion
 
