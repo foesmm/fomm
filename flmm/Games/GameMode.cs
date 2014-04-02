@@ -164,17 +164,6 @@ namespace Fomm.Games
 
     #region Constructors
 
-    /// <summary>
-    /// The default constructor.
-    /// </summary>
-    public GameMode()
-    {
-      //this folder can't be created here, as the path may not be set
-      // further, this folder should be created by the game, so I don't think the appropriate way
-      // to handle thing if it's missing is to create it
-      //if (!Directory.Exists(UserSettingsPath)) Directory.CreateDirectory(UserSettingsPath);
-    }
-
     #endregion
 
     #region Script

@@ -187,13 +187,6 @@ namespace Fomm.Games.FalloutNewVegas
 
     #region Constructors
 
-    /// <summary>
-    /// The default constructor.
-    /// </summary>
-    public FalloutNewVegasGameMode()
-    {
-    }
-
     #endregion
 
     #region Initialization

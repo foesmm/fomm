@@ -59,13 +59,6 @@ namespace Fomm.SharpZipLib.Zip.Compression.Streams
   {
     #region Constructors
 
-    /// <summary>
-    /// Constructs a default StreamManipulator with all buffers empty
-    /// </summary>
-    public StreamManipulator()
-    {
-    }
-
     #endregion
 
     /// <summary>

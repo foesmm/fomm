@@ -70,10 +70,6 @@ namespace Fomm.SharpZipLib.Zip.Compression
 
     #region Constructors
 
-    public InflaterDynHeader()
-    {
-    }
-
     #endregion
 
     public bool Decode(StreamManipulator input)

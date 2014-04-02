@@ -41,13 +41,6 @@ namespace Fomm.SharpZipLib.Core
   internal abstract class WindowsPathUtils
   {
     /// <summary>
-    /// Initializes a new instance of the <see cref="WindowsPathUtils"/> class.
-    /// </summary>
-    internal WindowsPathUtils()
-    {
-    }
-
-    /// <summary>
     /// Remove any path root present in the path
     /// </summary>
     /// <param name="path">A <see cref="string"/> containing path information.</param>

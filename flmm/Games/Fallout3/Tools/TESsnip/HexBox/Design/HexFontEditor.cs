@@ -15,13 +15,6 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox.Design
     private object value;
 
     /// <summary>
-    /// Initializes an instance of HexFontEditor class.
-    /// </summary>
-    public HexFontEditor()
-    {
-    }
-
-    /// <summary>
     /// Edits the value
     /// </summary>
     public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider,

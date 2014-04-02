@@ -49,13 +49,6 @@ namespace Fomm.InstallLogUpgraders
 
     #region Constructor
 
-    /// <summary>
-    /// The deafult constructor.
-    /// </summary>
-    internal Upgrader()
-    {
-    }
-
     #endregion
 
     /// <summary>

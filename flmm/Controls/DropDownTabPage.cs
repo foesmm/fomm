@@ -60,13 +60,6 @@ namespace Fomm.Controls
 
     #region Constructors
 
-    /// <summary>
-    /// The default constructor.
-    /// </summary>
-    public DropDownTabPage()
-    {
-    }
-
     #endregion
   }
 }

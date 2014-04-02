@@ -3028,13 +3028,6 @@ namespace Fomm.SharpZipLib.Zip
   /// </summary>
   internal class DynamicDiskDataSource : IDynamicDataSource
   {
-    /// <summary>
-    /// Initialise a default instance of <see cref="DynamicDiskDataSource"/>.
-    /// </summary>
-    public DynamicDiskDataSource()
-    {
-    }
-
     #region IDataSource Members
 
     /// <summary>
