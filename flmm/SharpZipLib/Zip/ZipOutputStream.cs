@@ -261,7 +261,7 @@ namespace Fomm.SharpZipLib.Zip
       }
 
       entry.Offset = offset;
-      entry.CompressionMethod = (CompressionMethod) method;
+      entry.CompressionMethod = method;
 
       curMethod = method;
       sizePatchPos = -1;
@@ -280,7 +280,7 @@ namespace Fomm.SharpZipLib.Zip
       WriteLeInt((int) entry.DosTime);
 
       // TODO: Refactor header writing.  Its done in several places.
-      if (headerInfoAvailable == true)
+      if (headerInfoAvailable)
       {
         WriteLeInt((int) entry.Crc);
         if (entry.LocalHeaderRequiresZip64)
@@ -296,7 +296,7 @@ namespace Fomm.SharpZipLib.Zip
       }
       else
       {
-        if (patchEntryHeader == true)
+        if (patchEntryHeader)
         {
           crcPatchPos = baseOutputStream_.Position;
         }
@@ -454,7 +454,7 @@ namespace Fomm.SharpZipLib.Zip
       offset += csize;
 
       // Patch the header if possible
-      if (patchEntryHeader == true)
+      if (patchEntryHeader)
       {
         patchEntryHeader = false;
 

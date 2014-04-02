@@ -100,7 +100,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     {
       var strName = p_xndPlugin.Attributes["name"].InnerText;
       var strDesc = p_xndPlugin.SelectSingleNode("description").InnerText.Trim();
-      IPluginType iptType = null;
+      IPluginType iptType;
       var xndTypeDescriptor = p_xndPlugin.SelectSingleNode("typeDescriptor").FirstChild;
       switch (xndTypeDescriptor.Name)
       {

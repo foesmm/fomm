@@ -181,7 +181,7 @@ namespace Fomm.PackageManager
       erpErrors.SetError(tbMinFommVersion, null);
       if (!String.IsNullOrEmpty(tbMinFommVersion.Text))
       {
-        Version verVersion = null;
+        Version verVersion;
         try
         {
           verVersion = new Version(tbMinFommVersion.Text);
@@ -376,7 +376,7 @@ namespace Fomm.PackageManager
         for (var i = 0; i < clbGroups.Items.Count; i++)
         {
           clbGroups.SetItemChecked(i,
-                                   Array.IndexOf<string>(value, ((string) clbGroups.Items[i]).ToLowerInvariant()) != -1);
+                                   Array.IndexOf(value, ((string) clbGroups.Items[i]).ToLowerInvariant()) != -1);
         }
         clbGroups.ResumeLayout();
       }

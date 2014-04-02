@@ -422,7 +422,7 @@ namespace Fomm.Controls
     /// <param name="e">A <see cref="MouseEventArgs"/> describing the event arguments.</param>
     protected override void OnMouseDown(MouseEventArgs e)
     {
-      base.SelectedNode = null;
+      SelectedNode = null;
       base.OnMouseDown(e);
     }
 

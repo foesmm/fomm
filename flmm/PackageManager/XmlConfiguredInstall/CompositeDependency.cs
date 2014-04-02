@@ -69,7 +69,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     {
       get
       {
-        var booAllFufilled = (m_dopOperator == DependencyOperator.And) ? true : false;
+        var booAllFufilled = (m_dopOperator == DependencyOperator.And);
         foreach (var dpnDependency in m_lstDependencies)
         {
           var booThisFufilled = dpnDependency.IsFufilled;
@@ -106,7 +106,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
           stbMessage.Append("(");
         }
 
-        var booAllFufilled = (m_dopOperator == DependencyOperator.And) ? true : false;
+        var booAllFufilled = (m_dopOperator == DependencyOperator.And);
         for (var i = 0; i < m_lstDependencies.Count; i++)
         {
           var dpnDependency = m_lstDependencies[i];

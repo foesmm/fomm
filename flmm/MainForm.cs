@@ -91,7 +91,7 @@ namespace Fomm
       Icon = Resources.fomm02;
       Settings.Default.windowPositions.GetWindowPosition("MainForm", this);
 
-      Text += " (" + Program.MVersion.ToString() + ") - " + Program.GameMode.GameName;
+      Text += " (" + Program.MVersion + ") - " + Program.GameMode.GameName;
 
       if (fomod != null)
       {
@@ -289,7 +289,7 @@ namespace Fomm
       else
       {
         PackageManagerForm = new PackageManager.PackageManager(this);
-        PackageManagerForm.FormClosed += delegate(object sender2, FormClosedEventArgs e2)
+        PackageManagerForm.FormClosed += delegate
         {
           RefreshPluginList();
           PackageManagerForm = null;
@@ -317,7 +317,7 @@ namespace Fomm
       else
       {
         m_fmgFileManagerForm = new FileManager.FileManager();
-        m_fmgFileManagerForm.FormClosed += delegate(object sender2, FormClosedEventArgs e2)
+        m_fmgFileManagerForm.FormClosed += delegate
         {
           m_fmgFileManagerForm = null;
         };
@@ -340,7 +340,7 @@ namespace Fomm
 
         foreach (ListViewItem lvi in lvEspList.Items)
         {
-          var i = Array.IndexOf<string>(strPlugins, lvi.Text.ToLowerInvariant());
+          var i = Array.IndexOf(strPlugins, lvi.Text.ToLowerInvariant());
           if (i != -1)
           {
             if (add)
@@ -459,14 +459,14 @@ namespace Fomm
       }
       else
       {
-        Array.Sort<int>(indicies);
+        Array.Sort(indicies);
         var items = new List<ListViewItem>();
         RefreshingList = true;
         lvEspList.BeginUpdate();
         var intLoadOrder = 0;
         for (var i = 0; i < position; i++)
         {
-          if (Array.BinarySearch<int>(indicies, i) < 0)
+          if (Array.BinarySearch(indicies, i) < 0)
           {
             Program.GameMode.PluginManager.SetLoadOrder(
               Path.Combine(Program.GameMode.PluginsPath, lvEspList.Items[i].Text), intLoadOrder++);
@@ -485,7 +485,7 @@ namespace Fomm
 
         for (var i = position; i < lvEspList.Items.Count; i++)
         {
-          if (Array.BinarySearch<int>(indicies, i) < 0)
+          if (Array.BinarySearch(indicies, i) < 0)
           {
             Program.GameMode.PluginManager.SetLoadOrder(
               Path.Combine(Program.GameMode.PluginsPath, lvEspList.Items[i].Text), intLoadOrder++);
@@ -529,7 +529,7 @@ namespace Fomm
         {
           toswap[i] = lvEspList.SelectedIndices[i];
         }
-        Array.Sort<int>(toswap);
+        Array.Sort(toswap);
         CommitLoadOrder(0, toswap);
       }
     }
@@ -543,7 +543,7 @@ namespace Fomm
         {
           toswap[i] = lvEspList.SelectedIndices[i];
         }
-        Array.Sort<int>(toswap);
+        Array.Sort(toswap);
         CommitLoadOrder(lvEspList.Items.Count, toswap);
       }
     }
@@ -557,7 +557,7 @@ namespace Fomm
         lvis[i] = lvEspList.CheckedItems[i];
       }
 
-      Array.Sort<ListViewItem>(lvis, delegate(ListViewItem a, ListViewItem b)
+      Array.Sort(lvis, delegate(ListViewItem a, ListViewItem b)
       {
         return
           int.Parse(a.SubItems[1].Text, NumberStyles.AllowHexSpecifier)
@@ -609,7 +609,7 @@ namespace Fomm
             indicies[i] = lvEspList.SelectedIndices[i];
           }
 
-          Array.Sort<int>(indicies);
+          Array.Sort(indicies);
           if (e.KeyCode == Keys.Up)
           {
             if (indicies[0] > 0)
@@ -692,7 +692,7 @@ namespace Fomm
 
         for (var i = 0; i < lvEspList.Items.Count; i++)
         {
-          if (Array.IndexOf<string>(order, lvEspList.Items[i].Text.ToLowerInvariant()) == -1)
+          if (Array.IndexOf(order, lvEspList.Items[i].Text.ToLowerInvariant()) == -1)
           {
             order[upto++] = lvEspList.Items[i].Text;
           }

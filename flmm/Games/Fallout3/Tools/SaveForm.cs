@@ -87,10 +87,7 @@ namespace Fomm.Games.Fallout3.Tools
             {
               return -1;
             }
-            else
-            {
-              return 1;
-            }
+            return 1;
           default:
             return 0;
         }
@@ -104,8 +101,8 @@ namespace Fomm.Games.Fallout3.Tools
     internal SaveForm(string[] ActivePlugins, string[] InactivePlugins)
     {
       InitializeComponent();
-      Array.Sort<string>(ActivePlugins);
-      Array.Sort<string>(InactivePlugins);
+      Array.Sort(ActivePlugins);
+      Array.Sort(InactivePlugins);
       aPlugins = ActivePlugins;
       iPlugins = InactivePlugins;
       SaveImageList.Images.AddRange(new Image[]
@@ -244,23 +241,20 @@ namespace Fomm.Games.Fallout3.Tools
         var lvi = new ListViewItem(sf.FileName);
         lvi.ToolTipText = "Player: " + sf.Player + "\nLevel: " + sf.Level + " (" + sf.Karma + ")\nLocation: " +
                           sf.Location + "\nPlay time: " + sf.Playtime +
-                          "\nDate saved: " + sf.saved.ToString() + "\nNumber of plugins: " +
-                          sf.plugins.Length.ToString();
+                          "\nDate saved: " + sf.saved + "\nNumber of plugins: " +
+                          sf.plugins.Length;
         lvi.Tag = sf;
         var worst = 0;
         foreach (var s in sf.plugins)
         {
-          if (Array.BinarySearch<string>(aPlugins, s) < 0)
+          if (Array.BinarySearch(aPlugins, s) < 0)
           {
-            if (Array.BinarySearch<string>(iPlugins, s) < 0)
+            if (Array.BinarySearch(iPlugins, s) < 0)
             {
               worst = 2;
               break;
             }
-            else
-            {
-              worst = 1;
-            }
+            worst = 1;
           }
         }
         lvi.ImageIndex = worst;
@@ -276,11 +270,11 @@ namespace Fomm.Games.Fallout3.Tools
       foreach (var s in plugins)
       {
         var lvi = new ListViewItem(s);
-        if (Array.BinarySearch<string>(aPlugins, s) >= 0)
+        if (Array.BinarySearch(aPlugins, s) >= 0)
         {
           lvi.ImageIndex = 0;
         }
-        else if (Array.BinarySearch<string>(iPlugins, s) >= 0)
+        else if (Array.BinarySearch(iPlugins, s) >= 0)
         {
           lvi.ImageIndex = 1;
         }
@@ -302,7 +296,7 @@ namespace Fomm.Games.Fallout3.Tools
       var sf = (SaveFile) lvSaves.SelectedItems[0].Tag;
       lName.Text = "Name: " + sf.Player + " (" + sf.Level + ": " + sf.Karma + ")";
       lLocation.Text = "Location: " + sf.Location;
-      lDate.Text = "Date saved: " + sf.saved.ToString() + " (" + sf.Playtime + ")";
+      lDate.Text = "Date saved: " + sf.saved + " (" + sf.Playtime + ")";
       UpdatePluginList(sf.plugins);
       pictureBox1.Image = sf.Image;
     }

@@ -49,12 +49,12 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
     public readonly string utoken;
     public readonly Keywords keyword;
 
-    private static readonly Keywords[] typelist = new Keywords[]
+    private static readonly Keywords[] typelist =
     {
       Keywords.Int, Keywords.Float, Keywords.Ref
     };
 
-    private static readonly Keywords[] flowlist = new Keywords[]
+    private static readonly Keywords[] flowlist =
     {
       Keywords.If, Keywords.ElseIf, Keywords.Else, Keywords.EndIf, Keywords.Return
     };
@@ -102,12 +102,12 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
 
     public bool IsFlowControl()
     {
-      return type == TokenType.Keyword && Array.IndexOf<Keywords>(flowlist, keyword) != -1;
+      return type == TokenType.Keyword && Array.IndexOf(flowlist, keyword) != -1;
     }
 
     public bool IsType()
     {
-      return type == TokenType.Keyword && Array.IndexOf<Keywords>(typelist, keyword) != -1;
+      return type == TokenType.Keyword && Array.IndexOf(typelist, keyword) != -1;
     }
 
     public bool IsSymbol(string s)
@@ -128,7 +128,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
 
   internal class TokenStream
   {
-    private static readonly string[] ReservedWords = new string[]
+    private static readonly string[] ReservedWords =
     {
       "if", "elseif", "else", "endif", "scriptname", "scn", "short", "int", "float", "ref", "begin", "end", "set", "to",
       "return", "showmessage"
@@ -182,7 +182,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
 
     private void AddError(string msg)
     {
-      errors.Add(line.ToString() + ": " + msg);
+      errors.Add(line + ": " + msg);
     }
 
     private void SkipLine()
@@ -261,7 +261,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
         }
         return new Token(TokenType.Integer, token);
       }
-      if ((i = Array.IndexOf<string>(ReservedWords, ltoken)) != -1)
+      if ((i = Array.IndexOf(ReservedWords, ltoken)) != -1)
       {
         return new Token(TokenType.Keyword, (Keywords) i);
       }
@@ -280,22 +280,22 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
           {
             return Token.Null;
           }
-          else if (c == '\n')
+
+          if (c == '\n')
           {
             line++;
             return Token.NewLine;
           }
-          else if (c == ';')
+
+          if (c == ';')
           {
             SkipLine();
             return Token.NewLine;
           }
-          else
+
+          if (!char.IsWhiteSpace(c))
           {
-            if (!char.IsWhiteSpace(c))
-            {
-              break;
-            }
+            break;
           }
         }
         if (char.IsLetterOrDigit(c) || c == '_' || ((c == '.' || c == '~') && char.IsDigit(SafePeek())))
@@ -317,131 +317,129 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
           }
           return FromWord(builder.ToString());
         }
-        else
+
+        switch (c)
         {
-          switch (c)
-          {
-            case '"':
-              builder.Length = 0;
-              while ((c = SafePop()) != '"')
+          case '"':
+            builder.Length = 0;
+            while ((c = SafePop()) != '"')
+            {
+              if (c == '\r' || c == '\n' || c == '\0')
               {
-                if (c == '\r' || c == '\n' || c == '\0')
+                AddError("Unexpected end of line");
+                break;
+              }
+              if (c == '\\')
+              {
+                switch (c = SafePop())
                 {
-                  AddError("Unexpected end of line");
-                  break;
-                }
-                if (c == '\\')
-                {
-                  switch (c = SafePop())
-                  {
-                    case '\0':
-                    case '\r':
-                    case '\n':
-                      AddError("Unexpected end of line");
-                      return FromWord(builder.ToString());
-                    case '\\':
-                      builder.Append('\\');
-                      break;
-                    case 'n':
-                      builder.Append('\n');
-                      break;
-                    case '"':
-                      builder.Append('"');
-                      break;
-                    default:
-                      AddError("Unrecognised escape sequence");
-                      builder.Append(c);
-                      break;
-                  }
-                }
-                else
-                {
-                  builder.Append(c);
+                  case '\0':
+                  case '\r':
+                  case '\n':
+                    AddError("Unexpected end of line");
+                    return FromWord(builder.ToString());
+                  case '\\':
+                    builder.Append('\\');
+                    break;
+                  case 'n':
+                    builder.Append('\n');
+                    break;
+                  case '"':
+                    builder.Append('"');
+                    break;
+                  default:
+                    AddError("Unrecognised escape sequence");
+                    builder.Append(c);
+                    break;
                 }
               }
-              return FromWord(builder.ToString());
-            case '+':
-              return new Token(TokenType.Symbol, "+");
-            case '-':
-              return new Token(TokenType.Symbol, "-");
-            case '*':
-              if (SafePeek() == '*')
+              else
               {
-                input.Dequeue();
-                return new Token(TokenType.Symbol, "**");
+                builder.Append(c);
               }
-              return new Token(TokenType.Symbol, "*");
-            case '/':
-              if (SafePeek() == '=')
-              {
-                input.Dequeue();
-                return new Token(TokenType.Symbol, "/=");
-              }
-              if (SafePeek() == ')')
-              {
-                input.Dequeue();
-                return new Token(TokenType.Symbol, "/)");
-              }
-              return new Token(TokenType.Symbol, "/");
-            case '!':
-              if (SafePeek() == '=')
-              {
-                input.Dequeue();
-                return new Token(TokenType.Symbol, "!=");
-              }
-              AddError("Illegal symbol '!'");
-              return new Token(TokenType.Symbol, "!");
-            case '=':
-              if (SafePeek() == '=')
-              {
-                input.Dequeue();
-                return new Token(TokenType.Symbol, "==");
-              }
-              AddError("Illegal symbol '='");
-              return new Token(TokenType.Symbol, "=");
-            case '>':
-              if (SafePeek() == '=')
-              {
-                input.Dequeue();
-                return new Token(TokenType.Symbol, ">=");
-              }
-              return new Token(TokenType.Symbol, ">");
-            case '<':
-              if (SafePeek() == '=')
-              {
-                input.Dequeue();
-                return new Token(TokenType.Symbol, "<=");
-              }
-              return new Token(TokenType.Symbol, "<");
-            case '(':
-              return new Token(TokenType.Symbol, "(");
-            case ')':
-              return new Token(TokenType.Symbol, ")");
-              //case ',':
-              //    return new Token(TokenType.Symbol, ",");
-            case '&':
-              if (SafePeek() == '&')
-              {
-                input.Dequeue();
-                return new Token(TokenType.Symbol, "&&");
-              }
-              AddError("Illegal symbol '&'");
-              return new Token(TokenType.Symbol, "&");
-            case '|':
-              if (SafePeek() == '|')
-              {
-                input.Dequeue();
-                return new Token(TokenType.Symbol, "||");
-              }
-              AddError("Illegal symbol '|'");
-              return new Token(TokenType.Symbol, "|");
-            case '.':
-              return new Token(TokenType.Symbol, ".");
-            default:
-              AddError("Unexpected character");
-              SkipLine();
-              break;
-          }
+            }
+            return FromWord(builder.ToString());
+          case '+':
+            return new Token(TokenType.Symbol, "+");
+          case '-':
+            return new Token(TokenType.Symbol, "-");
+          case '*':
+            if (SafePeek() == '*')
+            {
+              input.Dequeue();
+              return new Token(TokenType.Symbol, "**");
+            }
+            return new Token(TokenType.Symbol, "*");
+          case '/':
+            if (SafePeek() == '=')
+            {
+              input.Dequeue();
+              return new Token(TokenType.Symbol, "/=");
+            }
+            if (SafePeek() == ')')
+            {
+              input.Dequeue();
+              return new Token(TokenType.Symbol, "/)");
+            }
+            return new Token(TokenType.Symbol, "/");
+          case '!':
+            if (SafePeek() == '=')
+            {
+              input.Dequeue();
+              return new Token(TokenType.Symbol, "!=");
+            }
+            AddError("Illegal symbol '!'");
+            return new Token(TokenType.Symbol, "!");
+          case '=':
+            if (SafePeek() == '=')
+            {
+              input.Dequeue();
+              return new Token(TokenType.Symbol, "==");
+            }
+            AddError("Illegal symbol '='");
+            return new Token(TokenType.Symbol, "=");
+          case '>':
+            if (SafePeek() == '=')
+            {
+              input.Dequeue();
+              return new Token(TokenType.Symbol, ">=");
+            }
+            return new Token(TokenType.Symbol, ">");
+          case '<':
+            if (SafePeek() == '=')
+            {
+              input.Dequeue();
+              return new Token(TokenType.Symbol, "<=");
+            }
+            return new Token(TokenType.Symbol, "<");
+          case '(':
+            return new Token(TokenType.Symbol, "(");
+          case ')':
+            return new Token(TokenType.Symbol, ")");
+            //case ',':
+            //    return new Token(TokenType.Symbol, ",");
+          case '&':
+            if (SafePeek() == '&')
+            {
+              input.Dequeue();
+              return new Token(TokenType.Symbol, "&&");
+            }
+            AddError("Illegal symbol '&'");
+            return new Token(TokenType.Symbol, "&");
+          case '|':
+            if (SafePeek() == '|')
+            {
+              input.Dequeue();
+              return new Token(TokenType.Symbol, "||");
+            }
+            AddError("Illegal symbol '|'");
+            return new Token(TokenType.Symbol, "|");
+          case '.':
+            return new Token(TokenType.Symbol, ".");
+          default:
+            AddError("Unexpected character");
+            SkipLine();
+            break;
         }
       }
     }

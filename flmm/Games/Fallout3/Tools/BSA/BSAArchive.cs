@@ -67,10 +67,7 @@ namespace Fomm.Games.Fallout3.Tools.BSA
 
           return output;
         }
-        else
-        {
-          return bsa.br.ReadBytes(size);
-        }
+        return bsa.br.ReadBytes(size);
       }
     }
 
@@ -206,7 +203,7 @@ namespace Fomm.Games.Fallout3.Tools.BSA
         }
       }
 
-      Array.Sort<string>(fileNames);
+      Array.Sort(fileNames);
     }
 
     private static ulong GenHash(string file)
@@ -224,7 +221,7 @@ namespace Fomm.Games.Fallout3.Tools.BSA
       {
         hash = (ulong) (
           (((byte) file[file.Length - 1])*0x1) +
-          ((file.Length > 2 ? (byte) file[file.Length - 2] : (byte) 0)*0x100) +
+          ((file.Length > 2 ? (byte) file[file.Length - 2] : 0)*0x100) +
           (file.Length*0x10000) +
           (((byte) file[0])*0x1000000)
           );
@@ -291,10 +288,7 @@ namespace Fomm.Games.Fallout3.Tools.BSA
       {
         return null;
       }
-      else
-      {
-        return files[hash].GetRawData();
-      }
+      return files[hash].GetRawData();
     }
   }
 

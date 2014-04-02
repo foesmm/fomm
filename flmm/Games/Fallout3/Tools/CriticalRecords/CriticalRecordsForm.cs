@@ -122,7 +122,7 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
       {
         return;
       }
-      TreeNode tndSubNode = null;
+      TreeNode tndSubNode;
       if (p_recRecord is Record)
       {
         tndSubNode =

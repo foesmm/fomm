@@ -15,7 +15,7 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
   {
     #region InterOp
 
-    [DllImport("user32.dll"), SuppressUnmanagedCodeSecurity()]
+    [DllImport("user32.dll"), SuppressUnmanagedCodeSecurity]
     public static extern bool EnumDisplaySettings(string lpszDeviceName, int iModeNum, ref DEVMODE lpDevMode);
 
     [StructLayout(LayoutKind.Sequential)]
@@ -241,49 +241,49 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
 
     #region DropDown Items
 
-    private static ComboBoxItem[] m_cbiAspectRatios = new ComboBoxItem[]
+    private static ComboBoxItem[] m_cbiAspectRatios =
     {
       new ComboBoxItem("Standard (4:3 or 5:4)", 1, 4.0/3.0),
       new ComboBoxItem("16:9 Widescreen", 3, 16.0/9.0),
       new ComboBoxItem("16:10 Widescreen", 4, 1.6)
     };
 
-    private static ComboBoxItem[] m_cbiTextureQulities = new ComboBoxItem[]
+    private static ComboBoxItem[] m_cbiTextureQulities =
     {
       new ComboBoxItem("Low", 2),
       new ComboBoxItem("Medium", 1),
       new ComboBoxItem("High", 0)
     };
 
-    private static ComboBoxItem[] m_cbiRadialBlurQualities = new ComboBoxItem[]
+    private static ComboBoxItem[] m_cbiRadialBlurQualities =
     {
       new ComboBoxItem("Low", 0),
       new ComboBoxItem("Medium", 1),
       new ComboBoxItem("High", 2)
     };
 
-    private static ComboBoxItem[] m_cbiReflectionQualities = new ComboBoxItem[]
+    private static ComboBoxItem[] m_cbiReflectionQualities =
     {
       new ComboBoxItem("Low", 256),
       new ComboBoxItem("Medium", 512),
       new ComboBoxItem("High", 1024)
     };
 
-    private static ComboBoxItem[] m_cbiWaterMultisamples = new ComboBoxItem[]
+    private static ComboBoxItem[] m_cbiWaterMultisamples =
     {
       new ComboBoxItem("Low", 1),
       new ComboBoxItem("Medium", 2),
       new ComboBoxItem("High", 4)
     };
 
-    private static ComboBoxItem[] m_cbiShadowQualities = new ComboBoxItem[]
+    private static ComboBoxItem[] m_cbiShadowQualities =
     {
       new ComboBoxItem("Low", 256),
       new ComboBoxItem("Medium", 512),
       new ComboBoxItem("High", 1024)
     };
 
-    private static ComboBoxItem[] m_cbiShadowFilters = new ComboBoxItem[]
+    private static ComboBoxItem[] m_cbiShadowFilters =
     {
       new ComboBoxItem("Low", 0),
       new ComboBoxItem("Medium", 1),
@@ -344,7 +344,7 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
       if (!cbxResolution.Items.Contains(strCurrentRes))
       {
         var cbiResolution = new ComboBoxItem(strCurrentRes);
-        cbiResolution.Value = new Int32[]
+        cbiResolution.Value = new[]
         {
           intScreenWidth, intScreenHeight
         };
@@ -612,7 +612,7 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
                                               .FOPrefsIniPath)/100;
 
       //item fade
-      decimal dcmValue = 0;
+      decimal dcmValue;
       Decimal.TryParse(
         NativeMethods.GetPrivateProfileString("LOD", "fLODFadeOutMultItems", "0",
                                               ((Fallout3GameMode.SettingsFilesSet) Program.GameMode.SettingsFiles)
@@ -644,7 +644,7 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
                                               .FOPrefsIniPath)/1000;
 
       //land quality
-      decimal dcmValue = 0;
+      decimal dcmValue;
       Decimal.TryParse(
         NativeMethods.GetPrivateProfileString("TerrainManager", "fSplitDistanceMult", "0",
                                               ((Fallout3GameMode.SettingsFilesSet) Program.GameMode.SettingsFiles)
@@ -670,10 +670,10 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
       var intEnumCounter = 0;
       while (EnumDisplaySettings(null, intEnumCounter, ref vDevMode))
       {
-        var dblRatio = (double) vDevMode.dmPelsWidth/(double) vDevMode.dmPelsHeight;
+        var dblRatio = vDevMode.dmPelsWidth/(double) vDevMode.dmPelsHeight;
         var cbiResolution =
           new ComboBoxItem(String.Format("{0}x{1}", vDevMode.dmPelsWidth, vDevMode.dmPelsHeight));
-        cbiResolution.Value = new Int32[]
+        cbiResolution.Value = new[]
         {
           vDevMode.dmPelsWidth, vDevMode.dmPelsHeight
         };

@@ -437,7 +437,7 @@ namespace Fomm.Games.FalloutNewVegas
           var strDisplayName = (string) keyUninstall.OpenSubKey(strKeyName).GetValue("Displayname");
           if ("fallout: new vegas".Equals(strDisplayName, StringComparison.InvariantCultureIgnoreCase))
           {
-            var intAppId = -1;
+            int intAppId;
             if (Int32.TryParse(strKeyName.Split(' ')[2], out intAppId))
             {
               return intAppId;
@@ -453,7 +453,7 @@ namespace Fomm.Games.FalloutNewVegas
         var strInstallScript = File.ReadAllText(strInstallScriptPath);
         if (rgxAppId.IsMatch(strInstallScript))
         {
-          var intAppId = -1;
+          int intAppId;
           if (Int32.TryParse(rgxAppId.Match(strInstallScript).Groups[1].Value, out intAppId))
           {
             return intAppId;
@@ -497,13 +497,11 @@ namespace Fomm.Games.FalloutNewVegas
           if (Process.Start(psi) == null)
           {
             MessageBox.Show("Failed to launch '" + command + "'");
-            return;
           }
         }
         catch (Exception ex)
         {
           MessageBox.Show("Failed to launch '" + command + "'\n" + ex.Message);
-          return;
         }
       }
     }
@@ -548,13 +546,11 @@ namespace Fomm.Games.FalloutNewVegas
           if (Process.Start(psi) == null)
           {
             MessageBox.Show("Failed to launch 'nvse_loader.exe'");
-            return;
           }
         }
         catch (Exception ex)
         {
           MessageBox.Show("Failed to launch 'nvse_loader.exe'\n" + ex.Message);
-          return;
         }
       }
     }
@@ -591,13 +587,11 @@ namespace Fomm.Games.FalloutNewVegas
           if (Process.Start(psi) == null)
           {
             MessageBox.Show("Failed to launch '" + command + "'");
-            return;
           }
         }
         catch (Exception ex)
         {
           MessageBox.Show("Failed to launch '" + command + "'\n" + ex.Message);
-          return;
         }
       }
     }
@@ -651,13 +645,11 @@ namespace Fomm.Games.FalloutNewVegas
         if (Process.Start(psi) == null)
         {
           MessageBox.Show("Failed to launch FNVEdit.");
-          return;
         }
       }
       catch (Exception ex)
       {
         MessageBox.Show("Failed to launch FNVEdit." + Environment.NewLine + ex.Message);
-        return;
       }
     }
 
@@ -816,7 +808,7 @@ namespace Fomm.Games.FalloutNewVegas
             return true;
           case ".esp":
           case ".esm":
-            Application.Run(new TESsnip(new string[]
+            Application.Run(new TESsnip(new[]
             {
               p_strArgs[0]
             }));
@@ -828,7 +820,7 @@ namespace Fomm.Games.FalloutNewVegas
         switch (p_strArgs[0])
         {
           case "-setup":
-            var booNewMutex = false;
+            bool booNewMutex;
             var mutex = new Mutex(true, "fommMainMutex", out booNewMutex);
             if (!booNewMutex)
             {
@@ -882,7 +874,7 @@ namespace Fomm.Games.FalloutNewVegas
         return false;
       }
 
-      var strExes = new string[]
+      var strExes = new[]
       {
         Path.Combine(p_strPath, "falloutNV.exe"),
         Path.Combine(p_strPath, "falloutNVng.exe")
@@ -932,7 +924,7 @@ namespace Fomm.Games.FalloutNewVegas
         "Please enter the path to your Fallout: New Vegas game file, or click \"Auto Detect\" to search" +
         " for the install directory. Note that Auto Detection can take several minutes.",
         "Fallout 3 Game Directory:",
-        new string[]
+        new[]
         {
           "falloutNV.exe", "falloutNVng.exe"
         }))

@@ -211,6 +211,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
     public int GetSymbol(StreamManipulator input)
     {
       int lookahead, symbol;
+      int bits;
       if ((lookahead = input.PeekBits(9)) >= 0)
       {
         if ((symbol = tree[lookahead]) >= 0)
@@ -226,37 +227,25 @@ namespace Fomm.SharpZipLib.Zip.Compression
           input.DropBits(symbol & 15);
           return symbol >> 4;
         }
-        else
-        {
-          var bits = input.AvailableBits;
-          lookahead = input.PeekBits(bits);
-          symbol = tree[subtree | (lookahead >> 9)];
-          if ((symbol & 15) <= bits)
-          {
-            input.DropBits(symbol & 15);
-            return symbol >> 4;
-          }
-          else
-          {
-            return -1;
-          }
-        }
-      }
-      else
-      {
-        var bits = input.AvailableBits;
+        bits = input.AvailableBits;
         lookahead = input.PeekBits(bits);
-        symbol = tree[lookahead];
-        if (symbol >= 0 && (symbol & 15) <= bits)
+        symbol = tree[subtree | (lookahead >> 9)];
+        if ((symbol & 15) <= bits)
         {
           input.DropBits(symbol & 15);
           return symbol >> 4;
         }
-        else
-        {
-          return -1;
-        }
+        return -1;
       }
+      bits = input.AvailableBits;
+      lookahead = input.PeekBits(bits);
+      symbol = tree[lookahead];
+      if (symbol >= 0 && (symbol & 15) <= bits)
+      {
+        input.DropBits(symbol & 15);
+        return symbol >> 4;
+      }
+      return -1;
     }
   }
 }

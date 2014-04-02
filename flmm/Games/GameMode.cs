@@ -300,8 +300,6 @@ class Script : GenericBaseScript {
         fullModList.Add(Path.GetFileName(s).ToLower(), loi);
         i++;
       }
-
-      return;
     }
 
     /*
@@ -337,7 +335,7 @@ class Script : GenericBaseScript {
           }
         }
 
-        var i = 0;
+        int i;
         for (i = 0; i < masters.Count; i++)
         {
           if (fullModList.ContainsKey(masters[i]))

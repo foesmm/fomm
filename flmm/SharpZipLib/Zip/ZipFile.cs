@@ -1110,7 +1110,7 @@ namespace Fomm.SharpZipLib.Zip
       {
         // Note patch address for updating CRC later.
         update.CrcPatchOffset = baseStream_.Position;
-        WriteLEInt((int) 0);
+        WriteLEInt(0);
       }
       else
       {
@@ -1460,7 +1460,7 @@ namespace Fomm.SharpZipLib.Zip
 
       while (bytesToCopy > 0)
       {
-        var readSize = (int) bytesToCopy;
+        var readSize = bytesToCopy;
         var buffer = GetBuffer();
 
         stream.Position = sourcePosition;
@@ -1692,7 +1692,7 @@ namespace Fomm.SharpZipLib.Zip
         destinationPosition = baseStream_.Position;
       }
 
-      long sourcePosition = 0;
+      long sourcePosition;
 
       const int NameLengthOffset = 26;
 
@@ -2336,7 +2336,7 @@ namespace Fomm.SharpZipLib.Zip
         ReadLEUint();
         ReadLEUint();
         entriesForThisDisk = ReadLEUlong();
-        entriesForWholeCentralDir = ReadLEUlong();
+        ReadLEUlong();
         centralDirSize = ReadLEUlong();
         offsetOfCentralDir = (long) ReadLEUlong();
 
@@ -2397,7 +2397,7 @@ namespace Fomm.SharpZipLib.Zip
         entry.Size = size & 0xffffffffL;
         entry.CompressedSize = csize & 0xffffffffL;
         entry.Flags = bitFlags;
-        entry.DosTime = (uint) dostime;
+        entry.DosTime = dostime;
         entry.ZipFileIndex = (long) i;
         entry.Offset = offset;
         entry.ExternalFileAttributes = (int) externalAttributes;
@@ -3236,7 +3236,7 @@ namespace Fomm.SharpZipLib.Zip
         throw new ZipException("No temporary stream has been created");
       }
 
-      Stream result = null;
+      Stream result;
 
       var moveTempName = GetTempFileName(fileName_, false);
       var newFileCreated = false;
@@ -3253,8 +3253,6 @@ namespace Fomm.SharpZipLib.Zip
       }
       catch (Exception)
       {
-        result = null;
-
         // Try to roll back changes...
         if (!newFileCreated)
         {

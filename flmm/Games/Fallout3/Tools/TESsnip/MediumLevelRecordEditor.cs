@@ -348,20 +348,18 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
           IgnoreChange = false;
           return;
         }
-        else
+
+        var toDisable = ((cbTag) changed.Tag).textBox;
+        foreach (Control c in fpanel1.Controls)
         {
-          var toDisable = ((cbTag) changed.Tag).textBox;
-          foreach (Control c in fpanel1.Controls)
+          var tb = c as TextBox;
+          if (tb == toDisable)
           {
-            var tb = c as TextBox;
-            if (tb == toDisable)
-            {
-              toDisable.Enabled = false;
-              return;
-            }
+            toDisable.Enabled = false;
+            return;
           }
-          throw new ApplicationException();
         }
+        throw new ApplicationException();
       }
       var Group = ((cbTag) changed.Tag).group;
       var toEnable = ((cbTag) changed.Tag).textBox;

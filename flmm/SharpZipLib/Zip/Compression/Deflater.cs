@@ -451,7 +451,8 @@ namespace Fomm.SharpZipLib.Zip.Compression
             // We need more input now
             return origLength - length;
           }
-          else if (state == FLUSHING_STATE)
+
+          if (state == FLUSHING_STATE)
           {
             if (level != NO_COMPRESSION)
             {

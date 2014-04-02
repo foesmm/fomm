@@ -101,7 +101,7 @@ namespace Fomm.PackageManager.Controls
       var wbrBrowser = new WebBrowser();
       frmHTMLPreview.Controls.Add(wbrBrowser);
       wbrBrowser.Dock = DockStyle.Fill;
-      wbrBrowser.DocumentCompleted += delegate(object o, WebBrowserDocumentCompletedEventArgs arg)
+      wbrBrowser.DocumentCompleted += delegate
       {
         frmHTMLPreview.Text = String.IsNullOrEmpty(wbrBrowser.DocumentTitle) ? "Readme" : wbrBrowser.DocumentTitle;
       };

@@ -354,10 +354,7 @@ namespace Fomm.SharpZipLib.Zip
         {
           return -1;
         }
-        else
-        {
-          return externalFileAttributes;
-        }
+        return externalFileAttributes;
       }
 
       set
@@ -486,27 +483,24 @@ namespace Fomm.SharpZipLib.Zip
         {
           return versionToExtract;
         }
-        else
+        var result = 10;
+        if (CentralHeaderRequiresZip64)
         {
-          var result = 10;
-          if (CentralHeaderRequiresZip64)
-          {
-            result = ZipConstants.VersionZip64;
-          }
-          else if (CompressionMethod.Deflated == method)
-          {
-            result = 20;
-          }
-          else if (IsDirectory == true)
-          {
-            result = 20;
-          }
-          else if (HasDosAttributes(0x08))
-          {
-            result = 11;
-          }
-          return result;
+          result = ZipConstants.VersionZip64;
         }
+        else if (CompressionMethod.Deflated == method)
+        {
+          result = 20;
+        }
+        else if (IsDirectory)
+        {
+          result = 20;
+        }
+        else if (HasDosAttributes(0x08))
+        {
+          result = 11;
+        }
+        return result;
       }
     }
 
@@ -596,10 +590,7 @@ namespace Fomm.SharpZipLib.Zip
         {
           return 0;
         }
-        else
-        {
-          return dosTime;
-        }
+        return dosTime;
       }
 
       set
@@ -743,7 +734,7 @@ namespace Fomm.SharpZipLib.Zip
       }
       set
       {
-        if (((ulong) crc & 0xffffffff00000000L) != 0)
+        if ((crc & 0xffffffff00000000L) != 0)
         {
           throw new ArgumentOutOfRangeException("value");
         }
@@ -892,11 +883,8 @@ namespace Fomm.SharpZipLib.Zip
             }
             break;
           }
-          else
-          {
-            // An unknown NTFS tag so simply skip it.
-            extraData.Skip(ntfsLength);
-          }
+          // An unknown NTFS tag so simply skip it.
+          extraData.Skip(ntfsLength);
         }
       }
       else if (extraData.Find(0x5455))

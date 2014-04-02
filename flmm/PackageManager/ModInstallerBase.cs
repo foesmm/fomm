@@ -258,7 +258,7 @@ namespace Fomm.PackageManager
               }
             }
           }
-          var strMessage = String.Format(ExceptionMessage, stbError.ToString());
+          var strMessage = String.Format(ExceptionMessage, stbError);
           MessageBox.Show(strMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
           return false;
         }

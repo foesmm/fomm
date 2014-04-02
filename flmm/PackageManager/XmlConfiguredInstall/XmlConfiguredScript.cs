@@ -101,7 +101,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
       var lstSteps = prsParser.GetInstallSteps();
       var hifHeaderInfo = prsParser.GetHeaderInfo();
       var ofmOptions = new OptionsForm(this, hifHeaderInfo, m_dsmStateManager, lstSteps);
-      var booPerformInstall = false;
+      bool booPerformInstall;
       if (lstSteps.Count == 0)
       {
         booPerformInstall = true;

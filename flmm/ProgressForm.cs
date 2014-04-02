@@ -159,7 +159,7 @@ namespace Fomm
     internal void UpdateProgress(int value)
     {
       pbProgress.Value = value;
-      lProgress.Text = ((int) (100*(float) value/(float) pbProgress.Maximum)).ToString() + "%";
+      lProgress.Text = ((int) (100*(float) value/pbProgress.Maximum)) + "%";
       if (!Focused)
       {
         Focus();

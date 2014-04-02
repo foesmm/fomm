@@ -113,11 +113,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
       {
         var index = (long) en.Key;
         var value = (byte) en.Value;
-        if (_fileStream.Position != index)
-        {
-          _fileStream.Position = index;
-        }
-        _fileStream.Write(new byte[]
+        _fileStream.Position = index;
+        _fileStream.Write(new[]
         {
           value
         }, 0, 1);
@@ -146,10 +143,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
         return _writes[index];
       }
 
-      if (_fileStream.Position != index)
-      {
-        _fileStream.Position = index;
-      }
+      _fileStream.Position = index;
 
       var res = (byte) _fileStream.ReadByte();
       return res;

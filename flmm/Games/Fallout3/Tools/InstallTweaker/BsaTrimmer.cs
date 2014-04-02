@@ -47,7 +47,7 @@ namespace Fomm.Games.Fallout3.Tools.InstallTweaker
         throw new Exception("Invalid bsa");
       }
       var version = br.ReadUInt32();
-      bw.Write((int) 0x00415342);
+      bw.Write(0x00415342);
       bw.Write(version);
       bw.Write(br.ReadInt32());
       var flags = br.ReadUInt32();

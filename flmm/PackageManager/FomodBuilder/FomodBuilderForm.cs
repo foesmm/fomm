@@ -96,7 +96,7 @@ namespace Fomm.PackageManager.FomodBuilder
       lstCopyInstructions.Add(new KeyValuePair<string, string>(strPremadeSource, "/"));
 
       var lstSourceFiles = p_pfpPack.GetSources();
-      lstSourceFiles.ForEach((s) =>
+      lstSourceFiles.ForEach(s =>
       {
         s.Source = Path.Combine(p_strSourcesPath, s.Source);
       });
@@ -271,7 +271,7 @@ namespace Fomm.PackageManager.FomodBuilder
 
       //download locations tab validation
       UpdateDownloadLocationsList();
-      var lstSourceFiles = (IList<SourceFile>) sdsDownloadLocations.DataSource;
+      var lstSourceFiles = sdsDownloadLocations.DataSource;
       foreach (var sflLocation in lstSourceFiles)
       {
         if (String.IsNullOrEmpty(sflLocation.URL) && !sflLocation.Included)

@@ -546,7 +546,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
           return "(Contains: " + (char) data[0] + (char) data[1] + (char) data[2] + (char) data[3] + ")";
         case 2:
         case 3:
-          return "(Block number: " + (data[0] + data[1]*256 + data[2]*256*256 + data[3]*256*256*256).ToString() + ")";
+          return "(Block number: " + (data[0] + data[1]*256 + data[2]*256*256 + data[3]*256*256*256) + ")";
         case 4:
         case 5:
           return "(Coordinates: [" + (data[0] + data[1]*256) + ", " + data[2] + data[3]*256 + "])";
@@ -605,8 +605,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
           break;
       }
       return desc + Environment.NewLine +
-             "Records: " + Records.Count.ToString() + Environment.NewLine +
-             "Size: " + Size.ToString() + " bytes (including header)";
+             "Records: " + Records.Count + Environment.NewLine +
+             "Size: " + Size + " bytes (including header)";
     }
 
     internal override void SaveData(BinaryWriter bw)
@@ -794,8 +794,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
              Environment.NewLine +
              "Flags 2: " + Flags2.ToString("x8") + Environment.NewLine +
              "Flags 3: " + Flags3.ToString("x8") + Environment.NewLine +
-             "Subrecords: " + SubRecords.Count.ToString() + Environment.NewLine +
-             "Size: " + Size.ToString() + " bytes (excluding header)";
+             "Subrecords: " + SubRecords.Count + Environment.NewLine +
+             "Size: " + Size + " bytes (excluding header)";
     }
 
     private string GetExtendedDesc(SubrecordStructure[] sss, dFormIDLookupI formIDLookup)
@@ -842,10 +842,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       {
         return start;
       }
-      else
-      {
-        return start + Environment.NewLine + Environment.NewLine + "[Formatted information]" + Environment.NewLine + end;
-      }
+      return start + Environment.NewLine + Environment.NewLine + "[Formatted information]" + Environment.NewLine + end;
     }
 
     internal override void SaveData(BinaryWriter bw)
@@ -972,7 +969,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
     {
       return "[Subrecord]" + Environment.NewLine +
              "Name: " + Name + Environment.NewLine +
-             "Size: " + Size.ToString() + " bytes (Excluding header)";
+             "Size: " + Size + " bytes (Excluding header)";
     }
 
     public override void DeleteRecord(BaseRecord br)
@@ -1273,7 +1270,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       null,
       null,
       null,
-      null,
+      null
     };
 
     public static string GetRecFlags1Desc(uint flags)

@@ -194,7 +194,7 @@ namespace Fomm.SharpZipLib.Core
     /// <returns>True if the value matches, false otherwise.</returns>
     public bool IsMatch(string name)
     {
-      return (IsIncluded(name) == true) && (IsExcluded(name) == false);
+      return IsIncluded(name) && (IsExcluded(name) == false);
     }
 
     #endregion

@@ -306,12 +306,12 @@ namespace Fomm.Controls
       if (p_xspParticle is XmlSchemaElement)
       {
         var xseElement = (XmlSchemaElement) p_xspParticle;
-        return new List<KeyValuePair<string, string>>()
+        return new List<KeyValuePair<string, string>>
         {
           new KeyValuePair<string, string>(xseElement.Name, GetDocumentation(xseElement))
         };
       }
-      else if (p_xspParticle is XmlSchemaSequence)
+      if (p_xspParticle is XmlSchemaSequence)
       {
         var xssSequence = (XmlSchemaSequence) p_xspParticle;
         var lstChoices = new List<KeyValuePair<string, string>>();
@@ -325,7 +325,7 @@ namespace Fomm.Controls
         }
         return lstChoices;
       }
-      else if (p_xspParticle is XmlSchemaChoice)
+      if (p_xspParticle is XmlSchemaChoice)
       {
         var xscChoice = (XmlSchemaChoice) p_xspParticle;
         var lstChoices = new List<KeyValuePair<string, string>>();
@@ -335,7 +335,7 @@ namespace Fomm.Controls
         }
         return lstChoices;
       }
-      else if (p_xspParticle is XmlSchemaAll)
+      if (p_xspParticle is XmlSchemaAll)
       {
         var xsaAll = (XmlSchemaAll) p_xspParticle;
         var lstChoices = new List<KeyValuePair<string, string>>();
@@ -373,11 +373,11 @@ namespace Fomm.Controls
         }
         return xseElement.Name.Equals(strLastSibling);
       }
-      else if (p_xspParticle is XmlSchemaSequence)
+      if (p_xspParticle is XmlSchemaSequence)
       {
         var xssSequence = (XmlSchemaSequence) p_xspParticle;
         var booFound = false;
-        var i = 0;
+        int i;
         XmlSchemaParticle xspParticle = null;
         for (i = 0; i < xssSequence.Items.Count; i++)
         {
@@ -392,7 +392,7 @@ namespace Fomm.Controls
         {
           if (p_lstChoices == null)
           {
-            var intLastSiblingCount = 1;
+            int intLastSiblingCount;
             for (intLastSiblingCount = p_lstSiblings.Count - 1;
                  (intLastSiblingCount > -1) &&
                  p_lstSiblings[intLastSiblingCount].Equals(p_lstSiblings[p_lstSiblings.Count - 1]);
@@ -532,22 +532,19 @@ namespace Fomm.Controls
           if (p_xseElement.ElementSchemaType is XmlSchemaComplexType)
           {
             var xctElement = (XmlSchemaComplexType) p_xseElement.ElementSchemaType;
-            if (xctElement.Attributes != null)
+            foreach (var xsoAttribute in xctElement.Attributes)
             {
-              foreach (var xsoAttribute in xctElement.Attributes)
+              if (xsoAttribute is XmlSchemaAttribute)
               {
-                if (xsoAttribute is XmlSchemaAttribute)
+                if (!p_lstSiblings.Contains(((XmlSchemaAttribute) xsoAttribute).Name))
                 {
-                  if (!p_lstSiblings.Contains(((XmlSchemaAttribute) xsoAttribute).Name))
-                  {
-                    lstCompleteList.Add(new KeyValuePair<string, string>(((XmlSchemaAttribute) xsoAttribute).Name,
-                                                                         GetDocumentation(
-                                                                           (XmlSchemaAnnotated) xsoAttribute)));
-                  }
+                  lstCompleteList.Add(new KeyValuePair<string, string>(((XmlSchemaAttribute) xsoAttribute).Name,
+                                                                       GetDocumentation(
+                                                                         (XmlSchemaAnnotated) xsoAttribute)));
                 }
-                else if (xsoAttribute.ToString() == "System.Xml.Schema.XmlSchemaAttributeGroupRef")
-                {
-                }
+              }
+              else if (xsoAttribute.ToString() == "System.Xml.Schema.XmlSchemaAttributeGroupRef")
+              {
               }
             }
           }
@@ -557,53 +554,50 @@ namespace Fomm.Controls
           if (p_xseElement.ElementSchemaType is XmlSchemaComplexType)
           {
             var xctElement = (XmlSchemaComplexType) p_xseElement.ElementSchemaType;
-            if (xctElement.Attributes != null)
+            XmlSchemaAttribute xsaAttribute = null;
+            foreach (var attribute in xctElement.Attributes)
             {
-              XmlSchemaAttribute xsaAttribute = null;
-              foreach (var attribute in xctElement.Attributes)
+              if (attribute is XmlSchemaAttribute)
               {
-                if (attribute is XmlSchemaAttribute)
+                xsaAttribute = (XmlSchemaAttribute) attribute;
+                if (xsaAttribute.Name == p_lstSiblings[p_lstSiblings.Count - 1])
                 {
-                  xsaAttribute = (XmlSchemaAttribute) attribute;
-                  if (xsaAttribute.Name == p_lstSiblings[p_lstSiblings.Count - 1])
-                  {
-                    break;
-                  }
+                  break;
                 }
-                xsaAttribute = null;
               }
-              if (xsaAttribute != null)
+              xsaAttribute = null;
+            }
+            if (xsaAttribute != null)
+            {
+              XmlSchemaSimpleType xssSimpleType;
+              if (xsaAttribute.SchemaType != null)
               {
-                XmlSchemaSimpleType xssSimpleType = null;
-                if (xsaAttribute.SchemaType != null)
+                xssSimpleType = xsaAttribute.SchemaType;
+              }
+              else
+              {
+                xssSimpleType = (XmlSchemaSimpleType) m_xstSchema.GlobalTypes[xsaAttribute.SchemaTypeName];
+              }
+              if (xssSimpleType == null)
+              {
+                switch (xsaAttribute.AttributeSchemaType.TypeCode)
                 {
-                  xssSimpleType = xsaAttribute.SchemaType;
+                  case XmlTypeCode.Boolean:
+                    lstCompleteList.Add(new KeyValuePair<string, string>("0", null));
+                    lstCompleteList.Add(new KeyValuePair<string, string>("1", null));
+                    lstCompleteList.Add(new KeyValuePair<string, string>("true", null));
+                    lstCompleteList.Add(new KeyValuePair<string, string>("false", null));
+                    break;
                 }
-                else
+              }
+              else if (xssSimpleType.Content.ToString() == "System.Xml.Schema.XmlSchemaSimpleTypeRestriction")
+              {
+                foreach (
+                  XmlSchemaEnumerationFacet sefEnumValue in
+                    ((XmlSchemaSimpleTypeRestriction) xssSimpleType.Content).Facets)
                 {
-                  xssSimpleType = (XmlSchemaSimpleType) m_xstSchema.GlobalTypes[xsaAttribute.SchemaTypeName];
-                }
-                if (xssSimpleType == null)
-                {
-                  switch (xsaAttribute.AttributeSchemaType.TypeCode)
-                  {
-                    case XmlTypeCode.Boolean:
-                      lstCompleteList.Add(new KeyValuePair<string, string>("0", null));
-                      lstCompleteList.Add(new KeyValuePair<string, string>("1", null));
-                      lstCompleteList.Add(new KeyValuePair<string, string>("true", null));
-                      lstCompleteList.Add(new KeyValuePair<string, string>("false", null));
-                      break;
-                  }
-                }
-                else if (xssSimpleType.Content.ToString() == "System.Xml.Schema.XmlSchemaSimpleTypeRestriction")
-                {
-                  foreach (
-                    XmlSchemaEnumerationFacet sefEnumValue in
-                      ((XmlSchemaSimpleTypeRestriction) xssSimpleType.Content).Facets)
-                  {
-                    lstCompleteList.Add(new KeyValuePair<string, string>(sefEnumValue.Value,
-                                                                         GetDocumentation(sefEnumValue)));
-                  }
+                  lstCompleteList.Add(new KeyValuePair<string, string>(sefEnumValue.Value,
+                                                                       GetDocumentation(sefEnumValue)));
                 }
               }
             }
@@ -814,7 +808,7 @@ namespace Fomm.Controls
         stkAncestors.Push(llnLast.Value.Key);
       }
 
-      List<KeyValuePair<string, string>> lstComplete = null;
+      List<KeyValuePair<string, string>> lstComplete;
       var lstSiblings = dicSiblings[intDepth];
       m_actCompleteType = AutoCompleteType.Element;
 
@@ -951,7 +945,7 @@ namespace Fomm.Controls
     /// <returns>The type of key for the given character.</returns>
     public CompletionDataProviderKeyResult ProcessKey(char p_chrKey)
     {
-      List<char> lstExtraChars = null;
+      List<char> lstExtraChars;
       if (!m_dicExtraCompletionCharacters.TryGetValue(m_actCompleteType, out lstExtraChars))
       {
         lstExtraChars = new List<char>();

@@ -80,13 +80,13 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     {
       var srcCriticalData = getCriticalRecordData();
       var strCriticalData = srcCriticalData.GetStrData().Trim().Replace("\r\n", "\n").Replace("\n\r", "\n");
-      var strCriticalRecords = strCriticalData.Split(new char[]
+      var strCriticalRecords = strCriticalData.Split(new[]
       {
         '\n'
       }, StringSplitOptions.RemoveEmptyEntries);
       foreach (var strCriticalRecord in strCriticalRecords)
       {
-        UInt32 uintFormId = 0;
+        UInt32 uintFormId;
         if (
           !UInt32.TryParse(strCriticalRecord.Substring(0, 8), NumberStyles.HexNumber, null,
                            out uintFormId))
@@ -154,60 +154,58 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
         grcGroup = new GroupRecord("MESG");
         AddRecord(grcGroup);
       }
-      //if there is no fommCriticalRecords record, create one
-      if (recCriticalRecords == null)
+
+      //if there is no fommCriticalRecords record, create one, we returned otherwise.
+      recCriticalRecords = new Record();
+      recCriticalRecords.Name = "MESG";
+      var uintMastersCount = (UInt32) Masters.Count << 24;
+      var uintFormId = uintMastersCount + 1;
+      while (ContainsFormId(uintFormId))
       {
-        recCriticalRecords = new Record();
-        recCriticalRecords.Name = "MESG";
-        var uintMastersCount = (UInt32) Masters.Count << 24;
-        var uintFormId = uintMastersCount + 1;
-        while (ContainsFormId(uintFormId))
-        {
-          uintFormId++;
-        }
-        if ((uintFormId & 0xff000000) != uintMastersCount)
-        {
-          throw new PluginFullException("No available Form Id for new MESG record");
-        }
-        recCriticalRecords.FormID = uintFormId;
-        recCriticalRecords.Flags2 = 0x00044210;
-        recCriticalRecords.Flags3 = 0x0002000f;
-
-        var srcSub = new SubRecord();
-        srcSub.Name = "EDID";
-        srcSub.SetStrData(CRITICAL_DATA_RECORD_EDID, true);
-        recCriticalRecords.SubRecords.Add(srcSub);
-
-        srcCriticalData = new SubRecord();
-        srcCriticalData.Name = "DESC";
-        recCriticalRecords.SubRecords.Add(srcCriticalData);
-
-        srcSub = new SubRecord();
-        srcSub.Name = "INAM";
-        srcSub.SetData(new byte[]
-        {
-          0, 0, 0, 0
-        });
-        recCriticalRecords.SubRecords.Add(srcSub);
-
-        srcSub = new SubRecord();
-        srcSub.Name = "DNAM";
-        srcSub.SetData(new byte[]
-        {
-          0, 0, 0, 0
-        });
-        recCriticalRecords.SubRecords.Add(srcSub);
-
-        srcSub = new SubRecord();
-        srcSub.Name = "TNAM";
-        srcSub.SetData(new byte[]
-        {
-          0, 0, 0, 1
-        });
-        recCriticalRecords.SubRecords.Add(srcSub);
-
-        grcGroup.AddRecord(recCriticalRecords);
+        uintFormId++;
       }
+      if ((uintFormId & 0xff000000) != uintMastersCount)
+      {
+        throw new PluginFullException("No available Form Id for new MESG record");
+      }
+      recCriticalRecords.FormID = uintFormId;
+      recCriticalRecords.Flags2 = 0x00044210;
+      recCriticalRecords.Flags3 = 0x0002000f;
+
+      var srcSub = new SubRecord();
+      srcSub.Name = "EDID";
+      srcSub.SetStrData(CRITICAL_DATA_RECORD_EDID, true);
+      recCriticalRecords.SubRecords.Add(srcSub);
+
+      srcCriticalData = new SubRecord();
+      srcCriticalData.Name = "DESC";
+      recCriticalRecords.SubRecords.Add(srcCriticalData);
+
+      srcSub = new SubRecord();
+      srcSub.Name = "INAM";
+      srcSub.SetData(new byte[]
+      {
+        0, 0, 0, 0
+      });
+      recCriticalRecords.SubRecords.Add(srcSub);
+
+      srcSub = new SubRecord();
+      srcSub.Name = "DNAM";
+      srcSub.SetData(new byte[]
+      {
+        0, 0, 0, 0
+      });
+      recCriticalRecords.SubRecords.Add(srcSub);
+
+      srcSub = new SubRecord();
+      srcSub.Name = "TNAM";
+      srcSub.SetData(new byte[]
+      {
+        0, 0, 0, 1
+      });
+      recCriticalRecords.SubRecords.Add(srcSub);
+
+      grcGroup.AddRecord(recCriticalRecords);
 
       return srcCriticalData;
     }

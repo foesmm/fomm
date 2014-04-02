@@ -251,7 +251,7 @@ namespace ChinhDo.Transactions
         {
           if (IgnoreExceptionsInRollback)
           {
-            EventLog.WriteEntry(GetType().FullName, "Failed to rollback." + Environment.NewLine + e.ToString(),
+            EventLog.WriteEntry(GetType().FullName, "Failed to rollback." + Environment.NewLine + e,
                                 EventLogEntryType.Warning);
           }
           else
@@ -285,7 +285,7 @@ namespace ChinhDo.Transactions
 
         protected static string CreateTempFileName(string ext)
         {
-          string retVal = null;
+          string retVal;
           do
           {
             retVal = Path.Combine(_tempFolder, (_tempFilesPrefix != null ? _tempFilesPrefix + "-" : "")

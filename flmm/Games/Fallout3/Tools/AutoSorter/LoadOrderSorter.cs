@@ -329,7 +329,7 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
     public void SortList(string[] plugins)
     {
       var mi = BuildModInfo(plugins);
-      Array.Sort<ModInfo>(mi, delegate(ModInfo a, ModInfo b)
+      Array.Sort(mi, delegate(ModInfo a, ModInfo b)
       {
         return a.id.CompareTo(b.id);
       });
@@ -359,10 +359,7 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
         {
           return false;
         }
-        else
-        {
-          upto = mi[i].id;
-        }
+        upto = mi[i].id;
       }
       return true;
     }

@@ -13,7 +13,7 @@ namespace Fomm.Games.Fallout3.Tools.InstallTweaker
       Icon = Resources.fomm02;
       if (!File.Exists("xlive.ini"))
       {
-        File.WriteAllLines("xlive.ini", new string[]
+        File.WriteAllLines("xlive.ini", new[]
         {
           "[d3dx]", "sse=0", "", "[xlive]", "profile="
         });

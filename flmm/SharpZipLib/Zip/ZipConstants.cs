@@ -501,10 +501,7 @@ namespace Fomm.SharpZipLib.Zip
       {
         return Encoding.UTF8.GetString(data, 0, count);
       }
-      else
-      {
-        return ConvertToString(data, count);
-      }
+      return ConvertToString(data, count);
     }
 
     /// <summary>
@@ -528,10 +525,7 @@ namespace Fomm.SharpZipLib.Zip
       {
         return Encoding.UTF8.GetString(data, 0, data.Length);
       }
-      else
-      {
-        return ConvertToString(data, data.Length);
-      }
+      return ConvertToString(data, data.Length);
     }
 
     /// <summary>
@@ -570,10 +564,7 @@ namespace Fomm.SharpZipLib.Zip
       {
         return Encoding.UTF8.GetBytes(str);
       }
-      else
-      {
-        return ConvertToArray(str);
-      }
+      return ConvertToArray(str);
     }
   }
 }

@@ -109,12 +109,9 @@ class ScriptRunner {
       {
         return null;
       }
-      else
-      {
-        var data = File.ReadAllBytes(results.PathToAssembly);
-        File.Delete(results.PathToAssembly);
-        return data;
-      }
+      var data = File.ReadAllBytes(results.PathToAssembly);
+      File.Delete(results.PathToAssembly);
+      return data;
     }
 
     public static string CheckSyntax(string script, out string stdout)
@@ -126,8 +123,8 @@ class ScriptRunner {
         return "Cannot syntax check a fomm script";
       }
 
-      string[] errors = null;
-      string[] warnings = null;
+      string[] errors;
+      string[] warnings;
 
       Compile(script, out errors, out warnings, out stdout);
       if (errors != null || warnings != null)
@@ -194,7 +191,7 @@ class ScriptRunner {
         MethodInfo mifMethod = null;
         for (var tpeScriptType = s.GetType(); mifMethod == null; tpeScriptType = tpeScriptType.BaseType)
         {
-          mifMethod = tpeScriptType.GetMethod("Setup", new Type[]
+          mifMethod = tpeScriptType.GetMethod("Setup", new[]
           {
             typeof (ModInstaller)
           });
@@ -216,7 +213,7 @@ class ScriptRunner {
         while (ex.InnerException != null)
         {
           ex = ex.InnerException;
-          str += Environment.NewLine + Environment.NewLine + ex.ToString();
+          str += Environment.NewLine + Environment.NewLine + ex;
         }
         File.WriteAllText(
           Path.Combine(Program.GameMode.InstallInfoDirectory, "ScriptException.txt"), str);

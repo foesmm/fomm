@@ -24,7 +24,7 @@ namespace Fomm.PackageManager
       permissions = new PermissionSet(PermissionState.None);
       //do the following paths need to add to this?
       // savesPath - fallout 3
-      var fipFilePermission = new FileIOPermission(FileIOPermissionAccess.AllAccess, new string[]
+      var fipFilePermission = new FileIOPermission(FileIOPermissionAccess.AllAccess, new[]
       {
         Program.tmpPath,
         Path.GetTempPath(),

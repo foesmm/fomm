@@ -305,7 +305,6 @@ namespace Fomm.SharpZipLib.Zip
           }
           catch (Exception)
           {
-            doExtraction = false;
             continueRunning_ = false;
             throw;
           }

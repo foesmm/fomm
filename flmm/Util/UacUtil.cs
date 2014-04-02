@@ -161,8 +161,8 @@ namespace Fomm.Util
           return true;
         }
 
-        var booCallSucceeded = false;
-        var hToken = IntPtr.Zero;
+        bool booCallSucceeded;
+        IntPtr hToken;
 
         var ptrProcessHandle = GetCurrentProcess();
         if (ptrProcessHandle == IntPtr.Zero)
@@ -170,7 +170,7 @@ namespace Fomm.Util
           throw new Exception("Could not get hanlde to current process.");
         }
 
-        if (!(booCallSucceeded = OpenProcessToken(ptrProcessHandle, TOKEN_QUERY, out hToken)))
+        if (!(OpenProcessToken(ptrProcessHandle, TOKEN_QUERY, out hToken)))
         {
           throw new Exception("Could not open process token.");
         }
@@ -185,7 +185,7 @@ namespace Fomm.Util
           try
           {
             Marshal.StructureToPtr(tevTokenElevation, pteTokenElevation, true);
-            UInt32 uintReturnLength = 0;
+            UInt32 uintReturnLength;
             booCallSucceeded = GetTokenInformation(hToken, TOKEN_INFORMATION_CLASS.TokenElevation, pteTokenElevation,
                                                    (UInt32) intTokenElevationSize, out uintReturnLength);
             if ((!booCallSucceeded) || (intTokenElevationSize != uintReturnLength))

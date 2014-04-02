@@ -32,11 +32,11 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
     /// <returns>The current verison of the BOSS Fallout 3 Masterlist.</returns>
     public Int32 GetMasterlistVersion()
     {
-      string strVersionPage = null;
+      string strVersionPage;
       using (var wclGetter = new WebClient())
       {
         var strMasterListUrl = MasterListURL;
-        var intLastDividerPos = strMasterListUrl.LastIndexOfAny(new char[]
+        var intLastDividerPos = strMasterListUrl.LastIndexOfAny(new[]
         {
           Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar
         });
@@ -53,13 +53,13 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
     /// </summary>
     public void UpdateMasterlist(string p_strPath)
     {
-      string strMasterlist = null;
+      string strMasterlist;
       using (var wclGetter = new WebClient())
       {
         //the substring is to remove the 3byte EFBBBF Byte Order Mark (BOM)
         strMasterlist = TextUtil.ByteToString(wclGetter.DownloadData(MasterListURL));
       }
-      File.WriteAllText(p_strPath, GetMasterlistVersion().ToString() + Environment.NewLine + strMasterlist);
+      File.WriteAllText(p_strPath, GetMasterlistVersion() + Environment.NewLine + strMasterlist);
     }
   }
 }

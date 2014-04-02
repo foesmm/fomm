@@ -199,10 +199,7 @@ namespace Fomm.Controls
       {
         return true;
       }
-      else
-      {
-        return base.IsInputKey(keyData);
-      }
+      return base.IsInputKey(keyData);
     }
 
     /// <summary>
@@ -511,7 +508,7 @@ namespace Fomm.Controls
       //if the width is odd - favor pushing it over one pixel right.
       pntMiddle.X += (p_rctDropDownRect.Width%2);
 
-      var pntArrowPoints = new Point[]
+      var pntArrowPoints = new[]
       {
         new Point(pntMiddle.X - 2, pntMiddle.Y - 1), new Point(pntMiddle.X + 3, pntMiddle.Y - 1),
         new Point(pntMiddle.X, pntMiddle.Y + 2)

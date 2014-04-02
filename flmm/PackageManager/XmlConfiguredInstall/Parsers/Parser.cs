@@ -188,7 +188,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     {
       var strSchemaPath = Program.GameMode.GetXMLConfigSchemaPath(ConfigurationFileVersion);
       var bteSchema = File.ReadAllBytes(strSchemaPath);
-      XmlSchema xscSchema = null;
+      XmlSchema xscSchema;
       using (var stmSchema = new MemoryStream(bteSchema))
       {
         var xrsSettings = new XmlReaderSettings();

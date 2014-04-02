@@ -44,7 +44,7 @@ namespace Fomm.PackageManager.FomodBuilder
       {
         get
         {
-          return Find((s) =>
+          return Find(s =>
           {
             return s.Equals(p_strPath);
           });
@@ -249,7 +249,7 @@ namespace Fomm.PackageManager.FomodBuilder
         else if (LastSource.Path.StartsWith(Archive.ARCHIVE_PREFIX))
         {
           var kvpArchive = Archive.ParseArchivePath(LastSource);
-          Archive arcArchive = null;
+          Archive arcArchive;
           lock (m_dicArchiveCache)
           {
             if (!m_dicArchiveCache.ContainsKey(kvpArchive.Key))

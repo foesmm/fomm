@@ -92,13 +92,13 @@ namespace Fomm.Controls
       {
         g.DrawLine(new Pen(Color.Red), X1, Y, X2 - 1, Y);
 
-        var leftTriangle = new Point[3]
+        var leftTriangle = new[]
         {
           new Point(X1, Y - 4),
           new Point(X1 + 7, Y),
           new Point(X1, Y + 4)
         };
-        var rightTriangle = new Point[3]
+        var rightTriangle = new[]
         {
           new Point(X2, Y - 4),
           new Point(X2 - 8, Y),
@@ -216,7 +216,7 @@ namespace Fomm.Controls
         _ItemsToMove.Add(SelectedItems[index]);
       }
 
-      base.DoDragDrop(_DragKey, DragDropEffects.Move);
+      DoDragDrop(_DragKey, DragDropEffects.Move);
     }
 
     protected override void OnDragOver(DragEventArgs drgevent)
@@ -337,7 +337,6 @@ namespace Fomm.Controls
       else
       {
         base.OnDragEnter(drgevent);
-        return;
       }
     }
 

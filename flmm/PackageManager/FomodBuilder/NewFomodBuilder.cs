@@ -364,7 +364,7 @@ namespace Fomm.PackageManager.FomodBuilder
 
       var strDestination = p_kvpCopyInstruction.Value;
       strDestination = strDestination.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
-      strDestination = strDestination.Trim(new char[]
+      strDestination = strDestination.Trim(new[]
       {
         Path.DirectorySeparatorChar
       });

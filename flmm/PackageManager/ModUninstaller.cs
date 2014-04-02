@@ -125,7 +125,7 @@ namespace Fomm.PackageManager
       }
       TransactionalFileManager.Snapshot(InstallLog.Current.InstallLogPath);
 
-      var booIsActive = true;
+      bool booIsActive;
       try
       {
         if (Fomod != null)

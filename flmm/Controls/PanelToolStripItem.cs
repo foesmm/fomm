@@ -35,11 +35,7 @@ namespace Fomm.Controls
       }
       set
       {
-        if (m_tdsDisplayStyle != value)
-        {
-          m_tdsDisplayStyle = value;
-          //setDisplayStyle();
-        }
+        m_tdsDisplayStyle = value;
       }
     }
 

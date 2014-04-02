@@ -67,7 +67,7 @@ namespace Fomm.SharpZipLib.Checksums
   {
     private const uint CrcSeed = 0xFFFFFFFF;
 
-    private static readonly uint[] CrcTable = new uint[]
+    private static readonly uint[] CrcTable =
     {
       0x00000000, 0x77073096, 0xEE0E612C, 0x990951BA, 0x076DC419,
       0x706AF48F, 0xE963A535, 0x9E6495A3, 0x0EDB8832, 0x79DCB8A4,
@@ -135,7 +135,7 @@ namespace Fomm.SharpZipLib.Checksums
     {
       get
       {
-        return (long) crc;
+        return crc;
       }
     }
 

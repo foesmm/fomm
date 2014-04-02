@@ -139,7 +139,7 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
         {
           var strFoundPathLength = (tndRoot == null) ? -1 : tndRoot.FullPath.Length;
           //we need to create some folders
-          var strRemainingFolders = strParentDirectory.Substring(strFoundPathLength + 1).Split(new char[]
+          var strRemainingFolders = strParentDirectory.Substring(strFoundPathLength + 1).Split(new[]
           {
             Path.DirectorySeparatorChar
           }, StringSplitOptions.RemoveEmptyEntries);
@@ -173,7 +173,7 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
         return null;
       }
       var strPath = p_strPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
-      strPath = strPath.Trim(new char[]
+      strPath = strPath.Trim(new[]
       {
         Path.DirectorySeparatorChar
       });
@@ -541,7 +541,7 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
     {
       if (!p_strFile.StartsWith(Archive.ARCHIVE_PREFIX) && !p_strFile.StartsWith(FileSystemTreeNode.NEW_PREFIX))
       {
-        FileSystemInfo fsiInfo = null;
+        FileSystemInfo fsiInfo;
         if (Directory.Exists(p_strFile))
         {
           fsiInfo = new DirectoryInfo(p_strFile);
@@ -561,7 +561,7 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
       }
 
       var strFileName = Path.GetFileName(p_strFile);
-      FileSystemTreeNode tndFile = null;
+      FileSystemTreeNode tndFile;
       var tncSiblings = (p_tndRoot == null) ? tvwFomod.Nodes : p_tndRoot.Nodes;
       if (tncSiblings.ContainsKey(strFileName.ToLowerInvariant()))
       {

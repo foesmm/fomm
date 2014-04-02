@@ -49,7 +49,7 @@ namespace Fomm.Util
       {
         ReadOnlyCollection<ArchiveFileInfo> rocFileInfo = null;
         var mreDoneEvent = new ManualResetEvent(false);
-        m_queEvents.Enqueue(new KeyValuePair<Action<object>, ManualResetEvent>((o) =>
+        m_queEvents.Enqueue(new KeyValuePair<Action<object>, ManualResetEvent>(o =>
         {
           rocFileInfo = m_szeExtractor.ArchiveFileData;
         }, mreDoneEvent));
@@ -74,7 +74,7 @@ namespace Fomm.Util
       {
         var booIsSolid = false;
         var mreDoneEvent = new ManualResetEvent(false);
-        m_queEvents.Enqueue(new KeyValuePair<Action<object>, ManualResetEvent>((o) =>
+        m_queEvents.Enqueue(new KeyValuePair<Action<object>, ManualResetEvent>(o =>
         {
           booIsSolid = m_szeExtractor.IsSolid;
         }, mreDoneEvent));
@@ -175,7 +175,7 @@ namespace Fomm.Util
     public void ExtractFile(Int32 p_intIndex, Stream p_stmFile)
     {
       var mreDoneEvent = new ManualResetEvent(false);
-      m_queEvents.Enqueue(new KeyValuePair<Action<object>, ManualResetEvent>((o) =>
+      m_queEvents.Enqueue(new KeyValuePair<Action<object>, ManualResetEvent>(o =>
       {
         m_szeExtractor.ExtractFile(p_intIndex, p_stmFile);
       }, mreDoneEvent));

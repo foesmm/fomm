@@ -93,7 +93,7 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
 
     private void tkbSlider_Scroll(object sender, EventArgs e)
     {
-      nudValue.Value = (decimal) tkbSlider.Value/(decimal) m_intDivisor;
+      nudValue.Value = tkbSlider.Value/(decimal) m_intDivisor;
     }
 
     private void ckbOverride_CheckedChanged(object sender, EventArgs e)

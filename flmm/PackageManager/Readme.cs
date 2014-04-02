@@ -33,7 +33,7 @@ namespace Fomm.PackageManager
     /// <summary>
     /// The mapping of valid extensions to their respective readme formats.
     /// </summary>
-    private static Dictionary<string, ReadmeFormat> m_dicFormats = new Dictionary<string, ReadmeFormat>()
+    private static Dictionary<string, ReadmeFormat> m_dicFormats = new Dictionary<string, ReadmeFormat>
     {
       {
         ".txt", ReadmeFormat.PlainText

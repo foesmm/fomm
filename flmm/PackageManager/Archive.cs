@@ -200,14 +200,11 @@ namespace Fomm.PackageManager
           }
         }
       }
-      else
+      if (p_booThreadSafe)
       {
-        if (p_booThreadSafe)
-        {
-          return new ThreadSafeSevenZipExtractor(p_strPath);
-        }
-        return new SevenZipExtractor(p_strPath);
+        return new ThreadSafeSevenZipExtractor(p_strPath);
       }
+      return new SevenZipExtractor(p_strPath);
     }
 
     /// <summary>
@@ -510,7 +507,7 @@ namespace Fomm.PackageManager
     /// <lang cref="false"/> otherwise.</returns>
     public bool IsDirectory(string p_strPath)
     {
-      var strPath = p_strPath.Trim(new char[]
+      var strPath = p_strPath.Trim(new[]
       {
         Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar
       });
@@ -590,7 +587,7 @@ namespace Fomm.PackageManager
       var lstFiles = new Set<string>(StringComparer.InvariantCultureIgnoreCase);
       if (String.IsNullOrEmpty(p_strDirectory))
       {
-        m_strFiles.ForEach((s) =>
+        m_strFiles.ForEach(s =>
         {
           lstFiles.Add(String.Copy(s));
         });
@@ -709,7 +706,7 @@ namespace Fomm.PackageManager
         throw new FileNotFoundException("The requested file does not exist in the archive.", p_strPath);
       }
 
-      byte[] bteFile = null;
+      byte[] bteFile;
       var afiFile = m_dicFileInfo[strPath];
       bteFile = new byte[afiFile.Size];
       using (var msmFile = new MemoryStream(bteFile))
@@ -793,7 +790,7 @@ namespace Fomm.PackageManager
         p_strFileName.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).ToLowerInvariant();
       if (m_dicFileInfo.ContainsKey(strPath))
       {
-        var dicDelete = new Dictionary<int, string>()
+        var dicDelete = new Dictionary<int, string>
         {
           {
             m_dicFileInfo[strPath].Index, null
@@ -803,7 +800,7 @@ namespace Fomm.PackageManager
       }
       using (var msmData = new MemoryStream(p_bteData))
       {
-        m_szcCompressor.CompressStreamDictionary(new Dictionary<string, Stream>()
+        m_szcCompressor.CompressStreamDictionary(new Dictionary<string, Stream>
         {
           {
             p_strFileName, msmData
@@ -842,7 +839,7 @@ namespace Fomm.PackageManager
         p_strFileName.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).ToLowerInvariant();
       if (m_dicFileInfo.ContainsKey(strPath))
       {
-        var dicDelete = new Dictionary<int, string>()
+        var dicDelete = new Dictionary<int, string>
         {
           {
             m_dicFileInfo[strPath].Index, null

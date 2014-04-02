@@ -35,7 +35,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     {
       get
       {
-        string strValue = null;
+        string strValue;
         m_dsmStateManager.FlagValues.TryGetValue(FlagName, out strValue);
         if (String.IsNullOrEmpty(Value))
         {

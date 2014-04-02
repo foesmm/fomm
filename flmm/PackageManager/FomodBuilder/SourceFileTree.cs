@@ -188,7 +188,7 @@ namespace Fomm.PackageManager.FomodBuilder
     {
       if (!p_strFile.StartsWith(Archive.ARCHIVE_PREFIX) && !p_strFile.StartsWith(FileSystemTreeNode.NEW_PREFIX))
       {
-        FileSystemInfo fsiInfo = null;
+        FileSystemInfo fsiInfo;
         if (Directory.Exists(p_strFile))
         {
           fsiInfo = new DirectoryInfo(p_strFile);
@@ -207,7 +207,7 @@ namespace Fomm.PackageManager.FomodBuilder
         }
       }
 
-      FileSystemTreeNode tndFile = null;
+      FileSystemTreeNode tndFile;
       var tncSiblings = (p_tndRoot == null) ? tvwSource.Nodes : p_tndRoot.Nodes;
       if (tncSiblings.ContainsKey(p_strFile))
       {

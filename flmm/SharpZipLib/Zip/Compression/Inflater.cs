@@ -348,14 +348,12 @@ namespace Fomm.SharpZipLib.Zip.Compression
               {
                 return false;
               }
-              else
-              {
-                // symbol == 256: end of block
-                distTree = null;
-                litlenTree = null;
-                mode = DECODE_BLOCKS;
-                return true;
-              }
+
+              // symbol == 256: end of block
+              distTree = null;
+              litlenTree = null;
+              mode = DECODE_BLOCKS;
+              return true;
             }
 
             try
@@ -490,13 +488,11 @@ namespace Fomm.SharpZipLib.Zip.Compression
               mode = FINISHED;
               return false;
             }
-            else
-            {
-              input.SkipToByteBoundary();
-              neededBits = 32;
-              mode = DECODE_CHKSUM;
-              return true;
-            }
+
+            input.SkipToByteBoundary();
+            neededBits = 32;
+            mode = DECODE_CHKSUM;
+            return true;
           }
 
           var type = input.PeekBits(3);
@@ -628,7 +624,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
     public void SetInput(byte[] buffer, int index, int count)
     {
       input.SetInput(buffer, index, count);
-      totalIn += (long) count;
+      totalIn += count;
     }
 
     /// <summary>
@@ -747,7 +743,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
             adler.Update(buffer, offset, more);
             offset += more;
             bytesCopied += more;
-            totalOut += (long) more;
+            totalOut += more;
             count -= more;
             if (count == 0)
             {

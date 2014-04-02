@@ -87,7 +87,7 @@ namespace Fomm.Controls
     {
       var dvbAddPage = new DesignerVerb("Add Tab Page", AddTabPage);
       var dvbRemovePage = new DesignerVerb("Remove Tab Page", RemoveTabPage);
-      m_dvcVerbs.AddRange(new DesignerVerb[]
+      m_dvcVerbs.AddRange(new[]
       {
         dvbAddPage, dvbRemovePage
       });
@@ -147,7 +147,7 @@ namespace Fomm.Controls
       var tpcOldPages = DesignedTabControl.TabPages;
 
       RaiseComponentChanging(TypeDescriptor.GetProperties(DesignedTabControl)["TabPages"]);
-      DesignerHost.DestroyComponent((DropDownTabPage) (DesignedTabControl.TabPages[DesignedTabControl.SelectedIndex]));
+      DesignerHost.DestroyComponent(DesignedTabControl.TabPages[DesignedTabControl.SelectedIndex]);
       RaiseComponentChanged(TypeDescriptor.GetProperties(DesignedTabControl)["TabPages"], tpcOldPages,
                             DesignedTabControl.TabPages);
 

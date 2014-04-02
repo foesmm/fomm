@@ -357,7 +357,7 @@ namespace Fomm.Games.Fallout3.Script
     /// <param name="p_strValueKey">The key of the game-specific value to unedit.</param>
     public override bool UneditGameSpecificValue(string p_strFomodBaseName, string p_strValueKey)
     {
-      var strKey = p_strValueKey.Split(new char[]
+      var strKey = p_strValueKey.Split(new[]
       {
         ':'
       }, 2);
@@ -584,7 +584,7 @@ namespace Fomm.Games.Fallout3.Script
       IList<string> lstInstallers = InstallLog.Current.GetInstallingMods(p_strPath);
       if (lstInstallers.Contains(Fomod.BaseName))
       {
-        string strWritePath = null;
+        string strWritePath;
         if (!lstInstallers[lstInstallers.Count - 1].Equals(Fomod.BaseName))
         {
           var strDirectory = Path.GetDirectoryName(p_strPath);

@@ -128,7 +128,6 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
           Parent.Invalidate(Bounds);
           Parent.Update();
           Visible = true;
-          return;
         }
         else
         {
@@ -409,7 +408,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
           g.FillRectangle(new SolidBrush(BackColor), 0, 0, 120, 90);
         }
       }
-      var fltScale = (float) pbxImage.ClientSize.Height/(float) m_bmpOriginalImage.Height;
+      var fltScale = (float) pbxImage.ClientSize.Height/m_bmpOriginalImage.Height;
       pbxImage.ClientSize = new Size((Int32) (Math.Round(fltScale*m_bmpOriginalImage.Width)), pbxImage.ClientSize.Height);
       var bmpImage = resize(m_bmpOriginalImage, pbxImage.ClientSize);
       pbxImage.Image = bmpImage;
@@ -457,7 +456,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
       {
         var clrPixel = bmpImage.GetPixel(bmpImage.Width - intRange, i);
         var dblA = (double) clrPixel.A;
-        var dblADelta = dblA/(double) intRange;
+        var dblADelta = dblA/intRange;
         for (var j = intRange; j > 0; j--)
         {
           var intX = (m_tpsPosition == TextPosition.Left) ? j - 1 : bmpImage.Width - j;

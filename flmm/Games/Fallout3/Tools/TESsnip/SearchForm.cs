@@ -153,11 +153,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         MessageBox.Show("No match found");
         return false;
       }
-      else
-      {
-        foundNodes = matches.ToArray();
-        return true;
-      }
+      foundNodes = matches.ToArray();
+      return true;
     }
 
     private void bFind_Click(object sender, EventArgs e)

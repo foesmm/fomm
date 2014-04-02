@@ -244,21 +244,15 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         {
           return true;
         }
-        else
-        {
-          return false;
-        }
+        return false;
       }
-      else if (ss.Condition == CondType.Missing)
+      if (ss.Condition == CondType.Missing)
       {
         if (conditions.ContainsKey(ss.CondID))
         {
           return false;
         }
-        else
-        {
-          return true;
-        }
+        return true;
       }
       if (!conditions.ContainsKey(ss.CondID))
       {
@@ -372,7 +366,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         if (subs[subi].Name == sss[ssi].name && (sss[ssi].size == 0 || sss[ssi].size == subs[subi].Size))
         {
           SubrecordStructs[subi] = sss[ssi];
-          listView1.Items[subi].SubItems[1].Text = subs[subi].Size.ToString() + " *";
+          listView1.Items[subi].SubItems[1].Text = subs[subi].Size + " *";
           listView1.Items[subi].ToolTipText = sss[ssi].desc;
           if (sss[ssi].repeat > 0)
           {
@@ -447,7 +441,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         var r = (Record) PluginTree.SelectedNode.Tag;
         foreach (var sr in r.SubRecords)
         {
-          var lvi = new ListViewItem(new string[]
+          var lvi = new ListViewItem(new[]
           {
             sr.Name, sr.Size.ToString()
           });
@@ -525,10 +519,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       {
         p.Save(SaveModDialog.FileName);
       }
-      if (p.Name != tn.Text)
-      {
-        tn.Text = p.Name;
-      }
+      tn.Text = p.Name;
     }
 
     private void cutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -555,7 +546,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         {
           return;
         }
-        Clipboard = (SubRecord) ((SubRecord) listView1.SelectedItems[0].Tag).Clone();
+        Clipboard = ((SubRecord) listView1.SelectedItems[0].Tag).Clone();
         ClipboardNode = null;
       }
       else if (PluginTree.SelectedNode.Tag is Plugin)
@@ -658,20 +649,14 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       {
         var r = (Record) PluginTree.SelectedNode.Tag;
         HeaderEditor.Display(r);
-        if (PluginTree.SelectedNode.Text != r.DescriptiveName)
-        {
-          PluginTree.SelectedNode.Text = r.DescriptiveName;
-        }
+        PluginTree.SelectedNode.Text = r.DescriptiveName;
         tbInfo.Text = ((BaseRecord) PluginTree.SelectedNode.Tag).GetDesc();
       }
       else if (PluginTree.SelectedNode.Tag is GroupRecord)
       {
         var gr = (GroupRecord) PluginTree.SelectedNode.Tag;
         GroupEditor.Display(gr);
-        if (PluginTree.SelectedNode.Text != gr.DescriptiveName)
-        {
-          PluginTree.SelectedNode.Text = gr.DescriptiveName;
-        }
+        PluginTree.SelectedNode.Text = gr.DescriptiveName;
         tbInfo.Text = ((BaseRecord) PluginTree.SelectedNode.Tag).GetDesc();
       }
     }
@@ -733,7 +718,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
             parentRecord.descriptiveName = " (" + sr.GetStrData() + ")";
             PluginTree.SelectedNode.Text = parentRecord.DescriptiveName;
           }
-          listView1.SelectedItems[0].SubItems[1].Text = sr.Size.ToString() + " *";
+          listView1.SelectedItems[0].SubItems[1].Text = sr.Size + " *";
           return;
         }
       }
@@ -922,7 +907,6 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         return;
       }
       PluginTree_AfterSelect(null, null);
-      return;
     }
 
     private void listView1_DragEnter(object sender, DragEventArgs e)
@@ -937,7 +921,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     #region Spells
 
-    private readonly string[] SanitizeOrder = new string[]
+    private readonly string[] SanitizeOrder =
     {
       "GMST", "TXST", "MICN", "GLOB", "CLAS", "FACT", "HDPT", "HAIR", "EYES", "RACE", "SOUN", "ASPC", "MGEF", "SCPT",
       "LTEX",
@@ -958,15 +942,12 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       {
         return 1;
       }
-      else
+      var i = 1;
+      foreach (var r2 in ((GroupRecord) r).Records)
       {
-        var i = 1;
-        foreach (var r2 in ((GroupRecord) r).Records)
-        {
-          i += sanitizeCountRecords(r2);
-        }
-        return i;
+        i += sanitizeCountRecords(r2);
       }
+      return i;
     }
 
     private void sanitizeToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1155,10 +1136,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
           ids.Clear();
           return true;
         }
-        else
-        {
-          ids.Add(r2.FormID, tn);
-        }
+        ids.Add(r2.FormID, tn);
       }
       else
       {
@@ -1634,7 +1612,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
               if (sb3.Length > 0)
               {
                 sb2.AppendLine("    <LVLI formid=\"" + r.FormID.ToString("X6") + "\">");
-                sb2.Append(sb3.ToString());
+                sb2.Append(sb3);
                 sb2.AppendLine("    </LVLI>");
               }
               sb3.Length = 0;
@@ -1662,7 +1640,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
               if (sb3.Length > 0)
               {
                 sb2.AppendLine("    <LVLN formid=\"" + r.FormID.ToString("X6") + "\">");
-                sb2.Append(sb3.ToString());
+                sb2.Append(sb3);
                 sb2.AppendLine("    </LVLN>");
               }
               sb3.Length = 0;
@@ -1690,7 +1668,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
               if (sb3.Length > 0)
               {
                 sb2.AppendLine("    <LVLC formid=\"" + r.FormID.ToString("X6") + "\">");
-                sb2.Append(sb3.ToString());
+                sb2.Append(sb3);
                 sb2.AppendLine("    </LVLC>");
               }
               sb3.Length = 0;
@@ -1857,10 +1835,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       {
         p.Save(SaveModDialog.FileName);
       }
-      if (p.Name != tn.Text)
-      {
-        tn.Text = p.Name;
-      }
+      tn.Text = p.Name;
     }
 
     private void martigensToolStripMenuItem_Click(object sender, EventArgs e)

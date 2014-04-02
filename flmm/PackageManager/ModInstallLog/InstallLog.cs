@@ -223,7 +223,7 @@ namespace Fomm.PackageManager.ModInstallLog
         gameSpecificValueEditsNode = (XmlElement) xmlDoc.SelectSingleNode("installLog/gameSpecificEdits");
         if (m_xelModListNode == null)
         {
-          var root = (XmlNode) xmlDoc.SelectSingleNode("installLog");
+          var root = xmlDoc.SelectSingleNode("installLog");
           root.InsertBefore(m_xelModListNode = xmlDoc.CreateElement("modList"), dataFilesNode);
         }
         InitMods();
@@ -400,7 +400,7 @@ namespace Fomm.PackageManager.ModInstallLog
     /// the specified mod has no key.</returns>
     internal string GetModKey(string p_strModName)
     {
-      string strKey = null;
+      string strKey;
       m_dicModList.TryGetValue(p_strModName, out strKey);
       return strKey;
     }
@@ -439,7 +439,7 @@ namespace Fomm.PackageManager.ModInstallLog
         xndMod.Attributes.Append(xmlDoc.CreateAttribute("name"));
         xndMod.Attributes.Append(xmlDoc.CreateAttribute("key"));
         xndMod.Attributes["name"].InnerText = p_strModName;
-        string strKey = null;
+        string strKey;
         do
         {
           strKey = Path.GetFileNameWithoutExtension(Path.GetRandomFileName());
@@ -751,7 +751,7 @@ namespace Fomm.PackageManager.ModInstallLog
     /// <param name="p_strPath">The path of the file that was installed.</param>
     protected internal void AddDataFile(string p_strModName, string p_strPath)
     {
-      XmlNode xndModList = null;
+      XmlNode xndModList;
       var xndInstallingMod = CreateDataFileNode(m_dicModList[p_strModName], p_strPath, out xndModList);
       lock (dataFilesNode)
       {
@@ -793,7 +793,7 @@ namespace Fomm.PackageManager.ModInstallLog
     /// <param name="p_strPath">The path of the file that was installed.</param>
     protected internal void PrependDataFile(string p_strModName, string p_strPath)
     {
-      XmlNode xndModList = null;
+      XmlNode xndModList;
       var xndInstallingMod = CreateDataFileNode(GetModKey(p_strModName), p_strPath, out xndModList);
       xndModList.PrependChild(xndInstallingMod);
     }
@@ -982,7 +982,7 @@ namespace Fomm.PackageManager.ModInstallLog
     protected internal void AddIniEdit(string p_strFile, string p_strSection, string p_strKey, string p_strModName,
                                        string p_strValue)
     {
-      XmlNode xndModList = null;
+      XmlNode xndModList;
       var xndInstallingMod = CreateIniEditNode(m_dicModList[p_strModName], p_strFile, p_strSection, p_strKey,
                                                    p_strValue, out xndModList);
       lock (iniEditsNode)
@@ -1042,7 +1042,7 @@ namespace Fomm.PackageManager.ModInstallLog
     protected internal void PrependAfterOriginalIniEdit(string p_strFile, string p_strSection, string p_strKey,
                                                         string p_strModName, string p_strValue)
     {
-      XmlNode xndModList = null;
+      XmlNode xndModList;
       var xndInstallingMod = CreateIniEditNode(GetModKey(p_strModName), p_strFile, p_strSection, p_strKey,
                                                    p_strValue, out xndModList);
       if ((xndModList.FirstChild != null) &&
@@ -1238,7 +1238,7 @@ namespace Fomm.PackageManager.ModInstallLog
     /// <param name="p_bteData">The data to which to the value was set.</param>
     protected internal void AddGameSpecificValueEdit(string p_strModName, string p_strValueKey, byte[] p_bteData)
     {
-      XmlNode xndModList = null;
+      XmlNode xndModList;
       var xndInstallingMod = CreateGameSpecificValueEditNode(GetModKey(p_strModName), p_strValueKey, p_bteData,
                                                                  out xndModList);
       lock (gameSpecificValueEditsNode)
@@ -1295,7 +1295,7 @@ namespace Fomm.PackageManager.ModInstallLog
     protected internal void PrependAfterOriginalGameSpecificValueEdit(string p_strModName, string p_strValueKey,
                                                                       byte[] p_bteData)
     {
-      XmlNode xndModList = null;
+      XmlNode xndModList;
       var xndInstallingMod = CreateGameSpecificValueEditNode(GetModKey(p_strModName), p_strValueKey, p_bteData,
                                                                  out xndModList);
       if ((xndModList.FirstChild != null) &&
@@ -1493,9 +1493,9 @@ namespace Fomm.PackageManager.ModInstallLog
     /// the log entries for the components that were installed and edited.</param>
     internal void UnmergeModule(string p_strModName)
     {
-      XmlNode xndComponent = null;
-      XmlNode xndInstallingMods = null;
-      XmlNodeList xnlComponentMods = null;
+      XmlNode xndComponent;
+      XmlNode xndInstallingMods;
+      XmlNodeList xnlComponentMods;
       lock (dataFilesNode)
       {
         xnlComponentMods = dataFilesNode.SelectNodes("descendant::mod[@key=\"" + m_dicModList[p_strModName] + "\"]");
@@ -1557,7 +1557,7 @@ namespace Fomm.PackageManager.ModInstallLog
     internal InstallLogMergeModule GetMergeModule(string p_strModName)
     {
       var ilmMergeModule = new InstallLogMergeModule();
-      XmlNode xndComponent = null;
+      XmlNode xndComponent;
       var xnlComponentMods =
         dataFilesNode.SelectNodes("descendant::mod[@key=\"" + m_dicModList[p_strModName] + "\"]");
       foreach (XmlNode xndFile in xnlComponentMods)

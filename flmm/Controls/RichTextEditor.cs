@@ -68,7 +68,7 @@ namespace Fomm.Controls
     {
       InitializeComponent();
 
-      m_tsbJustifications = new ToolStripButton[]
+      m_tsbJustifications = new[]
       {
         tsbJustifyLeft, tsbJustifyCentre, tsbJustifyRight
       };
@@ -143,7 +143,6 @@ namespace Fomm.Controls
       rtbTemp.Select(intTempStart, intSelectionLength);
       rtbTextbox.SelectedRtf = rtbTemp.SelectedRtf;
       rtbTextbox.Select(intSelectionStart, intSelectionLength);
-      return;
     }
 
     /// <summary>
@@ -184,7 +183,7 @@ namespace Fomm.Controls
     /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
     private void tscbFontSize_TextChanged(object sender, EventArgs e)
     {
-      float fltFontSize = -1;
+      float fltFontSize;
       if (float.TryParse(tscbFontSize.Text, out fltFontSize))
       {
         m_fltLastFontSize = fltFontSize;
@@ -203,7 +202,7 @@ namespace Fomm.Controls
     /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
     private void tscbFontSize_Leave(object sender, EventArgs e)
     {
-      float fltFontSize = -1;
+      float fltFontSize;
       if (!float.TryParse(tscbFontSize.Text, out fltFontSize))
       {
         tscbFontSize.Text = m_fltLastFontSize.ToString();
@@ -246,7 +245,6 @@ namespace Fomm.Controls
       rtbTemp.Select(rtbTempStart, len);
       rtbTextbox.SelectedRtf = rtbTemp.SelectedRtf;
       rtbTextbox.Select(rtb1start, len);
-      return;
     }
 
     /// <summary>
@@ -303,10 +301,7 @@ namespace Fomm.Controls
         {
           return rtbTextbox.SelectionFont;
         }
-        else
-        {
-          return rtbTextbox.Font;
-        }
+        return rtbTextbox.Font;
       }
 
       // Step through the selected text one char at a time  

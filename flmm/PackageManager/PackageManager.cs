@@ -88,7 +88,7 @@ namespace Fomm.PackageManager
 
     private void AddFomodToList(fomod mod)
     {
-      var strWebVersion = "NA";
+      string strWebVersion;
       m_dicWebVersions.TryGetValue(mod.BaseName, out strWebVersion);
 
       if (lvModList.Items.ContainsKey(mod.BaseName))
@@ -98,7 +98,7 @@ namespace Fomm.PackageManager
 
       if (!cbGroups.Checked)
       {
-        var lvi = new ListViewItem(new string[]
+        var lvi = new ListViewItem(new[]
         {
           mod.ModName, mod.HumanReadableVersion, strWebVersion, mod.Author
         });
@@ -112,10 +112,10 @@ namespace Fomm.PackageManager
       var added = false;
       for (var i = 0; i < groups.Count; i++)
       {
-        if (Array.IndexOf<string>(mod.Groups, lgroups[i]) != -1)
+        if (Array.IndexOf(mod.Groups, lgroups[i]) != -1)
         {
           added = true;
-          var lvi = new ListViewItem(new string[]
+          var lvi = new ListViewItem(new[]
           {
             mod.ModName, mod.HumanReadableVersion, strWebVersion, mod.Author
           });
@@ -129,7 +129,7 @@ namespace Fomm.PackageManager
       }
       if (!added)
       {
-        var lvi = new ListViewItem(new string[]
+        var lvi = new ListViewItem(new[]
         {
           mod.ModName, mod.HumanReadableVersion, strWebVersion, mod.Author
         });
@@ -556,7 +556,7 @@ namespace Fomm.PackageManager
       tb.ScrollBars = ScrollBars.Vertical;
       tb.Text = string.Join(Environment.NewLine, groups.ToArray());
       tb.Select(0, 0);
-      f.FormClosing += delegate(object sender2, FormClosingEventArgs args2)
+      f.FormClosing += delegate
       {
         Settings.Default.windowPositions.SetWindowPosition("GroupEditor", f);
         Settings.Default.Save();
@@ -1063,10 +1063,7 @@ namespace Fomm.PackageManager
         {
           if (lvModList.Items[i].Checked || !p_booActiveOnly)
           {
-            swrModList.WriteLine(
-              String.Format("[{0}] {1,-" + intMaxNameLength + "}\t{2,-" + intMaxVersionLength + "}\t{3}",
-                            (lvModList.Items[i].Checked ? "X" : " "), lvModList.Items[i].Text,
-                            lvModList.Items[i].SubItems[1].Text, ((fomod) lvModList.Items[i].Tag).filepath));
+            swrModList.WriteLine("[{0}] {1,-" + intMaxNameLength + "}\t{2,-" + intMaxVersionLength + "}\t{3}", (lvModList.Items[i].Checked ? "X" : " "), lvModList.Items[i].Text, lvModList.Items[i].SubItems[1].Text, ((fomod) lvModList.Items[i].Tag).filepath);
           }
         }
       }

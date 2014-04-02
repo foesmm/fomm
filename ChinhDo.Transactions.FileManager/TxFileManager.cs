@@ -180,7 +180,7 @@ namespace ChinhDo.Transactions
     /// <param name="extension">File extension (with the dot).</param>
     public string GetTempFileName(string extension)
     {
-      string retVal = null;
+      string retVal;
       do
       {
         retVal = Path.Combine(_tempFolder, (_tempFilesPrefix != null ? _tempFilesPrefix + "-" : "")
@@ -218,7 +218,7 @@ namespace ChinhDo.Transactions
     /// <returns>Path to the temporary directory. The temporary directory is created automatically.</returns>
     public string GetTempDirectory(string parentDirectory, string prefix)
     {
-      string dirName = null;
+      string dirName;
       do
       {
         dirName = Path.Combine(parentDirectory, prefix + Path.GetFileNameWithoutExtension(Path.GetRandomFileName()));
@@ -232,7 +232,7 @@ namespace ChinhDo.Transactions
 
     protected static string CreateTempFileName(string ext)
     {
-      string retVal = null;
+      string retVal;
       do
       {
         retVal = Path.Combine(_tempFolder, (_tempFilesPrefix != null ? _tempFilesPrefix + "-" : "")

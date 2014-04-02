@@ -45,7 +45,7 @@ namespace Fomm.FileManager
       else
       {
         var lstInstalledMods = InstallLog.Current.GetModList();
-        TreeNode tndCurrentDirectory = null;
+        TreeNode tndCurrentDirectory;
         foreach (var strMod in lstInstalledMods)
         {
           tndCurrentDirectory = tvwFolders.Nodes.Add(strMod);
@@ -76,7 +76,7 @@ namespace Fomm.FileManager
     /// <param name="p_strFile">The file path whose containing directory node is to be selected.</param>
     protected void SelectNodeContainingFile(TreeNode p_tndNode, string p_strFile)
     {
-      var chrDirecotrySeparators = new char[]
+      var chrDirecotrySeparators = new[]
       {
         Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar
       };
@@ -96,8 +96,8 @@ namespace Fomm.FileManager
     /// <param name="p_strFiles">The files to add to the given node.</param>
     protected void AddFilesToNode(TreeNode p_tndNode, IList<string> p_strFiles)
     {
-      var tndCurrentDirectory = p_tndNode;
-      var chrDirecotrySeparators = new char[]
+      TreeNode tndCurrentDirectory;
+      var chrDirecotrySeparators = new[]
       {
         Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar
       };

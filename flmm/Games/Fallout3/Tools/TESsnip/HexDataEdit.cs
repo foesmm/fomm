@@ -156,10 +156,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     private void hexBox1_InsertActiveChanged(object sender, EventArgs e)
     {
-      if (cbInsert.Checked != hexBox1.InsertActive)
-      {
-        cbInsert.Checked = hexBox1.InsertActive;
-      }
+      cbInsert.Checked = hexBox1.InsertActive;
     }
 
     private void bCFormID_Click(object sender, EventArgs e)

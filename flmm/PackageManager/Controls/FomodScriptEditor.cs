@@ -42,7 +42,7 @@ namespace Fomm.PackageManager.Controls
             fscScript.Type = FomodScriptType.XMLConfig;
             var strHeader = "<?xml version=\"1.0\" encoding=\"UTF-16\" ?>" + Environment.NewLine +
                                "<config xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"http://qconsulting.ca/fo3/ModConfig{0}.xsd\">";
-            strHeader = String.Format(strHeader, cbxVersion.SelectedItem.ToString());
+            strHeader = String.Format(strHeader, cbxVersion.SelectedItem);
             fscScript.Text = xedScript.Text.Replace("<config>", strHeader);
           }
         }

@@ -28,7 +28,6 @@ namespace Fomm.Games.Fallout3.PluginFormatProviders
     {
       Color clr;
 
-      clr = Color.Black;
       switch (Program.GameMode.getPluginDependencyStatus(p_strPluginName))
       {
         case 1:
@@ -47,7 +46,6 @@ namespace Fomm.Games.Fallout3.PluginFormatProviders
           break;
 
         default:
-        case 0:
           clr = Color.Black;
           break;
       }

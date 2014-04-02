@@ -48,7 +48,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
 
       public override string ToString()
       {
-        return ret.ToString() + " func(" + args.Length + ")";
+        return ret + " func(" + args.Length + ")";
       }
 
       private static VarType GetVarType(string s)
@@ -568,7 +568,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
 
     private static bool ReturnError(string msg, out string error)
     {
-      error = ts.Line.ToString() + ": " + msg;
+      error = ts.Line + ": " + msg;
       ts = null;
       r = null;
       return false;
@@ -588,7 +588,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
 
     private static void AddError(string msg)
     {
-      errors.Add(ts.Line.ToString() + ": " + msg);
+      errors.Add(ts.Line + ": " + msg);
     }
 
     private static void HandleVariables()
@@ -829,14 +829,11 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
             hadRef = true;
             goto case TokenType.Function;
           }
-          else
+          if (type == ExpressionType.Numeric)
           {
-            if (type == ExpressionType.Numeric)
-            {
-              AddError("Reference type not valid here");
-            }
-            EmitRefLabel(t, RefType.Standalone);
+            AddError("Reference type not valid here");
           }
+          EmitRefLabel(t, RefType.Standalone);
           break;
         case TokenType.Local:
           var lv = locals[t.token];
@@ -954,10 +951,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
         {
           return true;
         }
-        else
-        {
-          throw new ExpressionParseException("Syntax error: misplaced ')'");
-        }
+        throw new ExpressionParseException("Syntax error: misplaced ')'");
       }
       if (biOps.ContainsKey(t.token))
       {
@@ -984,15 +978,9 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
           }
           goto start;
         }
-        else
-        {
-          return false;
-        }
+        return false;
       }
-      else
-      {
-        throw new ExpressionParseException("Syntax error");
-      }
+      throw new ExpressionParseException("Syntax error");
     }
 
     private static void EmitExpression(Token[] smt, ExpressionType type)
@@ -1060,7 +1048,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
         {
           smt[j - 1] = smt[j];
         }
-        Array.Resize<Token>(ref smt, smt.Length - 1);
+        Array.Resize(ref smt, smt.Length - 1);
         return;
       }
       var pos = bw.BaseStream.Length;
@@ -1119,13 +1107,10 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
             {
               smt[j - i] = smt[j];
             }
-            Array.Resize<Token>(ref smt, smt.Length - i);
+            Array.Resize(ref smt, smt.Length - i);
             break;
           }
-          else
-          {
-            AddError("Unexpected symbol '" + smt[i].token + "' in function arguments");
-          }
+          AddError("Unexpected symbol '" + smt[i].token + "' in function arguments");
         }
         if (argcount == fs.args.Length)
         {
@@ -1191,7 +1176,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
             {
               if (fs.args[argcount - 1] != VarType.Ref)
               {
-                AddError("Invalid argument " + i + " to function. Expected " + fs.args[argcount - 1].ToString());
+                AddError("Invalid argument " + i + " to function. Expected " + fs.args[argcount - 1]);
               }
               if (fs.reftypes[argcount - 1] != null && fs.reftypes[argcount - 1] != edidList[smt[i].token].Value)
               {
@@ -1208,7 +1193,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
               case VarType.Int:
                 if (fs.args[argcount - 1] != VarType.Float && fs.args[argcount - 1] != VarType.Int)
                 {
-                  AddError("Invalid argument " + i + " to function. Expected " + fs.args[argcount - 1].ToString());
+                  AddError("Invalid argument " + i + " to function. Expected " + fs.args[argcount - 1]);
                 }
                 EmitByte(0x73);
                 Emit((ushort) locals[smt[i].token].index);
@@ -1216,7 +1201,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
               case VarType.Float:
                 if (fs.args[argcount - 1] != VarType.Float && fs.args[argcount - 1] != VarType.Int)
                 {
-                  AddError("Invalid argument " + i + " to function. Expected " + fs.args[argcount - 1].ToString());
+                  AddError("Invalid argument " + i + " to function. Expected " + fs.args[argcount - 1]);
                 }
                 EmitByte(0x66);
                 Emit((ushort) locals[smt[i].token].index);
@@ -1224,7 +1209,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
               case VarType.Ref:
                 if (fs.args[argcount - 1] != VarType.Ref)
                 {
-                  AddError("Invalid argument " + i + " to function. Expected " + fs.args[argcount - 1].ToString());
+                  AddError("Invalid argument " + i + " to function. Expected " + fs.args[argcount - 1]);
                 }
                 EmitRefLabel(smt[i], RefType.Expression);
                 break;
@@ -1233,7 +1218,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
           case TokenType.Global:
             if (fs.args[argcount - 1] != VarType.Float && fs.args[argcount - 1] != VarType.Int)
             {
-              AddError("Invalid argument " + i + " to function. Expected " + fs.args[argcount - 1].ToString());
+              AddError("Invalid argument " + i + " to function. Expected " + fs.args[argcount - 1]);
             }
             EmitRefLabel(smt[i], RefType.Expression);
             break;
@@ -1244,7 +1229,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
             }
             if (fs.args[argcount - 1] != VarType.Int)
             {
-              AddError("Invalid argument " + i + " to function. Expected " + fs.args[argcount - 1].ToString());
+              AddError("Invalid argument " + i + " to function. Expected " + fs.args[argcount - 1]);
             }
             EmitByte(0x6e);
             bw.Write(int.Parse(smt[i].token));
@@ -1252,7 +1237,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
           case TokenType.Float:
             if (fs.args[argcount - 1] != VarType.Float && fs.args[argcount - 1] != VarType.Int)
             {
-              AddError("Invalid argument " + i + " to function. Expected " + fs.args[argcount - 1].ToString());
+              AddError("Invalid argument " + i + " to function. Expected " + fs.args[argcount - 1]);
             }
             EmitByte(0x7a);
             bw.Write(double.Parse(smt[i].token));
@@ -1293,10 +1278,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
           {
             goto default;
           }
-          else
-          {
-            EmitRefLabel(smt[1], RefType.Expression);
-          }
+          EmitRefLabel(smt[1], RefType.Expression);
           break;
         case TokenType.Local:
           var vt = locals[smt[1].token];
@@ -1825,7 +1807,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
       var compileddata = ((MemoryStream) bw.BaseStream).GetBuffer();
       if (compileddata.Length != bw.BaseStream.Length)
       {
-        Array.Resize<byte>(ref compileddata, (int) bw.BaseStream.Length);
+        Array.Resize(ref compileddata, (int) bw.BaseStream.Length);
       }
       scda.SetData(compileddata);
       bw.Close();
@@ -1936,7 +1918,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
       var compileddata = ((MemoryStream) bw.BaseStream).GetBuffer();
       if (compileddata.Length != bw.BaseStream.Length)
       {
-        Array.Resize<byte>(ref compileddata, (int) bw.BaseStream.Length);
+        Array.Resize(ref compileddata, (int) bw.BaseStream.Length);
       }
       scda.SetData(compileddata);
       r2.SubRecords.Clear();

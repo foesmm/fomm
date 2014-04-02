@@ -249,7 +249,7 @@ namespace Fomm
 
       AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
       Application.ThreadException += Application_ThreadException;
-      if (Array.IndexOf<string>(args, "-mono") != -1)
+      if (Array.IndexOf(args, "-mono") != -1)
       {
         monoMode = true;
       }
@@ -329,11 +329,8 @@ namespace Fomm
                   Messaging.TransmitMessage(args[0]);
                   return;
                 }
-                else
-                {
-                  autoLoad = args[0];
-                  break;
-                }
+                autoLoad = args[0];
+                break;
               default:
                 booArgsHandled = false;
                 break;
@@ -370,7 +367,7 @@ namespace Fomm
 
         try
         {
-          string strErrorMessage = null;
+          string strErrorMessage;
           if (!GameMode.SetWorkingDirectory(out strErrorMessage))
           {
             MessageBox.Show(null, strErrorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -386,7 +383,7 @@ namespace Fomm
 
           //Check that we're in fallout's directory and that we have write access
           var cancellaunch = true;
-          if (!Settings.Default.NoUACCheck || Array.IndexOf<string>(args, "-no-uac-check") == -1)
+          if (!Settings.Default.NoUACCheck || Array.IndexOf(args, "-no-uac-check") == -1)
           {
             try
             {
@@ -589,8 +586,8 @@ namespace Fomm
         }
         var msg = DateTime.Now.ToLongDateString() + " - " + DateTime.Now.ToLongTimeString() + Environment.NewLine +
                      "Fomm " + Version + (monoMode ? " (Mono)" : "") + Environment.NewLine + "OS version: " +
-                     Environment.OSVersion.ToString() +
-                     Environment.NewLine + Environment.NewLine + ex.ToString() + Environment.NewLine;
+                     Environment.OSVersion +
+                     Environment.NewLine + Environment.NewLine + ex + Environment.NewLine;
         if (ex is BadImageFormatException)
         {
           var biex = (BadImageFormatException) ex;
@@ -600,7 +597,7 @@ namespace Fomm
         while (ex.InnerException != null)
         {
           ex = ex.InnerException;
-          msg += "Inner Exception:" + Environment.NewLine + ex.ToString() + Environment.NewLine;
+          msg += "Inner Exception:" + Environment.NewLine + ex + Environment.NewLine;
         }
         var strDumpFile = Path.Combine(LocalApplicationDataPath, "crashdump.txt");
         File.WriteAllText(strDumpFile, msg);
@@ -618,7 +615,7 @@ namespace Fomm
       {
         return false;
       }
-      if (s.StartsWith(".") || Array.IndexOf<char>(Path.GetInvalidFileNameChars(), s[0]) != -1)
+      if (s.StartsWith(".") || Array.IndexOf(Path.GetInvalidFileNameChars(), s[0]) != -1)
       {
         return false;
       }
@@ -626,7 +623,7 @@ namespace Fomm
       {
         return false;
       }
-      if (s.EndsWith(".") || Array.IndexOf<char>(Path.GetInvalidFileNameChars(), s[s.Length - 1]) != -1)
+      if (s.EndsWith(".") || Array.IndexOf(Path.GetInvalidFileNameChars(), s[s.Length - 1]) != -1)
       {
         return false;
       }

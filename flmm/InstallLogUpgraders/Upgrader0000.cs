@@ -219,7 +219,7 @@ namespace Fomm.InstallLogUpgraders
         var strFile = xndIniEdit.Attributes.GetNamedItem("file").Value;
         var strSection = xndIniEdit.Attributes.GetNamedItem("section").Value;
         var strKey = xndIniEdit.Attributes.GetNamedItem("key").Value;
-        string strOldIniEditor = null;
+        string strOldIniEditor;
         var strOldValue = GetOldIniValue(strFile, strSection, strKey, out strOldIniEditor);
         if (p_strModBaseName.Equals(strOldIniEditor))
         {

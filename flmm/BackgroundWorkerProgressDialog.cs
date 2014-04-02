@@ -540,7 +540,7 @@ namespace Fomm
     /// </summary>
     void IDisposable.Dispose()
     {
-      base.Dispose();
+      Dispose();
       if (Error != null)
       {
         throw Error;

@@ -18,7 +18,7 @@ namespace Fomm.Games.Fallout3.Tools
         new List<string>(
           NativeMethods.GetPrivateProfileString("Archive", "SArchiveList", null,
                                                 ((Fallout3GameMode.SettingsFilesSet) Program.GameMode.SettingsFiles)
-                                                  .FOIniPath).Split(new char[]
+                                                  .FOIniPath).Split(new[]
                                                   {
                                                     ','
                                                   }, StringSplitOptions.RemoveEmptyEntries));

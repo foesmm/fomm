@@ -129,7 +129,7 @@ namespace Fomm.Games.Fallout3
       //do we need to?
       if (
         !Path.Combine(strOldFOMMLocation, "overwrites")
-             .Equals(((Fallout3GameMode) Program.GameMode).OverwriteDirectory,
+             .Equals(Program.GameMode.OverwriteDirectory,
                      StringComparison.InvariantCultureIgnoreCase))
       {
         var strOverwriteFiles = Directory.GetFiles(Path.Combine(strOldFOMMLocation, "overwrites"), "*.*",
@@ -138,7 +138,7 @@ namespace Fomm.Games.Fallout3
         m_bwdProgress.ItemProgressMaximum = strOverwriteFiles.Length;
         m_bwdProgress.ItemProgress = 0;
         FileUtil.Copy(tfmFileManager, Path.Combine(strOldFOMMLocation, "overwrites"),
-                      ((Fallout3GameMode) Program.GameMode).OverwriteDirectory, OverwriteFileCopied);
+                      Program.GameMode.OverwriteDirectory, OverwriteFileCopied);
       }
 
       m_bwdProgress.StepOverallProgress();

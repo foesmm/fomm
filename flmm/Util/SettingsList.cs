@@ -177,7 +177,7 @@ namespace Fomm.Util
       var lstValues = new List<Int32>();
       for (var i = 0; i < arr.Count; i++)
       {
-        var intValue = 0;
+        int intValue;
         Int32.TryParse(arr[i], out intValue);
         lstValues.Add(intValue);
       }

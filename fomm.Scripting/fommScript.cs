@@ -412,10 +412,7 @@ namespace fomm.Scripting
           {
             return arg1 >= arg2;
           }
-          else
-          {
-            return arg1 > arg2;
-          }
+          return arg1 > arg2;
         }
         case "fGreaterEqual":
         case "fGreaterThan":
@@ -439,10 +436,7 @@ namespace fomm.Scripting
           {
             return arg1 >= arg2;
           }
-          else
-          {
-            return arg1 > arg2;
-          }
+          return arg1 > arg2;
         }
         default:
           Warn("Unknown argument '" + line[1] + "' supplied to 'If'");
@@ -471,7 +465,7 @@ namespace fomm.Scripting
       if (line.Length%argsperoption != 0)
       {
         Warn("Unexpected extra arguments to 'Select'");
-        Array.Resize<string>(ref line, line.Length - line.Length%argsperoption);
+        Array.Resize(ref line, line.Length - line.Length%argsperoption);
       }
       //Create arrays to pass to the select form
       items = new string[line.Length/argsperoption];
@@ -537,21 +531,15 @@ namespace fomm.Scripting
           Warn("Invalid argument" + Func + "\nVariable '" + line[1] + "' does not exist");
           return new string[0];
         }
-        else
+        return new[]
         {
-          return new string[]
-          {
-            "Case " + variables[line[1]]
-          };
-        }
-      }
-      else
-      {
-        return new string[]
-        {
-          "Case " + line[1]
+          "Case " + variables[line[1]]
         };
       }
+      return new[]
+      {
+        "Case " + line[1]
+      };
     }
 
     private static FlowControlStruct FunctionFor(string[] line, int LineNo)
@@ -988,7 +976,7 @@ namespace fomm.Scripting
       {
         Warn("Unexpected extra arguments to function 'ExecLines'");
       }
-      var lines = line[1].Split(new string[]
+      var lines = line[1].Split(new[]
       {
         Environment.NewLine
       }, StringSplitOptions.RemoveEmptyEntries);
@@ -1039,10 +1027,7 @@ namespace fomm.Scripting
             func.Insert(index, iSet(newfunc).ToString());
             break;
           }
-          else
-          {
-            newfunc.Add(func[i]);
-          }
+          newfunc.Add(func[i]);
         }
         if (count != 0)
         {
@@ -1203,10 +1188,7 @@ namespace fomm.Scripting
             func.Insert(index, fSet(newfunc).ToString());
             break;
           }
-          else
-          {
-            newfunc.Add(func[i]);
-          }
+          newfunc.Add(func[i]);
         }
         if (count != 0)
         {
@@ -1516,7 +1498,7 @@ namespace fomm.Scripting
             case "Case":
               if (FlowControl.Count != 0 && FlowControl.Peek().type == 1)
               {
-                if (FlowControl.Peek().line != -1 && Array.IndexOf<string>(FlowControl.Peek().values, s) != -1)
+                if (FlowControl.Peek().line != -1 && Array.IndexOf(FlowControl.Peek().values, s) != -1)
                 {
                   FlowControl.Peek().active = true;
                   FlowControl.Peek().hitCase = true;

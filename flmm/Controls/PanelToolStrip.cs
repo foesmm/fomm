@@ -194,7 +194,7 @@ namespace Fomm.Controls
       {
         var sltItems = new SortedList<Int32, SortedList<Control>>();
 
-        var intIndex = -1;
+        int intIndex;
         var icpComparer = new ItemComparer(m_lstOrderAdded);
         for (var i = Controls.Count - 1; i >= 0; i--)
         {
@@ -367,7 +367,7 @@ namespace Fomm.Controls
       /// </summary>
       protected void checkScrollUp()
       {
-        Control ctlButton = null;
+        Control ctlButton;
         if (m_otnDirection == Orientation.Vertical)
         {
           ctlButton = Controls[Controls.Count - 1];
@@ -385,7 +385,7 @@ namespace Fomm.Controls
       /// </summary>
       protected void checkScrollDown()
       {
-        Control ctlButton = null;
+        Control ctlButton;
         if (m_otnDirection == Orientation.Vertical)
         {
           ctlButton = Controls[0];
@@ -415,7 +415,7 @@ namespace Fomm.Controls
           return;
         }
 
-        Control ctlButton = null;
+        Control ctlButton;
         if (m_otnDirection == Orientation.Vertical)
         {
           ctlButton = Controls[0];

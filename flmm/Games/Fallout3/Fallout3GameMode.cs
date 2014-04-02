@@ -683,7 +683,7 @@ namespace Fomm.Games.Fallout3
     {
       var retVal = true;
       List<string> keys;
-      var i = 0;
+      int i;
 
       // Do checks
       keys = new List<string>(fullModList.Keys);
@@ -695,16 +695,7 @@ namespace Fomm.Games.Fallout3
         }
         var key = keys[i];
 
-        switch (getPluginDependencyStatus(key, true))
-        {
-          case 0:
-            retVal = true;
-            break;
-
-          default:
-            retVal = false;
-            break;
-        }
+        retVal = (getPluginDependencyStatus(key, true) != 0);
       }
 
       return retVal;
@@ -741,13 +732,11 @@ namespace Fomm.Games.Fallout3
           if (Process.Start(psi) == null)
           {
             MessageBox.Show("Failed to launch '" + command + "'");
-            return;
           }
         }
         catch (Exception ex)
         {
           MessageBox.Show("Failed to launch '" + command + "'\n" + ex.Message);
-          return;
         }
       }
     }
@@ -780,13 +769,11 @@ namespace Fomm.Games.Fallout3
           if (Process.Start(psi) == null)
           {
             MessageBox.Show("Failed to launch 'fose_loader.exe'");
-            return;
           }
         }
         catch (Exception ex)
         {
           MessageBox.Show("Failed to launch 'fose_loader.exe'\n" + ex.Message);
-          return;
         }
       }
     }
@@ -816,13 +803,11 @@ namespace Fomm.Games.Fallout3
           if (Process.Start(psi) == null)
           {
             MessageBox.Show("Failed to launch '" + command + "'");
-            return;
           }
         }
         catch (Exception ex)
         {
           MessageBox.Show("Failed to launch '" + command + "'\n" + ex.Message);
-          return;
         }
       }
     }
@@ -865,13 +850,11 @@ namespace Fomm.Games.Fallout3
           if (Process.Start(psi) == null)
           {
             MessageBox.Show("Failed to launch '" + command + "'");
-            return;
           }
         }
         catch (Exception ex)
         {
           MessageBox.Show("Failed to launch '" + command + "'\n" + ex.Message);
-          return;
         }
       }
     }
@@ -1054,7 +1037,7 @@ namespace Fomm.Games.Fallout3
         lstPlugins.Add(Path.Combine(Program.GameMode.PluginsPath, strPluginName));
       }
       var tes = new TESsnip(lstPlugins.ToArray());
-      tes.FormClosed += delegate(object sender2, FormClosedEventArgs e2)
+      tes.FormClosed += delegate
       {
         p_eeaArguments.Argument.RefreshPluginList();
         GC.Collect();
@@ -1126,13 +1109,11 @@ namespace Fomm.Games.Fallout3
         if (Process.Start(psi) == null)
         {
           MessageBox.Show("Failed to launch FO3Edit.");
-          return;
         }
       }
       catch (Exception ex)
       {
         MessageBox.Show("Failed to launch FO3Edit." + Environment.NewLine + ex.Message);
-        return;
       }
     }
 
@@ -1234,7 +1215,7 @@ namespace Fomm.Games.Fallout3
     public void LaunchTESsnipTool(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
       var tes = new TESsnip();
-      tes.FormClosed += delegate(object sender2, FormClosedEventArgs e2)
+      tes.FormClosed += delegate
       {
         p_eeaArguments.Argument.RefreshPluginList();
         GC.Collect();
@@ -1472,7 +1453,7 @@ class Script : Fallout3BaseScript {
             return true;
           case ".esp":
           case ".esm":
-            Application.Run(new TESsnip(new string[]
+            Application.Run(new TESsnip(new[]
             {
               p_strArgs[0]
             }));
@@ -1484,7 +1465,7 @@ class Script : Fallout3BaseScript {
         switch (p_strArgs[0])
         {
           case "-setup":
-            var booNewMutex = false;
+            bool booNewMutex;
             var mutex = new Mutex(true, "fommMainMutex", out booNewMutex);
             if (!booNewMutex)
             {
@@ -1520,7 +1501,7 @@ class Script : Fallout3BaseScript {
     /// <lang cref="false"/> otherwise.</returns>
     public override bool HandleInAppArguments(string[] p_strArgs)
     {
-      if (Array.IndexOf<string>(p_strArgs, "-install-tweaker") != -1)
+      if (Array.IndexOf(p_strArgs, "-install-tweaker") != -1)
       {
         Application.Run(new InstallationTweaker());
         return true;
@@ -1543,7 +1524,7 @@ class Script : Fallout3BaseScript {
         return false;
       }
 
-      var strExes = new string[]
+      var strExes = new[]
       {
         Path.Combine(p_strPath, "fallout3.exe"),
         Path.Combine(p_strPath, "fallout3ng.exe")
@@ -1593,7 +1574,7 @@ class Script : Fallout3BaseScript {
         "Please enter the path to your Fallout 3 game file, or click \"Auto Detect\" to search" +
         " for the install directory. Note that Auto Detection can take several minutes.",
         "Fallout 3 Game Directory:",
-        new string[]
+        new[]
         {
           "fallout3.exe", "fallout3ng.exe"
         }))

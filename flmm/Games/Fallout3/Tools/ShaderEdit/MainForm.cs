@@ -187,20 +187,18 @@ namespace Fomm.Games.Fallout3.Tools.ShaderEdit
                         error.Replace("" + (char) 10, Environment.NewLine));
         return false;
       }
-      else
+
+      shaders[Editing].data = new byte[size];
+      var newdata = new byte[size];
+      for (var i = 0; i < size; i++)
       {
-        shaders[Editing].data = new byte[size];
-        var newdata = new byte[size];
-        for (var i = 0; i < size; i++)
-        {
-          newdata[i] = data[i + 4];
-        }
-        Array.Copy(newdata, 0, shaders[Editing].data, 0, size);
-        ChangedFile = true;
-        tbEdit.Modified = false;
-        Text = "SDP Editor (" + FileName + ")";
-        return true;
+        newdata[i] = data[i + 4];
       }
+      Array.Copy(newdata, 0, shaders[Editing].data, 0, size);
+      ChangedFile = true;
+      tbEdit.Modified = false;
+      Text = "SDP Editor (" + FileName + ")";
+      return true;
     }
 
     private void bCompile_Click(object sender, EventArgs e)

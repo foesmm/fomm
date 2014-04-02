@@ -39,7 +39,7 @@ namespace Fomm.Games.FalloutNewVegas.Tools
         new List<string>(
           NativeMethods.GetPrivateProfileString("Archive", "SArchiveList", null,
                                                 ((FalloutNewVegasGameMode.SettingsFilesSet)
-                                                  Program.GameMode.SettingsFiles).FOIniPath).Split(new char[]
+                                                  Program.GameMode.SettingsFiles).FOIniPath).Split(new[]
                                                   {
                                                     ','
                                                   }, StringSplitOptions.RemoveEmptyEntries));
@@ -140,7 +140,7 @@ namespace Fomm.Games.FalloutNewVegas.Tools
         new List<string>(
           NativeMethods.GetPrivateProfileString("Archive", "SArchiveList", null,
                                                 ((FalloutNewVegasGameMode.SettingsFilesSet)
-                                                  Program.GameMode.SettingsFiles).FOIniPath).Split(new char[]
+                                                  Program.GameMode.SettingsFiles).FOIniPath).Split(new[]
                                                   {
                                                     ','
                                                   }, StringSplitOptions.RemoveEmptyEntries));

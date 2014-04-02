@@ -121,7 +121,7 @@ namespace Fomm.PackageManager.FomodBuilder
                            bool p_booSetScreenshot, Screenshot p_shtScreenshot, FomodScript p_fscScript,
                            string p_strPFPPath)
     {
-      string strPFPExtension = null;
+      string strPFPExtension;
       switch (Settings.Default.pfpCompressionFormat)
       {
         case OutArchiveFormat.BZip2:
@@ -422,7 +422,6 @@ namespace Fomm.PackageManager.FomodBuilder
       }
 
       xmlMeta.Save(Path.Combine(p_strPFPFolder, "metadata.xml"));
-      return;
     }
 
     /// <summary>
@@ -473,10 +472,10 @@ namespace Fomm.PackageManager.FomodBuilder
       }
 
       //insert any custom steps
-      string strCollateStepFormat = null;
+      string strCollateStepFormat;
       if (!String.IsNullOrEmpty(p_strCustomHowToSteps))
       {
-        var strCustomSteps = p_strCustomHowToSteps.Split(new string[]
+        var strCustomSteps = p_strCustomHowToSteps.Split(new[]
         {
           Environment.NewLine
         }, StringSplitOptions.RemoveEmptyEntries);
@@ -631,7 +630,7 @@ namespace Fomm.PackageManager.FomodBuilder
       AppendWrappedFormat(stbHowTo, "{0}) Select the '{1}' folder you created in Step {2}.", intStepCounter++,
                           p_strModBaseName, intCreateFomodFolderStep).AppendLine();
       AppendWrappedFormat(stbHowTo, "{0}) Click OK.", intStepCounter++).AppendLine();
-      AppendWrappedFormat(stbHowTo, "{0}) Enjoy!", intStepCounter++).AppendLine();
+      AppendWrappedFormat(stbHowTo, "{0}) Enjoy!", intStepCounter).AppendLine();
 
       File.WriteAllText(Path.Combine(p_strPFPFolder, "howto.txt"), stbHowTo.ToString().Replace("\t", "    "));
     }

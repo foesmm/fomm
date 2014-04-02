@@ -50,7 +50,7 @@ namespace Fomm.PackageManager
     public static readonly Version DefaultVersion = new Version(1, 0);
     public static readonly Version DefaultMinFommVersion = new Version(0, 0, 0, 0);
 
-    private static readonly List<string> StopFolders = new List<string>()
+    private static readonly List<string> StopFolders = new List<string>
     {
       "fomod",
       "textures",
@@ -374,7 +374,7 @@ namespace Fomm.PackageManager
       }
 
       //check for screenshot
-      var extensions = new string[]
+      var extensions = new[]
       {
         ".png", ".jpg", ".bmp"
       };
@@ -534,7 +534,7 @@ namespace Fomm.PackageManager
     {
       var strPath = p_strPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
       strPath = strPath.Trim(Path.DirectorySeparatorChar);
-      string strAdjustedPath = null;
+      string strAdjustedPath;
       if (!m_dicMovedArchiveFiles.TryGetValue(strPath, out strAdjustedPath))
       {
         strAdjustedPath = Path.Combine(PathPrefix, strPath);
@@ -652,8 +652,8 @@ namespace Fomm.PackageManager
 
     public string ExtractToTemp(string srcFile)
     {
-      string ret = null;
-      var tmpFN = "";
+      string ret;
+      string tmpFN;
 
       PermissionsManager.CurrentPermissions.Assert();
 
@@ -803,7 +803,7 @@ namespace Fomm.PackageManager
       var xmlInfo = new XmlDocument();
       xmlInfo.AppendChild(xmlInfo.CreateXmlDeclaration("1.0", "UTF-16", null));
       var xelRoot = xmlInfo.CreateElement("fomod");
-      XmlElement xelTemp = null;
+      XmlElement xelTemp;
 
       xmlInfo.AppendChild(xelRoot);
       if (!String.IsNullOrEmpty(p_finFomodInfo.ModName))
@@ -1040,7 +1040,7 @@ namespace Fomm.PackageManager
       }
       if (MinFommVersion != new Version(0, 0, 0, 0))
       {
-        sb.AppendLine("Minimum required fomm version: " + MinFommVersion.ToString());
+        sb.AppendLine("Minimum required fomm version: " + MinFommVersion);
       }
       if (Description.Length > 0)
       {
@@ -1183,7 +1183,7 @@ namespace Fomm.PackageManager
       {
         throw new FileNotFoundException("File doesn't exist in fomod", p_strFile);
       }
-      Image imgImage = null;
+      Image imgImage;
       using (var msmImage = new MemoryStream(GetFileContents(p_strFile)))
       {
         imgImage = Image.FromStream(msmImage);

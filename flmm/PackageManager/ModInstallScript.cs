@@ -364,12 +364,12 @@ namespace Fomm.PackageManager
     {
       var strPluginNames = GetAllPlugins();
       PermissionsManager.CurrentPermissions.Assert();
-      Array.Sort<int>(p_intPlugins);
+      Array.Sort(p_intPlugins);
 
       var intLoadOrder = 0;
       for (var i = 0; i < p_intPosition; i++)
       {
-        if (Array.BinarySearch<int>(p_intPlugins, i) >= 0)
+        if (Array.BinarySearch(p_intPlugins, i) >= 0)
         {
           continue;
         }
@@ -383,7 +383,7 @@ namespace Fomm.PackageManager
       }
       for (var i = p_intPosition; i < strPluginNames.Length; i++)
       {
-        if (Array.BinarySearch<int>(p_intPlugins, i) >= 0)
+        if (Array.BinarySearch(p_intPlugins, i) >= 0)
         {
           continue;
         }
@@ -492,7 +492,7 @@ namespace Fomm.PackageManager
         return false;
       }
 
-      string strMessage = null;
+      string strMessage;
       if (strOldMod != null)
       {
         strMessage = String.Format("Data file '{{0}}' has already been installed by '{0}'" + Environment.NewLine +
@@ -790,7 +790,7 @@ namespace Fomm.PackageManager
 
             //remove anny empty directories from the overwrite folder we may have created
             var strStopDirectory = Program.GameMode.OverwriteDirectory;
-            strStopDirectory = strStopDirectory.Remove(0, strStopDirectory.LastIndexOfAny(new char[]
+            strStopDirectory = strStopDirectory.Remove(0, strStopDirectory.LastIndexOfAny(new[]
             {
               Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar
             }));
@@ -800,7 +800,7 @@ namespace Fomm.PackageManager
           {
             //remove any empty directories from the data folder we may have created
             var strStopDirectory = Program.GameMode.PluginsPath;
-            strStopDirectory = strStopDirectory.Remove(0, strStopDirectory.LastIndexOfAny(new char[]
+            strStopDirectory = strStopDirectory.Remove(0, strStopDirectory.LastIndexOfAny(new[]
             {
               Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar
             }));
@@ -910,7 +910,7 @@ namespace Fomm.PackageManager
       var strOldValue = NativeMethods.GetPrivateProfileString(p_strSection, p_strKey, null, strFile);
       if (!m_booOverwriteAllIni)
       {
-        string strMessage = null;
+        string strMessage;
         if (strOldMod != null)
         {
           strMessage =

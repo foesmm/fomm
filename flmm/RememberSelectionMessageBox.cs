@@ -26,7 +26,7 @@ namespace Fomm
     {
       var mbxBox = new RememberSelectionMessageBox();
       mbxBox.Init(p_strMessage, p_strCaption, p_mbbButtons, p_mbiIcon);
-      var drsResult = DialogResult.OK;
+      DialogResult drsResult;
       if (p_ctlParent == null)
       {
         mbxBox.StartPosition = FormStartPosition.CenterScreen;
@@ -255,7 +255,6 @@ namespace Fomm
           butAbort.Click += Button_Click;
           butAbort.Tag = DialogResult.Abort;
           butAbort.TabIndex = 0;
-          intLastButtonLeft = butAbort.Left;
           pnlButtons.Controls.Add(butAbort);
           AcceptButton = butAbort;
           break;

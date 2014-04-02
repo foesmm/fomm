@@ -55,7 +55,7 @@ namespace Fomm.InstallLogUpgraders
 
       //we only want one upgrade at a time happening to minimize the chances of
       // messed up install logs.
-      var booUpgraded = false;
+      bool booUpgraded;
       //lock (m_objLock)
       {
         InstallLog.Current.EnableLogFileRefresh = false;

@@ -147,7 +147,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     {
       foreach (ListViewGroup lvgGroup in lvwPlugins.Groups)
       {
-        PluginInfo pifPlugin = null;
+        PluginInfo pifPlugin;
         switch ((GroupType) lvgGroup.Tag)
         {
           case GroupType.SelectAll:
@@ -185,7 +185,6 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
               lvgGroup.Items[0].Checked = true;
             }
             break;
-          case GroupType.SelectAtLeastOne:
           default:
             var booOneSelected = false;
             foreach (ListViewItem lviPlugin in lvgGroup.Items)

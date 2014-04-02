@@ -204,7 +204,7 @@ namespace Fomm.PackageManager
     /// </remarks>
     public void PerformBasicInstall()
     {
-      var chrDirectorySeperators = new char[]
+      var chrDirectorySeperators = new[]
       {
         Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar
       };

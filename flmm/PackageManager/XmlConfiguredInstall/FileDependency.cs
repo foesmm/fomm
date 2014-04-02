@@ -104,7 +104,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
         {
           return "Passed";
         }
-        return String.Format("File '{0}' is not {1}.", File, State.ToString());
+        return String.Format("File '{0}' is not {1}.", File, State);
       }
     }
 
@@ -133,7 +133,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// <returns>A text representation of the dependency.</returns>
     public override string ToString()
     {
-      return m_strFile + " (" + m_mfsState.ToString() + ") : " + IsFufilled;
+      return m_strFile + " (" + m_mfsState + ") : " + IsFufilled;
     }
   }
 }

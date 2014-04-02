@@ -176,7 +176,6 @@ namespace Fomm.PackageManager.Upgrade
       }
       catch (Exception e)
       {
-        booUpgraded = false;
         throw e;
       }
       m_fomodOriginalMod.IsActive = DetermineFomodActiveStatus(booUpgraded);

@@ -315,10 +315,7 @@ namespace Fomm.Util
         }
         return false;
       }
-      else
-      {
-        return m_lstList.Remove(p_tItem);
-      }
+      return m_lstList.Remove(p_tItem);
     }
 
     #endregion

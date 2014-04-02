@@ -76,7 +76,7 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     /// <returns>The string representation of the info.</returns>
     public override string ToString()
     {
-      return ((Int32) Severity).ToString() + " " + Reason;
+      return ((Int32) Severity) + " " + Reason;
     }
   }
 }

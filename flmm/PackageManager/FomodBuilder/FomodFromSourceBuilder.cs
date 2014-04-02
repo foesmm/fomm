@@ -107,7 +107,7 @@ namespace Fomm.PackageManager.FomodBuilder
           throw new ArgumentException("Unrecognized file format.", "p_strPath");
         }
 
-        string[] strFOMods = null;
+        string[] strFOMods;
         using (var arcMod = new Archive(strSource))
         {
           strFOMods = arcMod.GetFiles(null, "*.fomod");
@@ -188,7 +188,7 @@ namespace Fomm.PackageManager.FomodBuilder
 
       if (booCreateFromFolder)
       {
-        string strFomodName = null;
+        string strFomodName;
         if (File.Exists(strSource))
         {
           //remove the file extension
@@ -198,7 +198,7 @@ namespace Fomm.PackageManager.FomodBuilder
         }
         else
         {
-          var intLastSeparatorPos = strSource.LastIndexOfAny(new char[]
+          var intLastSeparatorPos = strSource.LastIndexOfAny(new[]
           {
             Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar
           });

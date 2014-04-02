@@ -228,7 +228,7 @@ namespace Fomm
         return;
       }
       var rk = Registry.ClassesRoot.OpenSubKey(key + "\\Shell", true);
-      if (Array.IndexOf<string>(rk.GetSubKeyNames(), "Convert_to_fomod") != -1)
+      if (Array.IndexOf(rk.GetSubKeyNames(), "Convert_to_fomod") != -1)
       {
         rk.DeleteSubKeyTree("Convert_to_fomod");
       }
@@ -248,7 +248,7 @@ namespace Fomm
         var strKeys = Registry.ClassesRoot.GetSubKeyNames();
         if (!cbAssociateBsa.Checked)
         {
-          if (Array.IndexOf<string>(strKeys, "BethesdaSoftworks_Archive") != -1)
+          if (Array.IndexOf(strKeys, "BethesdaSoftworks_Archive") != -1)
           {
             Registry.ClassesRoot.DeleteSubKeyTree("BethesdaSoftworks_Archive");
             Registry.ClassesRoot.DeleteSubKeyTree(".bsa");
@@ -267,7 +267,7 @@ namespace Fomm
 
         if (!cbAssociateSdp.Checked)
         {
-          if (Array.IndexOf<string>(strKeys, "BethesdaSoftworks_ShaderPackage") != -1)
+          if (Array.IndexOf(strKeys, "BethesdaSoftworks_ShaderPackage") != -1)
           {
             Registry.ClassesRoot.DeleteSubKeyTree("BethesdaSoftworks_ShaderPackage");
             Registry.ClassesRoot.DeleteSubKeyTree(".sdp");
@@ -286,7 +286,7 @@ namespace Fomm
 
         if (!cbAssociateFomod.Checked)
         {
-          if (Array.IndexOf<string>(strKeys, "FOMM_Mod_Archive") != -1)
+          if (Array.IndexOf(strKeys, "FOMM_Mod_Archive") != -1)
           {
             Registry.ClassesRoot.DeleteSubKeyTree("FOMM_Mod_Archive");
             Registry.ClassesRoot.DeleteSubKeyTree(".fomod");

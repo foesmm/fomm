@@ -52,7 +52,7 @@ namespace Fomm.PackageManager
           var wbrBrowser = new WebBrowser();
           Controls.Add(wbrBrowser);
           wbrBrowser.Dock = DockStyle.Fill;
-          wbrBrowser.DocumentCompleted += delegate(object o, WebBrowserDocumentCompletedEventArgs arg)
+          wbrBrowser.DocumentCompleted += delegate
           {
             Text = String.IsNullOrEmpty(wbrBrowser.DocumentTitle) ? "Readme" : wbrBrowser.DocumentTitle;
           };
