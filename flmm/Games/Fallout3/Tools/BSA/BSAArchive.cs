@@ -1,4 +1,6 @@
 using System;
+using Fomm.SharpZipLib.Checksums;
+using Fomm.SharpZipLib.Zip.Compression;
 using StringList = System.Collections.Generic.List<string>;
 using HashTable = System.Collections.Generic.Dictionary<ulong, Fomm.Games.Fallout3.Tools.BSA.BSAArchive.BSAFileInfo>;
 using System.IO;
@@ -55,7 +57,7 @@ namespace Fomm.Games.Fallout3.Tools.BSA
           byte[] output = new byte[bsa.br.ReadUInt32()];
           bsa.br.Read(b, 0, size - 4);
 
-          ICSharpCode.SharpZipLib.Zip.Compression.Inflater inf = new ICSharpCode.SharpZipLib.Zip.Compression.Inflater();
+          Inflater inf = new Inflater();
           inf.SetInput(b, 0, b.Length);
           inf.Inflate(output);
 
@@ -333,7 +335,7 @@ namespace Fomm.Games.Fallout3.Tools.BSA
         }
         if (!found && sname == shader)
         {
-          ICSharpCode.SharpZipLib.Checksums.Crc32 ccrc = new ICSharpCode.SharpZipLib.Checksums.Crc32();
+          Crc32 ccrc = new Crc32();
           ccrc.Update(data);
           if (crc == 0 || ccrc.Value == crc)
           {

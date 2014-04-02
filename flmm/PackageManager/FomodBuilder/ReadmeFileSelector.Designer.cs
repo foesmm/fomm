@@ -1,4 +1,6 @@
-﻿namespace Fomm.PackageManager.FomodBuilder
+﻿using Fomm.Controls;
+
+namespace Fomm.PackageManager.FomodBuilder
 {
   partial class ReadmeFileSelector
   {
@@ -38,7 +40,7 @@
       this.label1 = new System.Windows.Forms.Label();
       this.cbxFormat = new System.Windows.Forms.ComboBox();
       this.sftSources = new Fomm.PackageManager.FomodBuilder.SourceFileTree();
-      this.lvwReadmeFiles = new L0ki.Controls.ReordableItemListView();
+      this.lvwReadmeFiles = new ReordableItemListView();
       this.chdFileName = new System.Windows.Forms.ColumnHeader();
       this.panel1.SuspendLayout();
       this.splitContainer1.Panel1.SuspendLayout();
@@ -210,7 +212,7 @@
     private System.Windows.Forms.SplitContainer splitContainer1;
     private SourceFileTree sftSources;
     private System.Windows.Forms.LinkLabel lnkHelp;
-    private L0ki.Controls.ReordableItemListView lvwReadmeFiles;
+    private ReordableItemListView lvwReadmeFiles;
     private System.Windows.Forms.Panel panel2;
     private System.Windows.Forms.Label label2;
     private System.Windows.Forms.RichTextBox rtbHelp;

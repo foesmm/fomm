@@ -36,9 +36,9 @@
 // exception statement from your version.
 
 using System;
-using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
+using Fomm.SharpZipLib.Zip.Compression.Streams;
 
-namespace ICSharpCode.SharpZipLib.Zip.Compression
+namespace Fomm.SharpZipLib.Zip.Compression
 {
   internal class InflaterDynHeader
   {

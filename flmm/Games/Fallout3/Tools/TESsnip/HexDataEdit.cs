@@ -1,5 +1,6 @@
 using System;
 using System.Windows.Forms;
+using Fomm.Games.Fallout3.Tools.TESsnip.HexBox;
 
 namespace Fomm.Games.Fallout3.Tools.TESsnip
 {
@@ -9,8 +10,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
     public static byte[] result;
     public static string resultName;
 
-    private Be.Windows.Forms.DynamicByteProvider dbytes;
-    private Be.Windows.Forms.ByteCollection bytes;
+    private DynamicByteProvider dbytes;
+    private ByteCollection bytes;
 
     private dFormIDLookupS formIDLookup;
 
@@ -22,7 +23,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       Text += RecName;
       tbName.Text = RecName;
       Text += " (hex mode)";
-      dbytes = new Be.Windows.Forms.DynamicByteProvider(data);
+      dbytes = new DynamicByteProvider(data);
       bytes = dbytes.Bytes;
       hexBox1.ByteProvider = dbytes;
       Canceled = true;

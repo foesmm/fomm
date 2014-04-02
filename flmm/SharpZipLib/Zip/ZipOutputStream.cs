@@ -38,13 +38,13 @@
 // exception statement from your version.
 
 using System;
-using System.IO;
 using System.Collections;
-using ICSharpCode.SharpZipLib.Checksums;
-using ICSharpCode.SharpZipLib.Zip.Compression;
-using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
+using System.IO;
+using Fomm.SharpZipLib.Checksums;
+using Fomm.SharpZipLib.Zip.Compression;
+using Fomm.SharpZipLib.Zip.Compression.Streams;
 
-namespace ICSharpCode.SharpZipLib.Zip
+namespace Fomm.SharpZipLib.Zip
 {
   /// <summary>
   /// This is a DeflaterOutputStream that writes the files into a zip
@@ -114,7 +114,7 @@ namespace ICSharpCode.SharpZipLib.Zip
     /// <exception cref="ArgumentOutOfRangeException">
     /// Level specified is not supported.
     /// </exception>
-    /// <see cref="ICSharpCode.SharpZipLib.Zip.Compression.Deflater"/>
+    /// <see cref="Deflater"/>
     public void SetLevel(int level)
     {
       deflater_.SetLevel(level);

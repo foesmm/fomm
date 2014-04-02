@@ -38,9 +38,9 @@
 // exception statement from your version.
 
 using System;
-using ICSharpCode.SharpZipLib.Checksums;
+using Fomm.SharpZipLib.Checksums;
 
-namespace ICSharpCode.SharpZipLib.Zip.Compression
+namespace Fomm.SharpZipLib.Zip.Compression
 {
   /// <summary>
   /// Strategies for deflater

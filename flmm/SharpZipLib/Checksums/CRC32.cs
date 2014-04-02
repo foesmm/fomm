@@ -37,7 +37,7 @@
 
 using System;
 
-namespace ICSharpCode.SharpZipLib.Checksums
+namespace Fomm.SharpZipLib.Checksums
 {
   /// <summary>
   /// Generate a table for a byte-wise 32-bit CRC calculation on the polynomial:

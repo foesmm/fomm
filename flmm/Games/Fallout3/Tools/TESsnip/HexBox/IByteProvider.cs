@@ -1,6 +1,6 @@
 using System;
 
-namespace Be.Windows.Forms
+namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 {
   /// <summary>
   /// Defines a byte provider for HexBox control

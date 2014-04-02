@@ -36,7 +36,7 @@
 using System;
 using System.IO;
 
-namespace ICSharpCode.SharpZipLib.Zip
+namespace Fomm.SharpZipLib.Zip
 {
   /// <summary>
   /// This class assists with writing/reading from Zip files.

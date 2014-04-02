@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace Be.Windows.Forms
+namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 {
   internal static class NativeMethods
   {

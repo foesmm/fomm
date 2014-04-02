@@ -1,7 +1,8 @@
 ﻿using System;
 using System.IO;
+using Fomm.Games.Fallout3;
 
-namespace Fomm.Games.Fallout3
+namespace Fomm.Games.FalloutNewVegas
 {
   /// <summary>
   /// Activates/deactivates Fallout: New Vegas plugins.

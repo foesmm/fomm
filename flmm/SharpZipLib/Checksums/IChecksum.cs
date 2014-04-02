@@ -35,7 +35,7 @@
 // obligated to do so.  If you do not wish to do so, delete this
 // exception statement from your version.
 
-namespace ICSharpCode.SharpZipLib.Checksums
+namespace Fomm.SharpZipLib.Checksums
 {
   /// <summary>
   /// Interface to compute a data checksum used by checked input/output streams.

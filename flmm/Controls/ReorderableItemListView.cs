@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace L0ki.Controls
+namespace Fomm.Controls
 {
   /// <summary>
   /// An extended version of the standard ListView designed to allow the user

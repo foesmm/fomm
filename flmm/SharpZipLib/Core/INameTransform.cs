@@ -33,7 +33,7 @@
 // obligated to do so.  If you do not wish to do so, delete this
 // exception statement from your version.
 
-namespace ICSharpCode.SharpZipLib.Core
+namespace Fomm.SharpZipLib.Core
 {
   /// <summary>
   /// INameTransform defines how file system names are transformed for use with archives, or vice versa.

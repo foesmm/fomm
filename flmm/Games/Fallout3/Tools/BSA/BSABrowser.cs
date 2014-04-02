@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Windows.Forms;
+using Fomm.SharpZipLib.Zip.Compression;
 
 namespace Fomm.Games.Fallout3.Tools.BSA
 {
@@ -36,8 +37,8 @@ namespace Fomm.Games.Fallout3.Tools.BSA
 
     private class BSAFileEntry
     {
-      private static readonly ICSharpCode.SharpZipLib.Zip.Compression.Inflater inf =
-        new ICSharpCode.SharpZipLib.Zip.Compression.Inflater();
+      private static readonly Inflater inf =
+        new Inflater();
 
       internal readonly bool Compressed;
       private string fileName;

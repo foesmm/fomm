@@ -4,7 +4,7 @@ using System.Drawing.Design;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
 
-namespace Be.Windows.Forms.Design
+namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox.Design
 {
   /// <summary>
   /// Display only fixed-piched fonts

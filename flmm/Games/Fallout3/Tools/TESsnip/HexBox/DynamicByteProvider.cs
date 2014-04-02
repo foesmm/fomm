@@ -1,6 +1,6 @@
 using System;
 
-namespace Be.Windows.Forms
+namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 {
   /// <summary>
   /// Byte provider for a small amount of data.

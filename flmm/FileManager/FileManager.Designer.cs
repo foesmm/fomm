@@ -1,4 +1,6 @@
-﻿namespace Fomm.FileManager
+﻿using Fomm.Controls;
+
+namespace Fomm.FileManager
 {
   partial class FileManager
   {
@@ -45,7 +47,7 @@
       this.panel2 = new System.Windows.Forms.Panel();
       this.radByFile = new System.Windows.Forms.RadioButton();
       this.radByMod = new System.Windows.Forms.RadioButton();
-      this.rlvOverwrites = new L0ki.Controls.ReordableItemListView();
+      this.rlvOverwrites = new ReordableItemListView();
       this.chdModName = new System.Windows.Forms.ColumnHeader();
       this.splitContainer1.Panel1.SuspendLayout();
       this.splitContainer1.Panel2.SuspendLayout();
@@ -267,7 +269,7 @@
     private System.Windows.Forms.ImageList imlFolders;
     private System.Windows.Forms.SplitContainer splitContainer2;
     private System.Windows.Forms.ListView lvwFiles;
-    private L0ki.Controls.ReordableItemListView rlvOverwrites;
+    private ReordableItemListView rlvOverwrites;
     private System.Windows.Forms.ColumnHeader chdName;
     private System.Windows.Forms.ColumnHeader chdDateCreated;
     private System.Windows.Forms.ColumnHeader chdDateModified;

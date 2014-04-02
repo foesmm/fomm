@@ -1,12 +1,12 @@
 using System;
-using System.Drawing;
-using System.Windows.Forms;
 using System.ComponentModel;
+using System.Drawing;
 using System.Security.Permissions;
+using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
-using Be.Windows.Forms.Design;
+using Fomm.Games.Fallout3.Tools.TESsnip.HexBox.Design;
 
-namespace Be.Windows.Forms
+namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 {
 
   #region HexCasing enumeration

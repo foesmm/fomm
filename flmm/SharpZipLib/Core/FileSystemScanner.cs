@@ -35,7 +35,7 @@
 
 using System;
 
-namespace ICSharpCode.SharpZipLib.Core
+namespace Fomm.SharpZipLib.Core
 {
 
   #region EventArgs

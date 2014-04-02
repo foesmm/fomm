@@ -34,12 +34,12 @@
 // exception statement from your version.
 
 using System;
-#if !NETCF_1_0 && !NETCF_2_0
 using System.Runtime.Serialization;
+#if !NETCF_1_0 && !NETCF_2_0
 
 #endif
 
-namespace ICSharpCode.SharpZipLib
+namespace Fomm.SharpZipLib
 {
   /// <summary>
   /// SharpZipBaseException is the base exception class for the SharpZipLibrary.

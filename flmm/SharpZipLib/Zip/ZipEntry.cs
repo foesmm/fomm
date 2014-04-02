@@ -39,7 +39,7 @@
 
 using System;
 
-namespace ICSharpCode.SharpZipLib.Zip
+namespace Fomm.SharpZipLib.Zip
 {
   /// <summary>
   /// Defines known values for the <see cref="HostSystemID"/> property.
@@ -758,8 +758,8 @@ namespace ICSharpCode.SharpZipLib.Zip
     /// <returns>
     /// The compression method for this entry
     /// </returns>
-    /// <see cref="ICSharpCode.SharpZipLib.Zip.CompressionMethod.Deflated"/>
-    /// <see cref="ICSharpCode.SharpZipLib.Zip.CompressionMethod.Stored"/>
+    /// <see cref="Zip.CompressionMethod.Deflated"/>
+    /// <see cref="Zip.CompressionMethod.Stored"/>
     public CompressionMethod CompressionMethod
     {
       get

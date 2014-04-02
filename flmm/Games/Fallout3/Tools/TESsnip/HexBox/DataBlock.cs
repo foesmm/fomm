@@ -1,4 +1,4 @@
-namespace Be.Windows.Forms
+namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 {
   internal abstract class DataBlock
   {

@@ -1,8 +1,8 @@
 using System;
-using System.IO;
 using System.Collections;
+using System.IO;
 
-namespace Be.Windows.Forms
+namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 {
   /// <summary>
   /// Byte provider for (big) files.

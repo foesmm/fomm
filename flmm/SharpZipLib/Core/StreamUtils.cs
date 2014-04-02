@@ -36,7 +36,7 @@
 using System;
 using System.IO;
 
-namespace ICSharpCode.SharpZipLib.Core
+namespace Fomm.SharpZipLib.Core
 {
   /// <summary>
   /// Provides simple <see cref="Stream"/>" utilities.

@@ -37,15 +37,14 @@
 // obligated to do so.  If you do not wish to do so, delete this
 // exception statement from your version.
 
+#if NETCF_1_0 || NETCF_2_0
+using System.Globalization;
+#endif
 using System;
 using System.Text;
 using System.Threading;
 
-#if NETCF_1_0 || NETCF_2_0
-using System.Globalization;
-#endif
-
-namespace ICSharpCode.SharpZipLib.Zip
+namespace Fomm.SharpZipLib.Zip
 {
 
   #region Enumerations

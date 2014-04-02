@@ -37,12 +37,12 @@
 // obligated to do so.  If you do not wish to do so, delete this
 // exception statement from your version.
 
-using System;
-using System.IO;
 #if !NETCF_1_0
 #endif
+using System;
+using System.IO;
 
-namespace ICSharpCode.SharpZipLib.Zip.Compression.Streams
+namespace Fomm.SharpZipLib.Zip.Compression.Streams
 {
   /// <summary>
   /// An input buffer customised for use by <see cref="InflaterInputStream"/>

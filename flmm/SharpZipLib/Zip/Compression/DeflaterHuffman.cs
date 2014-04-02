@@ -39,7 +39,7 @@
 
 using System;
 
-namespace ICSharpCode.SharpZipLib.Zip.Compression
+namespace Fomm.SharpZipLib.Zip.Compression
 {
   /// <summary>
   /// This is the DeflaterHuffman class.

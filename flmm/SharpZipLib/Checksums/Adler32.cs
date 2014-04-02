@@ -36,8 +36,9 @@
 // exception statement from your version.
 
 using System;
+using Fomm.SharpZipLib.Zip.Compression.Streams;
 
-namespace ICSharpCode.SharpZipLib.Checksums
+namespace Fomm.SharpZipLib.Checksums
 {
   /// <summary>
   /// Computes Adler32 checksum for a stream of data. An Adler32
@@ -83,8 +84,8 @@ namespace ICSharpCode.SharpZipLib.Checksums
   ///    checked separately. (Any sequence of zeroes has a Fletcher
   ///    checksum of zero.)"
   /// </summary>
-  /// <see cref="ICSharpCode.SharpZipLib.Zip.Compression.Streams.InflaterInputStream"/>
-  /// <see cref="ICSharpCode.SharpZipLib.Zip.Compression.Streams.DeflaterOutputStream"/>
+  /// <see cref="InflaterInputStream"/>
+  /// <see cref="DeflaterOutputStream"/>
   internal sealed class Adler32 : IChecksum
   {
     /// <summary>

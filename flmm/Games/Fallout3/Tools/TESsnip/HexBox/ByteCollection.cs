@@ -1,6 +1,6 @@
 using System.Collections;
 
-namespace Be.Windows.Forms
+namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 {
   /// <summary>
   /// Represents a collection of bytes.

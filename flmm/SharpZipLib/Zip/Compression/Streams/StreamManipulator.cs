@@ -38,7 +38,7 @@
 
 using System;
 
-namespace ICSharpCode.SharpZipLib.Zip.Compression.Streams
+namespace Fomm.SharpZipLib.Zip.Compression.Streams
 {
   /// <summary>
   /// This class allows us to retrieve a specified number of bits from

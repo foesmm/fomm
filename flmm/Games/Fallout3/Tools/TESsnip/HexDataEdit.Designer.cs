@@ -42,7 +42,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip {
             this.bCFormID = new System.Windows.Forms.Button();
             this.tbEDID = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
-            this.hexBox1 = new Be.Windows.Forms.HexBox();
+            this.hexBox1 = new HexBox.HexBox();
             this.bFromFile = new System.Windows.Forms.Button();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.SuspendLayout();
@@ -308,7 +308,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip {
         private System.Windows.Forms.Button bCancel;
         private System.Windows.Forms.TextBox tbName;
         private System.Windows.Forms.Label label1;
-        private Be.Windows.Forms.HexBox hexBox1;
+        private HexBox.HexBox hexBox1;
         private System.Windows.Forms.TextBox tbFloat;
         private System.Windows.Forms.TextBox tbInt;
         private System.Windows.Forms.TextBox tbWord;

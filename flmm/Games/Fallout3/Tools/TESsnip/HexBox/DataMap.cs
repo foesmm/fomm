@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 
-namespace Be.Windows.Forms
+namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 {
   internal class DataMap : ICollection, IEnumerable
   {

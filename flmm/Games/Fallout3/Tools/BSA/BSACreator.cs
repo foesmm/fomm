@@ -2,6 +2,7 @@ using System;
 using System.Windows.Forms;
 using System.IO;
 using System.Collections.Generic;
+using Fomm.SharpZipLib.Zip.Compression;
 
 namespace Fomm.Games.Fallout3.Tools.BSA
 {
@@ -534,7 +535,7 @@ namespace Fomm.Games.Fallout3.Tools.BSA
           level = 1;
           break;
       }
-      ICSharpCode.SharpZipLib.Zip.Compression.Deflater def = new ICSharpCode.SharpZipLib.Zip.Compression.Deflater(level);
+      Deflater def = new Deflater(level);
       byte[] In = File.ReadAllBytes(path);
       byte[] Out = new byte[In.Length + 64];
       def.SetInput(In);

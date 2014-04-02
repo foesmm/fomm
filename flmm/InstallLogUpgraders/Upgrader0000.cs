@@ -3,7 +3,7 @@ using Fomm.PackageManager;
 using System.Xml;
 using System.IO;
 using System.Collections.Generic;
-using ICSharpCode.SharpZipLib.Checksums;
+using Fomm.SharpZipLib.Checksums;
 using Fomm.PackageManager.ModInstallLog;
 
 namespace Fomm.InstallLogUpgraders

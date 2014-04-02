@@ -39,15 +39,15 @@
 
 using System;
 using System.Collections;
+using System.Globalization;
 using System.IO;
 using System.Text;
-using System.Globalization;
-using ICSharpCode.SharpZipLib.Core;
-using ICSharpCode.SharpZipLib.Checksums;
-using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
-using ICSharpCode.SharpZipLib.Zip.Compression;
+using Fomm.SharpZipLib.Checksums;
+using Fomm.SharpZipLib.Core;
+using Fomm.SharpZipLib.Zip.Compression;
+using Fomm.SharpZipLib.Zip.Compression.Streams;
 
-namespace ICSharpCode.SharpZipLib.Zip
+namespace Fomm.SharpZipLib.Zip
 {
 
   #region Update Definitions
@@ -355,7 +355,7 @@ namespace ICSharpCode.SharpZipLib.Zip
     /// <exception cref="ObjectDisposedException">
     /// The ZipFile has already been closed
     /// </exception>
-    /// <exception cref="ICSharpCode.SharpZipLib.Zip.ZipException">
+    /// <exception cref="ZipException">
     /// The compression method for the entry is unknown
     /// </exception>
     /// <exception cref="IndexOutOfRangeException">
@@ -395,7 +395,7 @@ namespace ICSharpCode.SharpZipLib.Zip
     /// <exception cref="ObjectDisposedException">
     /// The ZipFile has already been closed
     /// </exception>
-    /// <exception cref="ICSharpCode.SharpZipLib.Zip.ZipException">
+    /// <exception cref="ZipException">
     /// The compression method for the entry is unknown
     /// </exception>
     /// <exception cref="IndexOutOfRangeException">
@@ -2253,7 +2253,7 @@ namespace ICSharpCode.SharpZipLib.Zip
     /// <exception cref="System.IO.IOException">
     /// An i/o error occurs.
     /// </exception>
-    /// <exception cref="ICSharpCode.SharpZipLib.Zip.ZipException">
+    /// <exception cref="ZipException">
     /// The central directory is malformed or cannot be found
     /// </exception>
     private void ReadEntries()
@@ -2437,7 +2437,7 @@ namespace ICSharpCode.SharpZipLib.Zip
     /// <exception cref="System.IO.EndOfStreamException">
     /// The stream ends prematurely
     /// </exception>
-    /// <exception cref="ICSharpCode.SharpZipLib.Zip.ZipException">
+    /// <exception cref="ZipException">
     /// The local header signature is invalid, the entry and central header file name lengths are different
     /// or the local and entry compression methods dont match
     /// </exception>

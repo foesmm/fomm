@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Fomm.SharpZipLib;
+using Fomm.SharpZipLib.Zip.Compression;
 
 namespace Fomm.Games.Fallout3.Tools.TESsnip
 {
@@ -22,7 +24,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
     private static byte[] output;
     private static MemoryStream ms;
     private static BinaryReader compReader;
-    private static ICSharpCode.SharpZipLib.Zip.Compression.Inflater inf;
+    private static Inflater inf;
 
     protected static BinaryReader Decompress(BinaryReader br, int size, int outsize)
     {
@@ -41,7 +43,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       {
         inf.Inflate(output);
       }
-      catch (ICSharpCode.SharpZipLib.SharpZipBaseException e)
+      catch (SharpZipBaseException e)
       {
         //we ignore adler checksum mismatches, as I have a notion that they aren't always correctly
         // stored in the records.
@@ -61,7 +63,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     protected static void InitDecompressor()
     {
-      inf = new ICSharpCode.SharpZipLib.Zip.Compression.Inflater(false);
+      inf = new Inflater(false);
       ms = new MemoryStream();
       compReader = new BinaryReader(ms);
       input = new byte[0x1000];

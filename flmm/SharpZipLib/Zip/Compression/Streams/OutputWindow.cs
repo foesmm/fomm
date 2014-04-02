@@ -38,7 +38,7 @@
 
 using System;
 
-namespace ICSharpCode.SharpZipLib.Zip.Compression.Streams
+namespace Fomm.SharpZipLib.Zip.Compression.Streams
 {
   /// <summary>
   /// Contains the output from the Inflation process.

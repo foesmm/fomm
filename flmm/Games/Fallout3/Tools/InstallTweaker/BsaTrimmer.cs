@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using Fomm.SharpZipLib.Zip.Compression;
 
 namespace Fomm.Games.Fallout3.Tools.InstallTweaker
 {
@@ -43,7 +44,7 @@ namespace Fomm.Games.Fallout3.Tools.InstallTweaker
       BinaryReader br = new BinaryReader(File.OpenRead(In), System.Text.Encoding.Default);
       BinaryWriter bw = new BinaryWriter(File.Create(Out), System.Text.Encoding.Default);
       System.Text.StringBuilder sb = new System.Text.StringBuilder(64);
-      ICSharpCode.SharpZipLib.Zip.Compression.Inflater inf = new ICSharpCode.SharpZipLib.Zip.Compression.Inflater();
+      Inflater inf = new Inflater();
       bool Compressed, SkipName;
 
       if (br.ReadInt32() != 0x00415342)
