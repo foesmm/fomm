@@ -265,8 +265,6 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
         {
           throw new RecordXmlException("Root node was missing");
         }
-        XmlNode n2;
-        string sname;
         foreach (XmlNode n in root.ChildNodes)
         {
           if (n.NodeType == XmlNodeType.Comment)
@@ -293,7 +291,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
           }
           else if (n.Name == "Func")
           {
-            n2 = n.Attributes.GetNamedItem("short");
+            XmlNode n2 = n.Attributes.GetNamedItem("short");
+            string sname;
             if (n2 != null)
             {
               sname = n2.Value;
@@ -429,7 +428,6 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
       globals.Clear();
       farVars.Clear();
       Dictionary<uint, Record> records = new Dictionary<uint, Record>();
-      uint mask;
       List<Pair<uint, Record>> quests = new List<Pair<uint, Record>>();
       List<Pair<uint, Record>> refs = new List<Pair<uint, Record>>();
       Dictionary<uint, uint> RefLookupTable = new Dictionary<uint, uint>();
@@ -443,7 +441,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
         {
           continue;
         }
-        mask = 0;
+        uint mask = 0;
         foreach (SubRecord sr in ((Record) plugins[i].Records[0]).SubRecords)
         {
           if (sr.Name == "MAST")
@@ -624,8 +622,6 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
     private static void HandleVariables()
     {
       Token[] smt = ts.PeekNextStatement();
-      SubRecord slsd;
-      SubRecord scvr;
       while (smt.Length > 0 && smt[0].IsType())
       {
         ts.PopNextStatement();
@@ -635,7 +631,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
           smt = ts.PeekNextStatement();
           continue;
         }
-        slsd = new SubRecord();
+        SubRecord slsd = new SubRecord();
         slsd.Name = "SLSD";
         byte[] data = new byte[24];
         TypeConverter.si2h(locals.Count + 1, data, 0);
@@ -645,7 +641,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
         }
         slsd.SetData(data);
         r.AddRecord(slsd);
-        scvr = new SubRecord();
+        SubRecord scvr = new SubRecord();
         scvr.Name = "SCVR";
         scvr.SetStrData(smt[1].utoken, true);
         r.AddRecord(scvr);

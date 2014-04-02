@@ -459,7 +459,6 @@ namespace Fomm.PackageManager.FomodBuilder
       IList<SourceFile> lstOldLocations = sdsDownloadLocations.DataSource;
       List<SourceFile> lstLocations = new List<SourceFile>();
       string[] strSources = ffsFileStructure.Sources;
-      bool booFound = false;
       LinkedList<string> lklSourceFiles = new LinkedList<string>();
       foreach (string strSource in strSources)
       {
@@ -479,7 +478,7 @@ namespace Fomm.PackageManager.FomodBuilder
 
         foreach (string strSourceFile in lklSourceFiles)
         {
-          booFound = false;
+          bool booFound = false;
           for (Int32 i = lstOldLocations.Count - 1; i >= 0; i--)
           {
             if (lstOldLocations[i].Source.Equals(strSourceFile))

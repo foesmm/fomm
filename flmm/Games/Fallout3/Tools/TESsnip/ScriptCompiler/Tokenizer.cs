@@ -270,9 +270,9 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
 
     private Token PopTokenInternal2()
     {
-      char c;
       while (true)
       {
+        char c;
         while (true)
         {
           c = SafePop();

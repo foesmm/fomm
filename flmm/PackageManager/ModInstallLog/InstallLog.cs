@@ -355,16 +355,14 @@ namespace Fomm.PackageManager.ModInstallLog
     {
       List<FomodInfo> lstMods = new List<FomodInfo>();
       XmlNodeList xnlMods = m_xelModListNode.ChildNodes;
-      XmlNode xndVersion = null;
-      string strBaseName = null;
       foreach (XmlNode xndMod in xnlMods)
       {
-        strBaseName = xndMod.Attributes["name"].InnerText;
+        string strBaseName = xndMod.Attributes["name"].InnerText;
         if (strBaseName.Equals(ORIGINAL_VALUES) || strBaseName.Equals(FOMM))
         {
           continue;
         }
-        xndVersion = xndMod.SelectSingleNode("version");
+        XmlNode xndVersion = xndMod.SelectSingleNode("version");
         if ((xndVersion == null) || (xndVersion.Attributes["machineVersion"] == null))
         {
           throw new InstallLogException("Cannot find version for mod '" + strBaseName + "'. Install Log Version: " +

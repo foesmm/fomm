@@ -158,15 +158,9 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     public void DetectConflicts(IList<string> p_lstOrderedPlugins)
     {
       m_booCancelled = false;
-      Plugin plgPlugin = null;
-      CriticalRecordPlugin crpBasePlugin = null;
-      string strMasterPlugin = null;
-      string strPlugin = null;
-      UInt32 uintAdjustedFormId = 0;
-      string strBasePlugin = null;
       for (Int32 intIndex = 0; intIndex < p_lstOrderedPlugins.Count; intIndex++)
       {
-        strBasePlugin = p_lstOrderedPlugins[intIndex];
+        string strBasePlugin = p_lstOrderedPlugins[intIndex];
         if (m_booCancelled)
         {
           return;
@@ -179,23 +173,23 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
           continue;
         }
 
-        crpBasePlugin = new CriticalRecordPlugin(Path.Combine(Program.GameMode.PluginsPath, strBasePlugin), false);
+        CriticalRecordPlugin crpBasePlugin = new CriticalRecordPlugin(Path.Combine(Program.GameMode.PluginsPath, strBasePlugin), false);
         if (!crpBasePlugin.HasCriticalRecordData)
         {
           continue;
         }
         for (Int32 i = intIndex + 1; i < p_lstOrderedPlugins.Count; i++)
         {
-          strPlugin = p_lstOrderedPlugins[i];
-          plgPlugin = new Plugin(Path.Combine(Program.GameMode.PluginsPath, strPlugin), false);
+          string strPlugin = p_lstOrderedPlugins[i];
+          Plugin plgPlugin = new Plugin(Path.Combine(Program.GameMode.PluginsPath, strPlugin), false);
           foreach (UInt32 uintFormId in crpBasePlugin.CriticalRecordFormIds)
           {
-            strMasterPlugin = crpBasePlugin.GetMaster((Int32) uintFormId >> 24) ?? strBasePlugin;
+            string strMasterPlugin = crpBasePlugin.GetMaster((Int32) uintFormId >> 24) ?? strBasePlugin;
             if (plgPlugin.GetMasterIndex(strMasterPlugin) < 0)
             {
               continue;
             }
-            uintAdjustedFormId = ((UInt32) plgPlugin.GetMasterIndex(strMasterPlugin) << 24);
+            UInt32 uintAdjustedFormId = ((UInt32) plgPlugin.GetMasterIndex(strMasterPlugin) << 24);
             uintAdjustedFormId = uintAdjustedFormId + (uintFormId & 0x00ffffff);
             if (plgPlugin.ContainsFormId(uintAdjustedFormId))
             {

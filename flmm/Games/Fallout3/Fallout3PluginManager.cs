@@ -127,10 +127,9 @@ namespace Fomm.Games.Fallout3
     public override string[] SortPluginList(string[] p_strPlugins)
     {
       List<FileInfo> lstPlugins = new List<FileInfo>();
-      string strPlugin = null;
       for (Int32 i = 0; i < p_strPlugins.Length; i++)
       {
-        strPlugin = p_strPlugins[i];
+        string strPlugin = p_strPlugins[i];
         if (!strPlugin.StartsWith(Program.GameMode.PluginsPath, StringComparison.InvariantCultureIgnoreCase) &&
             !File.Exists(strPlugin))
         {

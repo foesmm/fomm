@@ -636,10 +636,9 @@ namespace Fomm
 
     internal static string CreateTempDirectory()
     {
-      string tmp;
       for (int i = 0; i < 32000; i++)
       {
-        tmp = Path.Combine(tmpPath, i.ToString());
+        string tmp = Path.Combine(tmpPath, i.ToString());
         if (!Directory.Exists(tmp))
         {
           Directory.CreateDirectory(tmp);

@@ -377,12 +377,11 @@ namespace Fomm.Controls
         Int32 intLastClosePos = strLine.LastIndexOf('>');
         if ((intLastClosePos > -1) && (intLastOpenPos > intLastClosePos))
         {
-          string strNextLine = null;
           StringBuilder stbLines = new StringBuilder(strLine);
           //there is an open tag on this line - read lines until it is closed.
           for (; i < docDocument.TotalNumberOfLines; i++)
           {
-            strNextLine = docDocument.GetText(docDocument.GetLineSegment(i));
+            string strNextLine = docDocument.GetText(docDocument.GetLineSegment(i));
             intLastClosePos = strLine.LastIndexOf('>');
             stbLines.Append(strNextLine);
             if (intLastClosePos < 0)

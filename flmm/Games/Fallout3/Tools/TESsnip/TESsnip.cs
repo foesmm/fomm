@@ -997,7 +997,6 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       Dictionary<string, GroupRecord> groups = new Dictionary<string, GroupRecord>();
 
       GroupRecord gr;
-      Record r2;
 
       foreach (string s in SanitizeOrder)
       {
@@ -1030,7 +1029,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         }
         else
         {
-          r2 = (Record) r;
+          Record r2 = (Record) r;
           if (r2.Name == "CELL" || r2.Name == "WRLD" || r2.Name == "REFR" || r2.Name == "ACRE" || r2.Name == "ACHR" ||
               r2.Name == "NAVM" || r2.Name == "DIAL" || r2.Name == "INFO")
           {
@@ -1478,10 +1477,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     private void compileAllToolStripMenuItem_Click(object sender, EventArgs e)
     {
-      string errors;
       string thingy = "";
       int count = 0, failed = 0, failed2 = 0;
-      int size;
       ScriptCompiler.ScriptCompiler.Setup(FormIDLookup);
       TreeNode tn = PluginTree.SelectedNode;
       while (tn.Parent != null)
@@ -1500,7 +1497,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
           foreach (Record r in gr.Records)
           {
             count++;
-            size = 0;
+            int size = 0;
             foreach (SubRecord sr in r.SubRecords)
             {
               if (sr.Name == "SCDA")
@@ -1509,6 +1506,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
                 break;
               }
             }
+            string errors;
             if (!ScriptCompiler.ScriptCompiler.Compile(r, out errors))
             {
               failed++;

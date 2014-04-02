@@ -298,7 +298,6 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
       {
         strTo += Path.DirectorySeparatorChar;
       }
-      String strFOMODFile = null;
       for (Int32 i = 0; i < lstFOMODFiles.Count; i++)
       {
         if (m_bwdProgress.Cancelled())
@@ -306,7 +305,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
           return;
         }
 
-        strFOMODFile = lstFOMODFiles[i];
+        String strFOMODFile = lstFOMODFiles[i];
         string strNewFileName = strFOMODFile.Substring(strFrom.Length, strFOMODFile.Length - strFrom.Length);
         m_misInstallScript.CopyDataFile(strFOMODFile, Path.Combine(strTo, strNewFileName));
 

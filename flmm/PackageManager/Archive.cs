@@ -529,12 +529,11 @@ namespace Fomm.PackageManager
       }
 
       ArchiveFileInfo afiFile = default(ArchiveFileInfo);
-      string strArchiveFileName = null;
       using (SevenZipExtractor szeExtractor = GetExtractor(m_strPath))
       {
         foreach (ArchiveFileInfo afiTmp in szeExtractor.ArchiveFileData)
         {
-          strArchiveFileName = afiTmp.FileName.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+          string strArchiveFileName = afiTmp.FileName.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
           if (strArchiveFileName.Equals(strPath, StringComparison.InvariantCultureIgnoreCase))
           {
             afiFile = afiTmp;
@@ -564,12 +563,11 @@ namespace Fomm.PackageManager
         strPrefix += Path.DirectorySeparatorChar;
       }
       Set<string> lstFolders = new Set<string>(StringComparer.InvariantCultureIgnoreCase);
-      Int32 intStopIndex = 0;
       foreach (string strFile in m_strFiles)
       {
         if (strFile.StartsWith(strPrefix, StringComparison.InvariantCultureIgnoreCase))
         {
-          intStopIndex = strFile.IndexOf(Path.DirectorySeparatorChar, strPrefix.Length);
+          Int32 intStopIndex = strFile.IndexOf(Path.DirectorySeparatorChar, strPrefix.Length);
           if (intStopIndex < 0)
           {
             continue;
@@ -604,12 +602,11 @@ namespace Fomm.PackageManager
         {
           strPrefix += Path.DirectorySeparatorChar;
         }
-        Int32 intStopIndex = 0;
         foreach (string strFile in m_strFiles)
         {
           if (strFile.StartsWith(strPrefix, StringComparison.InvariantCultureIgnoreCase))
           {
-            intStopIndex = strFile.IndexOf(Path.DirectorySeparatorChar, strPrefix.Length);
+            Int32 intStopIndex = strFile.IndexOf(Path.DirectorySeparatorChar, strPrefix.Length);
             if (intStopIndex > 0)
             {
               continue;

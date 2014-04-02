@@ -180,12 +180,12 @@ namespace Fomm.Util
           TOKEN_ELEVATION tevTokenElevation;
           tevTokenElevation.TokenIsElevated = 0;
 
-          UInt32 uintReturnLength = 0;
           Int32 intTokenElevationSize = Marshal.SizeOf(tevTokenElevation);
           IntPtr pteTokenElevation = Marshal.AllocHGlobal(intTokenElevationSize);
           try
           {
             Marshal.StructureToPtr(tevTokenElevation, pteTokenElevation, true);
+            UInt32 uintReturnLength = 0;
             booCallSucceeded = GetTokenInformation(hToken, TOKEN_INFORMATION_CLASS.TokenElevation, pteTokenElevation,
                                                    (UInt32) intTokenElevationSize, out uintReturnLength);
             if ((!booCallSucceeded) || (intTokenElevationSize != uintReturnLength))

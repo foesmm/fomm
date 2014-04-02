@@ -437,7 +437,6 @@ namespace Fomm.SharpZipLib.Zip.Compression
       int niceLength = this.niceLength;
       short[] prev = this.prev;
       int scan = strstart;
-      int match;
       int best_end = strstart + matchLen;
       int best_len = Math.Max(matchLen, DeflaterConstants.MIN_MATCH - 1);
 
@@ -471,7 +470,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
           continue;
         }
 
-        match = curMatch + 2;
+        int match = curMatch + 2;
         scan += 2;
 
         /* We check for insufficient lookahead only every 8th comparison;

@@ -394,13 +394,11 @@ namespace Fomm
 
     protected void rerunPluginFormatters()
     {
-      PluginFormat pftFormat = null;
-
       lvEspList.BeginUpdate();
 
       foreach (ListViewItem lviPlugin in lvEspList.Items)
       {
-        pftFormat = m_pfmPluginFormatManager.GetFormat(Path.GetFileName(lviPlugin.Text));
+        PluginFormat pftFormat = m_pfmPluginFormatManager.GetFormat(Path.GetFileName(lviPlugin.Text));
 
         lviPlugin.Font = pftFormat.ResolveFont(lviPlugin.Font);
         if (pftFormat.Colour.HasValue)
@@ -432,12 +430,10 @@ namespace Fomm
       }
 
       List<ListViewItem> lstPluginViewItems = new List<ListViewItem>();
-      PluginFormat pftFormat = null;
-      ListViewItem lviPlugin = null;
       foreach (string strPlugin in lstPluginFilenames)
       {
-        pftFormat = m_pfmPluginFormatManager.GetFormat(Path.GetFileName(strPlugin));
-        lviPlugin = new ListViewItem(Path.GetFileName(strPlugin));
+        PluginFormat pftFormat = m_pfmPluginFormatManager.GetFormat(Path.GetFileName(strPlugin));
+        ListViewItem lviPlugin = new ListViewItem(Path.GetFileName(strPlugin));
         lviPlugin.Font = pftFormat.ResolveFont(lviPlugin.Font);
         if (pftFormat.Colour.HasValue)
         {

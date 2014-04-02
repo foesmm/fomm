@@ -453,11 +453,10 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 
       //fade out the edge of the image
       Int32 intRange = bmpImage.Width/4;
-      double dblA = 0;
       for (Int32 i = 0; i < bmpImage.Height; i++)
       {
         Color clrPixel = bmpImage.GetPixel(bmpImage.Width - intRange, i);
-        dblA = (double) clrPixel.A;
+        double dblA = (double) clrPixel.A;
         double dblADelta = dblA/(double) intRange;
         for (Int32 j = intRange; j > 0; j--)
         {

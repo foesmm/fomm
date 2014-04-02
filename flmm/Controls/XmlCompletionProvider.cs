@@ -255,10 +255,9 @@ namespace Fomm.Controls
       {
         //this handle sequences, choices, and all
         XmlSchemaGroupBase xbsGroup = (XmlSchemaGroupBase) p_xspParticle;
-        XmlSchemaElement xseElement = null;
         foreach (XmlSchemaParticle xspParticle in xbsGroup.Items)
         {
-          xseElement = findElement(xspParticle, p_stkCode);
+          XmlSchemaElement xseElement = findElement(xspParticle, p_stkCode);
           if (xseElement != null)
           {
             return xseElement;

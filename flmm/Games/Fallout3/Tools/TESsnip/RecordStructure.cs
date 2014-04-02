@@ -422,12 +422,11 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       {
         throw new RecordXmlException("Root node was missing");
       }
-      string err;
       Dictionary<string, RecordStructure> records = new Dictionary<string, RecordStructure>();
       Dictionary<uint, SubrecordStructure[]> groups = new Dictionary<uint, SubrecordStructure[]>();
       foreach (XmlNode n in root.ChildNodes)
       {
-        err = n.OuterXml.Remove(n.OuterXml.IndexOf('>') + 1);
+        string err = n.OuterXml.Remove(n.OuterXml.IndexOf('>') + 1);
         ;
         try
         {

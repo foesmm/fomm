@@ -71,10 +71,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
       get
       {
         bool booAllFufilled = (m_dopOperator == DependencyOperator.And) ? true : false;
-        bool booThisFufilled = true;
         foreach (IDependency dpnDependency in m_lstDependencies)
         {
-          booThisFufilled = dpnDependency.IsFufilled;
+          bool booThisFufilled = dpnDependency.IsFufilled;
           switch (m_dopOperator)
           {
             case DependencyOperator.And:
@@ -109,12 +108,10 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
         }
 
         bool booAllFufilled = (m_dopOperator == DependencyOperator.And) ? true : false;
-        bool booThisFufilled = true;
-        IDependency dpnDependency = null;
         for (Int32 i = 0; i < m_lstDependencies.Count; i++)
         {
-          dpnDependency = m_lstDependencies[i];
-          booThisFufilled = dpnDependency.IsFufilled;
+          IDependency dpnDependency = m_lstDependencies[i];
+          bool booThisFufilled = dpnDependency.IsFufilled;
           if (!booThisFufilled)
           {
             stbMessage.Append(dpnDependency.Message);
@@ -168,10 +165,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     public override string ToString()
     {
       StringBuilder stbString = new StringBuilder("(");
-      IDependency dpdDependency = null;
       for (Int32 i = 0; i < m_lstDependencies.Count; i++)
       {
-        dpdDependency = m_lstDependencies[i];
+        IDependency dpdDependency = m_lstDependencies[i];
         stbString.Append(dpdDependency);
         if (i < m_lstDependencies.Count - 1)
         {

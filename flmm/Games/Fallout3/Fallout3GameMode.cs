@@ -683,7 +683,6 @@ namespace Fomm.Games.Fallout3
     {
       bool retVal = true;
       List<string> keys;
-      string key;
       int i = 0;
 
       // Do checks
@@ -694,7 +693,7 @@ namespace Fomm.Games.Fallout3
         {
           break;
         }
-        key = keys[i];
+        string key = keys[i];
 
         switch (getPluginDependencyStatus(key, true))
         {
@@ -1003,12 +1002,12 @@ namespace Fomm.Games.Fallout3
       bool[] active = new bool[plugins.Length];
       bool[] corrupt = new bool[plugins.Length];
       string[][] masters = new string[plugins.Length][];
-      Plugin p;
       List<string> mlist = new List<string>();
       for (int i = 0; i < plugins.Length; i++)
       {
         active[i] = PluginManager.IsPluginActive(plugins[i]);
         plugins[i] = Path.GetFileName(plugins[i]);
+        Plugin p;
         try
         {
           p = new Plugin(Path.Combine(PluginsPath, plugins[i]), true);

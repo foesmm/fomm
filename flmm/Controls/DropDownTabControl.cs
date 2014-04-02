@@ -687,10 +687,9 @@ namespace Fomm.Controls
     /// <param name="p_ddpPage">The <see cref="DropDownTabPage"/> to insert.</param>
     protected void InsertTabPageInSelector(DropDownTabPage p_ddpPage)
     {
-      DropDownTabPage ddpCurrent = null;
       for (Int32 i = 0; i < m_cbxSelector.Items.Count; i++)
       {
-        ddpCurrent = (DropDownTabPage) m_cbxSelector.Items[i];
+        DropDownTabPage ddpCurrent = (DropDownTabPage) m_cbxSelector.Items[i];
         if (ddpCurrent.PageIndex > p_ddpPage.PageIndex)
         {
           m_cbxSelector.Items.Insert(i, p_ddpPage);

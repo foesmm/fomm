@@ -289,12 +289,12 @@ class Script : GenericBaseScript {
     public void buildPluginList()
     {
       int i = 0;
-      LoadOrderInfo loi;
 
       fullModList.Clear();
 
       foreach (string s in PluginManager.OrderedPluginList)
       {
+        LoadOrderInfo loi;
         loi.active = PluginManager.IsPluginActive(Path.Combine(Program.GameMode.PluginsPath, s));
         loi.idx = i;
         fullModList.Add(Path.GetFileName(s).ToLower(), loi);
@@ -320,16 +320,13 @@ class Script : GenericBaseScript {
     public int getPluginDependencyStatus(string name, bool showMessage = false)
     {
       int ret = 0;
-      int i = 0;
-      Plugin plgPlugin;
-      List<string> masters;
 
       // Don't check dependency information if plugin is inactive.
       if (PluginManager.IsPluginActive(Path.Combine(Program.GameMode.PluginsPath, name)))
       {
         // Get the list of masters of the queried plugin
-        plgPlugin = plgPlugin = new Plugin(Path.Combine(Program.GameMode.PluginsPath, name), true);
-        masters = new List<string>();
+        Plugin plgPlugin = plgPlugin = new Plugin(Path.Combine(Program.GameMode.PluginsPath, name), true);
+        List<string> masters = new List<string>();
         foreach (SubRecord sr in ((Record) plgPlugin.Records[0]).SubRecords)
         {
           switch (sr.Name)
@@ -340,6 +337,7 @@ class Script : GenericBaseScript {
           }
         }
 
+        int i = 0;
         for (i = 0; i < masters.Count; i++)
         {
           if (fullModList.ContainsKey(masters[i]))

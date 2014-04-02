@@ -46,7 +46,6 @@ namespace Fomm.FileManager
       {
         IList<string> lstInstalledMods = InstallLog.Current.GetModList();
         TreeNode tndCurrentDirectory = null;
-        List<string> lstInstalledFiles = null;
         foreach (string strMod in lstInstalledMods)
         {
           tndCurrentDirectory = tvwFolders.Nodes.Add(strMod);
@@ -55,7 +54,7 @@ namespace Fomm.FileManager
           tndCurrentDirectory.SelectedImageKey = "mod";
           tndCurrentDirectory = tndCurrentDirectory.Nodes.Add(Path.GetFileName(Program.GameMode.PluginsPath));
           tndCurrentDirectory.Name = tndCurrentDirectory.Text;
-          lstInstalledFiles = InstallLog.Current.GetFileList(strMod);
+          List<string> lstInstalledFiles = InstallLog.Current.GetFileList(strMod);
           AddFilesToNode(tndCurrentDirectory, lstInstalledFiles);
         }
         if (rlvOverwrites.SelectedItems.Count > 0)
@@ -102,15 +101,13 @@ namespace Fomm.FileManager
       {
         Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar
       };
-      string strDirectory = null;
-      List<string> lstDirectoryFiles = null;
       foreach (string strFile in p_strFiles)
       {
         tndCurrentDirectory = p_tndNode;
         string[] strDirectories = strFile.Split(chrDirecotrySeparators);
         for (Int32 i = 0; i < strDirectories.Length - 1; i++)
         {
-          strDirectory = strDirectories[i];
+          string strDirectory = strDirectories[i];
           if (!tndCurrentDirectory.Nodes.ContainsKey(strDirectory))
           {
             tndCurrentDirectory = tndCurrentDirectory.Nodes.Add(strDirectory);
@@ -121,7 +118,7 @@ namespace Fomm.FileManager
             tndCurrentDirectory = tndCurrentDirectory.Nodes[strDirectory];
           }
         }
-        lstDirectoryFiles = (List<string>) tndCurrentDirectory.Tag;
+        List<string> lstDirectoryFiles = (List<string>) tndCurrentDirectory.Tag;
         if (lstDirectoryFiles == null)
         {
           lstDirectoryFiles = new List<string>();
@@ -146,10 +143,9 @@ namespace Fomm.FileManager
       rlvOverwrites.Items.Clear();
       string strFile = (string) lvwFiles.SelectedItems[0].Tag;
       IList<string> lstInstallers = InstallLog.Current.GetInstallingMods(strFile);
-      ListViewItem lviMod = null;
       foreach (string strMod in lstInstallers)
       {
-        lviMod = rlvOverwrites.Items.Add(strMod);
+        ListViewItem lviMod = rlvOverwrites.Items.Add(strMod);
         lviMod.Name = lviMod.Text;
       }
 

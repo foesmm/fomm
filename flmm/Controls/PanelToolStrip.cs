@@ -206,11 +206,10 @@ namespace Fomm.Controls
         SortedList<Int32, SortedList<Control>> sltItems = new SortedList<Int32, SortedList<Control>>();
 
         Int32 intIndex = -1;
-        Control ctlControl = null;
         ItemComparer icpComparer = new ItemComparer(m_lstOrderAdded);
         for (Int32 i = Controls.Count - 1; i >= 0; i--)
         {
-          ctlControl = Controls[i];
+          Control ctlControl = Controls[i];
 
           intIndex = ((PanelToolStripItem) ctlControl.Tag).Index;
           if (!sltItems.ContainsKey(intIndex))
@@ -220,19 +219,17 @@ namespace Fomm.Controls
           sltItems[intIndex].Add(ctlControl);
         }
 
-        SortedList<Control> lstButtons = null;
         //the lower the index, the higher up/further to the left
         // so index 0 is at the top/left
         // (top or left depending on orientation)
         intIndex = 0;
-        Control ctlButton = null;
         for (Int32 i = sltItems.Values.Count - 1; i >= 0; i--)
           //for (Int32 i = 0; i < sltItems.Values.Count; i++)
         {
-          lstButtons = sltItems.Values[i];
+          SortedList<Control> lstButtons = sltItems.Values[i];
           for (Int32 j = lstButtons.Count - 1; j >= 0; j--)
           {
-            ctlButton = lstButtons[j];
+            Control ctlButton = lstButtons[j];
             Controls.SetChildIndex(ctlButton, intIndex++);
 
             if ((i == sltItems.Values.Count - 1) && (j == lstButtons.Count - 1))
@@ -464,10 +461,9 @@ namespace Fomm.Controls
       private void psiButton_Selected(object sender, EventArgs e)
       {
         Control ctlButton = ((PanelToolStripItem) sender).Button;
-        Control ctlOther = null;
         for (Int32 i = Controls.Count - 1; i >= 0; i--)
         {
-          ctlOther = Controls[i];
+          Control ctlOther = Controls[i];
           if ((ctlOther != ctlButton) && (ctlOther.Tag is PanelToolStripItem))
           {
             ((PanelToolStripItem) ctlOther.Tag).SetUnselected();

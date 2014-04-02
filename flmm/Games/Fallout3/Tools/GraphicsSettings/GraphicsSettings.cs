@@ -671,10 +671,9 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
       cbxResolution.Items.Clear();
       DEVMODE vDevMode = new DEVMODE();
       Int32 intEnumCounter = 0;
-      double dblRatio = 0;
       while (EnumDisplaySettings(null, intEnumCounter, ref vDevMode))
       {
-        dblRatio = (double) vDevMode.dmPelsWidth/(double) vDevMode.dmPelsHeight;
+        double dblRatio = (double) vDevMode.dmPelsWidth/(double) vDevMode.dmPelsHeight;
         ComboBoxItem cbiResolution =
           new ComboBoxItem(String.Format("{0}x{1}", vDevMode.dmPelsWidth, vDevMode.dmPelsHeight));
         cbiResolution.Value = new Int32[]

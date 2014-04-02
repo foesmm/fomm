@@ -341,7 +341,6 @@ namespace Fomm.PackageManager.FomodBuilder
     {
       Cursor crsOldCursor = Cursor;
       Cursor = Cursors.WaitCursor;
-      string strPath = null;
       foreach (FileSystemTreeNode tndFolder in e.Node.Nodes)
       {
         if (tndFolder.LastSource.IsLoaded || !tndFolder.IsDirectory)
@@ -349,7 +348,7 @@ namespace Fomm.PackageManager.FomodBuilder
           continue;
         }
         tndFolder.LastSource.IsLoaded = true;
-        strPath = tndFolder.LastSource;
+        string strPath = tndFolder.LastSource;
         if (strPath.StartsWith(Archive.ARCHIVE_PREFIX))
         {
           KeyValuePair<string, string> kvpPath = Archive.ParseArchivePath(strPath);

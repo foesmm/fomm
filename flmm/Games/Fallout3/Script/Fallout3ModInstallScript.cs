@@ -390,11 +390,10 @@ namespace Fomm.Games.Fallout3.Script
     {
       string strShaderKey = String.Format("sdp:{0}/{1}", p_intPackage, p_strShaderName);
       string strOldMod = InstallLog.Current.GetCurrentGameSpecifcValueEditorModName(strShaderKey);
-      string strMessage = null;
       if (strOldMod != null)
       {
-        strMessage = String.Format("Shader '{0}' in package '{1}' has already been overwritten by '{2}'\n" +
-                                   "Overwrite the changes?", p_strShaderName, p_intPackage, strOldMod);
+        string strMessage = String.Format("Shader '{0}' in package '{1}' has already been overwritten by '{2}'\n" +
+                                          "Overwrite the changes?", p_strShaderName, p_intPackage, strOldMod);
         if (
           System.Windows.Forms.MessageBox.Show(strMessage, "Confirm Overwrite", MessageBoxButtons.YesNo,
                                                MessageBoxIcon.Question) != DialogResult.Yes)

@@ -84,17 +84,16 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
       {
         '\n'
       }, StringSplitOptions.RemoveEmptyEntries);
-      UInt32 uintFormId = 0;
-      CriticalRecordInfo criInfo = null;
       foreach (string strCriticalRecord in strCriticalRecords)
       {
+        UInt32 uintFormId = 0;
         if (
           !UInt32.TryParse(strCriticalRecord.Substring(0, 8), NumberStyles.HexNumber, null,
                            out uintFormId))
         {
           continue;
         }
-        criInfo = new CriticalRecordInfo();
+        CriticalRecordInfo criInfo = new CriticalRecordInfo();
         criInfo.Severity =
           (CriticalRecordInfo.ConflictSeverity)
             Int32.Parse(strCriticalRecord[9].ToString(), NumberStyles.HexNumber);

@@ -341,12 +341,11 @@ namespace Fomm
     protected bool SaveGameModeSettings()
     {
       bool booIsValid = true;
-      bool booIsPageValid = true;
       foreach (TabPage tpgSettings in tbcTabs.TabPages)
       {
         if (tpgSettings.Tag is SettingsPage)
         {
-          booIsPageValid = ((SettingsPage) tpgSettings.Tag).SaveSettings();
+          bool booIsPageValid = ((SettingsPage) tpgSettings.Tag).SaveSettings();
           booIsValid &= booIsPageValid;
           if (!booIsPageValid)
           {

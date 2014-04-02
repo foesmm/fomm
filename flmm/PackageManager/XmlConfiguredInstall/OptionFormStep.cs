@@ -147,11 +147,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// </summary>
     private void checkDefaults()
     {
-      ListViewItem lviRequired = null;
-      ListViewItem lviRecommended = null;
-      PluginInfo pifPlugin = null;
       foreach (ListViewGroup lvgGroup in lvwPlugins.Groups)
       {
+        PluginInfo pifPlugin = null;
         switch ((GroupType) lvgGroup.Tag)
         {
           case GroupType.SelectAll:
@@ -161,8 +159,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
             }
             break;
           case GroupType.SelectExactlyOne:
-            lviRequired = null;
-            lviRecommended = null;
+            ListViewItem lviRequired = null;
+            ListViewItem lviRecommended = null;
             foreach (ListViewItem lviPlugin in lvgGroup.Items)
             {
               pifPlugin = (PluginInfo) lviPlugin.Tag;

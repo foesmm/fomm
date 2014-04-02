@@ -218,10 +218,9 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
       {
         lstPathNodes.Add(CopyTree(tndNode));
       }
-      FileSystemTreeNode tndPathNode = null;
       for (Int32 i = lstPathNodes.Count - 1; i >= 0; i--)
       {
-        tndPathNode = lstPathNodes[i];
+        FileSystemTreeNode tndPathNode = lstPathNodes[i];
         if (tndPathNode.IsDirectory && (tndPathNode.Nodes.Count == 0))
         {
           lstPathNodes.RemoveAt(i);
@@ -283,10 +282,9 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
     /// <param name="p_tndDest">The root of the tree to which to copy.</param>
     private void CopyTree(FileSystemTreeNode p_tndSource, FileSystemTreeNode p_tndDest)
     {
-      FileSystemTreeNode tndCopy = null;
       foreach (FileSystemTreeNode tndSourceNode in p_tndSource.Nodes)
       {
-        tndCopy = new FileSystemTreeNode(tndSourceNode);
+        FileSystemTreeNode tndCopy = new FileSystemTreeNode(tndSourceNode);
         p_tndDest.Nodes.Add(tndCopy);
         CopyTree(tndSourceNode, tndCopy);
       }
@@ -320,10 +318,9 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
         ProcessTree(tndNode);
       }
       List<string> lstSubPaths = new List<string>();
-      FileSystemTreeNode.Source srcSource = null;
       for (Int32 j = p_tndNode.Sources.Count - 1; j >= 0; j--)
       {
-        srcSource = p_tndNode.Sources[j];
+        FileSystemTreeNode.Source srcSource = p_tndNode.Sources[j];
         lstSubPaths.Clear();
         if (srcSource.Path.StartsWith(Archive.ARCHIVE_PREFIX))
         {
@@ -410,12 +407,11 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
           {
             //...then remove the subpaths, so we just copy the
             // current folder instead of copying each child individually
-            FileSystemTreeNode tndNode = null;
             foreach (string strSubPath in lstSubPaths)
             {
               for (Int32 i = p_tndNode.Nodes.Count - 1; i >= 0; i--)
               {
-                tndNode = (FileSystemTreeNode) p_tndNode.Nodes[i];
+                FileSystemTreeNode tndNode = (FileSystemTreeNode) p_tndNode.Nodes[i];
                 if (tndNode.Sources.Contains(strSubPath))
                 {
                   //if we are removing the last source, and there are no
@@ -611,7 +607,6 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
     /// <param name="p_tndNode">The node to populate with children.</param>
     protected void PopulateNodeWithChildren(FileSystemTreeNode p_tndNode)
     {
-      string strSource = null;
       if (!p_tndNode.IsDirectory)
       {
         return;
@@ -622,7 +617,7 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
         {
           continue;
         }
-        strSource = srcSource.Path;
+        string strSource = srcSource.Path;
         srcSource.IsLoaded = true;
         if (strSource.StartsWith(Archive.ARCHIVE_PREFIX))
         {

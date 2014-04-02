@@ -272,10 +272,9 @@ namespace Fomm.Games.Fallout3.Tools.BSA
       }
       //Remove duplicate or absolute relative paths
       string previous = lvFiles.Items[0].Text.ToLower();
-      string next;
       for (int i = 1; i < lvFiles.Items.Count; i++)
       {
-        next = lvFiles.Items[i].Text.ToLower();
+        string next = lvFiles.Items[i].Text.ToLower();
         if (next == previous || !Program.IsSafeFileName(next) || next == "\\")
         {
           lvFiles.Items.RemoveAt(i--);

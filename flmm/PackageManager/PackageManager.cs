@@ -394,10 +394,9 @@ namespace Fomm.PackageManager
     private void ActivateFomod(fomod mod)
     {
       bool booFound = false;
-      fomod fomodMod = null;
       foreach (ListViewItem lviFomod in lvModList.Items)
       {
-        fomodMod = (fomod) lviFomod.Tag;
+        fomod fomodMod = (fomod) lviFomod.Tag;
         if (fomodMod.ModName.Equals(mod.ModName) && fomodMod.IsActive && !fomodMod.BaseName.Equals(mod.BaseName))
         {
           //ask to do upgrade

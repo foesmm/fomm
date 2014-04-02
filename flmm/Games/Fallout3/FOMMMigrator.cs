@@ -109,10 +109,9 @@ namespace Fomm.Games.Fallout3
         m_bwdProgress.ItemMessage = "Copying mods...";
         m_bwdProgress.ItemProgressMaximum = lstModFiles.Count;
         m_bwdProgress.ItemProgress = 0;
-        string strModFileName = null;
         foreach (string strMod in lstModFiles)
         {
-          strModFileName = Path.GetFileName(strMod);
+          string strModFileName = Path.GetFileName(strMod);
           m_bwdProgress.ItemMessage = "Copying mods (" + strModFileName + ")...";
           tfmFileManager.Copy(strMod, Path.Combine(Program.GameMode.ModDirectory, strModFileName), true);
           //File.Copy(strMod, Path.Combine(Program.GameMode.ModDirectory, Path.GetFileName(strMod)));

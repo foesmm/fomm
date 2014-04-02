@@ -173,10 +173,9 @@ namespace Fomm.PackageManager.FomodBuilder
     public string GenerateReadme()
     {
       StringBuilder stbReadme = new StringBuilder();
-      string strFileName = null;
       foreach (ListViewItem lviFile in lvwReadmeFiles.Items)
       {
-        strFileName = lviFile.Name;
+        string strFileName = lviFile.Name;
         if (strFileName.StartsWith(Archive.ARCHIVE_PREFIX))
         {
           KeyValuePair<string, string> kvpPath = Archive.ParseArchivePath(strFileName);

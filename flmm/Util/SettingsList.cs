@@ -175,10 +175,9 @@ namespace Fomm.Util
         return null;
       }
       List<Int32> lstValues = new List<Int32>();
-      Int32 intValue = 0;
       for (Int32 i = 0; i < arr.Count; i++)
       {
-        intValue = 0;
+        Int32 intValue = 0;
         Int32.TryParse(arr[i], out intValue);
         lstValues.Add(intValue);
       }

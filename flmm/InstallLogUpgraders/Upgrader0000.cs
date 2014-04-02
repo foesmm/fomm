@@ -47,9 +47,6 @@ namespace Fomm.InstallLogUpgraders
       ProgressWorker.OverallProgressMaximum = strModInstallFiles.Length;
       ProgressWorker.ItemProgressStep = 1;
 
-      XmlDocument xmlModInstallLog = null;
-      string strModBaseName = null;
-      fomod fomodMod = null;
       foreach (string strModInstallLog in strModInstallFiles)
       {
         if (ProgressWorker.Cancelled())
@@ -60,7 +57,7 @@ namespace Fomm.InstallLogUpgraders
         string strFomodPath = Path.ChangeExtension(strModInstallLog, ".fomod");
         if (File.Exists(strFomodPath))
         {
-          xmlModInstallLog = new XmlDocument();
+          XmlDocument xmlModInstallLog = new XmlDocument();
           xmlModInstallLog.Load(strModInstallLog);
           //figure out how much work we need to do for this mod
           XmlNodeList xnlFiles = xmlModInstallLog.SelectNodes("descendant::installedFiles/*");
@@ -71,8 +68,8 @@ namespace Fomm.InstallLogUpgraders
           ProgressWorker.ItemProgress = 0;
           ProgressWorker.ItemProgressMaximum = intItemCount;
 
-          fomodMod = new fomod(strFomodPath);
-          strModBaseName = fomodMod.BaseName;
+          fomod fomodMod = new fomod(strFomodPath);
+          string strModBaseName = fomodMod.BaseName;
           InstallLog.Current.AddMod(fomodMod);
 
           m_dicDefaultFileOwners = new Dictionary<string, string>();

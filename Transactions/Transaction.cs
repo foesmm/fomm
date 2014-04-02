@@ -84,12 +84,10 @@ namespace fomm.Transactions
 
       bool booVoteToCommit = true;
 
-      PreparingEnlistment lpeEnlistment = null;
-      IEnlistmentNotification entNotification = null;
       for (Int32 i = m_lstNotifications.Count - 1; i >= 0; i--)
       {
-        entNotification = m_lstNotifications[i];
-        lpeEnlistment = new PreparingEnlistment();
+        IEnlistmentNotification entNotification = m_lstNotifications[i];
+        PreparingEnlistment lpeEnlistment = new PreparingEnlistment();
         entNotification.Prepare(lpeEnlistment);
         if (lpeEnlistment.VoteToCommit.HasValue)
         {
@@ -123,12 +121,10 @@ namespace fomm.Transactions
                                        TransactionInformation.Status);
       }
 
-      PreparingEnlistment lpeEnlistment = null;
-      IEnlistmentNotification entNotification = null;
       for (Int32 i = m_lstNotifications.Count - 1; i >= 0; i--)
       {
-        entNotification = m_lstNotifications[i];
-        lpeEnlistment = new PreparingEnlistment();
+        IEnlistmentNotification entNotification = m_lstNotifications[i];
+        PreparingEnlistment lpeEnlistment = new PreparingEnlistment();
         entNotification.Commit(lpeEnlistment);
         if (lpeEnlistment.DoneProcessing)
         {
@@ -156,12 +152,10 @@ namespace fomm.Transactions
         return;
       }
 
-      Enlistment eltEnlistment = null;
-      IEnlistmentNotification entNotification = null;
       for (Int32 i = m_lstNotifications.Count - 1; i >= 0; i--)
       {
-        entNotification = m_lstNotifications[i];
-        eltEnlistment = new Enlistment();
+        IEnlistmentNotification entNotification = m_lstNotifications[i];
+        Enlistment eltEnlistment = new Enlistment();
         entNotification.InDoubt(eltEnlistment);
         if (eltEnlistment.DoneProcessing)
         {
@@ -182,12 +176,10 @@ namespace fomm.Transactions
 
       List<RollbackException.ExceptedResourceManager> lstExceptions =
         new List<RollbackException.ExceptedResourceManager>();
-      Enlistment eltEnlistment = null;
-      IEnlistmentNotification entNotification = null;
       for (Int32 i = m_lstNotifications.Count - 1; i >= 0; i--)
       {
-        entNotification = m_lstNotifications[i];
-        eltEnlistment = new Enlistment();
+        IEnlistmentNotification entNotification = m_lstNotifications[i];
+        Enlistment eltEnlistment = new Enlistment();
         try
         {
           entNotification.Rollback(eltEnlistment);

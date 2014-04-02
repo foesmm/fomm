@@ -239,10 +239,9 @@ namespace Fomm.Controls
       /// </summary>
       public void Clear()
       {
-        TreeNode tndNode = null;
         while (m_lklNodes.First != null)
         {
-          tndNode = m_lklNodes.First.Value;
+          TreeNode tndNode = m_lklNodes.First.Value;
           m_lklNodes.RemoveFirst();
           OnItemRemoved(tndNode);
         }

@@ -1399,9 +1399,9 @@ namespace fomm.Scripting
       {
         func.Add(line[i]);
       }
-      string result;
       try
       {
+        string result;
         if (integer)
         {
           int i = iSet(func);
@@ -1430,13 +1430,12 @@ namespace fomm.Scripting
       variables["NewLine"] = Environment.NewLine;
       variables["Tab"] = "\t";
       string[] script = InputScript.Replace("\r", "").Split('\n');
-      string[] line;
-      string s;
       string SkipTo = null;
       bool Break = false;
       bool Fatal = false;
       for (int i = 1; i < script.Length || ExtraLines.Count > 0; i++)
       {
+        string s;
         if (ExtraLines.Count > 0)
         {
           i--;
@@ -1479,7 +1478,7 @@ namespace fomm.Scripting
           }
         }
 
-        line = SplitLine(s);
+        string[] line = SplitLine(s);
         if (line.Length == 0)
         {
           continue;

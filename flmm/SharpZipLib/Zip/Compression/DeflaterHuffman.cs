@@ -363,16 +363,15 @@ namespace Fomm.SharpZipLib.Zip.Compression
       /// </summary>
       public void CalcBLFreq(Tree blTree)
       {
-        int max_count; /* max repeat count */
-        int min_count; /* min repeat count */
-        int count; /* repeat count of the current code */
         int curlen = -1; /* length of current code */
 
         int i = 0;
         while (i < numCodes)
         {
-          count = 1;
+          int count = 1; /* repeat count of the current code */
           int nextlen = length[i];
+          int max_count; /* max repeat count */
+          int min_count; /* min repeat count */
           if (nextlen == 0)
           {
             max_count = 138;
@@ -425,16 +424,15 @@ namespace Fomm.SharpZipLib.Zip.Compression
       /// <param name="blTree">Tree to write</param>
       public void WriteTree(Tree blTree)
       {
-        int max_count; // max repeat count
-        int min_count; // min repeat count
-        int count; // repeat count of the current code
         int curlen = -1; // length of current code
 
         int i = 0;
         while (i < numCodes)
         {
-          count = 1;
+          int count = 1; // repeat count of the current code
           int nextlen = length[i];
+          int max_count; // max repeat count
+          int min_count; // min repeat count
           if (nextlen == 0)
           {
             max_count = 138;
