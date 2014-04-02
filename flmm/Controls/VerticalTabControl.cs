@@ -61,8 +61,7 @@ namespace Fomm.Controls
     /// <summary>
     /// A collection of <see cref="VerticalTabPage"/>s.
     /// </summary>
-    public class TabPageCollection : IList<VerticalTabPage>, ICollection<VerticalTabPage>, IEnumerable<VerticalTabPage>,
-                                     ICollection, IList
+    public class TabPageCollection : IList<VerticalTabPage>, IList
     {
       #region Events
 

@@ -70,8 +70,7 @@ namespace Fomm.Controls
     /// <summary>
     /// A collection of <see cref="DropDownTabPage"/>s.
     /// </summary>
-    public class TabPageCollection : IList<DropDownTabPage>, ICollection<DropDownTabPage>, IEnumerable<DropDownTabPage>,
-                                     ICollection, IList
+    public class TabPageCollection : IList<DropDownTabPage>, IList
     {
       #region Events
 

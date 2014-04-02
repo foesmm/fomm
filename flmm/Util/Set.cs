@@ -8,7 +8,7 @@ namespace Fomm.Util
   /// A Set implementation.
   /// </summary>
   /// <typeparam name="T">The type of objects in the Set.</typeparam>
-  public class Set<T> : IList<T>, ICollection<T>, IEnumerable<T>, IList, ICollection, IEnumerable
+  public class Set<T> : IList<T>, IList
   {
     private List<T> m_lstList = new List<T>();
     private IComparer<T> m_cmpComparer;

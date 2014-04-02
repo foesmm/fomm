@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 {
-  internal class DataMap : ICollection, IEnumerable
+  internal class DataMap : ICollection
   {
     private readonly object _syncRoot = new object();
 
