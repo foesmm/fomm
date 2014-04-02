@@ -166,10 +166,8 @@ namespace Fomm.Controls
       /// <seealso cref="ICollection{DropDownTabPage}.Clear"/>
       public void Clear()
       {
-        DropDownTabPage tpgPage = null;
         for (var i = m_lstPages.Count - 1; i >= 0; i--)
         {
-          tpgPage = m_lstPages[i];
           RemoveAt(i);
         }
       }

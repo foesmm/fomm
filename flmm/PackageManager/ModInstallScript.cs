@@ -191,7 +191,6 @@ namespace Fomm.PackageManager
       if (p_strPreviews != null)
       {
         imgPreviews = new Image[p_strPreviews.Length];
-        var intMissingImages = 0;
         for (var i = 0; i < p_strPreviews.Length; i++)
         {
           if (p_strPreviews[i] == null)
@@ -204,11 +203,7 @@ namespace Fomm.PackageManager
           }
           catch (Exception e)
           {
-            if ((e is FileNotFoundException) || (e is DecompressionException))
-            {
-              intMissingImages++;
-            }
-            else
+            if (!((e is FileNotFoundException) || (e is DecompressionException)))
             {
               throw e;
             }

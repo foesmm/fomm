@@ -157,10 +157,8 @@ namespace Fomm.Controls
       /// <seealso cref="ICollection{VerticalTabPage}.Clear"/>
       public void Clear()
       {
-        VerticalTabPage tpgPage = null;
         for (var i = m_lstPages.Count - 1; i >= 0; i--)
         {
-          tpgPage = m_lstPages[i];
           RemoveAt(i);
         }
       }

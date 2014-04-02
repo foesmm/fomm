@@ -143,7 +143,6 @@ namespace Fomm.Games.Fallout3.Tools.InstallTweaker
         }
       }
 
-      var count = 0;
       for (var i = 0; i < FileCount; i++)
       {
         if ((i%100) == 0)
@@ -174,7 +173,6 @@ namespace Fomm.Games.Fallout3.Tools.InstallTweaker
         }
         else
         {
-          count++;
           var uncompressed = new byte[br.ReadUInt32()];
           var compressed = new byte[fileLengths[i] - 4];
           br.Read(compressed, 0, fileLengths[i] - 4);
