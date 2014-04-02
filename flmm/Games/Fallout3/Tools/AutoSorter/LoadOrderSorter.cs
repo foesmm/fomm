@@ -60,14 +60,6 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
       }
     }
 
-    private Dictionary<string, RecordInfo> MasterListOrder
-    {
-      get
-      {
-        return m_dicMasterList;
-      }
-    }
-
     public LoadOrderSorter()
     {
       LoadList();

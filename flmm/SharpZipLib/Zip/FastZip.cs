@@ -82,27 +82,6 @@ namespace Fomm.SharpZipLib.Zip
   {
     #region Enumerations
 
-    /// <summary>
-    /// Defines the desired handling when overwriting files during extraction.
-    /// </summary>
-    private enum Overwrite
-    {
-      /// <summary>
-      /// Prompt the user to confirm overwriting
-      /// </summary>
-      Prompt,
-
-      /// <summary>
-      /// Never overwrite files.
-      /// </summary>
-      Never,
-
-      /// <summary>
-      /// Always overwrite files.
-      /// </summary>
-      Always
-    }
-
     #endregion
 
     #region Events

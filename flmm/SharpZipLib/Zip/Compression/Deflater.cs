@@ -130,7 +130,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
     private const int IS_FINISHING = 0x08;
 
     private const int INIT_STATE = 0x00;
-    private const int SETDICT_STATE = 0x01;
+    //    private const int SETDICT_STATE = 0x01;
     //    private static  int INIT_FINISHING_STATE    = 0x08;
     //    private static  int SETDICT_FINISHING_STATE = 0x09;
     private const int BUSY_STATE = 0x10;

@@ -166,7 +166,7 @@ namespace Fomm.SharpZipLib.Zip
     [Flags]
     private enum Known : byte
     {
-      None = 0,
+      // None = 0,
       Size = 0x01,
       CompressedSize = 0x02,
       Crc = 0x04,

@@ -107,7 +107,7 @@ namespace Fomm.SharpZipLib.Zip
   /// Defines the contents of the general bit flags field for an archive entry.
   /// </summary>
   [Flags]
-  internal enum GeneralBitFlags : int
+  internal enum GeneralBitFlags
   {
     /// <summary>
     /// Bit 0 if set indicates that the file is encrypted

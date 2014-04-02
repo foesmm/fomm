@@ -15,7 +15,6 @@ namespace Fomm
   {
     private bool m_booChangeGameMode;
     private bool AlphaSortMode;
-    private List<string> m_lstIgnoreReadOnly = new List<string>();
     private PluginFormat.PluginFormatterManager m_pfmPluginFormatManager = new PluginFormat.PluginFormatterManager();
 
     #region Properties

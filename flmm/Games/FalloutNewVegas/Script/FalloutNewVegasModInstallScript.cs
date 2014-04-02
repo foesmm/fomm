@@ -78,14 +78,6 @@ namespace Fomm.Games.FalloutNewVegas.Script
 
     #region IDisposable Members
 
-    /// <summary>
-    /// Cleans up used resources.
-    /// </summary>
-    public override void Dispose()
-    {
-      base.Dispose();
-    }
-
     #endregion
   }
 }

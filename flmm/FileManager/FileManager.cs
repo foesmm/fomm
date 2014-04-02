@@ -153,52 +153,6 @@ namespace Fomm.FileManager
       rlvOverwrites.Items[rlvOverwrites.Items.Count - 1].Selected = true;
     }
 
-    private void highlightMissing(TreeNode thisRoot)
-    {
-      foreach (TreeNode tndHere in thisRoot.Nodes)
-      {
-        highlightMissing(tndHere);
-      }
-
-      var tndDirectory = thisRoot;
-      var lstDirectoryFiles = (List<string>) tndDirectory.Tag;
-      if ((lstDirectoryFiles == null) || (lstDirectoryFiles.Count == 0))
-      {
-        return;
-      }
-      foreach (var strFile in lstDirectoryFiles)
-      {
-        IList<string> lstInstallers = InstallLog.Current.GetInstallingMods(strFile);
-        var booMissing = false;
-        var currentOwner = InstallLog.Current.GetCurrentFileOwnerKey(strFile);
-        foreach (var strMod in lstInstallers)
-        {
-          var strModKey = InstallLog.Current.GetModKey(strMod);
-          var strDirectory = Path.GetDirectoryName(strFile);
-          var strBackupPath = Path.Combine(Program.GameMode.OverwriteDirectory, strDirectory);
-          strBackupPath = Path.Combine(strBackupPath, strModKey + "_" + Path.GetFileName(strFile));
-          if (!File.Exists(strBackupPath) && !currentOwner.Equals(strModKey))
-          {
-            booMissing = true;
-          }
-          else if (File.Exists(strBackupPath) && currentOwner.Equals(strModKey))
-          {
-            booMissing = true;
-          }
-        }
-        if (booMissing)
-        {
-          var upwego = tndDirectory;
-          do
-          {
-            upwego.BackColor = Color.Red;
-            upwego = upwego.Parent;
-          }
-          while (upwego != null);
-        }
-      }
-    }
-
     /// <summary>
     /// Handles the <see cref="TreeView.AfterSelect"/> event of the folder tree view.
     /// </summary>
