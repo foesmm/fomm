@@ -14,8 +14,8 @@ namespace Fomm
 {
   public partial class MainForm : Form
   {
-    private bool m_booChangeGameMode = false;
-    private bool AlphaSortMode = false;
+    private bool m_booChangeGameMode;
+    private bool AlphaSortMode;
     private List<string> m_lstIgnoreReadOnly = new List<string>();
     private PluginFormat.PluginFormatterManager m_pfmPluginFormatManager = new PluginFormat.PluginFormatterManager();
 
@@ -320,7 +320,7 @@ namespace Fomm
       }
     }
 
-    private FileManager.FileManager m_fmgFileManagerForm = null;
+    private FileManager.FileManager m_fmgFileManagerForm;
 
     /// <summary>
     /// Handles the <see cref="Button.Click"/> event of the file manager button.

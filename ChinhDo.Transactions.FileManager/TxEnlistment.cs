@@ -407,7 +407,7 @@ namespace ChinhDo.Transactions
 
       private readonly Transaction _tx;
       private readonly List<RollbackOperation> _journal;
-      private bool _enlisted = false;
+      private bool _enlisted;
       private bool _ignoreExceptionsInRollback;
 
       private void Enlist()

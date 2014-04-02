@@ -15,11 +15,11 @@ namespace Fomm.Controls
 
     private static int m_intBorderSize = SystemInformation.Border3DSize.Width*1;
     private PushButtonState m_pbsState;
-    private bool m_booSkipNextOpen = false;
-    private Rectangle m_rctDropDownRectangle = new Rectangle();
+    private bool m_booSkipNextOpen;
+    private Rectangle m_rctDropDownRectangle;
     private bool m_booShowSplit = true;
-    private ToolStripItem m_tsiLastPressedButton = null;
-    private Int32 m_intSelectedItemIndex = 0;
+    private ToolStripItem m_tsiLastPressedButton;
+    private Int32 m_intSelectedItemIndex;
 
     #region Properties
 

@@ -24,7 +24,7 @@ namespace Fomm.Controls
       /// </summary>
       public class TreeNodeEventArgs : EventArgs
       {
-        private TreeNode m_tndNode = null;
+        private TreeNode m_tndNode;
 
         #region Properties
 
@@ -349,8 +349,8 @@ namespace Fomm.Controls
       #endregion
     }
 
-    private TreeNodeCollection m_tncSelectedNodes = null;
-    private TreeNode m_tndFirst = null;
+    private TreeNodeCollection m_tncSelectedNodes;
+    private TreeNode m_tndFirst;
 
     #region Properties
 

@@ -23,8 +23,8 @@ namespace Fomm.PackageManager
     private readonly List<string> groups;
     private readonly List<string> lgroups;
     private readonly MainForm mf;
-    private BackgroundWorkerProgressDialog m_bwdProgress = null;
-    private string m_strLastFromFolderPath = null;
+    private BackgroundWorkerProgressDialog m_bwdProgress;
+    private string m_strLastFromFolderPath;
     private Dictionary<string, string> m_dicWebVersions = new Dictionary<string, string>();
 
     public PackageManager(MainForm mf)

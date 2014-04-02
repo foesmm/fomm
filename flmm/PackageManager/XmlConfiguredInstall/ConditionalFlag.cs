@@ -5,8 +5,8 @@
   /// </summary>
   public class ConditionalFlag
   {
-    private string m_strName = null;
-    private string m_strValue = null;
+    private string m_strName;
+    private string m_strValue;
 
     #region Properties
 

@@ -8,8 +8,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
   /// </summary>
   public class ConditionalFileInstallPattern
   {
-    private IList<PluginFile> m_lstFiles = null;
-    private CompositeDependency m_cdpDependency = null;
+    private IList<PluginFile> m_lstFiles;
+    private CompositeDependency m_cdpDependency;
 
     #region Properties
 

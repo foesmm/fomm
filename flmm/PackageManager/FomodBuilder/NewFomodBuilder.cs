@@ -17,13 +17,13 @@ namespace Fomm.PackageManager.FomodBuilder
     /// </summary>
     protected class BuildFomodArgs : GenerateFomodArgs
     {
-      private string m_strFomodName = null;
-      private IList<KeyValuePair<string, string>> m_lstCopyInstructions = null;
-      private Readme m_rmeReadme = null;
-      private XmlDocument m_xmlInfo = null;
-      private bool m_booSetScreenshot = false;
-      private Screenshot m_shtScreenshot = null;
-      private FomodScript m_fscScript = null;
+      private string m_strFomodName;
+      private IList<KeyValuePair<string, string>> m_lstCopyInstructions;
+      private Readme m_rmeReadme;
+      private XmlDocument m_xmlInfo;
+      private bool m_booSetScreenshot;
+      private Screenshot m_shtScreenshot;
+      private FomodScript m_fscScript;
 
       #region Properties
 

@@ -15,8 +15,8 @@ namespace Fomm.InstallLogUpgraders
   internal abstract class Upgrader
   {
     private static object m_objLock = new object();
-    private BackgroundWorkerProgressDialog m_pgdProgress = null;
-    private TxFileManager m_tfmFileManager = null;
+    private BackgroundWorkerProgressDialog m_pgdProgress;
+    private TxFileManager m_tfmFileManager;
 
     #region Properties
 

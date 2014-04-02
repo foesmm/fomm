@@ -57,7 +57,7 @@ namespace fomm.Scripting
     }
 
     private static Dictionary<string, string> variables;
-    private static ModInstaller m_midInstaller = null;
+    private static ModInstaller m_midInstaller;
 
     private static Fallout3ModInstallScript Script
     {

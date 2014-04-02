@@ -7,9 +7,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
   /// </summary>
   public class FlagDependency : IDependency
   {
-    private DependencyStateManager m_dsmStateManager = null;
-    private string m_strFlagName = null;
-    private string m_strValue = null;
+    private DependencyStateManager m_dsmStateManager;
+    private string m_strFlagName;
+    private string m_strValue;
 
     #region Properties
 

@@ -24,9 +24,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
       public PluginInfo Owner;
     }
 
-    private ModInstallScript m_misInstallScript = null;
+    private ModInstallScript m_misInstallScript;
     private Dictionary<string, FlagValue> m_dicFlags = new Dictionary<string, FlagValue>();
-    private Dictionary<string, bool> m_dicInstalledPlugins = null;
+    private Dictionary<string, bool> m_dicInstalledPlugins;
 
     #region Properties
 
@@ -167,7 +167,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
       return m_strActiveInstalledPlugins;
     }
 
-    private string[] m_strActiveInstalledPlugins = null;
+    private string[] m_strActiveInstalledPlugins;
 
     /// <summary>
     /// Sets the value of a conditional flag.

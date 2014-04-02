@@ -8,7 +8,7 @@ namespace Fomm.Games.Fallout3.PluginFormatProviders
   /// </summary>
   public class CriticalRecordPluginFormatProvider : IPluginFormatProvider
   {
-    private PluginFormat.PluginFormatterManager m_pfmManager = null;
+    private PluginFormat.PluginFormatterManager m_pfmManager;
     private Dictionary<string, PluginFormat> m_dicFormat = new Dictionary<string, PluginFormat>();
 
     /// <summary>

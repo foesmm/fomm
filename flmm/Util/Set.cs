@@ -11,7 +11,7 @@ namespace Fomm.Util
   public class Set<T> : IList<T>, ICollection<T>, IEnumerable<T>, IList, ICollection, IEnumerable
   {
     private List<T> m_lstList = new List<T>();
-    private IComparer<T> m_cmpComparer = null;
+    private IComparer<T> m_cmpComparer;
 
     #region Constructors
 

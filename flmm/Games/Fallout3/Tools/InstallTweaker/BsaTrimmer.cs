@@ -8,7 +8,7 @@ namespace Fomm.Games.Fallout3.Tools.InstallTweaker
 {
   internal static class BsaTrimmer
   {
-    private static int shrunkcount = 0;
+    private static int shrunkcount;
 
     private static void Commit(BinaryWriter bw, long offset, byte[] data, long offset2, int add, bool parse)
     {

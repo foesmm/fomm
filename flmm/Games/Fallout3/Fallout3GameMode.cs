@@ -111,9 +111,9 @@ namespace Fomm.Games.Fallout3
       #endregion
     }
 
-    private string m_strSavesPath = null;
+    private string m_strSavesPath;
     private Dictionary<string, string> m_dicAdditionalPaths = new Dictionary<string, string>();
-    private SettingsFilesSet m_sfsSettingsFiles = null;
+    private SettingsFilesSet m_sfsSettingsFiles;
 
     private Dictionary<string, IPluginFormatProvider> m_dicPluginFormatProviders =
       new Dictionary<string, IPluginFormatProvider>();
@@ -124,7 +124,7 @@ namespace Fomm.Games.Fallout3
     private List<Command<MainForm>> m_lstLoadOrderTools = new List<Command<MainForm>>();
     private List<Command<MainForm>> m_lstGameLaunchCommands = new List<Command<MainForm>>();
     private List<SettingsPage> m_lstSettingsPages = new List<SettingsPage>();
-    private Fallout3PluginManager m_pmgPluginManager = null;
+    private Fallout3PluginManager m_pmgPluginManager;
 
     #region Properties
 

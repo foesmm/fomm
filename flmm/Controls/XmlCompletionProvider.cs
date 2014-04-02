@@ -40,11 +40,11 @@ namespace Fomm.Controls
   /// </summary>
   public class AutoCompleteListEventArgs : EventArgs
   {
-    private List<XmlCompletionData> m_lstAutoCompleteList = null;
-    private string m_strElementPath = null;
-    private string[] m_strSiblings = null;
+    private List<XmlCompletionData> m_lstAutoCompleteList;
+    private string m_strElementPath;
+    private string[] m_strSiblings;
     private AutoCompleteType m_actType = AutoCompleteType.Element;
-    private string m_strLastWord = null;
+    private string m_strLastWord;
     private List<char> m_lstExtraInsertionCharacters = new List<char>();
 
     #region Properties
@@ -173,12 +173,12 @@ namespace Fomm.Controls
     private Regex rgxLastAttribute = new Regex(".*\\s([^=]+)=?", RegexOptions.Singleline);
     private Regex rgxAttribute = new Regex(@"(\S+)=");
 
-    private XmlSchemaSet m_xstSchema = null;
-    private XmlSchema m_xshSchema = null;
-    private ImageList m_imlImages = null;
-    private string m_strPreSelection = null;
+    private XmlSchemaSet m_xstSchema;
+    private XmlSchema m_xshSchema;
+    private ImageList m_imlImages;
+    private string m_strPreSelection;
     private AutoCompleteType m_actCompleteType = AutoCompleteType.Element;
-    private XmlEditor m_xedEditor = null;
+    private XmlEditor m_xedEditor;
 
     private Dictionary<AutoCompleteType, List<char>> m_dicExtraCompletionCharacters =
       new Dictionary<AutoCompleteType, List<char>>();

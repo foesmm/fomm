@@ -263,7 +263,7 @@ namespace ChinhDo.Transactions
     private bool _txEnabled = true;
     private static readonly string _tempFolder;
     private static readonly string _tempFilesPrefix = "";
-    private bool _ignoreExceptionsInRollback = false;
+    private bool _ignoreExceptionsInRollback;
 
     private TxEnlistment GetEnlistment()
     {

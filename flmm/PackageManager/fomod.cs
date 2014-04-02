@@ -68,15 +68,15 @@ namespace Fomm.PackageManager
     private bool hasInfo;
     private bool isActive;
 
-    private string m_strPathPrefix = null;
+    private string m_strPathPrefix;
 
     private Dictionary<string, string> m_dicMovedArchiveFiles =
       new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
 
-    private string m_strCachePath = null;
-    private string m_strScreenshotPath = null;
-    private string m_strScriptPath = null;
-    private string m_strReadmePath = null;
+    private string m_strCachePath;
+    private string m_strScreenshotPath;
+    private string m_strScriptPath;
+    private string m_strReadmePath;
 
     private readonly string baseName;
     private string m_strName;

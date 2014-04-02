@@ -9,8 +9,8 @@ namespace Fomm.Games.FalloutNewVegas.Script.XmlConfiguredInstall
   /// </summary>
   public class NvseDependency : IDependency
   {
-    private Fallout3DependencyStateManager m_dsmStateManager = null;
-    private Version m_verMinVersion = null;
+    private Fallout3DependencyStateManager m_dsmStateManager;
+    private Version m_verMinVersion;
 
     #region IDependency Members
 

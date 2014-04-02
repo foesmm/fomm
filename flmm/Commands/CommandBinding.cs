@@ -15,7 +15,7 @@ namespace Fomm.Commands
     /// <returns>The command argument.</returns>
     public delegate T GetCommandArgument();
 
-    private GetCommandArgument m_dlgGetArgument = null;
+    private GetCommandArgument m_dlgGetArgument;
     private readonly object m_objTrigger;
     private readonly Command<T> m_cmdCommand;
 

@@ -22,7 +22,7 @@ namespace Fomm.Util
     /// </summary>
     private class EnumeratorOfString : IEnumerator<string>
     {
-      private StringEnumerator m_senEnumerator = null;
+      private StringEnumerator m_senEnumerator;
 
       #region Contructors
 

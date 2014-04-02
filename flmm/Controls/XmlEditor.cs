@@ -18,7 +18,7 @@ namespace Fomm.Controls
   /// </summary>
   public class RegeneratableAutoCompleteListEventArgs : AutoCompleteListEventArgs
   {
-    private bool m_booGenerateOnNextKey = false;
+    private bool m_booGenerateOnNextKey;
 
     #region Properties
 
@@ -81,13 +81,13 @@ namespace Fomm.Controls
 
     private Timer m_tmrFoldUpdater = new Timer();
     private Timer m_tmrValidator = new Timer();
-    private XmlCompletionProvider m_cdpXmlCompletionProvider = null;
-    private CodeCompletionWindow m_ccwCodeCompletionWindow = null;
-    private XmlSchema m_xshSchema = null;
-    private bool m_booMalformedXml = false;
-    private XmlReaderSettings m_xrsSettings = null;
-    private bool m_booFormatOnce = false;
-    private bool m_booGenerateOnNextKey = false;
+    private XmlCompletionProvider m_cdpXmlCompletionProvider;
+    private CodeCompletionWindow m_ccwCodeCompletionWindow;
+    private XmlSchema m_xshSchema;
+    private bool m_booMalformedXml;
+    private XmlReaderSettings m_xrsSettings;
+    private bool m_booFormatOnce;
+    private bool m_booGenerateOnNextKey;
     private char m_chrLastChar = '\0';
 
     #region Properties

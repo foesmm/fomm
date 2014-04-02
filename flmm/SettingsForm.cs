@@ -14,7 +14,7 @@ namespace Fomm
   /// </summary>
   partial class SettingsForm : Form
   {
-    private bool booToolTipShown = false;
+    private bool booToolTipShown;
 
     #region Constructors
 

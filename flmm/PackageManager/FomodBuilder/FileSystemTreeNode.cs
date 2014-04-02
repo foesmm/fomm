@@ -94,8 +94,8 @@ namespace Fomm.PackageManager.FomodBuilder
     /// </summary>
     public class Source : IEquatable<Source>, IEquatable<string>
     {
-      private string m_strPath = null;
-      private bool m_booIsLoaded = false;
+      private string m_strPath;
+      private bool m_booIsLoaded;
 
       #region Properties
 
@@ -202,8 +202,8 @@ namespace Fomm.PackageManager.FomodBuilder
       new Dictionary<string, Archive>(StringComparer.InvariantCultureIgnoreCase);
 
     private SourceSet m_sstSources = new SourceSet();
-    private bool? m_booIsAchive = null;
-    private bool? m_booIsDirectory = null;
+    private bool? m_booIsAchive;
+    private bool? m_booIsDirectory;
 
     #region Properties
 

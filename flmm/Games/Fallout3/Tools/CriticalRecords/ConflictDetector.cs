@@ -150,7 +150,7 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
 
     #endregion
 
-    private bool m_booCancelled = false;
+    private bool m_booCancelled;
 
     /// <summary>
     /// Checks for conflicts with mod-author specified critical records. Used by background worker dialog.

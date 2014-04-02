@@ -45,14 +45,14 @@ namespace Fomm.PackageManager
       ".ico"
     };
 
-    private string m_strPath = null;
-    private SevenZipCompressor m_szcCompressor = null;
-    private List<string> m_strFiles = null;
-    private Dictionary<string, ArchiveFileInfo> m_dicFileInfo = null;
-    private bool m_booCanEdit = false;
-    private bool m_booIsSolid = false;
-    private ThreadSafeSevenZipExtractor m_szeReadOnlyExtractor = null;
-    private string m_strReadOnlyTempDirectory = null;
+    private string m_strPath;
+    private SevenZipCompressor m_szcCompressor;
+    private List<string> m_strFiles;
+    private Dictionary<string, ArchiveFileInfo> m_dicFileInfo;
+    private bool m_booCanEdit;
+    private bool m_booIsSolid;
+    private ThreadSafeSevenZipExtractor m_szeReadOnlyExtractor;
+    private string m_strReadOnlyTempDirectory;
 
     #region Properties
 

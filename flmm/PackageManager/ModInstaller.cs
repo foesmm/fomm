@@ -12,7 +12,7 @@ namespace Fomm.PackageManager
   /// </summary>
   public class ModInstaller : ModInstallerBase
   {
-    private BackgroundWorkerProgressDialog m_bwdProgress = null;
+    private BackgroundWorkerProgressDialog m_bwdProgress;
 
     #region Properties
 

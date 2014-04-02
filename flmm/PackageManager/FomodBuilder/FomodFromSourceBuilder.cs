@@ -18,9 +18,9 @@ namespace Fomm.PackageManager.FomodBuilder
     /// </summary>
     protected class BuildFomodArgs : GenerateFomodArgs
     {
-      private string m_strFomodName = null;
-      private string m_strSource = null;
-      private string m_strUrl = null;
+      private string m_strFomodName;
+      private string m_strSource;
+      private string m_strUrl;
 
       #region Properties
 

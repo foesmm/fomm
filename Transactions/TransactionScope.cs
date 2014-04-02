@@ -7,8 +7,8 @@ namespace fomm.Transactions
   /// </summary>
   public class TransactionScope : IDisposable
   {
-    private Transaction m_trnTransaction = null;
-    private bool m_booCompleted = false;
+    private Transaction m_trnTransaction;
+    private bool m_booCompleted;
 
     /// <summary>
     /// The default constructor.

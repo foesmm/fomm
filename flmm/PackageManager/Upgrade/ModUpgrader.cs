@@ -20,8 +20,8 @@ namespace Fomm.PackageManager.Upgrade
   /// </remarks>
   public class ModUpgrader : ModInstaller
   {
-    private fomod m_fomodOriginalMod = null;
-    private BackgroundWorkerProgressDialog m_bwdProgress = null;
+    private fomod m_fomodOriginalMod;
+    private BackgroundWorkerProgressDialog m_bwdProgress;
 
     #region Properties
 

@@ -14,8 +14,8 @@ namespace Fomm.Controls
   public class VerticalTabControlDesigner : ParentControlDesigner
   {
     private DesignerVerbCollection m_dvcVerbs = new DesignerVerbCollection();
-    private IDesignerHost m_dhtDesignerHost = null;
-    private ISelectionService m_slsSelectionService = null;
+    private IDesignerHost m_dhtDesignerHost;
+    private ISelectionService m_slsSelectionService;
 
     #region Properties
 

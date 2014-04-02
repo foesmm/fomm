@@ -13,7 +13,7 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
   /// <seealso cref="fomod.CriticalRecords"/>
   public partial class CriticalRecordsForm : Form
   {
-    private bool m_booPopulatingForm = false;
+    private bool m_booPopulatingForm;
 
     #region Constructors
 

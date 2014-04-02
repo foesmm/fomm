@@ -9,7 +9,7 @@ namespace Fomm.Controls
   /// </summary>
   public class VerticalTabPage : Panel, IStatusProviderAware
   {
-    private VerticalTabButton m_vtbTab = null;
+    private VerticalTabButton m_vtbTab;
 
     #region Properties
 

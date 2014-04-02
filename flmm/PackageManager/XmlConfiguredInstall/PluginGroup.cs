@@ -46,7 +46,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
   public class PluginGroup
   {
     private List<PluginInfo> m_lstPlugins = new List<PluginInfo>();
-    private string m_strName = null;
+    private string m_strName;
     private GroupType p_gtpType = GroupType.Inavlid;
     private SortOrder m_srtPluginOrder = SortOrder.Ascending;
 

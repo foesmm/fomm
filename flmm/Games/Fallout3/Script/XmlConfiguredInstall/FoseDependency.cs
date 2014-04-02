@@ -8,8 +8,8 @@ namespace Fomm.Games.Fallout3.Script.XmlConfiguredInstall
   /// </summary>
   public class FoseDependency : IDependency
   {
-    private Fallout3DependencyStateManager m_dsmStateManager = null;
-    private Version m_verMinVersion = null;
+    private Fallout3DependencyStateManager m_dsmStateManager;
+    private Version m_verMinVersion;
 
     #region IDependency Members
 

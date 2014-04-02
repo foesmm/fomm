@@ -26,7 +26,7 @@ namespace Fomm.Controls
     /// </summary>
     public class TabPageEventArgs : EventArgs
     {
-      private VerticalTabPage m_tpgPage = null;
+      private VerticalTabPage m_tpgPage;
 
       #region Properties
 
@@ -365,9 +365,9 @@ namespace Fomm.Controls
       #endregion
     }
 
-    private PanelToolStrip m_ptsTabContainer = null;
-    private TabPageCollection m_tpcPages = null;
-    private VerticalTabPage m_tpgSelected = null;
+    private PanelToolStrip m_ptsTabContainer;
+    private TabPageCollection m_tpcPages;
+    private VerticalTabPage m_tpgSelected;
 
     #region Properties
 

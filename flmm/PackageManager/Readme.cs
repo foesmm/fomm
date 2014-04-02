@@ -62,7 +62,7 @@ namespace Fomm.PackageManager
     }
 
     private ReadmeFormat m_fmtFormat = ReadmeFormat.PlainText;
-    private string m_strText = null;
+    private string m_strText;
 
     #region Properties
 

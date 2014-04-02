@@ -9,8 +9,8 @@ namespace GeMod.Interface
   /// </summary>
   public class Screenshot
   {
-    private string m_strExtension = null;
-    private byte[] m_bteData = null;
+    private string m_strExtension;
+    private byte[] m_bteData;
 
     #region Properties
 

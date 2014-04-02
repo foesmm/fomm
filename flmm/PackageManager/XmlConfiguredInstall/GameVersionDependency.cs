@@ -7,8 +7,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
   /// </summary>
   public class GameVersionDependency : IDependency
   {
-    private DependencyStateManager m_dsmStateManager = null;
-    private Version m_verMinVersion = null;
+    private DependencyStateManager m_dsmStateManager;
+    private Version m_verMinVersion;
 
     #region IDependency Members
 

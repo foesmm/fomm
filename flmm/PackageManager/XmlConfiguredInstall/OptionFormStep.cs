@@ -16,7 +16,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     {
     };
 
-    private DependencyStateManager m_dsmStateManager = null;
+    private DependencyStateManager m_dsmStateManager;
 
     #region Constructors
 

@@ -8,8 +8,8 @@ namespace Fomm.PackageManager
 {
   internal class ModUninstaller : ModInstallerBase
   {
-    private BackgroundWorkerProgressDialog m_bwdProgress = null;
-    private string m_strBaseName = null;
+    private BackgroundWorkerProgressDialog m_bwdProgress;
+    private string m_strBaseName;
 
     #region Properties
 

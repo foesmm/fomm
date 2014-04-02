@@ -10,9 +10,9 @@ namespace Fomm.PackageManager
   /// </summary>
   public class PremadeFomodPack
   {
-    private Archive m_arcPFP = null;
-    private XmlDocument m_xmlMeta = null;
-    private string m_strPremadePath = null;
+    private Archive m_arcPFP;
+    private XmlDocument m_xmlMeta;
+    private string m_strPremadePath;
 
     #region Validation
 

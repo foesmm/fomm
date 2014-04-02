@@ -53,9 +53,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
       #endregion
     }
 
-    private ModInstallScript m_misInstallScript = null;
-    private BackgroundWorkerProgressDialog m_bwdProgress = null;
-    private DependencyStateManager m_dsmStateManager = null;
+    private ModInstallScript m_misInstallScript;
+    private BackgroundWorkerProgressDialog m_bwdProgress;
+    private DependencyStateManager m_dsmStateManager;
 
     #region Constructors
 
@@ -341,7 +341,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
       return lstFiles;
     }
 
-    private string[] m_strFomodFiles = null;
+    private string[] m_strFomodFiles;
 
     #endregion
   }

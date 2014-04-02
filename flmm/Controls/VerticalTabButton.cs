@@ -10,7 +10,7 @@ namespace Fomm.Controls
   /// <see cref="<see cref="PanelToolStripItem"/>"/>
   public class VerticalTabButton : PanelToolStripItem
   {
-    private VerticalTabPage m_tpgPage = null;
+    private VerticalTabPage m_tpgPage;
 
     #region Properties
 

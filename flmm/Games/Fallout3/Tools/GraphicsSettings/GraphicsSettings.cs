@@ -780,8 +780,8 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
     /// </remarks>
     private class SettingsInstaller : ModInstallerBase
     {
-      private bool m_booChanged = false;
-      private GraphicsSettings m_gstSettings = null;
+      private bool m_booChanged;
+      private GraphicsSettings m_gstSettings;
 
       #region Properties
 

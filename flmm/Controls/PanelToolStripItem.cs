@@ -16,8 +16,8 @@ namespace Fomm.Controls
   {
     public event EventHandler IndexChanged;
 
-    private Control m_ctlButton = null;
-    private Int32 m_intIndex = 0;
+    private Control m_ctlButton;
+    private Int32 m_intIndex;
     private ToolTip m_ttpToolTip = new ToolTip();
     private ToolStripItemDisplayStyle m_tdsDisplayStyle = ToolStripItemDisplayStyle.Image;
 

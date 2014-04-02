@@ -28,9 +28,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
   /// </summary>
   public class FileDependency : IDependency
   {
-    private string m_strFile = null;
+    private string m_strFile;
     private ModFileState m_mfsState = ModFileState.Active;
-    private DependencyStateManager m_dsmStateManager = null;
+    private DependencyStateManager m_dsmStateManager;
 
     #region Properties
 

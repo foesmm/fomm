@@ -11,12 +11,12 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
   /// </remarks>
   public class PluginFile : IComparable<PluginFile>
   {
-    private string m_strSource = null;
-    private string m_strDest = null;
-    private bool m_booIsFolder = false;
-    private bool m_booAlwaysInstall = false;
-    private bool m_booInstallIfUsable = false;
-    private Int32 m_intPriority = 0;
+    private string m_strSource;
+    private string m_strDest;
+    private bool m_booIsFolder;
+    private bool m_booAlwaysInstall;
+    private bool m_booInstallIfUsable;
+    private Int32 m_intPriority;
 
     #region Properties
 

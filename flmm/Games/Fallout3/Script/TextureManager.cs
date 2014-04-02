@@ -12,8 +12,8 @@ namespace Fomm.Games.Fallout3.Script
   /// </summary>
   public class TextureManager : IDisposable
   {
-    private bool m_booDdsParserInited = false;
-    private List<IntPtr> m_lstTextures = null;
+    private bool m_booDdsParserInited;
+    private List<IntPtr> m_lstTextures;
 
     #region Constructors
 

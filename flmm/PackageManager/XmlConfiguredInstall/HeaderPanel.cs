@@ -38,7 +38,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     private class TransparentLabel : UserControl
     {
       private Label m_lblLabel = new Label();
-      private bool m_booPaintOnce = false;
+      private bool m_booPaintOnce;
 
       #region Properties
 
@@ -148,8 +148,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     private PictureBox m_pbxGradient = new PictureBox();
     private TextPosition m_tpsPosition = TextPosition.RightOfImage;
     private TransparentLabel m_tlbLabel = new TransparentLabel();
-    private string m_strImageLocation = null;
-    private Bitmap m_bmpOriginalImage = null;
+    private string m_strImageLocation;
+    private Bitmap m_bmpOriginalImage;
     private bool m_booShowFade = true;
 
     #region Properties

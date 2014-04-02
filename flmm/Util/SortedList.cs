@@ -7,7 +7,7 @@ namespace Fomm.Util
   public class SortedList<T> : IList<T>
   {
     private List<T> m_lstItems = new List<T>();
-    private IComparer<T> m_cmpComparer = null;
+    private IComparer<T> m_cmpComparer;
 
     public SortedList()
     {

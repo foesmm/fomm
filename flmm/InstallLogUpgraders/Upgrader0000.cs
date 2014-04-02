@@ -15,8 +15,8 @@ namespace Fomm.InstallLogUpgraders
   /// </summary>
   internal class Upgrader0000 : Upgrader
   {
-    private Dictionary<string, string> m_dicDefaultFileOwners = null;
-    private XmlDocument m_xmlOldInstallLog = null;
+    private Dictionary<string, string> m_dicDefaultFileOwners;
+    private XmlDocument m_xmlOldInstallLog;
 
     #region Constructors
 

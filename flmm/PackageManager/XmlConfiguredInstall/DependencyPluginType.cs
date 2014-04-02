@@ -14,7 +14,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     private class DependencyTypePattern
     {
       private PluginType m_ptpType = PluginType.Invalid;
-      private CompositeDependency m_cdpDependency = null;
+      private CompositeDependency m_cdpDependency;
 
       #region Properties
 

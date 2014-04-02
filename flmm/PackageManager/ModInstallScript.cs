@@ -13,17 +13,17 @@ namespace Fomm.PackageManager
   /// </summary>
   public abstract class ModInstallScript : IDisposable
   {
-    private Set<string> m_setActivePlugins = null;
-    private fomod m_fomodMod = null;
-    private ModInstallerBase m_mibInstaller = null;
+    private Set<string> m_setActivePlugins;
+    private fomod m_fomodMod;
+    private ModInstallerBase m_mibInstaller;
     private List<string> m_lstOverwriteFolders = new List<string>();
     private List<string> m_lstDontOverwriteFolders = new List<string>();
-    private bool m_booDontOverwriteAll = false;
-    private bool m_booOverwriteAll = false;
+    private bool m_booDontOverwriteAll;
+    private bool m_booOverwriteAll;
     private List<string> m_lstOverwriteMods = new List<string>();
     private List<string> m_lstDontOverwriteMods = new List<string>();
-    private bool m_booDontOverwriteAllIni = false;
-    private bool m_booOverwriteAllIni = false;
+    private bool m_booDontOverwriteAllIni;
+    private bool m_booOverwriteAllIni;
 
     #region Properties
 

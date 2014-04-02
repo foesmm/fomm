@@ -14,9 +14,9 @@ namespace Fomm.PackageManager.ModInstallLog
     /// </summary>
     internal class IniEdit : IComparable<IniEdit>
     {
-      private string m_strFile = null;
-      private string m_strSection = null;
-      private string m_strKey = null;
+      private string m_strFile;
+      private string m_strSection;
+      private string m_strKey;
       private string m_strValue;
 
       #region Properties
@@ -129,7 +129,7 @@ namespace Fomm.PackageManager.ModInstallLog
     /// </summary>
     internal class GameSpecificValueEdit : IComparable<GameSpecificValueEdit>
     {
-      private string m_strKey = null;
+      private string m_strKey;
       private byte[] m_bteData;
 
       #region Properties
@@ -293,13 +293,13 @@ namespace Fomm.PackageManager.ModInstallLog
 
       #endregion
     }*/
-    private List<string> m_lstDataFiles = null;
+    private List<string> m_lstDataFiles;
 
-    private List<string> m_lstReplacedDataFiles = null;
-    private List<IniEdit> m_lstIniEdits = null;
-    private List<IniEdit> m_lstReplacedIniValues = null;
-    private List<GameSpecificValueEdit> m_lstGameSpecificValueEdits = null;
-    private List<GameSpecificValueEdit> m_lstReplacedGameSpecificValues = null;
+    private List<string> m_lstReplacedDataFiles;
+    private List<IniEdit> m_lstIniEdits;
+    private List<IniEdit> m_lstReplacedIniValues;
+    private List<GameSpecificValueEdit> m_lstGameSpecificValueEdits;
+    private List<GameSpecificValueEdit> m_lstReplacedGameSpecificValues;
 
     #region Properties
 

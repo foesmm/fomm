@@ -8,10 +8,10 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
   /// </summary>
   public class HeaderInfo
   {
-    private string m_strTitle = null;
+    private string m_strTitle;
     private Color m_clrColour = SystemColors.ControlText;
     private TextPosition m_tpsTitlePosition = TextPosition.Right;
-    private Image m_imgImage = null;
+    private Image m_imgImage;
     private bool m_booShowImage = true;
     private bool m_booShowFade = true;
     private Int32 m_intHeight = -1;

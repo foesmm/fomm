@@ -20,7 +20,7 @@ namespace Fomm.PackageManager.FomodBuilder
     /// </summary>
     protected abstract class GenerateFomodArgs
     {
-      private string m_strPackedPath = null;
+      private string m_strPackedPath;
 
       #region Properties
 
@@ -56,7 +56,7 @@ namespace Fomm.PackageManager.FomodBuilder
       #endregion
     }
 
-    private BackgroundWorkerProgressDialog m_bwdProgress = null;
+    private BackgroundWorkerProgressDialog m_bwdProgress;
     private LinkedList<string> m_lltTempFolders = new LinkedList<string>();
 
     #region Properties

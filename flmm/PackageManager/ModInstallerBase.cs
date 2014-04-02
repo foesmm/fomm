@@ -12,11 +12,11 @@ namespace Fomm.PackageManager
   public abstract class ModInstallerBase : IDisposable
   {
     protected static readonly object objInstallLock = new object();
-    private BackgroundWorkerProgressDialog m_bwdProgress = null;
-    private TxFileManager m_tfmFileManager = null;
-    private InstallLogMergeModule m_ilmModInstallLog = null;
-    private fomod m_fomodMod = null;
-    private ModInstallScript m_misScript = null;
+    private BackgroundWorkerProgressDialog m_bwdProgress;
+    private TxFileManager m_tfmFileManager;
+    private InstallLogMergeModule m_ilmModInstallLog;
+    private fomod m_fomodMod;
+    private ModInstallScript m_misScript;
 
     #region Properties
 

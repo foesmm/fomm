@@ -35,8 +35,8 @@ namespace fomm.Scripting
   /// </summary>
   public abstract class GenericBaseScript
   {
-    private static ModInstaller m_mdiScript = null;
-    private static string m_strLastError = null;
+    private static ModInstaller m_mdiScript;
+    private static string m_strLastError;
 
     protected static ModInstaller Installer
     {

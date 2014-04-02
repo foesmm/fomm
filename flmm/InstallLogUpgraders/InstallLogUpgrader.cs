@@ -10,7 +10,7 @@ namespace Fomm.InstallLogUpgraders
   /// </summary>
   internal class InstallLogUpgrader
   {
-    private Dictionary<Version, Upgrader> m_dicUpgraders = null;
+    private Dictionary<Version, Upgrader> m_dicUpgraders;
 
     /// <summary>
     /// The default constructor.

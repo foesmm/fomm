@@ -8,9 +8,9 @@ namespace Fomm.FileManager
 {
   public class ModInstallReorderer : ModInstallerBase
   {
-    private string m_strFailMessage = null;
-    private string m_strFile = null;
-    private IList<string> m_lstOrderedMods = null;
+    private string m_strFailMessage;
+    private string m_strFile;
+    private IList<string> m_lstOrderedMods;
 
     #region Properties
 

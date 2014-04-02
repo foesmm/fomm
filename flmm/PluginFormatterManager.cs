@@ -12,7 +12,7 @@ namespace Fomm
     /// </summary>
     public class PluginFormatterManager
     {
-      private Int32 m_intIndex = 0;
+      private Int32 m_intIndex;
       private Set<IPluginFormatProvider> m_setProviders = new Set<IPluginFormatProvider>();
 
       /// <summary>

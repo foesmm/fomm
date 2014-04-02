@@ -21,8 +21,8 @@ namespace Fomm.PackageManager.FomodBuilder
     /// </summary>
     protected class BuildPFPArgs : BuildFomodArgs
     {
-      private IList<SourceFile> m_lstSourceFiles = null;
-      private string m_strCustomHowToSteps = null;
+      private IList<SourceFile> m_lstSourceFiles;
+      private string m_strCustomHowToSteps;
 
       #region Properties
 

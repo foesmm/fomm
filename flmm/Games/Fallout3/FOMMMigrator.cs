@@ -15,7 +15,7 @@ namespace Fomm.Games.Fallout3
   /// </summary>
   public class FOMMMigrator
   {
-    private BackgroundWorkerProgressDialog m_bwdProgress = null;
+    private BackgroundWorkerProgressDialog m_bwdProgress;
 
     /// <summary>
     /// Starts the migration, if necessary.

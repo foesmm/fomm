@@ -9,7 +9,7 @@ namespace Fomm.Games.Fallout3.PluginFormatProviders
   /// </summary>
   public class BoldESMPluginFormatProvider : IPluginFormatProvider
   {
-    private PluginFormat.PluginFormatterManager m_pfmManager = null;
+    private PluginFormat.PluginFormatterManager m_pfmManager;
 
     #region IPluginFormatProvider Members
 

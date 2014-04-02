@@ -15,8 +15,8 @@ namespace Fomm.Games.Fallout3.Script
 {
   public class Fallout3ModInstallScript : ModInstallScript
   {
-    private BsaManager m_bamBsaManager = null;
-    private TextureManager m_txmTextureManager = null;
+    private BsaManager m_bamBsaManager;
+    private TextureManager m_txmTextureManager;
 
     #region Properties
 

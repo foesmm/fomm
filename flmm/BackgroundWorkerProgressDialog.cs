@@ -14,12 +14,12 @@ namespace Fomm
 
     public delegate void ParamWorkerMethod(object p_objArgument);
 
-    private WorkerMethod m_wkmWorkMethod = null;
-    private ParamWorkerMethod m_pwmWorkerMethod = null;
-    private object m_objWorkMethodParam = null;
-    private DoWorkEventArgs m_weaDoWorkEventArgs = null;
-    private BackgroundWorker m_bgwWorker = null;
-    private Exception m_exError = null;
+    private WorkerMethod m_wkmWorkMethod;
+    private ParamWorkerMethod m_pwmWorkerMethod;
+    private object m_objWorkMethodParam;
+    private DoWorkEventArgs m_weaDoWorkEventArgs;
+    private BackgroundWorker m_bgwWorker;
+    private Exception m_exError;
 
     #region Properties
 

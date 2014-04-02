@@ -56,7 +56,7 @@ namespace Fomm.PackageManager.ModInstallLog
     public static readonly Version CURRENT_VERSION = new Version("0.2.0.0");
     protected internal const string ORIGINAL_VALUES = "ORIGINAL_VALUES";
     protected internal const string FOMM = "FOMM";
-    private static InstallLog m_ilgCurrent = null;
+    private static InstallLog m_ilgCurrent;
 
     public static InstallLog Current
     {
@@ -84,8 +84,8 @@ namespace Fomm.PackageManager.ModInstallLog
     private XmlElement dataFilesNode;
     private XmlElement iniEditsNode;
     private XmlElement gameSpecificValueEditsNode;
-    private Dictionary<string, string> m_dicModList = null;
-    private FileSystemWatcher m_fswLogWatcher = null;
+    private Dictionary<string, string> m_dicModList;
+    private FileSystemWatcher m_fswLogWatcher;
 
     #region Properties
 

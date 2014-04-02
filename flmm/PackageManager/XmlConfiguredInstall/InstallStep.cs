@@ -7,9 +7,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
   /// </summary>
   public class InstallStep
   {
-    private string m_strName = null;
-    private CompositeDependency m_cdpVisibilityDependency = null;
-    private IList<PluginGroup> m_lstGroupedPlugins = null;
+    private string m_strName;
+    private CompositeDependency m_cdpVisibilityDependency;
+    private IList<PluginGroup> m_lstGroupedPlugins;
 
     #region Properties
 

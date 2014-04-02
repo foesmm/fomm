@@ -52,7 +52,7 @@ namespace Fomm.PackageManager
     }
 
     private FomodScriptType m_fstType = FomodScriptType.CSharp;
-    private string m_strText = null;
+    private string m_strText;
 
     #region Properties
 

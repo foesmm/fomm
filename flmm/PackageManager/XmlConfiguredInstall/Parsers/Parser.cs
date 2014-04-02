@@ -79,9 +79,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     }
 
     public ParserExtension m_pexParserExtension = null;
-    private XmlDocument m_xmlConfig = null;
-    private fomod m_fomodMod = null;
-    private DependencyStateManager m_dsmSate = null;
+    private XmlDocument m_xmlConfig;
+    private fomod m_fomodMod;
+    private DependencyStateManager m_dsmSate;
 
     #region Properties
 

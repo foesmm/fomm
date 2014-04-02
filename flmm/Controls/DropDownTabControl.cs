@@ -35,7 +35,7 @@ namespace Fomm.Controls
     /// </summary>
     public class TabPageEventArgs : EventArgs
     {
-      private DropDownTabPage m_tpgPage = null;
+      private DropDownTabPage m_tpgPage;
 
       #region Properties
 
@@ -374,11 +374,11 @@ namespace Fomm.Controls
       #endregion
     }
 
-    private Panel m_pnlDropDownPanel = null;
-    private ComboBox m_cbxSelector = null;
-    private Label m_lblLabel = null;
-    private TabPageCollection m_tpcPages = null;
-    private DropDownTabPage m_tpgSelected = null;
+    private Panel m_pnlDropDownPanel;
+    private ComboBox m_cbxSelector;
+    private Label m_lblLabel;
+    private TabPageCollection m_tpcPages;
+    private DropDownTabPage m_tpgSelected;
 
     #region Properties
 

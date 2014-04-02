@@ -12,7 +12,7 @@ namespace Fomm.PackageManager
   /// </summary>
   public partial class FomodInfoControl : UserControl, IFomodInfo
   {
-    private Screenshot m_shtScreenshot = null;
+    private Screenshot m_shtScreenshot;
 
     #region Properties
 

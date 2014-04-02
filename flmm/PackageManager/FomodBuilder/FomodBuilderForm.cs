@@ -42,9 +42,9 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     private ReadmeGeneratorForm m_rgdGenerator = new ReadmeGeneratorForm();
-    private bool m_booInfoEntered = false;
-    private string m_strNewFomodPath = null;
-    private bool m_booLoadedInfo = false;
+    private bool m_booInfoEntered;
+    private string m_strNewFomodPath;
+    private bool m_booLoadedInfo;
 
     #region Properties
 

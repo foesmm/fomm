@@ -5,7 +5,7 @@ namespace Fomm.Games.Fallout3.PluginFormatProviders
   // Colorizes plugins based on their dependency status.
   public class ColorizerPluginFormatProvider : IPluginFormatProvider
   {
-    private PluginFormat.PluginFormatterManager m_pfmManager = null;
+    private PluginFormat.PluginFormatterManager m_pfmManager;
 
     #region IPluginFormatProvider Members
 

@@ -40,7 +40,7 @@ namespace Fomm.Controls
       /// </summary>
       protected class ItemComparer : IComparer<Control>
       {
-        private List<Control> m_lstOrderAdded = null;
+        private List<Control> m_lstOrderAdded;
 
         /// <summary>
         /// A simple contructor.
@@ -78,12 +78,12 @@ namespace Fomm.Controls
 
       private Orientation m_otnDirection = Orientation.Vertical;
       private List<Control> m_lstOrderAdded = new List<Control>();
-      private bool m_booNeedScroll = false;
-      private bool m_booEnableUpScroll = false;
-      private bool m_booEnableDownScroll = false;
+      private bool m_booNeedScroll;
+      private bool m_booEnableUpScroll;
+      private bool m_booEnableDownScroll;
       private Int32 m_intScrollAmount = 5;
       private FlatStyle m_fstFlatStyle = FlatStyle.Flat;
-      private Int32 m_intItemBorderWidth = 0;
+      private Int32 m_intItemBorderWidth;
 
       #region Properties
 
@@ -481,8 +481,8 @@ namespace Fomm.Controls
     private ToolStripPanel m_pnlToolStrip = new ToolStripPanel();
     private Timer m_tmrScrollTimer = new Timer();
     private Int32 m_intScrollTimerInterval = 25;
-    private Button m_butDown = null;
-    private Button m_butUp = null;
+    private Button m_butDown;
+    private Button m_butUp;
     private Int32 m_intMinScrollButtonWidth = 20;
 
     #region Properties

@@ -9,13 +9,13 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
   /// </summary>
   public partial class OptionsForm : Form
   {
-    private XmlConfiguredScript m_xcsScript = null;
-    private DependencyStateManager m_dsmStateManager = null;
+    private XmlConfiguredScript m_xcsScript;
+    private DependencyStateManager m_dsmStateManager;
 
     private List<KeyValuePair<InstallStep, OptionFormStep>> m_lstInstallSteps =
       new List<KeyValuePair<InstallStep, OptionFormStep>>();
 
-    private Int32 m_intCurrentStep = 0;
+    private Int32 m_intCurrentStep;
 
     /// <summary>
     /// A simple constructor that initializes the object with the given values.

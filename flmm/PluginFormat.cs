@@ -14,12 +14,12 @@ namespace Fomm
   public partial class PluginFormat : IComparable<PluginFormat>, IEquatable<PluginFormat>
   {
     private Int32 m_intIndex = -1;
-    private FontFamily m_ffmFontFamily = null;
-    private float? m_fltFontSizeEM = null;
-    private FontStyle? m_fstFontStyle = null;
-    private string m_strMessage = null;
-    private Color? m_clrColour = null;
-    private Color? m_clrHighlight = null;
+    private FontFamily m_ffmFontFamily;
+    private float? m_fltFontSizeEM;
+    private FontStyle? m_fstFontStyle;
+    private string m_strMessage;
+    private Color? m_clrColour;
+    private Color? m_clrHighlight;
 
     #region Properties
 

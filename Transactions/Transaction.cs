@@ -19,7 +19,7 @@ namespace fomm.Transactions
   /// </remarks>
   public class Transaction : IDisposable
   {
-    private static Transaction m_trnAmbient = null;
+    private static Transaction m_trnAmbient;
 
     /// <summary>
     /// Gets or sets the ambient transaction.

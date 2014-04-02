@@ -42,9 +42,9 @@ namespace Fomm.Controls
       /// </summary>
       public class TagPosition : IEquatable<string>
       {
-        private string m_strName = null;
-        private Int32 m_intLineNumber = 0;
-        private Int32 m_intColumn = 0;
+        private string m_strName;
+        private Int32 m_intLineNumber;
+        private Int32 m_intColumn;
 
         #region Properties
 

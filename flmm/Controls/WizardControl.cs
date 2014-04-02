@@ -27,12 +27,12 @@ namespace Fomm.Controls
     {
     };
 
-    private Panel m_pnlNavigation = null;
-    private Panel m_pnlNavigationShadow = null;
-    private Panel m_pnlNavigationLight = null;
-    private Button m_butPrevious = null;
-    private Button m_butNext = null;
-    private Button m_butCancel = null;
+    private Panel m_pnlNavigation;
+    private Panel m_pnlNavigationShadow;
+    private Panel m_pnlNavigationLight;
+    private Button m_butPrevious;
+    private Button m_butNext;
+    private Button m_butCancel;
 
     #region Properties
 

@@ -13,12 +13,12 @@ namespace Fomm.Util
   /// </summary>
   public class ThreadSafeSevenZipExtractor : IDisposable
   {
-    private Thread m_thdExtractor = null;
-    private Queue<KeyValuePair<Action<object>, ManualResetEvent>> m_queEvents = null;
-    private ManualResetEvent m_mreEvent = null;
-    private SevenZipExtractor m_szeExtractor = null;
-    private string m_strPath = null;
-    private Stream m_stmArchive = null;
+    private Thread m_thdExtractor;
+    private Queue<KeyValuePair<Action<object>, ManualResetEvent>> m_queEvents;
+    private ManualResetEvent m_mreEvent;
+    private SevenZipExtractor m_szeExtractor;
+    private string m_strPath;
+    private Stream m_stmArchive;
 
     #region Properties
 

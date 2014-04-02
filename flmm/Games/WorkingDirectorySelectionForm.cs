@@ -13,9 +13,9 @@ namespace Fomm.Games
   /// </remarks>
   public partial class WorkingDirectorySelectionForm : Form
   {
-    private string[] m_strSearchFiles = null;
-    private BackgroundWorkerProgressDialog m_bwdProgress = null;
-    private string m_strFoundWorkingDirectory = null;
+    private string[] m_strSearchFiles;
+    private BackgroundWorkerProgressDialog m_bwdProgress;
+    private string m_strFoundWorkingDirectory;
 
     #region Properties
 

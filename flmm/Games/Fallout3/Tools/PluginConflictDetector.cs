@@ -16,8 +16,8 @@ namespace Fomm.Games.Fallout3.Tools
   /// </summary>
   public class PluginConflictDetector
   {
-    private CriticalRecordPluginFormatProvider m_pfpFormatProvider = null;
-    private BackgroundWorkerProgressDialog m_bwdProgress = null;
+    private CriticalRecordPluginFormatProvider m_pfpFormatProvider;
+    private BackgroundWorkerProgressDialog m_bwdProgress;
 
     #region Constructors
 
