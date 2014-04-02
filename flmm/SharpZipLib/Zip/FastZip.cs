@@ -304,7 +304,7 @@ namespace Fomm.SharpZipLib.Zip
           targetName = extractNameTransform_.TransformDirectory(targetName);
         }
 
-        doExtraction = !((targetName == null) || (targetName.Length == 0));
+        doExtraction = !string.IsNullOrEmpty(targetName);
       }
 
       // TODO: Fire delegate/throw exception were compression method not supported, or name is invalid?

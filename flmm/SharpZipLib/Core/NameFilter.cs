@@ -87,7 +87,7 @@ namespace Fomm.SharpZipLib.Core
 
       var result = new ArrayList();
 
-      if ((original != null) && (original.Length > 0))
+      if (!string.IsNullOrEmpty(original))
       {
         var endIndex = -1;
         var b = new StringBuilder();
