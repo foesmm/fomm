@@ -27,7 +27,7 @@ namespace fomm.Scripting
       //Inactive
       public FlowControlStruct(byte type)
       {
-        this.line = -1;
+        line = -1;
         this.type = type;
       }
 
@@ -42,7 +42,7 @@ namespace fomm.Scripting
       public FlowControlStruct(int line, string[] values)
       {
         this.line = line;
-        this.type = 1;
+        type = 1;
         this.values = values;
       }
 
@@ -50,7 +50,7 @@ namespace fomm.Scripting
       public FlowControlStruct(string[] values, string var, int line)
       {
         this.line = line;
-        this.type = 2;
+        type = 2;
         this.values = values;
         this.var = var;
       }
