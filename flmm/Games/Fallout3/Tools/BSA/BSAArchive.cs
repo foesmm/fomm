@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using Fomm.Annotations;
 using Fomm.SharpZipLib.Checksums;
 using Fomm.SharpZipLib.Zip.Compression;
 using StringList = System.Collections.Generic.List<string>;
@@ -15,9 +16,11 @@ namespace Fomm.Games.Fallout3.Tools.BSA
     }
 
     [Flags]
-    private enum FileFlags : int
+    private enum FileFlags
     {
+      [UsedImplicitly]
       Meshes = 1,
+      [UsedImplicitly]
       Textures = 2
     }
 
