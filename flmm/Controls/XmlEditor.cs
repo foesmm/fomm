@@ -355,7 +355,6 @@ namespace Fomm.Controls
       for (var i = intBadLineNum; i < docDocument.TotalNumberOfLines; i++)
       {
         var strLine = docDocument.GetText(docDocument.GetLineSegment(i));
-        var intLineNum = i;
         var intLastOpenPos = strLine.LastIndexOf('<');
         if (intLastOpenPos < 0)
         {

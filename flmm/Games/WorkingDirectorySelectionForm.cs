@@ -160,7 +160,7 @@ namespace Fomm.Games
             }
           }
         }
-        catch (UnauthorizedAccessException e)
+        catch (UnauthorizedAccessException)
         {
           //we don't have access to the path we are trying to search, so let's bail
           return null;

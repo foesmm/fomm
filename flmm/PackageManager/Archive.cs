@@ -231,7 +231,9 @@ namespace Fomm.PackageManager
       {
         using (var szeExtractor = GetExtractor(p_strPath))
         {
+          // ReSharper disable once UnusedVariable
           var g = szeExtractor.FilesCount;
+          // ReSharper restore UnusedVariable
         }
       }
       catch (Exception)

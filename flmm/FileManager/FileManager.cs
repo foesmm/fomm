@@ -234,7 +234,7 @@ namespace Fomm.FileManager
         }
         else
         {
-          var lsiSubItem = lviFile.SubItems.Add("0 KB");
+          lviFile.SubItems.Add("0 KB");
           lviFile.Font = new Font(lviFile.Font, FontStyle.Strikeout);
         }
         lviFile.ImageKey = fliFile.Extension;

@@ -1493,7 +1493,6 @@ namespace Fomm.PackageManager.ModInstallLog
     /// the log entries for the components that were installed and edited.</param>
     internal void UnmergeModule(string p_strModName)
     {
-      var ilmMergeModule = new InstallLogMergeModule();
       XmlNode xndComponent = null;
       XmlNode xndInstallingMods = null;
       XmlNodeList xnlComponentMods = null;

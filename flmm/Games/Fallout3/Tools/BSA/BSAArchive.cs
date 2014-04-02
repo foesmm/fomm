@@ -399,7 +399,6 @@ namespace Fomm.Games.Fallout3.Tools.BSA
       var br = new BinaryReader(File.OpenRead(file), Encoding.Default);
       br.ReadInt32();
       var num = br.ReadInt32();
-      var sizeoffset = br.BaseStream.Position;
       br.ReadInt32();
       var found = false;
       byte[] OldData = null;

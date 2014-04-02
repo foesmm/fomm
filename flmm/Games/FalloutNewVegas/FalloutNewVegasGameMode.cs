@@ -611,7 +611,6 @@ namespace Fomm.Games.FalloutNewVegas
     public override void LaunchGame(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
       var command = Properties.Settings.Default.falloutNewVegasLaunchCommand;
-      var args = Properties.Settings.Default.falloutNewVegasLaunchCommandArgs;
       if (!String.IsNullOrEmpty(command))
       {
         LaunchFalloutNVCustom(p_objCommand, p_eeaArguments);

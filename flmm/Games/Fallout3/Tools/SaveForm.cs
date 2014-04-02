@@ -222,7 +222,7 @@ namespace Fomm.Games.Fallout3.Tools
             }
           }
         }
-        catch (Exception e)
+        catch (Exception)
         {
           continue;
         }

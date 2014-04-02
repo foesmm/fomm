@@ -230,7 +230,7 @@ namespace Fomm.Games.FalloutNewVegas.Tools
             }
           }
         }
-        catch (Exception e)
+        catch (Exception)
         {
           continue;
         }

@@ -293,7 +293,6 @@ namespace Fomm.Controls
     {
       //This method should handle cases that occur when multiple fonts/styles are selected
 
-      var intSelectionStart = rtbTextbox.SelectionStart;
       var intSelectionLength = rtbTextbox.SelectionLength;
       var intTempStart = 0;
 
@@ -369,7 +368,6 @@ namespace Fomm.Controls
     public void UpdateToolbar()
     {
       var fnt = GetFontDetails();
-      var style = fnt.Style;
 
       tsbBold.Checked = fnt.Bold;
       tsbItalic.Checked = fnt.Italic;

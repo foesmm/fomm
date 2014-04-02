@@ -148,55 +148,35 @@ namespace Fomm
       foreach (var cmdTool in Program.GameMode.Tools)
       {
         var tsiMenuItem = new ToolStripMenuItem();
-        var cbdCommandBinding =
-          new ToolStripMenuItemCommandBinding<MainForm>(tsiMenuItem, cmdTool, () =>
-          {
-            return this;
-          });
+        new ToolStripMenuItemCommandBinding<MainForm>(tsiMenuItem, cmdTool, () => this);
         toolsToolStripMenuItem.DropDownItems.Add(tsiMenuItem);
       }
 
       foreach (var cmdTool in Program.GameMode.GameSettingsTools)
       {
         var tsiMenuItem = new ToolStripMenuItem();
-        var cbdCommandBinding =
-          new ToolStripMenuItemCommandBinding<MainForm>(tsiMenuItem, cmdTool, () =>
-          {
-            return this;
-          });
+        new ToolStripMenuItemCommandBinding<MainForm>(tsiMenuItem, cmdTool, () => this);
         gameSettingsToolStripMenuItem.DropDownItems.Add(tsiMenuItem);
       }
 
       foreach (var cmdTool in Program.GameMode.RightClickTools)
       {
         var tsiMenuItem = new ToolStripMenuItem();
-        var cbdCommandBinding =
-          new ToolStripMenuItemCommandBinding<MainForm>(tsiMenuItem, cmdTool, () =>
-          {
-            return this;
-          });
+        new ToolStripMenuItemCommandBinding<MainForm>(tsiMenuItem, cmdTool, () => this);
         cmsPlugins.Items.Add(tsiMenuItem);
       }
 
       foreach (var cmdTool in Program.GameMode.LoadOrderTools)
       {
         var tsiMenuItem = new ToolStripMenuItem();
-        var cbdCommandBinding =
-          new ToolStripMenuItemCommandBinding<MainForm>(tsiMenuItem, cmdTool, () =>
-          {
-            return this;
-          });
+        new ToolStripMenuItemCommandBinding<MainForm>(tsiMenuItem, cmdTool, () => this);
         loadOrderToolStripMenuItem.DropDownItems.Add(tsiMenuItem);
       }
 
       foreach (var cmdTool in Program.GameMode.GameLaunchCommands)
       {
         var tsiMenuItem = new ToolStripMenuItem();
-        var cbdCommandBinding =
-          new ToolStripMenuItemCommandBinding<MainForm>(tsiMenuItem, cmdTool, () =>
-          {
-            return this;
-          });
+        new ToolStripMenuItemCommandBinding<MainForm>(tsiMenuItem, cmdTool, () => this);
         launchGameToolStripMenuItem.DropDownItems.Add(tsiMenuItem);
       }
     }

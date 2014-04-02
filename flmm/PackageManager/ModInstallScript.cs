@@ -119,7 +119,10 @@ namespace Fomm.PackageManager
       // the first time it is called is in a domain with limited access
       // to the machine then the initialization will fail.
       // to prevent this, we call it now to make sure it is ready when we need it.
+
+      // ReSharper disable once UnusedVariable
       object objIgnore = PermissionsManager.CurrentPermissions;
+      // ReSharper restore UnusedVariable
 
       m_mibInstaller = p_mibInstaller;
       //m_tfmFileManager = new TxFileManager();

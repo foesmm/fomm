@@ -3353,7 +3353,9 @@ namespace Fomm.SharpZipLib.Zip
               try
               {
                 // Try and create the file.
+                // ReSharper disable UnusedVariable
                 using (var stream = File.Create(newName))
+                // ReSharper restore UnusedVariable
                 {
                 }
                 result = newName;

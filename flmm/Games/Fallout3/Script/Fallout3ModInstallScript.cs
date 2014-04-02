@@ -431,8 +431,6 @@ namespace Fomm.Games.Fallout3.Script
     /// <exception cref="ShaderException">Thrown if the shader could not be unedited.</exception>
     protected void UneditShader(int p_intPackage, string p_strShaderName)
     {
-      var strLoweredShaderName = p_strShaderName.ToLowerInvariant();
-
       var strShaderKey = String.Format("sdp:{0}/{1}", p_intPackage, p_strShaderName);
       var strKey = InstallLog.Current.GetModKey(Fomod.BaseName);
       var strCurrentOwnerKey = InstallLog.Current.GetCurrentGameSpecifcValueEditorModKey(strShaderKey);

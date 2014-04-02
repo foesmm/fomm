@@ -57,8 +57,6 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
         foreach (ListViewItem lviItem in lvwPlugins.Items)
         {
           var pifPlugin = (PluginInfo) lviItem.Tag;
-          var ptpPluginType = pifPlugin.Type;
-          var gtpGroupType = (GroupType) lviItem.Group.Tag;
           if (lviItem.Checked)
           {
             lstInstall.AddRange(pifPlugin.Files);
