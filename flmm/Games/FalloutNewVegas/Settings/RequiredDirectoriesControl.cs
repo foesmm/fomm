@@ -93,7 +93,7 @@ namespace Fomm.Games.FalloutNewVegas.Settings
       tbxModDirectory.Text = Properties.Settings.Default.falloutNewVegasModDirectory;
       if (String.IsNullOrEmpty(tbxModDirectory.Text))
       {
-        string strDefault = Path.Combine(Path.GetDirectoryName(Program.GameMode.PluginsPath), "mods");
+        var strDefault = Path.Combine(Path.GetDirectoryName(Program.GameMode.PluginsPath), "mods");
         if (strDefault.StartsWith(Path.Combine(Path.GetPathRoot(strDefault), "Program Files"),
                                   StringComparison.InvariantCultureIgnoreCase))
         {
@@ -105,7 +105,7 @@ namespace Fomm.Games.FalloutNewVegas.Settings
       tbxInstallInfo.Text = Properties.Settings.Default.falloutNewVegasInstallInfoDirectory;
       if (String.IsNullOrEmpty(tbxInstallInfo.Text))
       {
-        string strDefault = Path.Combine(Path.GetDirectoryName(Program.GameMode.PluginsPath), "Install Info");
+        var strDefault = Path.Combine(Path.GetDirectoryName(Program.GameMode.PluginsPath), "Install Info");
         if (strDefault.StartsWith(Path.Combine(Path.GetPathRoot(strDefault), "Program Files"),
                                   StringComparison.InvariantCultureIgnoreCase))
         {

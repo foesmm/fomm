@@ -32,7 +32,7 @@ namespace Fomm.Games.Fallout3.Script
         throw new IllegalFilePathException(p_strBsa);
       }
       PermissionsManager.CurrentPermissions.Assert();
-      string strLoweredBsa = p_strBsa.ToLowerInvariant();
+      var strLoweredBsa = p_strBsa.ToLowerInvariant();
       if (!m_dicBSAs.ContainsKey(strLoweredBsa))
       {
         m_dicBSAs[strLoweredBsa] = new BSAArchive(Path.Combine(Program.GameMode.PluginsPath, strLoweredBsa));
@@ -73,7 +73,7 @@ namespace Fomm.Games.Fallout3.Script
     /// </remarks>
     public void Dispose()
     {
-      foreach (BSAArchive bsaBSA in m_dicBSAs.Values)
+      foreach (var bsaBSA in m_dicBSAs.Values)
       {
         bsaBSA.Dispose();
       }

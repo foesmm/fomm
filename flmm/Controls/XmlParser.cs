@@ -139,7 +139,7 @@ namespace Fomm.Controls
       /// <lang cref="false"/> otherwise.</returns>
       public bool Contains(string p_strTagName)
       {
-        for (LinkedListNode<TagPosition> llnCurrent = Last; llnCurrent != null; llnCurrent = llnCurrent.Previous)
+        for (var llnCurrent = Last; llnCurrent != null; llnCurrent = llnCurrent.Previous)
         {
           if (llnCurrent.Value.Equals(p_strTagName))
           {
@@ -175,7 +175,7 @@ namespace Fomm.Controls
       /// <returns>A <see cref="TagPosition"/> representing the tag on the top of the stack.</returns>
       public TagPosition Pop()
       {
-        TagPosition tgpTag = Last.Value;
+        var tgpTag = Last.Value;
         RemoveLast();
         return tgpTag;
       }
@@ -206,24 +206,24 @@ namespace Fomm.Controls
                                               "The given end line paramater is outside of the range of lines in the given document.");
       }
       //parse the buffer
-      TagStack stkTags = new TagStack();
-      for (Int32 i = 0; i <= p_intEndLine; i++)
+      var stkTags = new TagStack();
+      for (var i = 0; i <= p_intEndLine; i++)
       {
-        string strLine = p_docDocument.GetText(p_docDocument.GetLineSegment(i));
-        Int32 intLineNum = i;
-        Int32 intLastOpenPos = strLine.LastIndexOf('<');
+        var strLine = p_docDocument.GetText(p_docDocument.GetLineSegment(i));
+        var intLineNum = i;
+        var intLastOpenPos = strLine.LastIndexOf('<');
         if (intLastOpenPos < 0)
         {
           continue;
         }
-        Int32 intLastClosePos = strLine.LastIndexOf('>');
+        var intLastClosePos = strLine.LastIndexOf('>');
         if ((intLastClosePos > -1) && (intLastOpenPos > intLastClosePos))
         {
-          StringBuilder stbLines = new StringBuilder(strLine);
+          var stbLines = new StringBuilder(strLine);
           //there is an open tag on this line - read lines until it is closed.
           for (; i <= p_intEndLine; i++)
           {
-            string strNextLine = p_docDocument.GetText(p_docDocument.GetLineSegment(i));
+            var strNextLine = p_docDocument.GetText(p_docDocument.GetLineSegment(i));
             intLastClosePos = strLine.LastIndexOf('>');
             stbLines.Append(strNextLine);
             if (intLastClosePos < 0)
@@ -235,31 +235,31 @@ namespace Fomm.Controls
           strLine = stbLines.ToString();
         }
 
-        MatchCollection mclLineTags = rgxTagContents.Matches(strLine);
+        var mclLineTags = rgxTagContents.Matches(strLine);
         foreach (Match mtcTag in mclLineTags)
         {
-          string strTag = mtcTag.Groups[1].Value.Trim();
-          string strTagName = rgxTagName.Match(strTag).Groups[1].Value;
+          var strTag = mtcTag.Groups[1].Value.Trim();
+          var strTagName = rgxTagName.Match(strTag).Groups[1].Value;
           if (strTag.StartsWith("/"))
           {
             if (stkTags.Contains(strTagName))
             {
               while (!stkTags.Peek().Equals(strTagName))
               {
-                TagStack.TagPosition tpsTag = stkTags.Pop();
-                TextLocation tlcStart = new TextLocation(tpsTag.Column, tpsTag.LineNumber);
-                TextLocation tlcEnd = new TextLocation(tpsTag.Column + tpsTag.Name.Length, tpsTag.LineNumber);
+                var tpsTag = stkTags.Pop();
+                var tlcStart = new TextLocation(tpsTag.Column, tpsTag.LineNumber);
+                var tlcEnd = new TextLocation(tpsTag.Column + tpsTag.Name.Length, tpsTag.LineNumber);
                 if (p_pctUnclosedTagCallback != null)
                 {
                   p_pctUnclosedTagCallback(p_docDocument, tpsTag.Name, tlcStart, tlcEnd);
                 }
               }
-              TagStack.TagPosition tpsCompleteTag = stkTags.Pop();
+              var tpsCompleteTag = stkTags.Pop();
               if (p_pctCompleteTagCallback != null)
               {
-                TextLocation tlcStart = new TextLocation(tpsCompleteTag.Column, tpsCompleteTag.LineNumber);
-                Int32 intEndFoldPos = mtcTag.Groups[1].Index;
-                TextLocation tlcEnd = new TextLocation(intEndFoldPos, intLineNum);
+                var tlcStart = new TextLocation(tpsCompleteTag.Column, tpsCompleteTag.LineNumber);
+                var intEndFoldPos = mtcTag.Groups[1].Index;
+                var tlcEnd = new TextLocation(intEndFoldPos, intLineNum);
                 p_pctCompleteTagCallback(p_docDocument, strTagName, tlcStart, tlcEnd);
               }
             }
@@ -283,7 +283,7 @@ namespace Fomm.Controls
     /// <returns><lang cref="true"/> if the caret is inside a tag; <lang cref="false"/> otherwise.</returns>
     public static bool IsInsideTag(TextArea p_txaTextArea)
     {
-      string strText = p_txaTextArea.Document.TextContent.Substring(0, p_txaTextArea.Caret.Offset);
+      var strText = p_txaTextArea.Document.TextContent.Substring(0, p_txaTextArea.Caret.Offset);
       return strText.LastIndexOf('<') > strText.LastIndexOf('>');
     }
   }

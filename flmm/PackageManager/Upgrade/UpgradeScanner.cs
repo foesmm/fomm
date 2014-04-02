@@ -25,12 +25,12 @@ namespace Fomm.PackageManager.Upgrade
     /// </remarks>
     public void Scan()
     {
-      IList<FomodInfo> lstMods = InstallLog.Current.GetVersionedModList();
-      List<fomod> lstModsToUpgrade = new List<fomod>();
-      List<fomod> lstModsToReplace = new List<fomod>();
-      foreach (FomodInfo fifMod in lstMods)
+      var lstMods = InstallLog.Current.GetVersionedModList();
+      var lstModsToUpgrade = new List<fomod>();
+      var lstModsToReplace = new List<fomod>();
+      foreach (var fifMod in lstMods)
       {
-        fomod fomodMod = new fomod(Path.Combine(Program.GameMode.ModDirectory, fifMod.BaseName + ".fomod"));
+        var fomodMod = new fomod(Path.Combine(Program.GameMode.ModDirectory, fifMod.BaseName + ".fomod"));
         if (!fomodMod.HumanReadableVersion.Equals(fifMod.Version))
         {
           switch (
@@ -58,9 +58,9 @@ namespace Fomm.PackageManager.Upgrade
     /// <param name="p_lstModsToUpgrade">The list of fomods to upgrade.</param>
     private void Upgrade(IList<fomod> p_lstModsToUpgrade)
     {
-      foreach (fomod fomodMod in p_lstModsToUpgrade)
+      foreach (var fomodMod in p_lstModsToUpgrade)
       {
-        ModUpgrader mduUpgrader = new ModUpgrader(fomodMod);
+        var mduUpgrader = new ModUpgrader(fomodMod);
         mduUpgrader.Upgrade();
       }
     }
@@ -73,7 +73,7 @@ namespace Fomm.PackageManager.Upgrade
     {
       if (p_lstModsToReplace.Count > 0)
       {
-        foreach (fomod fomodMod in p_lstModsToReplace)
+        foreach (var fomodMod in p_lstModsToReplace)
         {
           InstallLog.Current.UpdateMod(fomodMod);
         }

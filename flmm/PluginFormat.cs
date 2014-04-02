@@ -161,7 +161,7 @@ namespace Fomm
     /// <returns>A font that is the result of altering the base font as described by the format.</returns>
     public Font ResolveFont(Font p_fntBaseFont)
     {
-      FontStyle fstStyle = p_fntBaseFont.Style;
+      var fstStyle = p_fntBaseFont.Style;
       if (FontStyle.HasValue)
       {
         fstStyle |= FontStyle.Value;

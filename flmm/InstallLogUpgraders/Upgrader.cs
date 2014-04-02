@@ -63,8 +63,8 @@ namespace Fomm.InstallLogUpgraders
     internal bool PerformUpgrade()
     {
       m_tfmFileManager = new TxFileManager();
-      bool booComplete = false;
-      using (TransactionScope tsTransaction = new TransactionScope())
+      var booComplete = false;
+      using (var tsTransaction = new TransactionScope())
       {
         m_tfmFileManager.Snapshot(InstallLog.Current.InstallLogPath);
 

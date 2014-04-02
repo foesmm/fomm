@@ -89,12 +89,12 @@ namespace ChinhDo.Transactions
           // we need to find out explicitly which are being created, and add a
           // journal entry for each.
 
-          string strNormalizedPath = m_rgxCleanPath.Replace(path, Path.DirectorySeparatorChar.ToString());
+          var strNormalizedPath = m_rgxCleanPath.Replace(path, Path.DirectorySeparatorChar.ToString());
           strNormalizedPath = strNormalizedPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
-          string[] strPaths = strNormalizedPath.Split(Path.DirectorySeparatorChar);
+          var strPaths = strNormalizedPath.Split(Path.DirectorySeparatorChar);
 
-          Int32 i = 0;
-          string strPath = "";
+          var i = 0;
+          var strPath = "";
           if (strPaths[0].EndsWith(Path.VolumeSeparatorChar.ToString()))
           {
             strPath = strPaths[0] + Path.DirectorySeparatorChar;
@@ -106,7 +106,7 @@ namespace ChinhDo.Transactions
             // or not the child directory exists is irrelevant, as we won't be able to create it
             try
             {
-              FileIOPermission fipWritePermission = new FileIOPermission(FileIOPermissionAccess.Write, strPath);
+              var fipWritePermission = new FileIOPermission(FileIOPermissionAccess.Write, strPath);
               strPath = Path.Combine(strPath, strPaths[i]);
               fipWritePermission.Demand();
               if (!Directory.Exists(strPath))
@@ -208,7 +208,7 @@ namespace ChinhDo.Transactions
 
       public void Commit(Enlistment enlistment)
       {
-        for (int i = 0; i < _journal.Count; i++)
+        for (var i = 0; i < _journal.Count; i++)
         {
           _journal[i].CleanUp();
         }
@@ -238,7 +238,7 @@ namespace ChinhDo.Transactions
         try
         {
           // Roll back journal items in reverse order
-          for (int i = _journal.Count - 1; i >= 0; i--)
+          for (var i = _journal.Count - 1; i >= 0; i--)
           {
             _journal[i].Rollback();
             _journal[i].CleanUp();
@@ -314,7 +314,7 @@ namespace ChinhDo.Transactions
         {
           if (_backupFileName != null)
           {
-            string strDirectory = Path.GetDirectoryName(_originalFileName);
+            var strDirectory = Path.GetDirectoryName(_originalFileName);
             if (!Directory.Exists(strDirectory))
             {
               Directory.CreateDirectory(strDirectory);
@@ -334,7 +334,7 @@ namespace ChinhDo.Transactions
         {
           if (_backupFileName != null)
           {
-            FileInfo fi = new FileInfo(_backupFileName);
+            var fi = new FileInfo(_backupFileName);
             if (fi.IsReadOnly)
             {
               fi.Attributes = FileAttributes.Normal;

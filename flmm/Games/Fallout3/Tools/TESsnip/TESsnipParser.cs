@@ -96,8 +96,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     protected static void WriteString(BinaryWriter bw, string s)
     {
-      byte[] b = new byte[s.Length];
-      for (int i = 0; i < s.Length; i++)
+      var b = new byte[s.Length];
+      for (var i = 0; i < s.Length; i++)
       {
         b[i] = (byte) s[i];
       }
@@ -116,7 +116,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       get
       {
         long size = 0;
-        foreach (Rec rec in Records)
+        foreach (var rec in Records)
         {
           size += rec.Size2;
         }
@@ -136,8 +136,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
     {
       get
       {
-        List<string> lstMasters = new List<string>();
-        foreach (SubRecord sr in ((Record) Records[0]).SubRecords)
+        var lstMasters = new List<string>();
+        foreach (var sr in ((Record) Records[0]).SubRecords)
         {
           switch (sr.Name)
           {
@@ -152,7 +152,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     public override void DeleteRecord(BaseRecord br)
     {
-      Rec r = br as Rec;
+      var r = br as Rec;
       if (r == null)
       {
         return;
@@ -162,7 +162,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     public override void AddRecord(BaseRecord br)
     {
-      Rec r = br as Rec;
+      var r = br as Rec;
       if (r == null)
       {
         throw new TESParserException("Record to add was not of the correct type." +
@@ -175,7 +175,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
     {
       string s;
       uint recsize;
-      bool IsOblivion = false;
+      var IsOblivion = false;
 
       InitDecompressor();
 
@@ -223,10 +223,10 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     public static bool GetIsEsm(string FilePath)
     {
-      BinaryReader br = new BinaryReader(File.OpenRead(FilePath));
+      var br = new BinaryReader(File.OpenRead(FilePath));
       try
       {
-        string s = ReadRecName(br);
+        var s = ReadRecName(br);
         if (s != "TES4")
         {
           return false;
@@ -247,7 +247,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
     public Plugin(byte[] data, string name)
     {
       Name = name;
-      BinaryReader br = new BinaryReader(new MemoryStream(data));
+      var br = new BinaryReader(new MemoryStream(data));
       try
       {
         LoadPlugin(br, false);
@@ -261,8 +261,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
     internal Plugin(string FilePath, bool headerOnly)
     {
       Name = Path.GetFileName(FilePath);
-      FileInfo fi = new FileInfo(FilePath);
-      BinaryReader br = new BinaryReader(fi.OpenRead());
+      var fi = new FileInfo(FilePath);
+      var br = new BinaryReader(fi.OpenRead());
       try
       {
         LoadPlugin(br, headerOnly);
@@ -288,25 +288,25 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     public byte[] Save()
     {
-      MemoryStream ms = new MemoryStream();
-      BinaryWriter bw = new BinaryWriter(ms);
+      var ms = new MemoryStream();
+      var bw = new BinaryWriter(ms);
       SaveData(bw);
-      byte[] b = ms.ToArray();
+      var b = ms.ToArray();
       bw.Close();
       return b;
     }
 
     internal void Save(string FilePath)
     {
-      bool existed = false;
-      DateTime timestamp = DateTime.Now;
+      var existed = false;
+      var timestamp = DateTime.Now;
       if (File.Exists(FilePath))
       {
         timestamp = new FileInfo(FilePath).LastWriteTime;
         existed = true;
         File.Delete(FilePath);
       }
-      BinaryWriter bw = new BinaryWriter(File.OpenWrite(FilePath));
+      var bw = new BinaryWriter(File.OpenWrite(FilePath));
       try
       {
         SaveData(bw);
@@ -330,7 +330,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     internal override void SaveData(BinaryWriter bw)
     {
-      foreach (Rec r in Records)
+      foreach (var r in Records)
       {
         r.SaveData(bw);
       }
@@ -338,8 +338,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     internal override List<string> GetIDs(bool lower)
     {
-      List<string> list = new List<string>();
-      foreach (Rec r in Records)
+      var list = new List<string>();
+      foreach (var r in Records)
       {
         list.AddRange(r.GetIDs(lower));
       }
@@ -358,7 +358,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     private bool ContainsFormId(uint p_uintFormId, List<Rec> p_lstRecords)
     {
-      foreach (Rec rec in p_lstRecords)
+      foreach (var rec in p_lstRecords)
       {
         if (rec is GroupRecord)
         {
@@ -380,8 +380,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     public Int32 GetMasterIndex(string p_strPluginName)
     {
-      IList<string> lstMaster = Masters;
-      for (Int32 i = 0; i < lstMaster.Count; i++)
+      var lstMaster = Masters;
+      for (var i = 0; i < lstMaster.Count; i++)
       {
         if (lstMaster[i].ToLowerInvariant().Equals(p_strPluginName.ToLowerInvariant()))
         {
@@ -393,7 +393,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     public string GetMaster(Int32 p_intIndex)
     {
-      IList<string> lstMasters = Masters;
+      var lstMasters = Masters;
       if ((p_intIndex < 0) || (p_intIndex >= lstMasters.Count))
       {
         return null;
@@ -436,7 +436,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       get
       {
         long size = 24;
-        foreach (Rec rec in Records)
+        foreach (var rec in Records)
         {
           size += rec.Size2;
         }
@@ -454,7 +454,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     public override void DeleteRecord(BaseRecord br)
     {
-      Rec r = br as Rec;
+      var r = br as Rec;
       if (r == null)
       {
         return;
@@ -464,7 +464,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     public override void AddRecord(BaseRecord br)
     {
-      Rec r = br as Rec;
+      var r = br as Rec;
       if (r == null)
       {
         throw new TESParserException("Record to add was not of the correct type." +
@@ -486,17 +486,17 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       uint AmountRead = 0;
       while (AmountRead < Size - (Oblivion ? 20 : 24))
       {
-        string s = ReadRecName(br);
-        uint recsize = br.ReadUInt32();
+        var s = ReadRecName(br);
+        var recsize = br.ReadUInt32();
         if (s == "GRUP")
         {
-          GroupRecord gr = new GroupRecord(recsize, br, Oblivion);
+          var gr = new GroupRecord(recsize, br, Oblivion);
           AmountRead += recsize;
           Records.Add(gr);
         }
         else
         {
-          Record r = new Record(s, recsize, br, Oblivion);
+          var r = new Record(s, recsize, br, Oblivion);
           AmountRead += (uint) (recsize + (Oblivion ? 20 : 24));
           Records.Add(r);
         }
@@ -515,7 +515,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
     {
       Name = "GRUP";
       this.data = new byte[4];
-      for (int i = 0; i < 4; i++)
+      for (var i = 0; i < 4; i++)
       {
         this.data[i] = (byte) data[i];
       }
@@ -530,7 +530,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       dateStamp = gr.dateStamp;
       flags = gr.flags;
       Records = new List<Rec>(gr.Records.Count);
-      for (int i = 0; i < gr.Records.Count; i++)
+      for (var i = 0; i < gr.Records.Count; i++)
       {
         Records.Add((Rec) gr.Records[i].Clone());
       }
@@ -564,7 +564,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     public override string GetDesc()
     {
-      string desc = "[Record group]" + Environment.NewLine + "Record type: ";
+      var desc = "[Record group]" + Environment.NewLine + "Record type: ";
       switch (groupType)
       {
         case 0:
@@ -617,7 +617,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       bw.Write(groupType);
       bw.Write(dateStamp);
       bw.Write(flags);
-      foreach (Rec r in Records)
+      foreach (var r in Records)
       {
         r.SaveData(bw);
       }
@@ -625,7 +625,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     internal override List<string> GetIDs(bool lower)
     {
-      List<string> list = new List<string>();
+      var list = new List<string>();
       foreach (Record r in Records)
       {
         list.AddRange(r.GetIDs(lower));
@@ -654,7 +654,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       {
         throw new ArgumentException("data length must be 4");
       }
-      for (int i = 0; i < 4; i++)
+      for (var i = 0; i < 4; i++)
       {
         this.data[i] = data[i];
       }
@@ -674,7 +674,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       get
       {
         long size = 0;
-        foreach (SubRecord rec in SubRecords)
+        foreach (var rec in SubRecords)
         {
           size += rec.Size2;
         }
@@ -687,7 +687,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       get
       {
         long size = 24;
-        foreach (SubRecord rec in SubRecords)
+        foreach (var rec in SubRecords)
         {
           size += rec.Size2;
         }
@@ -697,7 +697,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     public override void DeleteRecord(BaseRecord br)
     {
-      SubRecord sr = br as SubRecord;
+      var sr = br as SubRecord;
       if (sr == null)
       {
         return;
@@ -707,7 +707,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     public override void AddRecord(BaseRecord br)
     {
-      SubRecord sr = br as SubRecord;
+      var sr = br as SubRecord;
       if (sr == null)
       {
         throw new TESParserException("Record to add was not of the correct type." +
@@ -729,14 +729,14 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       if ((Flags1 & 0x00040000) > 0)
       {
         Flags1 ^= 0x00040000;
-        uint newSize = br.ReadUInt32();
+        var newSize = br.ReadUInt32();
         br = Decompress(br, (int) (Size - 4), (int) newSize);
         Size = newSize;
       }
       uint AmountRead = 0;
       while (AmountRead < Size)
       {
-        string s = ReadRecName(br);
+        var s = ReadRecName(br);
         uint i = 0;
         if (s == "XXXX")
         {
@@ -744,7 +744,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
           i = br.ReadUInt32();
           s = ReadRecName(br);
         }
-        SubRecord r = new SubRecord(s, br, i);
+        var r = new SubRecord(s, br, i);
         AmountRead += (uint) (r.Size2);
         SubRecords.Add(r);
       }
@@ -763,7 +763,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
     private Record(Record r)
     {
       SubRecords = new List<SubRecord>(r.SubRecords.Count);
-      for (int i = 0; i < r.SubRecords.Count; i++)
+      for (var i = 0; i < r.SubRecords.Count; i++)
       {
         SubRecords.Add((SubRecord) r.SubRecords[i].Clone());
       }
@@ -804,8 +804,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       {
         return null;
       }
-      string s = RecordStructure.Records[Name].description + Environment.NewLine;
-      for (int i = 0; i < sss.Length; i++)
+      var s = RecordStructure.Records[Name].description + Environment.NewLine;
+      for (var i = 0; i < sss.Length; i++)
       {
         if (sss[i].elements == null)
         {
@@ -827,7 +827,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     internal string GetDesc(SubrecordStructure[] sss, dFormIDLookupI formIDLookup)
     {
-      string start = "[Record]" + Environment.NewLine + GetBaseDesc();
+      var start = "[Record]" + Environment.NewLine + GetBaseDesc();
       string end;
       try
       {
@@ -856,7 +856,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       bw.Write(FormID);
       bw.Write(Flags2);
       bw.Write(Flags3);
-      foreach (SubRecord sr in SubRecords)
+      foreach (var sr in SubRecords)
       {
         sr.SaveData(bw);
       }
@@ -864,8 +864,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     internal override List<string> GetIDs(bool lower)
     {
-      List<string> list = new List<string>();
-      foreach (SubRecord sr in SubRecords)
+      var list = new List<string>();
+      foreach (var sr in SubRecords)
       {
         list.AddRange(sr.GetIDs(lower));
       }
@@ -986,8 +986,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     public string GetStrData()
     {
-      string s = "";
-      foreach (byte b in Data)
+      var s = "";
+      foreach (var b in Data)
       {
         if (b == 0)
         {
@@ -1000,8 +1000,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     public string GetHexData()
     {
-      string s = "";
-      foreach (byte b in Data)
+      var s = "";
+      foreach (var b in Data)
       {
         s += b.ToString("X").PadLeft(2, '0') + " ";
       }
@@ -1010,17 +1010,17 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     internal string GetFormattedData(SubrecordStructure ss, dFormIDLookupI formIDLookup)
     {
-      int offset = 0;
-      string s = ss.name + " (" + ss.desc + ")" + Environment.NewLine;
+      var offset = 0;
+      var s = ss.name + " (" + ss.desc + ")" + Environment.NewLine;
       try
       {
-        for (int j = 0; j < ss.elements.Length; j++)
+        for (var j = 0; j < ss.elements.Length; j++)
         {
           if (offset == Data.Length && j == ss.elements.Length - 1 && ss.elements[j].optional)
           {
             break;
           }
-          string s2 = "";
+          var s2 = "";
           if (!ss.elements[j].notininfo)
           {
             s2 += ss.elements[j].name + ": ";
@@ -1028,7 +1028,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
           switch (ss.elements[j].type)
           {
             case ElementValueType.Int:
-              string tmps =
+              var tmps =
                 TypeConverter.h2si(Data[offset], Data[offset + 1], Data[offset + 2], Data[offset + 3]).ToString();
               if (!ss.elements[j].notininfo)
               {
@@ -1043,7 +1043,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
                 }
                 if (ss.elements[j].options != null)
                 {
-                  for (int k = 0; k < ss.elements[j].options.Length; k += 2)
+                  for (var k = 0; k < ss.elements[j].options.Length; k += 2)
                   {
                     if (tmps == ss.elements[j].options[k + 1])
                     {
@@ -1053,9 +1053,9 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
                 }
                 else if (ss.elements[j].flags != null)
                 {
-                  uint val = TypeConverter.h2i(Data[offset], Data[offset + 1], Data[offset + 2], Data[offset + 3]);
-                  string tmp2 = "";
-                  for (int k = 0; k < ss.elements[j].flags.Length; k++)
+                  var val = TypeConverter.h2i(Data[offset], Data[offset + 1], Data[offset + 2], Data[offset + 3]);
+                  var tmp2 = "";
+                  for (var k = 0; k < ss.elements[j].flags.Length; k++)
                   {
                     if ((val & (1 << k)) != 0)
                     {
@@ -1088,7 +1088,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
                 }
                 if (ss.elements[j].options != null)
                 {
-                  for (int k = 0; k < ss.elements[j].options.Length; k += 2)
+                  for (var k = 0; k < ss.elements[j].options.Length; k += 2)
                   {
                     if (tmps == ss.elements[j].options[k + 1])
                     {
@@ -1099,8 +1099,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
                 else if (ss.elements[j].flags != null)
                 {
                   uint val = TypeConverter.h2s(Data[offset], Data[offset + 1]);
-                  string tmp2 = "";
-                  for (int k = 0; k < ss.elements[j].flags.Length; k++)
+                  var tmp2 = "";
+                  for (var k = 0; k < ss.elements[j].flags.Length; k++)
                   {
                     if ((val & (1 << k)) != 0)
                     {
@@ -1133,7 +1133,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
                 }
                 if (ss.elements[j].options != null)
                 {
-                  for (int k = 0; k < ss.elements[j].options.Length; k += 2)
+                  for (var k = 0; k < ss.elements[j].options.Length; k += 2)
                   {
                     if (tmps == ss.elements[j].options[k + 1])
                     {
@@ -1144,8 +1144,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
                 else if (ss.elements[j].flags != null)
                 {
                   int val = Data[offset];
-                  string tmp2 = "";
-                  for (int k = 0; k < ss.elements[j].flags.Length; k++)
+                  var tmp2 = "";
+                  for (var k = 0; k < ss.elements[j].flags.Length; k++)
                   {
                     if ((val & (1 << k)) != 0)
                     {
@@ -1165,7 +1165,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
               offset++;
               break;
             case ElementValueType.FormID:
-              uint id = TypeConverter.h2i(Data[offset], Data[offset + 1], Data[offset + 2], Data[offset + 3]);
+              var id = TypeConverter.h2i(Data[offset], Data[offset + 1], Data[offset + 2], Data[offset + 3]);
               if (!ss.elements[j].notininfo)
               {
                 s2 += id.ToString("X8");
@@ -1229,7 +1229,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     internal override List<string> GetIDs(bool lower)
     {
-      List<string> list = new List<string>();
+      var list = new List<string>();
       if (Name == "EDID")
       {
         if (lower)
@@ -1285,9 +1285,9 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     public static string GetRecFlags1Desc(uint flags)
     {
-      string desc = "";
-      bool b = false;
-      for (int i = 0; i < 32; i++)
+      var desc = "";
+      var b = false;
+      for (var i = 0; i < 32; i++)
       {
         if ((flags & (uint) (1 << i)) > 0)
         {

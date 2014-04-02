@@ -23,11 +23,11 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox.Design
       this.value = value;
       if (provider != null)
       {
-        IWindowsFormsEditorService service1 =
+        var service1 =
           (IWindowsFormsEditorService) provider.GetService(typeof (IWindowsFormsEditorService));
         if (service1 != null)
         {
-          FontDialog fontDialog = new FontDialog();
+          var fontDialog = new FontDialog();
           fontDialog.ShowApply = false;
           fontDialog.ShowColor = false;
           fontDialog.AllowVerticalFonts = false;
@@ -36,7 +36,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox.Design
           fontDialog.ShowEffects = false;
           fontDialog.ShowHelp = false;
 
-          Font font = value as Font;
+          var font = value as Font;
           if (font != null)
           {
             fontDialog.Font = font;

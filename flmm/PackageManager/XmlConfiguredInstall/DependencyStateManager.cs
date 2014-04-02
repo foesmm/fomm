@@ -54,8 +54,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     {
       get
       {
-        Dictionary<string, string> dicValues = new Dictionary<string, string>();
-        foreach (KeyValuePair<string, FlagValue> kvpValue in m_dicFlags)
+        var dicValues = new Dictionary<string, string>();
+        foreach (var kvpValue in m_dicFlags)
         {
           dicValues[kvpValue.Key] = kvpValue.Value.Value;
         }
@@ -105,9 +105,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     {
       m_misInstallScript = p_misInstallScript;
 
-      Dictionary<string, bool> dicPlugins = new Dictionary<string, bool>();
-      string[] strPlugins = m_misInstallScript.GetAllPlugins();
-      foreach (string strPlugin in strPlugins)
+      var dicPlugins = new Dictionary<string, bool>();
+      var strPlugins = m_misInstallScript.GetAllPlugins();
+      foreach (var strPlugin in strPlugins)
       {
         dicPlugins.Add(strPlugin.ToLowerInvariant(), IsPluginActive(strPlugin));
       }
@@ -123,8 +123,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// <returns>true if the specified plugin is active; false otherwise.</returns>
     protected bool IsPluginActive(string p_strFile)
     {
-      string[] strAtiveInstalledPlugins = GetActiveInstalledPlugins();
-      foreach (string strActivePlugin in strAtiveInstalledPlugins)
+      var strAtiveInstalledPlugins = GetActiveInstalledPlugins();
+      foreach (var strActivePlugin in strAtiveInstalledPlugins)
       {
         if (strActivePlugin.Equals(p_strFile.ToLowerInvariant()))
         {
@@ -142,9 +142,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     {
       if (m_strActiveInstalledPlugins == null)
       {
-        string[] strActivePlugins = m_misInstallScript.GetActivePlugins();
-        List<string> lstActiveInstalled = new List<string>();
-        foreach (string strActivePlugin in strActivePlugins)
+        var strActivePlugins = m_misInstallScript.GetActivePlugins();
+        var lstActiveInstalled = new List<string>();
+        foreach (var strActivePlugin in strActivePlugins)
         {
           if (FileManagement.DataFileExists(strActivePlugin))
           {
@@ -181,8 +181,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// <param name="p_pifPlugin">The owner of the flag to remove.</param>
     public void RemoveFlags(PluginInfo p_pifPlugin)
     {
-      List<string> lstFlags = new List<string>(m_dicFlags.Keys);
-      foreach (string strFlag in lstFlags)
+      var lstFlags = new List<string>(m_dicFlags.Keys);
+      foreach (var strFlag in lstFlags)
       {
         if (m_dicFlags[strFlag].Owner == p_pifPlugin)
         {

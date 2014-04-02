@@ -132,7 +132,7 @@ namespace Fomm.SharpZipLib.Zip.Compression.Streams
       deflater_.Finish();
       while (!deflater_.IsFinished)
       {
-        int len = deflater_.Deflate(buffer_, 0, buffer_.Length);
+        var len = deflater_.Deflate(buffer_, 0, buffer_.Length);
         if (len <= 0)
         {
           break;
@@ -267,7 +267,7 @@ namespace Fomm.SharpZipLib.Zip.Compression.Streams
     {
       while (!deflater_.IsNeedingInput)
       {
-        int deflateCount = deflater_.Deflate(buffer_, 0, buffer_.Length);
+        var deflateCount = deflater_.Deflate(buffer_, 0, buffer_.Length);
 
         if (deflateCount <= 0)
         {
@@ -483,7 +483,7 @@ namespace Fomm.SharpZipLib.Zip.Compression.Streams
     /// </param>
     public override void WriteByte(byte value)
     {
-      byte[] b = new byte[1];
+      var b = new byte[1];
       b[0] = value;
       Write(b, 0, 1);
     }

@@ -67,11 +67,11 @@ namespace Fomm.SharpZipLib.Core
     /// <remarks><see cref="Path.GetFullPath(string)"/> is used to get the full path before matching.</remarks>
     public virtual bool IsMatch(string name)
     {
-      bool result = false;
+      var result = false;
 
       if (name != null)
       {
-        string cooked = (name.Length > 0) ? Path.GetFullPath(name) : "";
+        var cooked = (name.Length > 0) ? Path.GetFullPath(name) : "";
         result = nameFilter_.IsMatch(cooked);
       }
       return result;

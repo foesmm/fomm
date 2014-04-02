@@ -60,8 +60,8 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
         {
           return;
         }
-        Int32 intMax = Maximum;
-        Int32 intMin = Minimum;
+        var intMax = Maximum;
+        var intMin = Minimum;
         m_intDivisor = value;
         Maximum = intMax;
         Minimum = intMin;

@@ -116,15 +116,15 @@ namespace Fomm.Games
     /// </summary>
     protected void AutoDetectWokringDirectory()
     {
-      DriveInfo[] difDrives = DriveInfo.GetDrives();
+      var difDrives = DriveInfo.GetDrives();
 
-      foreach (DriveInfo difDrive in difDrives)
+      foreach (var difDrive in difDrives)
       {
         if (difDrive.DriveType == DriveType.CDRom)
         {
           continue;
         }
-        string strFound = Search(difDrive.Name);
+        var strFound = Search(difDrive.Name);
         if (!String.IsNullOrEmpty(strFound))
         {
           m_strFoundWorkingDirectory = strFound;
@@ -140,7 +140,7 @@ namespace Fomm.Games
     protected string Search(string p_strPath)
     {
       m_bwdProgress.OverallMessage = p_strPath;
-      foreach (string strSearchFile in m_strSearchFiles)
+      foreach (var strSearchFile in m_strSearchFiles)
       {
         if (m_bwdProgress.Cancelled())
         {
@@ -148,8 +148,8 @@ namespace Fomm.Games
         }
         try
         {
-          string[] strFoundFiles = Directory.GetFiles(p_strPath, strSearchFile, SearchOption.TopDirectoryOnly);
-          foreach (string strFoundFile in strFoundFiles)
+          var strFoundFiles = Directory.GetFiles(p_strPath, strSearchFile, SearchOption.TopDirectoryOnly);
+          foreach (var strFoundFile in strFoundFiles)
           {
             if (
               MessageBox.Show(m_bwdProgress,
@@ -166,8 +166,8 @@ namespace Fomm.Games
           return null;
         }
       }
-      string[] strDirectories = Directory.GetDirectories(p_strPath);
-      foreach (string strDirectory in strDirectories)
+      var strDirectories = Directory.GetDirectories(p_strPath);
+      foreach (var strDirectory in strDirectories)
       {
         if (m_bwdProgress.Cancelled())
         {
@@ -177,7 +177,7 @@ namespace Fomm.Games
         {
           continue;
         }
-        string strFound = Search(strDirectory);
+        var strFound = Search(strDirectory);
         if (!String.IsNullOrEmpty(strFound))
         {
           return strFound;

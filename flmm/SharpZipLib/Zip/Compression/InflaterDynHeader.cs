@@ -119,7 +119,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
           case BLLENS:
             while (ptr < blnum)
             {
-              int len = input.PeekBits(3);
+              var len = input.PeekBits(3);
               if (len < 0)
               {
                 return false;
@@ -177,8 +177,8 @@ namespace Fomm.SharpZipLib.Zip.Compression
             goto case REPS; // fall through
           case REPS:
           {
-            int bits = repBits[repSymbol];
-            int count = input.PeekBits(bits);
+            var bits = repBits[repSymbol];
+            var count = input.PeekBits(bits);
             if (count < 0)
             {
               return false;
@@ -210,14 +210,14 @@ namespace Fomm.SharpZipLib.Zip.Compression
 
     public InflaterHuffmanTree BuildLitLenTree()
     {
-      byte[] litlenLens = new byte[lnum];
+      var litlenLens = new byte[lnum];
       Array.Copy(litdistLens, 0, litlenLens, 0, lnum);
       return new InflaterHuffmanTree(litlenLens);
     }
 
     public InflaterHuffmanTree BuildDistTree()
     {
-      byte[] distLens = new byte[dnum];
+      var distLens = new byte[dnum];
       Array.Copy(litdistLens, lnum, distLens, 0, dnum);
       return new InflaterHuffmanTree(distLens);
     }

@@ -53,7 +53,7 @@ namespace Fomm.PackageManager
         if (strGroups != null)
         {
           clbGroups.SuspendLayout();
-          foreach (string strGroup in strGroups)
+          foreach (var strGroup in strGroups)
           {
             clbGroups.Items.Add(strGroup, 0);
           }
@@ -219,7 +219,7 @@ namespace Fomm.PackageManager
     /// <returns><lang cref="true"/> if all controls passed validation; <lang cref="false"/> otherwise.</returns>
     public bool PerformValidation()
     {
-      bool booIsValid = ValidateMachineVersion();
+      var booIsValid = ValidateMachineVersion();
       booIsValid &= ValidateMinFommVersion();
       booIsValid &= ValidateWebsite();
       return booIsValid;
@@ -363,8 +363,8 @@ namespace Fomm.PackageManager
     {
       get
       {
-        string[] strGroups = new string[clbGroups.CheckedItems.Count];
-        for (Int32 i = 0; i < strGroups.Length; i++)
+        var strGroups = new string[clbGroups.CheckedItems.Count];
+        for (var i = 0; i < strGroups.Length; i++)
         {
           strGroups[i] = ((string) clbGroups.CheckedItems[i]).ToLowerInvariant();
         }
@@ -373,7 +373,7 @@ namespace Fomm.PackageManager
       set
       {
         clbGroups.SuspendLayout();
-        for (Int32 i = 0; i < clbGroups.Items.Count; i++)
+        for (var i = 0; i < clbGroups.Items.Count; i++)
         {
           clbGroups.SetItemChecked(i,
                                    Array.IndexOf<string>(value, ((string) clbGroups.Items[i]).ToLowerInvariant()) != -1);

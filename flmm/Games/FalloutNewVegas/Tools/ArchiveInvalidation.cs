@@ -35,7 +35,7 @@ namespace Fomm.Games.FalloutNewVegas.Tools
 
     private static string GetBSAList(bool p_booInsertAI)
     {
-      List<string> bsas =
+      var bsas =
         new List<string>(
           NativeMethods.GetPrivateProfileString("Archive", "SArchiveList", null,
                                                 ((FalloutNewVegasGameMode.SettingsFilesSet)
@@ -43,8 +43,8 @@ namespace Fomm.Games.FalloutNewVegas.Tools
                                                   {
                                                     ','
                                                   }, StringSplitOptions.RemoveEmptyEntries));
-      List<string> lstNewBSAs = new List<string>();
-      for (int i = 0; i < bsas.Count; i++)
+      var lstNewBSAs = new List<string>();
+      for (var i = 0; i < bsas.Count; i++)
       {
         bsas[i] = bsas[i].Trim(' ');
         if (bsas[i] == OldAiBsa)
@@ -69,11 +69,11 @@ namespace Fomm.Games.FalloutNewVegas.Tools
 
     private static void ApplyAI()
     {
-      foreach (FileInfo fi in new DirectoryInfo(Program.GameMode.PluginsPath).GetFiles("Fallout - *.bsa"))
+      foreach (var fi in new DirectoryInfo(Program.GameMode.PluginsPath).GetFiles("Fallout - *.bsa"))
       {
         fi.LastWriteTime = new DateTime(2008, 10, 1);
       }
-      foreach (FileInfo fi in new DirectoryInfo(Program.GameMode.PluginsPath).GetFiles("ClassicPack - *.bsa"))
+      foreach (var fi in new DirectoryInfo(Program.GameMode.PluginsPath).GetFiles("ClassicPack - *.bsa"))
       {
         fi.LastWriteTime = new DateTime(2008, 10, 1);
       }
@@ -136,7 +136,7 @@ namespace Fomm.Games.FalloutNewVegas.Tools
 
     public static bool IsActive()
     {
-      List<string> bsas =
+      var bsas =
         new List<string>(
           NativeMethods.GetPrivateProfileString("Archive", "SArchiveList", null,
                                                 ((FalloutNewVegasGameMode.SettingsFilesSet)
@@ -144,7 +144,7 @@ namespace Fomm.Games.FalloutNewVegas.Tools
                                                   {
                                                     ','
                                                   }, StringSplitOptions.RemoveEmptyEntries));
-      Int32 intInvalidate = NativeMethods.GetPrivateProfileIntA("Archive", "bInvalidateOlderFiles", 0,
+      var intInvalidate = NativeMethods.GetPrivateProfileIntA("Archive", "bInvalidateOlderFiles", 0,
                                                                 ((FalloutNewVegasGameMode.SettingsFilesSet)
                                                                   Program.GameMode.SettingsFiles).FOIniPath);
       return bsas.Contains(AiBsa) || (intInvalidate != 0);

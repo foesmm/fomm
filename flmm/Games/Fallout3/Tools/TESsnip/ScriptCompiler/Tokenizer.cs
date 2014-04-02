@@ -200,7 +200,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
       {
         return '\0';
       }
-      char c = input.Dequeue();
+      var c = input.Dequeue();
       while (c == '\r')
       {
         if (input.Count == 0)
@@ -226,7 +226,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
       {
         return '\0';
       }
-      char c = input.Peek();
+      var c = input.Peek();
       while (c == '\r')
       {
         input.Dequeue();
@@ -252,7 +252,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
     private static Token FromWord(string token)
     {
       int i;
-      string ltoken = token.ToLowerInvariant();
+      var ltoken = token.ToLowerInvariant();
       if (char.IsDigit(token[0]) || (token.Length > 1 && (token[0] == '.' || token[0] == '-') && char.IsDigit(token[1])))
       {
         if (token.Contains(".") || ltoken.Contains("e"))
@@ -309,7 +309,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
           {
             builder.Append(c);
           }
-          bool numeric = char.IsDigit(c);
+          var numeric = char.IsDigit(c);
           while (true)
           {
             c = SafePeek();
@@ -466,7 +466,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
       {
         return Token.Null;
       }
-      Token t = storedTokens.Dequeue();
+      var t = storedTokens.Dequeue();
       if (t.type == TokenType.Unknown)
       {
         if (localVars.Contains(t.token))
@@ -496,12 +496,12 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
     {
       if (lastTokens != null)
       {
-        Token[] tmp = lastTokens;
+        var tmp = lastTokens;
         lastTokens = null;
         return tmp;
       }
       line++;
-      Token t = DequeueToken();
+      var t = DequeueToken();
       while (t.IsSymbol("\n"))
       {
         line++;

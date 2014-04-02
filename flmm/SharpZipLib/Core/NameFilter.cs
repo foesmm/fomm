@@ -79,18 +79,18 @@ namespace Fomm.SharpZipLib.Core
     /// <returns>Returns a <see cref="T:System.String[]"/> containing the individual filter elements.</returns>
     public static string[] SplitQuoted(string original)
     {
-      char escape = '\\';
+      var escape = '\\';
       char[] separators =
       {
         ';'
       };
 
-      ArrayList result = new ArrayList();
+      var result = new ArrayList();
 
       if ((original != null) && (original.Length > 0))
       {
-        int endIndex = -1;
-        StringBuilder b = new StringBuilder();
+        var endIndex = -1;
+        var b = new StringBuilder();
 
         while (endIndex < original.Length)
         {
@@ -147,7 +147,7 @@ namespace Fomm.SharpZipLib.Core
     /// <returns>True if the value is included, false otherwise.</returns>
     public bool IsIncluded(string name)
     {
-      bool result = false;
+      var result = false;
       if (inclusions_.Count == 0)
       {
         result = true;
@@ -173,7 +173,7 @@ namespace Fomm.SharpZipLib.Core
     /// <returns>True if the value is excluded, false otherwise.</returns>
     public bool IsExcluded(string name)
     {
-      bool result = false;
+      var result = false;
       foreach (Regex r in exclusions_)
       {
         if (r.IsMatch(name))
@@ -211,12 +211,12 @@ namespace Fomm.SharpZipLib.Core
         return;
       }
 
-      string[] items = SplitQuoted(filter_);
-      for (int i = 0; i < items.Length; ++i)
+      var items = SplitQuoted(filter_);
+      for (var i = 0; i < items.Length; ++i)
       {
         if ((items[i] != null) && (items[i].Length > 0))
         {
-          bool include = (items[i][0] != '-');
+          var include = (items[i][0] != '-');
           string toCompile;
 
           if (items[i][0] == '+')

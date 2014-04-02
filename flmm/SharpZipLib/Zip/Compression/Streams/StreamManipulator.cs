@@ -183,7 +183,7 @@ namespace Fomm.SharpZipLib.Zip.Compression.Streams
         throw new InvalidOperationException("Bit buffer is not byte aligned!");
       }
 
-      int count = 0;
+      var count = 0;
       while ((bitsInBuffer_ > 0) && (length > 0))
       {
         output[offset++] = (byte) buffer_;
@@ -198,7 +198,7 @@ namespace Fomm.SharpZipLib.Zip.Compression.Streams
         return count;
       }
 
-      int avail = windowEnd_ - windowStart_;
+      var avail = windowEnd_ - windowStart_;
       if (length > avail)
       {
         length = avail;
@@ -261,7 +261,7 @@ namespace Fomm.SharpZipLib.Zip.Compression.Streams
         throw new InvalidOperationException("Old input was not completely processed");
       }
 
-      int end = offset + count;
+      var end = offset + count;
 
       // We want to throw an ArrayIndexOutOfBoundsException early.
       // Note the check also handles integer wrap around.

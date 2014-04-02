@@ -25,7 +25,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     {
       get
       {
-        Version verInstalledVersion = m_dsmStateManager.FommVersion;
+        var verInstalledVersion = m_dsmStateManager.FommVersion;
         return ((verInstalledVersion != null) && (verInstalledVersion >= m_verMinVersion));
       }
     }
@@ -44,7 +44,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     {
       get
       {
-        Version verInstalledVersion = m_dsmStateManager.FommVersion;
+        var verInstalledVersion = m_dsmStateManager.FommVersion;
         if (verInstalledVersion < m_verMinVersion)
         {
           return

@@ -16,8 +16,8 @@ namespace Fomm.PackageManager
       Text = title;
       toolTips = tooltips;
       Multi = multi;
-      List<int> selected = new List<int>();
-      for (int i = 0; i < items.Length; i++)
+      var selected = new List<int>();
+      for (var i = 0; i < items.Length; i++)
       {
         if (items[i].Length == 0)
         {
@@ -40,7 +40,7 @@ namespace Fomm.PackageManager
         label1.Text = "Select any number of options (Use ctrl and shift for multiselect)";
         if (selected.Count > 0)
         {
-          foreach (int i in selected)
+          foreach (var i in selected)
           {
             lbSelect.SetSelected(i, true);
           }
@@ -91,13 +91,13 @@ namespace Fomm.PackageManager
     {
       blockClose = false;
       SelectedIndex = new int[lbSelect.SelectedIndices.Count];
-      for (int i = 0; i < SelectedIndex.Length; i++)
+      for (var i = 0; i < SelectedIndex.Length; i++)
       {
         SelectedIndex[i] = lbSelect.SelectedIndices[i];
       }
       if (Previews != null)
       {
-        foreach (Image i in Previews)
+        foreach (var i in Previews)
         {
           if (i != null)
           {
@@ -129,14 +129,14 @@ namespace Fomm.PackageManager
       {
         selectedIndex = -1;
       }
-      for (int i = 0; i < selected.Count; i++)
+      for (var i = 0; i < selected.Count; i++)
       {
         if (!lbSelect.SelectedIndices.Contains(selected[i]))
         {
           selected.RemoveAt(i--);
         }
       }
-      for (int i = 0; i < lbSelect.SelectedIndices.Count; i++)
+      for (var i = 0; i < lbSelect.SelectedIndices.Count; i++)
       {
         if (!selected.Contains(lbSelect.SelectedIndices[i]))
         {
@@ -205,7 +205,7 @@ namespace Fomm.PackageManager
         //No function to do this all in one go?
         SuspendLayout();
         lbSelect.SelectedIndices.Clear();
-        for (int i = 0; i < lbSelect.Items.Count; i++)
+        for (var i = 0; i < lbSelect.Items.Count; i++)
         {
           lbSelect.SelectedIndices.Add(i);
         }

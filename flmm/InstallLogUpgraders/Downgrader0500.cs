@@ -65,15 +65,15 @@ namespace Fomm.InstallLogUpgraders
       root.SetAttributeValue("fileVersion", InstallLog.CURRENT_VERSION);
 
       // Reset datafile entries
-      foreach (XElement el in datafiles.Descendants("file"))
+      foreach (var el in datafiles.Descendants("file"))
       {
         // Check to see that data is set as the first path element.  If not, throw an exception
         // indicating that the user should disable that mod with NMM and try again -- FOMM cannot
         // presently uninstall/deactivate mods that operate in the game folder above the data
         // folder.
 
-        string strPath = el.Attribute("path").Value.ToLowerInvariant();
-        string strData = "data" + Path.DirectorySeparatorChar;
+        var strPath = el.Attribute("path").Value.ToLowerInvariant();
+        var strData = "data" + Path.DirectorySeparatorChar;
         strPath = strPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
         if (strPath.IndexOf(strData) == 0)
         {
@@ -90,7 +90,7 @@ namespace Fomm.InstallLogUpgraders
       }
 
       // Reset mod entries
-      foreach (XElement el in modlist.Descendants("mod"))
+      foreach (var el in modlist.Descendants("mod"))
       {
         // Set name attribute equal to name element value
         el.SetAttributeValue("name", el.Element("name").Value);

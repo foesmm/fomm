@@ -154,9 +154,9 @@ namespace ChinhDo.Transactions
     /// <param name="recursive">if set to <c>true</c>, include files in sub directories recursively.</param>
     public void GetFiles(string path, FileEventHandler handler, bool recursive)
     {
-      foreach (string fileName in Directory.GetFiles(path))
+      foreach (var fileName in Directory.GetFiles(path))
       {
-        bool cancel = false;
+        var cancel = false;
         handler(fileName, ref cancel);
         if (cancel)
         {
@@ -167,7 +167,7 @@ namespace ChinhDo.Transactions
       // Check subdirs
       if (recursive)
       {
-        foreach (string folderName in Directory.GetDirectories(path))
+        foreach (var folderName in Directory.GetDirectories(path))
         {
           GetFiles(folderName, handler, true);
         }
@@ -256,7 +256,7 @@ namespace ChinhDo.Transactions
 
     private TxEnlistment GetEnlistment()
     {
-      Transaction tx = Transaction.Current;
+      var tx = Transaction.Current;
       TxEnlistment enlistment;
 
       if (TxEnabled && tx != null)

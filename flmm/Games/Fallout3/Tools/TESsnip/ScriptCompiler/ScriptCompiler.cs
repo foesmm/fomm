@@ -135,7 +135,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
         args = new VarType[n.ChildNodes.Count];
         reftypes = new string[n.ChildNodes.Count];
         argdescs = new string[n.ChildNodes.Count];
-        for (int i = 0; i < n.ChildNodes.Count; i++)
+        for (var i = 0; i < n.ChildNodes.Count; i++)
         {
           n2 = n.ChildNodes[i];
           args[i] = GetVarType(n2.Attributes.GetNamedItem("type").Value);
@@ -250,7 +250,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
 
       try
       {
-        XmlDocument doc = new XmlDocument();
+        var doc = new XmlDocument();
         doc.LoadXml(File.ReadAllText(xmlPath));
         XmlNode root = null;
         foreach (XmlNode n in doc.ChildNodes)
@@ -273,7 +273,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
           }
           if (n.Name == "Enum")
           {
-            Dictionary<string, ushort> Enum = new Dictionary<string, ushort>();
+            var Enum = new Dictionary<string, ushort>();
             foreach (XmlNode n3 in n.ChildNodes)
             {
               if (n3.NodeType == XmlNodeType.Comment)
@@ -291,7 +291,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
           }
           else if (n.Name == "Func")
           {
-            XmlNode n2 = n.Attributes.GetNamedItem("short");
+            var n2 = n.Attributes.GetNamedItem("short");
             string sname;
             if (n2 != null)
             {
@@ -324,7 +324,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
     {
       if (r is Record)
       {
-        Record r2 = (Record) r;
+        var r2 = (Record) r;
         if (r2.descriptiveName == null)
         {
           return;
@@ -337,12 +337,12 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
 
         if (r2.Name == "QUST")
         {
-          foreach (SubRecord sr in r2.SubRecords)
+          foreach (var sr in r2.SubRecords)
           {
             if (sr.Name == "SCRI")
             {
-              byte[] bytes = sr.GetReadonlyData();
-              uint formid = (TypeConverter.h2i(bytes[0], bytes[1], bytes[2], bytes[3]));
+              var bytes = sr.GetReadonlyData();
+              var formid = (TypeConverter.h2i(bytes[0], bytes[1], bytes[2], bytes[3]));
               if ((formid & 0xff000000) != mask)
               {
                 return;
@@ -355,8 +355,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
         {
           if (r2.SubRecords.Count > 2 && r2.SubRecords[0].Name == "EDID" && r2.SubRecords[1].Name == "NAME")
           {
-            byte[] bytes = r2.SubRecords[1].GetReadonlyData();
-            uint formid = (TypeConverter.h2i(bytes[0], bytes[1], bytes[2], bytes[3]));
+            var bytes = r2.SubRecords[1].GetReadonlyData();
+            var formid = (TypeConverter.h2i(bytes[0], bytes[1], bytes[2], bytes[3]));
             if ((formid & 0xff000000) != mask)
             {
               return;
@@ -367,7 +367,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
       }
       else
       {
-        foreach (Rec r2 in ((GroupRecord) r).Records)
+        foreach (var r2 in ((GroupRecord) r).Records)
         {
           RecursePlugin(r2, mask, id, records, quests, refs);
         }
@@ -379,7 +379,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
     {
       if (r is Record)
       {
-        Record r2 = (Record) r;
+        var r2 = (Record) r;
         if (r2.descriptiveName == null)
         {
           return;
@@ -388,12 +388,12 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
 
         if (r2.Name == "QUST")
         {
-          foreach (SubRecord sr in r2.SubRecords)
+          foreach (var sr in r2.SubRecords)
           {
             if (sr.Name == "SCRI")
             {
-              byte[] bytes = sr.GetReadonlyData();
-              uint formid = (TypeConverter.h2i(bytes[0], bytes[1], bytes[2], bytes[3]));
+              var bytes = sr.GetReadonlyData();
+              var formid = (TypeConverter.h2i(bytes[0], bytes[1], bytes[2], bytes[3]));
               quests.Add(new Pair<uint, Record>(formid, r2));
             }
           }
@@ -402,15 +402,15 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
         {
           if (r2.SubRecords.Count > 0 && r2.SubRecords[1].Name == "NAME")
           {
-            byte[] bytes = r2.SubRecords[1].GetReadonlyData();
-            uint formid = (TypeConverter.h2i(bytes[0], bytes[1], bytes[2], bytes[3]));
+            var bytes = r2.SubRecords[1].GetReadonlyData();
+            var formid = (TypeConverter.h2i(bytes[0], bytes[1], bytes[2], bytes[3]));
             refs.Add(new Pair<uint, Record>(formid, r2));
           }
         }
       }
       else
       {
-        foreach (Rec r2 in ((GroupRecord) r).Records)
+        foreach (var r2 in ((GroupRecord) r).Records)
         {
           RecursePlugin(r2, records, quests, refs);
         }
@@ -427,10 +427,10 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
       edidList.Clear();
       globals.Clear();
       farVars.Clear();
-      Dictionary<uint, Record> records = new Dictionary<uint, Record>();
-      List<Pair<uint, Record>> quests = new List<Pair<uint, Record>>();
-      List<Pair<uint, Record>> refs = new List<Pair<uint, Record>>();
-      Dictionary<uint, uint> RefLookupTable = new Dictionary<uint, uint>();
+      var records = new Dictionary<uint, Record>();
+      var quests = new List<Pair<uint, Record>>();
+      var refs = new List<Pair<uint, Record>>();
+      var RefLookupTable = new Dictionary<uint, uint>();
       for (uint i = 0; i < plugins.Length - 1; i++)
       {
         if (plugins[i] == null)
@@ -442,7 +442,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
           continue;
         }
         uint mask = 0;
-        foreach (SubRecord sr in ((Record) plugins[i].Records[0]).SubRecords)
+        foreach (var sr in ((Record) plugins[i].Records[0]).SubRecords)
         {
           if (sr.Name == "MAST")
           {
@@ -450,13 +450,13 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
           }
         }
         mask <<= 24;
-        uint id = i << 24;
-        foreach (Rec r in plugins[i].Records)
+        var id = i << 24;
+        foreach (var r in plugins[i].Records)
         {
           RecursePlugin(r, mask, id, records, quests, refs);
         }
 
-        foreach (Pair<uint, Record> recs in refs)
+        foreach (var recs in refs)
         {
           if (RefLookupTable.ContainsKey(recs.Key) && RefLookupTable[recs.Key] != 0)
           {
@@ -464,14 +464,14 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
           }
           else if (records.ContainsKey(recs.Key))
           {
-            Record r = records[recs.Key];
+            var r = records[recs.Key];
             uint formID = 0;
-            foreach (SubRecord sr in r.SubRecords)
+            foreach (var sr in r.SubRecords)
             {
               if (sr.Name == "SCRI")
               {
-                byte[] bytes = sr.GetReadonlyData();
-                uint formid = (TypeConverter.h2i(bytes[0], bytes[1], bytes[2], bytes[3]));
+                var bytes = sr.GetReadonlyData();
+                var formid = (TypeConverter.h2i(bytes[0], bytes[1], bytes[2], bytes[3]));
                 if ((formid & 0xff000000) == mask)
                 {
                   formID = (formid & 0xffffff) + id;
@@ -484,11 +484,11 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
         }
         RefLookupTable.Clear();
       }
-      foreach (Rec r in plugins[plugins.Length - 1].Records)
+      foreach (var r in plugins[plugins.Length - 1].Records)
       {
         RecursePlugin(r, records, quests, refs);
       }
-      foreach (Pair<uint, Record> recs in refs)
+      foreach (var recs in refs)
       {
         if (RefLookupTable.ContainsKey(recs.Key) && RefLookupTable[recs.Key] != 0)
         {
@@ -496,13 +496,13 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
         }
         else if (records.ContainsKey(recs.Key))
         {
-          Record r = records[recs.Key];
+          var r = records[recs.Key];
           uint formID = 0;
-          foreach (SubRecord sr in r.SubRecords)
+          foreach (var sr in r.SubRecords)
           {
             if (sr.Name == "SCRI")
             {
-              byte[] bytes = sr.GetReadonlyData();
+              var bytes = sr.GetReadonlyData();
               formID = (TypeConverter.h2i(bytes[0], bytes[1], bytes[2], bytes[3]));
               break;
             }
@@ -511,9 +511,9 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
         }
       }
 
-      foreach (KeyValuePair<uint, Record> recs in records)
+      foreach (var recs in records)
       {
-        string edid = recs.Value.SubRecords[0].GetStrData().ToLowerInvariant();
+        var edid = recs.Value.SubRecords[0].GetStrData().ToLowerInvariant();
         if (recs.Value.Name == "GLOB")
         {
           TokenStream.AddGlobal(edid);
@@ -530,20 +530,20 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
       edidList["playerref"] = new Pair<uint, string>(0x14, "NPC_");
       TokenStream.AddEdid("playerref");
 
-      Dictionary<string, ushort> vars = new Dictionary<string, ushort>();
-      foreach (Pair<uint, Record> quest in quests)
+      var vars = new Dictionary<string, ushort>();
+      foreach (var quest in quests)
       {
         if (!records.ContainsKey(quest.Key))
         {
           continue;
         }
-        Record scpt = records[quest.Key];
-        string edid = quest.Value.SubRecords[0].GetStrData();
-        for (int i = 0; i < scpt.SubRecords.Count - 1; i++)
+        var scpt = records[quest.Key];
+        var edid = quest.Value.SubRecords[0].GetStrData();
+        for (var i = 0; i < scpt.SubRecords.Count - 1; i++)
         {
           if (scpt.SubRecords[i].Name == "SLSD")
           {
-            byte[] bytes = scpt.SubRecords[i].GetReadonlyData();
+            var bytes = scpt.SubRecords[i].GetReadonlyData();
             vars[scpt.SubRecords[i + 1].GetStrData().ToLowerInvariant()] = TypeConverter.h2s(bytes[0], bytes[1]);
           }
         }
@@ -605,7 +605,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
     private static bool OutputErrors(out string msg)
     {
       msg = "";
-      foreach (string s in errors)
+      foreach (var s in errors)
       {
         msg += s + Environment.NewLine;
       }
@@ -621,7 +621,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
 
     private static void HandleVariables()
     {
-      Token[] smt = ts.PeekNextStatement();
+      var smt = ts.PeekNextStatement();
       while (smt.Length > 0 && smt[0].IsType())
       {
         ts.PopNextStatement();
@@ -631,9 +631,9 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
           smt = ts.PeekNextStatement();
           continue;
         }
-        SubRecord slsd = new SubRecord();
+        var slsd = new SubRecord();
         slsd.Name = "SLSD";
-        byte[] data = new byte[24];
+        var data = new byte[24];
         TypeConverter.si2h(locals.Count + 1, data, 0);
         if (smt[0].IsKeyword(Keywords.Int))
         {
@@ -641,12 +641,12 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
         }
         slsd.SetData(data);
         r.AddRecord(slsd);
-        SubRecord scvr = new SubRecord();
+        var scvr = new SubRecord();
         scvr.Name = "SCVR";
         scvr.SetStrData(smt[1].utoken, true);
         r.AddRecord(scvr);
 
-        LocalVar lv = new LocalVar(locals.Count + 1, smt[0]);
+        var lv = new LocalVar(locals.Count + 1, smt[0]);
         locals.Add(smt[1].token, lv);
         localList.Add(lv);
         ts.AddLocal(smt[1].token);
@@ -657,8 +657,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
 
     private static Token[] TrimStatement(Token[] smt, int size)
     {
-      Token[] smt2 = new Token[smt.Length - size];
-      for (int i = 0; i < smt2.Length; i++)
+      var smt2 = new Token[smt.Length - size];
+      for (var i = 0; i < smt2.Length; i++)
       {
         smt2[i] = smt[i + size];
       }
@@ -710,7 +710,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
       }
       if (t.type == TokenType.Local)
       {
-        LocalVar var = locals[t.token];
+        var var = locals[t.token];
         if (var.refid == 0)
         {
           AddError("Variable was not of type ref");
@@ -724,7 +724,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
       {
         if (!edidRefs.ContainsKey(t.token))
         {
-          SubRecord sr = new SubRecord();
+          var sr = new SubRecord();
           sr.Name = "SCRO";
           if (t.type == TokenType.edid)
           {
@@ -756,8 +756,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
         EmitLong(0);
         return;
       }
-      FunctionSig fs = blockList[smt[1].token];
-      long pos = bw.BaseStream.Length;
+      var fs = blockList[smt[1].token];
+      var pos = bw.BaseStream.Length;
       Emit(0);
       Emit(fs.opcode);
       EmitLong(0);
@@ -769,7 +769,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
       if (fs.args.Length > 0)
       {
         Emit((ushort) (smt.Length - 2));
-        for (int i = 2; i < smt.Length; i++)
+        for (var i = 2; i < smt.Length; i++)
         {
           switch (fs.args[i - 2])
           {
@@ -832,7 +832,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
     private static void EmitExpressionValue(Token t, Queue<Token> smt, ExpressionType type)
     {
       EmitByte(0x20);
-      bool hadRef = false;
+      var hadRef = false;
       switch (t.type)
       {
         case TokenType.edid:
@@ -846,7 +846,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
             }
             if (farVars.ContainsKey(t.token))
             {
-              Dictionary<string, ushort> fars = farVars[t.token];
+              var fars = farVars[t.token];
               t = smt.Dequeue();
               if (fars.ContainsKey(t.token))
               {
@@ -872,7 +872,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
           }
           break;
         case TokenType.Local:
-          LocalVar lv = locals[t.token];
+          var lv = locals[t.token];
           if (lv.type == VarType.Ref && smt.Count > 0 && smt.Peek().IsSymbol("."))
           {
             goto case TokenType.edid;
@@ -915,14 +915,14 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
           //if(fs.requiredArgs!=fs.args.Length) throw new ExpressionParseException("functions with variable argument count cannot be used in expressions");
           //if(fs.ret==VarType.None) throw new ExpressionParseException("Functions with no return type cannot be used in expressions");
           //if(smt.Count<fs.args.Length) throw new ExpressionParseException("Not enough parameters to function");
-          Token[] args = new Token[smt.Count + 1];
+          var args = new Token[smt.Count + 1];
           args[0] = t;
-          for (int i = 1; i < args.Length; i++)
+          for (var i = 1; i < args.Length; i++)
           {
             args[i] = smt.Dequeue();
           }
           EmitFunctionCall(ref args, true, hadRef, type == ExpressionType.Ref);
-          for (int i = 0; i < args.Length; i++)
+          for (var i = 0; i < args.Length; i++)
           {
             smt.Enqueue(args[i]);
           }
@@ -939,7 +939,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
       {
         throw new ExpressionParseException("Unexpected end of line");
       }
-      Token t = smt.Dequeue();
+      var t = smt.Dequeue();
       if (t.type == TokenType.Symbol)
       {
         if (type == ExpressionType.Ref)
@@ -952,7 +952,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
         }
         else if (uniOps.ContainsKey(t.token))
         {
-          bool b = EmitExpression2(smt, uniOps[t.token].precedence, endonbracket, type);
+          var b = EmitExpression2(smt, uniOps[t.token].precedence, endonbracket, type);
           EmitByte(0x20);
           bw.Write(uniOps[t.token].opcode);
           if (b)
@@ -1003,7 +1003,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
       {
         if (biOps[t.token].precedence <= precedence)
         {
-          bool dontRepeat = false;
+          var dontRepeat = false;
           smt.Dequeue();
           if (biOps[t.token].end == null)
           {
@@ -1037,7 +1037,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
 
     private static void EmitExpression(Token[] smt, ExpressionType type)
     {
-      long pos = bw.BaseStream.Length;
+      var pos = bw.BaseStream.Length;
       Emit(0);
       try
       {
@@ -1055,7 +1055,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
 
     private static void EmitFunctionCall(ref Token[] smt, bool expression, bool hadref, bool requiresRef)
     {
-      FunctionSig fs = functionList[smt[0].token];
+      var fs = functionList[smt[0].token];
       if (hadref && !fs.allowref)
       {
         AddError("Object reference not valid on this function");
@@ -1096,19 +1096,19 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
       if (fs.args.Length == 0)
       {
         Emit(0);
-        for (int j = 1; j < smt.Length; j++)
+        for (var j = 1; j < smt.Length; j++)
         {
           smt[j - 1] = smt[j];
         }
         Array.Resize<Token>(ref smt, smt.Length - 1);
         return;
       }
-      long pos = bw.BaseStream.Length;
+      var pos = bw.BaseStream.Length;
       ushort argcount = 0;
       Emit(0);
       Emit(0);
-      int i = 0;
-      bool lastwasref = false;
+      var i = 0;
+      var lastwasref = false;
       while (true)
       {
         i++;
@@ -1129,7 +1129,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
             {
               i++;
               EmitByte(0x73);
-              Dictionary<string, ushort> vars = farVars[smt[i - 2].token];
+              var vars = farVars[smt[i - 2].token];
               if (!vars.ContainsKey(smt[i].token))
               {
                 AddError("Reference '" + smt[i - 2].utoken + "' has no variable called '" + smt[i].utoken + "'");
@@ -1155,7 +1155,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
             {
               AddError("Not enough arguments to function. Expected " + fs.requiredArgs);
             }
-            for (int j = i; j < smt.Length; j++)
+            for (var j = i; j < smt.Length; j++)
             {
               smt[j - i] = smt[j];
             }
@@ -1198,7 +1198,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
             }
             else
             {
-              Dictionary<string, ushort> Enum = enumList[fs.reftypes[argcount - 1]];
+              var Enum = enumList[fs.reftypes[argcount - 1]];
               if (!Enum.ContainsKey(smt[i].token))
               {
                 AddError("'" + smt[i].token + "' is not a valid entry of the enum '" + fs.reftypes[argcount - 1] + "'");
@@ -1242,7 +1242,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
             lastwasref = true;
             break;
           case TokenType.Local:
-            LocalVar vt = locals[smt[i].token];
+            var vt = locals[smt[i].token];
             switch (vt.type)
             {
               case VarType.Int:
@@ -1302,7 +1302,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
             return;
         }
       }
-      for (int j = 0; j < fs.paddingbytes; j++)
+      for (var j = 0; j < fs.paddingbytes; j++)
       {
         EmitByte(0);
       }
@@ -1322,7 +1322,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
         AddError("Not enough arguments to ShowMessage");
         return;
       }
-      long pos = bw.BaseStream.Length;
+      var pos = bw.BaseStream.Length;
       Emit(0);
       Emit(1);
 
@@ -1339,7 +1339,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
           }
           break;
         case TokenType.Local:
-          LocalVar vt = locals[smt[1].token];
+          var vt = locals[smt[1].token];
           if (vt.type != VarType.Ref)
           {
             goto default;
@@ -1357,9 +1357,9 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
       }
       else
       {
-        bool lastwasref = false;
+        var lastwasref = false;
         Emit((ushort) (smt.Length - 2));
-        for (int i = 2; i < smt.Length; i++)
+        for (var i = 2; i < smt.Length; i++)
         {
           if (smt[i].type == TokenType.Symbol)
           {
@@ -1369,7 +1369,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
               {
                 i++;
                 EmitByte(0x73);
-                Dictionary<string, ushort> vars = farVars[smt[i - 2].token];
+                var vars = farVars[smt[i - 2].token];
                 if (!vars.ContainsKey(smt[i].token))
                 {
                   AddError("Reference '" + smt[i - 2].utoken + "' has no variable called '" + smt[i].utoken + "'");
@@ -1399,7 +1399,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
               lastwasref = true;
               break;
             case TokenType.Local:
-              LocalVar vt = locals[smt[i].token];
+              var vt = locals[smt[i].token];
               switch (vt.type)
               {
                 case VarType.Int:
@@ -1458,11 +1458,11 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
           return;
         }
         Emit(0x15);
-        long pos = bw.BaseStream.Length;
+        var pos = bw.BaseStream.Length;
         Emit(0);
         if (smt[1].type == TokenType.Local)
         {
-          LocalVar lv = locals[smt[1].token];
+          var lv = locals[smt[1].token];
           if (lv.type == VarType.Int)
           {
             EmitByte(0x73);
@@ -1519,7 +1519,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
       }
       else if (smt[0].type == TokenType.Local)
       {
-        LocalVar lv = locals[smt[0].token];
+        var lv = locals[smt[0].token];
         if (lv.type != VarType.Ref)
         {
           AddError("Expected 'Set', <function> or <ref>.<function>");
@@ -1542,8 +1542,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
 
     private static void HandleBlock()
     {
-      Token[] smt = ts.PopNextStatement();
-      long pos = bw.BaseStream.Length + 6;
+      var smt = ts.PopNextStatement();
+      var pos = bw.BaseStream.Length + 6;
       if (smt.Length < 2 || !smt[0].IsKeyword(Keywords.Begin))
       {
         AddError("Expected 'begin <args>'");
@@ -1552,10 +1552,10 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
       {
         EmitBegin(smt);
       }
-      long start = bw.BaseStream.Length;
+      var start = bw.BaseStream.Length;
       smt = ts.PopNextStatement();
-      Stack<long> flowControl = new Stack<long>();
-      List<ushort> opcodecount = new List<ushort>();
+      var flowControl = new Stack<long>();
+      var opcodecount = new List<ushort>();
       while (smt.Length > 0 && !smt[0].IsKeyword(Keywords.End))
       {
         if (smt[0].IsFlowControl())
@@ -1564,12 +1564,12 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
           {
             case Keywords.If:
             {
-              for (int i = 0; i < opcodecount.Count; i++)
+              for (var i = 0; i < opcodecount.Count; i++)
               {
                 opcodecount[i] += 1;
               }
               Emit(0x16);
-              long pos2 = bw.BaseStream.Length;
+              var pos2 = bw.BaseStream.Length;
               Emit(0);
               flowControl.Push(bw.BaseStream.Length);
               Emit(0);
@@ -1592,13 +1592,13 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
                 opcodecount.RemoveAt(opcodecount.Count - 1);
                 bw.BaseStream.Position = bw.BaseStream.Length;
               }
-              for (int i = 0; i < opcodecount.Count; i++)
+              for (var i = 0; i < opcodecount.Count; i++)
               {
                 opcodecount[i] += 1;
               }
             {
               Emit(0x18);
-              long pos2 = bw.BaseStream.Length;
+              var pos2 = bw.BaseStream.Length;
               Emit(0);
               flowControl.Push(bw.BaseStream.Length);
               Emit(0);
@@ -1621,7 +1621,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
                 opcodecount.RemoveAt(opcodecount.Count - 1);
                 bw.BaseStream.Position = bw.BaseStream.Length;
               }
-              for (int i = 0; i < opcodecount.Count; i++)
+              for (var i = 0; i < opcodecount.Count; i++)
               {
                 opcodecount[i] += 1;
               }
@@ -1645,7 +1645,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
                 opcodecount.RemoveAt(opcodecount.Count - 1);
                 bw.BaseStream.Position = bw.BaseStream.Length;
               }
-              for (int i = 0; i < opcodecount.Count; i++)
+              for (var i = 0; i < opcodecount.Count; i++)
               {
                 opcodecount[i] += 1;
               }
@@ -1653,7 +1653,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
             case Keywords.Return:
               Emit(0x1e);
               Emit(0);
-              for (int i = 0; i < opcodecount.Count; i++)
+              for (var i = 0; i < opcodecount.Count; i++)
               {
                 opcodecount[i] += 1;
               }
@@ -1663,7 +1663,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
         else
         {
           HandleStatement(smt);
-          for (int i = 0; i < opcodecount.Count; i++)
+          for (var i = 0; i < opcodecount.Count; i++)
           {
             opcodecount[i] += 1;
           }
@@ -1690,9 +1690,9 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
 
     private static void HandleResultsBlock()
     {
-      Token[] smt = ts.PopNextStatement();
-      Stack<long> flowControl = new Stack<long>();
-      List<ushort> opcodecount = new List<ushort>();
+      var smt = ts.PopNextStatement();
+      var flowControl = new Stack<long>();
+      var opcodecount = new List<ushort>();
       while (smt.Length > 0)
       {
         if (smt[0].IsKeyword(Keywords.End))
@@ -1706,12 +1706,12 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
           {
             case Keywords.If:
             {
-              for (int i = 0; i < opcodecount.Count; i++)
+              for (var i = 0; i < opcodecount.Count; i++)
               {
                 opcodecount[i] += 1;
               }
               Emit(0x16);
-              long pos2 = bw.BaseStream.Length;
+              var pos2 = bw.BaseStream.Length;
               Emit(0);
               flowControl.Push(bw.BaseStream.Length);
               Emit(0);
@@ -1734,13 +1734,13 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
                 opcodecount.RemoveAt(opcodecount.Count - 1);
                 bw.BaseStream.Position = bw.BaseStream.Length;
               }
-              for (int i = 0; i < opcodecount.Count; i++)
+              for (var i = 0; i < opcodecount.Count; i++)
               {
                 opcodecount[i] += 1;
               }
             {
               Emit(0x18);
-              long pos2 = bw.BaseStream.Length;
+              var pos2 = bw.BaseStream.Length;
               Emit(0);
               flowControl.Push(bw.BaseStream.Length);
               Emit(0);
@@ -1763,7 +1763,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
                 opcodecount.RemoveAt(opcodecount.Count - 1);
                 bw.BaseStream.Position = bw.BaseStream.Length;
               }
-              for (int i = 0; i < opcodecount.Count; i++)
+              for (var i = 0; i < opcodecount.Count; i++)
               {
                 opcodecount[i] += 1;
               }
@@ -1787,7 +1787,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
                 opcodecount.RemoveAt(opcodecount.Count - 1);
                 bw.BaseStream.Position = bw.BaseStream.Length;
               }
-              for (int i = 0; i < opcodecount.Count; i++)
+              for (var i = 0; i < opcodecount.Count; i++)
               {
                 opcodecount[i] += 1;
               }
@@ -1795,7 +1795,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
             case Keywords.Return:
               Emit(0x1e);
               Emit(0);
-              for (int i = 0; i < opcodecount.Count; i++)
+              for (var i = 0; i < opcodecount.Count; i++)
               {
                 opcodecount[i] += 1;
               }
@@ -1805,7 +1805,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
         else
         {
           HandleStatement(smt);
-          for (int i = 0; i < opcodecount.Count; i++)
+          for (var i = 0; i < opcodecount.Count; i++)
           {
             opcodecount[i] += 1;
           }
@@ -1823,7 +1823,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
       msg = null;
       r2 = null;
       r = new Record();
-      string script = sr.GetStrData();
+      var script = sr.GetStrData();
       locals.Clear();
       localList.Clear();
       edidRefs.Clear();
@@ -1863,13 +1863,13 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
         return OutputErrors(out msg);
       }
 
-      byte[] header = new byte[20];
+      var header = new byte[20];
       TypeConverter.si2h(refcount, header, 4);
       TypeConverter.i2h((uint) bw.BaseStream.Length, header, 8);
       TypeConverter.si2h(localList.Count, header, 12);
       TypeConverter.si2h(0x10000, header, 16);
       schr.SetData(header);
-      byte[] compileddata = ((MemoryStream) bw.BaseStream).GetBuffer();
+      var compileddata = ((MemoryStream) bw.BaseStream).GetBuffer();
       if (compileddata.Length != bw.BaseStream.Length)
       {
         Array.Resize<byte>(ref compileddata, (int) bw.BaseStream.Length);
@@ -1885,8 +1885,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
       msg = null;
       r = new Record();
       string script = null;
-      int scptype = 0;
-      foreach (SubRecord sr2 in r2.SubRecords)
+      var scptype = 0;
+      foreach (var sr2 in r2.SubRecords)
       {
         if (sr2.Name == "SCTX")
         {
@@ -1894,7 +1894,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
         }
         if (sr2.Name == "SCHR")
         {
-          byte[] tmp = sr2.GetReadonlyData();
+          var tmp = sr2.GetReadonlyData();
           scptype = TypeConverter.h2si(tmp[16], tmp[17], tmp[18], tmp[19]);
         }
       }
@@ -1914,12 +1914,12 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
       {
         return OutputErrors(out msg);
       }
-      Token[] smt = ts.PopNextStatement();
+      var smt = ts.PopNextStatement();
       if (smt.Length != 2 || !smt[0].IsKeyword(Keywords.ScriptName) || smt[1].token == null)
       {
         return ReturnError("Expected 'ScriptName <edid>'", out msg);
       }
-      SubRecord sr = new SubRecord();
+      var sr = new SubRecord();
       sr.Name = "EDID";
       sr.SetStrData(smt[1].utoken, true);
       r.AddRecord(sr);
@@ -1946,7 +1946,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
       {
         return ReturnError(ex.Message, out msg);
       }
-      for (int i = 0; i < localList.Count; i++)
+      for (var i = 0; i < localList.Count; i++)
       {
         if (localList[i].type == VarType.Ref)
         {
@@ -1974,13 +1974,13 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
         return OutputErrors(out msg);
       }
 
-      byte[] header = new byte[20];
+      var header = new byte[20];
       TypeConverter.si2h(refcount, header, 4);
       TypeConverter.i2h((uint) bw.BaseStream.Length, header, 8);
       TypeConverter.si2h(localList.Count, header, 12);
       TypeConverter.si2h(scptype, header, 16);
       schr.SetData(header);
-      byte[] compileddata = ((MemoryStream) bw.BaseStream).GetBuffer();
+      var compileddata = ((MemoryStream) bw.BaseStream).GetBuffer();
       if (compileddata.Length != bw.BaseStream.Length)
       {
         Array.Resize<byte>(ref compileddata, (int) bw.BaseStream.Length);

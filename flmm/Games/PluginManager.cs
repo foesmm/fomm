@@ -24,8 +24,8 @@ namespace Fomm.Games
     /// <param name="p_strPath">The path to the plugin to activate.</param>
     public void ActivatePlugin(string p_strPath)
     {
-      Set<string> setPlugins = ActivePluginList;
-      string strPath = p_strPath;
+      var setPlugins = ActivePluginList;
+      var strPath = p_strPath;
       if (Path.GetFileName(strPath).Equals(strPath))
       {
         strPath = Path.Combine(Program.GameMode.PluginsPath, strPath);
@@ -40,8 +40,8 @@ namespace Fomm.Games
     /// <param name="p_strPath">The path to the plugin to deactivate.</param>
     public void DeactivatePlugin(string p_strPath)
     {
-      Set<string> setPlugins = ActivePluginList;
-      string strPath = p_strPath;
+      var setPlugins = ActivePluginList;
+      var strPath = p_strPath;
       if (Path.GetFileName(strPath).Equals(strPath))
       {
         strPath = Path.Combine(Program.GameMode.PluginsPath, strPath);

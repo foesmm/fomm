@@ -61,7 +61,7 @@ namespace Fomm.PackageManager
     {
       AssertFilePathIsSafe(p_strPath);
       PermissionsManager.CurrentPermissions.Assert();
-      string datapath = Path.Combine(Program.GameMode.PluginsPath, p_strPath);
+      var datapath = Path.Combine(Program.GameMode.PluginsPath, p_strPath);
       return File.Exists(datapath);
     }
 
@@ -92,7 +92,7 @@ namespace Fomm.PackageManager
     {
       AssertFilePathIsSafe(p_strPath);
       PermissionsManager.CurrentPermissions.Assert();
-      string datapath = Path.Combine(Program.GameMode.PluginsPath, p_strPath);
+      var datapath = Path.Combine(Program.GameMode.PluginsPath, p_strPath);
       if (!File.Exists(datapath))
       {
         throw new FileNotFoundException();

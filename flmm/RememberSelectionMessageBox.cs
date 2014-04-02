@@ -24,9 +24,9 @@ namespace Fomm
     public static DialogResult Show(Control p_ctlParent, string p_strMessage, string p_strCaption,
                                     MessageBoxButtons p_mbbButtons, MessageBoxIcon p_mbiIcon, out bool p_booRemember)
     {
-      RememberSelectionMessageBox mbxBox = new RememberSelectionMessageBox();
+      var mbxBox = new RememberSelectionMessageBox();
       mbxBox.Init(p_strMessage, p_strCaption, p_mbbButtons, p_mbiIcon);
-      DialogResult drsResult = DialogResult.OK;
+      var drsResult = DialogResult.OK;
       if (p_ctlParent == null)
       {
         mbxBox.StartPosition = FormStartPosition.CenterScreen;
@@ -80,7 +80,7 @@ namespace Fomm
     protected void Init(string p_strMessage, string p_strCaption, MessageBoxButtons p_mbbButtons,
                         MessageBoxIcon p_mbiIcon)
     {
-      bool booShowIcon = true;
+      var booShowIcon = true;
       switch (p_mbiIcon)
       {
         case MessageBoxIcon.Information:
@@ -109,11 +109,11 @@ namespace Fomm
 
       Text = p_strCaption;
 
-      Graphics gphGraphics = Graphics.FromHwnd(Handle);
+      var gphGraphics = Graphics.FromHwnd(Handle);
       albPrompt.Text = p_strMessage;
-      SizeF szeTextSize = gphGraphics.MeasureString(albPrompt.Text, albPrompt.Font);
+      var szeTextSize = gphGraphics.MeasureString(albPrompt.Text, albPrompt.Font);
 
-      Int32 intWindowWidth = (Int32) szeTextSize.Width + (booShowIcon ? pbxIcon.MinimumSize.Width : 0);
+      var intWindowWidth = (Int32) szeTextSize.Width + (booShowIcon ? pbxIcon.MinimumSize.Width : 0);
       if (intWindowWidth > 460)
       {
         intWindowWidth = 460;
@@ -125,21 +125,21 @@ namespace Fomm
       {
         szeTextSize = gphGraphics.MeasureString(albPrompt.Text, albPrompt.Font,
                                                 intWindowWidth - pbxIcon.MinimumSize.Width);
-        Int32 intLabelPadding = (pbxIcon.MinimumSize.Height - (Int32) szeTextSize.Height)/2;
+        var intLabelPadding = (pbxIcon.MinimumSize.Height - (Int32) szeTextSize.Height)/2;
         if (intLabelPadding > pnlLabel.Padding.Top)
         {
           pnlLabel.Padding = new Padding(pnlLabel.Padding.Left, intLabelPadding, pnlLabel.Padding.Right, 0);
         }
       }
 
-      Int32 intLastButtonLeft = pnlButtons.Right - 6;
+      var intLastButtonLeft = pnlButtons.Right - 6;
       //cancel button
       switch (p_mbbButtons)
       {
         case MessageBoxButtons.OKCancel:
         case MessageBoxButtons.RetryCancel:
         case MessageBoxButtons.YesNoCancel:
-          Button butCancel = new Button();
+          var butCancel = new Button();
           butCancel.Text = "Cancel";
           butCancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
           butCancel.Location = new Point(intLastButtonLeft - butCancel.Width - 6, 12);
@@ -157,7 +157,7 @@ namespace Fomm
       {
         case MessageBoxButtons.YesNo:
         case MessageBoxButtons.YesNoCancel:
-          Button butNo = new Button();
+          var butNo = new Button();
           butNo.Text = "No";
           butNo.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
           butNo.Location = new Point(intLastButtonLeft - butNo.Width - 6, 12);
@@ -178,7 +178,7 @@ namespace Fomm
       {
         case MessageBoxButtons.YesNo:
         case MessageBoxButtons.YesNoCancel:
-          Button butYes = new Button();
+          var butYes = new Button();
           butYes.Text = "Yes";
           butYes.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
           butYes.Location = new Point(intLastButtonLeft - butYes.Width - 6, 12);
@@ -196,7 +196,7 @@ namespace Fomm
       {
         case MessageBoxButtons.OK:
         case MessageBoxButtons.OKCancel:
-          Button butOk = new Button();
+          var butOk = new Button();
           butOk.Text = "OK";
           butOk.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
           butOk.Location = new Point(intLastButtonLeft - butOk.Width - 6, 12);
@@ -213,7 +213,7 @@ namespace Fomm
       switch (p_mbbButtons)
       {
         case MessageBoxButtons.AbortRetryIgnore:
-          Button butIgnore = new Button();
+          var butIgnore = new Button();
           butIgnore.Text = "Ignore";
           butIgnore.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
           butIgnore.Location = new Point(intLastButtonLeft - butIgnore.Width - 6, 12);
@@ -231,7 +231,7 @@ namespace Fomm
       {
         case MessageBoxButtons.AbortRetryIgnore:
         case MessageBoxButtons.RetryCancel:
-          Button butRetry = new Button();
+          var butRetry = new Button();
           butRetry.Text = "Retry";
           butRetry.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
           butRetry.Location = new Point(intLastButtonLeft - butRetry.Width - 6, 12);
@@ -248,7 +248,7 @@ namespace Fomm
       switch (p_mbbButtons)
       {
         case MessageBoxButtons.AbortRetryIgnore:
-          Button butAbort = new Button();
+          var butAbort = new Button();
           butAbort.Text = "Abort";
           butAbort.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
           butAbort.Location = new Point(intLastButtonLeft - butAbort.Width - 6, 12);

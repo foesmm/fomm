@@ -38,7 +38,7 @@ namespace Fomm.InstallLogUpgraders
       // the new-style install log, but before it had a version
       if (InstallLog.Current.GetInstallLogVersion().ToString().Equals("0.0.0.0"))
       {
-        XmlDocument xmlOldInstallLog = new XmlDocument();
+        var xmlOldInstallLog = new XmlDocument();
         xmlOldInstallLog.Load(InstallLog.Current.InstallLogPath);
         if (xmlOldInstallLog.SelectNodes("descendant::installingMods").Count > 0)
         {
@@ -47,7 +47,7 @@ namespace Fomm.InstallLogUpgraders
         }
       }
 
-      Version verOldVersion = InstallLog.Current.GetInstallLogVersion();
+      var verOldVersion = InstallLog.Current.GetInstallLogVersion();
       if (verOldVersion == InstallLog.CURRENT_VERSION)
       {
         return true;
@@ -55,7 +55,7 @@ namespace Fomm.InstallLogUpgraders
 
       //we only want one upgrade at a time happening to minimize the chances of
       // messed up install logs.
-      bool booUpgraded = false;
+      var booUpgraded = false;
       //lock (m_objLock)
       {
         InstallLog.Current.EnableLogFileRefresh = false;

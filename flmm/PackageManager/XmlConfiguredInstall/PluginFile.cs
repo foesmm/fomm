@@ -134,7 +134,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     ///or a value greater than 0 if this PluginFile is greater than the given PluginFile.</returns>
     public int CompareTo(PluginFile other)
     {
-      Int32 intResult = m_intPriority.CompareTo(other.Priority);
+      var intResult = m_intPriority.CompareTo(other.Priority);
       if (intResult == 0)
       {
         intResult = m_booIsFolder.CompareTo(other.IsFolder);

@@ -11,7 +11,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 
     public void CopyTo(Array array, int index)
     {
-      DataBlock[] blockArray = array as DataBlock[];
+      var blockArray = array as DataBlock[];
     }
 
     public int Count

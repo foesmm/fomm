@@ -20,12 +20,12 @@ namespace Fomm.InstallLogUpgraders
     /// </remarks>
     protected override void DoUpgrade()
     {
-      XmlDocument xmlInstallLog = new XmlDocument();
+      var xmlInstallLog = new XmlDocument();
       xmlInstallLog.LoadXml(InstallLog.Current.InstallLogPath);
 
-      XmlNode xndRoot = xmlInstallLog.SelectSingleNode("installLog");
-      XmlNode xndSdpEdits = xndRoot.SelectSingleNode("sdpEdits");
-      IList<string> lstMods = InstallLog.Current.GetModList();
+      var xndRoot = xmlInstallLog.SelectSingleNode("installLog");
+      var xndSdpEdits = xndRoot.SelectSingleNode("sdpEdits");
+      var lstMods = InstallLog.Current.GetModList();
 
       ProgressWorker.OverallProgressStep = 1;
       ProgressWorker.OverallProgressMaximum = lstMods.Count + xndSdpEdits.ChildNodes.Count;
@@ -34,12 +34,12 @@ namespace Fomm.InstallLogUpgraders
       //remove the sdp edit node...
       xndSdpEdits.ParentNode.RemoveChild(xndSdpEdits);
       //...and replace it with the game-specific edits node
-      XmlNode xndGameSpecificsValueEdits = xndRoot.AppendChild(xmlInstallLog.CreateElement("gameSpecificEdits"));
+      var xndGameSpecificsValueEdits = xndRoot.AppendChild(xmlInstallLog.CreateElement("gameSpecificEdits"));
       foreach (XmlNode xndSdpEdit in xndSdpEdits.ChildNodes)
       {
         ProgressWorker.StepOverallProgress();
-        XmlNode xndGameSpecificsValueEdit = xndGameSpecificsValueEdits.AppendChild(xmlInstallLog.CreateElement("edit"));
-        string strValueKey = String.Format("sdp:{0}/{1}", xndGameSpecificsValueEdits.Attributes["package"].Value,
+        var xndGameSpecificsValueEdit = xndGameSpecificsValueEdits.AppendChild(xmlInstallLog.CreateElement("edit"));
+        var strValueKey = String.Format("sdp:{0}/{1}", xndGameSpecificsValueEdits.Attributes["package"].Value,
                                            xndGameSpecificsValueEdits.Attributes["shader"].Value);
         xndGameSpecificsValueEdit.Attributes.Append(xmlInstallLog.CreateAttribute("key")).Value = strValueKey;
         xndGameSpecificsValueEdit.AppendChild(xndSdpEdit.FirstChild.Clone());
@@ -47,15 +47,15 @@ namespace Fomm.InstallLogUpgraders
       xmlInstallLog.Save(InstallLog.Current.InstallLogPath);
 
       //now update the mod info
-      foreach (string strMod in lstMods)
+      foreach (var strMod in lstMods)
       {
         ProgressWorker.StepOverallProgress();
         if (strMod.Equals(InstallLog.ORIGINAL_VALUES) || strMod.Equals(InstallLog.FOMM))
         {
           continue;
         }
-        string strModPath = Path.Combine(Program.GameMode.ModDirectory, strMod + ".fomod");
-        fomod fomodMod = new fomod(strModPath);
+        var strModPath = Path.Combine(Program.GameMode.ModDirectory, strMod + ".fomod");
+        var fomodMod = new fomod(strModPath);
         InstallLog.Current.UpdateMod(fomodMod);
       }
 

@@ -21,7 +21,7 @@ namespace Fomm.Controls
         return true;
       }
 
-      WizardControl wizWizardControl = (WizardControl) Control;
+      var wizWizardControl = (WizardControl) Control;
       if (wizWizardControl.PreviousButton.ClientRectangle.Contains(wizWizardControl.PreviousButton.PointToClient(point)))
       {
         return true;

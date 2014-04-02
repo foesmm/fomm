@@ -42,7 +42,7 @@ namespace Fomm.PackageManager
 
     private static void LoadFommScriptObject()
     {
-      byte[] data = Compile(@"
+      var data = Compile(@"
 using System;
 using fomm.Scripting;
 using Fomm.PackageManager;
@@ -67,15 +67,15 @@ class ScriptRunner {
     {
       cParams.OutputAssembly = ScriptOutputPath + (ScriptCount++) + ".dll";
         //Compatibility fix for mono, which needs a different assembly name each call
-      CompilerResults results = csCompiler.CompileAssemblyFromSource(cParams, code);
+      var results = csCompiler.CompileAssemblyFromSource(cParams, code);
       stdout = "";
-      for (int i = 0; i < results.Output.Count; i++)
+      for (var i = 0; i < results.Output.Count; i++)
       {
         stdout += results.Output[i] + Environment.NewLine;
       }
       if (results.Errors.HasErrors)
       {
-        sList msgs = new sList();
+        var msgs = new sList();
         foreach (CompilerError ce in results.Errors)
         {
           if (!ce.IsWarning)
@@ -91,7 +91,7 @@ class ScriptRunner {
       }
       if (results.Errors.HasWarnings)
       {
-        sList msgs = new sList();
+        var msgs = new sList();
         foreach (CompilerError ce in results.Errors)
         {
           if (ce.IsWarning)
@@ -111,7 +111,7 @@ class ScriptRunner {
       }
       else
       {
-        byte[] data = File.ReadAllBytes(results.PathToAssembly);
+        var data = File.ReadAllBytes(results.PathToAssembly);
         File.Delete(results.PathToAssembly);
         return data;
       }
@@ -132,11 +132,11 @@ class ScriptRunner {
       Compile(script, out errors, out warnings, out stdout);
       if (errors != null || warnings != null)
       {
-        StringBuilder sb = new StringBuilder();
+        var sb = new StringBuilder();
         if (errors != null)
         {
           sb.AppendLine("Errors:");
-          for (int i = 0; i < errors.Length; i++)
+          for (var i = 0; i < errors.Length; i++)
           {
             sb.AppendLine(errors[i]);
           }
@@ -144,7 +144,7 @@ class ScriptRunner {
         if (warnings != null)
         {
           sb.AppendLine("Warnings:");
-          for (int i = 0; i < warnings.Length; i++)
+          for (var i = 0; i < warnings.Length; i++)
           {
             sb.AppendLine(warnings[i]);
           }
@@ -174,15 +174,15 @@ class ScriptRunner {
           script, p_midInstaller
         });
       }
-      byte[] data = Compile(script);
+      var data = Compile(script);
       if (data == null)
       {
         MessageBox.Show("C# script failed to compile", "Error");
         return false;
       }
-      Assembly asm = AppDomain.CurrentDomain.Load(data, null, evidence);
+      var asm = AppDomain.CurrentDomain.Load(data, null, evidence);
       //Assembly asm = AppDomain.CurrentDomain.Load(data);
-      object s = asm.CreateInstance("Script");
+      var s = asm.CreateInstance("Script");
       if (s == null)
       {
         MessageBox.Show("C# or vb script did not contain a 'Script' class in the root namespace",
@@ -192,7 +192,7 @@ class ScriptRunner {
       try
       {
         MethodInfo mifMethod = null;
-        for (Type tpeScriptType = s.GetType(); mifMethod == null; tpeScriptType = tpeScriptType.BaseType)
+        for (var tpeScriptType = s.GetType(); mifMethod == null; tpeScriptType = tpeScriptType.BaseType)
         {
           mifMethod = tpeScriptType.GetMethod("Setup", new Type[]
           {
@@ -212,7 +212,7 @@ class ScriptRunner {
                                              Path.Combine(Program.GameMode.InstallInfoDirectory,
                                                                     "ScriptException.txt") + Environment.NewLine +
                                              "for full details", "Error");
-        string str = ex.ToString();
+        var str = ex.ToString();
         while (ex.InnerException != null)
         {
           ex = ex.InnerException;

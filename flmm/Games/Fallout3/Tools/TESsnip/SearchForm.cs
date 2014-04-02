@@ -32,10 +32,10 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     private void RecurseFullSearch(List<TreeNode> matches, TreeNode node)
     {
-      Record rec = node.Tag as Record;
+      var rec = node.Tag as Record;
       if (rec != null)
       {
-        foreach (SubRecord sr in rec.SubRecords)
+        foreach (var sr in rec.SubRecords)
         {
           if (cbPartial.Checked)
           {
@@ -55,7 +55,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       }
       else
       {
-        for (int i = 0; i < node.Nodes.Count; i++)
+        for (var i = 0; i < node.Nodes.Count; i++)
         {
           RecurseFullSearch(matches, node.Nodes[i]);
         }
@@ -64,7 +64,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     private void RecurseSearch(List<TreeNode> matches, TreeNode node)
     {
-      Record rec = node.Tag as Record;
+      var rec = node.Tag as Record;
       if (rec != null)
       {
         if (rbFormID.Checked)
@@ -94,7 +94,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       }
       else
       {
-        for (int i = 0; i < node.Nodes.Count; i++)
+        for (var i = 0; i < node.Nodes.Count; i++)
         {
           RecurseSearch(matches, node.Nodes[i]);
         }
@@ -115,7 +115,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       {
         searchString = tbSearch.Text.ToLowerInvariant();
       }
-      List<TreeNode> matches = new List<TreeNode>();
+      var matches = new List<TreeNode>();
 
       if (cbSelectedNode.Checked)
       {
@@ -135,7 +135,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       }
       else
       {
-        for (int i = 0; i < tv.Nodes.Count; i++)
+        for (var i = 0; i < tv.Nodes.Count; i++)
         {
           if (rbAll.Checked)
           {

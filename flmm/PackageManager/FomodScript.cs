@@ -64,7 +64,7 @@ namespace Fomm.PackageManager
     {
       get
       {
-        foreach (KeyValuePair<string, FomodScriptType> kvpFormat in m_dicFormats)
+        foreach (var kvpFormat in m_dicFormats)
         {
           if (kvpFormat.Value.Equals(m_fstType))
           {
@@ -75,7 +75,7 @@ namespace Fomm.PackageManager
       }
       set
       {
-        string strLoweredValue = (value ?? "").ToLowerInvariant();
+        var strLoweredValue = (value ?? "").ToLowerInvariant();
         if (!m_dicFormats.ContainsKey(strLoweredValue))
         {
           throw new ArgumentException("Unrecognized script name: " + value);

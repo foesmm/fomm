@@ -35,7 +35,7 @@ namespace Fomm.Controls
     {
       if (context != null)
       {
-        DropDownTabControl ddtTabControl = (DropDownTabControl) context.Instance;
+        var ddtTabControl = (DropDownTabControl) context.Instance;
         return ddtTabControl.TabPages.Contains((DropDownTabPage) value);
       }
       return false;

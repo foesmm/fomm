@@ -229,7 +229,7 @@ namespace Fomm.Controls
     {
       if (p_xspParticle is XmlSchemaElement)
       {
-        XmlSchemaElement xseElement = (XmlSchemaElement) p_xspParticle;
+        var xseElement = (XmlSchemaElement) p_xspParticle;
         if (p_stkCode.Peek().Equals(xseElement.Name))
         {
           p_stkCode.Pop();
@@ -240,7 +240,7 @@ namespace Fomm.Controls
 
           if (xseElement.ElementSchemaType is XmlSchemaComplexType)
           {
-            XmlSchemaComplexType xctElement = (XmlSchemaComplexType) xseElement.ElementSchemaType;
+            var xctElement = (XmlSchemaComplexType) xseElement.ElementSchemaType;
             if (xctElement.ContentTypeParticle != null)
             {
               return findElement(xctElement.ContentTypeParticle, p_stkCode);
@@ -254,10 +254,10 @@ namespace Fomm.Controls
       else if (p_xspParticle is XmlSchemaGroupBase)
       {
         //this handle sequences, choices, and all
-        XmlSchemaGroupBase xbsGroup = (XmlSchemaGroupBase) p_xspParticle;
+        var xbsGroup = (XmlSchemaGroupBase) p_xspParticle;
         foreach (XmlSchemaParticle xspParticle in xbsGroup.Items)
         {
-          XmlSchemaElement xseElement = findElement(xspParticle, p_stkCode);
+          var xseElement = findElement(xspParticle, p_stkCode);
           if (xseElement != null)
           {
             return xseElement;
@@ -276,16 +276,16 @@ namespace Fomm.Controls
     /// if there is no documentation in the schema.</returns>
     private string GetDocumentation(XmlSchemaAnnotated p_xsaAnnotatedElement)
     {
-      XmlSchemaAnnotation xsaAnnotation = p_xsaAnnotatedElement.Annotation;
+      var xsaAnnotation = p_xsaAnnotatedElement.Annotation;
       if (xsaAnnotation != null)
       {
-        StringBuilder stbDescriptions = new StringBuilder();
-        foreach (XmlSchemaObject xmoObject in xsaAnnotation.Items)
+        var stbDescriptions = new StringBuilder();
+        foreach (var xmoObject in xsaAnnotation.Items)
         {
           if (xmoObject is XmlSchemaDocumentation)
           {
-            XmlSchemaDocumentation xsdDocumentation = (XmlSchemaDocumentation) xmoObject;
-            foreach (XmlNode xndNode in xsdDocumentation.Markup)
+            var xsdDocumentation = (XmlSchemaDocumentation) xmoObject;
+            foreach (var xndNode in xsdDocumentation.Markup)
             {
               stbDescriptions.AppendLine(xndNode.Value);
             }
@@ -307,7 +307,7 @@ namespace Fomm.Controls
     {
       if (p_xspParticle is XmlSchemaElement)
       {
-        XmlSchemaElement xseElement = (XmlSchemaElement) p_xspParticle;
+        var xseElement = (XmlSchemaElement) p_xspParticle;
         return new List<KeyValuePair<string, string>>()
         {
           new KeyValuePair<string, string>(xseElement.Name, GetDocumentation(xseElement))
@@ -315,8 +315,8 @@ namespace Fomm.Controls
       }
       else if (p_xspParticle is XmlSchemaSequence)
       {
-        XmlSchemaSequence xssSequence = (XmlSchemaSequence) p_xspParticle;
-        List<KeyValuePair<string, string>> lstChoices = new List<KeyValuePair<string, string>>();
+        var xssSequence = (XmlSchemaSequence) p_xspParticle;
+        var lstChoices = new List<KeyValuePair<string, string>>();
         foreach (XmlSchemaParticle xspParticle in xssSequence.Items)
         {
           lstChoices.AddRange(GetChildrenElements(xspParticle));
@@ -329,8 +329,8 @@ namespace Fomm.Controls
       }
       else if (p_xspParticle is XmlSchemaChoice)
       {
-        XmlSchemaChoice xscChoice = (XmlSchemaChoice) p_xspParticle;
-        List<KeyValuePair<string, string>> lstChoices = new List<KeyValuePair<string, string>>();
+        var xscChoice = (XmlSchemaChoice) p_xspParticle;
+        var lstChoices = new List<KeyValuePair<string, string>>();
         foreach (XmlSchemaParticle xspParticle in xscChoice.Items)
         {
           lstChoices.AddRange(GetChildrenElements(xspParticle));
@@ -339,8 +339,8 @@ namespace Fomm.Controls
       }
       else if (p_xspParticle is XmlSchemaAll)
       {
-        XmlSchemaAll xsaAll = (XmlSchemaAll) p_xspParticle;
-        List<KeyValuePair<string, string>> lstChoices = new List<KeyValuePair<string, string>>();
+        var xsaAll = (XmlSchemaAll) p_xspParticle;
+        var lstChoices = new List<KeyValuePair<string, string>>();
         foreach (XmlSchemaParticle xspParticle in xsaAll.Items)
         {
           lstChoices.AddRange(GetChildrenElements(xspParticle));
@@ -367,7 +367,7 @@ namespace Fomm.Controls
     {
       if (p_xspParticle is XmlSchemaElement)
       {
-        XmlSchemaElement xseElement = (XmlSchemaElement) p_xspParticle;
+        var xseElement = (XmlSchemaElement) p_xspParticle;
         string strLastSibling = null;
         if (p_lstSiblings.Count > 0)
         {
@@ -377,9 +377,9 @@ namespace Fomm.Controls
       }
       else if (p_xspParticle is XmlSchemaSequence)
       {
-        XmlSchemaSequence xssSequence = (XmlSchemaSequence) p_xspParticle;
-        bool booFound = false;
-        Int32 i = 0;
+        var xssSequence = (XmlSchemaSequence) p_xspParticle;
+        var booFound = false;
+        var i = 0;
         XmlSchemaParticle xspParticle = null;
         for (i = 0; i < xssSequence.Items.Count; i++)
         {
@@ -394,7 +394,7 @@ namespace Fomm.Controls
         {
           if (p_lstChoices == null)
           {
-            Int32 intLastSiblingCount = 1;
+            var intLastSiblingCount = 1;
             for (intLastSiblingCount = p_lstSiblings.Count - 1;
                  (intLastSiblingCount > -1) &&
                  p_lstSiblings[intLastSiblingCount].Equals(p_lstSiblings[p_lstSiblings.Count - 1]);
@@ -404,7 +404,7 @@ namespace Fomm.Controls
             }
             intLastSiblingCount = p_lstSiblings.Count - intLastSiblingCount - 1;
 
-            List<KeyValuePair<string, string>> lstChoices = new List<KeyValuePair<string, string>>();
+            var lstChoices = new List<KeyValuePair<string, string>>();
             if (intLastSiblingCount < xspParticle.MaxOccurs)
             {
               lstChoices.AddRange(GetChildrenElements(xspParticle));
@@ -428,7 +428,7 @@ namespace Fomm.Controls
       }
       else if (p_xspParticle is XmlSchemaChoice)
       {
-        XmlSchemaChoice xscChoice = (XmlSchemaChoice) p_xspParticle;
+        var xscChoice = (XmlSchemaChoice) p_xspParticle;
         foreach (XmlSchemaParticle xspParticle in xscChoice.Items)
         {
           if (ContainsSiblings(xspParticle, ref p_lstChoices, p_lstSiblings))
@@ -439,8 +439,8 @@ namespace Fomm.Controls
       }
       else if (p_xspParticle is XmlSchemaAll)
       {
-        XmlSchemaAll xsaAll = (XmlSchemaAll) p_xspParticle;
-        bool booFound = false;
+        var xsaAll = (XmlSchemaAll) p_xspParticle;
+        var booFound = false;
         foreach (XmlSchemaParticle xspParticle in xsaAll.Items)
         {
           if (ContainsSiblings(xspParticle, ref p_lstChoices, p_lstSiblings))
@@ -453,13 +453,13 @@ namespace Fomm.Controls
         {
           if (p_lstChoices == null)
           {
-            List<KeyValuePair<string, string>> lstChoices = new List<KeyValuePair<string, string>>();
-            List<string> lstSibling = new List<string>();
-            Int32 intFoundCount = 0;
+            var lstChoices = new List<KeyValuePair<string, string>>();
+            var lstSibling = new List<string>();
+            var intFoundCount = 0;
             foreach (XmlSchemaParticle xspParticle in xsaAll.Items)
             {
               booFound = false;
-              foreach (string strSibling in p_lstSiblings)
+              foreach (var strSibling in p_lstSiblings)
               {
                 lstSibling.Clear();
                 lstSibling.Add(strSibling);
@@ -503,7 +503,7 @@ namespace Fomm.Controls
         case AutoCompleteType.Element:
           if (p_xseElement.ElementSchemaType is XmlSchemaComplexType)
           {
-            XmlSchemaComplexType xctElement = (XmlSchemaComplexType) p_xseElement.ElementSchemaType;
+            var xctElement = (XmlSchemaComplexType) p_xseElement.ElementSchemaType;
             if (xctElement.ContentTypeParticle != null)
             {
               if (!ContainsSiblings(xctElement.ContentTypeParticle, ref lstCompleteList, p_lstSiblings))
@@ -514,7 +514,7 @@ namespace Fomm.Controls
           }
           else
           {
-            XmlSchemaSimpleType xstElement = (XmlSchemaSimpleType) p_xseElement.ElementSchemaType;
+            var xstElement = (XmlSchemaSimpleType) p_xseElement.ElementSchemaType;
             switch (xstElement.TypeCode)
             {
               case XmlTypeCode.String:
@@ -533,10 +533,10 @@ namespace Fomm.Controls
           lstCompleteList = new List<KeyValuePair<string, string>>();
           if (p_xseElement.ElementSchemaType is XmlSchemaComplexType)
           {
-            XmlSchemaComplexType xctElement = (XmlSchemaComplexType) p_xseElement.ElementSchemaType;
+            var xctElement = (XmlSchemaComplexType) p_xseElement.ElementSchemaType;
             if (xctElement.Attributes != null)
             {
-              foreach (XmlSchemaObject xsoAttribute in xctElement.Attributes)
+              foreach (var xsoAttribute in xctElement.Attributes)
               {
                 if (xsoAttribute is XmlSchemaAttribute)
                 {
@@ -558,11 +558,11 @@ namespace Fomm.Controls
           lstCompleteList = new List<KeyValuePair<string, string>>();
           if (p_xseElement.ElementSchemaType is XmlSchemaComplexType)
           {
-            XmlSchemaComplexType xctElement = (XmlSchemaComplexType) p_xseElement.ElementSchemaType;
+            var xctElement = (XmlSchemaComplexType) p_xseElement.ElementSchemaType;
             if (xctElement.Attributes != null)
             {
               XmlSchemaAttribute xsaAttribute = null;
-              foreach (XmlSchemaObject attribute in xctElement.Attributes)
+              foreach (var attribute in xctElement.Attributes)
               {
                 if (attribute is XmlSchemaAttribute)
                 {
@@ -626,7 +626,7 @@ namespace Fomm.Controls
     private List<KeyValuePair<string, string>> ParseSchema(Stack<string> p_stkCode, List<string> p_lstSiblings,
                                                            AutoCompleteType p_rtvReturnType)
     {
-      List<KeyValuePair<string, string>> lstElements = new List<KeyValuePair<string, string>>();
+      var lstElements = new List<KeyValuePair<string, string>>();
       if (m_xstSchema == null)
       {
         return lstElements;
@@ -724,10 +724,10 @@ namespace Fomm.Controls
     /// <returns>The list of possible code copmletion values.</returns>
     public ICompletionData[] GenerateCompletionData(string p_strFileName, TextArea p_txaTextArea, char p_chrCharTyped)
     {
-      string strText = p_txaTextArea.Document.TextContent.Substring(0, p_txaTextArea.Caret.Offset);
-      Int32 intOpenTagPos = strText.LastIndexOf('<');
-      bool booInsideTag = intOpenTagPos > strText.LastIndexOf('>');
-      bool booInsideValue = false;
+      var strText = p_txaTextArea.Document.TextContent.Substring(0, p_txaTextArea.Caret.Offset);
+      var intOpenTagPos = strText.LastIndexOf('<');
+      var booInsideTag = intOpenTagPos > strText.LastIndexOf('>');
+      var booInsideValue = false;
 
       if (!booInsideTag && (p_chrCharTyped != '<'))
       {
@@ -736,8 +736,8 @@ namespace Fomm.Controls
 
       if (booInsideTag)
       {
-        Int32 intQuoteCount = 0;
-        for (Int32 intStartPos = intOpenTagPos;
+        var intQuoteCount = 0;
+        for (var intStartPos = intOpenTagPos;
              (intStartPos = strText.IndexOf('"', intStartPos + 1)) > -1;
              intQuoteCount++)
         {
@@ -749,19 +749,19 @@ namespace Fomm.Controls
       m_strPreSelection = null;
 
       //parse the buffer
-      MatchCollection mclTags = rgxTagContents.Matches(strText);
-      LinkedList<KeyValuePair<string, string>> lstTagAncestors = new LinkedList<KeyValuePair<string, string>>();
-      Dictionary<Int32, List<string>> dicSiblings = new Dictionary<int, List<string>>();
-      Int32 intDepth = -1;
+      var mclTags = rgxTagContents.Matches(strText);
+      var lstTagAncestors = new LinkedList<KeyValuePair<string, string>>();
+      var dicSiblings = new Dictionary<int, List<string>>();
+      var intDepth = -1;
       foreach (Match mtcTag in mclTags)
       {
-        string strTag = mtcTag.Groups[1].Value.Trim();
-        string strTagName = rgxTagName.Match(strTag).Groups[1].Value;
+        var strTag = mtcTag.Groups[1].Value.Trim();
+        var strTagName = rgxTagName.Match(strTag).Groups[1].Value;
         if (strTag.StartsWith("/"))
         {
-          Int32 intAcestorCount = lstTagAncestors.Count;
-          Int32 intLastIndex = intAcestorCount - 1;
-          LinkedListNode<KeyValuePair<string, string>> lndItem = lstTagAncestors.Last;
+          var intAcestorCount = lstTagAncestors.Count;
+          var intLastIndex = intAcestorCount - 1;
+          var lndItem = lstTagAncestors.Last;
           while ((lndItem != null) && !lndItem.Value.Key.Equals(strTagName))
           {
             intLastIndex--;
@@ -774,9 +774,9 @@ namespace Fomm.Controls
               lstTagAncestors.RemoveLast();
             }
             lstTagAncestors.RemoveLast();
-            Int32 intOldDepth = intDepth;
+            var intOldDepth = intDepth;
             intDepth -= intAcestorCount - intLastIndex;
-            for (Int32 i = intOldDepth + 1; i > intDepth + 1; i--)
+            for (var i = intOldDepth + 1; i > intDepth + 1; i--)
             {
               if (dicSiblings.ContainsKey(i))
               {
@@ -808,8 +808,8 @@ namespace Fomm.Controls
       {
         dicSiblings[intDepth] = new List<string>();
       }
-      Stack<string> stkAncestors = new Stack<string>();
-      for (LinkedListNode<KeyValuePair<string, string>> llnLast = lstTagAncestors.Last;
+      var stkAncestors = new Stack<string>();
+      for (var llnLast = lstTagAncestors.Last;
            llnLast != null;
            llnLast = llnLast.Previous)
       {
@@ -817,15 +817,15 @@ namespace Fomm.Controls
       }
 
       List<KeyValuePair<string, string>> lstComplete = null;
-      List<string> lstSiblings = dicSiblings[intDepth];
+      var lstSiblings = dicSiblings[intDepth];
       m_actCompleteType = AutoCompleteType.Element;
 
       if (booInsideValue || (booInsideTag && p_chrCharTyped.Equals('=')))
       {
-        string strOutsideText = strText;
+        var strOutsideText = strText;
         if (booInsideValue)
         {
-          Int32 intValueStart = strText.LastIndexOf('"');
+          var intValueStart = strText.LastIndexOf('"');
           strOutsideText = strText.Substring(0, intValueStart);
         }
         lstSiblings = new List<string>();
@@ -838,7 +838,7 @@ namespace Fomm.Controls
       }
       else if (booInsideTag && p_chrCharTyped.Equals(' '))
       {
-        string strTagContents = lstTagAncestors.Last.Value.Value;
+        var strTagContents = lstTagAncestors.Last.Value.Value;
         lstSiblings = new List<string>();
         foreach (Match mtcAttribute in rgxAttribute.Matches(strTagContents))
         {
@@ -848,10 +848,10 @@ namespace Fomm.Controls
       }
       lstComplete = ParseSchema(stkAncestors, lstSiblings, m_actCompleteType);
 
-      List<XmlCompletionData> k = new List<XmlCompletionData>();
+      var k = new List<XmlCompletionData>();
       if (lstComplete.Count > 0)
       {
-        foreach (KeyValuePair<string, string> kvpCompletion in lstComplete)
+        foreach (var kvpCompletion in lstComplete)
         {
           k.Add(new XmlCompletionData(m_actCompleteType, kvpCompletion.Key, kvpCompletion.Value));
         }
@@ -860,8 +860,8 @@ namespace Fomm.Controls
       m_dicExtraCompletionCharacters.Clear();
       if (GotAutoCompleteList != null)
       {
-        StringBuilder stbPath = new StringBuilder();
-        for (LinkedListNode<KeyValuePair<string, string>> llnFirst = lstTagAncestors.First;
+        var stbPath = new StringBuilder();
+        for (var llnFirst = lstTagAncestors.First;
              llnFirst != null;
              llnFirst = llnFirst.Next)
         {
@@ -872,14 +872,14 @@ namespace Fomm.Controls
           }
         }
 
-        string strLastWord = "";
+        var strLastWord = "";
         if (ProcessKey(p_chrCharTyped) == CompletionDataProviderKeyResult.NormalKey)
         {
-          TextWord twdLastWord =
+          var twdLastWord =
             p_txaTextArea.Document.GetLineSegment(p_txaTextArea.Caret.Line).GetWord(p_txaTextArea.Caret.Column - 1);
           if (booInsideValue)
           {
-            Int32 intValueStart = strText.LastIndexOf('"') + 1;
+            var intValueStart = strText.LastIndexOf('"') + 1;
             if (intValueStart < strText.Length)
             {
               strLastWord = strText.Substring(intValueStart) + p_chrCharTyped;
@@ -907,7 +907,7 @@ namespace Fomm.Controls
             ? null
             : strLastWord.Substring(0, strLastWord.Length - 1);
         }
-        AutoCompleteListEventArgs aclArgs = new AutoCompleteListEventArgs(k, stbPath.ToString(), lstSiblings.ToArray(),
+        var aclArgs = new AutoCompleteListEventArgs(k, stbPath.ToString(), lstSiblings.ToArray(),
                                                                           m_actCompleteType, strLastWord);
         GotAutoCompleteList(this, aclArgs);
         m_dicExtraCompletionCharacters[m_actCompleteType] = aclArgs.ExtraInsertionCharacters;
@@ -931,7 +931,7 @@ namespace Fomm.Controls
     public bool InsertAction(ICompletionData p_cdtData, TextArea p_txaTextArea, int p_intInsertionOffset, char p_chrKey)
     {
       p_txaTextArea.Caret.Position = p_txaTextArea.Document.OffsetToPosition(p_intInsertionOffset);
-      bool booInserted = p_cdtData.InsertAction(p_txaTextArea, p_chrKey);
+      var booInserted = p_cdtData.InsertAction(p_txaTextArea, p_chrKey);
 
       if (p_cdtData.Text.StartsWith("/"))
       {

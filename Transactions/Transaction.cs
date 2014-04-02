@@ -70,12 +70,12 @@ namespace fomm.Transactions
                                        TransactionInformation.Status);
       }
 
-      bool booVoteToCommit = true;
+      var booVoteToCommit = true;
 
-      for (Int32 i = m_lstNotifications.Count - 1; i >= 0; i--)
+      for (var i = m_lstNotifications.Count - 1; i >= 0; i--)
       {
-        IEnlistmentNotification entNotification = m_lstNotifications[i];
-        PreparingEnlistment lpeEnlistment = new PreparingEnlistment();
+        var entNotification = m_lstNotifications[i];
+        var lpeEnlistment = new PreparingEnlistment();
         entNotification.Prepare(lpeEnlistment);
         if (lpeEnlistment.VoteToCommit.HasValue)
         {
@@ -109,10 +109,10 @@ namespace fomm.Transactions
                                        TransactionInformation.Status);
       }
 
-      for (Int32 i = m_lstNotifications.Count - 1; i >= 0; i--)
+      for (var i = m_lstNotifications.Count - 1; i >= 0; i--)
       {
-        IEnlistmentNotification entNotification = m_lstNotifications[i];
-        PreparingEnlistment lpeEnlistment = new PreparingEnlistment();
+        var entNotification = m_lstNotifications[i];
+        var lpeEnlistment = new PreparingEnlistment();
         entNotification.Commit(lpeEnlistment);
         if (lpeEnlistment.DoneProcessing)
         {
@@ -140,10 +140,10 @@ namespace fomm.Transactions
         return;
       }
 
-      for (Int32 i = m_lstNotifications.Count - 1; i >= 0; i--)
+      for (var i = m_lstNotifications.Count - 1; i >= 0; i--)
       {
-        IEnlistmentNotification entNotification = m_lstNotifications[i];
-        Enlistment eltEnlistment = new Enlistment();
+        var entNotification = m_lstNotifications[i];
+        var eltEnlistment = new Enlistment();
         entNotification.InDoubt(eltEnlistment);
         if (eltEnlistment.DoneProcessing)
         {
@@ -162,12 +162,12 @@ namespace fomm.Transactions
         return;
       }
 
-      List<RollbackException.ExceptedResourceManager> lstExceptions =
+      var lstExceptions =
         new List<RollbackException.ExceptedResourceManager>();
-      for (Int32 i = m_lstNotifications.Count - 1; i >= 0; i--)
+      for (var i = m_lstNotifications.Count - 1; i >= 0; i--)
       {
-        IEnlistmentNotification entNotification = m_lstNotifications[i];
-        Enlistment eltEnlistment = new Enlistment();
+        var entNotification = m_lstNotifications[i];
+        var eltEnlistment = new Enlistment();
         try
         {
           entNotification.Rollback(eltEnlistment);

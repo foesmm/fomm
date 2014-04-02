@@ -58,7 +58,7 @@ namespace Fomm
 
     public static UInt64 GetPrivateProfileUInt64(string section, string value, UInt64 def, string path)
     {
-      string strValue = GetPrivateProfileString(section, value, null, path);
+      var strValue = GetPrivateProfileString(section, value, null, path);
       if (String.IsNullOrEmpty(strValue))
       {
         return def;
@@ -83,8 +83,8 @@ namespace Fomm
 
     public static string GetPrivateProfileString(string section, string value, string def, string path)
     {
-      byte[] buffer = new byte[256];
-      int len = GetPrivateProfileStringA(section, value, def, buffer, 256, path);
+      var buffer = new byte[256];
+      var len = GetPrivateProfileStringA(section, value, def, buffer, 256, path);
       return Encoding.Default.GetString(buffer, 0, len);
     }
 

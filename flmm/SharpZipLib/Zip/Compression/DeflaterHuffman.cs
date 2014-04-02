@@ -137,7 +137,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
       /// </summary>
       public void Reset()
       {
-        for (int i = 0; i < freqs.Length; i++)
+        for (var i = 0; i < freqs.Length; i++)
         {
           freqs[i] = 0;
         }
@@ -171,8 +171,8 @@ namespace Fomm.SharpZipLib.Zip.Compression
       public void BuildCodes()
       {
         //int numSymbols = freqs.Length;
-        int[] nextCode = new int[maxLength];
-        int code = 0;
+        var nextCode = new int[maxLength];
+        var code = 0;
 
         codes = new short[freqs.Length];
 
@@ -180,7 +180,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
         //          //Console.WriteLine("buildCodes: "+freqs.Length);
         //        }
 
-        for (int bits = 0; bits < maxLength; bits++)
+        for (var bits = 0; bits < maxLength; bits++)
         {
           nextCode[bits] = code;
           code += bl_counts[bits] << (15 - bits);
@@ -191,7 +191,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
           //          }
         }
 
-        for (int i = 0; i < numCodes; i++)
+        for (var i = 0; i < numCodes; i++)
         {
           int bits = length[i];
           if (bits > 0)
@@ -209,7 +209,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
 
       public void BuildTree()
       {
-        int numSymbols = freqs.Length;
+        var numSymbols = freqs.Length;
 
         /* heap is a priority queue, sorted by frequency, least frequent
         * nodes first.  The heap is a binary tree, with the property, that
@@ -219,16 +219,16 @@ namespace Fomm.SharpZipLib.Zip.Compression
         * The binary tree is encoded in an array:  0 is root node and
         * the nodes 2*n+1, 2*n+2 are the child nodes of node n.
         */
-        int[] heap = new int[numSymbols];
-        int heapLen = 0;
-        int maxCode = 0;
-        for (int n = 0; n < numSymbols; n++)
+        var heap = new int[numSymbols];
+        var heapLen = 0;
+        var maxCode = 0;
+        for (var n = 0; n < numSymbols; n++)
         {
           int freq = freqs[n];
           if (freq != 0)
           {
             // Insert n into heap
-            int pos = heapLen++;
+            var pos = heapLen++;
             int ppos;
             while (pos > 0 && freqs[heap[ppos = (pos - 1)/2]] > freq)
             {
@@ -248,19 +248,19 @@ namespace Fomm.SharpZipLib.Zip.Compression
         */
         while (heapLen < 2)
         {
-          int node = maxCode < 2 ? ++maxCode : 0;
+          var node = maxCode < 2 ? ++maxCode : 0;
           heap[heapLen++] = node;
         }
 
         numCodes = Math.Max(maxCode + 1, minNumCodes);
 
-        int numLeafs = heapLen;
-        int[] childs = new int[4*heapLen - 2];
-        int[] values = new int[2*heapLen - 1];
-        int numNodes = numLeafs;
-        for (int i = 0; i < heapLen; i++)
+        var numLeafs = heapLen;
+        var childs = new int[4*heapLen - 2];
+        var values = new int[2*heapLen - 1];
+        var numNodes = numLeafs;
+        for (var i = 0; i < heapLen; i++)
         {
-          int node = heap[i];
+          var node = heap[i];
           childs[2*i] = node;
           childs[2*i + 1] = -1;
           values[i] = freqs[node] << 8;
@@ -272,12 +272,12 @@ namespace Fomm.SharpZipLib.Zip.Compression
         */
         do
         {
-          int first = heap[0];
-          int last = heap[--heapLen];
+          var first = heap[0];
+          var last = heap[--heapLen];
 
           // Propagate the hole to the leafs of the heap
-          int ppos = 0;
-          int path = 1;
+          var ppos = 0;
+          var path = 1;
 
           while (path < heapLen)
           {
@@ -294,20 +294,20 @@ namespace Fomm.SharpZipLib.Zip.Compression
           /* Now propagate the last element down along path.  Normally
           * it shouldn't go too deep.
           */
-          int lastVal = values[last];
+          var lastVal = values[last];
           while ((path = ppos) > 0 && values[heap[ppos = (path - 1)/2]] > lastVal)
           {
             heap[path] = heap[ppos];
           }
           heap[path] = last;
 
-          int second = heap[0];
+          var second = heap[0];
 
           // Create a new node father of first and second
           last = numNodes++;
           childs[2*last] = first;
           childs[2*last + 1] = second;
-          int mindepth = Math.Min(values[first] & 0xff, values[second] & 0xff);
+          var mindepth = Math.Min(values[first] & 0xff, values[second] & 0xff);
           values[last] = lastVal = values[first] + values[second] - mindepth + 1;
 
           // Again, propagate the hole to the leafs
@@ -349,8 +349,8 @@ namespace Fomm.SharpZipLib.Zip.Compression
       /// <returns>Encoded length, the sum of frequencies * lengths</returns>
       public int GetEncodedLength()
       {
-        int len = 0;
-        for (int i = 0; i < freqs.Length; i++)
+        var len = 0;
+        for (var i = 0; i < freqs.Length; i++)
         {
           len += freqs[i]*length[i];
         }
@@ -363,12 +363,12 @@ namespace Fomm.SharpZipLib.Zip.Compression
       /// </summary>
       public void CalcBLFreq(Tree blTree)
       {
-        int curlen = -1; /* length of current code */
+        var curlen = -1; /* length of current code */
 
-        int i = 0;
+        var i = 0;
         while (i < numCodes)
         {
-          int count = 1; /* repeat count of the current code */
+          var count = 1; /* repeat count of the current code */
           int nextlen = length[i];
           int max_count; /* max repeat count */
           int min_count; /* min repeat count */
@@ -424,12 +424,12 @@ namespace Fomm.SharpZipLib.Zip.Compression
       /// <param name="blTree">Tree to write</param>
       public void WriteTree(Tree blTree)
       {
-        int curlen = -1; // length of current code
+        var curlen = -1; // length of current code
 
-        int i = 0;
+        var i = 0;
         while (i < numCodes)
         {
-          int count = 1; // repeat count of the current code
+          var count = 1; // repeat count of the current code
           int nextlen = length[i];
           int max_count; // max repeat count
           int min_count; // min repeat count
@@ -488,24 +488,24 @@ namespace Fomm.SharpZipLib.Zip.Compression
       private void BuildLength(int[] childs)
       {
         length = new byte[freqs.Length];
-        int numNodes = childs.Length/2;
-        int numLeafs = (numNodes + 1)/2;
-        int overflow = 0;
+        var numNodes = childs.Length/2;
+        var numLeafs = (numNodes + 1)/2;
+        var overflow = 0;
 
-        for (int i = 0; i < maxLength; i++)
+        for (var i = 0; i < maxLength; i++)
         {
           bl_counts[i] = 0;
         }
 
         // First calculate optimal bit lengths
-        int[] lengths = new int[numNodes];
+        var lengths = new int[numNodes];
         lengths[numNodes - 1] = 0;
 
-        for (int i = numNodes - 1; i >= 0; i--)
+        for (var i = numNodes - 1; i >= 0; i--)
         {
           if (childs[2*i + 1] != -1)
           {
-            int bitLength = lengths[i] + 1;
+            var bitLength = lengths[i] + 1;
             if (bitLength > maxLength)
             {
               bitLength = maxLength;
@@ -516,7 +516,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
           else
           {
             // A leaf node
-            int bitLength = lengths[i];
+            var bitLength = lengths[i];
             bl_counts[bitLength - 1]++;
             length[childs[2*i]] = (byte) lengths[i];
           }
@@ -535,7 +535,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
           return;
         }
 
-        int incrBitLen = maxLength - 1;
+        var incrBitLen = maxLength - 1;
         do
         {
           // Find the first bit length which could increase:
@@ -570,13 +570,13 @@ namespace Fomm.SharpZipLib.Zip.Compression
         * The nodes were inserted with decreasing frequency into the childs
         * array.
         */
-        int nodePtr = 2*numLeafs;
-        for (int bits = maxLength; bits != 0; bits--)
+        var nodePtr = 2*numLeafs;
+        for (var bits = maxLength; bits != 0; bits--)
         {
-          int n = bl_counts[bits - 1];
+          var n = bl_counts[bits - 1];
           while (n > 0)
           {
-            int childPtr = 2*childs[nodePtr++];
+            var childPtr = 2*childs[nodePtr++];
             if (childs[childPtr + 1] == -1)
             {
               // We found another leaf
@@ -621,7 +621,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
       staticLCodes = new short[LITERAL_NUM];
       staticLLength = new byte[LITERAL_NUM];
 
-      int i = 0;
+      var i = 0;
       while (i < 144)
       {
         staticLCodes[i] = BitReverse((0x030 + i) << 8);
@@ -696,7 +696,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
       pending.WriteBits(literalTree.numCodes - 257, 5);
       pending.WriteBits(distTree.numCodes - 1, 5);
       pending.WriteBits(blTreeCodes - 4, 4);
-      for (int rank = 0; rank < blTreeCodes; rank++)
+      for (var rank = 0; rank < blTreeCodes; rank++)
       {
         pending.WriteBits(blTree.length[BL_ORDER[rank]], 3);
       }
@@ -715,9 +715,9 @@ namespace Fomm.SharpZipLib.Zip.Compression
     /// </summary>
     public void CompressBlock()
     {
-      for (int i = 0; i < last_lit; i++)
+      for (var i = 0; i < last_lit; i++)
       {
-        int litlen = l_buf[i] & 0xff;
+        var litlen = l_buf[i] & 0xff;
         int dist = d_buf[i];
         if (dist-- != 0)
         {
@@ -725,16 +725,16 @@ namespace Fomm.SharpZipLib.Zip.Compression
           //            Console.Write("["+(dist+1)+","+(litlen+3)+"]: ");
           //          }
 
-          int lc = Lcode(litlen);
+          var lc = Lcode(litlen);
           literalTree.WriteSymbol(lc);
 
-          int bits = (lc - 261)/4;
+          var bits = (lc - 261)/4;
           if (bits > 0 && bits <= 5)
           {
             pending.WriteBits(litlen & ((1 << bits) - 1), bits);
           }
 
-          int dc = Dcode(dist);
+          var dc = Dcode(dist);
           distTree.WriteSymbol(dc);
 
           bits = dc/2 - 1;
@@ -815,24 +815,24 @@ namespace Fomm.SharpZipLib.Zip.Compression
       // Build bitlen tree
       blTree.BuildTree();
 
-      int blTreeCodes = 4;
-      for (int i = 18; i > blTreeCodes; i--)
+      var blTreeCodes = 4;
+      for (var i = 18; i > blTreeCodes; i--)
       {
         if (blTree.length[BL_ORDER[i]] > 0)
         {
           blTreeCodes = i + 1;
         }
       }
-      int opt_len = 14 + blTreeCodes*3 + blTree.GetEncodedLength() +
+      var opt_len = 14 + blTreeCodes*3 + blTree.GetEncodedLength() +
                     literalTree.GetEncodedLength() + distTree.GetEncodedLength() +
                     extra_bits;
 
-      int static_len = extra_bits;
-      for (int i = 0; i < LITERAL_NUM; i++)
+      var static_len = extra_bits;
+      for (var i = 0; i < LITERAL_NUM; i++)
       {
         static_len += literalTree.freqs[i]*staticLLength[i];
       }
-      for (int i = 0; i < DIST_NUM; i++)
+      for (var i = 0; i < DIST_NUM; i++)
       {
         static_len += distTree.freqs[i]*staticDLength[i];
       }
@@ -915,14 +915,14 @@ namespace Fomm.SharpZipLib.Zip.Compression
       d_buf[last_lit] = (short) distance;
       l_buf[last_lit++] = (byte) (length - 3);
 
-      int lc = Lcode(length - 3);
+      var lc = Lcode(length - 3);
       literalTree.freqs[lc]++;
       if (lc >= 265 && lc < 285)
       {
         extra_bits += (lc - 261)/4;
       }
 
-      int dc = Dcode(distance - 1);
+      var dc = Dcode(distance - 1);
       distTree.freqs[dc]++;
       if (dc >= 4)
       {
@@ -951,7 +951,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
         return 285;
       }
 
-      int code = 257;
+      var code = 257;
       while (length >= 8)
       {
         code += 4;
@@ -962,7 +962,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
 
     private static int Dcode(int distance)
     {
-      int code = 0;
+      var code = 0;
       while (distance >= 4)
       {
         code += 2;

@@ -69,7 +69,7 @@ namespace Fomm.Games
     {
       get
       {
-        string strDirectory = Path.Combine(InstallInfoDirectory, "overwrites");
+        var strDirectory = Path.Combine(InstallInfoDirectory, "overwrites");
         if (!Directory.Exists(strDirectory))
         {
           Directory.CreateDirectory(strDirectory);
@@ -229,7 +229,7 @@ class Script : GenericBaseScript {
     /// <returns>The appropriate parser extension for the specified configuration file version.</returns>
     public ParserExtension GetParserExtension(string p_strVersion)
     {
-      ParserExtension pexExtension = CreateParserExtension(p_strVersion);
+      var pexExtension = CreateParserExtension(p_strVersion);
       return pexExtension ?? new ParserExtension();
     }
 
@@ -249,7 +249,7 @@ class Script : GenericBaseScript {
     /// <returns>The path to the schema file for the specified configuration file version.</returns>
     public string GetXMLConfigSchemaPath(string p_strVersion)
     {
-      string strSchemaPath = GetGameSpecificXMLConfigSchemaPath(p_strVersion);
+      var strSchemaPath = GetGameSpecificXMLConfigSchemaPath(p_strVersion);
       return strSchemaPath ??
              Path.Combine(Program.ProgrammeInfoDirectory, String.Format("ModConfig{0}.xsd", p_strVersion));
     }
@@ -288,11 +288,11 @@ class Script : GenericBaseScript {
 
     public void buildPluginList()
     {
-      int i = 0;
+      var i = 0;
 
       fullModList.Clear();
 
-      foreach (string s in PluginManager.OrderedPluginList)
+      foreach (var s in PluginManager.OrderedPluginList)
       {
         LoadOrderInfo loi;
         loi.active = PluginManager.IsPluginActive(Path.Combine(Program.GameMode.PluginsPath, s));
@@ -319,15 +319,15 @@ class Script : GenericBaseScript {
 
     public int getPluginDependencyStatus(string name, bool showMessage = false)
     {
-      int ret = 0;
+      var ret = 0;
 
       // Don't check dependency information if plugin is inactive.
       if (PluginManager.IsPluginActive(Path.Combine(Program.GameMode.PluginsPath, name)))
       {
         // Get the list of masters of the queried plugin
-        Plugin plgPlugin = plgPlugin = new Plugin(Path.Combine(Program.GameMode.PluginsPath, name), true);
-        List<string> masters = new List<string>();
-        foreach (SubRecord sr in ((Record) plgPlugin.Records[0]).SubRecords)
+        var plgPlugin = new Plugin(Path.Combine(Program.GameMode.PluginsPath, name), true);
+        var masters = new List<string>();
+        foreach (var sr in ((Record) plgPlugin.Records[0]).SubRecords)
         {
           switch (sr.Name)
           {
@@ -337,7 +337,7 @@ class Script : GenericBaseScript {
           }
         }
 
-        int i = 0;
+        var i = 0;
         for (i = 0; i < masters.Count; i++)
         {
           if (fullModList.ContainsKey(masters[i]))

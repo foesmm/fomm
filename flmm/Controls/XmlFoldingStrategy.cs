@@ -46,8 +46,8 @@ namespace Fomm.Controls
       {
         return;
       }
-      string strStartLine = p_docDocument.GetText(p_docDocument.GetLineSegment(p_tlcStart.Line));
-      Int32 intStartFoldPos = strStartLine.IndexOf(">", p_tlcStart.Column);
+      var strStartLine = p_docDocument.GetText(p_docDocument.GetLineSegment(p_tlcStart.Line));
+      var intStartFoldPos = strStartLine.IndexOf(">", p_tlcStart.Column);
       if (intStartFoldPos < 0)
       {
         intStartFoldPos = strStartLine.Length;

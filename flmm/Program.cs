@@ -120,7 +120,7 @@ namespace Fomm
     {
       get
       {
-        string strPath = Path.Combine(PersonalDirectory, ProgrammeAcronym);
+        var strPath = Path.Combine(PersonalDirectory, ProgrammeAcronym);
         if (!Directory.Exists(strPath))
         {
           Directory.CreateDirectory(strPath);
@@ -164,7 +164,7 @@ namespace Fomm
     {
       get
       {
-        string strPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+        var strPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
         if (String.IsNullOrEmpty(strPath))
         {
           return
@@ -195,7 +195,7 @@ namespace Fomm
     /// </summary>
     private static void WriteHelp()
     {
-      StringBuilder stbHelp = new StringBuilder();
+      var stbHelp = new StringBuilder();
       stbHelp.AppendLine("Command line options:");
       stbHelp.AppendLine();
       stbHelp.AppendLine("*.fomod, *.rar, *.7z, *.zip");
@@ -211,12 +211,12 @@ namespace Fomm
       stbHelp.AppendLine();
       stbHelp.AppendLine("-game <game_name>");
       stbHelp.AppendLine("Run the mod manager in the specified mode. Valid values for <game_name> are:");
-      foreach (string strGame in Enum.GetNames(typeof (SupportedGameModes)))
+      foreach (var strGame in Enum.GetNames(typeof (SupportedGameModes)))
       {
         stbHelp.AppendLine("\t" + strGame);
       }
 
-      string strGameModeHelp = Fallout3GameMode.GetCommandLineHelp();
+      var strGameModeHelp = Fallout3GameMode.GetCommandLineHelp();
       if (!String.IsNullOrEmpty(strGameModeHelp))
       {
         stbHelp.AppendLine();
@@ -265,8 +265,8 @@ namespace Fomm
         return;
       }
 
-      SupportedGameModes sgmSelectedGame = Settings.Default.rememberedGameMode;
-      bool booChooseGame = true;
+      var sgmSelectedGame = Settings.Default.rememberedGameMode;
+      var booChooseGame = true;
       if ((args.Length > 0) && args[0].StartsWith("-"))
       {
         switch (args[0])
@@ -284,12 +284,12 @@ namespace Fomm
         }
       }
 
-      bool booChangeGameMode = false;
+      var booChangeGameMode = false;
       do
       {
         if (booChangeGameMode || (booChooseGame && !Settings.Default.rememberGameMode))
         {
-          GameModeSelector gmsSelector = new GameModeSelector();
+          var gmsSelector = new GameModeSelector();
           gmsSelector.ShowDialog();
           sgmSelectedGame = gmsSelector.SelectedGameMode;
         }
@@ -314,7 +314,7 @@ namespace Fomm
 
         if (!booChangeGameMode && (args.Length > 0))
         {
-          bool booArgsHandled = true;
+          var booArgsHandled = true;
           if (!args[0].StartsWith("-") && File.Exists(args[0]))
           {
             switch (Path.GetExtension(args[0]).ToLowerInvariant())
@@ -345,9 +345,9 @@ namespace Fomm
             switch (args[0])
             {
               case "-u":
-                string strGuid = args[1];
-                string strPath = Environment.GetFolderPath(Environment.SpecialFolder.System);
-                ProcessStartInfo psiInfo = new ProcessStartInfo(strPath + @"\msiexec.exe", "/x " + strGuid);
+                var strGuid = args[1];
+                var strPath = Environment.GetFolderPath(Environment.SpecialFolder.System);
+                var psiInfo = new ProcessStartInfo(strPath + @"\msiexec.exe", "/x " + strGuid);
                 Process.Start(psiInfo);
                 return;
               default:
@@ -386,13 +386,13 @@ namespace Fomm
           }
 
           //Check that we're in fallout's directory and that we have write access
-          bool cancellaunch = true;
+          var cancellaunch = true;
           if (!Settings.Default.NoUACCheck || Array.IndexOf<string>(args, "-no-uac-check") == -1)
           {
             try
             {
               File.Delete("limited");
-              string strVirtualStore =
+              var strVirtualStore =
                 Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "VirtualStore\\");
               strVirtualStore = Path.Combine(strVirtualStore, Directory.GetCurrentDirectory().Remove(0, 3));
               strVirtualStore = Path.Combine(strVirtualStore, "limited");
@@ -400,7 +400,7 @@ namespace Fomm
               {
                 File.Delete(strVirtualStore);
               }
-              FileStream fs = File.Create("limited");
+              var fs = File.Create("limited");
               fs.Close();
               if (File.Exists(strVirtualStore))
               {
@@ -440,7 +440,7 @@ namespace Fomm
             Directory.CreateDirectory(tmpPath);
           }
 
-          string str7zPath = Path.Combine(ProgrammeInfoDirectory, "7z-32bit.dll");
+          var str7zPath = Path.Combine(ProgrammeInfoDirectory, "7z-32bit.dll");
           SevenZipCompressor.SetLibraryPath(str7zPath);
 
           if (!GameMode.Init())
@@ -452,7 +452,7 @@ namespace Fomm
           //check to see if we need to upgrade the install log format
           if (InstallLog.Current.GetInstallLogVersion() != InstallLog.CURRENT_VERSION)
           {
-            InstallLogUpgrader iluUgrader = new InstallLogUpgrader();
+            var iluUgrader = new InstallLogUpgrader();
             try
             {
               MessageBox.Show(
@@ -476,13 +476,13 @@ namespace Fomm
           InstallLog.Reload();
 
           //let's uninstall any fomods that have been deleted since we last ran
-          IList<FomodInfo> lstMods = InstallLog.Current.GetVersionedModList();
-          foreach (FomodInfo fifMod in lstMods)
+          var lstMods = InstallLog.Current.GetVersionedModList();
+          foreach (var fifMod in lstMods)
           {
-            string strFomodPath = Path.Combine(GameMode.ModDirectory, fifMod.BaseName + ".fomod");
+            var strFomodPath = Path.Combine(GameMode.ModDirectory, fifMod.BaseName + ".fomod");
             if (!File.Exists(strFomodPath))
             {
-              string strMessage = "'" + fifMod.BaseName + ".fomod' was deleted without being deactivated. " +
+              var strMessage = "'" + fifMod.BaseName + ".fomod' was deleted without being deactivated. " +
                                   Environment.NewLine +
                                   "If you don't uninstall the FOMod, FOMM will close and you will " +
                                   "have to put the FOMod back in the mods folder." + Environment.NewLine +
@@ -492,7 +492,7 @@ namespace Fomm
               {
                 return;
               }
-              ModUninstaller mduUninstaller = new ModUninstaller(fifMod.BaseName);
+              var mduUninstaller = new ModUninstaller(fifMod.BaseName);
               mduUninstaller.Uninstall(true);
             }
           }
@@ -500,7 +500,7 @@ namespace Fomm
           try
           {
             //check to see if any fomod versions have changed, and whether to upgrade them
-            UpgradeScanner upsScanner = new UpgradeScanner();
+            var upsScanner = new UpgradeScanner();
             upsScanner.Scan();
           }
           catch (Exception e)
@@ -513,7 +513,7 @@ namespace Fomm
           {
             try
             {
-              MainForm frmMain = new MainForm(autoLoad);
+              var frmMain = new MainForm(autoLoad);
               Application.Run(frmMain);
               booChangeGameMode = frmMain.ChangeGameMode;
             }
@@ -526,8 +526,8 @@ namespace Fomm
           //backup the install log
           if (File.Exists(InstallLog.Current.InstallLogPath))
           {
-            string strLogPath = InstallLog.Current.InstallLogPath + ".bak";
-            FileInfo fifInstallLog = new FileInfo(InstallLog.Current.InstallLogPath);
+            var strLogPath = InstallLog.Current.InstallLogPath + ".bak";
+            var fifInstallLog = new FileInfo(InstallLog.Current.InstallLogPath);
             FileInfo fifInstallLogBak = null;
             if (File.Exists(strLogPath))
             {
@@ -536,7 +536,7 @@ namespace Fomm
 
             if ((fifInstallLogBak == null) || (fifInstallLogBak.LastWriteTimeUtc != fifInstallLog.LastWriteTimeUtc))
             {
-              for (Int32 i = 4; i > 0; i--)
+              for (var i = 4; i > 0; i--)
               {
                 if (File.Exists(strLogPath + i))
                 {
@@ -588,13 +588,13 @@ namespace Fomm
         {
           PermissionsManager.CurrentPermissions.Assert();
         }
-        string msg = DateTime.Now.ToLongDateString() + " - " + DateTime.Now.ToLongTimeString() + Environment.NewLine +
+        var msg = DateTime.Now.ToLongDateString() + " - " + DateTime.Now.ToLongTimeString() + Environment.NewLine +
                      "Fomm " + Version + (monoMode ? " (Mono)" : "") + Environment.NewLine + "OS version: " +
                      Environment.OSVersion.ToString() +
                      Environment.NewLine + Environment.NewLine + ex.ToString() + Environment.NewLine;
         if (ex is BadImageFormatException)
         {
-          BadImageFormatException biex = (BadImageFormatException) ex;
+          var biex = (BadImageFormatException) ex;
           msg += "File Name:\t" + biex.FileName + Environment.NewLine;
           msg += "Fusion Log:\t" + biex.FusionLog + Environment.NewLine;
         }
@@ -603,7 +603,7 @@ namespace Fomm
           ex = ex.InnerException;
           msg += "Inner Exception:" + Environment.NewLine + ex.ToString() + Environment.NewLine;
         }
-        string strDumpFile = Path.Combine(LocalApplicationDataPath, "crashdump.txt");
+        var strDumpFile = Path.Combine(LocalApplicationDataPath, "crashdump.txt");
         File.WriteAllText(strDumpFile, msg);
       }
     }
@@ -636,9 +636,9 @@ namespace Fomm
 
     internal static string CreateTempDirectory()
     {
-      for (int i = 0; i < 32000; i++)
+      for (var i = 0; i < 32000; i++)
       {
-        string tmp = Path.Combine(tmpPath, i.ToString());
+        var tmp = Path.Combine(tmpPath, i.ToString());
         if (!Directory.Exists(tmp))
         {
           Directory.CreateDirectory(tmp);

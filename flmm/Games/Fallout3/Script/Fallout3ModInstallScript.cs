@@ -357,14 +357,14 @@ namespace Fomm.Games.Fallout3.Script
     /// <param name="p_strValueKey">The key of the game-specific value to unedit.</param>
     public override bool UneditGameSpecificValue(string p_strFomodBaseName, string p_strValueKey)
     {
-      string[] strKey = p_strValueKey.Split(new char[]
+      var strKey = p_strValueKey.Split(new char[]
       {
         ':'
       }, 2);
       switch (strKey[0])
       {
         case "sdp":
-          string[] strShaderInfo = strKey[1].Split('/');
+          var strShaderInfo = strKey[1].Split('/');
           UneditShader(Int32.Parse(strShaderInfo[0]), strShaderInfo[1]);
           return true;
       }
@@ -388,11 +388,11 @@ namespace Fomm.Games.Fallout3.Script
     /// <exception cref="ShaderException">Thrown if the shader could not be edited.</exception>
     public virtual bool EditShader(int p_intPackage, string p_strShaderName, byte[] p_bteData)
     {
-      string strShaderKey = String.Format("sdp:{0}/{1}", p_intPackage, p_strShaderName);
-      string strOldMod = InstallLog.Current.GetCurrentGameSpecifcValueEditorModName(strShaderKey);
+      var strShaderKey = String.Format("sdp:{0}/{1}", p_intPackage, p_strShaderName);
+      var strOldMod = InstallLog.Current.GetCurrentGameSpecifcValueEditorModName(strShaderKey);
       if (strOldMod != null)
       {
-        string strMessage = String.Format("Shader '{0}' in package '{1}' has already been overwritten by '{2}'\n" +
+        var strMessage = String.Format("Shader '{0}' in package '{1}' has already been overwritten by '{2}'\n" +
                                           "Overwrite the changes?", p_strShaderName, p_intPackage, strOldMod);
         if (
           System.Windows.Forms.MessageBox.Show(strMessage, "Confirm Overwrite", MessageBoxButtons.YesNo,
@@ -431,11 +431,11 @@ namespace Fomm.Games.Fallout3.Script
     /// <exception cref="ShaderException">Thrown if the shader could not be unedited.</exception>
     protected void UneditShader(int p_intPackage, string p_strShaderName)
     {
-      string strLoweredShaderName = p_strShaderName.ToLowerInvariant();
+      var strLoweredShaderName = p_strShaderName.ToLowerInvariant();
 
-      string strShaderKey = String.Format("sdp:{0}/{1}", p_intPackage, p_strShaderName);
-      string strKey = InstallLog.Current.GetModKey(Fomod.BaseName);
-      string strCurrentOwnerKey = InstallLog.Current.GetCurrentGameSpecifcValueEditorModKey(strShaderKey);
+      var strShaderKey = String.Format("sdp:{0}/{1}", p_intPackage, p_strShaderName);
+      var strKey = InstallLog.Current.GetModKey(Fomod.BaseName);
+      var strCurrentOwnerKey = InstallLog.Current.GetCurrentGameSpecifcValueEditorModKey(strShaderKey);
       //if we didn't edit the shader, then leave it alone
       if (!strKey.Equals(strCurrentOwnerKey))
       {
@@ -444,7 +444,7 @@ namespace Fomm.Games.Fallout3.Script
 
       //if we did edit the shader, replace it with the shader we overwrote
       // if we didn't overwrite the shader, then just delete it
-      byte[] btePreviousData = InstallLog.Current.GetPreviousGameSpecifcValueData(strShaderKey);
+      var btePreviousData = InstallLog.Current.GetPreviousGameSpecifcValueData(strShaderKey);
       if (btePreviousData != null)
       {
         /*TODO: I'm not sure if this is the strictly correct way to unedit a shader
@@ -511,14 +511,14 @@ namespace Fomm.Games.Fallout3.Script
     public virtual string GetRendererInfo(string p_strValue)
     {
       PermissionsManager.CurrentPermissions.Assert();
-      string[] strLines = File.ReadAllLines(((Fallout3GameMode) Program.GameMode).FORendererFile);
-      for (int i = 1; i < strLines.Length; i++)
+      var strLines = File.ReadAllLines(((Fallout3GameMode) Program.GameMode).FORendererFile);
+      for (var i = 1; i < strLines.Length; i++)
       {
         if (!strLines[i].Contains(":"))
         {
           continue;
         }
-        string strCurrentValue = strLines[i].Remove(strLines[i].IndexOf(':')).Trim();
+        var strCurrentValue = strLines[i].Remove(strLines[i].IndexOf(':')).Trim();
         if (strCurrentValue.Equals(p_strValue))
         {
           return strLines[i].Substring(strLines[i].IndexOf(':') + 1).Trim();
@@ -589,10 +589,10 @@ namespace Fomm.Games.Fallout3.Script
         string strWritePath = null;
         if (!lstInstallers[lstInstallers.Count - 1].Equals(Fomod.BaseName))
         {
-          string strDirectory = Path.GetDirectoryName(p_strPath);
-          string strBackupPath = Path.Combine(Program.GameMode.OverwriteDirectory, strDirectory);
-          string strOldModKey = InstallLog.Current.GetModKey(Fomod.BaseName);
-          string strFile = strOldModKey + "_" + Path.GetFileName(p_strPath);
+          var strDirectory = Path.GetDirectoryName(p_strPath);
+          var strBackupPath = Path.Combine(Program.GameMode.OverwriteDirectory, strDirectory);
+          var strOldModKey = InstallLog.Current.GetModKey(Fomod.BaseName);
+          var strFile = strOldModKey + "_" + Path.GetFileName(p_strPath);
           strWritePath = Path.Combine(strBackupPath, strFile);
         }
         else

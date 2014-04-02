@@ -94,7 +94,7 @@ namespace fomm.Scripting
       }
       catch (Exception e)
       {
-        string strError = e.Message;
+        var strError = e.Message;
         if (e.InnerException != null)
         {
           strError += "\n" + e.InnerException.Message;
@@ -124,7 +124,7 @@ namespace fomm.Scripting
       }
       catch (Exception e)
       {
-        string strError = e.Message;
+        var strError = e.Message;
         if (e.InnerException != null)
         {
           strError += "\n" + e.InnerException.Message;
@@ -140,21 +140,21 @@ namespace fomm.Scripting
 
     private static string[] SplitLine(string s)
     {
-      List<string> temp = new List<string>();
-      bool WasLastSpace = false;
-      bool InQuotes = false;
-      bool WasLastEscape = false;
-      bool DoubleBreak = false;
-      bool InVar = false;
-      string CurrentWord = "";
-      string CurrentVar = "";
+      var temp = new List<string>();
+      var WasLastSpace = false;
+      var InQuotes = false;
+      var WasLastEscape = false;
+      var DoubleBreak = false;
+      var InVar = false;
+      var CurrentWord = "";
+      var CurrentVar = "";
 
       if (s.Length == 0)
       {
         return new string[0];
       }
       s += " ";
-      for (int i = 0; i < s.Length; i++)
+      for (var i = 0; i < s.Length; i++)
       {
         switch (s[i])
         {
@@ -468,9 +468,9 @@ namespace fomm.Scripting
       string[] items;
       string[] previews;
       string[] descs;
-      int argsperoption = 1 + (Previews ? 1 : 0) + (Descriptions ? 1 : 0);
+      var argsperoption = 1 + (Previews ? 1 : 0) + (Descriptions ? 1 : 0);
       //Remove first 2 arguments
-      string title = line[1];
+      var title = line[1];
       items = new string[line.Length - 2];
       Array.Copy(line, 2, items, 0, line.Length - 2);
       line = items;
@@ -484,7 +484,7 @@ namespace fomm.Scripting
       items = new string[line.Length/argsperoption];
       previews = Previews ? new string[line.Length/argsperoption] : null;
       descs = Descriptions ? new string[line.Length/argsperoption] : null;
-      for (int i = 0; i < line.Length/argsperoption; i++)
+      for (var i = 0; i < line.Length/argsperoption; i++)
       {
         items[i] = line[i*argsperoption];
         if (Previews)
@@ -506,7 +506,7 @@ namespace fomm.Scripting
       //Check for previews
       if (previews != null)
       {
-        for (int i = 0; i < previews.Length; i++)
+        for (var i = 0; i < previews.Length; i++)
         {
           if (previews[i] == "None")
           {
@@ -515,9 +515,9 @@ namespace fomm.Scripting
         }
       }
       //Display select form
-      int[] indices = (int[]) ExecuteMethod(() => m_midInstaller.Script.Select(items, previews, descs, title, many));
-      string[] result = new string[indices.Length];
-      for (int i = 0; i < indices.Length; i++)
+      var indices = (int[]) ExecuteMethod(() => m_midInstaller.Script.Select(items, previews, descs, title, many));
+      var result = new string[indices.Length];
+      for (var i = 0; i < indices.Length; i++)
       {
         result[i] = "Case " + items[indices[i]];
       }
@@ -570,7 +570,7 @@ namespace fomm.Scripting
 
     private static FlowControlStruct FunctionFor(string[] line, int LineNo)
     {
-      FlowControlStruct NullLoop = new FlowControlStruct(2);
+      var NullLoop = new FlowControlStruct(2);
       if (line.Length < 3)
       {
         Warn("Missing arguments to function 'For'");
@@ -600,8 +600,8 @@ namespace fomm.Scripting
             Warn("Invalid argument to 'For Count'");
             return NullLoop;
           }
-          List<string> steps = new List<string>();
-          for (int i = start; i <= end; i += step)
+          var steps = new List<string>();
+          for (var i = start; i <= end; i += step)
           {
             steps.Add(i.ToString());
           }
@@ -619,8 +619,8 @@ namespace fomm.Scripting
             Warn("Unexpected extra arguments to 'For Each DataFile'");
           }
 
-          string[] strFiles = (string[]) ExecuteMethod(() => m_midInstaller.Fomod.GetFileList().ToArray());
-          for (Int32 i = strFiles.Length - 1; i >= 0; i--)
+          var strFiles = (string[]) ExecuteMethod(() => m_midInstaller.Fomod.GetFileList().ToArray());
+          for (var i = strFiles.Length - 1; i >= 0; i--)
           {
             strFiles[i] = strFiles[i].Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
           }
@@ -767,7 +767,7 @@ namespace fomm.Scripting
         Warn("Invalid argument to function 'EditShader'\n'" + line[1] + "' is not a valid shader package ID");
         return;
       }
-      byte[] bteData = (byte[]) ExecuteMethod(() => m_midInstaller.Fomod.GetFile(line[3]));
+      var bteData = (byte[]) ExecuteMethod(() => m_midInstaller.Fomod.GetFile(line[3]));
       ExecuteMethod(() => Script.EditShader(package, line[2], bteData));
     }
 
@@ -1002,11 +1002,11 @@ namespace fomm.Scripting
       {
         Warn("Unexpected extra arguments to function 'ExecLines'");
       }
-      string[] lines = line[1].Split(new string[]
+      var lines = line[1].Split(new string[]
       {
         Environment.NewLine
       }, StringSplitOptions.RemoveEmptyEntries);
-      foreach (string s in lines)
+      foreach (var s in lines)
       {
         queue.Enqueue(s);
       }
@@ -1035,9 +1035,9 @@ namespace fomm.Scripting
       index = func.IndexOf("(");
       while (index != -1)
       {
-        int count = 1;
-        List<string> newfunc = new List<string>();
-        for (int i = index + 1; i < func.Count; i++)
+        var count = 1;
+        var newfunc = new List<string>();
+        for (var i = index + 1; i < func.Count; i++)
         {
           if (func[i] == "(")
           {
@@ -1069,7 +1069,7 @@ namespace fomm.Scripting
       index = func.IndexOf("not");
       while (index != -1)
       {
-        int i = int.Parse(func[index + 1]);
+        var i = int.Parse(func[index + 1]);
         i = ~i;
         func[index + 1] = i.ToString();
         func.RemoveAt(index);
@@ -1080,7 +1080,7 @@ namespace fomm.Scripting
       index = func.IndexOf("not");
       while (index != -1)
       {
-        int i = int.Parse(func[index - 1]) & int.Parse(func[index + 1]);
+        var i = int.Parse(func[index - 1]) & int.Parse(func[index + 1]);
         func[index + 1] = i.ToString();
         func.RemoveRange(index - 1, 2);
         index = func.IndexOf("not");
@@ -1090,7 +1090,7 @@ namespace fomm.Scripting
       index = func.IndexOf("or");
       while (index != -1)
       {
-        int i = int.Parse(func[index - 1]) | int.Parse(func[index + 1]);
+        var i = int.Parse(func[index - 1]) | int.Parse(func[index + 1]);
         func[index + 1] = i.ToString();
         func.RemoveRange(index - 1, 2);
         index = func.IndexOf("or");
@@ -1100,7 +1100,7 @@ namespace fomm.Scripting
       index = func.IndexOf("xor");
       while (index != -1)
       {
-        int i = int.Parse(func[index - 1]) ^ int.Parse(func[index + 1]);
+        var i = int.Parse(func[index - 1]) ^ int.Parse(func[index + 1]);
         func[index + 1] = i.ToString();
         func.RemoveRange(index - 1, 2);
         index = func.IndexOf("xor");
@@ -1110,7 +1110,7 @@ namespace fomm.Scripting
       index = func.IndexOf("mod");
       while (index != -1)
       {
-        int i = int.Parse(func[index - 1])%int.Parse(func[index + 1]);
+        var i = int.Parse(func[index - 1])%int.Parse(func[index + 1]);
         func[index + 1] = i.ToString();
         func.RemoveRange(index - 1, 2);
         index = func.IndexOf("mod");
@@ -1120,7 +1120,7 @@ namespace fomm.Scripting
       index = func.IndexOf("%");
       while (index != -1)
       {
-        int i = int.Parse(func[index - 1])%int.Parse(func[index + 1]);
+        var i = int.Parse(func[index - 1])%int.Parse(func[index + 1]);
         func[index + 1] = i.ToString();
         func.RemoveRange(index - 1, 2);
         index = func.IndexOf("%");
@@ -1130,7 +1130,7 @@ namespace fomm.Scripting
       index = func.IndexOf("^");
       while (index != -1)
       {
-        int i = (int) Math.Pow(int.Parse(func[index - 1]), int.Parse(func[index + 1]));
+        var i = (int) Math.Pow(int.Parse(func[index - 1]), int.Parse(func[index + 1]));
         func[index + 1] = i.ToString();
         func.RemoveRange(index - 1, 2);
         index = func.IndexOf("^");
@@ -1140,7 +1140,7 @@ namespace fomm.Scripting
       index = func.IndexOf("/");
       while (index != -1)
       {
-        int i = int.Parse(func[index - 1])/int.Parse(func[index + 1]);
+        var i = int.Parse(func[index - 1])/int.Parse(func[index + 1]);
         func[index + 1] = i.ToString();
         func.RemoveRange(index - 1, 2);
         index = func.IndexOf("/");
@@ -1150,7 +1150,7 @@ namespace fomm.Scripting
       index = func.IndexOf("*");
       while (index != -1)
       {
-        int i = int.Parse(func[index - 1])*int.Parse(func[index + 1]);
+        var i = int.Parse(func[index - 1])*int.Parse(func[index + 1]);
         func[index + 1] = i.ToString();
         func.RemoveRange(index - 1, 2);
         index = func.IndexOf("*");
@@ -1160,7 +1160,7 @@ namespace fomm.Scripting
       index = func.IndexOf("+");
       while (index != -1)
       {
-        int i = int.Parse(func[index - 1]) + int.Parse(func[index + 1]);
+        var i = int.Parse(func[index - 1]) + int.Parse(func[index + 1]);
         func[index + 1] = i.ToString();
         func.RemoveRange(index - 1, 2);
         index = func.IndexOf("+");
@@ -1170,7 +1170,7 @@ namespace fomm.Scripting
       index = func.IndexOf("-");
       while (index != -1)
       {
-        int i = int.Parse(func[index - 1]) - int.Parse(func[index + 1]);
+        var i = int.Parse(func[index - 1]) - int.Parse(func[index + 1]);
         func[index + 1] = i.ToString();
         func.RemoveRange(index - 1, 2);
         index = func.IndexOf("-");
@@ -1199,9 +1199,9 @@ namespace fomm.Scripting
       index = func.IndexOf("(");
       while (index != -1)
       {
-        int count = 1;
-        List<string> newfunc = new List<string>();
-        for (int i = index; i < func.Count; i++)
+        var count = 1;
+        var newfunc = new List<string>();
+        for (var i = index; i < func.Count; i++)
         {
           if (func[i] == "(")
           {
@@ -1314,7 +1314,7 @@ namespace fomm.Scripting
       index = func.IndexOf("mod");
       while (index != -1)
       {
-        double i = double.Parse(func[index - 1])%double.Parse(func[index + 1]);
+        var i = double.Parse(func[index - 1])%double.Parse(func[index + 1]);
         func[index + 1] = i.ToString();
         func.RemoveRange(index - 1, 2);
         index = func.IndexOf("mod");
@@ -1324,7 +1324,7 @@ namespace fomm.Scripting
       index = func.IndexOf("%");
       while (index != -1)
       {
-        double i = double.Parse(func[index - 1])%double.Parse(func[index + 1]);
+        var i = double.Parse(func[index - 1])%double.Parse(func[index + 1]);
         func[index + 1] = i.ToString();
         func.RemoveRange(index - 1, 2);
         index = func.IndexOf("%");
@@ -1334,7 +1334,7 @@ namespace fomm.Scripting
       index = func.IndexOf("^");
       while (index != -1)
       {
-        double i = Math.Pow(double.Parse(func[index - 1]), double.Parse(func[index + 1]));
+        var i = Math.Pow(double.Parse(func[index - 1]), double.Parse(func[index + 1]));
         func[index + 1] = i.ToString();
         func.RemoveRange(index - 1, 2);
         index = func.IndexOf("^");
@@ -1344,7 +1344,7 @@ namespace fomm.Scripting
       index = func.IndexOf("/");
       while (index != -1)
       {
-        double i = double.Parse(func[index - 1])/double.Parse(func[index + 1]);
+        var i = double.Parse(func[index - 1])/double.Parse(func[index + 1]);
         func[index + 1] = i.ToString();
         func.RemoveRange(index - 1, 2);
         index = func.IndexOf("/");
@@ -1354,7 +1354,7 @@ namespace fomm.Scripting
       index = func.IndexOf("*");
       while (index != -1)
       {
-        double i = double.Parse(func[index - 1])*double.Parse(func[index + 1]);
+        var i = double.Parse(func[index - 1])*double.Parse(func[index + 1]);
         func[index + 1] = i.ToString();
         func.RemoveRange(index - 1, 2);
         index = func.IndexOf("*");
@@ -1364,7 +1364,7 @@ namespace fomm.Scripting
       index = func.IndexOf("+");
       while (index != -1)
       {
-        double i = double.Parse(func[index - 1]) + double.Parse(func[index + 1]);
+        var i = double.Parse(func[index - 1]) + double.Parse(func[index + 1]);
         func[index + 1] = i.ToString();
         func.RemoveRange(index - 1, 2);
         index = func.IndexOf("+");
@@ -1374,7 +1374,7 @@ namespace fomm.Scripting
       index = func.IndexOf("-");
       while (index != -1)
       {
-        double i = double.Parse(func[index - 1]) - double.Parse(func[index + 1]);
+        var i = double.Parse(func[index - 1]) - double.Parse(func[index + 1]);
         func[index + 1] = i.ToString();
         func.RemoveRange(index - 1, 2);
         index = func.IndexOf("-");
@@ -1394,8 +1394,8 @@ namespace fomm.Scripting
         Warn("Missing arguments to function " + (integer ? "iSet" : "fSet"));
         return;
       }
-      List<string> func = new List<string>();
-      for (int i = 2; i < line.Length; i++)
+      var func = new List<string>();
+      for (var i = 2; i < line.Length; i++)
       {
         func.Add(line[i]);
       }
@@ -1404,12 +1404,12 @@ namespace fomm.Scripting
         string result;
         if (integer)
         {
-          int i = iSet(func);
+          var i = iSet(func);
           result = i.ToString();
         }
         else
         {
-          float f = (float) fSet(func);
+          var f = (float) fSet(func);
           result = f.ToString();
         }
         variables[line[1]] = result;
@@ -1425,15 +1425,15 @@ namespace fomm.Scripting
       m_midInstaller = p_midInstaller;
 
       variables = new Dictionary<string, string>();
-      Stack<FlowControlStruct> FlowControl = new Stack<FlowControlStruct>();
-      Queue<string> ExtraLines = new Queue<string>();
+      var FlowControl = new Stack<FlowControlStruct>();
+      var ExtraLines = new Queue<string>();
       variables["NewLine"] = Environment.NewLine;
       variables["Tab"] = "\t";
-      string[] script = InputScript.Replace("\r", "").Split('\n');
+      var script = InputScript.Replace("\r", "").Split('\n');
       string SkipTo = null;
-      bool Break = false;
-      bool Fatal = false;
-      for (int i = 1; i < script.Length || ExtraLines.Count > 0; i++)
+      var Break = false;
+      var Fatal = false;
+      for (var i = 1; i < script.Length || ExtraLines.Count > 0; i++)
       {
         string s;
         if (ExtraLines.Count > 0)
@@ -1478,7 +1478,7 @@ namespace fomm.Scripting
           }
         }
 
-        string[] line = SplitLine(s);
+        var line = SplitLine(s);
         if (line.Length == 0)
         {
           continue;
@@ -1666,13 +1666,13 @@ namespace fomm.Scripting
               break;
             case "Break":
             {
-              bool found = false;
-              FlowControlStruct[] fcs = FlowControl.ToArray();
-              for (int k = 0; k < fcs.Length; k++)
+              var found = false;
+              var fcs = FlowControl.ToArray();
+              for (var k = 0; k < fcs.Length; k++)
               {
                 if (fcs[k].type == 1)
                 {
-                  for (int j = 0; j <= k; j++)
+                  for (var j = 0; j <= k; j++)
                   {
                     fcs[j].active = false;
                   }
@@ -1710,7 +1710,7 @@ namespace fomm.Scripting
               break;
             case "For":
             {
-              FlowControlStruct fc = FunctionFor(line, i);
+              var fc = FunctionFor(line, i);
               FlowControl.Push(fc);
               if (fc.line != -1 && fc.values.Length > 0)
               {
@@ -1721,16 +1721,16 @@ namespace fomm.Scripting
             }
             case "Continue":
             {
-              bool found = false;
-              FlowControlStruct[] fcs = FlowControl.ToArray();
-              for (int k = 0; k < fcs.Length; k++)
+              var found = false;
+              var fcs = FlowControl.ToArray();
+              for (var k = 0; k < fcs.Length; k++)
               {
                 if (fcs[k].type == 2)
                 {
                   fcs[k].forCount++;
                   if (fcs[k].forCount == fcs[k].values.Length)
                   {
-                    for (int j = 0; j <= k; j++)
+                    for (var j = 0; j <= k; j++)
                     {
                       fcs[j].active = false;
                     }
@@ -1739,7 +1739,7 @@ namespace fomm.Scripting
                   {
                     i = fcs[k].line;
                     variables[fcs[k].var] = fcs[k].values[fcs[k].forCount];
-                    for (int j = 0; j < k; j++)
+                    for (var j = 0; j < k; j++)
                     {
                       FlowControl.Pop();
                     }
@@ -1756,13 +1756,13 @@ namespace fomm.Scripting
             }
             case "Exit":
             {
-              bool found = false;
-              FlowControlStruct[] fcs = FlowControl.ToArray();
-              for (int k = 0; k < fcs.Length; k++)
+              var found = false;
+              var fcs = FlowControl.ToArray();
+              for (var k = 0; k < fcs.Length; k++)
               {
                 if (fcs[k].type == 2)
                 {
-                  for (int j = 0; j <= k; j++)
+                  for (var j = 0; j <= k; j++)
                   {
                     FlowControl.Peek().active = false;
                   }
@@ -1779,7 +1779,7 @@ namespace fomm.Scripting
             case "EndFor":
               if (FlowControl.Count != 0 && FlowControl.Peek().type == 2)
               {
-                FlowControlStruct fc = FlowControl.Peek();
+                var fc = FlowControl.Peek();
                 fc.forCount++;
                 if (fc.forCount == fc.values.Length)
                 {

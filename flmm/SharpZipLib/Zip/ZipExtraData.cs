@@ -195,8 +195,8 @@ namespace Fomm.SharpZipLib.Zip
       readValueLength_ = 0;
       index_ = 0;
 
-      int localLength = readValueStart_;
-      int localTag = headerID - 1;
+      var localLength = readValueStart_;
+      var localTag = headerID - 1;
 
       // Trailing bytes that cant make up an entry (as there arent enough
       // bytes for a tag and length) are ignored!
@@ -210,7 +210,7 @@ namespace Fomm.SharpZipLib.Zip
         }
       }
 
-      bool result = (localTag == headerID) && ((index_ + localLength) <= data_.Length);
+      var result = (localTag == headerID) && ((index_ + localLength) <= data_.Length);
 
       if (result)
       {
@@ -234,7 +234,7 @@ namespace Fomm.SharpZipLib.Zip
         throw new ArgumentOutOfRangeException("headerID");
       }
 
-      int addLength = (fieldData == null) ? 0 : fieldData.Length;
+      var addLength = (fieldData == null) ? 0 : fieldData.Length;
 
       if (addLength > ushort.MaxValue)
       {
@@ -246,7 +246,7 @@ namespace Fomm.SharpZipLib.Zip
       }
 
       // Test for new length before adjusting data.
-      int newLength = data_.Length + addLength + 4;
+      var newLength = data_.Length + addLength + 4;
 
       if (Find(headerID))
       {
@@ -260,9 +260,9 @@ namespace Fomm.SharpZipLib.Zip
 
       Delete(headerID);
 
-      byte[] newData = new byte[newLength];
+      var newData = new byte[newLength];
       data_.CopyTo(newData, 0);
-      int index = data_.Length;
+      var index = data_.Length;
       data_ = newData;
       SetShort(ref index, headerID);
       SetShort(ref index, addLength);
@@ -289,7 +289,7 @@ namespace Fomm.SharpZipLib.Zip
     /// <param name="headerID">The identifier to use for this entry.</param>
     public void AddNewEntry(int headerID)
     {
-      byte[] newData = newEntry_.ToArray();
+      var newData = newEntry_.ToArray();
       newEntry_ = null;
       AddEntry(headerID, newData);
     }
@@ -343,17 +343,17 @@ namespace Fomm.SharpZipLib.Zip
     /// <returns>Returns true if the field was found and deleted.</returns>
     public bool Delete(int headerID)
     {
-      bool result = false;
+      var result = false;
 
       if (Find(headerID))
       {
         result = true;
-        int trueStart = readValueStart_ - 4;
+        var trueStart = readValueStart_ - 4;
 
-        byte[] newData = new byte[data_.Length - (ValueLength + 4)];
+        var newData = new byte[data_.Length - (ValueLength + 4)];
         Array.Copy(data_, 0, newData, 0, trueStart);
 
-        int trueEnd = trueStart + ValueLength + 4;
+        var trueEnd = trueStart + ValueLength + 4;
         Array.Copy(data_, trueEnd, newData, trueStart, data_.Length - trueEnd);
         data_ = newData;
       }
@@ -380,7 +380,7 @@ namespace Fomm.SharpZipLib.Zip
     {
       ReadCheck(4);
 
-      int result = data_[index_] + (data_[index_ + 1] << 8) +
+      var result = data_[index_] + (data_[index_ + 1] << 8) +
                    (data_[index_ + 2] << 16) + (data_[index_ + 3] << 24);
       index_ += 4;
       return result;
@@ -393,7 +393,7 @@ namespace Fomm.SharpZipLib.Zip
     public int ReadShort()
     {
       ReadCheck(2);
-      int result = data_[index_] + (data_[index_ + 1] << 8);
+      var result = data_[index_] + (data_[index_ + 1] << 8);
       index_ += 2;
       return result;
     }
@@ -404,7 +404,7 @@ namespace Fomm.SharpZipLib.Zip
     /// <returns>The byte value read or -1 if the end of data has been reached.</returns>
     public int ReadByte()
     {
-      int result = -1;
+      var result = -1;
       if ((index_ < data_.Length) && (readValueStart_ + readValueLength_ > index_))
       {
         result = data_[index_];
@@ -448,7 +448,7 @@ namespace Fomm.SharpZipLib.Zip
         throw new ZipException("End of extra data");
       }
 
-      int result = data_[index_] + (data_[index_ + 1] << 8);
+      var result = data_[index_] + (data_[index_ + 1] << 8);
       index_ += 2;
       return result;
     }

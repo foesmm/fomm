@@ -64,7 +64,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     private void hexBox1_SelectionStartChanged(object sender, EventArgs e)
     {
-      int pos = (int) hexBox1.SelectionStart;
+      var pos = (int) hexBox1.SelectionStart;
       if (bytes.Count >= pos + 4)
       {
         tbFloat.Text = TypeConverter.h2f(bytes[pos], bytes[pos + 1], bytes[pos + 2], bytes[pos + 3]).ToString();
@@ -109,8 +109,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         MessageBox.Show("Invalid float");
         return;
       }
-      byte[] b = TypeConverter.f2h(f);
-      int pos = (int) hexBox1.SelectionStart;
+      var b = TypeConverter.f2h(f);
+      var pos = (int) hexBox1.SelectionStart;
       bytes[pos + 0] = b[0];
       bytes[pos + 1] = b[1];
       bytes[pos + 2] = b[2];
@@ -126,8 +126,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         MessageBox.Show("Invalid int");
         return;
       }
-      byte[] b = TypeConverter.si2h(i);
-      int pos = (int) hexBox1.SelectionStart;
+      var b = TypeConverter.si2h(i);
+      var pos = (int) hexBox1.SelectionStart;
       bytes[pos + 0] = b[0];
       bytes[pos + 1] = b[1];
       bytes[pos + 2] = b[2];
@@ -143,8 +143,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         MessageBox.Show("Invalid word");
         return;
       }
-      byte[] b = TypeConverter.ss2h(s);
-      int pos = (int) hexBox1.SelectionStart;
+      var b = TypeConverter.ss2h(s);
+      var pos = (int) hexBox1.SelectionStart;
       bytes[pos + 0] = b[0];
       bytes[pos + 1] = b[1];
       hexBox1.Refresh();
@@ -171,8 +171,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         MessageBox.Show("Invalid form ID");
         return;
       }
-      byte[] b = TypeConverter.i2h(i);
-      int pos = (int) hexBox1.SelectionStart;
+      var b = TypeConverter.i2h(i);
+      var pos = (int) hexBox1.SelectionStart;
       bytes[pos + 0] = b[0];
       bytes[pos + 1] = b[1];
       bytes[pos + 2] = b[2];
@@ -191,7 +191,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       {
         return;
       }
-      byte[] newdata = File.ReadAllBytes(openFileDialog1.FileName);
+      var newdata = File.ReadAllBytes(openFileDialog1.FileName);
       bytes.Clear();
       bytes.AddRange(newdata);
       hexBox1.Refresh();

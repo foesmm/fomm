@@ -159,7 +159,7 @@ namespace Fomm.Controls
     {
       if (GotAutoCompleteList != null)
       {
-        RegeneratableAutoCompleteListEventArgs raaArgs = new RegeneratableAutoCompleteListEventArgs(e);
+        var raaArgs = new RegeneratableAutoCompleteListEventArgs(e);
         GotAutoCompleteList(this, raaArgs);
         m_booGenerateOnNextKey = raaArgs.GenerateOnNextKey;
         e.ExtraInsertionCharacters.AddRange(raaArgs.ExtraInsertionCharacters);
@@ -230,7 +230,7 @@ namespace Fomm.Controls
         m_tmrValidator.Stop();
         m_tmrValidator.Start();
       }
-      Int32 intCaretOffset = ActiveTextAreaControl.Caret.Offset;
+      var intCaretOffset = ActiveTextAreaControl.Caret.Offset;
       if (!m_booFormatOnce &&
           (intCaretOffset > 0) &&
           (intCaretOffset < Document.TextLength) &&
@@ -248,7 +248,7 @@ namespace Fomm.Controls
       if (m_chrLastChar.Equals('=') && XmlParser.IsInsideTag(ActiveTextAreaControl.TextArea))
       {
         m_chrLastChar = '"';
-        Caret caret = ActiveTextAreaControl.Caret;
+        var caret = ActiveTextAreaControl.Caret;
         Document.Insert(caret.Offset + 1, "\"\"");
         caret.Position = Document.OffsetToPosition(caret.Offset + 1);
         ShowCodeCompletionWindow('=');
@@ -302,7 +302,7 @@ namespace Fomm.Controls
     {
       m_tmrValidator.Stop();
 
-      IDocument docDocument = ActiveTextAreaControl.TextArea.Document;
+      var docDocument = ActiveTextAreaControl.TextArea.Document;
       docDocument.MarkerStrategy.RemoveAll(x =>
       {
         return (x.TextMarkerType == TextMarkerType.WaveLine);
@@ -314,23 +314,23 @@ namespace Fomm.Controls
         return true;
       }
 
-      XmlParser.TagStack stkBadTags = XmlParser.ParseTags(docDocument, docDocument.TotalNumberOfLines - 1, null,
+      var stkBadTags = XmlParser.ParseTags(docDocument, docDocument.TotalNumberOfLines - 1, null,
                                                           HighlightMalformedTag);
       //this deals with extra tags at beginning of file
       if ((stkBadTags.Count > 0) || m_booMalformedXml)
       {
         while (stkBadTags.Count > 0)
         {
-          XmlParser.TagStack.TagPosition tpsTag = stkBadTags.Pop();
-          TextLocation tlcStart = new TextLocation(tpsTag.Column, tpsTag.LineNumber);
-          TextLocation tlcEnd = new TextLocation(tpsTag.Column + tpsTag.Name.Length, tpsTag.LineNumber);
+          var tpsTag = stkBadTags.Pop();
+          var tlcStart = new TextLocation(tpsTag.Column, tpsTag.LineNumber);
+          var tlcEnd = new TextLocation(tpsTag.Column + tpsTag.Name.Length, tpsTag.LineNumber);
           HighlightMalformedTag(docDocument, tpsTag.Name, tlcStart, tlcEnd);
         }
         return false;
       }
 
-      Int32 intBadLineNum = Int32.MaxValue;
-      using (XmlReader xrdValidator = XmlReader.Create(new StringReader(Text), m_xrsSettings))
+      var intBadLineNum = Int32.MaxValue;
+      using (var xrdValidator = XmlReader.Create(new StringReader(Text), m_xrsSettings))
       {
         try
         {
@@ -353,23 +353,23 @@ namespace Fomm.Controls
           xrdValidator.Close();
         }
       }
-      for (Int32 i = intBadLineNum; i < docDocument.TotalNumberOfLines; i++)
+      for (var i = intBadLineNum; i < docDocument.TotalNumberOfLines; i++)
       {
-        string strLine = docDocument.GetText(docDocument.GetLineSegment(i));
-        Int32 intLineNum = i;
-        Int32 intLastOpenPos = strLine.LastIndexOf('<');
+        var strLine = docDocument.GetText(docDocument.GetLineSegment(i));
+        var intLineNum = i;
+        var intLastOpenPos = strLine.LastIndexOf('<');
         if (intLastOpenPos < 0)
         {
           continue;
         }
-        Int32 intLastClosePos = strLine.LastIndexOf('>');
+        var intLastClosePos = strLine.LastIndexOf('>');
         if ((intLastClosePos > -1) && (intLastOpenPos > intLastClosePos))
         {
-          StringBuilder stbLines = new StringBuilder(strLine);
+          var stbLines = new StringBuilder(strLine);
           //there is an open tag on this line - read lines until it is closed.
           for (; i < docDocument.TotalNumberOfLines; i++)
           {
-            string strNextLine = docDocument.GetText(docDocument.GetLineSegment(i));
+            var strNextLine = docDocument.GetText(docDocument.GetLineSegment(i));
             intLastClosePos = strLine.LastIndexOf('>');
             stbLines.Append(strNextLine);
             if (intLastClosePos < 0)
@@ -381,10 +381,10 @@ namespace Fomm.Controls
           strLine = stbLines.ToString();
         }
 
-        MatchCollection mclLineTags = rgxTagContents.Matches(strLine);
+        var mclLineTags = rgxTagContents.Matches(strLine);
         foreach (Match mtcTag in mclLineTags)
         {
-          string strTag = mtcTag.Groups[1].Value.Trim();
+          var strTag = mtcTag.Groups[1].Value.Trim();
           if (strTag.StartsWith("/"))
           {
             HighlightValidationErrors("Unexpected end tag.", new TextLocation(mtcTag.Groups[1].Index + 1, i));
@@ -430,10 +430,10 @@ namespace Fomm.Controls
     /// <param name="e">A <see cref="ValidationEventArgs"/> describing the event arguments.</param>
     private void HighlightValidationErrors(string p_strMessage, TextLocation p_tlcStart)
     {
-      IDocument docDocument = ActiveTextAreaControl.TextArea.Document;
-      TextWord twdWord = docDocument.GetLineSegment(p_tlcStart.Line).GetWord(p_tlcStart.Column);
-      Int32 intWordOffest = docDocument.PositionToOffset(p_tlcStart);
-      TextMarker tmkError = new TextMarker(intWordOffest, (twdWord == null) ? 1 : twdWord.Length,
+      var docDocument = ActiveTextAreaControl.TextArea.Document;
+      var twdWord = docDocument.GetLineSegment(p_tlcStart.Line).GetWord(p_tlcStart.Column);
+      var intWordOffest = docDocument.PositionToOffset(p_tlcStart);
+      var tmkError = new TextMarker(intWordOffest, (twdWord == null) ? 1 : twdWord.Length,
                                            TextMarkerType.WaveLine);
       tmkError.ToolTip = p_strMessage;
       docDocument.MarkerStrategy.AddMarker(tmkError);

@@ -164,7 +164,7 @@ namespace Fomm.PackageManager.FomodBuilder
                              Readme p_rmeReadme, XmlDocument p_xmlInfo, bool p_booSetScreenshot,
                              Screenshot p_shtScreenshot, FomodScript p_fscScript)
     {
-      string strFomodPath = Path.Combine(Program.GameMode.ModDirectory, p_strFileName + ".fomod");
+      var strFomodPath = Path.Combine(Program.GameMode.ModDirectory, p_strFileName + ".fomod");
       strFomodPath = GenerateFomod(new BuildFomodArgs(p_strFileName,
                                                       p_lstCopyInstructions,
                                                       p_rmeReadme,
@@ -186,7 +186,7 @@ namespace Fomm.PackageManager.FomodBuilder
     /// <param name="p_objArgs">A <see cref="BuildFomodArgs"/> describing the fomod to build.</param>
     protected override void DoGenerateFomod(object p_objArgs)
     {
-      BuildFomodArgs bfaArgs = p_objArgs as BuildFomodArgs;
+      var bfaArgs = p_objArgs as BuildFomodArgs;
       if (bfaArgs == null)
       {
         throw new ArgumentException("The given argument must be a BuildFomodArgs.", "p_objArgs");
@@ -206,10 +206,10 @@ namespace Fomm.PackageManager.FomodBuilder
        * Total steps  = 1 + (# sources to extract) + 1 + (# of copies needed) + 1 + 1 + 1 + 1 + 1
        *        = 7 + (# sources to extract) + (# of copies needed)
        */
-      Int32 intBaseStepCount = 7;
+      var intBaseStepCount = 7;
 
       // 1) Create tmp dirs for source extraction
-      Dictionary<string, string> dicSources = CreateExtractionDirectories(bfaArgs.CopyInstructions);
+      var dicSources = CreateExtractionDirectories(bfaArgs.CopyInstructions);
       ProgressDialog.OverallProgressMaximum = intBaseStepCount + dicSources.Count + bfaArgs.CopyInstructions.Count;
       if (ProgressDialog.Cancelled())
       {
@@ -218,7 +218,7 @@ namespace Fomm.PackageManager.FomodBuilder
       ProgressDialog.StepOverallProgress();
 
       // 2) Extract sources
-      foreach (KeyValuePair<string, string> kvpArchive in dicSources)
+      foreach (var kvpArchive in dicSources)
       {
         UnpackArchive(kvpArchive.Key, kvpArchive.Value);
         if (ProgressDialog.Cancelled())
@@ -229,8 +229,8 @@ namespace Fomm.PackageManager.FomodBuilder
       }
 
       // 3) Create dest fomod dir
-      string strTempFomodFolder = CreateFomodDirectory();
-      string strTempFomodFomodFolder = Path.Combine(strTempFomodFolder, "fomod");
+      var strTempFomodFolder = CreateFomodDirectory();
+      var strTempFomodFomodFolder = Path.Combine(strTempFomodFolder, "fomod");
       if (ProgressDialog.Cancelled())
       {
         return;
@@ -238,7 +238,7 @@ namespace Fomm.PackageManager.FomodBuilder
       ProgressDialog.StepOverallProgress();
 
       // 4) Copy sources to dest fomod dir
-      foreach (KeyValuePair<string, string> kvpCopyInstruction in bfaArgs.CopyInstructions)
+      foreach (var kvpCopyInstruction in bfaArgs.CopyInstructions)
       {
         CopyFiles(strTempFomodFolder, dicSources, kvpCopyInstruction);
         if (ProgressDialog.Cancelled())
@@ -308,12 +308,12 @@ namespace Fomm.PackageManager.FomodBuilder
       ProgressDialog.ItemProgressStep = 1;
       ProgressDialog.ItemMessage = String.Format("Creating temporary folders...");
 
-      Dictionary<string, string> dicSources = new Dictionary<string, string>();
-      foreach (KeyValuePair<string, string> kvpCopyPath in p_lstCopyPaths)
+      var dicSources = new Dictionary<string, string>();
+      foreach (var kvpCopyPath in p_lstCopyPaths)
       {
         if (kvpCopyPath.Key.StartsWith(Archive.ARCHIVE_PREFIX))
         {
-          KeyValuePair<string, string> kvpArchive = Archive.ParseArchivePath(kvpCopyPath.Key);
+          var kvpArchive = Archive.ParseArchivePath(kvpCopyPath.Key);
           if (!dicSources.ContainsKey(kvpArchive.Key))
           {
             dicSources[kvpArchive.Key] = CreateTemporaryDirectory();
@@ -334,7 +334,7 @@ namespace Fomm.PackageManager.FomodBuilder
       ProgressDialog.ItemProgressMaximum = 1;
       ProgressDialog.ItemProgressStep = 1;
       ProgressDialog.ItemMessage = String.Format("Creating Temporary Folders...");
-      string strPath = CreateTemporaryDirectory();
+      var strPath = CreateTemporaryDirectory();
       ProgressDialog.StepItemProgress();
       return strPath;
     }
@@ -351,10 +351,10 @@ namespace Fomm.PackageManager.FomodBuilder
       ProgressDialog.ItemProgress = 0;
       ProgressDialog.ItemProgressStep = 1;
 
-      string strSource = p_kvpCopyInstruction.Key;
+      var strSource = p_kvpCopyInstruction.Key;
       if (strSource.StartsWith(Archive.ARCHIVE_PREFIX))
       {
-        KeyValuePair<string, string> kvpArchive = Archive.ParseArchivePath(strSource);
+        var kvpArchive = Archive.ParseArchivePath(strSource);
         strSource = Path.Combine(p_dicSources[kvpArchive.Key], kvpArchive.Value);
       }
       ProgressDialog.ItemMessage = String.Format("Copying Source Files: {0}...", Path.GetFileName(strSource));
@@ -362,7 +362,7 @@ namespace Fomm.PackageManager.FomodBuilder
         ? 1
         : Directory.GetFiles(strSource, "*", SearchOption.AllDirectories).Length;
 
-      string strDestination = p_kvpCopyInstruction.Value;
+      var strDestination = p_kvpCopyInstruction.Value;
       strDestination = strDestination.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
       strDestination = strDestination.Trim(new char[]
       {

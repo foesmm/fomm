@@ -48,9 +48,9 @@ namespace Fomm.Games.Fallout3.Script
       IList<string> lstInstallers = InstallLog.Current.GetInstallingMods(p_strFile, p_strSection, p_strKey);
       if (lstInstallers.Contains(Fomod.BaseName))
       {
-        string strLoweredFile = p_strFile.ToLowerInvariant();
-        string strLoweredSection = p_strSection.ToLowerInvariant();
-        string strLoweredKey = p_strKey.ToLowerInvariant();
+        var strLoweredFile = p_strFile.ToLowerInvariant();
+        var strLoweredSection = p_strSection.ToLowerInvariant();
+        var strLoweredKey = p_strKey.ToLowerInvariant();
         if (lstInstallers[lstInstallers.Count - 1].Equals(Fomod.BaseName))
         {
           NativeMethods.WritePrivateProfileStringA(strLoweredSection, strLoweredKey, p_strValue, strLoweredFile);
@@ -88,7 +88,7 @@ namespace Fomm.Games.Fallout3.Script
     {
       PermissionsManager.CurrentPermissions.Assert();
 
-      string strShaderKey = String.Format("sdp:{0}/{1}", p_intPackage, p_strShaderName);
+      var strShaderKey = String.Format("sdp:{0}/{1}", p_intPackage, p_strShaderName);
       IList<string> lstInstallers = InstallLog.Current.GetGameSpecifcValueInstallingMods(strShaderKey);
       if (lstInstallers.Contains(Fomod.BaseName))
       {

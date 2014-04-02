@@ -125,8 +125,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     /// <param name="length">the length of bytes to delete.</param>
     public void DeleteBytes(long index, long length)
     {
-      int internal_index = (int) Math.Max(0, index);
-      int internal_length = (int) Math.Min((int) Length, length);
+      var internal_index = (int) Math.Max(0, index);
+      var internal_length = (int) Math.Min((int) Length, length);
       _bytes.RemoveRange(internal_index, internal_length);
 
       OnLengthChanged(EventArgs.Empty);

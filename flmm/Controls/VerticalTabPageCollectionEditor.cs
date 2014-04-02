@@ -39,9 +39,9 @@ namespace Fomm.Controls
     /// <returns>The resulting collection with the new items.</returns>
     protected override object SetItems(object p_objTabPages, object[] p_objValues)
     {
-      VerticalTabControl.TabPageCollection tpcPages =
+      var tpcPages =
         (VerticalTabControl.TabPageCollection) base.SetItems(p_objTabPages, p_objValues);
-      for (Int32 i = 0; i < tpcPages.Count; i++)
+      for (var i = 0; i < tpcPages.Count; i++)
       {
         tpcPages[i].PageIndex = i;
       }
@@ -59,8 +59,8 @@ namespace Fomm.Controls
     /// <returns>A new object of the given type.</returns>
     protected override object CreateInstance(Type p_tpeItemType)
     {
-      object objNew = base.CreateInstance(p_tpeItemType);
-      VerticalTabPage vtpPage = objNew as VerticalTabPage;
+      var objNew = base.CreateInstance(p_tpeItemType);
+      var vtpPage = objNew as VerticalTabPage;
       if (vtpPage != null)
       {
         vtpPage.Text = vtpPage.Name;

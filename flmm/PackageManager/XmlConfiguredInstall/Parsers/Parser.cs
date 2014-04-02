@@ -30,7 +30,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
       {
         return null;
       }
-      string strConfigVersion = m_rgxVersion.Match(p_strXml).Groups[1].Value;
+      var strConfigVersion = m_rgxVersion.Match(p_strXml).Groups[1].Value;
       if (String.IsNullOrEmpty(strConfigVersion))
       {
         strConfigVersion = "1.0";
@@ -48,19 +48,19 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     /// <exception cref="ParserException">Thrown if no parser is found for the given configuration file.</exception>
     public static Parser GetParser(XmlDocument p_xmlConfig, fomod p_fomodMod, DependencyStateManager p_dsmSate)
     {
-      string strConfigVersion = "1.0";
-      string strSchemaName =
+      var strConfigVersion = "1.0";
+      var strSchemaName =
         p_xmlConfig.SelectSingleNode("config").Attributes["xsi:noNamespaceSchemaLocation"].InnerText.ToLowerInvariant();
-      Int32 intStartPos = strSchemaName.LastIndexOf("modconfig") + 9;
+      var intStartPos = strSchemaName.LastIndexOf("modconfig") + 9;
       if (intStartPos > 8)
       {
-        Int32 intLength = strSchemaName.Length - intStartPos - 4;
+        var intLength = strSchemaName.Length - intStartPos - 4;
         if (intLength > 0)
         {
           strConfigVersion = strSchemaName.Substring(intStartPos, intLength);
         }
       }
-      ParserExtension pexParserExtension = Program.GameMode.GetParserExtension(strConfigVersion);
+      var pexParserExtension = Program.GameMode.GetParserExtension(strConfigVersion);
       switch (strConfigVersion)
       {
         case "1.0":
@@ -172,7 +172,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     /// <returns>The module configuration file.</returns>
     private void validateModuleConfig()
     {
-      XmlSchema xscSchema = loadModuleConfigSchema();
+      var xscSchema = loadModuleConfigSchema();
       m_xmlConfig.Schemas.Add(xscSchema);
       m_xmlConfig.Validate((s, e) =>
       {
@@ -186,15 +186,15 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     /// <returns>The module configuration schema.</returns>
     private XmlSchema loadModuleConfigSchema()
     {
-      string strSchemaPath = Program.GameMode.GetXMLConfigSchemaPath(ConfigurationFileVersion);
-      byte[] bteSchema = File.ReadAllBytes(strSchemaPath);
+      var strSchemaPath = Program.GameMode.GetXMLConfigSchemaPath(ConfigurationFileVersion);
+      var bteSchema = File.ReadAllBytes(strSchemaPath);
       XmlSchema xscSchema = null;
-      using (MemoryStream stmSchema = new MemoryStream(bteSchema))
+      using (var stmSchema = new MemoryStream(bteSchema))
       {
-        XmlReaderSettings xrsSettings = new XmlReaderSettings();
+        var xrsSettings = new XmlReaderSettings();
         xrsSettings.IgnoreComments = true;
         xrsSettings.IgnoreWhitespace = true;
-        using (XmlReader xrdSchemaReader = XmlReader.Create(stmSchema, xrsSettings, strSchemaPath))
+        using (var xrdSchemaReader = XmlReader.Create(stmSchema, xrsSettings, strSchemaPath))
         {
           xscSchema = XmlSchema.Read(xrdSchemaReader, delegate(object sender, ValidationEventArgs e)
           {

@@ -58,11 +58,11 @@ namespace Fomm.Games.Fallout3.Tools
     private void CheckForCriticalRecordConflicts()
     {
       m_pfpFormatProvider.Clear();
-      List<string> lstPlugins =
+      var lstPlugins =
         new List<string>(Program.GameMode.PluginManager.SortPluginList(Program.GameMode.PluginManager.ActivePluginList));
 
       m_bwdProgress.OverallProgressMaximum = lstPlugins.Count;
-      ConflictDetector cdrDetector = new ConflictDetector();
+      var cdrDetector = new ConflictDetector();
       cdrDetector.ConflictDetected += new EventHandler<ConflictDetectedEventArgs>(cdrDetector_ConflictDetected);
       cdrDetector.PluginProcessed += new EventHandler<PluginProcessedEventArgs>(cdrDetector_PluginProcessed);
       cdrDetector.DetectConflicts(lstPlugins);
@@ -93,14 +93,14 @@ namespace Fomm.Games.Fallout3.Tools
     /// <param name="e">A <see cref="ConflictDetectedEventArgs"/> describing the event arguments.</param>
     private void cdrDetector_ConflictDetected(object sender, ConflictDetectedEventArgs e)
     {
-      StringBuilder stbMessage = new StringBuilder();
-      List<Color> lstBackgroundColours = new List<Color>
+      var stbMessage = new StringBuilder();
+      var lstBackgroundColours = new List<Color>
       {
         Color.LightSkyBlue,
         Color.Yellow,
         Color.Red
       };
-      Int32 intColourIndex = 0;
+      var intColourIndex = 0;
       switch (e.ConflictInfo.Severity)
       {
         case CriticalRecordInfo.ConflictSeverity.Conflict:
@@ -116,10 +116,10 @@ namespace Fomm.Games.Fallout3.Tools
           intColourIndex = 0;
           break;
       }
-      Color clrHighlight = lstBackgroundColours[intColourIndex];
+      var clrHighlight = lstBackgroundColours[intColourIndex];
       if (m_pfpFormatProvider.HasFormat(e.ConflictedPlugin.Name))
       {
-        PluginFormat pftFormat = m_pfpFormatProvider.GetFormat(e.ConflictedPlugin.Name);
+        var pftFormat = m_pfpFormatProvider.GetFormat(e.ConflictedPlugin.Name);
         if (pftFormat.Highlight.HasValue && (lstBackgroundColours.IndexOf(pftFormat.Highlight.Value) > intColourIndex))
         {
           clrHighlight = pftFormat.Highlight.Value;
@@ -134,7 +134,7 @@ namespace Fomm.Games.Fallout3.Tools
       }
       else
       {
-        fomod fomodMod =
+        var fomodMod =
           new fomod(Path.Combine(Program.GameMode.ModDirectory,
                                  InstallLog.Current.GetCurrentFileOwnerName(e.ConflictingPlugin.Name) + ".fomod"));
         stbMessage.AppendFormat(

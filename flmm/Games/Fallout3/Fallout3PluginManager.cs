@@ -23,21 +23,21 @@ namespace Fomm.Games.Fallout3
     {
       get
       {
-        string strPluginsFilePath = ((Fallout3GameMode) Program.GameMode).PluginsFilePath;
+        var strPluginsFilePath = ((Fallout3GameMode) Program.GameMode).PluginsFilePath;
 
-        Set<string> setActivePlugins = new Set<string>(StringComparer.InvariantCultureIgnoreCase);
+        var setActivePlugins = new Set<string>(StringComparer.InvariantCultureIgnoreCase);
         if (File.Exists(strPluginsFilePath))
         {
-          string[] strPlugins = File.ReadAllLines(strPluginsFilePath);
-          char[] strInvalidChars = Path.GetInvalidFileNameChars();
-          for (int i = 0; i < strPlugins.Length; i++)
+          var strPlugins = File.ReadAllLines(strPluginsFilePath);
+          var strInvalidChars = Path.GetInvalidFileNameChars();
+          for (var i = 0; i < strPlugins.Length; i++)
           {
             strPlugins[i] = strPlugins[i].Trim();
             if (strPlugins[i].Length == 0 || strPlugins[i][0] == '#' || strPlugins[i].IndexOfAny(strInvalidChars) != -1)
             {
               continue;
             }
-            string strPluginPath = Path.Combine(Program.GameMode.PluginsPath, strPlugins[i]);
+            var strPluginPath = Path.Combine(Program.GameMode.PluginsPath, strPlugins[i]);
             if (!File.Exists(strPluginPath))
             {
               continue;
@@ -55,9 +55,9 @@ namespace Fomm.Games.Fallout3
     /// <param name="p_setActivePlugins">The complete set of active plugins.</param>
     public override void SetActivePlugins(Set<string> p_setActivePlugins)
     {
-      string strPluginsFilePath = ((Fallout3GameMode) Program.GameMode).PluginsFilePath;
-      Set<string> setPluginFilenames = new Set<string>(StringComparer.InvariantCultureIgnoreCase);
-      foreach (string strPlugin in p_setActivePlugins)
+      var strPluginsFilePath = ((Fallout3GameMode) Program.GameMode).PluginsFilePath;
+      var setPluginFilenames = new Set<string>(StringComparer.InvariantCultureIgnoreCase);
+      foreach (var strPlugin in p_setActivePlugins)
       {
         setPluginFilenames.Add(Path.GetFileName(strPlugin));
       }
@@ -76,8 +76,8 @@ namespace Fomm.Games.Fallout3
     /// <lang cref="false"/> otherwise.</returns>
     public override bool IsPluginActive(string p_strPath)
     {
-      string strPluginFilename = Path.GetFileName(p_strPath);
-      string strPluginPath = Path.Combine(Program.GameMode.PluginsPath, strPluginFilename);
+      var strPluginFilename = Path.GetFileName(p_strPath);
+      var strPluginPath = Path.Combine(Program.GameMode.PluginsPath, strPluginFilename);
       return ActivePluginList.Contains(strPluginPath);
     }
 
@@ -93,8 +93,8 @@ namespace Fomm.Games.Fallout3
     {
       get
       {
-        DirectoryInfo difPluginsDirectory = new DirectoryInfo(Program.GameMode.PluginsPath);
-        List<FileInfo> lstPlugins = new List<FileInfo>(Program.GetFiles(difPluginsDirectory, "*.esp"));
+        var difPluginsDirectory = new DirectoryInfo(Program.GameMode.PluginsPath);
+        var lstPlugins = new List<FileInfo>(Program.GetFiles(difPluginsDirectory, "*.esp"));
         lstPlugins.AddRange(Program.GetFiles(difPluginsDirectory, "*.esm"));
 
         lstPlugins.Sort(delegate(FileInfo a, FileInfo b)
@@ -106,8 +106,8 @@ namespace Fomm.Games.Fallout3
           return Plugin.GetIsEsm(a.FullName) ? -1 : 1;
         });
 
-        List<string> lstPluginPaths = new List<string>();
-        for (Int32 i = 0; i < lstPlugins.Count; i++)
+        var lstPluginPaths = new List<string>();
+        for (var i = 0; i < lstPlugins.Count; i++)
         {
           lstPluginPaths.Add(lstPlugins[i].FullName);
         }
@@ -126,10 +126,10 @@ namespace Fomm.Games.Fallout3
     /// <returns>The sorted list of plugin paths.</returns>
     public override string[] SortPluginList(string[] p_strPlugins)
     {
-      List<FileInfo> lstPlugins = new List<FileInfo>();
-      for (Int32 i = 0; i < p_strPlugins.Length; i++)
+      var lstPlugins = new List<FileInfo>();
+      for (var i = 0; i < p_strPlugins.Length; i++)
       {
-        string strPlugin = p_strPlugins[i];
+        var strPlugin = p_strPlugins[i];
         if (!strPlugin.StartsWith(Program.GameMode.PluginsPath, StringComparison.InvariantCultureIgnoreCase) &&
             !File.Exists(strPlugin))
         {
@@ -148,8 +148,8 @@ namespace Fomm.Games.Fallout3
         }
         return Plugin.GetIsEsm(a.FullName) ? -1 : 1;
       });
-      List<string> lstPluginPaths = new List<string>();
-      foreach (FileInfo fifPlugin in lstPlugins)
+      var lstPluginPaths = new List<string>();
+      foreach (var fifPlugin in lstPlugins)
       {
         lstPluginPaths.Add(fifPlugin.FullName);
       }
@@ -163,8 +163,8 @@ namespace Fomm.Games.Fallout3
     /// <param name="p_intPluginLoadOrderIndex">The new load order index of the plugin.</param>
     public override void SetLoadOrder(string p_strPluginPath, Int32 p_intOrderIndex)
     {
-      DateTime dteTimestamp = new DateTime(2008, 1, 1);
-      TimeSpan tspTwoMins = TimeSpan.FromMinutes(2 + p_intOrderIndex);
+      var dteTimestamp = new DateTime(2008, 1, 1);
+      var tspTwoMins = TimeSpan.FromMinutes(2 + p_intOrderIndex);
       dteTimestamp += tspTwoMins;
       File.SetLastWriteTime(p_strPluginPath, dteTimestamp);
     }
@@ -184,7 +184,7 @@ namespace Fomm.Games.Fallout3
         throw new FileNotFoundException("The specified plugin does not exist.", p_strPluginPath);
       }
 
-      string strPluginName = Path.GetFileName(p_strPluginPath);
+      var strPluginName = Path.GetFileName(p_strPluginPath);
       Plugin plgPlugin;
       try
       {
@@ -196,11 +196,11 @@ namespace Fomm.Games.Fallout3
       }
       if (plgPlugin == null || plgPlugin.Records.Count == 0 || plgPlugin.Records[0].Name != "TES4")
       {
-        string strDescription = strPluginName + Environment.NewLine + "Warning: Plugin appears corrupt";
+        var strDescription = strPluginName + Environment.NewLine + "Warning: Plugin appears corrupt";
         return new PluginInfo(strDescription, null);
       }
 
-      StringBuilder stbDescription =
+      var stbDescription =
         new StringBuilder(
           @"{\rtf1\ansi\ansicpg1252\deff0\deflang4105{\fonttbl{\f0\fnil\fcharset0 MS Sans Serif;}{\f1\fnil\fcharset2 Symbol;}}");
       stbDescription.AppendLine()
@@ -210,8 +210,8 @@ namespace Fomm.Games.Fallout3
       string name = null;
       string desc = null;
       byte[] pic = null;
-      List<string> masters = new List<string>();
-      foreach (SubRecord sr in ((Record) plgPlugin.Records[0]).SubRecords)
+      var masters = new List<string>();
+      foreach (var sr in ((Record) plgPlugin.Records[0]).SubRecords)
       {
         switch (sr.Name)
         {
@@ -257,7 +257,7 @@ namespace Fomm.Games.Fallout3
       {
         stbDescription.Append(
           @"\b Masters: \b0 \par \pard{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\sl240\slmult1 ");
-        for (int i = 0; i < masters.Count; i++)
+        for (var i = 0; i < masters.Count; i++)
         {
           stbDescription.AppendFormat("{{\\pntext\\f1\\'B7\\tab}}{0}\\par ", masters[i]);
           stbDescription.AppendLine();
@@ -265,7 +265,7 @@ namespace Fomm.Games.Fallout3
         stbDescription.Append(@"\pard\sl240\slmult1 ");
       }
 
-      PluginInfo pifInfo = new PluginInfo(stbDescription.ToString(), null);
+      var pifInfo = new PluginInfo(stbDescription.ToString(), null);
       if (pic != null)
       {
         pifInfo.Picture = Bitmap.FromStream(new MemoryStream(pic));

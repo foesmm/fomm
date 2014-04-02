@@ -203,7 +203,7 @@ namespace Fomm.Controls
     /// <param name="p_intJumpSize">The number of pages to jump.</param>
     protected void MovePage(Int32 p_intJumpSize)
     {
-      Int32 intNewIndex = SelectedIndex + p_intJumpSize;
+      var intNewIndex = SelectedIndex + p_intJumpSize;
       if (intNewIndex < 0)
       {
         intNewIndex = 0;

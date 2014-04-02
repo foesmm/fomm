@@ -40,9 +40,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
         hplTitle.Height = p_hifHeaderInfo.Height;
       }
 
-      foreach (InstallStep stpStep in p_lstInstallSteps)
+      foreach (var stpStep in p_lstInstallSteps)
       {
-        OptionFormStep ofsStep = new OptionFormStep(m_dsmStateManager, stpStep.GroupedPlugins);
+        var ofsStep = new OptionFormStep(m_dsmStateManager, stpStep.GroupedPlugins);
         ofsStep.Dock = DockStyle.Fill;
         ofsStep.Visible = false;
         ofsStep.ItemChecked += new EventHandler(ofsStep_ItemChecked);
@@ -66,8 +66,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     {
       get
       {
-        List<PluginFile> lstInstall = new List<PluginFile>();
-        foreach (KeyValuePair<InstallStep, OptionFormStep> kvpStep in m_lstInstallSteps)
+        var lstInstall = new List<PluginFile>();
+        foreach (var kvpStep in m_lstInstallSteps)
         {
           if (kvpStep.Key.Visible)
           {
@@ -90,8 +90,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     {
       get
       {
-        List<PluginFile> lstActivate = new List<PluginFile>();
-        foreach (KeyValuePair<InstallStep, OptionFormStep> kvpStep in m_lstInstallSteps)
+        var lstActivate = new List<PluginFile>();
+        foreach (var kvpStep in m_lstInstallSteps)
         {
           if (kvpStep.Key.Visible)
           {
@@ -123,10 +123,10 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// </summary>
     protected void SetWizardButtonStates()
     {
-      bool booLast = true;
-      for (Int32 i = m_intCurrentStep + 1; i < m_lstInstallSteps.Count; i++)
+      var booLast = true;
+      for (var i = m_intCurrentStep + 1; i < m_lstInstallSteps.Count; i++)
       {
-        KeyValuePair<InstallStep, OptionFormStep> kvpStep = m_lstInstallSteps[i];
+        var kvpStep = m_lstInstallSteps[i];
         if (kvpStep.Key.Visible)
         {
           booLast = false;
@@ -142,10 +142,10 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
         butNext.Text = "Next >";
       }
 
-      bool booFirst = true;
-      for (Int32 i = m_intCurrentStep - 1; i >= 0; i--)
+      var booFirst = true;
+      for (var i = m_intCurrentStep - 1; i >= 0; i--)
       {
-        KeyValuePair<InstallStep, OptionFormStep> kvpStep = m_lstInstallSteps[i];
+        var kvpStep = m_lstInstallSteps[i];
         if (kvpStep.Key.Visible)
         {
           booFirst = false;
@@ -166,9 +166,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
         DialogResult = DialogResult.OK;
         Close();
       }
-      for (Int32 i = m_intCurrentStep + 1; i < m_lstInstallSteps.Count; i++)
+      for (var i = m_intCurrentStep + 1; i < m_lstInstallSteps.Count; i++)
       {
-        KeyValuePair<InstallStep, OptionFormStep> kvpStep = m_lstInstallSteps[i];
+        var kvpStep = m_lstInstallSteps[i];
         if (kvpStep.Key.Visible)
         {
           if (m_intCurrentStep >= 0)
@@ -188,9 +188,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// </summary>
     protected void StepBack()
     {
-      for (Int32 i = m_intCurrentStep - 1; i >= 0; i--)
+      for (var i = m_intCurrentStep - 1; i >= 0; i--)
       {
-        KeyValuePair<InstallStep, OptionFormStep> kvpStep = m_lstInstallSteps[i];
+        var kvpStep = m_lstInstallSteps[i];
         if (kvpStep.Key.Visible)
         {
           if (m_intCurrentStep < m_lstInstallSteps.Count)

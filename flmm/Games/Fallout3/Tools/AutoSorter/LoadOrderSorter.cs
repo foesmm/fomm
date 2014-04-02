@@ -83,19 +83,19 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
       {
         return;
       }
-      string[] fileLines = File.ReadAllLines(LoadOrderTemplatePath);
+      var fileLines = File.ReadAllLines(LoadOrderTemplatePath);
 
       if (!int.TryParse(fileLines[0], out fileVersion))
       {
         fileVersion = 0;
       }
-      int upto = 0;
-      List<string> requires = new List<string>();
-      List<string> conflicts = new List<string>();
-      List<string> comments = new List<string>();
-      for (int i = 0; i < fileLines.Length; i++)
+      var upto = 0;
+      var requires = new List<string>();
+      var conflicts = new List<string>();
+      var comments = new List<string>();
+      for (var i = 0; i < fileLines.Length; i++)
       {
-        int comment = fileLines[i].IndexOf('\\');
+        var comment = fileLines[i].IndexOf('\\');
         if (comment != -1)
         {
           fileLines[i] = fileLines[i].Remove(comment);
@@ -103,9 +103,9 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
         fileLines[i] = fileLines[i].Trim();
         if (fileLines[i] != string.Empty)
         {
-          RecordInfo ri = new RecordInfo(upto++);
-          int skiplines = 0;
-          for (int j = i + 1; j < fileLines.Length; j++)
+          var ri = new RecordInfo(upto++);
+          var skiplines = 0;
+          for (var j = i + 1; j < fileLines.Length; j++)
           {
             fileLines[j] = fileLines[j].Trim();
             if (fileLines[j].Length > 0)
@@ -161,13 +161,13 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
 
     private ModInfo[] BuildModInfo(string[] plugins)
     {
-      ModInfo[] mi = new ModInfo[plugins.Length];
-      int addcount = 1;
-      int lastPos = -1;
-      int maxPos = 0;
-      for (int i = 0; i < mi.Length; i++)
+      var mi = new ModInfo[plugins.Length];
+      var addcount = 1;
+      var lastPos = -1;
+      var maxPos = 0;
+      for (var i = 0; i < mi.Length; i++)
       {
-        string lplugin = plugins[i].ToLowerInvariant();
+        var lplugin = plugins[i].ToLowerInvariant();
         if (m_dicMasterList.ContainsKey(lplugin))
         {
           lastPos = m_dicMasterList[lplugin].id;
@@ -186,7 +186,7 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
       }
       addcount = 1;
       maxPos++;
-      for (int i = mi.Length - 1; i >= 0; i--)
+      for (var i = mi.Length - 1; i >= 0; i--)
       {
         if (mi[i].hadEntry)
         {
@@ -200,9 +200,9 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
 
     public string GenerateReport(string[] plugins, bool[] active, bool[] corrupt, string[][] masters)
     {
-      StringBuilder sb = new StringBuilder(plugins.Length*32);
-      string[] lplugins = new string[plugins.Length];
-      for (int i = 0; i < plugins.Length; i++)
+      var sb = new StringBuilder(plugins.Length*32);
+      var lplugins = new string[plugins.Length];
+      for (var i = 0; i < plugins.Length; i++)
       {
         lplugins[i] = plugins[i].ToLowerInvariant();
       }
@@ -214,8 +214,8 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
                       " duplicate entries. This warning can be ignored.");
       }
       sb.AppendLine();
-      bool LoadOrderWrong = false;
-      for (int i = 0; i < plugins.Length; i++)
+      var LoadOrderWrong = false;
+      for (var i = 0; i < plugins.Length; i++)
       {
         sb.AppendLine(plugins[i] + (active[i] ? string.Empty : " (Inactive)"));
         plugins[i] = plugins[i].ToLowerInvariant();
@@ -225,10 +225,10 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
         }
         if (active[i] && masters[i] != null)
         {
-          for (int k = 0; k < masters[i].Length; k++)
+          for (var k = 0; k < masters[i].Length; k++)
           {
-            bool found = false;
-            for (int j = 0; j < i; j++)
+            var found = false;
+            for (var j = 0; j < i; j++)
             {
               if (active[j] && lplugins[j] == masters[i][k])
               {
@@ -238,7 +238,7 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
             }
             if (!found)
             {
-              for (int j = i + 1; j < plugins.Length; j++)
+              for (var j = i + 1; j < plugins.Length; j++)
               {
                 if (active[j] && lplugins[j] == masters[i][k])
                 {
@@ -257,7 +257,7 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
         }
         if (m_dicMasterList.ContainsKey(plugins[i]))
         {
-          RecordInfo ri = m_dicMasterList[plugins[i]];
+          var ri = m_dicMasterList[plugins[i]];
           if (ri.id < latestPosition)
           {
             sb.AppendLine("* The current load order of this mod does not match the current template");
@@ -269,10 +269,10 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
           }
           if (active[i] && ri.requires != null)
           {
-            for (int k = 0; k < ri.requires.Length; k++)
+            for (var k = 0; k < ri.requires.Length; k++)
             {
-              bool found = false;
-              for (int j = 0; j < lplugins.Length; j++)
+              var found = false;
+              for (var j = 0; j < lplugins.Length; j++)
               {
                 if (lplugins[j] == ri.requires[k])
                 {
@@ -291,9 +291,9 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
           }
           if (active[i] && ri.conflicts != null)
           {
-            for (int k = 0; k < ri.conflicts.Length; k++)
+            for (var k = 0; k < ri.conflicts.Length; k++)
             {
-              for (int j = 0; j < lplugins.Length; j++)
+              for (var j = 0; j < lplugins.Length; j++)
               {
                 if (lplugins[j] == ri.conflicts[k])
                 {
@@ -308,7 +308,7 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
           }
           if (ri.comments != null)
           {
-            for (int k = 0; k < ri.comments.Length; k++)
+            for (var k = 0; k < ri.comments.Length; k++)
             {
               sb.AppendLine("  " + ri.comments[k]);
             }
@@ -323,10 +323,10 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
       }
       if (LoadOrderWrong)
       {
-        string[] dup = (string[]) plugins.Clone();
+        var dup = (string[]) plugins.Clone();
         SortList(dup);
         sb.AppendLine("The order that the current template suggests is as follows:");
-        for (int i = 0; i < dup.Length; i++)
+        for (var i = 0; i < dup.Length; i++)
         {
           sb.AppendLine(dup[i]);
         }
@@ -336,12 +336,12 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
 
     public void SortList(string[] plugins)
     {
-      ModInfo[] mi = BuildModInfo(plugins);
+      var mi = BuildModInfo(plugins);
       Array.Sort<ModInfo>(mi, delegate(ModInfo a, ModInfo b)
       {
         return a.id.CompareTo(b.id);
       });
-      for (int i = 0; i < mi.Length; i++)
+      for (var i = 0; i < mi.Length; i++)
       {
         plugins[i] = mi[i].name;
       }
@@ -359,9 +359,9 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
       {
         return false;
       }
-      ModInfo[] mi = BuildModInfo(plugins);
+      var mi = BuildModInfo(plugins);
       double upto = 0;
-      for (int i = 0; i < mi.Length; i++)
+      for (var i = 0; i < mi.Length; i++)
       {
         if (mi[i].id < upto)
         {
@@ -382,9 +382,9 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
       {
         return plugins.Length;
       }
-      ModInfo[] mi = BuildModInfo(plugins);
-      int target = m_dicMasterList[plugin].id;
-      for (int i = 0; i < mi.Length; i++)
+      var mi = BuildModInfo(plugins);
+      var target = m_dicMasterList[plugin].id;
+      for (var i = 0; i < mi.Length; i++)
       {
         if (mi[i].id >= target)
         {

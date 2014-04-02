@@ -128,7 +128,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
       do
       {
         FillWindow();
-        bool canFlush = flush && (inputOff == inputEnd);
+        var canFlush = flush && (inputOff == inputEnd);
 
 #if DebugDeflation
         if (DeflaterConstants.DEBUGGING) {
@@ -184,7 +184,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
         throw new InvalidOperationException("Old input was not completely processed");
       }
 
-      int end = offset + count;
+      var end = offset + count;
 
       /* We want to throw an ArrayIndexOutOfBoundsException early.  The
       * check is very tricky: it also handles integer wrap around.
@@ -221,12 +221,12 @@ namespace Fomm.SharpZipLib.Zip.Compression
       prevAvailable = false;
       matchLen = DeflaterConstants.MIN_MATCH - 1;
 
-      for (int i = 0; i < DeflaterConstants.HASH_SIZE; i++)
+      for (var i = 0; i < DeflaterConstants.HASH_SIZE; i++)
       {
         head[i] = 0;
       }
 
-      for (int i = 0; i < DeflaterConstants.WSIZE; i++)
+      for (var i = 0; i < DeflaterConstants.WSIZE; i++)
       {
         prev[i] = 0;
       }
@@ -337,7 +337,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
        */
       while (lookahead < DeflaterConstants.MIN_LOOKAHEAD && inputOff < inputEnd)
       {
-        int more = 2*DeflaterConstants.WSIZE - lookahead - strstart;
+        var more = 2*DeflaterConstants.WSIZE - lookahead - strstart;
 
         if (more > inputEnd - inputOff)
         {
@@ -376,7 +376,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
     private int InsertString()
     {
       short match;
-      int hash = ((ins_h << DeflaterConstants.HASH_SHIFT) ^ window[strstart + (DeflaterConstants.MIN_MATCH - 1)]) &
+      var hash = ((ins_h << DeflaterConstants.HASH_SHIFT) ^ window[strstart + (DeflaterConstants.MIN_MATCH - 1)]) &
                  DeflaterConstants.HASH_MASK;
 
 #if DebugDeflation
@@ -407,16 +407,16 @@ namespace Fomm.SharpZipLib.Zip.Compression
 
       // Slide the hash table (could be avoided with 32 bit values
       // at the expense of memory usage).
-      for (int i = 0; i < DeflaterConstants.HASH_SIZE; ++i)
+      for (var i = 0; i < DeflaterConstants.HASH_SIZE; ++i)
       {
-        int m = head[i] & 0xffff;
+        var m = head[i] & 0xffff;
         head[i] = (short) (m >= DeflaterConstants.WSIZE ? (m - DeflaterConstants.WSIZE) : 0);
       }
 
       // Slide the prev table.
-      for (int i = 0; i < DeflaterConstants.WSIZE; i++)
+      for (var i = 0; i < DeflaterConstants.WSIZE; i++)
       {
-        int m = prev[i] & 0xffff;
+        var m = prev[i] & 0xffff;
         prev[i] = (short) (m >= DeflaterConstants.WSIZE ? (m - DeflaterConstants.WSIZE) : 0);
       }
     }
@@ -433,18 +433,18 @@ namespace Fomm.SharpZipLib.Zip.Compression
     /// <returns>True if a match greater than the minimum length is found</returns>
     private bool FindLongestMatch(int curMatch)
     {
-      int chainLength = max_chain;
-      int niceLength = this.niceLength;
-      short[] prev = this.prev;
-      int scan = strstart;
-      int best_end = strstart + matchLen;
-      int best_len = Math.Max(matchLen, DeflaterConstants.MIN_MATCH - 1);
+      var chainLength = max_chain;
+      var niceLength = this.niceLength;
+      var prev = this.prev;
+      var scan = strstart;
+      var best_end = strstart + matchLen;
+      var best_len = Math.Max(matchLen, DeflaterConstants.MIN_MATCH - 1);
 
-      int limit = Math.Max(strstart - DeflaterConstants.MAX_DIST, 0);
+      var limit = Math.Max(strstart - DeflaterConstants.MAX_DIST, 0);
 
-      int strend = strstart + DeflaterConstants.MAX_MATCH - 1;
-      byte scan_end1 = window[best_end - 1];
-      byte scan_end = window[best_end];
+      var strend = strstart + DeflaterConstants.MAX_MATCH - 1;
+      var scan_end1 = window[best_end - 1];
+      var scan_end = window[best_end];
 
       // Do not waste too much time if we already have a good match:
       if (best_len >= goodLength)
@@ -470,7 +470,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
           continue;
         }
 
-        int match = curMatch + 2;
+        var match = curMatch + 2;
         scan += 2;
 
         /* We check for insufficient lookahead only every 8th comparison;
@@ -522,14 +522,14 @@ namespace Fomm.SharpZipLib.Zip.Compression
       strstart += lookahead;
       lookahead = 0;
 
-      int storedLength = strstart - blockStart;
+      var storedLength = strstart - blockStart;
 
       if ((storedLength >= DeflaterConstants.MAX_BLOCK_SIZE) || // Block is full
           (blockStart < DeflaterConstants.WSIZE && storedLength >= DeflaterConstants.MAX_DIST) ||
           // Block may move out of window
           flush)
       {
-        bool lastBlock = finish;
+        var lastBlock = finish;
         if (storedLength > DeflaterConstants.MAX_BLOCK_SIZE)
         {
           storedLength = DeflaterConstants.MAX_BLOCK_SIZE;
@@ -578,7 +578,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
         {
           // longestMatch sets matchStart and matchLen
 
-          bool full = huffman.TallyDist(strstart - matchStart, matchLen);
+          var full = huffman.TallyDist(strstart - matchStart, matchLen);
 
           lookahead -= matchLen;
           if (matchLen <= max_lazy && lookahead >= DeflaterConstants.MIN_MATCH)
@@ -614,7 +614,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
 
         if (huffman.IsFull())
         {
-          bool lastBlock = finish && (lookahead == 0);
+          var lastBlock = finish && (lookahead == 0);
           huffman.FlushBlock(window, blockStart, strstart - blockStart, lastBlock);
           blockStart = strstart;
           return !lastBlock;
@@ -662,11 +662,11 @@ namespace Fomm.SharpZipLib.Zip.Compression
           SlideWindow();
         }
 
-        int prevMatch = matchStart;
-        int prevLen = matchLen;
+        var prevMatch = matchStart;
+        var prevLen = matchLen;
         if (lookahead >= DeflaterConstants.MIN_MATCH)
         {
-          int hashHead = InsertString();
+          var hashHead = InsertString();
 
           if (strategy != DeflateStrategy.HuffmanOnly &&
               hashHead != 0 &&
@@ -719,12 +719,12 @@ namespace Fomm.SharpZipLib.Zip.Compression
 
         if (huffman.IsFull())
         {
-          int len = strstart - blockStart;
+          var len = strstart - blockStart;
           if (prevAvailable)
           {
             len--;
           }
-          bool lastBlock = (finish && (lookahead == 0) && !prevAvailable);
+          var lastBlock = (finish && (lookahead == 0) && !prevAvailable);
           huffman.FlushBlock(window, blockStart, len, lastBlock);
           blockStart += len;
           return !lastBlock;

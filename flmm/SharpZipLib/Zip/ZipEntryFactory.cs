@@ -158,11 +158,11 @@ namespace Fomm.SharpZipLib.Zip
     /// <returns>Returns a new <see cref="ZipEntry"/> based on the <paramref name="fileName"/>.</returns>
     public ZipEntry MakeFileEntry(string fileName, bool useFileSystem)
     {
-      ZipEntry result = new ZipEntry(nameTransform_.TransformFile(fileName));
+      var result = new ZipEntry(nameTransform_.TransformFile(fileName));
       result.IsUnicodeText = true;
 
-      int externalAttributes = 0;
-      bool useAttributes = false;
+      var externalAttributes = 0;
+      var useAttributes = false;
 
       FileInfo fi = null;
       if (useFileSystem)
@@ -206,10 +206,10 @@ namespace Fomm.SharpZipLib.Zip
     /// <returns>Returns a new <see cref="ZipEntry"></see> representing a directory.</returns>
     public ZipEntry MakeDirectoryEntry(string directoryName, bool useFileSystem)
     {
-      ZipEntry result = new ZipEntry(nameTransform_.TransformDirectory(directoryName));
+      var result = new ZipEntry(nameTransform_.TransformDirectory(directoryName));
       result.Size = 0;
 
-      int externalAttributes = 0;
+      var externalAttributes = 0;
 
       DirectoryInfo di = null;
 

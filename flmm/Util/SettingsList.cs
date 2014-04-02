@@ -110,7 +110,7 @@ namespace Fomm.Util
       {
         return null;
       }
-      List<string> lstValues = new List<string>(arr);
+      var lstValues = new List<string>(arr);
       return lstValues.ToArray();
     }
 
@@ -125,7 +125,7 @@ namespace Fomm.Util
       {
         return null;
       }
-      SettingsList sslValues = new SettingsList();
+      var sslValues = new SettingsList();
       sslValues.AddRange(values);
       return sslValues;
     }
@@ -141,7 +141,7 @@ namespace Fomm.Util
       {
         return null;
       }
-      SettingsList sslValues = new SettingsList();
+      var sslValues = new SettingsList();
       sslValues.AddRange(values.ToArray());
       return sslValues;
     }
@@ -174,10 +174,10 @@ namespace Fomm.Util
       {
         return null;
       }
-      List<Int32> lstValues = new List<Int32>();
-      for (Int32 i = 0; i < arr.Count; i++)
+      var lstValues = new List<Int32>();
+      for (var i = 0; i < arr.Count; i++)
       {
-        Int32 intValue = 0;
+        var intValue = 0;
         Int32.TryParse(arr[i], out intValue);
         lstValues.Add(intValue);
       }
@@ -195,8 +195,8 @@ namespace Fomm.Util
       {
         return null;
       }
-      SettingsList sslValues = new SettingsList();
-      foreach (Int32 intValue in values)
+      var sslValues = new SettingsList();
+      foreach (var intValue in values)
       {
         sslValues.Add(intValue.ToString());
       }

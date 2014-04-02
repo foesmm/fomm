@@ -10,8 +10,8 @@ namespace Fomm.Games.Fallout3.Tools.InstallTweaker
 
     private static void WriteString(BinaryWriter bw, string s)
     {
-      byte[] b = new byte[4];
-      for (int i = 0; i < 4; i++)
+      var b = new byte[4];
+      for (var i = 0; i < 4; i++)
       {
         b[i] = (byte) s[i];
       }
@@ -51,14 +51,14 @@ namespace Fomm.Games.Fallout3.Tools.InstallTweaker
     private static void WriteGroup(BinaryWriter bw, GroupRecord gr)
     {
       WriteString(bw, "GRUP");
-      long pos = bw.BaseStream.Position;
+      var pos = bw.BaseStream.Position;
       bw.Write(0);
       bw.Write(gr.GetReadonlyData());
       bw.Write(gr.groupType);
       bw.Write(gr.dateStamp);
       bw.Write(gr.flags);
-      long start = bw.BaseStream.Position;
-      foreach (Rec r in gr.Records)
+      var start = bw.BaseStream.Position;
+      foreach (var r in gr.Records)
       {
         if (r is GroupRecord)
         {
@@ -69,7 +69,7 @@ namespace Fomm.Games.Fallout3.Tools.InstallTweaker
           WriteRecord(bw, (Record) r);
         }
       }
-      long end = bw.BaseStream.Position;
+      var end = bw.BaseStream.Position;
       bw.BaseStream.Position = pos;
       bw.Write((uint) (24 + (end - start)));
       bw.BaseStream.Position = bw.BaseStream.Length;
@@ -77,20 +77,20 @@ namespace Fomm.Games.Fallout3.Tools.InstallTweaker
 
     internal static void Trim(bool stripEdids, bool stripRefs, string In, string Out, ReportProgressDelegate del)
     {
-      Plugin p = new Plugin(In, false);
+      var p = new Plugin(In, false);
 
       del("Editing plugin");
 
-      Queue<Rec> queue = new Queue<Rec>(p.Records);
+      var queue = new Queue<Rec>(p.Records);
       while (queue.Count > 0)
       {
         if (queue.Peek() is Record)
         {
-          Record r = (Record) queue.Dequeue();
+          var r = (Record) queue.Dequeue();
           if (stripEdids)
           {
             //if(r.SubRecords.Count>0&&r.SubRecords[0].Name=="EDID") r.SubRecords.RemoveAt(0);
-            for (int i = 0; i < r.SubRecords.Count; i++)
+            for (var i = 0; i < r.SubRecords.Count; i++)
             {
               //if(r.SubRecords[i].Name=="SCTX") r.SubRecords.RemoveAt(i--);
             }
@@ -98,10 +98,10 @@ namespace Fomm.Games.Fallout3.Tools.InstallTweaker
         }
         else
         {
-          GroupRecord gr = (GroupRecord) queue.Dequeue();
+          var gr = (GroupRecord) queue.Dequeue();
           if (gr.ContentsType != "GMST")
           {
-            foreach (Rec r in gr.Records)
+            foreach (var r in gr.Records)
             {
               queue.Enqueue(r);
             }
@@ -112,7 +112,7 @@ namespace Fomm.Games.Fallout3.Tools.InstallTweaker
       del("Generating new esm");
 
       //deflater=new ICSharpCode.SharpZipLib.Zip.Compression.Deflater(9);
-      BinaryWriter bw = new BinaryWriter(File.Create(Out));
+      var bw = new BinaryWriter(File.Create(Out));
       p.SaveData(bw);
       /*foreach(Rec r in p.Records) {
                 if(r is GroupRecord) WriteGroup(bw, (GroupRecord)r);

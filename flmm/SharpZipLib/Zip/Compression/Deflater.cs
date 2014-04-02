@@ -395,7 +395,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
     /// </exception>
     public int Deflate(byte[] output, int offset, int length)
     {
-      int origLength = length;
+      var origLength = length;
 
       if (state == CLOSED_STATE)
       {
@@ -405,9 +405,9 @@ namespace Fomm.SharpZipLib.Zip.Compression
       if (state < BUSY_STATE)
       {
         // output header
-        int header = (DEFLATED +
+        var header = (DEFLATED +
                       ((DeflaterConstants.MAX_WBITS - 8) << 4)) << 8;
-        int level_flags = (level - 1) >> 1;
+        var level_flags = (level - 1) >> 1;
         if (level_flags < 0 || level_flags > 3)
         {
           level_flags = 3;
@@ -423,7 +423,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
         pending.WriteShortMSB(header);
         if ((state & IS_SETDICT) != 0)
         {
-          int chksum = engine.Adler;
+          var chksum = engine.Adler;
           engine.ResetAdler();
           pending.WriteShortMSB(chksum >> 16);
           pending.WriteShortMSB(chksum & 0xffff);
@@ -434,7 +434,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
 
       for (;;)
       {
-        int count = pending.Flush(output, offset, length);
+        var count = pending.Flush(output, offset, length);
         offset += count;
         totalOut += count;
         length -= count;
@@ -459,7 +459,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
                * is needed by the zlib inflater, and we must fill
                * the next byte, so that all bits are flushed.
                */
-              int neededbits = 8 + ((-pending.BitCount) & 7);
+              var neededbits = 8 + ((-pending.BitCount) & 7);
               while (neededbits > 0)
               {
                 /* write a static tree block consisting solely of
@@ -478,7 +478,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
             // Compressed data is complete.  Write footer information if required.
             if (!noZlibHeaderOrFooter)
             {
-              int adler = engine.Adler;
+              var adler = engine.Adler;
               pending.WriteShortMSB(adler >> 16);
               pending.WriteShortMSB(adler & 0xffff);
             }

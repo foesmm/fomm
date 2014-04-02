@@ -29,7 +29,7 @@ namespace Fomm.Games.Fallout3
         return true;
       }
 
-      string strOldFOMMLocation =
+      var strOldFOMMLocation =
         (Registry.GetValue(
           @"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Fallout Mod Manager_is1",
           "InstallLocation", "") ?? "").ToString();
@@ -45,7 +45,7 @@ namespace Fomm.Games.Fallout3
         return true;
       }
 
-      string strMessage =
+      var strMessage =
         "An older version of the mod manager was detected. Would you like to migrate your mods into the new programme?" +
         Environment.NewLine +
         "If you answer \"No\", you will have to manually copy your mods into: " + Environment.NewLine +
@@ -65,7 +65,7 @@ namespace Fomm.Games.Fallout3
           return true;
       }
 
-      using (TransactionScope tsTransaction = new TransactionScope())
+      using (var tsTransaction = new TransactionScope())
       {
         using (m_bwdProgress = new BackgroundWorkerProgressDialog(DoMigration))
         {
@@ -94,8 +94,8 @@ namespace Fomm.Games.Fallout3
     /// <param name="p_objArgs">The path to the old FOMM installation.</param>
     protected void DoMigration(object p_objArgs)
     {
-      string strOldFOMMLocation = (string) p_objArgs;
-      TxFileManager tfmFileManager = new TxFileManager();
+      var strOldFOMMLocation = (string) p_objArgs;
+      var tfmFileManager = new TxFileManager();
 
       //copy the mods
       //do we need to copy?
@@ -103,15 +103,15 @@ namespace Fomm.Games.Fallout3
         !Path.Combine(strOldFOMMLocation, "mods")
              .Equals(Program.GameMode.ModDirectory, StringComparison.InvariantCultureIgnoreCase))
       {
-        List<string> lstModFiles = new List<string>();
+        var lstModFiles = new List<string>();
         lstModFiles.AddRange(Directory.GetFiles(Path.Combine(strOldFOMMLocation, "mods"), "*.fomod"));
         lstModFiles.AddRange(Directory.GetFiles(Path.Combine(strOldFOMMLocation, "mods"), "*.xml"));
         m_bwdProgress.ItemMessage = "Copying mods...";
         m_bwdProgress.ItemProgressMaximum = lstModFiles.Count;
         m_bwdProgress.ItemProgress = 0;
-        foreach (string strMod in lstModFiles)
+        foreach (var strMod in lstModFiles)
         {
-          string strModFileName = Path.GetFileName(strMod);
+          var strModFileName = Path.GetFileName(strMod);
           m_bwdProgress.ItemMessage = "Copying mods (" + strModFileName + ")...";
           tfmFileManager.Copy(strMod, Path.Combine(Program.GameMode.ModDirectory, strModFileName), true);
           //File.Copy(strMod, Path.Combine(Program.GameMode.ModDirectory, Path.GetFileName(strMod)));
@@ -132,7 +132,7 @@ namespace Fomm.Games.Fallout3
              .Equals(((Fallout3GameMode) Program.GameMode).OverwriteDirectory,
                      StringComparison.InvariantCultureIgnoreCase))
       {
-        string[] strOverwriteFiles = Directory.GetFiles(Path.Combine(strOldFOMMLocation, "overwrites"), "*.*",
+        var strOverwriteFiles = Directory.GetFiles(Path.Combine(strOldFOMMLocation, "overwrites"), "*.*",
                                                         SearchOption.AllDirectories);
         m_bwdProgress.ItemMessage = "Copying overwrites...";
         m_bwdProgress.ItemProgressMaximum = strOverwriteFiles.Length;
@@ -149,11 +149,11 @@ namespace Fomm.Games.Fallout3
         !Path.Combine(strOldFOMMLocation, "fomm")
              .Equals(Program.GameMode.InstallInfoDirectory, StringComparison.InvariantCultureIgnoreCase))
       {
-        string[] strMiscFiles = Directory.GetFiles(Path.Combine(strOldFOMMLocation, "fomm"), "InstallLog.xml*");
+        var strMiscFiles = Directory.GetFiles(Path.Combine(strOldFOMMLocation, "fomm"), "InstallLog.xml*");
         m_bwdProgress.ItemMessage = "Copying info files...";
         m_bwdProgress.ItemProgressMaximum = strMiscFiles.Length;
         m_bwdProgress.ItemProgress = 0;
-        foreach (string strFile in strMiscFiles)
+        foreach (var strFile in strMiscFiles)
         {
           tfmFileManager.Copy(strFile, Path.Combine(Program.GameMode.InstallInfoDirectory, Path.GetFileName(strFile)),
                               true);

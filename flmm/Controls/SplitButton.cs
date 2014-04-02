@@ -176,7 +176,7 @@ namespace Fomm.Controls
     /// <returns>The preferred size of the control.</returns>
     public override Size GetPreferredSize(Size proposedSize)
     {
-      Size szePreferredSize = base.GetPreferredSize(proposedSize);
+      var szePreferredSize = base.GetPreferredSize(proposedSize);
       if (m_booShowSplit && !string.IsNullOrEmpty(Text) &&
           TextRenderer.MeasureText(Text, Font).Width + PUSH_BUTTON_WIDTH > szePreferredSize.Width)
       {
@@ -415,13 +415,13 @@ namespace Fomm.Controls
         return;
       }
 
-      Graphics gphGraphics = pevent.Graphics;
-      Rectangle rctBounds = ClientRectangle;
+      var gphGraphics = pevent.Graphics;
+      var rctBounds = ClientRectangle;
 
       // draw the button background as according to the current state.
       if (State != PushButtonState.Pressed && IsDefault && !Application.RenderWithVisualStyles)
       {
-        Rectangle backgroundBounds = rctBounds;
+        var backgroundBounds = rctBounds;
         backgroundBounds.Inflate(-1, -1);
         ButtonRenderer.DrawButton(gphGraphics, backgroundBounds, State);
 
@@ -437,13 +437,13 @@ namespace Fomm.Controls
       m_rctDropDownRectangle = new Rectangle(rctBounds.Right - PUSH_BUTTON_WIDTH - 1, m_intBorderSize, PUSH_BUTTON_WIDTH,
                                              rctBounds.Height - m_intBorderSize*2);
 
-      Int32 intInternalBorder = m_intBorderSize;
-      Rectangle rctFocusRect = new Rectangle(intInternalBorder,
+      var intInternalBorder = m_intBorderSize;
+      var rctFocusRect = new Rectangle(intInternalBorder,
                                              intInternalBorder,
                                              rctBounds.Width - m_rctDropDownRectangle.Width - intInternalBorder,
                                              rctBounds.Height - (intInternalBorder*2));
 
-      bool booDrawSplitLine = (State == PushButtonState.Hot || State == PushButtonState.Pressed ||
+      var booDrawSplitLine = (State == PushButtonState.Hot || State == PushButtonState.Pressed ||
                                !Application.RenderWithVisualStyles);
       if (RightToLeft == RightToLeft.Yes)
       {
@@ -474,7 +474,7 @@ namespace Fomm.Controls
       PaintArrow(gphGraphics, m_rctDropDownRectangle);
 
       // Figure out how to draw the text
-      TextFormatFlags tffFormatFlags = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter;
+      var tffFormatFlags = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter;
 
       // If we dont' use mnemonic, set formatFlag to NoPrefix as this will show ampersand.
       if (!UseMnemonic)
@@ -505,13 +505,13 @@ namespace Fomm.Controls
     /// <param name="p_rctDropDownRect">The rectangle in which to paint the arrow.</param>
     private void PaintArrow(Graphics p_gphGraphics, Rectangle p_rctDropDownRect)
     {
-      Point pntMiddle = new Point(Convert.ToInt32(p_rctDropDownRect.Left + p_rctDropDownRect.Width/2),
+      var pntMiddle = new Point(Convert.ToInt32(p_rctDropDownRect.Left + p_rctDropDownRect.Width/2),
                                   Convert.ToInt32(p_rctDropDownRect.Top + p_rctDropDownRect.Height/2));
 
       //if the width is odd - favor pushing it over one pixel right.
       pntMiddle.X += (p_rctDropDownRect.Width%2);
 
-      Point[] pntArrowPoints = new Point[]
+      var pntArrowPoints = new Point[]
       {
         new Point(pntMiddle.X - 2, pntMiddle.Y - 1), new Point(pntMiddle.X + 3, pntMiddle.Y - 1),
         new Point(pntMiddle.X, pntMiddle.Y + 2)
@@ -562,7 +562,7 @@ namespace Fomm.Controls
     /// <param name="e">A <see cref="ToolStripDropDownClosingEventArgs"/> describing the event arguments.</param>
     private void ContextMenuStrip_Closing(object sender, ToolStripDropDownClosingEventArgs e)
     {
-      ContextMenuStrip cmsDropDownItems = sender as ContextMenuStrip;
+      var cmsDropDownItems = sender as ContextMenuStrip;
       if (cmsDropDownItems != null)
       {
         cmsDropDownItems.Closing -= new ToolStripDropDownClosingEventHandler(ContextMenuStrip_Closing);

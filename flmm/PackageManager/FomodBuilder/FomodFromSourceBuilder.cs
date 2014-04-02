@@ -94,11 +94,11 @@ namespace Fomm.PackageManager.FomodBuilder
     /// <returns>The path to the new fomod if it was successfully built; <lang cref="null"/> otherwise.</returns>
     public IList<string> BuildFomodFromSource(string p_strPath)
     {
-      string strSource = p_strPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+      var strSource = p_strPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
 
-      List<string> lstPackedFOModPaths = new List<string>();
+      var lstPackedFOModPaths = new List<string>();
 
-      bool booCreateFromFolder = true;
+      var booCreateFromFolder = true;
 
       if (File.Exists(strSource))
       {
@@ -109,7 +109,7 @@ namespace Fomm.PackageManager.FomodBuilder
         }
 
         string[] strFOMods = null;
-        using (Archive arcMod = new Archive(strSource))
+        using (var arcMod = new Archive(strSource))
         {
           strFOMods = arcMod.GetFiles(null, "*.fomod");
           if ((strFOMods.Length == 0) && (arcMod.VolumeFileNames.Length > 1))
@@ -130,14 +130,14 @@ namespace Fomm.PackageManager.FomodBuilder
         {
           if (strFOMods.Length > 0)
           {
-            foreach (string strFOMod in strFOMods)
+            foreach (var strFOMod in strFOMods)
             {
-              string strNewPath = Path.Combine(Program.GameMode.ModDirectory, Path.GetFileName(strFOMod));
+              var strNewPath = Path.Combine(Program.GameMode.ModDirectory, Path.GetFileName(strFOMod));
               if (CheckFileName(ref strNewPath))
               {
-                using (SevenZipExtractor szeExtractor = Archive.GetExtractor(strSource))
+                using (var szeExtractor = Archive.GetExtractor(strSource))
                 {
-                  using (FileStream fsmFOMod = new FileStream(strNewPath, FileMode.Create))
+                  using (var fsmFOMod = new FileStream(strNewPath, FileMode.Create))
                   {
                     szeExtractor.ExtractFile(strFOMod, fsmFOMod);
                   }
@@ -148,7 +148,7 @@ namespace Fomm.PackageManager.FomodBuilder
           }
           else
           {
-            fomod mof = new fomod(strSource, false);
+            var mof = new fomod(strSource, false);
             if (!mof.HasInstallScript && mof.RequiresScript)
             {
               if (
@@ -161,7 +161,7 @@ namespace Fomm.PackageManager.FomodBuilder
               }
             }
             //remove the file extension
-            string strPackedFomodPath = Path.GetFileNameWithoutExtension(strSource);
+            var strPackedFomodPath = Path.GetFileNameWithoutExtension(strSource);
             //remove the .part1 or what have for multipart files
             strPackedFomodPath = Path.GetFileNameWithoutExtension(strPackedFomodPath);
             strPackedFomodPath = Path.Combine(Program.GameMode.ModDirectory, strPackedFomodPath);
@@ -169,7 +169,7 @@ namespace Fomm.PackageManager.FomodBuilder
             {
               strPackedFomodPath += ".fomod";
             }
-            string strNewPath = strPackedFomodPath;
+            var strNewPath = strPackedFomodPath;
             if (CheckFileName(ref strNewPath))
             {
               FileUtil.ForceDelete(strNewPath);
@@ -199,14 +199,14 @@ namespace Fomm.PackageManager.FomodBuilder
         }
         else
         {
-          Int32 intLastSeparatorPos = strSource.LastIndexOfAny(new char[]
+          var intLastSeparatorPos = strSource.LastIndexOfAny(new char[]
           {
             Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar
           });
           strFomodName = strSource.Substring(intLastSeparatorPos + 1);
         }
 
-        string strPackedFomodPath = Path.Combine(Program.GameMode.ModDirectory, strFomodName + ".fomod");
+        var strPackedFomodPath = Path.Combine(Program.GameMode.ModDirectory, strFomodName + ".fomod");
         strPackedFomodPath = GenerateFomod(new BuildFomodArgs(strFomodName, strSource, null, strPackedFomodPath));
         if (!String.IsNullOrEmpty(strPackedFomodPath))
         {
@@ -226,13 +226,13 @@ namespace Fomm.PackageManager.FomodBuilder
     /// <param name="p_objArgs">A <see cref="BuildFomodArgs"/> describing the fomod to build.</param>
     protected override void DoGenerateFomod(object p_objArgs)
     {
-      BuildFomodArgs bfaArgs = p_objArgs as BuildFomodArgs;
+      var bfaArgs = p_objArgs as BuildFomodArgs;
       if (bfaArgs == null)
       {
         throw new ArgumentException("The given argument must be a BuildFomodArgs.", "p_objArgs");
       }
 
-      string strSource = bfaArgs.SourcePath;
+      var strSource = bfaArgs.SourcePath;
 
       /**
        * 1) Unpack source, if required
@@ -281,8 +281,8 @@ namespace Fomm.PackageManager.FomodBuilder
           Program.GetFiles(strSource, "*.esp", SearchOption.TopDirectoryOnly).Length +
           Program.GetFiles(strSource, "*.esm", SearchOption.TopDirectoryOnly).Length)
       {
-        bool booHasScript = false;
-        foreach (string strScriptName in FomodScript.ScriptNames)
+        var booHasScript = false;
+        foreach (var strScriptName in FomodScript.ScriptNames)
         {
           if (File.Exists(Path.Combine(strSource, "fomod\\" + strScriptName)))
           {
@@ -300,12 +300,12 @@ namespace Fomm.PackageManager.FomodBuilder
       }
 
       // 4) Create readme
-      string[] strReadmes = Directory.GetFiles(strSource, "readme - " + bfaArgs.FomodName + ".*",
+      var strReadmes = Directory.GetFiles(strSource, "readme - " + bfaArgs.FomodName + ".*",
                                                SearchOption.TopDirectoryOnly);
       if (strReadmes.Length == 0)
       {
         strReadmes = Directory.GetFiles(strSource, "*readme*.*", SearchOption.AllDirectories);
-        foreach (string strExtension in Readme.ValidExtensions)
+        foreach (var strExtension in Readme.ValidExtensions)
         {
           if (strReadmes.Length > 0)
           {
@@ -314,7 +314,7 @@ namespace Fomm.PackageManager.FomodBuilder
           strReadmes = Program.GetFiles(strSource, "*" + strExtension, SearchOption.AllDirectories);
         }
         Readme rmeReadme = null;
-        foreach (string strReadme in strReadmes)
+        foreach (var strReadme in strReadmes)
         {
           if (Readme.IsValidReadme(strReadme))
           {
@@ -333,17 +333,17 @@ namespace Fomm.PackageManager.FomodBuilder
       // 5) Create info.xml
       if (!String.IsNullOrEmpty(bfaArgs.Url))
       {
-        string strFomodFomodPath = Path.Combine(strSource, "fomod");
+        var strFomodFomodPath = Path.Combine(strSource, "fomod");
         if (!Directory.Exists(strFomodFomodPath))
         {
           Directory.CreateDirectory(strFomodFomodPath);
         }
         if (!File.Exists(Path.Combine(strFomodFomodPath, "info.xml")))
         {
-          XmlDocument xmlInfo = new XmlDocument();
+          var xmlInfo = new XmlDocument();
           xmlInfo.AppendChild(xmlInfo.CreateXmlDeclaration("1.0", "UTF-16", null));
-          XmlNode xndRoot = xmlInfo.AppendChild(xmlInfo.CreateElement("fomod"));
-          XmlNode xndWebsite = xndRoot.AppendChild(xmlInfo.CreateElement("Website"));
+          var xndRoot = xmlInfo.AppendChild(xmlInfo.CreateElement("fomod"));
+          var xndWebsite = xndRoot.AppendChild(xmlInfo.CreateElement("Website"));
           xndWebsite.InnerText = bfaArgs.Url;
           CreateInfoFile(strFomodFomodPath, xmlInfo);
         }
@@ -372,7 +372,7 @@ namespace Fomm.PackageManager.FomodBuilder
     /// <param name="p_strSourcePath">The path from which to removed extraneous files.</param>
     protected void DeleteUnwantedFiles(string p_strSourcePath)
     {
-      List<string> lstUnwantedFiles = new List<string>();
+      var lstUnwantedFiles = new List<string>();
       lstUnwantedFiles.AddRange(Program.GetFiles(p_strSourcePath, "ArchiveInvalidation.txt", SearchOption.AllDirectories));
       lstUnwantedFiles.AddRange(Program.GetFiles(p_strSourcePath, "thumbs.db", SearchOption.AllDirectories));
       lstUnwantedFiles.AddRange(Program.GetFiles(p_strSourcePath, "desktop.ini", SearchOption.AllDirectories));
@@ -381,7 +381,7 @@ namespace Fomm.PackageManager.FomodBuilder
       ProgressDialog.ItemProgressMaximum = lstUnwantedFiles.Count;
       ProgressDialog.ItemProgressStep = 1;
       ProgressDialog.ItemMessage = String.Format("Deleting Unwanted Files...");
-      foreach (string strFile in lstUnwantedFiles)
+      foreach (var strFile in lstUnwantedFiles)
       {
         FileUtil.ForceDelete(strFile);
         ProgressDialog.StepItemProgress();
@@ -405,10 +405,10 @@ namespace Fomm.PackageManager.FomodBuilder
       ProgressDialog.ItemProgressStep = 1;
       ProgressDialog.ItemMessage = String.Format("Finding FOMod Folder...");
 
-      string strSourcePath = p_strSourcePath;
+      var strSourcePath = p_strSourcePath;
       //this code removes any top-level folders until it finds esp/esm/bsa, or the top-level folder
       // is a fomod/textures/meshes/music/shaders/video/facegen/menus/lodsettings/lsdata/sound folder.
-      string[] directories = Directory.GetDirectories(strSourcePath);
+      var directories = Directory.GetDirectories(strSourcePath);
       while (directories.Length == 1 &&
              ((Program.GetFiles(strSourcePath, "*.esp").Length == 0 &&
                Program.GetFiles(strSourcePath, "*.esm").Length == 0 &&
@@ -416,14 +416,14 @@ namespace Fomm.PackageManager.FomodBuilder
               Path.GetFileName(directories[0]).Equals("data", StringComparison.InvariantCultureIgnoreCase)))
       {
         directories = directories[0].Split(Path.DirectorySeparatorChar);
-        string name = directories[directories.Length - 1].ToLowerInvariant();
+        var name = directories[directories.Length - 1].ToLowerInvariant();
         if ((name != "fomod") && (name != "textures") && (name != "meshes") && (name != "music") &&
             (name != "shaders") && (name != "video") && (name != "facegen") && (name != "menus") &&
             (name != "lodsettings") && (name != "lsdata") && (name != "sound"))
         {
-          foreach (string file in Directory.GetFiles(strSourcePath))
+          foreach (var file in Directory.GetFiles(strSourcePath))
           {
-            string newpath2 = Path.Combine(Path.Combine(Path.GetDirectoryName(file), name), Path.GetFileName(file));
+            var newpath2 = Path.Combine(Path.Combine(Path.GetDirectoryName(file), name), Path.GetFileName(file));
             if (!File.Exists(newpath2))
             {
               File.Move(file, newpath2);

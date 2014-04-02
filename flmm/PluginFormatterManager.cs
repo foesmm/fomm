@@ -59,8 +59,8 @@ namespace Fomm
       /// <returns>The format to apply to the specified plugin.</returns>
       public PluginFormat GetFormat(string p_strPluginName)
       {
-        List<PluginFormat> lstFormats = new List<PluginFormat>();
-        foreach (IPluginFormatProvider pfpProvider in m_setProviders)
+        var lstFormats = new List<PluginFormat>();
+        foreach (var pfpProvider in m_setProviders)
         {
           if (pfpProvider.HasFormat(p_strPluginName))
           {
@@ -68,8 +68,8 @@ namespace Fomm
           }
         }
         lstFormats.Sort();
-        PluginFormat pftMergedFormat = new PluginFormat();
-        for (Int32 i = 0; i < lstFormats.Count; pftMergedFormat.Merge(lstFormats[i++]))
+        var pftMergedFormat = new PluginFormat();
+        for (var i = 0; i < lstFormats.Count; pftMergedFormat.Merge(lstFormats[i++]))
         {
           ;
         }

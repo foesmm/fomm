@@ -14,7 +14,7 @@ namespace Fomm.Games.Fallout3.Tools
 
     private static string GetBSAList()
     {
-      List<string> bsas =
+      var bsas =
         new List<string>(
           NativeMethods.GetPrivateProfileString("Archive", "SArchiveList", null,
                                                 ((Fallout3GameMode.SettingsFilesSet) Program.GameMode.SettingsFiles)
@@ -22,7 +22,7 @@ namespace Fomm.Games.Fallout3.Tools
                                                   {
                                                     ','
                                                   }, StringSplitOptions.RemoveEmptyEntries));
-      for (int i = 0; i < bsas.Count; i++)
+      for (var i = 0; i < bsas.Count; i++)
       {
         bsas[i] = bsas[i].Trim(' ');
         if (bsas[i] == AiBsa)
@@ -35,27 +35,27 @@ namespace Fomm.Games.Fallout3.Tools
 
     private static void ApplyAI()
     {
-      foreach (FileInfo fi in new DirectoryInfo(Program.GameMode.PluginsPath).GetFiles("Fallout - *.bsa"))
+      foreach (var fi in new DirectoryInfo(Program.GameMode.PluginsPath).GetFiles("Fallout - *.bsa"))
       {
         fi.LastWriteTime = new DateTime(2008, 10, 1);
       }
-      foreach (FileInfo fi in new DirectoryInfo(Program.GameMode.PluginsPath).GetFiles("Anchorage - *.bsa"))
+      foreach (var fi in new DirectoryInfo(Program.GameMode.PluginsPath).GetFiles("Anchorage - *.bsa"))
       {
         fi.LastWriteTime = new DateTime(2008, 10, 2);
       }
-      foreach (FileInfo fi in new DirectoryInfo(Program.GameMode.PluginsPath).GetFiles("ThePitt - *.bsa"))
+      foreach (var fi in new DirectoryInfo(Program.GameMode.PluginsPath).GetFiles("ThePitt - *.bsa"))
       {
         fi.LastWriteTime = new DateTime(2008, 10, 3);
       }
-      foreach (FileInfo fi in new DirectoryInfo(Program.GameMode.PluginsPath).GetFiles("BrokenSteel - *.bsa"))
+      foreach (var fi in new DirectoryInfo(Program.GameMode.PluginsPath).GetFiles("BrokenSteel - *.bsa"))
       {
         fi.LastWriteTime = new DateTime(2008, 10, 4);
       }
-      foreach (FileInfo fi in new DirectoryInfo(Program.GameMode.PluginsPath).GetFiles("PointLookout - *.bsa"))
+      foreach (var fi in new DirectoryInfo(Program.GameMode.PluginsPath).GetFiles("PointLookout - *.bsa"))
       {
         fi.LastWriteTime = new DateTime(2008, 10, 5);
       }
-      foreach (FileInfo fi in new DirectoryInfo(Program.GameMode.PluginsPath).GetFiles("Zeta - *.bsa"))
+      foreach (var fi in new DirectoryInfo(Program.GameMode.PluginsPath).GetFiles("Zeta - *.bsa"))
       {
         fi.LastWriteTime = new DateTime(2008, 10, 6);
       }

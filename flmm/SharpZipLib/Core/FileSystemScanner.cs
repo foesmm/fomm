@@ -144,11 +144,11 @@ namespace Fomm.SharpZipLib.Core
     /// <param name="file">The file name.</param>
     private void OnProcessFile(string file)
     {
-      ProcessFileHandler handler = ProcessFile;
+      var handler = ProcessFile;
 
       if (handler != null)
       {
-        ScanEventArgs args = new ScanEventArgs(file);
+        var args = new ScanEventArgs(file);
         handler(this, args);
         alive_ = args.ContinueRunning;
       }
@@ -167,9 +167,9 @@ namespace Fomm.SharpZipLib.Core
 
     private void ScanDir(string directory, bool recurse)
     {
-      string[] names = Directory.GetFiles(directory);
-      bool hasMatch = false;
-      for (int fileIndex = 0; fileIndex < names.Length; ++fileIndex)
+      var names = Directory.GetFiles(directory);
+      var hasMatch = false;
+      for (var fileIndex = 0; fileIndex < names.Length; ++fileIndex)
       {
         if (!fileFilter_.IsMatch(names[fileIndex]))
         {
@@ -183,7 +183,7 @@ namespace Fomm.SharpZipLib.Core
 
       if (alive_ && hasMatch)
       {
-        foreach (string fileName in names)
+        foreach (var fileName in names)
         {
           if (fileName != null)
           {
@@ -199,7 +199,7 @@ namespace Fomm.SharpZipLib.Core
       if (alive_ && recurse)
       {
         names = Directory.GetDirectories(directory);
-        foreach (string fulldir in names)
+        foreach (var fulldir in names)
         {
           if ((directoryFilter_ == null) || (directoryFilter_.IsMatch(fulldir)))
           {

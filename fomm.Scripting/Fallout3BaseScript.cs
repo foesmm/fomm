@@ -316,8 +316,8 @@ namespace fomm.Scripting
     /// <seealso cref="ModScript.SetupScriptCompiler(Fomm.TESsnip.Plugin[] p_plgPlugins)"/>
     public static void SetupScriptCompiler(Plugin[] p_plgPlugins)
     {
-      Plugin[] tspPlugins = new Plugin[p_plgPlugins.Length];
-      for (int i = 0; i < p_plgPlugins.Length; i++)
+      var tspPlugins = new Plugin[p_plgPlugins.Length];
+      for (var i = 0; i < p_plgPlugins.Length; i++)
       {
         tspPlugins[i] = p_plgPlugins[i];
       }
@@ -361,7 +361,7 @@ namespace fomm.Scripting
       {
         Script.CompileScript(r2, out msg);
         r2.SubRecords.Clear();
-        for (int i = 0; i < r2.SubRecords.Count; i++)
+        for (var i = 0; i < r2.SubRecords.Count; i++)
         {
           r2.SubRecords.Add((SubRecord) r2.SubRecords[i].Clone());
         }

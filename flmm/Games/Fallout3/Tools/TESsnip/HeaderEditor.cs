@@ -47,7 +47,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     public static void Display(Record r)
     {
-      HeaderEditor hr = new HeaderEditor(r);
+      var hr = new HeaderEditor(r);
       hr.ShowDialog();
     }
 
@@ -83,7 +83,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
     {
       if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
       {
-        char c = char.ToLowerInvariant(e.KeyChar);
+        var c = char.ToLowerInvariant(e.KeyChar);
         if (c != 'a' && c != 'b' && c != 'c' && c != 'd' && c != 'e' && c != 'f')
         {
           e.Handled = true;
@@ -93,7 +93,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     private void HexValidCheck(object sender, EventArgs e)
     {
-      TextBox tb = (TextBox) sender;
+      var tb = (TextBox) sender;
       if (tb.Text.Length < 8)
       {
         tb.Text = tb.Text.PadLeft(8, '0');

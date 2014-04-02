@@ -32,8 +32,8 @@ namespace Fomm.FileManager
       tvwFolders.Nodes.Clear();
       if (radByFile.Checked)
       {
-        List<string> lstInstalledFiles = InstallLog.Current.GetFileList();
-        TreeNode tndCurrentDirectory = new TreeNode(Path.GetFileName(Program.GameMode.PluginsPath));
+        var lstInstalledFiles = InstallLog.Current.GetFileList();
+        var tndCurrentDirectory = new TreeNode(Path.GetFileName(Program.GameMode.PluginsPath));
         tndCurrentDirectory.Name = tndCurrentDirectory.Text;
         tvwFolders.Nodes.Add(tndCurrentDirectory);
         AddFilesToNode(tndCurrentDirectory, lstInstalledFiles);
@@ -44,9 +44,9 @@ namespace Fomm.FileManager
       }
       else
       {
-        IList<string> lstInstalledMods = InstallLog.Current.GetModList();
+        var lstInstalledMods = InstallLog.Current.GetModList();
         TreeNode tndCurrentDirectory = null;
-        foreach (string strMod in lstInstalledMods)
+        foreach (var strMod in lstInstalledMods)
         {
           tndCurrentDirectory = tvwFolders.Nodes.Add(strMod);
           tndCurrentDirectory.Name = tndCurrentDirectory.Text;
@@ -54,7 +54,7 @@ namespace Fomm.FileManager
           tndCurrentDirectory.SelectedImageKey = "mod";
           tndCurrentDirectory = tndCurrentDirectory.Nodes.Add(Path.GetFileName(Program.GameMode.PluginsPath));
           tndCurrentDirectory.Name = tndCurrentDirectory.Text;
-          List<string> lstInstalledFiles = InstallLog.Current.GetFileList(strMod);
+          var lstInstalledFiles = InstallLog.Current.GetFileList(strMod);
           AddFilesToNode(tndCurrentDirectory, lstInstalledFiles);
         }
         if (rlvOverwrites.SelectedItems.Count > 0)
@@ -76,13 +76,13 @@ namespace Fomm.FileManager
     /// <param name="p_strFile">The file path whose containing directory node is to be selected.</param>
     protected void SelectNodeContainingFile(TreeNode p_tndNode, string p_strFile)
     {
-      char[] chrDirecotrySeparators = new char[]
+      var chrDirecotrySeparators = new char[]
       {
         Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar
       };
-      string[] strDirectories = p_strFile.Split(chrDirecotrySeparators);
-      TreeNode tndCurrentDirectory = p_tndNode;
-      for (Int32 i = 0; i < strDirectories.Length - 1; i++)
+      var strDirectories = p_strFile.Split(chrDirecotrySeparators);
+      var tndCurrentDirectory = p_tndNode;
+      for (var i = 0; i < strDirectories.Length - 1; i++)
       {
         tndCurrentDirectory = tndCurrentDirectory.Nodes[strDirectories[i]];
       }
@@ -96,18 +96,18 @@ namespace Fomm.FileManager
     /// <param name="p_strFiles">The files to add to the given node.</param>
     protected void AddFilesToNode(TreeNode p_tndNode, IList<string> p_strFiles)
     {
-      TreeNode tndCurrentDirectory = p_tndNode;
-      char[] chrDirecotrySeparators = new char[]
+      var tndCurrentDirectory = p_tndNode;
+      var chrDirecotrySeparators = new char[]
       {
         Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar
       };
-      foreach (string strFile in p_strFiles)
+      foreach (var strFile in p_strFiles)
       {
         tndCurrentDirectory = p_tndNode;
-        string[] strDirectories = strFile.Split(chrDirecotrySeparators);
-        for (Int32 i = 0; i < strDirectories.Length - 1; i++)
+        var strDirectories = strFile.Split(chrDirecotrySeparators);
+        for (var i = 0; i < strDirectories.Length - 1; i++)
         {
-          string strDirectory = strDirectories[i];
+          var strDirectory = strDirectories[i];
           if (!tndCurrentDirectory.Nodes.ContainsKey(strDirectory))
           {
             tndCurrentDirectory = tndCurrentDirectory.Nodes.Add(strDirectory);
@@ -118,7 +118,7 @@ namespace Fomm.FileManager
             tndCurrentDirectory = tndCurrentDirectory.Nodes[strDirectory];
           }
         }
-        List<string> lstDirectoryFiles = (List<string>) tndCurrentDirectory.Tag;
+        var lstDirectoryFiles = (List<string>) tndCurrentDirectory.Tag;
         if (lstDirectoryFiles == null)
         {
           lstDirectoryFiles = new List<string>();
@@ -141,11 +141,11 @@ namespace Fomm.FileManager
         return;
       }
       rlvOverwrites.Items.Clear();
-      string strFile = (string) lvwFiles.SelectedItems[0].Tag;
+      var strFile = (string) lvwFiles.SelectedItems[0].Tag;
       IList<string> lstInstallers = InstallLog.Current.GetInstallingMods(strFile);
-      foreach (string strMod in lstInstallers)
+      foreach (var strMod in lstInstallers)
       {
-        ListViewItem lviMod = rlvOverwrites.Items.Add(strMod);
+        var lviMod = rlvOverwrites.Items.Add(strMod);
         lviMod.Name = lviMod.Text;
       }
 
@@ -160,22 +160,22 @@ namespace Fomm.FileManager
         highlightMissing(tndHere);
       }
 
-      TreeNode tndDirectory = thisRoot;
-      List<string> lstDirectoryFiles = (List<string>) tndDirectory.Tag;
+      var tndDirectory = thisRoot;
+      var lstDirectoryFiles = (List<string>) tndDirectory.Tag;
       if ((lstDirectoryFiles == null) || (lstDirectoryFiles.Count == 0))
       {
         return;
       }
-      foreach (string strFile in lstDirectoryFiles)
+      foreach (var strFile in lstDirectoryFiles)
       {
         IList<string> lstInstallers = InstallLog.Current.GetInstallingMods(strFile);
-        bool booMissing = false;
-        string currentOwner = InstallLog.Current.GetCurrentFileOwnerKey(strFile);
-        foreach (string strMod in lstInstallers)
+        var booMissing = false;
+        var currentOwner = InstallLog.Current.GetCurrentFileOwnerKey(strFile);
+        foreach (var strMod in lstInstallers)
         {
-          string strModKey = InstallLog.Current.GetModKey(strMod);
-          string strDirectory = Path.GetDirectoryName(strFile);
-          string strBackupPath = Path.Combine(Program.GameMode.OverwriteDirectory, strDirectory);
+          var strModKey = InstallLog.Current.GetModKey(strMod);
+          var strDirectory = Path.GetDirectoryName(strFile);
+          var strBackupPath = Path.Combine(Program.GameMode.OverwriteDirectory, strDirectory);
           strBackupPath = Path.Combine(strBackupPath, strModKey + "_" + Path.GetFileName(strFile));
           if (!File.Exists(strBackupPath) && !currentOwner.Equals(strModKey))
           {
@@ -188,7 +188,7 @@ namespace Fomm.FileManager
         }
         if (booMissing)
         {
-          TreeNode upwego = tndDirectory;
+          var upwego = tndDirectory;
           do
           {
             upwego.BackColor = Color.Red;
@@ -209,19 +209,19 @@ namespace Fomm.FileManager
     /// <param name="e">A <see cref="TreeViewEventArgs"/> describing the event arguments.</param>
     private void tvwFolders_AfterSelect(object sender, TreeViewEventArgs e)
     {
-      TreeNode tndDirectory = e.Node;
-      List<string> lstDirectoryFiles = (List<string>) tndDirectory.Tag;
+      var tndDirectory = e.Node;
+      var lstDirectoryFiles = (List<string>) tndDirectory.Tag;
       lvwFiles.Items.Clear();
       if ((lstDirectoryFiles == null) || (lstDirectoryFiles.Count == 0))
       {
         return;
       }
-      foreach (string strFile in lstDirectoryFiles)
+      foreach (var strFile in lstDirectoryFiles)
       {
-        ListViewItem lviFile = new ListViewItem(Path.GetFileName(strFile));
+        var lviFile = new ListViewItem(Path.GetFileName(strFile));
         lviFile.Name = lviFile.Text;
         lviFile.Tag = strFile;
-        FileInfo fliFile = new FileInfo(Path.Combine(Program.GameMode.PluginsPath, strFile));
+        var fliFile = new FileInfo(Path.Combine(Program.GameMode.PluginsPath, strFile));
         lviFile.SubItems.Add(fliFile.CreationTime.ToString("g"));
         lviFile.SubItems.Add(fliFile.LastWriteTime.ToString("g"));
         if (fliFile.Exists)
@@ -234,7 +234,7 @@ namespace Fomm.FileManager
         }
         else
         {
-          ListViewItem.ListViewSubItem lsiSubItem = lviFile.SubItems.Add("0 KB");
+          var lsiSubItem = lviFile.SubItems.Add("0 KB");
           lviFile.Font = new Font(lviFile.Font, FontStyle.Strikeout);
         }
         lviFile.ImageKey = fliFile.Extension;
@@ -266,21 +266,21 @@ namespace Fomm.FileManager
     /// <param name="e">A <see cref="TreeViewEventArgs"/> describing the event arguments.</param>
     private void rlvOverwrites_DragDrop(object sender, DragEventArgs e)
     {
-      List<string> lstOrderedMods = new List<string>();
+      var lstOrderedMods = new List<string>();
       foreach (ListViewItem lviMod in rlvOverwrites.Items)
       {
         lstOrderedMods.Add(lviMod.Text);
       }
 
-      string strFile = (string) lvwFiles.SelectedItems[0].Tag;
-      ModInstallReorderer mirReorderer = new ModInstallReorderer();
+      var strFile = (string) lvwFiles.SelectedItems[0].Tag;
+      var mirReorderer = new ModInstallReorderer();
       if (!mirReorderer.ReorderFileInstallers(strFile, lstOrderedMods))
       {
         loadInstallingMods();
       }
       else
       {
-        for (Int32 i = rlvOverwrites.Items.Count - 2; i >= 0; i--)
+        for (var i = rlvOverwrites.Items.Count - 2; i >= 0; i--)
         {
           rlvOverwrites.Items[i].BackColor = SystemColors.Window;
         }

@@ -40,7 +40,7 @@ namespace Fomm.Games.Fallout3.Tools
             return image;
           }
           image = new Bitmap(ImageWidth, ImageHeight, PixelFormat.Format24bppRgb);
-          BitmapData bd = image.LockBits(new Rectangle(0, 0, ImageWidth, ImageHeight), ImageLockMode.WriteOnly,
+          var bd = image.LockBits(new Rectangle(0, 0, ImageWidth, ImageHeight), ImageLockMode.WriteOnly,
                                          PixelFormat.Format24bppRgb);
           Marshal.Copy(ImageData, 0, bd.Scan0, ImageData.Length);
           image.UnlockBits(bd);
@@ -64,8 +64,8 @@ namespace Fomm.Games.Fallout3.Tools
 
       public int Compare(object a, object b)
       {
-        SaveFile sa = (SaveFile) ((ListViewItem) a).Tag;
-        SaveFile sb = (SaveFile) ((ListViewItem) b).Tag;
+        var sa = (SaveFile) ((ListViewItem) a).Tag;
+        var sb = (SaveFile) ((ListViewItem) b).Tag;
         switch (order)
         {
           case SaveSortOrder.Name:
@@ -77,8 +77,8 @@ namespace Fomm.Games.Fallout3.Tools
           case SaveSortOrder.Date:
             return DateTime.Compare(sa.saved, sb.saved);
           case SaveSortOrder.FileSize:
-            long sizea = (new FileInfo(Program.GameMode.SavesPath + sa.FileName)).Length;
-            long sizeb = (new FileInfo(Program.GameMode.SavesPath + sb.FileName)).Length;
+            var sizea = (new FileInfo(Program.GameMode.SavesPath + sa.FileName)).Length;
+            var sizeb = (new FileInfo(Program.GameMode.SavesPath + sb.FileName)).Length;
             if (sizea == sizeb)
             {
               return 0;
@@ -116,7 +116,7 @@ namespace Fomm.Games.Fallout3.Tools
       Icon = Resources.fomm02;
       cmbSort.SelectedIndex = 3;
       lvSaves.ListViewItemSorter = new SaveListSorter();
-      foreach (string file in Directory.GetFiles(Program.GameMode.SavesPath))
+      foreach (var file in Directory.GetFiles(Program.GameMode.SavesPath))
       {
         BinaryReader br;
         SaveFile sf;
@@ -135,8 +135,8 @@ namespace Fomm.Games.Fallout3.Tools
             br.Close();
             continue;
           }
-          string str = "";
-          for (int i = 0; i < 11; i++)
+          var str = "";
+          for (var i = 0; i < 11; i++)
           {
             str += (char) br.ReadByte();
           }
@@ -156,16 +156,16 @@ namespace Fomm.Games.Fallout3.Tools
           br.ReadByte();
           br.ReadInt32();
           br.ReadByte();
-          short s = br.ReadInt16();
+          var s = br.ReadInt16();
           br.ReadByte();
-          for (int i = 0; i < s; i++)
+          for (var i = 0; i < s; i++)
           {
             sf.Player += (char) br.ReadByte();
           }
           br.ReadByte();
           s = br.ReadInt16();
           br.ReadByte();
-          for (int i = 0; i < s; i++)
+          for (var i = 0; i < s; i++)
           {
             sf.Karma += (char) br.ReadByte();
           }
@@ -174,24 +174,24 @@ namespace Fomm.Games.Fallout3.Tools
           br.ReadByte();
           s = br.ReadInt16();
           br.ReadByte();
-          for (int i = 0; i < s; i++)
+          for (var i = 0; i < s; i++)
           {
             sf.Location += (char) br.ReadByte();
           }
           br.ReadInt32(); //|<short>|
-          for (int i = 0; i < 3; i++)
+          for (var i = 0; i < 3; i++)
           {
             sf.Playtime += (char) br.ReadByte();
           }
           sf.Playtime += " hours, ";
           br.ReadByte();
-          for (int i = 0; i < 2; i++)
+          for (var i = 0; i < 2; i++)
           {
             sf.Playtime += (char) br.ReadByte();
           }
           sf.Playtime += " minutes and ";
           br.ReadByte();
-          for (int i = 0; i < 2; i++)
+          for (var i = 0; i < 2; i++)
           {
             sf.Playtime += (char) br.ReadByte();
           }
@@ -201,22 +201,22 @@ namespace Fomm.Games.Fallout3.Tools
           sf.ImageData = new byte[sf.ImageHeight*sf.ImageWidth*3];
           br.Read(sf.ImageData, 0, sf.ImageData.Length);
           //Flip the blue and red channels
-          for (int i = 0; i < sf.ImageWidth*sf.ImageHeight; i++)
+          for (var i = 0; i < sf.ImageWidth*sf.ImageHeight; i++)
           {
-            byte temp = sf.ImageData[i*3];
+            var temp = sf.ImageData[i*3];
             sf.ImageData[i*3] = sf.ImageData[i*3 + 2];
             sf.ImageData[i*3 + 2] = temp;
           }
           br.ReadByte();
           br.ReadInt32();
           sf.plugins = new string[br.ReadByte()];
-          for (int i = 0; i < sf.plugins.Length; i++)
+          for (var i = 0; i < sf.plugins.Length; i++)
           {
             br.ReadByte();
             s = br.ReadInt16();
             br.ReadByte();
             sf.plugins[i] = "";
-            for (int j = 0; j < s; j++)
+            for (var j = 0; j < s; j++)
             {
               sf.plugins[i] += (char) br.ReadByte();
             }
@@ -239,16 +239,16 @@ namespace Fomm.Games.Fallout3.Tools
     {
       lvSaves.BeginUpdate();
       lvSaves.Clear();
-      foreach (SaveFile sf in saves)
+      foreach (var sf in saves)
       {
-        ListViewItem lvi = new ListViewItem(sf.FileName);
+        var lvi = new ListViewItem(sf.FileName);
         lvi.ToolTipText = "Player: " + sf.Player + "\nLevel: " + sf.Level + " (" + sf.Karma + ")\nLocation: " +
                           sf.Location + "\nPlay time: " + sf.Playtime +
                           "\nDate saved: " + sf.saved.ToString() + "\nNumber of plugins: " +
                           sf.plugins.Length.ToString();
         lvi.Tag = sf;
-        int worst = 0;
-        foreach (string s in sf.plugins)
+        var worst = 0;
+        foreach (var s in sf.plugins)
         {
           if (Array.BinarySearch<string>(aPlugins, s) < 0)
           {
@@ -273,9 +273,9 @@ namespace Fomm.Games.Fallout3.Tools
     {
       lvPlugins.SuspendLayout();
       lvPlugins.Items.Clear();
-      foreach (string s in plugins)
+      foreach (var s in plugins)
       {
-        ListViewItem lvi = new ListViewItem(s);
+        var lvi = new ListViewItem(s);
         if (Array.BinarySearch<string>(aPlugins, s) >= 0)
         {
           lvi.ImageIndex = 0;
@@ -299,7 +299,7 @@ namespace Fomm.Games.Fallout3.Tools
       {
         return;
       }
-      SaveFile sf = (SaveFile) lvSaves.SelectedItems[0].Tag;
+      var sf = (SaveFile) lvSaves.SelectedItems[0].Tag;
       lName.Text = "Name: " + sf.Player + " (" + sf.Level + ": " + sf.Karma + ")";
       lLocation.Text = "Location: " + sf.Location;
       lDate.Text = "Date saved: " + sf.saved.ToString() + " (" + sf.Playtime + ")";
@@ -324,8 +324,8 @@ namespace Fomm.Games.Fallout3.Tools
       {
         return;
       }
-      SaveFile sf = (SaveFile) lvSaves.SelectedItems[0].Tag;
-      SaveFileDialog ofd = new SaveFileDialog();
+      var sf = (SaveFile) lvSaves.SelectedItems[0].Tag;
+      var ofd = new SaveFileDialog();
       ofd.Filter = "Text file (*.txt)|*.txt";
       ofd.AddExtension = true;
       ofd.RestoreDirectory = true;
@@ -333,8 +333,8 @@ namespace Fomm.Games.Fallout3.Tools
       {
         return;
       }
-      StreamWriter sw = new StreamWriter(ofd.FileName);
-      for (int i = 0; i < sf.plugins.Length; i++)
+      var sw = new StreamWriter(ofd.FileName);
+      for (var i = 0; i < sf.plugins.Length; i++)
       {
         sw.WriteLine("[X] " + sf.plugins[i]);
       }

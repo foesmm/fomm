@@ -40,7 +40,7 @@ namespace Fomm.PackageManager
 
     public static OverwriteResult ShowDialog(string msg, bool allowFolder, bool allowMod)
     {
-      Overwriteform of = new Overwriteform(msg, allowFolder, allowMod);
+      var of = new Overwriteform(msg, allowFolder, allowMod);
       of.ShowDialog();
       return of.result;
     }

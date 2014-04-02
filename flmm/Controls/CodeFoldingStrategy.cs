@@ -17,17 +17,17 @@ namespace Fomm.Controls
     /// <returns>The list of markers indicating where the code should be folded.</returns>
     public List<FoldMarker> GenerateFoldMarkers(IDocument document, string fileName, object parseInformation)
     {
-      List<FoldMarker> list = new List<FoldMarker>();
+      var list = new List<FoldMarker>();
 
-      Stack<int> stack = new Stack<int>();
+      var stack = new Stack<int>();
       //bool InComment;
 
-      for (int i = 0; i < document.TotalNumberOfLines; i++)
+      for (var i = 0; i < document.TotalNumberOfLines; i++)
       {
-        string text = document.GetText(document.GetLineSegment(i)).Trim();
+        var text = document.GetText(document.GetLineSegment(i)).Trim();
         if (text.StartsWith("}") && stack.Count > 0)
         {
-          int pos = stack.Pop();
+          var pos = stack.Pop();
           list.Add(new FoldMarker(document, pos, document.GetLineSegment(pos).Length, i, 1));
         }
         if (text.EndsWith("{"))

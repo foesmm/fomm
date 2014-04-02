@@ -86,14 +86,14 @@ namespace Fomm.PackageManager.FomodBuilder
     /// <param name="p_intRowIndex"></param>
     private void HandleIncludedChange(Int32 p_intRowIndex)
     {
-      DataGridViewTextBoxCell downloadLocationCell =
+      var downloadLocationCell =
         (DataGridViewTextBoxCell) dgvSourceList.Rows[p_intRowIndex].Cells["clmURL"];
-      DataGridViewCheckBoxCell ckcHidden =
+      var ckcHidden =
         (DataGridViewCheckBoxCell) dgvSourceList.Rows[p_intRowIndex].Cells["clmHidden"];
-      DataGridViewCheckBoxCell ckcGenerated =
+      var ckcGenerated =
         (DataGridViewCheckBoxCell) dgvSourceList.Rows[p_intRowIndex].Cells["clmGenerated"];
 
-      DataGridViewCheckBoxCell ckcIncluded =
+      var ckcIncluded =
         (DataGridViewCheckBoxCell) dgvSourceList.Rows[p_intRowIndex].Cells["clmIncluded"];
       downloadLocationCell.ReadOnly = (Boolean) ckcIncluded.Value;
       downloadLocationCell.Style.ForeColor = ((Boolean) ckcIncluded.Value)
@@ -125,7 +125,7 @@ namespace Fomm.PackageManager.FomodBuilder
     /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
     private void dgvSourceList_DataSourceChanged(object sender, EventArgs e)
     {
-      for (Int32 i = 0; i < dgvSourceList.RowCount; i++)
+      for (var i = 0; i < dgvSourceList.RowCount; i++)
       {
         HandleIncludedChange(i);
       }

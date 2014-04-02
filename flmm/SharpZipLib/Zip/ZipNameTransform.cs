@@ -78,7 +78,7 @@ namespace Fomm.SharpZipLib.Zip
 #else
       invalidPathChars = Path.GetInvalidPathChars();
 #endif
-      int howMany = invalidPathChars.Length + 2;
+      var howMany = invalidPathChars.Length + 2;
 
       InvalidEntryCharsRelaxed = new char[howMany];
       Array.Copy(invalidPathChars, 0, InvalidEntryCharsRelaxed, 0, invalidPathChars.Length);
@@ -125,7 +125,7 @@ namespace Fomm.SharpZipLib.Zip
     {
       if (name != null)
       {
-        string lowerName = name.ToLower();
+        var lowerName = name.ToLower();
         if ((trimPrefix_ != null) && (lowerName.IndexOf(trimPrefix_) == 0))
         {
           name = name.Substring(trimPrefix_.Length);
@@ -147,7 +147,7 @@ namespace Fomm.SharpZipLib.Zip
         }
 
         // Convert consecutive // characters to /
-        int index = name.IndexOf("//");
+        var index = name.IndexOf("//");
         while (index >= 0)
         {
           name = name.Remove(index, 1);
@@ -188,10 +188,10 @@ namespace Fomm.SharpZipLib.Zip
     /// <returns>Returns a valid name</returns>
     private static string MakeValidName(string name, char replacement)
     {
-      int index = name.IndexOfAny(InvalidEntryChars);
+      var index = name.IndexOfAny(InvalidEntryChars);
       if (index >= 0)
       {
-        StringBuilder builder = new StringBuilder(name);
+        var builder = new StringBuilder(name);
 
         while (index >= 0)
         {
@@ -231,7 +231,7 @@ namespace Fomm.SharpZipLib.Zip
     /// </remarks>
     public static bool IsValidName(string name, bool relaxed)
     {
-      bool result = (name != null);
+      var result = (name != null);
 
       if (result)
       {

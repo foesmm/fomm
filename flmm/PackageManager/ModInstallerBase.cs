@@ -161,7 +161,7 @@ namespace Fomm.PackageManager
     /// <seealso cref="DoScript()"/>
     protected bool Run(bool p_booSuppressSuccessMessage, bool p_booSetFOModReadOnly)
     {
-      bool booSuccess = false;
+      var booSuccess = false;
       if (CheckAlreadyDone())
       {
         booSuccess = true;
@@ -182,12 +182,12 @@ namespace Fomm.PackageManager
           // hence the lock.
           lock (objInstallLock)
           {
-            using (TransactionScope tsTransaction = new TransactionScope())
+            using (var tsTransaction = new TransactionScope())
             {
               m_tfmFileManager = new TxFileManager();
               using (m_misScript = CreateInstallScript())
               {
-                bool booCancelled = false;
+                var booCancelled = false;
                 if (p_booSetFOModReadOnly && (Fomod != null))
                 {
                   if (Fomod.ReadOnlyInitStepCount > 1)
@@ -233,7 +233,7 @@ namespace Fomm.PackageManager
         }
         catch (Exception e)
         {
-          StringBuilder stbError = new StringBuilder(e.Message);
+          var stbError = new StringBuilder(e.Message);
           if (e is FileNotFoundException)
           {
             stbError.Append(" (" + ((FileNotFoundException) e).FileName + ")");
@@ -248,7 +248,7 @@ namespace Fomm.PackageManager
           }
           if (e is RollbackException)
           {
-            foreach (RollbackException.ExceptedResourceManager erm in ((RollbackException) e).ExceptedResourceManagers)
+            foreach (var erm in ((RollbackException) e).ExceptedResourceManagers)
             {
               stbError.AppendLine(erm.ResourceManager.ToString());
               stbError.AppendLine(erm.Exception.Message);
@@ -258,7 +258,7 @@ namespace Fomm.PackageManager
               }
             }
           }
-          string strMessage = String.Format(ExceptionMessage, stbError.ToString());
+          var strMessage = String.Format(ExceptionMessage, stbError.ToString());
           MessageBox.Show(strMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
           return false;
         }

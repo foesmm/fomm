@@ -70,9 +70,9 @@ namespace GeMod.Interface
           return null;
         }
         Image imgReal = null;
-        using (MemoryStream msmImage = new MemoryStream(m_bteData))
+        using (var msmImage = new MemoryStream(m_bteData))
         {
-          Image imgSreenshot = Image.FromStream(msmImage);
+          var imgSreenshot = Image.FromStream(msmImage);
           imgReal = new Bitmap(imgSreenshot);
           msmImage.Close();
         }

@@ -136,14 +136,14 @@ namespace Fomm.PackageManager.FomodBuilder
         return false;
       }
 
-      string strError = PremadeFomodPack.ValidatePFP(tbxPFP.Text);
+      var strError = PremadeFomodPack.ValidatePFP(tbxPFP.Text);
       if (!String.IsNullOrEmpty(strError))
       {
         erpError.SetError(butPFP, "File is not a valid PFP: " + strError);
         return false;
       }
-      PremadeFomodPack pfpPack = new PremadeFomodPack(tbxPFP.Text);
-      List<SourceFile> lstSources = pfpPack.GetSources();
+      var pfpPack = new PremadeFomodPack(tbxPFP.Text);
+      var lstSources = pfpPack.GetSources();
       if (lstSources.Count > 0)
       {
         if (String.IsNullOrEmpty(tbxSources.Text))
@@ -156,11 +156,11 @@ namespace Fomm.PackageManager.FomodBuilder
           erpError.SetError(butSources, "Folder does not exist.");
           return false;
         }
-        List<SourceFile> lstMissingSources = new List<SourceFile>();
-        List<SourceFile> lstMissingHiddenSources = new List<SourceFile>();
-        foreach (SourceFile sflSource in lstSources)
+        var lstMissingSources = new List<SourceFile>();
+        var lstMissingHiddenSources = new List<SourceFile>();
+        foreach (var sflSource in lstSources)
         {
-          bool booSourceMissing = !File.Exists(Path.Combine(tbxSources.Text, sflSource.Source)) &&
+          var booSourceMissing = !File.Exists(Path.Combine(tbxSources.Text, sflSource.Source)) &&
                                   !Directory.Exists(Path.Combine(tbxSources.Text, sflSource.Source));
           if ((!sflSource.Hidden || sflSource.Generated) && booSourceMissing)
           {
@@ -175,14 +175,14 @@ namespace Fomm.PackageManager.FomodBuilder
         {
           erpError.SetError(butSources, "Missing sources.");
 
-          StringBuilder stbErrorHtml = new StringBuilder("<html><body bgcolor=\"");
+          var stbErrorHtml = new StringBuilder("<html><body bgcolor=\"");
           stbErrorHtml.AppendFormat("#{0:x6}", Color.FromKnownColor(KnownColor.Control).ToArgb() & 0x00ffffff);
           stbErrorHtml.Append("\">");
-          bool booMissingGeneratedFiles = false;
+          var booMissingGeneratedFiles = false;
           if (lstMissingSources.Count > 0)
           {
             stbErrorHtml.Append("The following sources are missing:<ul>");
-            foreach (SourceFile sflSource in lstMissingSources)
+            foreach (var sflSource in lstMissingSources)
             {
               if (!sflSource.Generated)
               {
@@ -200,7 +200,7 @@ namespace Fomm.PackageManager.FomodBuilder
           if (lstMissingHiddenSources.Count > 0)
           {
             stbErrorHtml.Append("Some of the missing sources require the following files to be downloaded:<ul>");
-            foreach (SourceFile sflSource in lstMissingHiddenSources)
+            foreach (var sflSource in lstMissingHiddenSources)
             {
               stbErrorHtml.AppendFormat("<li><a href=\"{0}\">{1}</a></li>", sflSource.URL, sflSource.SourceFileName)
                           .AppendLine();
@@ -228,12 +228,12 @@ namespace Fomm.PackageManager.FomodBuilder
     /// </summary>
     protected void ShowHTML(string p_strHTML)
     {
-      Form frmHTMLPreview = new Form();
+      var frmHTMLPreview = new Form();
       frmHTMLPreview.Size = new Size(500, 500);
       frmHTMLPreview.Icon = Resources.fomm02;
       frmHTMLPreview.ShowInTaskbar = false;
       frmHTMLPreview.StartPosition = FormStartPosition.CenterParent;
-      WebBrowser wbrBrowser = new WebBrowser();
+      var wbrBrowser = new WebBrowser();
       frmHTMLPreview.Controls.Add(wbrBrowser);
       wbrBrowser.Dock = DockStyle.Fill;
       frmHTMLPreview.Text = "Missing Sources";

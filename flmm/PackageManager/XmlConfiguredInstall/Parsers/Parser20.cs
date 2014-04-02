@@ -45,26 +45,26 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     /// <seealso cref="Parser.GetModDependencies()"/>
     public override CompositeDependency GetModDependencies()
     {
-      CompositeDependency cpdDependency = new CompositeDependency(DependencyOperator.And);
-      XmlNodeList xnlDependencies = XmlConfig.SelectNodes("/config/moduleDependencies/*");
+      var cpdDependency = new CompositeDependency(DependencyOperator.And);
+      var xnlDependencies = XmlConfig.SelectNodes("/config/moduleDependencies/*");
       foreach (XmlNode xndDependency in xnlDependencies)
       {
         switch (xndDependency.Name)
         {
           case "falloutDependency":
-            Version verMinFalloutVersion = new Version(xndDependency.Attributes["version"].InnerText);
+            var verMinFalloutVersion = new Version(xndDependency.Attributes["version"].InnerText);
             cpdDependency.Dependencies.Add(new GameVersionDependency(StateManager, verMinFalloutVersion));
             break;
           case "fommDependency":
-            Version verMinFommVersion = new Version(xndDependency.Attributes["version"].InnerText);
+            var verMinFommVersion = new Version(xndDependency.Attributes["version"].InnerText);
             cpdDependency.Dependencies.Add(new FommDependency(StateManager, verMinFommVersion));
             break;
           case "fileDependency":
-            string strDependency = xndDependency.Attributes["file"].InnerText.ToLower();
+            var strDependency = xndDependency.Attributes["file"].InnerText.ToLower();
             cpdDependency.Dependencies.Add(new FileDependency(strDependency, ModFileState.Active, StateManager));
             break;
           default:
-            IDependency dpnExtensionDependency = ParserExtension.ParseDependency(xndDependency, StateManager);
+            var dpnExtensionDependency = ParserExtension.ParseDependency(xndDependency, StateManager);
             if (dpnExtensionDependency != null)
             {
               cpdDependency.Dependencies.Add(dpnExtensionDependency);
@@ -83,7 +83,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     /// <seealso cref="Parser.GetConditionalFileInstallPatterns()"/>
     public override IList<ConditionalFileInstallPattern> GetConditionalFileInstallPatterns()
     {
-      XmlNodeList xnlRequiredInstallFiles = XmlConfig.SelectNodes("/config/conditionalFileInstalls/patterns/*");
+      var xnlRequiredInstallFiles = XmlConfig.SelectNodes("/config/conditionalFileInstalls/patterns/*");
       return readConditionalFileInstallInfo(xnlRequiredInstallFiles);
     }
 
@@ -98,10 +98,10 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     /// <returns>The plugin information.</returns>
     protected override PluginInfo parsePlugin(XmlNode p_xndPlugin)
     {
-      string strName = p_xndPlugin.Attributes["name"].InnerText;
-      string strDesc = p_xndPlugin.SelectSingleNode("description").InnerText.Trim();
+      var strName = p_xndPlugin.Attributes["name"].InnerText;
+      var strDesc = p_xndPlugin.SelectSingleNode("description").InnerText.Trim();
       IPluginType iptType = null;
-      XmlNode xndTypeDescriptor = p_xndPlugin.SelectSingleNode("typeDescriptor").FirstChild;
+      var xndTypeDescriptor = p_xndPlugin.SelectSingleNode("typeDescriptor").FirstChild;
       switch (xndTypeDescriptor.Name)
       {
         case "type":
@@ -110,20 +110,20 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
               (PluginType) Enum.Parse(typeof (PluginType), xndTypeDescriptor.Attributes["name"].InnerText));
           break;
         case "dependencyType":
-          PluginType ptpDefaultType =
+          var ptpDefaultType =
             (PluginType)
               Enum.Parse(typeof (PluginType),
                          xndTypeDescriptor.SelectSingleNode("defaultType").Attributes["name"].InnerText);
           iptType = new DependencyPluginType(ptpDefaultType);
-          DependencyPluginType dptDependentType = (DependencyPluginType) iptType;
+          var dptDependentType = (DependencyPluginType) iptType;
 
-          XmlNodeList xnlPatterns = xndTypeDescriptor.SelectNodes("patterns/*");
+          var xnlPatterns = xndTypeDescriptor.SelectNodes("patterns/*");
           foreach (XmlNode xndPattern in xnlPatterns)
           {
-            PluginType ptpType =
+            var ptpType =
               (PluginType)
                 Enum.Parse(typeof (PluginType), xndPattern.SelectSingleNode("type").Attributes["name"].InnerText);
-            CompositeDependency cdpDependency = loadDependency(xndPattern.SelectSingleNode("dependencies"));
+            var cdpDependency = loadDependency(xndPattern.SelectSingleNode("dependencies"));
             dptDependentType.AddPattern(ptpType, cdpDependency);
           }
           break;
@@ -131,19 +131,19 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
           throw new ParserException("Invalid plaug type descriptor node: " + xndTypeDescriptor.Name +
                                     ". At this point the config file has been validated against the schema, so there's something wrong with the parser.");
       }
-      XmlNode xndImage = p_xndPlugin.SelectSingleNode("image");
+      var xndImage = p_xndPlugin.SelectSingleNode("image");
       Image imgImage = null;
       if (xndImage != null)
       {
-        string strImageFilePath = xndImage.Attributes["path"].InnerText;
+        var strImageFilePath = xndImage.Attributes["path"].InnerText;
         imgImage = Fomod.GetImage(strImageFilePath);
       }
-      PluginInfo pifPlugin = new PluginInfo(strName, strDesc, imgImage, iptType);
+      var pifPlugin = new PluginInfo(strName, strDesc, imgImage, iptType);
 
-      XmlNodeList xnlPluginFiles = p_xndPlugin.SelectNodes("files/*");
+      var xnlPluginFiles = p_xndPlugin.SelectNodes("files/*");
       pifPlugin.Files.AddRange(readFileInfo(xnlPluginFiles));
 
-      XmlNodeList xnlPluginFlags = p_xndPlugin.SelectNodes("conditionFlags/*");
+      var xnlPluginFlags = p_xndPlugin.SelectNodes("conditionFlags/*");
       pifPlugin.Flags.AddRange(readFlagInfo(xnlPluginFlags));
 
       return pifPlugin;
@@ -156,11 +156,11 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     /// <returns>A <see cref="CompositeDependency"/> representing the dependency described in the given node.</returns>
     protected override CompositeDependency loadDependency(XmlNode p_xndCompositeDependency)
     {
-      DependencyOperator dopOperator =
+      var dopOperator =
         (DependencyOperator)
           Enum.Parse(typeof (DependencyOperator), p_xndCompositeDependency.Attributes["operator"].InnerText);
-      CompositeDependency cpdDependency = new CompositeDependency(dopOperator);
-      XmlNodeList xnlDependencies = p_xndCompositeDependency.ChildNodes;
+      var cpdDependency = new CompositeDependency(dopOperator);
+      var xnlDependencies = p_xndCompositeDependency.ChildNodes;
       foreach (XmlNode xndDependency in xnlDependencies)
       {
         switch (xndDependency.Name)
@@ -169,14 +169,14 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
             cpdDependency.Dependencies.Add(loadDependency(xndDependency));
             break;
           case "fileDependency":
-            string strDependency = xndDependency.Attributes["file"].InnerText.ToLower();
-            ModFileState mfsModState =
+            var strDependency = xndDependency.Attributes["file"].InnerText.ToLower();
+            var mfsModState =
               (ModFileState) Enum.Parse(typeof (ModFileState), xndDependency.Attributes["state"].InnerText);
             cpdDependency.Dependencies.Add(new FileDependency(strDependency, mfsModState, StateManager));
             break;
           case "flagDependency":
-            string strFlagName = xndDependency.Attributes["flag"].InnerText;
-            string strValue = xndDependency.Attributes["value"].InnerText;
+            var strFlagName = xndDependency.Attributes["flag"].InnerText;
+            var strValue = xndDependency.Attributes["value"].InnerText;
             cpdDependency.Dependencies.Add(new FlagDependency(strFlagName, strValue, StateManager));
             break;
           default:
@@ -194,11 +194,11 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     /// <returns>An ordered list of <see cref="ConditionalFlag"/>s representing the data in the given list.</returns>
     private List<ConditionalFlag> readFlagInfo(XmlNodeList p_xnlFlags)
     {
-      List<ConditionalFlag> lstFlags = new List<ConditionalFlag>();
+      var lstFlags = new List<ConditionalFlag>();
       foreach (XmlNode xndFlag in p_xnlFlags)
       {
-        string strName = xndFlag.Attributes["name"].InnerText;
-        string strValue = xndFlag.InnerXml;
+        var strName = xndFlag.Attributes["name"].InnerText;
+        var strValue = xndFlag.InnerXml;
         lstFlags.Add(new ConditionalFlag(strName, strValue));
       }
       return lstFlags;
@@ -213,10 +213,10 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     /// data in the given list.</returns>
     private IList<ConditionalFileInstallPattern> readConditionalFileInstallInfo(XmlNodeList p_xnlConditionalFileInstalls)
     {
-      List<ConditionalFileInstallPattern> lstPatterns = new List<ConditionalFileInstallPattern>();
+      var lstPatterns = new List<ConditionalFileInstallPattern>();
       foreach (XmlNode xndPattern in p_xnlConditionalFileInstalls)
       {
-        CompositeDependency cdpDependency = loadDependency(xndPattern.SelectSingleNode("dependencies"));
+        var cdpDependency = loadDependency(xndPattern.SelectSingleNode("dependencies"));
         IList<PluginFile> lstFiles = readFileInfo(xndPattern.SelectNodes("files/*"));
         lstPatterns.Add(new ConditionalFileInstallPattern(cdpDependency, lstFiles));
       }

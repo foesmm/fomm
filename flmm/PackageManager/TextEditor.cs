@@ -42,7 +42,7 @@ namespace Fomm.PackageManager
 
     public static string ShowEditor(string initial, TextEditorType type, bool dialog)
     {
-      TextEditor se = new TextEditor(initial, type);
+      var se = new TextEditor(initial, type);
       if (dialog)
       {
         se.ShowDialog();

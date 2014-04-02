@@ -20,7 +20,7 @@ namespace Fomm.PackageManager.Controls
     {
       get
       {
-        Readme rmeReadme = new Readme(ReadmeFormat.PlainText, null);
+        var rmeReadme = new Readme(ReadmeFormat.PlainText, null);
         if (ddtReadme.SelectedTabPage == ddpPlainText)
         {
           rmeReadme.Format = ReadmeFormat.PlainText;
@@ -97,8 +97,8 @@ namespace Fomm.PackageManager.Controls
     /// </summary>
     protected void ShowHTMLPreview()
     {
-      Form frmHTMLPreview = new Form();
-      WebBrowser wbrBrowser = new WebBrowser();
+      var frmHTMLPreview = new Form();
+      var wbrBrowser = new WebBrowser();
       frmHTMLPreview.Controls.Add(wbrBrowser);
       wbrBrowser.Dock = DockStyle.Fill;
       wbrBrowser.DocumentCompleted += delegate(object o, WebBrowserDocumentCompletedEventArgs arg)

@@ -65,7 +65,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
       name = node.Attributes.GetNamedItem("name").Value;
       desc = node.Attributes.GetNamedItem("desc").Value;
-      XmlNode node2 = node.Attributes.GetNamedItem("repeat");
+      var node2 = node.Attributes.GetNamedItem("repeat");
       if (node2 != null)
       {
         repeat = int.Parse(node2.Value);
@@ -167,7 +167,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         CondOperand = null;
       }
 
-      List<ElementStructure> elements = new List<ElementStructure>();
+      var elements = new List<ElementStructure>();
       foreach (XmlNode n in node.ChildNodes)
       {
         if (n.NodeType == XmlNodeType.Comment)
@@ -178,8 +178,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       }
       this.elements = elements.ToArray();
       ContaintsConditionals = false;
-      bool containsBlob = false;
-      foreach (ElementStructure es in this.elements)
+      var containsBlob = false;
+      foreach (var es in this.elements)
       {
         if (es.CondID != 0)
         {
@@ -194,7 +194,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       {
         throw new RecordXmlException("A subrecord containing a blorb or fstring may only contain one element");
       }
-      for (int i = 0; i < this.elements.Length - 1; i++)
+      for (var i = 0; i < this.elements.Length - 1; i++)
       {
         if (this.elements[i].repeat || this.elements[i].optional)
         {
@@ -229,7 +229,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       }
 
       name = node.Attributes.GetNamedItem("name").Value;
-      XmlNode node2 = node.Attributes.GetNamedItem("group");
+      var node2 = node.Attributes.GetNamedItem("group");
       if (node2 != null)
       {
         group = int.Parse(node2.Value);
@@ -406,7 +406,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       {
         loaded = true;
       }
-      XmlDocument doc = new XmlDocument();
+      var doc = new XmlDocument();
       doc.LoadXml(File.ReadAllText(xmlPath));
 
       XmlNode root = null;
@@ -422,11 +422,11 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       {
         throw new RecordXmlException("Root node was missing");
       }
-      Dictionary<string, RecordStructure> records = new Dictionary<string, RecordStructure>();
-      Dictionary<uint, SubrecordStructure[]> groups = new Dictionary<uint, SubrecordStructure[]>();
+      var records = new Dictionary<string, RecordStructure>();
+      var groups = new Dictionary<uint, SubrecordStructure[]>();
       foreach (XmlNode n in root.ChildNodes)
       {
-        string err = n.OuterXml.Remove(n.OuterXml.IndexOf('>') + 1);
+        var err = n.OuterXml.Remove(n.OuterXml.IndexOf('>') + 1);
         ;
         try
         {
@@ -440,7 +440,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
           }
           else if (n.Name == "Group")
           {
-            List<SubrecordStructure> subs = new List<SubrecordStructure>();
+            var subs = new List<SubrecordStructure>();
             foreach (XmlNode n2 in n.ChildNodes)
             {
               if (n2.NodeType == XmlNodeType.Comment)
@@ -453,7 +453,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
               }
               else if (n2.Name == "Group")
               {
-                foreach (SubrecordStructure ss in groups[uint.Parse(n2.Attributes.GetNamedItem("id").Value)])
+                foreach (var ss in groups[uint.Parse(n2.Attributes.GetNamedItem("id").Value)])
                 {
                   subs.Add(ss);
                 }
@@ -489,7 +489,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       {
         throw new RecordXmlException("Invalid node");
       }
-      List<SubrecordStructure> subrecords = new List<SubrecordStructure>();
+      var subrecords = new List<SubrecordStructure>();
       description = node.Attributes.GetNamedItem("desc").Value;
       foreach (XmlNode n in node.ChildNodes)
       {
@@ -503,7 +503,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         }
         else if (n.Name == "Group")
         {
-          foreach (SubrecordStructure ss in groups[uint.Parse(n.Attributes.GetNamedItem("id").Value)])
+          foreach (var ss in groups[uint.Parse(n.Attributes.GetNamedItem("id").Value)])
           {
             subrecords.Add(ss);
           }
@@ -514,14 +514,14 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         }
       }
       this.subrecords = subrecords.ToArray();
-      Stack<int> ends = new Stack<int>();
-      for (int i = 0; i < this.subrecords.Length; i++)
+      var ends = new Stack<int>();
+      for (var i = 0; i < this.subrecords.Length; i++)
       {
         while (ends.Count > 0 && ends.Peek() < i)
         {
           ends.Pop();
         }
-        int j = Math.Max(this.subrecords[i].optional, this.subrecords[i].repeat) + i - 1;
+        var j = Math.Max(this.subrecords[i].optional, this.subrecords[i].repeat) + i - 1;
         if (ends.Count > 0 && ends.Peek() < j)
         {
           throw new RecordXmlException("Overlapping subrecord blocks");

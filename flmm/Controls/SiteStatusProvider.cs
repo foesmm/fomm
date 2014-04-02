@@ -19,7 +19,7 @@ namespace Fomm.Controls
     /// <seealso cref="SetError(Control p_ctlControl, string p_strMessage)"/>
     public void SetStatus(Control p_ctlControl, string p_strMessage)
     {
-      Control ctlSite = p_ctlControl;
+      var ctlSite = p_ctlControl;
       while (ctlSite is IStatusProviderAware)
       {
         ctlSite = ((IStatusProviderAware) ctlSite).StatusProviderSite;
@@ -38,7 +38,7 @@ namespace Fomm.Controls
     /// <seealso cref="SetStatus(Control p_ctlControl, string p_strMessage)"/>
     public new void SetError(Control p_ctlControl, string p_strMessage)
     {
-      Control ctlSite = p_ctlControl;
+      var ctlSite = p_ctlControl;
       while (ctlSite is IStatusProviderAware)
       {
         ctlSite = ((IStatusProviderAware) ctlSite).StatusProviderSite;

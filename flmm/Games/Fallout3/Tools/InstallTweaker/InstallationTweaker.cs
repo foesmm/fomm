@@ -49,7 +49,7 @@ namespace Fomm.Games.Fallout3.Tools.InstallTweaker
       {
         bXliveSettings.Enabled = true;
       }
-      WorkerArgs args = new WorkerArgs();
+      var args = new WorkerArgs();
       args.xlive = cbDisableLive.Checked;
       //args.stripedids=cbStripGeck.Checked;
       //args.striprefs=cbRemoveClutter.Checked;
@@ -59,7 +59,7 @@ namespace Fomm.Games.Fallout3.Tools.InstallTweaker
       bApply.Enabled = false;
       bReset.Enabled = true;
       lines = new string[70];
-      for (int i = 0; i < 70; i++)
+      for (var i = 0; i < 70; i++)
       {
         lines[i] = string.Empty;
       }
@@ -108,7 +108,7 @@ namespace Fomm.Games.Fallout3.Tools.InstallTweaker
 
     private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
     {
-      WorkerArgs args = (WorkerArgs) e.Argument;
+      var args = (WorkerArgs) e.Argument;
       Directory.CreateDirectory(BackupPath);
       if (cbDisableLive.Checked)
       {
@@ -144,7 +144,7 @@ namespace Fomm.Games.Fallout3.Tools.InstallTweaker
       }
       else
       {
-        for (int i = 0; i < 69; i++)
+        for (var i = 0; i < 69; i++)
         {
           lines[i] = lines[i + 1];
         }

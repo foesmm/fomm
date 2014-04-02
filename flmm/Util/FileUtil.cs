@@ -55,8 +55,8 @@ namespace Fomm.Util
         {
           p_tfmFileManager.CreateDirectory(p_strDestination);
         }
-        string[] strFiles = Directory.GetFiles(p_strSource);
-        foreach (string strFile in strFiles)
+        var strFiles = Directory.GetFiles(p_strSource);
+        foreach (var strFile in strFiles)
         {
           p_tfmFileManager.Copy(strFile, Path.Combine(p_strDestination, Path.GetFileName(strFile)), true);
           if ((p_fncCopyCallback != null) && p_fncCopyCallback(strFile))
@@ -64,8 +64,8 @@ namespace Fomm.Util
             return false;
           }
         }
-        string[] strDirectories = Directory.GetDirectories(p_strSource);
-        foreach (string strDirectory in strDirectories)
+        var strDirectories = Directory.GetDirectories(p_strSource);
+        foreach (var strDirectory in strDirectories)
         {
           if (!Copy(strDirectory, Path.Combine(p_strDestination, Path.GetFileName(strDirectory)), p_fncCopyCallback))
           {
@@ -107,8 +107,8 @@ namespace Fomm.Util
         {
           Directory.CreateDirectory(p_strDestination);
         }
-        string[] strFiles = Directory.GetFiles(p_strSource);
-        foreach (string strFile in strFiles)
+        var strFiles = Directory.GetFiles(p_strSource);
+        foreach (var strFile in strFiles)
         {
           File.Copy(strFile, Path.Combine(p_strDestination, Path.GetFileName(strFile)), true);
           if ((p_fncCopyCallback != null) && p_fncCopyCallback(strFile))
@@ -116,8 +116,8 @@ namespace Fomm.Util
             return false;
           }
         }
-        string[] strDirectories = Directory.GetDirectories(p_strSource);
-        foreach (string strDirectory in strDirectories)
+        var strDirectories = Directory.GetDirectories(p_strSource);
+        foreach (var strDirectory in strDirectories)
         {
           if (!Copy(strDirectory, Path.Combine(p_strDestination, Path.GetFileName(strDirectory)), p_fncCopyCallback))
           {
@@ -180,7 +180,7 @@ namespace Fomm.Util
     {
       if (File.Exists(p_strPath))
       {
-        FileInfo fifFile = new FileInfo(p_strPath);
+        var fifFile = new FileInfo(p_strPath);
         fifFile.Attributes = FileAttributes.Normal;
       }
       else if (Directory.Exists(p_strPath))
@@ -203,11 +203,11 @@ namespace Fomm.Util
       p_difPath.Attributes = FileAttributes.Normal;
       if (p_booRecurse)
       {
-        foreach (DirectoryInfo difDirectory in p_difPath.GetDirectories())
+        foreach (var difDirectory in p_difPath.GetDirectories())
         {
           ClearAttributes(difDirectory, true);
         }
-        foreach (FileInfo fifFile in p_difPath.GetFiles())
+        foreach (var fifFile in p_difPath.GetFiles())
         {
           fifFile.Attributes = FileAttributes.Normal;
         }

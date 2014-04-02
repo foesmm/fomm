@@ -54,11 +54,11 @@ namespace Fomm.Games.Fallout3.Tools.BSA
         }
         if (compressed)
         {
-          byte[] b = new byte[size - 4];
-          byte[] output = new byte[bsa.br.ReadUInt32()];
+          var b = new byte[size - 4];
+          var output = new byte[bsa.br.ReadUInt32()];
           bsa.br.Read(b, 0, size - 4);
 
-          Inflater inf = new Inflater();
+          var inf = new Inflater();
           inf.SetInput(b, 0, b.Length);
           inf.Inflate(output);
 
@@ -160,20 +160,20 @@ namespace Fomm.Games.Fallout3.Tools.BSA
       files = new HashTable();
 
       //Read folder info
-      BSAFolderInfo4[] folderInfo = new BSAFolderInfo4[header.folderCount];
-      BSAFileInfo4[] fileInfo = new BSAFileInfo4[header.fileCount];
+      var folderInfo = new BSAFolderInfo4[header.folderCount];
+      var fileInfo = new BSAFileInfo4[header.fileCount];
       fileNames = new string[header.fileCount];
-      for (int i = 0; i < header.folderCount; i++)
+      for (var i = 0; i < header.folderCount; i++)
       {
         folderInfo[i] = new BSAFolderInfo4(br);
       }
-      int count = 0;
+      var count = 0;
       for (uint i = 0; i < header.folderCount; i++)
       {
         folderInfo[i].path = new string(br.ReadChars(br.ReadByte() - 1));
         br.BaseStream.Position++;
         folderInfo[i].offset = count;
-        for (int j = 0; j < folderInfo[i].count; j++)
+        for (var j = 0; j < folderInfo[i].count; j++)
         {
           fileInfo[count + j] = new BSAFileInfo4(br);
         }
@@ -189,15 +189,15 @@ namespace Fomm.Games.Fallout3.Tools.BSA
         }
       }
 
-      for (int i = 0; i < header.folderCount; i++)
+      for (var i = 0; i < header.folderCount; i++)
       {
-        for (int j = 0; j < folderInfo[i].count; j++)
+        for (var j = 0; j < folderInfo[i].count; j++)
         {
-          BSAFileInfo4 fi4 = fileInfo[folderInfo[i].offset + j];
-          string ext = Path.GetExtension(fi4.path);
-          BSAFileInfo fi = new BSAFileInfo(this, (int) fi4.offset, fi4.size);
-          string fpath = Path.Combine(folderInfo[i].path, Path.GetFileNameWithoutExtension(fi4.path));
-          ulong hash = GenHash(fpath, ext);
+          var fi4 = fileInfo[folderInfo[i].offset + j];
+          var ext = Path.GetExtension(fi4.path);
+          var fi = new BSAFileInfo(this, (int) fi4.offset, fi4.size);
+          var fpath = Path.Combine(folderInfo[i].path, Path.GetFileNameWithoutExtension(fi4.path));
+          var hash = GenHash(fpath, ext);
           files[hash] = fi;
           fileNames[folderInfo[i].offset + j] = fpath + ext;
         }
@@ -247,9 +247,9 @@ namespace Fomm.Games.Fallout3.Tools.BSA
         }
         if (i != 0)
         {
-          byte a = (byte) (((i & 0xfc) << 5) + (byte) ((hash & 0xff000000) >> 24));
-          byte b = (byte) (((i & 0xfe) << 6) + (byte) (hash & 0xff));
-          byte c = (byte) ((i << 7) + (byte) ((hash & 0xff00) >> 8));
+          var a = (byte) (((i & 0xfc) << 5) + (byte) ((hash & 0xff000000) >> 24));
+          var b = (byte) (((i & 0xfe) << 6) + (byte) (hash & 0xff));
+          var c = (byte) ((i << 7) + (byte) ((hash & 0xff00) >> 8));
           hash -= hash & 0xFF00FFFF;
           hash += (uint) ((a << 24) + b + (c << 8));
         }
@@ -260,7 +260,7 @@ namespace Fomm.Games.Fallout3.Tools.BSA
     private static uint GenHash2(string s)
     {
       uint hash = 0;
-      for (int i = 0; i < s.Length; i++)
+      for (var i = 0; i < s.Length; i++)
       {
         hash *= 0x1003f;
         hash += (byte) s[i];
@@ -283,7 +283,7 @@ namespace Fomm.Games.Fallout3.Tools.BSA
 
     internal byte[] GetFile(string path)
     {
-      ulong hash = GenHash(path);
+      var hash = GenHash(path);
       if (!files.ContainsKey(hash))
       {
         return null;
@@ -304,29 +304,29 @@ namespace Fomm.Games.Fallout3.Tools.BSA
 
     private static bool ReplaceShader(string file, string shader, byte[] newdata, out byte[] OldData, uint crc)
     {
-      string tempshader = Path.Combine(Program.tmpPath, "tempshader");
+      var tempshader = Path.Combine(Program.tmpPath, "tempshader");
 
-      DateTime timeStamp = File.GetLastWriteTime(file);
+      var timeStamp = File.GetLastWriteTime(file);
       File.Delete(tempshader);
       File.Move(file, tempshader);
-      BinaryReader br = new BinaryReader(File.OpenRead(tempshader), Encoding.Default);
-      BinaryWriter bw = new BinaryWriter(File.Create(file), Encoding.Default);
+      var br = new BinaryReader(File.OpenRead(tempshader), Encoding.Default);
+      var bw = new BinaryWriter(File.Create(file), Encoding.Default);
       bw.Write(br.ReadInt32());
-      int num = br.ReadInt32();
+      var num = br.ReadInt32();
       bw.Write(num);
-      long sizeoffset = br.BaseStream.Position;
+      var sizeoffset = br.BaseStream.Position;
       bw.Write(br.ReadInt32());
-      bool found = false;
+      var found = false;
       OldData = null;
-      for (int i = 0; i < num; i++)
+      for (var i = 0; i < num; i++)
       {
-        char[] name = br.ReadChars(0x100);
-        int size = br.ReadInt32();
-        byte[] data = br.ReadBytes(size);
+        var name = br.ReadChars(0x100);
+        var size = br.ReadInt32();
+        var data = br.ReadBytes(size);
 
         bw.Write(name);
-        string sname = "";
-        for (int i2 = 0; i2 < 100; i2++)
+        var sname = "";
+        for (var i2 = 0; i2 < 100; i2++)
         {
           if (name[i2] == '\0')
           {
@@ -336,7 +336,7 @@ namespace Fomm.Games.Fallout3.Tools.BSA
         }
         if (!found && sname == shader)
         {
-          Crc32 ccrc = new Crc32();
+          var ccrc = new Crc32();
           ccrc.Update(data);
           if (crc == 0 || ccrc.Value == crc)
           {
@@ -368,7 +368,7 @@ namespace Fomm.Games.Fallout3.Tools.BSA
 
     internal static bool EditShader(int package, string name, byte[] newData, out byte[] oldData)
     {
-      string path = GetPath(package);
+      var path = GetPath(package);
       if (!File.Exists(path))
       {
         oldData = null;
@@ -380,7 +380,7 @@ namespace Fomm.Games.Fallout3.Tools.BSA
     internal static bool RestoreShader(int package, string name, byte[] data, uint crc)
     {
       byte[] unused;
-      string path = GetPath(package);
+      var path = GetPath(package);
       if (!File.Exists(path))
       {
         return false;
@@ -390,27 +390,27 @@ namespace Fomm.Games.Fallout3.Tools.BSA
 
     internal static byte[] GetShader(int package, string shader)
     {
-      string file = GetPath(package);
+      var file = GetPath(package);
       if (!File.Exists(file))
       {
         return null;
       }
 
-      BinaryReader br = new BinaryReader(File.OpenRead(file), Encoding.Default);
+      var br = new BinaryReader(File.OpenRead(file), Encoding.Default);
       br.ReadInt32();
-      int num = br.ReadInt32();
-      long sizeoffset = br.BaseStream.Position;
+      var num = br.ReadInt32();
+      var sizeoffset = br.BaseStream.Position;
       br.ReadInt32();
-      bool found = false;
+      var found = false;
       byte[] OldData = null;
-      for (int i = 0; i < num; i++)
+      for (var i = 0; i < num; i++)
       {
-        char[] name = br.ReadChars(0x100);
-        int size = br.ReadInt32();
-        byte[] data = br.ReadBytes(size);
+        var name = br.ReadChars(0x100);
+        var size = br.ReadInt32();
+        var data = br.ReadBytes(size);
 
-        string sname = "";
-        for (int i2 = 0; i2 < 100; i2++)
+        var sname = "";
+        for (var i2 = 0; i2 < 100; i2++)
         {
           if (name[i2] == '\0')
           {

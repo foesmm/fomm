@@ -62,7 +62,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       InitializeComponent();
       Icon = Resources.fomm02;
       Properties.Settings.Default.windowPositions.GetWindowPosition("TESsnip", this);
-      for (int i = 0; i < mods.Length; i++)
+      for (var i = 0; i < mods.Length; i++)
       {
         LoadPlugin(mods[i]);
       }
@@ -70,19 +70,19 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     private void LoadPlugin(string s)
     {
-      Plugin p = new Plugin(s, false);
-      TreeNode tn = new TreeNode(p.Name);
+      var p = new Plugin(s, false);
+      var tn = new TreeNode(p.Name);
       CreatePluginTree(p, tn);
       PluginTree.Nodes.Add(tn);
     }
 
     private void WalkPluginTree(Rec r, TreeNode tn)
     {
-      TreeNode tn2 = new TreeNode(r.DescriptiveName);
+      var tn2 = new TreeNode(r.DescriptiveName);
       tn2.Tag = r;
       if (r is GroupRecord)
       {
-        foreach (Rec r2 in ((GroupRecord) r).Records)
+        foreach (var r2 in ((GroupRecord) r).Records)
         {
           WalkPluginTree(r2, tn2);
         }
@@ -93,7 +93,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
     private void CreatePluginTree(Plugin p, TreeNode tn)
     {
       tn.Tag = p;
-      foreach (Rec r in p.Records)
+      foreach (var r in p.Records)
       {
         WalkPluginTree(r, tn);
       }
@@ -108,7 +108,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       }
       if (OpenModDialog.ShowDialog() == DialogResult.OK)
       {
-        foreach (string s in OpenModDialog.FileNames)
+        foreach (var s in OpenModDialog.FileNames)
         {
           LoadPlugin(s);
         }
@@ -160,9 +160,9 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
     private static void MatchRecordAddConditionals(Dictionary<int, Conditional> conditions, SubRecord sr,
                                                    ElementStructure[] ess)
     {
-      int offset = 0;
-      byte[] data = sr.GetReadonlyData();
-      for (int j = 0; j < ess.Length; j++)
+      var offset = 0;
+      var data = sr.GetReadonlyData();
+      for (var j = 0; j < ess.Length; j++)
       {
         if (ess[j].CondID != 0)
         {
@@ -191,7 +191,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
               offset++;
               break;
             case ElementValueType.String:
-              string s = "";
+              var s = "";
               while (data[offset] != 0)
               {
                 s += (char) data[offset++];
@@ -265,7 +265,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       {
         return false;
       }
-      Conditional cond = conditions[ss.CondID];
+      var cond = conditions[ss.CondID];
       switch (cond.type)
       {
         case ElementValueType.Byte:
@@ -324,7 +324,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         case ElementValueType.fstring:
         case ElementValueType.String:
         {
-          string s = (string) cond.value;
+          var s = (string) cond.value;
           switch (ss.Condition)
           {
             case CondType.Equal:
@@ -358,11 +358,11 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         return;
       }
       SubrecordStructs = new SubrecordStructure[parentRecord.SubRecords.Count];
-      SubrecordStructure[] sss = RecordStructure.Records[parentRecord.Name].subrecords;
-      SubRecord[] subs = parentRecord.SubRecords.ToArray();
+      var sss = RecordStructure.Records[parentRecord.Name].subrecords;
+      var subs = parentRecord.SubRecords.ToArray();
       int subi = 0, ssi = 0;
-      Stack<LoopBlock> repeats = new Stack<LoopBlock>();
-      Dictionary<int, Conditional> conditions = new Dictionary<int, Conditional>();
+      var repeats = new Stack<LoopBlock>();
+      var conditions = new Dictionary<int, Conditional>();
       while (subi < subs.Length && ssi < sss.Length)
       {
         if (sss[ssi].Condition != CondType.None && !MatchRecordCheckCondition(conditions, sss[ssi]))
@@ -445,10 +445,10 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         pasteToolStripMenuItem.Enabled = true;
         insertRecordToolStripMenuItem.Enabled = false;
         insertSubrecordToolStripMenuItem.Enabled = true;
-        Record r = (Record) PluginTree.SelectedNode.Tag;
-        foreach (SubRecord sr in r.SubRecords)
+        var r = (Record) PluginTree.SelectedNode.Tag;
+        foreach (var sr in r.SubRecords)
         {
-          ListViewItem lvi = new ListViewItem(new string[]
+          var lvi = new ListViewItem(new string[]
           {
             sr.Name, sr.Size.ToString()
           });
@@ -501,8 +501,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       {
         if (PluginTree.SelectedNode.Parent != null)
         {
-          BaseRecord parent = (BaseRecord) PluginTree.SelectedNode.Parent.Tag;
-          BaseRecord node = (BaseRecord) PluginTree.SelectedNode.Tag;
+          var parent = (BaseRecord) PluginTree.SelectedNode.Parent.Tag;
+          var node = (BaseRecord) PluginTree.SelectedNode.Tag;
           parent.DeleteRecord(node);
         }
         PluginTree.SelectedNode.Remove();
@@ -516,12 +516,12 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         MessageBox.Show("No plugin selected to save", "Error");
         return;
       }
-      TreeNode tn = PluginTree.SelectedNode;
+      var tn = PluginTree.SelectedNode;
       while (!(tn.Tag is Plugin))
       {
         tn = tn.Parent;
       }
-      Plugin p = (Plugin) tn.Tag;
+      var p = (Plugin) tn.Tag;
       if (SaveModDialog.ShowDialog() == DialogResult.OK)
       {
         p.Save(SaveModDialog.FileName);
@@ -565,14 +565,14 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       }
       else
       {
-        BaseRecord node = ((BaseRecord) PluginTree.SelectedNode.Tag).Clone();
+        var node = ((BaseRecord) PluginTree.SelectedNode.Tag).Clone();
         Clipboard = node;
         ClipboardNode = (TreeNode) PluginTree.SelectedNode.Clone();
         ClipboardNode.Tag = node;
         if (ClipboardNode.Nodes.Count > 0)
         {
           ClipboardNode.Nodes.Clear();
-          foreach (Rec r in ((GroupRecord) node).Records)
+          foreach (var r in ((GroupRecord) node).Records)
           {
             WalkPluginTree(r, ClipboardNode);
           }
@@ -592,7 +592,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         MessageBox.Show("The clipboard is empty", "Error");
         return;
       }
-      BaseRecord node = (BaseRecord) PluginTree.SelectedNode.Tag;
+      var node = (BaseRecord) PluginTree.SelectedNode.Tag;
       if (Clipboard is Plugin)
       {
         MessageBox.Show("Plugin merging has been disabled");
@@ -626,10 +626,10 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         MessageBox.Show("Cannot modify contents while searching", "Error");
         return;
       }
-      Plugin p = new Plugin();
-      Record r = new Record();
+      var p = new Plugin();
+      var r = new Record();
       r.Name = "TES4";
-      SubRecord sr = new SubRecord();
+      var sr = new SubRecord();
       sr.Name = "HEDR";
       sr.SetData(new byte[]
       {
@@ -641,9 +641,9 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       sr.SetData(Encoding.ASCII.GetBytes("Default\0"));
       r.AddRecord(sr);
       p.AddRecord(r);
-      TreeNode tn = new TreeNode(p.Name);
+      var tn = new TreeNode(p.Name);
       tn.Tag = p;
-      TreeNode tn2 = new TreeNode(r.DescriptiveName);
+      var tn2 = new TreeNode(r.DescriptiveName);
       tn2.Tag = r;
       tn.Nodes.Add(tn2);
       PluginTree.Nodes.Add(tn);
@@ -657,7 +657,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       }
       if (PluginTree.SelectedNode.Tag is Record)
       {
-        Record r = (Record) PluginTree.SelectedNode.Tag;
+        var r = (Record) PluginTree.SelectedNode.Tag;
         HeaderEditor.Display(r);
         if (PluginTree.SelectedNode.Text != r.DescriptiveName)
         {
@@ -667,7 +667,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       }
       else if (PluginTree.SelectedNode.Tag is GroupRecord)
       {
-        GroupRecord gr = (GroupRecord) PluginTree.SelectedNode.Tag;
+        var gr = (GroupRecord) PluginTree.SelectedNode.Tag;
         GroupEditor.Display(gr);
         if (PluginTree.SelectedNode.Text != gr.DescriptiveName)
         {
@@ -683,7 +683,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       {
         return;
       }
-      SubRecord sr = (SubRecord) listView1.SelectedItems[0].Tag;
+      var sr = (SubRecord) listView1.SelectedItems[0].Tag;
       if (SubrecordStructs != null && SubrecordStructs[listView1.SelectedIndices[0]].elements != null)
       {
         tbInfo.Text = sr.GetFormattedData(SubrecordStructs[listView1.SelectedIndices[0]], LookupFormIDI);
@@ -709,7 +709,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       {
         return;
       }
-      SubRecord sr = (SubRecord) listView1.SelectedItems[0].Tag;
+      var sr = (SubRecord) listView1.SelectedItems[0].Tag;
       if (useNewSubrecordEditorToolStripMenuItem.Checked && SubrecordStructs != null &&
           SubrecordStructs[listView1.SelectedIndices[0]].elements != null &&
           SubrecordStructs[listView1.SelectedIndices[0]].elements[0].type != ElementValueType.Blob &&
@@ -777,10 +777,10 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         MessageBox.Show("Cannot modify contents while searching", "Error");
         return;
       }
-      BaseRecord node = (BaseRecord) PluginTree.SelectedNode.Tag;
-      Record p = new Record();
+      var node = (BaseRecord) PluginTree.SelectedNode.Tag;
+      var p = new Record();
       node.AddRecord(p);
-      TreeNode tn = new TreeNode(p.Name);
+      var tn = new TreeNode(p.Name);
       tn.Tag = p;
       PluginTree.SelectedNode.Nodes.Add(tn);
     }
@@ -792,8 +792,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         MessageBox.Show("Cannot modify contents while searching", "Error");
         return;
       }
-      BaseRecord node = (BaseRecord) PluginTree.SelectedNode.Tag;
-      SubRecord p = new SubRecord();
+      var node = (BaseRecord) PluginTree.SelectedNode.Tag;
+      var p = new SubRecord();
       node.AddRecord(p);
       PluginTree_AfterSelect(null, null);
     }
@@ -860,7 +860,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         MessageBox.Show("Cannot modify contents while searching", "Error");
         return;
       }
-      TreeNode tn = PluginTree.SelectedNode;
+      var tn = PluginTree.SelectedNode;
       while (!(tn.Tag is Plugin))
       {
         tn = tn.Parent;
@@ -883,8 +883,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     private void listView1_GiveFeedback(object sender, GiveFeedbackEventArgs e)
     {
-      Point p = listView1.PointToClient(MousePosition);
-      ListViewItem lvi = listView1.GetItemAt(p.X, p.Y);
+      var p = listView1.PointToClient(MousePosition);
+      var lvi = listView1.GetItemAt(p.X, p.Y);
       if (lvi == null)
       {
         listView1.SelectedIndices.Clear();
@@ -897,12 +897,12 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     private void listView1_DragDrop(object sender, DragEventArgs e)
     {
-      int toswap = (int) e.Data.GetData(typeof (int)) - 1;
+      var toswap = (int) e.Data.GetData(typeof (int)) - 1;
       if (toswap == -1)
       {
         return;
       }
-      SubRecord sr = parentRecord.SubRecords[toswap];
+      var sr = parentRecord.SubRecords[toswap];
       if (listView1.SelectedIndices.Count == 0)
       {
         parentRecord.SubRecords.RemoveAt(toswap);
@@ -910,7 +910,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       }
       else if (listView1.SelectedIndices.Count == 1)
       {
-        int moveto = listView1.SelectedIndices[0];
+        var moveto = listView1.SelectedIndices[0];
         if (toswap == moveto)
         {
           return;
@@ -961,8 +961,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       }
       else
       {
-        int i = 1;
-        foreach (Rec r2 in ((GroupRecord) r).Records)
+        var i = 1;
+        foreach (var r2 in ((GroupRecord) r).Records)
         {
           i += sanitizeCountRecords(r2);
         }
@@ -977,14 +977,14 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         MessageBox.Show("No plugin selected", "Error");
         return;
       }
-      TreeNode tn = PluginTree.SelectedNode;
+      var tn = PluginTree.SelectedNode;
       while (!(tn.Tag is Plugin))
       {
         tn = tn.Parent;
       }
-      Plugin p = (Plugin) tn.Tag;
+      var p = (Plugin) tn.Tag;
 
-      Queue<Rec> toParse = new Queue<Rec>(p.Records);
+      var toParse = new Queue<Rec>(p.Records);
       if (toParse.Count == 0 || toParse.Peek().Name != "TES4")
       {
         MessageBox.Show("Plugin lacks a vlid TES4 record. Cannot continue");
@@ -994,22 +994,22 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       tn.Nodes.Clear();
       p.Records.Clear();
       p.AddRecord(toParse.Dequeue());
-      Dictionary<string, GroupRecord> groups = new Dictionary<string, GroupRecord>();
+      var groups = new Dictionary<string, GroupRecord>();
 
       GroupRecord gr;
 
-      foreach (string s in SanitizeOrder)
+      foreach (var s in SanitizeOrder)
       {
         gr = new GroupRecord(s);
         p.Records.Add(gr);
         groups[s] = gr;
       }
 
-      bool looseGroupsWarning = false;
-      bool unknownRecordsWarning = false;
+      var looseGroupsWarning = false;
+      var unknownRecordsWarning = false;
       while (toParse.Count > 0)
       {
-        Rec r = toParse.Dequeue();
+        var r = toParse.Dequeue();
         if (r is GroupRecord)
         {
           gr = (GroupRecord) r;
@@ -1020,7 +1020,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
           }
           else
           {
-            for (int i = 0; i < gr.Records.Count; i++)
+            for (var i = 0; i < gr.Records.Count; i++)
             {
               toParse.Enqueue(gr.Records[i]);
             }
@@ -1029,7 +1029,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         }
         else
         {
-          Record r2 = (Record) r;
+          var r2 = (Record) r;
           if (r2.Name == "CELL" || r2.Name == "WRLD" || r2.Name == "REFR" || r2.Name == "ACRE" || r2.Name == "ACHR" ||
               r2.Name == "NAVM" || r2.Name == "DIAL" || r2.Name == "INFO")
           {
@@ -1051,7 +1051,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         }
       }
 
-      foreach (GroupRecord gr2 in groups.Values)
+      foreach (var gr2 in groups.Values)
       {
         if (gr2.Records.Count == 0)
         {
@@ -1073,19 +1073,19 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
       CreatePluginTree(p, tn);
 
-      int reccount = -1;
-      foreach (Rec r in p.Records)
+      var reccount = -1;
+      foreach (var r in p.Records)
       {
         reccount += sanitizeCountRecords(r);
       }
       if (p.Records.Count > 0 && p.Records[0].Name == "TES4")
       {
-        Record tes4 = (Record) p.Records[0];
+        var tes4 = (Record) p.Records[0];
         if (tes4.SubRecords.Count > 0 && tes4.SubRecords[0].Name == "HEDR" && tes4.SubRecords[0].Size >= 8)
         {
-          byte[] data = tes4.SubRecords[0].GetData();
-          byte[] reccountbytes = TypeConverter.si2h(reccount);
-          for (int i = 0; i < 4; i++)
+          var data = tes4.SubRecords[0].GetData();
+          var reccountbytes = TypeConverter.si2h(reccount);
+          for (var i = 0; i < 4; i++)
           {
             data[4 + i] = reccountbytes[i];
           }
@@ -1098,12 +1098,12 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
     {
       if (r is Record)
       {
-        Record r2 = (Record) r;
+        var r2 = (Record) r;
         if (r2.Name != "GMST" && r2.SubRecords.Count > 0 && r2.SubRecords[0].Name == "EDID")
         {
           r2.DeleteRecord(r2.SubRecords[0]);
         }
-        for (int i = 0; i < r2.SubRecords.Count; i++)
+        for (var i = 0; i < r2.SubRecords.Count; i++)
         {
           if (r2.SubRecords[i].Name == "SCTX")
           {
@@ -1113,7 +1113,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       }
       else
       {
-        foreach (Rec r2 in ((GroupRecord) r).Records)
+        foreach (var r2 in ((GroupRecord) r).Records)
         {
           StripEDIDspublic(r2);
         }
@@ -1132,13 +1132,13 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       {
         return;
       }
-      TreeNode tn = PluginTree.SelectedNode;
+      var tn = PluginTree.SelectedNode;
       while (!(tn.Tag is Plugin))
       {
         tn = tn.Parent;
       }
-      Plugin p = (Plugin) tn.Tag;
-      foreach (Rec r in p.Records)
+      var p = (Plugin) tn.Tag;
+      foreach (var r in p.Records)
       {
         StripEDIDspublic(r);
       }
@@ -1148,7 +1148,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
     {
       if (tn.Tag is Record)
       {
-        Record r2 = (Record) tn.Tag;
+        var r2 = (Record) tn.Tag;
         if (ids.ContainsKey(r2.FormID))
         {
           PluginTree.SelectedNode = tn;
@@ -1173,12 +1173,12 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     private void findDuplicatedFormIDToolStripMenuItem_Click(object sender, EventArgs e)
     {
-      TreeNode tn = PluginTree.SelectedNode;
+      var tn = PluginTree.SelectedNode;
       while (tn.Parent != null)
       {
         tn = tn.Parent;
       }
-      Dictionary<uint, TreeNode> ids = new Dictionary<uint, TreeNode>();
+      var ids = new Dictionary<uint, TreeNode>();
       foreach (TreeNode tn2 in tn.Nodes)
       {
         if (findDuplicateFormIDs(tn2, ids))
@@ -1193,7 +1193,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
     {
       if (r is Record)
       {
-        Record r2 = (Record) r;
+        var r2 = (Record) r;
         if (r2.SubRecords.Count > 0 && r2.SubRecords[0].Name == "EDID")
         {
           sw.WriteLine(r2.SubRecords[0].GetStrData());
@@ -1201,7 +1201,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       }
       else
       {
-        foreach (Rec r2 in ((GroupRecord) r).Records)
+        foreach (var r2 in ((GroupRecord) r).Records)
         {
           DumpEdidsInternal(r2, sw);
         }
@@ -1223,10 +1223,10 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       {
         return;
       }
-      StreamWriter sw = new StreamWriter(SaveEdidListDialog.FileName);
+      var sw = new StreamWriter(SaveEdidListDialog.FileName);
       if (PluginTree.SelectedNode.Tag is Plugin)
       {
-        foreach (Rec r in ((Plugin) PluginTree.SelectedNode.Tag).Records)
+        foreach (var r in ((Plugin) PluginTree.SelectedNode.Tag).Records)
         {
           DumpEdidsInternal(r, sw);
         }
@@ -1240,7 +1240,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     private void cleanRecurse(Rec r, uint match, uint mask, Dictionary<uint, Record> lookup)
     {
-      Record r2 = r as Record;
+      var r2 = r as Record;
       if (r2 != null)
       {
         if ((r2.FormID & 0xff000000) == match)
@@ -1253,7 +1253,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       }
       else
       {
-        foreach (Rec r3 in ((GroupRecord) r).Records)
+        foreach (var r3 in ((GroupRecord) r).Records)
         {
           cleanRecurse(r3, match, mask, lookup);
         }
@@ -1262,24 +1262,24 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     private bool cleanRecurse2(Rec r, ref int count, Dictionary<uint, Record> lookup)
     {
-      Record r2 = r as Record;
+      var r2 = r as Record;
       if (r2 != null)
       {
         if (lookup.ContainsKey(r2.FormID))
         {
-          Record r3 = lookup[r2.FormID];
+          var r3 = lookup[r2.FormID];
           if (r2.Name == r3.Name && r2.Size == r3.Size && r2.SubRecords.Count == r3.SubRecords.Count &&
               r2.Flags1 == r3.Flags1 &&
               r2.Flags2 == r3.Flags2 && r2.Flags3 == r3.Flags3)
           {
-            for (int i = 0; i < r2.SubRecords.Count; i++)
+            for (var i = 0; i < r2.SubRecords.Count; i++)
             {
               if (r2.SubRecords[i].Name != r3.SubRecords[i].Name || r2.SubRecords[i].Size != r3.SubRecords[i].Size)
               {
                 return false;
               }
               byte[] data1 = r2.SubRecords[i].GetReadonlyData(), data2 = r3.SubRecords[i].GetReadonlyData();
-              for (int j = 0; j < data1.Length; j++)
+              for (var j = 0; j < data1.Length; j++)
               {
                 if (data1[j] != data2[j])
                 {
@@ -1293,8 +1293,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       }
       else
       {
-        GroupRecord gr = (GroupRecord) r;
-        for (int i = 0; i < gr.Records.Count; i++)
+        var gr = (GroupRecord) r;
+        for (var i = 0; i < gr.Records.Count; i++)
         {
           if (cleanRecurse2(gr.Records[i], ref count, lookup))
           {
@@ -1320,9 +1320,9 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         return;
       }
       FindMasters();
-      Dictionary<uint, Record> lookup = new Dictionary<uint, Record>();
-      bool missingMasters = false;
-      for (int i = 0; i < FormIDLookup.Length - 1; i++)
+      var lookup = new Dictionary<uint, Record>();
+      var missingMasters = false;
+      for (var i = 0; i < FormIDLookup.Length - 1; i++)
       {
         if (FormIDLookup[i] == null)
         {
@@ -1334,7 +1334,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
           continue;
         }
         uint match = 0;
-        foreach (SubRecord sr in ((Record) FormIDLookup[i].Records[0]).SubRecords)
+        foreach (var sr in ((Record) FormIDLookup[i].Records[0]).SubRecords)
         {
           if (sr.Name == "MAST")
           {
@@ -1342,8 +1342,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
           }
         }
         match <<= 24;
-        uint mask = (uint) i << 24;
-        for (int j = 1; j < FormIDLookup[i].Records.Count; j++)
+        var mask = (uint) i << 24;
+        for (var j = 1; j < FormIDLookup[i].Records.Count; j++)
         {
           cleanRecurse(FormIDLookup[i].Records[j], match, mask, lookup);
         }
@@ -1354,8 +1354,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         MessageBox.Show("One or more dependencies are not loaded, and will be ignored.", "Warning");
       }
 
-      int count = 0;
-      for (int j = 1; j < FormIDLookup[FormIDLookup.Length - 1].Records.Count; j++)
+      var count = 0;
+      for (var j = 1; j < FormIDLookup[FormIDLookup.Length - 1].Records.Count; j++)
       {
         cleanRecurse2(FormIDLookup[FormIDLookup.Length - 1].Records[j], ref count, lookup);
       }
@@ -1368,7 +1368,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         MessageBox.Show("" + count + " records removed");
       }
 
-      TreeNode tn = PluginTree.SelectedNode;
+      var tn = PluginTree.SelectedNode;
       while (tn.Parent != null)
       {
         tn = tn.Parent;
@@ -1424,7 +1424,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       Record r;
       if (SelectedSubrecord && parentRecord.Name != "SCPT")
       {
-        SubRecord sr = (SubRecord) listView1.SelectedItems[0].Tag;
+        var sr = (SubRecord) listView1.SelectedItems[0].Tag;
         if (sr.Name != "SCTX")
         {
           MessageBox.Show("You need to select a SCPT record or SCTX subrecord to compile", "Error");
@@ -1437,8 +1437,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         }
         else
         {
-          int i = listView1.SelectedIndices[0];
-          List<SubRecord> srs = parentRecord.SubRecords;
+          var i = listView1.SelectedIndices[0];
+          var srs = parentRecord.SubRecords;
           while (i > 0 && (srs[i - 1].Name == "SCDA" || srs[i - 1].Name == "SCHR"))
           {
             srs.RemoveAt(--i);
@@ -1456,7 +1456,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         }
         return;
       }
-      TreeNode tn = PluginTree.SelectedNode;
+      var tn = PluginTree.SelectedNode;
       r = tn.Tag as Record;
       if (r == null || (r.Name != "SCPT"))
       {
@@ -1477,17 +1477,17 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     private void compileAllToolStripMenuItem_Click(object sender, EventArgs e)
     {
-      string thingy = "";
+      var thingy = "";
       int count = 0, failed = 0, failed2 = 0;
       ScriptCompiler.ScriptCompiler.Setup(FormIDLookup);
-      TreeNode tn = PluginTree.SelectedNode;
+      var tn = PluginTree.SelectedNode;
       while (tn.Parent != null)
       {
         tn = tn.Parent;
       }
-      foreach (Rec rec in ((Plugin) tn.Tag).Records)
+      foreach (var rec in ((Plugin) tn.Tag).Records)
       {
-        GroupRecord gr = rec as GroupRecord;
+        var gr = rec as GroupRecord;
         if (gr == null)
         {
           continue;
@@ -1497,8 +1497,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
           foreach (Record r in gr.Records)
           {
             count++;
-            int size = 0;
-            foreach (SubRecord sr in r.SubRecords)
+            var size = 0;
+            foreach (var sr in r.SubRecords)
             {
               if (sr.Name == "SCDA")
               {
@@ -1514,7 +1514,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
             }
             else
             {
-              foreach (SubRecord sr in r.SubRecords)
+              foreach (var sr in r.SubRecords)
               {
                 if (sr.Name == "SCDA")
                 {
@@ -1541,7 +1541,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       {
         return;
       }
-      Plugin p = FormIDLookup[FormIDLookup.Length - 1];
+      var p = FormIDLookup[FormIDLookup.Length - 1];
 
       {
         Record r;
@@ -1553,10 +1553,10 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         {
           r = null;
         }
-        bool firstwasfallout = false;
+        var firstwasfallout = false;
         if (r != null && r.Name == "TES4")
         {
-          foreach (SubRecord sr in r.SubRecords)
+          foreach (var sr in r.SubRecords)
           {
             if (sr.Name == "MAST")
             {
@@ -1575,20 +1575,20 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         }
       }
 
-      uint mask = (uint) (FormIDLookup.Length - 1) << 24;
-      Queue<Rec> recs = new Queue<Rec>(p.Records);
+      var mask = (uint) (FormIDLookup.Length - 1) << 24;
+      var recs = new Queue<Rec>(p.Records);
 
-      StringBuilder sb2 = new StringBuilder();
-      StringBuilder sb3 = new StringBuilder();
+      var sb2 = new StringBuilder();
+      var sb3 = new StringBuilder();
       while (recs.Count > 0)
       {
-        Rec rec = recs.Dequeue();
+        var rec = recs.Dequeue();
         if (rec is GroupRecord)
         {
-          GroupRecord gr = (GroupRecord) rec;
+          var gr = (GroupRecord) rec;
           if (gr.ContentsType == "LVLI" || gr.ContentsType == "LVLN" || gr.ContentsType == "LVLC")
           {
-            for (int i = 0; i < gr.Records.Count; i++)
+            for (var i = 0; i < gr.Records.Count; i++)
             {
               recs.Enqueue(gr.Records[i]);
             }
@@ -1596,7 +1596,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         }
         else
         {
-          Record r = (Record) rec;
+          var r = (Record) rec;
           if ((r.FormID & 0xff000000) != 0)
           {
             continue;
@@ -1604,7 +1604,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
           switch (r.Name)
           {
             case "LVLI":
-              for (int i = 0; i < r.SubRecords.Count; i++)
+              for (var i = 0; i < r.SubRecords.Count; i++)
               {
                 if (r.SubRecords[i].Name == "LVLO")
                 {
@@ -1612,8 +1612,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
                   {
                     continue;
                   }
-                  byte[] data = r.SubRecords[i].GetReadonlyData();
-                  uint formid = TypeConverter.h2i(data[4], data[5], data[6], data[7]);
+                  var data = r.SubRecords[i].GetReadonlyData();
+                  var formid = TypeConverter.h2i(data[4], data[5], data[6], data[7]);
                   if ((formid & 0xff000000) != mask)
                   {
                     continue;
@@ -1641,7 +1641,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
               sb3.Length = 0;
               break;
             case "LVLN":
-              for (int i = 0; i < r.SubRecords.Count; i++)
+              for (var i = 0; i < r.SubRecords.Count; i++)
               {
                 if (r.SubRecords[i].Name == "LVLO")
                 {
@@ -1649,8 +1649,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
                   {
                     continue;
                   }
-                  byte[] data = r.SubRecords[i].GetReadonlyData();
-                  uint formid = TypeConverter.h2i(data[4], data[5], data[6], data[7]);
+                  var data = r.SubRecords[i].GetReadonlyData();
+                  var formid = TypeConverter.h2i(data[4], data[5], data[6], data[7]);
                   if ((formid & 0xff000000) != mask)
                   {
                     continue;
@@ -1669,7 +1669,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
               sb3.Length = 0;
               break;
             case "LVLC":
-              for (int i = 0; i < r.SubRecords.Count; i++)
+              for (var i = 0; i < r.SubRecords.Count; i++)
               {
                 if (r.SubRecords[i].Name == "LVLO")
                 {
@@ -1677,8 +1677,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
                   {
                     continue;
                   }
-                  byte[] data = r.SubRecords[i].GetReadonlyData();
-                  uint formid = TypeConverter.h2i(data[4], data[5], data[6], data[7]);
+                  var data = r.SubRecords[i].GetReadonlyData();
+                  var formid = TypeConverter.h2i(data[4], data[5], data[6], data[7]);
                   if ((formid & 0xff000000) != mask)
                   {
                     continue;
@@ -1701,7 +1701,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       }
       if (sb2.Length > 0)
       {
-        StringBuilder sb1 = new StringBuilder();
+        var sb1 = new StringBuilder();
         sb1.AppendLine("<?xml version=\"1.0\" encoding=\"utf-8\" ?>");
         sb1.AppendLine("<Plugin>");
         sb1.AppendLine("  <MergedLists>");
@@ -1832,12 +1832,12 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         return;
       }
 
-      TreeNode tn = PluginTree.SelectedNode;
+      var tn = PluginTree.SelectedNode;
       while (!(tn.Tag is Plugin))
       {
         tn = tn.Parent;
       }
-      Plugin p = (Plugin) tn.Tag;
+      var p = (Plugin) tn.Tag;
 
       if (p.Records.Count == 0 || p.Records[0].Name != "TES4")
       {
@@ -1845,7 +1845,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         return;
       }
 
-      Record tes4 = (Record) p.Records[0];
+      var tes4 = (Record) p.Records[0];
       if ((tes4.Flags1 & 1) == 1)
       {
         MessageBox.Show("Plugin is already a master file");
@@ -1871,16 +1871,16 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         return;
       }
 
-      TreeNode tn = PluginTree.SelectedNode;
+      var tn = PluginTree.SelectedNode;
       while (!(tn.Tag is Plugin))
       {
         tn = tn.Parent;
       }
-      Plugin p = (Plugin) tn.Tag;
+      var p = (Plugin) tn.Tag;
 
-      Form f = new Form();
+      var f = new Form();
       f.Text = "Replace";
-      TextBox tb = new TextBox();
+      var tb = new TextBox();
       f.Controls.Add(tb);
       tb.Dock = DockStyle.Fill;
       tb.AcceptsReturn = true;
@@ -1888,38 +1888,38 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       tb.ScrollBars = ScrollBars.Vertical;
       f.ShowDialog();
 
-      string replace = tb.Text;
+      var replace = tb.Text;
       f.Text = "Replace with";
       tb.Text = "";
       f.ShowDialog();
-      string with = tb.Text;
+      var with = tb.Text;
 
-      Queue<Rec> recs = new Queue<Rec>(p.Records);
+      var recs = new Queue<Rec>(p.Records);
       while (recs.Count > 0)
       {
         if (recs.Peek() is GroupRecord)
         {
-          GroupRecord gr = (GroupRecord) recs.Dequeue();
-          for (int i = 0; i < gr.Records.Count; i++)
+          var gr = (GroupRecord) recs.Dequeue();
+          for (var i = 0; i < gr.Records.Count; i++)
           {
             recs.Enqueue(gr.Records[i]);
           }
         }
         else
         {
-          Record r = (Record) recs.Dequeue();
-          foreach (SubRecord sr in r.SubRecords)
+          var r = (Record) recs.Dequeue();
+          foreach (var sr in r.SubRecords)
           {
             if (sr.Name != "SCTX")
             {
               continue;
             }
-            string text = sr.GetStrData();
-            int upto = 0;
-            bool replaced = false;
+            var text = sr.GetStrData();
+            var upto = 0;
+            var replaced = false;
             while (true)
             {
-              int i = text.IndexOf(replace, upto, StringComparison.InvariantCultureIgnoreCase);
+              var i = text.IndexOf(replace, upto, StringComparison.InvariantCultureIgnoreCase);
               if (i == -1)
               {
                 break;
@@ -1941,22 +1941,22 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     private void FindMasters()
     {
-      TreeNode tn = PluginTree.SelectedNode;
+      var tn = PluginTree.SelectedNode;
       while (tn.Parent != null)
       {
         tn = tn.Parent;
       }
-      Plugin p = (Plugin) tn.Tag;
-      Plugin[] plugins = new Plugin[PluginTree.Nodes.Count];
-      for (int i = 0; i < plugins.Length; i++)
+      var p = (Plugin) tn.Tag;
+      var plugins = new Plugin[PluginTree.Nodes.Count];
+      for (var i = 0; i < plugins.Length; i++)
       {
         plugins[i] = (Plugin) PluginTree.Nodes[i].Tag;
       }
 
-      List<string> masters = new List<string>();
+      var masters = new List<string>();
       if (p.Records.Count > 0 && p.Records[0].Name == "TES4")
       {
-        foreach (SubRecord sr in ((Record) p.Records[0]).SubRecords)
+        foreach (var sr in ((Record) p.Records[0]).SubRecords)
         {
           if (sr.Name == "MAST")
           {
@@ -1966,9 +1966,9 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       }
       FormIDLookup = new Plugin[masters.Count + 1];
       Fixups = new uint[masters.Count + 1];
-      for (int i = 0; i < masters.Count; i++)
+      for (var i = 0; i < masters.Count; i++)
       {
-        for (int j = 0; j < plugins.Length; j++)
+        for (var j = 0; j < plugins.Length; j++)
         {
           if (masters[i] == plugins[j].Name.ToLowerInvariant())
           {
@@ -1976,7 +1976,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
             uint fixup = 0;
             if (plugins[j].Records.Count > 0 && plugins[j].Records[0].Name == "TES4")
             {
-              foreach (SubRecord sr in ((Record) plugins[j].Records[0]).SubRecords)
+              foreach (var sr in ((Record) plugins[j].Records[0]).SubRecords)
               {
                 if (sr.Name == "MAST")
                 {
@@ -2005,7 +2005,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       }
       else
       {
-        foreach (Rec r in ((GroupRecord) rec).Records)
+        foreach (var r in ((GroupRecord) rec).Records)
         {
           if (RecurseFormIDSearch(r, FormID, ref edid))
           {
@@ -2018,13 +2018,13 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     private string LookupFormIDI(uint id)
     {
-      uint pluginid = (id & 0xff000000) >> 24;
+      var pluginid = (id & 0xff000000) >> 24;
       if (pluginid > FormIDLookup.Length)
       {
         return "FormID was invalid";
       }
       string edid = null;
-      foreach (Rec r in FormIDLookup[FormIDLookup.Length - 1].Records)
+      foreach (var r in FormIDLookup[FormIDLookup.Length - 1].Records)
       {
         if (RecurseFormIDSearch(r, id, ref edid))
         {
@@ -2037,7 +2037,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         return "Master not loaded";
       }
       id += Fixups[pluginid] << 24;
-      foreach (Rec r in FormIDLookup[pluginid].Records)
+      foreach (var r in FormIDLookup[pluginid].Records)
       {
         if (RecurseFormIDSearch(r, id, ref edid))
         {
@@ -2059,7 +2059,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     private void FormIDScanRecurse(Rec r, uint match, uint mask, Dictionary<uint, string> table, string type)
     {
-      Record r2 = r as Record;
+      var r2 = r as Record;
       if (r2 != null)
       {
         if (r2.Name == type && (r2.FormID & 0xff000000) == match)
@@ -2069,12 +2069,12 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       }
       else
       {
-        GroupRecord gr = (GroupRecord) r;
+        var gr = (GroupRecord) r;
         if (gr.groupType == 0 && gr.ContentsType != type)
         {
           return;
         }
-        foreach (Rec r3 in gr.Records)
+        foreach (var r3 in gr.Records)
         {
           FormIDScanRecurse(r3, match, mask, table, type);
         }
@@ -2083,7 +2083,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     private void FormIDScanRecurse2(Rec r, Dictionary<uint, string> table, string type)
     {
-      Record r2 = r as Record;
+      var r2 = r as Record;
       if (r2 != null)
       {
         if (r2.Name == type)
@@ -2093,12 +2093,12 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       }
       else
       {
-        GroupRecord gr = (GroupRecord) r;
+        var gr = (GroupRecord) r;
         if (gr.groupType == 0 && gr.ContentsType != type)
         {
           return;
         }
-        foreach (Rec r3 in gr.Records)
+        foreach (var r3 in gr.Records)
         {
           FormIDScanRecurse2(r3, table, type);
         }
@@ -2107,8 +2107,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     private string[] FormIDScan(string type)
     {
-      Dictionary<uint, string> list = new Dictionary<uint, string>();
-      for (int i = 0; i < FormIDLookup.Length - 1; i++)
+      var list = new Dictionary<uint, string>();
+      for (var i = 0; i < FormIDLookup.Length - 1; i++)
       {
         if (FormIDLookup[i] == null)
         {
@@ -2119,7 +2119,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
           continue;
         }
         uint match = 0;
-        foreach (SubRecord sr in ((Record) FormIDLookup[i].Records[0]).SubRecords)
+        foreach (var sr in ((Record) FormIDLookup[i].Records[0]).SubRecords)
         {
           if (sr.Name == "MAST")
           {
@@ -2127,20 +2127,20 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
           }
         }
         match <<= 24;
-        uint mask = (uint) i << 24;
-        for (int j = 1; j < FormIDLookup[i].Records.Count; j++)
+        var mask = (uint) i << 24;
+        for (var j = 1; j < FormIDLookup[i].Records.Count; j++)
         {
           FormIDScanRecurse(FormIDLookup[i].Records[j], match, mask, list, type);
         }
       }
-      for (int j = 1; j < FormIDLookup[FormIDLookup.Length - 1].Records.Count; j++)
+      for (var j = 1; j < FormIDLookup[FormIDLookup.Length - 1].Records.Count; j++)
       {
         FormIDScanRecurse2(FormIDLookup[FormIDLookup.Length - 1].Records[j], list, type);
       }
 
-      string[] ret = new string[list.Count*2];
-      int count = 0;
-      foreach (KeyValuePair<uint, string> pair in list)
+      var ret = new string[list.Count*2];
+      var count = 0;
+      foreach (var pair in list)
       {
         ret[count++] = pair.Value;
         ret[count++] = pair.Key.ToString("X8");
@@ -2168,11 +2168,11 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         MessageBox.Show("Cannot modify contents while searching", "Error");
         return;
       }
-      AddMasterForm amfNewMaster = new AddMasterForm();
+      var amfNewMaster = new AddMasterForm();
       if (amfNewMaster.ShowDialog() == DialogResult.OK)
       {
         //find the root node for the current plugin
-        TreeNode tndRoot = PluginTree.SelectedNode;
+        var tndRoot = PluginTree.SelectedNode;
         if (tndRoot == null)
         {
           MessageBox.Show(this, "No plugin selected. Cannot continue.", "Missing Plugin", MessageBoxButtons.OK,
@@ -2199,10 +2199,10 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
                           MessageBoxButtons.OK, MessageBoxIcon.Error);
           return;
         }
-        SubRecord sbrMaster = new SubRecord();
+        var sbrMaster = new SubRecord();
         sbrMaster.Name = "MAST";
-        Int32 intCount = Encoding.UTF8.GetByteCount(amfNewMaster.MasterName);
-        byte[] bteData = new byte[intCount + 1];
+        var intCount = Encoding.UTF8.GetByteCount(amfNewMaster.MasterName);
+        var bteData = new byte[intCount + 1];
         Array.Copy(Encoding.UTF8.GetBytes(amfNewMaster.MasterName), bteData, intCount);
         sbrMaster.SetData(bteData);
         brcTES4.AddRecord(sbrMaster);

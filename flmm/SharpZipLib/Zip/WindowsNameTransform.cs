@@ -116,7 +116,7 @@ namespace Fomm.SharpZipLib.Zip
 #else
       invalidPathChars = Path.GetInvalidPathChars();
 #endif
-      int howMany = invalidPathChars.Length + 3;
+      var howMany = invalidPathChars.Length + 3;
 
       InvalidEntryChars = new char[howMany];
       Array.Copy(invalidPathChars, 0, InvalidEntryChars, 0, invalidPathChars.Length);
@@ -153,7 +153,7 @@ namespace Fomm.SharpZipLib.Zip
       }
 
       // Convert consecutive \\ characters to \
-      int index = name.IndexOf(@"\\");
+      var index = name.IndexOf(@"\\");
       while (index >= 0)
       {
         name = name.Remove(index, 1);
@@ -164,7 +164,7 @@ namespace Fomm.SharpZipLib.Zip
       index = name.IndexOfAny(InvalidEntryChars);
       if (index >= 0)
       {
-        StringBuilder builder = new StringBuilder(name);
+        var builder = new StringBuilder(name);
 
         while (index >= 0)
         {

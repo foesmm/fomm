@@ -191,8 +191,8 @@ namespace Fomm.PackageManager
       if (p_strPreviews != null)
       {
         imgPreviews = new Image[p_strPreviews.Length];
-        int intMissingImages = 0;
-        for (int i = 0; i < p_strPreviews.Length; i++)
+        var intMissingImages = 0;
+        for (var i = 0; i < p_strPreviews.Length; i++)
         {
           if (p_strPreviews[i] == null)
           {
@@ -223,10 +223,10 @@ namespace Fomm.PackageManager
           m_strLastError = "There were " + intMissingImages + " filenames specified for preview images which could not be loaded";
         }*/
       }
-      SelectForm sfmSelectForm = new SelectForm(p_strItems, p_strTitle, p_booSelectMany, imgPreviews, p_strDescriptions);
+      var sfmSelectForm = new SelectForm(p_strItems, p_strTitle, p_booSelectMany, imgPreviews, p_strDescriptions);
       sfmSelectForm.ShowDialog();
-      int[] intResults = new int[sfmSelectForm.SelectedIndex.Length];
-      for (int i = 0; i < sfmSelectForm.SelectedIndex.Length; i++)
+      var intResults = new int[sfmSelectForm.SelectedIndex.Length];
+      for (var i = 0; i < sfmSelectForm.SelectedIndex.Length; i++)
       {
         intResults[i] = sfmSelectForm.SelectedIndex[i];
       }
@@ -278,10 +278,10 @@ namespace Fomm.PackageManager
     public string[] GetAllPlugins()
     {
       PermissionsManager.CurrentPermissions.Assert();
-      string[] strPlugins = Program.GameMode.PluginManager.OrderedPluginList;
-      Int32 intTrimLength =
+      var strPlugins = Program.GameMode.PluginManager.OrderedPluginList;
+      var intTrimLength =
         Program.GameMode.PluginsPath.Trim(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).Length + 1;
-      for (int i = 0; i < strPlugins.Length; i++)
+      for (var i = 0; i < strPlugins.Length; i++)
       {
         strPlugins[i] = strPlugins[i].Remove(0, intTrimLength);
       }
@@ -297,10 +297,10 @@ namespace Fomm.PackageManager
     public string[] GetActivePlugins()
     {
       PermissionsManager.CurrentPermissions.Assert();
-      string[] strPlugins = Program.GameMode.PluginManager.SortPluginList(ActivePlugins.ToArray());
-      Int32 intTrimLength =
+      var strPlugins = Program.GameMode.PluginManager.SortPluginList(ActivePlugins.ToArray());
+      var intTrimLength =
         Program.GameMode.PluginsPath.Trim(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).Length + 1;
-      for (int i = 0; i < strPlugins.Length; i++)
+      for (var i = 0; i < strPlugins.Length; i++)
       {
         strPlugins[i] = strPlugins[i].Remove(0, intTrimLength);
       }
@@ -327,13 +327,13 @@ namespace Fomm.PackageManager
     /// <paramref name="p_intPlugins"/> refers to a non-existant plugin.</exception>
     public void SetLoadOrder(int[] p_intPlugins)
     {
-      string[] strPluginNames = GetAllPlugins();
+      var strPluginNames = GetAllPlugins();
       if (p_intPlugins.Length != strPluginNames.Length)
       {
         throw new ArgumentException("Length of new load order array was different to the total number of plugins");
       }
 
-      for (int i = 0; i < p_intPlugins.Length; i++)
+      for (var i = 0; i < p_intPlugins.Length; i++)
       {
         if (p_intPlugins[i] < 0 || p_intPlugins[i] >= p_intPlugins.Length)
         {
@@ -342,7 +342,7 @@ namespace Fomm.PackageManager
       }
 
       PermissionsManager.CurrentPermissions.Assert();
-      for (int i = 0; i < strPluginNames.Length; i++)
+      for (var i = 0; i < strPluginNames.Length; i++)
       {
         Program.GameMode.PluginManager.SetLoadOrder(
           Path.Combine(Program.GameMode.PluginsPath, strPluginNames[p_intPlugins[i]]), i);
@@ -364,12 +364,12 @@ namespace Fomm.PackageManager
     /// plugins.</param>
     public void SetLoadOrder(int[] p_intPlugins, int p_intPosition)
     {
-      string[] strPluginNames = GetAllPlugins();
+      var strPluginNames = GetAllPlugins();
       PermissionsManager.CurrentPermissions.Assert();
       Array.Sort<int>(p_intPlugins);
 
-      Int32 intLoadOrder = 0;
-      for (int i = 0; i < p_intPosition; i++)
+      var intLoadOrder = 0;
+      for (var i = 0; i < p_intPosition; i++)
       {
         if (Array.BinarySearch<int>(p_intPlugins, i) >= 0)
         {
@@ -378,12 +378,12 @@ namespace Fomm.PackageManager
         Program.GameMode.PluginManager.SetLoadOrder(Path.Combine(Program.GameMode.PluginsPath, strPluginNames[i]),
                                                     intLoadOrder++);
       }
-      for (int i = 0; i < p_intPlugins.Length; i++)
+      for (var i = 0; i < p_intPlugins.Length; i++)
       {
         Program.GameMode.PluginManager.SetLoadOrder(
           Path.Combine(Program.GameMode.PluginsPath, strPluginNames[p_intPlugins[i]]), intLoadOrder++);
       }
-      for (int i = p_intPosition; i < strPluginNames.Length; i++)
+      for (var i = p_intPosition; i < strPluginNames.Length; i++)
       {
         if (Array.BinarySearch<int>(p_intPlugins, i) >= 0)
         {
@@ -413,7 +413,7 @@ namespace Fomm.PackageManager
         throw new IllegalFilePathException(p_strName);
       }
       PermissionsManager.CurrentPermissions.Assert();
-      string strFullPath = Path.Combine(Program.GameMode.PluginsPath, p_strName);
+      var strFullPath = Path.Combine(Program.GameMode.PluginsPath, p_strName);
       if (!File.Exists(strFullPath))
       {
         throw new FileNotFoundException("Plugin does not exist", p_strName);
@@ -461,14 +461,14 @@ namespace Fomm.PackageManager
     /// can be written; <lang cref="false"/> otherwise.</returns>
     protected bool TestDoOverwrite(string p_strPath)
     {
-      string strDataPath = Path.Combine(Program.GameMode.PluginsPath, p_strPath);
-      string strOldMod = InstallLog.Current.GetCurrentFileOwnerName(p_strPath);
+      var strDataPath = Path.Combine(Program.GameMode.PluginsPath, p_strPath);
+      var strOldMod = InstallLog.Current.GetCurrentFileOwnerName(p_strPath);
 
       if (!File.Exists(strDataPath))
       {
         return true;
       }
-      string strLoweredPath = strDataPath.ToLowerInvariant();
+      var strLoweredPath = strDataPath.ToLowerInvariant();
       if (m_lstOverwriteFolders.Contains(Path.GetDirectoryName(strLoweredPath)))
       {
         return true;
@@ -524,7 +524,7 @@ namespace Fomm.PackageManager
           m_lstOverwriteMods.Add(strOldMod);
           return true;
         case OverwriteResult.NoToFolder:
-          Queue<string> folders = new Queue<string>();
+          var folders = new Queue<string>();
           folders.Enqueue(Path.GetDirectoryName(strLoweredPath));
           while (folders.Count > 0)
           {
@@ -532,7 +532,7 @@ namespace Fomm.PackageManager
             if (!m_lstOverwriteFolders.Contains(strLoweredPath))
             {
               m_lstDontOverwriteFolders.Add(strLoweredPath);
-              foreach (string s in Directory.GetDirectories(strLoweredPath))
+              foreach (var s in Directory.GetDirectories(strLoweredPath))
               {
                 folders.Enqueue(s.ToLowerInvariant());
               }
@@ -548,7 +548,7 @@ namespace Fomm.PackageManager
             if (!m_lstDontOverwriteFolders.Contains(strLoweredPath))
             {
               m_lstOverwriteFolders.Add(strLoweredPath);
-              foreach (string s in Directory.GetDirectories(strLoweredPath))
+              foreach (var s in Directory.GetDirectories(strLoweredPath))
               {
                 folders.Enqueue(s.ToLowerInvariant());
               }
@@ -563,7 +563,7 @@ namespace Fomm.PackageManager
 
     public bool InstallFile(string fnFrom, string fnTo = "")
     {
-      bool ret = false;
+      var ret = false;
       string tmpFN;
       string strDataPath;
 
@@ -659,7 +659,7 @@ namespace Fomm.PackageManager
       PermissionsManager.CurrentPermissions.Assert();
       FileManagement.AssertFilePathIsSafe(p_strPath);
       string strDataPath;
-      bool ret = false;
+      var ret = false;
 
       if (GenerateDataFilePrep(p_strPath, out strDataPath))
       {
@@ -687,9 +687,9 @@ namespace Fomm.PackageManager
 
         if (File.Exists(strDataPath))
         {
-          string strDirectory = Path.GetDirectoryName(p_strPath);
-          string strBackupPath = Path.Combine(Program.GameMode.OverwriteDirectory, strDirectory);
-          string strOldModKey = InstallLog.Current.GetCurrentFileOwnerKey(p_strPath);
+          var strDirectory = Path.GetDirectoryName(p_strPath);
+          var strBackupPath = Path.Combine(Program.GameMode.OverwriteDirectory, strDirectory);
+          var strOldModKey = InstallLog.Current.GetCurrentFileOwnerKey(p_strPath);
           //if this mod installed a file, and now we are overwriting itm
           // the install log will tell us no one owns the file, or the wrong mod owns the
           // file. so, if this mod has installed this file already just replace it, don't
@@ -707,7 +707,7 @@ namespace Fomm.PackageManager
               Installer.MergeModule.BackupOriginalDataFile(p_strPath);
               strOldModKey = InstallLog.Current.OriginalValuesKey;
             }
-            string strFile =
+            var strFile =
               Path.GetFileName(Directory.GetFiles(Path.GetDirectoryName(strDataPath), Path.GetFileName(strDataPath))[0]);
             strFile = strOldModKey + "_" + strFile;
 
@@ -760,13 +760,13 @@ namespace Fomm.PackageManager
     {
       PermissionsManager.CurrentPermissions.Assert();
       FileManagement.AssertFilePathIsSafe(p_strFile);
-      string strDataPath = Path.Combine(Program.GameMode.PluginsPath, p_strFile);
-      string strKey = InstallLog.Current.GetModKey(p_strFomodBaseName);
-      string strDirectory = Path.GetDirectoryName(p_strFile);
-      string strBackupDirectory = Path.Combine(Program.GameMode.OverwriteDirectory, strDirectory);
+      var strDataPath = Path.Combine(Program.GameMode.PluginsPath, p_strFile);
+      var strKey = InstallLog.Current.GetModKey(p_strFomodBaseName);
+      var strDirectory = Path.GetDirectoryName(p_strFile);
+      var strBackupDirectory = Path.Combine(Program.GameMode.OverwriteDirectory, strDirectory);
       if (File.Exists(strDataPath))
       {
-        string strCurrentOwnerKey = InstallLog.Current.GetCurrentFileOwnerKey(p_strFile);
+        var strCurrentOwnerKey = InstallLog.Current.GetCurrentFileOwnerKey(p_strFile);
         //if we didn't install the file, then leave it alone
         if (strKey.Equals(strCurrentOwnerKey))
         {
@@ -774,24 +774,24 @@ namespace Fomm.PackageManager
           // if we didn't overwrite a file, then just delete it
           Installer.TransactionalFileManager.Delete(strDataPath);
 
-          string strPreviousOwnerKey = InstallLog.Current.GetPreviousFileOwnerKey(p_strFile);
+          var strPreviousOwnerKey = InstallLog.Current.GetPreviousFileOwnerKey(p_strFile);
           if (strPreviousOwnerKey != null)
           {
-            string strFile = strPreviousOwnerKey + "_" + Path.GetFileName(p_strFile);
-            string strRestoreFromPath = Path.Combine(strBackupDirectory, strFile);
+            var strFile = strPreviousOwnerKey + "_" + Path.GetFileName(p_strFile);
+            var strRestoreFromPath = Path.Combine(strBackupDirectory, strFile);
             if (File.Exists(strRestoreFromPath))
             {
-              string strBackupFileName =
+              var strBackupFileName =
                 Path.GetFileName(
                   Directory.GetFiles(Path.GetDirectoryName(strRestoreFromPath), Path.GetFileName(strRestoreFromPath))[0]);
-              string strCasedFileName = strBackupFileName.Substring(strBackupFileName.IndexOf('_') + 1);
-              string strNewDataPath = Path.Combine(Path.GetDirectoryName(strDataPath), strCasedFileName);
+              var strCasedFileName = strBackupFileName.Substring(strBackupFileName.IndexOf('_') + 1);
+              var strNewDataPath = Path.Combine(Path.GetDirectoryName(strDataPath), strCasedFileName);
               Installer.TransactionalFileManager.Copy(strRestoreFromPath, strNewDataPath, true);
               Installer.TransactionalFileManager.Delete(strRestoreFromPath);
             }
 
             //remove anny empty directories from the overwrite folder we may have created
-            string strStopDirectory = Program.GameMode.OverwriteDirectory;
+            var strStopDirectory = Program.GameMode.OverwriteDirectory;
             strStopDirectory = strStopDirectory.Remove(0, strStopDirectory.LastIndexOfAny(new char[]
             {
               Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar
@@ -801,7 +801,7 @@ namespace Fomm.PackageManager
           else
           {
             //remove any empty directories from the data folder we may have created
-            string strStopDirectory = Program.GameMode.PluginsPath;
+            var strStopDirectory = Program.GameMode.PluginsPath;
             strStopDirectory = strStopDirectory.Remove(0, strStopDirectory.LastIndexOfAny(new char[]
             {
               Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar
@@ -812,8 +812,8 @@ namespace Fomm.PackageManager
       }
 
       //remove our version of the file from the backup directory
-      string strOverwriteFile = strKey + "_" + Path.GetFileName(p_strFile);
-      string strOverwritePath = Path.Combine(strBackupDirectory, strOverwriteFile);
+      var strOverwriteFile = strKey + "_" + Path.GetFileName(p_strFile);
+      var strOverwritePath = Path.Combine(strBackupDirectory, strOverwriteFile);
       if (File.Exists(strOverwritePath))
       {
         Installer.TransactionalFileManager.Delete(strOverwritePath);
@@ -829,7 +829,7 @@ namespace Fomm.PackageManager
     /// <param name="p_strStopDirectory">The directory at which to stop looking.</param>
     protected void TrimEmptyDirectories(string p_strStartPath, string p_strStopDirectory)
     {
-      string strEmptyDirectory = Path.GetDirectoryName(p_strStartPath).ToLowerInvariant();
+      var strEmptyDirectory = Path.GetDirectoryName(p_strStartPath).ToLowerInvariant();
       if (!Directory.Exists(strEmptyDirectory))
       {
         return;
@@ -898,18 +898,18 @@ namespace Fomm.PackageManager
     /// if the user chose not to overwrite the existing value.</returns>
     protected virtual bool EditINI(string p_strSettingsFileName, string p_strSection, string p_strKey, string p_strValue)
     {
-      string strFile = p_strSettingsFileName;
+      var strFile = p_strSettingsFileName;
       if (m_booDontOverwriteAllIni)
       {
         return false;
       }
 
       PermissionsManager.CurrentPermissions.Assert();
-      string strLoweredFile = strFile.ToLowerInvariant();
-      string strLoweredSection = p_strSection.ToLowerInvariant();
-      string strLoweredKey = p_strKey.ToLowerInvariant();
-      string strOldMod = InstallLog.Current.GetCurrentIniEditorModName(strFile, p_strSection, p_strKey);
-      string strOldValue = NativeMethods.GetPrivateProfileString(p_strSection, p_strKey, null, strFile);
+      var strLoweredFile = strFile.ToLowerInvariant();
+      var strLoweredSection = p_strSection.ToLowerInvariant();
+      var strLoweredKey = p_strKey.ToLowerInvariant();
+      var strOldMod = InstallLog.Current.GetCurrentIniEditorModName(strFile, p_strSection, p_strKey);
+      var strOldValue = NativeMethods.GetPrivateProfileString(p_strSection, p_strKey, null, strFile);
       if (!m_booOverwriteAllIni)
       {
         string strMessage = null;
@@ -985,12 +985,12 @@ namespace Fomm.PackageManager
     /// <seealso cref="UneditIni(string p_strSettingsFileName, string p_strSection, string p_strKey)"/>
     public void UneditIni(string p_strFomodBaseName, string p_strSettingsFileName, string p_strSection, string p_strKey)
     {
-      string strLoweredFile = p_strSettingsFileName.ToLowerInvariant();
-      string strLoweredSection = p_strSection.ToLowerInvariant();
-      string strLoweredKey = p_strKey.ToLowerInvariant();
+      var strLoweredFile = p_strSettingsFileName.ToLowerInvariant();
+      var strLoweredSection = p_strSection.ToLowerInvariant();
+      var strLoweredKey = p_strKey.ToLowerInvariant();
 
-      string strKey = InstallLog.Current.GetModKey(p_strFomodBaseName);
-      string strCurrentOwnerKey = InstallLog.Current.GetCurrentIniEditorModKey(strLoweredFile, strLoweredSection,
+      var strKey = InstallLog.Current.GetModKey(p_strFomodBaseName);
+      var strCurrentOwnerKey = InstallLog.Current.GetCurrentIniEditorModKey(strLoweredFile, strLoweredSection,
                                                                                strLoweredKey);
       //if we didn't edit the value, then leave it alone
       if (!strKey.Equals(strCurrentOwnerKey))
@@ -1000,7 +1000,7 @@ namespace Fomm.PackageManager
 
       //if we did edit the value, replace if with the value we overwrote
       // if we didn't overwrite a value, then just delete it
-      string strPreviousValue = InstallLog.Current.GetPreviousIniValue(strLoweredFile, strLoweredSection, strLoweredKey);
+      var strPreviousValue = InstallLog.Current.GetPreviousIniValue(strLoweredFile, strLoweredSection, strLoweredKey);
       if (strPreviousValue != null)
       {
         PermissionsManager.CurrentPermissions.Assert();

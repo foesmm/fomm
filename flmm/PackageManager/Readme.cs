@@ -73,7 +73,7 @@ namespace Fomm.PackageManager
     {
       get
       {
-        foreach (KeyValuePair<string, ReadmeFormat> kvpFormat in m_dicFormats)
+        foreach (var kvpFormat in m_dicFormats)
         {
           if (kvpFormat.Value.Equals(m_fmtFormat))
           {
@@ -84,7 +84,7 @@ namespace Fomm.PackageManager
       }
       set
       {
-        string strLoweredValue = (value ?? "").ToLowerInvariant();
+        var strLoweredValue = (value ?? "").ToLowerInvariant();
         if (!strLoweredValue.StartsWith("."))
         {
           strLoweredValue = "." + strLoweredValue;
@@ -170,7 +170,7 @@ namespace Fomm.PackageManager
     /// <lang cref="false"/> otherwise.</returns>
     public static bool IsValidExtension(string p_strExtension)
     {
-      string strLoweredValue = (p_strExtension ?? "").ToLowerInvariant();
+      var strLoweredValue = (p_strExtension ?? "").ToLowerInvariant();
       if (!strLoweredValue.StartsWith("."))
       {
         strLoweredValue = "." + strLoweredValue;

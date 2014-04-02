@@ -19,7 +19,7 @@ namespace Fomm.Games.Fallout3.PluginFormatProviders
     /// <param name="p_strMessage">The message of the format.</param>
     public void AddFormat(string p_strPluginName, Color p_clrHighlight, string p_strMessage)
     {
-      PluginFormat pftFormat = m_pfmManager.CreateFormat(null, null, null, null, p_clrHighlight, p_strMessage);
+      var pftFormat = m_pfmManager.CreateFormat(null, null, null, null, p_clrHighlight, p_strMessage);
       m_dicFormat[p_strPluginName] = pftFormat;
     }
 

@@ -103,24 +103,24 @@ namespace Fomm.FileManager
 
       TransactionalFileManager.Snapshot(InstallLog.Current.InstallLogPath);
 
-      string strOldOwner = InstallLog.Current.GetCurrentFileOwnerKey(m_strFile);
+      var strOldOwner = InstallLog.Current.GetCurrentFileOwnerKey(m_strFile);
       InstallLog.Current.SetInstallingModsOrder(m_strFile, m_lstOrderedMods);
-      string strNewOwner = InstallLog.Current.GetCurrentFileOwnerKey(m_strFile);
+      var strNewOwner = InstallLog.Current.GetCurrentFileOwnerKey(m_strFile);
 
       if (!strNewOwner.Equals(strOldOwner))
       {
-        string strDataPath = Path.Combine(Program.GameMode.PluginsPath, m_strFile);
+        var strDataPath = Path.Combine(Program.GameMode.PluginsPath, m_strFile);
         strDataPath = Directory.GetFiles(Path.GetDirectoryName(strDataPath), Path.GetFileName(strDataPath))[0];
 
-        string strDirectory = Path.GetDirectoryName(m_strFile);
-        string strBackupPath = Path.Combine(Program.GameMode.OverwriteDirectory, strDirectory);
+        var strDirectory = Path.GetDirectoryName(m_strFile);
+        var strBackupPath = Path.Combine(Program.GameMode.OverwriteDirectory, strDirectory);
         //the old backup file is becoming the new file
-        string strOldBackupFile = strNewOwner + "_" + Path.GetFileName(strDataPath);
+        var strOldBackupFile = strNewOwner + "_" + Path.GetFileName(strDataPath);
         //the old owner is becoming the new backup file
-        string strNewBackupFile = strOldOwner + "_" + Path.GetFileName(strDataPath);
+        var strNewBackupFile = strOldOwner + "_" + Path.GetFileName(strDataPath);
 
-        string strNewBackupPath = Path.Combine(strBackupPath, strNewBackupFile);
-        string strOldBackupPath = Path.Combine(strBackupPath, strOldBackupFile);
+        var strNewBackupPath = Path.Combine(strBackupPath, strNewBackupFile);
+        var strOldBackupPath = Path.Combine(strBackupPath, strOldBackupFile);
         if (!TransactionalFileManager.FileExists(strOldBackupPath))
         {
           m_strFailMessage = "The version of the file for " + InstallLog.Current.GetModName(strNewOwner) +
@@ -128,9 +128,9 @@ namespace Fomm.FileManager
           return false;
         }
         TransactionalFileManager.Copy(strDataPath, strNewBackupPath, true);
-        string strOldBackupFileName = Path.GetFileName(Directory.GetFiles(strBackupPath, strOldBackupFile)[0]);
-        string strCasedFileName = strOldBackupFileName.Substring(strOldBackupFileName.IndexOf('_') + 1);
-        string strNewDataPath = Path.Combine(Path.GetDirectoryName(strDataPath), strCasedFileName);
+        var strOldBackupFileName = Path.GetFileName(Directory.GetFiles(strBackupPath, strOldBackupFile)[0]);
+        var strCasedFileName = strOldBackupFileName.Substring(strOldBackupFileName.IndexOf('_') + 1);
+        var strNewDataPath = Path.Combine(Path.GetDirectoryName(strDataPath), strCasedFileName);
         TransactionalFileManager.Delete(strNewDataPath);
         TransactionalFileManager.Move(strOldBackupPath, strNewDataPath);
       }

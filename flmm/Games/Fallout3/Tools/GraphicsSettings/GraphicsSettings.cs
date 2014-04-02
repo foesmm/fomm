@@ -321,11 +321,11 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
       cbxAdapter.SelectedIndex = 0;
 
       //aspect ratios
-      Int32 intCurrentAspect = NativeMethods.GetPrivateProfileIntA("Launcher", "uLastAspectRatio", 0,
+      var intCurrentAspect = NativeMethods.GetPrivateProfileIntA("Launcher", "uLastAspectRatio", 0,
                                                                    ((Fallout3GameMode.SettingsFilesSet)
                                                                      Program.GameMode.SettingsFiles).FOPrefsIniPath);
       double dblCurrentRatio = 0;
-      for (Int32 i = 0; i < m_cbiAspectRatios.Length; i++)
+      for (var i = 0; i < m_cbiAspectRatios.Length; i++)
       {
         cbxAspectRatio.Items.Add(m_cbiAspectRatios[i]);
         if (intCurrentAspect.Equals(m_cbiAspectRatios[i].Value))
@@ -336,17 +336,17 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
       }
 
       //screen resolutions
-      Int32 intScreenWidth = NativeMethods.GetPrivateProfileIntA("Display", "iSize W", 0,
+      var intScreenWidth = NativeMethods.GetPrivateProfileIntA("Display", "iSize W", 0,
                                                                  ((Fallout3GameMode.SettingsFilesSet)
                                                                    Program.GameMode.SettingsFiles).FOPrefsIniPath);
-      Int32 intScreenHeight = NativeMethods.GetPrivateProfileIntA("Display", "iSize H", 0,
+      var intScreenHeight = NativeMethods.GetPrivateProfileIntA("Display", "iSize H", 0,
                                                                   ((Fallout3GameMode.SettingsFilesSet)
                                                                     Program.GameMode.SettingsFiles).FOPrefsIniPath);
-      string strCurrentRes = String.Format("{0}x{1}", intScreenWidth, intScreenHeight);
+      var strCurrentRes = String.Format("{0}x{1}", intScreenWidth, intScreenHeight);
       LoadResolutions(dblCurrentRatio, strCurrentRes);
       if (!cbxResolution.Items.Contains(strCurrentRes))
       {
-        ComboBoxItem cbiResolution = new ComboBoxItem(strCurrentRes);
+        var cbiResolution = new ComboBoxItem(strCurrentRes);
         cbiResolution.Value = new Int32[]
         {
           intScreenWidth, intScreenHeight
@@ -355,12 +355,12 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
       }
 
       //antialiasing
-      ComboBoxItem cbiAliasing = new ComboBoxItem("Off (best performance)", 0);
-      Int32 intAliasingSamples = NativeMethods.GetPrivateProfileIntA("Display", "iMultiSample", 0,
+      var cbiAliasing = new ComboBoxItem("Off (best performance)", 0);
+      var intAliasingSamples = NativeMethods.GetPrivateProfileIntA("Display", "iMultiSample", 0,
                                                                      ((Fallout3GameMode.SettingsFilesSet)
                                                                        Program.GameMode.SettingsFiles).FOPrefsIniPath);
       cbxAntialiasing.Items.Add(cbiAliasing);
-      for (Int32 i = 2; i < Math.Max(4, intAliasingSamples) + 1; i += 2)
+      for (var i = 2; i < Math.Max(4, intAliasingSamples) + 1; i += 2)
       {
         cbiAliasing = new ComboBoxItem(i + " Samples", i);
         cbxAntialiasing.Items.Add(cbiAliasing);
@@ -368,12 +368,12 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
       cbxAntialiasing.SelectedIndex = intAliasingSamples/2;
 
       //ansio
-      ComboBoxItem cbiAniso = new ComboBoxItem("Off (best performance)", 0);
-      Int32 intAnisoSamples = NativeMethods.GetPrivateProfileIntA("Display", "iMaxAnisotropy", 0,
+      var cbiAniso = new ComboBoxItem("Off (best performance)", 0);
+      var intAnisoSamples = NativeMethods.GetPrivateProfileIntA("Display", "iMaxAnisotropy", 0,
                                                                   ((Fallout3GameMode.SettingsFilesSet)
                                                                     Program.GameMode.SettingsFiles).FOPrefsIniPath);
       cbxAnisotropic.Items.Add(cbiAniso);
-      for (Int32 i = 2; i < Math.Max(15, intAnisoSamples) + 1; i++)
+      for (var i = 2; i < Math.Max(15, intAnisoSamples) + 1; i++)
       {
         cbiAniso = new ComboBoxItem(i + " Samples", i);
         cbxAnisotropic.Items.Add(cbiAniso);
@@ -410,10 +410,10 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
     private void LoadDetailValues()
     {
       //texture quality
-      Int32 intTextureQuality = NativeMethods.GetPrivateProfileIntA("Display", "iTexMipMapSkip", 0,
+      var intTextureQuality = NativeMethods.GetPrivateProfileIntA("Display", "iTexMipMapSkip", 0,
                                                                     ((Fallout3GameMode.SettingsFilesSet)
                                                                       Program.GameMode.SettingsFiles).FOPrefsIniPath);
-      for (Int32 i = 0; i < m_cbiTextureQulities.Length; i++)
+      for (var i = 0; i < m_cbiTextureQulities.Length; i++)
       {
         cbxTextureQuality.Items.Add(m_cbiTextureQulities[i]);
         if (intTextureQuality.Equals(m_cbiTextureQulities[i].Value))
@@ -423,10 +423,10 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
       }
 
       //radial blur quality
-      Int32 intRadialBlurQuality = NativeMethods.GetPrivateProfileIntA("Imagespace", "iRadialBlurLevel", 0,
+      var intRadialBlurQuality = NativeMethods.GetPrivateProfileIntA("Imagespace", "iRadialBlurLevel", 0,
                                                                        ((Fallout3GameMode.SettingsFilesSet)
                                                                          Program.GameMode.SettingsFiles).FOPrefsIniPath);
-      for (Int32 i = 0; i < m_cbiRadialBlurQualities.Length; i++)
+      for (var i = 0; i < m_cbiRadialBlurQualities.Length; i++)
       {
         cbxRadialBlurQuality.Items.Add(m_cbiRadialBlurQualities[i]);
         if (intRadialBlurQuality.Equals(m_cbiRadialBlurQualities[i].Value))
@@ -474,10 +474,10 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
       // iWaterReflectWidth
       // iWaterReflectHeight
       // the above values should always be the same
-      Int32 intReflectionSize = NativeMethods.GetPrivateProfileIntA("Water", "iWaterReflectWidth", 0,
+      var intReflectionSize = NativeMethods.GetPrivateProfileIntA("Water", "iWaterReflectWidth", 0,
                                                                     ((Fallout3GameMode.SettingsFilesSet)
                                                                       Program.GameMode.SettingsFiles).FOPrefsIniPath);
-      for (Int32 i = 0; i < m_cbiReflectionQualities.Length; i++)
+      for (var i = 0; i < m_cbiReflectionQualities.Length; i++)
       {
         cbxReflectionQuality.Items.Add(m_cbiReflectionQualities[i]);
         if (intReflectionSize.Equals(m_cbiReflectionQualities[i].Value))
@@ -520,10 +520,10 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
                                                .FOPrefsIniPath) == 1);
 
       //water multisamples
-      Int32 intSamples = NativeMethods.GetPrivateProfileIntA("Display", "iWaterMultisamples", 0,
+      var intSamples = NativeMethods.GetPrivateProfileIntA("Display", "iWaterMultisamples", 0,
                                                              ((Fallout3GameMode.SettingsFilesSet)
                                                                Program.GameMode.SettingsFiles).FOPrefsIniPath);
-      for (Int32 i = 0; i < m_cbiWaterMultisamples.Length; i++)
+      for (var i = 0; i < m_cbiWaterMultisamples.Length; i++)
       {
         cbxWaterMultisampling.Items.Add(m_cbiWaterMultisamples[i]);
         if (intSamples.Equals(m_cbiWaterMultisamples[i].Value))
@@ -545,10 +545,10 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
                                                .FOPrefsIniPath) == 1);
 
       //shadow quality
-      Int32 intShadowsRes = NativeMethods.GetPrivateProfileIntA("Display", "iShadowMapResolution", 0,
+      var intShadowsRes = NativeMethods.GetPrivateProfileIntA("Display", "iShadowMapResolution", 0,
                                                                 ((Fallout3GameMode.SettingsFilesSet)
                                                                   Program.GameMode.SettingsFiles).FOPrefsIniPath);
-      for (Int32 i = 0; i < m_cbiShadowQualities.Length; i++)
+      for (var i = 0; i < m_cbiShadowQualities.Length; i++)
       {
         cbxShadowQuality.Items.Add(m_cbiShadowQualities[i]);
         if (intShadowsRes.Equals(m_cbiShadowQualities[i].Value))
@@ -558,10 +558,10 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
       }
 
       //shadow filtering
-      Int32 intShadowFilter = NativeMethods.GetPrivateProfileIntA("Display", "iShadowFilter", 0,
+      var intShadowFilter = NativeMethods.GetPrivateProfileIntA("Display", "iShadowFilter", 0,
                                                                   ((Fallout3GameMode.SettingsFilesSet)
                                                                     Program.GameMode.SettingsFiles).FOPrefsIniPath);
-      for (Int32 i = 0; i < m_cbiShadowFilters.Length; i++)
+      for (var i = 0; i < m_cbiShadowFilters.Length; i++)
       {
         cbxShadowFiltering.Items.Add(m_cbiShadowFilters[i]);
         if (intShadowFilter.Equals(m_cbiShadowFilters[i].Value))
@@ -669,12 +669,12 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
     protected void LoadResolutions(double p_dblSelectedRatio, string p_strCurrentRes)
     {
       cbxResolution.Items.Clear();
-      DEVMODE vDevMode = new DEVMODE();
-      Int32 intEnumCounter = 0;
+      var vDevMode = new DEVMODE();
+      var intEnumCounter = 0;
       while (EnumDisplaySettings(null, intEnumCounter, ref vDevMode))
       {
-        double dblRatio = (double) vDevMode.dmPelsWidth/(double) vDevMode.dmPelsHeight;
-        ComboBoxItem cbiResolution =
+        var dblRatio = (double) vDevMode.dmPelsWidth/(double) vDevMode.dmPelsHeight;
+        var cbiResolution =
           new ComboBoxItem(String.Format("{0}x{1}", vDevMode.dmPelsWidth, vDevMode.dmPelsHeight));
         cbiResolution.Value = new Int32[]
         {
@@ -682,7 +682,7 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
         };
         if ((!cbxResolution.Items.Contains(cbiResolution)) && (Math.Abs(dblRatio - p_dblSelectedRatio) < 0.001))
         {
-          Int32 intIndex = cbxResolution.Items.Add(cbiResolution);
+          var intIndex = cbxResolution.Items.Add(cbiResolution);
           if (cbiResolution.Equals(p_strCurrentRes))
           {
             cbxResolution.SelectedIndex = intIndex;
@@ -705,13 +705,13 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
     /// <param name="e">An <see cref="EventArgs"/> describing the event's arguments.</param>
     private void cbxAspectRatio_SelectedIndexChanged(object sender, EventArgs e)
     {
-      Int32 intScreenWidth = NativeMethods.GetPrivateProfileIntA("Display", "iSize W", 0,
+      var intScreenWidth = NativeMethods.GetPrivateProfileIntA("Display", "iSize W", 0,
                                                                  ((Fallout3GameMode.SettingsFilesSet)
                                                                    Program.GameMode.SettingsFiles).FOPrefsIniPath);
-      Int32 intScreenHeight = NativeMethods.GetPrivateProfileIntA("Display", "iSize H", 0,
+      var intScreenHeight = NativeMethods.GetPrivateProfileIntA("Display", "iSize H", 0,
                                                                   ((Fallout3GameMode.SettingsFilesSet)
                                                                     Program.GameMode.SettingsFiles).FOPrefsIniPath);
-      string strCurrentRes = String.Format("{0}x{1}", intScreenWidth, intScreenHeight);
+      var strCurrentRes = String.Format("{0}x{1}", intScreenWidth, intScreenHeight);
       LoadResolutions((double) ((ComboBoxItem) cbxAspectRatio.SelectedItem).Tag, strCurrentRes);
       if ((cbxResolution.SelectedItem == null) && (cbxResolution.Items.Count > 0))
       {
@@ -763,7 +763,7 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
     /// <param name="e">An <see cref="EventArgs"/> describing the event's arguments.</param>
     private void butOK_Click(object sender, EventArgs e)
     {
-      SettingsInstaller sinSaver = new SettingsInstaller();
+      var sinSaver = new SettingsInstaller();
       sinSaver.SaveSettings(this);
       DialogResult = DialogResult.OK;
     }
@@ -885,7 +885,7 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
         //screen resolutions
         if (p_gstSettings.cbxResolution.SelectedItem != null)
         {
-          Int32[] intResolution = (Int32[]) ((ComboBoxItem) (p_gstSettings.cbxResolution.SelectedItem)).Value;
+          var intResolution = (Int32[]) ((ComboBoxItem) (p_gstSettings.cbxResolution.SelectedItem)).Value;
           if (intResolution != null)
           {
             SaveValue("Display", "iSize W", intResolution[0].ToString());

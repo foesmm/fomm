@@ -49,7 +49,7 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     public CriticalRecordsForm(string[] p_strPlugins)
       : this()
     {
-      foreach (string strFile in p_strPlugins)
+      foreach (var strFile in p_strPlugins)
       {
         if (strFile.ToLowerInvariant().EndsWith(".esm") || strFile.ToLowerInvariant().EndsWith(".esp"))
         {
@@ -68,9 +68,9 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     /// <param name="p_strPlugin">The plugin whose records are to be loaded.</param>
     private void LoadPlugin(string p_strPlugin)
     {
-      byte[] bteData = File.ReadAllBytes(p_strPlugin);
-      CriticalRecordPlugin crpPlugin = new CriticalRecordPlugin(bteData, p_strPlugin);
-      TreeNode tndPluginRoot = new TreeNode(p_strPlugin);
+      var bteData = File.ReadAllBytes(p_strPlugin);
+      var crpPlugin = new CriticalRecordPlugin(bteData, p_strPlugin);
+      var tndPluginRoot = new TreeNode(p_strPlugin);
       tvwRecords.BeginUpdate();
       CreatePluginTree(crpPlugin, tndPluginRoot);
       tvwRecords.Nodes.Add(tndPluginRoot);
@@ -83,13 +83,13 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     /// <param name="p_tndPluginNode">The node whose plugin records are to be reloaded.</param>
     private void ReloadPlugin(TreeNode p_tndPluginNode)
     {
-      TreeNode tndPluginRoot = p_tndPluginNode;
+      var tndPluginRoot = p_tndPluginNode;
       while (!(tndPluginRoot.Tag is Plugin))
       {
         tndPluginRoot = tndPluginRoot.Parent;
       }
 
-      CriticalRecordPlugin crpPlugin = (CriticalRecordPlugin) tndPluginRoot.Tag;
+      var crpPlugin = (CriticalRecordPlugin) tndPluginRoot.Tag;
       tvwRecords.BeginUpdate();
       tndPluginRoot.Nodes.Clear();
       CreatePluginTree(crpPlugin, tndPluginRoot);
@@ -104,7 +104,7 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     private void CreatePluginTree(CriticalRecordPlugin p_crpPlugin, TreeNode p_tndNode)
     {
       p_tndNode.Tag = p_crpPlugin;
-      foreach (Rec recRecord in p_crpPlugin.Records)
+      foreach (var recRecord in p_crpPlugin.Records)
       {
         WalkPluginTree(p_crpPlugin, recRecord, p_tndNode);
       }
@@ -139,7 +139,7 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
       tndSubNode.Tag = p_recRecord;
       if (p_recRecord is GroupRecord)
       {
-        foreach (Rec recSubRecord in ((GroupRecord) p_recRecord).Records)
+        foreach (var recSubRecord in ((GroupRecord) p_recRecord).Records)
         {
           WalkPluginTree(p_crpPlugin, recSubRecord, tndSubNode);
         }
@@ -160,14 +160,14 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     /// <param name="e">A <see cref="TreeViewEventArgs"/> describing the event arguments.</param>
     private void tvwRecords_AfterSelect(object sender, TreeViewEventArgs e)
     {
-      TreeNode tndRoot = e.Node;
+      var tndRoot = e.Node;
       while (tndRoot.Parent != null)
       {
         tndRoot = tndRoot.Parent;
       }
-      CriticalRecordPlugin crpPlugin = tndRoot.Tag as CriticalRecordPlugin;
+      var crpPlugin = tndRoot.Tag as CriticalRecordPlugin;
 
-      Record recRecord = e.Node.Tag as Record;
+      var recRecord = e.Node.Tag as Record;
       if (recRecord == null)
       {
         splitContainer1.Panel2Collapsed = true;
@@ -204,12 +204,12 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
         return;
       }
 
-      TreeNode tndRoot = tvwRecords.SelectedNode;
+      var tndRoot = tvwRecords.SelectedNode;
       if (tndRoot == null)
       {
         return;
       }
-      Record recRecord = tndRoot.Tag as Record;
+      var recRecord = tndRoot.Tag as Record;
       if (recRecord == null)
       {
         return;
@@ -218,7 +218,7 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
       {
         tndRoot = tndRoot.Parent;
       }
-      CriticalRecordPlugin crpPlugin = tndRoot.Tag as CriticalRecordPlugin;
+      var crpPlugin = tndRoot.Tag as CriticalRecordPlugin;
       if (ckbIsCritical.Checked)
       {
         crpPlugin.SetCriticalRecord(recRecord.FormID, (CriticalRecordInfo.ConflictSeverity) cbxSeverity.SelectedItem,
@@ -245,7 +245,7 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     {
       if (OpenModDialog.ShowDialog() == DialogResult.OK)
       {
-        foreach (string strPlugin in OpenModDialog.FileNames)
+        foreach (var strPlugin in OpenModDialog.FileNames)
         {
           LoadPlugin(strPlugin);
         }
@@ -267,12 +267,12 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
         MessageBox.Show("No plugin selected to save.", "Error");
         return;
       }
-      TreeNode tndPlugin = tvwRecords.SelectedNode;
+      var tndPlugin = tvwRecords.SelectedNode;
       while (!(tndPlugin.Tag is Plugin))
       {
         tndPlugin = tndPlugin.Parent;
       }
-      CriticalRecordPlugin crpPlugin = (CriticalRecordPlugin) tndPlugin.Tag;
+      var crpPlugin = (CriticalRecordPlugin) tndPlugin.Tag;
       crpPlugin.Save(tndPlugin.Text);
       crpPlugin.Name = tndPlugin.Text;
       ReloadPlugin(tndPlugin);
@@ -295,7 +295,7 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
         return;
       }
 
-      TreeNode tndPlugin = tvwRecords.SelectedNode;
+      var tndPlugin = tvwRecords.SelectedNode;
       while (!(tndPlugin.Tag is Plugin))
       {
         tndPlugin = tndPlugin.Parent;

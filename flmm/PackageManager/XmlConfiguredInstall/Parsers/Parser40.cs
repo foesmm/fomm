@@ -44,8 +44,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     /// <seealso cref="Parser.GetInstallSteps()"/>
     public override IList<InstallStep> GetInstallSteps()
     {
-      List<InstallStep> lstSteps = new List<InstallStep>();
-      XmlNode xndSteps = XmlConfig.SelectSingleNode("/config/installSteps");
+      var lstSteps = new List<InstallStep>();
+      var xndSteps = XmlConfig.SelectSingleNode("/config/installSteps");
       if (xndSteps != null)
       {
         foreach (XmlNode xndStep in xndSteps.ChildNodes)
@@ -98,10 +98,10 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     /// <returns>The added install step.</returns>
     protected InstallStep parseInstallStep(XmlNode p_xndStep)
     {
-      string strName = p_xndStep.Attributes["name"].InnerText;
-      CompositeDependency cmpVisibility = loadDependency(p_xndStep.SelectSingleNode("visible"));
-      IList<PluginGroup> lstGroups = loadGroupedPlugins(p_xndStep.SelectSingleNode("optionalFileGroups"));
-      InstallStep stpStep = new InstallStep(strName, cmpVisibility, lstGroups);
+      var strName = p_xndStep.Attributes["name"].InnerText;
+      var cmpVisibility = loadDependency(p_xndStep.SelectSingleNode("visible"));
+      var lstGroups = loadGroupedPlugins(p_xndStep.SelectSingleNode("optionalFileGroups"));
+      var stpStep = new InstallStep(strName, cmpVisibility, lstGroups);
       return stpStep;
     }
 

@@ -51,11 +51,11 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
       {
         return null;
       }
-      DependencyOperator dopOperator =
+      var dopOperator =
         (DependencyOperator)
           Enum.Parse(typeof (DependencyOperator), p_xndCompositeDependency.Attributes["operator"].InnerText);
-      CompositeDependency cpdDependency = new CompositeDependency(dopOperator);
-      XmlNodeList xnlDependencies = p_xndCompositeDependency.ChildNodes;
+      var cpdDependency = new CompositeDependency(dopOperator);
+      var xnlDependencies = p_xndCompositeDependency.ChildNodes;
       foreach (XmlNode xndDependency in xnlDependencies)
       {
         switch (xndDependency.Name)
@@ -64,26 +64,26 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
             cpdDependency.Dependencies.Add(loadDependency(xndDependency));
             break;
           case "fileDependency":
-            string strDependency = xndDependency.Attributes["file"].InnerText.ToLower();
-            ModFileState mfsModState =
+            var strDependency = xndDependency.Attributes["file"].InnerText.ToLower();
+            var mfsModState =
               (ModFileState) Enum.Parse(typeof (ModFileState), xndDependency.Attributes["state"].InnerText);
             cpdDependency.Dependencies.Add(new FileDependency(strDependency, mfsModState, StateManager));
             break;
           case "flagDependency":
-            string strFlagName = xndDependency.Attributes["flag"].InnerText;
-            string strValue = xndDependency.Attributes["value"].InnerText;
+            var strFlagName = xndDependency.Attributes["flag"].InnerText;
+            var strValue = xndDependency.Attributes["value"].InnerText;
             cpdDependency.Dependencies.Add(new FlagDependency(strFlagName, strValue, StateManager));
             break;
           case "gameDependency":
-            Version verMinFalloutVersion = new Version(xndDependency.Attributes["version"].InnerText);
+            var verMinFalloutVersion = new Version(xndDependency.Attributes["version"].InnerText);
             cpdDependency.Dependencies.Add(new GameVersionDependency(StateManager, verMinFalloutVersion));
             break;
           case "fommDependency":
-            Version verMinFommVersion = new Version(xndDependency.Attributes["version"].InnerText);
+            var verMinFommVersion = new Version(xndDependency.Attributes["version"].InnerText);
             cpdDependency.Dependencies.Add(new FommDependency(StateManager, verMinFommVersion));
             break;
           default:
-            IDependency dpnExtensionDependency = ParserExtension.ParseDependency(xndDependency, StateManager);
+            var dpnExtensionDependency = ParserExtension.ParseDependency(xndDependency, StateManager);
             if (dpnExtensionDependency != null)
             {
               cpdDependency.Dependencies.Add(dpnExtensionDependency);

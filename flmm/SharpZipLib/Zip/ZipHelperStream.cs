@@ -145,7 +145,7 @@ namespace Fomm.SharpZipLib.Zip
     /// </remarks>
     public override void Close()
     {
-      Stream toClose = stream_;
+      var toClose = stream_;
       stream_ = null;
       if (isOwner_ && (toClose != null))
       {
@@ -166,13 +166,13 @@ namespace Fomm.SharpZipLib.Zip
     /// <returns>Eeturns the offset of the first byte after the signature; -1 if not found</returns>
     public long LocateBlockWithSignature(int signature, long endLocation, int minimumBlockSize, int maximumVariableData)
     {
-      long pos = endLocation - minimumBlockSize;
+      var pos = endLocation - minimumBlockSize;
       if (pos < 0)
       {
         return -1;
       }
 
-      long giveUpMarker = Math.Max(pos - maximumVariableData, 0);
+      var giveUpMarker = Math.Max(pos - maximumVariableData, 0);
 
       // TODO: This loop could be optimised for speed.
       do
@@ -196,7 +196,7 @@ namespace Fomm.SharpZipLib.Zip
     /// <param name="centralDirOffset">The offset of the dentral directory.</param>
     public void WriteZip64EndOfCentralDirectory(long noOfEntries, long sizeEntries, long centralDirOffset)
     {
-      long centralSignatureOffset = stream_.Position;
+      var centralSignatureOffset = stream_.Position;
       WriteLEInt(ZipConstants.Zip64CentralFileHeaderSignature);
       WriteLELong(44); // Size of this record (total size of remaining fields in header or full size - 12)
       WriteLEShort(ZipConstants.VersionMadeBy); // Version made by
@@ -277,7 +277,7 @@ namespace Fomm.SharpZipLib.Zip
         WriteLEInt((int) startOfCentralDirectory);
       }
 
-      int commentLength = (comment != null) ? comment.Length : 0;
+      var commentLength = (comment != null) ? comment.Length : 0;
 
       if (commentLength > 0xffff)
       {
@@ -306,14 +306,14 @@ namespace Fomm.SharpZipLib.Zip
     /// </exception>
     public int ReadLEShort()
     {
-      int byteValue1 = stream_.ReadByte();
+      var byteValue1 = stream_.ReadByte();
 
       if (byteValue1 < 0)
       {
         throw new EndOfStreamException();
       }
 
-      int byteValue2 = stream_.ReadByte();
+      var byteValue2 = stream_.ReadByte();
       if (byteValue2 < 0)
       {
         throw new EndOfStreamException();
@@ -401,7 +401,7 @@ namespace Fomm.SharpZipLib.Zip
         throw new ArgumentNullException("entry");
       }
 
-      int result = 0;
+      var result = 0;
 
       // Add data descriptor if flagged as required
       if ((entry.Flags & (int) GeneralBitFlags.Descriptor) != 0)

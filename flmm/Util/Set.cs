@@ -80,7 +80,7 @@ namespace Fomm.Util
     /// <returns>An array containing the items in the set.</returns>
     public T[] ToArray()
     {
-      T[] tSet = new T[Count];
+      var tSet = new T[Count];
       CopyTo(tSet, 0);
       return tSet;
     }
@@ -91,7 +91,7 @@ namespace Fomm.Util
     /// <param name="p_enmItems">The items to add.</param>
     public void AddRange(IEnumerable<T> p_enmItems)
     {
-      foreach (T tItem in p_enmItems)
+      foreach (var tItem in p_enmItems)
       {
         Add(tItem);
       }
@@ -124,7 +124,7 @@ namespace Fomm.Util
     {
       if (m_cmpComparer != null)
       {
-        for (Int32 i = p_intStartIndex; i < Count; i++)
+        for (var i = p_intStartIndex; i < Count; i++)
         {
           if (m_cmpComparer.Compare(this[i], p_tItem) == 0)
           {
@@ -156,7 +156,7 @@ namespace Fomm.Util
     {
       if (m_cmpComparer != null)
       {
-        for (Int32 i = p_intStartIndex; i > 0; i++)
+        for (var i = p_intStartIndex; i > 0; i++)
         {
           if (m_cmpComparer.Compare(this[i], p_tItem) == 0)
           {
@@ -305,7 +305,7 @@ namespace Fomm.Util
     {
       if (m_cmpComparer != null)
       {
-        for (Int32 i = Count - 1; i > 0; i--)
+        for (var i = Count - 1; i > 0; i--)
         {
           if (m_cmpComparer.Compare(this[i], p_tItem) == 0)
           {

@@ -85,17 +85,17 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     private void AddElement(ElementStructure es, ref int offset, byte[] data, ref int groupOffset, ref int CurrentGroup)
     {
-      Panel panel1 = new Panel();
+      var panel1 = new Panel();
       panel1.AutoSize = true;
       panel1.Width = fpanel1.Width;
       panel1.Height = 1;
-      int ypos = 0;
+      var ypos = 0;
 
-      TextBox tb = new TextBox();
+      var tb = new TextBox();
       boxes.Add(tb);
       if (es.group != 0)
       {
-        CheckBox cb = new CheckBox();
+        var cb = new CheckBox();
         cb.Text = "Use this value?";
         panel1.Controls.Add(cb);
         cb.Location = new Point(10, ypos);
@@ -113,7 +113,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       }
       if (es.optional || es.repeat && repeatcount > 0)
       {
-        CheckBox cb = new CheckBox();
+        var cb = new CheckBox();
         cb.Text = "Use this value?";
         panel1.Controls.Add(cb);
         cb.Location = new Point(10, ypos);
@@ -169,7 +169,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
             offset++;
             break;
           case ElementValueType.String:
-            string s = "";
+            var s = "";
             while (data[offset] != 0)
             {
               s += (char) data[offset++];
@@ -197,9 +197,9 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
           tb.Text = removedStrings[boxes.Count - 1];
         }
       }
-      Label l = new Label();
+      var l = new Label();
       l.AutoSize = true;
-      string tmp = es.type.ToString();
+      var tmp = es.type.ToString();
       l.Text = tmp + ": " + es.name + (es.desc != null ? (" (" + es.desc + ")") : "");
       panel1.Controls.Add(tb);
       tb.Location = new Point(10, ypos);
@@ -215,12 +215,12 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       if (es.type == ElementValueType.FormID)
       {
         ypos += 28;
-        Button b = new Button();
+        var b = new Button();
         b.Text = "FormID lookup";
         b.Click += new EventHandler(LookupFormID_Click);
         panel1.Controls.Add(b);
         b.Location = new Point(20, ypos);
-        TextBox tb2 = new TextBox();
+        var tb2 = new TextBox();
         tb2.Width += 200;
         tb2.ReadOnly = true;
         panel1.Controls.Add(tb2);
@@ -246,10 +246,10 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       if (options != null)
       {
         ypos += 28;
-        ComboBox cmb = new ComboBox();
+        var cmb = new ComboBox();
         cmb.Tag = tb;
         cmb.Width += 200;
-        for (int j = 0; j < options.Length; j += 2)
+        for (var j = 0; j < options.Length; j += 2)
         {
           cmb.Items.Add(new comboBoxItem(options[j], options[j + 1]));
         }
@@ -275,16 +275,16 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       this.formIDLookup = formIDLookup;
       this.formIDScan = formIDScan;
 
-      int offset = 0;
-      byte[] data = sr.GetReadonlyData();
+      var offset = 0;
+      var data = sr.GetReadonlyData();
       boxes = new List<TextBox>(ss.elements.Length);
       valueTypes = new List<ElementValueType>(ss.elements.Length);
       elements = new List<Panel>();
-      int groupOffset = 0;
-      int CurrentGroup = 0;
+      var groupOffset = 0;
+      var CurrentGroup = 0;
       try
       {
-        for (int i = 0; i < ss.elements.Length; i++)
+        for (var i = 0; i < ss.elements.Length; i++)
         {
           if (ss.elements[i].optional && offset == data.Length)
           {
@@ -319,8 +319,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     private void cb_SelectedIndexChanged(object sender, EventArgs e)
     {
-      ComboBox cmb = (ComboBox) sender;
-      comboBoxItem cbi = (comboBoxItem) cmb.SelectedItem;
+      var cmb = (ComboBox) sender;
+      var cbi = (comboBoxItem) cmb.SelectedItem;
       ((TextBox) cmb.Tag).Text = cbi.value;
     }
 
@@ -338,7 +338,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       {
         return;
       }
-      CheckBox changed = (CheckBox) sender;
+      var changed = (CheckBox) sender;
       if (changed.Checked == false)
       {
         if (!CheckingChange)
@@ -350,10 +350,10 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         }
         else
         {
-          TextBox toDisable = ((cbTag) changed.Tag).textBox;
+          var toDisable = ((cbTag) changed.Tag).textBox;
           foreach (Control c in fpanel1.Controls)
           {
-            TextBox tb = c as TextBox;
+            var tb = c as TextBox;
             if (tb == toDisable)
             {
               toDisable.Enabled = false;
@@ -363,14 +363,14 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
           throw new ApplicationException();
         }
       }
-      int Group = ((cbTag) changed.Tag).group;
-      TextBox toEnable = ((cbTag) changed.Tag).textBox;
+      var Group = ((cbTag) changed.Tag).group;
+      var toEnable = ((cbTag) changed.Tag).textBox;
       CheckingChange = true;
       foreach (Panel p in fpanel1.Controls)
       {
         foreach (Control c in p.Controls)
         {
-          CheckBox cb = c as CheckBox;
+          var cb = c as CheckBox;
           if (cb != null && cb != changed)
           {
             if (((cbTag) changed.Tag).group == Group)
@@ -378,7 +378,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
               cb.Checked = false;
             }
           }
-          TextBox tb = c as TextBox;
+          var tb = c as TextBox;
           if (tb == toEnable)
           {
             toEnable.Enabled = true;
@@ -390,8 +390,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     private void RepeatCheckBox_CheckedChanged(object sender, EventArgs e)
     {
-      CheckBox cb = (CheckBox) sender;
-      repeatCbTag tag = (repeatCbTag) cb.Tag;
+      var cb = (CheckBox) sender;
+      var tag = (repeatCbTag) cb.Tag;
       tag.tb.Enabled = cb.Checked;
       if (cb.Checked)
       {
@@ -402,7 +402,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       }
       else
       {
-        for (int i = tag.panel + 1; i < elements.Count; i++)
+        for (var i = tag.panel + 1; i < elements.Count; i++)
         {
           removedStrings[i] = boxes[i].Text;
           fpanel1.Controls.Remove(elements[i]);
@@ -420,8 +420,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     private void bSave_Click(object sender, EventArgs e)
     {
-      List<byte> bytes = new List<byte>();
-      for (int j = 0; j < boxes.Count; j++)
+      var bytes = new List<byte>();
+      for (var j = 0; j < boxes.Count; j++)
       {
         if (!boxes[j].Enabled)
         {
@@ -448,7 +448,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
               MessageBox.Show("Invalid short: " + boxes[j].Text, "Error");
               return;
             }
-            byte[] conv = TypeConverter.ss2h(s);
+            var conv = TypeConverter.ss2h(s);
             bytes.Add(conv[0]);
             bytes.Add(conv[1]);
             break;
@@ -461,7 +461,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
               MessageBox.Show("Invalid int: " + boxes[j].Text, "Error");
               return;
             }
-            byte[] conv = TypeConverter.si2h(i);
+            var conv = TypeConverter.si2h(i);
             bytes.AddRange(conv);
             break;
           }
@@ -473,7 +473,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
               MessageBox.Show("Invalid float: " + boxes[j].Text, "Error");
               return;
             }
-            byte[] conv = TypeConverter.f2h(f);
+            var conv = TypeConverter.f2h(f);
             bytes.AddRange(conv);
             break;
           }
@@ -485,20 +485,20 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
               MessageBox.Show("Invalid formID: " + boxes[j].Text, "Error");
               return;
             }
-            byte[] conv = TypeConverter.i2h(i);
+            var conv = TypeConverter.i2h(i);
             bytes.AddRange(conv);
             break;
           }
           case ElementValueType.String:
           {
-            byte[] conv = Encoding.Default.GetBytes(boxes[j].Text);
+            var conv = Encoding.Default.GetBytes(boxes[j].Text);
             bytes.AddRange(conv);
             bytes.Add(0);
             break;
           }
           case ElementValueType.fstring:
           {
-            byte[] conv = Encoding.Default.GetBytes(boxes[j].Text);
+            var conv = Encoding.Default.GetBytes(boxes[j].Text);
             bytes.AddRange(conv);
             break;
           }
@@ -512,7 +512,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     private void LookupFormID_Click(object sender, EventArgs e)
     {
-      bTag tag = (bTag) ((Button) sender).Tag;
+      var tag = (bTag) ((Button) sender).Tag;
       tag.edid.Text = formIDLookup(tag.formID.Text);
     }
   }

@@ -108,11 +108,11 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
         return;
       }
 
-      IDictionaryEnumerator en = _writes.GetEnumerator();
+      var en = _writes.GetEnumerator();
       while (en.MoveNext())
       {
-        long index = (long) en.Key;
-        byte value = (byte) en.Value;
+        var index = (long) en.Key;
+        var value = (byte) en.Value;
         if (_fileStream.Position != index)
         {
           _fileStream.Position = index;
@@ -151,7 +151,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
         _fileStream.Position = index;
       }
 
-      byte res = (byte) _fileStream.ReadByte();
+      var res = (byte) _fileStream.ReadByte();
       return res;
     }
 

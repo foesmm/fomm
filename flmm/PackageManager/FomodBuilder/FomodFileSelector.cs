@@ -72,7 +72,7 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
     public void SetCopyInstructions(IList<SourceFile> p_lstSources,
                                     IList<KeyValuePair<string, string>> p_lstInstructions)
     {
-      List<KeyValuePair<string, string>> lstInstructions = new List<KeyValuePair<string, string>>();
+      var lstInstructions = new List<KeyValuePair<string, string>>();
       //we need to replace any instructions of the form:
       // "blaFolder => /"
       // with a set of instructions that explicitly copies the contents of blaFolder
@@ -80,28 +80,28 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
       // "blaFolder/subFolder => subFolder"
       // "blaFolder/file.txt => file.txt"
       // this needs to be done so we can populate the FOMod Files tree
-      foreach (KeyValuePair<string, string> kvpInstruction in p_lstInstructions)
+      foreach (var kvpInstruction in p_lstInstructions)
       {
-        string strParentDirectory = Path.GetDirectoryName(kvpInstruction.Value);
+        var strParentDirectory = Path.GetDirectoryName(kvpInstruction.Value);
         if (strParentDirectory == null)
         {
           if (kvpInstruction.Key.StartsWith(Archive.ARCHIVE_PREFIX))
           {
-            KeyValuePair<string, string> kvpSource = Archive.ParseArchivePath(kvpInstruction.Key);
-            Archive arcSource = new Archive(kvpSource.Key);
+            var kvpSource = Archive.ParseArchivePath(kvpInstruction.Key);
+            var arcSource = new Archive(kvpSource.Key);
             if (!arcSource.IsDirectory(kvpSource.Value))
             {
               throw new Exception("Copy instruction is renaming a file to the root directory.");
             }
-            foreach (string strDirectory in arcSource.GetDirectories(kvpSource.Value))
+            foreach (var strDirectory in arcSource.GetDirectories(kvpSource.Value))
             {
-              string strDestPath = strDirectory.Substring(kvpSource.Value.Length);
+              var strDestPath = strDirectory.Substring(kvpSource.Value.Length);
               lstInstructions.Add(
                 new KeyValuePair<string, string>(Archive.GenerateArchivePath(kvpSource.Key, strDirectory), strDestPath));
             }
-            foreach (string strFile in arcSource.GetFiles(kvpSource.Value))
+            foreach (var strFile in arcSource.GetFiles(kvpSource.Value))
             {
-              string strDestPath = strFile.Substring(kvpSource.Value.Length);
+              var strDestPath = strFile.Substring(kvpSource.Value.Length);
               lstInstructions.Add(new KeyValuePair<string, string>(Archive.GenerateArchivePath(kvpSource.Key, strFile),
                                                                    strDestPath));
             }
@@ -112,14 +112,14 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
             {
               throw new Exception("Copy instruction is renaming a file to the root directory.");
             }
-            foreach (string strDirectory in Directory.GetDirectories(kvpInstruction.Key))
+            foreach (var strDirectory in Directory.GetDirectories(kvpInstruction.Key))
             {
-              string strDestPath = strDirectory.Substring(kvpInstruction.Key.Length);
+              var strDestPath = strDirectory.Substring(kvpInstruction.Key.Length);
               lstInstructions.Add(new KeyValuePair<string, string>(strDirectory, strDestPath));
             }
-            foreach (string strFile in Directory.GetFiles(kvpInstruction.Key))
+            foreach (var strFile in Directory.GetFiles(kvpInstruction.Key))
             {
-              string strDestPath = strFile.Substring(kvpInstruction.Key.Length);
+              var strDestPath = strFile.Substring(kvpInstruction.Key.Length);
               lstInstructions.Add(new KeyValuePair<string, string>(strFile, strDestPath));
             }
           }
@@ -130,28 +130,28 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
         }
       }
 
-      foreach (KeyValuePair<string, string> kvpInstruction in lstInstructions)
+      foreach (var kvpInstruction in lstInstructions)
       {
-        string strParentDirectory = Path.GetDirectoryName(kvpInstruction.Value);
+        var strParentDirectory = Path.GetDirectoryName(kvpInstruction.Value);
         strParentDirectory = strParentDirectory.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
-        FileSystemTreeNode tndRoot = findNode(strParentDirectory);
+        var tndRoot = findNode(strParentDirectory);
         if ((tndRoot == null) || !tndRoot.FullPath.Equals(strParentDirectory))
         {
-          Int32 strFoundPathLength = (tndRoot == null) ? -1 : tndRoot.FullPath.Length;
+          var strFoundPathLength = (tndRoot == null) ? -1 : tndRoot.FullPath.Length;
           //we need to create some folders
-          string[] strRemainingFolders = strParentDirectory.Substring(strFoundPathLength + 1).Split(new char[]
+          var strRemainingFolders = strParentDirectory.Substring(strFoundPathLength + 1).Split(new char[]
           {
             Path.DirectorySeparatorChar
           }, StringSplitOptions.RemoveEmptyEntries);
-          foreach (string strFolder in strRemainingFolders)
+          foreach (var strFolder in strRemainingFolders)
           {
             tndRoot = addFomodFile(tndRoot, FileSystemTreeNode.NEW_PREFIX + "//" + strFolder);
           }
         }
         addFomodFile(tndRoot, kvpInstruction.Key).Text = Path.GetFileName(kvpInstruction.Value);
       }
-      List<string> lstSources = new List<string>(p_lstSources.Count);
-      foreach (SourceFile sflSource in p_lstSources)
+      var lstSources = new List<string>(p_lstSources.Count);
+      foreach (var sflSource in p_lstSources)
       {
         if (!sflSource.Hidden)
         {
@@ -172,17 +172,17 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
       {
         return null;
       }
-      string strPath = p_strPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+      var strPath = p_strPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
       strPath = strPath.Trim(new char[]
       {
         Path.DirectorySeparatorChar
       });
-      string[] strPathNodes = strPath.Split(Path.DirectorySeparatorChar);
+      var strPathNodes = strPath.Split(Path.DirectorySeparatorChar);
       Array.Reverse(strPathNodes);
-      Stack<string> stkPath = new Stack<string>(strPathNodes);
-      TreeNodeCollection tncNodes = tvwFomod.Nodes;
+      var stkPath = new Stack<string>(strPathNodes);
+      var tncNodes = tvwFomod.Nodes;
       FileSystemTreeNode tndLastNode = null;
-      Int32 intPathCount = 0;
+      var intPathCount = 0;
       while ((tncNodes.Count > 0) && (intPathCount != stkPath.Count))
       {
         intPathCount = stkPath.Count;
@@ -213,14 +213,14 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
     /// create the specified fomod file structure.</returns>
     public IList<KeyValuePair<string, string>> GetCopyInstructions()
     {
-      List<FileSystemTreeNode> lstPathNodes = new List<FileSystemTreeNode>();
+      var lstPathNodes = new List<FileSystemTreeNode>();
       foreach (FileSystemTreeNode tndNode in tvwFomod.Nodes)
       {
         lstPathNodes.Add(CopyTree(tndNode));
       }
-      for (Int32 i = lstPathNodes.Count - 1; i >= 0; i--)
+      for (var i = lstPathNodes.Count - 1; i >= 0; i--)
       {
-        FileSystemTreeNode tndPathNode = lstPathNodes[i];
+        var tndPathNode = lstPathNodes[i];
         if (tndPathNode.IsDirectory && (tndPathNode.Nodes.Count == 0))
         {
           lstPathNodes.RemoveAt(i);
@@ -230,7 +230,7 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
           ProcessTree(tndPathNode);
         }
       }
-      List<KeyValuePair<string, string>> lstPaths = new List<KeyValuePair<string, string>>();
+      var lstPaths = new List<KeyValuePair<string, string>>();
       GetCopyPaths(lstPaths, lstPathNodes);
       return lstPaths;
     }
@@ -269,7 +269,7 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
     /// <returns>The root of the copied tree.</returns>
     private FileSystemTreeNode CopyTree(FileSystemTreeNode p_tndSource)
     {
-      FileSystemTreeNode tndDest = new FileSystemTreeNode(p_tndSource);
+      var tndDest = new FileSystemTreeNode(p_tndSource);
       CopyTree(p_tndSource, tndDest);
       return tndDest;
     }
@@ -284,7 +284,7 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
     {
       foreach (FileSystemTreeNode tndSourceNode in p_tndSource.Nodes)
       {
-        FileSystemTreeNode tndCopy = new FileSystemTreeNode(tndSourceNode);
+        var tndCopy = new FileSystemTreeNode(tndSourceNode);
         p_tndDest.Nodes.Add(tndCopy);
         CopyTree(tndSourceNode, tndCopy);
       }
@@ -304,7 +304,7 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
     {
       if (p_tndNode.Nodes.Count == 0)
       {
-        for (Int32 j = p_tndNode.Sources.Count - 1; j >= 0; j--)
+        for (var j = p_tndNode.Sources.Count - 1; j >= 0; j--)
         {
           if (p_tndNode.Sources[j].Path.StartsWith(FileSystemTreeNode.NEW_PREFIX))
           {
@@ -317,20 +317,20 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
       {
         ProcessTree(tndNode);
       }
-      List<string> lstSubPaths = new List<string>();
-      for (Int32 j = p_tndNode.Sources.Count - 1; j >= 0; j--)
+      var lstSubPaths = new List<string>();
+      for (var j = p_tndNode.Sources.Count - 1; j >= 0; j--)
       {
-        FileSystemTreeNode.Source srcSource = p_tndNode.Sources[j];
+        var srcSource = p_tndNode.Sources[j];
         lstSubPaths.Clear();
         if (srcSource.Path.StartsWith(Archive.ARCHIVE_PREFIX))
         {
-          KeyValuePair<string, string> kvpPath = Archive.ParseArchivePath(srcSource.Path);
-          Archive arcArchive = new Archive(kvpPath.Key);
-          foreach (string strPath in arcArchive.GetDirectories(kvpPath.Value))
+          var kvpPath = Archive.ParseArchivePath(srcSource.Path);
+          var arcArchive = new Archive(kvpPath.Key);
+          foreach (var strPath in arcArchive.GetDirectories(kvpPath.Value))
           {
             lstSubPaths.Add(Archive.GenerateArchivePath(kvpPath.Key, strPath));
           }
-          foreach (string strPath in arcArchive.GetFiles(kvpPath.Value))
+          foreach (var strPath in arcArchive.GetFiles(kvpPath.Value))
           {
             lstSubPaths.Add(Archive.GenerateArchivePath(kvpPath.Key, strPath));
           }
@@ -343,7 +343,7 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
         else
         {
           lstSubPaths.AddRange(Directory.GetDirectories(srcSource.Path));
-          foreach (string strPath in Directory.GetFiles(srcSource.Path))
+          foreach (var strPath in Directory.GetFiles(srcSource.Path))
           {
             if ((new FileInfo(strPath).Attributes & FileAttributes.System) > 0)
             {
@@ -360,10 +360,10 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
           //if we find all the current folder's subpaths, and each subpath
           // has no children in the same source tree, then we can just copy
           // the current folder instead of copying each child individually
-          Int32 intFoundCount = 0;
+          var intFoundCount = 0;
 
           //so, for each subpath of the current folder...
-          foreach (string strSubPath in lstSubPaths)
+          foreach (var strSubPath in lstSubPaths)
           {
             //...look through all the children nodes for the subpath...
             foreach (FileSystemTreeNode tndChild in p_tndNode.Nodes)
@@ -373,7 +373,7 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
               {
                 //...and the node containing the subpath has no children
                 // containing anything in the same source tree...
-                bool booFound = false;
+                var booFound = false;
                 foreach (FileSystemTreeNode tndSubNode in tndChild.Nodes)
                 {
                   foreach (string strSubSource in tndSubNode.Sources)
@@ -407,11 +407,11 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
           {
             //...then remove the subpaths, so we just copy the
             // current folder instead of copying each child individually
-            foreach (string strSubPath in lstSubPaths)
+            foreach (var strSubPath in lstSubPaths)
             {
-              for (Int32 i = p_tndNode.Nodes.Count - 1; i >= 0; i--)
+              for (var i = p_tndNode.Nodes.Count - 1; i >= 0; i--)
               {
-                FileSystemTreeNode tndNode = (FileSystemTreeNode) p_tndNode.Nodes[i];
+                var tndNode = (FileSystemTreeNode) p_tndNode.Nodes[i];
                 if (tndNode.Sources.Contains(strSubPath))
                 {
                   //if we are removing the last source, and there are no
@@ -463,7 +463,7 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
         return;
       }
       e.Effect = DragDropEffects.Copy;
-      FileSystemTreeNode tndFolder =
+      var tndFolder =
         (FileSystemTreeNode) tvwFomod.GetNodeAt(tvwFomod.PointToClient(new Point(e.X, e.Y)));
       if ((tndFolder != null) && tndFolder.IsDirectory)
       {
@@ -489,12 +489,12 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
       {
         return;
       }
-      Cursor crsOldCursor = Cursor;
+      var crsOldCursor = Cursor;
       Cursor = Cursors.WaitCursor;
       tvwFomod.BeginUpdate();
-      FileSystemTreeNode tndFolder =
+      var tndFolder =
         (FileSystemTreeNode) tvwFomod.GetNodeAt(tvwFomod.PointToClient(new Point(e.X, e.Y)));
-      List<SourceFileTree.SourceFileSystemDragData> lstPaths =
+      var lstPaths =
         ((List<SourceFileTree.SourceFileSystemDragData>)
           e.Data.GetData(typeof (List<SourceFileTree.SourceFileSystemDragData>)));
       if (tndFolder != null)
@@ -505,7 +505,7 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
         }
         if (tndFolder != null)
         {
-          for (Int32 i = 0; i < lstPaths.Count; i++)
+          for (var i = 0; i < lstPaths.Count; i++)
           {
             addFomodFile(tndFolder, lstPaths[i].Path);
           }
@@ -513,7 +513,7 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
         }
         else
         {
-          for (Int32 i = 0; i < lstPaths.Count; i++)
+          for (var i = 0; i < lstPaths.Count; i++)
           {
             addFomodFile(null, lstPaths[i].Path);
           }
@@ -521,7 +521,7 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
       }
       else
       {
-        for (Int32 i = 0; i < lstPaths.Count; i++)
+        for (var i = 0; i < lstPaths.Count; i++)
         {
           addFomodFile(null, lstPaths[i].Path);
         }
@@ -560,9 +560,9 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
         }
       }
 
-      string strFileName = Path.GetFileName(p_strFile);
+      var strFileName = Path.GetFileName(p_strFile);
       FileSystemTreeNode tndFile = null;
-      TreeNodeCollection tncSiblings = (p_tndRoot == null) ? tvwFomod.Nodes : p_tndRoot.Nodes;
+      var tncSiblings = (p_tndRoot == null) ? tvwFomod.Nodes : p_tndRoot.Nodes;
       if (tncSiblings.ContainsKey(strFileName.ToLowerInvariant()))
       {
         tndFile = (FileSystemTreeNode) tncSiblings[strFileName.ToLowerInvariant()];
@@ -587,10 +587,10 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
       else
       {
         tndFile.Sources[p_strFile].IsLoaded = true;
-        string strExtension = Path.GetExtension(p_strFile).ToLowerInvariant();
+        var strExtension = Path.GetExtension(p_strFile).ToLowerInvariant();
         if (!imlIcons.Images.ContainsKey(strExtension))
         {
-          string strIconPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName()) + strExtension;
+          var strIconPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName()) + strExtension;
           File.CreateText(strIconPath).Close();
           imlIcons.Images.Add(strExtension, Icon.ExtractAssociatedIcon(strIconPath));
           File.Delete(strIconPath);
@@ -611,38 +611,38 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
       {
         return;
       }
-      foreach (FileSystemTreeNode.Source srcSource in p_tndNode.Sources)
+      foreach (var srcSource in p_tndNode.Sources)
       {
         if (srcSource.IsLoaded)
         {
           continue;
         }
-        string strSource = srcSource.Path;
+        var strSource = srcSource.Path;
         srcSource.IsLoaded = true;
         if (strSource.StartsWith(Archive.ARCHIVE_PREFIX))
         {
-          KeyValuePair<string, string> kvpPath = Archive.ParseArchivePath(strSource);
-          Archive arcArchive = new Archive(kvpPath.Key);
-          string[] strFolders = arcArchive.GetDirectories(kvpPath.Value);
-          for (Int32 i = 0; i < strFolders.Length; i++)
+          var kvpPath = Archive.ParseArchivePath(strSource);
+          var arcArchive = new Archive(kvpPath.Key);
+          var strFolders = arcArchive.GetDirectories(kvpPath.Value);
+          for (var i = 0; i < strFolders.Length; i++)
           {
             addFomodFile(p_tndNode, Archive.GenerateArchivePath(kvpPath.Key, strFolders[i]));
           }
-          string[] strFiles = arcArchive.GetFiles(kvpPath.Value);
-          for (Int32 i = 0; i < strFiles.Length; i++)
+          var strFiles = arcArchive.GetFiles(kvpPath.Value);
+          for (var i = 0; i < strFiles.Length; i++)
           {
             addFomodFile(p_tndNode, Archive.GenerateArchivePath(kvpPath.Key, strFiles[i]));
           }
         }
         else if (!strSource.StartsWith(FileSystemTreeNode.NEW_PREFIX))
         {
-          string[] strFolders = Directory.GetDirectories(strSource);
-          for (Int32 i = 0; i < strFolders.Length; i++)
+          var strFolders = Directory.GetDirectories(strSource);
+          for (var i = 0; i < strFolders.Length; i++)
           {
             addFomodFile(p_tndNode, strFolders[i]);
           }
-          string[] strFiles = Directory.GetFiles(strSource);
-          for (Int32 i = 0; i < strFiles.Length; i++)
+          var strFiles = Directory.GetFiles(strSource);
+          for (var i = 0; i < strFiles.Length; i++)
           {
             addFomodFile(p_tndNode, strFiles[i]);
           }
@@ -660,7 +660,7 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
     /// <param name="e">A <see cref="TreeViewCancelEventArgs"/> that describes the event arguments.</param>
     private void tvwFomod_BeforeExpand(object sender, TreeViewCancelEventArgs e)
     {
-      Cursor crsOldCursor = Cursor;
+      var crsOldCursor = Cursor;
       Cursor = Cursors.WaitCursor;
       foreach (FileSystemTreeNode tndFolder in e.Node.Nodes)
       {
@@ -711,7 +711,7 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
     /// <param name="e">An <see cref="EventArgs"/> that describes the event arguments.</param>
     private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
     {
-      TreeNode tndNode = tvwFomod.SelectedNode;
+      var tndNode = tvwFomod.SelectedNode;
       if (
         MessageBox.Show(this, "Are you sure you want to delete '" + tndNode.Text + "?'", "Confirm",
                         MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.Cancel)
@@ -763,7 +763,7 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
       {
         tndNode = tvwFomod.SelectedNode;
       }
-      FileSystemTreeNode tndNewNode = addFomodFile(tndNode, FileSystemTreeNode.NEW_PREFIX + "//New Folder");
+      var tndNewNode = addFomodFile(tndNode, FileSystemTreeNode.NEW_PREFIX + "//New Folder");
       if (tndNode != null)
       {
         tndNode.Expand();
@@ -785,7 +785,7 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
     {
       if (e.Button == MouseButtons.Right)
       {
-        FileSystemTreeNode tndFolder = (FileSystemTreeNode) tvwFomod.GetNodeAt(e.Location);
+        var tndFolder = (FileSystemTreeNode) tvwFomod.GetNodeAt(e.Location);
         tvwFomod.SelectedNode = tndFolder;
       }
     }
@@ -830,19 +830,19 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
     /// and the value is the source path for the file.</returns>
     public List<KeyValuePair<string, string>> FindFomodFiles(string p_strPattern)
     {
-      string[] strPatterns =
+      var strPatterns =
         p_strPattern.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar)
                     .Split(Path.DirectorySeparatorChar);
-      Queue<string> queDirectories = new Queue<string>();
-      for (Int32 i = 0; i < strPatterns.Length - 1; i++)
+      var queDirectories = new Queue<string>();
+      for (var i = 0; i < strPatterns.Length - 1; i++)
       {
         queDirectories.Enqueue(strPatterns[i].ToLowerInvariant());
       }
-      string strFileNamePattern = (strPatterns.Length > 0) ? strPatterns[strPatterns.Length - 1] : "*";
+      var strFileNamePattern = (strPatterns.Length > 0) ? strPatterns[strPatterns.Length - 1] : "*";
       strFileNamePattern = strFileNamePattern.Replace(".", @"\.").Replace("*", @".*");
-      Regex rgxFileNamePattern = new Regex("^" + strFileNamePattern + "$", RegexOptions.IgnoreCase);
-      List<KeyValuePair<string, string>> lstMatches = new List<KeyValuePair<string, string>>();
-      Int32 intOriginalDepth = queDirectories.Count;
+      var rgxFileNamePattern = new Regex("^" + strFileNamePattern + "$", RegexOptions.IgnoreCase);
+      var lstMatches = new List<KeyValuePair<string, string>>();
+      var intOriginalDepth = queDirectories.Count;
       foreach (FileSystemTreeNode tndFolder in tvwFomod.Nodes)
       {
         lstMatches.AddRange(FindFomodFiles(tndFolder, queDirectories, rgxFileNamePattern));
@@ -866,12 +866,12 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
     private List<KeyValuePair<string, string>> FindFomodFiles(FileSystemTreeNode p_tndRoot,
                                                               Queue<string> p_queDirectories, Regex p_rgxFileNamePattern)
     {
-      List<KeyValuePair<string, string>> lstMatches = new List<KeyValuePair<string, string>>();
+      var lstMatches = new List<KeyValuePair<string, string>>();
       if (p_tndRoot.IsDirectory && ((p_queDirectories.Count > 0) && p_tndRoot.Name.Equals(p_queDirectories.Peek())))
       {
         p_queDirectories.Dequeue();
         PopulateNodeWithChildren(p_tndRoot);
-        Int32 intOriginalDepth = p_queDirectories.Count;
+        var intOriginalDepth = p_queDirectories.Count;
         foreach (FileSystemTreeNode tndNode in p_tndRoot.Nodes)
         {
           lstMatches.AddRange(FindFomodFiles(tndNode, p_queDirectories, p_rgxFileNamePattern));

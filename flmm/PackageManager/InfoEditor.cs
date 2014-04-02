@@ -39,7 +39,7 @@ namespace Fomm.PackageManager
 
     private void butEditReadme_Click(object sender, EventArgs e)
     {
-      EditReadmeForm erfEditor = new EditReadmeForm();
+      var erfEditor = new EditReadmeForm();
       if (!m_fomodMod.HasReadme)
       {
         erfEditor.Readme = new Readme(ReadmeFormat.PlainText, "");

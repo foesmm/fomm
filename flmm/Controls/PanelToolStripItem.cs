@@ -132,7 +132,7 @@ namespace Fomm.Controls
       m_ctlButton = p_ctlButton;
       m_tdsDisplayStyle = p_tdsDisplayStyle;
 
-      Type tpeButtonType = m_ctlButton.GetType();
+      var tpeButtonType = m_ctlButton.GetType();
 
       m_ctlButton.Tag = this;
       m_intIndex = p_intIndex;

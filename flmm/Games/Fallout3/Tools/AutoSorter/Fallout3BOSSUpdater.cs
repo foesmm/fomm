@@ -33,18 +33,18 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
     public Int32 GetMasterlistVersion()
     {
       string strVersionPage = null;
-      using (WebClient wclGetter = new WebClient())
+      using (var wclGetter = new WebClient())
       {
-        string strMasterListUrl = MasterListURL;
-        Int32 intLastDividerPos = strMasterListUrl.LastIndexOfAny(new char[]
+        var strMasterListUrl = MasterListURL;
+        var intLastDividerPos = strMasterListUrl.LastIndexOfAny(new char[]
         {
           Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar
         });
-        string strVersionUrl = strMasterListUrl.Substring(0, intLastDividerPos);
+        var strVersionUrl = strMasterListUrl.Substring(0, intLastDividerPos);
         strVersionPage = wclGetter.DownloadString(strVersionUrl);
       }
 
-      string strWebVersion = m_rgxVersion.Match(strVersionPage).Groups[1].Value.Trim();
+      var strWebVersion = m_rgxVersion.Match(strVersionPage).Groups[1].Value.Trim();
       return Int32.Parse(strWebVersion);
     }
 
@@ -54,7 +54,7 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
     public void UpdateMasterlist(string p_strPath)
     {
       string strMasterlist = null;
-      using (WebClient wclGetter = new WebClient())
+      using (var wclGetter = new WebClient())
       {
         //the substring is to remove the 3byte EFBBBF Byte Order Mark (BOM)
         strMasterlist = TextUtil.ByteToString(wclGetter.DownloadData(MasterListURL));

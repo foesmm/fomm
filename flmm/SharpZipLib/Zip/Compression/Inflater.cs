@@ -252,7 +252,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
     /// </exception>
     private bool DecodeHeader()
     {
-      int header = input.PeekBits(16);
+      var header = input.PeekBits(16);
       if (header < 0)
       {
         return false;
@@ -301,7 +301,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
     {
       while (neededBits > 0)
       {
-        int dictByte = input.PeekBits(8);
+        var dictByte = input.PeekBits(8);
         if (dictByte < 0)
         {
           return false;
@@ -325,7 +325,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
     /// </exception>
     private bool DecodeHuffman()
     {
-      int free = outputWindow.GetFreeSpace();
+      var free = outputWindow.GetFreeSpace();
       while (free >= 258)
       {
         int symbol;
@@ -373,7 +373,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
             if (neededBits > 0)
             {
               mode = DECODE_HUFFMAN_LENBITS;
-              int i = input.PeekBits(neededBits);
+              var i = input.PeekBits(neededBits);
               if (i < 0)
               {
                 return false;
@@ -407,7 +407,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
             if (neededBits > 0)
             {
               mode = DECODE_HUFFMAN_DISTBITS;
-              int i = input.PeekBits(neededBits);
+              var i = input.PeekBits(neededBits);
               if (i < 0)
               {
                 return false;
@@ -441,7 +441,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
     {
       while (neededBits > 0)
       {
-        int chkByte = input.PeekBits(8);
+        var chkByte = input.PeekBits(8);
         if (chkByte < 0)
         {
           return false;
@@ -499,7 +499,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
             }
           }
 
-          int type = input.PeekBits(3);
+          var type = input.PeekBits(3);
           if (type < 0)
           {
             return false;
@@ -543,7 +543,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
 
         case DECODE_STORED_LEN2:
         {
-          int nlen = input.PeekBits(16);
+          var nlen = input.PeekBits(16);
           if (nlen < 0)
           {
             return false;
@@ -559,7 +559,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
 
         case DECODE_STORED:
         {
-          int more = outputWindow.CopyStored(input, uncomprLen);
+          var more = outputWindow.CopyStored(input, uncomprLen);
           uncomprLen -= more;
           if (uncomprLen == 0)
           {
@@ -728,7 +728,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
         return 0;
       }
 
-      int bytesCopied = 0;
+      var bytesCopied = 0;
 
       do
       {
@@ -741,7 +741,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
           *   IsNeedingInput() and not IsFinished()
           *   implies more output can be produced.
           */
-          int more = outputWindow.CopyOutput(buffer, offset, count);
+          var more = outputWindow.CopyOutput(buffer, offset, count);
           if (more > 0)
           {
             adler.Update(buffer, offset, more);

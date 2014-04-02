@@ -113,11 +113,11 @@ namespace Fomm.PackageManager
     /// <seealso cref="ModInstallScript.DoScript"/>
     protected override bool DoScript()
     {
-      foreach (string strSettingsFile in Program.GameMode.SettingsFiles.Values)
+      foreach (var strSettingsFile in Program.GameMode.SettingsFiles.Values)
       {
         TransactionalFileManager.Snapshot(strSettingsFile);
       }
-      foreach (string strAdditionalFile in Program.GameMode.AdditionalPaths.Values)
+      foreach (var strAdditionalFile in Program.GameMode.AdditionalPaths.Values)
       {
         if (File.Exists(strAdditionalFile))
         {
@@ -126,7 +126,7 @@ namespace Fomm.PackageManager
       }
       TransactionalFileManager.Snapshot(InstallLog.Current.InstallLogPath);
 
-      bool booIsActive = true;
+      var booIsActive = true;
       try
       {
         if (Fomod != null)
@@ -177,7 +177,7 @@ namespace Fomm.PackageManager
     /// cannot be found.</exception>
     protected bool RunCustomUninstallScript()
     {
-      string strScript = Fomod.GetUninstallScript();
+      var strScript = Fomod.GetUninstallScript();
       if (strScript == null)
       {
         throw new FileNotFoundException("No uninstall script found, even though fomod claimed to have one.");
@@ -221,14 +221,14 @@ namespace Fomm.PackageManager
     /// </remarks>
     protected void PerformBasicUninstall()
     {
-      List<string> lstFiles = MergeModule.DataFiles;
-      List<InstallLogMergeModule.IniEdit> lstIniEdits = MergeModule.IniEdits;
-      List<InstallLogMergeModule.GameSpecificValueEdit> lstGameSpecificValueEdits = MergeModule.GameSpecificValueEdits;
+      var lstFiles = MergeModule.DataFiles;
+      var lstIniEdits = MergeModule.IniEdits;
+      var lstGameSpecificValueEdits = MergeModule.GameSpecificValueEdits;
       m_bwdProgress.OverallProgressMaximum = lstFiles.Count + lstIniEdits.Count + lstGameSpecificValueEdits.Count;
 
       m_bwdProgress.ItemProgressMaximum = lstFiles.Count;
       m_bwdProgress.ItemMessage = "Uninstalling Files";
-      foreach (string strFile in lstFiles)
+      foreach (var strFile in lstFiles)
       {
         if (m_bwdProgress.Cancelled())
         {
@@ -248,7 +248,7 @@ namespace Fomm.PackageManager
 
       m_bwdProgress.ItemProgressMaximum = lstIniEdits.Count;
       m_bwdProgress.ItemMessage = "Undoing Ini Edits";
-      foreach (InstallLogMergeModule.IniEdit iniEdit in lstIniEdits)
+      foreach (var iniEdit in lstIniEdits)
       {
         if (m_bwdProgress.Cancelled())
         {
@@ -268,7 +268,7 @@ namespace Fomm.PackageManager
 
       m_bwdProgress.ItemProgressMaximum = lstGameSpecificValueEdits.Count;
       m_bwdProgress.ItemMessage = "Undoing Game Specific Value Edits";
-      foreach (InstallLogMergeModule.GameSpecificValueEdit gsvEdit in lstGameSpecificValueEdits)
+      foreach (var gsvEdit in lstGameSpecificValueEdits)
       {
         if (m_bwdProgress.Cancelled())
         {

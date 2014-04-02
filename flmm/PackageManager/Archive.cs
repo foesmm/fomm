@@ -92,10 +92,10 @@ namespace Fomm.PackageManager
     {
       get
       {
-        using (SevenZipExtractor szeExtractor = GetExtractor(m_strPath))
+        using (var szeExtractor = GetExtractor(m_strPath))
         {
           IList<string> lstVolumes = szeExtractor.VolumeFileNames;
-          string[] strVolumes = new string[lstVolumes.Count];
+          var strVolumes = new string[lstVolumes.Count];
           lstVolumes.CopyTo(strVolumes, 0);
           return strVolumes;
         }
@@ -161,29 +161,29 @@ namespace Fomm.PackageManager
     {
       if (p_strPath.StartsWith(ARCHIVE_PREFIX))
       {
-        Stack<KeyValuePair<string, string>> stkFiles = new Stack<KeyValuePair<string, string>>();
-        string strPath = p_strPath;
+        var stkFiles = new Stack<KeyValuePair<string, string>>();
+        var strPath = p_strPath;
         while (strPath.StartsWith(ARCHIVE_PREFIX))
         {
           stkFiles.Push(ParseArchivePath(strPath));
           strPath = stkFiles.Peek().Key;
         }
-        Stack<SevenZipExtractor> stkExtractors = new Stack<SevenZipExtractor>();
+        var stkExtractors = new Stack<SevenZipExtractor>();
         try
         {
-          KeyValuePair<string, string> kvpArchive = stkFiles.Pop();
-          SevenZipExtractor szeArchive = new SevenZipExtractor(kvpArchive.Key);
+          var kvpArchive = stkFiles.Pop();
+          var szeArchive = new SevenZipExtractor(kvpArchive.Key);
           stkExtractors.Push(szeArchive);
           for (; stkFiles.Count > 0; kvpArchive = stkFiles.Pop())
           {
-            MemoryStream msmArchive = new MemoryStream();
+            var msmArchive = new MemoryStream();
             szeArchive.ExtractFile(kvpArchive.Value, msmArchive);
             msmArchive.Position = 0;
             szeArchive = new SevenZipExtractor(msmArchive);
             stkExtractors.Push(szeArchive);
           }
 
-          MemoryStream msmFile = new MemoryStream();
+          var msmFile = new MemoryStream();
           szeArchive.ExtractFile(kvpArchive.Value, msmFile);
           msmFile.Position = 0;
           if (p_booThreadSafe)
@@ -222,16 +222,16 @@ namespace Fomm.PackageManager
       {
         return false;
       }
-      bool booIsAchive = true;
+      var booIsAchive = true;
       if (m_lstNonArchiveExtensions.Contains(Path.GetExtension(p_strPath)))
       {
         return false;
       }
       try
       {
-        using (SevenZipExtractor szeExtractor = GetExtractor(p_strPath))
+        using (var szeExtractor = GetExtractor(p_strPath))
         {
-          UInt32 g = szeExtractor.FilesCount;
+          var g = szeExtractor.FilesCount;
         }
       }
       catch (Exception)
@@ -260,15 +260,15 @@ namespace Fomm.PackageManager
       {
         throw new ArgumentException("The given path is not an archive path: " + p_strArchivePath, "p_strArchivePath");
       }
-      string strNewDirectory = p_strNewArchiveDirectory ?? "";
-      KeyValuePair<string, string> kvpArchive = ParseArchivePath(p_strArchivePath);
-      Stack<string> stkArchives = new Stack<string>();
+      var strNewDirectory = p_strNewArchiveDirectory ?? "";
+      var kvpArchive = ParseArchivePath(p_strArchivePath);
+      var stkArchives = new Stack<string>();
       while (kvpArchive.Key.StartsWith(ARCHIVE_PREFIX))
       {
         stkArchives.Push(kvpArchive.Value);
         kvpArchive = ParseArchivePath(kvpArchive.Key);
       }
-      string strSource = GenerateArchivePath(Path.Combine(strNewDirectory, Path.GetFileName(kvpArchive.Key)),
+      var strSource = GenerateArchivePath(Path.Combine(strNewDirectory, Path.GetFileName(kvpArchive.Key)),
                                              kvpArchive.Value);
       while (stkArchives.Count > 0)
       {
@@ -289,13 +289,13 @@ namespace Fomm.PackageManager
       {
         return new KeyValuePair<string, string>(null, null);
       }
-      Int32 intEndIndex = p_strPath.LastIndexOf("//");
+      var intEndIndex = p_strPath.LastIndexOf("//");
       if (intEndIndex < 0)
       {
         intEndIndex = p_strPath.Length;
       }
-      string strArchive = p_strPath.Substring(ARCHIVE_PREFIX.Length, intEndIndex - ARCHIVE_PREFIX.Length);
-      string strPath = p_strPath.Substring(intEndIndex + 2);
+      var strArchive = p_strPath.Substring(ARCHIVE_PREFIX.Length, intEndIndex - ARCHIVE_PREFIX.Length);
+      var strPath = p_strPath.Substring(intEndIndex + 2);
       return new KeyValuePair<string, string>(strArchive, strPath);
     }
 
@@ -324,7 +324,7 @@ namespace Fomm.PackageManager
       if (!p_strPath.StartsWith(ARCHIVE_PREFIX))
       {
         m_strPath = p_strPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
-        using (SevenZipExtractor szeExtractor = new SevenZipExtractor(m_strPath))
+        using (var szeExtractor = new SevenZipExtractor(m_strPath))
         {
           if (Enum.IsDefined(typeof (OutArchiveFormat), szeExtractor.Format.ToString()))
           {
@@ -384,7 +384,7 @@ namespace Fomm.PackageManager
     {
       get
       {
-        using (SevenZipExtractor szeExtractor = GetExtractor(m_strPath))
+        using (var szeExtractor = GetExtractor(m_strPath))
         {
           if (szeExtractor.IsSolid)
           {
@@ -411,7 +411,7 @@ namespace Fomm.PackageManager
           m_szeReadOnlyExtractor.Dispose();
           m_szeReadOnlyExtractor = null;
           m_strReadOnlyTempDirectory = Program.CreateTempDirectory();
-          using (SevenZipExtractor szeExtractor = GetExtractor(m_strPath))
+          using (var szeExtractor = GetExtractor(m_strPath))
           {
             szeExtractor.FileExtractionFinished += new EventHandler<FileInfoEventArgs>(FileExtractionFinished);
             szeExtractor.FileExtractionStarted += new EventHandler<FileInfoEventArgs>(FileExtractionStarted);
@@ -433,7 +433,7 @@ namespace Fomm.PackageManager
     /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
     private void FileExtractionFinished(object sender, FileInfoEventArgs e)
     {
-      CancelEventArgs ceaArgs = new CancelEventArgs(false);
+      var ceaArgs = new CancelEventArgs(false);
       ReadOnlyInitStepFinished(this, ceaArgs);
       e.Cancel = ceaArgs.Cancel;
     }
@@ -448,7 +448,7 @@ namespace Fomm.PackageManager
     /// <param name="e">A <see cref="FileNameEventArgs"/> describing the event arguments.</param>
     private void FileExtractionStarted(object sender, FileInfoEventArgs e)
     {
-      CancelEventArgs ceaArgs = new CancelEventArgs(false);
+      var ceaArgs = new CancelEventArgs(false);
       ReadOnlyInitStepStarted(this, ceaArgs);
       e.Cancel = ceaArgs.Cancel;
     }
@@ -484,10 +484,10 @@ namespace Fomm.PackageManager
     {
       m_dicFileInfo.Clear();
       m_strFiles.Clear();
-      using (SevenZipExtractor szeExtractor = GetExtractor(m_strPath))
+      using (var szeExtractor = GetExtractor(m_strPath))
       {
         m_booIsSolid = szeExtractor.IsSolid;
-        foreach (ArchiveFileInfo afiFile in szeExtractor.ArchiveFileData)
+        foreach (var afiFile in szeExtractor.ArchiveFileData)
         {
           if (!afiFile.IsDirectory)
           {
@@ -508,19 +508,19 @@ namespace Fomm.PackageManager
     /// <lang cref="false"/> otherwise.</returns>
     public bool IsDirectory(string p_strPath)
     {
-      string strPath = p_strPath.Trim(new char[]
+      var strPath = p_strPath.Trim(new char[]
       {
         Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar
       });
       strPath = strPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
-      string strPathWithSep = strPath + Path.DirectorySeparatorChar;
+      var strPathWithSep = strPath + Path.DirectorySeparatorChar;
 
       if (m_dicFileInfo.ContainsKey(strPath))
       {
         return false;
       }
 
-      foreach (string strFile in m_dicFileInfo.Keys)
+      foreach (var strFile in m_dicFileInfo.Keys)
       {
         if (strFile.StartsWith(strPathWithSep, StringComparison.InvariantCultureIgnoreCase))
         {
@@ -528,12 +528,12 @@ namespace Fomm.PackageManager
         }
       }
 
-      ArchiveFileInfo afiFile = default(ArchiveFileInfo);
-      using (SevenZipExtractor szeExtractor = GetExtractor(m_strPath))
+      var afiFile = default(ArchiveFileInfo);
+      using (var szeExtractor = GetExtractor(m_strPath))
       {
-        foreach (ArchiveFileInfo afiTmp in szeExtractor.ArchiveFileData)
+        foreach (var afiTmp in szeExtractor.ArchiveFileData)
         {
-          string strArchiveFileName = afiTmp.FileName.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+          var strArchiveFileName = afiTmp.FileName.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
           if (strArchiveFileName.Equals(strPath, StringComparison.InvariantCultureIgnoreCase))
           {
             afiFile = afiTmp;
@@ -551,7 +551,7 @@ namespace Fomm.PackageManager
     /// <returns>A list of directories that are in the specified directory in this archive.</returns>
     public string[] GetDirectories(string p_strDirectory)
     {
-      string strPrefix = p_strDirectory;
+      var strPrefix = p_strDirectory;
       if (String.IsNullOrEmpty(p_strDirectory))
       {
         strPrefix = "";
@@ -562,12 +562,12 @@ namespace Fomm.PackageManager
       {
         strPrefix += Path.DirectorySeparatorChar;
       }
-      Set<string> lstFolders = new Set<string>(StringComparer.InvariantCultureIgnoreCase);
-      foreach (string strFile in m_strFiles)
+      var lstFolders = new Set<string>(StringComparer.InvariantCultureIgnoreCase);
+      foreach (var strFile in m_strFiles)
       {
         if (strFile.StartsWith(strPrefix, StringComparison.InvariantCultureIgnoreCase))
         {
-          Int32 intStopIndex = strFile.IndexOf(Path.DirectorySeparatorChar, strPrefix.Length);
+          var intStopIndex = strFile.IndexOf(Path.DirectorySeparatorChar, strPrefix.Length);
           if (intStopIndex < 0)
           {
             continue;
@@ -585,7 +585,7 @@ namespace Fomm.PackageManager
     /// <returns>A list of files that are in the specified directory in this archive.</returns>
     public string[] GetFiles(string p_strDirectory)
     {
-      Set<string> lstFiles = new Set<string>(StringComparer.InvariantCultureIgnoreCase);
+      var lstFiles = new Set<string>(StringComparer.InvariantCultureIgnoreCase);
       if (String.IsNullOrEmpty(p_strDirectory))
       {
         m_strFiles.ForEach((s) =>
@@ -595,18 +595,18 @@ namespace Fomm.PackageManager
       }
       else
       {
-        string strPrefix = p_strDirectory;
+        var strPrefix = p_strDirectory;
         strPrefix = strPrefix.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
         strPrefix = strPrefix.Trim(Path.DirectorySeparatorChar);
         if (strPrefix.Length > 0)
         {
           strPrefix += Path.DirectorySeparatorChar;
         }
-        foreach (string strFile in m_strFiles)
+        foreach (var strFile in m_strFiles)
         {
           if (strFile.StartsWith(strPrefix, StringComparison.InvariantCultureIgnoreCase))
           {
-            Int32 intStopIndex = strFile.IndexOf(Path.DirectorySeparatorChar, strPrefix.Length);
+            var intStopIndex = strFile.IndexOf(Path.DirectorySeparatorChar, strPrefix.Length);
             if (intStopIndex > 0)
             {
               continue;
@@ -626,13 +626,13 @@ namespace Fomm.PackageManager
     /// <returns>A list of files that are in the specified directory and match the given pattern in this archive.</returns>
     public string[] GetFiles(string p_strDirectory, string p_strPattern)
     {
-      Set<string> lstFiles = new Set<string>(StringComparer.InvariantCultureIgnoreCase);
-      string[] strFiles = GetFiles(p_strDirectory);
+      var lstFiles = new Set<string>(StringComparer.InvariantCultureIgnoreCase);
+      var strFiles = GetFiles(p_strDirectory);
 
-      string strPattern = p_strPattern.Replace(".", "\\.").Replace("*", ".*");
-      Regex rgxPattern = new Regex(strPattern);
+      var strPattern = p_strPattern.Replace(".", "\\.").Replace("*", ".*");
+      var rgxPattern = new Regex(strPattern);
 
-      foreach (string strFile in strFiles)
+      foreach (var strFile in strFiles)
       {
         if (rgxPattern.IsMatch(strFile))
         {
@@ -650,7 +650,7 @@ namespace Fomm.PackageManager
     /// <lang cref="false"/> otherwise.</returns>
     public bool ContainsFile(string p_strPath)
     {
-      string strPath = p_strPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).ToLowerInvariant();
+      var strPath = p_strPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).ToLowerInvariant();
       return m_dicFileInfo.ContainsKey(strPath);
     }
 
@@ -685,7 +685,7 @@ namespace Fomm.PackageManager
       }
       else
       {
-        using (SevenZipExtractor szeExtractor = GetExtractor(m_strPath))
+        using (var szeExtractor = GetExtractor(m_strPath))
         {
           fsOut = new FileStream(dstFN, FileMode.Truncate);
           szeExtractor.ExtractFile(afiFile.Index, fsOut);
@@ -701,16 +701,16 @@ namespace Fomm.PackageManager
     /// <returns>The contents of the specified file in the archive.</returns>
     public byte[] GetFileContents(string p_strPath)
     {
-      string strPath = p_strPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).ToLowerInvariant();
+      var strPath = p_strPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).ToLowerInvariant();
       if (!m_dicFileInfo.ContainsKey(strPath))
       {
         throw new FileNotFoundException("The requested file does not exist in the archive.", p_strPath);
       }
 
       byte[] bteFile = null;
-      ArchiveFileInfo afiFile = m_dicFileInfo[strPath];
+      var afiFile = m_dicFileInfo[strPath];
       bteFile = new byte[afiFile.Size];
-      using (MemoryStream msmFile = new MemoryStream(bteFile))
+      using (var msmFile = new MemoryStream(bteFile))
       {
         //check to see if we are on the same thread as the extractor
         // if not, then marshall the call to the extractor's thread.
@@ -729,7 +729,7 @@ namespace Fomm.PackageManager
         }
         else
         {
-          using (SevenZipExtractor szeExtractor = GetExtractor(m_strPath))
+          using (var szeExtractor = GetExtractor(m_strPath))
           {
             szeExtractor.ExtractFile(afiFile.Index, msmFile);
           }
@@ -742,7 +742,7 @@ namespace Fomm.PackageManager
         // as bteFile should always be exactly the right size to hold the extracted file
         //however, just to be safe, I've included this code to make sure we only return
         // valid bytes
-        byte[] bteReal = new byte[afiFile.Size];
+        var bteReal = new byte[afiFile.Size];
         Array.Copy(bteFile, bteReal, bteReal.LongLength);
         bteFile = bteReal;
       }
@@ -782,16 +782,16 @@ namespace Fomm.PackageManager
       }
       if (!m_booCanEdit)
       {
-        using (SevenZipExtractor szeExtractor = GetExtractor(m_strPath))
+        using (var szeExtractor = GetExtractor(m_strPath))
         {
           throw new InvalidOperationException("Cannot modify archive of type: " + szeExtractor.Format);
         }
       }
-      string strPath =
+      var strPath =
         p_strFileName.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).ToLowerInvariant();
       if (m_dicFileInfo.ContainsKey(strPath))
       {
-        Dictionary<int, string> dicDelete = new Dictionary<int, string>()
+        var dicDelete = new Dictionary<int, string>()
         {
           {
             m_dicFileInfo[strPath].Index, null
@@ -799,7 +799,7 @@ namespace Fomm.PackageManager
         };
         m_szcCompressor.ModifyArchive(m_strPath, dicDelete);
       }
-      using (MemoryStream msmData = new MemoryStream(p_bteData))
+      using (var msmData = new MemoryStream(p_bteData))
       {
         m_szcCompressor.CompressStreamDictionary(new Dictionary<string, Stream>()
         {
@@ -831,16 +831,16 @@ namespace Fomm.PackageManager
       }
       if (!m_booCanEdit)
       {
-        using (SevenZipExtractor szeExtractor = GetExtractor(m_strPath))
+        using (var szeExtractor = GetExtractor(m_strPath))
         {
           throw new InvalidOperationException("Cannot modify archive of type: " + szeExtractor.Format);
         }
       }
-      string strPath =
+      var strPath =
         p_strFileName.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).ToLowerInvariant();
       if (m_dicFileInfo.ContainsKey(strPath))
       {
-        Dictionary<int, string> dicDelete = new Dictionary<int, string>()
+        var dicDelete = new Dictionary<int, string>()
         {
           {
             m_dicFileInfo[strPath].Index, null

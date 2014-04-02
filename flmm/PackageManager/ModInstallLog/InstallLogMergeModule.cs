@@ -98,7 +98,7 @@ namespace Fomm.PackageManager.ModInstallLog
       /// instance.</returns>
       public int CompareTo(IniEdit other)
       {
-        Int32 intResult = m_strFile.CompareTo(other.m_strFile);
+        var intResult = m_strFile.CompareTo(other.m_strFile);
         if (intResult == 0)
         {
           intResult = m_strSection.CompareTo(other.m_strSection);
@@ -171,7 +171,7 @@ namespace Fomm.PackageManager.ModInstallLog
       /// instance.</returns>
       public int CompareTo(GameSpecificValueEdit other)
       {
-        Int32 intResult = m_strKey.CompareTo(other.m_strKey);
+        var intResult = m_strKey.CompareTo(other.m_strKey);
         return intResult;
       }
 
@@ -381,8 +381,8 @@ namespace Fomm.PackageManager.ModInstallLog
     /// <lang cref="false"/> otherwise.</returns>
     private bool ListContains(List<string> p_lstValues, string p_strSearchString)
     {
-      string strLoweredSearchString = p_strSearchString.ToLowerInvariant();
-      for (Int32 i = p_lstValues.Count - 1; i >= 0; i--)
+      var strLoweredSearchString = p_strSearchString.ToLowerInvariant();
+      for (var i = p_lstValues.Count - 1; i >= 0; i--)
       {
         if (p_lstValues[i].ToLowerInvariant().Equals(strLoweredSearchString))
         {
@@ -402,7 +402,7 @@ namespace Fomm.PackageManager.ModInstallLog
     /// <lang cref="false"/> otherwise.</returns>
     internal bool ContainsFile(string p_strDataPath)
     {
-      string strNormalizedPath = NormalizePath(p_strDataPath);
+      var strNormalizedPath = NormalizePath(p_strDataPath);
       return ListContains(m_lstDataFiles, strNormalizedPath);
     }
 
@@ -416,7 +416,7 @@ namespace Fomm.PackageManager.ModInstallLog
     /// <param name="p_strDataPath">The file that was installed for the mod.</param>
     internal void AddFile(string p_strDataPath)
     {
-      string strNormalizedPath = NormalizePath(p_strDataPath);
+      var strNormalizedPath = NormalizePath(p_strDataPath);
       if (!ListContains(m_lstDataFiles, strNormalizedPath))
       {
         m_lstDataFiles.Add(strNormalizedPath);
@@ -455,11 +455,11 @@ namespace Fomm.PackageManager.ModInstallLog
     /// <param name="p_strValue">The value to which the key was set.</param>
     internal void AddIniEdit(string p_strFile, string p_strSection, string p_strKey, string p_strValue)
     {
-      string strLoweredFile = p_strFile.ToLowerInvariant();
-      string strLoweredSection = p_strSection.ToLowerInvariant();
-      string strLoweredKey = p_strKey.ToLowerInvariant();
-      IniEdit iniEdit = new IniEdit(strLoweredFile, strLoweredSection, strLoweredKey);
-      Int32 intIndex = m_lstIniEdits.IndexOf(iniEdit);
+      var strLoweredFile = p_strFile.ToLowerInvariant();
+      var strLoweredSection = p_strSection.ToLowerInvariant();
+      var strLoweredKey = p_strKey.ToLowerInvariant();
+      var iniEdit = new IniEdit(strLoweredFile, strLoweredSection, strLoweredKey);
+      var intIndex = m_lstIniEdits.IndexOf(iniEdit);
       if (intIndex == -1)
       {
         m_lstIniEdits.Add(iniEdit);
@@ -483,11 +483,11 @@ namespace Fomm.PackageManager.ModInstallLog
     /// <param name="p_strValue">The original value of the edited key.</param>
     internal void BackupOriginalIniValue(string p_strFile, string p_strSection, string p_strKey, string p_strValue)
     {
-      string strLoweredFile = p_strFile.ToLowerInvariant();
-      string strLoweredSection = p_strSection.ToLowerInvariant();
-      string strLoweredKey = p_strKey.ToLowerInvariant();
-      IniEdit iniEdit = new IniEdit(strLoweredFile, strLoweredSection, strLoweredKey);
-      Int32 intIndex = m_lstReplacedIniValues.IndexOf(iniEdit);
+      var strLoweredFile = p_strFile.ToLowerInvariant();
+      var strLoweredSection = p_strSection.ToLowerInvariant();
+      var strLoweredKey = p_strKey.ToLowerInvariant();
+      var iniEdit = new IniEdit(strLoweredFile, strLoweredSection, strLoweredKey);
+      var intIndex = m_lstReplacedIniValues.IndexOf(iniEdit);
       if (intIndex == -1)
       {
         m_lstReplacedIniValues.Add(iniEdit);
@@ -514,9 +514,9 @@ namespace Fomm.PackageManager.ModInstallLog
     /// <param name="p_bteData">The data to which the value was set.</param>
     internal void AddGameSpecificValueEdit(string p_strKey, byte[] p_bteData)
     {
-      string strLoweredKey = p_strKey.ToLowerInvariant();
-      GameSpecificValueEdit gseEdit = new GameSpecificValueEdit(strLoweredKey);
-      Int32 intIndex = m_lstGameSpecificValueEdits.IndexOf(gseEdit);
+      var strLoweredKey = p_strKey.ToLowerInvariant();
+      var gseEdit = new GameSpecificValueEdit(strLoweredKey);
+      var intIndex = m_lstGameSpecificValueEdits.IndexOf(gseEdit);
       if (intIndex == -1)
       {
         m_lstGameSpecificValueEdits.Add(gseEdit);
@@ -538,9 +538,9 @@ namespace Fomm.PackageManager.ModInstallLog
     /// <param name="p_bteData">The original data of the edited value.</param>
     internal void BackupOriginalGameSpecificValueEdit(string p_strKey, byte[] p_bteData)
     {
-      string strLoweredKey = p_strKey.ToLowerInvariant();
-      GameSpecificValueEdit oetEdit = new GameSpecificValueEdit(strLoweredKey);
-      Int32 intIndex = m_lstReplacedGameSpecificValues.IndexOf(oetEdit);
+      var strLoweredKey = p_strKey.ToLowerInvariant();
+      var oetEdit = new GameSpecificValueEdit(strLoweredKey);
+      var intIndex = m_lstReplacedGameSpecificValues.IndexOf(oetEdit);
       if (intIndex == -1)
       {
         m_lstReplacedGameSpecificValues.Add(oetEdit);

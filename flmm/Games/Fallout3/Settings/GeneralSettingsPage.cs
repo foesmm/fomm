@@ -31,7 +31,7 @@ namespace Fomm.Games.Fallout3.Settings
     /// <lang cref="false"/> otherwise.</returns>
     protected bool ValidateSettings()
     {
-      bool booValid = rdcDirectories.ValidateSettings();
+      var booValid = rdcDirectories.ValidateSettings();
       booValid &= ValidateWorkingDirectory();
       return booValid;
     }

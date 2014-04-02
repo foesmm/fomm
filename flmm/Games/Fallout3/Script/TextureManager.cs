@@ -40,7 +40,7 @@ namespace Fomm.Games.Fallout3.Script
         NativeMethods.ddsInit(Application.OpenForms[0].Handle);
         m_booDdsParserInited = true;
       }
-      IntPtr ptr = NativeMethods.ddsLoad(p_bteTexture, p_bteTexture.Length);
+      var ptr = NativeMethods.ddsLoad(p_bteTexture, p_bteTexture.Length);
       if (ptr != IntPtr.Zero)
       {
         m_lstTextures.Add(ptr);
@@ -62,7 +62,7 @@ namespace Fomm.Games.Fallout3.Script
         NativeMethods.ddsInit(Application.OpenForms[0].Handle);
         m_booDdsParserInited = true;
       }
-      IntPtr ptr = NativeMethods.ddsCreate(p_intWidth, p_intHeight);
+      var ptr = NativeMethods.ddsCreate(p_intWidth, p_intHeight);
       if (ptr != IntPtr.Zero)
       {
         m_lstTextures.Add(ptr);
@@ -86,12 +86,12 @@ namespace Fomm.Games.Fallout3.Script
       }
       PermissionsManager.CurrentPermissions.Assert();
       int length;
-      IntPtr data = NativeMethods.ddsSave(p_ptrTexture, p_intFormat, p_booMipmaps ? 1 : 0, out length);
+      var data = NativeMethods.ddsSave(p_ptrTexture, p_intFormat, p_booMipmaps ? 1 : 0, out length);
       if (data == IntPtr.Zero)
       {
         return null;
       }
-      byte[] result = new byte[length];
+      var result = new byte[length];
       Marshal.Copy(data, result, 0, length);
       return result;
     }
@@ -149,12 +149,12 @@ namespace Fomm.Games.Fallout3.Script
       }
       PermissionsManager.CurrentPermissions.Assert();
       int length;
-      IntPtr ptr = NativeMethods.ddsLock(p_ptrTexture, out length, out p_intPitch);
+      var ptr = NativeMethods.ddsLock(p_ptrTexture, out length, out p_intPitch);
       if (ptr == IntPtr.Zero)
       {
         return null;
       }
-      byte[] result = new byte[length];
+      var result = new byte[length];
       Marshal.Copy(ptr, result, 0, length);
       NativeMethods.ddsUnlock(p_ptrTexture);
       return result;
@@ -202,7 +202,7 @@ namespace Fomm.Games.Fallout3.Script
     {
       if (m_booDdsParserInited)
       {
-        for (int i = 0; i < m_lstTextures.Count; i++)
+        for (var i = 0; i < m_lstTextures.Count; i++)
         {
           NativeMethods.ddsRelease(m_lstTextures[i]);
         }

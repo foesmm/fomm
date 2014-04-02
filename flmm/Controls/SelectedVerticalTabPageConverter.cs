@@ -35,7 +35,7 @@ namespace Fomm.Controls
     {
       if (context != null)
       {
-        VerticalTabControl vtcTabControl = (VerticalTabControl) context.Instance;
+        var vtcTabControl = (VerticalTabControl) context.Instance;
         return vtcTabControl.TabPages.Contains((VerticalTabPage) value);
       }
       return false;

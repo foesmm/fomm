@@ -80,7 +80,7 @@ namespace Fomm.Games.FalloutNewVegas
     {
       get
       {
-        string strModDirectory = Properties.Settings.Default.falloutNewVegasModDirectory;
+        var strModDirectory = Properties.Settings.Default.falloutNewVegasModDirectory;
         if (String.IsNullOrEmpty(strModDirectory))
         {
           throw new Exception("The Mod Directory for Fallout: New Vegas Mods has not been set.");
@@ -118,7 +118,7 @@ namespace Fomm.Games.FalloutNewVegas
     {
       get
       {
-        string strFalloutEsm = Path.Combine(PluginsPath, "falloutnv.esm");
+        var strFalloutEsm = Path.Combine(PluginsPath, "falloutnv.esm");
         return Icon.ExtractAssociatedIcon(strFalloutEsm);
       }
     }
@@ -134,7 +134,7 @@ namespace Fomm.Games.FalloutNewVegas
     {
       get
       {
-        string strDirectory = Properties.Settings.Default.falloutNewVegasInstallInfoDirectory;
+        var strDirectory = Properties.Settings.Default.falloutNewVegasInstallInfoDirectory;
         if (String.IsNullOrEmpty(strDirectory))
         {
           throw new Exception("The InstallInfoDirectory for Fallout: New Vegas has not been set.");
@@ -206,7 +206,7 @@ namespace Fomm.Games.FalloutNewVegas
     {
       if (!Properties.Settings.Default.falloutNewVegasDoneSetup)
       {
-        SetupForm sfmSetup = new SetupForm();
+        var sfmSetup = new SetupForm();
         if (sfmSetup.ShowDialog() == DialogResult.Cancel)
         {
           return false;
@@ -334,11 +334,11 @@ namespace Fomm.Games.FalloutNewVegas
 
     public override bool updateBOSS()
     {
-      bool ret = false;
+      var ret = false;
 
       try
       {
-        FalloutNewVegasBOSSUpdater bupUpdater = new FalloutNewVegasBOSSUpdater();
+        var bupUpdater = new FalloutNewVegasBOSSUpdater();
         bupUpdater.UpdateMasterlist(LoadOrderSorter.LoadOrderTemplatePath);
         ret = true;
       }
@@ -365,7 +365,7 @@ namespace Fomm.Games.FalloutNewVegas
     /// <lang cref="false"/> otherwise.</returns>
     public bool StartSteam(MainForm p_eeaArguments)
     {
-      foreach (Process clsProcess in Process.GetProcesses())
+      foreach (var clsProcess in Process.GetProcesses())
       {
         if (clsProcess.ProcessName.ToLowerInvariant().Contains("steam"))
         {
@@ -373,25 +373,25 @@ namespace Fomm.Games.FalloutNewVegas
         }
       }
 
-      string strSteam =
+      var strSteam =
         (string) Registry.GetValue(@"HKEY_CURRENT_USER\Software\Valve\Steam", "SteamExe", null);
       if (!String.IsNullOrEmpty(strSteam))
       {
         try
         {
-          ProcessStartInfo psi = new ProcessStartInfo();
+          var psi = new ProcessStartInfo();
           psi.FileName = strSteam;
           psi.WorkingDirectory = Path.GetDirectoryName(strSteam);
           psi.UseShellExecute = false;
 
-          using (FileSystemWatcher fswClientBlob = new FileSystemWatcher(psi.WorkingDirectory))
+          using (var fswClientBlob = new FileSystemWatcher(psi.WorkingDirectory))
           {
             //isn't there a more elegant way of determining if Steam has loaded,
             // rather than counting how many time the ClientRegistry.blob file
             // has been modified?
             fswClientBlob.EnableRaisingEvents = true;
             fswClientBlob.Filter = "ClientRegistry.blob";
-            Int32 intSteamClientBlobChangeCount = 0;
+            var intSteamClientBlobChangeCount = 0;
             fswClientBlob.Changed += new FileSystemEventHandler((s, e) =>
             {
               intSteamClientBlobChangeCount++;
@@ -399,7 +399,7 @@ namespace Fomm.Games.FalloutNewVegas
 
             if (Process.Start(psi) != null)
             {
-              for (Int32 i = 0; i < 120 && intSteamClientBlobChangeCount < 4; i++)
+              for (var i = 0; i < 120 && intSteamClientBlobChangeCount < 4; i++)
               {
                 Thread.Sleep(500);
               }
@@ -428,16 +428,16 @@ namespace Fomm.Games.FalloutNewVegas
     /// <exception cref="Exception">Thrown is the id cannot be found.</exception>
     protected Int32 GetSteamAppId()
     {
-      RegistryKey keyUninstall = Registry.LocalMachine.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Uninstall");
-      string[] strNames = keyUninstall.GetSubKeyNames();
-      foreach (string strKeyName in strNames)
+      var keyUninstall = Registry.LocalMachine.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Uninstall");
+      var strNames = keyUninstall.GetSubKeyNames();
+      foreach (var strKeyName in strNames)
       {
         if (strKeyName.StartsWith("steam app", StringComparison.InvariantCultureIgnoreCase))
         {
-          string strDisplayName = (string) keyUninstall.OpenSubKey(strKeyName).GetValue("Displayname");
+          var strDisplayName = (string) keyUninstall.OpenSubKey(strKeyName).GetValue("Displayname");
           if ("fallout: new vegas".Equals(strDisplayName, StringComparison.InvariantCultureIgnoreCase))
           {
-            Int32 intAppId = -1;
+            var intAppId = -1;
             if (Int32.TryParse(strKeyName.Split(' ')[2], out intAppId))
             {
               return intAppId;
@@ -446,14 +446,14 @@ namespace Fomm.Games.FalloutNewVegas
         }
       }
 
-      string strInstallScriptPath = Path.Combine(Environment.CurrentDirectory, "InstallScript.vdf");
+      var strInstallScriptPath = Path.Combine(Environment.CurrentDirectory, "InstallScript.vdf");
       if (File.Exists(strInstallScriptPath))
       {
-        Regex rgxAppId = new Regex(@"HKEY_LOCAL_MACHINE\\\\Software\\\\Valve\\\\Steam\\\\Apps\\\\(\d+)");
-        string strInstallScript = File.ReadAllText(strInstallScriptPath);
+        var rgxAppId = new Regex(@"HKEY_LOCAL_MACHINE\\\\Software\\\\Valve\\\\Steam\\\\Apps\\\\(\d+)");
+        var strInstallScript = File.ReadAllText(strInstallScriptPath);
         if (rgxAppId.IsMatch(strInstallScript))
         {
-          Int32 intAppId = -1;
+          var intAppId = -1;
           if (Int32.TryParse(rgxAppId.Match(strInstallScript).Groups[1].Value, out intAppId))
           {
             return intAppId;
@@ -480,8 +480,8 @@ namespace Fomm.Games.FalloutNewVegas
           MessageBox.Show("Please close all utility windows before launching Fallout");
           return;
         }
-        string command = Properties.Settings.Default.falloutNewVegasLaunchCommand;
-        string args = Properties.Settings.Default.falloutNewVegasLaunchCommandArgs;
+        var command = Properties.Settings.Default.falloutNewVegasLaunchCommand;
+        var args = Properties.Settings.Default.falloutNewVegasLaunchCommandArgs;
         if (String.IsNullOrEmpty(command))
         {
           MessageBox.Show("No custom launch command has been set", "Error");
@@ -490,7 +490,7 @@ namespace Fomm.Games.FalloutNewVegas
 
         try
         {
-          ProcessStartInfo psi = new ProcessStartInfo();
+          var psi = new ProcessStartInfo();
           psi.Arguments = args;
           psi.FileName = command;
           psi.WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath(command));
@@ -531,7 +531,7 @@ namespace Fomm.Games.FalloutNewVegas
 
         try
         {
-          ProcessStartInfo psi = new ProcessStartInfo();
+          var psi = new ProcessStartInfo();
           psi.FileName = "nvse_loader.exe";
           //this configuration force the FO:NV launcher, which
           // ensures NVSE loads
@@ -583,11 +583,11 @@ namespace Fomm.Games.FalloutNewVegas
         {
           command = "falloutNVng.exe";
         }
-        bool booSteamStarted = StartSteam(p_eeaArguments.Argument);
+        var booSteamStarted = StartSteam(p_eeaArguments.Argument);
 
         try
         {
-          ProcessStartInfo psi = new ProcessStartInfo();
+          var psi = new ProcessStartInfo();
           if (booSteamStarted && !psi.EnvironmentVariables.ContainsKey("SteamAppID"))
           {
             psi.EnvironmentVariables.Add("SteamAppID", GetSteamAppId().ToString());
@@ -617,8 +617,8 @@ namespace Fomm.Games.FalloutNewVegas
     /// main mod management form.</param>
     public override void LaunchGame(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
-      string command = Properties.Settings.Default.falloutNewVegasLaunchCommand;
-      string args = Properties.Settings.Default.falloutNewVegasLaunchCommandArgs;
+      var command = Properties.Settings.Default.falloutNewVegasLaunchCommand;
+      var args = Properties.Settings.Default.falloutNewVegasLaunchCommandArgs;
       if (!String.IsNullOrEmpty(command))
       {
         LaunchFalloutNVCustom(p_objCommand, p_eeaArguments);
@@ -653,7 +653,7 @@ namespace Fomm.Games.FalloutNewVegas
       }
       try
       {
-        ProcessStartInfo psi = new ProcessStartInfo();
+        var psi = new ProcessStartInfo();
         psi.FileName = "FNVEdit.exe";
         psi.WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath(psi.FileName));
         if (Process.Start(psi) == null)
@@ -677,12 +677,12 @@ namespace Fomm.Games.FalloutNewVegas
     /// main mod management form.</param>
     public override void LaunchSaveGamesViewer(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
-      List<string> lstActive = new List<string>();
+      var lstActive = new List<string>();
       //the original implementation populated the inactive list with all plugins
       // we only populate it with inactive plugins - hopefully that's OK
-      List<string> lstInactive = new List<string>();
+      var lstInactive = new List<string>();
 
-      foreach (string strPlugin in PluginManager.OrderedPluginList)
+      foreach (var strPlugin in PluginManager.OrderedPluginList)
       {
         if (PluginManager.IsPluginActive(strPlugin))
         {
@@ -794,7 +794,7 @@ namespace Fomm.Games.FalloutNewVegas
     /// <returns>Command line help for the arguments provided by the game mode.</returns>
     public new static string GetCommandLineHelp()
     {
-      StringBuilder stbHelp = new StringBuilder();
+      var stbHelp = new StringBuilder();
       stbHelp.AppendLine("*.dat, *.bsa, *.esm, *.esp, *.sdp");
       stbHelp.AppendLine("Open the specified file in the relevent utility");
       stbHelp.AppendLine();
@@ -836,8 +836,8 @@ namespace Fomm.Games.FalloutNewVegas
         switch (p_strArgs[0])
         {
           case "-setup":
-            bool booNewMutex = false;
-            Mutex mutex = new Mutex(true, "fommMainMutex", out booNewMutex);
+            var booNewMutex = false;
+            var mutex = new Mutex(true, "fommMainMutex", out booNewMutex);
             if (!booNewMutex)
             {
               MessageBox.Show("fomm is already running", "Error");
@@ -890,13 +890,13 @@ namespace Fomm.Games.FalloutNewVegas
         return false;
       }
 
-      string[] strExes = new string[]
+      var strExes = new string[]
       {
         Path.Combine(p_strPath, "falloutNV.exe"),
         Path.Combine(p_strPath, "falloutNVng.exe")
       };
-      bool booFound = false;
-      foreach (string strExe in strExes)
+      var booFound = false;
+      foreach (var strExe in strExes)
       {
         if (File.Exists(strExe))
         {
@@ -918,7 +918,7 @@ namespace Fomm.Games.FalloutNewVegas
     /// <lang cref="false"/> otherwise.</returns>
     public override bool SetWorkingDirectory(out string p_strErrorMessage)
     {
-      string strWorkingDirectory = Properties.Settings.Default.falloutNewVegasWorkingDirectory;
+      var strWorkingDirectory = Properties.Settings.Default.falloutNewVegasWorkingDirectory;
 
       if (String.IsNullOrEmpty(strWorkingDirectory) || !Directory.Exists(strWorkingDirectory))
       {
@@ -934,7 +934,7 @@ namespace Fomm.Games.FalloutNewVegas
         }
       }
 
-      using (WorkingDirectorySelectionForm wdfForm = new WorkingDirectorySelectionForm(
+      using (var wdfForm = new WorkingDirectorySelectionForm(
         "Could not find Fallout: New Vegas directory." + Environment.NewLine +
         "Fallout's registry entry appears to be missing or incorrect." + Environment.NewLine +
         "Please enter the path to your Fallout: New Vegas game file, or click \"Auto Detect\" to search" +

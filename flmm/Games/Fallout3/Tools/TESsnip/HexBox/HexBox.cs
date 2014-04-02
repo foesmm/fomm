@@ -267,7 +267,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
         }
 
         _bpi = GetBytePositionInfo(new Point(e.X, e.Y));
-        long selEnd = _bpi.Index;
+        var selEnd = _bpi.Index;
         long realselStart;
         long realselLength;
 
@@ -306,9 +306,9 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
       {
         Debug.WriteLine("PreProcessWmKeyDown(ref Message m)", "KeyInterpreter");
 
-        Keys vc = (Keys) m.WParam.ToInt32();
+        var vc = (Keys) m.WParam.ToInt32();
 
-        Keys keyData = vc | ModifierKeys;
+        var keyData = vc | ModifierKeys;
 
         switch (keyData)
         {
@@ -386,7 +386,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 
       protected bool RaiseKeyDown(Keys keyData)
       {
-        KeyEventArgs e = new KeyEventArgs(keyData);
+        var e = new KeyEventArgs(keyData);
         _hexBox.OnKeyDown(e);
         return e.Handled;
       }
@@ -398,8 +398,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 
       protected virtual bool PreProcessWmKeyDown_Up(ref Message m)
       {
-        long pos = _hexBox._bytePos;
-        int cp = _hexBox._byteCharacterPos;
+        var pos = _hexBox._bytePos;
+        var cp = _hexBox._byteCharacterPos;
 
         if (!(pos == 0 && cp == 0))
         {
@@ -433,8 +433,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 
       protected virtual bool PreProcessWmKeyDown_Down(ref Message m)
       {
-        long pos = _hexBox._bytePos;
-        int cp = _hexBox._byteCharacterPos;
+        var pos = _hexBox._bytePos;
+        var cp = _hexBox._byteCharacterPos;
 
         if (pos == _hexBox._byteProvider.Length && cp == 0)
         {
@@ -465,8 +465,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 
       protected virtual bool PreProcessWmKeyDown_PageUp(ref Message m)
       {
-        long pos = _hexBox._bytePos;
-        int cp = _hexBox._byteCharacterPos;
+        var pos = _hexBox._bytePos;
+        var cp = _hexBox._byteCharacterPos;
 
         if (pos == 0 && cp == 0)
         {
@@ -494,8 +494,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 
       protected virtual bool PreProcessWmKeyDown_PageDown(ref Message m)
       {
-        long pos = _hexBox._bytePos;
-        int cp = _hexBox._byteCharacterPos;
+        var pos = _hexBox._bytePos;
+        var cp = _hexBox._byteCharacterPos;
 
         if (pos == _hexBox._byteProvider.Length && cp == 0)
         {
@@ -525,8 +525,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 
       protected virtual bool PreProcessWmKeyDown_ShiftLeft(ref Message m)
       {
-        long pos = _hexBox._bytePos;
-        long sel = _hexBox._selectionLength;
+        var pos = _hexBox._bytePos;
+        var sel = _hexBox._selectionLength;
 
         if (pos + sel < 1)
         {
@@ -556,8 +556,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 
       protected virtual bool PreProcessWmKeyDown_ShiftUp(ref Message m)
       {
-        long pos = _hexBox._bytePos;
-        long sel = _hexBox._selectionLength;
+        var pos = _hexBox._bytePos;
+        var sel = _hexBox._selectionLength;
 
         if (pos - _hexBox._iHexMaxHBytes < 0 && pos <= _bpiStart.Index)
         {
@@ -594,8 +594,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 
       protected virtual bool PreProcessWmKeyDown_ShiftRight(ref Message m)
       {
-        long pos = _hexBox._bytePos;
-        long sel = _hexBox._selectionLength;
+        var pos = _hexBox._bytePos;
+        var sel = _hexBox._selectionLength;
 
         if (pos + sel >= _hexBox._byteProvider.Length)
         {
@@ -621,10 +621,10 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 
       protected virtual bool PreProcessWmKeyDown_ShiftDown(ref Message m)
       {
-        long pos = _hexBox._bytePos;
-        long sel = _hexBox._selectionLength;
+        var pos = _hexBox._bytePos;
+        var sel = _hexBox._selectionLength;
 
-        long max = _hexBox._byteProvider.Length;
+        var max = _hexBox._byteProvider.Length;
 
         if (pos + sel + _hexBox._iHexMaxHBytes > max)
         {
@@ -706,17 +706,17 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
           return true;
         }
 
-        long pos = _hexBox._bytePos;
-        long sel = _hexBox._selectionLength;
-        int cp = _hexBox._byteCharacterPos;
+        var pos = _hexBox._bytePos;
+        var sel = _hexBox._selectionLength;
+        var cp = _hexBox._byteCharacterPos;
 
-        long startDelete = (cp == 0 && sel == 0) ? pos - 1 : pos;
+        var startDelete = (cp == 0 && sel == 0) ? pos - 1 : pos;
         if (startDelete < 0 && sel < 1)
         {
           return true;
         }
 
-        long bytesToDelete = (sel > 0) ? sel : 1;
+        var bytesToDelete = (sel > 0) ? sel : 1;
         _hexBox._byteProvider.DeleteBytes(Math.Max(0, startDelete), bytesToDelete);
         _hexBox.UpdateScrollSize();
 
@@ -738,15 +738,15 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
           return true;
         }
 
-        long pos = _hexBox._bytePos;
-        long sel = _hexBox._selectionLength;
+        var pos = _hexBox._bytePos;
+        var sel = _hexBox._selectionLength;
 
         if (pos >= _hexBox._byteProvider.Length)
         {
           return true;
         }
 
-        long bytesToDelete = (sel > 0) ? sel : 1;
+        var bytesToDelete = (sel > 0) ? sel : 1;
         _hexBox._byteProvider.DeleteBytes(pos, bytesToDelete);
 
         _hexBox.UpdateScrollSize();
@@ -758,8 +758,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 
       protected virtual bool PreProcessWmKeyDown_Home(ref Message m)
       {
-        long pos = _hexBox._bytePos;
-        int cp = _hexBox._byteCharacterPos;
+        var pos = _hexBox._bytePos;
+        var cp = _hexBox._byteCharacterPos;
 
         if (pos < 1)
         {
@@ -779,8 +779,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 
       protected virtual bool PreProcessWmKeyDown_End(ref Message m)
       {
-        long pos = _hexBox._bytePos;
-        int cp = _hexBox._byteCharacterPos;
+        var pos = _hexBox._bytePos;
+        var cp = _hexBox._byteCharacterPos;
 
         if (pos >= _hexBox._byteProvider.Length - 1)
         {
@@ -850,13 +850,13 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
           return _hexBox.BasePreProcessMessage(ref m);
         }
 
-        bool sw = _hexBox._byteProvider.SupportsWriteByte();
-        bool si = _hexBox._byteProvider.SupportsInsertBytes();
-        bool sd = _hexBox._byteProvider.SupportsDeleteBytes();
+        var sw = _hexBox._byteProvider.SupportsWriteByte();
+        var si = _hexBox._byteProvider.SupportsInsertBytes();
+        var sd = _hexBox._byteProvider.SupportsDeleteBytes();
 
-        long pos = _hexBox._bytePos;
-        long sel = _hexBox._selectionLength;
-        int cp = _hexBox._byteCharacterPos;
+        var pos = _hexBox._bytePos;
+        var sel = _hexBox._selectionLength;
+        var cp = _hexBox._byteCharacterPos;
 
         if (
           (!sw && pos != _hexBox._byteProvider.Length) ||
@@ -865,7 +865,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
           return _hexBox.BasePreProcessMessage(ref m);
         }
 
-        char c = (char) m.WParam.ToInt32();
+        var c = (char) m.WParam.ToInt32();
 
         if (Uri.IsHexDigit(c))
         {
@@ -879,7 +879,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
             return true;
           }
 
-          bool isInsertMode = (pos == _hexBox._byteProvider.Length);
+          var isInsertMode = (pos == _hexBox._byteProvider.Length);
 
           // do insert when insertActive = true
           if (!isInsertMode && si && _hexBox._insertActive && cp == 0)
@@ -907,13 +907,13 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
             currentByte = _hexBox._byteProvider.ReadByte(pos);
           }
 
-          string sCb = currentByte.ToString("X", Thread.CurrentThread.CurrentCulture);
+          var sCb = currentByte.ToString("X", Thread.CurrentThread.CurrentCulture);
           if (sCb.Length == 1)
           {
             sCb = "0" + sCb;
           }
 
-          string sNewCb = c.ToString();
+          var sNewCb = c.ToString();
           if (cp == 0)
           {
             sNewCb += sCb.Substring(1, 1);
@@ -922,7 +922,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
           {
             sNewCb = sCb.Substring(0, 1) + sNewCb;
           }
-          byte newcb = byte.Parse(sNewCb, NumberStyles.AllowHexSpecifier,
+          var newcb = byte.Parse(sNewCb, NumberStyles.AllowHexSpecifier,
                                   Thread.CurrentThread.CurrentCulture);
           if (isInsertMode)
           {
@@ -949,7 +949,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 
       protected bool RaiseKeyPress(char keyChar)
       {
-        KeyPressEventArgs e = new KeyPressEventArgs(keyChar);
+        var e = new KeyPressEventArgs(keyChar);
         _hexBox.OnKeyPress(e);
         return e.Handled;
       }
@@ -962,9 +962,9 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
       {
         Debug.WriteLine("PreProcessWmKeyUp(ref Message m)", "KeyInterpreter");
 
-        Keys vc = (Keys) m.WParam.ToInt32();
+        var vc = (Keys) m.WParam.ToInt32();
 
-        Keys keyData = vc | ModifierKeys;
+        var keyData = vc | ModifierKeys;
 
         switch (keyData)
         {
@@ -998,7 +998,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 
       protected bool RaiseKeyUp(Keys keyData)
       {
-        KeyEventArgs e = new KeyEventArgs(keyData);
+        var e = new KeyEventArgs(keyData);
         _hexBox.OnKeyUp(e);
         return e.Handled;
       }
@@ -1009,9 +1009,9 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 
       protected virtual bool PerformPosMoveLeft()
       {
-        long pos = _hexBox._bytePos;
-        long sel = _hexBox._selectionLength;
-        int cp = _hexBox._byteCharacterPos;
+        var pos = _hexBox._bytePos;
+        var sel = _hexBox._selectionLength;
+        var cp = _hexBox._byteCharacterPos;
 
         if (sel != 0)
         {
@@ -1052,9 +1052,9 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 
       protected virtual bool PerformPosMoveRight()
       {
-        long pos = _hexBox._bytePos;
-        int cp = _hexBox._byteCharacterPos;
-        long sel = _hexBox._selectionLength;
+        var pos = _hexBox._bytePos;
+        var cp = _hexBox._byteCharacterPos;
+        var sel = _hexBox._selectionLength;
 
         if (sel != 0)
         {
@@ -1094,8 +1094,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 
       protected virtual bool PerformPosMoveLeftByte()
       {
-        long pos = _hexBox._bytePos;
-        int cp = _hexBox._byteCharacterPos;
+        var pos = _hexBox._bytePos;
+        var cp = _hexBox._byteCharacterPos;
 
         if (pos == 0)
         {
@@ -1120,8 +1120,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 
       protected virtual bool PerformPosMoveRightByte()
       {
-        long pos = _hexBox._bytePos;
-        int cp = _hexBox._byteCharacterPos;
+        var pos = _hexBox._bytePos;
+        var cp = _hexBox._byteCharacterPos;
 
         if (pos == _hexBox._byteProvider.Length)
         {
@@ -1181,9 +1181,9 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 
       public override bool PreProcessWmKeyDown(ref Message m)
       {
-        Keys vc = (Keys) m.WParam.ToInt32();
+        var vc = (Keys) m.WParam.ToInt32();
 
-        Keys keyData = vc | ModifierKeys;
+        var keyData = vc | ModifierKeys;
 
         switch (keyData)
         {
@@ -1228,13 +1228,13 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
           return _hexBox.BasePreProcessMessage(ref m);
         }
 
-        bool sw = _hexBox._byteProvider.SupportsWriteByte();
-        bool si = _hexBox._byteProvider.SupportsInsertBytes();
-        bool sd = _hexBox._byteProvider.SupportsDeleteBytes();
+        var sw = _hexBox._byteProvider.SupportsWriteByte();
+        var si = _hexBox._byteProvider.SupportsInsertBytes();
+        var sd = _hexBox._byteProvider.SupportsDeleteBytes();
 
-        long pos = _hexBox._bytePos;
-        long sel = _hexBox._selectionLength;
-        int cp = _hexBox._byteCharacterPos;
+        var pos = _hexBox._bytePos;
+        var sel = _hexBox._selectionLength;
+        var cp = _hexBox._byteCharacterPos;
 
         if (
           (!sw && pos != _hexBox._byteProvider.Length) ||
@@ -1243,7 +1243,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
           return _hexBox.BasePreProcessMessage(ref m);
         }
 
-        char c = (char) m.WParam.ToInt32();
+        var c = (char) m.WParam.ToInt32();
 
         if (RaiseKeyPress(c))
         {
@@ -1255,7 +1255,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
           return true;
         }
 
-        bool isInsertMode = (pos == _hexBox._byteProvider.Length);
+        var isInsertMode = (pos == _hexBox._byteProvider.Length);
 
         // do insert when insertActive = true
         if (!isInsertMode && si && _hexBox._insertActive)
@@ -1299,7 +1299,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
       {
         Debug.WriteLine("GetCaretPointF()", "StringKeyInterpreter");
 
-        Point gp = _hexBox.GetGridBytePoint(byteIndex);
+        var gp = _hexBox.GetGridBytePoint(byteIndex);
         return _hexBox.GetByteStringPointF(gp);
       }
 
@@ -1643,7 +1643,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
           PerformScrollPageUp();
           break;
         case ScrollEventType.ThumbPosition:
-          long lPos = FromScrollPos(e.NewValue);
+          var lPos = FromScrollPos(e.NewValue);
           PerformScrollThumpPosition(lPos);
           break;
         case ScrollEventType.ThumbTrack:
@@ -1654,7 +1654,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
           }
 
           // perform scroll immediately only if last refresh is very old
-          int currentThumbTrack = Environment.TickCount;
+          var currentThumbTrack = Environment.TickCount;
           if (currentThumbTrack - _lastThumbtrack > THUMPTRACKDELAY)
           {
             PerformScrollThumbTrack(null, null);
@@ -1692,11 +1692,11 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
       // calc scroll bar info
       if (VScrollBarVisible && _byteProvider != null && _byteProvider.Length > 0 && _iHexMaxHBytes != 0)
       {
-        long scrollmax =
+        var scrollmax =
           (long) Math.Ceiling((double) _byteProvider.Length/(double) _iHexMaxHBytes - (double) _iHexMaxVBytes);
         scrollmax = Math.Max(0, scrollmax);
 
-        long scrollpos = _startByte/_iHexMaxHBytes;
+        var scrollpos = _startByte/_iHexMaxHBytes;
 
         if (scrollmax == _scrollVmax && scrollpos == _scrollVpos)
         {
@@ -1722,7 +1722,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     {
       Debug.WriteLine("UpdateVScroll()", "HexBox");
 
-      int max = ToScrollMax(_scrollVmax);
+      var max = ToScrollMax(_scrollVmax);
 
       if (max > 0)
       {
@@ -1739,7 +1739,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 
     private int ToScrollPos(long value)
     {
-      int max = 65535;
+      var max = 65535;
 
       if (_scrollVmax < max)
       {
@@ -1747,8 +1747,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
       }
       else
       {
-        double valperc = (double) value/(double) _scrollVmax*(double) 100;
-        int res = (int) Math.Floor((double) max/(double) 100*valperc);
+        var valperc = (double) value/(double) _scrollVmax*(double) 100;
+        var res = (int) Math.Floor((double) max/(double) 100*valperc);
         res = (int) Math.Max(_scrollVmin, res);
         res = (int) Math.Min(_scrollVmax, res);
         return res;
@@ -1757,14 +1757,14 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 
     private long FromScrollPos(int value)
     {
-      int max = 65535;
+      var max = 65535;
       if (_scrollVmax < max)
       {
         return (long) value;
       }
       else
       {
-        double valperc = (double) value/(double) max*(double) 100;
+        var valperc = (double) value/(double) max*(double) 100;
         long res = (int) Math.Floor((double) _scrollVmax/(double) 100*valperc);
         return res;
       }
@@ -1840,7 +1840,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     private void PerformScrollThumpPosition(long pos)
     {
       // Bug fix: Scroll to end, do not scroll to end
-      int difference = (_scrollVmax > 65535) ? 10 : 9;
+      var difference = (_scrollVmax > 65535) ? 10 : 9;
 
       if (ToScrollPos(pos) == ToScrollMax(_scrollVmax) - difference)
       {
@@ -1876,12 +1876,12 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 
       if (index < _startByte)
       {
-        long line = (long) Math.Floor((double) index/(double) _iHexMaxHBytes);
+        var line = (long) Math.Floor((double) index/(double) _iHexMaxHBytes);
         PerformScrollThumpPosition(line);
       }
       else if (index > _endByte)
       {
-        long line = (long) Math.Floor((double) index/(double) _iHexMaxHBytes);
+        var line = (long) Math.Floor((double) index/(double) _iHexMaxHBytes);
         line -= _iHexMaxVBytes - 1;
         PerformScrollThumpPosition(line);
       }
@@ -1927,9 +1927,9 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 
     private void InternalSelect(long start, long length)
     {
-      long pos = start;
-      long sel = length;
-      int cp = 0;
+      var pos = start;
+      var sel = length;
+      var cp = 0;
 
       if (sel > 0 && _caretVisible)
       {
@@ -2045,8 +2045,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 
       Debug.WriteLine("UpdateCaret()", "HexBox");
 
-      long byteIndex = _bytePos - _startByte;
-      PointF p = _keyInterpreter.GetCaretPointF(byteIndex);
+      var byteIndex = _bytePos - _startByte;
+      var p = _keyInterpreter.GetCaretPointF(byteIndex);
       p.X += _byteCharacterPos*_charSize.Width;
       NativeMethods.SetCaretPos((int) p.X, (int) p.Y);
     }
@@ -2073,12 +2073,12 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
         return;
       }
 
-      long pos = _bytePos;
-      int cp = _byteCharacterPos;
+      var pos = _bytePos;
+      var cp = _byteCharacterPos;
 
       if (_recHex.Contains(p))
       {
-        BytePositionInfo bpi = GetHexBytePositionInfo(p);
+        var bpi = GetHexBytePositionInfo(p);
         pos = bpi.Index;
         cp = bpi.CharacterPosition;
 
@@ -2090,7 +2090,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
       }
       else if (_recStringView.Contains(p))
       {
-        BytePositionInfo bpi = GetStringBytePositionInfo(p);
+        var bpi = GetStringBytePositionInfo(p);
         pos = bpi.Index;
         cp = bpi.CharacterPosition;
 
@@ -2109,12 +2109,12 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
       long bytePos;
       int byteCharaterPos;
 
-      float x = ((float) (p.X - _recHex.X)/_charSize.Width);
-      float y = ((float) (p.Y - _recHex.Y)/_charSize.Height);
-      int iX = (int) x;
-      int iY = (int) y;
+      var x = ((float) (p.X - _recHex.X)/_charSize.Width);
+      var y = ((float) (p.Y - _recHex.Y)/_charSize.Height);
+      var iX = (int) x;
+      var iY = (int) y;
 
-      int hPos = (iX/3 + 1);
+      var hPos = (iX/3 + 1);
 
       bytePos = Math.Min(_byteProvider.Length,
                          _startByte + (_iHexMaxHBytes*(iY + 1) - _iHexMaxHBytes) + hPos - 1);
@@ -2143,12 +2143,12 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
       long bytePos;
       int byteCharacterPos;
 
-      float x = ((float) (p.X - _recStringView.X)/_charSize.Width);
-      float y = ((float) (p.Y - _recStringView.Y)/_charSize.Height);
-      int iX = (int) x;
-      int iY = (int) y;
+      var x = ((float) (p.X - _recStringView.X)/_charSize.Width);
+      var y = ((float) (p.Y - _recStringView.Y)/_charSize.Height);
+      var iX = (int) x;
+      var iY = (int) y;
 
-      int hPos = iX + 1;
+      var hPos = iX + 1;
 
       bytePos = Math.Min(_byteProvider.Length,
                          _startByte + (_iHexMaxHBytes*(iY + 1) - _iHexMaxHBytes) + hPos - 1);
@@ -2206,12 +2206,12 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     /// -2 if Find was aborted.</returns>
     public long Find(byte[] bytes, long startIndex)
     {
-      int match = 0;
-      int bytesLength = bytes.Length;
+      var match = 0;
+      var bytesLength = bytes.Length;
 
       _abortFind = false;
 
-      for (long pos = startIndex; pos < _byteProvider.Length; pos++)
+      for (var pos = startIndex; pos < _byteProvider.Length; pos++)
       {
         if (_abortFind)
         {
@@ -2235,7 +2235,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 
         if (match == bytesLength)
         {
-          long bytePos = pos - bytesLength + 1;
+          var bytePos = pos - bytesLength + 1;
           Select(bytePos, bytesLength);
           ScrollByteIntoView(_bytePos + _selectionLength);
           ScrollByteIntoView(_bytePos);
@@ -2282,23 +2282,23 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
       }
 
       // put bytes into buffer
-      byte[] buffer = new byte[_selectionLength];
-      int id = -1;
-      for (long i = _bytePos; i < _bytePos + _selectionLength; i++)
+      var buffer = new byte[_selectionLength];
+      var id = -1;
+      for (var i = _bytePos; i < _bytePos + _selectionLength; i++)
       {
         id++;
 
         buffer[id] = _byteProvider.ReadByte(i);
       }
 
-      DataObject da = new DataObject();
+      var da = new DataObject();
 
       // set string buffer clipbard data
-      string sBuffer = Encoding.ASCII.GetString(buffer, 0, buffer.Length);
+      var sBuffer = Encoding.ASCII.GetString(buffer, 0, buffer.Length);
       da.SetData(typeof (string), sBuffer);
 
       //set memorystream (BinaryData) clipboard data
-      MemoryStream ms = new MemoryStream(buffer, 0, buffer.Length, false, true);
+      var ms = new MemoryStream(buffer, 0, buffer.Length, false, true);
       da.SetData("BinaryData", ms);
 
       Clipboard.SetDataObject(da, true);
@@ -2378,16 +2378,16 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
       }
 
       byte[] buffer = null;
-      IDataObject da = Clipboard.GetDataObject();
+      var da = Clipboard.GetDataObject();
       if (da.GetDataPresent("BinaryData"))
       {
-        MemoryStream ms = (MemoryStream) da.GetData("BinaryData");
+        var ms = (MemoryStream) da.GetData("BinaryData");
         buffer = new byte[ms.Length];
         ms.Read(buffer, 0, buffer.Length);
       }
       else if (da.GetDataPresent(typeof (string)))
       {
-        string sBuffer = (string) da.GetData(typeof (string));
+        var sBuffer = (string) da.GetData(typeof (string));
         buffer = Encoding.ASCII.GetBytes(sBuffer);
       }
       else
@@ -2425,7 +2425,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
         return false;
       }
 
-      IDataObject da = Clipboard.GetDataObject();
+      var da = Clipboard.GetDataObject();
       if (da.GetDataPresent("BinaryData"))
       {
         return true;
@@ -2456,8 +2456,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
         {
           if (TextBoxRenderer.IsSupported)
           {
-            VisualStyleElement state = VisualStyleElement.TextBox.TextEdit.Normal;
-            Color backColor = BackColor;
+            var state = VisualStyleElement.TextBox.TextEdit.Normal;
+            var backColor = BackColor;
 
             if (Enabled)
             {
@@ -2476,10 +2476,10 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
               backColor = BackColorDisabled;
             }
 
-            VisualStyleRenderer vsr = new VisualStyleRenderer(state);
+            var vsr = new VisualStyleRenderer(state);
             vsr.DrawBackground(pevent.Graphics, ClientRectangle);
 
-            Rectangle rectContent = vsr.GetBackgroundContentRectangle(pevent.Graphics, ClientRectangle);
+            var rectContent = vsr.GetBackgroundContentRectangle(pevent.Graphics, ClientRectangle);
             pevent.Graphics.FillRectangle(new SolidBrush(backColor), rectContent);
           }
           else
@@ -2519,7 +2519,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
       }
 
       // draw only in the content rectangle, so exclude the border and the scrollbar.
-      Region r = new Region(ClientRectangle);
+      var r = new Region(ClientRectangle);
       r.Exclude(_recContent);
       e.Graphics.ExcludeClip(r);
 
@@ -2549,18 +2549,18 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
       // Ensure endByte isn't > length of array.
       endByte = Math.Min(_byteProvider.Length - 1, endByte);
 
-      Color lineInfoColor = (LineInfoForeColor != Color.Empty) ? LineInfoForeColor : ForeColor;
+      var lineInfoColor = (LineInfoForeColor != Color.Empty) ? LineInfoForeColor : ForeColor;
       Brush brush = new SolidBrush(lineInfoColor);
 
-      int maxLine = GetGridBytePoint(endByte - startByte).Y + 1;
+      var maxLine = GetGridBytePoint(endByte - startByte).Y + 1;
 
-      for (int i = 0; i < maxLine; i++)
+      for (var i = 0; i < maxLine; i++)
       {
-        long firstLineByte = startByte + (_iHexMaxHBytes)*i;
+        var firstLineByte = startByte + (_iHexMaxHBytes)*i;
 
-        PointF bytePointF = GetBytePointF(new Point(0, 0 + i));
-        string info = firstLineByte.ToString(_hexStringFormat, Thread.CurrentThread.CurrentCulture);
-        int nulls = 8 - info.Length;
+        var bytePointF = GetBytePointF(new Point(0, 0 + i));
+        var info = firstLineByte.ToString(_hexStringFormat, Thread.CurrentThread.CurrentCulture);
+        var nulls = 8 - info.Length;
         string formattedInfo;
         if (nulls > -1)
         {
@@ -2581,18 +2581,18 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
       Brush selBrush = new SolidBrush(_selectionForeColor);
       Brush selBrushBack = new SolidBrush(_selectionBackColor);
 
-      int counter = -1;
-      long intern_endByte = Math.Min(_byteProvider.Length - 1, endByte + _iHexMaxHBytes);
+      var counter = -1;
+      var intern_endByte = Math.Min(_byteProvider.Length - 1, endByte + _iHexMaxHBytes);
 
-      bool isKeyInterpreterActive = _keyInterpreter == null || _keyInterpreter.GetType() == typeof (KeyInterpreter);
+      var isKeyInterpreterActive = _keyInterpreter == null || _keyInterpreter.GetType() == typeof (KeyInterpreter);
 
-      for (long i = startByte; i < intern_endByte + 1; i++)
+      for (var i = startByte; i < intern_endByte + 1; i++)
       {
         counter++;
-        Point gridPoint = GetGridBytePoint(counter);
-        byte b = _byteProvider.ReadByte(i);
+        var gridPoint = GetGridBytePoint(counter);
+        var b = _byteProvider.ReadByte(i);
 
-        bool isSelectedByte = i >= _bytePos && i <= (_bytePos + _selectionLength - 1) && _selectionLength != 0;
+        var isSelectedByte = i >= _bytePos && i <= (_bytePos + _selectionLength - 1) && _selectionLength != 0;
 
         if (isSelectedByte && isKeyInterpreterActive)
         {
@@ -2607,9 +2607,9 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 
     private void PaintHexString(Graphics g, byte b, Brush brush, Point gridPoint)
     {
-      PointF bytePointF = GetBytePointF(gridPoint);
+      var bytePointF = GetBytePointF(gridPoint);
 
-      string sB = b.ToString(_hexStringFormat, Thread.CurrentThread.CurrentCulture);
+      var sB = b.ToString(_hexStringFormat, Thread.CurrentThread.CurrentCulture);
       if (sB.Length == 1)
       {
         sB = "0" + sB;
@@ -2622,16 +2622,16 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 
     private void PaintHexStringSelected(Graphics g, byte b, Brush brush, Brush brushBack, Point gridPoint)
     {
-      string sB = b.ToString(_hexStringFormat, Thread.CurrentThread.CurrentCulture);
+      var sB = b.ToString(_hexStringFormat, Thread.CurrentThread.CurrentCulture);
       if (sB.Length == 1)
       {
         sB = "0" + sB;
       }
 
-      PointF bytePointF = GetBytePointF(gridPoint);
+      var bytePointF = GetBytePointF(gridPoint);
 
-      bool isLastLineChar = (gridPoint.X + 1 == _iHexMaxHBytes);
-      float bcWidth = (isLastLineChar) ? _charSize.Width*2 : _charSize.Width*3;
+      var isLastLineChar = (gridPoint.X + 1 == _iHexMaxHBytes);
+      var bcWidth = (isLastLineChar) ? _charSize.Width*2 : _charSize.Width*3;
 
       g.FillRectangle(brushBack, bytePointF.X, bytePointF.Y, bcWidth, _charSize.Height);
       g.DrawString(sB.Substring(0, 1), Font, brush, bytePointF, _stringFormat);
@@ -2645,21 +2645,21 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
       Brush selBrush = new SolidBrush(_selectionForeColor);
       Brush selBrushBack = new SolidBrush(_selectionBackColor);
 
-      int counter = -1;
-      long intern_endByte = Math.Min(_byteProvider.Length - 1, endByte + _iHexMaxHBytes);
+      var counter = -1;
+      var intern_endByte = Math.Min(_byteProvider.Length - 1, endByte + _iHexMaxHBytes);
 
-      bool isKeyInterpreterActive = _keyInterpreter == null || _keyInterpreter.GetType() == typeof (KeyInterpreter);
-      bool isStringKeyInterpreterActive = _keyInterpreter != null &&
+      var isKeyInterpreterActive = _keyInterpreter == null || _keyInterpreter.GetType() == typeof (KeyInterpreter);
+      var isStringKeyInterpreterActive = _keyInterpreter != null &&
                                           _keyInterpreter.GetType() == typeof (StringKeyInterpreter);
 
-      for (long i = startByte; i < intern_endByte + 1; i++)
+      for (var i = startByte; i < intern_endByte + 1; i++)
       {
         counter++;
-        Point gridPoint = GetGridBytePoint(counter);
-        PointF byteStringPointF = GetByteStringPointF(gridPoint);
-        byte b = _byteProvider.ReadByte(i);
+        var gridPoint = GetGridBytePoint(counter);
+        var byteStringPointF = GetByteStringPointF(gridPoint);
+        var b = _byteProvider.ReadByte(i);
 
-        bool isSelectedByte = i >= _bytePos && i <= (_bytePos + _selectionLength - 1) && _selectionLength != 0;
+        var isSelectedByte = i >= _bytePos && i <= (_bytePos + _selectionLength - 1) && _selectionLength != 0;
 
         if (isSelectedByte && isKeyInterpreterActive)
         {
@@ -2700,10 +2700,10 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
         {
           if (_selectionLength == 0)
           {
-            Point gp = GetGridBytePoint(_bytePos - _startByte);
-            PointF pf = GetByteStringPointF(gp);
-            Size s = new Size((int) _charSize.Width, (int) _charSize.Height);
-            Rectangle r = new Rectangle((int) pf.X, (int) pf.Y, s.Width, s.Height);
+            var gp = GetGridBytePoint(_bytePos - _startByte);
+            var pf = GetByteStringPointF(gp);
+            var s = new Size((int) _charSize.Width, (int) _charSize.Height);
+            var r = new Rectangle((int) pf.X, (int) pf.Y, s.Width, s.Height);
             if (r.IntersectsWith(_recStringView))
             {
               r.Intersect(_recStringView);
@@ -2712,18 +2712,18 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
           }
           else
           {
-            int lineWidth = (int) (_recStringView.Width - _charSize.Width);
+            var lineWidth = (int) (_recStringView.Width - _charSize.Width);
 
-            Point startSelGridPoint = GetGridBytePoint(_bytePos - _startByte);
-            PointF startSelPointF = GetByteStringPointF(startSelGridPoint);
+            var startSelGridPoint = GetGridBytePoint(_bytePos - _startByte);
+            var startSelPointF = GetByteStringPointF(startSelGridPoint);
 
-            Point endSelGridPoint = GetGridBytePoint(_bytePos - _startByte + _selectionLength - 1);
-            PointF endSelPointF = GetByteStringPointF(endSelGridPoint);
+            var endSelGridPoint = GetGridBytePoint(_bytePos - _startByte + _selectionLength - 1);
+            var endSelPointF = GetByteStringPointF(endSelGridPoint);
 
-            int multiLine = endSelGridPoint.Y - startSelGridPoint.Y;
+            var multiLine = endSelGridPoint.Y - startSelGridPoint.Y;
             if (multiLine == 0)
             {
-              Rectangle singleLine = new Rectangle(
+              var singleLine = new Rectangle(
                 (int) startSelPointF.X,
                 (int) startSelPointF.Y,
                 (int) (endSelPointF.X - startSelPointF.X + _charSize.Width),
@@ -2736,7 +2736,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
             }
             else
             {
-              Rectangle firstLine = new Rectangle(
+              var firstLine = new Rectangle(
                 (int) startSelPointF.X,
                 (int) startSelPointF.Y,
                 (int) (_recStringView.X + lineWidth - startSelPointF.X + _charSize.Width),
@@ -2749,7 +2749,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 
               if (multiLine > 1)
               {
-                Rectangle betweenLines = new Rectangle(
+                var betweenLines = new Rectangle(
                   _recStringView.X,
                   (int) (startSelPointF.Y + _charSize.Height),
                   (int) (_recStringView.Width),
@@ -2761,7 +2761,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
                 }
               }
 
-              Rectangle lastLine = new Rectangle(
+              var lastLine = new Rectangle(
                 _recStringView.X,
                 (int) endSelPointF.Y,
                 (int) (endSelPointF.X - _recStringView.X + _charSize.Width),
@@ -2778,26 +2778,26 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
         {
           if (_selectionLength == 0)
           {
-            Point gp = GetGridBytePoint(_bytePos - _startByte);
-            PointF pf = GetBytePointF(gp);
-            Size s = new Size((int) _charSize.Width*2, (int) _charSize.Height);
-            Rectangle r = new Rectangle((int) pf.X, (int) pf.Y, s.Width, s.Height);
+            var gp = GetGridBytePoint(_bytePos - _startByte);
+            var pf = GetBytePointF(gp);
+            var s = new Size((int) _charSize.Width*2, (int) _charSize.Height);
+            var r = new Rectangle((int) pf.X, (int) pf.Y, s.Width, s.Height);
             PaintCurrentByteSign(g, r);
           }
           else
           {
-            int lineWidth = (int) (_recHex.Width - _charSize.Width*5);
+            var lineWidth = (int) (_recHex.Width - _charSize.Width*5);
 
-            Point startSelGridPoint = GetGridBytePoint(_bytePos - _startByte);
-            PointF startSelPointF = GetBytePointF(startSelGridPoint);
+            var startSelGridPoint = GetGridBytePoint(_bytePos - _startByte);
+            var startSelPointF = GetBytePointF(startSelGridPoint);
 
-            Point endSelGridPoint = GetGridBytePoint(_bytePos - _startByte + _selectionLength - 1);
-            PointF endSelPointF = GetBytePointF(endSelGridPoint);
+            var endSelGridPoint = GetGridBytePoint(_bytePos - _startByte + _selectionLength - 1);
+            var endSelPointF = GetBytePointF(endSelGridPoint);
 
-            int multiLine = endSelGridPoint.Y - startSelGridPoint.Y;
+            var multiLine = endSelGridPoint.Y - startSelGridPoint.Y;
             if (multiLine == 0)
             {
-              Rectangle singleLine = new Rectangle(
+              var singleLine = new Rectangle(
                 (int) startSelPointF.X,
                 (int) startSelPointF.Y,
                 (int) (endSelPointF.X - startSelPointF.X + _charSize.Width*2),
@@ -2810,7 +2810,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
             }
             else
             {
-              Rectangle firstLine = new Rectangle(
+              var firstLine = new Rectangle(
                 (int) startSelPointF.X,
                 (int) startSelPointF.Y,
                 (int) (_recHex.X + lineWidth - startSelPointF.X + _charSize.Width*2),
@@ -2823,7 +2823,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 
               if (multiLine > 1)
               {
-                Rectangle betweenLines = new Rectangle(
+                var betweenLines = new Rectangle(
                   _recHex.X,
                   (int) (startSelPointF.Y + _charSize.Height),
                   (int) (lineWidth + _charSize.Width*2),
@@ -2835,7 +2835,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
                 }
               }
 
-              Rectangle lastLine = new Rectangle(
+              var lastLine = new Rectangle(
                 _recHex.X,
                 (int) endSelPointF.Y,
                 (int) (endSelPointF.X - _recHex.X + _charSize.Width*2),
@@ -2859,10 +2859,10 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
         return;
       }
 
-      Bitmap myBitmap = new Bitmap(rec.Width, rec.Height);
-      Graphics bitmapGraphics = Graphics.FromImage(myBitmap);
+      var myBitmap = new Bitmap(rec.Width, rec.Height);
+      var bitmapGraphics = Graphics.FromImage(myBitmap);
 
-      SolidBrush greenBrush = new SolidBrush(_shadowSelectionColor);
+      var greenBrush = new SolidBrush(_shadowSelectionColor);
 
       bitmapGraphics.FillRectangle(greenBrush, 0,
                                    0, rec.Width, rec.Height);
@@ -2902,7 +2902,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     private void UpdateRectanglePositioning()
     {
       // calc char size
-      SizeF charSize = CreateGraphics().MeasureString("A", Font, 100, _stringFormat);
+      var charSize = CreateGraphics().MeasureString("A", Font, 100, _stringFormat);
       _charSize = new SizeF((float) Math.Ceiling(charSize.Width), (float) Math.Ceiling(charSize.Height));
 
       // calc content bounds
@@ -2920,7 +2920,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
         _vScrollBar.Height = _recContent.Height;
       }
 
-      int marginLeft = 4;
+      var marginLeft = 4;
 
       // calc line info bounds
       if (_lineInfoVisible)
@@ -2949,7 +2949,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
       }
       else
       {
-        int hmax = (int) Math.Floor((double) _recHex.Width/(double) _charSize.Width);
+        var hmax = (int) Math.Floor((double) _recHex.Width/(double) _charSize.Width);
         if (hmax > 1)
         {
           SetHorizontalByteCount((int) Math.Floor((double) hmax/3));
@@ -2972,7 +2972,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
         _recStringView = Rectangle.Empty;
       }
 
-      int vmax = (int) Math.Floor((double) _recHex.Height/(double) _charSize.Height);
+      var vmax = (int) Math.Floor((double) _recHex.Height/(double) _charSize.Height);
       SetVerticalByteCount(vmax);
 
       _iHexMaxBytes = _iHexMaxHBytes*_iHexMaxVBytes;
@@ -2982,33 +2982,33 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 
     private PointF GetBytePointF(long byteIndex)
     {
-      Point gp = GetGridBytePoint(byteIndex);
+      var gp = GetGridBytePoint(byteIndex);
 
       return GetBytePointF(gp);
     }
 
     private PointF GetBytePointF(Point gp)
     {
-      float x = (3*_charSize.Width)*gp.X + _recHex.X;
-      float y = (gp.Y + 1)*_charSize.Height - _charSize.Height + _recHex.Y;
+      var x = (3*_charSize.Width)*gp.X + _recHex.X;
+      var y = (gp.Y + 1)*_charSize.Height - _charSize.Height + _recHex.Y;
 
       return new PointF(x, y);
     }
 
     private PointF GetByteStringPointF(Point gp)
     {
-      float x = (_charSize.Width)*gp.X + _recStringView.X;
-      float y = (gp.Y + 1)*_charSize.Height - _charSize.Height + _recStringView.Y;
+      var x = (_charSize.Width)*gp.X + _recStringView.X;
+      var y = (gp.Y + 1)*_charSize.Height - _charSize.Height + _recStringView.Y;
 
       return new PointF(x, y);
     }
 
     private Point GetGridBytePoint(long byteIndex)
     {
-      int row = (int) Math.Floor((double) byteIndex/(double) _iHexMaxHBytes);
-      int column = (int) (byteIndex + _iHexMaxHBytes - _iHexMaxHBytes*(row + 1));
+      var row = (int) Math.Floor((double) byteIndex/(double) _iHexMaxHBytes);
+      var column = (int) (byteIndex + _iHexMaxHBytes - _iHexMaxHBytes*(row + 1));
 
-      Point res = new Point(column, row);
+      var res = new Point(column, row);
       return res;
     }
 
@@ -3713,7 +3713,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 
     private void CheckCurrentLineChanged()
     {
-      long currentLine = (long) Math.Floor((double) _bytePos/(double) _iHexMaxHBytes) + 1;
+      var currentLine = (long) Math.Floor((double) _bytePos/(double) _iHexMaxHBytes) + 1;
 
       if (_byteProvider == null && _currentLine != 0)
       {
@@ -3729,8 +3729,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 
     private void CheckCurrentPositionInLineChanged()
     {
-      Point gb = GetGridBytePoint(_bytePos);
-      int currentPositionInLine = gb.X + 1;
+      var gb = GetGridBytePoint(_bytePos);
+      var currentPositionInLine = gb.X + 1;
 
       if (_byteProvider == null && _currentPositionInLine != 0)
       {
@@ -3960,7 +3960,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     /// <param name="e">An EventArgs that contains the event data.</param>
     protected override void OnMouseWheel(MouseEventArgs e)
     {
-      int linesToScroll = -(e.Delta*SystemInformation.MouseWheelScrollLines/120);
+      var linesToScroll = -(e.Delta*SystemInformation.MouseWheelScrollLines/120);
       PerformScrollLines(linesToScroll);
 
       base.OnMouseWheel(e);

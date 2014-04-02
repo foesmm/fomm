@@ -86,8 +86,8 @@ namespace Fomm.Controls
     public DropDownTabControlDesigner()
       : base()
     {
-      DesignerVerb dvbAddPage = new DesignerVerb("Add Tab Page", new EventHandler(AddTabPage));
-      DesignerVerb dvbRemovePage = new DesignerVerb("Remove Tab Page", new EventHandler(RemoveTabPage));
+      var dvbAddPage = new DesignerVerb("Add Tab Page", new EventHandler(AddTabPage));
+      var dvbRemovePage = new DesignerVerb("Remove Tab Page", new EventHandler(RemoveTabPage));
       m_dvcVerbs.AddRange(new DesignerVerb[]
       {
         dvbAddPage, dvbRemovePage
@@ -114,11 +114,11 @@ namespace Fomm.Controls
     /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
     private void AddTabPage(object sender, EventArgs e)
     {
-      DropDownTabControl.TabPageCollection tpcOldPages = DesignedTabControl.TabPages;
+      var tpcOldPages = DesignedTabControl.TabPages;
 
       RaiseComponentChanging(TypeDescriptor.GetProperties(DesignedTabControl)["TabPages"]);
 
-      DropDownTabPage tpgPage = (DropDownTabPage) DesignerHost.CreateComponent(typeof (DropDownTabPage));
+      var tpgPage = (DropDownTabPage) DesignerHost.CreateComponent(typeof (DropDownTabPage));
       tpgPage.Text = tpgPage.Name;
       tpgPage.BackColor = Color.FromKnownColor(KnownColor.Control);
       DesignedTabControl.TabPages.Add(tpgPage);
@@ -145,7 +145,7 @@ namespace Fomm.Controls
         return;
       }
 
-      DropDownTabControl.TabPageCollection tpcOldPages = DesignedTabControl.TabPages;
+      var tpcOldPages = DesignedTabControl.TabPages;
 
       RaiseComponentChanging(TypeDescriptor.GetProperties(DesignedTabControl)["TabPages"]);
       DesignerHost.DestroyComponent((DropDownTabPage) (DesignedTabControl.TabPages[DesignedTabControl.SelectedIndex]));
@@ -167,7 +167,7 @@ namespace Fomm.Controls
     /// <lang cref="false"/> otherwise.</returns>
     protected override bool GetHitTest(Point point)
     {
-      DropDownTabControl ddtTabControl = (DropDownTabControl) Control;
+      var ddtTabControl = (DropDownTabControl) Control;
       return ddtTabControl.TabSelector.ClientRectangle.Contains(ddtTabControl.TabSelector.PointToClient(point));
     }
 
@@ -179,7 +179,7 @@ namespace Fomm.Controls
     {
       base.InitializeNewComponent(defaultValues);
 
-      DropDownTabPage tpgPage = (DropDownTabPage) DesignerHost.CreateComponent(typeof (DropDownTabPage));
+      var tpgPage = (DropDownTabPage) DesignerHost.CreateComponent(typeof (DropDownTabPage));
       tpgPage.Text = tpgPage.Name;
       tpgPage.BackColor = Color.FromKnownColor(KnownColor.Control);
       DesignedTabControl.TabPages.Add(tpgPage);

@@ -77,8 +77,8 @@ namespace Fomm.Controls
       tsbJustifyRight.Tag = HorizontalAlignment.Right;
       tsbJustifyLeft.Checked = true;
 
-      InstalledFontCollection ifcInstalledFonts = new InstalledFontCollection();
-      foreach (FontFamily ffmFont in ifcInstalledFonts.Families)
+      var ifcInstalledFonts = new InstalledFontCollection();
+      foreach (var ffmFont in ifcInstalledFonts.Families)
       {
         if (ffmFont.IsStyleAvailable(FontStyle.Regular))
         {
@@ -120,9 +120,9 @@ namespace Fomm.Controls
       // a null selection font is returned for a selection with more 
       // than one font style
 
-      Int32 intSelectionStart = rtbTextbox.SelectionStart;
-      Int32 intSelectionLength = rtbTextbox.SelectionLength;
-      Int32 intTempStart = 0;
+      var intSelectionStart = rtbTextbox.SelectionStart;
+      var intSelectionLength = rtbTextbox.SelectionLength;
+      var intTempStart = 0;
 
       // if there is text selected, and only one style in the selection, change it
       if (intSelectionLength <= 1 && rtbTextbox.SelectionFont != null)
@@ -133,7 +133,7 @@ namespace Fomm.Controls
 
       // walk through the selected text
       rtbTemp.Rtf = rtbTextbox.SelectedRtf;
-      for (int i = 0; i < intSelectionLength; ++i)
+      for (var i = 0; i < intSelectionLength; ++i)
       {
         rtbTemp.Select(intTempStart + i, 1);
         rtbTemp.SelectionFont = new Font(p_strFontFamilyName, p_fltFontSize, rtbTemp.SelectionFont.Style);
@@ -154,7 +154,7 @@ namespace Fomm.Controls
     private void tscbFont_SelectedIndexChanged(object sender, EventArgs e)
     {
       m_intLastFontIndex = tscbFont.SelectedIndex;
-      float fltFontSize = (rtbTextbox.SelectionFont == null)
+      var fltFontSize = (rtbTextbox.SelectionFont == null)
         ? float.Parse(tscbFontSize.Text)
         : rtbTextbox.SelectionFont.Size;
       ChangeFont(((FontFamily) tscbFont.SelectedItem).Name, fltFontSize);
@@ -219,9 +219,9 @@ namespace Fomm.Controls
     /// </summary>
     public void ChangeFontStyle(FontStyle p_fstStyle, bool p_booAddStyle)
     {
-      int rtb1start = rtbTextbox.SelectionStart;
-      int len = rtbTextbox.SelectionLength;
-      int rtbTempStart = 0;
+      var rtb1start = rtbTextbox.SelectionStart;
+      var len = rtbTextbox.SelectionLength;
+      var rtbTempStart = 0;
 
       // if there is text selected, and only one style in the selection, change it
       if (len <= 1 && rtbTextbox.SelectionFont != null)
@@ -239,7 +239,7 @@ namespace Fomm.Controls
 
       // walk through the selected text
       rtbTemp.Rtf = rtbTextbox.SelectedRtf;
-      for (int i = 0; i < len; ++i)
+      for (var i = 0; i < len; ++i)
       {
         rtbTemp.Select(rtbTempStart + i, 1);
         if (p_booAddStyle)
@@ -266,7 +266,7 @@ namespace Fomm.Controls
     /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
     private void FontStyleChanged(object sender, EventArgs e)
     {
-      ToolStripButton tsbFontStyle = (ToolStripButton) sender;
+      var tsbFontStyle = (ToolStripButton) sender;
       ChangeFontStyle((FontStyle) tsbFontStyle.Tag, tsbFontStyle.Checked);
     }
 
@@ -284,7 +284,7 @@ namespace Fomm.Controls
     /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
     private void JustifyText(object sender, EventArgs e)
     {
-      foreach (ToolStripButton tsbJustification in m_tsbJustifications)
+      foreach (var tsbJustification in m_tsbJustifications)
       {
         tsbJustification.Checked = (tsbJustification == sender);
       }
@@ -303,9 +303,9 @@ namespace Fomm.Controls
     {
       //This method should handle cases that occur when multiple fonts/styles are selected
 
-      Int32 intSelectionStart = rtbTextbox.SelectionStart;
-      Int32 intSelectionLength = rtbTextbox.SelectionLength;
-      Int32 intTempStart = 0;
+      var intSelectionStart = rtbTextbox.SelectionStart;
+      var intSelectionLength = rtbTextbox.SelectionLength;
+      var intTempStart = 0;
 
       if (intSelectionLength <= 1)
       {
@@ -325,17 +325,17 @@ namespace Fomm.Controls
       rtbTemp.Rtf = rtbTextbox.SelectedRtf;
 
       //Turn everything on so we can turn it off one by one
-      FontStyle replystyle =
+      var replystyle =
         FontStyle.Bold | FontStyle.Italic | FontStyle.Strikeout | FontStyle.Underline;
 
       // Set reply font, size and style to that of first char in selection.
       rtbTemp.Select(intTempStart, 1);
-      string replyfont = rtbTemp.SelectionFont.Name;
-      float replyfontsize = rtbTemp.SelectionFont.Size;
+      var replyfont = rtbTemp.SelectionFont.Name;
+      var replyfontsize = rtbTemp.SelectionFont.Size;
       replystyle = replystyle & rtbTemp.SelectionFont.Style;
 
       // Search the rest of the selection
-      for (int i = 1; i < intSelectionLength; ++i)
+      for (var i = 1; i < intSelectionLength; ++i)
       {
         rtbTemp.Select(intTempStart + i, 1);
 
@@ -367,7 +367,7 @@ namespace Fomm.Controls
       }
 
       // generate reply font
-      Font reply
+      var reply
         = new Font(replyfont, replyfontsize, replystyle);
 
       return reply;
@@ -378,8 +378,8 @@ namespace Fomm.Controls
     /// </summary>
     public void UpdateToolbar()
     {
-      Font fnt = GetFontDetails();
-      FontStyle style = fnt.Style;
+      var fnt = GetFontDetails();
+      var style = fnt.Style;
 
       tsbBold.Checked = fnt.Bold;
       tsbItalic.Checked = fnt.Italic;

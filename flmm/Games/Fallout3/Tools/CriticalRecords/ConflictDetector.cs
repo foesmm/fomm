@@ -124,7 +124,7 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     {
       if (PluginProcessed != null)
       {
-        PluginProcessedEventArgs ppaArgs = new PluginProcessedEventArgs();
+        var ppaArgs = new PluginProcessedEventArgs();
         PluginProcessed(this, ppaArgs);
         m_booCancelled |= ppaArgs.Cancel;
       }
@@ -142,7 +142,7 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     {
       if (ConflictDetected != null)
       {
-        ConflictDetectedEventArgs cdaArgs = new ConflictDetectedEventArgs(p_plgConflictedPlugin, p_plgConflictingPlugin,
+        var cdaArgs = new ConflictDetectedEventArgs(p_plgConflictedPlugin, p_plgConflictingPlugin,
                                                                           p_uintFormId, p_criInfo);
         ConflictDetected(this, cdaArgs);
       }
@@ -158,9 +158,9 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     public void DetectConflicts(IList<string> p_lstOrderedPlugins)
     {
       m_booCancelled = false;
-      for (Int32 intIndex = 0; intIndex < p_lstOrderedPlugins.Count; intIndex++)
+      for (var intIndex = 0; intIndex < p_lstOrderedPlugins.Count; intIndex++)
       {
-        string strBasePlugin = p_lstOrderedPlugins[intIndex];
+        var strBasePlugin = p_lstOrderedPlugins[intIndex];
         if (m_booCancelled)
         {
           return;
@@ -173,23 +173,23 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
           continue;
         }
 
-        CriticalRecordPlugin crpBasePlugin = new CriticalRecordPlugin(Path.Combine(Program.GameMode.PluginsPath, strBasePlugin), false);
+        var crpBasePlugin = new CriticalRecordPlugin(Path.Combine(Program.GameMode.PluginsPath, strBasePlugin), false);
         if (!crpBasePlugin.HasCriticalRecordData)
         {
           continue;
         }
-        for (Int32 i = intIndex + 1; i < p_lstOrderedPlugins.Count; i++)
+        for (var i = intIndex + 1; i < p_lstOrderedPlugins.Count; i++)
         {
-          string strPlugin = p_lstOrderedPlugins[i];
-          Plugin plgPlugin = new Plugin(Path.Combine(Program.GameMode.PluginsPath, strPlugin), false);
-          foreach (UInt32 uintFormId in crpBasePlugin.CriticalRecordFormIds)
+          var strPlugin = p_lstOrderedPlugins[i];
+          var plgPlugin = new Plugin(Path.Combine(Program.GameMode.PluginsPath, strPlugin), false);
+          foreach (var uintFormId in crpBasePlugin.CriticalRecordFormIds)
           {
-            string strMasterPlugin = crpBasePlugin.GetMaster((Int32) uintFormId >> 24) ?? strBasePlugin;
+            var strMasterPlugin = crpBasePlugin.GetMaster((Int32) uintFormId >> 24) ?? strBasePlugin;
             if (plgPlugin.GetMasterIndex(strMasterPlugin) < 0)
             {
               continue;
             }
-            UInt32 uintAdjustedFormId = ((UInt32) plgPlugin.GetMasterIndex(strMasterPlugin) << 24);
+            var uintAdjustedFormId = ((UInt32) plgPlugin.GetMasterIndex(strMasterPlugin) << 24);
             uintAdjustedFormId = uintAdjustedFormId + (uintFormId & 0x00ffffff);
             if (plgPlugin.ContainsFormId(uintAdjustedFormId))
             {

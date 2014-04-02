@@ -203,8 +203,8 @@ namespace Fomm.SharpZipLib.Zip
         throw new ZipException("Too many entries for Zip file");
       }
 
-      CompressionMethod method = entry.CompressionMethod;
-      int compressionLevel = defaultCompressionLevel;
+      var method = entry.CompressionMethod;
+      var compressionLevel = defaultCompressionLevel;
 
       // Clear flags that the library manages internally
       entry.Flags &= (int) GeneralBitFlags.UnicodeText;
@@ -320,14 +320,14 @@ namespace Fomm.SharpZipLib.Zip
         }
       }
 
-      byte[] name = ZipConstants.ConvertToArray(entry.Flags, entry.Name);
+      var name = ZipConstants.ConvertToArray(entry.Flags, entry.Name);
 
       if (name.Length > 0xFFFF)
       {
         throw new ZipException("Entry name too long.");
       }
 
-      ZipExtraData ed = new ZipExtraData(entry.ExtraData);
+      var ed = new ZipExtraData(entry.ExtraData);
 
       if (entry.LocalHeaderRequiresZip64)
       {
@@ -359,7 +359,7 @@ namespace Fomm.SharpZipLib.Zip
         ed.Delete(1);
       }
 
-      byte[] extra = ed.GetEntryData();
+      var extra = ed.GetEntryData();
 
       WriteLeShort(name.Length);
       WriteLeShort(extra.Length);
@@ -408,7 +408,7 @@ namespace Fomm.SharpZipLib.Zip
         throw new InvalidOperationException("No open entry");
       }
 
-      long csize = size;
+      var csize = size;
 
       // First finish the deflater, if appropriate
       if (curMethod == CompressionMethod.Deflated)
@@ -458,7 +458,7 @@ namespace Fomm.SharpZipLib.Zip
       {
         patchEntryHeader = false;
 
-        long curPos = baseOutputStream_.Position;
+        var curPos = baseOutputStream_.Position;
         baseOutputStream_.Seek(crcPatchPos, SeekOrigin.Begin);
         WriteLeInt((int) curEntry.Crc);
 
@@ -614,14 +614,14 @@ namespace Fomm.SharpZipLib.Zip
           WriteLeInt((int) entry.Size);
         }
 
-        byte[] name = ZipConstants.ConvertToArray(entry.Flags, entry.Name);
+        var name = ZipConstants.ConvertToArray(entry.Flags, entry.Name);
 
         if (name.Length > 0xffff)
         {
           throw new ZipException("Name too long.");
         }
 
-        ZipExtraData ed = new ZipExtraData(entry.ExtraData);
+        var ed = new ZipExtraData(entry.ExtraData);
 
         if (entry.CentralHeaderRequiresZip64)
         {
@@ -650,9 +650,9 @@ namespace Fomm.SharpZipLib.Zip
           ed.Delete(1);
         }
 
-        byte[] extra = ed.GetEntryData();
+        var extra = ed.GetEntryData();
 
-        byte[] entryComment =
+        var entryComment =
           (entry.Comment != null)
             ? ZipConstants.ConvertToArray(entry.Flags, entry.Comment)
             : new byte[0];
@@ -713,7 +713,7 @@ namespace Fomm.SharpZipLib.Zip
         sizeEntries += ZipConstants.CentralHeaderBaseSize + name.Length + extra.Length + entryComment.Length;
       }
 
-      using (ZipHelperStream zhs = new ZipHelperStream(baseOutputStream_))
+      using (var zhs = new ZipHelperStream(baseOutputStream_))
       {
         zhs.WriteEndOfCentralDirectory(numEntries, sizeEntries, offset, zipComment);
       }

@@ -32,7 +32,7 @@ namespace Fomm.PackageManager.FomodBuilder
     {
       get
       {
-        List<string> lstFiles = new List<string>();
+        var lstFiles = new List<string>();
         foreach (ListViewItem lviFile in lvwReadmeFiles.Items)
         {
           lstFiles.Add(lviFile.Name);
@@ -119,11 +119,11 @@ namespace Fomm.PackageManager.FomodBuilder
       {
         return;
       }
-      List<SourceFileTree.SourceFileSystemDragData> lstData =
+      var lstData =
         (List<SourceFileTree.SourceFileSystemDragData>)
           e.Data.GetData(typeof (List<SourceFileTree.SourceFileSystemDragData>));
-      bool booFoundFile = false;
-      foreach (SourceFileTree.SourceFileSystemDragData sddData in lstData)
+      var booFoundFile = false;
+      foreach (var sddData in lstData)
       {
         if (!sddData.IsDirectory)
         {
@@ -152,10 +152,10 @@ namespace Fomm.PackageManager.FomodBuilder
       {
         return;
       }
-      List<SourceFileTree.SourceFileSystemDragData> lstData =
+      var lstData =
         (List<SourceFileTree.SourceFileSystemDragData>)
           e.Data.GetData(typeof (List<SourceFileTree.SourceFileSystemDragData>));
-      foreach (SourceFileTree.SourceFileSystemDragData sddData in lstData)
+      foreach (var sddData in lstData)
       {
         if (!sddData.IsDirectory)
         {
@@ -172,15 +172,15 @@ namespace Fomm.PackageManager.FomodBuilder
     /// <returns>A concatenation of all selected file.</returns>
     public string GenerateReadme()
     {
-      StringBuilder stbReadme = new StringBuilder();
+      var stbReadme = new StringBuilder();
       foreach (ListViewItem lviFile in lvwReadmeFiles.Items)
       {
-        string strFileName = lviFile.Name;
+        var strFileName = lviFile.Name;
         if (strFileName.StartsWith(Archive.ARCHIVE_PREFIX))
         {
-          KeyValuePair<string, string> kvpPath = Archive.ParseArchivePath(strFileName);
-          Archive arcArchive = new Archive(kvpPath.Key);
-          string strFile = Encoding.UTF8.GetString(arcArchive.GetFileContents(kvpPath.Value));
+          var kvpPath = Archive.ParseArchivePath(strFileName);
+          var arcArchive = new Archive(kvpPath.Key);
+          var strFile = Encoding.UTF8.GetString(arcArchive.GetFileContents(kvpPath.Value));
           stbReadme.Append(strFile).AppendLine().AppendLine();
         }
         else

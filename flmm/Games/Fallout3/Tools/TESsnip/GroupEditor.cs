@@ -18,7 +18,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       cmbGroupType.ContextMenu = new ContextMenu();
       cmbGroupType.SelectedIndex = (int) gr.groupType;
       tbRecType.Text = gr.ContentsType;
-      byte[] data = gr.GetData();
+      var data = gr.GetData();
       tbX.Text = TypeConverter.h2ss(data[2], data[3]).ToString();
       tbY.Text = TypeConverter.h2ss(data[0], data[1]).ToString();
       tbBlock.Text = TypeConverter.h2i(data[0], data[1], data[2], data[3]).ToString();
@@ -29,7 +29,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     public static void Display(GroupRecord gr)
     {
-      GroupEditor ge = new GroupEditor(gr);
+      var ge = new GroupEditor(gr);
       ge.ShowDialog();
     }
 
@@ -98,7 +98,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         MessageBox.Show("Invalid value specified for flags");
         return;
       }
-      uint grouptype = (uint) cmbGroupType.SelectedIndex;
+      var grouptype = (uint) cmbGroupType.SelectedIndex;
       byte[] data;
       switch (cmbGroupType.SelectedIndex)
       {

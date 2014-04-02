@@ -73,7 +73,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     /// <returns>an array of bytes.</returns>
     public byte[] GetBytes()
     {
-      byte[] bytes = new byte[Count];
+      var bytes = new byte[Count];
       InnerList.CopyTo(0, bytes, 0, bytes.Length);
       return bytes;
     }

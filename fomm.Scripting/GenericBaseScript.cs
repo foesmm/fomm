@@ -186,8 +186,8 @@ namespace fomm.Scripting
     /// <seealso cref="fomod.GetFileList()"/>
     public static string[] GetFomodFileList()
     {
-      string[] strFiles = (string[]) ExecuteMethod(() => m_mdiScript.Fomod.GetFileList().ToArray());
-      for (Int32 i = strFiles.Length - 1; i >= 0; i--)
+      var strFiles = (string[]) ExecuteMethod(() => m_mdiScript.Fomod.GetFileList().ToArray());
+      for (var i = strFiles.Length - 1; i >= 0; i--)
       {
         strFiles[i] = strFiles[i].Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
       }
@@ -320,9 +320,9 @@ namespace fomm.Scripting
     /// <seealso cref="Select(string[] p_strItems, string[] p_strPreviews, string[] p_strDescriptions, string p_strTitle, bool p_booSelectMany)"/>
     public static int[] Select(SelectOption[] p_sopOptions, string p_strTitle, bool p_booSelectMany)
     {
-      bool booHasPreviews = false;
-      bool booHasDescriptions = false;
-      foreach (SelectOption so in p_sopOptions)
+      var booHasPreviews = false;
+      var booHasDescriptions = false;
+      foreach (var so in p_sopOptions)
       {
         if (so.Preview != null)
         {
@@ -333,10 +333,10 @@ namespace fomm.Scripting
           booHasDescriptions = true;
         }
       }
-      string[] strItems = new string[p_sopOptions.Length];
-      string[] strPreviews = booHasPreviews ? new string[p_sopOptions.Length] : null;
-      string[] strDescriptions = booHasDescriptions ? new string[p_sopOptions.Length] : null;
-      for (int i = 0; i < p_sopOptions.Length; i++)
+      var strItems = new string[p_sopOptions.Length];
+      var strPreviews = booHasPreviews ? new string[p_sopOptions.Length] : null;
+      var strDescriptions = booHasDescriptions ? new string[p_sopOptions.Length] : null;
+      for (var i = 0; i < p_sopOptions.Length; i++)
       {
         strItems[i] = p_sopOptions[i].Item;
         if (booHasPreviews)

@@ -44,17 +44,17 @@ namespace Fomm.Games.Fallout3.Tools.ShaderEdit
     {
       FileName = Path.GetFileName(path);
       Text = "SDP Editor (" + FileName + ")";
-      BinaryReader br = new BinaryReader(File.OpenRead(path), Encoding.Default);
+      var br = new BinaryReader(File.OpenRead(path), Encoding.Default);
       unknown = br.ReadUInt32();
-      int num = br.ReadInt32();
+      var num = br.ReadInt32();
       br.ReadInt32();
-      for (int i = 0; i < num; i++)
+      for (var i = 0; i < num; i++)
       {
-        Shader s = new Shader();
-        char[] name = br.ReadChars(0x100);
+        var s = new Shader();
+        var name = br.ReadChars(0x100);
         s.name = "";
         s.name2 = name;
-        for (int i2 = 0; i2 < 100; i2++)
+        for (var i2 = 0; i2 < 100; i2++)
         {
           if (name[i2] == '\0')
           {
@@ -62,7 +62,7 @@ namespace Fomm.Games.Fallout3.Tools.ShaderEdit
           }
           s.name += name[i2];
         }
-        int size = br.ReadInt32();
+        var size = br.ReadInt32();
         s.data = br.ReadBytes(size);
         shaders.Add(s);
         cmbShaderSelect.Items.Add(s.name);
@@ -104,8 +104,8 @@ namespace Fomm.Games.Fallout3.Tools.ShaderEdit
         }
       }
       Editing = cmbShaderSelect.SelectedIndex;
-      sbyte* ptr = NativeMethods.Disasm(shaders[Editing].data, shaders[Editing].data.Length, 0);
-      string text = new string(ptr);
+      var ptr = NativeMethods.Disasm(shaders[Editing].data, shaders[Editing].data.Length, 0);
+      var text = new string(ptr);
       text = text.Replace("" + (char) 10, Environment.NewLine);
       tbEdit.Text = text;
       bCompile.Enabled = true;
@@ -134,16 +134,16 @@ namespace Fomm.Games.Fallout3.Tools.ShaderEdit
       {
         return false;
       }
-      BinaryWriter bw = new BinaryWriter(File.Create(saveFileDialog1.FileName), Encoding.Default);
+      var bw = new BinaryWriter(File.Create(saveFileDialog1.FileName), Encoding.Default);
       bw.Write(unknown);
       bw.Write(shaders.Count);
-      int tsize = 0;
-      foreach (Shader s in shaders)
+      var tsize = 0;
+      foreach (var s in shaders)
       {
         tsize += 0x100 + 4 + s.data.Length;
       }
       bw.Write(tsize);
-      foreach (Shader s in shaders)
+      foreach (var s in shaders)
       {
         bw.Write(s.name2);
         bw.Write(s.data.Length);
@@ -165,17 +165,17 @@ namespace Fomm.Games.Fallout3.Tools.ShaderEdit
       {
         return true;
       }
-      byte[] b = new byte[tbEdit.Text.Length];
-      for (int i = 0; i < tbEdit.Text.Length; i++)
+      var b = new byte[tbEdit.Text.Length];
+      for (var i = 0; i < tbEdit.Text.Length; i++)
       {
         b[i] = (byte) tbEdit.Text[i];
       }
-      byte* data = NativeMethods.Asm(b, b.Length);
-      int size = (data[3] << 24) + (data[2] << 16) + (data[1] << 8) + data[0];
+      var data = NativeMethods.Asm(b, b.Length);
+      var size = (data[3] << 24) + (data[2] << 16) + (data[1] << 8) + data[0];
       if (size == 0)
       {
-        string error = "";
-        for (int i = 4; i < 0x10000; i++)
+        var error = "";
+        for (var i = 4; i < 0x10000; i++)
         {
           if (data[i] == '\0')
           {
@@ -190,8 +190,8 @@ namespace Fomm.Games.Fallout3.Tools.ShaderEdit
       else
       {
         shaders[Editing].data = new byte[size];
-        byte[] newdata = new byte[size];
-        for (int i = 0; i < size; i++)
+        var newdata = new byte[size];
+        for (var i = 0; i < size; i++)
         {
           newdata[i] = data[i + 4];
         }
@@ -259,14 +259,14 @@ namespace Fomm.Games.Fallout3.Tools.ShaderEdit
       {
         return;
       }
-      string text = File.ReadAllText(openFileDialog1.FileName, Encoding.Default);
-      byte* data = NativeMethods.Compile(text, text.Length, HLSLImporterForm.EntryPoint, HLSLImporterForm.Profile,
+      var text = File.ReadAllText(openFileDialog1.FileName, Encoding.Default);
+      var data = NativeMethods.Compile(text, text.Length, HLSLImporterForm.EntryPoint, HLSLImporterForm.Profile,
                                          HLSLImporterForm.Debug);
-      int size = (data[3] << 24) + (data[2] << 16) + (data[1] << 8) + data[0];
+      var size = (data[3] << 24) + (data[2] << 16) + (data[1] << 8) + data[0];
       if (size == 0)
       {
-        string error = "";
-        for (int i = 4; i < 0x10000; i++)
+        var error = "";
+        for (var i = 4; i < 0x10000; i++)
         {
           if (data[i] == '\0')
           {
@@ -280,8 +280,8 @@ namespace Fomm.Games.Fallout3.Tools.ShaderEdit
       else
       {
         shaders[Editing].data = new byte[size];
-        byte[] newdata = new byte[size];
-        for (int i = 0; i < size; i++)
+        var newdata = new byte[size];
+        for (var i = 0; i < size; i++)
         {
           newdata[i] = data[i + 4];
         }
@@ -301,8 +301,8 @@ namespace Fomm.Games.Fallout3.Tools.ShaderEdit
       {
         return;
       }
-      byte[] b = File.ReadAllBytes(openFileDialog1.FileName);
-      sbyte* result = NativeMethods.Disasm(b, b.Length, 0);
+      var b = File.ReadAllBytes(openFileDialog1.FileName);
+      var result = NativeMethods.Disasm(b, b.Length, 0);
       if (new IntPtr(result) == IntPtr.Zero)
       {
         MessageBox.Show("An error occured during shader disassembly", "Error");
@@ -310,7 +310,7 @@ namespace Fomm.Games.Fallout3.Tools.ShaderEdit
       else
       {
         shaders[Editing].data = b;
-        string text = new string(result);
+        var text = new string(result);
         tbEdit.Text = text.Replace("" + (char) 10, Environment.NewLine);
       }
     }
@@ -354,9 +354,9 @@ namespace Fomm.Games.Fallout3.Tools.ShaderEdit
       {
         return;
       }
-      for (int i = 0; i < shaders.Count; i++)
+      for (var i = 0; i < shaders.Count; i++)
       {
-        string path = Path.Combine(folderBrowserDialog1.SelectedPath, shaders[i].name);
+        var path = Path.Combine(folderBrowserDialog1.SelectedPath, shaders[i].name);
         if (File.Exists(path))
         {
           MessageBox.Show("File " + path + " already exists, skipping.", "Error");

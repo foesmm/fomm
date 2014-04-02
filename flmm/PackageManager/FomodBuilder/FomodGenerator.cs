@@ -96,7 +96,7 @@ namespace Fomm.PackageManager.FomodBuilder
     /// may be different if the given path pointed to an existing file.</returns>
     protected string GenerateFomod(GenerateFomodArgs p_gfaArgs)
     {
-      string strPackedPath = p_gfaArgs.PackedPath;
+      var strPackedPath = p_gfaArgs.PackedPath;
       if (!CheckFileName(ref strPackedPath))
       {
         return null;
@@ -120,7 +120,7 @@ namespace Fomm.PackageManager.FomodBuilder
       }
       finally
       {
-        foreach (string strFolder in m_lltTempFolders)
+        foreach (var strFolder in m_lltTempFolders)
         {
           FileUtil.ForceDelete(strFolder);
         }
@@ -149,7 +149,7 @@ namespace Fomm.PackageManager.FomodBuilder
     /// <returns>The path to the new temporary directory.</returns>
     protected string CreateTemporaryDirectory()
     {
-      string strTempDirectory = Program.CreateTempDirectory();
+      var strTempDirectory = Program.CreateTempDirectory();
       m_lltTempFolders.AddLast(strTempDirectory);
       return strTempDirectory;
     }
@@ -164,9 +164,9 @@ namespace Fomm.PackageManager.FomodBuilder
     /// specify an existing file; <lang cref="false"/> otherwise.</returns>
     protected bool CheckFileName(ref string newpath)
     {
-      string strNewPath = newpath;
-      string strExtension = Path.GetExtension(newpath);
-      for (Int32 i = 2; i < 999 && File.Exists(strNewPath); i++)
+      var strNewPath = newpath;
+      var strExtension = Path.GetExtension(newpath);
+      for (var i = 2; i < 999 && File.Exists(strNewPath); i++)
       {
         strNewPath = String.Format("{0} ({1}){2}", Path.ChangeExtension(newpath, null), i, strExtension);
       }
@@ -207,7 +207,7 @@ namespace Fomm.PackageManager.FomodBuilder
       ProgressDialog.ItemProgressStep = 1;
       ProgressDialog.ItemMessage = String.Format("Compressing FOMod...");
 
-      SevenZipCompressor szcCompressor = new SevenZipCompressor();
+      var szcCompressor = new SevenZipCompressor();
       szcCompressor.CompressionLevel = Settings.Default.fomodCompressionLevel;
       szcCompressor.ArchiveFormat = Settings.Default.fomodCompressionFormat;
       szcCompressor.CompressionMethod = CompressionMethod.Default;
@@ -269,9 +269,9 @@ namespace Fomm.PackageManager.FomodBuilder
       ProgressDialog.ItemMessage = String.Format("Creating Screenshot...");
       if (p_booSetScreenshot)
       {
-        string[] strScreenshots = Directory.GetFiles(p_strFomodFomodFolder, "screenshot.*",
+        var strScreenshots = Directory.GetFiles(p_strFomodFomodFolder, "screenshot.*",
                                                      SearchOption.TopDirectoryOnly);
-        foreach (String strScreenshot in strScreenshots)
+        foreach (var strScreenshot in strScreenshots)
         {
           FileUtil.ForceDelete(strScreenshot);
         }
@@ -316,7 +316,7 @@ namespace Fomm.PackageManager.FomodBuilder
       ProgressDialog.ItemMessage = String.Format("Creating Readme File...");
       if ((p_rmeReadme != null) && !String.IsNullOrEmpty(p_rmeReadme.Text))
       {
-        string strReadmeFileName = String.Format("Readme - {0}{1}", p_strFomodName, p_rmeReadme.Extension);
+        var strReadmeFileName = String.Format("Readme - {0}{1}", p_strFomodName, p_rmeReadme.Extension);
         if (Settings.Default.UseDocsFolder)
         {
           strReadmeFileName = Path.Combine("docs", strReadmeFileName);
@@ -333,7 +333,7 @@ namespace Fomm.PackageManager.FomodBuilder
     /// <param name="p_strExtractionPath">The path to the directory to which to unpack the archive.</param>
     protected void UnpackArchive(string p_strArchivePath, string p_strExtractionPath)
     {
-      using (SevenZipExtractor szeExtractor = Archive.GetExtractor(p_strArchivePath))
+      using (var szeExtractor = Archive.GetExtractor(p_strArchivePath))
       {
         szeExtractor.FileExtractionFinished += new EventHandler<FileInfoEventArgs>(FileExtractionFinished);
         szeExtractor.FileExtractionStarted += new EventHandler<FileInfoEventArgs>(FileExtractionStarted);

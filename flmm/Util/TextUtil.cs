@@ -18,9 +18,9 @@ namespace Fomm.Util
     public static string ByteToString(byte[] p_bteText)
     {
       string strText;
-      using (MemoryStream msmFile = new MemoryStream(p_bteText))
+      using (var msmFile = new MemoryStream(p_bteText))
       {
-        using (StreamReader strReader = new StreamReader(msmFile, true))
+        using (var strReader = new StreamReader(msmFile, true))
         {
           strText = strReader.ReadToEnd();
           strReader.Close();

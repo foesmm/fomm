@@ -19,7 +19,7 @@ namespace Fomm.PackageManager.ModInstallLog
     /// <returns>The normalized path.</returns>
     protected string NormalizePath(string p_strPath)
     {
-      string strNormalizedPath = m_rgxCleanPath.Replace(p_strPath, Path.DirectorySeparatorChar.ToString());
+      var strNormalizedPath = m_rgxCleanPath.Replace(p_strPath, Path.DirectorySeparatorChar.ToString());
       strNormalizedPath = strNormalizedPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
       return strNormalizedPath;
     }

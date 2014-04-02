@@ -63,7 +63,7 @@ namespace Fomm.Controls
         case AutoCompleteType.Element:
           if (Text.EndsWith("["))
           {
-            Caret crtCaret = textArea.Caret;
+            var crtCaret = textArea.Caret;
             textArea.InsertString(String.Concat(Text, "]]>"));
             crtCaret.Position = textArea.Document.OffsetToPosition(crtCaret.Offset - 3);
             return false;

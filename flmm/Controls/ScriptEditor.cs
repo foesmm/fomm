@@ -48,7 +48,7 @@ namespace Fomm.Controls
     public bool ValidateSyntax()
     {
       string stdout;
-      string errors = ScriptCompiler.CheckSyntax(cedEditor.Text, out stdout);
+      var errors = ScriptCompiler.CheckSyntax(cedEditor.Text, out stdout);
       return (errors == null);
     }
 
@@ -58,7 +58,7 @@ namespace Fomm.Controls
     protected void CheckSyntax()
     {
       string stdout;
-      string errors = ScriptCompiler.CheckSyntax(cedEditor.Text, out stdout);
+      var errors = ScriptCompiler.CheckSyntax(cedEditor.Text, out stdout);
       if (errors != null)
       {
         MessageBox.Show(errors);

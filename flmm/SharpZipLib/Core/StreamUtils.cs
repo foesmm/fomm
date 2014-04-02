@@ -89,7 +89,7 @@ namespace Fomm.SharpZipLib.Core
 
       while (count > 0)
       {
-        int readCount = stream.Read(buffer, offset, count);
+        var readCount = stream.Read(buffer, offset, count);
         if (readCount <= 0)
         {
           throw new EndOfStreamException();
@@ -128,11 +128,11 @@ namespace Fomm.SharpZipLib.Core
         throw new ArgumentException("Buffer is too small", "buffer");
       }
 
-      bool copying = true;
+      var copying = true;
 
       while (copying)
       {
-        int bytesRead = source.Read(buffer, 0, buffer.Length);
+        var bytesRead = source.Read(buffer, 0, buffer.Length);
         if (bytesRead > 0)
         {
           destination.Write(buffer, 0, bytesRead);

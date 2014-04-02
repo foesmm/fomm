@@ -125,7 +125,7 @@ namespace Fomm.SharpZipLib.Zip
     {
       if (EntryExtracted != null)
       {
-        ZipEventArgs zeaArgs = new ZipEventArgs(p_zeEntry.Name);
+        var zeaArgs = new ZipEventArgs(p_zeEntry.Name);
         EntryExtracted(this, zeaArgs);
         continueRunning_ &= !zeaArgs.Cancel;
       }
@@ -175,7 +175,7 @@ namespace Fomm.SharpZipLib.Zip
       entryFactory_.NameTransform = new ZipNameTransform(sourceDirectory);
       using (outputStream_ = new ZipOutputStream(outputStream))
       {
-        FileSystemScanner scanner = new FileSystemScanner(fileFilter, directoryFilter);
+        var scanner = new FileSystemScanner(fileFilter, directoryFilter);
         scanner.ProcessFile += new ProcessFileHandler(ProcessFile);
 
         scanner.Scan(sourceDirectory, recurse);
@@ -217,10 +217,10 @@ namespace Fomm.SharpZipLib.Zip
 
       using (zipFile_ = new ZipFile(zipFileName))
       {
-        IEnumerator enumerator = zipFile_.GetEnumerator();
+        var enumerator = zipFile_.GetEnumerator();
         while (continueRunning_ && enumerator.MoveNext())
         {
-          ZipEntry entry = (ZipEntry) enumerator.Current;
+          var entry = (ZipEntry) enumerator.Current;
           if (entry.IsFile)
           {
             // TODO Path.GetDirectory can fail here on invalid characters.
@@ -241,9 +241,9 @@ namespace Fomm.SharpZipLib.Zip
     {
       if (e.ContinueRunning)
       {
-        using (FileStream stream = File.OpenRead(e.Name))
+        using (var stream = File.OpenRead(e.Name))
         {
-          ZipEntry entry = entryFactory_.MakeFileEntry(e.Name);
+          var entry = entryFactory_.MakeFileEntry(e.Name);
           outputStream_.PutNextEntry(entry);
           AddFileContents(stream);
         }
@@ -271,7 +271,7 @@ namespace Fomm.SharpZipLib.Zip
       {
         try
         {
-          using (FileStream outputStream = File.Create(targetName))
+          using (var outputStream = File.Create(targetName))
           {
             if (buffer_ == null)
             {
@@ -291,8 +291,8 @@ namespace Fomm.SharpZipLib.Zip
 
     private void ExtractEntry(ZipEntry entry)
     {
-      bool doExtraction = entry.IsCompressionMethodSupported();
-      string targetName = entry.Name;
+      var doExtraction = entry.IsCompressionMethodSupported();
+      var targetName = entry.Name;
 
       if (doExtraction)
       {

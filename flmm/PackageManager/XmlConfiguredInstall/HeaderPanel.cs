@@ -106,7 +106,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
       /// </summary>
       private void updateLayout()
       {
-        using (Graphics g = CreateGraphics())
+        using (var g = CreateGraphics())
         {
           Size = g.MeasureString(m_lblLabel.Text, m_lblLabel.Font).ToSize();
         }
@@ -133,9 +133,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
         else
         {
           m_booPaintOnce = false;
-          using (Graphics g = e.Graphics)
+          using (var g = e.Graphics)
           {
-            SolidBrush brush = new SolidBrush(ForeColor);
+            var brush = new SolidBrush(ForeColor);
             g.DrawString(Text, Font, brush, 1, 1);
           }
         }
@@ -387,8 +387,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// <returns>The resized image.</returns>
     protected Bitmap resize(Image p_imgSource, Size p_szeSize)
     {
-      Bitmap bmpSmallPicture = new Bitmap(p_szeSize.Width, p_szeSize.Height, PixelFormat.Format32bppArgb);
-      Graphics grpPhoto = Graphics.FromImage(bmpSmallPicture);
+      var bmpSmallPicture = new Bitmap(p_szeSize.Width, p_szeSize.Height, PixelFormat.Format32bppArgb);
+      var grpPhoto = Graphics.FromImage(bmpSmallPicture);
       grpPhoto.DrawImage(p_imgSource, new Rectangle(0, 0, p_szeSize.Width, p_szeSize.Height),
                          new Rectangle(0, 0, p_imgSource.Width, p_imgSource.Height), GraphicsUnit.Pixel);
       return bmpSmallPicture;
@@ -399,19 +399,19 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// </summary>
     private void loadImage()
     {
-      PictureBox pbxImage = m_pbxImage;
+      var pbxImage = m_pbxImage;
 
       if (m_bmpOriginalImage == null)
       {
         m_bmpOriginalImage = new Bitmap(120, 90);
-        using (Graphics g = Graphics.FromImage(m_bmpOriginalImage))
+        using (var g = Graphics.FromImage(m_bmpOriginalImage))
         {
           g.FillRectangle(new SolidBrush(BackColor), 0, 0, 120, 90);
         }
       }
-      float fltScale = (float) pbxImage.ClientSize.Height/(float) m_bmpOriginalImage.Height;
+      var fltScale = (float) pbxImage.ClientSize.Height/(float) m_bmpOriginalImage.Height;
       pbxImage.ClientSize = new Size((Int32) (Math.Round(fltScale*m_bmpOriginalImage.Width)), pbxImage.ClientSize.Height);
-      Bitmap bmpImage = resize(m_bmpOriginalImage, pbxImage.ClientSize);
+      var bmpImage = resize(m_bmpOriginalImage, pbxImage.ClientSize);
       pbxImage.Image = bmpImage;
     }
 
@@ -426,20 +426,20 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
         return;
       }
 
-      PictureBox pbxImage = m_pbxImage;
-      PictureBox pbxGradient = m_pbxGradient;
-      Bitmap bmpImage = (Bitmap) pbxImage.Image;
+      var pbxImage = m_pbxImage;
+      var pbxGradient = m_pbxGradient;
+      var bmpImage = (Bitmap) pbxImage.Image;
 
       //set background of picture box to average colour of the image
-      Int32 intR = 0;
-      Int32 intG = 0;
-      Int32 intB = 0;
-      Int32 intCounter = 0;
-      for (Int32 i = 0; i < bmpImage.Width; i += 10)
+      var intR = 0;
+      var intG = 0;
+      var intB = 0;
+      var intCounter = 0;
+      for (var i = 0; i < bmpImage.Width; i += 10)
       {
-        for (Int32 j = 0; j < bmpImage.Height; j += 10)
+        for (var j = 0; j < bmpImage.Height; j += 10)
         {
-          Color clrPixel = bmpImage.GetPixel(i, j);
+          var clrPixel = bmpImage.GetPixel(i, j);
           intR += clrPixel.R;
           intG += clrPixel.G;
           intB += clrPixel.B;
@@ -452,38 +452,38 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
       pbxImage.BackColor = Color.FromArgb(255, intR, intG, intB);
 
       //fade out the edge of the image
-      Int32 intRange = bmpImage.Width/4;
-      for (Int32 i = 0; i < bmpImage.Height; i++)
+      var intRange = bmpImage.Width/4;
+      for (var i = 0; i < bmpImage.Height; i++)
       {
-        Color clrPixel = bmpImage.GetPixel(bmpImage.Width - intRange, i);
-        double dblA = (double) clrPixel.A;
-        double dblADelta = dblA/(double) intRange;
-        for (Int32 j = intRange; j > 0; j--)
+        var clrPixel = bmpImage.GetPixel(bmpImage.Width - intRange, i);
+        var dblA = (double) clrPixel.A;
+        var dblADelta = dblA/(double) intRange;
+        for (var j = intRange; j > 0; j--)
         {
-          Int32 intX = (m_tpsPosition == TextPosition.Left) ? j - 1 : bmpImage.Width - j;
+          var intX = (m_tpsPosition == TextPosition.Left) ? j - 1 : bmpImage.Width - j;
           clrPixel = bmpImage.GetPixel(intX, i);
           intR = clrPixel.R;
           intG = clrPixel.G;
           intB = clrPixel.B;
           dblA -= dblADelta;
-          Color clrTmp = Color.FromArgb((Int32) dblA, intR, intG, intB);
+          var clrTmp = Color.FromArgb((Int32) dblA, intR, intG, intB);
           bmpImage.SetPixel(intX, i, clrTmp);
         }
       }
 
       //create a gradient fading out the average image colour
-      Color clrBackColour = pbxImage.BackColor;
+      var clrBackColour = pbxImage.BackColor;
       intR = clrBackColour.R;
       intG = clrBackColour.G;
       intB = clrBackColour.B;
-      Bitmap bmpGradient = new Bitmap(256*GRADIENT_SIZE_MULT, bmpImage.Height);
+      var bmpGradient = new Bitmap(256*GRADIENT_SIZE_MULT, bmpImage.Height);
       if (m_tpsPosition == TextPosition.Left)
       {
-        for (Int32 i = 0; i < bmpImage.Height; i++)
+        for (var i = 0; i < bmpImage.Height; i++)
         {
-          for (Int32 j = 0; j < 256*GRADIENT_SIZE_MULT; j += GRADIENT_SIZE_MULT)
+          for (var j = 0; j < 256*GRADIENT_SIZE_MULT; j += GRADIENT_SIZE_MULT)
           {
-            for (Int32 n = 0; n < GRADIENT_SIZE_MULT; n++)
+            for (var n = 0; n < GRADIENT_SIZE_MULT; n++)
             {
               bmpGradient.SetPixel(j + n, i, Color.FromArgb(j/GRADIENT_SIZE_MULT, intR, intG, intB));
             }
@@ -492,11 +492,11 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
       }
       else
       {
-        for (Int32 i = 0; i < bmpImage.Height; i++)
+        for (var i = 0; i < bmpImage.Height; i++)
         {
-          for (Int32 j = 0; j < 256*GRADIENT_SIZE_MULT; j += GRADIENT_SIZE_MULT)
+          for (var j = 0; j < 256*GRADIENT_SIZE_MULT; j += GRADIENT_SIZE_MULT)
           {
-            for (Int32 n = 0; n < GRADIENT_SIZE_MULT; n++)
+            for (var n = 0; n < GRADIENT_SIZE_MULT; n++)
             {
               bmpGradient.SetPixel(j + n, i, Color.FromArgb(255 - j/GRADIENT_SIZE_MULT, intR, intG, intB));
             }

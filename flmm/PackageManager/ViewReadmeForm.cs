@@ -28,7 +28,7 @@ namespace Fomm.PackageManager
       {
         case ReadmeFormat.PlainText:
         case ReadmeFormat.RichText:
-          RichTextBox rtbReadme = new RichTextBox();
+          var rtbReadme = new RichTextBox();
           rtbReadme.Multiline = true;
           rtbReadme.ScrollBars = RichTextBoxScrollBars.Vertical;
           rtbReadme.BorderStyle = BorderStyle.None;
@@ -49,7 +49,7 @@ namespace Fomm.PackageManager
           Controls.Add(rtbReadme);
           break;
         case ReadmeFormat.HTML:
-          WebBrowser wbrBrowser = new WebBrowser();
+          var wbrBrowser = new WebBrowser();
           Controls.Add(wbrBrowser);
           wbrBrowser.Dock = DockStyle.Fill;
           wbrBrowser.DocumentCompleted += delegate(object o, WebBrowserDocumentCompletedEventArgs arg)

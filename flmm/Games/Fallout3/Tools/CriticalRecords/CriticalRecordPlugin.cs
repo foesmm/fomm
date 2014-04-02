@@ -78,13 +78,13 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     /// </summary>
     protected void loadCriticalData()
     {
-      SubRecord srcCriticalData = getCriticalRecordData();
-      string strCriticalData = srcCriticalData.GetStrData().Trim().Replace("\r\n", "\n").Replace("\n\r", "\n");
-      string[] strCriticalRecords = strCriticalData.Split(new char[]
+      var srcCriticalData = getCriticalRecordData();
+      var strCriticalData = srcCriticalData.GetStrData().Trim().Replace("\r\n", "\n").Replace("\n\r", "\n");
+      var strCriticalRecords = strCriticalData.Split(new char[]
       {
         '\n'
       }, StringSplitOptions.RemoveEmptyEntries);
-      foreach (string strCriticalRecord in strCriticalRecords)
+      foreach (var strCriticalRecord in strCriticalRecords)
       {
         UInt32 uintFormId = 0;
         if (
@@ -93,7 +93,7 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
         {
           continue;
         }
-        CriticalRecordInfo criInfo = new CriticalRecordInfo();
+        var criInfo = new CriticalRecordInfo();
         criInfo.Severity =
           (CriticalRecordInfo.ConflictSeverity)
             Int32.Parse(strCriticalRecord[9].ToString(), NumberStyles.HexNumber);
@@ -114,7 +114,7 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
       GroupRecord grcGroup = null;
       Record recCriticalRecords = null;
       SubRecord srcCriticalData = null;
-      foreach (Rec rec in Records)
+      foreach (var rec in Records)
       {
         grcGroup = rec as GroupRecord;
         if (grcGroup == null)
@@ -125,7 +125,7 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
         {
           foreach (Record recRecord in grcGroup.Records)
           {
-            foreach (SubRecord srcSubRecord in recRecord.SubRecords)
+            foreach (var srcSubRecord in recRecord.SubRecords)
             {
               switch (srcSubRecord.Name)
               {
@@ -159,8 +159,8 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
       {
         recCriticalRecords = new Record();
         recCriticalRecords.Name = "MESG";
-        UInt32 uintMastersCount = (UInt32) Masters.Count << 24;
-        UInt32 uintFormId = uintMastersCount + 1;
+        var uintMastersCount = (UInt32) Masters.Count << 24;
+        var uintFormId = uintMastersCount + 1;
         while (ContainsFormId(uintFormId))
         {
           uintFormId++;
@@ -173,7 +173,7 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
         recCriticalRecords.Flags2 = 0x00044210;
         recCriticalRecords.Flags3 = 0x0002000f;
 
-        SubRecord srcSub = new SubRecord();
+        var srcSub = new SubRecord();
         srcSub.Name = "EDID";
         srcSub.SetStrData(CRITICAL_DATA_RECORD_EDID, true);
         recCriticalRecords.SubRecords.Add(srcSub);
@@ -218,12 +218,12 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     /// <param name="bw">The writer to which to write the plugin data.</param>
     internal override void SaveData(BinaryWriter bw)
     {
-      StringBuilder stbCriticalData = new StringBuilder();
-      foreach (KeyValuePair<UInt32, CriticalRecordInfo> kvpCriticalRecords in m_dicCriticalRecords)
+      var stbCriticalData = new StringBuilder();
+      foreach (var kvpCriticalRecords in m_dicCriticalRecords)
       {
         stbCriticalData.AppendFormat("{0:x8} {1}", kvpCriticalRecords.Key, kvpCriticalRecords.Value).AppendLine();
       }
-      SubRecord srcCriticalData = getCriticalRecordData();
+      var srcCriticalData = getCriticalRecordData();
       srcCriticalData.SetStrData(stbCriticalData.ToString(), true);
 
       base.SaveData(bw);

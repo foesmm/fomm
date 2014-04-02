@@ -83,7 +83,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     {
       get
       {
-        foreach (DependencyTypePattern dtpPattern in m_lstPatterns)
+        foreach (var dtpPattern in m_lstPatterns)
         {
           if (dtpPattern.Dependency.IsFufilled)
           {

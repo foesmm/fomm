@@ -215,7 +215,7 @@ namespace Fomm.SharpZipLib.Zip
         throw new ArgumentException("Stream is not seekable", "outStream");
       }
 
-      ZipFile result = new ZipFile();
+      var result = new ZipFile();
       result.baseStream_ = outStream;
       return result;
     }
@@ -312,7 +312,7 @@ namespace Fomm.SharpZipLib.Zip
       }
 
       // TODO: This will be slow as the next ice age for huge archives!
-      for (int i = 0; i < entries_.Length; i++)
+      for (var i = 0; i < entries_.Length; i++)
       {
         if (string.Compare(name, entries_[i].Name, ignoreCase, CultureInfo.InvariantCulture) == 0)
         {
@@ -342,7 +342,7 @@ namespace Fomm.SharpZipLib.Zip
         throw new ObjectDisposedException("ZipFile");
       }
 
-      int index = FindEntry(name, true);
+      var index = FindEntry(name, true);
       return (index >= 0) ? (ZipEntry) entries_[index].Clone() : null;
     }
 
@@ -373,7 +373,7 @@ namespace Fomm.SharpZipLib.Zip
         throw new ObjectDisposedException("ZipFile");
       }
 
-      long index = entry.ZipFileIndex;
+      var index = entry.ZipFileIndex;
       if ((index < 0) || (index >= entries_.Length) || (entries_[index].Name != entry.Name))
       {
         index = FindEntry(entry.Name, true);
@@ -408,8 +408,8 @@ namespace Fomm.SharpZipLib.Zip
         throw new ObjectDisposedException("ZipFile");
       }
 
-      long start = LocateEntry(entries_[entryIndex]);
-      CompressionMethod method = entries_[entryIndex].CompressionMethod;
+      var start = LocateEntry(entries_[entryIndex]);
+      var method = entries_[entryIndex].CompressionMethod;
       Stream result = new PartialInputStream(this, start, entries_[entryIndex].CompressedSize);
 
       switch (method)
@@ -453,8 +453,8 @@ namespace Fomm.SharpZipLib.Zip
     {
       lock (baseStream_)
       {
-        bool testHeader = (tests & HeaderTest.Header) != 0;
-        bool testData = (tests & HeaderTest.Extract) != 0;
+        var testHeader = (tests & HeaderTest.Header) != 0;
+        var testData = (tests & HeaderTest.Extract) != 0;
 
         baseStream_.Seek(offsetOfFirstEntry + entry.Offset, SeekOrigin.Begin);
         if ((int) ReadLEUint() != ZipConstants.LocalHeaderSignature)
@@ -462,24 +462,24 @@ namespace Fomm.SharpZipLib.Zip
           throw new ZipException(string.Format("Wrong local header signature @{0:X}", offsetOfFirstEntry + entry.Offset));
         }
 
-        short extractVersion = (short) ReadLEUshort();
-        short localFlags = (short) ReadLEUshort();
-        short compressionMethod = (short) ReadLEUshort();
-        short fileTime = (short) ReadLEUshort();
-        short fileDate = (short) ReadLEUshort();
-        uint crcValue = ReadLEUint();
+        var extractVersion = (short) ReadLEUshort();
+        var localFlags = (short) ReadLEUshort();
+        var compressionMethod = (short) ReadLEUshort();
+        var fileTime = (short) ReadLEUshort();
+        var fileDate = (short) ReadLEUshort();
+        var crcValue = ReadLEUint();
         long compressedSize = ReadLEUint();
         long size = ReadLEUint();
         int storedNameLength = ReadLEUshort();
         int extraDataLength = ReadLEUshort();
 
-        byte[] nameData = new byte[storedNameLength];
+        var nameData = new byte[storedNameLength];
         StreamUtils.ReadFully(baseStream_, nameData);
 
-        byte[] extraData = new byte[extraDataLength];
+        var extraData = new byte[extraDataLength];
         StreamUtils.ReadFully(baseStream_, extraData);
 
-        ZipExtraData localExtraData = new ZipExtraData(extraData);
+        var localExtraData = new ZipExtraData(extraData);
 
         // Extra data / zip64 checks
         if (localExtraData.Find(1))
@@ -673,7 +673,7 @@ namespace Fomm.SharpZipLib.Zip
           }
 
           // Name data has already been read convert it and compare.
-          string localName = ZipConstants.ConvertToStringExt(localFlags, nameData);
+          var localName = ZipConstants.ConvertToStringExt(localFlags, nameData);
 
           // Central directory and local entry name match
           if (localName != entry.Name)
@@ -728,7 +728,7 @@ namespace Fomm.SharpZipLib.Zip
           }
         }
 
-        int extraLength = storedNameLength + extraDataLength;
+        var extraLength = storedNameLength + extraDataLength;
         return offsetOfFirstEntry + entry.Offset + ZipConstants.LocalHeaderBaseSize + extraLength;
       }
     }
@@ -831,9 +831,9 @@ namespace Fomm.SharpZipLib.Zip
       updateIndex_ = new Hashtable();
 
       updates_ = new ArrayList(entries_.Length);
-      foreach (ZipEntry entry in entries_)
+      foreach (var entry in entries_)
       {
-        int index = updates_.Add(new ZipUpdate(entry));
+        var index = updates_.Add(new ZipUpdate(entry));
         updateIndex_.Add(entry.Name, index);
       }
 
@@ -889,8 +889,8 @@ namespace Fomm.SharpZipLib.Zip
           // Create an empty archive if none existed originally.
           if (entries_.Length == 0)
           {
-            byte[] theComment = ZipConstants.ConvertToArray(comment_);
-            using (ZipHelperStream zhs = new ZipHelperStream(baseStream_))
+            var theComment = ZipConstants.ConvertToArray(comment_);
+            using (var zhs = new ZipHelperStream(baseStream_))
             {
               zhs.WriteEndOfCentralDirectory(0, 0, 0, theComment);
             }
@@ -911,7 +911,7 @@ namespace Fomm.SharpZipLib.Zip
     {
       contentsEdited_ = true;
 
-      int index = FindExistingUpdate(update.Entry.Name);
+      var index = FindExistingUpdate(update.Entry.Name);
 
       if (index >= 0)
       {
@@ -992,7 +992,7 @@ namespace Fomm.SharpZipLib.Zip
 
       CheckUpdating();
 
-      int index = FindExistingUpdate(entry);
+      var index = FindExistingUpdate(entry);
       if (index >= 0)
       {
         contentsEdited_ = true;
@@ -1055,7 +1055,7 @@ namespace Fomm.SharpZipLib.Zip
 
     private void WriteLocalEntryHeader(ZipUpdate update)
     {
-      ZipEntry entry = update.OutEntry;
+      var entry = update.OutEntry;
 
       // TODO: Local offset will require adjusting for multi-disk zip files.
       entry.Offset = baseStream_.Position;
@@ -1133,14 +1133,14 @@ namespace Fomm.SharpZipLib.Zip
         WriteLEInt((int) entry.Size);
       }
 
-      byte[] name = ZipConstants.ConvertToArray(entry.Flags, entry.Name);
+      var name = ZipConstants.ConvertToArray(entry.Flags, entry.Name);
 
       if (name.Length > 0xFFFF)
       {
         throw new ZipException("Entry name too long.");
       }
 
-      ZipExtraData ed = new ZipExtraData(entry.ExtraData);
+      var ed = new ZipExtraData(entry.ExtraData);
 
       if (entry.LocalHeaderRequiresZip64)
       {
@@ -1236,7 +1236,7 @@ namespace Fomm.SharpZipLib.Zip
         WriteLEInt((int) entry.Size);
       }
 
-      byte[] name = ZipConstants.ConvertToArray(entry.Flags, entry.Name);
+      var name = ZipConstants.ConvertToArray(entry.Flags, entry.Name);
 
       if (name.Length > 0xFFFF)
       {
@@ -1246,7 +1246,7 @@ namespace Fomm.SharpZipLib.Zip
       WriteLEShort(name.Length);
 
       // Central header extra data is different to local header version so regenerate.
-      ZipExtraData ed = new ZipExtraData(entry.ExtraData);
+      var ed = new ZipExtraData(entry.ExtraData);
 
       if (entry.CentralHeaderRequiresZip64)
       {
@@ -1276,7 +1276,7 @@ namespace Fomm.SharpZipLib.Zip
         ed.Delete(1);
       }
 
-      byte[] centralExtraData = ed.GetEntryData();
+      var centralExtraData = ed.GetEntryData();
 
       WriteLEShort(centralExtraData.Length);
       WriteLEShort(entry.Comment != null ? entry.Comment.Length : 0);
@@ -1320,7 +1320,7 @@ namespace Fomm.SharpZipLib.Zip
         baseStream_.Write(centralExtraData, 0, centralExtraData.Length);
       }
 
-      byte[] rawComment = (entry.Comment != null) ? Encoding.ASCII.GetBytes(entry.Comment) : new byte[0];
+      var rawComment = (entry.Comment != null) ? Encoding.ASCII.GetBytes(entry.Comment) : new byte[0];
 
       if (rawComment.Length > 0)
       {
@@ -1367,17 +1367,17 @@ namespace Fomm.SharpZipLib.Zip
 
     private void CopyDescriptorBytes(ZipUpdate update, Stream dest, Stream source)
     {
-      int bytesToCopy = GetDescriptorSize(update);
+      var bytesToCopy = GetDescriptorSize(update);
 
       if (bytesToCopy > 0)
       {
-        byte[] buffer = GetBuffer();
+        var buffer = GetBuffer();
 
         while (bytesToCopy > 0)
         {
-          int readSize = Math.Min(buffer.Length, bytesToCopy);
+          var readSize = Math.Min(buffer.Length, bytesToCopy);
 
-          int bytesRead = source.Read(buffer, 0, readSize);
+          var bytesRead = source.Read(buffer, 0, readSize);
           if (bytesRead > 0)
           {
             dest.Write(buffer, 0, bytesRead);
@@ -1400,16 +1400,16 @@ namespace Fomm.SharpZipLib.Zip
       }
 
       // NOTE: Compressed size is updated elsewhere.
-      Crc32 crc = new Crc32();
-      byte[] buffer = GetBuffer();
+      var crc = new Crc32();
+      var buffer = GetBuffer();
 
-      long targetBytes = bytesToCopy;
+      var targetBytes = bytesToCopy;
       long totalBytesRead = 0;
 
       int bytesRead;
       do
       {
-        int readSize = buffer.Length;
+        var readSize = buffer.Length;
 
         if (bytesToCopy < readSize)
         {
@@ -1448,7 +1448,7 @@ namespace Fomm.SharpZipLib.Zip
     /// <returns>The descriptor size, zero if there isnt one.</returns>
     private static int GetDescriptorSize(ZipUpdate update)
     {
-      int result = 0;
+      var result = 0;
       if ((update.Entry.Flags & (int) GeneralBitFlags.Descriptor) != 0)
       {
         result = ZipConstants.DataDescriptorSize - 4;
@@ -1463,15 +1463,15 @@ namespace Fomm.SharpZipLib.Zip
     private void CopyDescriptorBytesDirect(ZipUpdate update, Stream stream, ref long destinationPosition,
                                            long sourcePosition)
     {
-      int bytesToCopy = GetDescriptorSize(update);
+      var bytesToCopy = GetDescriptorSize(update);
 
       while (bytesToCopy > 0)
       {
-        int readSize = (int) bytesToCopy;
-        byte[] buffer = GetBuffer();
+        var readSize = (int) bytesToCopy;
+        var buffer = GetBuffer();
 
         stream.Position = sourcePosition;
-        int bytesRead = stream.Read(buffer, 0, readSize);
+        var bytesRead = stream.Read(buffer, 0, readSize);
         if (bytesRead > 0)
         {
           stream.Position = destinationPosition;
@@ -1490,19 +1490,19 @@ namespace Fomm.SharpZipLib.Zip
     private void CopyEntryDataDirect(ZipUpdate update, Stream stream, bool updateCrc, ref long destinationPosition,
                                      ref long sourcePosition)
     {
-      long bytesToCopy = update.Entry.CompressedSize;
+      var bytesToCopy = update.Entry.CompressedSize;
 
       // NOTE: Compressed size is updated elsewhere.
-      Crc32 crc = new Crc32();
-      byte[] buffer = GetBuffer();
+      var crc = new Crc32();
+      var buffer = GetBuffer();
 
-      long targetBytes = bytesToCopy;
+      var targetBytes = bytesToCopy;
       long totalBytesRead = 0;
 
       int bytesRead;
       do
       {
-        int readSize = buffer.Length;
+        var readSize = buffer.Length;
 
         if (bytesToCopy < readSize)
         {
@@ -1541,8 +1541,8 @@ namespace Fomm.SharpZipLib.Zip
 
     private int FindExistingUpdate(ZipEntry entry)
     {
-      int result = -1;
-      string convertedName = GetTransformedFileName(entry.Name);
+      var result = -1;
+      var convertedName = GetTransformedFileName(entry.Name);
 
       if (updateIndex_.ContainsKey(convertedName))
       {
@@ -1566,9 +1566,9 @@ namespace Fomm.SharpZipLib.Zip
 
     private int FindExistingUpdate(string fileName)
     {
-      int result = -1;
+      var result = -1;
 
-      string convertedName = GetTransformedFileName(fileName);
+      var convertedName = GetTransformedFileName(fileName);
 
       if (updateIndex_.ContainsKey(convertedName))
       {
@@ -1597,7 +1597,7 @@ namespace Fomm.SharpZipLib.Zip
     /// <returns>The output stream obtained for the entry.</returns>
     private Stream GetOutputStream(ZipEntry entry)
     {
-      Stream result = baseStream_;
+      var result = baseStream_;
 
       switch (entry.CompressionMethod)
       {
@@ -1606,7 +1606,7 @@ namespace Fomm.SharpZipLib.Zip
           break;
 
         case CompressionMethod.Deflated:
-          DeflaterOutputStream dos = new DeflaterOutputStream(result, new Deflater(9, true));
+          var dos = new DeflaterOutputStream(result, new Deflater(9, true));
           dos.IsStreamOwner = false;
           result = dos;
           break;
@@ -1635,7 +1635,7 @@ namespace Fomm.SharpZipLib.Zip
       {
         using (source)
         {
-          long sourceStreamLength = source.Length;
+          var sourceStreamLength = source.Length;
           if (update.OutEntry.Size < 0)
           {
             update.OutEntry.Size = sourceStreamLength;
@@ -1651,19 +1651,19 @@ namespace Fomm.SharpZipLib.Zip
 
           workFile.WriteLocalEntryHeader(update);
 
-          long dataStart = workFile.baseStream_.Position;
+          var dataStart = workFile.baseStream_.Position;
 
-          using (Stream output = workFile.GetOutputStream(update.OutEntry))
+          using (var output = workFile.GetOutputStream(update.OutEntry))
           {
             CopyBytes(update, output, source, sourceStreamLength, true);
           }
 
-          long dataEnd = workFile.baseStream_.Position;
+          var dataEnd = workFile.baseStream_.Position;
           update.OutEntry.CompressedSize = dataEnd - dataStart;
 
           if ((update.OutEntry.Flags & (int) GeneralBitFlags.Descriptor) == (int) GeneralBitFlags.Descriptor)
           {
-            ZipHelperStream helper = new ZipHelperStream(workFile.baseStream_);
+            var helper = new ZipHelperStream(workFile.baseStream_);
             helper.WriteDataDescriptor(update.OutEntry);
           }
         }
@@ -1678,15 +1678,15 @@ namespace Fomm.SharpZipLib.Zip
     private static void ModifyEntry(ZipFile workFile, ZipUpdate update)
     {
       workFile.WriteLocalEntryHeader(update);
-      long dataStart = workFile.baseStream_.Position;
+      var dataStart = workFile.baseStream_.Position;
 
-      long dataEnd = workFile.baseStream_.Position;
+      var dataEnd = workFile.baseStream_.Position;
       update.Entry.CompressedSize = dataEnd - dataStart;
     }
 
     private void CopyEntryDirect(ZipFile workFile, ZipUpdate update, ref long destinationPosition)
     {
-      bool skipOver = false;
+      var skipOver = false;
       if (update.Entry.Offset == destinationPosition)
       {
         skipOver = true;
@@ -1704,7 +1704,7 @@ namespace Fomm.SharpZipLib.Zip
       const int NameLengthOffset = 26;
 
       // TODO: Add base for SFX friendly handling
-      long entryDataOffset = update.Entry.Offset + NameLengthOffset;
+      var entryDataOffset = update.Entry.Offset + NameLengthOffset;
 
       baseStream_.Seek(entryDataOffset, SeekOrigin.Begin);
 
@@ -1739,7 +1739,7 @@ namespace Fomm.SharpZipLib.Zip
       {
         const int NameLengthOffset = 26;
 
-        long entryDataOffset = update.Entry.Offset + NameLengthOffset;
+        var entryDataOffset = update.Entry.Offset + NameLengthOffset;
 
         // TODO: This wont work for SFX files!
         baseStream_.Seek(entryDataOffset, SeekOrigin.Begin);
@@ -1782,8 +1782,8 @@ namespace Fomm.SharpZipLib.Zip
         object x,
         object y)
       {
-        ZipUpdate zx = x as ZipUpdate;
-        ZipUpdate zy = y as ZipUpdate;
+        var zx = x as ZipUpdate;
+        var zy = y as ZipUpdate;
 
         int result;
 
@@ -1804,13 +1804,13 @@ namespace Fomm.SharpZipLib.Zip
         }
         else
         {
-          int xCmdValue = ((zx.Command == UpdateCommand.Copy) || (zx.Command == UpdateCommand.Modify)) ? 0 : 1;
-          int yCmdValue = ((zy.Command == UpdateCommand.Copy) || (zy.Command == UpdateCommand.Modify)) ? 0 : 1;
+          var xCmdValue = ((zx.Command == UpdateCommand.Copy) || (zx.Command == UpdateCommand.Modify)) ? 0 : 1;
+          var yCmdValue = ((zy.Command == UpdateCommand.Copy) || (zy.Command == UpdateCommand.Modify)) ? 0 : 1;
 
           result = xCmdValue - yCmdValue;
           if (result == 0)
           {
-            long offsetDiff = zx.Entry.Offset - zy.Entry.Offset;
+            var offsetDiff = zx.Entry.Offset - zy.Entry.Offset;
             if (offsetDiff < 0)
             {
               result = -1;
@@ -1833,8 +1833,8 @@ namespace Fomm.SharpZipLib.Zip
     {
       long sizeEntries = 0;
       long endOfStream = 0;
-      bool allOk = true;
-      bool directUpdate = false;
+      var allOk = true;
+      var directUpdate = false;
       long destinationPosition = 0; // NOT SFX friendly
 
       ZipFile workFile;
@@ -1912,7 +1912,7 @@ namespace Fomm.SharpZipLib.Zip
           workFile.baseStream_.Position = destinationPosition;
         }
 
-        long centralDirOffset = workFile.baseStream_.Position;
+        var centralDirOffset = workFile.baseStream_.Position;
 
         foreach (ZipUpdate update in updates_)
         {
@@ -1922,8 +1922,8 @@ namespace Fomm.SharpZipLib.Zip
           }
         }
 
-        byte[] theComment = ZipConstants.ConvertToArray(comment_);
-        using (ZipHelperStream zhs = new ZipHelperStream(workFile.baseStream_))
+        var theComment = ZipConstants.ConvertToArray(comment_);
+        using (var zhs = new ZipHelperStream(workFile.baseStream_))
         {
           zhs.WriteEndOfCentralDirectory(updateCount_, sizeEntries, centralDirOffset, theComment);
         }
@@ -2199,14 +2199,14 @@ namespace Fomm.SharpZipLib.Zip
     /// </exception>
     private ushort ReadLEUshort()
     {
-      int data1 = baseStream_.ReadByte();
+      var data1 = baseStream_.ReadByte();
 
       if (data1 < 0)
       {
         throw new EndOfStreamException("End of stream");
       }
 
-      int data2 = baseStream_.ReadByte();
+      var data2 = baseStream_.ReadByte();
 
       if (data2 < 0)
       {
@@ -2241,7 +2241,7 @@ namespace Fomm.SharpZipLib.Zip
     // NOTE this returns the offset of the first byte after the signature.
     private long LocateBlockWithSignature(int signature, long endLocation, int minimumBlockSize, int maximumVariableData)
     {
-      using (ZipHelperStream les = new ZipHelperStream(baseStream_))
+      using (var les = new ZipHelperStream(baseStream_))
       {
         return les.LocateBlockWithSignature(signature, endLocation, minimumBlockSize, maximumVariableData);
       }
@@ -2272,7 +2272,7 @@ namespace Fomm.SharpZipLib.Zip
         throw new ZipException("ZipFile stream must be seekable");
       }
 
-      long locatedEndOfCentralDir = LocateBlockWithSignature(ZipConstants.EndOfCentralDirectorySignature,
+      var locatedEndOfCentralDir = LocateBlockWithSignature(ZipConstants.EndOfCentralDirectorySignature,
                                                              baseStream_.Length, ZipConstants.EndOfCentralRecordBaseSize,
                                                              0xffff);
 
@@ -2282,8 +2282,8 @@ namespace Fomm.SharpZipLib.Zip
       }
 
       // Read end of central directory record
-      ushort thisDiskNumber = ReadLEUshort();
-      ushort startCentralDirDisk = ReadLEUshort();
+      var thisDiskNumber = ReadLEUshort();
+      var startCentralDirDisk = ReadLEUshort();
       ulong entriesForThisDisk = ReadLEUshort();
       ulong entriesForWholeCentralDir = ReadLEUshort();
       ulong centralDirSize = ReadLEUint();
@@ -2292,7 +2292,7 @@ namespace Fomm.SharpZipLib.Zip
 
       if (commentSize > 0)
       {
-        byte[] comment = new byte[commentSize];
+        var comment = new byte[commentSize];
 
         StreamUtils.ReadFully(baseStream_, comment);
         comment_ = ZipConstants.ConvertToString(comment);
@@ -2302,7 +2302,7 @@ namespace Fomm.SharpZipLib.Zip
         comment_ = string.Empty;
       }
 
-      bool isZip64 = false;
+      var isZip64 = false;
 
       // Check if zip64 header information is required.
       if ((thisDiskNumber == 0xffff) ||
@@ -2314,7 +2314,7 @@ namespace Fomm.SharpZipLib.Zip
       {
         isZip64 = true;
 
-        long offset = LocateBlockWithSignature(ZipConstants.Zip64CentralDirLocatorSignature, locatedEndOfCentralDir, 0,
+        var offset = LocateBlockWithSignature(ZipConstants.Zip64CentralDirLocatorSignature, locatedEndOfCentralDir, 0,
                                                0x1000);
         if (offset < 0)
         {
@@ -2325,7 +2325,7 @@ namespace Fomm.SharpZipLib.Zip
         // relative offset of the zip64 end of central directory record 8 bytes 
         // total number of disks 4 bytes 
         ReadLEUint(); // startDisk64 is not currently used
-        ulong offset64 = ReadLEUlong();
+        var offset64 = ReadLEUlong();
         ReadLEUint();
 
         baseStream_.Position = (long) offset64;
@@ -2380,10 +2380,10 @@ namespace Fomm.SharpZipLib.Zip
         int versionToExtract = ReadLEUshort();
         int bitFlags = ReadLEUshort();
         int method = ReadLEUshort();
-        uint dostime = ReadLEUint();
-        uint crc = ReadLEUint();
-        long csize = (long) ReadLEUint();
-        long size = (long) ReadLEUint();
+        var dostime = ReadLEUint();
+        var crc = ReadLEUint();
+        var csize = (long) ReadLEUint();
+        var size = (long) ReadLEUint();
         int nameLen = ReadLEUshort();
         int extraLen = ReadLEUshort();
         int commentLen = ReadLEUshort();
@@ -2391,15 +2391,15 @@ namespace Fomm.SharpZipLib.Zip
         ReadLEUshort(); // Not currently used
         ReadLEUshort(); // Not currently used
 
-        uint externalAttributes = ReadLEUint();
+        var externalAttributes = ReadLEUint();
         long offset = ReadLEUint();
 
-        byte[] buffer = new byte[Math.Max(nameLen, commentLen)];
+        var buffer = new byte[Math.Max(nameLen, commentLen)];
 
         StreamUtils.ReadFully(baseStream_, buffer, 0, nameLen);
-        string name = ZipConstants.ConvertToStringExt(bitFlags, buffer, nameLen);
+        var name = ZipConstants.ConvertToStringExt(bitFlags, buffer, nameLen);
 
-        ZipEntry entry = new ZipEntry(name, versionToExtract, versionMadeBy, (CompressionMethod) method);
+        var entry = new ZipEntry(name, versionToExtract, versionMadeBy, (CompressionMethod) method);
         entry.Crc = crc & 0xffffffffL;
         entry.Size = size & 0xffffffffL;
         entry.CompressedSize = csize & 0xffffffffL;
@@ -2411,7 +2411,7 @@ namespace Fomm.SharpZipLib.Zip
 
         if (extraLen > 0)
         {
-          byte[] extra = new byte[extraLen];
+          var extra = new byte[extraLen];
           StreamUtils.ReadFully(baseStream_, extra);
           entry.ExtraData = extra;
         }
@@ -2785,7 +2785,7 @@ namespace Fomm.SharpZipLib.Zip
           }
 
           baseStream_.Seek(readPos_, SeekOrigin.Begin);
-          int readCount = baseStream_.Read(buffer, offset, count);
+          var readCount = baseStream_.Read(buffer, offset, count);
           if (readCount > 0)
           {
             readPos_ += readCount;
@@ -2836,7 +2836,7 @@ namespace Fomm.SharpZipLib.Zip
       /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed. </exception>
       public override long Seek(long offset, SeekOrigin origin)
       {
-        long newPos = readPos_;
+        var newPos = readPos_;
 
         switch (origin)
         {
@@ -2891,7 +2891,7 @@ namespace Fomm.SharpZipLib.Zip
         }
         set
         {
-          long newPos = start_ + value;
+          var newPos = start_ + value;
 
           if (newPos < start_)
           {
@@ -3247,8 +3247,8 @@ namespace Fomm.SharpZipLib.Zip
 
       Stream result = null;
 
-      string moveTempName = GetTempFileName(fileName_, false);
-      bool newFileCreated = false;
+      var moveTempName = GetTempFileName(fileName_, false);
+      var newFileCreated = false;
 
       try
       {
@@ -3348,13 +3348,13 @@ namespace Fomm.SharpZipLib.Zip
       }
       else
       {
-        int counter = 0;
-        int suffixSeed = DateTime.Now.Second;
+        var counter = 0;
+        var suffixSeed = DateTime.Now.Second;
 
         while (result == null)
         {
           counter += 1;
-          string newName = string.Format("{0}.{1}{2}.tmp", original, suffixSeed, counter);
+          var newName = string.Format("{0}.{1}{2}.tmp", original, suffixSeed, counter);
           if (!File.Exists(newName))
           {
             if (makeTempFile)
@@ -3362,7 +3362,7 @@ namespace Fomm.SharpZipLib.Zip
               try
               {
                 // Try and create the file.
-                using (FileStream stream = File.Create(newName))
+                using (var stream = File.Create(newName))
                 {
                 }
                 result = newName;

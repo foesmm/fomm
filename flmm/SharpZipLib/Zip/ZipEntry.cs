@@ -389,7 +389,7 @@ namespace Fomm.SharpZipLib.Zip
     /// based and have the same attributes set as the value passed.</returns>
     private bool HasDosAttributes(int attributes)
     {
-      bool result = false;
+      var result = false;
       if ((known & Known.ExternalAttributes) != 0)
       {
         if (((HostSystem == (int) HostSystemID.Msdos) ||
@@ -488,7 +488,7 @@ namespace Fomm.SharpZipLib.Zip
         }
         else
         {
-          int result = 10;
+          var result = 10;
           if (CentralHeaderRequiresZip64)
           {
             result = ZipConstants.VersionZip64;
@@ -554,11 +554,11 @@ namespace Fomm.SharpZipLib.Zip
     {
       get
       {
-        bool result = forceZip64_;
+        var result = forceZip64_;
 
         if (!result)
         {
-          ulong trueCompressedSize = compressedSize;
+          var trueCompressedSize = compressedSize;
 
           // TODO: A better estimation of the true limit based on compression overhead should be used
           // to determine when an entry should use Zip64.
@@ -623,23 +623,23 @@ namespace Fomm.SharpZipLib.Zip
     {
       get
       {
-        uint sec = Math.Min(59, 2*(dosTime & 0x1f));
-        uint min = Math.Min(59, (dosTime >> 5) & 0x3f);
-        uint hrs = Math.Min(23, (dosTime >> 11) & 0x1f);
-        uint mon = Math.Max(1, Math.Min(12, ((dosTime >> 21) & 0xf)));
-        uint year = ((dosTime >> 25) & 0x7f) + 1980;
-        int day = Math.Max(1, Math.Min(DateTime.DaysInMonth((int) year, (int) mon), (int) ((dosTime >> 16) & 0x1f)));
+        var sec = Math.Min(59, 2*(dosTime & 0x1f));
+        var min = Math.Min(59, (dosTime >> 5) & 0x3f);
+        var hrs = Math.Min(23, (dosTime >> 11) & 0x1f);
+        var mon = Math.Max(1, Math.Min(12, ((dosTime >> 21) & 0xf)));
+        var year = ((dosTime >> 25) & 0x7f) + 1980;
+        var day = Math.Max(1, Math.Min(DateTime.DaysInMonth((int) year, (int) mon), (int) ((dosTime >> 16) & 0x1f)));
         return new DateTime((int) year, (int) mon, day, (int) hrs, (int) min, (int) sec);
       }
 
       set
       {
-        uint year = (uint) value.Year;
-        uint month = (uint) value.Month;
-        uint day = (uint) value.Day;
-        uint hour = (uint) value.Hour;
-        uint minute = (uint) value.Minute;
-        uint second = (uint) value.Second;
+        var year = (uint) value.Year;
+        var month = (uint) value.Month;
+        var day = (uint) value.Day;
+        var hour = (uint) value.Hour;
+        var minute = (uint) value.Minute;
+        var second = (uint) value.Second;
 
         if (year < 1980)
         {
@@ -822,7 +822,7 @@ namespace Fomm.SharpZipLib.Zip
     /// </param>
     internal void ProcessExtraData(bool localHeader)
     {
-      ZipExtraData extraData = new ZipExtraData(extra);
+      var extraData = new ZipExtraData(extra);
 
       if (extraData.Find(0x0001))
       {
@@ -877,13 +877,13 @@ namespace Fomm.SharpZipLib.Zip
 
         while (extraData.UnreadCount >= 4)
         {
-          int ntfsTag = extraData.ReadShort();
-          int ntfsLength = extraData.ReadShort();
+          var ntfsTag = extraData.ReadShort();
+          var ntfsLength = extraData.ReadShort();
           if (ntfsTag == 1)
           {
             if (ntfsLength >= 24)
             {
-              long lastModification = extraData.ReadLong();
+              var lastModification = extraData.ReadLong();
               //long lastAccess = extraData.ReadLong();
               //long createTime = extraData.ReadLong();
               extraData.Skip(16);
@@ -901,14 +901,14 @@ namespace Fomm.SharpZipLib.Zip
       }
       else if (extraData.Find(0x5455))
       {
-        int length = extraData.ValueLength;
-        int flags = extraData.ReadByte();
+        var length = extraData.ValueLength;
+        var flags = extraData.ReadByte();
 
         // Can include other times but these are ignored.  Length of data should
         // actually be 1 + 4 * no of bits in flags.
         if (((flags & 1) != 0) && (length >= 5))
         {
-          int iTime = extraData.ReadInt();
+          var iTime = extraData.ReadInt();
 
           DateTime = (new DateTime(1970, 1, 1, 0, 0, 0).ToUniversalTime() +
                       new TimeSpan(0, 0, 0, iTime, 0)).ToLocalTime();
@@ -971,8 +971,8 @@ namespace Fomm.SharpZipLib.Zip
     {
       get
       {
-        int nameLength = name.Length;
-        bool result =
+        var nameLength = name.Length;
+        var result =
           ((nameLength > 0) &&
            ((name[nameLength - 1] == '/') || (name[nameLength - 1] == '\\'))) ||
           HasDosAttributes(16)
@@ -1013,7 +1013,7 @@ namespace Fomm.SharpZipLib.Zip
     /// <returns>An <see cref="Object"/> that is a copy of the current instance.</returns>
     public object Clone()
     {
-      ZipEntry result = (ZipEntry) MemberwiseClone();
+      var result = (ZipEntry) MemberwiseClone();
 
       // Ensure extra data is unique if it exists.
       if (extra != null)

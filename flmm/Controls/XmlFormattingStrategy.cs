@@ -18,9 +18,9 @@ namespace Fomm.Controls
     /// <returns>The indent depth of the specified line.</returns>
     protected override int AutoIndentLine(TextArea p_txaTextArea, int p_intLineNumber)
     {
-      XmlParser.TagStack stkTags = XmlParser.ParseTags(p_txaTextArea.Document, p_intLineNumber, null, null);
-      Int32 intDepth = 0;
-      Int32 intLastLineNum = -1;
+      var stkTags = XmlParser.ParseTags(p_txaTextArea.Document, p_intLineNumber, null, null);
+      var intDepth = 0;
+      var intLastLineNum = -1;
       while (stkTags.Count > 0)
       {
         if (stkTags.Peek().LineNumber != intLastLineNum)
@@ -31,14 +31,14 @@ namespace Fomm.Controls
         stkTags.Pop();
       }
 
-      StringBuilder stbLineWithIndent = new StringBuilder();
-      for (Int32 i = 0; i < intDepth; i++)
+      var stbLineWithIndent = new StringBuilder();
+      for (var i = 0; i < intDepth; i++)
       {
         stbLineWithIndent.Append("\t");
       }
       stbLineWithIndent.Append(TextUtilities.GetLineAsString(p_txaTextArea.Document, p_intLineNumber).Trim());
-      LineSegment oldLine = p_txaTextArea.Document.GetLineSegment(p_intLineNumber);
-      Int32 intCaretOffset = stbLineWithIndent.Length - oldLine.Length;
+      var oldLine = p_txaTextArea.Document.GetLineSegment(p_intLineNumber);
+      var intCaretOffset = stbLineWithIndent.Length - oldLine.Length;
       SmartReplaceLine(p_txaTextArea.Document, oldLine, stbLineWithIndent.ToString());
       p_txaTextArea.Caret.Column += intCaretOffset;
 

@@ -48,7 +48,7 @@ namespace Fomm.Util
       get
       {
         ReadOnlyCollection<ArchiveFileInfo> rocFileInfo = null;
-        ManualResetEvent mreDoneEvent = new ManualResetEvent(false);
+        var mreDoneEvent = new ManualResetEvent(false);
         m_queEvents.Enqueue(new KeyValuePair<Action<object>, ManualResetEvent>((o) =>
         {
           rocFileInfo = m_szeExtractor.ArchiveFileData;
@@ -72,8 +72,8 @@ namespace Fomm.Util
     {
       get
       {
-        bool booIsSolid = false;
-        ManualResetEvent mreDoneEvent = new ManualResetEvent(false);
+        var booIsSolid = false;
+        var mreDoneEvent = new ManualResetEvent(false);
         m_queEvents.Enqueue(new KeyValuePair<Action<object>, ManualResetEvent>((o) =>
         {
           booIsSolid = m_szeExtractor.IsSolid;
@@ -119,7 +119,7 @@ namespace Fomm.Util
       m_thdExtractor.IsBackground = true;
       m_thdExtractor.Name = "Seven Zip Extractor";
 
-      ManualResetEvent mreDoneStart = new ManualResetEvent(false);
+      var mreDoneStart = new ManualResetEvent(false);
       m_queEvents.Enqueue(new KeyValuePair<Action<object>, ManualResetEvent>(null, mreDoneStart));
       m_thdExtractor.Start();
       mreDoneStart.WaitOne();
@@ -142,12 +142,12 @@ namespace Fomm.Util
         : new SevenZipExtractor(m_strPath);
       try
       {
-        KeyValuePair<Action<object>, ManualResetEvent> kvpStartEvent = m_queEvents.Dequeue();
+        var kvpStartEvent = m_queEvents.Dequeue();
         kvpStartEvent.Value.Set();
         while (true)
         {
           m_mreEvent.WaitOne();
-          KeyValuePair<Action<object>, ManualResetEvent> kvpEvent = m_queEvents.Dequeue();
+          var kvpEvent = m_queEvents.Dequeue();
           if (kvpEvent.Key == null)
           {
             break;
@@ -174,7 +174,7 @@ namespace Fomm.Util
     /// <param name="p_stmFile">The stream to which to extract the file.</param>
     public void ExtractFile(Int32 p_intIndex, Stream p_stmFile)
     {
-      ManualResetEvent mreDoneEvent = new ManualResetEvent(false);
+      var mreDoneEvent = new ManualResetEvent(false);
       m_queEvents.Enqueue(new KeyValuePair<Action<object>, ManualResetEvent>((o) =>
       {
         m_szeExtractor.ExtractFile(p_intIndex, p_stmFile);

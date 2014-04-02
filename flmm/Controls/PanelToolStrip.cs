@@ -192,13 +192,13 @@ namespace Fomm.Controls
 
       protected void SortToolStripItems()
       {
-        SortedList<Int32, SortedList<Control>> sltItems = new SortedList<Int32, SortedList<Control>>();
+        var sltItems = new SortedList<Int32, SortedList<Control>>();
 
-        Int32 intIndex = -1;
-        ItemComparer icpComparer = new ItemComparer(m_lstOrderAdded);
-        for (Int32 i = Controls.Count - 1; i >= 0; i--)
+        var intIndex = -1;
+        var icpComparer = new ItemComparer(m_lstOrderAdded);
+        for (var i = Controls.Count - 1; i >= 0; i--)
         {
-          Control ctlControl = Controls[i];
+          var ctlControl = Controls[i];
 
           intIndex = ((PanelToolStripItem) ctlControl.Tag).Index;
           if (!sltItems.ContainsKey(intIndex))
@@ -212,13 +212,13 @@ namespace Fomm.Controls
         // so index 0 is at the top/left
         // (top or left depending on orientation)
         intIndex = 0;
-        for (Int32 i = sltItems.Values.Count - 1; i >= 0; i--)
+        for (var i = sltItems.Values.Count - 1; i >= 0; i--)
           //for (Int32 i = 0; i < sltItems.Values.Count; i++)
         {
-          SortedList<Control> lstButtons = sltItems.Values[i];
-          for (Int32 j = lstButtons.Count - 1; j >= 0; j--)
+          var lstButtons = sltItems.Values[i];
+          for (var j = lstButtons.Count - 1; j >= 0; j--)
           {
-            Control ctlButton = lstButtons[j];
+            var ctlButton = lstButtons[j];
             Controls.SetChildIndex(ctlButton, intIndex++);
 
             if ((i == sltItems.Values.Count - 1) && (j == lstButtons.Count - 1))
@@ -249,11 +249,11 @@ namespace Fomm.Controls
       /// <param name="e">A <see cref="ControlEventArgs"/> describing the event arguments.</param>
       protected override void OnControlAdded(ControlEventArgs e)
       {
-        Control ctlButton = e.Control;
+        var ctlButton = e.Control;
 
         if (ctlButton.Tag is PanelToolStripItem)
         {
-          PanelToolStripItem tsiStripItem = (PanelToolStripItem) ctlButton.Tag;
+          var tsiStripItem = (PanelToolStripItem) ctlButton.Tag;
           m_lstOrderAdded.Add(ctlButton);
           ((PanelToolStripItem) ctlButton.Tag).IndexChanged += new EventHandler(ToolStripPanel_IndexChanged);
 
@@ -267,7 +267,7 @@ namespace Fomm.Controls
 
       protected override void OnControlRemoved(ControlEventArgs e)
       {
-        Control ctlButton = e.Control;
+        var ctlButton = e.Control;
         if (ctlButton.Tag is PanelToolStripItem)
         {
           ((PanelToolStripItem) ctlButton.Tag).IndexChanged -= new EventHandler(ToolStripPanel_IndexChanged);
@@ -309,8 +309,8 @@ namespace Fomm.Controls
       /// </summary>
       public void scrollUp()
       {
-        Int32 intNewX = DisplayRectangle.X;
-        Int32 intNewY = DisplayRectangle.Y;
+        var intNewX = DisplayRectangle.X;
+        var intNewY = DisplayRectangle.Y;
         if (m_otnDirection == Orientation.Horizontal)
         {
           intNewX -= m_intScrollAmount;
@@ -338,8 +338,8 @@ namespace Fomm.Controls
       /// </summary>
       public void scrollDown()
       {
-        Int32 intNewX = DisplayRectangle.X;
-        Int32 intNewY = DisplayRectangle.Y;
+        var intNewX = DisplayRectangle.X;
+        var intNewY = DisplayRectangle.Y;
         if (m_otnDirection == Orientation.Horizontal)
         {
           intNewX += m_intScrollAmount;
@@ -449,10 +449,10 @@ namespace Fomm.Controls
       /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
       private void psiButton_Selected(object sender, EventArgs e)
       {
-        Control ctlButton = ((PanelToolStripItem) sender).Button;
-        for (Int32 i = Controls.Count - 1; i >= 0; i--)
+        var ctlButton = ((PanelToolStripItem) sender).Button;
+        for (var i = Controls.Count - 1; i >= 0; i--)
         {
-          Control ctlOther = Controls[i];
+          var ctlOther = Controls[i];
           if ((ctlOther != ctlButton) && (ctlOther.Tag is PanelToolStripItem))
           {
             ((PanelToolStripItem) ctlOther.Tag).SetUnselected();
@@ -485,7 +485,7 @@ namespace Fomm.Controls
       }
       set
       {
-        Int32 intValue = (value == 0) ? 1 : value;
+        var intValue = (value == 0) ? 1 : value;
         m_pnlToolStrip.ScrollAmount = intValue;
       }
     }
@@ -862,7 +862,7 @@ namespace Fomm.Controls
     {
       SuspendLayout();
 
-      Int32 intButtonSpace = 0;
+      var intButtonSpace = 0;
       if (m_pnlToolStrip.Direction == Orientation.Horizontal)
       {
         if (m_butDown.Visible)

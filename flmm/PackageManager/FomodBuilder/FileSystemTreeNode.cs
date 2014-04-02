@@ -58,7 +58,7 @@ namespace Fomm.PackageManager.FomodBuilder
 
       public bool Remove(string p_strPath)
       {
-        for (Int32 i = Count - 1; i >= 0; i--)
+        for (var i = Count - 1; i >= 0; i--)
         {
           if (this[i].Equals(p_strPath))
           {
@@ -78,7 +78,7 @@ namespace Fomm.PackageManager.FomodBuilder
       /// the given path; <lang cref="false"/> otherwise.</returns>
       public bool Contains(string p_strSourcePath)
       {
-        for (Int32 i = Count - 1; i >= 0; i--)
+        for (var i = Count - 1; i >= 0; i--)
         {
           if (this[i].Equals(p_strSourcePath))
           {
@@ -208,7 +208,7 @@ namespace Fomm.PackageManager.FomodBuilder
         {
           return base.FullPath;
         }
-        Stack<string> stkPath = new Stack<string>();
+        var stkPath = new Stack<string>();
         TreeNode tndParent = this;
         do
         {
@@ -216,7 +216,7 @@ namespace Fomm.PackageManager.FomodBuilder
           tndParent = tndParent.Parent;
         }
         while (tndParent != null);
-        StringBuilder stbPath = new StringBuilder();
+        var stbPath = new StringBuilder();
         while (stkPath.Count > 0)
         {
           stbPath.Append(stkPath.Pop());
@@ -248,7 +248,7 @@ namespace Fomm.PackageManager.FomodBuilder
         }
         else if (LastSource.Path.StartsWith(Archive.ARCHIVE_PREFIX))
         {
-          KeyValuePair<string, string> kvpArchive = Archive.ParseArchivePath(LastSource);
+          var kvpArchive = Archive.ParseArchivePath(LastSource);
           Archive arcArchive = null;
           lock (m_dicArchiveCache)
           {
@@ -399,7 +399,7 @@ namespace Fomm.PackageManager.FomodBuilder
     /// A value greater than 0 if this node is greater than the other.</returns>
     public int CompareTo(FileSystemTreeNode other)
     {
-      Int32 intResult = other.IsDirectory.CompareTo(IsDirectory);
+      var intResult = other.IsDirectory.CompareTo(IsDirectory);
       if (intResult == 0)
       {
         intResult = Text.CompareTo(other.Text);

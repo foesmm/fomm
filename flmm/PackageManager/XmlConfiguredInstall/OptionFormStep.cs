@@ -53,19 +53,19 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     {
       get
       {
-        List<PluginFile> lstInstall = new List<PluginFile>();
+        var lstInstall = new List<PluginFile>();
         foreach (ListViewItem lviItem in lvwPlugins.Items)
         {
-          PluginInfo pifPlugin = (PluginInfo) lviItem.Tag;
-          PluginType ptpPluginType = pifPlugin.Type;
-          GroupType gtpGroupType = (GroupType) lviItem.Group.Tag;
+          var pifPlugin = (PluginInfo) lviItem.Tag;
+          var ptpPluginType = pifPlugin.Type;
+          var gtpGroupType = (GroupType) lviItem.Group.Tag;
           if (lviItem.Checked)
           {
             lstInstall.AddRange(pifPlugin.Files);
           }
           else
           {
-            foreach (PluginFile pflFile in pifPlugin.Files)
+            foreach (var pflFile in pifPlugin.Files)
             {
               if (pflFile.AlwaysInstall || (pflFile.InstallIfUsable && (pifPlugin.Type != PluginType.NotUsable)))
               {
@@ -90,13 +90,13 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     {
       get
       {
-        List<PluginFile> lstActivate = new List<PluginFile>();
+        var lstActivate = new List<PluginFile>();
         foreach (ListViewItem lviItem in lvwPlugins.Items)
         {
-          PluginInfo pifPlugin = (PluginInfo) lviItem.Tag;
+          var pifPlugin = (PluginInfo) lviItem.Tag;
           if (lviItem.Checked)
           {
-            foreach (PluginFile pflFile in pifPlugin.Files)
+            foreach (var pflFile in pifPlugin.Files)
             {
               if (pflFile.IsFolder)
               {
@@ -131,10 +131,10 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     private void loadPlugins(IList<PluginGroup> p_lstGroups)
     {
       adjustListViewColumnWidth();
-      foreach (PluginGroup pgpGroup in p_lstGroups)
+      foreach (var pgpGroup in p_lstGroups)
       {
-        ListViewGroup lvgGroup = addGroup(pgpGroup);
-        foreach (PluginInfo pifPlugin in pgpGroup.Plugins)
+        var lvgGroup = addGroup(pgpGroup);
+        foreach (var pifPlugin in pgpGroup.Plugins)
         {
           addPlugin(lvgGroup, pifPlugin);
         }
@@ -189,7 +189,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
             break;
           case GroupType.SelectAtLeastOne:
           default:
-            bool booOneSelected = false;
+            var booOneSelected = false;
             foreach (ListViewItem lviPlugin in lvgGroup.Items)
             {
               pifPlugin = (PluginInfo) lviPlugin.Tag;
@@ -271,7 +271,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// <param name="p_pifPlugin">The plugin to add.</param>
     private void addPlugin(ListViewGroup p_lvgGroup, PluginInfo p_pifPlugin)
     {
-      string strName = p_pifPlugin.Name;
+      var strName = p_pifPlugin.Name;
       ListViewItem lviPlugin = null;
       foreach (ListViewItem lviExistingPlugin in p_lvgGroup.Items)
       {
@@ -318,7 +318,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     {
       if (lvwPlugins.SelectedItems.Count > 0)
       {
-        PluginInfo pifPlugin = (PluginInfo) lvwPlugins.SelectedItems[0].Tag;
+        var pifPlugin = (PluginInfo) lvwPlugins.SelectedItems[0].Tag;
         tbxDescription.Text = pifPlugin.Description;
         pbxImage.Image = pifPlugin.Image;
       }
@@ -340,7 +340,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
     private void lvwPlugins_ItemCheck(object sender, ItemCheckEventArgs e)
     {
-      PluginInfo pifPlugin = (PluginInfo) lvwPlugins.Items[e.Index].Tag;
+      var pifPlugin = (PluginInfo) lvwPlugins.Items[e.Index].Tag;
       switch (pifPlugin.Type)
       {
         case PluginType.Required:
@@ -380,7 +380,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
           }
           break;
       }
-      ListViewGroup lvgGroup = lvwPlugins.Items[e.Index].Group;
+      var lvgGroup = lvwPlugins.Items[e.Index].Group;
       switch ((GroupType) lvgGroup.Tag)
       {
         case GroupType.SelectAll:
@@ -393,7 +393,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
         case GroupType.SelectAtLeastOne:
           if (e.NewValue != CheckState.Checked)
           {
-            bool booOtherChecked = false;
+            var booOtherChecked = false;
             foreach (ListViewItem lviGroupItem in lvgGroup.Items)
             {
               if ((lviGroupItem.Index != e.Index) && (lviGroupItem.Checked))
@@ -412,7 +412,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
         case GroupType.SelectExactlyOne:
           if (e.NewValue != CheckState.Checked)
           {
-            bool booOtherChecked = false;
+            var booOtherChecked = false;
             foreach (ListViewItem lviGroupItem in lvgGroup.Items)
             {
               if ((lviGroupItem.Index != e.Index) && (lviGroupItem.Checked))
@@ -441,8 +441,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
     private void lvwPlugins_ItemChecked(object sender, ItemCheckedEventArgs e)
     {
-      ListViewItem lviItem = e.Item;
-      ListViewGroup lvgGroup = lviItem.Group;
+      var lviItem = e.Item;
+      var lvgGroup = lviItem.Group;
       switch ((GroupType) lvgGroup.Tag)
       {
         case GroupType.SelectAtMostOne:
@@ -459,10 +459,10 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
           }
           break;
       }
-      PluginInfo pifPlugin = (PluginInfo) e.Item.Tag;
+      var pifPlugin = (PluginInfo) e.Item.Tag;
       if (lviItem.Checked)
       {
-        foreach (ConditionalFlag cfgFlag in pifPlugin.Flags)
+        foreach (var cfgFlag in pifPlugin.Flags)
         {
           m_dsmStateManager.SetFlagValue(cfgFlag.Name, cfgFlag.ConditionalValue, pifPlugin);
         }

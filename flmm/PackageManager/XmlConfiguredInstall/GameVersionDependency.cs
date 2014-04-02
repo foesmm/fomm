@@ -25,7 +25,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     {
       get
       {
-        Version verInstalledVersion = m_dsmStateManager.GameVersion;
+        var verInstalledVersion = m_dsmStateManager.GameVersion;
         return ((verInstalledVersion != null) && (verInstalledVersion >= m_verMinVersion));
       }
     }
@@ -43,7 +43,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     {
       get
       {
-        Version verInstalledVersion = m_dsmStateManager.GameVersion;
+        var verInstalledVersion = m_dsmStateManager.GameVersion;
         if (verInstalledVersion < m_verMinVersion)
         {
           return String.Format("This mod requires v{0} or higher of the game. You have {1}. Please update your game.",

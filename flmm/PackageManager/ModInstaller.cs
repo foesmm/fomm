@@ -94,11 +94,11 @@ namespace Fomm.PackageManager
     /// </summary>
     protected override bool DoScript()
     {
-      foreach (string strSettingsFile in Program.GameMode.SettingsFiles.Values)
+      foreach (var strSettingsFile in Program.GameMode.SettingsFiles.Values)
       {
         TransactionalFileManager.Snapshot(strSettingsFile);
       }
-      foreach (string strAdditionalFile in Program.GameMode.AdditionalPaths.Values)
+      foreach (var strAdditionalFile in Program.GameMode.AdditionalPaths.Values)
       {
         if (File.Exists(strAdditionalFile))
         {
@@ -112,7 +112,7 @@ namespace Fomm.PackageManager
         MergeModule = new InstallLogMergeModule();
         if (Fomod.HasInstallScript)
         {
-          FomodScript fscInstallScript = Fomod.GetInstallScript();
+          var fscInstallScript = Fomod.GetInstallScript();
           switch (fscInstallScript.Type)
           {
             case FomodScriptType.CSharp:
@@ -153,7 +153,7 @@ namespace Fomm.PackageManager
     /// <lang cref="false"/> otherwise.</returns>
     protected bool RunXmlInstallScript()
     {
-      XmlConfiguredScript xmlScript = new XmlConfiguredScript(Script);
+      var xmlScript = new XmlConfiguredScript(Script);
       return xmlScript.Install();
     }
 
@@ -164,7 +164,7 @@ namespace Fomm.PackageManager
     /// <lang cref="false"/> otherwise.</returns>
     protected bool RunCustomInstallScript()
     {
-      string strScript = Fomod.GetInstallScript().Text;
+      var strScript = Fomod.GetInstallScript().Text;
       return ScriptCompiler.Execute(strScript, this);
     }
 
@@ -205,16 +205,16 @@ namespace Fomm.PackageManager
     /// </remarks>
     public void PerformBasicInstall()
     {
-      char[] chrDirectorySeperators = new char[]
+      var chrDirectorySeperators = new char[]
       {
         Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar
       };
-      List<string> lstFiles = Fomod.GetFileList();
+      var lstFiles = Fomod.GetFileList();
       if (m_bwdProgress != null)
       {
         m_bwdProgress.OverallProgressMaximum = lstFiles.Count;
       }
-      foreach (string strFile in lstFiles)
+      foreach (var strFile in lstFiles)
       {
         if ((m_bwdProgress != null) && m_bwdProgress.Cancelled())
         {

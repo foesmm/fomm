@@ -17,8 +17,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       Text += RecName;
       tbName.Text = RecName;
       Text += " (string mode)";
-      string s = "";
-      foreach (byte b in data)
+      var s = "";
+      foreach (var b in data)
       {
         s += (char) b;
       }
@@ -30,7 +30,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
     {
       Canceled = false;
       result = new byte[tbEdit.Text.Length + 1];
-      for (int i = 0; i < tbEdit.Text.Length; i++)
+      for (var i = 0; i < tbEdit.Text.Length; i++)
       {
         result[i] = (byte) tbEdit.Text[i];
       }

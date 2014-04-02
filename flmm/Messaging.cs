@@ -23,7 +23,7 @@ namespace Fomm
     public static void ServerSetup(RecieveMessageDelegate del)
     {
       Messaging.del = del;
-      IpcChannel serverChannel = new IpcChannel("localhost:9090");
+      var serverChannel = new IpcChannel("localhost:9090");
       ChannelServices.RegisterChannel(serverChannel, false);
       RemotingConfiguration.RegisterWellKnownServiceType(typeof (MessagePasser), "MessagePasser.rem",
                                                          WellKnownObjectMode.Singleton);
@@ -31,12 +31,12 @@ namespace Fomm
 
     public static void TransmitMessage(string s)
     {
-      IpcChannel channel = new IpcChannel();
+      var channel = new IpcChannel();
       ChannelServices.RegisterChannel(channel, false);
-      WellKnownClientTypeEntry remoteType = new WellKnownClientTypeEntry(typeof (MessagePasser),
+      var remoteType = new WellKnownClientTypeEntry(typeof (MessagePasser),
                                                                          "ipc://localhost:9090/MessagePasser.rem");
       RemotingConfiguration.RegisterWellKnownClientType(remoteType);
-      MessagePasser passer = new MessagePasser();
+      var passer = new MessagePasser();
       passer.SendMessage(s);
     }
   }

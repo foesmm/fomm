@@ -26,7 +26,7 @@ namespace Fomm.Games.Fallout3.Script.XmlConfiguredInstall
     {
       get
       {
-        Version verInstalledVersion = m_dsmStateManager.ScriptExtenderVersion;
+        var verInstalledVersion = m_dsmStateManager.ScriptExtenderVersion;
         return ((verInstalledVersion != null) && (verInstalledVersion >= m_verMinVersion));
       }
     }
@@ -45,7 +45,7 @@ namespace Fomm.Games.Fallout3.Script.XmlConfiguredInstall
     {
       get
       {
-        Version verInstalledVersion = m_dsmStateManager.ScriptExtenderVersion;
+        var verInstalledVersion = m_dsmStateManager.ScriptExtenderVersion;
         if (verInstalledVersion == null)
         {
           return String.Format("This mod requires FOSE v{0} or higher. Please download from http://silverlock.org",

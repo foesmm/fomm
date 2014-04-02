@@ -105,8 +105,8 @@ namespace Fomm.SharpZipLib.Zip.Compression.Streams
         throw new InvalidOperationException("Window full");
       }
 
-      int repStart = (windowEnd - distance) & WindowMask;
-      int border = WindowSize - length;
+      var repStart = (windowEnd - distance) & WindowMask;
+      var border = WindowSize - length;
       if ((repStart <= border) && (windowEnd < border))
       {
         if (length <= distance)
@@ -140,7 +140,7 @@ namespace Fomm.SharpZipLib.Zip.Compression.Streams
       length = Math.Min(Math.Min(length, WindowSize - windowFilled), input.AvailableBytes);
       int copied;
 
-      int tailLen = WindowSize - windowEnd;
+      var tailLen = WindowSize - windowEnd;
       if (length > tailLen)
       {
         copied = input.CopyBytes(window, windowEnd, tailLen);
@@ -189,7 +189,7 @@ namespace Fomm.SharpZipLib.Zip.Compression.Streams
     /// </exception>
     public int CopyOutput(byte[] output, int offset, int len)
     {
-      int copyEnd = windowEnd;
+      var copyEnd = windowEnd;
       if (len > windowFilled)
       {
         len = windowFilled;
@@ -199,8 +199,8 @@ namespace Fomm.SharpZipLib.Zip.Compression.Streams
         copyEnd = (windowEnd - windowFilled + len) & WindowMask;
       }
 
-      int copied = len;
-      int tailLen = len - copyEnd;
+      var copied = len;
+      var tailLen = len - copyEnd;
 
       if (tailLen > 0)
       {

@@ -70,10 +70,10 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     {
       get
       {
-        bool booAllFufilled = (m_dopOperator == DependencyOperator.And) ? true : false;
-        foreach (IDependency dpnDependency in m_lstDependencies)
+        var booAllFufilled = (m_dopOperator == DependencyOperator.And) ? true : false;
+        foreach (var dpnDependency in m_lstDependencies)
         {
-          bool booThisFufilled = dpnDependency.IsFufilled;
+          var booThisFufilled = dpnDependency.IsFufilled;
           switch (m_dopOperator)
           {
             case DependencyOperator.And:
@@ -101,17 +101,17 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     {
       get
       {
-        StringBuilder stbMessage = new StringBuilder();
+        var stbMessage = new StringBuilder();
         if (m_dopOperator == DependencyOperator.Or)
         {
           stbMessage.Append("(");
         }
 
-        bool booAllFufilled = (m_dopOperator == DependencyOperator.And) ? true : false;
-        for (Int32 i = 0; i < m_lstDependencies.Count; i++)
+        var booAllFufilled = (m_dopOperator == DependencyOperator.And) ? true : false;
+        for (var i = 0; i < m_lstDependencies.Count; i++)
         {
-          IDependency dpnDependency = m_lstDependencies[i];
-          bool booThisFufilled = dpnDependency.IsFufilled;
+          var dpnDependency = m_lstDependencies[i];
+          var booThisFufilled = dpnDependency.IsFufilled;
           if (!booThisFufilled)
           {
             stbMessage.Append(dpnDependency.Message);
@@ -164,10 +164,10 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// <returns>A text representation of the dependency.</returns>
     public override string ToString()
     {
-      StringBuilder stbString = new StringBuilder("(");
-      for (Int32 i = 0; i < m_lstDependencies.Count; i++)
+      var stbString = new StringBuilder("(");
+      for (var i = 0; i < m_lstDependencies.Count; i++)
       {
-        IDependency dpdDependency = m_lstDependencies[i];
+        var dpdDependency = m_lstDependencies[i];
         stbString.Append(dpdDependency);
         if (i < m_lstDependencies.Count - 1)
         {

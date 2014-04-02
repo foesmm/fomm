@@ -49,7 +49,7 @@ namespace Fomm
           gbxAssociations.ClientRectangle.Contains(gbxAssociations.PointToClient(Cursor.Position)))
       {
         booToolTipShown = true;
-        Point pntToolTipLocation = gbxAssociations.PointToClient(Cursor.Position);
+        var pntToolTipLocation = gbxAssociations.PointToClient(Cursor.Position);
         ttpTip.Show(ttpTip.GetToolTip(gbxAssociations), gbxAssociations, pntToolTipLocation.X,
                     pntToolTipLocation.Y + Cursor.Current.Size.Height);
       }
@@ -90,7 +90,7 @@ namespace Fomm
         ttpTip.SetToolTip(gbxAssociations, "Run FOMM as Administrator to change these settings.");
       }
 
-      string key = Registry.GetValue(@"HKEY_CLASSES_ROOT\.bsa", null, null) as string;
+      var key = Registry.GetValue(@"HKEY_CLASSES_ROOT\.bsa", null, null) as string;
       switch (key)
       {
         case "BethesdaSoftworks_Archive":
@@ -166,7 +166,7 @@ namespace Fomm
     /// </summary>
     protected void LoadGameModeSettings()
     {
-      foreach (SettingsPage spgSettings in Program.GameMode.SettingsPages)
+      foreach (var spgSettings in Program.GameMode.SettingsPages)
       {
         tbcTabs.TabPages.Add(spgSettings.Name, spgSettings.Text);
         spgSettings.Dock = DockStyle.Fill;
@@ -228,7 +228,7 @@ namespace Fomm
       {
         return;
       }
-      RegistryKey rk = Registry.ClassesRoot.OpenSubKey(key + "\\Shell", true);
+      var rk = Registry.ClassesRoot.OpenSubKey(key + "\\Shell", true);
       if (Array.IndexOf<string>(rk.GetSubKeyNames(), "Convert_to_fomod") != -1)
       {
         rk.DeleteSubKeyTree("Convert_to_fomod");
@@ -246,7 +246,7 @@ namespace Fomm
 
       if (UacUtil.IsElevated)
       {
-        string[] strKeys = Registry.ClassesRoot.GetSubKeyNames();
+        var strKeys = Registry.ClassesRoot.GetSubKeyNames();
         if (!cbAssociateBsa.Checked)
         {
           if (Array.IndexOf<string>(strKeys, "BethesdaSoftworks_Archive") != -1)
@@ -340,12 +340,12 @@ namespace Fomm
     /// <lang cref="false"/> otherwise.</returns>
     protected bool SaveGameModeSettings()
     {
-      bool booIsValid = true;
+      var booIsValid = true;
       foreach (TabPage tpgSettings in tbcTabs.TabPages)
       {
         if (tpgSettings.Tag is SettingsPage)
         {
-          bool booIsPageValid = ((SettingsPage) tpgSettings.Tag).SaveSettings();
+          var booIsPageValid = ((SettingsPage) tpgSettings.Tag).SaveSettings();
           booIsValid &= booIsPageValid;
           if (!booIsPageValid)
           {

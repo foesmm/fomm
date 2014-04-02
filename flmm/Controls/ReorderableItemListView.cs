@@ -66,12 +66,12 @@ namespace Fomm.Controls
       {
         if (LineBefore >= 0 && LineBefore < Items.Count)
         {
-          Rectangle rc = Items[LineBefore].GetBounds(ItemBoundsPortion.Entire);
+          var rc = Items[LineBefore].GetBounds(ItemBoundsPortion.Entire);
           DrawInsertionLine(rc.Left, rc.Right, rc.Top);
         }
         if (LineAfter >= 0 && LineBefore < Items.Count)
         {
-          Rectangle rc = Items[LineAfter].GetBounds(ItemBoundsPortion.Entire);
+          var rc = Items[LineAfter].GetBounds(ItemBoundsPortion.Entire);
           DrawInsertionLine(rc.Left, rc.Right, rc.Bottom);
         }
       }
@@ -89,17 +89,17 @@ namespace Fomm.Controls
     /// <param name="Y">Position (Y) of the line</param>
     private void DrawInsertionLine(int X1, int X2, int Y)
     {
-      using (Graphics g = CreateGraphics())
+      using (var g = CreateGraphics())
       {
         g.DrawLine(new Pen(Color.Red), X1, Y, X2 - 1, Y);
 
-        Point[] leftTriangle = new Point[3]
+        var leftTriangle = new Point[3]
         {
           new Point(X1, Y - 4),
           new Point(X1 + 7, Y),
           new Point(X1, Y + 4)
         };
-        Point[] rightTriangle = new Point[3]
+        var rightTriangle = new Point[3]
         {
           new Point(X2, Y - 4),
           new Point(X2 - 8, Y),
@@ -120,8 +120,8 @@ namespace Fomm.Controls
     /// <returns>true if location is in the top half of itemToCheck, otherwise false</returns>
     private bool IsPointInTopHalfOfItem(Point location, ListViewItem itemToCheck)
     {
-      Point pt = PointToClient(location);
-      Rectangle rc = itemToCheck.GetBounds(ItemBoundsPortion.Entire);
+      var pt = PointToClient(location);
+      var rc = itemToCheck.GetBounds(ItemBoundsPortion.Entire);
       return (pt.Y < (rc.Top + (rc.Height/2)));
     }
 
@@ -135,8 +135,8 @@ namespace Fomm.Controls
     /// </returns>
     private ListViewItem GetItemAtPoint(Point location)
     {
-      Point pt = PointToClient(location);
-      int lastItemBottom = Math.Min(pt.Y,
+      var pt = PointToClient(location);
+      var lastItemBottom = Math.Min(pt.Y,
                                     Items[Items.Count - 1].GetBounds(ItemBoundsPortion.Entire).Bottom - 1);
       return GetItemAt(0, lastItemBottom);
     }
@@ -212,7 +212,7 @@ namespace Fomm.Controls
       ResetDragIndicator();
 
       _ItemsToMove.Clear();
-      for (int index = 0; index < SelectedItems.Count; index++)
+      for (var index = 0; index < SelectedItems.Count; index++)
       {
         _ItemsToMove.Add(SelectedItems[index]);
       }
@@ -228,8 +228,8 @@ namespace Fomm.Controls
         return;
       }
 
-      Point pt = new Point(drgevent.X, drgevent.Y);
-      ListViewItem itemOver = GetItemAtPoint(pt);
+      var pt = new Point(drgevent.X, drgevent.Y);
+      var itemOver = GetItemAtPoint(pt);
       if (itemOver == null)
       {
         drgevent.Effect = DragDropEffects.None;
@@ -273,8 +273,8 @@ namespace Fomm.Controls
         return;
       }
 
-      Point pt = new Point(drgevent.X, drgevent.Y);
-      ListViewItem itemOver = GetItemAtPoint(pt);
+      var pt = new Point(drgevent.X, drgevent.Y);
+      var itemOver = GetItemAtPoint(pt);
       if ((itemOver == null) || (itemOver == _ItemsToMove[0]))
       {
         ResetDragItems();
@@ -291,8 +291,8 @@ namespace Fomm.Controls
         insertIndex = itemOver.Index + 1;
       }
 
-      Int32 intSelectionStartIndex = Items.IndexOf(_ItemsToMove[0]);
-      Int32 intSelectionEndIndex = Items.IndexOf(_ItemsToMove[_ItemsToMove.Count - 1]);
+      var intSelectionStartIndex = Items.IndexOf(_ItemsToMove[0]);
+      var intSelectionEndIndex = Items.IndexOf(_ItemsToMove[_ItemsToMove.Count - 1]);
       //if we are dragging to a point in the selection being dragged, don't bother as the order won't change
       if ((insertIndex >= intSelectionStartIndex) && (insertIndex <= intSelectionEndIndex))
       {
@@ -306,13 +306,13 @@ namespace Fomm.Controls
       }
 
       // Remove old items
-      for (int index = 0; index < _ItemsToMove.Count; index++)
+      for (var index = 0; index < _ItemsToMove.Count; index++)
       {
         Items.Remove(_ItemsToMove[index]);
       }
 
       // Insert new items
-      for (int index = 0; index < _ItemsToMove.Count; index++)
+      for (var index = 0; index < _ItemsToMove.Count; index++)
       {
         Items.Insert(Math.Min(insertIndex + index, Items.Count), _ItemsToMove[index]);
       }

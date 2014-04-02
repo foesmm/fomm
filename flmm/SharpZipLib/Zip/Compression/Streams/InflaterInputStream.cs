@@ -103,11 +103,11 @@ namespace Fomm.SharpZipLib.Zip.Compression.Streams
     public void Fill()
     {
       rawLength = 0;
-      int toRead = rawData.Length;
+      var toRead = rawData.Length;
 
       while (toRead > 0)
       {
-        int count = inputStream.Read(rawData, rawLength, toRead);
+        var count = inputStream.Read(rawData, rawLength, toRead);
         if (count <= 0)
         {
           if (rawLength == 0)
@@ -403,10 +403,10 @@ namespace Fomm.SharpZipLib.Zip.Compression.Streams
         throw new SharpZipBaseException("Need a dictionary");
       }
 
-      int remainingBytes = count;
+      var remainingBytes = count;
       while (true)
       {
-        int bytesRead = inf.Inflate(buffer, offset, remainingBytes);
+        var bytesRead = inf.Inflate(buffer, offset, remainingBytes);
         offset += bytesRead;
         remainingBytes -= bytesRead;
 

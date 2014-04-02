@@ -135,7 +135,7 @@ namespace Fomm.Controls
       /// <seealso cref="IList{DropDownTabPage}.RemoveAt"/>
       public void RemoveAt(int index)
       {
-        DropDownTabPage tpgPage = m_lstPages[index];
+        var tpgPage = m_lstPages[index];
         m_lstPages.RemoveAt(index);
         OnTabPageRemoved(tpgPage);
       }
@@ -168,7 +168,7 @@ namespace Fomm.Controls
       public void Clear()
       {
         DropDownTabPage tpgPage = null;
-        for (Int32 i = m_lstPages.Count - 1; i >= 0; i--)
+        for (var i = m_lstPages.Count - 1; i >= 0; i--)
         {
           tpgPage = m_lstPages[i];
           RemoveAt(i);
@@ -255,7 +255,7 @@ namespace Fomm.Controls
         {
           throw new ArgumentException("Insufficient space in target array.");
         }
-        for (Int32 i = index; i < m_lstPages.Count + index; i++)
+        for (var i = index; i < m_lstPages.Count + index; i++)
         {
           array.SetValue(m_lstPages[i - index], i);
         }
@@ -286,7 +286,7 @@ namespace Fomm.Controls
       /// <seealso cref="IList.Add"/>
       public int Add(object value)
       {
-        DropDownTabPage vtpPage = value as DropDownTabPage;
+        var vtpPage = value as DropDownTabPage;
         if (vtpPage == null)
         {
           throw new ArgumentException(
@@ -300,7 +300,7 @@ namespace Fomm.Controls
       /// <seealso cref="IList.Contains"/>
       public bool Contains(object value)
       {
-        DropDownTabPage vtpPage = value as DropDownTabPage;
+        var vtpPage = value as DropDownTabPage;
         if (vtpPage == null)
         {
           return false;
@@ -311,7 +311,7 @@ namespace Fomm.Controls
       /// <seealso cref="IList.IndexOf"/>
       public int IndexOf(object value)
       {
-        DropDownTabPage vtpPage = value as DropDownTabPage;
+        var vtpPage = value as DropDownTabPage;
         if (vtpPage == null)
         {
           return -1;
@@ -322,7 +322,7 @@ namespace Fomm.Controls
       /// <seealso cref="IList.Insert"/>
       public void Insert(int index, object value)
       {
-        DropDownTabPage vtpPage = value as DropDownTabPage;
+        var vtpPage = value as DropDownTabPage;
         if (vtpPage == null)
         {
           throw new ArgumentException(
@@ -344,7 +344,7 @@ namespace Fomm.Controls
       /// <seealso cref="IList.Remove"/>
       public void Remove(object value)
       {
-        DropDownTabPage vtpPage = value as DropDownTabPage;
+        var vtpPage = value as DropDownTabPage;
         if (vtpPage != null)
         {
           Remove(vtpPage);
@@ -360,7 +360,7 @@ namespace Fomm.Controls
         }
         set
         {
-          DropDownTabPage vtpPage = value as DropDownTabPage;
+          var vtpPage = value as DropDownTabPage;
           if (vtpPage == null)
           {
             throw new ArgumentException(
@@ -583,7 +583,7 @@ namespace Fomm.Controls
     /// <param name="e">A <see cref="DropDownTabControl.TabPageEventArgs"/> describing the event arguments.</param>
     private void AddTabPage(object sender, TabPageEventArgs e)
     {
-      DropDownTabPage ctlPage = e.TabPage;
+      var ctlPage = e.TabPage;
       if (ctlPage.PageIndex == -1)
       {
         ctlPage.PageIndex = m_tpcPages.Count - 1;
@@ -612,11 +612,11 @@ namespace Fomm.Controls
     /// <param name="e">A <see cref="DropDownTabControl.TabPageEventArgs"/> describing the event arguments.</param>
     private void RemoveTabPage(object sender, TabPageEventArgs e)
     {
-      DropDownTabPage ctlPage = e.TabPage;
+      var ctlPage = e.TabPage;
       ctlPage.PageIndexChanged -= new EventHandler(PageIndexChanged);
       ctlPage.TextChanged -= new EventHandler(PageTextChanged);
       m_cbxSelector.Items.Remove(ctlPage);
-      for (Int32 i = 0; i < m_tpcPages.Count; i++)
+      for (var i = 0; i < m_tpcPages.Count; i++)
       {
         if (m_tpcPages[i].PageIndex > ctlPage.PageIndex)
         {
@@ -654,7 +654,7 @@ namespace Fomm.Controls
       base.OnControlAdded(e);
       if (e.Control is DropDownTabPage)
       {
-        DropDownTabPage ctlPage = (DropDownTabPage) e.Control;
+        var ctlPage = (DropDownTabPage) e.Control;
         if (!m_tpcPages.Contains(ctlPage))
         {
           m_tpcPages.Add(ctlPage);
@@ -675,7 +675,7 @@ namespace Fomm.Controls
       base.OnControlRemoved(e);
       if (e.Control is DropDownTabPage)
       {
-        DropDownTabPage ctlPage = (DropDownTabPage) e.Control;
+        var ctlPage = (DropDownTabPage) e.Control;
         m_tpcPages.Remove(ctlPage);
       }
     }
@@ -687,9 +687,9 @@ namespace Fomm.Controls
     /// <param name="p_ddpPage">The <see cref="DropDownTabPage"/> to insert.</param>
     protected void InsertTabPageInSelector(DropDownTabPage p_ddpPage)
     {
-      for (Int32 i = 0; i < m_cbxSelector.Items.Count; i++)
+      for (var i = 0; i < m_cbxSelector.Items.Count; i++)
       {
-        DropDownTabPage ddpCurrent = (DropDownTabPage) m_cbxSelector.Items[i];
+        var ddpCurrent = (DropDownTabPage) m_cbxSelector.Items[i];
         if (ddpCurrent.PageIndex > p_ddpPage.PageIndex)
         {
           m_cbxSelector.Items.Insert(i, p_ddpPage);
@@ -707,7 +707,7 @@ namespace Fomm.Controls
     {
       m_cbxSelector.BeginUpdate();
       m_cbxSelector.Items.Clear();
-      foreach (DropDownTabPage ddpPage in m_tpcPages)
+      foreach (var ddpPage in m_tpcPages)
       {
         InsertTabPageInSelector(ddpPage);
       }

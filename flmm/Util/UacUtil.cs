@@ -129,11 +129,11 @@ namespace Fomm.Util
     {
       get
       {
-        IntPtr hmodule = LoadLibrary("kernel32");
+        var hmodule = LoadLibrary("kernel32");
 
         //a function that only exists on Vista and above
         // this is a hack, as the function we use may not exist on some future OS
-        string strFunction = "CreateThreadpoolWait";
+        var strFunction = "CreateThreadpoolWait";
         return ((hmodule.ToInt32() != 0) && (GetProcAddress(hmodule, strFunction).ToInt32() != 0));
       }
     }
@@ -161,10 +161,10 @@ namespace Fomm.Util
           return true;
         }
 
-        bool booCallSucceeded = false;
-        IntPtr hToken = IntPtr.Zero;
+        var booCallSucceeded = false;
+        var hToken = IntPtr.Zero;
 
-        IntPtr ptrProcessHandle = GetCurrentProcess();
+        var ptrProcessHandle = GetCurrentProcess();
         if (ptrProcessHandle == IntPtr.Zero)
         {
           throw new Exception("Could not get hanlde to current process.");
@@ -180,8 +180,8 @@ namespace Fomm.Util
           TOKEN_ELEVATION tevTokenElevation;
           tevTokenElevation.TokenIsElevated = 0;
 
-          Int32 intTokenElevationSize = Marshal.SizeOf(tevTokenElevation);
-          IntPtr pteTokenElevation = Marshal.AllocHGlobal(intTokenElevationSize);
+          var intTokenElevationSize = Marshal.SizeOf(tevTokenElevation);
+          var pteTokenElevation = Marshal.AllocHGlobal(intTokenElevationSize);
           try
           {
             Marshal.StructureToPtr(tevTokenElevation, pteTokenElevation, true);

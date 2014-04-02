@@ -94,7 +94,7 @@ namespace Fomm.Controls
       /// <param name="p_enmNodes">The <see cref="TreeNode"/>s to add to the collection.</param>
       public void AddRange(IEnumerable<TreeNode> p_enmNodes)
       {
-        foreach (TreeNode tndNode in p_enmNodes)
+        foreach (var tndNode in p_enmNodes)
         {
           m_lklNodes.AddLast(tndNode);
           OnItemAdded(tndNode);
@@ -111,8 +111,8 @@ namespace Fomm.Controls
       /// -1 otherwise.</returns>
       public int IndexOf(TreeNode item)
       {
-        LinkedListNode<TreeNode> lndNode = m_lklNodes.First;
-        for (Int32 i = 0; lndNode != null; i++, lndNode = lndNode.Next)
+        var lndNode = m_lklNodes.First;
+        for (var i = 0; lndNode != null; i++, lndNode = lndNode.Next)
         {
           if (lndNode.Value == item)
           {
@@ -135,8 +135,8 @@ namespace Fomm.Controls
         {
           throw new IndexOutOfRangeException("Index " + index + " is out of range.");
         }
-        LinkedListNode<TreeNode> lndNode = m_lklNodes.First;
-        for (Int32 i = 0; lndNode != null && i < index; i++, lndNode = lndNode.Next)
+        var lndNode = m_lklNodes.First;
+        for (var i = 0; lndNode != null && i < index; i++, lndNode = lndNode.Next)
         {
           ;
         }
@@ -163,8 +163,8 @@ namespace Fomm.Controls
         {
           throw new IndexOutOfRangeException("Index " + index + " is out of range.");
         }
-        LinkedListNode<TreeNode> lndNode = m_lklNodes.First;
-        for (Int32 i = 0; lndNode != null && i < index; i++, lndNode = lndNode.Next)
+        var lndNode = m_lklNodes.First;
+        for (var i = 0; lndNode != null && i < index; i++, lndNode = lndNode.Next)
         {
           ;
         }
@@ -190,8 +190,8 @@ namespace Fomm.Controls
           {
             throw new IndexOutOfRangeException("Index " + index + " is out of range.");
           }
-          LinkedListNode<TreeNode> lndNode = m_lklNodes.First;
-          for (Int32 i = 0; lndNode != null && i < index; i++, lndNode = lndNode.Next)
+          var lndNode = m_lklNodes.First;
+          for (var i = 0; lndNode != null && i < index; i++, lndNode = lndNode.Next)
           {
             ;
           }
@@ -203,8 +203,8 @@ namespace Fomm.Controls
           {
             throw new IndexOutOfRangeException("Index " + index + " is out of range.");
           }
-          LinkedListNode<TreeNode> lndNode = m_lklNodes.First;
-          for (Int32 i = 0; lndNode != null && i < index; i++, lndNode = lndNode.Next)
+          var lndNode = m_lklNodes.First;
+          for (var i = 0; lndNode != null && i < index; i++, lndNode = lndNode.Next)
           {
             ;
           }
@@ -241,7 +241,7 @@ namespace Fomm.Controls
       {
         while (m_lklNodes.First != null)
         {
-          TreeNode tndNode = m_lklNodes.First.Value;
+          var tndNode = m_lklNodes.First.Value;
           m_lklNodes.RemoveFirst();
           OnItemRemoved(tndNode);
         }
@@ -272,8 +272,8 @@ namespace Fomm.Controls
         {
           throw new ArgumentException("Given array is too small");
         }
-        LinkedListNode<TreeNode> lndNode = m_lklNodes.First;
-        for (Int32 i = arrayIndex; lndNode != null; i++, lndNode = lndNode.Next)
+        var lndNode = m_lklNodes.First;
+        for (var i = arrayIndex; lndNode != null; i++, lndNode = lndNode.Next)
         {
           array[i] = lndNode.Value;
         }
@@ -311,8 +311,8 @@ namespace Fomm.Controls
       /// <lang cref="false"/> if the item couldn't be removed because it was not in the collection.</returns>
       public bool Remove(TreeNode item)
       {
-        LinkedListNode<TreeNode> lndNode = m_lklNodes.First;
-        for (Int32 i = 0; lndNode != null; i++, lndNode = lndNode.Next)
+        var lndNode = m_lklNodes.First;
+        for (var i = 0; lndNode != null; i++, lndNode = lndNode.Next)
         {
           if (lndNode.Value == item)
           {
@@ -496,8 +496,8 @@ namespace Fomm.Controls
     /// <returns>The list of nodes visible between the two given node.</returns>
     protected List<TreeNode> FindPath(TreeNode p_tndStart, TreeNode p_tndEnd)
     {
-      List<TreeNode> lstPath = new List<TreeNode>();
-      TreeNode tndPathNode = p_tndStart;
+      var lstPath = new List<TreeNode>();
+      var tndPathNode = p_tndStart;
       while ((tndPathNode != null) && (tndPathNode != p_tndEnd))
       {
         lstPath.Add(tndPathNode);
