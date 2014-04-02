@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using Fomm.PackageManager;
 using System.IO;
 using Fomm.Games.Fallout3.Script;
@@ -45,7 +46,7 @@ namespace Fomm.Games.FalloutNewVegas.Script
         return null;
       }
       return
-        new Version(System.Diagnostics.FileVersionInfo.GetVersionInfo("nvse_loader.exe").FileVersion.Replace(", ", "."));
+        new Version(FileVersionInfo.GetVersionInfo("nvse_loader.exe").FileVersion.Replace(", ", "."));
     }
 
     #endregion

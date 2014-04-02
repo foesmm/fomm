@@ -1,6 +1,8 @@
 using System;
+using System.Globalization;
 using System.Windows.Forms;
 using System.Collections.Generic;
+using Fomm.Properties;
 
 namespace Fomm.Games.Fallout3.Tools.TESsnip
 {
@@ -23,7 +25,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
     public SearchForm(TreeView list)
     {
       InitializeComponent();
-      this.Icon = Fomm.Properties.Resources.fomm02;
+      Icon = Resources.fomm02;
       bReset.Enabled = false;
       tv = list;
     }
@@ -103,7 +105,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
     {
       if (rbFormID.Checked)
       {
-        if (!uint.TryParse(tbSearch.Text, System.Globalization.NumberStyles.AllowHexSpecifier, null, out searchID))
+        if (!uint.TryParse(tbSearch.Text, NumberStyles.AllowHexSpecifier, null, out searchID))
         {
           MessageBox.Show("Invalid FormID");
           return false;

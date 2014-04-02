@@ -12,7 +12,7 @@ namespace Fomm.Controls
     /// </summary>
     public DoubleBufferedListView()
     {
-      this.DoubleBuffered = true;
+      DoubleBuffered = true;
     }
   }
 }

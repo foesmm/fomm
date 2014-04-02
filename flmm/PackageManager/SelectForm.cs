@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
+using Fomm.Properties;
 using Image = System.Drawing.Image;
 
 namespace Fomm.PackageManager
@@ -9,12 +11,12 @@ namespace Fomm.PackageManager
     internal SelectForm(string[] items, string title, bool multi, Image[] previews, string[] tooltips)
     {
       InitializeComponent();
-      this.Icon = Fomm.Properties.Resources.fomm02;
-      Properties.Settings.Default.windowPositions.GetWindowPosition("PackageManagerSelectForm", this);
+      Icon = Resources.fomm02;
+      Settings.Default.windowPositions.GetWindowPosition("PackageManagerSelectForm", this);
       Text = title;
       toolTips = tooltips;
       Multi = multi;
-      System.Collections.Generic.List<int> selected = new System.Collections.Generic.List<int>();
+      List<int> selected = new List<int>();
       for (int i = 0; i < items.Length; i++)
       {
         if (items[i].Length == 0)
@@ -77,13 +79,13 @@ namespace Fomm.PackageManager
       0
     };
 
-    private System.Drawing.Image[] Previews;
+    private Image[] Previews;
     private string[] toolTips;
     private bool ShowingDesc;
     private bool Multi;
 
     private int selectedIndex;
-    private System.Collections.Generic.List<int> selected = new System.Collections.Generic.List<int>();
+    private List<int> selected = new List<int>();
 
     private void bOK_Click(object sender, EventArgs e)
     {
@@ -95,7 +97,7 @@ namespace Fomm.PackageManager
       }
       if (Previews != null)
       {
-        foreach (System.Drawing.Image i in Previews)
+        foreach (Image i in Previews)
         {
           if (i != null)
           {
@@ -108,8 +110,8 @@ namespace Fomm.PackageManager
 
     private void SelectForm_FormClosing(object sender, FormClosingEventArgs e)
     {
-      Properties.Settings.Default.windowPositions.SetWindowPosition("PackageManagerSelectForm", this);
-      Properties.Settings.Default.Save();
+      Settings.Default.windowPositions.SetWindowPosition("PackageManagerSelectForm", this);
+      Settings.Default.Save();
       e.Cancel = blockClose;
     }
 

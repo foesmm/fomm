@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Fomm.Games.Fallout3.Tools.BSA;
 using Fomm.PackageManager;
 using Fomm.PackageManager.ModInstallLog;
 
@@ -94,7 +95,7 @@ namespace Fomm.Games.FalloutNewVegas.Script
         if (lstInstallers[lstInstallers.Count - 1].Equals(Fomod.BaseName))
         {
           byte[] oldData;
-          if (!Fallout3.Tools.BSA.SDPArchives.EditShader(p_intPackage, p_strShaderName, p_bteData, out oldData))
+          if (!SDPArchives.EditShader(p_intPackage, p_strShaderName, p_bteData, out oldData))
           {
             throw new ShaderException("Failed to edit the shader");
           }

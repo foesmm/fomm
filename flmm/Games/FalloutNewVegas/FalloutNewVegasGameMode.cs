@@ -1,11 +1,17 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Drawing;
+using Fomm.Games.Fallout3.Tools;
+using Fomm.Games.Fallout3.Tools.AutoSorter;
+using Fomm.Games.Fallout3.Tools.BSA;
+using Fomm.Games.Fallout3.Tools.TESsnip;
 using Fomm.Games.FalloutNewVegas.Settings;
 using System.Text;
 using System.Windows.Forms;
 using System.Threading;
 using System.Collections.Generic;
+using Fomm.Games.FalloutNewVegas.Tools.AutoSorter;
 using Fomm.PackageManager;
 using Fomm.PackageManager.XmlConfiguredInstall.Parsers;
 using Fomm.Games.FalloutNewVegas.Script.XmlConfiguredInstall.Parsers;
@@ -15,6 +21,7 @@ using Fomm.Games.FalloutNewVegas.PluginFormatProviders;
 using Microsoft.Win32;
 using Fomm.Commands;
 using System.Text.RegularExpressions;
+using SaveForm = Fomm.Games.FalloutNewVegas.Tools.SaveForm;
 
 namespace Fomm.Games.FalloutNewVegas
 {
@@ -112,7 +119,7 @@ namespace Fomm.Games.FalloutNewVegas
       get
       {
         string strFalloutEsm = Path.Combine(PluginsPath, "falloutnv.esm");
-        return System.Drawing.Icon.ExtractAssociatedIcon(strFalloutEsm);
+        return Icon.ExtractAssociatedIcon(strFalloutEsm);
       }
     }
 
@@ -151,13 +158,13 @@ namespace Fomm.Games.FalloutNewVegas
         if (File.Exists("FalloutNV.exe"))
         {
           return
-            new Version(System.Diagnostics.FileVersionInfo.GetVersionInfo("FalloutNV.exe")
+            new Version(FileVersionInfo.GetVersionInfo("FalloutNV.exe")
                               .FileVersion.Replace(", ", "."));
         }
         if (File.Exists("FalloutNVng.exe"))
         {
           return
-            new Version(System.Diagnostics.FileVersionInfo.GetVersionInfo("FalloutNVng.exe")
+            new Version(FileVersionInfo.GetVersionInfo("FalloutNVng.exe")
                               .FileVersion.Replace(", ", "."));
         }
         return null;
@@ -221,7 +228,7 @@ namespace Fomm.Games.FalloutNewVegas
         Tools.Add(new Command<MainForm>("FNVEdit", "Launches FNVEdit, if it is installed.", LaunchFNVEdit));
       }
       Tools.Add(new CheckedCommand<MainForm>("Archive Invalidation", "Toggles Archive Invalidation.",
-                                             Fallout3.Tools.ArchiveInvalidation.IsActive(), ToggleArchiveInvalidation));
+                                             ArchiveInvalidation.IsActive(), ToggleArchiveInvalidation));
 
       if (!File.Exists(((SettingsFilesSet) SettingsFiles).FOIniPath))
       {
@@ -338,8 +345,8 @@ namespace Fomm.Games.FalloutNewVegas
 
       try
       {
-        Tools.AutoSorter.FalloutNewVegasBOSSUpdater bupUpdater = new Tools.AutoSorter.FalloutNewVegasBOSSUpdater();
-        bupUpdater.UpdateMasterlist(Fomm.Games.Fallout3.Tools.AutoSorter.LoadOrderSorter.LoadOrderTemplatePath);
+        FalloutNewVegasBOSSUpdater bupUpdater = new FalloutNewVegasBOSSUpdater();
+        bupUpdater.UpdateMasterlist(LoadOrderSorter.LoadOrderTemplatePath);
         ret = true;
       }
       catch (Exception e)
@@ -365,7 +372,7 @@ namespace Fomm.Games.FalloutNewVegas
     /// <lang cref="false"/> otherwise.</returns>
     public bool StartSteam(MainForm p_eeaArguments)
     {
-      foreach (System.Diagnostics.Process clsProcess in System.Diagnostics.Process.GetProcesses())
+      foreach (Process clsProcess in Process.GetProcesses())
       {
         if (clsProcess.ProcessName.ToLowerInvariant().Contains("steam"))
         {
@@ -374,12 +381,12 @@ namespace Fomm.Games.FalloutNewVegas
       }
 
       string strSteam =
-        (string) Microsoft.Win32.Registry.GetValue(@"HKEY_CURRENT_USER\Software\Valve\Steam", "SteamExe", null);
+        (string) Registry.GetValue(@"HKEY_CURRENT_USER\Software\Valve\Steam", "SteamExe", null);
       if (!String.IsNullOrEmpty(strSteam))
       {
         try
         {
-          System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
+          ProcessStartInfo psi = new ProcessStartInfo();
           psi.FileName = strSteam;
           psi.WorkingDirectory = Path.GetDirectoryName(strSteam);
           psi.UseShellExecute = false;
@@ -397,7 +404,7 @@ namespace Fomm.Games.FalloutNewVegas
               intSteamClientBlobChangeCount++;
             });
 
-            if (System.Diagnostics.Process.Start(psi) != null)
+            if (Process.Start(psi) != null)
             {
               for (Int32 i = 0; i < 120 && intSteamClientBlobChangeCount < 4; i++)
               {
@@ -490,11 +497,11 @@ namespace Fomm.Games.FalloutNewVegas
 
         try
         {
-          System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
+          ProcessStartInfo psi = new ProcessStartInfo();
           psi.Arguments = args;
           psi.FileName = command;
           psi.WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath(command));
-          if (System.Diagnostics.Process.Start(psi) == null)
+          if (Process.Start(psi) == null)
           {
             MessageBox.Show("Failed to launch '" + command + "'");
             return;
@@ -531,7 +538,7 @@ namespace Fomm.Games.FalloutNewVegas
 
         try
         {
-          System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
+          ProcessStartInfo psi = new ProcessStartInfo();
           psi.FileName = "nvse_loader.exe";
           //this configuration force the FO:NV launcher, which
           // ensures NVSE loads
@@ -545,7 +552,7 @@ namespace Fomm.Games.FalloutNewVegas
           }
           psi.UseShellExecute = false;
           psi.WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath("nvse_loader.exe"));
-          if (System.Diagnostics.Process.Start(psi) == null)
+          if (Process.Start(psi) == null)
           {
             MessageBox.Show("Failed to launch 'nvse_loader.exe'");
             return;
@@ -587,7 +594,7 @@ namespace Fomm.Games.FalloutNewVegas
 
         try
         {
-          System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
+          ProcessStartInfo psi = new ProcessStartInfo();
           if (booSteamStarted && !psi.EnvironmentVariables.ContainsKey("SteamAppID"))
           {
             psi.EnvironmentVariables.Add("SteamAppID", GetSteamAppId().ToString());
@@ -595,7 +602,7 @@ namespace Fomm.Games.FalloutNewVegas
           psi.FileName = command;
           psi.UseShellExecute = false;
           psi.WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath(command));
-          if (System.Diagnostics.Process.Start(psi) == null)
+          if (Process.Start(psi) == null)
           {
             MessageBox.Show("Failed to launch '" + command + "'");
             return;
@@ -653,10 +660,10 @@ namespace Fomm.Games.FalloutNewVegas
       }
       try
       {
-        System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
+        ProcessStartInfo psi = new ProcessStartInfo();
         psi.FileName = "FNVEdit.exe";
         psi.WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath(psi.FileName));
-        if (System.Diagnostics.Process.Start(psi) == null)
+        if (Process.Start(psi) == null)
         {
           MessageBox.Show("Failed to launch FNVEdit.");
           return;
@@ -693,7 +700,7 @@ namespace Fomm.Games.FalloutNewVegas
           lstInactive.Add(Path.GetFileName(strPlugin));
         }
       }
-      (new Tools.SaveForm(lstActive.ToArray(), lstInactive.ToArray())).Show();
+      (new SaveForm(lstActive.ToArray(), lstInactive.ToArray())).Show();
     }
 
     /// <summary>
@@ -704,10 +711,10 @@ namespace Fomm.Games.FalloutNewVegas
     /// main mod management form.</param>
     public override void ToggleArchiveInvalidation(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
-      if (Fomm.Games.FalloutNewVegas.Tools.ArchiveInvalidation.Update())
+      if (FalloutNewVegas.Tools.ArchiveInvalidation.Update())
       {
         ((CheckedCommand<MainForm>) p_objCommand).IsChecked =
-          Fomm.Games.FalloutNewVegas.Tools.ArchiveInvalidation.IsActive();
+          FalloutNewVegas.Tools.ArchiveInvalidation.IsActive();
       }
     }
 
@@ -817,14 +824,14 @@ namespace Fomm.Games.FalloutNewVegas
         {
           case ".dat":
           case ".bsa":
-            Application.Run(new Fallout3.Tools.BSA.BSABrowser(p_strArgs[0]));
+            Application.Run(new BSABrowser(p_strArgs[0]));
             return true;
           case ".sdp":
             Application.Run(new Fallout3.Tools.ShaderEdit.MainForm(p_strArgs[0]));
             return true;
           case ".esp":
           case ".esm":
-            Application.Run(new Fallout3.Tools.TESsnip.TESsnip(new string[]
+            Application.Run(new TESsnip(new string[]
             {
               p_strArgs[0]
             }));
@@ -848,13 +855,13 @@ namespace Fomm.Games.FalloutNewVegas
             mutex.Close();
             return true;
           case "-bsa-unpacker":
-            Application.Run(new Fallout3.Tools.BSA.BSABrowser());
+            Application.Run(new BSABrowser());
             return true;
           case "-bsa-creator":
-            Application.Run(new Fallout3.Tools.BSA.BSACreator());
+            Application.Run(new BSACreator());
             return true;
           case "-tessnip":
-            Application.Run(new Fallout3.Tools.TESsnip.TESsnip());
+            Application.Run(new TESsnip());
             return true;
           case "-sdp-editor":
             Application.Run(new Fallout3.Tools.ShaderEdit.MainForm());
@@ -925,7 +932,7 @@ namespace Fomm.Games.FalloutNewVegas
         try
         {
           strWorkingDirectory =
-            Microsoft.Win32.Registry.GetValue(@"HKEY_LOCAL_MACHINE\Software\Bethesda Softworks\FalloutNV",
+            Registry.GetValue(@"HKEY_LOCAL_MACHINE\Software\Bethesda Softworks\FalloutNV",
                                               "Installed Path", null) as string;
         }
         catch

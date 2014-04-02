@@ -1,6 +1,9 @@
 using System;
+using System.Globalization;
+using System.IO;
 using System.Windows.Forms;
 using Fomm.Games.Fallout3.Tools.TESsnip.HexBox;
+using Fomm.Properties;
 
 namespace Fomm.Games.Fallout3.Tools.TESsnip
 {
@@ -18,7 +21,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
     public HexDataEdit(string RecName, byte[] data, dFormIDLookupS formIDLookup)
     {
       InitializeComponent();
-      this.Icon = Fomm.Properties.Resources.fomm02;
+      Icon = Resources.fomm02;
       this.formIDLookup = formIDLookup;
       Text += RecName;
       tbName.Text = RecName;
@@ -163,7 +166,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
     private void bCFormID_Click(object sender, EventArgs e)
     {
       uint i;
-      if (!uint.TryParse(tbFormID.Text, System.Globalization.NumberStyles.AllowHexSpecifier, null, out i))
+      if (!uint.TryParse(tbFormID.Text, NumberStyles.AllowHexSpecifier, null, out i))
       {
         MessageBox.Show("Invalid form ID");
         return;
@@ -188,7 +191,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       {
         return;
       }
-      byte[] newdata = System.IO.File.ReadAllBytes(openFileDialog1.FileName);
+      byte[] newdata = File.ReadAllBytes(openFileDialog1.FileName);
       bytes.Clear();
       bytes.AddRange(newdata);
       hexBox1.Refresh();

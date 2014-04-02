@@ -215,7 +215,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
     public Inflater(bool noHeader)
     {
       this.noHeader = noHeader;
-      this.adler = new Adler32();
+      adler = new Adler32();
       input = new StreamManipulator();
       outputWindow = new OutputWindow();
       mode = noHeader ? DECODE_BLOCKS : DECODE_HEADER;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Fomm.Properties;
 using ICSharpCode.TextEditor.Gui.CompletionWindow;
 using System.Text.RegularExpressions;
 using System.Xml.Schema;
@@ -664,9 +665,9 @@ namespace Fomm.Controls
     {
       m_imlImages = new ImageList();
       m_imlImages.TransparentColor = Color.Magenta;
-      m_imlImages.Images.Add(Properties.Resources.xml);
-      m_imlImages.Images.Add(Properties.Resources.Properties);
-      m_imlImages.Images.Add(Properties.Resources.EnumItem);
+      m_imlImages.Images.Add(Resources.xml);
+      m_imlImages.Images.Add(Resources.Properties);
+      m_imlImages.Images.Add(Resources.EnumItem);
       m_xedEditor = p_xedEditor;
     }
 

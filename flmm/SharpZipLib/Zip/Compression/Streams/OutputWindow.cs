@@ -111,7 +111,7 @@ namespace Fomm.SharpZipLib.Zip.Compression.Streams
       {
         if (length <= distance)
         {
-          System.Array.Copy(window, repStart, window, windowEnd, length);
+          Array.Copy(window, repStart, window, windowEnd, length);
           windowEnd += length;
         }
         else
@@ -204,11 +204,11 @@ namespace Fomm.SharpZipLib.Zip.Compression.Streams
 
       if (tailLen > 0)
       {
-        System.Array.Copy(window, WindowSize - tailLen, output, offset, tailLen);
+        Array.Copy(window, WindowSize - tailLen, output, offset, tailLen);
         offset += tailLen;
         len = copyEnd;
       }
-      System.Array.Copy(window, copyEnd - len, output, offset, len);
+      Array.Copy(window, copyEnd - len, output, offset, len);
       windowFilled -= copied;
       if (windowFilled < 0)
       {

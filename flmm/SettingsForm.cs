@@ -1,5 +1,6 @@
 using System;
 using System.Windows.Forms;
+using Fomm.Properties;
 using Microsoft.Win32;
 using SevenZip;
 using Fomm.Controls;
@@ -23,7 +24,7 @@ namespace Fomm
     public SettingsForm()
     {
       InitializeComponent();
-      this.Icon = Fomm.Properties.Resources.fomm02;
+      Icon = Resources.fomm02;
 
       LoadGeneralSettings();
       LoadFOMODSettings();
@@ -80,8 +81,8 @@ namespace Fomm
     /// </summary>
     protected void LoadGeneralSettings()
     {
-      cbDisableUAC.Checked = Properties.Settings.Default.NoUACCheck;
-      cbDisableIPC.Checked = Properties.Settings.Default.DisableIPC;
+      cbDisableUAC.Checked = Settings.Default.NoUACCheck;
+      cbDisableIPC.Checked = Settings.Default.DisableIPC;
 
       if (!UacUtil.IsElevated)
       {
@@ -149,15 +150,15 @@ namespace Fomm
     {
       cbxFomodCompression.DataSource = Enum.GetValues(typeof (CompressionLevel));
       cbxFomodFormat.DataSource = Enum.GetValues(typeof (OutArchiveFormat));
-      cbxFomodCompression.SelectedItem = Properties.Settings.Default.fomodCompressionLevel;
-      cbxFomodFormat.SelectedItem = Properties.Settings.Default.fomodCompressionFormat;
+      cbxFomodCompression.SelectedItem = Settings.Default.fomodCompressionLevel;
+      cbxFomodFormat.SelectedItem = Settings.Default.fomodCompressionFormat;
 
       cbxPFPCompression.DataSource = Enum.GetValues(typeof (CompressionLevel));
       cbxPFPFormat.DataSource = Enum.GetValues(typeof (OutArchiveFormat));
-      cbxPFPCompression.SelectedItem = Properties.Settings.Default.pfpCompressionLevel;
-      cbxPFPFormat.SelectedItem = Properties.Settings.Default.pfpCompressionFormat;
+      cbxPFPCompression.SelectedItem = Settings.Default.pfpCompressionLevel;
+      cbxPFPFormat.SelectedItem = Settings.Default.pfpCompressionFormat;
 
-      cbUseDocs.Checked = Properties.Settings.Default.UseDocsFolder;
+      cbUseDocs.Checked = Settings.Default.UseDocsFolder;
     }
 
     /// <summary>
@@ -196,7 +197,7 @@ namespace Fomm
       SaveGeneralSettings();
       SaveFOMODSettings();
 
-      Properties.Settings.Default.Save();
+      Settings.Default.Save();
       DialogResult = DialogResult.OK;
     }
 
@@ -240,8 +241,8 @@ namespace Fomm
     /// </summary>
     protected void SaveGeneralSettings()
     {
-      Properties.Settings.Default.NoUACCheck = cbDisableUAC.Checked;
-      Properties.Settings.Default.DisableIPC = cbDisableIPC.Checked;
+      Settings.Default.NoUACCheck = cbDisableUAC.Checked;
+      Settings.Default.DisableIPC = cbDisableIPC.Checked;
 
       if (UacUtil.IsElevated)
       {
@@ -323,13 +324,13 @@ namespace Fomm
     /// </summary>
     protected void SaveFOMODSettings()
     {
-      Properties.Settings.Default.fomodCompressionLevel = (CompressionLevel) cbxFomodCompression.SelectedItem;
-      Properties.Settings.Default.fomodCompressionFormat = (OutArchiveFormat) cbxFomodFormat.SelectedItem;
+      Settings.Default.fomodCompressionLevel = (CompressionLevel) cbxFomodCompression.SelectedItem;
+      Settings.Default.fomodCompressionFormat = (OutArchiveFormat) cbxFomodFormat.SelectedItem;
 
-      Properties.Settings.Default.pfpCompressionLevel = (CompressionLevel) cbxPFPCompression.SelectedItem;
-      Properties.Settings.Default.pfpCompressionFormat = (OutArchiveFormat) cbxPFPFormat.SelectedItem;
+      Settings.Default.pfpCompressionLevel = (CompressionLevel) cbxPFPCompression.SelectedItem;
+      Settings.Default.pfpCompressionFormat = (OutArchiveFormat) cbxPFPFormat.SelectedItem;
 
-      Properties.Settings.Default.UseDocsFolder = cbUseDocs.Checked;
+      Settings.Default.UseDocsFolder = cbUseDocs.Checked;
     }
 
     /// <summary>

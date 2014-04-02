@@ -40,7 +40,7 @@ namespace Fomm.Controls
     /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
     protected override void OnLoad(EventArgs e)
     {
-      m_tmrFoldUpdater.SynchronizingObject = this.FindForm();
+      m_tmrFoldUpdater.SynchronizingObject = FindForm();
       base.OnLoad(e);
     }
 

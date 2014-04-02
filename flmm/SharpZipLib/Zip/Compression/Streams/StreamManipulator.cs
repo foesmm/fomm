@@ -210,7 +210,7 @@ namespace Fomm.SharpZipLib.Zip.Compression.Streams
       {
         length = avail;
       }
-      System.Array.Copy(window_, windowStart_, output, offset, length);
+      Array.Copy(window_, windowStart_, output, offset, length);
       windowStart_ += length;
 
       if (((windowStart_ - windowEnd_) & 1) != 0)

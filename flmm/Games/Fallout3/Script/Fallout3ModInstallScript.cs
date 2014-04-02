@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using Fomm.Games.Fallout3.Tools;
 using Fomm.PackageManager;
 using System.IO;
 using Fomm.Games.Fallout3.Tools.TESsnip;
@@ -7,6 +9,7 @@ using System.Windows.Forms;
 using Fomm.Games.Fallout3.Tools.BSA;
 using System.Collections.Generic;
 using Fomm.Games.Fallout3.Tools.AutoSorter;
+using ScriptCompiler = Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler.ScriptCompiler;
 
 namespace Fomm.Games.Fallout3.Script
 {
@@ -68,7 +71,7 @@ namespace Fomm.Games.Fallout3.Script
     public void SetupScriptCompiler(Plugin[] p_plgPlugins)
     {
       PermissionsManager.CurrentPermissions.Assert();
-      Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler.ScriptCompiler.Setup(p_plgPlugins);
+      ScriptCompiler.Setup(p_plgPlugins);
     }
 
     /// <summary>
@@ -76,7 +79,7 @@ namespace Fomm.Games.Fallout3.Script
     /// </summary>
     public void CompileResultScript(SubRecord sr, out Record r2, out string msg)
     {
-      Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler.ScriptCompiler.CompileResultScript(sr, out r2, out msg);
+      ScriptCompiler.CompileResultScript(sr, out r2, out msg);
     }
 
     /// <summary>
@@ -84,7 +87,7 @@ namespace Fomm.Games.Fallout3.Script
     /// </summary>
     public void CompileScript(Record r2, out string msg)
     {
-      Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler.ScriptCompiler.Compile(r2, out msg);
+      ScriptCompiler.Compile(r2, out msg);
     }
 
     #endregion
@@ -114,7 +117,7 @@ namespace Fomm.Games.Fallout3.Script
         return null;
       }
       return
-        new Version(System.Diagnostics.FileVersionInfo.GetVersionInfo("fose_loader.exe").FileVersion.Replace(", ", "."));
+        new Version(FileVersionInfo.GetVersionInfo("fose_loader.exe").FileVersion.Replace(", ", "."));
     }
 
     /// <summary>
@@ -129,7 +132,7 @@ namespace Fomm.Games.Fallout3.Script
       {
         return null;
       }
-      return new Version(System.Diagnostics.FileVersionInfo.GetVersionInfo("geck.exe").FileVersion.Replace(", ", "."));
+      return new Version(FileVersionInfo.GetVersionInfo("geck.exe").FileVersion.Replace(", ", "."));
     }
 
     #endregion
@@ -532,7 +535,7 @@ namespace Fomm.Games.Fallout3.Script
     /// <lang cref="false"/> otherwise.</returns>
     public virtual bool IsAIActive()
     {
-      return Tools.ArchiveInvalidation.IsActive();
+      return ArchiveInvalidation.IsActive();
     }
 
     #endregion

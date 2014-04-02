@@ -97,17 +97,17 @@ namespace Fomm.Controls
       m_pnlNavigation.DataBindings.Add("BackColor", this, "BackColor");
 
       m_pnlNavigationLight = new Panel();
-      m_pnlNavigationLight.BackColor = System.Drawing.SystemColors.ControlLightLight;
-      m_pnlNavigationLight.Dock = System.Windows.Forms.DockStyle.Top;
-      m_pnlNavigationLight.Location = new System.Drawing.Point(0, 1);
-      m_pnlNavigationLight.Size = new System.Drawing.Size(444, 1);
+      m_pnlNavigationLight.BackColor = SystemColors.ControlLightLight;
+      m_pnlNavigationLight.Dock = DockStyle.Top;
+      m_pnlNavigationLight.Location = new Point(0, 1);
+      m_pnlNavigationLight.Size = new Size(444, 1);
       m_pnlNavigationLight.TabIndex = 1;
 
       m_pnlNavigationShadow = new Panel();
-      m_pnlNavigationShadow.BackColor = System.Drawing.SystemColors.ControlDark;
-      m_pnlNavigationShadow.Dock = System.Windows.Forms.DockStyle.Top;
-      m_pnlNavigationShadow.Location = new System.Drawing.Point(0, 0);
-      m_pnlNavigationShadow.Size = new System.Drawing.Size(444, 1);
+      m_pnlNavigationShadow.BackColor = SystemColors.ControlDark;
+      m_pnlNavigationShadow.Dock = DockStyle.Top;
+      m_pnlNavigationShadow.Location = new Point(0, 0);
+      m_pnlNavigationShadow.Size = new Size(444, 1);
       m_pnlNavigationShadow.TabIndex = 2;
 
       m_pnlNavigation.Controls.Add(m_pnlNavigationLight);
@@ -139,7 +139,7 @@ namespace Fomm.Controls
       m_butPrevious.Click += new EventHandler(Previous_Click);
       m_pnlNavigation.Controls.Add(m_butPrevious);
 
-      this.Dock = DockStyle.Fill;
+      Dock = DockStyle.Fill;
     }
 
     #endregion

@@ -214,7 +214,7 @@ namespace Fomm.SharpZipLib.Zip
     {
       if (name == null)
       {
-        throw new System.ArgumentNullException("name");
+        throw new ArgumentNullException("name");
       }
 
       if (name.Length > 0xffff)
@@ -227,10 +227,10 @@ namespace Fomm.SharpZipLib.Zip
         throw new ArgumentOutOfRangeException("versionRequiredToExtract");
       }
 
-      this.DateTime = System.DateTime.Now;
+      DateTime = DateTime.Now;
       this.name = name;
-      this.versionMadeBy = (ushort) madeByInfo;
-      this.versionToExtract = (ushort) versionRequiredToExtract;
+      versionMadeBy = (ushort) madeByInfo;
+      versionToExtract = (ushort) versionRequiredToExtract;
       this.method = method;
     }
 
@@ -563,7 +563,7 @@ namespace Fomm.SharpZipLib.Zip
           // TODO: A better estimation of the true limit based on compression overhead should be used
           // to determine when an entry should use Zip64.
           result =
-            ((this.size >= uint.MaxValue) || (trueCompressedSize >= uint.MaxValue)) &&
+            ((size >= uint.MaxValue) || (trueCompressedSize >= uint.MaxValue)) &&
             ((versionToExtract == 0) || (versionToExtract >= ZipConstants.VersionZip64));
         }
 
@@ -629,7 +629,7 @@ namespace Fomm.SharpZipLib.Zip
         uint mon = Math.Max(1, Math.Min(12, ((dosTime >> 21) & 0xf)));
         uint year = ((dosTime >> 25) & 0x7f) + 1980;
         int day = Math.Max(1, Math.Min(DateTime.DaysInMonth((int) year, (int) mon), (int) ((dosTime >> 16) & 0x1f)));
-        return new System.DateTime((int) year, (int) mon, day, (int) hrs, (int) min, (int) sec);
+        return new DateTime((int) year, (int) mon, day, (int) hrs, (int) min, (int) sec);
       }
 
       set
@@ -702,8 +702,8 @@ namespace Fomm.SharpZipLib.Zip
       }
       set
       {
-        this.size = (ulong) value;
-        this.known |= Known.Size;
+        size = (ulong) value;
+        known |= Known.Size;
       }
     }
 
@@ -721,8 +721,8 @@ namespace Fomm.SharpZipLib.Zip
       }
       set
       {
-        this.compressedSize = (ulong) value;
-        this.known |= Known.CompressedSize;
+        compressedSize = (ulong) value;
+        known |= Known.CompressedSize;
       }
     }
 
@@ -747,8 +747,8 @@ namespace Fomm.SharpZipLib.Zip
         {
           throw new ArgumentOutOfRangeException("value");
         }
-        this.crc = (uint) value;
-        this.known |= Known.Crc;
+        crc = (uint) value;
+        known |= Known.Crc;
       }
     }
 
@@ -773,7 +773,7 @@ namespace Fomm.SharpZipLib.Zip
         {
           throw new NotSupportedException("Compression method not supported");
         }
-        this.method = value;
+        method = value;
       }
     }
 
@@ -805,7 +805,7 @@ namespace Fomm.SharpZipLib.Zip
         {
           if (value.Length > 0xffff)
           {
-            throw new System.ArgumentOutOfRangeException("value");
+            throw new ArgumentOutOfRangeException("value");
           }
 
           extra = new byte[value.Length];
@@ -822,7 +822,7 @@ namespace Fomm.SharpZipLib.Zip
     /// </param>
     internal void ProcessExtraData(bool localHeader)
     {
-      ZipExtraData extraData = new ZipExtraData(this.extra);
+      ZipExtraData extraData = new ZipExtraData(extra);
 
       if (extraData.Find(0x0001))
       {
@@ -888,7 +888,7 @@ namespace Fomm.SharpZipLib.Zip
               //long createTime = extraData.ReadLong();
               extraData.Skip(16);
 
-              DateTime = System.DateTime.FromFileTime(lastModification);
+              DateTime = DateTime.FromFileTime(lastModification);
             }
             break;
           }
@@ -910,7 +910,7 @@ namespace Fomm.SharpZipLib.Zip
         {
           int iTime = extraData.ReadInt();
 
-          DateTime = (new System.DateTime(1970, 1, 1, 0, 0, 0).ToUniversalTime() +
+          DateTime = (new DateTime(1970, 1, 1, 0, 0, 0).ToUniversalTime() +
                       new TimeSpan(0, 0, 0, iTime, 0)).ToLocalTime();
         }
       }
@@ -1013,7 +1013,7 @@ namespace Fomm.SharpZipLib.Zip
     /// <returns>An <see cref="Object"/> that is a copy of the current instance.</returns>
     public object Clone()
     {
-      ZipEntry result = (ZipEntry) this.MemberwiseClone();
+      ZipEntry result = (ZipEntry) MemberwiseClone();
 
       // Ensure extra data is unique if it exists.
       if (extra != null)

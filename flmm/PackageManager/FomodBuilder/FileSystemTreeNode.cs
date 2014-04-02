@@ -44,7 +44,7 @@ namespace Fomm.PackageManager.FomodBuilder
       {
         get
         {
-          return this.Find((s) =>
+          return Find((s) =>
           {
             return s.Equals(p_strPath);
           });
@@ -53,7 +53,7 @@ namespace Fomm.PackageManager.FomodBuilder
 
       public void Add(string p_strPath, bool p_booIsLoaded)
       {
-        this.Add(new Source(p_strPath, false));
+        Add(new Source(p_strPath, false));
       }
 
       public bool Remove(string p_strPath)
@@ -362,8 +362,8 @@ namespace Fomm.PackageManager.FomodBuilder
     public FileSystemTreeNode(FileSystemTreeNode p_tndCopy)
       : base(p_tndCopy.Text)
     {
-      this.Name = p_tndCopy.Name;
-      this.m_sstSources = new SourceSet(p_tndCopy.m_sstSources);
+      Name = p_tndCopy.Name;
+      m_sstSources = new SourceSet(p_tndCopy.m_sstSources);
     }
 
     /// <summary>
@@ -410,10 +410,10 @@ namespace Fomm.PackageManager.FomodBuilder
     /// A value greater than 0 if this node is greater than the other.</returns>
     public int CompareTo(FileSystemTreeNode other)
     {
-      Int32 intResult = other.IsDirectory.CompareTo(this.IsDirectory);
+      Int32 intResult = other.IsDirectory.CompareTo(IsDirectory);
       if (intResult == 0)
       {
-        intResult = this.Text.CompareTo(other.Text);
+        intResult = Text.CompareTo(other.Text);
       }
       return intResult;
     }

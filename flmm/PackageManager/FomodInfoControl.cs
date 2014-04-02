@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.IO;
+using Fomm.Properties;
 using GeMod.Interface;
 
 namespace Fomm.PackageManager
@@ -48,7 +49,7 @@ namespace Fomm.PackageManager
       // no idea why
       try
       {
-        string[] strGroups = Properties.Settings.Default.pluginGroups;
+        string[] strGroups = Settings.Default.pluginGroups;
         if (strGroups != null)
         {
           clbGroups.SuspendLayout();
@@ -254,7 +255,7 @@ namespace Fomm.PackageManager
     /// <lang cref="true"/> otherwise.</returns>
     public bool SaveFomod(fomod p_fomodMod)
     {
-      if (!this.ValidateChildren())
+      if (!ValidateChildren())
       {
         return false;
       }
@@ -292,8 +293,8 @@ namespace Fomm.PackageManager
     protected override void OnResize(EventArgs e)
     {
       base.OnResize(e);
-      pbxScreenshot.Height = this.ClientSize.Height - pbxScreenshot.Top - 3;
-      pbxScreenshot.Width = this.ClientSize.Width - 6;
+      pbxScreenshot.Height = ClientSize.Height - pbxScreenshot.Top - 3;
+      pbxScreenshot.Width = ClientSize.Width - 6;
     }
 
     #region IFomodInfo Members

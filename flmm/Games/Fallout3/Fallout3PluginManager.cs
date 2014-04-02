@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using Fomm.Games.Fallout3.Tools.TESsnip;
 using System.Text;
@@ -64,7 +65,7 @@ namespace Fomm.Games.Fallout3
       {
         Directory.CreateDirectory(Path.GetDirectoryName(strPluginsFilePath));
       }
-      File.WriteAllLines(strPluginsFilePath, setPluginFilenames.ToArray(), System.Text.Encoding.Default);
+      File.WriteAllLines(strPluginsFilePath, setPluginFilenames.ToArray(), Encoding.Default);
     }
 
     /// <summary>
@@ -98,11 +99,11 @@ namespace Fomm.Games.Fallout3
 
         lstPlugins.Sort(delegate(FileInfo a, FileInfo b)
         {
-          if (Tools.TESsnip.Plugin.GetIsEsm(a.FullName) == Tools.TESsnip.Plugin.GetIsEsm(b.FullName))
+          if (Plugin.GetIsEsm(a.FullName) == Plugin.GetIsEsm(b.FullName))
           {
             return a.LastWriteTime.CompareTo(b.LastWriteTime);
           }
-          return Tools.TESsnip.Plugin.GetIsEsm(a.FullName) ? -1 : 1;
+          return Plugin.GetIsEsm(a.FullName) ? -1 : 1;
         });
 
         List<string> lstPluginPaths = new List<string>();
@@ -142,11 +143,11 @@ namespace Fomm.Games.Fallout3
       }
       lstPlugins.Sort(delegate(FileInfo a, FileInfo b)
       {
-        if (Tools.TESsnip.Plugin.GetIsEsm(a.FullName) == Tools.TESsnip.Plugin.GetIsEsm(b.FullName))
+        if (Plugin.GetIsEsm(a.FullName) == Plugin.GetIsEsm(b.FullName))
         {
           return a.LastWriteTime.CompareTo(b.LastWriteTime);
         }
-        return Tools.TESsnip.Plugin.GetIsEsm(a.FullName) ? -1 : 1;
+        return Plugin.GetIsEsm(a.FullName) ? -1 : 1;
       });
       List<string> lstPluginPaths = new List<string>();
       foreach (FileInfo fifPlugin in lstPlugins)
@@ -268,7 +269,7 @@ namespace Fomm.Games.Fallout3
       PluginInfo pifInfo = new PluginInfo(stbDescription.ToString(), null);
       if (pic != null)
       {
-        pifInfo.Picture = System.Drawing.Bitmap.FromStream(new MemoryStream(pic));
+        pifInfo.Picture = Bitmap.FromStream(new MemoryStream(pic));
       }
       return pifInfo;
     }

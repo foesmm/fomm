@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 using Fomm.SharpZipLib.Checksums;
 using Fomm.SharpZipLib.Zip.Compression;
 using StringList = System.Collections.Generic.List<string>;
@@ -148,7 +149,7 @@ namespace Fomm.Games.Fallout3.Tools.BSA
     internal BSAArchive(string path)
     {
       BSAHeader4 header;
-      br = new BinaryReader(File.OpenRead(path), System.Text.Encoding.Default);
+      br = new BinaryReader(File.OpenRead(path), Encoding.Default);
       header = new BSAHeader4(br);
       if (header.bsaVersion != 0x68 && header.bsaVersion != 0x67)
       {
@@ -308,8 +309,8 @@ namespace Fomm.Games.Fallout3.Tools.BSA
       DateTime timeStamp = File.GetLastWriteTime(file);
       File.Delete(tempshader);
       File.Move(file, tempshader);
-      BinaryReader br = new BinaryReader(File.OpenRead(tempshader), System.Text.Encoding.Default);
-      BinaryWriter bw = new BinaryWriter(File.Create(file), System.Text.Encoding.Default);
+      BinaryReader br = new BinaryReader(File.OpenRead(tempshader), Encoding.Default);
+      BinaryWriter bw = new BinaryWriter(File.Create(file), Encoding.Default);
       bw.Write(br.ReadInt32());
       int num = br.ReadInt32();
       bw.Write(num);
@@ -395,7 +396,7 @@ namespace Fomm.Games.Fallout3.Tools.BSA
         return null;
       }
 
-      BinaryReader br = new BinaryReader(File.OpenRead(file), System.Text.Encoding.Default);
+      BinaryReader br = new BinaryReader(File.OpenRead(file), Encoding.Default);
       br.ReadInt32();
       int num = br.ReadInt32();
       long sizeoffset = br.BaseStream.Position;

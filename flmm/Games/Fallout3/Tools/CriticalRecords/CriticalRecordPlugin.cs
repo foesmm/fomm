@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using Fomm.Games.Fallout3.Tools.TESsnip;
 using System.IO;
@@ -88,7 +89,7 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
       foreach (string strCriticalRecord in strCriticalRecords)
       {
         if (
-          !UInt32.TryParse(strCriticalRecord.Substring(0, 8), System.Globalization.NumberStyles.HexNumber, null,
+          !UInt32.TryParse(strCriticalRecord.Substring(0, 8), NumberStyles.HexNumber, null,
                            out uintFormId))
         {
           continue;
@@ -96,7 +97,7 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
         criInfo = new CriticalRecordInfo();
         criInfo.Severity =
           (CriticalRecordInfo.ConflictSeverity)
-            Int32.Parse(strCriticalRecord[9].ToString(), System.Globalization.NumberStyles.HexNumber);
+            Int32.Parse(strCriticalRecord[9].ToString(), NumberStyles.HexNumber);
         criInfo.Reason = strCriticalRecord.Substring(11);
         m_dicCriticalRecords[uintFormId] = criInfo;
       }

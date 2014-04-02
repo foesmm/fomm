@@ -56,7 +56,7 @@ namespace Fomm.SharpZipLib.Zip
         throw new ArgumentNullException("baseDirectory", "Directory name is invalid");
       }
 
-      this.baseDirectory_ = Path.GetFullPath(baseDirectory);
+      baseDirectory_ = Path.GetFullPath(baseDirectory);
     }
 
     /// <summary>

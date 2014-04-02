@@ -1,7 +1,9 @@
 using System;
+using System.Collections;
 using System.Windows.Forms;
 using System.IO;
 using System.Collections.Generic;
+using Fomm.Properties;
 using Fomm.SharpZipLib.Zip.Compression;
 
 namespace Fomm.Games.Fallout3.Tools.BSA
@@ -154,7 +156,7 @@ namespace Fomm.Games.Fallout3.Tools.BSA
       }
     }
 
-    private class ListViewSorter : System.Collections.IComparer
+    private class ListViewSorter : IComparer
     {
       public int Compare(object oa, object ob)
       {
@@ -209,7 +211,7 @@ namespace Fomm.Games.Fallout3.Tools.BSA
     internal BSACreator()
     {
       InitializeComponent();
-      this.Icon = Fomm.Properties.Resources.fomm02;
+      Icon = Resources.fomm02;
       lvFiles.ListViewItemSorter = sorter;
     }
 

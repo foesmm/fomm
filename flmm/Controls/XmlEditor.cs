@@ -8,6 +8,7 @@ using System.Xml;
 using ICSharpCode.TextEditor.Document;
 using System.IO;
 using System.Text;
+using KeyEventHandler = ICSharpCode.TextEditor.KeyEventHandler;
 
 namespace Fomm.Controls
 {
@@ -137,8 +138,8 @@ namespace Fomm.Controls
 
       SetHighlighting("XML");
       ActiveTextAreaControl.TextArea.KeyEventHandler +=
-        new ICSharpCode.TextEditor.KeyEventHandler(TextArea_KeyEventHandler);
-      this.Disposed += DisposeCodeCompletionWindow;
+        new KeyEventHandler(TextArea_KeyEventHandler);
+      Disposed += DisposeCodeCompletionWindow;
 
       Document.FoldingManager.FoldingStrategy = new XmlFoldingStrategy();
       Document.FormattingStrategy = new XmlFormattingStrategy();
@@ -203,7 +204,7 @@ namespace Fomm.Controls
     /// <param name="p_chrChar">The character that was typed that caused the code window to display.</param>
     public void ShowCodeCompletionWindow(char p_chrChar)
     {
-      m_ccwCodeCompletionWindow = CodeCompletionWindow.ShowCompletionWindow(this.FindForm(), this, null,
+      m_ccwCodeCompletionWindow = CodeCompletionWindow.ShowCompletionWindow(FindForm(), this, null,
                                                                             m_cdpXmlCompletionProvider, p_chrChar, true,
                                                                             false);
       //m_ccwCodeCompletionWindow is null if there are no valid completions
@@ -341,7 +342,7 @@ namespace Fomm.Controls
       }
 
       Int32 intBadLineNum = Int32.MaxValue;
-      using (XmlReader xrdValidator = XmlReader.Create(new StringReader(this.Text), m_xrsSettings))
+      using (XmlReader xrdValidator = XmlReader.Create(new StringReader(Text), m_xrsSettings))
       {
         try
         {

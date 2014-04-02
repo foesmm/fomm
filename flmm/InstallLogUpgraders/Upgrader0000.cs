@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Globalization;
+using Fomm.Games.Fallout3.Tools.BSA;
 using Fomm.PackageManager;
 using System.Xml;
 using System.IO;
@@ -125,7 +127,7 @@ namespace Fomm.InstallLogUpgraders
       for (int i = 0; i < b.Length; i++)
       {
         b[i] = byte.Parse("" + node.InnerText[i*2] + node.InnerText[i*2 + 1],
-                          System.Globalization.NumberStyles.AllowHexSpecifier);
+                          NumberStyles.AllowHexSpecifier);
       }
       return b;
     }
@@ -158,7 +160,7 @@ namespace Fomm.InstallLogUpgraders
           //this is the first mod we have encountered that edited this shader,
           // so let's assume it is the lastest mod to have made the edit...
           InstallLog.Current.AddGameSpecificValueEdit(p_strModBaseName, strShaderKey,
-                                                      Fomm.Games.Fallout3.Tools.BSA.SDPArchives.GetShader(intPackage,
+                                                      SDPArchives.GetShader(intPackage,
                                                                                                           strShader));
           //...and backup the old value as the original value
           InstallLog.Current.PrependAfterOriginalGameSpecificValueEdit(InstallLog.ORIGINAL_VALUES, strShaderKey,

@@ -1,5 +1,6 @@
 using System;
 using System.Windows.Forms;
+using Fomm.Properties;
 using File = System.IO.File;
 
 namespace Fomm.Games.Fallout3.Tools.InstallTweaker
@@ -9,7 +10,7 @@ namespace Fomm.Games.Fallout3.Tools.InstallTweaker
     public xliveSettings()
     {
       InitializeComponent();
-      this.Icon = Fomm.Properties.Resources.fomm02;
+      Icon = Resources.fomm02;
       if (!File.Exists("xlive.ini"))
       {
         File.WriteAllLines("xlive.ini", new string[]

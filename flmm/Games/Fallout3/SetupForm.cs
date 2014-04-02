@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using Fomm.Controls;
+using Fomm.Properties;
 
 namespace Fomm.Games.Fallout3
 {
@@ -17,7 +18,7 @@ namespace Fomm.Games.Fallout3
     public SetupForm()
     {
       InitializeComponent();
-      this.Icon = Properties.Resources.fomm02;
+      Icon = Resources.fomm02;
       rdcDirectories.LoadSettings();
     }
 

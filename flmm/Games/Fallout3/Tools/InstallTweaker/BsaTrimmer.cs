@@ -1,5 +1,7 @@
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
+using System.Text;
 using Fomm.SharpZipLib.Zip.Compression;
 
 namespace Fomm.Games.Fallout3.Tools.InstallTweaker
@@ -29,7 +31,7 @@ namespace Fomm.Games.Fallout3.Tools.InstallTweaker
       {
         shrunkcount++;
         newdata = new byte[newsize];
-        System.Runtime.InteropServices.Marshal.Copy(pdata, newdata, 0, newsize);
+        Marshal.Copy(pdata, newdata, 0, newsize);
       }
       bw.Write(newdata);
       bw.BaseStream.Position = offset;
@@ -41,9 +43,9 @@ namespace Fomm.Games.Fallout3.Tools.InstallTweaker
     public static void Trim(IntPtr hwnd, string In, string Out, ReportProgressDelegate del)
     {
       NativeMethods.ddsInit(hwnd);
-      BinaryReader br = new BinaryReader(File.OpenRead(In), System.Text.Encoding.Default);
-      BinaryWriter bw = new BinaryWriter(File.Create(Out), System.Text.Encoding.Default);
-      System.Text.StringBuilder sb = new System.Text.StringBuilder(64);
+      BinaryReader br = new BinaryReader(File.OpenRead(In), Encoding.Default);
+      BinaryWriter bw = new BinaryWriter(File.Create(Out), Encoding.Default);
+      StringBuilder sb = new StringBuilder(64);
       Inflater inf = new Inflater();
       bool Compressed, SkipName;
 

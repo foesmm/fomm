@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using Fomm.PackageManager;
@@ -14,7 +15,7 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
   {
     #region InterOp
 
-    [DllImport("user32.dll"), System.Security.SuppressUnmanagedCodeSecurity()]
+    [DllImport("user32.dll"), SuppressUnmanagedCodeSecurity()]
     public static extern bool EnumDisplaySettings(string lpszDeviceName, int iModeNum, ref DEVMODE lpDevMode);
 
     [StructLayout(LayoutKind.Sequential)]

@@ -25,6 +25,7 @@ using System.Diagnostics;
 using Fomm.PackageManager;
 using Fomm.InstallLogUpgraders;
 using Fomm.PackageManager.Upgrade;
+using Fomm.Properties;
 using SevenZip;
 using Microsoft.Win32;
 using Fomm.Util;
@@ -240,15 +241,15 @@ namespace Fomm
     [STAThread]
     private static void Main(string[] args)
     {
-      if (!Properties.Settings.Default.settingsUpgraded)
+      if (!Settings.Default.settingsUpgraded)
       {
-        Properties.Settings.Default.Upgrade();
-        Properties.Settings.Default.settingsUpgraded = true;
-        Properties.Settings.Default.Save();
+        Settings.Default.Upgrade();
+        Settings.Default.settingsUpgraded = true;
+        Settings.Default.Save();
       }
 
       AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
-      Application.ThreadException += new System.Threading.ThreadExceptionEventHandler(Application_ThreadException);
+      Application.ThreadException += new ThreadExceptionEventHandler(Application_ThreadException);
       if (Array.IndexOf<string>(args, "-mono") != -1)
       {
         monoMode = true;
@@ -264,7 +265,7 @@ namespace Fomm
         return;
       }
 
-      SupportedGameModes sgmSelectedGame = Properties.Settings.Default.rememberedGameMode;
+      SupportedGameModes sgmSelectedGame = Settings.Default.rememberedGameMode;
       bool booChooseGame = true;
       if ((args.Length > 0) && args[0].StartsWith("-"))
       {
@@ -286,7 +287,7 @@ namespace Fomm
       bool booChangeGameMode = false;
       do
       {
-        if (booChangeGameMode || (booChooseGame && !Properties.Settings.Default.rememberGameMode))
+        if (booChangeGameMode || (booChooseGame && !Settings.Default.rememberGameMode))
         {
           GameModeSelector gmsSelector = new GameModeSelector();
           gmsSelector.ShowDialog();
@@ -322,7 +323,7 @@ namespace Fomm
               case ".7z":
               case ".zip":
               case ".fomod":
-                mutex = new System.Threading.Mutex(true, "fommMainMutex", out booNewMutex);
+                mutex = new Mutex(true, "fommMainMutex", out booNewMutex);
                 mutex.Close();
                 if (!booNewMutex)
                 {
@@ -360,7 +361,7 @@ namespace Fomm
           }
         }
 
-        mutex = new System.Threading.Mutex(true, "fommMainMutex", out booNewMutex);
+        mutex = new Mutex(true, "fommMainMutex", out booNewMutex);
         if (!booNewMutex)
         {
           MessageBox.Show(ProgrammeAcronym + " is already running", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -375,18 +376,18 @@ namespace Fomm
           {
             MessageBox.Show(null, strErrorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             booChangeGameMode = false;
-            if (Properties.Settings.Default.rememberGameMode)
+            if (Settings.Default.rememberGameMode)
             {
               booChangeGameMode = true;
-              Properties.Settings.Default.rememberGameMode = false;
-              Properties.Settings.Default.Save();
+              Settings.Default.rememberGameMode = false;
+              Settings.Default.Save();
             }
             continue;
           }
 
           //Check that we're in fallout's directory and that we have write access
           bool cancellaunch = true;
-          if (!Properties.Settings.Default.NoUACCheck || Array.IndexOf<string>(args, "-no-uac-check") == -1)
+          if (!Settings.Default.NoUACCheck || Array.IndexOf<string>(args, "-no-uac-check") == -1)
           {
             try
             {
@@ -420,7 +421,7 @@ namespace Fomm
               MessageBox.Show(
                 "Unable to get write permissions for:" + Environment.NewLine + GameMode.PluginsPath +
                 Environment.NewLine + "Please read" + Environment.NewLine +
-                Path.Combine(Program.ProgrammeInfoDirectory, "Readme - fomm.txt") + Environment.NewLine +
+                Path.Combine(ProgrammeInfoDirectory, "Readme - fomm.txt") + Environment.NewLine +
                 "for the solution.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
           }
@@ -439,7 +440,7 @@ namespace Fomm
             Directory.CreateDirectory(tmpPath);
           }
 
-          string str7zPath = Path.Combine(Program.ProgrammeInfoDirectory, "7z-32bit.dll");
+          string str7zPath = Path.Combine(ProgrammeInfoDirectory, "7z-32bit.dll");
           SevenZipCompressor.SetLibraryPath(str7zPath);
 
           if (!GameMode.Init())
@@ -563,7 +564,7 @@ namespace Fomm
       while (booChangeGameMode);
     }
 
-    private static void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)
+    private static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
     {
       HandleException(e.Exception, "Something bad seems to have happened.", "Error");
       Application.ExitThread();

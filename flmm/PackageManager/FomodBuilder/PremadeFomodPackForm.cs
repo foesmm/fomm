@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
+using Fomm.Properties;
 
 namespace Fomm.PackageManager.FomodBuilder
 {
@@ -77,9 +79,9 @@ namespace Fomm.PackageManager.FomodBuilder
     {
       InitializeComponent();
 
-      Icon = Fomm.Properties.Resources.fomm02;
-      ofdPFP.InitialDirectory = Properties.Settings.Default.LastPFPPath;
-      fbdSources.SelectedPath = Properties.Settings.Default.LastPFPSourcesPath;
+      Icon = Resources.fomm02;
+      ofdPFP.InitialDirectory = Settings.Default.LastPFPPath;
+      fbdSources.SelectedPath = Settings.Default.LastPFPSourcesPath;
       m_omdMode = p_omdMode;
     }
 
@@ -229,7 +231,7 @@ namespace Fomm.PackageManager.FomodBuilder
     {
       Form frmHTMLPreview = new Form();
       frmHTMLPreview.Size = new Size(500, 500);
-      frmHTMLPreview.Icon = Fomm.Properties.Resources.fomm02;
+      frmHTMLPreview.Icon = Resources.fomm02;
       frmHTMLPreview.ShowInTaskbar = false;
       frmHTMLPreview.StartPosition = FormStartPosition.CenterParent;
       WebBrowser wbrBrowser = new WebBrowser();
@@ -242,19 +244,19 @@ namespace Fomm.PackageManager.FomodBuilder
       wbrBrowser.Navigating += ((s, e) =>
       {
         e.Cancel = true;
-        System.Diagnostics.Process.Start(e.Url.ToString());
+        Process.Start(e.Url.ToString());
       });
       frmHTMLPreview.ShowDialog(this);
     }
 
     private void butOK_Click(object sender, EventArgs e)
     {
-      Properties.Settings.Default.LastPFPPath = Path.GetDirectoryName(tbxPFP.Text);
+      Settings.Default.LastPFPPath = Path.GetDirectoryName(tbxPFP.Text);
       if (!String.IsNullOrEmpty(tbxSources.Text))
       {
-        Properties.Settings.Default.LastPFPSourcesPath = Path.GetDirectoryName(tbxSources.Text);
+        Settings.Default.LastPFPSourcesPath = Path.GetDirectoryName(tbxSources.Text);
       }
-      Properties.Settings.Default.Save();
+      Settings.Default.Save();
       if (ValidateFiles())
       {
         DialogResult = DialogResult.OK;

@@ -1,5 +1,6 @@
 using System;
 using System.Windows.Forms;
+using Fomm.Properties;
 
 namespace Fomm.PackageManager
 {
@@ -16,8 +17,8 @@ namespace Fomm.PackageManager
     private TextEditor(string text, TextEditorType type)
     {
       InitializeComponent();
-      this.Icon = Fomm.Properties.Resources.fomm02;
-      Properties.Settings.Default.windowPositions.GetWindowPosition("TextEditor", this);
+      Icon = Resources.fomm02;
+      Settings.Default.windowPositions.GetWindowPosition("TextEditor", this);
       switch (type)
       {
         case TextEditorType.Text:
@@ -83,8 +84,8 @@ namespace Fomm.PackageManager
             return;
         }
       }
-      Properties.Settings.Default.windowPositions.SetWindowPosition("TextEditor", this);
-      Properties.Settings.Default.Save();
+      Settings.Default.windowPositions.SetWindowPosition("TextEditor", this);
+      Settings.Default.Save();
     }
   }
 }

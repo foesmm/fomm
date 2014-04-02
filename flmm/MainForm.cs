@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
 using System.Windows.Forms;
 using System.IO;
 using System.Runtime.Remoting;
 using System.Text;
 using Fomm.Games;
 using Fomm.Commands;
+using Fomm.Properties;
 
 namespace Fomm
 {
@@ -87,8 +90,8 @@ namespace Fomm
     public MainForm(string fomod)
     {
       InitializeComponent();
-      this.Icon = Fomm.Properties.Resources.fomm02;
-      Properties.Settings.Default.windowPositions.GetWindowPosition("MainForm", this);
+      Icon = Resources.fomm02;
+      Settings.Default.windowPositions.GetWindowPosition("MainForm", this);
 
       Text += " (" + Program.MVersion.ToString() + ") - " + Program.GameMode.GameName;
 
@@ -105,7 +108,7 @@ namespace Fomm
       bLaunch.Text = cmdGameLaunch.Name;
       bLaunch.Tag = cmdGameLaunch;
 
-      if (!Properties.Settings.Default.DisableIPC)
+      if (!Settings.Default.DisableIPC)
       {
         Timer newFommTimer = new Timer();
         try
@@ -119,8 +122,8 @@ namespace Fomm
         {
           newFommTimer.Stop();
           newFommTimer.Enabled = false;
-          Properties.Settings.Default.DisableIPC = true;
-          Properties.Settings.Default.Save();
+          Settings.Default.DisableIPC = true;
+          Settings.Default.Save();
         }
       }
 
@@ -201,7 +204,7 @@ namespace Fomm
 
     private void MainForm_Load(object sender, EventArgs e)
     {
-      Int32 tmp = Properties.Settings.Default.MainFormPanelSplit;
+      Int32 tmp = Settings.Default.MainFormPanelSplit;
       if (tmp > 0)
       {
         splitContainer1.SplitterDistance = Math.Max(splitContainer1.Panel1MinSize + 1,
@@ -209,7 +212,7 @@ namespace Fomm
                                                       splitContainer1.Height - (splitContainer1.Panel2MinSize + 1), tmp));
       }
 
-      Int32[] intColumnWidths = Properties.Settings.Default.MainFormColumnWidths;
+      Int32[] intColumnWidths = Settings.Default.MainFormColumnWidths;
       if (intColumnWidths != null)
       {
         for (Int32 i = 0; i < intColumnWidths.Length; i++)
@@ -259,16 +262,16 @@ namespace Fomm
         return;
       }
 
-      Properties.Settings.Default.windowPositions.SetWindowPosition("MainForm", this);
-      Properties.Settings.Default.MainFormPanelSplit = splitContainer1.SplitterDistance;
+      Settings.Default.windowPositions.SetWindowPosition("MainForm", this);
+      Settings.Default.MainFormPanelSplit = splitContainer1.SplitterDistance;
 
       Int32[] intColumnWidths = new Int32[lvEspList.Columns.Count];
       foreach (ColumnHeader chdHeader in lvEspList.Columns)
       {
         intColumnWidths[chdHeader.Index] = chdHeader.Width;
       }
-      Properties.Settings.Default.MainFormColumnWidths = intColumnWidths;
-      Properties.Settings.Default.Save();
+      Settings.Default.MainFormColumnWidths = intColumnWidths;
+      Settings.Default.Save();
     }
 
     public void LoadPluginInfo()
@@ -307,7 +310,7 @@ namespace Fomm
       }
       else
       {
-        PackageManagerForm = new Fomm.PackageManager.PackageManager(this);
+        PackageManagerForm = new PackageManager.PackageManager(this);
         PackageManagerForm.FormClosed += delegate(object sender2, FormClosedEventArgs e2)
         {
           RefreshPluginList();
@@ -335,7 +338,7 @@ namespace Fomm
       }
       else
       {
-        m_fmgFileManagerForm = new Fomm.FileManager.FileManager();
+        m_fmgFileManagerForm = new FileManager.FileManager();
         m_fmgFileManagerForm.FormClosed += delegate(object sender2, FormClosedEventArgs e2)
         {
           m_fmgFileManagerForm = null;
@@ -469,7 +472,7 @@ namespace Fomm
 
     private void bHelp_Click(object sender, EventArgs e)
     {
-      System.Diagnostics.Process.Start(Path.Combine(Program.ProgrammeInfoDirectory, "fomm.chm"));
+      Process.Start(Path.Combine(Program.ProgrammeInfoDirectory, "fomm.chm"));
     }
 
     #endregion
@@ -573,7 +576,7 @@ namespace Fomm
 
     private void copyLoadOrderToClipboardToolStripMenuItem_Click(object sender, EventArgs e)
     {
-      System.Text.StringBuilder sb = new System.Text.StringBuilder();
+      StringBuilder sb = new StringBuilder();
       ListViewItem[] lvis = new ListViewItem[lvEspList.CheckedItems.Count];
       for (int i = 0; i < lvEspList.CheckedItems.Count; i++)
       {
@@ -583,8 +586,8 @@ namespace Fomm
       Array.Sort<ListViewItem>(lvis, delegate(ListViewItem a, ListViewItem b)
       {
         return
-          int.Parse(a.SubItems[1].Text, System.Globalization.NumberStyles.AllowHexSpecifier)
-             .CompareTo(int.Parse(b.SubItems[1].Text, System.Globalization.NumberStyles.AllowHexSpecifier));
+          int.Parse(a.SubItems[1].Text, NumberStyles.AllowHexSpecifier)
+             .CompareTo(int.Parse(b.SubItems[1].Text, NumberStyles.AllowHexSpecifier));
       });
 
       for (int i = 0; i < lvis.Length; i++)
@@ -846,7 +849,7 @@ namespace Fomm
     /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
     private void rtbPluginInfo_LinkClicked(object sender, LinkClickedEventArgs e)
     {
-      System.Diagnostics.Process.Start(e.LinkText);
+      Process.Start(e.LinkText);
     }
 
     /// <summary>

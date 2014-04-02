@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 using System.IO;
 using System.Collections.Generic;
@@ -263,7 +264,7 @@ namespace Fomm.PackageManager.FomodBuilder
         {
           string strIconPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName()) + strExtension;
           File.CreateText(strIconPath).Close();
-          imlIcons.Images.Add(strExtension, System.Drawing.Icon.ExtractAssociatedIcon(strIconPath));
+          imlIcons.Images.Add(strExtension, Icon.ExtractAssociatedIcon(strIconPath));
           File.Delete(strIconPath);
         }
         tndFile.ImageKey = strExtension;
@@ -322,7 +323,7 @@ namespace Fomm.PackageManager.FomodBuilder
     /// <param name="e">A <see cref="ItemDragEventArgs"/> that describes the event arguments.</param>
     private void tvwSource_QueryContinueDrag(object sender, QueryContinueDragEventArgs e)
     {
-      if ((e.Action != DragAction.Drop) && ((Control.MouseButtons & MouseButtons.Left) != MouseButtons.Left))
+      if ((e.Action != DragAction.Drop) && ((MouseButtons & MouseButtons.Left) != MouseButtons.Left))
       {
         e.Action = DragAction.Cancel;
       }

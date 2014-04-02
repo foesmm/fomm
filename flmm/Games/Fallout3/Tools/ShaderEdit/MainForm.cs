@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Windows.Forms;
 using System.Collections.Generic;
+using Fomm.Properties;
 using Encoding = System.Text.Encoding;
 
 namespace Fomm.Games.Fallout3.Tools.ShaderEdit
@@ -26,7 +27,7 @@ namespace Fomm.Games.Fallout3.Tools.ShaderEdit
     public MainForm()
     {
       InitializeComponent();
-      this.Icon = Fomm.Properties.Resources.fomm02;
+      Icon = Resources.fomm02;
     }
 
     public MainForm(string path) : this()
@@ -43,7 +44,7 @@ namespace Fomm.Games.Fallout3.Tools.ShaderEdit
     {
       FileName = Path.GetFileName(path);
       Text = "SDP Editor (" + FileName + ")";
-      BinaryReader br = new BinaryReader(File.OpenRead(path), System.Text.Encoding.Default);
+      BinaryReader br = new BinaryReader(File.OpenRead(path), Encoding.Default);
       unknown = br.ReadUInt32();
       int num = br.ReadInt32();
       br.ReadInt32();
@@ -133,7 +134,7 @@ namespace Fomm.Games.Fallout3.Tools.ShaderEdit
       {
         return false;
       }
-      BinaryWriter bw = new BinaryWriter(File.Create(saveFileDialog1.FileName), System.Text.Encoding.Default);
+      BinaryWriter bw = new BinaryWriter(File.Create(saveFileDialog1.FileName), Encoding.Default);
       bw.Write(unknown);
       bw.Write(shaders.Count);
       int tsize = 0;

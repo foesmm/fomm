@@ -1,5 +1,6 @@
 using System;
 using System.Windows.Forms;
+using Fomm.Properties;
 
 namespace Fomm.PackageManager
 {
@@ -20,8 +21,8 @@ namespace Fomm.PackageManager
     private Overwriteform(string msg, bool allowFolder, bool allowMod)
     {
       InitializeComponent();
-      this.Icon = Fomm.Properties.Resources.fomm02;
-      Properties.Settings.Default.windowPositions.GetWindowPosition("OverwriteForm", this);
+      Icon = Resources.fomm02;
+      Settings.Default.windowPositions.GetWindowPosition("OverwriteForm", this);
       label1.Text = msg;
       if (!allowFolder)
       {
@@ -94,8 +95,8 @@ namespace Fomm.PackageManager
 
     private void Overwriteform_FormClosing(object sender, FormClosingEventArgs e)
     {
-      Properties.Settings.Default.windowPositions.SetWindowPosition("OverwriteForm", this);
-      Properties.Settings.Default.Save();
+      Settings.Default.windowPositions.SetWindowPosition("OverwriteForm", this);
+      Settings.Default.Save();
     }
 
     private void panel1_Layout(object sender, LayoutEventArgs e)

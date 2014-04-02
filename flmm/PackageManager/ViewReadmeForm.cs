@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows.Forms;
 using System.ComponentModel;
 using System.Drawing;
+using Fomm.Properties;
 
 namespace Fomm.PackageManager
 {
@@ -19,8 +21,8 @@ namespace Fomm.PackageManager
     public ViewReadmeForm(Readme p_rmeReadme)
     {
       InitializeComponent();
-      this.Icon = Fomm.Properties.Resources.fomm02;
-      Properties.Settings.Default.windowPositions.GetWindowPosition("ReadmeViewer", this);
+      Icon = Resources.fomm02;
+      Settings.Default.windowPositions.GetWindowPosition("ReadmeViewer", this);
 
       switch (p_rmeReadme.Format)
       {
@@ -72,7 +74,7 @@ namespace Fomm.PackageManager
     /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
     private void rtbReadme_LinkClicked(object sender, LinkClickedEventArgs e)
     {
-      System.Diagnostics.Process.Start(e.LinkText);
+      Process.Start(e.LinkText);
     }
 
     #endregion
@@ -86,8 +88,8 @@ namespace Fomm.PackageManager
     /// <param name="e">A <see cref="CancelEventArgs"/> describing the event arguments.</param>
     protected override void OnClosing(CancelEventArgs e)
     {
-      Properties.Settings.Default.windowPositions.SetWindowPosition("ReadmeViewer", this);
-      Properties.Settings.Default.Save();
+      Settings.Default.windowPositions.SetWindowPosition("ReadmeViewer", this);
+      Settings.Default.Save();
       base.OnClosing(e);
     }
   }

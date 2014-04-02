@@ -1,5 +1,6 @@
 using System;
 using System.Windows.Forms;
+using Fomm.Properties;
 
 namespace Fomm.Games.Fallout3.Tools.ShaderEdit
 {
@@ -8,7 +9,7 @@ namespace Fomm.Games.Fallout3.Tools.ShaderEdit
     public HLSLImporter()
     {
       InitializeComponent();
-      this.Icon = Fomm.Properties.Resources.fomm02;
+      Icon = Resources.fomm02;
       DialogResult = DialogResult.Cancel;
     }
 

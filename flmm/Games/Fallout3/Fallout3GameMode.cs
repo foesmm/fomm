@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Drawing;
 using System.Text;
@@ -6,6 +7,13 @@ using System.Windows.Forms;
 using System.Threading;
 using System.Collections.Generic;
 using Fomm.Controls;
+using Fomm.Games.Fallout3.Tools;
+using Fomm.Games.Fallout3.Tools.AutoSorter;
+using Fomm.Games.Fallout3.Tools.BSA;
+using Fomm.Games.Fallout3.Tools.CriticalRecords;
+using Fomm.Games.Fallout3.Tools.GraphicsSettings;
+using Fomm.Games.Fallout3.Tools.InstallTweaker;
+using Fomm.Games.Fallout3.Tools.TESsnip;
 using Fomm.PackageManager;
 using Fomm.PackageManager.XmlConfiguredInstall;
 using Fomm.PackageManager.XmlConfiguredInstall.Parsers;
@@ -15,6 +23,7 @@ using Fomm.Games.Fallout3.Script.XmlConfiguredInstall;
 using Fomm.Games.Fallout3.Script.XmlConfiguredInstall.Parsers;
 using Fomm.Games.Fallout3.PluginFormatProviders;
 using Fomm.Commands;
+using Microsoft.Win32;
 
 namespace Fomm.Games.Fallout3
 {
@@ -194,7 +203,7 @@ namespace Fomm.Games.Fallout3
       get
       {
         string strFalloutEsm = Path.Combine(PluginsPath, "fallout3.esm");
-        return System.Drawing.Icon.ExtractAssociatedIcon(strFalloutEsm);
+        return Icon.ExtractAssociatedIcon(strFalloutEsm);
       }
     }
 
@@ -462,12 +471,12 @@ namespace Fomm.Games.Fallout3
         if (File.Exists("Fallout3.exe"))
         {
           return
-            new Version(System.Diagnostics.FileVersionInfo.GetVersionInfo("Fallout3.exe").FileVersion.Replace(", ", "."));
+            new Version(FileVersionInfo.GetVersionInfo("Fallout3.exe").FileVersion.Replace(", ", "."));
         }
         if (File.Exists("Fallout3ng.exe"))
         {
           return
-            new Version(System.Diagnostics.FileVersionInfo.GetVersionInfo("Fallout3ng.exe")
+            new Version(FileVersionInfo.GetVersionInfo("Fallout3ng.exe")
                               .FileVersion.Replace(", ", "."));
         }
         return null;
@@ -545,7 +554,7 @@ namespace Fomm.Games.Fallout3
         m_lstTools.Add(new Command<MainForm>("FO3Edit", "Launches FO3Edit, if it is installed.", LaunchFO3Edit));
       }
       m_lstTools.Add(new CheckedCommand<MainForm>("Archive Invalidation", "Toggles Archive Invalidation.",
-                                                  Fallout3.Tools.ArchiveInvalidation.IsActive(),
+                                                  ArchiveInvalidation.IsActive(),
                                                   ToggleArchiveInvalidation));
 
       ScanForReadonlyPlugins();
@@ -678,7 +687,7 @@ namespace Fomm.Games.Fallout3
       int i = 0;
 
       // Do checks
-      keys = new List<string>(this.fullModList.Keys);
+      keys = new List<string>(fullModList.Keys);
       for (i = 0; i < keys.Count; i++)
       {
         if (!retVal)
@@ -726,11 +735,11 @@ namespace Fomm.Games.Fallout3
         }
         try
         {
-          System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
+          ProcessStartInfo psi = new ProcessStartInfo();
           psi.Arguments = args;
           psi.FileName = command;
           psi.WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath(command));
-          if (System.Diagnostics.Process.Start(psi) == null)
+          if (Process.Start(psi) == null)
           {
             MessageBox.Show("Failed to launch '" + command + "'");
             return;
@@ -766,10 +775,10 @@ namespace Fomm.Games.Fallout3
         }
         try
         {
-          System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
+          ProcessStartInfo psi = new ProcessStartInfo();
           psi.FileName = "fose_loader.exe";
           psi.WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath("fose_loader.exe"));
-          if (System.Diagnostics.Process.Start(psi) == null)
+          if (Process.Start(psi) == null)
           {
             MessageBox.Show("Failed to launch 'fose_loader.exe'");
             return;
@@ -809,10 +818,10 @@ namespace Fomm.Games.Fallout3
         }
         try
         {
-          System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
+          ProcessStartInfo psi = new ProcessStartInfo();
           psi.FileName = command;
           psi.WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath(command));
-          if (System.Diagnostics.Process.Start(psi) == null)
+          if (Process.Start(psi) == null)
           {
             MessageBox.Show("Failed to launch '" + command + "'");
             return;
@@ -857,11 +866,11 @@ namespace Fomm.Games.Fallout3
         }
         try
         {
-          System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
+          ProcessStartInfo psi = new ProcessStartInfo();
           psi.Arguments = args;
           psi.FileName = command;
           psi.WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath(command));
-          if (System.Diagnostics.Process.Start(psi) == null)
+          if (Process.Start(psi) == null)
           {
             MessageBox.Show("Failed to launch '" + command + "'");
             return;
@@ -901,7 +910,7 @@ namespace Fomm.Games.Fallout3
       {
         plugins[i] = Path.GetFileName(plugins[i]);
       }
-      Tools.AutoSorter.LoadOrderSorter losSorter = new Tools.AutoSorter.LoadOrderSorter();
+      LoadOrderSorter losSorter = new LoadOrderSorter();
       if (!losSorter.HasMasterList)
       {
         if (DialogResult.Yes ==
@@ -942,8 +951,8 @@ namespace Fomm.Games.Fallout3
 
       try
       {
-        Tools.AutoSorter.Fallout3BOSSUpdater bupUpdater = new Tools.AutoSorter.Fallout3BOSSUpdater();
-        bupUpdater.UpdateMasterlist(Fomm.Games.Fallout3.Tools.AutoSorter.LoadOrderSorter.LoadOrderTemplatePath);
+        Fallout3BOSSUpdater bupUpdater = new Fallout3BOSSUpdater();
+        bupUpdater.UpdateMasterlist(LoadOrderSorter.LoadOrderTemplatePath);
         ret = true;
       }
       catch (Exception e)
@@ -963,7 +972,7 @@ namespace Fomm.Games.Fallout3
     /// main mod management form.</param>
     public void LaunchLoadOrderReport(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
-      Tools.AutoSorter.LoadOrderSorter losSorter = new Tools.AutoSorter.LoadOrderSorter();
+      LoadOrderSorter losSorter = new LoadOrderSorter();
       if (!losSorter.HasMasterList)
       {
         if (DialogResult.Yes ==
@@ -994,7 +1003,7 @@ namespace Fomm.Games.Fallout3
       bool[] active = new bool[plugins.Length];
       bool[] corrupt = new bool[plugins.Length];
       string[][] masters = new string[plugins.Length][];
-      Tools.TESsnip.Plugin p;
+      Plugin p;
       List<string> mlist = new List<string>();
       for (int i = 0; i < plugins.Length; i++)
       {
@@ -1002,7 +1011,7 @@ namespace Fomm.Games.Fallout3
         plugins[i] = Path.GetFileName(plugins[i]);
         try
         {
-          p = new Tools.TESsnip.Plugin(Path.Combine(PluginsPath, plugins[i]), true);
+          p = new Plugin(Path.Combine(PluginsPath, plugins[i]), true);
         }
         catch
         {
@@ -1011,7 +1020,7 @@ namespace Fomm.Games.Fallout3
         }
         if (p != null)
         {
-          foreach (Tools.TESsnip.SubRecord sr in ((Tools.TESsnip.Record) p.Records[0]).SubRecords)
+          foreach (SubRecord sr in ((Record) p.Records[0]).SubRecords)
           {
             if (sr.Name != "MAST")
             {
@@ -1028,7 +1037,7 @@ namespace Fomm.Games.Fallout3
       }
 
       string s = losSorter.GenerateReport(plugins, active, corrupt, masters);
-      PackageManager.TextEditor.ShowEditor(s, Fomm.PackageManager.TextEditorType.Text, false);
+      TextEditor.ShowEditor(s, TextEditorType.Text, false);
     }
 
     #endregion
@@ -1052,7 +1061,7 @@ namespace Fomm.Games.Fallout3
       {
         lstPlugins.Add(Path.Combine(Program.GameMode.PluginsPath, strPluginName));
       }
-      Tools.TESsnip.TESsnip tes = new Tools.TESsnip.TESsnip(lstPlugins.ToArray());
+      TESsnip tes = new TESsnip(lstPlugins.ToArray());
       tes.FormClosed += delegate(object sender2, FormClosedEventArgs e2)
       {
         p_eeaArguments.Argument.RefreshPluginList();
@@ -1078,8 +1087,8 @@ namespace Fomm.Games.Fallout3
       {
         lstPlugins.Add(Path.Combine(Program.GameMode.PluginsPath, strPluginName));
       }
-      Tools.CriticalRecords.CriticalRecordsForm crfEditor =
-        new Tools.CriticalRecords.CriticalRecordsForm(lstPlugins.ToArray());
+      CriticalRecordsForm crfEditor =
+        new CriticalRecordsForm(lstPlugins.ToArray());
       crfEditor.Show();
     }
 
@@ -1095,7 +1104,7 @@ namespace Fomm.Games.Fallout3
     /// main mod management form.</param>
     public void LaunchGraphicsSettingsTool(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
-      Tools.GraphicsSettings.GraphicsSettings gsfGraphicsSettingsForm = new Tools.GraphicsSettings.GraphicsSettings();
+      GraphicsSettings gsfGraphicsSettingsForm = new GraphicsSettings();
       gsfGraphicsSettingsForm.ShowDialog();
     }
 
@@ -1119,10 +1128,10 @@ namespace Fomm.Games.Fallout3
       }
       try
       {
-        System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
+        ProcessStartInfo psi = new ProcessStartInfo();
         psi.FileName = "FO3Edit.exe";
         psi.WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath(psi.FileName));
-        if (System.Diagnostics.Process.Start(psi) == null)
+        if (Process.Start(psi) == null)
         {
           MessageBox.Show("Failed to launch FO3Edit.");
           return;
@@ -1159,7 +1168,7 @@ namespace Fomm.Games.Fallout3
           lstInactive.Add(Path.GetFileName(strPlugin));
         }
       }
-      (new Tools.SaveForm(lstActive.ToArray(), lstInactive.ToArray())).Show();
+      (new SaveForm(lstActive.ToArray(), lstInactive.ToArray())).Show();
     }
 
     /// <summary>
@@ -1180,7 +1189,7 @@ namespace Fomm.Games.Fallout3
       {
         return;
       }
-      Tools.PluginConflictDetector pcdDetector = new Tools.PluginConflictDetector(CriticalRecordPluginFormatProvider);
+      PluginConflictDetector pcdDetector = new PluginConflictDetector(CriticalRecordPluginFormatProvider);
       pcdDetector.CheckForConflicts();
       p_eeaArguments.Argument.LoadPluginInfo();
     }
@@ -1193,7 +1202,7 @@ namespace Fomm.Games.Fallout3
     /// main mod management form.</param>
     public void LaunchBSABrowserTool(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
-      new Tools.BSA.BSABrowser().Show();
+      new BSABrowser().Show();
     }
 
     /// <summary>
@@ -1204,7 +1213,7 @@ namespace Fomm.Games.Fallout3
     /// main mod management form.</param>
     public void LaunchBSACreatorTool(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
-      new Tools.BSA.BSACreator().Show();
+      new BSACreator().Show();
     }
 
     /// <summary>
@@ -1221,7 +1230,7 @@ namespace Fomm.Games.Fallout3
                         "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         return;
       }
-      (new Tools.InstallTweaker.InstallationTweaker()).ShowDialog();
+      (new InstallationTweaker()).ShowDialog();
     }
 
     /// <summary>
@@ -1232,7 +1241,7 @@ namespace Fomm.Games.Fallout3
     /// main mod management form.</param>
     public void LaunchTESsnipTool(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
-      Tools.TESsnip.TESsnip tes = new Tools.TESsnip.TESsnip();
+      TESsnip tes = new TESsnip();
       tes.FormClosed += delegate(object sender2, FormClosedEventArgs e2)
       {
         p_eeaArguments.Argument.RefreshPluginList();
@@ -1260,7 +1269,7 @@ namespace Fomm.Games.Fallout3
     /// main mod management form.</param>
     public void LaunchCREditorTool(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
-      Tools.CriticalRecords.CriticalRecordsForm crfEditor = new Tools.CriticalRecords.CriticalRecordsForm();
+      CriticalRecordsForm crfEditor = new CriticalRecordsForm();
       crfEditor.Show();
       GC.Collect();
     }
@@ -1273,9 +1282,9 @@ namespace Fomm.Games.Fallout3
     /// main mod management form.</param>
     public virtual void ToggleArchiveInvalidation(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
-      if (Fomm.Games.Fallout3.Tools.ArchiveInvalidation.Update())
+      if (ArchiveInvalidation.Update())
       {
-        ((CheckedCommand<MainForm>) p_objCommand).IsChecked = Fomm.Games.Fallout3.Tools.ArchiveInvalidation.IsActive();
+        ((CheckedCommand<MainForm>) p_objCommand).IsChecked = ArchiveInvalidation.IsActive();
       }
     }
 
@@ -1464,14 +1473,14 @@ class Script : Fallout3BaseScript {
         {
           case ".dat":
           case ".bsa":
-            Application.Run(new Tools.BSA.BSABrowser(p_strArgs[0]));
+            Application.Run(new BSABrowser(p_strArgs[0]));
             return true;
           case ".sdp":
             Application.Run(new Tools.ShaderEdit.MainForm(p_strArgs[0]));
             return true;
           case ".esp":
           case ".esm":
-            Application.Run(new Tools.TESsnip.TESsnip(new string[]
+            Application.Run(new TESsnip(new string[]
             {
               p_strArgs[0]
             }));
@@ -1495,13 +1504,13 @@ class Script : Fallout3BaseScript {
             mutex.Close();
             return true;
           case "-bsa-unpacker":
-            Application.Run(new Tools.BSA.BSABrowser());
+            Application.Run(new BSABrowser());
             return true;
           case "-bsa-creator":
-            Application.Run(new Tools.BSA.BSACreator());
+            Application.Run(new BSACreator());
             return true;
           case "-tessnip":
-            Application.Run(new Tools.TESsnip.TESsnip());
+            Application.Run(new TESsnip());
             return true;
           case "-sdp-editor":
             Application.Run(new Tools.ShaderEdit.MainForm());
@@ -1521,7 +1530,7 @@ class Script : Fallout3BaseScript {
     {
       if (Array.IndexOf<string>(p_strArgs, "-install-tweaker") != -1)
       {
-        Application.Run(new Tools.InstallTweaker.InstallationTweaker());
+        Application.Run(new InstallationTweaker());
         return true;
       }
       return false;
@@ -1577,7 +1586,7 @@ class Script : Fallout3BaseScript {
         try
         {
           strWorkingDirectory =
-            Microsoft.Win32.Registry.GetValue(@"HKEY_LOCAL_MACHINE\Software\Bethesda Softworks\Fallout3",
+            Registry.GetValue(@"HKEY_LOCAL_MACHINE\Software\Bethesda Softworks\Fallout3",
                                               "Installed Path", null) as string;
         }
         catch

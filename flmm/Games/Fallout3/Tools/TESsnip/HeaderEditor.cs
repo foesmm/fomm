@@ -1,5 +1,7 @@
 using System;
+using System.Globalization;
 using System.Windows.Forms;
+using Fomm.Properties;
 
 namespace Fomm.Games.Fallout3.Tools.TESsnip
 {
@@ -19,7 +21,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
     private HeaderEditor(Record r)
     {
       InitializeComponent();
-      this.Icon = Fomm.Properties.Resources.fomm02;
+      Icon = Resources.fomm02;
       R = r;
       tbName.Text = r.Name;
       Flags1 = r.Flags1;
@@ -97,7 +99,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         tb.Text = tb.Text.PadLeft(8, '0');
       }
       uint i;
-      if (!uint.TryParse(tb.Text, System.Globalization.NumberStyles.AllowHexSpecifier, null, out i))
+      if (!uint.TryParse(tb.Text, NumberStyles.AllowHexSpecifier, null, out i))
       {
         MessageBox.Show("Invalid hex value", "Error");
         if (tb == tbFormID)

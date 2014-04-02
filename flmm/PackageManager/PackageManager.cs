@@ -1,8 +1,12 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
 using System.Windows.Forms;
 using System.IO;
 using Fomm.PackageManager.Upgrade;
+using Fomm.Properties;
 using SevenZip;
 using Fomm.PackageManager.FomodBuilder;
 using Fomm.Util;
@@ -30,12 +34,12 @@ namespace Fomm.PackageManager
 
       CheckFOModCache();
 
-      this.Icon = Fomm.Properties.Resources.fomm02;
+      Icon = Resources.fomm02;
       cmbSortOrder.ContextMenu = new ContextMenu();
       lvModList.ListViewItemSorter = new FomodSorter();
-      Properties.Settings.Default.windowPositions.GetWindowPosition("PackageManager", this);
-      sbtAddFomod.SelectedItemIndex = Properties.Settings.Default.SelectedAddFomodAction;
-      m_strLastFromFolderPath = Properties.Settings.Default.LastBuildFOMODFromFolderPath;
+      Settings.Default.windowPositions.GetWindowPosition("PackageManager", this);
+      sbtAddFomod.SelectedItemIndex = Settings.Default.SelectedAddFomodAction;
+      m_strLastFromFolderPath = Settings.Default.LastBuildFOMODFromFolderPath;
 
       foreach (string modpath in Program.GetFiles(Program.GameMode.ModDirectory, "*.fomod.zip"))
       {
@@ -45,15 +49,15 @@ namespace Fomm.PackageManager
         }
       }
 
-      string[] groups = Properties.Settings.Default.pluginGroups;
+      string[] groups = Settings.Default.pluginGroups;
       this.groups = new List<string>(groups);
-      this.lgroups = new List<string>(groups.Length);
+      lgroups = new List<string>(groups.Length);
       for (int i = 0; i < groups.Length; i++)
       {
         lgroups.Add(groups[i].ToLowerInvariant());
       }
 
-      cbGroups.Checked = Properties.Settings.Default.PackageManagerShowsGroups;
+      cbGroups.Checked = Settings.Default.PackageManagerShowsGroups;
 
       WebsiteLogin();
 
@@ -167,7 +171,7 @@ namespace Fomm.PackageManager
         lvModList.Columns.Add("Version");
         lvModList.Columns.Add("Web Version");
         lvModList.Columns.Add("Author");
-        Int32[] intColumnWidths = Properties.Settings.Default.PackageManagerColumnWidths;
+        Int32[] intColumnWidths = Settings.Default.PackageManagerColumnWidths;
         for (Int32 i = 0; i < intColumnWidths.Length; i++)
         {
           lvModList.Columns[i].Width = intColumnWidths[i];
@@ -231,24 +235,24 @@ namespace Fomm.PackageManager
     /// </remarks>
     private void WebsiteLogin()
     {
-      if (!Properties.Settings.Default.checkForNewModVersionsInitialized)
+      if (!Settings.Default.checkForNewModVersionsInitialized)
       {
-        Properties.Settings.Default.checkForNewModVersions = false;
-        Properties.Settings.Default.checkForNewModVersionsInitialized = true;
-        Properties.Settings.Default.Save();
+        Settings.Default.checkForNewModVersions = false;
+        Settings.Default.checkForNewModVersionsInitialized = true;
+        Settings.Default.Save();
       }
 
-      if (!Properties.Settings.Default.addMissingInfoToModsInitialized)
+      if (!Settings.Default.addMissingInfoToModsInitialized)
       {
-        Properties.Settings.Default.addMissingInfoToMods = false;
-        Properties.Settings.Default.addMissingInfoToModsInitialized = true;
-        Properties.Settings.Default.Save();
+        Settings.Default.addMissingInfoToMods = false;
+        Settings.Default.addMissingInfoToModsInitialized = true;
+        Settings.Default.Save();
       }
     }
 
     private void PackageManager_Load(object sender, EventArgs e)
     {
-      Int32 tmp = Properties.Settings.Default.PackageManagerPanelSplit;
+      Int32 tmp = Settings.Default.PackageManagerPanelSplit;
       if (tmp > 0)
       {
         splitContainer1.SplitterDistance = Math.Max(splitContainer1.Panel1MinSize + 1,
@@ -337,16 +341,16 @@ namespace Fomm.PackageManager
 
     private void PackageManager_FormClosing(object sender, FormClosingEventArgs e)
     {
-      Properties.Settings.Default.windowPositions.SetWindowPosition("PackageManager", this);
-      Properties.Settings.Default.SelectedAddFomodAction = sbtAddFomod.SelectedItemIndex;
-      Properties.Settings.Default.PackageManagerPanelSplit = splitContainer1.SplitterDistance;
+      Settings.Default.windowPositions.SetWindowPosition("PackageManager", this);
+      Settings.Default.SelectedAddFomodAction = sbtAddFomod.SelectedItemIndex;
+      Settings.Default.PackageManagerPanelSplit = splitContainer1.SplitterDistance;
       Int32[] intColumnWidths = new Int32[lvModList.Columns.Count];
       for (Int32 i = 0; i < lvModList.Columns.Count; i++)
       {
         intColumnWidths[i] = lvModList.Columns[i].Width;
       }
-      Properties.Settings.Default.PackageManagerColumnWidths = intColumnWidths;
-      Properties.Settings.Default.Save();
+      Settings.Default.PackageManagerColumnWidths = intColumnWidths;
+      Settings.Default.Save();
 
       foreach (ListViewItem lvi in lvModList.Items)
       {
@@ -518,7 +522,7 @@ namespace Fomm.PackageManager
       }
     }
 
-    private void fomodContextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+    private void fomodContextMenu_Opening(object sender, CancelEventArgs e)
     {
       if (lvModList.SelectedItems.Count != 1)
       {
@@ -553,7 +557,7 @@ namespace Fomm.PackageManager
       fomod mod = (fomod) lvModList.SelectedItems[0].Tag;
       try
       {
-        System.Diagnostics.Process.Start(mod.Website);
+        Process.Start(mod.Website);
       }
       catch (Win32Exception ex)
       {
@@ -569,14 +573,14 @@ namespace Fomm.PackageManager
         return;
       }
       fomod mod = (fomod) lvModList.SelectedItems[0].Tag;
-      System.Diagnostics.Process.Start("mailto://" + mod.Email, "");
+      Process.Start("mailto://" + mod.Email, "");
     }
 
     private void cbGroups_CheckedChanged(object sender, EventArgs e)
     {
       RebuildListView();
-      Properties.Settings.Default.PackageManagerShowsGroups = cbGroups.Checked;
-      Properties.Settings.Default.Save();
+      Settings.Default.PackageManagerShowsGroups = cbGroups.Checked;
+      Settings.Default.Save();
       bActivateGroup.Enabled = cbGroups.Checked;
       bDeactivateGroup.Enabled = cbGroups.Checked;
       cmbSortOrder.Enabled = !cbGroups.Checked;
@@ -585,7 +589,7 @@ namespace Fomm.PackageManager
     private void bEditGroups_Click(object sender, EventArgs e)
     {
       Form f = new Form();
-      Properties.Settings.Default.windowPositions.GetWindowPosition("GroupEditor", f);
+      Settings.Default.windowPositions.GetWindowPosition("GroupEditor", f);
       f.Text = "Groups";
       TextBox tb = new TextBox();
       f.Controls.Add(tb);
@@ -597,8 +601,8 @@ namespace Fomm.PackageManager
       tb.Select(0, 0);
       f.FormClosing += delegate(object sender2, FormClosingEventArgs args2)
       {
-        Properties.Settings.Default.windowPositions.SetWindowPosition("GroupEditor", f);
-        Properties.Settings.Default.Save();
+        Settings.Default.windowPositions.SetWindowPosition("GroupEditor", f);
+        Settings.Default.Save();
       };
       f.ShowDialog();
       groups.Clear();
@@ -616,8 +620,8 @@ namespace Fomm.PackageManager
         lgroups.Add(groups[i].ToLowerInvariant());
       }
       RebuildListView();
-      Properties.Settings.Default.pluginGroups = groups;
-      Properties.Settings.Default.Save();
+      Settings.Default.pluginGroups = groups;
+      Settings.Default.Save();
     }
 
     private void fomodStatusToolStripMenuItem_Click(object sender, EventArgs e)
@@ -628,7 +632,7 @@ namespace Fomm.PackageManager
       }
       fomod mod = (fomod) lvModList.SelectedItems[0].Tag;
       Form f = new Form();
-      Properties.Settings.Default.windowPositions.GetWindowPosition("FomodStatus", f);
+      Settings.Default.windowPositions.GetWindowPosition("FomodStatus", f);
       f.Text = "Fomod status";
       TextBox tb = new TextBox();
       f.Controls.Add(tb);
@@ -636,12 +640,12 @@ namespace Fomm.PackageManager
       tb.Multiline = true;
       tb.Text = mod.GetStatusString();
       tb.ReadOnly = true;
-      tb.BackColor = System.Drawing.SystemColors.Window;
+      tb.BackColor = SystemColors.Window;
       tb.Select(0, 0);
       tb.ScrollBars = ScrollBars.Vertical;
       f.ShowDialog();
-      Properties.Settings.Default.windowPositions.SetWindowPosition("FomodStatus", f);
-      Properties.Settings.Default.Save();
+      Settings.Default.windowPositions.SetWindowPosition("FomodStatus", f);
+      Settings.Default.Save();
     }
 
     private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
@@ -770,7 +774,7 @@ namespace Fomm.PackageManager
       mf.RefreshPluginList();
     }
 
-    private class FomodSorter : System.Collections.IComparer
+    private class FomodSorter : IComparer
     {
       public static int Mode;
 
@@ -977,8 +981,8 @@ namespace Fomm.PackageManager
         return;
       }
       m_strLastFromFolderPath = fbd.SelectedPath;
-      Properties.Settings.Default.LastBuildFOMODFromFolderPath = Path.GetDirectoryName(m_strLastFromFolderPath);
-      Properties.Settings.Default.Save();
+      Settings.Default.LastBuildFOMODFromFolderPath = Path.GetDirectoryName(m_strLastFromFolderPath);
+      Settings.Default.Save();
       AddNewFomod(fbd.SelectedPath);
     }
 

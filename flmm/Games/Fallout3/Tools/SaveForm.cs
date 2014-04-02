@@ -1,9 +1,12 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.IO;
+using Fomm.Properties;
 
 namespace Fomm.Games.Fallout3.Tools
 {
@@ -39,7 +42,7 @@ namespace Fomm.Games.Fallout3.Tools
           image = new Bitmap(ImageWidth, ImageHeight, PixelFormat.Format24bppRgb);
           BitmapData bd = image.LockBits(new Rectangle(0, 0, ImageWidth, ImageHeight), ImageLockMode.WriteOnly,
                                          PixelFormat.Format24bppRgb);
-          System.Runtime.InteropServices.Marshal.Copy(ImageData, 0, bd.Scan0, ImageData.Length);
+          Marshal.Copy(ImageData, 0, bd.Scan0, ImageData.Length);
           image.UnlockBits(bd);
           return image;
         }
@@ -55,7 +58,7 @@ namespace Fomm.Games.Fallout3.Tools
       FileSize
     }
 
-    internal class SaveListSorter : System.Collections.IComparer
+    internal class SaveListSorter : IComparer
     {
       internal static SaveSortOrder order = SaveSortOrder.Name;
 
@@ -74,8 +77,8 @@ namespace Fomm.Games.Fallout3.Tools
           case SaveSortOrder.Date:
             return DateTime.Compare(sa.saved, sb.saved);
           case SaveSortOrder.FileSize:
-            long sizea = (new System.IO.FileInfo(Program.GameMode.SavesPath + sa.FileName)).Length;
-            long sizeb = (new System.IO.FileInfo(Program.GameMode.SavesPath + sb.FileName)).Length;
+            long sizea = (new FileInfo(Program.GameMode.SavesPath + sa.FileName)).Length;
+            long sizeb = (new FileInfo(Program.GameMode.SavesPath + sb.FileName)).Length;
             if (sizea == sizeb)
             {
               return 0;
@@ -107,10 +110,10 @@ namespace Fomm.Games.Fallout3.Tools
       iPlugins = InactivePlugins;
       SaveImageList.Images.AddRange(new Image[]
       {
-        Fomm.Properties.Resources.GreenSquare,
-        Fomm.Properties.Resources.YellowSquare, Fomm.Properties.Resources.YellowSquare
+        Resources.GreenSquare,
+        Resources.YellowSquare, Resources.YellowSquare
       });
-      this.Icon = Fomm.Properties.Resources.fomm02;
+      Icon = Resources.fomm02;
       cmbSort.SelectedIndex = 3;
       lvSaves.ListViewItemSorter = new SaveListSorter();
       foreach (string file in Directory.GetFiles(Program.GameMode.SavesPath))

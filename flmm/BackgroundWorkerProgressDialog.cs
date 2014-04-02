@@ -498,7 +498,7 @@ namespace Fomm
         DialogResult = DialogResult.OK;
       }
       m_exError = e.Error;
-      this.Close();
+      Close();
     }
 
     /// <summary>

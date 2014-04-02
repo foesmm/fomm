@@ -180,7 +180,7 @@ namespace Fomm.PackageManager
           // not clear what the value of SETTING1 will be).
           // as a result, we only allow one mod to be installed at a time,
           // hence the lock.
-          lock (ModInstallerBase.objInstallLock)
+          lock (objInstallLock)
           {
             using (TransactionScope tsTransaction = new TransactionScope())
             {
@@ -259,7 +259,7 @@ namespace Fomm.PackageManager
             }
           }
           string strMessage = String.Format(ExceptionMessage, stbError.ToString());
-          System.Windows.Forms.MessageBox.Show(strMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+          MessageBox.Show(strMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
           return false;
         }
         finally
@@ -274,11 +274,11 @@ namespace Fomm.PackageManager
       }
       if (booSuccess && !p_booSuppressSuccessMessage && !String.IsNullOrEmpty(SuccessMessage))
       {
-        System.Windows.Forms.MessageBox.Show(SuccessMessage, "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        MessageBox.Show(SuccessMessage, "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
       }
       else if (!booSuccess && !String.IsNullOrEmpty(FailMessage))
       {
-        System.Windows.Forms.MessageBox.Show(FailMessage, "Failure", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        MessageBox.Show(FailMessage, "Failure", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
       return booSuccess;
     }

@@ -34,6 +34,7 @@
 // exception statement from your version.
 
 using System;
+using System.Collections;
 using System.IO;
 using Fomm.SharpZipLib.Core;
 
@@ -216,7 +217,7 @@ namespace Fomm.SharpZipLib.Zip
 
       using (zipFile_ = new ZipFile(zipFileName))
       {
-        System.Collections.IEnumerator enumerator = zipFile_.GetEnumerator();
+        IEnumerator enumerator = zipFile_.GetEnumerator();
         while (continueRunning_ && enumerator.MoveNext())
         {
           ZipEntry entry = (ZipEntry) enumerator.Current;

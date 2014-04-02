@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Drawing;
 using Fomm.PackageManager;
@@ -91,7 +92,7 @@ namespace Fomm.Games.Fallout3.Script
         return null;
       }
       byte[] result = new byte[length];
-      System.Runtime.InteropServices.Marshal.Copy(data, result, 0, length);
+      Marshal.Copy(data, result, 0, length);
       return result;
     }
 
@@ -154,7 +155,7 @@ namespace Fomm.Games.Fallout3.Script
         return null;
       }
       byte[] result = new byte[length];
-      System.Runtime.InteropServices.Marshal.Copy(ptr, result, 0, length);
+      Marshal.Copy(ptr, result, 0, length);
       NativeMethods.ddsUnlock(p_ptrTexture);
       return result;
     }

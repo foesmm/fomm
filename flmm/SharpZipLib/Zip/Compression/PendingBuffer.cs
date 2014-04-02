@@ -37,6 +37,8 @@
 // obligated to do so.  If you do not wish to do so, delete this
 // exception statement from your version.
 
+using System;
+
 namespace Fomm.SharpZipLib.Zip.Compression
 {
   /// <summary>
@@ -126,7 +128,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
         throw new SharpZipBaseException("Debug check: start != 0");
       }
 #endif
-      System.Array.Copy(block, offset, buffer_, end, length);
+      Array.Copy(block, offset, buffer_, end, length);
       end += length;
     }
 
@@ -239,13 +241,13 @@ namespace Fomm.SharpZipLib.Zip.Compression
       if (length > end - start)
       {
         length = end - start;
-        System.Array.Copy(buffer_, start, output, offset, length);
+        Array.Copy(buffer_, start, output, offset, length);
         start = 0;
         end = 0;
       }
       else
       {
-        System.Array.Copy(buffer_, start, output, offset, length);
+        Array.Copy(buffer_, start, output, offset, length);
         start += length;
       }
       return length;

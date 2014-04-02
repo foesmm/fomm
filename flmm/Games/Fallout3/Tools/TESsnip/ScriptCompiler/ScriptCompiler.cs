@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Text;
 using System.Xml;
 using BinaryWriter = System.IO.BinaryWriter;
 using MemoryStream = System.IO.MemoryStream;
@@ -74,7 +77,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
       public FunctionSig(XmlNode n, bool block)
       {
         opcode = ushort.Parse(n.Attributes.GetNamedItem("opcode").Value,
-                              System.Globalization.NumberStyles.AllowHexSpecifier, null);
+                              NumberStyles.AllowHexSpecifier, null);
         XmlNode n2;
         n2 = n.Attributes.GetNamedItem("desc");
         if (n2 == null)
@@ -179,7 +182,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
         this.end = end;
         this.precedence = precedence;
         //this.rtl=rtl;
-        this.opcode = System.Text.Encoding.ASCII.GetBytes(opcode);
+        this.opcode = Encoding.ASCII.GetBytes(opcode);
       }
     }
 
@@ -201,7 +204,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
     private static readonly Dictionary<string, Dictionary<string, ushort>> farVars =
       new Dictionary<string, Dictionary<string, ushort>>();
 
-    private static string xmlPath = System.IO.Path.Combine(Program.ProgrammeInfoDirectory,
+    private static string xmlPath = Path.Combine(Program.ProgrammeInfoDirectory,
                                                            "Fallout3\\TESsnip\\ScriptCompiler\\ScriptFunctions.xml");
 
     private static void AddFunction(string name, string sname, FunctionSig sig)
@@ -248,7 +251,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
       try
       {
         XmlDocument doc = new XmlDocument();
-        doc.LoadXml(System.IO.File.ReadAllText(xmlPath));
+        doc.LoadXml(File.ReadAllText(xmlPath));
         XmlNode root = null;
         foreach (XmlNode n in doc.ChildNodes)
         {
@@ -313,7 +316,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
       }
       catch (Exception ex)
       {
-        System.Windows.Forms.MessageBox.Show("An error occured while parsing ScriptFunctions.xml.\n" + ex);
+        MessageBox.Show("An error occured while parsing ScriptFunctions.xml.\n" + ex);
       }
     }
 
@@ -909,7 +912,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
           {
             AddError("A reference assignment must consist of a single edid or function");
           }
-          bw.Write(System.Text.Encoding.ASCII.GetBytes(t.token));
+          bw.Write(Encoding.ASCII.GetBytes(t.token));
           break;
         case TokenType.Function:
           //FunctionSig fs=functionList[t.token];
@@ -1222,7 +1225,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
             continue;
           case VarType.String:
             Emit((ushort) smt[i].token.Length);
-            bw.Write(System.Text.Encoding.Default.GetBytes(smt[i].token));
+            bw.Write(Encoding.Default.GetBytes(smt[i].token));
             continue;
         }
         switch (smt[i].type)

@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using Fomm.Properties;
 
 namespace Fomm
 {
@@ -9,7 +10,7 @@ namespace Fomm
     internal ImageForm(Image i)
     {
       InitializeComponent();
-      this.Icon = Fomm.Properties.Resources.fomm02;
+      Icon = Resources.fomm02;
       /*if(Program.IsImageAnimated(i)) {
                 MessageBox.Show("Animated or multi-resolution images are not supported", "Error");
                 pictureBox1.Image=null;

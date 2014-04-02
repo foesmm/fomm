@@ -73,7 +73,7 @@ namespace GeMod.Interface
         Image imgReal = null;
         using (MemoryStream msmImage = new MemoryStream(m_bteData))
         {
-          imgSreenshot = System.Drawing.Image.FromStream(msmImage);
+          imgSreenshot = Image.FromStream(msmImage);
           imgReal = new Bitmap(imgSreenshot);
           msmImage.Close();
         }

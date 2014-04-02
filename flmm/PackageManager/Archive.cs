@@ -159,13 +159,13 @@ namespace Fomm.PackageManager
     /// thread safe; a <see cref="ThreadSafeSevenZipExtractor"/> otherwise.</returns>
     private static object GetExtractor(string p_strPath, bool p_booThreadSafe)
     {
-      if (p_strPath.StartsWith(Archive.ARCHIVE_PREFIX))
+      if (p_strPath.StartsWith(ARCHIVE_PREFIX))
       {
         Stack<KeyValuePair<string, string>> stkFiles = new Stack<KeyValuePair<string, string>>();
         string strPath = p_strPath;
-        while (strPath.StartsWith(Archive.ARCHIVE_PREFIX))
+        while (strPath.StartsWith(ARCHIVE_PREFIX))
         {
-          stkFiles.Push(Archive.ParseArchivePath(strPath));
+          stkFiles.Push(ParseArchivePath(strPath));
           strPath = stkFiles.Peek().Key;
         }
         Stack<SevenZipExtractor> stkExtractors = new Stack<SevenZipExtractor>();
@@ -307,7 +307,7 @@ namespace Fomm.PackageManager
     /// <returns></returns>
     public static string GenerateArchivePath(string p_strArchivePath, string p_strInternalPath)
     {
-      return String.Format("{0}{1}//{2}", Archive.ARCHIVE_PREFIX, p_strArchivePath, p_strInternalPath);
+      return String.Format("{0}{1}//{2}", ARCHIVE_PREFIX, p_strArchivePath, p_strInternalPath);
     }
 
     #endregion
@@ -411,7 +411,7 @@ namespace Fomm.PackageManager
           m_szeReadOnlyExtractor.Dispose();
           m_szeReadOnlyExtractor = null;
           m_strReadOnlyTempDirectory = Program.CreateTempDirectory();
-          using (SevenZipExtractor szeExtractor = Archive.GetExtractor(m_strPath))
+          using (SevenZipExtractor szeExtractor = GetExtractor(m_strPath))
           {
             szeExtractor.FileExtractionFinished += new EventHandler<FileInfoEventArgs>(FileExtractionFinished);
             szeExtractor.FileExtractionStarted += new EventHandler<FileInfoEventArgs>(FileExtractionStarted);

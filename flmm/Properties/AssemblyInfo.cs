@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Reflection;
+using System.Resources;
 using System.Runtime.InteropServices;
+using Fomm;
 
 [assembly: AssemblyTitle("FOMM")]
 [assembly: AssemblyDescription("Fallout Mod Manager")]
@@ -11,9 +13,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
-[assembly: AssemblyVersion(Fomm.Program.Version)]
-[assembly: AssemblyFileVersion(Fomm.Program.Version)]
+[assembly: AssemblyVersion(Program.Version)]
+[assembly: AssemblyFileVersion(Program.Version)]
 [assembly: CLSCompliant(false)]
-[assembly: System.Resources.NeutralResourcesLanguage("en")]
+[assembly: NeutralResourcesLanguage("en")]
 
 //[assembly: PermissionSet(SecurityAction.RequestMinimum, Name="FullTrust")]

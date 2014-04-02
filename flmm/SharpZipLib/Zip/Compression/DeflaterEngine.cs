@@ -344,7 +344,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
           more = inputEnd - inputOff;
         }
 
-        System.Array.Copy(inputBuf, inputOff, window, strstart + lookahead, more);
+        Array.Copy(inputBuf, inputOff, window, strstart + lookahead, more);
         adler.Update(inputBuf, inputOff, more);
 
         inputOff += more;
@@ -433,12 +433,12 @@ namespace Fomm.SharpZipLib.Zip.Compression
     /// <returns>True if a match greater than the minimum length is found</returns>
     private bool FindLongestMatch(int curMatch)
     {
-      int chainLength = this.max_chain;
+      int chainLength = max_chain;
       int niceLength = this.niceLength;
       short[] prev = this.prev;
-      int scan = this.strstart;
+      int scan = strstart;
       int match;
-      int best_end = this.strstart + matchLen;
+      int best_end = strstart + matchLen;
       int best_len = Math.Max(matchLen, DeflaterConstants.MIN_MATCH - 1);
 
       int limit = Math.Max(strstart - DeflaterConstants.MAX_DIST, 0);
@@ -448,7 +448,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
       byte scan_end = window[best_end];
 
       // Do not waste too much time if we already have a good match:
-      if (best_len >= this.goodLength)
+      if (best_len >= goodLength)
       {
         chainLength >>= 2;
       }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows.Forms;
+using Fomm.Properties;
 
 namespace Fomm.PackageManager
 {
@@ -35,8 +36,8 @@ namespace Fomm.PackageManager
     {
       InitializeComponent();
 
-      Icon = Fomm.Properties.Resources.fomm02;
-      Properties.Settings.Default.windowPositions.GetWindowPosition("EditScriptForm", this);
+      Icon = Resources.fomm02;
+      Settings.Default.windowPositions.GetWindowPosition("EditScriptForm", this);
     }
 
     #endregion
@@ -50,8 +51,8 @@ namespace Fomm.PackageManager
     /// <param name="e">A <see cref="CancelEventArgs"/> describing the event arguments.</param>
     protected override void OnClosing(CancelEventArgs e)
     {
-      Properties.Settings.Default.windowPositions.SetWindowPosition("EditScriptForm", this);
-      Properties.Settings.Default.Save();
+      Settings.Default.windowPositions.SetWindowPosition("EditScriptForm", this);
+      Settings.Default.Save();
       base.OnClosing(e);
     }
 

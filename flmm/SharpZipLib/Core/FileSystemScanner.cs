@@ -34,6 +34,7 @@
 // exception statement from your version.
 
 using System;
+using System.IO;
 
 namespace Fomm.SharpZipLib.Core
 {
@@ -166,7 +167,7 @@ namespace Fomm.SharpZipLib.Core
 
     private void ScanDir(string directory, bool recurse)
     {
-      string[] names = System.IO.Directory.GetFiles(directory);
+      string[] names = Directory.GetFiles(directory);
       bool hasMatch = false;
       for (int fileIndex = 0; fileIndex < names.Length; ++fileIndex)
       {
@@ -197,7 +198,7 @@ namespace Fomm.SharpZipLib.Core
 
       if (alive_ && recurse)
       {
-        names = System.IO.Directory.GetDirectories(directory);
+        names = Directory.GetDirectories(directory);
         foreach (string fulldir in names)
         {
           if ((directoryFilter_ == null) || (directoryFilter_.IsMatch(fulldir)))

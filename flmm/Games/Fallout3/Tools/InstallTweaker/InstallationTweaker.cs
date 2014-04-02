@@ -1,6 +1,8 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Windows.Forms;
 using System.IO;
+using Fomm.Properties;
 
 namespace Fomm.Games.Fallout3.Tools.InstallTweaker
 {
@@ -16,7 +18,7 @@ namespace Fomm.Games.Fallout3.Tools.InstallTweaker
     public InstallationTweaker()
     {
       InitializeComponent();
-      this.Icon = Fomm.Properties.Resources.fomm02;
+      Icon = Resources.fomm02;
       if (Directory.Exists(BackupPath))
       {
         if (File.Exists("xlive.dll"))
@@ -52,7 +54,7 @@ namespace Fomm.Games.Fallout3.Tools.InstallTweaker
       //args.stripedids=cbStripGeck.Checked;
       //args.striprefs=cbRemoveClutter.Checked;
       args.trimbsa = cbShrinkTextures.Checked;
-      args.hwnd = this.Handle;
+      args.hwnd = Handle;
       tbDescription.Text = "";
       bApply.Enabled = false;
       bReset.Enabled = true;
@@ -104,7 +106,7 @@ namespace Fomm.Games.Fallout3.Tools.InstallTweaker
       backgroundWorker1.ReportProgress(0, msg);
     }
 
-    private void backgroundWorker1_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+    private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
     {
       WorkerArgs args = (WorkerArgs) e.Argument;
       Directory.CreateDirectory(BackupPath);
@@ -134,7 +136,7 @@ namespace Fomm.Games.Fallout3.Tools.InstallTweaker
     private int LineCount;
     private string[] lines;
 
-    private void backgroundWorker1_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
+    private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
     {
       if (LineCount < 70)
       {

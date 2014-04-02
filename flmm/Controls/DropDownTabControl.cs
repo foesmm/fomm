@@ -457,7 +457,7 @@ namespace Fomm.Controls
     {
       get
       {
-        return this.TabPages.IndexOf(SelectedTabPage);
+        return TabPages.IndexOf(SelectedTabPage);
       }
       set
       {
@@ -581,7 +581,7 @@ namespace Fomm.Controls
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
     /// <param name="e">A <see cref="DropDownTabControl.TabPageEventArgs"/> describing the event arguments.</param>
-    private void AddTabPage(object sender, DropDownTabControl.TabPageEventArgs e)
+    private void AddTabPage(object sender, TabPageEventArgs e)
     {
       DropDownTabPage ctlPage = e.TabPage;
       if (ctlPage.PageIndex == -1)
@@ -610,7 +610,7 @@ namespace Fomm.Controls
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
     /// <param name="e">A <see cref="DropDownTabControl.TabPageEventArgs"/> describing the event arguments.</param>
-    private void RemoveTabPage(object sender, DropDownTabControl.TabPageEventArgs e)
+    private void RemoveTabPage(object sender, TabPageEventArgs e)
     {
       DropDownTabPage ctlPage = e.TabPage;
       ctlPage.PageIndexChanged -= new EventHandler(PageIndexChanged);

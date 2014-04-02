@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.ComponentModel;
 using System.Collections.Specialized;
 using System.Collections.Generic;
+using System.Drawing.Design;
 
 namespace Fomm.Util
 {
@@ -9,7 +11,7 @@ namespace Fomm.Util
   /// Extends the <see cref="StringCollection"/> to add implicit conversions to and from
   /// similar data structures.
   /// </summary>
-  [Editor("System.Windows.Forms.Design.StringCollectionEditor", typeof (System.Drawing.Design.UITypeEditor))]
+  [Editor("System.Windows.Forms.Design.StringCollectionEditor", typeof (UITypeEditor))]
   public class SettingsList : StringCollection, IEnumerable<string>
   {
     #region String List Conversions
@@ -69,7 +71,7 @@ namespace Fomm.Util
       /// Gets the current value in the enumeration.
       /// </summary>
       /// <value>The current value in the enumeration.</value>
-      object System.Collections.IEnumerator.Current
+      object IEnumerator.Current
       {
         get
         {

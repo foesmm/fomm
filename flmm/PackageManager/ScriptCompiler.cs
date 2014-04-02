@@ -1,6 +1,10 @@
 using System;
+using System.IO;
+using System.Security;
 using System.Security.Policy;
 using System.CodeDom.Compiler;
+using System.Windows.Forms;
+using Microsoft.CSharp;
 using Assembly = System.Reflection.Assembly;
 using sList = System.Collections.Generic.List<string>;
 using StringBuilder = System.Text.StringBuilder;
@@ -10,13 +14,13 @@ namespace Fomm.PackageManager
 {
   internal static class ScriptCompiler
   {
-    private static readonly Microsoft.CSharp.CSharpCodeProvider csCompiler = new Microsoft.CSharp.CSharpCodeProvider();
+    private static readonly CSharpCodeProvider csCompiler = new CSharpCodeProvider();
     private static readonly CompilerParameters cParams;
     private static readonly Evidence evidence;
     private static Assembly fommScriptRunner;
     private static object fommScriptObject;
 
-    private static readonly string ScriptOutputPath = System.IO.Path.Combine(Program.tmpPath, "dotnetscript");
+    private static readonly string ScriptOutputPath = Path.Combine(Program.tmpPath, "dotnetscript");
     private static uint ScriptCount;
 
     static ScriptCompiler()
@@ -26,14 +30,14 @@ namespace Fomm.PackageManager
       cParams.GenerateInMemory = false;
       cParams.IncludeDebugInformation = false;
       //cParams.OutputAssembly=ScriptOutputPath;
-      cParams.ReferencedAssemblies.Add(System.IO.Path.Combine(Program.ExecutableDirectory, "fomm.Scripting.dll"));
+      cParams.ReferencedAssemblies.Add(Path.Combine(Program.ExecutableDirectory, "fomm.Scripting.dll"));
       cParams.ReferencedAssemblies.Add("System.dll");
       cParams.ReferencedAssemblies.Add("System.Drawing.dll");
       cParams.ReferencedAssemblies.Add("System.Windows.Forms.dll");
       cParams.ReferencedAssemblies.Add("System.Xml.dll");
 
       evidence = new Evidence();
-      evidence.AddHost(new Zone(System.Security.SecurityZone.Internet));
+      evidence.AddHost(new Zone(SecurityZone.Internet));
     }
 
     private static void LoadFommScriptObject()
@@ -107,8 +111,8 @@ class ScriptRunner {
       }
       else
       {
-        byte[] data = System.IO.File.ReadAllBytes(results.PathToAssembly);
-        System.IO.File.Delete(results.PathToAssembly);
+        byte[] data = File.ReadAllBytes(results.PathToAssembly);
+        File.Delete(results.PathToAssembly);
         return data;
       }
     }
@@ -173,7 +177,7 @@ class ScriptRunner {
       byte[] data = Compile(script);
       if (data == null)
       {
-        System.Windows.Forms.MessageBox.Show("C# script failed to compile", "Error");
+        MessageBox.Show("C# script failed to compile", "Error");
         return false;
       }
       Assembly asm = AppDomain.CurrentDomain.Load(data, null, evidence);
@@ -181,7 +185,7 @@ class ScriptRunner {
       object s = asm.CreateInstance("Script");
       if (s == null)
       {
-        System.Windows.Forms.MessageBox.Show("C# or vb script did not contain a 'Script' class in the root namespace",
+        MessageBox.Show("C# or vb script did not contain a 'Script' class in the root namespace",
                                              "Error");
         return false;
       }
@@ -203,9 +207,9 @@ class ScriptRunner {
       }
       catch (Exception ex)
       {
-        System.Windows.Forms.MessageBox.Show("An exception occured. The mod may not have been activated completely.\n" +
+        MessageBox.Show("An exception occured. The mod may not have been activated completely.\n" +
                                              "Check" + Environment.NewLine +
-                                             System.IO.Path.Combine(Program.GameMode.InstallInfoDirectory,
+                                             Path.Combine(Program.GameMode.InstallInfoDirectory,
                                                                     "ScriptException.txt") + Environment.NewLine +
                                              "for full details", "Error");
         string str = ex.ToString();
@@ -214,8 +218,8 @@ class ScriptRunner {
           ex = ex.InnerException;
           str += Environment.NewLine + Environment.NewLine + ex.ToString();
         }
-        System.IO.File.WriteAllText(
-          System.IO.Path.Combine(Program.GameMode.InstallInfoDirectory, "ScriptException.txt"), str);
+        File.WriteAllText(
+          Path.Combine(Program.GameMode.InstallInfoDirectory, "ScriptException.txt"), str);
         return false;
       }
     }

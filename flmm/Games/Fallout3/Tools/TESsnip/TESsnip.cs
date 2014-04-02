@@ -1,7 +1,11 @@
 using System;
+using System.Drawing;
+using System.Globalization;
+using System.IO;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Text;
+using Fomm.Properties;
 
 namespace Fomm.Games.Fallout3.Tools.TESsnip
 {
@@ -37,7 +41,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         }
       }
       InitializeComponent();
-      this.Icon = Fomm.Properties.Resources.fomm02;
+      Icon = Resources.fomm02;
       Properties.Settings.Default.windowPositions.GetWindowPosition("TESsnip", this);
     }
 
@@ -56,7 +60,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         }
       }
       InitializeComponent();
-      this.Icon = Fomm.Properties.Resources.fomm02;
+      Icon = Resources.fomm02;
       Properties.Settings.Default.windowPositions.GetWindowPosition("TESsnip", this);
       for (int i = 0; i < mods.Length; i++)
       {
@@ -634,7 +638,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       r.AddRecord(sr);
       sr = new SubRecord();
       sr.Name = "CNAM";
-      sr.SetData(System.Text.Encoding.ASCII.GetBytes("Default\0"));
+      sr.SetData(Encoding.ASCII.GetBytes("Default\0"));
       r.AddRecord(sr);
       p.AddRecord(r);
       TreeNode tn = new TreeNode(p.Name);
@@ -879,7 +883,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     private void listView1_GiveFeedback(object sender, GiveFeedbackEventArgs e)
     {
-      System.Drawing.Point p = listView1.PointToClient(Form.MousePosition);
+      Point p = listView1.PointToClient(MousePosition);
       ListViewItem lvi = listView1.GetItemAt(p.X, p.Y);
       if (lvi == null)
       {
@@ -1186,7 +1190,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       ids.Clear();
     }
 
-    private void DumpEdidsInternal(Rec r, System.IO.StreamWriter sw)
+    private void DumpEdidsInternal(Rec r, StreamWriter sw)
     {
       if (r is Record)
       {
@@ -1220,7 +1224,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       {
         return;
       }
-      System.IO.StreamWriter sw = new System.IO.StreamWriter(SaveEdidListDialog.FileName);
+      StreamWriter sw = new StreamWriter(SaveEdidListDialog.FileName);
       if (PluginTree.SelectedNode.Tag is Plugin)
       {
         foreach (Rec r in ((Plugin) PluginTree.SelectedNode.Tag).Records)
@@ -1530,7 +1534,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         }
       }
       thingy += Environment.NewLine + Environment.NewLine + "Final results: " + count + "/" + failed + "/" + failed2;
-      System.IO.File.WriteAllText("script results.txt", thingy);
+      File.WriteAllText("script results.txt", thingy);
     }
 
     private void generateLLXmlToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1576,8 +1580,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       uint mask = (uint) (FormIDLookup.Length - 1) << 24;
       Queue<Rec> recs = new Queue<Rec>(p.Records);
 
-      System.Text.StringBuilder sb2 = new System.Text.StringBuilder();
-      System.Text.StringBuilder sb3 = new System.Text.StringBuilder();
+      StringBuilder sb2 = new StringBuilder();
+      StringBuilder sb3 = new StringBuilder();
       while (recs.Count > 0)
       {
         Rec rec = recs.Dequeue();
@@ -1699,14 +1703,14 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       }
       if (sb2.Length > 0)
       {
-        System.Text.StringBuilder sb1 = new System.Text.StringBuilder();
+        StringBuilder sb1 = new StringBuilder();
         sb1.AppendLine("<?xml version=\"1.0\" encoding=\"utf-8\" ?>");
         sb1.AppendLine("<Plugin>");
         sb1.AppendLine("  <MergedLists>");
         sb1.Append(sb2);
         sb1.AppendLine("  </MergedLists>");
         sb1.AppendLine("</Plugin>");
-        System.IO.File.WriteAllText(System.IO.Path.ChangeExtension("data\\" + p.Name, ".xml"), sb1.ToString());
+        File.WriteAllText(Path.ChangeExtension("data\\" + p.Name, ".xml"), sb1.ToString());
       }
       else
       {
@@ -1851,7 +1855,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       }
       tes4.Flags1 |= 1;
 
-      SaveModDialog.FileName = System.IO.Path.ChangeExtension(p.Name, ".esm");
+      SaveModDialog.FileName = Path.ChangeExtension(p.Name, ".esm");
       if (SaveModDialog.ShowDialog() == DialogResult.OK)
       {
         p.Save(SaveModDialog.FileName);
@@ -2048,7 +2052,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
     private string LookupFormIDS(string sid)
     {
       uint id;
-      if (!uint.TryParse(sid, System.Globalization.NumberStyles.AllowHexSpecifier, null, out id))
+      if (!uint.TryParse(sid, NumberStyles.AllowHexSpecifier, null, out id))
       {
         return "FormID was invalid";
       }

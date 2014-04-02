@@ -21,13 +21,13 @@ namespace Fomm.Commands
     {
       get
       {
-        return this.m_booIsChecked;
+        return m_booIsChecked;
       }
       set
       {
-        if (this.m_booIsChecked != value)
+        if (m_booIsChecked != value)
         {
-          this.m_booIsChecked = value;
+          m_booIsChecked = value;
           OnPropertyChanged(new PropertyChangedEventArgs("IsChecked"));
         }
       }

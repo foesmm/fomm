@@ -1,5 +1,6 @@
 using System;
 using System.Windows.Forms;
+using Fomm.Properties;
 
 namespace Fomm.Games.Fallout3.Tools.TESsnip
 {
@@ -12,7 +13,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
     public DataEdit(string RecName, byte[] data)
     {
       InitializeComponent();
-      this.Icon = Fomm.Properties.Resources.fomm02;
+      Icon = Resources.fomm02;
       Text += RecName;
       tbName.Text = RecName;
       Text += " (string mode)";

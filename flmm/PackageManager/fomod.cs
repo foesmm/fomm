@@ -1,7 +1,9 @@
 using System;
+using System.Text;
 using System.Xml;
 using System.Drawing;
 using System.Collections.Generic;
+using Fomm.Properties;
 using Fomm.Util;
 using System.IO;
 using Fomm.PackageManager.ModInstallLog;
@@ -418,8 +420,8 @@ namespace Fomm.PackageManager
     /// <param name="path">The path to the fomod file.</param>
     internal fomod(string path, bool p_booUseCache)
     {
-      this.filepath = path;
-      ModName = System.IO.Path.GetFileNameWithoutExtension(path);
+      filepath = path;
+      ModName = Path.GetFileNameWithoutExtension(path);
 
       m_arcFile = new Archive(path);
       m_strCachePath = Path.Combine(Program.GameMode.ModInfoCacheDirectory, ModName + ".zip");
@@ -437,7 +439,7 @@ namespace Fomm.PackageManager
       MachineVersion = DefaultVersion;
       MinFommVersion = DefaultMinFommVersion;
       Groups = new string[0];
-      isActive = (InstallLog.Current.GetModKey(this.baseName) != null);
+      isActive = (InstallLog.Current.GetModKey(baseName) != null);
 
       //check for script
       for (int i = 0; i < FomodScript.ScriptNames.Length; i++)
@@ -1055,7 +1057,7 @@ namespace Fomm.PackageManager
       {
         if (m_strReadmePath == null)
         {
-          m_strReadmePath = (Properties.Settings.Default.UseDocsFolder ? "docs/" : "") + "Readme - " +
+          m_strReadmePath = (Settings.Default.UseDocsFolder ? "docs/" : "") + "Readme - " +
                             Path.GetFileNameWithoutExtension(filepath) + ".rtf";
         }
         m_strReadmePath = Path.ChangeExtension(m_strReadmePath, p_rmeReadme.Extension);
@@ -1116,7 +1118,7 @@ namespace Fomm.PackageManager
 
     internal string GetStatusString()
     {
-      System.Text.StringBuilder sb = new System.Text.StringBuilder();
+      StringBuilder sb = new StringBuilder();
       sb.AppendLine("Mod name: " + ModName);
       sb.AppendLine("File name: " + baseName);
       if (!DEFAULT_AUTHOR.Equals(Author))
@@ -1160,7 +1162,7 @@ namespace Fomm.PackageManager
         sb.AppendLine();
         sb.AppendLine("Activation data" + Environment.NewLine);
 
-        InstallLogMergeModule ilmMergeModule = InstallLog.Current.GetMergeModule(this.baseName);
+        InstallLogMergeModule ilmMergeModule = InstallLog.Current.GetMergeModule(baseName);
         if (ilmMergeModule.DataFiles.Count > 0)
         {
           sb.AppendLine("-- Installed data files");

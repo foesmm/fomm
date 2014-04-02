@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using Fomm.SharpZipLib;
 using Fomm.SharpZipLib.Zip.Compression;
 
@@ -485,7 +486,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       uint AmountRead = 0;
       while (AmountRead < Size - (Oblivion ? 20 : 24))
       {
-        string s = Plugin.ReadRecName(br);
+        string s = ReadRecName(br);
         uint recsize = br.ReadUInt32();
         if (s == "GRUP")
         {
@@ -913,7 +914,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       {
         s += '\0';
       }
-      Data = System.Text.Encoding.Default.GetBytes(s);
+      Data = Encoding.Default.GetBytes(s);
     }
 
     internal SubRecord(string name, BinaryReader br, uint size)
@@ -1233,11 +1234,11 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       {
         if (lower)
         {
-          list.Add(this.GetStrData().ToLower());
+          list.Add(GetStrData().ToLower());
         }
         else
         {
-          list.Add(this.GetStrData());
+          list.Add(GetStrData());
         }
       }
       return list;

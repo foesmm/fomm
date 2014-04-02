@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Xml;
 using Path = System.IO.Path;
 using File = System.IO.File;
@@ -1166,7 +1167,7 @@ namespace Fomm.PackageManager.ModInstallLog
       for (int i = 0; i < bteData.Length; i++)
       {
         bteData[i] = byte.Parse("" + strData[i*2] + strData[i*2 + 1],
-                                System.Globalization.NumberStyles.AllowHexSpecifier);
+                                NumberStyles.AllowHexSpecifier);
       }
       return bteData;
     }
@@ -1587,7 +1588,7 @@ namespace Fomm.PackageManager.ModInstallLog
         for (int i = 0; i < bteData.Length; i++)
         {
           bteData[i] = byte.Parse("" + strData[i*2] + strData[i*2 + 1],
-                                  System.Globalization.NumberStyles.AllowHexSpecifier);
+                                  NumberStyles.AllowHexSpecifier);
         }
 
         ilmMergeModule.AddGameSpecificValueEdit(xndComponent.Attributes["key"].InnerText, bteData);

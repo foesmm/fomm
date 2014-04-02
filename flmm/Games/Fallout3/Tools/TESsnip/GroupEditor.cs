@@ -1,5 +1,8 @@
 using System;
+using System.Globalization;
+using System.Text;
 using System.Windows.Forms;
+using Fomm.Properties;
 
 namespace Fomm.Games.Fallout3.Tools.TESsnip
 {
@@ -11,7 +14,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
     {
       this.gr = gr;
       InitializeComponent();
-      this.Icon = Fomm.Properties.Resources.fomm02;
+      Icon = Resources.fomm02;
       cmbGroupType.ContextMenu = new ContextMenu();
       cmbGroupType.SelectedIndex = (int) gr.groupType;
       tbRecType.Text = gr.ContentsType;
@@ -85,12 +88,12 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
     private void bSave_Click(object sender, EventArgs e)
     {
       uint flags, datestamp;
-      if (!uint.TryParse(tbDateStamp.Text, System.Globalization.NumberStyles.AllowHexSpecifier, null, out datestamp))
+      if (!uint.TryParse(tbDateStamp.Text, NumberStyles.AllowHexSpecifier, null, out datestamp))
       {
         MessageBox.Show("Invalid value specified for datestamp");
         return;
       }
-      if (!uint.TryParse(tbFlags.Text, System.Globalization.NumberStyles.AllowHexSpecifier, null, out flags))
+      if (!uint.TryParse(tbFlags.Text, NumberStyles.AllowHexSpecifier, null, out flags))
       {
         MessageBox.Show("Invalid value specified for flags");
         return;
@@ -100,7 +103,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       switch (cmbGroupType.SelectedIndex)
       {
         case 0:
-          data = System.Text.Encoding.ASCII.GetBytes(tbRecType.Text);
+          data = Encoding.ASCII.GetBytes(tbRecType.Text);
           break;
         case 2:
         case 3:
@@ -136,7 +139,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         case 9:
         case 10:
           uint parent;
-          if (!uint.TryParse(tbParent.Text, System.Globalization.NumberStyles.AllowHexSpecifier, null, out parent))
+          if (!uint.TryParse(tbParent.Text, NumberStyles.AllowHexSpecifier, null, out parent))
           {
             MessageBox.Show("Invalid value specified for parent");
             return;

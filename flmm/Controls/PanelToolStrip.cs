@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using Fomm.Properties;
 using Fomm.Util;
 
 namespace Fomm.Controls
@@ -195,7 +196,7 @@ namespace Fomm.Controls
       /// </summary>
       public ToolStripPanel()
       {
-        this.AutoScroll = true;
+        AutoScroll = true;
       }
 
       #endregion
@@ -232,18 +233,18 @@ namespace Fomm.Controls
           for (Int32 j = lstButtons.Count - 1; j >= 0; j--)
           {
             ctlButton = lstButtons[j];
-            this.Controls.SetChildIndex(ctlButton, intIndex++);
+            Controls.SetChildIndex(ctlButton, intIndex++);
 
             if ((i == sltItems.Values.Count - 1) && (j == lstButtons.Count - 1))
             {
               if (m_otnDirection == Orientation.Vertical)
               {
-                m_booNeedScroll = (m_booNeedScroll || (ctlButton.Bounds.Bottom > this.Height));
+                m_booNeedScroll = (m_booNeedScroll || (ctlButton.Bounds.Bottom > Height));
                 m_booEnableDownScroll = m_booNeedScroll;
               }
               else
               {
-                m_booNeedScroll = (m_booNeedScroll || (ctlButton.Bounds.Right > this.Width));
+                m_booNeedScroll = (m_booNeedScroll || (ctlButton.Bounds.Right > Width));
                 m_booEnableUpScroll = m_booNeedScroll;
               }
             }
@@ -322,14 +323,14 @@ namespace Fomm.Controls
       /// </summary>
       public void scrollUp()
       {
-        Int32 intNewX = this.DisplayRectangle.X;
-        Int32 intNewY = this.DisplayRectangle.Y;
+        Int32 intNewX = DisplayRectangle.X;
+        Int32 intNewY = DisplayRectangle.Y;
         if (m_otnDirection == Orientation.Horizontal)
         {
           intNewX -= m_intScrollAmount;
-          if (this.DisplayRectangle.Right < this.Width)
+          if (DisplayRectangle.Right < Width)
           {
-            intNewX += this.Width - this.DisplayRectangle.Right + 1;
+            intNewX += Width - DisplayRectangle.Right + 1;
           }
         }
         else
@@ -340,7 +341,7 @@ namespace Fomm.Controls
             intNewY = 0;
           }
         }
-        this.SetDisplayRectLocation(intNewX, intNewY);
+        SetDisplayRectLocation(intNewX, intNewY);
 
         m_booEnableDownScroll = true;
         checkScrollUp();
@@ -351,8 +352,8 @@ namespace Fomm.Controls
       /// </summary>
       public void scrollDown()
       {
-        Int32 intNewX = this.DisplayRectangle.X;
-        Int32 intNewY = this.DisplayRectangle.Y;
+        Int32 intNewX = DisplayRectangle.X;
+        Int32 intNewY = DisplayRectangle.Y;
         if (m_otnDirection == Orientation.Horizontal)
         {
           intNewX += m_intScrollAmount;
@@ -364,12 +365,12 @@ namespace Fomm.Controls
         else
         {
           intNewY -= m_intScrollAmount;
-          if (this.DisplayRectangle.Bottom < this.Height)
+          if (DisplayRectangle.Bottom < Height)
           {
-            intNewY += this.Height - this.DisplayRectangle.Bottom + 1;
+            intNewY += Height - DisplayRectangle.Bottom + 1;
           }
         }
-        this.SetDisplayRectLocation(intNewX, intNewY);
+        SetDisplayRectLocation(intNewX, intNewY);
 
         m_booEnableUpScroll = true;
         checkScrollDown();
@@ -383,13 +384,13 @@ namespace Fomm.Controls
         Control ctlButton = null;
         if (m_otnDirection == Orientation.Vertical)
         {
-          ctlButton = this.Controls[this.Controls.Count - 1];
+          ctlButton = Controls[Controls.Count - 1];
           m_booEnableUpScroll = (ctlButton.Bounds.Top < 0);
         }
         else
         {
-          ctlButton = this.Controls[0];
-          m_booEnableUpScroll = (ctlButton.Bounds.Right > this.Width);
+          ctlButton = Controls[0];
+          m_booEnableUpScroll = (ctlButton.Bounds.Right > Width);
         }
       }
 
@@ -401,12 +402,12 @@ namespace Fomm.Controls
         Control ctlButton = null;
         if (m_otnDirection == Orientation.Vertical)
         {
-          ctlButton = this.Controls[0];
-          m_booEnableDownScroll = (ctlButton.Bounds.Bottom > this.Height);
+          ctlButton = Controls[0];
+          m_booEnableDownScroll = (ctlButton.Bounds.Bottom > Height);
         }
         else
         {
-          ctlButton = this.Controls[this.Controls.Count - 1];
+          ctlButton = Controls[Controls.Count - 1];
           m_booEnableDownScroll = (ctlButton.Bounds.Left < 0);
         }
       }
@@ -423,7 +424,7 @@ namespace Fomm.Controls
           return;
         }
 
-        if (this.Controls.Count == 0)
+        if (Controls.Count == 0)
         {
           return;
         }
@@ -431,18 +432,18 @@ namespace Fomm.Controls
         Control ctlButton = null;
         if (m_otnDirection == Orientation.Vertical)
         {
-          ctlButton = this.Controls[0];
-          m_booNeedScroll = (ctlButton.Bounds.Bottom > this.Height);
+          ctlButton = Controls[0];
+          m_booNeedScroll = (ctlButton.Bounds.Bottom > Height);
 
-          ctlButton = this.Controls[this.Controls.Count - 1];
+          ctlButton = Controls[Controls.Count - 1];
           m_booNeedScroll = (m_booNeedScroll || (ctlButton.Bounds.Top < 0));
         }
         else
         {
-          ctlButton = this.Controls[0];
-          m_booNeedScroll = (ctlButton.Bounds.Right > this.Width);
+          ctlButton = Controls[0];
+          m_booNeedScroll = (ctlButton.Bounds.Right > Width);
 
-          ctlButton = this.Controls[this.Controls.Count - 1];
+          ctlButton = Controls[Controls.Count - 1];
           m_booNeedScroll = (m_booNeedScroll || (ctlButton.Bounds.Left < 0));
         }
 
@@ -766,15 +767,15 @@ namespace Fomm.Controls
     /// </summary>
     public PanelToolStrip()
     {
-      this.BackColor = m_pnlToolStrip.BackColor;
-      this.Controls.Add(m_pnlToolStrip);
+      BackColor = m_pnlToolStrip.BackColor;
+      Controls.Add(m_pnlToolStrip);
       m_pnlToolStrip.ControlAdded += new ControlEventHandler(m_pnlToolStrip_ControlAdded);
-      m_pnlToolStrip.Width = this.Width;
-      m_pnlToolStrip.Height = this.Height;
+      m_pnlToolStrip.Width = Width;
+      m_pnlToolStrip.Height = Height;
 
       m_butDown = new Button();
       m_butDown.Text = "";
-      m_butDown.Image = Properties.Resources.arrow_down_black_small;
+      m_butDown.Image = Resources.arrow_down_black_small;
       m_butDown.TextImageRelation = TextImageRelation.ImageAboveText;
       m_butDown.FlatStyle = m_pnlToolStrip.ButtonFlatStyle;
       m_butDown.AutoSize = true;
@@ -788,7 +789,7 @@ namespace Fomm.Controls
 
       m_butUp = new Button();
       m_butUp.Text = "";
-      m_butUp.Image = Properties.Resources.arrow_up_black_small;
+      m_butUp.Image = Resources.arrow_up_black_small;
       m_butUp.TextImageRelation = TextImageRelation.ImageAboveText;
       m_butUp.FlatStyle = m_pnlToolStrip.ButtonFlatStyle;
       m_butUp.AutoSize = true;
@@ -819,11 +820,11 @@ namespace Fomm.Controls
     {
       if (m_pnlToolStrip.Direction == Orientation.Horizontal)
       {
-        m_pnlToolStrip.Height = this.Height + SystemInformation.HorizontalScrollBarHeight;
+        m_pnlToolStrip.Height = Height + SystemInformation.HorizontalScrollBarHeight;
       }
       else
       {
-        m_pnlToolStrip.Width = this.Width + SystemInformation.VerticalScrollBarWidth;
+        m_pnlToolStrip.Width = Width + SystemInformation.VerticalScrollBarWidth;
       }
       m_pnlToolStrip.addToolStripItem(p_pdiItem);
     }
@@ -874,7 +875,7 @@ namespace Fomm.Controls
     /// </summary>
     protected void positionToolStripPanel()
     {
-      this.SuspendLayout();
+      SuspendLayout();
 
       Int32 intButtonSpace = 0;
       if (m_pnlToolStrip.Direction == Orientation.Horizontal)
@@ -895,9 +896,9 @@ namespace Fomm.Controls
         }
 
         m_pnlToolStrip.Height = (m_pnlToolStrip.NeedScroll)
-          ? this.Height + SystemInformation.HorizontalScrollBarHeight
-          : this.Height;
-        m_pnlToolStrip.Width = this.Width - intButtonSpace;
+          ? Height + SystemInformation.HorizontalScrollBarHeight
+          : Height;
+        m_pnlToolStrip.Width = Width - intButtonSpace;
         m_pnlToolStrip.Top = 0;
       }
       else
@@ -918,13 +919,13 @@ namespace Fomm.Controls
         }
 
         m_pnlToolStrip.Width = (m_pnlToolStrip.NeedScroll)
-          ? this.Width + SystemInformation.VerticalScrollBarWidth
-          : this.Width;
-        m_pnlToolStrip.Height = this.Height - intButtonSpace;
+          ? Width + SystemInformation.VerticalScrollBarWidth
+          : Width;
+        m_pnlToolStrip.Height = Height - intButtonSpace;
         m_pnlToolStrip.Left = 0;
       }
 
-      this.ResumeLayout();
+      ResumeLayout();
     }
 
     #endregion
@@ -942,23 +943,23 @@ namespace Fomm.Controls
     {
       base.OnResize(eventargs);
 
-      this.SuspendLayout();
+      SuspendLayout();
 
       if (m_pnlToolStrip.Direction == Orientation.Horizontal)
       {
-        m_pnlToolStrip.Height = this.Height + SystemInformation.HorizontalScrollBarHeight;
-        m_pnlToolStrip.Width = this.Width;
+        m_pnlToolStrip.Height = Height + SystemInformation.HorizontalScrollBarHeight;
+        m_pnlToolStrip.Width = Width;
       }
       else
       {
-        m_pnlToolStrip.Width = this.Width + SystemInformation.VerticalScrollBarWidth;
-        m_pnlToolStrip.Height = this.Height;
+        m_pnlToolStrip.Width = Width + SystemInformation.VerticalScrollBarWidth;
+        m_pnlToolStrip.Height = Height;
       }
 
       m_pnlToolStrip.checkScroll();
       checkScroll();
 
-      this.ResumeLayout();
+      ResumeLayout();
     }
 
     /// <summary>

@@ -124,7 +124,7 @@ namespace Fomm.Util
     {
       if (m_cmpComparer != null)
       {
-        for (Int32 i = p_intStartIndex; i < this.Count; i++)
+        for (Int32 i = p_intStartIndex; i < Count; i++)
         {
           if (m_cmpComparer.Compare(this[i], p_tItem) == 0)
           {
@@ -305,7 +305,7 @@ namespace Fomm.Util
     {
       if (m_cmpComparer != null)
       {
-        for (Int32 i = this.Count - 1; i > 0; i--)
+        for (Int32 i = Count - 1; i > 0; i--)
         {
           if (m_cmpComparer.Compare(this[i], p_tItem) == 0)
           {

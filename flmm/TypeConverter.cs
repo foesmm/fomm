@@ -1,33 +1,35 @@
+using System.Runtime.InteropServices;
+
 namespace Fomm
 {
-  [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Explicit)]
+  [StructLayout(LayoutKind.Explicit)]
   internal struct TypeConverter
   {
-    [System.Runtime.InteropServices.FieldOffset(0)]
+    [FieldOffset(0)]
     private uint i;
 
-    [System.Runtime.InteropServices.FieldOffset(0)]
+    [FieldOffset(0)]
     private int si;
 
-    [System.Runtime.InteropServices.FieldOffset(0)]
+    [FieldOffset(0)]
     private ushort s;
 
-    [System.Runtime.InteropServices.FieldOffset(0)]
+    [FieldOffset(0)]
     private short ss;
 
-    [System.Runtime.InteropServices.FieldOffset(0)]
+    [FieldOffset(0)]
     private float f;
 
-    [System.Runtime.InteropServices.FieldOffset(0)]
+    [FieldOffset(0)]
     private byte b1;
 
-    [System.Runtime.InteropServices.FieldOffset(1)]
+    [FieldOffset(1)]
     private byte b2;
 
-    [System.Runtime.InteropServices.FieldOffset(2)]
+    [FieldOffset(2)]
     private byte b3;
 
-    [System.Runtime.InteropServices.FieldOffset(3)]
+    [FieldOffset(3)]
     private byte b4;
 
     private static TypeConverter tc;

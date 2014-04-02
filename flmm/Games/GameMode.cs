@@ -302,13 +302,13 @@ class Script : GenericBaseScript {
       int i = 0;
       LoadOrderInfo loi;
 
-      this.fullModList.Clear();
+      fullModList.Clear();
 
       foreach (string s in PluginManager.OrderedPluginList)
       {
         loi.active = PluginManager.IsPluginActive(Path.Combine(Program.GameMode.PluginsPath, s));
         loi.idx = i;
-        this.fullModList.Add(Path.GetFileName(s).ToLower(), loi);
+        fullModList.Add(Path.GetFileName(s).ToLower(), loi);
         i++;
       }
 
@@ -353,11 +353,11 @@ class Script : GenericBaseScript {
 
         for (i = 0; i < masters.Count; i++)
         {
-          if (this.fullModList.ContainsKey(masters[i]))
+          if (fullModList.ContainsKey(masters[i]))
           {
-            if (this.fullModList[masters[i]].active)
+            if (fullModList[masters[i]].active)
             {
-              if (this.fullModList[masters[i]].idx > this.fullModList[name.ToLower()].idx)
+              if (fullModList[masters[i]].idx > fullModList[name.ToLower()].idx)
               {
                 // Master present and active but in wrong order.
                 ret = 3;

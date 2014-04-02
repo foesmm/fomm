@@ -1,6 +1,13 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Diagnostics;
 using System.IO;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using Fomm.Properties;
 using Fomm.SharpZipLib.Zip.Compression;
 
 namespace Fomm.Games.Fallout3.Tools.BSA
@@ -10,7 +17,7 @@ namespace Fomm.Games.Fallout3.Tools.BSA
     internal BSABrowser()
     {
       InitializeComponent();
-      this.Icon = Fomm.Properties.Resources.fomm02;
+      Icon = Resources.fomm02;
       string path = Properties.Settings.Default.fallout3LastBSAUnpackPath;
       if (!String.IsNullOrEmpty(path))
       {
@@ -162,7 +169,7 @@ namespace Fomm.Games.Fallout3.Tools.BSA
       FileType
     }
 
-    private class BSASorter : System.Collections.IComparer
+    private class BSASorter : IComparer
     {
       internal static BSASortOrder order = 0;
 
@@ -211,10 +218,10 @@ namespace Fomm.Games.Fallout3.Tools.BSA
     {
       try
       {
-        br = new BinaryReader(File.OpenRead(path), System.Text.Encoding.Default);
+        br = new BinaryReader(File.OpenRead(path), Encoding.Default);
         //if(Program.ReadCString(br)!="BSA") throw new fommException("File was not a valid BSA archive");
         uint type = br.ReadUInt32();
-        System.Text.StringBuilder sb = new System.Text.StringBuilder(64);
+        StringBuilder sb = new StringBuilder(64);
         if (type != 0x00415342 && type != 0x00000100)
         {
           //Might be a fallout 2 dat
@@ -555,7 +562,7 @@ namespace Fomm.Games.Fallout3.Tools.BSA
           case ".xml":
             string path = Program.CreateTempDirectory();
             fe.Extract(Path.Combine(path, fe.FileName), false, br, ContainsFileNameBlobs);
-            System.Diagnostics.Process.Start(Path.Combine(path, fe.FileName));
+            Process.Start(Path.Combine(path, fe.FileName));
             break;
           default:
             MessageBox.Show("Filetype not supported.\n" +
@@ -580,7 +587,7 @@ namespace Fomm.Games.Fallout3.Tools.BSA
       fe.Extract(path, false, br, ContainsFileNameBlobs);
 
       DataObject obj = new DataObject();
-      System.Collections.Specialized.StringCollection sc = new System.Collections.Specialized.StringCollection();
+      StringCollection sc = new StringCollection();
       sc.Add(path);
       obj.SetFileDropList(sc);
       lvFiles.DoDragDrop(obj, DragDropEffects.Move);
@@ -595,10 +602,10 @@ namespace Fomm.Games.Fallout3.Tools.BSA
       string str = tbSearch.Text;
       if (cbRegex.Checked && str.Length > 0)
       {
-        System.Text.RegularExpressions.Regex regex;
+        Regex regex;
         try
         {
-          regex = new System.Text.RegularExpressions.Regex(str, System.Text.RegularExpressions.RegexOptions.Singleline);
+          regex = new Regex(str, RegexOptions.Singleline);
         }
         catch
         {
@@ -606,8 +613,8 @@ namespace Fomm.Games.Fallout3.Tools.BSA
         }
         lvFiles.BeginUpdate();
         lvFiles.Items.Clear();
-        System.Collections.Generic.List<ListViewItem> lvis =
-          new System.Collections.Generic.List<ListViewItem>(Files.Length);
+        List<ListViewItem> lvis =
+          new List<ListViewItem>(Files.Length);
         for (int i = 0; i < lvItems.Length; i++)
         {
           if (regex.IsMatch(lvItems[i].Text))
@@ -629,8 +636,8 @@ namespace Fomm.Games.Fallout3.Tools.BSA
         }
         else
         {
-          System.Collections.Generic.List<ListViewItem> lvis =
-            new System.Collections.Generic.List<ListViewItem>(Files.Length);
+          List<ListViewItem> lvis =
+            new List<ListViewItem>(Files.Length);
           for (int i = 0; i < lvItems.Length; i++)
           {
             if (lvItems[i].Text.Contains(str))
@@ -651,8 +658,8 @@ namespace Fomm.Games.Fallout3.Tools.BSA
         return;
       }
       tvFolders.Nodes[0].Nodes.Clear();
-      System.Collections.Generic.Dictionary<string, TreeNode> nodes =
-        new System.Collections.Generic.Dictionary<string, TreeNode>();
+      Dictionary<string, TreeNode> nodes =
+        new Dictionary<string, TreeNode>();
       lvAllItems = (ListViewItem[]) lvItems.Clone();
       foreach (ListViewItem lvi in lvAllItems)
       {
@@ -697,8 +704,8 @@ namespace Fomm.Games.Fallout3.Tools.BSA
       }
       else
       {
-        System.Collections.Generic.List<ListViewItem> lvis =
-          new System.Collections.Generic.List<ListViewItem>(lvAllItems.Length);
+        List<ListViewItem> lvis =
+          new List<ListViewItem>(lvAllItems.Length);
         foreach (ListViewItem lvi in lvAllItems)
         {
           if (lvi.Text.StartsWith(s))

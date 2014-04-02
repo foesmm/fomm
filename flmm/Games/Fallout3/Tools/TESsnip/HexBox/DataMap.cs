@@ -101,8 +101,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 
       void IEnumerator.Reset()
       {
-        this._index = -1;
-        this._current = null;
+        _index = -1;
+        _current = null;
       }
 
       public void Dispose()

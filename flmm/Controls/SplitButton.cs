@@ -36,9 +36,9 @@ namespace Fomm.Controls
         {
           m_booShowSplit = value;
           Invalidate();
-          if (this.Parent != null)
+          if (Parent != null)
           {
-            this.Parent.PerformLayout();
+            Parent.PerformLayout();
           }
         }
       }
@@ -164,7 +164,7 @@ namespace Fomm.Controls
     /// </summary>
     public SplitButton()
     {
-      this.AutoSize = true;
+      AutoSize = true;
     }
 
     #endregion
@@ -259,7 +259,7 @@ namespace Fomm.Controls
     /// <param name="e">A <see cref="KeyEventArgs"/> describing the event arguments.</param>
     protected override void OnKeyUp(KeyEventArgs kevent)
     {
-      if (kevent.KeyCode.Equals(Keys.Space) && (Control.MouseButtons == MouseButtons.None))
+      if (kevent.KeyCode.Equals(Keys.Space) && (MouseButtons == MouseButtons.None))
       {
         State = PushButtonState.Normal;
       }
@@ -416,7 +416,7 @@ namespace Fomm.Controls
       }
 
       Graphics gphGraphics = pevent.Graphics;
-      Rectangle rctBounds = this.ClientRectangle;
+      Rectangle rctBounds = ClientRectangle;
 
       // draw the button background as according to the current state.
       if (State != PushButtonState.Pressed && IsDefault && !Application.RenderWithVisualStyles)
@@ -486,7 +486,7 @@ namespace Fomm.Controls
         tffFormatFlags = tffFormatFlags | TextFormatFlags.HidePrefix;
       }
 
-      if (!string.IsNullOrEmpty(this.Text))
+      if (!string.IsNullOrEmpty(Text))
       {
         TextRenderer.DrawText(gphGraphics, Text, Font, rctFocusRect, SystemColors.ControlText, tffFormatFlags);
       }
@@ -571,7 +571,7 @@ namespace Fomm.Controls
       SetButtonDrawState();
       if (e.CloseReason == ToolStripDropDownCloseReason.AppClicked)
       {
-        m_booSkipNextOpen = (m_rctDropDownRectangle.Contains(this.PointToClient(Cursor.Position)));
+        m_booSkipNextOpen = (m_rctDropDownRectangle.Contains(PointToClient(Cursor.Position)));
       }
     }
 

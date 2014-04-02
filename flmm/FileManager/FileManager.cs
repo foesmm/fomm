@@ -233,7 +233,7 @@ namespace Fomm.FileManager
           lviFile.SubItems.Add(((Int64) Math.Ceiling(fliFile.Length/1024.0)) + " KB");
           if (!imlFiles.Images.ContainsKey(fliFile.Extension))
           {
-            imlFiles.Images.Add(fliFile.Extension, System.Drawing.Icon.ExtractAssociatedIcon(fliFile.FullName));
+            imlFiles.Images.Add(fliFile.Extension, Icon.ExtractAssociatedIcon(fliFile.FullName));
           }
         }
         else

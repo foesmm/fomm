@@ -1857,7 +1857,7 @@ namespace Fomm.SharpZipLib.Zip
       }
       else
       {
-        workFile = ZipFile.Create(archiveStorage_.GetTemporaryOutput());
+        workFile = Create(archiveStorage_.GetTemporaryOutput());
         workFile.UseZip64 = UseZip64;
 
         if (key != null)

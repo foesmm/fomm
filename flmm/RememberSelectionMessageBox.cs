@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using Fomm.Properties;
 
 namespace Fomm
 {
@@ -83,16 +84,16 @@ namespace Fomm
       switch (p_mbiIcon)
       {
         case MessageBoxIcon.Information:
-          pbxIcon.Image = Properties.Resources.info;
+          pbxIcon.Image = Resources.info;
           break;
         case MessageBoxIcon.Error:
-          pbxIcon.Image = Properties.Resources.error;
+          pbxIcon.Image = Resources.error;
           break;
         case MessageBoxIcon.Warning:
-          pbxIcon.Image = Properties.Resources.Warning;
+          pbxIcon.Image = Resources.Warning;
           break;
         case MessageBoxIcon.Question:
-          pbxIcon.Image = Properties.Resources.help;
+          pbxIcon.Image = Resources.help;
           break;
         case MessageBoxIcon.None:
           booShowIcon = false;
@@ -108,7 +109,7 @@ namespace Fomm
 
       Text = p_strCaption;
 
-      Graphics gphGraphics = Graphics.FromHwnd(this.Handle);
+      Graphics gphGraphics = Graphics.FromHwnd(Handle);
       albPrompt.Text = p_strMessage;
       SizeF szeTextSize = gphGraphics.MeasureString(albPrompt.Text, albPrompt.Font);
 
@@ -147,7 +148,7 @@ namespace Fomm
           butCancel.TabIndex = 6;
           pnlButtons.Controls.Add(butCancel);
           intLastButtonLeft = butCancel.Left;
-          this.CancelButton = butCancel;
+          CancelButton = butCancel;
           break;
       }
 
@@ -167,7 +168,7 @@ namespace Fomm
           pnlButtons.Controls.Add(butNo);
           if (p_mbbButtons == MessageBoxButtons.YesNo)
           {
-            this.CancelButton = butNo;
+            CancelButton = butNo;
           }
           break;
       }
@@ -186,7 +187,7 @@ namespace Fomm
           butYes.TabIndex = 4;
           intLastButtonLeft = butYes.Left;
           pnlButtons.Controls.Add(butYes);
-          this.AcceptButton = butYes;
+          AcceptButton = butYes;
           break;
       }
 
@@ -204,7 +205,7 @@ namespace Fomm
           butOk.TabIndex = 3;
           intLastButtonLeft = butOk.Left;
           pnlButtons.Controls.Add(butOk);
-          this.AcceptButton = butOk;
+          AcceptButton = butOk;
           break;
       }
 
@@ -221,7 +222,7 @@ namespace Fomm
           butIgnore.TabIndex = 2;
           intLastButtonLeft = butIgnore.Left;
           pnlButtons.Controls.Add(butIgnore);
-          this.CancelButton = butIgnore;
+          CancelButton = butIgnore;
           break;
       }
 
@@ -239,7 +240,7 @@ namespace Fomm
           butRetry.TabIndex = 1;
           intLastButtonLeft = butRetry.Left;
           pnlButtons.Controls.Add(butRetry);
-          this.AcceptButton = butRetry;
+          AcceptButton = butRetry;
           break;
       }
 
@@ -256,7 +257,7 @@ namespace Fomm
           butAbort.TabIndex = 0;
           intLastButtonLeft = butAbort.Left;
           pnlButtons.Controls.Add(butAbort);
-          this.AcceptButton = butAbort;
+          AcceptButton = butAbort;
           break;
       }
     }

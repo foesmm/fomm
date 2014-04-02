@@ -41,14 +41,14 @@ namespace Fomm.Controls
       : base()
     {
       // Reduce flicker
-      this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+      SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 
       // This listview was designed for a details view with gridlines enabled
       base.AllowDrop = true;
-      this.FullRowSelect = true;
-      this.ShowGroups = false;
-      this.Sorting = SortOrder.None;
-      this.View = View.Details;
+      FullRowSelect = true;
+      ShowGroups = false;
+      Sorting = SortOrder.None;
+      View = View.Details;
     }
 
     #endregion
@@ -89,7 +89,7 @@ namespace Fomm.Controls
     /// <param name="Y">Position (Y) of the line</param>
     private void DrawInsertionLine(int X1, int X2, int Y)
     {
-      using (Graphics g = this.CreateGraphics())
+      using (Graphics g = CreateGraphics())
       {
         g.DrawLine(new Pen(Color.Red), X1, Y, X2 - 1, Y);
 
@@ -120,7 +120,7 @@ namespace Fomm.Controls
     /// <returns>true if location is in the top half of itemToCheck, otherwise false</returns>
     private bool IsPointInTopHalfOfItem(Point location, ListViewItem itemToCheck)
     {
-      Point pt = this.PointToClient(location);
+      Point pt = PointToClient(location);
       Rectangle rc = itemToCheck.GetBounds(ItemBoundsPortion.Entire);
       return (pt.Y < (rc.Top + (rc.Height/2)));
     }
@@ -135,10 +135,10 @@ namespace Fomm.Controls
     /// </returns>
     private ListViewItem GetItemAtPoint(Point location)
     {
-      Point pt = this.PointToClient(location);
+      Point pt = PointToClient(location);
       int lastItemBottom = Math.Min(pt.Y,
-                                    this.Items[this.Items.Count - 1].GetBounds(ItemBoundsPortion.Entire).Bottom - 1);
-      return this.GetItemAt(0, lastItemBottom);
+                                    Items[Items.Count - 1].GetBounds(ItemBoundsPortion.Entire).Bottom - 1);
+      return GetItemAt(0, lastItemBottom);
     }
 
     /// <summary>
@@ -146,9 +146,9 @@ namespace Fomm.Controls
     /// </summary>
     private void ResetDragIndicator()
     {
-      this.LineAfter = -1;
-      this.LineBefore = -1;
-      this.Invalidate();
+      LineAfter = -1;
+      LineBefore = -1;
+      Invalidate();
     }
 
     /// <summary>
@@ -156,8 +156,8 @@ namespace Fomm.Controls
     /// </summary>
     private void ResetDragItems()
     {
-      this._ItemsToMove.Clear();
-      this.SelectedItems.Clear();
+      _ItemsToMove.Clear();
+      SelectedItems.Clear();
     }
 
     #endregion
@@ -204,20 +204,20 @@ namespace Fomm.Controls
 
     protected override void OnItemDrag(ItemDragEventArgs e)
     {
-      if ((this.SelectedItems.Count == 0) || (e.Button != MouseButtons.Left) || !allowDrop)
+      if ((SelectedItems.Count == 0) || (e.Button != MouseButtons.Left) || !allowDrop)
       {
         return;
       }
 
       ResetDragIndicator();
 
-      this._ItemsToMove.Clear();
-      for (int index = 0; index < this.SelectedItems.Count; index++)
+      _ItemsToMove.Clear();
+      for (int index = 0; index < SelectedItems.Count; index++)
       {
-        this._ItemsToMove.Add(this.SelectedItems[index]);
+        _ItemsToMove.Add(SelectedItems[index]);
       }
 
-      base.DoDragDrop(this._DragKey, DragDropEffects.Move);
+      base.DoDragDrop(_DragKey, DragDropEffects.Move);
     }
 
     protected override void OnDragOver(DragEventArgs drgevent)
@@ -239,22 +239,22 @@ namespace Fomm.Controls
 
       if (IsPointInTopHalfOfItem(pt, itemOver))
       {
-        if (this.LineBefore != itemOver.Index)
+        if (LineBefore != itemOver.Index)
         {
-          this.LineBefore = itemOver.Index;
-          this.LineAfter = -1;
+          LineBefore = itemOver.Index;
+          LineAfter = -1;
           itemOver.EnsureVisible();
-          this.Invalidate();
+          Invalidate();
         }
       }
       else
       {
-        if (this.LineAfter != itemOver.Index)
+        if (LineAfter != itemOver.Index)
         {
-          this.LineBefore = -1;
-          this.LineAfter = itemOver.Index;
+          LineBefore = -1;
+          LineAfter = itemOver.Index;
           itemOver.EnsureVisible();
-          this.Invalidate();
+          Invalidate();
         }
       }
 
@@ -291,8 +291,8 @@ namespace Fomm.Controls
         insertIndex = itemOver.Index + 1;
       }
 
-      Int32 intSelectionStartIndex = this.Items.IndexOf(_ItemsToMove[0]);
-      Int32 intSelectionEndIndex = this.Items.IndexOf(_ItemsToMove[_ItemsToMove.Count - 1]);
+      Int32 intSelectionStartIndex = Items.IndexOf(_ItemsToMove[0]);
+      Int32 intSelectionEndIndex = Items.IndexOf(_ItemsToMove[_ItemsToMove.Count - 1]);
       //if we are dragging to a point in the selection being dragged, don't bother as the order won't change
       if ((insertIndex >= intSelectionStartIndex) && (insertIndex <= intSelectionEndIndex))
       {
@@ -306,15 +306,15 @@ namespace Fomm.Controls
       }
 
       // Remove old items
-      for (int index = 0; index < this._ItemsToMove.Count; index++)
+      for (int index = 0; index < _ItemsToMove.Count; index++)
       {
-        this.Items.Remove(this._ItemsToMove[index]);
+        Items.Remove(_ItemsToMove[index]);
       }
 
       // Insert new items
-      for (int index = 0; index < this._ItemsToMove.Count; index++)
+      for (int index = 0; index < _ItemsToMove.Count; index++)
       {
-        this.Items.Insert(Math.Min(insertIndex + index, this.Items.Count), _ItemsToMove[index]);
+        Items.Insert(Math.Min(insertIndex + index, Items.Count), _ItemsToMove[index]);
       }
 
       ResetDragItems();
@@ -329,7 +329,7 @@ namespace Fomm.Controls
 
     protected override void OnDragEnter(DragEventArgs drgevent)
     {
-      if ((this._ItemsToMove.Count > 0) && _PauseItemDrag)
+      if ((_ItemsToMove.Count > 0) && _PauseItemDrag)
       {
         ResetDragIndicator();
         drgevent.Effect = DragDropEffects.Move;

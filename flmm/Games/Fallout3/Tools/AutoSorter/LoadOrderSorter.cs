@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace Fomm.Games.Fallout3.Tools.AutoSorter
 {
@@ -199,7 +200,7 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
 
     public string GenerateReport(string[] plugins, bool[] active, bool[] corrupt, string[][] masters)
     {
-      System.Text.StringBuilder sb = new System.Text.StringBuilder(plugins.Length*32);
+      StringBuilder sb = new StringBuilder(plugins.Length*32);
       string[] lplugins = new string[plugins.Length];
       for (int i = 0; i < plugins.Length; i++)
       {

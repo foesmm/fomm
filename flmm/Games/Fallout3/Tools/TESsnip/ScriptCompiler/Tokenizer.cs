@@ -62,17 +62,17 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
     public Token(TokenType type, string token)
     {
       this.type = type;
-      this.utoken = token;
+      utoken = token;
       this.token = token;
-      this.keyword = Keywords.NotAKeyword;
+      keyword = Keywords.NotAKeyword;
     }
 
     public Token(TokenType type, string ltoken, string token)
     {
       this.type = type;
-      this.utoken = token;
+      utoken = token;
       this.token = ltoken;
-      this.keyword = Keywords.NotAKeyword;
+      keyword = Keywords.NotAKeyword;
     }
 
     public Token(TokenType type, Keywords keyword)
@@ -87,8 +87,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
       }
       this.type = type;
       this.keyword = keyword;
-      this.token = keyword.ToString();
-      this.utoken = this.token;
+      token = keyword.ToString();
+      utoken = token;
     }
 
     public override string ToString()

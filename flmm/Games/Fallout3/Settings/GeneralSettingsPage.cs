@@ -100,7 +100,7 @@ namespace Fomm.Games.Fallout3.Settings
     private void butSelectWorkingDirectory_Click(object sender, EventArgs e)
     {
       fbdWorkingDirectory.SelectedPath = tbxWorkingDirectory.Text;
-      if (fbdWorkingDirectory.ShowDialog(this.FindForm()) == DialogResult.OK)
+      if (fbdWorkingDirectory.ShowDialog(FindForm()) == DialogResult.OK)
       {
         tbxWorkingDirectory.Text = fbdWorkingDirectory.SelectedPath;
       }

@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
+using Fomm.Properties;
 
 namespace Fomm
 {
@@ -11,7 +12,7 @@ namespace Fomm
     /// <summary>
     /// Required designer variable.
     /// </summary>
-    private System.ComponentModel.IContainer components = null;
+    private IContainer components = null;
 
     /// <summary>
     /// Clean up any resources being used.
@@ -114,10 +115,10 @@ namespace Fomm
 
     #endregion
 
-    private System.Windows.Forms.ProgressBar pbProgress;
-    private System.Windows.Forms.ProgressBar pbRatio;
-    private System.Windows.Forms.Label lProgress;
-    private System.Windows.Forms.Label lRatio;
+    private ProgressBar pbProgress;
+    private ProgressBar pbRatio;
+    private Label lProgress;
+    private Label lRatio;
 
     #endregion
 
@@ -127,7 +128,7 @@ namespace Fomm
     internal ProgressForm(string title, bool ShowRatio)
     {
       InitializeComponent();
-      this.Icon = Fomm.Properties.Resources.fomm02;
+      Icon = Resources.fomm02;
       Application.UseWaitCursor = true;
       Text = title;
       if (!ShowRatio)
@@ -137,7 +138,7 @@ namespace Fomm
         pbProgress.Height += 21;
         lProgress.Top += 10;
       }
-      this.Closing += new CancelEventHandler(ProgressForm_FormClosing);
+      Closing += new CancelEventHandler(ProgressForm_FormClosing);
     }
 
     internal void SetProgressRange(int high)

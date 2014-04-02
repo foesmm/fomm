@@ -109,7 +109,7 @@ namespace Fomm.PackageManager.Controls
       wbrBrowser.AllowWebBrowserDrop = false;
       wbrBrowser.AllowNavigation = false;
       wbrBrowser.DocumentText = xedReadme.Text;
-      frmHTMLPreview.ShowDialog(this.FindForm());
+      frmHTMLPreview.ShowDialog(FindForm());
     }
 
     /// <summary>

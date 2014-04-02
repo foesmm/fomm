@@ -106,9 +106,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
       /// </summary>
       private void updateLayout()
       {
-        using (Graphics g = this.CreateGraphics())
+        using (Graphics g = CreateGraphics())
         {
-          this.Size = g.MeasureString(m_lblLabel.Text, m_lblLabel.Font).ToSize();
+          Size = g.MeasureString(m_lblLabel.Text, m_lblLabel.Font).ToSize();
         }
       }
 
@@ -124,10 +124,10 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
         if (!m_booPaintOnce)
         {
           m_booPaintOnce = true;
-          this.Visible = false;
-          this.Parent.Invalidate(this.Bounds);
-          this.Parent.Update();
-          this.Visible = true;
+          Visible = false;
+          Parent.Invalidate(Bounds);
+          Parent.Update();
+          Visible = true;
           return;
         }
         else
@@ -135,8 +135,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
           m_booPaintOnce = false;
           using (Graphics g = e.Graphics)
           {
-            SolidBrush brush = new SolidBrush(this.ForeColor);
-            g.DrawString(this.Text, this.Font, brush, 1, 1);
+            SolidBrush brush = new SolidBrush(ForeColor);
+            g.DrawString(Text, Font, brush, 1, 1);
           }
         }
       }
@@ -299,8 +299,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// </summary>
     public HeaderPanel()
     {
-      this.DoubleBuffered = true;
-      this.SuspendLayout();
+      DoubleBuffered = true;
+      SuspendLayout();
       Controls.Add(m_pbxImage);
       Controls.Add(m_pbxGradient);
       Controls.Add(m_tlbLabel);
@@ -308,7 +308,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
       m_pbxGradient.Dock = DockStyle.Fill;
       m_pbxGradient.SizeMode = PictureBoxSizeMode.StretchImage;
       m_booShowFade = !String.IsNullOrEmpty(m_strImageLocation) || (m_bmpOriginalImage != null);
-      this.ResumeLayout();
+      ResumeLayout();
       updateLayout();
     }
 
@@ -319,11 +319,11 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// </summary>
     private void updateLayout()
     {
-      this.SuspendLayout();
+      SuspendLayout();
       m_pbxImage.Dock = (m_tpsPosition == TextPosition.Left) ? DockStyle.Right : DockStyle.Left;
       m_pbxGradient.BringToFront();
       loadImage();
-      m_tlbLabel.Top = (this.ClientSize.Height - m_tlbLabel.Height)/2;
+      m_tlbLabel.Top = (ClientSize.Height - m_tlbLabel.Height)/2;
       switch (m_tpsPosition)
       {
         case TextPosition.Left:
@@ -335,12 +335,12 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
           m_tlbLabel.Anchor = AnchorStyles.Top | AnchorStyles.Left;
           break;
         default:
-          m_tlbLabel.Left = this.ClientSize.Width - m_tlbLabel.Width - 15;
+          m_tlbLabel.Left = ClientSize.Width - m_tlbLabel.Width - 15;
           m_tlbLabel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
           break;
       }
       m_tlbLabel.BringToFront();
-      this.ResumeLayout();
+      ResumeLayout();
 
       Fade();
     }
@@ -355,7 +355,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     protected override void OnFontChanged(EventArgs e)
     {
       base.OnFontChanged(e);
-      m_tlbLabel.Font = this.Font;
+      m_tlbLabel.Font = Font;
       updateLayout();
     }
 
@@ -406,7 +406,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
         m_bmpOriginalImage = new Bitmap(120, 90);
         using (Graphics g = Graphics.FromImage(m_bmpOriginalImage))
         {
-          g.FillRectangle(new SolidBrush(this.BackColor), 0, 0, 120, 90);
+          g.FillRectangle(new SolidBrush(BackColor), 0, 0, 120, 90);
         }
       }
       float fltScale = (float) pbxImage.ClientSize.Height/(float) m_bmpOriginalImage.Height;

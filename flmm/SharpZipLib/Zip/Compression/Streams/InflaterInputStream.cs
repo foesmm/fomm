@@ -199,7 +199,7 @@ namespace Fomm.SharpZipLib.Zip.Compression.Streams
       }
 
       this.baseInputStream = baseInputStream;
-      this.inf = inflater;
+      inf = inflater;
 
       inputBuffer = new InflaterInputBuffer(baseInputStream, bufferSize);
     }

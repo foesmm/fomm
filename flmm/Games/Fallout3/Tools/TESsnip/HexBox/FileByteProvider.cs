@@ -23,7 +23,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
       {
         get
         {
-          return (byte) this.Dictionary[index];
+          return (byte) Dictionary[index];
         }
         set
         {

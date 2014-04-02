@@ -97,7 +97,7 @@ namespace Fomm.PackageManager
       {
         return false;
       }
-      return this.Source.Equals(other.Source);
+      return Source.Equals(other.Source);
     }
 
     #endregion

@@ -1,6 +1,10 @@
 using System;
+using System.Drawing;
+using System.Globalization;
+using System.Text;
 using System.Windows.Forms;
 using System.Collections.Generic;
+using Fomm.Properties;
 
 namespace Fomm.Games.Fallout3.Tools.TESsnip
 {
@@ -39,7 +43,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
       public bTag(TextBox form, TextBox edid)
       {
-        this.formID = form;
+        formID = form;
         this.edid = edid;
       }
     }
@@ -94,7 +98,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         CheckBox cb = new CheckBox();
         cb.Text = "Use this value?";
         panel1.Controls.Add(cb);
-        cb.Location = new System.Drawing.Point(10, ypos);
+        cb.Location = new Point(10, ypos);
         ypos += 24;
         cb.Tag = new cbTag(es.group, tb);
         if (CurrentGroup != es.group)
@@ -112,7 +116,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         CheckBox cb = new CheckBox();
         cb.Text = "Use this value?";
         panel1.Controls.Add(cb);
-        cb.Location = new System.Drawing.Point(10, ypos);
+        cb.Location = new Point(10, ypos);
         ypos += 24;
         cb.Tag = new repeatCbTag(tb, elements.Count);
         if (data == null)
@@ -198,7 +202,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       string tmp = es.type.ToString();
       l.Text = tmp + ": " + es.name + (es.desc != null ? (" (" + es.desc + ")") : "");
       panel1.Controls.Add(tb);
-      tb.Location = new System.Drawing.Point(10, ypos);
+      tb.Location = new Point(10, ypos);
       if (es.multiline)
       {
         tb.Multiline = true;
@@ -206,7 +210,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         tb.Height *= 6;
       }
       panel1.Controls.Add(l);
-      l.Location = new System.Drawing.Point(tb.Right + 10, ypos + 3);
+      l.Location = new Point(tb.Right + 10, ypos + 3);
       string[] options = null;
       if (es.type == ElementValueType.FormID)
       {
@@ -215,12 +219,12 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         b.Text = "FormID lookup";
         b.Click += new EventHandler(LookupFormID_Click);
         panel1.Controls.Add(b);
-        b.Location = new System.Drawing.Point(20, ypos);
+        b.Location = new Point(20, ypos);
         TextBox tb2 = new TextBox();
         tb2.Width += 200;
         tb2.ReadOnly = true;
         panel1.Controls.Add(tb2);
-        tb2.Location = new System.Drawing.Point(b.Right + 10, ypos);
+        tb2.Location = new Point(b.Right + 10, ypos);
         b.Tag = new bTag(tb, tb2);
         if (es.FormIDType != null)
         {
@@ -253,7 +257,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         cmb.ContextMenu = new ContextMenu();
         cmb.SelectedIndexChanged += new EventHandler(cb_SelectedIndexChanged);
         panel1.Controls.Add(cmb);
-        cmb.Location = new System.Drawing.Point(20, ypos);
+        cmb.Location = new Point(20, ypos);
       }
 
       fpanel1.Controls.Add(panel1);
@@ -264,7 +268,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
                                    dFormIDScan formIDScan)
     {
       InitializeComponent();
-      this.Icon = Fomm.Properties.Resources.fomm02;
+      Icon = Resources.fomm02;
       SuspendLayout();
       this.sr = sr;
       this.ss = ss;
@@ -416,7 +420,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     private void bSave_Click(object sender, EventArgs e)
     {
-      System.Collections.Generic.List<byte> bytes = new System.Collections.Generic.List<byte>();
+      List<byte> bytes = new List<byte>();
       for (int j = 0; j < boxes.Count; j++)
       {
         if (!boxes[j].Enabled)
@@ -476,7 +480,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
           case ElementValueType.FormID:
           {
             uint i;
-            if (!uint.TryParse(boxes[j].Text, System.Globalization.NumberStyles.AllowHexSpecifier, null, out i))
+            if (!uint.TryParse(boxes[j].Text, NumberStyles.AllowHexSpecifier, null, out i))
             {
               MessageBox.Show("Invalid formID: " + boxes[j].Text, "Error");
               return;
@@ -487,14 +491,14 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
           }
           case ElementValueType.String:
           {
-            byte[] conv = System.Text.Encoding.Default.GetBytes(boxes[j].Text);
+            byte[] conv = Encoding.Default.GetBytes(boxes[j].Text);
             bytes.AddRange(conv);
             bytes.Add(0);
             break;
           }
           case ElementValueType.fstring:
           {
-            byte[] conv = System.Text.Encoding.Default.GetBytes(boxes[j].Text);
+            byte[] conv = Encoding.Default.GetBytes(boxes[j].Text);
             bytes.AddRange(conv);
             break;
           }

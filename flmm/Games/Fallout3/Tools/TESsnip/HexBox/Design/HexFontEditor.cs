@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
 using System.Windows.Forms;
@@ -23,7 +24,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox.Design
     /// <summary>
     /// Edits the value
     /// </summary>
-    public override object EditValue(System.ComponentModel.ITypeDescriptorContext context, IServiceProvider provider,
+    public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider,
                                      object value)
     {
       this.value = value;
@@ -61,7 +62,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox.Design
       return value;
     }
 
-    public override UITypeEditorEditStyle GetEditStyle(System.ComponentModel.ITypeDescriptorContext context)
+    public override UITypeEditorEditStyle GetEditStyle(ITypeDescriptorContext context)
     {
       return UITypeEditorEditStyle.Modal;
     }

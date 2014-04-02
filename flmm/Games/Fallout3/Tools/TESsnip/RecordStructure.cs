@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Xml;
 
 namespace Fomm.Games.Fallout3.Tools.TESsnip
@@ -392,7 +393,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     public static Dictionary<string, RecordStructure> Records;
 
-    private static string xmlPath = System.IO.Path.Combine(Program.ProgrammeInfoDirectory,
+    private static string xmlPath = Path.Combine(Program.ProgrammeInfoDirectory,
                                                            "Fallout3\\TESsnip\\RecordStructure.xml");
 
     public static void Load()
@@ -406,7 +407,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         loaded = true;
       }
       XmlDocument doc = new XmlDocument();
-      doc.LoadXml(System.IO.File.ReadAllText(xmlPath));
+      doc.LoadXml(File.ReadAllText(xmlPath));
 
       XmlNode root = null;
       foreach (XmlNode n in doc.ChildNodes)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Drawing;
@@ -340,7 +341,7 @@ namespace Fomm.Controls
 
       #region IEnumerable Members
 
-      System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+      IEnumerator IEnumerable.GetEnumerator()
       {
         return m_lklNodes.GetEnumerator();
       }
@@ -393,7 +394,7 @@ namespace Fomm.Controls
     /// <param name="sender">The object that raised the event.</param>
     /// <param name="e">A <see cref="TreeNodeCollection.TreeNodeEventArgs"/> describing the event arguments.</param>
     private void m_tncSelectedNodes_ItemRemoved(object sender,
-                                                MultiSelectTreeView.TreeNodeCollection.TreeNodeEventArgs e)
+                                                TreeNodeCollection.TreeNodeEventArgs e)
     {
       e.TreeNode.BackColor = Color.Empty;
       e.TreeNode.ForeColor = Color.Empty;
@@ -407,7 +408,7 @@ namespace Fomm.Controls
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
     /// <param name="e">A <see cref="TreeNodeCollection.TreeNodeEventArgs"/> describing the event arguments.</param>
-    private void m_tncSelectedNodes_ItemAdded(object sender, MultiSelectTreeView.TreeNodeCollection.TreeNodeEventArgs e)
+    private void m_tncSelectedNodes_ItemAdded(object sender, TreeNodeCollection.TreeNodeEventArgs e)
     {
       e.TreeNode.BackColor = SystemColors.Highlight;
       e.TreeNode.ForeColor = SystemColors.HighlightText;

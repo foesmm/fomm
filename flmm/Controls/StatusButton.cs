@@ -50,7 +50,7 @@ namespace Fomm.Controls
     /// </summary>
     public StatusButton()
     {
-      this.Height = m_butButton.Height;
+      Height = m_butButton.Height;
       m_butButton.Click += new EventHandler(m_butButton_Click);
       m_butButton.Dock = DockStyle.Fill;
 

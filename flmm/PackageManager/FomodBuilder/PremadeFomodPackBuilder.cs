@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Xml;
 using System.IO;
+using Fomm.Properties;
 using SevenZip;
 using System.Text;
 using Fomm.Util;
@@ -121,7 +122,7 @@ namespace Fomm.PackageManager.FomodBuilder
                            string p_strPFPPath)
     {
       string strPFPExtension = null;
-      switch (Properties.Settings.Default.pfpCompressionFormat)
+      switch (Settings.Default.pfpCompressionFormat)
       {
         case OutArchiveFormat.BZip2:
           strPFPExtension = ".bz2";
@@ -677,8 +678,8 @@ namespace Fomm.PackageManager.FomodBuilder
       ProgressDialog.ItemMessage = String.Format("Compressing Premade Fomod Pack...");
 
       SevenZipCompressor szcCompressor = new SevenZipCompressor();
-      szcCompressor.CompressionLevel = Properties.Settings.Default.pfpCompressionLevel;
-      szcCompressor.ArchiveFormat = Properties.Settings.Default.pfpCompressionFormat;
+      szcCompressor.CompressionLevel = Settings.Default.pfpCompressionLevel;
+      szcCompressor.ArchiveFormat = Settings.Default.pfpCompressionFormat;
       szcCompressor.CompressionMethod = CompressionMethod.Default;
       szcCompressor.CompressionMode = CompressionMode.Create;
       szcCompressor.FileCompressionStarted += new EventHandler<FileNameEventArgs>(FileCompressionStarted);

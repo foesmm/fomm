@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.IO;
+using Fomm.Properties;
 
 namespace Fomm.Games
 {
@@ -44,7 +45,7 @@ namespace Fomm.Games
     {
       m_strSearchFiles = p_strSearchFiles;
       InitializeComponent();
-      this.Icon = Fomm.Properties.Resources.fomm02;
+      Icon = Resources.fomm02;
       autosizeLabel1.Text = p_strMessage;
       label2.Text = p_strLabel;
     }
