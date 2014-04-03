@@ -7,7 +7,7 @@ namespace Fomm.Controls
   /// The <see cref="PanelToolStripItem"/> wrapper for the control
   /// used as tabs for the <see cref="VerticalTabControl"/>.
   /// </summary>
-  /// <see cref="<see cref="PanelToolStripItem"/>"/>
+  /// <see langref="<see cref="PanelToolStripItem"/>"/>
   public class VerticalTabButton : PanelToolStripItem
   {
     private VerticalTabPage m_tpgPage;

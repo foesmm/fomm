@@ -21,7 +21,7 @@ namespace Fomm.PackageManager
     /// </summary>
     /// <param name="p_strPFPPath">The path of the file to validate as a PFP.</param>
     /// <returns>An error string describing why the specified file is not a valid PFP, or
-    /// <lang cref="null"/> if the specified file is a valid PFP.</returns>
+    /// <lang langref="null"/> if the specified file is a valid PFP.</returns>
     public static string ValidatePFP(string p_strPFPPath)
     {
       return ValidatePFP(new Archive(p_strPFPPath));
@@ -32,7 +32,7 @@ namespace Fomm.PackageManager
     /// </summary>
     /// <param name="p_arcPFP">The archive to validate as a PFP.</param>
     /// <returns>An error string describing why the specified file is not a valid PFP, or
-    /// <lang cref="null"/> if the given archive is a valid PFP.</returns>
+    /// <lang langref="null"/> if the given archive is a valid PFP.</returns>
     protected static string ValidatePFP(Archive p_arcPFP)
     {
       if (!p_arcPFP.ContainsFile("metadata.xml"))
@@ -140,7 +140,7 @@ namespace Fomm.PackageManager
     /// The returned copy instructions are made relative to the given source path. This means that
     /// all instructions will be adjusted to assume the source files are in the directory specified
     /// by <paramref name="p_strSourcesPath"/>. If you want the copy instructions as they are stored
-    /// in the PFP, pass in <lang cref="null/"/>.
+    /// in the PFP, pass in <lang langref="null/"/>.
     /// 
     /// Note that copy instructions are strictly ordered.
     /// </remarks>

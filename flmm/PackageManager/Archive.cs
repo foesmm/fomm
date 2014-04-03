@@ -211,8 +211,8 @@ namespace Fomm.PackageManager
     /// Determines whether or not the file specified by the given path
     /// is an archive.
     /// </summary>
-    /// <returns><lang cref="true"/> if the specified file is an archive;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the specified file is an archive;
+    /// <lang langref="false"/> otherwise.</returns>
     public static bool IsArchive(string p_strPath)
     {
       if (!p_strPath.StartsWith(ARCHIVE_PREFIX) && !File.Exists(p_strPath))
@@ -503,8 +503,8 @@ namespace Fomm.PackageManager
     /// Determins if the given path is a directory in this archive.
     /// </summary>
     /// <param name="p_strPath">The path to examine.</param>
-    /// <returns><lang cref="true"/> if the given path is a directory in this archive;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the given path is a directory in this archive;
+    /// <lang langref="false"/> otherwise.</returns>
     public bool IsDirectory(string p_strPath)
     {
       var strPath = p_strPath.Trim(new[]
@@ -645,8 +645,8 @@ namespace Fomm.PackageManager
     /// Determins if the archive contains the specified file.
     /// </summary>
     /// <param name="p_strPath">The path of the file whose presence in the archive is to be determined.</param>
-    /// <returns><lang cref="true"/> if the file is in the archive;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the file is in the archive;
+    /// <lang langref="false"/> otherwise.</returns>
     public bool ContainsFile(string p_strPath)
     {
       var strPath = p_strPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).ToLowerInvariant();

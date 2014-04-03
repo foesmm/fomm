@@ -67,7 +67,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// Gets the installed version of the current game.
     /// </summary>
     /// <remarks>
-    /// <lang cref="null"/> is returned if the game is not installed.
+    /// <lang langref="null"/> is returned if the game is not installed.
     /// </remarks>
     /// <value>The installed version of the current game.</value>
     public Version GameVersion
@@ -82,7 +82,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// Gets the installed version of FOMM.
     /// </summary>
     /// <remarks>
-    /// <lang cref="null"/> is returned if FOMM is not installed.
+    /// <lang langref="null"/> is returned if FOMM is not installed.
     /// </remarks>
     /// <value>The installed version of FOMM.</value>
     public Version FommVersion

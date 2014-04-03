@@ -121,7 +121,7 @@ namespace Fomm.PackageManager.FomodBuilder
     /// <remarks>
     /// This makes sure the selected PFP file is a valid PFP, and that all required sources are present.
     /// </remarks>
-    /// <returns><lang cref="true"/> if the selected paths are valid; <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the selected paths are valid; <lang langref="false"/> otherwise.</returns>
     protected bool ValidateFiles()
     {
       erpError.Clear();

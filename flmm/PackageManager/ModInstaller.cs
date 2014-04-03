@@ -72,8 +72,8 @@ namespace Fomm.PackageManager
     /// Indicates that this script's work has already been completed if
     /// the <see cref="Fomod"/> is already active.
     /// </summary>
-    /// <returns><lang cref="true"/> if the <see cref="Fomod"/> is active;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the <see cref="Fomod"/> is active;
+    /// <lang langref="false"/> otherwise.</returns>
     /// <seealso cref="ModInstallScript.CheckAlreadyDone()"/>
     protected override bool CheckAlreadyDone()
     {
@@ -148,8 +148,8 @@ namespace Fomm.PackageManager
     /// <summary>
     /// Runs the XML configured install script.
     /// </summary>
-    /// <returns><lang cref="true"/> if the installation was successful;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the installation was successful;
+    /// <lang langref="false"/> otherwise.</returns>
     protected bool RunXmlInstallScript()
     {
       var xmlScript = new XmlConfiguredScript(Script);
@@ -159,8 +159,8 @@ namespace Fomm.PackageManager
     /// <summary>
     /// Runs the custom install script included in the fomod.
     /// </summary>
-    /// <returns><lang cref="true"/> if the installation was successful;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the installation was successful;
+    /// <lang langref="false"/> otherwise.</returns>
     protected bool RunCustomInstallScript()
     {
       var strScript = Fomod.GetInstallScript().Text;
@@ -171,8 +171,8 @@ namespace Fomm.PackageManager
     /// Runs the basic install script.
     /// </summary>
     /// <param name="p_strMessage">The message to display in the progress dialog.</param>
-    /// <returns><lang cref="true"/> if the installation was successful;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the installation was successful;
+    /// <lang langref="false"/> otherwise.</returns>
     protected bool RunBasicInstallScript(string p_strMessage)
     {
       try

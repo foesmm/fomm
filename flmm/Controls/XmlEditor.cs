@@ -169,7 +169,7 @@ namespace Fomm.Controls
     /// Called whenever a character is about to be added to the document.
     /// </summary>
     /// <param name="p_chrChar">The character about to be added.</param>
-    /// <returns><lang cref="true"/> if the character has been handled; <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the character has been handled; <lang langref="false"/> otherwise.</returns>
     private bool TextArea_KeyEventHandler(char p_chrChar)
     {
       if ((m_ccwCodeCompletionWindow != null) && m_ccwCodeCompletionWindow.ProcessKeyEvent(p_chrChar))
@@ -296,7 +296,7 @@ namespace Fomm.Controls
     /// <summary>
     /// Validates the XML against the schema.
     /// </summary>
-    /// <returns><lang cref="true"/> if the XML is valid; <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the XML is valid; <lang langref="false"/> otherwise.</returns>
     public bool ValidateXml()
     {
       m_tmrValidator.Stop();

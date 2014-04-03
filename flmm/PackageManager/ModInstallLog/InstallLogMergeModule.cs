@@ -377,8 +377,8 @@ namespace Fomm.PackageManager.ModInstallLog
     /// </summary>
     /// <param name="p_lstValues">The list though which to search.</param>
     /// <param name="p_strSearchString">The value for which to search.</param>
-    /// <returns><lang cref="true"/> if the value is found in the list;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the value is found in the list;
+    /// <lang langref="false"/> otherwise.</returns>
     private bool ListContains(List<string> p_lstValues, string p_strSearchString)
     {
       var strLoweredSearchString = p_strSearchString.ToLowerInvariant();
@@ -398,8 +398,8 @@ namespace Fomm.PackageManager.ModInstallLog
     /// Determins if this merge module contains the specified file. 
     /// </summary>
     /// <param name="p_strDataPath">The file for whose presence in this merge module will be determined.</param>
-    /// <returns><lang cref="true"/> if the specified file is in this merge module;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the specified file is in this merge module;
+    /// <lang langref="false"/> otherwise.</returns>
     internal bool ContainsFile(string p_strDataPath)
     {
       var strNormalizedPath = NormalizePath(p_strDataPath);

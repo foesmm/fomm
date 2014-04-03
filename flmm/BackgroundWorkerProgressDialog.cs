@@ -38,7 +38,7 @@ namespace Fomm
     /// Gets the exception that was thrown during the execution of the background work.
     /// </summary>
     /// <value>The exception that was thrown during the execution of the background work,
-    /// or <lang cref="null"/> if now exception was thrown.</value>
+    /// or <lang langref="null"/> if now exception was thrown.</value>
     public Exception Error
     {
       get
@@ -439,8 +439,8 @@ namespace Fomm
     /// <summary>
     /// Checks if the user has cancelled.
     /// </summary>
-    /// <returns><lang cref="true"/> if the user has cancelled and work needs to stop;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the user has cancelled and work needs to stop;
+    /// <lang langref="false"/> otherwise.</returns>
     public bool Cancelled()
     {
       if (m_bgwWorker.CancellationPending)

@@ -107,8 +107,8 @@ namespace Fomm.PackageManager
     /// <summary>
     /// Ensures that the version is valid, if present.
     /// </summary>
-    /// <returns><lang cref="true"/> if the version is valid or not present;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the version is valid or not present;
+    /// <lang langref="false"/> otherwise.</returns>
     protected bool ValidateMachineVersion()
     {
       erpErrors.SetError(tbMVersion, null);
@@ -140,8 +140,8 @@ namespace Fomm.PackageManager
     /// <summary>
     /// Ensures that the URL is valid, if present.
     /// </summary>
-    /// <returns><lang cref="true"/> if the website is valid or not present;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the website is valid or not present;
+    /// <lang langref="false"/> otherwise.</returns>
     protected bool ValidateWebsite()
     {
       erpErrors.SetError(tbWebsite, null);
@@ -174,8 +174,8 @@ namespace Fomm.PackageManager
     /// <summary>
     /// Ensures that the version is valid, if present.
     /// </summary>
-    /// <returns><lang cref="true"/> if the version is valid or not present;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the version is valid or not present;
+    /// <lang langref="false"/> otherwise.</returns>
     protected bool ValidateMinFommVersion()
     {
       erpErrors.SetError(tbMinFommVersion, null);
@@ -216,7 +216,7 @@ namespace Fomm.PackageManager
     /// <summary>
     /// Validate the controls on this control.
     /// </summary>
-    /// <returns><lang cref="true"/> if all controls passed validation; <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if all controls passed validation; <lang langref="false"/> otherwise.</returns>
     public bool PerformValidation()
     {
       var booIsValid = ValidateMachineVersion();
@@ -251,8 +251,8 @@ namespace Fomm.PackageManager
     /// Saves the edited info to the given fomod.
     /// </summary>
     /// <param name="p_fomodMod">The <see cref="fomod"/> to which to save the info.</param>
-    /// <returns><lang cref="false"/> if the info failed validation and was not saved;
-    /// <lang cref="true"/> otherwise.</returns>
+    /// <returns><lang langref="false"/> if the info failed validation and was not saved;
+    /// <lang langref="true"/> otherwise.</returns>
     public bool SaveFomod(fomod p_fomodMod)
     {
       if (!ValidateChildren())

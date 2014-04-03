@@ -59,10 +59,10 @@ namespace Fomm.FileManager
     /// Checks to see if the script work has already been done.
     /// </summary>
     /// <remarks>
-    /// This always returns <lang cref="false"/>.
+    /// This always returns <lang langref="false"/>.
     /// </remarks>
-    /// <returns><lang cref="true"/> if the script work has already been done and the script
-    /// doesn't need to execute; <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the script work has already been done and the script
+    /// doesn't need to execute; <lang langref="false"/> otherwise.</returns>
     protected override bool CheckAlreadyDone()
     {
       return false;
@@ -76,8 +76,8 @@ namespace Fomm.FileManager
     /// </remarks>
     /// <param name="p_strFile">The file whose installers are to be reordered.</param>
     /// <param name="p_lstOrderedMods">The new order of the file's installers.</param>
-    /// <returns><lang cref="true"/> if the file installers were reordered;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the file installers were reordered;
+    /// <lang langref="false"/> otherwise.</returns>
     internal bool ReorderFileInstallers(string p_strFile, List<string> p_lstOrderedMods)
     {
       m_strFile = p_strFile;
@@ -88,10 +88,10 @@ namespace Fomm.FileManager
     /// <summary>
     /// This does the moving of files and log alteration.
     /// </summary>
-    /// <returns><lang cref="true"/> if the script work was completed successfully and needs to
-    /// be committed; <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the script work was completed successfully and needs to
+    /// be committed; <lang langref="false"/> otherwise.</returns>
     /// <exception cref="InvalidOperationException">Thrown if m_strFile or m_lstOrderedMods are
-    /// <lang cref="null"/>.</exception>
+    /// <lang langref="null"/>.</exception>
     /// <seealso cref="ModInstallScript.DoScript"/>
     protected override bool DoScript()
     {

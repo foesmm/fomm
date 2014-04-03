@@ -247,8 +247,8 @@ namespace Fomm.Controls
       /// Determines if the given item is in the collection.
       /// </summary>
       /// <param name="item">The item whose presence in the collection is to be determined.</param>
-      /// <returns><lang cref="true"/> if the item is in the collection;
-      /// <lang cref="false"/> otherwise.</returns>
+      /// <returns><lang langref="true"/> if the item is in the collection;
+      /// <lang langref="false"/> otherwise.</returns>
       public bool Contains(TreeNode item)
       {
         return (IndexOf(item) > -1);
@@ -303,8 +303,8 @@ namespace Fomm.Controls
       /// Removes the given item from the collection.
       /// </summary>
       /// <param name="item">The item to remove from the collection.</param>
-      /// <returns><lang cref="true"/> if the item was removed from the collection;
-      /// <lang cref="false"/> if the item couldn't be removed because it was not in the collection.</returns>
+      /// <returns><lang langref="true"/> if the item was removed from the collection;
+      /// <lang langref="false"/> if the item couldn't be removed because it was not in the collection.</returns>
       public bool Remove(TreeNode item)
       {
         var lndNode = m_lklNodes.First;

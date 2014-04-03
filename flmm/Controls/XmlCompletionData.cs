@@ -50,8 +50,8 @@ namespace Fomm.Controls
     /// </summary>
     /// <param name="textArea">The text area into which to insert the selection.</param>
     /// <param name="ch">The character that was used to choose this completion selection.</param>
-    /// <returns><lang cref="true"/> if the insertion of <paramref name="p_chrKey"/> was handled;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the insertion of <paramref name="p_chrKey"/> was handled;
+    /// <lang langref="false"/> otherwise.</returns>
     public override bool InsertAction(TextArea textArea, char ch)
     {
       switch (m_actCompletionType)

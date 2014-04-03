@@ -190,8 +190,8 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
       /// </summary>
       /// <remarks>Items' equality is determined by their names.</remarks>
       /// <param name="other">The item to which to compare this item.</param>
-      /// <returns><lang cref="true"/> if this item's name is equal to the given
-      /// ComboBoxItem's name; <lang cref="false"/> otherwise.</returns>
+      /// <returns><lang langref="true"/> if this item's name is equal to the given
+      /// ComboBoxItem's name; <lang langref="false"/> otherwise.</returns>
       public bool Equals(ComboBoxItem other)
       {
         return Name.Equals(other.Name);
@@ -206,8 +206,8 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
       /// </summary>
       /// <remarks>Items' equality is determined by their names.</remarks>
       /// <param name="other">The item to which to compare this item.</param>
-      /// <returns><lang cref="true"/> if this item's name is equal to the given
-      /// ComboBoxItem's name; <lang cref="false"/> otherwise.</returns>
+      /// <returns><lang langref="true"/> if this item's name is equal to the given
+      /// ComboBoxItem's name; <lang langref="false"/> otherwise.</returns>
       public bool Equals(string other)
       {
         return Name.Equals(other);
@@ -223,8 +223,8 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
       /// of the types Equals methods.
       /// </remarks>
       /// <param name="obj">The item to which to compare this item.</param>
-      /// <returns><lang cref="true"/> if this item's name is equal to the given
-      /// ComboBoxItem's name; <lang cref="false"/> otherwise.</returns>
+      /// <returns><lang langref="true"/> if this item's name is equal to the given
+      /// ComboBoxItem's name; <lang langref="false"/> otherwise.</returns>
       public override bool Equals(object obj)
       {
         if (obj is string)
@@ -835,9 +835,9 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
       /// Determines if the settings have already been saved.
       /// </summary>
       /// <remarks>
-      /// This always returns <lang cref="false"/>.
+      /// This always returns <lang langref="false"/>.
       /// </remarks>
-      /// <returns><lang cref="false"/></returns>
+      /// <returns><lang langref="false"/></returns>
       /// <seealso cref="ModInstallScript.CheckAlreadyDone()"/>
       protected override bool CheckAlreadyDone()
       {
@@ -853,8 +853,8 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
       /// <param name="p_strSection">The section of the file containing the key to change.</param>
       /// <param name="p_strKey">The key to change.</param>
       /// <param name="p_strValue">The value to which to set the key.</param>
-      /// <returns><lang cref="true"/> if the value differed and so was changed;
-      /// <lang cref="false"/> otherwise.</returns>
+      /// <returns><lang langref="true"/> if the value differed and so was changed;
+      /// <lang langref="false"/> otherwise.</returns>
       private bool SaveValue(string p_strSection, string p_strKey, string p_strValue)
       {
         if (!Fallout3Script.GetPrefsIniString(p_strSection, p_strKey).Equals(p_strValue))
@@ -1091,10 +1091,10 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
       /// <summary>
       /// This does the actual changing of settings.
       /// </summary>
-      /// <returns><lang cref="true"/> if the script work was completed successfully and needs to
-      /// be committed; <lang cref="false"/> otherwise.</returns>
+      /// <returns><lang langref="true"/> if the script work was completed successfully and needs to
+      /// be committed; <lang langref="false"/> otherwise.</returns>
       /// <exception cref="InvalidOperationException">Thrown if m_gstSettings is
-      /// <lang cref="null"/>.</exception>
+      /// <lang langref="null"/>.</exception>
       /// <seealso cref="ModInstallScript.DoScript"/>
       protected override bool DoScript()
       {

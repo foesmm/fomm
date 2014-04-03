@@ -26,7 +26,7 @@ namespace Fomm.Games.FalloutNewVegas.Script
     /// <summary>
     /// Indicates whether or not NVSE is present.
     /// </summary>
-    /// <returns><lang cref="true"/> if NVSE is installed; <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if NVSE is installed; <lang langref="false"/> otherwise.</returns>
     public override bool ScriptExtenderPresent()
     {
       PermissionsManager.CurrentPermissions.Assert();
@@ -36,7 +36,7 @@ namespace Fomm.Games.FalloutNewVegas.Script
     /// <summary>
     /// Gets the version of the sript extender that is installed.
     /// </summary>
-    /// <returns>The version of the sript extender that is installed, or <lang cref="null"/> if no
+    /// <returns>The version of the sript extender that is installed, or <lang langref="null"/> if no
     /// sript extender is installed.</returns>
     public override Version GetScriptExtenderVersion()
     {
@@ -62,7 +62,7 @@ namespace Fomm.Games.FalloutNewVegas.Script
     /// <param name="p_strKey">The key in the Ini file to edit.</param>
     /// <param name="p_strValue">The value to which to set the key.</param>
     /// <param name="p_booSaveOld">Not used.</param>
-    /// <returns><lang cref="true"/> if the value was set; <lang cref="false"/>
+    /// <returns><lang langref="true"/> if the value was set; <lang langref="false"/>
     /// if the user chose not to overwrite the existing value.</returns>
     public override bool EditFalloutINI(string p_strSection, string p_strKey, string p_strValue, bool p_booSaveOld)
     {

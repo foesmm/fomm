@@ -849,7 +849,7 @@ namespace Fomm.PackageManager
     /// <remarks>
     /// This method is used by the background worker.
     /// </remarks>
-    /// <param name="p_objArgs">A <see cref="Pair{fomod, string}"/> containing the fomod to extract
+    /// <param name="p_objArgs">A Pair{fomod, string} containing the fomod to extract
     /// and the direcotry to which to extract it.</param>
     private void UnpackFomod(object p_objArgs)
     {

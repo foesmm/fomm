@@ -151,8 +151,8 @@ namespace Fomm.PackageManager
     /// Determines if the specified readme file is of a recognized format.
     /// </summary>
     /// <param name="p_strPath">The path of the readme file.</param>
-    /// <returns><lang cref="true"/> if the given path has a valid extension;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the given path has a valid extension;
+    /// <lang langref="false"/> otherwise.</returns>
     public static bool IsValidReadme(string p_strPath)
     {
       if (String.IsNullOrEmpty(p_strPath))
@@ -166,8 +166,8 @@ namespace Fomm.PackageManager
     /// Determines if the given extension is a valid readme extension.
     /// </summary>
     /// <param name="p_strExtension">The extension whose validity is to be determined.</param>
-    /// <returns><lang cref="true"/> if the given extension is a valid readme extension;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the given extension is a valid readme extension;
+    /// <lang langref="false"/> otherwise.</returns>
     public static bool IsValidExtension(string p_strExtension)
     {
       var strLoweredValue = (p_strExtension ?? "").ToLowerInvariant();

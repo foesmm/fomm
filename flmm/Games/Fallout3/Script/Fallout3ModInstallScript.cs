@@ -97,7 +97,7 @@ namespace Fomm.Games.Fallout3.Script
     /// <summary>
     /// Indicates whether or not FOSE is present.
     /// </summary>
-    /// <returns><lang cref="true"/> if FOSE is installed; <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if FOSE is installed; <lang langref="false"/> otherwise.</returns>
     public virtual bool ScriptExtenderPresent()
     {
       PermissionsManager.CurrentPermissions.Assert();
@@ -107,7 +107,7 @@ namespace Fomm.Games.Fallout3.Script
     /// <summary>
     /// Gets the version of the sript extender that is installed.
     /// </summary>
-    /// <returns>The version of the sript extender that is installed, or <lang cref="null"/> if no
+    /// <returns>The version of the sript extender that is installed, or <lang langref="null"/> if no
     /// sript extender is installed.</returns>
     public virtual Version GetScriptExtenderVersion()
     {
@@ -123,7 +123,7 @@ namespace Fomm.Games.Fallout3.Script
     /// <summary>
     /// Gets the version of GECK that is installed.
     /// </summary>
-    /// <returns>The version of GECK, or <lang cref="null"/> if GECK
+    /// <returns>The version of GECK, or <lang langref="null"/> if GECK
     /// is not installed.</returns>
     public Version GetGeckVersion()
     {
@@ -142,8 +142,8 @@ namespace Fomm.Games.Fallout3.Script
     /// <summary>
     /// Determines if the plugins have been auto-sorted.
     /// </summary>
-    /// <returns><lang cref="true"/> if the plugins have been auto-sorted;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the plugins have been auto-sorted;
+    /// <lang langref="false"/> otherwise.</returns>
     public bool IsLoadOrderAutoSorted()
     {
       PermissionsManager.CurrentPermissions.Assert();
@@ -290,7 +290,7 @@ namespace Fomm.Games.Fallout3.Script
     /// <param name="p_strKey">The key in the Ini file to edit.</param>
     /// <param name="p_strValue">The value to which to set the key.</param>
     /// <param name="p_booSaveOld">Not used.</param>
-    /// <returns><lang cref="true"/> if the value was set; <lang cref="false"/>
+    /// <returns><lang langref="true"/> if the value was set; <lang langref="false"/>
     /// if the user chose not to overwrite the existing value.</returns>
     public virtual bool EditFalloutINI(string p_strSection, string p_strKey, string p_strValue, bool p_booSaveOld)
     {
@@ -305,7 +305,7 @@ namespace Fomm.Games.Fallout3.Script
     /// <param name="p_strKey">The key in the Ini file to edit.</param>
     /// <param name="p_strValue">The value to which to set the key.</param>
     /// <param name="p_booSaveOld">Not used.</param>
-    /// <returns><lang cref="true"/> if the value was set; <lang cref="false"/>
+    /// <returns><lang langref="true"/> if the value was set; <lang langref="false"/>
     /// if the user chose not to overwrite the existing value.</returns>
     public virtual bool EditPrefsINI(string p_strSection, string p_strKey, string p_strValue, bool p_booSaveOld)
     {
@@ -320,7 +320,7 @@ namespace Fomm.Games.Fallout3.Script
     /// <param name="p_strKey">The key in the Ini file to edit.</param>
     /// <param name="p_strValue">The value to which to set the key.</param>
     /// <param name="p_booSaveOld">Not used.</param>
-    /// <returns><lang cref="true"/> if the value was set; <lang cref="false"/>
+    /// <returns><lang langref="true"/> if the value was set; <lang langref="false"/>
     /// if the user chose not to overwrite the existing value.</returns>
     public virtual bool EditGeckINI(string p_strSection, string p_strKey, string p_strValue, bool p_booSaveOld)
     {
@@ -335,7 +335,7 @@ namespace Fomm.Games.Fallout3.Script
     /// <param name="p_strKey">The key in the Ini file to edit.</param>
     /// <param name="p_strValue">The value to which to set the key.</param>
     /// <param name="p_booSaveOld">Not used.</param>
-    /// <returns><lang cref="true"/> if the value was set; <lang cref="false"/>
+    /// <returns><lang langref="true"/> if the value was set; <lang langref="false"/>
     /// if the user chose not to overwrite the existing value.</returns>
     public virtual bool EditGeckPrefsINI(string p_strSection, string p_strKey, string p_strValue, bool p_booSaveOld)
     {
@@ -383,7 +383,7 @@ namespace Fomm.Games.Fallout3.Script
     /// <param name="p_intPackage">The package containing the shader to edit.</param>
     /// <param name="p_strShaderName">The shader to edit.</param>
     /// <param name="p_bteData">The value to which to edit the shader.</param>
-    /// <returns><lang cref="true"/> if the value was set; <lang cref="false"/>
+    /// <returns><lang langref="true"/> if the value was set; <lang langref="false"/>
     /// if the user chose not to overwrite the existing value.</returns>
     /// <exception cref="ShaderException">Thrown if the shader could not be edited.</exception>
     public virtual bool EditShader(int p_intPackage, string p_strShaderName, byte[] p_bteData)
@@ -505,7 +505,7 @@ namespace Fomm.Games.Fallout3.Script
     /// </summary>
     /// <param name="p_strValue">The value to retrieve from the file.</param>
     /// <returns>The specified value from the RendererInfo.txt file, or
-    /// <lang cref="null"/> if the value is not found.</returns>
+    /// <lang langref="null"/> if the value is not found.</returns>
     public virtual string GetRendererInfo(string p_strValue)
     {
       PermissionsManager.CurrentPermissions.Assert();
@@ -528,8 +528,8 @@ namespace Fomm.Games.Fallout3.Script
     /// <summary>
     /// Determines if archive invalidation is active.
     /// </summary>
-    /// <returns><lang cref="true"/> if archive invalidation is active;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if archive invalidation is active;
+    /// <lang langref="false"/> otherwise.</returns>
     public virtual bool IsAIActive()
     {
       return ArchiveInvalidation.IsActive();
@@ -572,7 +572,7 @@ namespace Fomm.Games.Fallout3.Script
     /// </remarks>
     /// <param name="p_strPath">The path where the file is to be created.</param>
     /// <param name="p_bteData">The data that is to make up the file.</param>
-    /// <returns><lang cref="true"/> if the file was written; <lang cref="false"/> if the user chose
+    /// <returns><lang langref="true"/> if the file was written; <lang langref="false"/> if the user chose
     /// not to overwrite an existing file.</returns>
     /// <exception cref="IllegalFilePathException">Thrown if <paramref name="p_strPath"/> is
     /// not safe.</exception>

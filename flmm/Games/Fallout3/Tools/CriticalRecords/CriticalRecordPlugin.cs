@@ -232,8 +232,8 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     /// </summary>
     /// <param name="p_uintFormId">The record for which it is to be determined whether it is
     /// critical.</param>
-    /// <returns><lang cref="true"/> if the specified record is critical;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the specified record is critical;
+    /// <lang langref="false"/> otherwise.</returns>
     internal bool IsRecordCritical(UInt32 p_uintFormId)
     {
       return m_dicCriticalRecords.ContainsKey(p_uintFormId);

@@ -57,7 +57,7 @@ namespace Fomm.InstallLogUpgraders
     /// Sets up the resources required to upgrade the install log, and then
     /// call <see cref="DoUpgrade()"/> so implementers can do the upgrade.
     /// </remarks>
-    /// <returns><lang cref="true"/> if the upgrade completed; <lang cref="false"/>
+    /// <returns><lang langref="true"/> if the upgrade completed; <lang langref="false"/>
     /// if the user cancelled.</returns>
     internal bool PerformUpgrade()
     {

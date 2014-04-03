@@ -13,8 +13,8 @@ namespace Fomm.PackageManager
     /// directory or one of its sub-directories.
     /// </remarks>
     /// <param name="p_strPath">The path whose safety is to be verified.</param>
-    /// <returns><lang cref="true"/> if the given path is safe to write to;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the given path is safe to write to;
+    /// <lang langref="false"/> otherwise.</returns>
     private static bool IsSafeFilePath(string p_strPath)
     {
       if (p_strPath.IndexOfAny(Path.GetInvalidPathChars()) != -1)
@@ -54,7 +54,7 @@ namespace Fomm.PackageManager
     /// Determines if the specified file exists in the user's Data directory.
     /// </summary>
     /// <param name="p_strPath">The path of the file whose existence is to be verified.</param>
-    /// <returns><lang cref="true"/> if the specified file exists; <lange cref="false"/>
+    /// <returns><lang langref="true"/> if the specified file exists; <lange langref="false"/>
     /// otherwise.</returns>
     /// <exception cref="IllegalFilePathException">Thrown if the given path is not safe.</exception>
     public static bool DataFileExists(string p_strPath)

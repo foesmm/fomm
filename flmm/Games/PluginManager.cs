@@ -54,8 +54,8 @@ namespace Fomm.Games
     /// Determines if the specified plugin is active.
     /// </summary>
     /// <param name="p_strPath">The path to the plugin whose active state is to be determined.</param>
-    /// <returns><lange cref="true"/> if the specified plugin is active;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lange langref="true"/> if the specified plugin is active;
+    /// <lang langref="false"/> otherwise.</returns>
     public abstract bool IsPluginActive(string p_strPath);
 
     #endregion
@@ -112,8 +112,8 @@ namespace Fomm.Games
     /// Determines if the specified plugin is critical to the current game.
     /// </summary>
     /// <param name="p_strPluginPath">The full path to the plugin for which it is to be determined whether or not it is critical.</param>
-    /// <returns><lang cref="true"/> if the specified pluing is critical;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the specified pluing is critical;
+    /// <lang langref="false"/> otherwise.</returns>
     public abstract bool IsCriticalPlugin(string p_strPluginPath);
   }
 }

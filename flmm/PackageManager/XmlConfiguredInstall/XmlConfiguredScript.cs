@@ -75,7 +75,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// <summary>
     /// Displays the option form and starts the background worker to do the install.
     /// </summary>
-    /// <returns><lang cref="true"/> if the mod installed correctly; <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the mod installed correctly; <lang langref="false"/> otherwise.</returns>
     public bool Install()
     {
       var xmlConfig = new XmlDocument();
@@ -202,8 +202,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// </summary>
     /// <param name="plfFile">The file to install.</param>
     /// <param name="booActivate">Whether or not to activate any esp/esm files.</param>
-    /// <returns><lang cref="false"/> if the user cancelled the install;
-    /// <lang cref="true"/> otherwise.</returns>
+    /// <returns><lang langref="false"/> if the user cancelled the install;
+    /// <lang langref="true"/> otherwise.</returns>
     protected bool InstallPluginFile(PluginFile plfFile, bool booActivate)
     {
       var strSource = plfFile.Source;

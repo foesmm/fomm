@@ -31,7 +31,7 @@ namespace Fomm.Controls
     #endregion
 
     /// <summary>
-    /// Raises the <see cref="Control.Load"/> event.
+    /// Raises the <see cref="System.Windows.Forms.Control.Load"/> event.
     /// </summary>
     /// <remarks>
     /// This sets the synchronizing object on the timers to our form. Doing so allows the timers

@@ -85,7 +85,7 @@ namespace fomm.Scripting
     /// application) there should not be any noticable difference.
     /// </remarks>
     /// <param name="p_gmdMethod">The method to execute.</param>
-    /// <see cref="ExecuteMethod(GenereicReturnMethodDelegate p_gmdMethod)"/>
+    /// <see cref="ExecuteMethod(GenereicReturnMethodDelegate)"/>
     private static void ExecuteMethod(GenereicVoidMethodDelegate p_gmdMethod)
     {
       try
@@ -115,7 +115,7 @@ namespace fomm.Scripting
     /// application) there should not be any noticable difference.
     /// </remarks>
     /// <param name="p_gmdMethod">The method to execute.</param>
-    /// <see cref="ExecuteMethod(GenereicVoidMethodDelegate p_gmdMethod)"/>
+    /// <see cref="ExecuteMethod(GenereicVoidMethodDelegate)"/>
     private static object ExecuteMethod(GenereicReturnMethodDelegate p_gmdMethod)
     {
       try

@@ -535,7 +535,7 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
     /// </summary>
     /// <param name="p_tndRoot">The node to which to add the file/folder.</param>
     /// <param name="p_strFile">The path to add to the fomod file structure.</param>
-    /// <returns>The node that was added for the specified file/folder. <lang cref="null"/>
+    /// <returns>The node that was added for the specified file/folder. <lang langref="null"/>
     /// is returned if the given path is invalid.</returns>
     private FileSystemTreeNode addFomodFile(TreeNode p_tndRoot, string p_strFile)
     {

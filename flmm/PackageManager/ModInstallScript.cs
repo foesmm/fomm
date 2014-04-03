@@ -257,7 +257,7 @@ namespace Fomm.PackageManager
     /// <summary>
     /// Gets the version of Fallout that is installed.
     /// </summary>
-    /// <returns>The version of Fallout, or <lang cref="null"/> if Fallout
+    /// <returns>The version of Fallout, or <lang langref="null"/> if Fallout
     /// is not installed.</returns>
     public Version GetGameVersion()
     {
@@ -455,8 +455,8 @@ namespace Fomm.PackageManager
     /// asked to overwrite the file.
     /// </remarks>
     /// <param name="p_strPath">The file path, relative to the Data folder, whose writability is to be verified.</param>
-    /// <returns><lang cref="true"/> if the location specified by <paramref name="p_strPath"/>
-    /// can be written; <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the location specified by <paramref name="p_strPath"/>
+    /// can be written; <lang langref="false"/> otherwise.</returns>
     protected bool TestDoOverwrite(string p_strPath)
     {
       var strDataPath = Path.Combine(Program.GameMode.PluginsPath, p_strPath);
@@ -615,7 +615,7 @@ namespace Fomm.PackageManager
     /// Installs the speified file from the FOMod to the file system.
     /// </summary>
     /// <param name="p_strFile">The path of the file to install.</param>
-    /// <returns><lang cref="true"/> if the file was written; <lang cref="false"/> if the user chose
+    /// <returns><lang langref="true"/> if the file was written; <lang langref="false"/> if the user chose
     /// not to overwrite an existing file.</returns>
     public bool InstallFileFromFomod(string p_strFile)
     {
@@ -627,7 +627,7 @@ namespace Fomm.PackageManager
     /// </summary>
     /// <param name="p_strFrom">The path of the file in the FOMod to install.</param>
     /// <param name="p_strTo">The path on the file system where the file is to be created.</param>
-    /// <returns><lang cref="true"/> if the file was written; <lang cref="false"/> if the user chose
+    /// <returns><lang langref="true"/> if the file was written; <lang langref="false"/> if the user chose
     /// not to overwrite an existing file.</returns>
     /// <exception cref="FileNotFoundException">Thrown if the file referenced by
     /// <paramref name="p_strFrom"/> is not in the FOMod.</exception>
@@ -647,7 +647,7 @@ namespace Fomm.PackageManager
     /// </remarks>
     /// <param name="p_strPath">The path where the file is to be created.</param>
     /// <param name="p_bteData">The data that is to make up the file.</param>
-    /// <returns><lang cref="true"/> if the file was written; <lang cref="false"/> if the user chose
+    /// <returns><lang langref="true"/> if the file was written; <lang langref="false"/> if the user chose
     /// not to overwrite an existing file.</returns>
     /// <exception cref="IllegalFilePathException">Thrown if <paramref name="p_strPath"/> is
     /// not safe.</exception>
@@ -731,7 +731,7 @@ namespace Fomm.PackageManager
     /// the file is deleted.
     /// </remarks>
     /// <param name="p_strPath">The path to the file that is to be uninstalled.</param>
-    /// <seealso cref="UninstallDataFile(string p_strFomodBaseName, string p_strFile)"/>
+    /// <seealso cref="UninstallDataFile(string, string)"/>
     public void UninstallDataFile(string p_strFile)
     {
       UninstallDataFile(Fomod.BaseName, p_strFile);
@@ -752,7 +752,7 @@ namespace Fomm.PackageManager
     /// <param name="p_strFomodBaseName">The base name of the <see cref="fomod"/> whose file
     /// is being uninstalled.</param>
     /// <param name="p_strPath">The path to the file that is to be uninstalled.</param>
-    /// <seealso cref="UninstallDataFile(string p_strFile)"/>
+    /// <seealso cref="UninstallDataFile(string)"/>
     public void UninstallDataFile(string p_strFomodBaseName, string p_strFile)
     {
       PermissionsManager.CurrentPermissions.Assert();
@@ -891,7 +891,7 @@ namespace Fomm.PackageManager
     /// <param name="p_strSection">The section in the Ini file to edit.</param>
     /// <param name="p_strKey">The key in the Ini file to edit.</param>
     /// <param name="p_strValue">The value to which to set the key.</param>
-    /// <returns><lang cref="true"/> if the value was set; <lang cref="false"/>
+    /// <returns><lang langref="true"/> if the value was set; <lang langref="false"/>
     /// if the user chose not to overwrite the existing value.</returns>
     protected virtual bool EditINI(string p_strSettingsFileName, string p_strSection, string p_strKey, string p_strValue)
     {
@@ -961,7 +961,7 @@ namespace Fomm.PackageManager
     /// <param name="p_strSettingsFileName">The name of the settings file to unedit.</param>
     /// <param name="p_strSection">The section in the Ini file to unedit.</param>
     /// <param name="p_strKey">The key in the Ini file to unedit.</param>
-    /// <seealso cref="UneditIni(string p_strFomodBaseName, string p_strSettingsFileName, string p_strSection, string p_strKey)"/>
+    /// <seealso cref="UneditIni(string, string, string, string)"/>
     public void UneditIni(string p_strSettingsFileName, string p_strSection, string p_strKey)
     {
       UneditIni(Fomod.BaseName, p_strSettingsFileName, p_strSection, p_strKey);
@@ -979,7 +979,7 @@ namespace Fomm.PackageManager
     /// <param name="p_strSettingsFileName">The name of the settings file to unedit.</param>
     /// <param name="p_strSection">The section in the Ini file to unedit.</param>
     /// <param name="p_strKey">The key in the Ini file to unedit.</param>
-    /// <seealso cref="UneditIni(string p_strSettingsFileName, string p_strSection, string p_strKey)"/>
+    /// <seealso cref="UneditIni(string, string, string)"/>
     public void UneditIni(string p_strFomodBaseName, string p_strSettingsFileName, string p_strSection, string p_strKey)
     {
       var strLoweredFile = p_strSettingsFileName.ToLowerInvariant();
@@ -1017,7 +1017,7 @@ namespace Fomm.PackageManager
     /// Undoes the edit made to the spcified game-specific value.
     /// </summary>
     /// <param name="p_strValueKey">The key of the game-specific value to unedit.</param>
-    /// <seealso cref="UneditGameSpecificValue(string p_strFomodBaseName, string p_strValueKey)"/>
+    /// <seealso cref="UneditGameSpecificValue(string, string)"/>
     public bool UneditGameSpecificValue(string p_strValueKey)
     {
       return UneditGameSpecificValue(Fomod.BaseName, p_strValueKey);
@@ -1033,7 +1033,7 @@ namespace Fomm.PackageManager
     /// <param name="p_strFomodBaseName">The base name of the <see cref="fomod"/> whose file
     /// is being uninstalled.</param>
     /// <param name="p_strValueKey">The key of the game-specific value to unedit.</param>
-    /// <seealso cref="UneditGameSpecificValue(string p_strValueKey)"/>
+    /// <seealso cref="UneditGameSpecificValue(string)"/>
     public abstract bool UneditGameSpecificValue(string p_strFomodBaseName, string p_strValueKey);
 
     #endregion

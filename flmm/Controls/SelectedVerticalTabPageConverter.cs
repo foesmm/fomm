@@ -29,8 +29,8 @@ namespace Fomm.Controls
     /// </summary>
     /// <param name="context">The context of the value.</param>
     /// <param name="value">The value to which to set the property</param>
-    /// <returns><lang cref="true"/> if the given value is a <see cref="VerticalTabPage"/>
-    /// in the <see cref="VerticalTabControl"/>; <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the given value is a <see cref="VerticalTabPage"/>
+    /// in the <see cref="VerticalTabControl"/>; <lang langref="false"/> otherwise.</returns>
     protected override bool IsValueAllowed(ITypeDescriptorContext context, object value)
     {
       if (context != null)

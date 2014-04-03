@@ -33,7 +33,7 @@ namespace Fomm.Util
     /// <param name="p_strDestination">The path to which to copy.</param>
     /// <param name="p_fncCopyCallback">A callback method that notifies the caller when a file has been copied,
     /// and provides the opportunity to cancel the copy operation.</param>
-    /// <returns><lang cref="true"/> if the copy operation wasn't cancelled; <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the copy operation wasn't cancelled; <lang langref="false"/> otherwise.</returns>
     public static bool Copy(TxFileManager p_tfmFileManager, string p_strSource, string p_strDestination,
                             Func<string, bool> p_fncCopyCallback)
     {
@@ -86,7 +86,7 @@ namespace Fomm.Util
     /// <param name="p_strDestination">The path to which to copy.</param>
     /// <param name="p_fncCopyCallback">A callback method that notifies the caller when a file has been copied,
     /// and provides the opportunity to cancel the copy operation.</param>
-    /// <returns><lang cref="true"/> if the copy operation wasn't cancelled; <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the copy operation wasn't cancelled; <lang langref="false"/> otherwise.</returns>
     public static bool Copy(string p_strSource, string p_strDestination, Func<string, bool> p_fncCopyCallback)
     {
       if (File.Exists(p_strSource))

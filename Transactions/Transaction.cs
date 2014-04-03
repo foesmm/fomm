@@ -60,8 +60,8 @@ namespace fomm.Transactions
     /// <summary>
     /// Prepares the enlited resource managers for committal.
     /// </summary>
-    /// <returns><lang cref="true"/> if all polled participants voted to commit;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if all polled participants voted to commit;
+    /// <lang langref="false"/> otherwise.</returns>
     internal bool Prepare()
     {
       if (TransactionInformation.Status != TransactionStatus.Active)

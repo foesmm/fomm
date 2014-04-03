@@ -22,7 +22,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     /// Gets the config version used by the given XML configuration file.
     /// </summary>
     /// <param name="p_strXml">The XML files who version is to be determined.</param>
-    /// <returns>The config version used the given XML configuration file, or <lang cref="null"/>
+    /// <returns>The config version used the given XML configuration file, or <lang langref="null"/>
     /// if the given file is not recognized as a configuration file.</returns>
     public static string GetConfigVersion(string p_strXml)
     {

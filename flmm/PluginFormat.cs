@@ -27,7 +27,7 @@ namespace Fomm
     /// Gets the font family to apply to the plugin item.
     /// </summary>
     /// <remarks>
-    /// If this value is <lang cref="null"/> then no change should be made to
+    /// If this value is <lang langref="null"/> then no change should be made to
     /// the plugin's item's font family.
     /// </remarks>
     /// <value>The font family to apply to the plugin item.</value>
@@ -43,7 +43,7 @@ namespace Fomm
     /// Gets the font size to apply to the plugin item.
     /// </summary>
     /// <remarks>
-    /// If this value is <lang cref="null"/> then no change should be made to
+    /// If this value is <lang langref="null"/> then no change should be made to
     /// the plugin's item's font size.
     /// </remarks>
     /// <value>The font size to apply to the plugin item.</value>
@@ -59,7 +59,7 @@ namespace Fomm
     /// Gets the font style to apply to the plugin item.
     /// </summary>
     /// <remarks>
-    /// If this value is <lang cref="null"/> then no change should be made to
+    /// If this value is <lang langref="null"/> then no change should be made to
     /// the plugin's item's font style.
     /// </remarks>
     /// <value>The font style to apply to the plugin item.</value>
@@ -75,7 +75,7 @@ namespace Fomm
     /// Gets the font colour to apply to the plugin item.
     /// </summary>
     /// <remarks>
-    /// If this value is <lang cref="null"/> then no change should be made to
+    /// If this value is <lang langref="null"/> then no change should be made to
     /// the plugin's item's font colour.
     /// </remarks>
     /// <value>The font colour to apply to the plugin item.</value>
@@ -91,7 +91,7 @@ namespace Fomm
     /// Gets the highlight to apply to the plugin item.
     /// </summary>
     /// <remarks>
-    /// If this value is <lang cref="null"/> then no change should be made to
+    /// If this value is <lang langref="null"/> then no change should be made to
     /// the plugin's item's highlight.
     /// </remarks>
     /// <value>The highlight to apply to the plugin item.</value>
@@ -107,7 +107,7 @@ namespace Fomm
     /// Gets the message to show for the plugin.
     /// </summary>
     /// <remarks>
-    /// If this value is <lang cref="null"/> then no change should be made to
+    /// If this value is <lang langref="null"/> then no change should be made to
     /// the plugin's description.
     /// </remarks>
     /// <value>The message to show for the plugin.</value>
@@ -224,8 +224,8 @@ namespace Fomm
     /// <see cref="PluginFormat.m_intIndex"/>s are equal.
     /// </remarks>
     /// <param name="other">The <see cref="PluginFormat"/> to which to compare this one.</param>
-    /// <returns><lang cref="true"/> if the given <see cref="PluginFormat"/> is equal to this one;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the given <see cref="PluginFormat"/> is equal to this one;
+    /// <lang langref="false"/> otherwise.</returns>
     public bool Equals(PluginFormat other)
     {
       return CompareTo(other) == 0;

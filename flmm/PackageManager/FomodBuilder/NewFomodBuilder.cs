@@ -159,7 +159,7 @@ namespace Fomm.PackageManager.FomodBuilder
     /// <param name="p_booSetScreenshot">Whether or not to set the fomod's screenshot.</param>
     /// <param name="p_shtScreenshot">The fomod screenshot.</param>
     /// <param name="p_fscScript">The fomod install script.</param>
-    /// <returns>The path to the new fomod if it was successfully built; <lang cref="null"/> otherwise.</returns>
+    /// <returns>The path to the new fomod if it was successfully built; <lang langref="null"/> otherwise.</returns>
     public string BuildFomod(string p_strFileName, IList<KeyValuePair<string, string>> p_lstCopyInstructions,
                              Readme p_rmeReadme, XmlDocument p_xmlInfo, bool p_booSetScreenshot,
                              Screenshot p_shtScreenshot, FomodScript p_fscScript)

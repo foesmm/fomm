@@ -192,7 +192,7 @@ namespace Fomm.Controls
     /// The we are showing the split, then the down arrow is an input key.
     /// </remarks>
     /// <param name="keyData">The key for which it is to be determined if it is an input key.</param>
-    /// <returns><lang cref="true"/> if the given key is an input key; <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the given key is an input key; <lang langref="false"/> otherwise.</returns>
     protected override bool IsInputKey(Keys keyData)
     {
       if (keyData.Equals(Keys.Down) && m_booShowSplit)

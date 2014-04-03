@@ -156,8 +156,8 @@ class ScriptRunner {
     /// </summary>
     /// <param name="script">The script to run.</param>
     /// <param name="p_midInstaller">The installer script to use the execute the custom script.</param>
-    /// <returns><lang cref="true"/> if the script return <lang cref="true"/>;
-    /// <lang cref="null"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the script return <lang langref="true"/>;
+    /// <lang langref="null"/> otherwise.</returns>
     public static bool Execute(string script, ModInstaller p_midInstaller)
     {
       if (script.StartsWith("#fommScript"))

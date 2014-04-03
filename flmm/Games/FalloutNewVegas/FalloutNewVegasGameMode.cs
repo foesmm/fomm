@@ -200,8 +200,8 @@ namespace Fomm.Games.FalloutNewVegas
     /// 
     /// This method also checks for DLCs, and cleans up any missing FOMods.
     /// </remarks>
-    /// <returns><lang cref="true"/> if the game mode was able to initialize;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the game mode was able to initialize;
+    /// <lang langref="false"/> otherwise.</returns>
     public override bool Init()
     {
       if (!Properties.Settings.Default.falloutNewVegasDoneSetup)
@@ -361,8 +361,8 @@ namespace Fomm.Games.FalloutNewVegas
     /// This ensures that the steam client has loaded.
     /// </summary>
     /// <param name="p_eeaArguments">The main mod management form.</param>
-    /// <returns><lang cref="true"/> if Steam is running;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if Steam is running;
+    /// <lang langref="false"/> otherwise.</returns>
     public bool StartSteam(MainForm p_eeaArguments)
     {
       foreach (var clsProcess in Process.GetProcesses())
@@ -739,7 +739,7 @@ namespace Fomm.Games.FalloutNewVegas
     /// </summary>
     /// <param name="p_strVersion">The XML configuration file version for which to return a parser extension.</param>
     /// <returns>The appropriate parser extension for the specified configuration file version, or
-    /// <lang cref="null"/> if no extension is available.</returns>
+    /// <lang langref="null"/> if no extension is available.</returns>
     public override ParserExtension CreateParserExtension(string p_strVersion)
     {
       switch (p_strVersion)
@@ -756,7 +756,7 @@ namespace Fomm.Games.FalloutNewVegas
     /// </summary>
     /// <param name="p_strVersion">The XML configuration file version for which to return a parser extension.</param>
     /// <returns>The path to the schema file for the specified configuration file version, or
-    /// <lang cref="null"/> if there is no game-specific schema for the specified configuration
+    /// <lang langref="null"/> if there is no game-specific schema for the specified configuration
     /// file version.</returns>
     public override string GetGameSpecificXMLConfigSchemaPath(string p_strVersion)
     {
@@ -790,8 +790,8 @@ namespace Fomm.Games.FalloutNewVegas
     /// Handles the command line arguments that run outside of an instance of FOMM.
     /// </summary>
     /// <param name="p_strArgs">The command line arguments that were passed to the programme.</param>
-    /// <returns><lang cref="true"/> if at least one of the arguments were handled;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if at least one of the arguments were handled;
+    /// <lang langref="false"/> otherwise.</returns>
     public override bool HandleStandaloneArguments(string[] p_strArgs)
     {
       if (!p_strArgs[0].StartsWith("-") && File.Exists(p_strArgs[0]))
@@ -851,8 +851,8 @@ namespace Fomm.Games.FalloutNewVegas
     /// Handles the command line arguments that affect an instance of the mod manager.
     /// </summary>
     /// <param name="p_strArgs">The command line arguments that were passed to the programme.</param>
-    /// <returns><lang cref="true"/> if at least one of the arguments were handled;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if at least one of the arguments were handled;
+    /// <lang langref="false"/> otherwise.</returns>
     public override bool HandleInAppArguments(string[] p_strArgs)
     {
       return false;
@@ -864,8 +864,8 @@ namespace Fomm.Games.FalloutNewVegas
     /// Verifies that the given path is a valid working directory for the game mode.
     /// </summary>
     /// <param name="p_strPath">The path to validate as a working directory.</param>
-    /// <returns><lang cref="true"/> if the path is a vlid working directory;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the path is a vlid working directory;
+    /// <lang langref="false"/> otherwise.</returns>
     public override bool VerifyWorkingDirectory(string p_strPath)
     {
       if (String.IsNullOrEmpty(p_strPath))
@@ -897,8 +897,8 @@ namespace Fomm.Games.FalloutNewVegas
     /// This sets the working directory to the Fallout 3 install folder.
     /// </remarks>
     /// <param name="p_strErrorMessage">The out parameter that is set to the error message, if an error occurred.</param>
-    /// <returns><lang cref="true"/> if the working directory was successfully set;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the working directory was successfully set;
+    /// <lang langref="false"/> otherwise.</returns>
     public override bool SetWorkingDirectory(out string p_strErrorMessage)
     {
       var strWorkingDirectory = Properties.Settings.Default.falloutNewVegasWorkingDirectory;

@@ -3,7 +3,7 @@
 namespace Fomm.Controls
 {
   /// <summary>
-  /// A list view that has <see cref="Control.DoubleBuffered"/> set to <lang cref="true"/>.
+  /// A list view that has <see cref="Control.DoubleBuffered"/> set to <lang langref="true"/>.
   /// </summary>
   public class DoubleBufferedListView : ListView
   {

@@ -52,7 +52,7 @@ namespace Fomm.PackageManager.FomodBuilder
     /// Gets the path of the fomod that was built.
     /// </summary>
     /// <remarks>
-    /// This value will be <lang cref="null"/> if the fomod was not successfully built.
+    /// This value will be <lang langref="null"/> if the fomod was not successfully built.
     /// </remarks>
     /// <value>The path of the fomod that was built.</value>
     public string FomodPath
@@ -359,8 +359,8 @@ namespace Fomm.PackageManager.FomodBuilder
     /// <summary>
     /// Validates the source files of the FOMod.
     /// </summary>
-    /// <returns><lang cref="true"/> if the user has entered a file name for the FOMod, and selected
-    /// files to include; <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the user has entered a file name for the FOMod, and selected
+    /// files to include; <lang langref="false"/> otherwise.</returns>
     protected bool ValidateSources()
     {
       var booPassed = ValidateFomodFileName();
@@ -371,7 +371,7 @@ namespace Fomm.PackageManager.FomodBuilder
     /// <summary>
     /// Ensures that the user has entered a file name.
     /// </summary>
-    /// <returns><lang cref="true"/> if the user has entered a file name; <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the user has entered a file name; <lang langref="false"/> otherwise.</returns>
     protected bool ValidateFomodFileName()
     {
       sspError.SetError(tbxFomodFileName, null);
@@ -386,8 +386,8 @@ namespace Fomm.PackageManager.FomodBuilder
     /// <summary>
     /// Ensures that the user has selected files to include in the FOMod.
     /// </summary>
-    /// <returns><lang cref="true"/> if the user has selected files to include in the FOMod;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the user has selected files to include in the FOMod;
+    /// <lang langref="false"/> otherwise.</returns>
     protected bool ValidateFomodFiles()
     {
       sspError.SetStatus(ffsFileStructure, null);
@@ -419,8 +419,8 @@ namespace Fomm.PackageManager.FomodBuilder
     /// <summary>
     /// Ensures that the user has entered a Premade FOMod Pack save path, if a PFP is being created.
     /// </summary>
-    /// <returns><lang cref="true"/> if the user has entered a path and a Premade FOMod Pack is being created;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the user has entered a path and a Premade FOMod Pack is being created;
+    /// <lang langref="false"/> otherwise.</returns>
     protected bool ValidatePFPSavePath()
     {
       sspError.SetError(cbxPFP, null);

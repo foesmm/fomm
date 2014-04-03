@@ -113,8 +113,8 @@ namespace Fomm.Controls
         /// the string is equal to this <see cref="TagPosition"/>'s <see cref="Name"/>.
         /// </remarks>
         /// <param name="other">The string to compare to this object.</param>
-        /// <returns><lang cref="true"/> if the given string is equal to this object;
-        /// <lang cref="false"/> otherwise.</returns>
+        /// <returns><lang langref="true"/> if the given string is equal to this object;
+        /// <lang langref="false"/> otherwise.</returns>
         public bool Equals(string other)
         {
           if (String.IsNullOrEmpty(Name))
@@ -135,8 +135,8 @@ namespace Fomm.Controls
       /// Determines if the stack contains the specified tag.
       /// </summary>
       /// <param name="p_strTagName">The name of the tag for whose presence is to be determined.</param>
-      /// <returns><lang cref="true"/> if the stack contains the specified tag;
-      /// <lang cref="false"/> otherwise.</returns>
+      /// <returns><lang langref="true"/> if the stack contains the specified tag;
+      /// <lang langref="false"/> otherwise.</returns>
       public bool Contains(string p_strTagName)
       {
         for (var llnCurrent = Last; llnCurrent != null; llnCurrent = llnCurrent.Previous)
@@ -280,7 +280,7 @@ namespace Fomm.Controls
     /// Determins if the caret is inside a tag.
     /// </summary>
     /// <param name="p_txaTextArea">The text area containing the caret.</param>
-    /// <returns><lang cref="true"/> if the caret is inside a tag; <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the caret is inside a tag; <lang langref="false"/> otherwise.</returns>
     public static bool IsInsideTag(TextArea p_txaTextArea)
     {
       var strText = p_txaTextArea.Document.TextContent.Substring(0, p_txaTextArea.Caret.Offset);

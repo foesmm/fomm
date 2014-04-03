@@ -335,8 +335,8 @@ namespace Fomm
     /// <summary>
     /// Persists the game-mode specific settings.
     /// </summary>
-    /// <returns><lang cref="true"/> if ettings were saved;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if ettings were saved;
+    /// <lang langref="false"/> otherwise.</returns>
     protected bool SaveGameModeSettings()
     {
       var booIsValid = true;

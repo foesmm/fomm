@@ -74,8 +74,8 @@ namespace Fomm.PackageManager.FomodBuilder
       /// with the given path.
       /// </summary>
       /// <param name="p_strSourcePath">The source path to look for in the set.</param>
-      /// <returns><lang cref="true"/> if the set contains a <see cref="Source"/> with
-      /// the given path; <lang cref="false"/> otherwise.</returns>
+      /// <returns><lang langref="true"/> if the set contains a <see cref="Source"/> with
+      /// the given path; <lang langref="false"/> otherwise.</returns>
       public bool Contains(string p_strSourcePath)
       {
         for (var i = Count - 1; i >= 0; i--)
@@ -147,8 +147,8 @@ namespace Fomm.PackageManager.FomodBuilder
       /// <see cref="Source.Path"/>s are case-insensitively equal.
       /// </remarks>
       /// <param name="other">The <see cref="Source"/> to compare to this one.</param>
-      /// <returns><lang cref="true"/> if the two <see cref="Source"/>s are equal;
-      /// <lang cref="false"/> otherwise.</returns>
+      /// <returns><lang langref="true"/> if the two <see cref="Source"/>s are equal;
+      /// <lang langref="false"/> otherwise.</returns>
       public bool Equals(Source other)
       {
         return Path.Equals(other.Path, StringComparison.InvariantCultureIgnoreCase);
@@ -167,8 +167,8 @@ namespace Fomm.PackageManager.FomodBuilder
       /// <see cref="Source.Path"/> is case-insensitively equal to the string.
       /// </remarks>
       /// <param name="other">The string to compare to this <see cref="Source"/>.</param>
-      /// <returns><lang cref="true"/> if this <see cref="Source"/> is equal
-      /// to the given string; <lang cref="false"/> otherwise.</returns>
+      /// <returns><lang langref="true"/> if this <see cref="Source"/> is equal
+      /// to the given string; <lang langref="false"/> otherwise.</returns>
       public bool Equals(string other)
       {
         return Path.Equals(other);

@@ -157,7 +157,7 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Raises the <see cref="Control.ControlRemoved event.
+    /// Raises the <see cref="Control.ControlRemoved"/> event.
     /// </summary>
     /// <remarks>
     /// This ensures that the wizard buttons are enabled/disabled correctly.

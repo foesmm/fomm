@@ -20,8 +20,8 @@ namespace Fomm.Games.Fallout3
     /// <summary>
     /// Starts the migration, if necessary.
     /// </summary>
-    /// <returns><lang cref="false"/> if the migration failed;
-    /// <lang cref="true"/> otherwise.</returns>
+    /// <returns><lang langref="false"/> if the migration failed;
+    /// <lang langref="true"/> otherwise.</returns>
     public bool Migrate()
     {
       if (Properties.Settings.Default.migratedFromPre0130)
@@ -175,8 +175,8 @@ namespace Fomm.Games.Fallout3
     /// This allows the user to cancel the operation.
     /// </remarks>
     /// <param name="p_strFile">The file that was copied.</param>
-    /// <returns><lang cref="true"/> if the user has cancelled;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the user has cancelled;
+    /// <lang langref="false"/> otherwise.</returns>
     protected bool OverwriteFileCopied(string p_strFile)
     {
       return m_bwdProgress.Cancelled();

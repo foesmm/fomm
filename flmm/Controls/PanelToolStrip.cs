@@ -822,6 +822,7 @@ namespace Fomm.Controls
     /// values and adds it to the toolstrip.
     /// </remarks>
     /// <param name="p_ctlButton">The <see cref="Control"/> to add.</param>
+    /// <param name="p_strEventName">Event Name</param>
     /// <param name="p_intIndex">The index at which to insert the added item.</param>
     /// <param name="p_tdsDisplayStyle">The <see cref="ToolStripItemDisplayStyle"/> indicating how text and
     /// images are displayed on the added item.</param>

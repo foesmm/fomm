@@ -343,8 +343,8 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
     /// Determins if the given list of plugins has been auto-sorted.
     /// </summary>
     /// <param name="plugins">The plugins whose order is to be verified.</param>
-    /// <returns><lang cref="true"/> if the plugins have been auto-sorted;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the plugins have been auto-sorted;
+    /// <lang langref="false"/> otherwise.</returns>
     public bool CheckList(string[] plugins)
     {
       if (!HasMasterList)

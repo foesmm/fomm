@@ -90,7 +90,7 @@ namespace Fomm.PackageManager.FomodBuilder
     /// The source can be a folder or an archive.
     /// </remarks>
     /// <param name="p_strPath">The path to the source from which to create the fomod.</param>
-    /// <returns>The path to the new fomod if it was successfully built; <lang cref="null"/> otherwise.</returns>
+    /// <returns>The path to the new fomod if it was successfully built; <lang langref="null"/> otherwise.</returns>
     public IList<string> BuildFomodFromSource(string p_strPath)
     {
       var strSource = p_strPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);

@@ -31,7 +31,7 @@ namespace Fomm.InstallLogUpgraders
     /// This creates a <see cref="BackgroundWorkerProgressDialog"/> to do the work
     /// and display progress.
     /// </remarks>
-    /// <returns><lang cref="false"/> if the user cancelled the upgrade; <lang cref="true"/> otherwise.</returns>
+    /// <returns><lang langref="false"/> if the user cancelled the upgrade; <lang langref="true"/> otherwise.</returns>
     public bool UpgradeInstallLog()
     {
       //this is to handle the few people who already installed a version that used

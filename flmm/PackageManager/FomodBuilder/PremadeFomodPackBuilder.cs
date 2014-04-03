@@ -114,7 +114,7 @@ namespace Fomm.PackageManager.FomodBuilder
     /// <param name="p_shtScreenshot">The fomod screenshot.</param>
     /// <param name="p_fscScript">The fomod install script.</param>
     /// <param name="p_strPFPPath">The path where the Premade Fomod Pack will be created.</param>
-    /// <returns>The path to the new premade fomod pack if it was successfully built; <lang cref="null"/> otherwise.</returns>
+    /// <returns>The path to the new premade fomod pack if it was successfully built; <lang langref="null"/> otherwise.</returns>
     public string BuildPFP(string p_strFileName, string p_strVersion, string p_strMachineVersion,
                            IList<KeyValuePair<string, string>> p_lstCopyInstructions, IList<SourceFile> p_lstSourceFiles,
                            string p_strCustomHowToSteps, Readme p_rmeReadme, XmlDocument p_xmlInfo,

@@ -27,8 +27,8 @@ namespace Fomm.Games.FalloutNewVegas.Settings
     /// <summary>
     /// Validates the entered settings values on this page.
     /// </summary>
-    /// <returns><lang cref="true"/> if the entered settings values are valid;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the entered settings values are valid;
+    /// <lang langref="false"/> otherwise.</returns>
     protected bool ValidateSettings()
     {
       var booValid = rdcDirectories.ValidateSettings();
@@ -39,8 +39,8 @@ namespace Fomm.Games.FalloutNewVegas.Settings
     /// <summary>
     /// Validates the selected working directory.
     /// </summary>
-    /// <returns><lang cref="true"/> if the selected working directory is valid;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the selected working directory is valid;
+    /// <lang langref="false"/> otherwise.</returns>
     protected bool ValidateWorkingDirectory()
     {
       erpErrors.SetError(butSelectWorkingDirectory, null);
@@ -71,8 +71,8 @@ namespace Fomm.Games.FalloutNewVegas.Settings
     /// <summary>
     /// Persists the settings from the page's controls.
     /// </summary>
-    /// <returns><lang cref="true"/> if ettings were saved;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if ettings were saved;
+    /// <lang langref="false"/> otherwise.</returns>
     public override bool SaveSettings()
     {
       if (ValidateSettings())

@@ -84,16 +84,13 @@ namespace Fomm.PackageManager.FomodBuilder
     /// <remarks>
     /// This method is called by implementers of this abstract class to instantiate the
     /// <see cref="BackgroundWorkerProgressDialog"/> that will be used to generate the fomod. The
-    /// <see cref="BackgroundWorkerProgressDialog"/> calls <see cref="DoGenerateFomod(object p_objArgs)"/>,
+    /// <see cref="BackgroundWorkerProgressDialog"/> calls <see cref="DoGenerateFomod(object)"/>,
     /// which must be overridden in the implementer, to actually do the work.
     /// 
-    /// This method deals with the cases where <paramref name="p_strPackedFomodPath"/> points
-    /// to an existing file. It also performs housecleaning in case the user cancels the operation.
     /// </remarks>
-    /// <param name="p_gfaArgs">The arguments to pass the the <see cref="DoGenerateFomod(object p_objArgs)"/>
+    /// <param name="p_gfaArgs">The arguments to pass the the <see cref="DoGenerateFomod(object)"/>
     /// method.</param>
-    /// <returns>The atual path of the generated fomod. This could be <see cref="p_strPackedFomodPath"/>, but
-    /// may be different if the given path pointed to an existing file.</returns>
+    /// <returns>The atual path of the generated fomod.</returns>
     protected string GenerateFomod(GenerateFomodArgs p_gfaArgs)
     {
       var strPackedPath = p_gfaArgs.PackedPath;
@@ -132,7 +129,7 @@ namespace Fomm.PackageManager.FomodBuilder
     /// This method is overridden by implementers to perform the actual fomod generation.
     /// </summary>
     /// <param name="p_objArgs">The arguments the implementer passed to
-    /// <see cref="GenerateFomod(string p_strPackedFomodPath, object p_objArgs)"/>.</param>
+    /// <see cref="GenerateFomod(GenerateFomodArgs)"/>.</param>
     protected abstract void DoGenerateFomod(object p_objArgs);
 
     #endregion
@@ -160,8 +157,8 @@ namespace Fomm.PackageManager.FomodBuilder
     /// </summary>
     /// <param name="newpath">The path for which it is to be detemined if a file exists.
     /// It is updated with the new path if the given path was already in use.</param>
-    /// <returns><lang cref="true"/> if the returned value of <see cref="newpath"/> does not
-    /// specify an existing file; <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the returned value of <see cref="newpath"/> does not
+    /// specify an existing file; <lang langref="false"/> otherwise.</returns>
     protected bool CheckFileName(ref string newpath)
     {
       var strNewPath = newpath;
@@ -254,9 +251,9 @@ namespace Fomm.PackageManager.FomodBuilder
     /// metadata.
     /// </summary>
     /// <remarks>
-    /// The file is only created if <paramref name="p_booSetScreenshot"/> is <lang cref="true"/>. If
-    /// <paramref name="p_booSetScreenshot"/> is <lang cref="true"/> and <paramref name="p_shtScreenshot"/>
-    /// is <lang cref="null"/>, then any existing screenshot files will be deleted.
+    /// The file is only created if <paramref name="p_booSetScreenshot"/> is <lang langref="true"/>. If
+    /// <paramref name="p_booSetScreenshot"/> is <lang langref="true"/> and <paramref name="p_shtScreenshot"/>
+    /// is <lang langref="null"/>, then any existing screenshot files will be deleted.
     /// </remarks>
     /// <param name="p_strFomodFomodFolder">The folder in which to create the screenshot file.</param>
     /// <param name="p_booSetScreenshot">Whether or not to create the file.</param>
@@ -358,7 +355,7 @@ namespace Fomm.PackageManager.FomodBuilder
     /// execute the copy instructions.
     /// </remarks>
     /// <param name="p_strFile">The file the was copied.</param>
-    /// <returns><lang cref="true"/> if the user cancelled the operation; <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the user cancelled the operation; <lang langref="false"/> otherwise.</returns>
     protected bool FileCopied(string p_strFile)
     {
       ProgressDialog.StepItemProgress();

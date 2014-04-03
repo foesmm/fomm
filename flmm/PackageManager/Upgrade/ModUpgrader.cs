@@ -98,8 +98,8 @@ namespace Fomm.PackageManager.Upgrade
     /// the <see cref="fomod"/>'s installed version is equal to the
     /// current <see cref="Fomod"/>'s version.
     /// </summary>
-    /// <returns><lang cref="true"/> if the <see cref="Fomod"/>'s installed version is equal to the
-    /// current <see cref="Fomod"/>'s version; <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the <see cref="Fomod"/>'s installed version is equal to the
+    /// current <see cref="Fomod"/>'s version; <lang langref="false"/> otherwise.</returns>
     /// <seealso cref="ModInstallScript.CheckAlreadyDone()"/>
     protected override bool CheckAlreadyDone()
     {
@@ -192,8 +192,8 @@ namespace Fomm.PackageManager.Upgrade
     /// or not the script was successful.
     /// </summary>
     /// <param name="p_booSucceeded">Whether or not the script was successful.</param>
-    /// <returns><lang cref="true"/> if the script was successful;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the script was successful;
+    /// <lang langref="false"/> otherwise.</returns>
     protected virtual bool DetermineFomodActiveStatus(bool p_booSucceeded)
     {
       return p_booSucceeded;

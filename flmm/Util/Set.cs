@@ -67,7 +67,7 @@ namespace Fomm.Util
     /// Finds the first item that matches the given predicate.
     /// </summary>
     /// <param name="match">The predicate against which to match the items.</param>
-    /// <returns>The first item that matches the given predicate, or <lang cref="null"/>
+    /// <returns>The first item that matches the given predicate, or <lang langref="null"/>
     /// if no matching item is found.</returns>
     public T Find(Predicate<T> match)
     {
@@ -254,8 +254,8 @@ namespace Fomm.Util
     /// Determines if the given item is in the set.
     /// </summary>
     /// <param name="p_tItem">The item to look for in the set.</param>
-    /// <returns><lang cref="true"/> if the item is in the set;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the item is in the set;
+    /// <lang langref="false"/> otherwise.</returns>
     public bool Contains(T p_tItem)
     {
       return IndexOf(p_tItem) > -1;
@@ -284,9 +284,9 @@ namespace Fomm.Util
     }
 
     /// <summary>
-    /// Gets whether the set is read-only. Always <lang cref="false"/>.
+    /// Gets whether the set is read-only. Always <lang langref="false"/>.
     /// </summary>
-    /// <value>Whether the set is read-only. Always <lang cref="false"/>.</value>
+    /// <value>Whether the set is read-only. Always <lang langref="false"/>.</value>
     public bool IsReadOnly
     {
       get
@@ -299,8 +299,8 @@ namespace Fomm.Util
     /// Removes the given item from the set.
     /// </summary>
     /// <param name="p_tItem">The item to remove</param>
-    /// <returns><lang cref="true"/> if the item was removed;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the item was removed;
+    /// <lang langref="false"/> otherwise.</returns>
     public bool Remove(T p_tItem)
     {
       if (m_cmpComparer != null)
@@ -366,8 +366,8 @@ namespace Fomm.Util
     /// Determines if the given item is in the set.
     /// </summary>
     /// <param name="value">The item to look for in the set.</param>
-    /// <returns><lang cref="true"/> if the item is in the set;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the item is in the set;
+    /// <lang langref="false"/> otherwise.</returns>
     public bool Contains(object value)
     {
       if (!(value is T))
@@ -410,9 +410,9 @@ namespace Fomm.Util
     }
 
     /// <summary>
-    /// Gets whether the set is fixed size. Always <lang cref="false"/>.
+    /// Gets whether the set is fixed size. Always <lang langref="false"/>.
     /// </summary>
-    /// <value>Whether the set is fixed size. Always <lang cref="false"/>.</value>
+    /// <value>Whether the set is fixed size. Always <lang langref="false"/>.</value>
     public bool IsFixedSize
     {
       get

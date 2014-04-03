@@ -71,8 +71,8 @@ namespace Fomm.PackageManager
     /// Indicates that this script's work has already been completed if
     /// the <see cref="Fomod"/> is already not active.
     /// </summary>
-    /// <returns><lang cref="true"/> if the <see cref="Fomod"/> is not active;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the <see cref="Fomod"/> is not active;
+    /// <lang langref="false"/> otherwise.</returns>
     /// <seealso cref="ModInstallScript.CheckAlreadyDone()"/>
     protected override bool CheckAlreadyDone()
     {
@@ -86,7 +86,7 @@ namespace Fomm.PackageManager
     /// <summary>
     /// Uninstalls the mod and deactivates it.
     /// </summary>
-    /// <seealso cref="Uninstall(bool p_booSuppressSuccessMessage)"/>
+    /// <seealso cref="Uninstall(bool)"/>
     public void Uninstall()
     {
       Uninstall(false);
@@ -107,8 +107,8 @@ namespace Fomm.PackageManager
     /// This does the actual uninstallation; it removes the files and undoes any edits the
     /// fomod made.
     /// </summary>
-    /// <returns><lang cref="true"/> if the script work was completed successfully and needs to
-    /// be committed; <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the script work was completed successfully and needs to
+    /// be committed; <lang langref="false"/> otherwise.</returns>
     /// <seealso cref="ModInstallScript.DoScript"/>
     protected override bool DoScript()
     {
@@ -170,8 +170,8 @@ namespace Fomm.PackageManager
     /// <summary>
     /// Runs the custom uninstall script included in the fomod.
     /// </summary>
-    /// <returns><lang cref="true"/> if the uninstallation was successful;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the uninstallation was successful;
+    /// <lang langref="false"/> otherwise.</returns>
     /// <exception cref="FileNotFoundException">Thrown if the uninstall script
     /// cannot be found.</exception>
     protected bool RunCustomUninstallScript()
@@ -187,8 +187,8 @@ namespace Fomm.PackageManager
     /// <summary>
     /// Runs the basic uninstall script.
     /// </summary>
-    /// <returns><lang cref="true"/> if the installation was successful;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the installation was successful;
+    /// <lang langref="false"/> otherwise.</returns>
     protected bool RunBasicUninstallScript()
     {
       try

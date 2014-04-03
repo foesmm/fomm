@@ -278,7 +278,7 @@ namespace Fomm.InstallLogUpgraders
     /// the last installing mod doesn't have a corresponding file in the overwrites folder.
     /// </remarks>
     /// <param name="p_strDataRelativePath">The file for which it is to be determined if the owner is known.</param>
-    /// <returns><lang cref="true"/> if the owner is known; <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the owner is known; <lang langref="false"/> otherwise.</returns>
     private bool FileOwnerIsKnown(string p_strDataRelativePath)
     {
       var strModKey = InstallLog.Current.GetCurrentFileOwnerKey(p_strDataRelativePath);

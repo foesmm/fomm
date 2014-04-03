@@ -18,7 +18,7 @@ namespace Fomm.Util
 
     /// <summary>
     /// This class decorates <see cref="StringEnumerator"/> to make it appear
-    /// as a <see cref="IEnumerator{string}"/>.
+    /// as a IEnumerator{string} />.
     /// </summary>
     private class EnumeratorOfString : IEnumerator<string>
     {
@@ -82,7 +82,7 @@ namespace Fomm.Util
       /// <summary>
       /// Moves to the next item in the enumeration.
       /// </summary>
-      /// <returns><lang cref="true"/> if there is another item; <lang cref="false"/> otherwise.</returns>
+      /// <returns><lang langref="true"/> if there is another item; <lang langref="false"/> otherwise.</returns>
       public bool MoveNext()
       {
         return m_senEnumerator.MoveNext();
@@ -131,10 +131,10 @@ namespace Fomm.Util
     }
 
     /// <summary>
-    /// Implicitly converts a <see cref="List{string}"/> to a <see cref="SettingsStringList"/>.
+    /// Implicitly converts a List{string} to a SettingsStringList/>.
     /// </summary>
-    /// <param name="values">The <see cref="List{string}"/> to convert to a <see cref="SettingsStringList"/>.</param>
-    /// <returns>A <see cref="SettingsStringList"/> containing the strings in the given <see cref="List{string}"/>.</returns>
+    /// <param name="values">The List{string} to convert to a SettingsStringList.</param>
+    /// <returns>A SettingsStringList containing the strings in the given List{string}.</returns>
     public static implicit operator SettingsList(List<string> values)
     {
       if (values == null)

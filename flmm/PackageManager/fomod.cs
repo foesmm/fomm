@@ -509,7 +509,7 @@ namespace Fomm.PackageManager
     /// This method accounts for the <see cref="PathPrefix"/>.
     /// </remarks> 
     /// <param name="p_strPath">The filename whose existence in the FOMod is to be determined.</param>
-    /// <returns><lang cref="true"/> if the specified file is in the FOMod; <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the specified file is in the FOMod; <lang langref="false"/> otherwise.</returns>
     public bool ContainsFile(string p_strPath)
     {
       var strPath = p_strPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);

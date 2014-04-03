@@ -44,7 +44,7 @@ namespace Fomm.Controls
     /// <summary>
     /// Validates the syntax of the script.
     /// </summary>
-    /// <returns><lang cref="true"/> if the script syntax is valid; <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the script syntax is valid; <lang langref="false"/> otherwise.</returns>
     public bool ValidateSyntax()
     {
       string stdout;

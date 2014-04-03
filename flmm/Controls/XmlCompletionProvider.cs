@@ -221,7 +221,7 @@ namespace Fomm.Controls
     /// </summary>
     /// <param name="p_xspParticle">The particle at which to being the search.</param>
     /// <param name="p_stkCode">A stack describing a path to an XML element.</param>
-    /// <returns>The element specified by the given stack, or <lang cref="null"/> if no such
+    /// <returns>The element specified by the given stack, or <lang langref="null"/> if no such
     /// element could be found.</returns>
     private XmlSchemaElement findElement(XmlSchemaParticle p_xspParticle, Stack<string> p_stkCode)
     {
@@ -270,7 +270,7 @@ namespace Fomm.Controls
     /// Gets the documentation associated with the given XML element.
     /// </summary>
     /// <param name="p_xsaAnnotatedElement">The element for which to retrieve the documentations.</param>
-    /// <returns>The documentation associated with the given XML element, or <lang cref="null"/>
+    /// <returns>The documentation associated with the given XML element, or <lang langref="null"/>
     /// if there is no documentation in the schema.</returns>
     private string GetDocumentation(XmlSchemaAnnotated p_xsaAnnotatedElement)
     {
@@ -359,7 +359,7 @@ namespace Fomm.Controls
     /// contains the given sibling element.</param>
     /// <param name="p_lstChoices">The list of elements that are eligible to be the next element in the XML document.</param>
     /// <param name="p_lstSiblings">A list of sibling elements.</param>
-    /// <returns><lang cref="true"/> if the given siblings are contained by the given particle.</returns>
+    /// <returns><lang langref="true"/> if the given siblings are contained by the given particle.</returns>
     private bool ContainsSiblings(XmlSchemaParticle p_xspParticle, ref List<KeyValuePair<string, string>> p_lstChoices,
                                   List<string> p_lstSiblings)
     {
@@ -915,8 +915,8 @@ namespace Fomm.Controls
     /// <param name="p_txaTextArea">The area containing the document being edited.</param>
     /// <param name="p_intInsertionOffset">Where the selection should be inserted into the document.</param>
     /// <param name="p_chrKey">The character that was used to choose this completion selection.</param>
-    /// <returns><lang cref="true"/> if the insertion of <paramref name="p_chrKey"/> was handled;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the insertion of <paramref name="p_chrKey"/> was handled;
+    /// <lang langref="false"/> otherwise.</returns>
     public bool InsertAction(ICompletionData p_cdtData, TextArea p_txaTextArea, int p_intInsertionOffset, char p_chrKey)
     {
       p_txaTextArea.Caret.Position = p_txaTextArea.Document.OffsetToPosition(p_intInsertionOffset);

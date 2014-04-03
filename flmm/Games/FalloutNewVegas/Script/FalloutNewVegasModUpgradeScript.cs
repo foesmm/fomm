@@ -39,7 +39,7 @@ namespace Fomm.Games.FalloutNewVegas.Script
     /// <param name="p_strSection">The section in the Ini file to edit.</param>
     /// <param name="p_strKey">The key in the Ini file to edit.</param>
     /// <param name="p_strValue">The value to which to set the key.</param>
-    /// <returns><lang cref="true"/> if the value was set; <lang cref="false"/>
+    /// <returns><lang langref="true"/> if the value was set; <lang langref="false"/>
     /// if the user chose not to overwrite the existing value.</returns>
     protected override bool EditINI(string p_strFile, string p_strSection, string p_strKey, string p_strValue)
     {
@@ -81,7 +81,7 @@ namespace Fomm.Games.FalloutNewVegas.Script
     /// <param name="p_intPackage">The package containing the shader to edit.</param>
     /// <param name="p_strShaderName">The shader to edit.</param>
     /// <param name="p_bteData">The value to which to edit the shader.</param>
-    /// <returns><lang cref="true"/> if the value was set; <lang cref="false"/>
+    /// <returns><lang langref="true"/> if the value was set; <lang langref="false"/>
     /// if the user chose not to overwrite the existing value.</returns>
     /// <exception cref="ShaderException">Thrown if the shader could not be edited.</exception>
     public override bool EditShader(int p_intPackage, string p_strShaderName, byte[] p_bteData)

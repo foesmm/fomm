@@ -68,8 +68,8 @@ namespace Fomm.Util
     /// <param name="ProcessHandle">The process whose token is to be opened.</param>
     /// <param name="DesiredAccess">The desired access token we wish to open.</param>
     /// <param name="TokenHandle">The output parameter for the opened token.</param>
-    /// <returns><lang cref="true"/> if the desired token was opened;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the desired token was opened;
+    /// <lang langref="false"/> otherwise.</returns>
     [DllImport("advapi32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     private static extern bool OpenProcessToken(IntPtr ProcessHandle, UInt32 DesiredAccess, out IntPtr TokenHandle);
@@ -89,8 +89,8 @@ namespace Fomm.Util
     /// <param name="TokenInformation">The structure into which the information will be copied.</param>
     /// <param name="TokenInformationLength">The length of the information data structure.</param>
     /// <param name="ReturnLength">The length of the return information.</param>
-    /// <returns><lang cref="true"/> if the information was successfully retrieved;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the information was successfully retrieved;
+    /// <lang langref="false"/> otherwise.</returns>
     [DllImport("advapi32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     private static extern bool GetTokenInformation(
@@ -104,8 +104,8 @@ namespace Fomm.Util
     /// Closes the given handle.
     /// </summary>
     /// <param name="hObject">The handle to close.</param>
-    /// <returns><lang cref="true"/> if the was closed;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the was closed;
+    /// <lang langref="false"/> otherwise.</returns>
     [DllImport("kernel32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     private static extern bool CloseHandle(IntPtr hObject);
@@ -142,14 +142,14 @@ namespace Fomm.Util
     /// Gets whether or not the current process is elevated.
     /// </summary>
     /// <remarks>
-    /// This return <lang cref="true"/> if:
+    /// This return <lang langref="true"/> if:
     /// The current OS supports UAC, UAC is on, and the process is being run as an elevated user.
     /// OR
     /// The current OS supports UAC, UAC is off, and the process is being run by an administrator.
     /// OR
     /// The current OS doesn't support UAC.
     /// 
-    /// Otherwise, this returns <lang cref="false"/>.
+    /// Otherwise, this returns <lang langref="false"/>.
     /// </remarks>
     /// <value>Whether or not the current process is elevated.</value>
     public static bool IsElevated

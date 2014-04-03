@@ -86,7 +86,7 @@ namespace Fomm.PackageManager
     /// Gets the message to display upon failure of the script.
     /// </summary>
     /// <remarks>
-    /// If the value of this property is <lang cref="null"/> then no message will be
+    /// If the value of this property is <lang langref="null"/> then no message will be
     /// displayed.
     /// </remarks>
     /// <value>The message to display upon failure of the script.</value>
@@ -96,7 +96,7 @@ namespace Fomm.PackageManager
     /// Gets the message to display upon success of the script.
     /// </summary>
     /// <remarks>
-    /// If the value of this property is <lang cref="null"/> then no message will be
+    /// If the value of this property is <lang langref="null"/> then no message will be
     /// displayed.
     /// </remarks>
     /// <value>The message to display upon success of the script.</value>
@@ -122,8 +122,8 @@ namespace Fomm.PackageManager
     /// <summary>
     /// Checks to see if the script work has already been done.
     /// </summary>
-    /// <returns><lang cref="true"/> if the script work has already been done and the script
-    /// doesn't need to execute; <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the script work has already been done and the script
+    /// doesn't need to execute; <lang langref="false"/> otherwise.</returns>
     protected virtual bool CheckAlreadyDone()
     {
       return true;
@@ -136,8 +136,8 @@ namespace Fomm.PackageManager
     /// This is the method that needs to be overridden by implementers to do
     /// their script-specific work.
     /// </remarks>
-    /// <returns><lang cref="true"/> if the script work was completed successfully and needs to
-    /// be committed; <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the script work was completed successfully and needs to
+    /// be committed; <lang langref="false"/> otherwise.</returns>
     protected abstract bool DoScript();
 
     /// <summary>

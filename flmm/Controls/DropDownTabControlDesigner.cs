@@ -162,8 +162,8 @@ namespace Fomm.Controls
     /// Determines of the control should respond to a mouse click.
     /// </summary>
     /// <param name="point">The point where the mouse was clicked.</param>
-    /// <returns><lang cref="true"/> if the designed control should process the mouse click;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the designed control should process the mouse click;
+    /// <lang langref="false"/> otherwise.</returns>
     protected override bool GetHitTest(Point point)
     {
       var ddtTabControl = (DropDownTabControl) Control;

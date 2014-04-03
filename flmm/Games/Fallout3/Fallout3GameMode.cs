@@ -526,8 +526,8 @@ namespace Fomm.Games.Fallout3
     /// 
     /// This method also checks for DLCs, and cleans up any missing FOMods.
     /// </remarks>
-    /// <returns><lang cref="true"/> if the game mode was able to initialize;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the game mode was able to initialize;
+    /// <lang langref="false"/> otherwise.</returns>
     public override bool Init()
     {
       if (!Properties.Settings.Default.fallout3DoneSetup)
@@ -1378,7 +1378,7 @@ class Script : Fallout3BaseScript {
     /// </summary>
     /// <param name="p_strVersion">The XML configuration file version for which to return a parser extension.</param>
     /// <returns>The appropriate parser extension for the specified configuration file version, or
-    /// <lang cref="null"/> if no extension is available.</returns>
+    /// <lang langref="null"/> if no extension is available.</returns>
     public override ParserExtension CreateParserExtension(string p_strVersion)
     {
       switch (p_strVersion)
@@ -1400,7 +1400,7 @@ class Script : Fallout3BaseScript {
     /// </summary>
     /// <param name="p_strVersion">The XML configuration file version for which to return a parser extension.</param>
     /// <returns>The path to the schema file for the specified configuration file version, or
-    /// <lang cref="null"/> if there is no game-specific schema for the specified configuration
+    /// <lang langref="null"/> if there is no game-specific schema for the specified configuration
     /// file version.</returns>
     public override string GetGameSpecificXMLConfigSchemaPath(string p_strVersion)
     {
@@ -1434,8 +1434,8 @@ class Script : Fallout3BaseScript {
     /// Handles the command line arguments that run outside of an instance of FOMM.
     /// </summary>
     /// <param name="p_strArgs">The command line arguments that were passed to the programme.</param>
-    /// <returns><lang cref="true"/> if at least one of the arguments were handled;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if at least one of the arguments were handled;
+    /// <lang langref="false"/> otherwise.</returns>
     public override bool HandleStandaloneArguments(string[] p_strArgs)
     {
       if (!p_strArgs[0].StartsWith("-") && File.Exists(p_strArgs[0]))
@@ -1495,8 +1495,8 @@ class Script : Fallout3BaseScript {
     /// Handles the command line arguments that affect an instance of FOMM.
     /// </summary>
     /// <param name="p_strArgs">The command line arguments that were passed to the programme.</param>
-    /// <returns><lang cref="true"/> if at least one of the arguments were handled;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if at least one of the arguments were handled;
+    /// <lang langref="false"/> otherwise.</returns>
     public override bool HandleInAppArguments(string[] p_strArgs)
     {
       if (Array.IndexOf(p_strArgs, "-install-tweaker") != -1)
@@ -1513,8 +1513,8 @@ class Script : Fallout3BaseScript {
     /// Verifies that the given path is a valid working directory for the game mode.
     /// </summary>
     /// <param name="p_strPath">The path to validate as a working directory.</param>
-    /// <returns><lang cref="true"/> if the path is a vlid working directory;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the path is a vlid working directory;
+    /// <lang langref="false"/> otherwise.</returns>
     public virtual bool VerifyWorkingDirectory(string p_strPath)
     {
       if (String.IsNullOrEmpty(p_strPath))
@@ -1546,8 +1546,8 @@ class Script : Fallout3BaseScript {
     /// This sets the working directory to the Fallout 3 install folder.
     /// </remarks>
     /// <param name="p_strErrorMessage">The out parameter that is set to the error message, if an error occurred.</param>
-    /// <returns><lang cref="true"/> if the working directory was successfully set;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the working directory was successfully set;
+    /// <lang langref="false"/> otherwise.</returns>
     public override bool SetWorkingDirectory(out string p_strErrorMessage)
     {
       var strWorkingDirectory = Properties.Settings.Default.fallout3WorkingDirectory;
@@ -1863,8 +1863,8 @@ class Script : Fallout3BaseScript {
     /// Determines if the specified file is a plugin for the game mode.
     /// </summary>
     /// <param name="p_strPath">The path to the file for which it is to be determined if it is a plugin file.</param>
-    /// <returns><lang cref="true"/> if the specified file is a plugin file in the game mode;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the specified file is a plugin file in the game mode;
+    /// <lang langref="false"/> otherwise.</returns>
     public override bool IsPluginFile(string p_strPath)
     {
       var strExt = Path.GetExtension(p_strPath).ToLowerInvariant();

@@ -33,12 +33,12 @@ namespace Fomm
       /// can be enforced across the <see cref="IPluginFormatProvider"/>s, ensuring the last one
       /// to change a plugin's format wins.
       /// </remarks>
-      /// <param name="p_ffmFontFamily">The desired font family, or <lang cref="null"/> if the format won't affect the font family.</param>
-      /// <param name="p_fltFontSizeEM">The desired font size in em-points, or <lang cref="null"/> if the format won't affect the font size.</param>
-      /// <param name="p_fstFontStyle">The desired font style, or <lang cref="null"/> if the format won't affect the font style.</param>
-      /// <param name="p_clrColour">The desired font colour, or <lang cref="null"/> if the format won't affect the font colour.</param>
-      /// <param name="p_clrHighlight">The desired highlight colour, or <lang cref="null"/> if the format won't affect the highlight colour.</param>
-      /// <param name="p_strMessage">The desired message, or <lang cref="null"/> if the format won't affect the message.</param>
+      /// <param name="p_ffmFontFamily">The desired font family, or <lang langref="null"/> if the format won't affect the font family.</param>
+      /// <param name="p_fltFontSizeEM">The desired font size in em-points, or <lang langref="null"/> if the format won't affect the font size.</param>
+      /// <param name="p_fstFontStyle">The desired font style, or <lang langref="null"/> if the format won't affect the font style.</param>
+      /// <param name="p_clrColour">The desired font colour, or <lang langref="null"/> if the format won't affect the font colour.</param>
+      /// <param name="p_clrHighlight">The desired highlight colour, or <lang langref="null"/> if the format won't affect the highlight colour.</param>
+      /// <param name="p_strMessage">The desired message, or <lang langref="null"/> if the format won't affect the message.</param>
       /// <returns>A <see cref="PluginFormat"/> representing the given values.</returns>
       public PluginFormat CreateFormat(FontFamily p_ffmFontFamily, float? p_fltFontSizeEM, FontStyle? p_fstFontStyle,
                                        Color? p_clrColour, Color? p_clrHighlight, string p_strMessage)

@@ -379,7 +379,7 @@ namespace Fomm.PackageManager.ModInstallLog
     /// Returns install information about the specified <see cref="fomod"/>.
     /// </summary>
     /// <param name="p_strBaseName">The base name of the <see cref="fomod"/> for which to return information.</param>
-    /// <returns>Install information about the specified <see cref="fomod"/>, or <lang cref="null"/> if the
+    /// <returns>Install information about the specified <see cref="fomod"/>, or <lang langref="null"/> if the
     /// specified fomod is not installed.</returns>
     internal FomodInfo GetModInfo(string p_strBaseName)
     {
@@ -396,7 +396,7 @@ namespace Fomm.PackageManager.ModInstallLog
     /// Gets the key that was assigned to the specified mod.
     /// </summary>
     /// <param name="p_strModName">The base name of the <see cref="fomod"/> whose key is to be retrieved.</param>
-    /// <returns>The key that was assigned to the specified mod, or <lang cref="null"/> if
+    /// <returns>The key that was assigned to the specified mod, or <lang langref="null"/> if
     /// the specified mod has no key.</returns>
     internal string GetModKey(string p_strModName)
     {
@@ -484,8 +484,8 @@ namespace Fomm.PackageManager.ModInstallLog
     /// This updates the given mod's version in the install log without changing its key.
     /// </remarks>
     /// <param name="p_fomodMod">The <see cref="fomod"/> being updated.</param>
-    /// <returns><lang cref="true"/> if the given fomod was found and it's information updated;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the given fomod was found and it's information updated;
+    /// <lang langref="false"/> otherwise.</returns>
     protected internal bool UpdateMod(fomod p_fomodMod)
     {
       if (m_dicModList.ContainsKey(p_fomodMod.BaseName))
@@ -512,8 +512,8 @@ namespace Fomm.PackageManager.ModInstallLog
     /// </remarks>
     /// <param name="p_strOldBaseName">The old base name of the mod whose information is to be updated.</param>
     /// <param name="p_fomodMod">The <see cref="fomod"/> containing the new information.</param>
-    /// <returns><lang cref="true"/> if the given fomod was found and it's information updated;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the given fomod was found and it's information updated;
+    /// <lang langref="false"/> otherwise.</returns>
     protected bool UpdateMod(string p_strOldBaseName, fomod p_fomodMod)
     {
       if (p_fomodMod.BaseName.Equals(p_strOldBaseName))
@@ -671,7 +671,7 @@ namespace Fomm.PackageManager.ModInstallLog
     /// </summary>
     /// <param name="p_strPath">The path to the file whose previous owner is to be determined.</param>
     /// <returns>The key of the mod who was the previous owner of the specified file, or
-    /// <lang cref="null"/> if there was no previous owner.</returns>
+    /// <lang langref="null"/> if there was no previous owner.</returns>
     public string GetPreviousFileOwnerKey(string p_strPath)
     {
       var strNormalizedPath = NormalizePath(p_strPath);
@@ -769,7 +769,7 @@ namespace Fomm.PackageManager.ModInstallLog
     /// </remarks>
     /// <param name="p_strModName">The base name of the mod that installed the file.</param>
     /// <param name="p_strPath">The path of the file that was installed.</param>
-    /// <seealso cref="AddDataFile(string p_strModName, string p_strPath)"/>
+    /// <seealso cref="AddDataFile(string, string)"/>
     protected void ReplaceDataFile(string p_strModName, string p_strPath)
     {
       p_strPath = NormalizePath(p_strPath.ToLowerInvariant());
@@ -887,7 +887,7 @@ namespace Fomm.PackageManager.ModInstallLog
     /// <param name="p_strSection">The section containing the key whose previous value is to be retrieved.</param>
     /// <param name="p_strKey">The key whose previous value is to be retrieved.</param>
     /// <returns>The value of the specified key before it was most recently overwritten, or
-    /// <lang cref="null"/> if there was no previous value.</returns>
+    /// <lang langref="null"/> if there was no previous value.</returns>
     public string GetPreviousIniValue(string file, string section, string key)
     {
       var xndModList =
@@ -1005,7 +1005,7 @@ namespace Fomm.PackageManager.ModInstallLog
     /// <param name="p_strKey">The key in the Ini file that was edited.</param>
     /// <param name="p_strModName">The base name of the mod that made the edit.</param>
     /// <param name="p_strValue">The value to which to the key was set.</param>
-    /// <seealso cref="AddIniEdit(string p_strFile, string p_strSection, string p_strKey, string p_strModName, string p_strValue)"/>
+    /// <seealso cref="AddIniEdit(string, string, string, string, string)"/>
     protected internal void ReplaceIniEdit(string p_strFile, string p_strSection, string p_strKey, string p_strModName,
                                            string p_strValue)
     {
@@ -1144,7 +1144,7 @@ namespace Fomm.PackageManager.ModInstallLog
     /// </summary>
     /// <param name="p_strValueKey">The key of the game-specific value whose previous data is to be retrieved.</param>
     /// <returns>The data of the specified game-specific value before it was most recently overwritten, or
-    /// <lang cref="null"/> if there was no previous value.</returns>
+    /// <lang langref="null"/> if there was no previous value.</returns>
     public byte[] GetPreviousGameSpecifcValueData(string p_strValueKey)
     {
       var xndModList =
@@ -1259,7 +1259,7 @@ namespace Fomm.PackageManager.ModInstallLog
     /// <param name="p_strModName">The base name of the mod that made the edit.</param>
     /// <param name="p_strValueKey">The key of the game-specific value that was edited.</param>
     /// <param name="p_bteData">The data to which to the value was set.</param>
-    /// <seealso cref="AddGameSpecificValueEdit(string p_strModName, string p_strValueKey, byte[] p_bteData)"/>
+    /// <seealso cref="AddGameSpecificValueEdit(string, string, byte[])"/>
     protected internal void ReplaceGameSpecificValueEdit(string p_strModName, string p_strValueKey, byte[] p_bteData)
     {
       var strLoweredValueKey = p_strValueKey.ToLowerInvariant();

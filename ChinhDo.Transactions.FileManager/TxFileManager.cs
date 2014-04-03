@@ -230,6 +230,12 @@ namespace ChinhDo.Transactions
       return dirName;
     }
 
+    /// <summary>
+    /// Creates a temporary file with the given extension and returns the filename.
+    /// </summary>
+    /// <param name="ext">The suffix the temporary file should have.  Include
+    /// a dot if you want it to appear in the filename as an extension.</param>
+    /// <returns></returns>
     protected static string CreateTempFileName(string ext)
     {
       string retVal;

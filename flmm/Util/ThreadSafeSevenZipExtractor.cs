@@ -66,7 +66,7 @@ namespace Fomm.Util
     /// This wrapper property ensures the operation executes on the same thread in which the
     /// <see cref="SevenZipExtractor"/> was created.
     /// </remarks>
-    /// <value><lang cref="true"/> if the archive is solid; <lang cref="false"/> otherwise.</value>
+    /// <value><lang langref="true"/> if the archive is solid; <lang langref="false"/> otherwise.</value>
     /// <seealso cref="SevenZipExtractor.IsSolid"/>
     public bool IsSolid
     {
