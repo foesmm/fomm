@@ -78,18 +78,6 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 
       #endregion
 
-      #region Constructors
-
-      /// <summary>
-      /// The default constructor.
-      /// </summary>
-      public TransparentLabel()
-      {
-        BackColor = Color.Transparent;
-      }
-
-      #endregion
-
       /// <summary>
       /// Raises the <see cref="Control.OnPaintBackground"/> event.
       /// </summary>
@@ -298,10 +286,10 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// </summary>
     public HeaderPanel()
     {
-      DoubleBuffered = true;
       SuspendLayout();
       Controls.Add(m_pbxImage);
       Controls.Add(m_pbxGradient);
+      m_tlbLabel.BackColor = Color.Transparent;
       Controls.Add(m_tlbLabel);
       m_pbxImage.SizeMode = PictureBoxSizeMode.StretchImage;
       m_pbxGradient.Dock = DockStyle.Fill;

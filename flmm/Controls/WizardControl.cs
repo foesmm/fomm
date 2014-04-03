@@ -69,9 +69,6 @@ namespace Fomm.Controls
     /// </summary>
     public WizardControl()
     {
-      TabsVisible = false;
-      BackColor = Color.FromKnownColor(KnownColor.Control);
-
       var mPnlNavigation = new Panel();
       mPnlNavigation.Dock = DockStyle.Bottom;
       mPnlNavigation.Height = 23 + 2*12;
@@ -119,8 +116,6 @@ namespace Fomm.Controls
       PreviousButton.Location = new Point(NextButton.Left - 6 - PreviousButton.Width, 12);
       PreviousButton.Click += Previous_Click;
       mPnlNavigation.Controls.Add(PreviousButton);
-
-      Dock = DockStyle.Fill;
     }
 
     #endregion

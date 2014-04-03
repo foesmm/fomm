@@ -125,12 +125,11 @@ namespace Fomm
     private Button bCancel;
     private bool BlockClose = true;
 
-    internal ProgressForm(string title, bool ShowRatio)
+    internal ProgressForm(bool ShowRatio)
     {
       InitializeComponent();
       Icon = Resources.fomm02;
       Application.UseWaitCursor = true;
-      Text = title;
       if (!ShowRatio)
       {
         pbRatio.Visible = false;

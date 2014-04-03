@@ -84,8 +84,6 @@ namespace Fomm
       Icon = Resources.fomm02;
       Settings.Default.windowPositions.GetWindowPosition("MainForm", this);
 
-      Text += " (" + Program.MVersion + ") - " + Program.GameMode.GameName;
-
       if (fomod != null)
       {
         bPackageManager_Click(null, null);

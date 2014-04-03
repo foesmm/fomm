@@ -185,10 +185,6 @@ namespace Fomm.Games.FalloutNewVegas
 
     #endregion
 
-    #region Constructors
-
-    #endregion
-
     #region Initialization
 
     /// <summary>

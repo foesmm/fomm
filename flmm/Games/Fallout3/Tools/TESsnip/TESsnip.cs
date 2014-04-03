@@ -724,7 +724,10 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       }
       if (hexModeToolStripMenuItem.Checked)
       {
-        new HexDataEdit(sr.Name, sr.GetData(), LookupFormIDS).ShowDialog();
+        var hde = new HexDataEdit(sr.Name, sr.GetData(), LookupFormIDS);
+        hde.Text += sr.Name + " (hex mode)";
+        hde.ShowDialog();
+
         if (!HexDataEdit.Canceled)
         {
           sr.SetData(HexDataEdit.result);
@@ -736,7 +739,10 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       }
       else
       {
-        new DataEdit(sr.Name, sr.GetData()).ShowDialog();
+        var de = new DataEdit(sr.Name, sr.GetData());
+        de.Text += sr.Name + " (string mode)";
+        de.ShowDialog();
+
         if (!DataEdit.Canceled)
         {
           sr.SetData(DataEdit.result);

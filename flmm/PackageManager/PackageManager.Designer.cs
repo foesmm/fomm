@@ -56,6 +56,7 @@ namespace Fomm.PackageManager {
       this.createFOMODToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.editPFPToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.sbtAddFomod = new Fomm.Controls.SplitButton();
+          this.sbtAddFomod.AutoSize = true;
       this.menuStrip1 = new System.Windows.Forms.MenuStrip();
       this.modListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.exportModListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();

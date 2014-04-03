@@ -157,18 +157,6 @@ namespace Fomm.Controls
 
     #endregion
 
-    #region Constructors
-
-    /// <summary>
-    /// The default constructor.
-    /// </summary>
-    public SplitButton()
-    {
-      AutoSize = true;
-    }
-
-    #endregion
-
     /// <summary>
     /// Gets the preferred size of the control.
     /// </summary>

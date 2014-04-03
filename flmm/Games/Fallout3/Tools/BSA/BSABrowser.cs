@@ -427,7 +427,8 @@ namespace Fomm.Games.Fallout3.Tools.BSA
       {
         if (SaveAllDialog.ShowDialog() == DialogResult.OK)
         {
-          var pf = new ProgressForm("Unpacking archive", false);
+          var pf = new ProgressForm(false);
+          pf.Text = "Unpacking archive";
           pf.EnableCancel();
           pf.SetProgressRange(lvFiles.SelectedItems.Count);
           pf.Show();
@@ -460,7 +461,8 @@ namespace Fomm.Games.Fallout3.Tools.BSA
     {
       if (SaveAllDialog.ShowDialog() == DialogResult.OK)
       {
-        var pf = new ProgressForm("Unpacking archive", false);
+        var pf = new ProgressForm(false);
+        pf.Text = "Unpacking archive";
         pf.EnableCancel();
         pf.SetProgressRange(Files.Length);
         pf.Show();

@@ -207,7 +207,8 @@ namespace Fomm.PackageManager
           m_strLastError = "There were " + intMissingImages + " filenames specified for preview images which could not be loaded";
         }*/
       }
-      var sfmSelectForm = new SelectForm(p_strItems, p_strTitle, p_booSelectMany, imgPreviews, p_strDescriptions);
+      var sfmSelectForm = new SelectForm(p_strItems, p_booSelectMany, imgPreviews, p_strDescriptions);
+      sfmSelectForm.Text = p_strTitle;
       sfmSelectForm.ShowDialog();
       var intResults = new int[sfmSelectForm.SelectedIndex.Length];
       for (var i = 0; i < sfmSelectForm.SelectedIndex.Length; i++)

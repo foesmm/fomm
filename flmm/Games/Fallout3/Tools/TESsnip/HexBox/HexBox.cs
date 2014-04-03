@@ -1572,8 +1572,6 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
       _vScrollBar = new VScrollBar();
       _vScrollBar.Scroll += _vScrollBar_Scroll;
 
-      BackColor = Color.White;
-      Font = new Font("Courier New", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
       _stringFormat = new StringFormat(StringFormat.GenericTypographic);
       _stringFormat.FormatFlags = StringFormatFlags.MeasureTrailingSpaces;
 

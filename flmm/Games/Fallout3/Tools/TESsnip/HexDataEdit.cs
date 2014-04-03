@@ -22,9 +22,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       InitializeComponent();
       Icon = Resources.fomm02;
       this.formIDLookup = formIDLookup;
-      Text += RecName;
       tbName.Text = RecName;
-      Text += " (hex mode)";
       var dbytes = new DynamicByteProvider(data);
       bytes = dbytes.Bytes;
       hexBox1.ByteProvider = dbytes;

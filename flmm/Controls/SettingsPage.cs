@@ -1,5 +1,4 @@
 ﻿using System.Windows.Forms;
-using System.Drawing;
 
 namespace Fomm.Controls
 {

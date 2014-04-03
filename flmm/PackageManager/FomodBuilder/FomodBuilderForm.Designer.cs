@@ -1,4 +1,6 @@
-﻿namespace Fomm.PackageManager.FomodBuilder
+﻿using System.Drawing;
+
+namespace Fomm.PackageManager.FomodBuilder
 {
   partial class FomodBuilderForm
   {
@@ -36,6 +38,7 @@
       this.butCancel = new System.Windows.Forms.Button();
       this.fbdPFPPath = new System.Windows.Forms.FolderBrowserDialog();
       this.vtcFomodData = new Fomm.Controls.VerticalTabControl();
+      this.vtcFomodData.BackColor = Color.FromKnownColor(KnownColor.Window);
       this.vtpDownloadLocations = new Fomm.Controls.VerticalTabPage();
       this.sdsDownloadLocations = new Fomm.PackageManager.FomodBuilder.SourceDownloadSelector();
       this.panel5 = new System.Windows.Forms.Panel();

@@ -497,12 +497,7 @@ namespace Fomm.Games.Fallout3
 
     #endregion
 
-    #region Constructors
-
-    /// <summary>
-    /// The default constructor.
-    /// </summary>
-    public Fallout3GameMode()
+    override public void PostInit()
     {
       m_sfsSettingsFiles = CreateSettingsFileSet();
       m_pmgPluginManager = CreatePluginManager();
@@ -512,8 +507,6 @@ namespace Fomm.Games.Fallout3
       SetupTools();
       SetupLaunchCommands();
     }
-
-    #endregion
 
     #region Initialization
 

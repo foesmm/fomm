@@ -472,7 +472,6 @@ namespace Fomm.Controls
     /// </summary>
     public VerticalTabControl()
     {
-      BackColor = Color.FromKnownColor(KnownColor.Window);
       TabPages = new TabPageCollection();
       TabPages.TabPageAdded += AddTabPage;
       TabPages.TabPageRemoved += RemoveTabPage;

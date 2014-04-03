@@ -27,7 +27,6 @@ namespace Fomm.PackageManager
           rtbEdit.Text = text;
           rtbEdit.Dock = DockStyle.Fill;
           rtbEdit.TextChanged += textChanged;
-          Text = "Readme editor";
           break;
       }
     }
@@ -43,6 +42,8 @@ namespace Fomm.PackageManager
     public static string ShowEditor(string initial, TextEditorType type, bool dialog)
     {
       var se = new TextEditor(initial, type);
+      se.Text = "Readme editor";
+
       if (dialog)
       {
         se.ShowDialog();

@@ -298,6 +298,7 @@ namespace Fomm
             MessageBox.Show("Unrecognized game selection.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             return;
         }
+        GameMode.PostInit();
 
         Mutex mutex;
         bool booNewMutex;
@@ -502,6 +503,8 @@ namespace Fomm
             try
             {
               var frmMain = new MainForm(autoLoad);
+              frmMain.Text += " (" + MVersion + ") - " + GameMode.GameName;
+
               Application.Run(frmMain);
               booChangeGameMode = frmMain.ChangeGameMode;
             }
