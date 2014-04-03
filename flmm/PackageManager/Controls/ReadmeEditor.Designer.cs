@@ -34,6 +34,7 @@
       this.tbxReadme = new System.Windows.Forms.TextBox();
       this.ddpHTML = new Fomm.Controls.DropDownTabPage();
       this.xedReadme = new Fomm.Controls.XmlEditor();
+      this.xedReadme.SetHighlighting("XML");
       this.toolStrip1 = new System.Windows.Forms.ToolStrip();
       this.tsbPreview = new System.Windows.Forms.ToolStripButton();
       this.ddpRichText = new Fomm.Controls.DropDownTabPage();

@@ -123,7 +123,6 @@ namespace Fomm.Controls
     {
       m_cdpXmlCompletionProvider = new XmlCompletionProvider(this);
 
-      SetHighlighting("XML");
       ActiveTextAreaControl.TextArea.KeyEventHandler +=
         TextArea_KeyEventHandler;
       Disposed += DisposeCodeCompletionWindow;
