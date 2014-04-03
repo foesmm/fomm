@@ -14,13 +14,10 @@ namespace Fomm.Controls
     /// </summary>
     public AutosizeLabel()
     {
-      Multiline = true;
       ScrollBars = RichTextBoxScrollBars.None;
       BorderStyle = BorderStyle.None;
-      BackColor = SystemColors.Control;
       ReadOnly = true;
       TabStop = false;
-      Cursor = Cursors.Arrow;
       Enter += delegate
       {
         FindForm().Controls["nonExistant"].Focus();
