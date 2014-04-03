@@ -17,47 +17,25 @@ namespace Fomm.PackageManager.FomodBuilder
     /// </summary>
     protected class BuildFomodArgs : GenerateFomodArgs
     {
-      private string m_strFomodName;
-      private string m_strSource;
-      private string m_strUrl;
-
       #region Properties
 
       /// <summary>
       /// Gets or sets the fomodName.
       /// </summary>
       /// <value>The fomodName.</value>
-      public string FomodName
-      {
-        get
-        {
-          return m_strFomodName;
-        }
-      }
+      public string FomodName { get; private set; }
 
       /// <summary>
       /// Gets the source folder from which to make the fomod.
       /// </summary>
       /// <value>The source folder from which to make the fomod.</value>
-      public string SourcePath
-      {
-        get
-        {
-          return m_strSource;
-        }
-      }
+      public string SourcePath { get; private set; }
 
       /// <summary>
       /// Gets the URL of the mod's website.
       /// </summary>
       /// <value>The URL of the mod's website.</value>
-      public string Url
-      {
-        get
-        {
-          return m_strUrl;
-        }
-      }
+      public string Url { get; private set; }
 
       #endregion
 
@@ -73,9 +51,9 @@ namespace Fomm.PackageManager.FomodBuilder
       public BuildFomodArgs(string p_strFomodName, string p_strSourcePath, string p_strUrl, string p_strPackedFomodPath)
         : base(p_strPackedFomodPath)
       {
-        m_strFomodName = p_strFomodName;
-        m_strSource = p_strSourcePath;
-        m_strUrl = p_strUrl;
+        FomodName = p_strFomodName;
+        SourcePath = p_strSourcePath;
+        Url = p_strUrl;
       }
 
       #endregion

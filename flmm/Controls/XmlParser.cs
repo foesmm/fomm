@@ -42,47 +42,25 @@ namespace Fomm.Controls
       /// </summary>
       public class TagPosition : IEquatable<string>
       {
-        private string m_strName;
-        private Int32 m_intLineNumber;
-        private Int32 m_intColumn;
-
         #region Properties
 
         /// <summary>
         /// Gets the name of the tag.
         /// </summary>
         /// <value>The name of the tag.</value>
-        public string Name
-        {
-          get
-          {
-            return m_strName;
-          }
-        }
+        public string Name { get; private set; }
 
         /// <summary>
         /// Gets the line number of the tag in the document.
         /// </summary>
         /// <value>The line number of the tag in the document.</value>
-        public Int32 LineNumber
-        {
-          get
-          {
-            return m_intLineNumber;
-          }
-        }
+        public int LineNumber { get; private set; }
 
         /// <summary>
         /// Gets the column of the tag.
         /// </summary>
         /// <value>The column of the tag.</value>
-        public Int32 Column
-        {
-          get
-          {
-            return m_intColumn;
-          }
-        }
+        public int Column { get; private set; }
 
         #endregion
 
@@ -96,9 +74,9 @@ namespace Fomm.Controls
         /// <param name="p_intColumn">The column of the tag.</param>
         public TagPosition(string p_strName, Int32 p_intLineNumber, Int32 p_intColumn)
         {
-          m_strName = p_strName;
-          m_intLineNumber = p_intLineNumber;
-          m_intColumn = p_intColumn;
+          Name = p_strName;
+          LineNumber = p_intLineNumber;
+          Column = p_intColumn;
         }
 
         #endregion

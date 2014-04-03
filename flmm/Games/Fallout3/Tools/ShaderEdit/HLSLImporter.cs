@@ -13,25 +13,11 @@ namespace Fomm.Games.Fallout3.Tools.ShaderEdit
       DialogResult = DialogResult.Cancel;
     }
 
-    private string profile;
-    private string entryPoint;
     private bool debug;
 
-    public string Profile
-    {
-      get
-      {
-        return profile;
-      }
-    }
+    public string Profile { get; private set; }
 
-    public string EntryPoint
-    {
-      get
-      {
-        return entryPoint;
-      }
-    }
+    public string EntryPoint { get; private set; }
 
     public byte Debug
     {
@@ -54,11 +40,11 @@ namespace Fomm.Games.Fallout3.Tools.ShaderEdit
       {
         if (c is RadioButton && ((RadioButton) c).Checked)
         {
-          profile = c.Text;
+          Profile = c.Text;
           break;
         }
       }
-      entryPoint = tbEntry.Text;
+      EntryPoint = tbEntry.Text;
       debug = cbDebug.Checked;
       Close();
     }

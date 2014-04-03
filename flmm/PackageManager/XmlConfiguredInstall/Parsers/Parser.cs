@@ -79,9 +79,6 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     }
 
     public ParserExtension m_pexParserExtension = null;
-    private XmlDocument m_xmlConfig;
-    private fomod m_fomodMod;
-    private DependencyStateManager m_dsmSate;
 
     #region Properties
 
@@ -107,37 +104,19 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     /// Gets the xml configuration file.
     /// </summary>
     /// <value>The xml configuration file.</value>
-    protected XmlDocument XmlConfig
-    {
-      get
-      {
-        return m_xmlConfig;
-      }
-    }
+    protected XmlDocument XmlConfig { get; private set; }
 
     /// <summary>
     /// Gets the fomod being installed.
     /// </summary>
     /// <value>The fomod being installed.</value>
-    protected fomod Fomod
-    {
-      get
-      {
-        return m_fomodMod;
-      }
-    }
+    protected fomod Fomod { get; private set; }
 
     /// <summary>
     /// Gets the dependency state manager.
     /// </summary>
     /// <value>The dependency state manager.</value>
-    protected DependencyStateManager StateManager
-    {
-      get
-      {
-        return m_dsmSate;
-      }
-    }
+    protected DependencyStateManager StateManager { get; private set; }
 
     #endregion
 
@@ -154,9 +133,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
                   ParserExtension p_pexParserExtension)
     {
       m_pexParserExtension = p_pexParserExtension;
-      m_xmlConfig = p_xmlConfig;
-      m_fomodMod = p_fomodMod;
-      m_dsmSate = p_dsmSate;
+      XmlConfig = p_xmlConfig;
+      Fomod = p_fomodMod;
+      StateManager = p_dsmSate;
       validateModuleConfig();
     }
 
@@ -173,8 +152,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     private void validateModuleConfig()
     {
       var xscSchema = loadModuleConfigSchema();
-      m_xmlConfig.Schemas.Add(xscSchema);
-      m_xmlConfig.Validate((s, e) =>
+      XmlConfig.Schemas.Add(xscSchema);
+      XmlConfig.Validate((s, e) =>
       {
         throw e.Exception;
       });

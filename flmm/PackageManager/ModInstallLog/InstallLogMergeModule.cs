@@ -14,47 +14,25 @@ namespace Fomm.PackageManager.ModInstallLog
     /// </summary>
     internal class IniEdit : IComparable<IniEdit>
     {
-      private string m_strFile;
-      private string m_strSection;
-      private string m_strKey;
-
       #region Properties
 
       /// <summary>
       /// Gets the file that was edited.
       /// </summary>
       /// <value>The file that was edited.</value>
-      public string File
-      {
-        get
-        {
-          return m_strFile;
-        }
-      }
+      public string File { get; private set; }
 
       /// <summary>
       /// Gets the section in the file that was edited.
       /// </summary>
       /// <value>The section in the file that was edited.</value>
-      public string Section
-      {
-        get
-        {
-          return m_strSection;
-        }
-      }
+      public string Section { get; private set; }
 
       /// <summary>
       /// Gets the key in the file that was edited.
       /// </summary>
       /// <value>The key in the file that was edited.</value>
-      public string Key
-      {
-        get
-        {
-          return m_strKey;
-        }
-      }
+      public string Key { get; private set; }
 
       /// <summary>
       /// Gets or sets the value to which the key was set.
@@ -74,9 +52,9 @@ namespace Fomm.PackageManager.ModInstallLog
       /// <param name="p_strKey">The key in the Ini file that was edited.</param>
       public IniEdit(string p_strFile, string p_strSection, string p_strKey)
       {
-        m_strFile = p_strFile;
-        m_strSection = p_strSection;
-        m_strKey = p_strKey;
+        File = p_strFile;
+        Section = p_strSection;
+        Key = p_strKey;
       }
 
       #endregion
@@ -98,13 +76,13 @@ namespace Fomm.PackageManager.ModInstallLog
       /// instance.</returns>
       public int CompareTo(IniEdit other)
       {
-        var intResult = m_strFile.CompareTo(other.m_strFile);
+        var intResult = File.CompareTo(other.File);
         if (intResult == 0)
         {
-          intResult = m_strSection.CompareTo(other.m_strSection);
+          intResult = Section.CompareTo(other.Section);
           if (intResult == 0)
           {
-            intResult = m_strKey.CompareTo(other.m_strKey);
+            intResult = Key.CompareTo(other.Key);
           }
         }
         return intResult;
@@ -118,21 +96,13 @@ namespace Fomm.PackageManager.ModInstallLog
     /// </summary>
     internal class GameSpecificValueEdit : IComparable<GameSpecificValueEdit>
     {
-      private string m_strKey;
-
       #region Properties
 
       /// <summary>
       /// Gets the key of the value that was edited.
       /// </summary>
       /// <value>The key of the value that was edited.</value>
-      public string Key
-      {
-        get
-        {
-          return m_strKey;
-        }
-      }
+      public string Key { get; private set; }
 
       /// <summary>
       /// Gets or sets the data to which the game-specific value was set.
@@ -150,7 +120,7 @@ namespace Fomm.PackageManager.ModInstallLog
       /// <param name="p_strKey">The key of the game-specific value that was edited.</param>
       public GameSpecificValueEdit(string p_strKey)
       {
-        m_strKey = p_strKey;
+        Key = p_strKey;
       }
 
       #endregion
@@ -171,113 +141,12 @@ namespace Fomm.PackageManager.ModInstallLog
       /// instance.</returns>
       public int CompareTo(GameSpecificValueEdit other)
       {
-        var intResult = m_strKey.CompareTo(other.m_strKey);
+        var intResult = Key.CompareTo(other.Key);
         return intResult;
       }
 
       #endregion
     }
-
-    /// <summary>
-    /// Describes an edit to an Sdp.
-    /// </summary>
-    /*internal class SdpEdit : IComparable<SdpEdit>
-    {
-      private Int32 m_intPackage = -1;
-      private string m_strShaderName = null;
-      private byte[] m_bteData;
-
-      #region Properties
-
-      /// <summary>
-      /// Gets the package that was edited.
-      /// </summary>
-      /// <value>The package that was edited.</value>
-      public Int32 Package
-      {
-        get
-        {
-          return m_intPackage;
-        }
-      }
-
-      /// <summary>
-      /// Gets the name of the sahder that was edited.
-      /// </summary>
-      /// <value>The name of the sahder that was edited.</value>
-      public string ShaderName
-      {
-        get
-        {
-          return m_strShaderName;
-        }
-      }
-
-      /// <summary>
-      /// Gets or sets the data to which the Sdp was set.
-      /// </summary>
-      /// <value>The data to which the Sdp was set.</value>
-      public byte[] Data
-      {
-        get
-        {
-          return m_bteData;
-        }
-        set
-        {
-          m_bteData = value;
-        }
-      }
-
-      #endregion
-
-      #region Constructors
-
-      /// <summary>
-      /// A simple constructor that initializes the object with the given values.
-      /// </summary>
-      /// <param name="p_intPackage">The package that was edited.</param>
-      /// <param name="p_strShaderName">The name of the shader that was edited.</param>
-      public SdpEdit(Int32 p_intPackage, string p_strShaderName)
-      {
-        m_intPackage = p_intPackage;
-        m_strShaderName = p_strShaderName;
-      }
-
-      #endregion
-
-      #region IComparable<SdpEdit> Members
-
-      /// <summary>
-      /// Compares this SdpEdit to the given SdpEdit.
-      /// </summary>
-      /// <remarks>
-      /// Two SdpEdit objects can be strictly ordered by
-      /// the following properties in the following order:
-      /// Package, ShaderName
-      /// </remarks>
-      /// <param name="other">The SdpEdit to which to compare this SdpEdit.</param>
-      /// <returns>A value less than zero if this instance is less than the given instance,
-      /// or a value of zero  if this instance is equal to the given instance,
-      /// or a value greater than zero if this instance is greater than the given
-      /// instance.</returns>
-      public int CompareTo(SdpEdit other)
-      {
-        Int32 intResult = m_intPackage.CompareTo(other.m_intPackage);
-        if (intResult == 0)
-          intResult = m_strShaderName.CompareTo(other.m_strShaderName);
-        return intResult;
-      }
-
-      #endregion
-    }*/
-    private List<string> m_lstDataFiles;
-
-    private List<string> m_lstReplacedDataFiles;
-    private List<IniEdit> m_lstIniEdits;
-    private List<IniEdit> m_lstReplacedIniValues;
-    private List<GameSpecificValueEdit> m_lstGameSpecificValueEdits;
-    private List<GameSpecificValueEdit> m_lstReplacedGameSpecificValues;
 
     #region Properties
 
@@ -285,73 +154,37 @@ namespace Fomm.PackageManager.ModInstallLog
     /// Gets the list of data files installed during an install.
     /// </summary>
     /// <value>The list of data files installed during an install.</value>
-    internal List<string> DataFiles
-    {
-      get
-      {
-        return m_lstDataFiles;
-      }
-    }
+    internal List<string> DataFiles { get; private set; }
 
     /// <summary>
     /// Gets the list of original data files that were overwritten.
     /// </summary>
     /// <value>The list of original  data files that were overwritten.</value>
-    internal List<string> ReplacedOriginalDataFiles
-    {
-      get
-      {
-        return m_lstReplacedDataFiles;
-      }
-    }
+    internal List<string> ReplacedOriginalDataFiles { get; private set; }
 
     /// <summary>
     /// Gets the list of Ini edits performed during an install.
     /// </summary>
     /// <value>The list of Ini edits performed during an install.</value>
-    internal List<IniEdit> IniEdits
-    {
-      get
-      {
-        return m_lstIniEdits;
-      }
-    }
+    internal List<IniEdit> IniEdits { get; private set; }
 
     /// <summary>
     /// Gets the list of original Ini values that were overwritten.
     /// </summary>
     /// <value>The list of original Ini values that were overwritten.</value>
-    internal List<IniEdit> ReplacedOriginalIniValues
-    {
-      get
-      {
-        return m_lstReplacedIniValues;
-      }
-    }
+    internal List<IniEdit> ReplacedOriginalIniValues { get; private set; }
 
     /// <summary>
     /// Gets the list of game-specifc value edits performed during an install.
     /// </summary>
     /// <value>The list of game-specifc value edits performed during an install.</value>
-    internal List<GameSpecificValueEdit> GameSpecificValueEdits
-    {
-      get
-      {
-        return m_lstGameSpecificValueEdits;
-      }
-    }
+    internal List<GameSpecificValueEdit> GameSpecificValueEdits { get; private set; }
 
     /// <summary>
     /// Gets the list of original game-specifc values that were overwritten.
     /// </summary>
     /// <value>The list of original game-specifc values that were overwritten.</value>
-    internal List<GameSpecificValueEdit> ReplacedGameSpecificValueData
-    {
-      get
-      {
-        return m_lstReplacedGameSpecificValues;
-      }
-    }
+    internal List<GameSpecificValueEdit> ReplacedGameSpecificValueData { get; private set; }
 
     #endregion
 
@@ -362,12 +195,12 @@ namespace Fomm.PackageManager.ModInstallLog
     /// </summary>
     public InstallLogMergeModule()
     {
-      m_lstDataFiles = new List<string>();
-      m_lstReplacedDataFiles = new List<string>();
-      m_lstIniEdits = new List<IniEdit>();
-      m_lstReplacedIniValues = new List<IniEdit>();
-      m_lstGameSpecificValueEdits = new List<GameSpecificValueEdit>();
-      m_lstReplacedGameSpecificValues = new List<GameSpecificValueEdit>();
+      DataFiles = new List<string>();
+      ReplacedOriginalDataFiles = new List<string>();
+      IniEdits = new List<IniEdit>();
+      ReplacedOriginalIniValues = new List<IniEdit>();
+      GameSpecificValueEdits = new List<GameSpecificValueEdit>();
+      ReplacedGameSpecificValueData = new List<GameSpecificValueEdit>();
     }
 
     #endregion
@@ -403,7 +236,7 @@ namespace Fomm.PackageManager.ModInstallLog
     internal bool ContainsFile(string p_strDataPath)
     {
       var strNormalizedPath = NormalizePath(p_strDataPath);
-      return ListContains(m_lstDataFiles, strNormalizedPath);
+      return ListContains(DataFiles, strNormalizedPath);
     }
 
     /// <summary>
@@ -417,9 +250,9 @@ namespace Fomm.PackageManager.ModInstallLog
     internal void AddFile(string p_strDataPath)
     {
       var strNormalizedPath = NormalizePath(p_strDataPath);
-      if (!ListContains(m_lstDataFiles, strNormalizedPath))
+      if (!ListContains(DataFiles, strNormalizedPath))
       {
-        m_lstDataFiles.Add(strNormalizedPath);
+        DataFiles.Add(strNormalizedPath);
       }
     }
 
@@ -432,9 +265,9 @@ namespace Fomm.PackageManager.ModInstallLog
     /// <param name="p_strDataPath">The file that was overwritten.</param>
     internal void BackupOriginalDataFile(string p_strDataPath)
     {
-      if (!ListContains(m_lstReplacedDataFiles, p_strDataPath))
+      if (!ListContains(ReplacedOriginalDataFiles, p_strDataPath))
       {
-        m_lstReplacedDataFiles.Add(p_strDataPath);
+        ReplacedOriginalDataFiles.Add(p_strDataPath);
       }
     }
 
@@ -459,14 +292,14 @@ namespace Fomm.PackageManager.ModInstallLog
       var strLoweredSection = p_strSection.ToLowerInvariant();
       var strLoweredKey = p_strKey.ToLowerInvariant();
       var iniEdit = new IniEdit(strLoweredFile, strLoweredSection, strLoweredKey);
-      var intIndex = m_lstIniEdits.IndexOf(iniEdit);
+      var intIndex = IniEdits.IndexOf(iniEdit);
       if (intIndex == -1)
       {
-        m_lstIniEdits.Add(iniEdit);
+        IniEdits.Add(iniEdit);
       }
       else
       {
-        iniEdit = m_lstIniEdits[intIndex];
+        iniEdit = IniEdits[intIndex];
       }
       iniEdit.Value = p_strValue;
     }
@@ -487,14 +320,14 @@ namespace Fomm.PackageManager.ModInstallLog
       var strLoweredSection = p_strSection.ToLowerInvariant();
       var strLoweredKey = p_strKey.ToLowerInvariant();
       var iniEdit = new IniEdit(strLoweredFile, strLoweredSection, strLoweredKey);
-      var intIndex = m_lstReplacedIniValues.IndexOf(iniEdit);
+      var intIndex = ReplacedOriginalIniValues.IndexOf(iniEdit);
       if (intIndex == -1)
       {
-        m_lstReplacedIniValues.Add(iniEdit);
+        ReplacedOriginalIniValues.Add(iniEdit);
       }
       else
       {
-        iniEdit = m_lstReplacedIniValues[intIndex];
+        iniEdit = ReplacedOriginalIniValues[intIndex];
       }
       iniEdit.Value = p_strValue;
     }
@@ -516,14 +349,14 @@ namespace Fomm.PackageManager.ModInstallLog
     {
       var strLoweredKey = p_strKey.ToLowerInvariant();
       var gseEdit = new GameSpecificValueEdit(strLoweredKey);
-      var intIndex = m_lstGameSpecificValueEdits.IndexOf(gseEdit);
+      var intIndex = GameSpecificValueEdits.IndexOf(gseEdit);
       if (intIndex == -1)
       {
-        m_lstGameSpecificValueEdits.Add(gseEdit);
+        GameSpecificValueEdits.Add(gseEdit);
       }
       else
       {
-        gseEdit = m_lstGameSpecificValueEdits[intIndex];
+        gseEdit = GameSpecificValueEdits[intIndex];
       }
       gseEdit.Data = p_bteData;
     }
@@ -540,14 +373,14 @@ namespace Fomm.PackageManager.ModInstallLog
     {
       var strLoweredKey = p_strKey.ToLowerInvariant();
       var oetEdit = new GameSpecificValueEdit(strLoweredKey);
-      var intIndex = m_lstReplacedGameSpecificValues.IndexOf(oetEdit);
+      var intIndex = ReplacedGameSpecificValueData.IndexOf(oetEdit);
       if (intIndex == -1)
       {
-        m_lstReplacedGameSpecificValues.Add(oetEdit);
+        ReplacedGameSpecificValueData.Add(oetEdit);
       }
       else
       {
-        oetEdit = m_lstReplacedGameSpecificValues[intIndex];
+        oetEdit = ReplacedGameSpecificValueData[intIndex];
       }
       oetEdit.Data = p_bteData;
     }

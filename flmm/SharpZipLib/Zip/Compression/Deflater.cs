@@ -204,7 +204,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
     public void Reset()
     {
       state = (noZlibHeaderOrFooter ? BUSY_STATE : INIT_STATE);
-      totalOut = 0;
+      TotalOut = 0;
       pending.Reset();
       engine.Reset();
     }
@@ -212,13 +212,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
     /// <summary>
     /// Gets the number of output bytes so far.
     /// </summary>
-    public long TotalOut
-    {
-      get
-      {
-        return totalOut;
-      }
-    }
+    public long TotalOut { get; private set; }
 
     /// <summary>
     /// Flushes the current input block.  Further calls to deflate() will
@@ -436,7 +430,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
       {
         var count = pending.Flush(output, offset, length);
         offset += count;
-        totalOut += count;
+        TotalOut += count;
         length -= count;
 
         if (length == 0 || state == FINISHED_STATE)
@@ -506,11 +500,6 @@ namespace Fomm.SharpZipLib.Zip.Compression
     /// The current state.
     /// </summary>
     private int state;
-
-    /// <summary>
-    /// The total bytes of output written.
-    /// </summary>
-    private long totalOut;
 
     /// <summary>
     /// The pending output.

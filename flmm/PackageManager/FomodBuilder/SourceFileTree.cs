@@ -16,34 +16,19 @@ namespace Fomm.PackageManager.FomodBuilder
     /// </summary>
     public class SourceFileSystemDragData
     {
-      private string m_strPath;
-      private bool m_booIsDirectory;
-
       #region Properties
 
       /// <summary>
       /// Gets the path of the source file system object being dragged.
       /// </summary>
       /// <value>The path of the source file system object being dragged.</value>
-      public string Path
-      {
-        get
-        {
-          return m_strPath;
-        }
-      }
+      public string Path { get; private set; }
 
       /// <summary>
       /// Gets whether or not the <see cref="Path"/> is a directory.
       /// </summary>
       /// <value>Whether or not the <see cref="Path"/> is a directory.</value>
-      public bool IsDirectory
-      {
-        get
-        {
-          return m_booIsDirectory;
-        }
-      }
+      public bool IsDirectory { get; private set; }
 
       #endregion
 
@@ -55,8 +40,8 @@ namespace Fomm.PackageManager.FomodBuilder
       /// <param name="p_strPath">The path of the source file system object being dragged.</param>
       public SourceFileSystemDragData(string p_strPath, bool p_booIsDirectory)
       {
-        m_strPath = p_strPath;
-        m_booIsDirectory = p_booIsDirectory;
+        Path = p_strPath;
+        IsDirectory = p_booIsDirectory;
       }
 
       #endregion

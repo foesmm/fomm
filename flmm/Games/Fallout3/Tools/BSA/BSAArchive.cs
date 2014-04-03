@@ -136,15 +136,8 @@ namespace Fomm.Games.Fallout3.Tools.BSA
     private bool defaultCompressed;
     private bool SkipNames;
     private HashTable files;
-    private string[] fileNames;
 
-    public string[] FileNames
-    {
-      get
-      {
-        return fileNames;
-      }
-    }
+    public string[] FileNames { get; private set; }
 
     internal BSAArchive(string path)
     {
@@ -161,7 +154,7 @@ namespace Fomm.Games.Fallout3.Tools.BSA
       //Read folder info
       var folderInfo = new BSAFolderInfo4[header.folderCount];
       var fileInfo = new BSAFileInfo4[header.fileCount];
-      fileNames = new string[header.fileCount];
+      FileNames = new string[header.fileCount];
       for (var i = 0; i < header.folderCount; i++)
       {
         folderInfo[i] = new BSAFolderInfo4(br);
@@ -198,11 +191,11 @@ namespace Fomm.Games.Fallout3.Tools.BSA
           var fpath = Path.Combine(folderInfo[i].path, Path.GetFileNameWithoutExtension(fi4.path));
           var hash = GenHash(fpath, ext);
           files[hash] = fi;
-          fileNames[folderInfo[i].offset + j] = fpath + ext;
+          FileNames[folderInfo[i].offset + j] = fpath + ext;
         }
       }
 
-      Array.Sort(fileNames);
+      Array.Sort(FileNames);
     }
 
     private static ulong GenHash(string file)

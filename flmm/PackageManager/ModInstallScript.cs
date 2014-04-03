@@ -14,8 +14,6 @@ namespace Fomm.PackageManager
   public abstract class ModInstallScript : IDisposable
   {
     private Set<string> m_setActivePlugins;
-    private fomod m_fomodMod;
-    private ModInstallerBase m_mibInstaller;
     private List<string> m_lstOverwriteFolders = new List<string>();
     private List<string> m_lstDontOverwriteFolders = new List<string>();
     private bool m_booDontOverwriteAll;
@@ -49,13 +47,7 @@ namespace Fomm.PackageManager
     /// Gets the mod that is being scripted against.
     /// </summary>
     /// <value>The mod that is being scripted against.</value>
-    public fomod Fomod
-    {
-      get
-      {
-        return m_fomodMod;
-      }
-    }
+    public fomod Fomod { get; private set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether to overwrite
@@ -93,13 +85,7 @@ namespace Fomm.PackageManager
       }
     }
 
-    protected ModInstallerBase Installer
-    {
-      get
-      {
-        return m_mibInstaller;
-      }
-    }
+    protected ModInstallerBase Installer { get; private set; }
 
     #endregion
 
@@ -111,7 +97,7 @@ namespace Fomm.PackageManager
     /// <param name="p_fomodMod">The <see cref="fomod"/> to be installed or uninstalled.</param>
     public ModInstallScript(fomod p_fomodMod, ModInstallerBase p_mibInstaller)
     {
-      m_fomodMod = p_fomodMod;
+      Fomod = p_fomodMod;
 
       //make sure the permissions manager is initialized.
       // static members are (usually) only loaded upon first access.
@@ -124,7 +110,7 @@ namespace Fomm.PackageManager
       object objIgnore = PermissionsManager.CurrentPermissions;
       // ReSharper restore UnusedVariable
 
-      m_mibInstaller = p_mibInstaller;
+      Installer = p_mibInstaller;
       //m_tfmFileManager = new TxFileManager();
     }
 

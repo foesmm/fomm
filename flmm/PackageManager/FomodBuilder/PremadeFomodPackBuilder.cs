@@ -21,34 +21,19 @@ namespace Fomm.PackageManager.FomodBuilder
     /// </summary>
     protected class BuildPFPArgs : BuildFomodArgs
     {
-      private IList<SourceFile> m_lstSourceFiles;
-      private string m_strCustomHowToSteps;
-
       #region Properties
 
       /// <summary>
       /// Gets the fomod sources.
       /// </summary>
       /// <value>The fomod sources.</value>
-      public IList<SourceFile> SourceFiles
-      {
-        get
-        {
-          return m_lstSourceFiles;
-        }
-      }
+      public IList<SourceFile> SourceFiles { get; private set; }
 
       /// <summary>
       /// Gets custom howto steps that should be included in the PFP HowTo.
       /// </summary>
       /// <value>Custom howto steps that should be included in the PFP HowTo.</value>
-      public string CustomHowToSteps
-      {
-        get
-        {
-          return m_strCustomHowToSteps;
-        }
-      }
+      public string CustomHowToSteps { get; private set; }
 
       #endregion
 
@@ -75,8 +60,8 @@ namespace Fomm.PackageManager.FomodBuilder
           p_strFomodName, p_lstCopyInstructions, p_rmeReadme, p_xmlInfo, p_booSetScreenshot, p_shtScreenshot,
           p_fscScript, p_strPackedPath)
       {
-        m_lstSourceFiles = p_lstSourceFiles;
-        m_strCustomHowToSteps = p_strCustomHowToSteps;
+        SourceFiles = p_lstSourceFiles;
+        CustomHowToSteps = p_strCustomHowToSteps;
       }
 
       #endregion

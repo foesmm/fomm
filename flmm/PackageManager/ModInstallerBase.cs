@@ -15,18 +15,10 @@ namespace Fomm.PackageManager
     private BackgroundWorkerProgressDialog m_bwdProgress;
     private TxFileManager m_tfmFileManager;
     private InstallLogMergeModule m_ilmModInstallLog;
-    private fomod m_fomodMod;
-    private ModInstallScript m_misScript;
 
     #region Properties
 
-    public ModInstallScript Script
-    {
-      get
-      {
-        return m_misScript;
-      }
-    }
+    public ModInstallScript Script { get; private set; }
 
     /// <summary>
     /// Gets the transactional file manager the script is using.
@@ -65,13 +57,7 @@ namespace Fomm.PackageManager
     /// Gets the mod that is being scripted against.
     /// </summary>
     /// <value>The mod that is being scripted against.</value>
-    public fomod Fomod
-    {
-      get
-      {
-        return m_fomodMod;
-      }
-    }
+    public fomod Fomod { get; private set; }
 
     /// <summary>
     /// Gets the message to display to the user when an exception is caught.
@@ -112,7 +98,7 @@ namespace Fomm.PackageManager
     /// <param name="p_fomodMod">The <see cref="fomod"/> to be installed or uninstalled.</param>
     public ModInstallerBase(fomod p_fomodMod)
     {
-      m_fomodMod = p_fomodMod;
+      Fomod = p_fomodMod;
     }
 
     #endregion
@@ -185,7 +171,7 @@ namespace Fomm.PackageManager
             using (var tsTransaction = new TransactionScope())
             {
               m_tfmFileManager = new TxFileManager();
-              using (m_misScript = CreateInstallScript())
+              using (Script = CreateInstallScript())
               {
                 var booCancelled = false;
                 if (p_booSetFOModReadOnly && (Fomod != null))
@@ -331,9 +317,9 @@ namespace Fomm.PackageManager
 
     public void Dispose()
     {
-      if (m_misScript != null)
+      if (Script != null)
       {
-        m_misScript.Dispose();
+        Script.Dispose();
       }
     }
 

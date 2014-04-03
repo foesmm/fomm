@@ -137,10 +137,10 @@ namespace Fomm.SharpZipLib.Zip
         throw new ArgumentNullException("name");
       }
 
-      name_ = name;
+      Name = name;
 
       baseStream_ = File.OpenRead(name);
-      isStreamOwner = true;
+      IsStreamOwner = true;
 
       try
       {
@@ -159,7 +159,7 @@ namespace Fomm.SharpZipLib.Zip
     internal ZipFile()
     {
       entries_ = new ZipEntry[0];
-      isNewArchive_ = true;
+      IsNewArchive = true;
     }
 
     #endregion
@@ -231,13 +231,7 @@ namespace Fomm.SharpZipLib.Zip
     /// <remarks>
     /// The default value is true in all cases.
     /// </remarks>
-    public bool IsStreamOwner
-    {
-      get
-      {
-        return isStreamOwner;
-      }
-    }
+    public bool IsStreamOwner { get; private set; }
 
     /// <summary>
     /// Get a value indicating wether
@@ -255,24 +249,12 @@ namespace Fomm.SharpZipLib.Zip
     /// <summary>
     /// Get a value indicating that this archive is a new one.
     /// </summary>
-    public bool IsNewArchive
-    {
-      get
-      {
-        return isNewArchive_;
-      }
-    }
+    public bool IsNewArchive { get; private set; }
 
     /// <summary>
     /// Gets the name of this zip file.
     /// </summary>
-    public string Name
-    {
-      get
-      {
-        return name_;
-      }
-    }
+    public string Name { get; private set; }
 
     #endregion
 
@@ -1752,7 +1734,7 @@ namespace Fomm.SharpZipLib.Zip
         throw new ZipException("Failed to reopen archive - no source");
       }
 
-      isNewArchive_ = false;
+      IsNewArchive = false;
       baseStream_ = source;
       ReadEntries();
     }
@@ -1975,7 +1957,7 @@ namespace Fomm.SharpZipLib.Zip
       {
         if (directUpdate)
         {
-          isNewArchive_ = false;
+          IsNewArchive = false;
           workFile.baseStream_.Flush();
           ReadEntries();
         }
@@ -2017,14 +1999,14 @@ namespace Fomm.SharpZipLib.Zip
       public ZipUpdate(IStaticDataSource dataSource, ZipEntry entry)
       {
         command_ = UpdateCommand.Add;
-        entry_ = entry;
+        Entry = entry;
         dataSource_ = dataSource;
       }
 
       public ZipUpdate(UpdateCommand command, ZipEntry entry)
       {
         command_ = command;
-        entry_ = (ZipEntry) entry.Clone();
+        Entry = (ZipEntry) entry.Clone();
       }
 
       /// <summary>
@@ -2043,13 +2025,7 @@ namespace Fomm.SharpZipLib.Zip
       /// Get the <see cref="ZipEntry"/> for this update.
       /// </summary>
       /// <remarks>This is the source or original entry.</remarks>
-      public ZipEntry Entry
-      {
-        get
-        {
-          return entry_;
-        }
-      }
+      public ZipEntry Entry { get; private set; }
 
       /// <summary>
       /// Get the <see cref="ZipEntry"/> that will be written to the updated/new file.
@@ -2060,7 +2036,7 @@ namespace Fomm.SharpZipLib.Zip
         {
           if (outEntry_ == null)
           {
-            outEntry_ = (ZipEntry) entry_.Clone();
+            outEntry_ = (ZipEntry) Entry.Clone();
           }
 
           return outEntry_;
@@ -2121,7 +2097,6 @@ namespace Fomm.SharpZipLib.Zip
 
       #region Instance Fields
 
-      private ZipEntry entry_;
       private ZipEntry outEntry_;
       private UpdateCommand command_;
       private IStaticDataSource dataSource_;
@@ -2442,14 +2417,11 @@ namespace Fomm.SharpZipLib.Zip
     #region Instance Fields
 
     private bool isDisposed_;
-    private string name_;
     private string comment_;
     private Stream baseStream_;
-    private bool isStreamOwner;
     private long offsetOfFirstEntry;
     private ZipEntry[] entries_;
     private byte[] key;
-    private bool isNewArchive_;
 
     // Default is dynamic which is not backwards compatible and can cause problems
     // with XP's built in compression which cant read Zip64 archives.

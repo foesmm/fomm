@@ -94,21 +94,13 @@ namespace Fomm.PackageManager.FomodBuilder
     /// </summary>
     public class Source : IEquatable<Source>, IEquatable<string>
     {
-      private string m_strPath;
-
       #region Properties
 
       /// <summary>
       /// Gets the path of the source.
       /// </summary>
       /// <value>The path of the source.</value>
-      public string Path
-      {
-        get
-        {
-          return m_strPath;
-        }
-      }
+      public string Path { get; private set; }
 
       /// <summary>
       /// Gets or sets whether the source has been loaded for the
@@ -130,7 +122,7 @@ namespace Fomm.PackageManager.FomodBuilder
       /// current node.</param>
       public Source(string p_strPath, bool p_booIsLoaded)
       {
-        m_strPath = p_strPath;
+        Path = p_strPath;
         IsLoaded = p_booIsLoaded;
       }
 

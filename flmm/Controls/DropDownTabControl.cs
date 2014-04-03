@@ -22,11 +22,11 @@ namespace Fomm.Controls
     {
       add
       {
-        m_cbxSelector.SelectedIndexChanged += value;
+        TabSelector.SelectedIndexChanged += value;
       }
       remove
       {
-        m_cbxSelector.SelectedIndexChanged -= value;
+        TabSelector.SelectedIndexChanged -= value;
       }
     }
 
@@ -35,21 +35,13 @@ namespace Fomm.Controls
     /// </summary>
     public class TabPageEventArgs : EventArgs
     {
-      private DropDownTabPage m_tpgPage;
-
       #region Properties
 
       /// <summary>
       /// Gets the tab page that was affected by the event.
       /// </summary>
       /// <value>The tab page that was affected by the event.</value>
-      public DropDownTabPage TabPage
-      {
-        get
-        {
-          return m_tpgPage;
-        }
-      }
+      public DropDownTabPage TabPage { get; private set; }
 
       #endregion
 
@@ -61,7 +53,7 @@ namespace Fomm.Controls
       /// <param name="p_tpgPage">The tab page that was affected by the event.</param>
       public TabPageEventArgs(DropDownTabPage p_tpgPage)
       {
-        m_tpgPage = p_tpgPage;
+        TabPage = p_tpgPage;
       }
 
       #endregion
@@ -371,9 +363,7 @@ namespace Fomm.Controls
       #endregion
     }
 
-    private ComboBox m_cbxSelector;
     private Label m_lblLabel;
-    private TabPageCollection m_tpcPages;
     private DropDownTabPage m_tpgSelected;
 
     #region Properties
@@ -382,13 +372,7 @@ namespace Fomm.Controls
     /// Gets the tab selector combobox.
     /// </summary>
     /// <value>The tab selector combobox.</value>
-    internal ComboBox TabSelector
-    {
-      get
-      {
-        return m_cbxSelector;
-      }
-    }
+    internal ComboBox TabSelector { get; private set; }
 
     /// <summary>
     /// Gets or sets the text of the tab selector.
@@ -410,13 +394,7 @@ namespace Fomm.Controls
     /// </summary>
     /// <value>The tab pages of this control.</value>
     [Editor(typeof (DropDownTabPageCollectionEditor), typeof (UITypeEditor))]
-    public TabPageCollection TabPages
-    {
-      get
-      {
-        return m_tpcPages;
-      }
-    }
+    public TabPageCollection TabPages { get; private set; }
 
     /// <summary>
     /// Gets or sets the currently selected tab page.
@@ -439,7 +417,7 @@ namespace Fomm.Controls
         if (m_tpgSelected != null)
         {
           m_tpgSelected.BringToFront();
-          m_cbxSelector.SelectedItem = m_tpgSelected;
+          TabSelector.SelectedItem = m_tpgSelected;
         }
       }
     }
@@ -470,11 +448,11 @@ namespace Fomm.Controls
     {
       get
       {
-        return m_cbxSelector.Width;
+        return TabSelector.Width;
       }
       set
       {
-        m_cbxSelector.Width = value;
+        TabSelector.Width = value;
       }
     }
 
@@ -503,9 +481,9 @@ namespace Fomm.Controls
     /// </summary>
     public DropDownTabControl()
     {
-      m_tpcPages = new TabPageCollection();
-      m_tpcPages.TabPageAdded += AddTabPage;
-      m_tpcPages.TabPageRemoved += RemoveTabPage;
+      TabPages = new TabPageCollection();
+      TabPages.TabPageAdded += AddTabPage;
+      TabPages.TabPageRemoved += RemoveTabPage;
 
       var mPnlDropDownPanel = new Panel();
       mPnlDropDownPanel.Dock = DockStyle.Top;
@@ -516,14 +494,14 @@ namespace Fomm.Controls
       m_lblLabel.Text = Name;
       m_lblLabel.Location = new Point(3, 3);
 
-      m_cbxSelector = new ComboBox();
-      m_cbxSelector.Location = new Point(13, m_lblLabel.Top + 13 + 4);
-      m_cbxSelector.DisplayMember = "Text";
-      m_cbxSelector.SelectedIndexChanged += TabSelected;
+      TabSelector = new ComboBox();
+      TabSelector.Location = new Point(13, m_lblLabel.Top + 13 + 4);
+      TabSelector.DisplayMember = "Text";
+      TabSelector.SelectedIndexChanged += TabSelected;
 
-      mPnlDropDownPanel.Height = m_cbxSelector.Location.Y + m_cbxSelector.Height + 4;
+      mPnlDropDownPanel.Height = TabSelector.Location.Y + TabSelector.Height + 4;
       mPnlDropDownPanel.Controls.Add(m_lblLabel);
-      mPnlDropDownPanel.Controls.Add(m_cbxSelector);
+      mPnlDropDownPanel.Controls.Add(TabSelector);
       Controls.Add(mPnlDropDownPanel);
     }
 
@@ -542,7 +520,7 @@ namespace Fomm.Controls
       base.OnCreateControl();
       if (!DesignMode)
       {
-        m_cbxSelector.DropDownStyle = ComboBoxStyle.DropDownList;
+        TabSelector.DropDownStyle = ComboBoxStyle.DropDownList;
       }
     }
 
@@ -557,7 +535,7 @@ namespace Fomm.Controls
     /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
     protected void TabSelected(object sender, EventArgs e)
     {
-      SelectedTabPage = (DropDownTabPage) m_cbxSelector.SelectedItem;
+      SelectedTabPage = (DropDownTabPage) TabSelector.SelectedItem;
     }
 
     /// <summary>
@@ -575,11 +553,11 @@ namespace Fomm.Controls
       var ctlPage = e.TabPage;
       if (ctlPage.PageIndex == -1)
       {
-        ctlPage.PageIndex = m_tpcPages.Count - 1;
+        ctlPage.PageIndex = TabPages.Count - 1;
       }
-      if (!m_tpcPages.Contains(ctlPage))
+      if (!TabPages.Contains(ctlPage))
       {
-        m_tpcPages.Add(ctlPage);
+        TabPages.Add(ctlPage);
       }
       ctlPage.PageIndexChanged += PageIndexChanged;
       ctlPage.TextChanged += PageTextChanged;
@@ -604,8 +582,8 @@ namespace Fomm.Controls
       var ctlPage = e.TabPage;
       ctlPage.PageIndexChanged -= PageIndexChanged;
       ctlPage.TextChanged -= PageTextChanged;
-      m_cbxSelector.Items.Remove(ctlPage);
-      foreach (var page in m_tpcPages)
+      TabSelector.Items.Remove(ctlPage);
+      foreach (var page in TabPages)
       {
         if (page.PageIndex > ctlPage.PageIndex)
         {
@@ -614,11 +592,11 @@ namespace Fomm.Controls
       }
       if (SelectedTabPage == ctlPage)
       {
-        if (m_tpcPages.Count == 0)
+        if (TabPages.Count == 0)
         {
           SelectedTabPage = null;
         }
-        else if (SelectedIndex == m_tpcPages.Count)
+        else if (SelectedIndex == TabPages.Count)
         {
           SelectedIndex--;
         }
@@ -644,9 +622,9 @@ namespace Fomm.Controls
       if (e.Control is DropDownTabPage)
       {
         var ctlPage = (DropDownTabPage) e.Control;
-        if (!m_tpcPages.Contains(ctlPage))
+        if (!TabPages.Contains(ctlPage))
         {
-          m_tpcPages.Add(ctlPage);
+          TabPages.Add(ctlPage);
         }
       }
     }
@@ -665,7 +643,7 @@ namespace Fomm.Controls
       if (e.Control is DropDownTabPage)
       {
         var ctlPage = (DropDownTabPage) e.Control;
-        m_tpcPages.Remove(ctlPage);
+        TabPages.Remove(ctlPage);
       }
     }
 
@@ -676,16 +654,16 @@ namespace Fomm.Controls
     /// <param name="p_ddpPage">The <see cref="DropDownTabPage"/> to insert.</param>
     protected void InsertTabPageInSelector(DropDownTabPage p_ddpPage)
     {
-      for (var i = 0; i < m_cbxSelector.Items.Count; i++)
+      for (var i = 0; i < TabSelector.Items.Count; i++)
       {
-        var ddpCurrent = (DropDownTabPage) m_cbxSelector.Items[i];
+        var ddpCurrent = (DropDownTabPage) TabSelector.Items[i];
         if (ddpCurrent.PageIndex > p_ddpPage.PageIndex)
         {
-          m_cbxSelector.Items.Insert(i, p_ddpPage);
+          TabSelector.Items.Insert(i, p_ddpPage);
           return;
         }
       }
-      m_cbxSelector.Items.Add(p_ddpPage);
+      TabSelector.Items.Add(p_ddpPage);
     }
 
     /// <summary>
@@ -694,14 +672,14 @@ namespace Fomm.Controls
     /// </summary>
     protected void UpdateSelector()
     {
-      m_cbxSelector.BeginUpdate();
-      m_cbxSelector.Items.Clear();
-      foreach (var ddpPage in m_tpcPages)
+      TabSelector.BeginUpdate();
+      TabSelector.Items.Clear();
+      foreach (var ddpPage in TabPages)
       {
         InsertTabPageInSelector(ddpPage);
       }
-      m_cbxSelector.SelectedItem = SelectedTabPage;
-      m_cbxSelector.EndUpdate();
+      TabSelector.SelectedItem = SelectedTabPage;
+      TabSelector.EndUpdate();
     }
 
     /// <summary>

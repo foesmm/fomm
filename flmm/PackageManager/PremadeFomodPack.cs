@@ -12,7 +12,6 @@ namespace Fomm.PackageManager
   {
     private Archive m_arcPFP;
     private XmlDocument m_xmlMeta;
-    private string m_strPremadePath;
 
     #region Validation
 
@@ -83,7 +82,7 @@ namespace Fomm.PackageManager
     {
       get
       {
-        return m_strPremadePath.Substring(8);
+        return PremadePath.Substring(8);
       }
     }
 
@@ -91,13 +90,7 @@ namespace Fomm.PackageManager
     /// Gets the path to the Premade folder if the PFP.
     /// </summary>
     /// <value>The path to the Premade folder if the PFP.</value>
-    public string PremadePath
-    {
-      get
-      {
-        return m_strPremadePath;
-      }
-    }
+    public string PremadePath { get; private set; }
 
     #endregion
 
@@ -125,7 +118,7 @@ namespace Fomm.PackageManager
       {
         if (strDirectory.StartsWith("Premade", StringComparison.InvariantCultureIgnoreCase))
         {
-          m_strPremadePath = strDirectory;
+          PremadePath = strDirectory;
           break;
         }
       }

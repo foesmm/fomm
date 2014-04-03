@@ -14,9 +14,6 @@ namespace Fomm.InstallLogUpgraders
   /// </remarks>
   internal abstract class Upgrader
   {
-    private BackgroundWorkerProgressDialog m_pgdProgress;
-    private TxFileManager m_tfmFileManager;
-
     #region Properties
 
     /// <summary>
@@ -25,24 +22,12 @@ namespace Fomm.InstallLogUpgraders
     /// </summary>
     /// <value>The <see cref="BackgroundWorkerProgressDialog"/> that performs
     /// the upgrade and shows progress.</value>
-    protected BackgroundWorkerProgressDialog ProgressWorker
-    {
-      get
-      {
-        return m_pgdProgress;
-      }
-    }
+    protected BackgroundWorkerProgressDialog ProgressWorker { get; private set; }
 
     /// <summary>
     /// Gets the transactional file manager to be used in the upgrade.
     /// </summary>
-    protected TxFileManager FileManager
-    {
-      get
-      {
-        return m_tfmFileManager;
-      }
-    }
+    protected TxFileManager FileManager { get; private set; }
 
     #endregion
 
@@ -61,22 +46,22 @@ namespace Fomm.InstallLogUpgraders
     /// if the user cancelled.</returns>
     internal bool PerformUpgrade()
     {
-      m_tfmFileManager = new TxFileManager();
+      FileManager = new TxFileManager();
       var booComplete = false;
       using (var tsTransaction = new TransactionScope())
       {
-        m_tfmFileManager.Snapshot(InstallLog.Current.InstallLogPath);
+        FileManager.Snapshot(InstallLog.Current.InstallLogPath);
 
-        using (m_pgdProgress = new BackgroundWorkerProgressDialog(DoUpgrade))
+        using (ProgressWorker = new BackgroundWorkerProgressDialog(DoUpgrade))
         {
-          m_pgdProgress.OverallMessage = "Upgrading FOMM Files";
-          if (m_pgdProgress.ShowDialog() == DialogResult.OK)
+          ProgressWorker.OverallMessage = "Upgrading FOMM Files";
+          if (ProgressWorker.ShowDialog() == DialogResult.OK)
           {
             booComplete = true;
             tsTransaction.Complete();
           }
         }
-        m_tfmFileManager = null;
+        FileManager = null;
       }
       return booComplete;
     }

@@ -24,7 +24,6 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
       public PluginInfo Owner;
     }
 
-    private ModInstallScript m_misInstallScript;
     private Dictionary<string, FlagValue> m_dicFlags = new Dictionary<string, FlagValue>();
 
     #region Properties
@@ -33,13 +32,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// Gets the install script being used to perform the install.
     /// </summary>
     /// <value>The install script being used to perform the install.</value>
-    protected ModInstallScript Script
-    {
-      get
-      {
-        return m_misInstallScript;
-      }
-    }
+    protected ModInstallScript Script { get; private set; }
 
     /// <summary>
     /// A dictionary listed all installed plugins, and indicating which are active.
@@ -74,7 +67,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     {
       get
       {
-        return m_misInstallScript.GetGameVersion();
+        return Script.GetGameVersion();
       }
     }
 
@@ -89,7 +82,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     {
       get
       {
-        return m_misInstallScript.GetFommVersion();
+        return Script.GetFommVersion();
       }
     }
 
@@ -103,10 +96,10 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// <param name="p_misInstallScript">The install script.</param>
     public DependencyStateManager(ModInstallScript p_misInstallScript)
     {
-      m_misInstallScript = p_misInstallScript;
+      Script = p_misInstallScript;
 
       var dicPlugins = new Dictionary<string, bool>();
-      var strPlugins = m_misInstallScript.GetAllPlugins();
+      var strPlugins = Script.GetAllPlugins();
       foreach (var strPlugin in strPlugins)
       {
         dicPlugins.Add(strPlugin.ToLowerInvariant(), IsPluginActive(strPlugin));
@@ -142,7 +135,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     {
       if (m_strActiveInstalledPlugins == null)
       {
-        var strActivePlugins = m_misInstallScript.GetActivePlugins();
+        var strActivePlugins = Script.GetActivePlugins();
         var lstActiveInstalled = new List<string>();
         foreach (var strActivePlugin in strActivePlugins)
         {

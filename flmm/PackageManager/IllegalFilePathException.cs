@@ -7,19 +7,11 @@ namespace Fomm.PackageManager
   /// </summary>
   public class IllegalFilePathException : Exception
   {
-    private string m_strPath;
-
     /// <summary>
     /// Gets the illegal path.
     /// </summary>
     /// <value>The illegal path.</value>
-    public string Path
-    {
-      get
-      {
-        return m_strPath;
-      }
-    }
+    public string Path { get; private set; }
 
     /// <summary>
     /// The default constructor.
@@ -27,7 +19,7 @@ namespace Fomm.PackageManager
     /// <param name="p_strPath">The illegal path.</param>
     public IllegalFilePathException(string p_strPath)
     {
-      m_strPath = p_strPath;
+      Path = p_strPath;
     }
 
     /// <summary>
@@ -38,7 +30,7 @@ namespace Fomm.PackageManager
     public IllegalFilePathException(string p_strPath, string message)
       : base(message)
     {
-      m_strPath = p_strPath;
+      Path = p_strPath;
     }
 
     /// <summary>
@@ -50,7 +42,7 @@ namespace Fomm.PackageManager
     public IllegalFilePathException(string p_strPath, string message, Exception inner)
       : base(message, inner)
     {
-      m_strPath = p_strPath;
+      Path = p_strPath;
     }
   }
 }

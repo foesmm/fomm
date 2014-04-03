@@ -228,7 +228,7 @@ namespace Fomm.SharpZipLib.Zip
       }
 
       DateTime = DateTime.Now;
-      this.name = name;
+      this.Name = name;
       versionMadeBy = (ushort) madeByInfo;
       versionToExtract = (ushort) versionRequiredToExtract;
       this.method = method;
@@ -669,13 +669,7 @@ namespace Fomm.SharpZipLib.Zip
     /// Dos device names like C: should also be removed.
     /// See the <see cref="ZipNameTransform"/> class, or <see cref="CleanName(string)"/>
     ///</remarks>
-    public string Name
-    {
-      get
-      {
-        return name;
-      }
-    }
+    public string Name { get; private set; }
 
     /// <summary>
     /// Gets/Sets the size of the uncompressed data.
@@ -959,10 +953,10 @@ namespace Fomm.SharpZipLib.Zip
     {
       get
       {
-        var nameLength = name.Length;
+        var nameLength = Name.Length;
         var result =
           ((nameLength > 0) &&
-           ((name[nameLength - 1] == '/') || (name[nameLength - 1] == '\\'))) ||
+           ((Name[nameLength - 1] == '/') || (Name[nameLength - 1] == '\\'))) ||
           HasDosAttributes(16)
           ;
         return result;
@@ -1021,7 +1015,7 @@ namespace Fomm.SharpZipLib.Zip
     /// <returns>A readable textual representation of this <see cref="ZipEntry"/></returns>
     public override string ToString()
     {
-      return name;
+      return Name;
     }
 
     /// <summary>
@@ -1045,7 +1039,6 @@ namespace Fomm.SharpZipLib.Zip
     private ushort versionMadeBy; // Contains host system and version information
     // only relevant for central header entries
 
-    private string name;
     private ulong size;
     private ulong compressedSize;
     private ushort versionToExtract; // Version required to extract (library handles <= 2.0)

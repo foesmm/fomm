@@ -54,7 +54,7 @@ namespace Fomm.SharpZipLib.Core
     /// <param name="name">The file or directory name.</param>
     public ScanEventArgs(string name)
     {
-      name_ = name;
+      Name = name;
     }
 
     #endregion
@@ -62,13 +62,7 @@ namespace Fomm.SharpZipLib.Core
     /// <summary>
     /// The file or directory name for this event.
     /// </summary>
-    public string Name
-    {
-      get
-      {
-        return name_;
-      }
-    }
+    public string Name { get; private set; }
 
     /// <summary>
     /// Get set a value indicating if scanning should continue or not.
@@ -83,7 +77,6 @@ namespace Fomm.SharpZipLib.Core
 
     #region Instance Fields
 
-    private string name_;
     private bool continueRunning_ = true;
 
     #endregion

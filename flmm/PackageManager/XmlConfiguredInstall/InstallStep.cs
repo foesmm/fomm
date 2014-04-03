@@ -7,9 +7,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
   /// </summary>
   public class InstallStep
   {
-    private string m_strName;
     private CompositeDependency m_cdpVisibilityDependency;
-    private IList<PluginGroup> m_lstGroupedPlugins;
 
     #region Properties
 
@@ -17,13 +15,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// Gets the name of the step.
     /// </summary>
     /// <value>The name of the step.</value>
-    public string Name
-    {
-      get
-      {
-        return m_strName;
-      }
-    }
+    public string Name { get; private set; }
 
     /// <summary>
     /// Gets whether this step is visible.
@@ -45,13 +37,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// Gets the grouped list of plugins to display in this step.
     /// </summary>
     /// <value>The grouped list of plugins to display in this step.</value>
-    public IList<PluginGroup> GroupedPlugins
-    {
-      get
-      {
-        return m_lstGroupedPlugins;
-      }
-    }
+    public IList<PluginGroup> GroupedPlugins { get; private set; }
 
     #endregion
 
@@ -66,9 +52,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     public InstallStep(string p_strName, CompositeDependency p_cdpVisibilityDependency,
                        IList<PluginGroup> p_lstGroupedPlugins)
     {
-      m_strName = p_strName;
+      Name = p_strName;
       m_cdpVisibilityDependency = p_cdpVisibilityDependency;
-      m_lstGroupedPlugins = p_lstGroupedPlugins;
+      GroupedPlugins = p_lstGroupedPlugins;
     }
 
     #endregion

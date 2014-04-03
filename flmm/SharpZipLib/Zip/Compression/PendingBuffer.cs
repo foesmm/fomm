@@ -62,7 +62,6 @@ namespace Fomm.SharpZipLib.Zip.Compression
     private int end;
 
     private uint bits;
-    private int bitCount;
 
     #endregion
 
@@ -93,7 +92,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
     /// </summary>
     public void Reset()
     {
-      start = end = bitCount = 0;
+      start = end = BitCount = 0;
     }
 
     /// <summary>
@@ -135,13 +134,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
     /// <summary>
     /// The number of bits written to the buffer
     /// </summary>
-    public int BitCount
-    {
-      get
-      {
-        return bitCount;
-      }
-    }
+    public int BitCount { get; private set; }
 
     /// <summary>
     /// Align internal buffer on a byte boundary
@@ -154,16 +147,16 @@ namespace Fomm.SharpZipLib.Zip.Compression
         throw new SharpZipBaseException("Debug check: start != 0");
       }
 #endif
-      if (bitCount > 0)
+      if (BitCount > 0)
       {
         buffer_[end++] = unchecked((byte) bits);
-        if (bitCount > 8)
+        if (BitCount > 8)
         {
           buffer_[end++] = unchecked((byte) (bits >> 8));
         }
       }
       bits = 0;
-      bitCount = 0;
+      BitCount = 0;
     }
 
     /// <summary>
@@ -183,14 +176,14 @@ namespace Fomm.SharpZipLib.Zip.Compression
       //        //Console.WriteLine("writeBits("+b+","+count+")");
       //      }
 #endif
-      bits |= (uint) (b << bitCount);
-      bitCount += count;
-      if (bitCount >= 16)
+      bits |= (uint) (b << BitCount);
+      BitCount += count;
+      if (BitCount >= 16)
       {
         buffer_[end++] = unchecked((byte) bits);
         buffer_[end++] = unchecked((byte) (bits >> 8));
         bits >>= 16;
-        bitCount -= 16;
+        BitCount -= 16;
       }
     }
 
@@ -231,11 +224,11 @@ namespace Fomm.SharpZipLib.Zip.Compression
     /// <returns>The number of bytes flushed.</returns>
     public int Flush(byte[] output, int offset, int length)
     {
-      if (bitCount >= 8)
+      if (BitCount >= 8)
       {
         buffer_[end++] = unchecked((byte) bits);
         bits >>= 8;
-        bitCount -= 8;
+        BitCount -= 8;
       }
 
       if (length > end - start)

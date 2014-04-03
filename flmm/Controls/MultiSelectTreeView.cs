@@ -24,21 +24,13 @@ namespace Fomm.Controls
       /// </summary>
       public class TreeNodeEventArgs : EventArgs
       {
-        private TreeNode m_tndNode;
-
         #region Properties
 
         /// <summary>
         /// Gets the <see cref="TreeNode"/> affected by the event.
         /// </summary>
         /// <value>The <see cref="TreeNode"/> affected by the event.</value>
-        public TreeNode TreeNode
-        {
-          get
-          {
-            return m_tndNode;
-          }
-        }
+        public TreeNode TreeNode { get; private set; }
 
         #endregion
 
@@ -50,7 +42,7 @@ namespace Fomm.Controls
         /// <param name="p_tndNode">The <see cref="TreeNode"/> affected by the event.</param>
         public TreeNodeEventArgs(TreeNode p_tndNode)
         {
-          m_tndNode = p_tndNode;
+          TreeNode = p_tndNode;
         }
 
         #endregion
@@ -344,7 +336,6 @@ namespace Fomm.Controls
       #endregion
     }
 
-    private TreeNodeCollection m_tncSelectedNodes;
     private TreeNode m_tndFirst;
 
     #region Properties
@@ -353,13 +344,7 @@ namespace Fomm.Controls
     /// Gets the selected <see cref="TreeNode"/>s.
     /// </summary>
     /// <value>The selected <see cref="TreeNode"/>s.</value>
-    public TreeNodeCollection SelectedNodes
-    {
-      get
-      {
-        return m_tncSelectedNodes;
-      }
-    }
+    public TreeNodeCollection SelectedNodes { get; private set; }
 
     #endregion
 
@@ -371,10 +356,10 @@ namespace Fomm.Controls
     public MultiSelectTreeView()
     {
       DoubleBuffered = true;
-      m_tncSelectedNodes = new TreeNodeCollection();
-      m_tncSelectedNodes.ItemAdded +=
+      SelectedNodes = new TreeNodeCollection();
+      SelectedNodes.ItemAdded +=
         m_tncSelectedNodes_ItemAdded;
-      m_tncSelectedNodes.ItemRemoved +=
+      SelectedNodes.ItemRemoved +=
         m_tncSelectedNodes_ItemRemoved;
     }
 
@@ -433,7 +418,7 @@ namespace Fomm.Controls
     protected override void OnBeforeSelect(TreeViewCancelEventArgs e)
     {
       base.OnBeforeSelect(e);
-      if (((ModifierKeys & Keys.Control) > 0) && m_tncSelectedNodes.Contains(e.Node))
+      if (((ModifierKeys & Keys.Control) > 0) && SelectedNodes.Contains(e.Node))
       {
         SelectedNodes.Remove(e.Node);
         e.Cancel = true;

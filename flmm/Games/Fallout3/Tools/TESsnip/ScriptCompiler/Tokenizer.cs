@@ -168,21 +168,13 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
     private readonly Queue<char> input;
     private readonly Queue<Token> storedTokens;
 
-    private int line;
-
-    public int Line
-    {
-      get
-      {
-        return line;
-      }
-    }
+    public int Line { get; private set; }
 
     private readonly List<string> errors;
 
     private void AddError(string msg)
     {
-      errors.Add(line + ": " + msg);
+      errors.Add(Line + ": " + msg);
     }
 
     private void SkipLine()
@@ -190,7 +182,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
       while (input.Count > 0 && input.Dequeue() != '\n')
       {
       }
-      line++;
+      Line++;
     }
 
     private char SafePop()
@@ -282,7 +274,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
 
           if (c == '\n')
           {
-            line++;
+            Line++;
             return Token.NewLine;
           }
 
@@ -489,11 +481,11 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
         lastTokens = null;
         return tmp;
       }
-      line++;
+      Line++;
       var t = DequeueToken();
       while (t.IsSymbol("\n"))
       {
-        line++;
+        Line++;
         t = DequeueToken();
       }
       if (storedTokens.Count == 0)
@@ -521,7 +513,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
     public TokenStream(string file, List<string> errors)
     {
       this.errors = errors;
-      line = 1;
+      Line = 1;
       input = new Queue<char>(file.ToCharArray());
       input.Enqueue('\n');
       storedTokens = new Queue<Token>();
@@ -529,7 +521,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
       {
         PopTokenInternal();
       }
-      line = 0;
+      Line = 0;
     }
   }
 }

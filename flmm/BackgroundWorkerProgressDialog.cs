@@ -19,7 +19,6 @@ namespace Fomm
     private object m_objWorkMethodParam;
     private DoWorkEventArgs m_weaDoWorkEventArgs;
     private BackgroundWorker m_bgwWorker;
-    private Exception m_exError;
 
     #region Properties
 
@@ -39,13 +38,7 @@ namespace Fomm
     /// </summary>
     /// <value>The exception that was thrown during the execution of the background work,
     /// or <lang langref="null"/> if now exception was thrown.</value>
-    public Exception Error
-    {
-      get
-      {
-        return m_exError;
-      }
-    }
+    public Exception Error { get; private set; }
 
     /// <summary>
     /// Gets or sets whether the item progress is visible.
@@ -490,7 +483,7 @@ namespace Fomm
     private void m_bgwWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
     {
       DialogResult = e.Cancelled ? DialogResult.Cancel : DialogResult.OK;
-      m_exError = e.Error;
+      Error = e.Error;
       Close();
     }
 

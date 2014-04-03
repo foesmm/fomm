@@ -76,13 +76,7 @@ namespace Fomm.SharpZipLib.Zip.Compression.Streams
     /// <summary>
     /// Get the length of bytes bytes in the <see cref="RawData"/>
     /// </summary>
-    public int RawLength
-    {
-      get
-      {
-        return rawLength;
-      }
-    }
+    public int RawLength { get; private set; }
 
     /// <summary>
     /// Call <see cref="Inflater.SetInput(byte[], int, int)"/> passing the current clear text buffer contents.
@@ -102,32 +96,31 @@ namespace Fomm.SharpZipLib.Zip.Compression.Streams
     /// </summary>
     public void Fill()
     {
-      rawLength = 0;
+      RawLength = 0;
       var toRead = rawData.Length;
 
       while (toRead > 0)
       {
-        var count = inputStream.Read(rawData, rawLength, toRead);
+        var count = inputStream.Read(rawData, RawLength, toRead);
         if (count <= 0)
         {
-          if (rawLength == 0)
+          if (RawLength == 0)
           {
             throw new SharpZipBaseException("Unexpected EOF");
           }
           break;
         }
-        rawLength += count;
+        RawLength += count;
         toRead -= count;
       }
 
-      clearTextLength = rawLength;
+      clearTextLength = RawLength;
 
       available = clearTextLength;
     }
 
     #region Instance Fields
 
-    private int rawLength;
     private byte[] rawData;
 
     private int clearTextLength;

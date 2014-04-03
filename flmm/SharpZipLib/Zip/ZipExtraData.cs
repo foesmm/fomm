@@ -145,13 +145,7 @@ namespace Fomm.SharpZipLib.Zip
     /// Get the length of the last value found by <see cref="Find"/>
     /// </summary>
     /// <remarks>This is only valid if <see cref="Find"/> has previously returned true.</remarks>
-    public int ValueLength
-    {
-      get
-      {
-        return readValueLength_;
-      }
-    }
+    public int ValueLength { get; private set; }
 
     /// <summary>
     /// Get the index for the current read value.
@@ -159,13 +153,7 @@ namespace Fomm.SharpZipLib.Zip
     /// <remarks>This is only valid if <see cref="Find"/> has previously returned true.
     /// Initially the result will be the index of the first byte of actual data.  The value is updated after calls to
     /// <see cref="ReadInt"/>, <see cref="ReadShort"/> and <see cref="ReadLong"/>. </remarks>
-    public int CurrentReadIndex
-    {
-      get
-      {
-        return index_;
-      }
-    }
+    public int CurrentReadIndex { get; private set; }
 
     /// <summary>
     /// Get the number of bytes remaining to be read for the current value;
@@ -180,7 +168,7 @@ namespace Fomm.SharpZipLib.Zip
           throw new ZipException("Find must be called before calling a Read method");
         }
 
-        return readValueStart_ + readValueLength_ - index_;
+        return readValueStart_ + ValueLength - CurrentReadIndex;
       }
     }
 
@@ -192,30 +180,30 @@ namespace Fomm.SharpZipLib.Zip
     public bool Find(int headerID)
     {
       readValueStart_ = data_.Length;
-      readValueLength_ = 0;
-      index_ = 0;
+      ValueLength = 0;
+      CurrentReadIndex = 0;
 
       var localLength = readValueStart_;
       var localTag = headerID - 1;
 
       // Trailing bytes that cant make up an entry (as there arent enough
       // bytes for a tag and length) are ignored!
-      while ((localTag != headerID) && (index_ < data_.Length - 3))
+      while ((localTag != headerID) && (CurrentReadIndex < data_.Length - 3))
       {
         localTag = ReadShortInternal();
         localLength = ReadShortInternal();
         if (localTag != headerID)
         {
-          index_ += localLength;
+          CurrentReadIndex += localLength;
         }
       }
 
-      var result = (localTag == headerID) && ((index_ + localLength) <= data_.Length);
+      var result = (localTag == headerID) && ((CurrentReadIndex + localLength) <= data_.Length);
 
       if (result)
       {
-        readValueStart_ = index_;
-        readValueLength_ = localLength;
+        readValueStart_ = CurrentReadIndex;
+        ValueLength = localLength;
       }
 
       return result;
@@ -380,9 +368,9 @@ namespace Fomm.SharpZipLib.Zip
     {
       ReadCheck(4);
 
-      var result = data_[index_] + (data_[index_ + 1] << 8) +
-                   (data_[index_ + 2] << 16) + (data_[index_ + 3] << 24);
-      index_ += 4;
+      var result = data_[CurrentReadIndex] + (data_[CurrentReadIndex + 1] << 8) +
+                   (data_[CurrentReadIndex + 2] << 16) + (data_[CurrentReadIndex + 3] << 24);
+      CurrentReadIndex += 4;
       return result;
     }
 
@@ -393,8 +381,8 @@ namespace Fomm.SharpZipLib.Zip
     public int ReadShort()
     {
       ReadCheck(2);
-      var result = data_[index_] + (data_[index_ + 1] << 8);
-      index_ += 2;
+      var result = data_[CurrentReadIndex] + (data_[CurrentReadIndex + 1] << 8);
+      CurrentReadIndex += 2;
       return result;
     }
 
@@ -405,10 +393,10 @@ namespace Fomm.SharpZipLib.Zip
     public int ReadByte()
     {
       var result = -1;
-      if ((index_ < data_.Length) && (readValueStart_ + readValueLength_ > index_))
+      if ((CurrentReadIndex < data_.Length) && (readValueStart_ + ValueLength > CurrentReadIndex))
       {
-        result = data_[index_];
-        index_ += 1;
+        result = data_[CurrentReadIndex];
+        CurrentReadIndex += 1;
       }
       return result;
     }
@@ -420,7 +408,7 @@ namespace Fomm.SharpZipLib.Zip
     public void Skip(int amount)
     {
       ReadCheck(amount);
-      index_ += amount;
+      CurrentReadIndex += amount;
     }
 
     // ReSharper disable UnusedParameter.Local
@@ -433,7 +421,7 @@ namespace Fomm.SharpZipLib.Zip
         throw new ZipException("Find must be called before calling a Read method");
       }
 
-      if (index_ > readValueStart_ + readValueLength_ - length)
+      if (CurrentReadIndex > readValueStart_ + ValueLength - length)
       {
         throw new ZipException("End of extra data");
       }
@@ -445,13 +433,13 @@ namespace Fomm.SharpZipLib.Zip
     /// <returns>Returns the short value read.</returns>
     private int ReadShortInternal()
     {
-      if (index_ > data_.Length - 2)
+      if (CurrentReadIndex > data_.Length - 2)
       {
         throw new ZipException("End of extra data");
       }
 
-      var result = data_[index_] + (data_[index_ + 1] << 8);
-      index_ += 2;
+      var result = data_[CurrentReadIndex] + (data_[CurrentReadIndex + 1] << 8);
+      CurrentReadIndex += 2;
       return result;
     }
 
@@ -481,9 +469,7 @@ namespace Fomm.SharpZipLib.Zip
 
     #region Instance Fields
 
-    private int index_;
     private int readValueStart_;
-    private int readValueLength_;
 
     private MemoryStream newEntry_;
     private byte[] data_;

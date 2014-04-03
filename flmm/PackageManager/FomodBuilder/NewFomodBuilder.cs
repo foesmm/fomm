@@ -17,99 +17,49 @@ namespace Fomm.PackageManager.FomodBuilder
     /// </summary>
     protected class BuildFomodArgs : GenerateFomodArgs
     {
-      private string m_strFomodName;
-      private IList<KeyValuePair<string, string>> m_lstCopyInstructions;
-      private Readme m_rmeReadme;
-      private XmlDocument m_xmlInfo;
-      private bool m_booSetScreenshot;
-      private Screenshot m_shtScreenshot;
-      private FomodScript m_fscScript;
-
       #region Properties
 
       /// <summary>
       /// Gets the fomodName.
       /// </summary>
       /// <value>The fomodName.</value>
-      public string FomodName
-      {
-        get
-        {
-          return m_strFomodName;
-        }
-      }
+      public string FomodName { get; private set; }
 
       /// <summary>
       /// Gets the copy instructions that need to be executed to create the fomod.
       /// </summary>
       /// <value>The copy instructions that need to be executed to create the fomod.</value>
-      public IList<KeyValuePair<string, string>> CopyInstructions
-      {
-        get
-        {
-          return m_lstCopyInstructions;
-        }
-      }
+      public IList<KeyValuePair<string, string>> CopyInstructions { get; private set; }
 
       /// <summary>
       /// Gets the readme.
       /// </summary>
       /// <value>The readme.</value>
-      public Readme Readme
-      {
-        get
-        {
-          return m_rmeReadme;
-        }
-      }
+      public Readme Readme { get; private set; }
 
       /// <summary>
       /// Gets the info file.
       /// </summary>
       /// <value>The info file.</value>
-      public XmlDocument InfoFile
-      {
-        get
-        {
-          return m_xmlInfo;
-        }
-      }
+      public XmlDocument InfoFile { get; private set; }
 
       /// <summary>
       /// Gets the setScreenshot.
       /// </summary>
       /// <value>The setScreenshot.</value>
-      public bool SetScreenshot
-      {
-        get
-        {
-          return m_booSetScreenshot;
-        }
-      }
+      public bool SetScreenshot { get; private set; }
 
       /// <summary>
       /// Gets the screenshot.
       /// </summary>
       /// <value>The screenshot.</value>
-      public Screenshot Screenshot
-      {
-        get
-        {
-          return m_shtScreenshot;
-        }
-      }
+      public Screenshot Screenshot { get; private set; }
 
       /// <summary>
       /// Gets the script.
       /// </summary>
       /// <value>The script.</value>
-      public FomodScript Script
-      {
-        get
-        {
-          return m_fscScript;
-        }
-      }
+      public FomodScript Script { get; private set; }
 
       #endregion
 
@@ -131,13 +81,13 @@ namespace Fomm.PackageManager.FomodBuilder
                             Screenshot p_shtScreenshot, FomodScript p_fscScript, string p_strPackedPath)
         : base(p_strPackedPath)
       {
-        m_strFomodName = p_strFomodName;
-        m_lstCopyInstructions = p_lstCopyPaths;
-        m_rmeReadme = p_rmeReadme;
-        m_xmlInfo = p_xmlInfo;
-        m_booSetScreenshot = p_booSetScreenshot;
-        m_shtScreenshot = p_shtScreenshot;
-        m_fscScript = p_fscScript;
+        FomodName = p_strFomodName;
+        CopyInstructions = p_lstCopyPaths;
+        Readme = p_rmeReadme;
+        InfoFile = p_xmlInfo;
+        SetScreenshot = p_booSetScreenshot;
+        Screenshot = p_shtScreenshot;
+        Script = p_fscScript;
       }
 
       #endregion

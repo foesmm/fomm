@@ -42,7 +42,6 @@ namespace Fomm.PackageManager
       }
     }
 
-    private Archive m_arcFile;
     private Archive m_arcCacheFile;
 
     internal readonly string filepath;
@@ -65,15 +64,11 @@ namespace Fomm.PackageManager
       "sound"
     };
 
-    private bool hasInfo;
     private bool isActive;
-
-    private string m_strPathPrefix;
 
     private Dictionary<string, string> m_dicMovedArchiveFiles =
       new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
 
-    private string m_strCachePath;
     private string m_strScreenshotPath;
     private string m_strScriptPath;
     private string m_strReadmePath;
@@ -86,13 +81,7 @@ namespace Fomm.PackageManager
     /// Gets the path to the fomod's cache file.
     /// </summary>
     /// <value>The path to the fomod's cache file.</value>
-    public string CachePath
-    {
-      get
-      {
-        return m_strCachePath;
-      }
-    }
+    public string CachePath { get; private set; }
 
     /// <summary>
     /// Gets the path prefix of the FOMod.
@@ -102,13 +91,7 @@ namespace Fomm.PackageManager
     /// normalizes the file structure of FOMods and adjusts for incorrectly packaged FOMods.
     /// </remarks>
     /// <value>The path prefix of the FOMod.</value>
-    protected string PathPrefix
-    {
-      get
-      {
-        return m_strPathPrefix;
-      }
-    }
+    protected string PathPrefix { get; private set; }
 
     /// <summary>
     /// Gets or sets the name of the fomod.
@@ -183,25 +166,13 @@ namespace Fomm.PackageManager
     /// The fomod file is a compressed file.
     /// </remarks>
     /// <value>The fomod file.</value>
-    internal Archive FomodFile
-    {
-      get
-      {
-        return m_arcFile;
-      }
-    }
+    internal Archive FomodFile { get; private set; }
 
     /// <summary>
     /// Gets whether the mod has metadata.
     /// </summary>
     /// <value>Whether the mod has metadata.</value>
-    public bool HasInfo
-    {
-      get
-      {
-        return hasInfo;
-      }
-    }
+    public bool HasInfo { get; private set; }
 
     /// <summary>
     /// Gets or sets whether the mod is active.
@@ -298,7 +269,7 @@ namespace Fomm.PackageManager
     {
       get
       {
-        return m_arcFile.ReadOnlyInitStepCount;
+        return FomodFile.ReadOnlyInitStepCount;
       }
     }
 
@@ -324,15 +295,15 @@ namespace Fomm.PackageManager
       filepath = path;
       ModName = Path.GetFileNameWithoutExtension(path);
 
-      m_arcFile = new Archive(path);
-      m_strCachePath = Path.Combine(Program.GameMode.ModInfoCacheDirectory, ModName + ".zip");
-      if (p_booUseCache && File.Exists(m_strCachePath))
+      FomodFile = new Archive(path);
+      CachePath = Path.Combine(Program.GameMode.ModInfoCacheDirectory, ModName + ".zip");
+      if (p_booUseCache && File.Exists(CachePath))
       {
-        m_arcCacheFile = new Archive(m_strCachePath);
+        m_arcCacheFile = new Archive(CachePath);
       }
 
       FindPathPrefix();
-      m_arcFile.FilesChanged += Archive_FilesChanged;
+      FomodFile.FilesChanged += Archive_FilesChanged;
       baseName = ModName.ToLowerInvariant();
       Author = DEFAULT_AUTHOR;
       Description = Email = Website = string.Empty;
@@ -387,7 +358,7 @@ namespace Fomm.PackageManager
         }
       }
 
-      if (p_booUseCache && !File.Exists(m_strCachePath) && (m_arcFile.IsSolid || m_arcFile.ReadOnly))
+      if (p_booUseCache && !File.Exists(CachePath) && (FomodFile.IsSolid || FomodFile.ReadOnly))
       {
         var strTmpInfo = Program.CreateTempDirectory();
         try
@@ -422,16 +393,16 @@ namespace Fomm.PackageManager
             var szcCompressor = new SevenZipCompressor();
             szcCompressor.ArchiveFormat = OutArchiveFormat.Zip;
             szcCompressor.CompressionLevel = CompressionLevel.Ultra;
-            szcCompressor.CompressDirectory(strTmpInfo, m_strCachePath);
+            szcCompressor.CompressDirectory(strTmpInfo, CachePath);
           }
         }
         finally
         {
           FileUtil.ForceDelete(strTmpInfo);
         }
-        if (File.Exists(m_strCachePath))
+        if (File.Exists(CachePath))
         {
-          m_arcCacheFile = new Archive(m_strCachePath);
+          m_arcCacheFile = new Archive(CachePath);
         }
       }
 
@@ -457,18 +428,18 @@ namespace Fomm.PackageManager
       var strSourcePath = "/";
       //this code removes any top-level folders until it finds esp/esm/bsa, or the top-level folder
       // is a fomod/textures/meshes/music/shaders/video/facegen/menus/lodsettings/lsdata/sound folder.
-      var directories = m_arcFile.GetDirectories(strSourcePath);
+      var directories = FomodFile.GetDirectories(strSourcePath);
       while (directories.Length == 1 &&
-             ((m_arcFile.GetFiles(strSourcePath, "*.esp").Length == 0 &&
-               m_arcFile.GetFiles(strSourcePath, "*.esm").Length == 0 &&
-               m_arcFile.GetFiles(strSourcePath, "*.bsa").Length == 0) ||
+             ((FomodFile.GetFiles(strSourcePath, "*.esp").Length == 0 &&
+               FomodFile.GetFiles(strSourcePath, "*.esm").Length == 0 &&
+               FomodFile.GetFiles(strSourcePath, "*.bsa").Length == 0) ||
               Path.GetFileName(directories[0]).Equals("data", StringComparison.InvariantCultureIgnoreCase)))
       {
         directories = directories[0].Split(Path.DirectorySeparatorChar);
         var name = directories[directories.Length - 1].ToLowerInvariant();
         if (!StopFolders.Contains(name))
         {
-          foreach (var file in m_arcFile.GetFiles(strSourcePath))
+          foreach (var file in FomodFile.GetFiles(strSourcePath))
           {
             var strNewFileName = Path.GetFileName(file);
             for (var i = 1; m_dicMovedArchiveFiles.ContainsKey(strNewFileName); i++)
@@ -478,14 +449,14 @@ namespace Fomm.PackageManager
             m_dicMovedArchiveFiles[strNewFileName] = file;
           }
           strSourcePath = Path.Combine(strSourcePath, name);
-          directories = m_arcFile.GetDirectories(strSourcePath);
+          directories = FomodFile.GetDirectories(strSourcePath);
         }
         else
         {
           break;
         }
       }
-      m_strPathPrefix = strSourcePath.Trim('/');
+      PathPrefix = strSourcePath.Trim('/');
     }
 
     /// <summary>
@@ -518,7 +489,7 @@ namespace Fomm.PackageManager
       {
         return true;
       }
-      if (m_arcFile.ContainsFile(GetPrefixAdjustedPath(strPath)))
+      if (FomodFile.ContainsFile(GetPrefixAdjustedPath(strPath)))
       {
         return true;
       }
@@ -554,7 +525,7 @@ namespace Fomm.PackageManager
       PermissionsManager.CurrentPermissions.Assert();
       var lstFiles = new List<string>();
       var intTrimLength = (PathPrefix.Length == 0) ? 0 : PathPrefix.Length + 1;
-      foreach (var strFile in m_arcFile.GetFiles(null))
+      foreach (var strFile in FomodFile.GetFiles(null))
       {
         if (strFile.StartsWith(PathPrefix, StringComparison.InvariantCultureIgnoreCase))
         {
@@ -586,7 +557,7 @@ namespace Fomm.PackageManager
       {
         return m_arcCacheFile.GetFileContents(GetPrefixAdjustedPath(p_strPath));
       }
-      return m_arcFile.GetFileContents(GetPrefixAdjustedPath(p_strPath));
+      return FomodFile.GetFileContents(GetPrefixAdjustedPath(p_strPath));
     }
 
     /// <summary>
@@ -598,9 +569,9 @@ namespace Fomm.PackageManager
     /// <param name="p_strPath">The path of the file to delete.</param>
     protected void DeleteFile(string p_strPath)
     {
-      if (!m_arcFile.ReadOnly)
+      if (!FomodFile.ReadOnly)
       {
-        m_arcFile.DeleteFile(GetPrefixAdjustedPath(p_strPath));
+        FomodFile.DeleteFile(GetPrefixAdjustedPath(p_strPath));
       }
       if ((m_arcCacheFile != null) && m_arcCacheFile.ContainsFile(GetPrefixAdjustedPath(p_strPath)))
       {
@@ -618,12 +589,12 @@ namespace Fomm.PackageManager
     /// <param name="p_bteData">The new file data.</param>
     protected void ReplaceFile(string p_strPath, byte[] p_bteData)
     {
-      if (!m_arcFile.ReadOnly)
+      if (!FomodFile.ReadOnly)
       {
-        m_arcFile.ReplaceFile(GetPrefixAdjustedPath(p_strPath), p_bteData);
+        FomodFile.ReplaceFile(GetPrefixAdjustedPath(p_strPath), p_bteData);
       }
       if ((m_arcCacheFile != null) &&
-          (m_arcCacheFile.ContainsFile(GetPrefixAdjustedPath(p_strPath)) || m_arcFile.ReadOnly))
+          (m_arcCacheFile.ContainsFile(GetPrefixAdjustedPath(p_strPath)) || FomodFile.ReadOnly))
       {
         m_arcCacheFile.ReplaceFile(GetPrefixAdjustedPath(p_strPath), p_bteData);
       }
@@ -639,12 +610,12 @@ namespace Fomm.PackageManager
     /// <param name="p_strData">The new file text.</param>
     protected void ReplaceFile(string p_strPath, string p_strData)
     {
-      if (!m_arcFile.ReadOnly)
+      if (!FomodFile.ReadOnly)
       {
-        m_arcFile.ReplaceFile(GetPrefixAdjustedPath(p_strPath), p_strData);
+        FomodFile.ReplaceFile(GetPrefixAdjustedPath(p_strPath), p_strData);
       }
       if ((m_arcCacheFile != null) &&
-          (m_arcCacheFile.ContainsFile(GetPrefixAdjustedPath(p_strPath)) || m_arcFile.ReadOnly))
+          (m_arcCacheFile.ContainsFile(GetPrefixAdjustedPath(p_strPath)) || FomodFile.ReadOnly))
       {
         m_arcCacheFile.ReplaceFile(GetPrefixAdjustedPath(p_strPath), p_strData);
       }
@@ -670,7 +641,7 @@ namespace Fomm.PackageManager
       }
       else
       {
-        m_arcFile.ExtractTo(GetPrefixAdjustedPath(srcFile), tmpFN);
+        FomodFile.ExtractTo(GetPrefixAdjustedPath(srcFile), tmpFN);
         ret = tmpFN;
       }
 
@@ -871,7 +842,7 @@ namespace Fomm.PackageManager
     {
       if (ContainsFile("fomod/info.xml"))
       {
-        hasInfo = true;
+        HasInfo = true;
         var doc = new XmlDocument();
         doc.LoadXml(TextUtil.ByteToString(GetFileContents("fomod/info.xml")));
         LoadInfo(doc, this);
@@ -968,7 +939,7 @@ namespace Fomm.PackageManager
     internal void CommitInfo(bool SetScreenshot, Screenshot p_shtScreenshot)
     {
       var xmlInfo = SaveInfo(this);
-      hasInfo = true;
+      HasInfo = true;
 
       var ms = new MemoryStream();
       xmlInfo.Save(ms);
@@ -1013,7 +984,7 @@ namespace Fomm.PackageManager
 
     internal void Dispose()
     {
-      m_arcFile.Dispose();
+      FomodFile.Dispose();
     }
 
     internal string GetStatusString()
@@ -1096,11 +1067,11 @@ namespace Fomm.PackageManager
     {
       add
       {
-        m_arcFile.ReadOnlyInitStepStarted += value;
+        FomodFile.ReadOnlyInitStepStarted += value;
       }
       remove
       {
-        m_arcFile.ReadOnlyInitStepStarted -= value;
+        FomodFile.ReadOnlyInitStepStarted -= value;
       }
     }
 
@@ -1111,11 +1082,11 @@ namespace Fomm.PackageManager
     {
       add
       {
-        m_arcFile.ReadOnlyInitStepFinished += value;
+        FomodFile.ReadOnlyInitStepFinished += value;
       }
       remove
       {
-        m_arcFile.ReadOnlyInitStepFinished -= value;
+        FomodFile.ReadOnlyInitStepFinished -= value;
       }
     }
 
@@ -1129,7 +1100,7 @@ namespace Fomm.PackageManager
     /// </remarks>
     public void BeginReadOnlyTransaction()
     {
-      m_arcFile.BeginReadOnlyTransaction();
+      FomodFile.BeginReadOnlyTransaction();
     }
 
     /// <summary>
@@ -1142,7 +1113,7 @@ namespace Fomm.PackageManager
     /// </remarks>
     public void EndReadOnlyTransaction()
     {
-      m_arcFile.EndReadOnlyTransaction();
+      FomodFile.EndReadOnlyTransaction();
     }
 
     #endregion

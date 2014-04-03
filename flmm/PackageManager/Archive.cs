@@ -45,12 +45,10 @@ namespace Fomm.PackageManager
       ".ico"
     };
 
-    private string m_strPath;
     private SevenZipCompressor m_szcCompressor;
     private List<string> m_strFiles;
     private Dictionary<string, ArchiveFileInfo> m_dicFileInfo;
     private bool m_booCanEdit;
-    private bool m_booIsSolid;
     private ThreadSafeSevenZipExtractor m_szeReadOnlyExtractor;
     private string m_strReadOnlyTempDirectory;
 
@@ -76,13 +74,7 @@ namespace Fomm.PackageManager
     /// Gets the path of the archive.
     /// </summary>
     /// <value>The path of the archive.</value>
-    public string ArchivePath
-    {
-      get
-      {
-        return m_strPath;
-      }
-    }
+    public string ArchivePath { get; private set; }
 
     /// <summary>
     /// Gets the names of the volumes that make up this archive.
@@ -92,7 +84,7 @@ namespace Fomm.PackageManager
     {
       get
       {
-        using (var szeExtractor = GetExtractor(m_strPath))
+        using (var szeExtractor = GetExtractor(ArchivePath))
         {
           IList<string> lstVolumes = szeExtractor.VolumeFileNames;
           var strVolumes = new string[lstVolumes.Count];
@@ -106,13 +98,7 @@ namespace Fomm.PackageManager
     /// Gets whether the archive is solid.
     /// </summary>
     /// <value>Whether the archive is solid.</value>
-    public bool IsSolid
-    {
-      get
-      {
-        return m_booIsSolid;
-      }
-    }
+    public bool IsSolid { get; private set; }
 
     #endregion
 
@@ -319,11 +305,11 @@ namespace Fomm.PackageManager
     /// <param name="p_strPath">The path to the archive file.</param>
     public Archive(string p_strPath)
     {
-      m_strPath = p_strPath;
+      ArchivePath = p_strPath;
       if (!p_strPath.StartsWith(ARCHIVE_PREFIX))
       {
-        m_strPath = p_strPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
-        using (var szeExtractor = new SevenZipExtractor(m_strPath))
+        ArchivePath = p_strPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+        using (var szeExtractor = new SevenZipExtractor(ArchivePath))
         {
           if (Enum.IsDefined(typeof (OutArchiveFormat), szeExtractor.Format.ToString()))
           {
@@ -383,7 +369,7 @@ namespace Fomm.PackageManager
     {
       get
       {
-        using (var szeExtractor = GetExtractor(m_strPath))
+        using (var szeExtractor = GetExtractor(ArchivePath))
         {
           if (szeExtractor.IsSolid)
           {
@@ -404,13 +390,13 @@ namespace Fomm.PackageManager
     {
       if (m_szeReadOnlyExtractor == null)
       {
-        m_szeReadOnlyExtractor = GetThreadSafeExtractor(m_strPath);
+        m_szeReadOnlyExtractor = GetThreadSafeExtractor(ArchivePath);
         if (m_szeReadOnlyExtractor.IsSolid)
         {
           m_szeReadOnlyExtractor.Dispose();
           m_szeReadOnlyExtractor = null;
           m_strReadOnlyTempDirectory = Program.CreateTempDirectory();
-          using (var szeExtractor = GetExtractor(m_strPath))
+          using (var szeExtractor = GetExtractor(ArchivePath))
           {
             szeExtractor.FileExtractionFinished += FileExtractionFinished;
             szeExtractor.FileExtractionStarted += FileExtractionStarted;
@@ -483,9 +469,9 @@ namespace Fomm.PackageManager
     {
       m_dicFileInfo.Clear();
       m_strFiles.Clear();
-      using (var szeExtractor = GetExtractor(m_strPath))
+      using (var szeExtractor = GetExtractor(ArchivePath))
       {
-        m_booIsSolid = szeExtractor.IsSolid;
+        IsSolid = szeExtractor.IsSolid;
         foreach (var afiFile in szeExtractor.ArchiveFileData)
         {
           if (!afiFile.IsDirectory)
@@ -528,7 +514,7 @@ namespace Fomm.PackageManager
       }
 
       var afiFile = default(ArchiveFileInfo);
-      using (var szeExtractor = GetExtractor(m_strPath))
+      using (var szeExtractor = GetExtractor(ArchivePath))
       {
         foreach (var afiTmp in szeExtractor.ArchiveFileData)
         {
@@ -682,7 +668,7 @@ namespace Fomm.PackageManager
       }
       else
       {
-        using (var szeExtractor = GetExtractor(m_strPath))
+        using (var szeExtractor = GetExtractor(ArchivePath))
         {
           fsOut = new FileStream(dstFN, FileMode.Truncate);
           szeExtractor.ExtractFile(afiFile.Index, fsOut);
@@ -725,7 +711,7 @@ namespace Fomm.PackageManager
         }
         else
         {
-          using (var szeExtractor = GetExtractor(m_strPath))
+          using (var szeExtractor = GetExtractor(ArchivePath))
           {
             szeExtractor.ExtractFile(afiFile.Index, msmFile);
           }
@@ -778,7 +764,7 @@ namespace Fomm.PackageManager
       }
       if (!m_booCanEdit)
       {
-        using (var szeExtractor = GetExtractor(m_strPath))
+        using (var szeExtractor = GetExtractor(ArchivePath))
         {
           throw new InvalidOperationException("Cannot modify archive of type: " + szeExtractor.Format);
         }
@@ -793,7 +779,7 @@ namespace Fomm.PackageManager
             m_dicFileInfo[strPath].Index, null
           }
         };
-        m_szcCompressor.ModifyArchive(m_strPath, dicDelete);
+        m_szcCompressor.ModifyArchive(ArchivePath, dicDelete);
       }
       using (var msmData = new MemoryStream(p_bteData))
       {
@@ -802,7 +788,7 @@ namespace Fomm.PackageManager
           {
             p_strFileName, msmData
           }
-        }, m_strPath);
+        }, ArchivePath);
         msmData.Close();
       }
       LoadFileIndices();
@@ -827,7 +813,7 @@ namespace Fomm.PackageManager
       }
       if (!m_booCanEdit)
       {
-        using (var szeExtractor = GetExtractor(m_strPath))
+        using (var szeExtractor = GetExtractor(ArchivePath))
         {
           throw new InvalidOperationException("Cannot modify archive of type: " + szeExtractor.Format);
         }
@@ -842,7 +828,7 @@ namespace Fomm.PackageManager
             m_dicFileInfo[strPath].Index, null
           }
         };
-        m_szcCompressor.ModifyArchive(m_strPath, dicDelete);
+        m_szcCompressor.ModifyArchive(ArchivePath, dicDelete);
       }
       LoadFileIndices();
     }

@@ -44,7 +44,6 @@ namespace Fomm.PackageManager.FomodBuilder
       #endregion
     }
 
-    private BackgroundWorkerProgressDialog m_bwdProgress;
     private LinkedList<string> m_lltTempFolders = new LinkedList<string>();
 
     #region Properties
@@ -55,13 +54,7 @@ namespace Fomm.PackageManager.FomodBuilder
     /// </summary>
     /// <value>The <see cref="BackgroundWorkerProgressDialog"/> used to generate
     /// the fomod.</value>
-    protected BackgroundWorkerProgressDialog ProgressDialog
-    {
-      get
-      {
-        return m_bwdProgress;
-      }
-    }
+    protected BackgroundWorkerProgressDialog ProgressDialog { get; private set; }
 
     /// <summary>
     /// Gets the overall message to display in the progress dialog.
@@ -102,13 +95,13 @@ namespace Fomm.PackageManager.FomodBuilder
 
       try
       {
-        using (m_bwdProgress = new BackgroundWorkerProgressDialog(DoGenerateFomod))
+        using (ProgressDialog = new BackgroundWorkerProgressDialog(DoGenerateFomod))
         {
-          m_bwdProgress.OverallMessage = OverallProgressMessage;
-          m_bwdProgress.ShowItemProgress = true;
-          m_bwdProgress.OverallProgressStep = 1;
-          m_bwdProgress.WorkMethodArguments = p_gfaArgs;
-          if (m_bwdProgress.ShowDialog() == DialogResult.Cancel)
+          ProgressDialog.OverallMessage = OverallProgressMessage;
+          ProgressDialog.ShowItemProgress = true;
+          ProgressDialog.OverallProgressStep = 1;
+          ProgressDialog.WorkMethodArguments = p_gfaArgs;
+          if (ProgressDialog.ShowDialog() == DialogResult.Cancel)
           {
             FileUtil.ForceDelete(strPackedPath);
             return null;

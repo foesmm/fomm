@@ -78,9 +78,6 @@ namespace Fomm.Controls
 
       private Orientation m_otnDirection = Orientation.Vertical;
       private List<Control> m_lstOrderAdded = new List<Control>();
-      private bool m_booNeedScroll;
-      private bool m_booEnableUpScroll;
-      private bool m_booEnableDownScroll;
       private Int32 m_intScrollAmount = 5;
       private FlatStyle m_fstFlatStyle = FlatStyle.Flat;
 
@@ -122,37 +119,19 @@ namespace Fomm.Controls
       /// Gets whether an up scroll control is needed.
       /// </summary>
       /// <value>Whether an up scroll control is needed.</value>
-      public bool NeedScroll
-      {
-        get
-        {
-          return m_booNeedScroll;
-        }
-      }
+      public bool NeedScroll { get; private set; }
 
       /// <summary>
       /// Gets whether the up scroll should be enabled.
       /// </summary>
       /// <value>Whether the up scroll should be enabled.</value>
-      public bool EnableUpScroll
-      {
-        get
-        {
-          return m_booEnableUpScroll;
-        }
-      }
+      public bool EnableUpScroll { get; private set; }
 
       /// <summary>
       /// Gets whether the down scroll should be enabled.
       /// </summary>
       /// <value>Whether the down scroll should be enabled.</value>
-      public bool EnableDownScroll
-      {
-        get
-        {
-          return m_booEnableDownScroll;
-        }
-      }
+      public bool EnableDownScroll { get; private set; }
 
       /// <summary>
       /// Gets or sets the flatStyle of the ToolStripItems.
@@ -225,13 +204,13 @@ namespace Fomm.Controls
             {
               if (m_otnDirection == Orientation.Vertical)
               {
-                m_booNeedScroll = (m_booNeedScroll || (ctlButton.Bounds.Bottom > Height));
-                m_booEnableDownScroll = m_booNeedScroll;
+                NeedScroll = (NeedScroll || (ctlButton.Bounds.Bottom > Height));
+                EnableDownScroll = NeedScroll;
               }
               else
               {
-                m_booNeedScroll = (m_booNeedScroll || (ctlButton.Bounds.Right > Width));
-                m_booEnableUpScroll = m_booNeedScroll;
+                NeedScroll = (NeedScroll || (ctlButton.Bounds.Right > Width));
+                EnableUpScroll = NeedScroll;
               }
             }
           }
@@ -329,7 +308,7 @@ namespace Fomm.Controls
         }
         SetDisplayRectLocation(intNewX, intNewY);
 
-        m_booEnableDownScroll = true;
+        EnableDownScroll = true;
         checkScrollUp();
       }
 
@@ -358,7 +337,7 @@ namespace Fomm.Controls
         }
         SetDisplayRectLocation(intNewX, intNewY);
 
-        m_booEnableUpScroll = true;
+        EnableUpScroll = true;
         checkScrollDown();
       }
 
@@ -371,12 +350,12 @@ namespace Fomm.Controls
         if (m_otnDirection == Orientation.Vertical)
         {
           ctlButton = Controls[Controls.Count - 1];
-          m_booEnableUpScroll = (ctlButton.Bounds.Top < 0);
+          EnableUpScroll = (ctlButton.Bounds.Top < 0);
         }
         else
         {
           ctlButton = Controls[0];
-          m_booEnableUpScroll = (ctlButton.Bounds.Right > Width);
+          EnableUpScroll = (ctlButton.Bounds.Right > Width);
         }
       }
 
@@ -389,12 +368,12 @@ namespace Fomm.Controls
         if (m_otnDirection == Orientation.Vertical)
         {
           ctlButton = Controls[0];
-          m_booEnableDownScroll = (ctlButton.Bounds.Bottom > Height);
+          EnableDownScroll = (ctlButton.Bounds.Bottom > Height);
         }
         else
         {
           ctlButton = Controls[Controls.Count - 1];
-          m_booEnableDownScroll = (ctlButton.Bounds.Left < 0);
+          EnableDownScroll = (ctlButton.Bounds.Left < 0);
         }
       }
 
@@ -406,7 +385,7 @@ namespace Fomm.Controls
       {
         if (DesignMode)
         {
-          m_booNeedScroll = true;
+          NeedScroll = true;
           return;
         }
 
@@ -419,21 +398,21 @@ namespace Fomm.Controls
         if (m_otnDirection == Orientation.Vertical)
         {
           ctlButton = Controls[0];
-          m_booNeedScroll = (ctlButton.Bounds.Bottom > Height);
+          NeedScroll = (ctlButton.Bounds.Bottom > Height);
 
           ctlButton = Controls[Controls.Count - 1];
-          m_booNeedScroll = (m_booNeedScroll || (ctlButton.Bounds.Top < 0));
+          NeedScroll = (NeedScroll || (ctlButton.Bounds.Top < 0));
         }
         else
         {
           ctlButton = Controls[0];
-          m_booNeedScroll = (ctlButton.Bounds.Right > Width);
+          NeedScroll = (ctlButton.Bounds.Right > Width);
 
           ctlButton = Controls[Controls.Count - 1];
-          m_booNeedScroll = (m_booNeedScroll || (ctlButton.Bounds.Left < 0));
+          NeedScroll = (NeedScroll || (ctlButton.Bounds.Left < 0));
         }
 
-        if (m_booNeedScroll)
+        if (NeedScroll)
         {
           checkScrollUp();
           checkScrollDown();

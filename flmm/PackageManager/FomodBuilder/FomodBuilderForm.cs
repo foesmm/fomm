@@ -43,7 +43,6 @@ namespace Fomm.PackageManager.FomodBuilder
 
     private ReadmeGeneratorForm m_rgdGenerator = new ReadmeGeneratorForm();
     private bool m_booInfoEntered;
-    private string m_strNewFomodPath;
     private bool m_booLoadedInfo;
 
     #region Properties
@@ -55,13 +54,7 @@ namespace Fomm.PackageManager.FomodBuilder
     /// This value will be <lang langref="null"/> if the fomod was not successfully built.
     /// </remarks>
     /// <value>The path of the fomod that was built.</value>
-    public string FomodPath
-    {
-      get
-      {
-        return m_strNewFomodPath;
-      }
-    }
+    public string FomodPath { get; private set; }
 
     #endregion
 
@@ -203,9 +196,9 @@ namespace Fomm.PackageManager.FomodBuilder
       if (cbxFomod.Checked)
       {
         var fgnGenerator = new NewFomodBuilder();
-        m_strNewFomodPath = fgnGenerator.BuildFomod(tbxFomodFileName.Text, lstCopyInstructions, rmeReadme, xmlInfo,
+        FomodPath = fgnGenerator.BuildFomod(tbxFomodFileName.Text, lstCopyInstructions, rmeReadme, xmlInfo,
                                                     m_booInfoEntered, finInfo.Screenshot, fscScript);
-        if (String.IsNullOrEmpty(m_strNewFomodPath))
+        if (String.IsNullOrEmpty(FomodPath))
         {
           return;
         }

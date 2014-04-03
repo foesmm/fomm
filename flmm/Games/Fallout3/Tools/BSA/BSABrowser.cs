@@ -49,7 +49,6 @@ namespace Fomm.Games.Fallout3.Tools.BSA
 
       internal readonly bool Compressed;
       private string fileName;
-      private string lowername;
 
       internal string FileName
       {
@@ -65,17 +64,11 @@ namespace Fomm.Games.Fallout3.Tools.BSA
           }
           fileName = value;
           //lowername=Folder.ToLower()+"\\"+fileName.ToLower();
-          lowername = Path.Combine(Folder.ToLower(), fileName.ToLower());
+          LowerName = Path.Combine(Folder.ToLower(), fileName.ToLower());
         }
       }
 
-      internal string LowerName
-      {
-        get
-        {
-          return lowername;
-        }
-      }
+      internal string LowerName { get; private set; }
 
       internal readonly string Folder;
       internal readonly uint Offset;

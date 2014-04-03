@@ -35,16 +35,9 @@ namespace fomm.Scripting
   /// </summary>
   public abstract class GenericBaseScript
   {
-    private static ModInstaller m_mdiScript;
     private static string m_strLastError;
 
-    protected static ModInstaller Installer
-    {
-      get
-      {
-        return m_mdiScript;
-      }
-    }
+    protected static ModInstaller Installer { get; private set; }
 
     protected static string LastError
     {
@@ -69,7 +62,7 @@ namespace fomm.Scripting
     /// to perform its work.</param>
     public static void Setup(ModInstaller p_mdiScript)
     {
-      m_mdiScript = p_mdiScript;
+      Installer = p_mdiScript;
     }
 
     #region Method Execution
@@ -160,7 +153,7 @@ namespace fomm.Scripting
     /// <seealso cref="ModInstaller.PerformBasicInstall()"/>
     public static void PerformBasicInstall()
     {
-      ExecuteMethod(() => m_mdiScript.PerformBasicInstall());
+      ExecuteMethod(() => Installer.PerformBasicInstall());
     }
 
     #endregion
@@ -176,7 +169,7 @@ namespace fomm.Scripting
     /// <seealso cref="ModInstaller.CopyDataFile(string, string)"/>
     public static bool CopyDataFile(string p_strFrom, string p_strTo)
     {
-      return (bool) (ExecuteMethod(() => m_mdiScript.Script.CopyDataFile(p_strFrom, p_strTo)) ?? false);
+      return (bool) (ExecuteMethod(() => Installer.Script.CopyDataFile(p_strFrom, p_strTo)) ?? false);
     }
 
     /// <summary>
@@ -186,7 +179,7 @@ namespace fomm.Scripting
     /// <seealso cref="fomod.GetFileList()"/>
     public static string[] GetFomodFileList()
     {
-      var strFiles = (string[]) ExecuteMethod(() => m_mdiScript.Fomod.GetFileList().ToArray());
+      var strFiles = (string[]) ExecuteMethod(() => Installer.Fomod.GetFileList().ToArray());
       for (var i = strFiles.Length - 1; i >= 0; i--)
       {
         strFiles[i] = strFiles[i].Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
@@ -202,7 +195,7 @@ namespace fomm.Scripting
     /// <seealso cref="ModInstaller.InstallFileFromFomod(string)"/>
     public static bool InstallFileFromFomod(string p_strFile)
     {
-      return (bool) (ExecuteMethod(() => m_mdiScript.Script.InstallFileFromFomod(p_strFile)) ?? false);
+      return (bool) (ExecuteMethod(() => Installer.Script.InstallFileFromFomod(p_strFile)) ?? false);
     }
 
     /// <summary>
@@ -213,7 +206,7 @@ namespace fomm.Scripting
     /// <seealso cref="fomod.GetFile(string)"/>
     public static byte[] GetFileFromFomod(string p_strFile)
     {
-      return (byte[]) ExecuteMethod(() => m_mdiScript.Fomod.GetFile(p_strFile));
+      return (byte[]) ExecuteMethod(() => Installer.Fomod.GetFile(p_strFile));
     }
 
     /// <summary>
@@ -266,7 +259,7 @@ namespace fomm.Scripting
     /// <seealso cref="ModInstaller.GenerateDataFile(string, byte[])"/>
     public static bool GenerateDataFile(string p_strPath, byte[] p_bteData)
     {
-      return (bool) (ExecuteMethod(() => m_mdiScript.Script.GenerateDataFile(p_strPath, p_bteData)) ?? false);
+      return (bool) (ExecuteMethod(() => Installer.Script.GenerateDataFile(p_strPath, p_bteData)) ?? false);
     }
 
     #endregion
@@ -282,7 +275,7 @@ namespace fomm.Scripting
     /// <seealso cref="ModScript.MessageBox(string)"/>
     public static void MessageBox(string p_strMessage)
     {
-      ExecuteMethod(() => m_mdiScript.Script.MessageBox(p_strMessage));
+      ExecuteMethod(() => Installer.Script.MessageBox(p_strMessage));
     }
 
     /// <summary>
@@ -293,7 +286,7 @@ namespace fomm.Scripting
     /// <seealso cref="ModScript.MessageBox(string, string)"/>
     public static void MessageBox(string p_strMessage, string p_strTitle)
     {
-      ExecuteMethod(() => m_mdiScript.Script.MessageBox(p_strMessage, p_strTitle));
+      ExecuteMethod(() => Installer.Script.MessageBox(p_strMessage, p_strTitle));
     }
 
     /// <summary>
@@ -305,7 +298,7 @@ namespace fomm.Scripting
     /// <seealso cref="ModScript.MessageBox(string, string, MessageBoxButtons)"/>
     public static DialogResult MessageBox(string p_strMessage, string p_strTitle, MessageBoxButtons p_mbbButtons)
     {
-      return (DialogResult) ExecuteMethod(() => m_mdiScript.Script.MessageBox(p_strMessage, p_strTitle, p_mbbButtons));
+      return (DialogResult) ExecuteMethod(() => Installer.Script.MessageBox(p_strMessage, p_strTitle, p_mbbButtons));
     }
 
     #endregion
@@ -375,7 +368,7 @@ namespace fomm.Scripting
       return
         (int[])
           ExecuteMethod(
-            () => m_mdiScript.Script.Select(p_strItems, p_strPreviews, p_strDescriptions, p_strTitle, p_booSelectMany));
+            () => Installer.Script.Select(p_strItems, p_strPreviews, p_strDescriptions, p_strTitle, p_booSelectMany));
     }
 
     /// <summary>
@@ -385,7 +378,7 @@ namespace fomm.Scripting
     /// <seealso cref="ModScript.CreateCustomForm()"/>
     public static Form CreateCustomForm()
     {
-      return (Form) ExecuteMethod(() => m_mdiScript.Script.CreateCustomForm());
+      return (Form) ExecuteMethod(() => Installer.Script.CreateCustomForm());
     }
 
     #endregion
@@ -399,7 +392,7 @@ namespace fomm.Scripting
     /// <seealso cref="ModScript.GetFommVersion()"/>
     public static Version GetFommVersion()
     {
-      return (Version) ExecuteMethod(() => m_mdiScript.Script.GetFommVersion());
+      return (Version) ExecuteMethod(() => Installer.Script.GetFommVersion());
     }
 
     /// <summary>
@@ -410,7 +403,7 @@ namespace fomm.Scripting
     /// <seealso cref="ModScript.GetGameVersion()"/>
     public static Version GetGameVersion()
     {
-      return (Version) ExecuteMethod(() => m_mdiScript.Script.GetGameVersion());
+      return (Version) ExecuteMethod(() => Installer.Script.GetGameVersion());
     }
 
     #endregion
@@ -424,7 +417,7 @@ namespace fomm.Scripting
     /// <seealso cref="ModScript.GetAllPlugins()"/>
     public static string[] GetAllPlugins()
     {
-      return (string[]) ExecuteMethod(() => m_mdiScript.Script.GetAllPlugins());
+      return (string[]) ExecuteMethod(() => Installer.Script.GetAllPlugins());
     }
 
     #region Plugin Activation Management
@@ -436,7 +429,7 @@ namespace fomm.Scripting
     /// <seealso cref="ModScript.GetActivePlugins()"/>
     public static string[] GetActivePlugins()
     {
-      return (string[]) ExecuteMethod(() => m_mdiScript.Script.GetActivePlugins());
+      return (string[]) ExecuteMethod(() => Installer.Script.GetActivePlugins());
     }
 
     /// <summary>
@@ -447,7 +440,7 @@ namespace fomm.Scripting
     /// <seealso cref="ModInstaller.SetPluginActivation(string, bool)"/>
     public static void SetPluginActivation(string p_strName, bool p_booActivate)
     {
-      ExecuteMethod(() => m_mdiScript.Script.SetPluginActivation(p_strName, p_booActivate));
+      ExecuteMethod(() => Installer.Script.SetPluginActivation(p_strName, p_booActivate));
     }
 
     #endregion
@@ -466,7 +459,7 @@ namespace fomm.Scripting
     /// <seealso cref="ModScript.SetLoadOrder(int[])"/>
     public static void SetLoadOrder(int[] p_intPlugins)
     {
-      ExecuteMethod(() => m_mdiScript.Script.SetLoadOrder(p_intPlugins));
+      ExecuteMethod(() => Installer.Script.SetLoadOrder(p_intPlugins));
     }
 
     /// <summary>
@@ -485,7 +478,7 @@ namespace fomm.Scripting
     /// <seealso cref="ModScript.SetLoadOrder(int[], int)"/>
     public static void SetLoadOrder(int[] p_intPlugins, int p_intPosition)
     {
-      ExecuteMethod(() => m_mdiScript.Script.SetLoadOrder(p_intPlugins, p_intPosition));
+      ExecuteMethod(() => Installer.Script.SetLoadOrder(p_intPlugins, p_intPosition));
     }
 
     #endregion

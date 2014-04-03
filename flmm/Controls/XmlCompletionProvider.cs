@@ -38,11 +38,7 @@ namespace Fomm.Controls
   /// </summary>
   public class AutoCompleteListEventArgs : EventArgs
   {
-    private List<XmlCompletionData> m_lstAutoCompleteList;
-    private string m_strElementPath;
-    private string[] m_strSiblings;
     private AutoCompleteType m_actType = AutoCompleteType.Element;
-    private string m_strLastWord;
     private List<char> m_lstExtraInsertionCharacters = new List<char>();
 
     #region Properties
@@ -54,25 +50,13 @@ namespace Fomm.Controls
     /// This property can be used to add or remove code completions.
     /// </remarks>
     /// <value>The list of code completions.</value>
-    public List<XmlCompletionData> AutoCompleteList
-    {
-      get
-      {
-        return m_lstAutoCompleteList;
-      }
-    }
+    public List<XmlCompletionData> AutoCompleteList { get; private set; }
 
     /// <summary>
     /// Gets the path to the current element in the XML.
     /// </summary>
     /// <value>The path to the current element in the XML.</value>
-    public string ElementPath
-    {
-      get
-      {
-        return m_strElementPath;
-      }
-    }
+    public string ElementPath { get; private set; }
 
     /// <summary>
     /// Gets the siblings of the current XML object being completed.
@@ -84,13 +68,7 @@ namespace Fomm.Controls
     /// is being completed.
     /// </remarks>
     /// <value>The siblings of the current XML object being completed.</value>
-    public string[] Siblings
-    {
-      get
-      {
-        return m_strSiblings;
-      }
-    }
+    public string[] Siblings { get; private set; }
 
     /// <summary>
     /// Gets the type of object being completed.
@@ -108,13 +86,7 @@ namespace Fomm.Controls
     /// Gets the word that has been entered thus far for the autocompletion string.
     /// </summary>
     /// <value>The word that has been entered thus far for the autocompletion string.</value>
-    public string LastWord
-    {
-      get
-      {
-        return m_strLastWord;
-      }
-    }
+    public string LastWord { get; private set; }
 
     /// <summary>
     /// Gets a list of extra characters that should be treated as insertion characters.
@@ -143,11 +115,11 @@ namespace Fomm.Controls
     public AutoCompleteListEventArgs(List<XmlCompletionData> p_lstAutoCompleteList, string p_strElementPath,
                                      string[] p_strSiblings, AutoCompleteType p_actType, string p_strLastWord)
     {
-      m_lstAutoCompleteList = p_lstAutoCompleteList;
-      m_strElementPath = p_strElementPath;
-      m_strSiblings = p_strSiblings;
+      AutoCompleteList = p_lstAutoCompleteList;
+      ElementPath = p_strElementPath;
+      Siblings = p_strSiblings;
       m_actType = p_actType;
-      m_strLastWord = p_strLastWord;
+      LastWord = p_strLastWord;
     }
 
     #endregion
@@ -173,8 +145,6 @@ namespace Fomm.Controls
 
     private XmlSchemaSet m_xstSchema;
     private XmlSchema m_xshSchema;
-    private ImageList m_imlImages;
-    private string m_strPreSelection;
     private AutoCompleteType m_actCompleteType = AutoCompleteType.Element;
     private XmlEditor m_xedEditor;
 
@@ -653,11 +623,11 @@ namespace Fomm.Controls
     /// </summary>
     public XmlCompletionProvider(XmlEditor p_xedEditor)
     {
-      m_imlImages = new ImageList();
-      m_imlImages.TransparentColor = Color.Magenta;
-      m_imlImages.Images.Add(Resources.xml);
-      m_imlImages.Images.Add(Resources.Properties);
-      m_imlImages.Images.Add(Resources.EnumItem);
+      ImageList = new ImageList();
+      ImageList.TransparentColor = Color.Magenta;
+      ImageList.Images.Add(Resources.xml);
+      ImageList.Images.Add(Resources.Properties);
+      ImageList.Images.Add(Resources.EnumItem);
       m_xedEditor = p_xedEditor;
     }
 
@@ -683,25 +653,13 @@ namespace Fomm.Controls
     /// Gets the image list to use for the autocompletion window.
     /// </summary>
     /// <value>The image list to use for the autocompletion window.</value>
-    public ImageList ImageList
-    {
-      get
-      {
-        return m_imlImages;
-      }
-    }
+    public ImageList ImageList { get; private set; }
 
     /// <summary>
     /// Gets the preselection.
     /// </summary>
     /// <value>The preselection.</value>
-    public string PreSelection
-    {
-      get
-      {
-        return m_strPreSelection;
-      }
-    }
+    public string PreSelection { get; private set; }
 
     #endregion
 
@@ -736,7 +694,7 @@ namespace Fomm.Controls
         booInsideValue = (intQuoteCount%2 == 1);
       }
 
-      m_strPreSelection = null;
+      PreSelection = null;
 
       //parse the buffer
       var mclTags = rgxTagContents.Matches(strText);
@@ -892,7 +850,7 @@ namespace Fomm.Controls
               strLastWord = p_chrCharTyped.ToString();
             }
           }
-          m_strPreSelection = String.IsNullOrEmpty(strLastWord)
+          PreSelection = String.IsNullOrEmpty(strLastWord)
             ? null
             : strLastWord.Substring(0, strLastWord.Length - 1);
         }

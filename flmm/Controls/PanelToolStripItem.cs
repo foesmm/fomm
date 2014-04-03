@@ -16,7 +16,6 @@ namespace Fomm.Controls
   {
     public event EventHandler IndexChanged;
 
-    private Control m_ctlButton;
     private Int32 m_intIndex;
     private ToolTip m_ttpToolTip = new ToolTip();
     private ToolStripItemDisplayStyle m_tdsDisplayStyle = ToolStripItemDisplayStyle.Image;
@@ -70,11 +69,11 @@ namespace Fomm.Controls
     {
       get
       {
-        return m_ctlButton.Enabled;
+        return Button.Enabled;
       }
       set
       {
-        m_ctlButton.Enabled = value;
+        Button.Enabled = value;
       }
     }
 
@@ -86,11 +85,11 @@ namespace Fomm.Controls
     {
       get
       {
-        return m_ctlButton.Visible;
+        return Button.Visible;
       }
       set
       {
-        m_ctlButton.Visible = value;
+        Button.Visible = value;
       }
     }
 
@@ -98,13 +97,7 @@ namespace Fomm.Controls
     /// Gets the actual control that is to be added to the <see cref="PanelToolStrip"/>.
     /// </summary>
     /// <value>The actual control that is to be added to the <see cref="PanelToolStrip"/>.</value>
-    public Control Button
-    {
-      get
-      {
-        return m_ctlButton;
-      }
-    }
+    public Control Button { get; private set; }
 
     #endregion
 
@@ -125,14 +118,14 @@ namespace Fomm.Controls
     public PanelToolStripItem(Control p_ctlButton, string p_strEvent, Int32 p_intIndex,
                               ToolStripItemDisplayStyle p_tdsDisplayStyle)
     {
-      m_ctlButton = p_ctlButton;
+      Button = p_ctlButton;
       m_tdsDisplayStyle = p_tdsDisplayStyle;
 
-      var tpeButtonType = m_ctlButton.GetType();
+      var tpeButtonType = Button.GetType();
 
-      m_ctlButton.Tag = this;
+      Button.Tag = this;
       m_intIndex = p_intIndex;
-      m_ttpToolTip.SetToolTip(m_ctlButton, m_ctlButton.Text);
+      m_ttpToolTip.SetToolTip(Button, Button.Text);
 
       tpeButtonType.GetEvent(p_strEvent)
                    .AddEventHandler(p_ctlButton, Delegate.CreateDelegate(typeof (EventHandler), this, "OnSelected"));

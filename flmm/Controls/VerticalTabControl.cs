@@ -26,21 +26,13 @@ namespace Fomm.Controls
     /// </summary>
     public class TabPageEventArgs : EventArgs
     {
-      private VerticalTabPage m_tpgPage;
-
       #region Properties
 
       /// <summary>
       /// Gets the tab page that was affected by the event.
       /// </summary>
       /// <value>The tab page that was affected by the event.</value>
-      public VerticalTabPage TabPage
-      {
-        get
-        {
-          return m_tpgPage;
-        }
-      }
+      public VerticalTabPage TabPage { get; private set; }
 
       #endregion
 
@@ -52,7 +44,7 @@ namespace Fomm.Controls
       /// <param name="p_tpgPage">The tab page that was affected by the event.</param>
       public TabPageEventArgs(VerticalTabPage p_tpgPage)
       {
-        m_tpgPage = p_tpgPage;
+        TabPage = p_tpgPage;
       }
 
       #endregion
@@ -363,7 +355,6 @@ namespace Fomm.Controls
     }
 
     private PanelToolStrip m_ptsTabContainer;
-    private TabPageCollection m_tpcPages;
     private VerticalTabPage m_tpgSelected;
 
     #region Properties
@@ -373,13 +364,7 @@ namespace Fomm.Controls
     /// </summary>
     /// <value>The tab pages of this control.</value>
     [Editor(typeof (VerticalTabPageCollectionEditor), typeof (UITypeEditor))]
-    public TabPageCollection TabPages
-    {
-      get
-      {
-        return m_tpcPages;
-      }
-    }
+    public TabPageCollection TabPages { get; private set; }
 
     /// <summary>
     /// Gets or sets the currently selected tab page.
@@ -488,9 +473,9 @@ namespace Fomm.Controls
     public VerticalTabControl()
     {
       BackColor = Color.FromKnownColor(KnownColor.Window);
-      m_tpcPages = new TabPageCollection();
-      m_tpcPages.TabPageAdded += AddTabPage;
-      m_tpcPages.TabPageRemoved += RemoveTabPage;
+      TabPages = new TabPageCollection();
+      TabPages.TabPageAdded += AddTabPage;
+      TabPages.TabPageRemoved += RemoveTabPage;
 
       m_ptsTabContainer = new PanelToolStrip();
       m_ptsTabContainer.BorderStyle = BorderStyle.Fixed3D;
@@ -532,11 +517,11 @@ namespace Fomm.Controls
       var ctlPage = e.TabPage;
       if (ctlPage.PageIndex == -1)
       {
-        ctlPage.PageIndex = m_tpcPages.Count - 1;
+        ctlPage.PageIndex = TabPages.Count - 1;
       }
-      if (!m_tpcPages.Contains(ctlPage))
+      if (!TabPages.Contains(ctlPage))
       {
-        m_tpcPages.Add(ctlPage);
+        TabPages.Add(ctlPage);
       }
       ctlPage.TabButton.Selected += TabSelected;
       m_ptsTabContainer.addToolStripItem(ctlPage.TabButton);
@@ -559,7 +544,7 @@ namespace Fomm.Controls
     {
       var ctlPage = e.TabPage;
       ctlPage.TabButton.Selected -= TabSelected;
-      foreach (var tabPage in m_tpcPages)
+      foreach (var tabPage in TabPages)
       {
         if (tabPage.PageIndex > ctlPage.PageIndex)
         {
@@ -569,11 +554,11 @@ namespace Fomm.Controls
       m_ptsTabContainer.removeToolStripItem(ctlPage.TabButton);
       if (SelectedTabPage == ctlPage)
       {
-        if (m_tpcPages.Count == 0)
+        if (TabPages.Count == 0)
         {
           SelectedTabPage = null;
         }
-        else if (SelectedIndex == m_tpcPages.Count)
+        else if (SelectedIndex == TabPages.Count)
         {
           SelectedIndex--;
         }
@@ -599,9 +584,9 @@ namespace Fomm.Controls
       if (e.Control is VerticalTabPage)
       {
         var ctlPage = (VerticalTabPage) e.Control;
-        if (!m_tpcPages.Contains(ctlPage))
+        if (!TabPages.Contains(ctlPage))
         {
-          m_tpcPages.Add(ctlPage);
+          TabPages.Add(ctlPage);
         }
       }
     }
@@ -620,7 +605,7 @@ namespace Fomm.Controls
       if (e.Control is VerticalTabPage)
       {
         var ctlPage = (VerticalTabPage) e.Control;
-        m_tpcPages.Remove(ctlPage);
+        TabPages.Remove(ctlPage);
       }
     }
   }

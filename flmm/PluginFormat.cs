@@ -14,10 +14,8 @@ namespace Fomm
   public partial class PluginFormat : IComparable<PluginFormat>, IEquatable<PluginFormat>
   {
     private Int32 m_intIndex = -1;
-    private FontFamily m_ffmFontFamily;
     private float? m_fltFontSizeEM;
     private FontStyle? m_fstFontStyle;
-    private string m_strMessage;
     private Color? m_clrColour;
     private Color? m_clrHighlight;
 
@@ -31,13 +29,7 @@ namespace Fomm
     /// the plugin's item's font family.
     /// </remarks>
     /// <value>The font family to apply to the plugin item.</value>
-    public FontFamily FontFamily
-    {
-      get
-      {
-        return m_ffmFontFamily;
-      }
-    }
+    public FontFamily FontFamily { get; private set; }
 
     /// <summary>
     /// Gets the font size to apply to the plugin item.
@@ -111,13 +103,7 @@ namespace Fomm
     /// the plugin's description.
     /// </remarks>
     /// <value>The message to show for the plugin.</value>
-    public string Message
-    {
-      get
-      {
-        return m_strMessage;
-      }
-    }
+    public string Message { get; private set; }
 
     #endregion
 
@@ -144,12 +130,12 @@ namespace Fomm
                            FontStyle? p_fstFontStyle, Color? p_clrColour, Color? p_clrHighlight, string p_strMessage)
     {
       m_intIndex = p_intIndex;
-      m_ffmFontFamily = p_ffmFontFamily;
+      FontFamily = p_ffmFontFamily;
       m_fltFontSizeEM = p_fltFontSizeEM;
       m_fstFontStyle = p_fstFontStyle;
       m_clrColour = p_clrColour;
       m_clrHighlight = p_clrHighlight;
-      m_strMessage = p_strMessage;
+      Message = p_strMessage;
     }
 
     #endregion
@@ -175,7 +161,7 @@ namespace Fomm
     /// <param name="p_pftFormat">The <see cref="PluginFormat"/> whose properties are to be merged with this object's.</param>
     public void Merge(PluginFormat p_pftFormat)
     {
-      m_ffmFontFamily = p_pftFormat.FontFamily ?? m_ffmFontFamily;
+      FontFamily = p_pftFormat.FontFamily ?? FontFamily;
       m_fltFontSizeEM = p_pftFormat.FontSizeEM ?? m_fltFontSizeEM;
       if (FontStyle.HasValue && p_pftFormat.FontStyle.HasValue)
       {
@@ -187,11 +173,11 @@ namespace Fomm
       }
       m_clrColour = p_pftFormat.Colour ?? m_clrColour;
       m_clrHighlight = p_pftFormat.Highlight ?? m_clrHighlight;
-      if (!String.IsNullOrEmpty(m_strMessage) && !String.IsNullOrEmpty(p_pftFormat.Message))
+      if (!String.IsNullOrEmpty(Message) && !String.IsNullOrEmpty(p_pftFormat.Message))
       {
-        m_strMessage += @"\par ";
+        Message += @"\par ";
       }
-      m_strMessage += p_pftFormat.Message;
+      Message += p_pftFormat.Message;
     }
 
     #region IComparable<PluginFormat> Members

@@ -325,15 +325,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
   {
     #region Static
 
-    private static bool loaded;
-
-    public static bool Loaded
-    {
-      get
-      {
-        return loaded;
-      }
-    }
+    public static bool Loaded { get; private set; }
 
     public static Dictionary<string, RecordStructure> Records;
 
@@ -342,13 +334,13 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
     public static void Load()
     {
-      if (loaded)
+      if (Loaded)
       {
         Records.Clear();
       }
       else
       {
-        loaded = true;
+        Loaded = true;
       }
       var doc = new XmlDocument();
       doc.LoadXml(File.ReadAllText(xmlPath));

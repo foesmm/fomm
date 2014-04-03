@@ -15,34 +15,19 @@ namespace Fomm.Games.Fallout3.Script
 {
   public class Fallout3ModInstallScript : ModInstallScript
   {
-    private BsaManager m_bamBsaManager;
-    private TextureManager m_txmTextureManager;
-
     #region Properties
 
     /// <summary>
     /// Gets the <see cref="BsaManager"/> this script is using.
     /// </summary>
     /// <value>The <see cref="BsaManager"/> this script is using.</value>
-    public BsaManager BsaManager
-    {
-      get
-      {
-        return m_bamBsaManager;
-      }
-    }
+    public BsaManager BsaManager { get; private set; }
 
     /// <summary>
     /// Gets the <see cref="TextureManager"/> this script is using.
     /// </summary>
     /// <value>The <see cref="TextureManager"/> this script is using.</value>
-    public TextureManager TextureManager
-    {
-      get
-      {
-        return m_txmTextureManager;
-      }
-    }
+    public TextureManager TextureManager { get; private set; }
 
     #endregion
 
@@ -56,8 +41,8 @@ namespace Fomm.Games.Fallout3.Script
       : base(p_fomodMod, p_mibInstaller)
     {
       //m_misScript = new ModInstallScript(p_fomodMod);
-      m_bamBsaManager = new BsaManager();
-      m_txmTextureManager = new TextureManager();
+      BsaManager = new BsaManager();
+      TextureManager = new TextureManager();
     }
 
     #endregion
@@ -544,13 +529,13 @@ namespace Fomm.Games.Fallout3.Script
     /// </summary>
     public override void Dispose()
     {
-      if (m_txmTextureManager != null)
+      if (TextureManager != null)
       {
-        m_txmTextureManager.Dispose();
+        TextureManager.Dispose();
       }
-      if (m_bamBsaManager != null)
+      if (BsaManager != null)
       {
-        m_bamBsaManager.Dispose();
+        BsaManager.Dispose();
       }
       base.Dispose();
     }

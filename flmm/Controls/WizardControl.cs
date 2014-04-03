@@ -27,9 +27,6 @@ namespace Fomm.Controls
     {
     };
 
-    private Button m_butPrevious;
-    private Button m_butNext;
-
     #region Properties
 
     /// <summary>
@@ -37,26 +34,14 @@ namespace Fomm.Controls
     /// </summary>
     /// <value>The wizard's previous button.</value>
     [Browsable(false)]
-    public Button PreviousButton
-    {
-      get
-      {
-        return m_butPrevious;
-      }
-    }
+    public Button PreviousButton { get; private set; }
 
     /// <summary>
     /// Gets the wizard's next button.
     /// </summary>
     /// <value>The wizard's next button.</value>
     [Browsable(false)]
-    public Button NextButton
-    {
-      get
-      {
-        return m_butNext;
-      }
-    }
+    public Button NextButton { get; private set; }
 
     /// <summary>
     /// Gets or sets whether the tabs are visible.
@@ -119,21 +104,21 @@ namespace Fomm.Controls
       mButCancel.Click += Cancel_Click;
       mPnlNavigation.Controls.Add(mButCancel);
 
-      m_butNext = new Button();
-      m_butNext.Text = "Next >>";
-      m_butNext.Anchor = AnchorStyles.Right | AnchorStyles.Bottom;
-      m_butNext.Size = new Size(75, 23);
-      m_butNext.Location = new Point(mButCancel.Left - 12 - m_butNext.Width, 12);
-      m_butNext.Click += Next_Click;
-      mPnlNavigation.Controls.Add(m_butNext);
+      NextButton = new Button();
+      NextButton.Text = "Next >>";
+      NextButton.Anchor = AnchorStyles.Right | AnchorStyles.Bottom;
+      NextButton.Size = new Size(75, 23);
+      NextButton.Location = new Point(mButCancel.Left - 12 - NextButton.Width, 12);
+      NextButton.Click += Next_Click;
+      mPnlNavigation.Controls.Add(NextButton);
 
-      m_butPrevious = new Button();
-      m_butPrevious.Text = "<< Back";
-      m_butPrevious.Anchor = AnchorStyles.Right | AnchorStyles.Bottom;
-      m_butPrevious.Size = new Size(75, 23);
-      m_butPrevious.Location = new Point(m_butNext.Left - 6 - m_butPrevious.Width, 12);
-      m_butPrevious.Click += Previous_Click;
-      mPnlNavigation.Controls.Add(m_butPrevious);
+      PreviousButton = new Button();
+      PreviousButton.Text = "<< Back";
+      PreviousButton.Anchor = AnchorStyles.Right | AnchorStyles.Bottom;
+      PreviousButton.Size = new Size(75, 23);
+      PreviousButton.Location = new Point(NextButton.Left - 6 - PreviousButton.Width, 12);
+      PreviousButton.Click += Previous_Click;
+      mPnlNavigation.Controls.Add(PreviousButton);
 
       Dock = DockStyle.Fill;
     }
@@ -209,8 +194,8 @@ namespace Fomm.Controls
         intNewIndex = TabPages.Count - 1;
       }
 
-      m_butPrevious.Enabled = (intNewIndex > 0);
-      m_butNext.Text = intNewIndex == TabPages.Count - 1 ? "Finish" : "Next >>";
+      PreviousButton.Enabled = (intNewIndex > 0);
+      NextButton.Text = intNewIndex == TabPages.Count - 1 ? "Finish" : "Next >>";
       SelectedIndex = intNewIndex;
     }
 
@@ -237,7 +222,7 @@ namespace Fomm.Controls
     /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
     private void Next_Click(object sender, EventArgs e)
     {
-      if (m_butNext.Text.Equals("Finish"))
+      if (NextButton.Text.Equals("Finish"))
       {
         Finished(this, new EventArgs());
       }

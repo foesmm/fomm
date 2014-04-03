@@ -13,7 +13,6 @@ namespace Fomm
 {
   public partial class MainForm : Form
   {
-    private bool m_booChangeGameMode;
     private bool AlphaSortMode;
     private PluginFormat.PluginFormatterManager m_pfmPluginFormatManager = new PluginFormat.PluginFormatterManager();
 
@@ -23,13 +22,7 @@ namespace Fomm
     /// Gets whether or not to change the game mode.
     /// </summary>
     /// <value>Whether or not to change the game mode.</value>
-    public bool ChangeGameMode
-    {
-      get
-      {
-        return m_booChangeGameMode;
-      }
-    }
+    public bool ChangeGameMode { get; private set; }
 
     /// <summary>
     /// Gets whether there are any open utility windows.
@@ -836,7 +829,7 @@ namespace Fomm
     /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
     private void changeGameToolStripMenuItem_Click(object sender, EventArgs e)
     {
-      m_booChangeGameMode = true;
+      ChangeGameMode = true;
       Close();
     }
   }

@@ -175,15 +175,7 @@ namespace Fomm
       }
     }
 
-    private static bool monoMode;
-
-    public static bool MonoMode
-    {
-      get
-      {
-        return monoMode;
-      }
-    }
+    public static bool MonoMode { get; private set; }
 
     public static GameMode GameMode = null;
 
@@ -251,7 +243,7 @@ namespace Fomm
       Application.ThreadException += Application_ThreadException;
       if (Array.IndexOf(args, "-mono") != -1)
       {
-        monoMode = true;
+        MonoMode = true;
       }
       Directory.SetCurrentDirectory(ExecutableDirectory);
       //Style setup
@@ -585,7 +577,7 @@ namespace Fomm
           PermissionsManager.CurrentPermissions.Assert();
         }
         var msg = DateTime.Now.ToLongDateString() + " - " + DateTime.Now.ToLongTimeString() + Environment.NewLine +
-                     "Fomm " + Version + (monoMode ? " (Mono)" : "") + Environment.NewLine + "OS version: " +
+                     "Fomm " + Version + (MonoMode ? " (Mono)" : "") + Environment.NewLine + "OS version: " +
                      Environment.OSVersion +
                      Environment.NewLine + Environment.NewLine + ex + Environment.NewLine;
         if (ex is BadImageFormatException)

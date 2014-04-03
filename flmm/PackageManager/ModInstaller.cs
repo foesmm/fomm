@@ -11,17 +11,9 @@ namespace Fomm.PackageManager
   /// </summary>
   public class ModInstaller : ModInstallerBase
   {
-    private BackgroundWorkerProgressDialog m_bwdProgress;
-
     #region Properties
 
-    protected BackgroundWorkerProgressDialog ProgressDialog
-    {
-      get
-      {
-        return m_bwdProgress;
-      }
-    }
+    protected BackgroundWorkerProgressDialog ProgressDialog { get; private set; }
 
     /// <seealso cref="ModInstallScript.ExceptionMessage"/>
     protected override string ExceptionMessage
@@ -177,12 +169,12 @@ namespace Fomm.PackageManager
     {
       try
       {
-        using (m_bwdProgress = new BackgroundWorkerProgressDialog(PerformBasicInstall))
+        using (ProgressDialog = new BackgroundWorkerProgressDialog(PerformBasicInstall))
         {
-          m_bwdProgress.OverallMessage = p_strMessage;
-          m_bwdProgress.ShowItemProgress = false;
-          m_bwdProgress.OverallProgressStep = 1;
-          if (m_bwdProgress.ShowDialog() == DialogResult.Cancel)
+          ProgressDialog.OverallMessage = p_strMessage;
+          ProgressDialog.ShowItemProgress = false;
+          ProgressDialog.OverallProgressStep = 1;
+          if (ProgressDialog.ShowDialog() == DialogResult.Cancel)
           {
             return false;
           }
@@ -190,7 +182,7 @@ namespace Fomm.PackageManager
       }
       finally
       {
-        m_bwdProgress = null;
+        ProgressDialog = null;
       }
       return true;
     }
@@ -209,13 +201,13 @@ namespace Fomm.PackageManager
         Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar
       };
       var lstFiles = Fomod.GetFileList();
-      if (m_bwdProgress != null)
+      if (ProgressDialog != null)
       {
-        m_bwdProgress.OverallProgressMaximum = lstFiles.Count;
+        ProgressDialog.OverallProgressMaximum = lstFiles.Count;
       }
       foreach (var strFile in lstFiles)
       {
-        if ((m_bwdProgress != null) && m_bwdProgress.Cancelled())
+        if ((ProgressDialog != null) && ProgressDialog.Cancelled())
         {
           return;
         }
@@ -224,9 +216,9 @@ namespace Fomm.PackageManager
         {
           Script.SetPluginActivation(strFile, true);
         }
-        if (m_bwdProgress != null)
+        if (ProgressDialog != null)
         {
-          m_bwdProgress.StepOverallProgress();
+          ProgressDialog.StepOverallProgress();
         }
       }
     }

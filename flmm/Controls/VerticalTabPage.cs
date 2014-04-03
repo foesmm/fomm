@@ -9,8 +9,6 @@ namespace Fomm.Controls
   /// </summary>
   public class VerticalTabPage : Panel, IStatusProviderAware
   {
-    private VerticalTabButton m_vtbTab;
-
     #region Properties
 
     /// <summary>
@@ -21,13 +19,7 @@ namespace Fomm.Controls
     /// </remarks>
     /// <value>The buttons associated with this page.</value>
     [Browsable(false)]
-    public VerticalTabButton TabButton
-    {
-      get
-      {
-        return m_vtbTab;
-      }
-    }
+    public VerticalTabButton TabButton { get; private set; }
 
     /// <summary>
     /// Gets or sets the text that appears in this page's tab.
@@ -38,11 +30,11 @@ namespace Fomm.Controls
     {
       get
       {
-        return m_vtbTab.Text;
+        return TabButton.Text;
       }
       set
       {
-        m_vtbTab.Text = value;
+        TabButton.Text = value;
       }
     }
 
@@ -72,7 +64,7 @@ namespace Fomm.Controls
     /// </summary>
     public VerticalTabPage()
     {
-      m_vtbTab = new VerticalTabButton(this);
+      TabButton = new VerticalTabButton(this);
     }
 
     #endregion
@@ -86,7 +78,7 @@ namespace Fomm.Controls
     /// <param name="disposing"></param>
     protected override void Dispose(bool disposing)
     {
-      m_vtbTab.Button.Dispose();
+      TabButton.Button.Dispose();
       base.Dispose(disposing);
     }
 
