@@ -1,4 +1,7 @@
-﻿namespace Fomm.Games.Fallout3
+﻿using System.Drawing;
+using System.Windows.Forms;
+
+namespace Fomm.Games.Fallout3
 {
   partial class SetupForm
   {
@@ -33,6 +36,9 @@
       this.pnlShadow = new System.Windows.Forms.Panel();
       this.pnlLight = new System.Windows.Forms.Panel();
       this.wizSetup = new Fomm.Controls.WizardControl();
+      this.wizSetup.TabsVisible = false;
+      this.wizSetup.BackColor = Color.FromKnownColor(KnownColor.Control);
+      this.wizSetup.Dock = DockStyle.Fill;
       this.vtpDirectories = new Fomm.Controls.VerticalTabPage();
       this.rdcDirectories = new Fomm.Games.Fallout3.Settings.RequiredDirectoriesControl();
       this.panel1.SuspendLayout();

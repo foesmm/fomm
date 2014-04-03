@@ -14,9 +14,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
     {
       InitializeComponent();
       Icon = Resources.fomm02;
-      Text += RecName;
       tbName.Text = RecName;
-      Text += " (string mode)";
       var s = "";
       foreach (var b in data)
       {

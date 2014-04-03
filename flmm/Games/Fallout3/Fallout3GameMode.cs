@@ -497,12 +497,7 @@ namespace Fomm.Games.Fallout3
 
     #endregion
 
-    #region Constructors
-
-    /// <summary>
-    /// The default constructor.
-    /// </summary>
-    public Fallout3GameMode()
+    override public void PostInit()
     {
       m_sfsSettingsFiles = CreateSettingsFileSet();
       m_pmgPluginManager = CreatePluginManager();
@@ -512,8 +507,6 @@ namespace Fomm.Games.Fallout3
       SetupTools();
       SetupLaunchCommands();
     }
-
-    #endregion
 
     #region Initialization
 
@@ -623,7 +616,11 @@ namespace Fomm.Games.Fallout3
     /// </summary>
     protected virtual void SetupSettingsPages()
     {
-      m_lstSettingsPages.Add(new GeneralSettingsPage());
+      var gsp = new GeneralSettingsPage();
+      gsp.Text = "Fallout 3";
+      gsp.BackColor = Color.FromKnownColor(KnownColor.Transparent);
+
+      m_lstSettingsPages.Add(gsp);
     }
 
     /// <summary>

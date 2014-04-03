@@ -1,5 +1,4 @@
 ﻿using System.Windows.Forms;
-using System.Drawing;
 
 namespace Fomm.Controls
 {
@@ -8,19 +7,6 @@ namespace Fomm.Controls
   /// </summary>
   public class SettingsPage : UserControl
   {
-    #region Constructors
-
-    /// <summary>
-    /// The default constructor.
-    /// </summary>
-    public SettingsPage()
-    {
-      Text = "Settings";
-      BackColor = Color.FromKnownColor(KnownColor.Transparent);
-    }
-
-    #endregion
-
     #region Settings Management
 
     /// <summary>

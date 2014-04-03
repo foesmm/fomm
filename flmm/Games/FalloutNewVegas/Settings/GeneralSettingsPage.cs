@@ -17,7 +17,6 @@ namespace Fomm.Games.FalloutNewVegas.Settings
     public GeneralSettingsPage()
     {
       InitializeComponent();
-      Text = "Fallout: New Vegas";
     }
 
     #endregion

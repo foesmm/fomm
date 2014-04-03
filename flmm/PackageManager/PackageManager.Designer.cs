@@ -1,3 +1,5 @@
+using System.Security.AccessControl;
+
 namespace Fomm.PackageManager {
     partial class PackageManager {
         /// <summary>
@@ -25,7 +27,7 @@ namespace Fomm.PackageManager {
         private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
       this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-      this.lvModList = new Fomm.Controls.DoubleBufferedListView();
+      this.lvModList = new System.Windows.Forms.ListView();
       this.fomodContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
       this.visitWebsiteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.emailAuthorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -54,6 +56,7 @@ namespace Fomm.PackageManager {
       this.createFOMODToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.editPFPToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.sbtAddFomod = new Fomm.Controls.SplitButton();
+          this.sbtAddFomod.AutoSize = true;
       this.menuStrip1 = new System.Windows.Forms.MenuStrip();
       this.modListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.exportModListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -450,7 +453,7 @@ namespace Fomm.PackageManager {
         #endregion
 
         private System.Windows.Forms.SplitContainer splitContainer1;
-         private Fomm.Controls.DoubleBufferedListView lvModList;
+         private System.Windows.Forms.ListView lvModList;
         private System.Windows.Forms.TextBox tbModInfo;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Button bEditScript;

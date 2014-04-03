@@ -8,12 +8,11 @@ namespace Fomm.PackageManager
 {
   internal partial class SelectForm : Form
   {
-    internal SelectForm(string[] items, string title, bool multi, Image[] previews, string[] tooltips)
+    internal SelectForm(string[] items, bool multi, Image[] previews, string[] tooltips)
     {
       InitializeComponent();
       Icon = Resources.fomm02;
       Settings.Default.windowPositions.GetWindowPosition("PackageManagerSelectForm", this);
-      Text = title;
       toolTips = tooltips;
       Multi = multi;
       var selected = new List<int>();
@@ -163,7 +162,9 @@ namespace Fomm.PackageManager
 
     private void bPreview_Click(object sender, EventArgs e)
     {
-      (new ImageForm(Previews[selectedIndex], (string) lbSelect.SelectedItem)).ShowDialog();
+      var imgfrm = new ImageForm(Previews[selectedIndex]);
+      imgfrm.Text = (string)lbSelect.SelectedItem;
+      imgfrm.ShowDialog();
     }
 
     private void bDescription_Click(object sender, EventArgs e)

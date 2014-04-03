@@ -157,18 +157,6 @@ namespace Fomm.Controls
 
       #endregion
 
-      #region Constructors
-
-      /// <summary>
-      /// The default constructor.
-      /// </summary>
-      public ToolStripPanel()
-      {
-        AutoScroll = true;
-      }
-
-      #endregion
-
       protected void SortToolStripItems()
       {
         var sltItems = new SortedList<Int32, SortedList<Control>>();
@@ -451,6 +439,18 @@ namespace Fomm.Controls
 
     #region Properties
 
+    public Color TspBackColor
+    {
+      get
+      {
+        return m_pnlToolStrip.BackColor;
+      }
+      set
+      {
+        m_pnlToolStrip.BackColor = value;
+      }
+    }
+
     /// <summary>
     /// Gets or sets how many pixels the tool strip scrolls per tick.
     /// </summary>
@@ -731,7 +731,7 @@ namespace Fomm.Controls
     /// </summary>
     public PanelToolStrip()
     {
-      BackColor = m_pnlToolStrip.BackColor;
+      m_pnlToolStrip.AutoScroll = true;
       Controls.Add(m_pnlToolStrip);
       m_pnlToolStrip.ControlAdded += m_pnlToolStrip_ControlAdded;
       m_pnlToolStrip.Width = Width;

@@ -207,9 +207,6 @@
     <Compile Include="Games\Fallout3\Tools\CriticalRecords\CriticalRecordPlugin.cs" />
     <Compile Include="Games\Fallout3\PluginFormatProviders\CriticalRecordPluginFormatProvider.cs" />
     <Compile Include="Games\Fallout3\Tools\CriticalRecords\PluginFullException.cs" />
-    <Compile Include="Controls\DoubleBufferedListView.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="FileManager\FileManager.cs">
       <SubType>Form</SubType>
     </Compile>

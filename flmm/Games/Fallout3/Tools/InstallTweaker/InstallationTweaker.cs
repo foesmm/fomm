@@ -119,11 +119,6 @@ namespace Fomm.Games.Fallout3.Tools.InstallTweaker
         }
         File.Copy(xlivePath, "xlive.dll");
       }
-      /*if(cbRemoveClutter.Checked||cbStripGeck.Checked) {
-        backgroundWorker1.ReportProgress(0, "Parsing fallout3.esm");
-        File.Move("data\\fallout3.esm", esmBackup);
-        EsmTrimmer.Trim(cbStripGeck.Checked, cbRemoveClutter.Checked, esmBackup, "data\\fallout3.esm", ReportProgress);
-      }*/
       if (cbShrinkTextures.Checked)
       {
         backgroundWorker1.ReportProgress(0, "Parsing Fallout - Textures.bsa");

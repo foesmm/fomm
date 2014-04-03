@@ -217,7 +217,6 @@ namespace Fomm.SharpZipLib.Zip.Compression
       adler.Reset();
       blockStart = strstart = 1;
       lookahead = 0;
-      totalIn = 0;
       prevAvailable = false;
       matchLen = DeflaterConstants.MIN_MATCH - 1;
 
@@ -348,7 +347,6 @@ namespace Fomm.SharpZipLib.Zip.Compression
         adler.Update(inputBuf, inputOff, more);
 
         inputOff += more;
-        totalIn += more;
         lookahead += more;
       }
 
@@ -793,11 +791,6 @@ namespace Fomm.SharpZipLib.Zip.Compression
     /// The input data for compression.
     /// </summary>
     private byte[] inputBuf;
-
-    /// <summary>
-    /// The total bytes of input read.
-    /// </summary>
-    private long totalIn;
 
     /// <summary>
     /// The offset into inputBuf, where input data starts.

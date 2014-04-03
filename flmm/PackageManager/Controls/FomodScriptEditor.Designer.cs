@@ -33,6 +33,7 @@
       this.sedScript = new Fomm.Controls.ScriptEditor();
       this.dtpXML = new Fomm.Controls.DropDownTabPage();
       this.xedScript = new Fomm.Controls.XmlEditor();
+      this.xedScript.SetHighlighting("XML");
       this.panel4 = new System.Windows.Forms.Panel();
       this.cbxVersion = new System.Windows.Forms.ComboBox();
       this.label9 = new System.Windows.Forms.Label();

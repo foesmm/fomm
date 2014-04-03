@@ -1,3 +1,5 @@
+using System.Drawing;
+
 namespace Fomm.Games.Fallout3.Tools.TESsnip {
     partial class HexDataEdit {
         /// <summary>
@@ -43,6 +45,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip {
             this.tbEDID = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.hexBox1 = new HexBox.HexBox();
+            this.hexBox1.BackColor = Color.White;
+            this.hexBox1.Font = new Font("Courier New", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             this.bFromFile = new System.Windows.Forms.Button();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.SuspendLayout();

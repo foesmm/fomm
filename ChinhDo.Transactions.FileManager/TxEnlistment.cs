@@ -283,7 +283,7 @@ namespace ChinhDo.Transactions
         public abstract void Rollback();
         public abstract void CleanUp();
 
-        protected static string CreateTempFileName(string ext)
+        protected static string LocalCreateTempFileName(string ext)
         {
           string retVal;
           do
@@ -305,7 +305,7 @@ namespace ChinhDo.Transactions
 
           if (File.Exists(fileName))
           {
-            _backupFileName = CreateTempFileName(Path.GetExtension(fileName));
+            _backupFileName = LocalCreateTempFileName(Path.GetExtension(fileName));
             File.Copy(_originalFileName, _backupFileName);
           }
         }

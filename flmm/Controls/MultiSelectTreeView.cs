@@ -355,7 +355,6 @@ namespace Fomm.Controls
     /// </summary>
     public MultiSelectTreeView()
     {
-      DoubleBuffered = true;
       SelectedNodes = new TreeNodeCollection();
       SelectedNodes.ItemAdded +=
         m_tncSelectedNodes_ItemAdded;

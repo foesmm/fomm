@@ -9,8 +9,6 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
   /// </summary>
   public partial class OptionsForm : Form
   {
-    private XmlConfiguredScript m_xcsScript;
-
     private List<KeyValuePair<InstallStep, OptionFormStep>> m_lstInstallSteps =
       new List<KeyValuePair<InstallStep, OptionFormStep>>();
 
@@ -26,7 +24,6 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     public OptionsForm(XmlConfiguredScript p_xcsScript, HeaderInfo p_hifHeaderInfo,
                        DependencyStateManager p_dsmStateManager, IList<InstallStep> p_lstInstallSteps)
     {
-      m_xcsScript = p_xcsScript;
       InitializeComponent();
       hplTitle.Text = p_hifHeaderInfo.Title;
       hplTitle.Image = p_hifHeaderInfo.ShowImage ? p_hifHeaderInfo.Image : null;

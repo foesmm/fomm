@@ -17,7 +17,6 @@ namespace Fomm.Games.Fallout3.Settings
     public GeneralSettingsPage()
     {
       InitializeComponent();
-      Text = "Fallout 3";
     }
 
     #endregion

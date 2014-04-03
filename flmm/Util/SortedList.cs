@@ -62,10 +62,6 @@ namespace Fomm.Util
 
     public void Add(T item)
     {
-      if (m_cmpComparer == null)
-      {
-        m_lstItems.BinarySearch(item);
-      }
       var intIndex = m_lstItems.BinarySearch(item, m_cmpComparer);
 
       if (intIndex < 0)
@@ -83,10 +79,6 @@ namespace Fomm.Util
 
     public bool Contains(T item)
     {
-      if (m_cmpComparer == null)
-      {
-        m_lstItems.BinarySearch(item);
-      }
       var intIndex = m_lstItems.BinarySearch(item, m_cmpComparer);
       return intIndex > -1;
     }
@@ -114,10 +106,6 @@ namespace Fomm.Util
 
     public bool Remove(T item)
     {
-      if (m_cmpComparer == null)
-      {
-        m_lstItems.BinarySearch(item);
-      }
       var intIndex = m_lstItems.BinarySearch(item, m_cmpComparer);
       if (intIndex > -1)
       {

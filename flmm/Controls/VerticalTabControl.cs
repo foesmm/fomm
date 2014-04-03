@@ -472,12 +472,12 @@ namespace Fomm.Controls
     /// </summary>
     public VerticalTabControl()
     {
-      BackColor = Color.FromKnownColor(KnownColor.Window);
       TabPages = new TabPageCollection();
       TabPages.TabPageAdded += AddTabPage;
       TabPages.TabPageRemoved += RemoveTabPage;
 
       m_ptsTabContainer = new PanelToolStrip();
+      m_ptsTabContainer.BackColor = m_ptsTabContainer.TspBackColor;
       m_ptsTabContainer.BorderStyle = BorderStyle.Fixed3D;
       m_ptsTabContainer.Dock = DockStyle.Left;
       m_ptsTabContainer.Width = 150;
