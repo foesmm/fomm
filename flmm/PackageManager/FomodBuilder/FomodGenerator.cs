@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Xml;
+using Fomm.Properties;
 using SevenZip;
 using System.IO;
 using System.Windows.Forms;
 using Fomm.Util;
-using System.Drawing;
-using System.Drawing.Imaging;
 using GeMod.Interface;
 
 namespace Fomm.PackageManager.FomodBuilder
@@ -21,25 +20,13 @@ namespace Fomm.PackageManager.FomodBuilder
     /// </summary>
     protected abstract class GenerateFomodArgs
     {
-      private string m_strPackedPath = null;
-
       #region Properties
 
       /// <summary>
       /// Gets or sets the path where the packed file will be created.
       /// </summary>
       /// <value>The path where the packed file will be created.</value>
-      public string PackedPath
-      {
-        get
-        {
-          return m_strPackedPath;
-        }
-        set
-        {
-          m_strPackedPath = value;
-        }
-      }
+      public string PackedPath { get; set; }
 
       #endregion
 
@@ -51,13 +38,12 @@ namespace Fomm.PackageManager.FomodBuilder
       /// <param name="p_strPackedPath">The value with which to initialize the <see cref="PackedPath"/> property.</param>
       public GenerateFomodArgs(string p_strPackedPath)
       {
-        m_strPackedPath = p_strPackedPath;
+        PackedPath = p_strPackedPath;
       }
 
       #endregion
     }
 
-    private BackgroundWorkerProgressDialog m_bwdProgress = null;
     private LinkedList<string> m_lltTempFolders = new LinkedList<string>();
 
     #region Properties
@@ -68,13 +54,7 @@ namespace Fomm.PackageManager.FomodBuilder
     /// </summary>
     /// <value>The <see cref="BackgroundWorkerProgressDialog"/> used to generate
     /// the fomod.</value>
-    protected BackgroundWorkerProgressDialog ProgressDialog
-    {
-      get
-      {
-        return m_bwdProgress;
-      }
-    }
+    protected BackgroundWorkerProgressDialog ProgressDialog { get; private set; }
 
     /// <summary>
     /// Gets the overall message to display in the progress dialog.
@@ -97,32 +77,31 @@ namespace Fomm.PackageManager.FomodBuilder
     /// <remarks>
     /// This method is called by implementers of this abstract class to instantiate the
     /// <see cref="BackgroundWorkerProgressDialog"/> that will be used to generate the fomod. The
-    /// <see cref="BackgroundWorkerProgressDialog"/> calls <see cref="DoGenerateFomod(object p_objArgs)"/>,
+    /// <see cref="BackgroundWorkerProgressDialog"/> calls <see cref="DoGenerateFomod(object)"/>,
     /// which must be overridden in the implementer, to actually do the work.
     /// 
-    /// This method deals with the cases where <paramref name="p_strPackedFomodPath"/> points
-    /// to an existing file. It also performs housecleaning in case the user cancels the operation.
     /// </remarks>
-    /// <param name="p_gfaArgs">The arguments to pass the the <see cref="DoGenerateFomod(object p_objArgs)"/>
+    /// <param name="p_gfaArgs">The arguments to pass the the <see cref="DoGenerateFomod(object)"/>
     /// method.</param>
-    /// <returns>The atual path of the generated fomod. This could be <see cref="p_strPackedFomodPath"/>, but
-    /// may be different if the given path pointed to an existing file.</returns>
+    /// <returns>The atual path of the generated fomod.</returns>
     protected string GenerateFomod(GenerateFomodArgs p_gfaArgs)
     {
-      string strPackedPath = p_gfaArgs.PackedPath;
+      var strPackedPath = p_gfaArgs.PackedPath;
       if (!CheckFileName(ref strPackedPath))
+      {
         return null;
+      }
       p_gfaArgs.PackedPath = strPackedPath;
 
       try
       {
-        using (m_bwdProgress = new BackgroundWorkerProgressDialog(DoGenerateFomod))
+        using (ProgressDialog = new BackgroundWorkerProgressDialog(DoGenerateFomod))
         {
-          m_bwdProgress.OverallMessage = OverallProgressMessage;
-          m_bwdProgress.ShowItemProgress = true;
-          m_bwdProgress.OverallProgressStep = 1;
-          m_bwdProgress.WorkMethodArguments = p_gfaArgs;
-          if (m_bwdProgress.ShowDialog() == DialogResult.Cancel)
+          ProgressDialog.OverallMessage = OverallProgressMessage;
+          ProgressDialog.ShowItemProgress = true;
+          ProgressDialog.OverallProgressStep = 1;
+          ProgressDialog.WorkMethodArguments = p_gfaArgs;
+          if (ProgressDialog.ShowDialog() == DialogResult.Cancel)
           {
             FileUtil.ForceDelete(strPackedPath);
             return null;
@@ -131,8 +110,10 @@ namespace Fomm.PackageManager.FomodBuilder
       }
       finally
       {
-        foreach (string strFolder in m_lltTempFolders)
+        foreach (var strFolder in m_lltTempFolders)
+        {
           FileUtil.ForceDelete(strFolder);
+        }
       }
       return strPackedPath;
     }
@@ -141,7 +122,7 @@ namespace Fomm.PackageManager.FomodBuilder
     /// This method is overridden by implementers to perform the actual fomod generation.
     /// </summary>
     /// <param name="p_objArgs">The arguments the implementer passed to
-    /// <see cref="GenerateFomod(string p_strPackedFomodPath, object p_objArgs)"/>.</param>
+    /// <see cref="GenerateFomod(GenerateFomodArgs)"/>.</param>
     protected abstract void DoGenerateFomod(object p_objArgs);
 
     #endregion
@@ -158,7 +139,7 @@ namespace Fomm.PackageManager.FomodBuilder
     /// <returns>The path to the new temporary directory.</returns>
     protected string CreateTemporaryDirectory()
     {
-      string strTempDirectory = Program.CreateTempDirectory();
+      var strTempDirectory = Program.CreateTempDirectory();
       m_lltTempFolders.AddLast(strTempDirectory);
       return strTempDirectory;
     }
@@ -169,13 +150,13 @@ namespace Fomm.PackageManager.FomodBuilder
     /// </summary>
     /// <param name="newpath">The path for which it is to be detemined if a file exists.
     /// It is updated with the new path if the given path was already in use.</param>
-    /// <returns><lang cref="true"/> if the returned value of <see cref="newpath"/> does not
-    /// specify an existing file; <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the returned value of <see cref="newpath"/> does not
+    /// specify an existing file; <lang langref="false"/> otherwise.</returns>
     protected bool CheckFileName(ref string newpath)
     {
-      string strNewPath = newpath;
-      string strExtension = Path.GetExtension(newpath);
-      for (Int32 i = 2; i < 999 && File.Exists(strNewPath); i++)
+      var strNewPath = newpath;
+      var strExtension = Path.GetExtension(newpath);
+      for (var i = 2; i < 999 && File.Exists(strNewPath); i++)
       {
         strNewPath = String.Format("{0} ({1}){2}", Path.ChangeExtension(newpath, null), i, strExtension);
       }
@@ -186,7 +167,11 @@ namespace Fomm.PackageManager.FomodBuilder
       }
       if (!newpath.Equals(strNewPath))
       {
-        switch (MessageBox.Show("File '" + newpath + "' already exists. The old file can be replaced, or the new file can be named '" + strNewPath + "'." + Environment.NewLine + "Do you want to overwrite the old file?", "Warning", MessageBoxButtons.YesNoCancel))
+        switch (
+          MessageBox.Show(
+            "File '" + newpath + "' already exists. The old file can be replaced, or the new file can be named '" +
+            strNewPath + "'." + Environment.NewLine + "Do you want to overwrite the old file?", "Warning",
+            MessageBoxButtons.YesNoCancel))
         {
           case DialogResult.Yes:
             return true;
@@ -212,9 +197,9 @@ namespace Fomm.PackageManager.FomodBuilder
       ProgressDialog.ItemProgressStep = 1;
       ProgressDialog.ItemMessage = String.Format("Compressing FOMod...");
 
-      SevenZipCompressor szcCompressor = new SevenZipCompressor();
-      szcCompressor.CompressionLevel = Properties.Settings.Default.fomodCompressionLevel;
-      szcCompressor.ArchiveFormat = Properties.Settings.Default.fomodCompressionFormat;
+      var szcCompressor = new SevenZipCompressor();
+      szcCompressor.CompressionLevel = Settings.Default.fomodCompressionLevel;
+      szcCompressor.ArchiveFormat = Settings.Default.fomodCompressionFormat;
       szcCompressor.CompressionMethod = CompressionMethod.Default;
       switch (szcCompressor.ArchiveFormat)
       {
@@ -230,8 +215,8 @@ namespace Fomm.PackageManager.FomodBuilder
           break;
       }
       szcCompressor.CompressionMode = CompressionMode.Create;
-      szcCompressor.FileCompressionStarted += new EventHandler<FileNameEventArgs>(FileCompressionStarted);
-      szcCompressor.FileCompressionFinished += new EventHandler<EventArgs>(FileCompressionFinished);
+      szcCompressor.FileCompressionStarted += FileCompressionStarted;
+      szcCompressor.FileCompressionFinished += FileCompressionFinished;
       szcCompressor.CompressDirectory(p_strFomodFolder, p_strPackedFomodPath);
     }
 
@@ -248,7 +233,9 @@ namespace Fomm.PackageManager.FomodBuilder
       ProgressDialog.ItemProgressStep = 1;
       ProgressDialog.ItemMessage = String.Format("Creating Script File...");
       if ((p_fscScript != null) && !String.IsNullOrEmpty(p_fscScript.Text))
+      {
         File.WriteAllText(Path.Combine(p_strFomodFomodFolder, p_fscScript.FileName), p_fscScript.Text);
+      }
       ProgressDialog.StepItemProgress();
     }
 
@@ -257,9 +244,9 @@ namespace Fomm.PackageManager.FomodBuilder
     /// metadata.
     /// </summary>
     /// <remarks>
-    /// The file is only created if <paramref name="p_booSetScreenshot"/> is <lang cref="true"/>. If
-    /// <paramref name="p_booSetScreenshot"/> is <lang cref="true"/> and <paramref name="p_shtScreenshot"/>
-    /// is <lang cref="null"/>, then any existing screenshot files will be deleted.
+    /// The file is only created if <paramref name="p_booSetScreenshot"/> is <lang langref="true"/>. If
+    /// <paramref name="p_booSetScreenshot"/> is <lang langref="true"/> and <paramref name="p_shtScreenshot"/>
+    /// is <lang langref="null"/>, then any existing screenshot files will be deleted.
     /// </remarks>
     /// <param name="p_strFomodFomodFolder">The folder in which to create the screenshot file.</param>
     /// <param name="p_booSetScreenshot">Whether or not to create the file.</param>
@@ -272,11 +259,17 @@ namespace Fomm.PackageManager.FomodBuilder
       ProgressDialog.ItemMessage = String.Format("Creating Screenshot...");
       if (p_booSetScreenshot)
       {
-        string[] strScreenshots = Directory.GetFiles(p_strFomodFomodFolder, "screenshot.*", SearchOption.TopDirectoryOnly);
-        foreach (String strScreenshot in strScreenshots)
+        var strScreenshots = Directory.GetFiles(p_strFomodFomodFolder, "screenshot.*",
+                                                     SearchOption.TopDirectoryOnly);
+        foreach (var strScreenshot in strScreenshots)
+        {
           FileUtil.ForceDelete(strScreenshot);
+        }
         if (p_shtScreenshot != null)
-          File.WriteAllBytes(Path.Combine(p_strFomodFomodFolder, "screenshot" + p_shtScreenshot.Extension), p_shtScreenshot.Data);
+        {
+          File.WriteAllBytes(Path.Combine(p_strFomodFomodFolder, "screenshot" + p_shtScreenshot.Extension),
+                             p_shtScreenshot.Data);
+        }
       }
       ProgressDialog.StepItemProgress();
     }
@@ -293,7 +286,9 @@ namespace Fomm.PackageManager.FomodBuilder
       ProgressDialog.ItemProgressStep = 1;
       ProgressDialog.ItemMessage = String.Format("Creating Info File...");
       if (p_xmlInfo != null)
+      {
         p_xmlInfo.Save(Path.Combine(p_strFomodFomodFolder, "info.xml"));
+      }
       ProgressDialog.StepItemProgress();
     }
 
@@ -311,9 +306,11 @@ namespace Fomm.PackageManager.FomodBuilder
       ProgressDialog.ItemMessage = String.Format("Creating Readme File...");
       if ((p_rmeReadme != null) && !String.IsNullOrEmpty(p_rmeReadme.Text))
       {
-        string strReadmeFileName = String.Format("Readme - {0}{1}", p_strFomodName, p_rmeReadme.Extension);
-        if (Properties.Settings.Default.UseDocsFolder)
+        var strReadmeFileName = String.Format("Readme - {0}{1}", p_strFomodName, p_rmeReadme.Extension);
+        if (Settings.Default.UseDocsFolder)
+        {
           strReadmeFileName = Path.Combine("docs", strReadmeFileName);
+        }
         File.WriteAllText(Path.Combine(p_strFomodFolder, strReadmeFileName), p_rmeReadme.Text);
       }
       ProgressDialog.StepItemProgress();
@@ -326,14 +323,15 @@ namespace Fomm.PackageManager.FomodBuilder
     /// <param name="p_strExtractionPath">The path to the directory to which to unpack the archive.</param>
     protected void UnpackArchive(string p_strArchivePath, string p_strExtractionPath)
     {
-      using (SevenZipExtractor szeExtractor = Archive.GetExtractor(p_strArchivePath))
+      using (var szeExtractor = Archive.GetExtractor(p_strArchivePath))
       {
-        szeExtractor.FileExtractionFinished += new EventHandler<FileInfoEventArgs>(FileExtractionFinished);
-        szeExtractor.FileExtractionStarted += new EventHandler<FileInfoEventArgs>(FileExtractionStarted);
+        szeExtractor.FileExtractionFinished += FileExtractionFinished;
+        szeExtractor.FileExtractionStarted += FileExtractionStarted;
         ProgressDialog.ItemProgress = 0;
-        ProgressDialog.ItemProgressMaximum = (Int32)szeExtractor.FilesCount;
+        ProgressDialog.ItemProgressMaximum = (Int32) szeExtractor.FilesCount;
         ProgressDialog.ItemProgressStep = 1;
-        ProgressDialog.ItemMessage = String.Format("Extracting Source Files ({0})...", Path.GetFileName(p_strArchivePath));
+        ProgressDialog.ItemMessage = String.Format("Extracting Source Files ({0})...",
+                                                   Path.GetFileName(p_strArchivePath));
         szeExtractor.ExtractArchive(p_strExtractionPath);
       }
     }
@@ -350,7 +348,7 @@ namespace Fomm.PackageManager.FomodBuilder
     /// execute the copy instructions.
     /// </remarks>
     /// <param name="p_strFile">The file the was copied.</param>
-    /// <returns><lang cref="true"/> if the user cancelled the operation; <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the user cancelled the operation; <lang langref="false"/> otherwise.</returns>
     protected bool FileCopied(string p_strFile)
     {
       ProgressDialog.StepItemProgress();

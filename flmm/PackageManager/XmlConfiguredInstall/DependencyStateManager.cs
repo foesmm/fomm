@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.IO;
 
 namespace Fomm.PackageManager.XmlConfiguredInstall
 {
@@ -26,9 +24,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
       public PluginInfo Owner;
     }
 
-    private ModInstallScript m_misInstallScript = null;
     private Dictionary<string, FlagValue> m_dicFlags = new Dictionary<string, FlagValue>();
-    private Dictionary<string, bool> m_dicInstalledPlugins = null;
 
     #region Properties
 
@@ -36,28 +32,12 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// Gets the install script being used to perform the install.
     /// </summary>
     /// <value>The install script being used to perform the install.</value>
-    protected ModInstallScript Script
-    {
-      get
-      {
-        return m_misInstallScript;
-      }
-    }
+    protected ModInstallScript Script { get; private set; }
 
     /// <summary>
     /// A dictionary listed all installed plugins, and indicating which are active.
     /// </summary>
-    public Dictionary<string, bool> InstalledPlugins
-    {
-      get
-      {
-        return m_dicInstalledPlugins;
-      }
-      protected set
-      {
-        m_dicInstalledPlugins = value;
-      }
-    }
+    public Dictionary<string, bool> InstalledPlugins { get; protected set; }
 
     /// <summary>
     /// Gets the current values of the flags that have been set.
@@ -67,9 +47,11 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     {
       get
       {
-        Dictionary<string, string> dicValues = new Dictionary<string, string>();
-        foreach (KeyValuePair<string, FlagValue> kvpValue in m_dicFlags)
+        var dicValues = new Dictionary<string, string>();
+        foreach (var kvpValue in m_dicFlags)
+        {
           dicValues[kvpValue.Key] = kvpValue.Value.Value;
+        }
         return dicValues;
       }
     }
@@ -78,14 +60,14 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// Gets the installed version of the current game.
     /// </summary>
     /// <remarks>
-    /// <lang cref="null"/> is returned if the game is not installed.
+    /// <lang langref="null"/> is returned if the game is not installed.
     /// </remarks>
     /// <value>The installed version of the current game.</value>
     public Version GameVersion
     {
       get
       {
-        return m_misInstallScript.GetGameVersion();
+        return Script.GetGameVersion();
       }
     }
 
@@ -93,14 +75,14 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// Gets the installed version of FOMM.
     /// </summary>
     /// <remarks>
-    /// <lang cref="null"/> is returned if FOMM is not installed.
+    /// <lang langref="null"/> is returned if FOMM is not installed.
     /// </remarks>
     /// <value>The installed version of FOMM.</value>
     public Version FommVersion
     {
       get
       {
-        return m_misInstallScript.GetFommVersion();
+        return Script.GetFommVersion();
       }
     }
 
@@ -114,12 +96,14 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// <param name="p_misInstallScript">The install script.</param>
     public DependencyStateManager(ModInstallScript p_misInstallScript)
     {
-      m_misInstallScript = p_misInstallScript;
+      Script = p_misInstallScript;
 
-      Dictionary<string, bool> dicPlugins = new Dictionary<string, bool>();
-      string[] strPlugins = m_misInstallScript.GetAllPlugins();
-      foreach (string strPlugin in strPlugins)
+      var dicPlugins = new Dictionary<string, bool>();
+      var strPlugins = Script.GetAllPlugins();
+      foreach (var strPlugin in strPlugins)
+      {
         dicPlugins.Add(strPlugin.ToLowerInvariant(), IsPluginActive(strPlugin));
+      }
       InstalledPlugins = dicPlugins;
     }
 
@@ -132,10 +116,14 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// <returns>true if the specified plugin is active; false otherwise.</returns>
     protected bool IsPluginActive(string p_strFile)
     {
-      string[] strAtiveInstalledPlugins = GetActiveInstalledPlugins();
-      foreach (string strActivePlugin in strAtiveInstalledPlugins)
+      var strAtiveInstalledPlugins = GetActiveInstalledPlugins();
+      foreach (var strActivePlugin in strAtiveInstalledPlugins)
+      {
         if (strActivePlugin.Equals(p_strFile.ToLowerInvariant()))
+        {
           return true;
+        }
+      }
       return false;
     }
 
@@ -147,16 +135,21 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     {
       if (m_strActiveInstalledPlugins == null)
       {
-        string[] strActivePlugins = m_misInstallScript.GetActivePlugins();
-        List<string> lstActiveInstalled = new List<string>();
-        foreach (string strActivePlugin in strActivePlugins)
+        var strActivePlugins = Script.GetActivePlugins();
+        var lstActiveInstalled = new List<string>();
+        foreach (var strActivePlugin in strActivePlugins)
+        {
           if (FileManagement.DataFileExists(strActivePlugin))
+          {
             lstActiveInstalled.Add(strActivePlugin.ToLowerInvariant());
+          }
+        }
         m_strActiveInstalledPlugins = lstActiveInstalled.ToArray();
       }
       return m_strActiveInstalledPlugins;
     }
-    string[] m_strActiveInstalledPlugins = null;
+
+    private string[] m_strActiveInstalledPlugins;
 
     /// <summary>
     /// Sets the value of a conditional flag.
@@ -167,7 +160,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     public void SetFlagValue(string p_strFlagName, string p_strValue, PluginInfo p_pifPlugin)
     {
       if (!m_dicFlags.ContainsKey(p_strFlagName))
+      {
         m_dicFlags[p_strFlagName] = new FlagValue();
+      }
       m_dicFlags[p_strFlagName].Value = p_strValue;
       m_dicFlags[p_strFlagName].Owner = p_pifPlugin;
     }
@@ -179,10 +174,14 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// <param name="p_pifPlugin">The owner of the flag to remove.</param>
     public void RemoveFlags(PluginInfo p_pifPlugin)
     {
-      List<string> lstFlags = new List<string>(m_dicFlags.Keys);
-      foreach (string strFlag in lstFlags)
+      var lstFlags = new List<string>(m_dicFlags.Keys);
+      foreach (var strFlag in lstFlags)
+      {
         if (m_dicFlags[strFlag].Owner == p_pifPlugin)
+        {
           m_dicFlags.Remove(strFlag);
+        }
+      }
     }
   }
 }

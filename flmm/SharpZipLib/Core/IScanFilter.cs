@@ -33,14 +33,12 @@
 // obligated to do so.  If you do not wish to do so, delete this
 // exception statement from your version.
 
-using System;
-
-namespace ICSharpCode.SharpZipLib.Core
+namespace Fomm.SharpZipLib.Core
 {
   /// <summary>
   /// Scanning filters support filtering of names.
   /// </summary>
-  interface IScanFilter
+  internal interface IScanFilter
   {
     /// <summary>
     /// Test a name to see if it 'matches' the filter.

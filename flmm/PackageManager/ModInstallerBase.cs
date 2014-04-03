@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using ChinhDo.Transactions;
 using Fomm.PackageManager.ModInstallLog;
@@ -13,21 +12,13 @@ namespace Fomm.PackageManager
   public abstract class ModInstallerBase : IDisposable
   {
     protected static readonly object objInstallLock = new object();
-    private BackgroundWorkerProgressDialog m_bwdProgress = null;
-    private TxFileManager m_tfmFileManager = null;
-    private InstallLogMergeModule m_ilmModInstallLog = null;    
-    private fomod m_fomodMod = null;
-    private ModInstallScript m_misScript = null;
-    
+    private BackgroundWorkerProgressDialog m_bwdProgress;
+    private TxFileManager m_tfmFileManager;
+    private InstallLogMergeModule m_ilmModInstallLog;
+
     #region Properties
 
-    public ModInstallScript Script
-    {
-      get
-      {
-        return m_misScript;
-      }
-    }
+    public ModInstallScript Script { get; private set; }
 
     /// <summary>
     /// Gets the transactional file manager the script is using.
@@ -38,7 +29,10 @@ namespace Fomm.PackageManager
       get
       {
         if (m_tfmFileManager == null)
-          throw new InvalidOperationException("The transactional file manager must be initialized by calling InitTransactionalFileManager() before it is used.");
+        {
+          throw new InvalidOperationException(
+            "The transactional file manager must be initialized by calling InitTransactionalFileManager() before it is used.");
+        }
         return m_tfmFileManager;
       }
     }
@@ -63,13 +57,7 @@ namespace Fomm.PackageManager
     /// Gets the mod that is being scripted against.
     /// </summary>
     /// <value>The mod that is being scripted against.</value>
-    public fomod Fomod
-    {
-      get
-      {
-        return m_fomodMod;
-      }
-    }
+    public fomod Fomod { get; private set; }
 
     /// <summary>
     /// Gets the message to display to the user when an exception is caught.
@@ -78,36 +66,27 @@ namespace Fomm.PackageManager
     /// In order to display the exception message, the placeholder {0} should be used.
     /// </remarks>
     /// <value>The message to display to the user when an exception is caught.</value>
-    protected abstract string ExceptionMessage
-    {
-      get;
-    }
+    protected abstract string ExceptionMessage { get; }
 
     /// <summary>
     /// Gets the message to display upon failure of the script.
     /// </summary>
     /// <remarks>
-    /// If the value of this property is <lang cref="null"/> then no message will be
+    /// If the value of this property is <lang langref="null"/> then no message will be
     /// displayed.
     /// </remarks>
     /// <value>The message to display upon failure of the script.</value>
-    protected abstract string FailMessage
-    {
-      get;
-    }
+    protected abstract string FailMessage { get; }
 
     /// <summary>
     /// Gets the message to display upon success of the script.
     /// </summary>
     /// <remarks>
-    /// If the value of this property is <lang cref="null"/> then no message will be
+    /// If the value of this property is <lang langref="null"/> then no message will be
     /// displayed.
     /// </remarks>
     /// <value>The message to display upon success of the script.</value>
-    protected abstract string SuccessMessage
-    {
-      get;
-    }
+    protected abstract string SuccessMessage { get; }
 
     #endregion
 
@@ -119,7 +98,7 @@ namespace Fomm.PackageManager
     /// <param name="p_fomodMod">The <see cref="fomod"/> to be installed or uninstalled.</param>
     public ModInstallerBase(fomod p_fomodMod)
     {
-      m_fomodMod = p_fomodMod;
+      Fomod = p_fomodMod;
     }
 
     #endregion
@@ -129,8 +108,8 @@ namespace Fomm.PackageManager
     /// <summary>
     /// Checks to see if the script work has already been done.
     /// </summary>
-    /// <returns><lang cref="true"/> if the script work has already been done and the script
-    /// doesn't need to execute; <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the script work has already been done and the script
+    /// doesn't need to execute; <lang langref="false"/> otherwise.</returns>
     protected virtual bool CheckAlreadyDone()
     {
       return true;
@@ -143,8 +122,8 @@ namespace Fomm.PackageManager
     /// This is the method that needs to be overridden by implementers to do
     /// their script-specific work.
     /// </remarks>
-    /// <returns><lang cref="true"/> if the script work was completed successfully and needs to
-    /// be committed; <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the script work was completed successfully and needs to
+    /// be committed; <lang langref="false"/> otherwise.</returns>
     protected abstract bool DoScript();
 
     /// <summary>
@@ -168,9 +147,11 @@ namespace Fomm.PackageManager
     /// <seealso cref="DoScript()"/>
     protected bool Run(bool p_booSuppressSuccessMessage, bool p_booSetFOModReadOnly)
     {
-      bool booSuccess = false;
+      var booSuccess = false;
       if (CheckAlreadyDone())
+      {
         booSuccess = true;
+      }
 
       if (!booSuccess)
       {
@@ -185,14 +166,14 @@ namespace Fomm.PackageManager
           // not clear what the value of SETTING1 will be).
           // as a result, we only allow one mod to be installed at a time,
           // hence the lock.
-          lock (ModInstallerBase.objInstallLock)
+          lock (objInstallLock)
           {
-            using (TransactionScope tsTransaction = new TransactionScope())
+            using (var tsTransaction = new TransactionScope())
             {
               m_tfmFileManager = new TxFileManager();
-              using (m_misScript = CreateInstallScript())
+              using (Script = CreateInstallScript())
               {
-                bool booCancelled = false;
+                var booCancelled = false;
                 if (p_booSetFOModReadOnly && (Fomod != null))
                 {
                   if (Fomod.ReadOnlyInitStepCount > 1)
@@ -205,26 +186,32 @@ namespace Fomm.PackageManager
                       m_bwdProgress.OverallProgressStep = 1;
                       try
                       {
-                        Fomod.ReadOnlyInitStepStarted += new CancelEventHandler(Fomod_ReadOnlyInitStepStarted);
-                        Fomod.ReadOnlyInitStepFinished += new CancelEventHandler(Fomod_ReadOnlyInitStepFinished);
+                        Fomod.ReadOnlyInitStepStarted += Fomod_ReadOnlyInitStepStarted;
+                        Fomod.ReadOnlyInitStepFinished += Fomod_ReadOnlyInitStepFinished;
                         if (m_bwdProgress.ShowDialog() == DialogResult.Cancel)
+                        {
                           booCancelled = true;
+                        }
                       }
                       finally
                       {
-                        Fomod.ReadOnlyInitStepStarted -= new CancelEventHandler(Fomod_ReadOnlyInitStepStarted);
-                        Fomod.ReadOnlyInitStepFinished -= new CancelEventHandler(Fomod_ReadOnlyInitStepFinished);
+                        Fomod.ReadOnlyInitStepStarted -= Fomod_ReadOnlyInitStepStarted;
+                        Fomod.ReadOnlyInitStepFinished -= Fomod_ReadOnlyInitStepFinished;
                       }
                     }
                   }
                   else
+                  {
                     Fomod.BeginReadOnlyTransaction();
+                  }
                 }
                 if (!booCancelled)
                 {
                   booSuccess = DoScript();
                   if (booSuccess)
+                  {
                     tsTransaction.Complete();
+                  }
                 }
               }
             }
@@ -232,23 +219,33 @@ namespace Fomm.PackageManager
         }
         catch (Exception e)
         {
-          StringBuilder stbError = new StringBuilder(e.Message);
+          var stbError = new StringBuilder(e.Message);
           if (e is FileNotFoundException)
-            stbError.Append(" (" + ((FileNotFoundException)e).FileName + ")");
+          {
+            stbError.Append(" (" + ((FileNotFoundException) e).FileName + ")");
+          }
           if (e is IllegalFilePathException)
-            stbError.Append(" (" + ((IllegalFilePathException)e).Path + ")");
+          {
+            stbError.Append(" (" + ((IllegalFilePathException) e).Path + ")");
+          }
           if (e.InnerException != null)
+          {
             stbError.AppendLine().AppendLine(e.InnerException.Message);
+          }
           if (e is RollbackException)
-            foreach (RollbackException.ExceptedResourceManager erm in ((RollbackException)e).ExceptedResourceManagers)
+          {
+            foreach (var erm in ((RollbackException) e).ExceptedResourceManagers)
             {
               stbError.AppendLine(erm.ResourceManager.ToString());
               stbError.AppendLine(erm.Exception.Message);
               if (erm.Exception.InnerException != null)
+              {
                 stbError.AppendLine(erm.Exception.InnerException.Message);
+              }
             }
-          string strMessage = String.Format(ExceptionMessage, stbError.ToString());
-          System.Windows.Forms.MessageBox.Show(strMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+          }
+          var strMessage = String.Format(ExceptionMessage, stbError);
+          MessageBox.Show(strMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
           return false;
         }
         finally
@@ -256,13 +253,19 @@ namespace Fomm.PackageManager
           m_tfmFileManager = null;
           m_ilmModInstallLog = null;
           if (Fomod != null)
+          {
             Fomod.EndReadOnlyTransaction();
+          }
         }
       }
       if (booSuccess && !p_booSuppressSuccessMessage && !String.IsNullOrEmpty(SuccessMessage))
-        System.Windows.Forms.MessageBox.Show(SuccessMessage, "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+      {
+        MessageBox.Show(SuccessMessage, "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+      }
       else if (!booSuccess && !String.IsNullOrEmpty(FailMessage))
-        System.Windows.Forms.MessageBox.Show(FailMessage, "Failure", MessageBoxButtons.OK, MessageBoxIcon.Error);
+      {
+        MessageBox.Show(FailMessage, "Failure", MessageBoxButtons.OK, MessageBoxIcon.Error);
+      }
       return booSuccess;
     }
 
@@ -314,8 +317,10 @@ namespace Fomm.PackageManager
 
     public void Dispose()
     {
-      if (m_misScript != null)
-        m_misScript.Dispose();
+      if (Script != null)
+      {
+        Script.Dispose();
+      }
     }
 
     #endregion

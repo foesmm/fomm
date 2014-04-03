@@ -13,20 +13,20 @@
  *    http://www.codeproject.com/KB/list/LVCustomReordering.aspx
  * 
  * */
+
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace L0ki.Controls
+namespace Fomm.Controls
 {
   /// <summary>
   /// An extended version of the standard ListView designed to allow the user
   /// to reorder items in the control by drag and drop.
   /// </summary>
   /// <see cref="ListView"/>
-  class ReordableItemListView : ListView
+  internal class ReordableItemListView : ListView
   {
     #region Constants
 
@@ -38,17 +38,16 @@ namespace L0ki.Controls
     #region Constructor
 
     public ReordableItemListView()
-      : base()
     {
       // Reduce flicker
-      this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+      SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 
       // This listview was designed for a details view with gridlines enabled
       base.AllowDrop = true;
-      this.FullRowSelect = true;
-      this.ShowGroups = false;
-      this.Sorting = SortOrder.None;
-      this.View = View.Details;
+      FullRowSelect = true;
+      ShowGroups = false;
+      Sorting = SortOrder.None;
+      View = View.Details;
     }
 
     #endregion
@@ -66,12 +65,12 @@ namespace L0ki.Controls
       {
         if (LineBefore >= 0 && LineBefore < Items.Count)
         {
-          Rectangle rc = Items[LineBefore].GetBounds(ItemBoundsPortion.Entire);
+          var rc = Items[LineBefore].GetBounds(ItemBoundsPortion.Entire);
           DrawInsertionLine(rc.Left, rc.Right, rc.Top);
         }
         if (LineAfter >= 0 && LineBefore < Items.Count)
         {
-          Rectangle rc = Items[LineAfter].GetBounds(ItemBoundsPortion.Entire);
+          var rc = Items[LineAfter].GetBounds(ItemBoundsPortion.Entire);
           DrawInsertionLine(rc.Left, rc.Right, rc.Bottom);
         }
       }
@@ -89,19 +88,21 @@ namespace L0ki.Controls
     /// <param name="Y">Position (Y) of the line</param>
     private void DrawInsertionLine(int X1, int X2, int Y)
     {
-      using (Graphics g = this.CreateGraphics())
+      using (var g = CreateGraphics())
       {
         g.DrawLine(new Pen(Color.Red), X1, Y, X2 - 1, Y);
 
-        Point[] leftTriangle = new Point[3] {
-          new Point(X1,      Y-4),
-          new Point(X1 + 7,  Y),
-          new Point(X1,      Y+4)
+        var leftTriangle = new[]
+        {
+          new Point(X1, Y - 4),
+          new Point(X1 + 7, Y),
+          new Point(X1, Y + 4)
         };
-        Point[] rightTriangle = new Point[3] {
-          new Point(X2,     Y-4),
+        var rightTriangle = new[]
+        {
+          new Point(X2, Y - 4),
           new Point(X2 - 8, Y),
-          new Point(X2,     Y+4)
+          new Point(X2, Y + 4)
         };
 
         Brush br = new SolidBrush(Color.Red);
@@ -118,9 +119,9 @@ namespace L0ki.Controls
     /// <returns>true if location is in the top half of itemToCheck, otherwise false</returns>
     private bool IsPointInTopHalfOfItem(Point location, ListViewItem itemToCheck)
     {
-      Point pt = this.PointToClient(location);
-      Rectangle rc = itemToCheck.GetBounds(ItemBoundsPortion.Entire);
-      return (pt.Y < (rc.Top + (rc.Height / 2)));
+      var pt = PointToClient(location);
+      var rc = itemToCheck.GetBounds(ItemBoundsPortion.Entire);
+      return (pt.Y < (rc.Top + (rc.Height/2)));
     }
 
     /// <summary>
@@ -133,9 +134,10 @@ namespace L0ki.Controls
     /// </returns>
     private ListViewItem GetItemAtPoint(Point location)
     {
-      Point pt = this.PointToClient(location);
-      int lastItemBottom = Math.Min(pt.Y, this.Items[this.Items.Count - 1].GetBounds(ItemBoundsPortion.Entire).Bottom - 1);
-      return this.GetItemAt(0, lastItemBottom);
+      var pt = PointToClient(location);
+      var lastItemBottom = Math.Min(pt.Y,
+                                    Items[Items.Count - 1].GetBounds(ItemBoundsPortion.Entire).Bottom - 1);
+      return GetItemAt(0, lastItemBottom);
     }
 
     /// <summary>
@@ -143,9 +145,9 @@ namespace L0ki.Controls
     /// </summary>
     private void ResetDragIndicator()
     {
-      this.LineAfter = -1;
-      this.LineBefore = -1;
-      this.Invalidate();
+      LineAfter = -1;
+      LineBefore = -1;
+      Invalidate();
     }
 
     /// <summary>
@@ -153,18 +155,26 @@ namespace L0ki.Controls
     /// </summary>
     private void ResetDragItems()
     {
-      this._ItemsToMove.Clear();
-      this.SelectedItems.Clear();
+      _ItemsToMove.Clear();
+      SelectedItems.Clear();
     }
 
     #endregion
 
     #region Properties
+
     private bool allowDrop = true;
+
     public override bool AllowDrop
     {
-      get { return allowDrop; }
-      set { allowDrop = value; }
+      get
+      {
+        return allowDrop;
+      }
+      set
+      {
+        allowDrop = value;
+      }
     }
 
     #endregion
@@ -184,22 +194,29 @@ namespace L0ki.Controls
 
     protected override void OnItemChecked(ItemCheckedEventArgs e)
     {
-      if (_ItemsToMove.Count > 0) return;
+      if (_ItemsToMove.Count > 0)
+      {
+        return;
+      }
       base.OnItemChecked(e);
     }
 
     protected override void OnItemDrag(ItemDragEventArgs e)
     {
-      if ((this.SelectedItems.Count == 0) || (e.Button != MouseButtons.Left) || !allowDrop)
+      if ((SelectedItems.Count == 0) || (e.Button != MouseButtons.Left) || !allowDrop)
+      {
         return;
+      }
 
       ResetDragIndicator();
 
-      this._ItemsToMove.Clear();
-      for (int index = 0; index < this.SelectedItems.Count; index++)
-        this._ItemsToMove.Add(this.SelectedItems[index]);
+      _ItemsToMove.Clear();
+      for (var index = 0; index < SelectedItems.Count; index++)
+      {
+        _ItemsToMove.Add(SelectedItems[index]);
+      }
 
-      base.DoDragDrop(this._DragKey, DragDropEffects.Move);
+      DoDragDrop(_DragKey, DragDropEffects.Move);
     }
 
     protected override void OnDragOver(DragEventArgs drgevent)
@@ -210,8 +227,8 @@ namespace L0ki.Controls
         return;
       }
 
-      Point pt = new Point(drgevent.X, drgevent.Y);
-      ListViewItem itemOver = GetItemAtPoint(pt);
+      var pt = new Point(drgevent.X, drgevent.Y);
+      var itemOver = GetItemAtPoint(pt);
       if (itemOver == null)
       {
         drgevent.Effect = DragDropEffects.None;
@@ -221,22 +238,22 @@ namespace L0ki.Controls
 
       if (IsPointInTopHalfOfItem(pt, itemOver))
       {
-        if (this.LineBefore != itemOver.Index)
+        if (LineBefore != itemOver.Index)
         {
-          this.LineBefore = itemOver.Index;
-          this.LineAfter = -1;
+          LineBefore = itemOver.Index;
+          LineAfter = -1;
           itemOver.EnsureVisible();
-          this.Invalidate();
+          Invalidate();
         }
       }
       else
       {
-        if (this.LineAfter != itemOver.Index)
+        if (LineAfter != itemOver.Index)
         {
-          this.LineBefore = -1;
-          this.LineAfter = itemOver.Index;
+          LineBefore = -1;
+          LineAfter = itemOver.Index;
           itemOver.EnsureVisible();
-          this.Invalidate();
+          Invalidate();
         }
       }
 
@@ -255,8 +272,8 @@ namespace L0ki.Controls
         return;
       }
 
-      Point pt = new Point(drgevent.X, drgevent.Y);
-      ListViewItem itemOver = GetItemAtPoint(pt);
+      var pt = new Point(drgevent.X, drgevent.Y);
+      var itemOver = GetItemAtPoint(pt);
       if ((itemOver == null) || (itemOver == _ItemsToMove[0]))
       {
         ResetDragItems();
@@ -265,28 +282,40 @@ namespace L0ki.Controls
 
       int insertIndex;
       if (IsPointInTopHalfOfItem(pt, itemOver))
+      {
         insertIndex = itemOver.Index;
+      }
       else
+      {
         insertIndex = itemOver.Index + 1;
+      }
 
-      Int32 intSelectionStartIndex = this.Items.IndexOf(_ItemsToMove[0]);
-      Int32 intSelectionEndIndex = this.Items.IndexOf(_ItemsToMove[_ItemsToMove.Count - 1]);
+      var intSelectionStartIndex = Items.IndexOf(_ItemsToMove[0]);
+      var intSelectionEndIndex = Items.IndexOf(_ItemsToMove[_ItemsToMove.Count - 1]);
       //if we are dragging to a point in the selection being dragged, don't bother as the order won't change
       if ((insertIndex >= intSelectionStartIndex) && (insertIndex <= intSelectionEndIndex))
+      {
         return;
+      }
       //if we are inserting at a point after the selection being dragged, offset the insert index to account
       // the the seleciton having been removed
       if (insertIndex > intSelectionEndIndex)
+      {
         insertIndex -= _ItemsToMove.Count;
-      
+      }
+
       // Remove old items
-      for (int index = 0; index < this._ItemsToMove.Count; index++)
-        this.Items.Remove(this._ItemsToMove[index]);
+      foreach (var item in _ItemsToMove)
+      {
+        Items.Remove(item);
+      }
 
       // Insert new items
-      for (int index = 0; index < this._ItemsToMove.Count; index++)
-        this.Items.Insert(Math.Min(insertIndex + index, this.Items.Count), _ItemsToMove[index]);
-      
+      for (var index = 0; index < _ItemsToMove.Count; index++)
+      {
+        Items.Insert(Math.Min(insertIndex + index, Items.Count), _ItemsToMove[index]);
+      }
+
       ResetDragItems();
 
       base.OnDragDrop(drgevent);
@@ -299,7 +328,7 @@ namespace L0ki.Controls
 
     protected override void OnDragEnter(DragEventArgs drgevent)
     {
-      if ((this._ItemsToMove.Count > 0) && _PauseItemDrag)
+      if ((_ItemsToMove.Count > 0) && _PauseItemDrag)
       {
         ResetDragIndicator();
         drgevent.Effect = DragDropEffects.Move;
@@ -308,7 +337,6 @@ namespace L0ki.Controls
       else
       {
         base.OnDragEnter(drgevent);
-        return;
       }
     }
 

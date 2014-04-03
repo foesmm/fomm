@@ -1,50 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Fomm.PackageManager.XmlConfiguredInstall
+﻿namespace Fomm.PackageManager.XmlConfiguredInstall
 {
   /// <summary>
   /// Describes the value to which to set a given flag.
   /// </summary>
   public class ConditionalFlag
   {
-    private string m_strName = null;
-    private string m_strValue = null;
-
     #region Properties
 
     /// <summary>
     /// Gets or sets the name of the flag to set.
     /// </summary>
     /// <value>The name of the flag to set.</value>
-    public string Name
-    {
-      get
-      {
-        return m_strName;
-      }
-      protected set
-      {
-        m_strName = value;
-      }
-    }
+    public string Name { get; protected set; }
 
     /// <summary>
     /// Gets or sets the value to which to set the flag.
     /// </summary>
     /// <value>The value to which to set the flag.</value>
-    public string ConditionalValue
-    {
-      get
-      {
-        return m_strValue;
-      }
-      protected set
-      {
-        m_strValue = value;
-      }
-    }
+    public string ConditionalValue { get; protected set; }
 
     #endregion
 

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 
 namespace Fomm.Games.Fallout3.PluginFormatProviders
@@ -9,7 +8,7 @@ namespace Fomm.Games.Fallout3.PluginFormatProviders
   /// </summary>
   public class CriticalRecordPluginFormatProvider : IPluginFormatProvider
   {
-    private PluginFormat.PluginFormatterManager m_pfmManager = null;
+    private PluginFormat.PluginFormatterManager m_pfmManager;
     private Dictionary<string, PluginFormat> m_dicFormat = new Dictionary<string, PluginFormat>();
 
     /// <summary>
@@ -20,7 +19,7 @@ namespace Fomm.Games.Fallout3.PluginFormatProviders
     /// <param name="p_strMessage">The message of the format.</param>
     public void AddFormat(string p_strPluginName, Color p_clrHighlight, string p_strMessage)
     {
-      PluginFormat pftFormat = m_pfmManager.CreateFormat(null, null, null, null, p_clrHighlight, p_strMessage);
+      var pftFormat = m_pfmManager.CreateFormat(null, null, null, null, p_clrHighlight, p_strMessage);
       m_dicFormat[p_strPluginName] = pftFormat;
     }
 
@@ -50,8 +49,8 @@ namespace Fomm.Games.Fallout3.PluginFormatProviders
     /// Determins if the provider has a format for the specified plugin.
     /// </summary>
     /// <param name="p_strPluginName">The name of the plugin for which to check if there is a format.</param>
-    /// <returns><lang cref="true"/> if this provider has a format for the specified plugin;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if this provider has a format for the specified plugin;
+    /// <lang langref="false"/> otherwise.</returns>
     public bool HasFormat(string p_strPluginName)
     {
       return m_dicFormat.ContainsKey(p_strPluginName);
@@ -61,12 +60,14 @@ namespace Fomm.Games.Fallout3.PluginFormatProviders
     /// Gets the provider's format for the specified plugin.
     /// </summary>
     /// <param name="p_strPluginName">The name of the plugin whose format is to be returned.</param>
-    /// <returns>The provider's format for the specified plugin, or <lang cref="null"/> if the
+    /// <returns>The provider's format for the specified plugin, or <lang langref="null"/> if the
     /// provider does not have a format for the speficied plugin.</returns>
     public PluginFormat GetFormat(string p_strPluginName)
     {
       if (!m_dicFormat.ContainsKey(p_strPluginName))
+      {
         return null;
+      }
       return m_dicFormat[p_strPluginName];
     }
 

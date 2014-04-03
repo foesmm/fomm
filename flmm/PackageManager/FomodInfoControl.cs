@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Text;
 using System.Windows.Forms;
-using System.Text.RegularExpressions;
 using System.IO;
+using Fomm.Properties;
 using GeMod.Interface;
 
 namespace Fomm.PackageManager
@@ -16,7 +12,7 @@ namespace Fomm.PackageManager
   /// </summary>
   public partial class FomodInfoControl : UserControl, IFomodInfo
   {
-    private Screenshot m_shtScreenshot = null;
+    private Screenshot m_shtScreenshot;
 
     #region Properties
 
@@ -53,12 +49,14 @@ namespace Fomm.PackageManager
       // no idea why
       try
       {
-        string[] strGroups = Properties.Settings.Default.pluginGroups;
+        string[] strGroups = Settings.Default.pluginGroups;
         if (strGroups != null)
         {
           clbGroups.SuspendLayout();
-          foreach (string strGroup in strGroups)
+          foreach (var strGroup in strGroups)
+          {
             clbGroups.Items.Add(strGroup, 0);
+          }
           clbGroups.ResumeLayout();
         }
       }
@@ -109,8 +107,8 @@ namespace Fomm.PackageManager
     /// <summary>
     /// Ensures that the version is valid, if present.
     /// </summary>
-    /// <returns><lang cref="true"/> if the version is valid or not present;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the version is valid or not present;
+    /// <lang langref="false"/> otherwise.</returns>
     protected bool ValidateMachineVersion()
     {
       erpErrors.SetError(tbMVersion, null);
@@ -142,15 +140,16 @@ namespace Fomm.PackageManager
     /// <summary>
     /// Ensures that the URL is valid, if present.
     /// </summary>
-    /// <returns><lang cref="true"/> if the website is valid or not present;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the website is valid or not present;
+    /// <lang langref="false"/> otherwise.</returns>
     protected bool ValidateWebsite()
     {
       erpErrors.SetError(tbWebsite, null);
       if (!String.IsNullOrEmpty(tbWebsite.Text))
       {
         Uri uri;
-        if (!Uri.TryCreate(tbWebsite.Text, UriKind.Absolute, out uri) || uri.IsFile || (uri.Scheme != "http" && uri.Scheme != "https"))
+        if (!Uri.TryCreate(tbWebsite.Text, UriKind.Absolute, out uri) || uri.IsFile ||
+            (uri.Scheme != "http" && uri.Scheme != "https"))
         {
           erpErrors.SetError(tbWebsite, "Invalid web address specified.\nDid you miss the 'http://'?");
           return false;
@@ -175,14 +174,14 @@ namespace Fomm.PackageManager
     /// <summary>
     /// Ensures that the version is valid, if present.
     /// </summary>
-    /// <returns><lang cref="true"/> if the version is valid or not present;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the version is valid or not present;
+    /// <lang langref="false"/> otherwise.</returns>
     protected bool ValidateMinFommVersion()
     {
       erpErrors.SetError(tbMinFommVersion, null);
       if (!String.IsNullOrEmpty(tbMinFommVersion.Text))
       {
-        Version verVersion = null;
+        Version verVersion;
         try
         {
           verVersion = new Version(tbMinFommVersion.Text);
@@ -217,10 +216,10 @@ namespace Fomm.PackageManager
     /// <summary>
     /// Validate the controls on this control.
     /// </summary>
-    /// <returns><lang cref="true"/> if all controls passed validation; <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if all controls passed validation; <lang langref="false"/> otherwise.</returns>
     public bool PerformValidation()
     {
-      bool booIsValid = ValidateMachineVersion();
+      var booIsValid = ValidateMachineVersion();
       booIsValid &= ValidateMinFommVersion();
       booIsValid &= ValidateWebsite();
       return booIsValid;
@@ -236,7 +235,9 @@ namespace Fomm.PackageManager
     {
       ModName = p_fomodMod.ModName;
       Author = p_fomodMod.Author;
-      HumanReadableVersion = String.IsNullOrEmpty(p_fomodMod.HumanReadableVersion) ? p_fomodMod.MachineVersion.ToString() : p_fomodMod.HumanReadableVersion;
+      HumanReadableVersion = String.IsNullOrEmpty(p_fomodMod.HumanReadableVersion)
+        ? p_fomodMod.MachineVersion.ToString()
+        : p_fomodMod.HumanReadableVersion;
       MachineVersion = p_fomodMod.MachineVersion;
       Description = p_fomodMod.Description;
       Website = p_fomodMod.Website;
@@ -250,12 +251,14 @@ namespace Fomm.PackageManager
     /// Saves the edited info to the given fomod.
     /// </summary>
     /// <param name="p_fomodMod">The <see cref="fomod"/> to which to save the info.</param>
-    /// <returns><lang cref="false"/> if the info failed validation and was not saved;
-    /// <lang cref="true"/> otherwise.</returns>
+    /// <returns><lang langref="false"/> if the info failed validation and was not saved;
+    /// <lang langref="true"/> otherwise.</returns>
     public bool SaveFomod(fomod p_fomodMod)
     {
-      if (!this.ValidateChildren())
+      if (!ValidateChildren())
+      {
         return false;
+      }
 
       if (!String.IsNullOrEmpty(tbVersion.Text) && String.IsNullOrEmpty(tbMVersion.Text))
       {
@@ -265,7 +268,9 @@ namespace Fomm.PackageManager
 
       p_fomodMod.ModName = ModName;
       p_fomodMod.Author = Author;
-      p_fomodMod.HumanReadableVersion = String.IsNullOrEmpty(HumanReadableVersion) ? MachineVersion.ToString() : HumanReadableVersion;
+      p_fomodMod.HumanReadableVersion = String.IsNullOrEmpty(HumanReadableVersion)
+        ? MachineVersion.ToString()
+        : HumanReadableVersion;
       p_fomodMod.MachineVersion = MachineVersion;
       p_fomodMod.Description = Description;
       p_fomodMod.Website = Website;
@@ -288,8 +293,8 @@ namespace Fomm.PackageManager
     protected override void OnResize(EventArgs e)
     {
       base.OnResize(e);
-      pbxScreenshot.Height = this.ClientSize.Height - pbxScreenshot.Top - 3;
-      pbxScreenshot.Width = this.ClientSize.Width - 6;
+      pbxScreenshot.Height = ClientSize.Height - pbxScreenshot.Top - 3;
+      pbxScreenshot.Width = ClientSize.Width - 6;
     }
 
     #region IFomodInfo Members
@@ -319,7 +324,9 @@ namespace Fomm.PackageManager
       get
       {
         if (String.IsNullOrEmpty(tbMVersion.Text) || !ValidateMachineVersion())
+        {
           return fomod.DefaultVersion;
+        }
         return new Version(tbMVersion.Text);
       }
       set
@@ -337,7 +344,9 @@ namespace Fomm.PackageManager
       get
       {
         if (String.IsNullOrEmpty(tbMinFommVersion.Text) || !ValidateMinFommVersion())
+        {
           return fomod.DefaultMinFommVersion;
+        }
         return new Version(tbMinFommVersion.Text);
       }
       set
@@ -354,16 +363,21 @@ namespace Fomm.PackageManager
     {
       get
       {
-        string[] strGroups = new string[clbGroups.CheckedItems.Count];
-        for (Int32 i = 0; i < strGroups.Length; i++)
-          strGroups[i] = ((string)clbGroups.CheckedItems[i]).ToLowerInvariant();
+        var strGroups = new string[clbGroups.CheckedItems.Count];
+        for (var i = 0; i < strGroups.Length; i++)
+        {
+          strGroups[i] = ((string) clbGroups.CheckedItems[i]).ToLowerInvariant();
+        }
         return strGroups;
       }
       set
       {
         clbGroups.SuspendLayout();
-        for (Int32 i = 0; i < clbGroups.Items.Count; i++)
-          clbGroups.SetItemChecked(i, Array.IndexOf<string>(value, ((string)clbGroups.Items[i]).ToLowerInvariant()) != -1);
+        for (var i = 0; i < clbGroups.Items.Count; i++)
+        {
+          clbGroups.SetItemChecked(i,
+                                   Array.IndexOf(value, ((string) clbGroups.Items[i]).ToLowerInvariant()) != -1);
+        }
         clbGroups.ResumeLayout();
       }
     }

@@ -35,18 +35,17 @@
 // exception statement from your version.
 
 using System;
-using System.Collections;
 using System.IO;
 
-namespace ICSharpCode.SharpZipLib.Zip
+namespace Fomm.SharpZipLib.Zip
 {
   // TODO: Sort out wether tagged data is useful and what a good implementation might look like.
   // Its just a sketch of an idea at the moment.
-  
+
   /// <summary>
   /// ExtraData tagged value interface.
   /// </summary>
-  interface ITaggedData
+  internal interface ITaggedData
   {
     /// <summary>
     /// Get the ID for this tagged data value.
@@ -67,11 +66,11 @@ namespace ICSharpCode.SharpZipLib.Zip
     /// <returns>Returns the data for this instance.</returns>
     byte[] GetData();
   }
-  
+
   /// <summary>
   /// A factory that creates <see cref="ITaggedData">tagged data</see> instances.
   /// </summary>
-  interface ITaggedDataFactory
+  internal interface ITaggedDataFactory
   {
     /// <summary>
     /// Get data for a specific tag value.
@@ -95,16 +94,17 @@ namespace ICSharpCode.SharpZipLib.Zip
   /// means that for extra data created by passing in data can have the values modified by the caller
   /// in some circumstances.
   /// </remarks>
-  sealed class ZipExtraData : IDisposable
+  internal sealed class ZipExtraData : IDisposable
   {
     #region Constructors
+
     /// <summary>
     /// Initialise with known extra data.
     /// </summary>
     /// <param name="data">The extra data.</param>
     public ZipExtraData(byte[] data)
     {
-      if ( data == null )
+      if (data == null)
       {
         data_ = new byte[0];
       }
@@ -113,6 +113,7 @@ namespace ICSharpCode.SharpZipLib.Zip
         data_ = data;
       }
     }
+
     #endregion
 
     /// <summary>
@@ -121,11 +122,12 @@ namespace ICSharpCode.SharpZipLib.Zip
     /// <returns>Returns the raw byte[] extra data this instance represents.</returns>
     public byte[] GetEntryData()
     {
-      if ( Length > ushort.MaxValue ) {
+      if (Length > ushort.MaxValue)
+      {
         throw new ZipException("Data exceeds maximum length");
       }
 
-      return (byte[])data_.Clone();
+      return (byte[]) data_.Clone();
     }
 
     /// <summary>
@@ -133,17 +135,17 @@ namespace ICSharpCode.SharpZipLib.Zip
     /// </summary>
     public int Length
     {
-      get { return data_.Length; }
+      get
+      {
+        return data_.Length;
+      }
     }
-    
+
     /// <summary>
     /// Get the length of the last value found by <see cref="Find"/>
     /// </summary>
     /// <remarks>This is only valid if <see cref="Find"/> has previously returned true.</remarks>
-    public int ValueLength
-    {
-      get { return readValueLength_; }
-    }
+    public int ValueLength { get; private set; }
 
     /// <summary>
     /// Get the index for the current read value.
@@ -151,24 +153,22 @@ namespace ICSharpCode.SharpZipLib.Zip
     /// <remarks>This is only valid if <see cref="Find"/> has previously returned true.
     /// Initially the result will be the index of the first byte of actual data.  The value is updated after calls to
     /// <see cref="ReadInt"/>, <see cref="ReadShort"/> and <see cref="ReadLong"/>. </remarks>
-    public int CurrentReadIndex
-    {
-      get { return index_; }
-    }
+    public int CurrentReadIndex { get; private set; }
 
     /// <summary>
     /// Get the number of bytes remaining to be read for the current value;
     /// </summary>
     public int UnreadCount
     {
-      get 
+      get
       {
         if ((readValueStart_ > data_.Length) ||
-          (readValueStart_ < 4) ) {
+            (readValueStart_ < 4))
+        {
           throw new ZipException("Find must be called before calling a Read method");
         }
 
-        return readValueStart_ + readValueLength_ - index_; 
+        return readValueStart_ + ValueLength - CurrentReadIndex;
       }
     }
 
@@ -180,27 +180,30 @@ namespace ICSharpCode.SharpZipLib.Zip
     public bool Find(int headerID)
     {
       readValueStart_ = data_.Length;
-      readValueLength_ = 0;
-      index_ = 0;
+      ValueLength = 0;
+      CurrentReadIndex = 0;
 
-      int localLength = readValueStart_;
-      int localTag = headerID - 1;
+      var localLength = readValueStart_;
+      var localTag = headerID - 1;
 
       // Trailing bytes that cant make up an entry (as there arent enough
       // bytes for a tag and length) are ignored!
-      while ( (localTag != headerID) && (index_ < data_.Length - 3) ) {
+      while ((localTag != headerID) && (CurrentReadIndex < data_.Length - 3))
+      {
         localTag = ReadShortInternal();
         localLength = ReadShortInternal();
-        if ( localTag != headerID ) {
-          index_ += localLength;
+        if (localTag != headerID)
+        {
+          CurrentReadIndex += localLength;
         }
       }
 
-      bool result = (localTag == headerID) && ((index_ + localLength) <= data_.Length);
+      var result = (localTag == headerID) && ((CurrentReadIndex + localLength) <= data_.Length);
 
-      if ( result ) {
-        readValueStart_ = index_;
-        readValueLength_ = localLength;
+      if (result)
+      {
+        readValueStart_ = CurrentReadIndex;
+        ValueLength = localLength;
       }
 
       return result;
@@ -214,13 +217,15 @@ namespace ICSharpCode.SharpZipLib.Zip
     /// <remarks>If the ID already exists its contents are replaced.</remarks>
     public void AddEntry(int headerID, byte[] fieldData)
     {
-      if ( (headerID > ushort.MaxValue) || (headerID < 0)) {
+      if ((headerID > ushort.MaxValue) || (headerID < 0))
+      {
         throw new ArgumentOutOfRangeException("headerID");
       }
 
-      int addLength = (fieldData == null) ? 0 : fieldData.Length;
+      var addLength = (fieldData == null) ? 0 : fieldData.Length;
 
-      if ( addLength > ushort.MaxValue ) {
+      if (addLength > ushort.MaxValue)
+      {
 #if NETCF_1_0
         throw new ArgumentOutOfRangeException("fieldData");
 #else
@@ -229,26 +234,28 @@ namespace ICSharpCode.SharpZipLib.Zip
       }
 
       // Test for new length before adjusting data.
-      int newLength = data_.Length + addLength + 4;
+      var newLength = data_.Length + addLength + 4;
 
-      if ( Find(headerID) )
+      if (Find(headerID))
       {
         newLength -= (ValueLength + 4);
       }
 
-      if ( newLength > ushort.MaxValue ) {
+      if (newLength > ushort.MaxValue)
+      {
         throw new ZipException("Data exceeds maximum length");
       }
-      
+
       Delete(headerID);
 
-      byte[] newData = new byte[newLength];
+      var newData = new byte[newLength];
       data_.CopyTo(newData, 0);
-      int index = data_.Length;
+      var index = data_.Length;
       data_ = newData;
       SetShort(ref index, headerID);
       SetShort(ref index, addLength);
-      if ( fieldData != null ) {
+      if (fieldData != null)
+      {
         fieldData.CopyTo(newData, index);
       }
     }
@@ -270,7 +277,7 @@ namespace ICSharpCode.SharpZipLib.Zip
     /// <param name="headerID">The identifier to use for this entry.</param>
     public void AddNewEntry(int headerID)
     {
-      byte[] newData = newEntry_.ToArray();
+      var newData = newEntry_.ToArray();
       newEntry_ = null;
       AddEntry(headerID, newData);
     }
@@ -282,9 +289,10 @@ namespace ICSharpCode.SharpZipLib.Zip
     /// <seealso cref="StartNewEntry"/>
     public void AddLeShort(int toAdd)
     {
-      unchecked {
-        newEntry_.WriteByte(( byte )toAdd);
-        newEntry_.WriteByte(( byte )(toAdd >> 8));
+      unchecked
+      {
+        newEntry_.WriteByte((byte) toAdd);
+        newEntry_.WriteByte((byte) (toAdd >> 8));
       }
     }
 
@@ -295,9 +303,10 @@ namespace ICSharpCode.SharpZipLib.Zip
     /// <seealso cref="StartNewEntry"/>
     public void AddLeInt(int toAdd)
     {
-      unchecked {
-        AddLeShort(( short )toAdd);
-        AddLeShort(( short )(toAdd >> 16));
+      unchecked
+      {
+        AddLeShort((short) toAdd);
+        AddLeShort((short) (toAdd >> 16));
       }
     }
 
@@ -308,9 +317,10 @@ namespace ICSharpCode.SharpZipLib.Zip
     /// <seealso cref="StartNewEntry"/>
     public void AddLeLong(long toAdd)
     {
-      unchecked {
-        AddLeInt(( int )(toAdd & 0xffffffff));
-        AddLeInt(( int )(toAdd >> 32));
+      unchecked
+      {
+        AddLeInt((int) (toAdd & 0xffffffff));
+        AddLeInt((int) (toAdd >> 32));
       }
     }
 
@@ -321,16 +331,17 @@ namespace ICSharpCode.SharpZipLib.Zip
     /// <returns>Returns true if the field was found and deleted.</returns>
     public bool Delete(int headerID)
     {
-      bool result = false;
+      var result = false;
 
-      if ( Find(headerID) ) {
+      if (Find(headerID))
+      {
         result = true;
-        int trueStart = readValueStart_ - 4;
+        var trueStart = readValueStart_ - 4;
 
-        byte[] newData = new byte[data_.Length - (ValueLength + 4)];
+        var newData = new byte[data_.Length - (ValueLength + 4)];
         Array.Copy(data_, 0, newData, 0, trueStart);
 
-        int trueEnd = trueStart + ValueLength + 4;
+        var trueEnd = trueStart + ValueLength + 4;
         Array.Copy(data_, trueEnd, newData, trueStart, data_.Length - trueEnd);
         data_ = newData;
       }
@@ -338,6 +349,7 @@ namespace ICSharpCode.SharpZipLib.Zip
     }
 
     #region Reading Support
+
     /// <summary>
     /// Read a long in little endian form from the last <see cref="Find">found</see> data value
     /// </summary>
@@ -345,7 +357,7 @@ namespace ICSharpCode.SharpZipLib.Zip
     public long ReadLong()
     {
       ReadCheck(8);
-      return (ReadInt() & 0xffffffff) | ((( long )ReadInt()) << 32);
+      return (ReadInt() & 0xffffffff) | (((long) ReadInt()) << 32);
     }
 
     /// <summary>
@@ -356,9 +368,9 @@ namespace ICSharpCode.SharpZipLib.Zip
     {
       ReadCheck(4);
 
-      int result = data_[index_] + (data_[index_ + 1] << 8) + 
-        (data_[index_ + 2] << 16) + (data_[index_ + 3] << 24);
-      index_ += 4;
+      var result = data_[CurrentReadIndex] + (data_[CurrentReadIndex + 1] << 8) +
+                   (data_[CurrentReadIndex + 2] << 16) + (data_[CurrentReadIndex + 3] << 24);
+      CurrentReadIndex += 4;
       return result;
     }
 
@@ -369,8 +381,8 @@ namespace ICSharpCode.SharpZipLib.Zip
     public int ReadShort()
     {
       ReadCheck(2);
-      int result = data_[index_] + (data_[index_ + 1] << 8);
-      index_ += 2;
+      var result = data_[CurrentReadIndex] + (data_[CurrentReadIndex + 1] << 8);
+      CurrentReadIndex += 2;
       return result;
     }
 
@@ -380,10 +392,11 @@ namespace ICSharpCode.SharpZipLib.Zip
     /// <returns>The byte value read or -1 if the end of data has been reached.</returns>
     public int ReadByte()
     {
-      int result = -1;
-      if ( (index_ < data_.Length) && (readValueStart_ + readValueLength_ > index_) ) {
-        result = data_[index_];
-        index_ += 1;
+      var result = -1;
+      if ((CurrentReadIndex < data_.Length) && (readValueStart_ + ValueLength > CurrentReadIndex))
+      {
+        result = data_[CurrentReadIndex];
+        CurrentReadIndex += 1;
       }
       return result;
     }
@@ -395,17 +408,21 @@ namespace ICSharpCode.SharpZipLib.Zip
     public void Skip(int amount)
     {
       ReadCheck(amount);
-      index_ += amount;
+      CurrentReadIndex += amount;
     }
 
-    void ReadCheck(int length)
+    // ReSharper disable UnusedParameter.Local
+    private void ReadCheck(int length)
+    // ReSharper restore UnusedParameter.Local
     {
       if ((readValueStart_ > data_.Length) ||
-        (readValueStart_ < 4) ) {
+          (readValueStart_ < 4))
+      {
         throw new ZipException("Find must be called before calling a Read method");
       }
 
-      if (index_ > readValueStart_ + readValueLength_ - length ) {
+      if (CurrentReadIndex > readValueStart_ + ValueLength - length)
+      {
         throw new ZipException("End of extra data");
       }
     }
@@ -414,21 +431,22 @@ namespace ICSharpCode.SharpZipLib.Zip
     /// Internal form of <see cref="ReadShort"/> that reads data at any location.
     /// </summary>
     /// <returns>Returns the short value read.</returns>
-    int ReadShortInternal()
+    private int ReadShortInternal()
     {
-      if ( index_ > data_.Length - 2) {
+      if (CurrentReadIndex > data_.Length - 2)
+      {
         throw new ZipException("End of extra data");
       }
 
-      int result = data_[index_] + (data_[index_ + 1] << 8);
-      index_ += 2;
+      var result = data_[CurrentReadIndex] + (data_[CurrentReadIndex + 1] << 8);
+      CurrentReadIndex += 2;
       return result;
     }
 
-    void SetShort(ref int index, int source)
+    private void SetShort(ref int index, int source)
     {
-      data_[index] = (byte)source;
-      data_[index + 1] = (byte)(source >> 8);
+      data_[index] = (byte) source;
+      data_[index + 1] = (byte) (source >> 8);
       index += 2;
     }
 
@@ -441,7 +459,8 @@ namespace ICSharpCode.SharpZipLib.Zip
     /// </summary>
     public void Dispose()
     {
-      if ( newEntry_ != null ) {
+      if (newEntry_ != null)
+      {
         newEntry_.Close();
       }
     }
@@ -449,12 +468,12 @@ namespace ICSharpCode.SharpZipLib.Zip
     #endregion
 
     #region Instance Fields
-    int index_;
-    int readValueStart_;
-    int readValueLength_;
 
-    MemoryStream newEntry_;
-    byte[] data_;
+    private int readValueStart_;
+
+    private MemoryStream newEntry_;
+    private byte[] data_;
+
     #endregion
   }
 }

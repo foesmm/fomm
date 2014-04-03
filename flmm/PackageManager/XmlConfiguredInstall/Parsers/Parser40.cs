@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Xml;
 using System.Collections.Generic;
-using System.Xml.Schema;
-using System.IO;
-using System.Drawing;
-using System.Windows.Forms;
-using System.Globalization;
 
 namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
 {
@@ -36,7 +31,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     /// <param name="p_fomodMod">The mod whose configuration file we are parsing.</param>
     /// <param name="p_dsmSate">The state of the install.</param>
     /// <param name="p_pexParserExtension">The parser extension that provides game-specific config file parsing.</param>
-    public Parser40(XmlDocument p_xmlConfig, fomod p_fomodMod, DependencyStateManager p_dsmSate, ParserExtension p_pexParserExtension)
+    public Parser40(XmlDocument p_xmlConfig, fomod p_fomodMod, DependencyStateManager p_dsmSate,
+                    ParserExtension p_pexParserExtension)
       : base(p_xmlConfig, p_fomodMod, p_dsmSate, p_pexParserExtension)
     {
     }
@@ -48,12 +44,14 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     /// <seealso cref="Parser.GetInstallSteps()"/>
     public override IList<InstallStep> GetInstallSteps()
     {
-      List<InstallStep> lstSteps = new List<InstallStep>();
-      XmlNode xndSteps = XmlConfig.SelectSingleNode("/config/installSteps");
+      var lstSteps = new List<InstallStep>();
+      var xndSteps = XmlConfig.SelectSingleNode("/config/installSteps");
       if (xndSteps != null)
       {
         foreach (XmlNode xndStep in xndSteps.ChildNodes)
+        {
           lstSteps.Add(parseInstallStep(xndStep));
+        }
         switch (xndSteps.Attributes["order"].InnerText)
         {
           case "Ascending":
@@ -62,7 +60,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
               if (String.IsNullOrEmpty(x.Name))
               {
                 if (String.IsNullOrEmpty(y.Name))
+                {
                   return 0;
+                }
                 return -1;
               }
               return x.Name.CompareTo(y.Name);
@@ -74,7 +74,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
               if (String.IsNullOrEmpty(y.Name))
               {
                 if (String.IsNullOrEmpty(x.Name))
+                {
                   return 0;
+                }
                 return -1;
               }
               return y.Name.CompareTo(x.Name);
@@ -96,10 +98,10 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     /// <returns>The added install step.</returns>
     protected InstallStep parseInstallStep(XmlNode p_xndStep)
     {
-      string strName = p_xndStep.Attributes["name"].InnerText;
-      CompositeDependency cmpVisibility = loadDependency(p_xndStep.SelectSingleNode("visible"));
-      IList<PluginGroup> lstGroups = loadGroupedPlugins(p_xndStep.SelectSingleNode("optionalFileGroups"));
-      InstallStep stpStep = new InstallStep(strName, cmpVisibility, lstGroups);
+      var strName = p_xndStep.Attributes["name"].InnerText;
+      var cmpVisibility = loadDependency(p_xndStep.SelectSingleNode("visible"));
+      var lstGroups = loadGroupedPlugins(p_xndStep.SelectSingleNode("optionalFileGroups"));
+      var stpStep = new InstallStep(strName, cmpVisibility, lstGroups);
       return stpStep;
     }
 

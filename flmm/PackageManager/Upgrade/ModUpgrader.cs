@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.IO;
 using System.Windows.Forms;
 using Fomm.PackageManager.ModInstallLog;
@@ -22,8 +20,8 @@ namespace Fomm.PackageManager.Upgrade
   /// </remarks>
   public class ModUpgrader : ModInstaller
   {
-    private fomod m_fomodOriginalMod = null;
-    private BackgroundWorkerProgressDialog m_bwdProgress = null;
+    private fomod m_fomodOriginalMod;
+    private BackgroundWorkerProgressDialog m_bwdProgress;
 
     #region Properties
 
@@ -32,7 +30,8 @@ namespace Fomm.PackageManager.Upgrade
     {
       get
       {
-        return "A problem occurred during in-place upgrade: " + Environment.NewLine + "{0}" + Environment.NewLine + "The mod was not upgraded.";
+        return "A problem occurred during in-place upgrade: " + Environment.NewLine + "{0}" + Environment.NewLine +
+               "The mod was not upgraded.";
       }
     }
 
@@ -87,7 +86,7 @@ namespace Fomm.PackageManager.Upgrade
       : base(new UpgradeFomod(p_fomodMod.filepath))
     {
       m_fomodOriginalMod = p_fomodMod;
-      ((UpgradeFomod)Fomod).SetBaseName(p_strOldBaseName);
+      ((UpgradeFomod) Fomod).SetBaseName(p_strOldBaseName);
     }
 
     #endregion
@@ -99,13 +98,13 @@ namespace Fomm.PackageManager.Upgrade
     /// the <see cref="fomod"/>'s installed version is equal to the
     /// current <see cref="Fomod"/>'s version.
     /// </summary>
-    /// <returns><lang cref="true"/> if the <see cref="Fomod"/>'s installed version is equal to the
-    /// current <see cref="Fomod"/>'s version; <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the <see cref="Fomod"/>'s installed version is equal to the
+    /// current <see cref="Fomod"/>'s version; <lang langref="false"/> otherwise.</returns>
     /// <seealso cref="ModInstallScript.CheckAlreadyDone()"/>
     protected override bool CheckAlreadyDone()
     {
-      FomodInfo fifInfo = InstallLog.Current.GetModInfo(Fomod.BaseName);
-      string strCurrentVersion =  (fifInfo == null) ? null : fifInfo.Version;
+      var fifInfo = InstallLog.Current.GetModInfo(Fomod.BaseName);
+      var strCurrentVersion = (fifInfo == null) ? null : fifInfo.Version;
       return Fomod.HumanReadableVersion.Equals(strCurrentVersion);
     }
 
@@ -122,20 +121,26 @@ namespace Fomm.PackageManager.Upgrade
     /// </summary>
     protected override bool DoScript()
     {
-      foreach (string strSettingsFile in Program.GameMode.SettingsFiles.Values)
+      foreach (var strSettingsFile in Program.GameMode.SettingsFiles.Values)
+      {
         TransactionalFileManager.Snapshot(strSettingsFile);
-      foreach (string strAdditionalFile in Program.GameMode.AdditionalPaths.Values)
+      }
+      foreach (var strAdditionalFile in Program.GameMode.AdditionalPaths.Values)
+      {
         if (File.Exists(strAdditionalFile))
+        {
           TransactionalFileManager.Snapshot(strAdditionalFile);
+        }
+      }
       TransactionalFileManager.Snapshot(InstallLog.Current.InstallLogPath);
 
-      bool booUpgraded = false;
+      var booUpgraded = false;
       try
       {
         MergeModule = new InstallLogMergeModule();
         if (Fomod.HasInstallScript)
         {
-          FomodScript fscInstallScript = Fomod.GetInstallScript();
+          var fscInstallScript = Fomod.GetInstallScript();
           switch (fscInstallScript.Type)
           {
             case FomodScriptType.CSharp:
@@ -147,7 +152,9 @@ namespace Fomm.PackageManager.Upgrade
           }
         }
         else
+        {
           booUpgraded = RunBasicInstallScript(ProgressMessage);
+        }
         if (booUpgraded)
         {
           using (m_bwdProgress = new BackgroundWorkerProgressDialog(ReconcileDifferences))
@@ -156,18 +163,19 @@ namespace Fomm.PackageManager.Upgrade
             m_bwdProgress.ItemProgressStep = 1;
             m_bwdProgress.OverallProgressStep = 1;
             if (m_bwdProgress.ShowDialog() == DialogResult.Cancel)
+            {
               return false;
+            }
           }
-          string strOldBaseName = Fomod.BaseName;
-          ((UpgradeFomod)Fomod).SetBaseName(((UpgradeFomod)Fomod).OriginalBaseName);
+          var strOldBaseName = Fomod.BaseName;
+          ((UpgradeFomod) Fomod).SetBaseName(((UpgradeFomod) Fomod).OriginalBaseName);
           InstallLog.Current.MergeUpgrade(Fomod, strOldBaseName, MergeModule);
-          ((UpgradeFomod)Fomod).SetBaseName(strOldBaseName);
+          ((UpgradeFomod) Fomod).SetBaseName(strOldBaseName);
           Script.CommitActivePlugins();
         }
       }
       catch (Exception e)
       {
-        booUpgraded = false;
         throw e;
       }
       m_fomodOriginalMod.IsActive = DetermineFomodActiveStatus(booUpgraded);
@@ -184,8 +192,8 @@ namespace Fomm.PackageManager.Upgrade
     /// or not the script was successful.
     /// </summary>
     /// <param name="p_booSucceeded">Whether or not the script was successful.</param>
-    /// <returns><lang cref="true"/> if the script was successful;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the script was successful;
+    /// <lang langref="false"/> otherwise.</returns>
     protected virtual bool DetermineFomodActiveStatus(bool p_booSucceeded)
     {
       return p_booSucceeded;
@@ -204,38 +212,50 @@ namespace Fomm.PackageManager.Upgrade
     {
       m_bwdProgress.OverallProgressMaximum = 3;
       m_bwdProgress.ItemMessage = "Synchronizing Files";
-      InstallLogMergeModule ilmPreviousChanges = InstallLog.Current.GetMergeModule(Fomod.BaseName);
+      var ilmPreviousChanges = InstallLog.Current.GetMergeModule(Fomod.BaseName);
       m_bwdProgress.ItemProgressMaximum = ilmPreviousChanges.DataFiles.Count;
-      foreach (string strFile in ilmPreviousChanges.DataFiles)
+      foreach (var strFile in ilmPreviousChanges.DataFiles)
       {
         if (!MergeModule.ContainsFile(strFile))
+        {
           Script.UninstallDataFile(strFile);
+        }
         if (m_bwdProgress.Cancelled())
+        {
           return;
+        }
         m_bwdProgress.StepItemProgress();
       }
       m_bwdProgress.StepOverallProgress();
 
       m_bwdProgress.ItemMessage = "Synchronizing Ini Edits";
       m_bwdProgress.ItemProgressMaximum = ilmPreviousChanges.IniEdits.Count;
-      foreach (InstallLogMergeModule.IniEdit iniEdit in ilmPreviousChanges.IniEdits)
+      foreach (var iniEdit in ilmPreviousChanges.IniEdits)
       {
         if (!MergeModule.IniEdits.Contains(iniEdit))
+        {
           Script.UneditIni(iniEdit.File, iniEdit.Section, iniEdit.Key);
+        }
         if (m_bwdProgress.Cancelled())
+        {
           return;
+        }
         m_bwdProgress.StepItemProgress();
       }
       m_bwdProgress.StepOverallProgress();
 
       m_bwdProgress.ItemMessage = "Synchronizing Game Specific Value Edits";
       m_bwdProgress.ItemProgressMaximum = ilmPreviousChanges.GameSpecificValueEdits.Count;
-      foreach (InstallLogMergeModule.GameSpecificValueEdit gsvEdit in ilmPreviousChanges.GameSpecificValueEdits)
+      foreach (var gsvEdit in ilmPreviousChanges.GameSpecificValueEdits)
       {
         if (!MergeModule.GameSpecificValueEdits.Contains(gsvEdit))
+        {
           Script.UneditGameSpecificValue(gsvEdit.Key);
+        }
         if (m_bwdProgress.Cancelled())
+        {
           return;
+        }
         m_bwdProgress.StepItemProgress();
       }
       m_bwdProgress.StepOverallProgress();

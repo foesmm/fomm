@@ -89,13 +89,15 @@ namespace Fomm.PackageManager
     /// <see cref="SourceFile.Source"/>s are equal.
     /// </remarks>
     /// <param name="other">The <see cref="SourceFile"/> to which to equate this <see cref="SourceFile"/>.</param>
-    /// <returns><lang cref="true"/> is the two <see cref="SourceDownloadLocation"/>s are equal;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> is the two <see cref="SourceDownloadLocation"/>s are equal;
+    /// <lang langref="false"/> otherwise.</returns>
     public bool Equals(SourceFile other)
     {
       if (other == null)
+      {
         return false;
-      return this.Source.Equals(other.Source);
+      }
+      return Source.Equals(other.Source);
     }
 
     #endregion

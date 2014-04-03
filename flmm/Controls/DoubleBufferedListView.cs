@@ -1,10 +1,9 @@
-﻿using System;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
 namespace Fomm.Controls
 {
   /// <summary>
-  /// A list view that has <see cref="Control.DoubleBuffered"/> set to <lang cref="true"/>.
+  /// A list view that has <see cref="Control.DoubleBuffered"/> set to <lang langref="true"/>.
   /// </summary>
   public class DoubleBufferedListView : ListView
   {
@@ -13,7 +12,7 @@ namespace Fomm.Controls
     /// </summary>
     public DoubleBufferedListView()
     {
-      this.DoubleBuffered = true;
+      DoubleBuffered = true;
     }
   }
 }

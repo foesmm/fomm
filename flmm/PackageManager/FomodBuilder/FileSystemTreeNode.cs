@@ -4,7 +4,6 @@ using System.Text;
 using System.IO;
 using System.Windows.Forms;
 using System.Collections.Generic;
-using SevenZip;
 
 namespace Fomm.PackageManager.FomodBuilder
 {
@@ -45,23 +44,28 @@ namespace Fomm.PackageManager.FomodBuilder
       {
         get
         {
-          return this.Find((s) => { return s.Equals(p_strPath); });
+          return Find(s =>
+          {
+            return s.Equals(p_strPath);
+          });
         }
       }
 
       public void Add(string p_strPath, bool p_booIsLoaded)
       {
-        this.Add(new Source(p_strPath, false));
+        Add(new Source(p_strPath, false));
       }
 
       public bool Remove(string p_strPath)
       {
-        for (Int32 i = Count - 1; i >= 0; i--)
+        for (var i = Count - 1; i >= 0; i--)
+        {
           if (this[i].Equals(p_strPath))
           {
             RemoveAt(i);
             return true;
           }
+        }
         return false;
       }
 
@@ -70,13 +74,17 @@ namespace Fomm.PackageManager.FomodBuilder
       /// with the given path.
       /// </summary>
       /// <param name="p_strSourcePath">The source path to look for in the set.</param>
-      /// <returns><lang cref="true"/> if the set contains a <see cref="Source"/> with
-      /// the given path; <lang cref="false"/> otherwise.</returns>
+      /// <returns><lang langref="true"/> if the set contains a <see cref="Source"/> with
+      /// the given path; <lang langref="false"/> otherwise.</returns>
       public bool Contains(string p_strSourcePath)
       {
-        for (Int32 i = Count - 1; i >= 0; i--)
+        for (var i = Count - 1; i >= 0; i--)
+        {
           if (this[i].Equals(p_strSourcePath))
+          {
             return true;
+          }
+        }
         return false;
       }
     }
@@ -86,22 +94,13 @@ namespace Fomm.PackageManager.FomodBuilder
     /// </summary>
     public class Source : IEquatable<Source>, IEquatable<string>
     {
-      private string m_strPath = null;
-      private bool m_booIsLoaded = false;
-
       #region Properties
 
       /// <summary>
       /// Gets the path of the source.
       /// </summary>
       /// <value>The path of the source.</value>
-      public string Path
-      {
-        get
-        {
-          return m_strPath;
-        }
-      }
+      public string Path { get; private set; }
 
       /// <summary>
       /// Gets or sets whether the source has been loaded for the
@@ -109,17 +108,7 @@ namespace Fomm.PackageManager.FomodBuilder
       /// </summary>
       /// <value>Whether the source has been loaded for the
       /// current node.</value>
-      public bool IsLoaded
-      {
-        get
-        {
-          return m_booIsLoaded;
-        }
-        set
-        {
-          m_booIsLoaded = value;
-        }
-      }
+      public bool IsLoaded { get; set; }
 
       #endregion
 
@@ -133,8 +122,8 @@ namespace Fomm.PackageManager.FomodBuilder
       /// current node.</param>
       public Source(string p_strPath, bool p_booIsLoaded)
       {
-        m_strPath = p_strPath;
-        m_booIsLoaded = p_booIsLoaded;
+        Path = p_strPath;
+        IsLoaded = p_booIsLoaded;
       }
 
       #endregion
@@ -150,8 +139,8 @@ namespace Fomm.PackageManager.FomodBuilder
       /// <see cref="Source.Path"/>s are case-insensitively equal.
       /// </remarks>
       /// <param name="other">The <see cref="Source"/> to compare to this one.</param>
-      /// <returns><lang cref="true"/> if the two <see cref="Source"/>s are equal;
-      /// <lang cref="false"/> otherwise.</returns>
+      /// <returns><lang langref="true"/> if the two <see cref="Source"/>s are equal;
+      /// <lang langref="false"/> otherwise.</returns>
       public bool Equals(Source other)
       {
         return Path.Equals(other.Path, StringComparison.InvariantCultureIgnoreCase);
@@ -170,8 +159,8 @@ namespace Fomm.PackageManager.FomodBuilder
       /// <see cref="Source.Path"/> is case-insensitively equal to the string.
       /// </remarks>
       /// <param name="other">The string to compare to this <see cref="Source"/>.</param>
-      /// <returns><lang cref="true"/> if this <see cref="Source"/> is equal
-      /// to the given string; <lang cref="false"/> otherwise.</returns>
+      /// <returns><lang langref="true"/> if this <see cref="Source"/> is equal
+      /// to the given string; <lang langref="false"/> otherwise.</returns>
       public bool Equals(string other)
       {
         return Path.Equals(other);
@@ -190,11 +179,12 @@ namespace Fomm.PackageManager.FomodBuilder
     /// </summary>
     public const string NEW_PREFIX = "new:";
 
-    private static Dictionary<string, Archive> m_dicArchiveCache = new Dictionary<string, Archive>(StringComparer.InvariantCultureIgnoreCase);
+    private static Dictionary<string, Archive> m_dicArchiveCache =
+      new Dictionary<string, Archive>(StringComparer.InvariantCultureIgnoreCase);
 
     private SourceSet m_sstSources = new SourceSet();
-    private bool? m_booIsAchive = null;
-    private bool? m_booIsDirectory = null;
+    private bool? m_booIsAchive;
+    private bool? m_booIsDirectory;
 
     #region Properties
 
@@ -207,20 +197,25 @@ namespace Fomm.PackageManager.FomodBuilder
       get
       {
         if (TreeView != null)
+        {
           return base.FullPath;
-        Stack<string> stkPath = new Stack<string>();
+        }
+        var stkPath = new Stack<string>();
         TreeNode tndParent = this;
         do
         {
           stkPath.Push(tndParent.Text);
           tndParent = tndParent.Parent;
-        } while (tndParent != null);
-        StringBuilder stbPath = new StringBuilder();
+        }
+        while (tndParent != null);
+        var stbPath = new StringBuilder();
         while (stkPath.Count > 0)
         {
           stbPath.Append(stkPath.Pop());
           if (stkPath.Count > 0)
+          {
             stbPath.Append(Path.DirectorySeparatorChar);
+          }
         }
         return stbPath.ToString();
       }
@@ -235,25 +230,32 @@ namespace Fomm.PackageManager.FomodBuilder
       get
       {
         if (m_booIsDirectory.HasValue)
+        {
           return m_booIsDirectory.Value;
-
+        }
 
         if ((m_sstSources.Count == 0) || LastSource.Path.StartsWith(NEW_PREFIX))
+        {
           m_booIsDirectory = true;
+        }
         else if (LastSource.Path.StartsWith(Archive.ARCHIVE_PREFIX))
         {
-          KeyValuePair<string, string> kvpArchive = Archive.ParseArchivePath(LastSource);
-          Archive arcArchive = null;
+          var kvpArchive = Archive.ParseArchivePath(LastSource);
+          Archive arcArchive;
           lock (m_dicArchiveCache)
           {
             if (!m_dicArchiveCache.ContainsKey(kvpArchive.Key))
+            {
               m_dicArchiveCache[kvpArchive.Key] = new Archive(kvpArchive.Key);
+            }
             arcArchive = m_dicArchiveCache[kvpArchive.Key];
           }
           m_booIsDirectory = arcArchive.IsDirectory(kvpArchive.Value);
         }
         else
+        {
           m_booIsDirectory = Directory.Exists(LastSource);
+        }
         return m_booIsDirectory.Value;
       }
     }
@@ -267,10 +269,14 @@ namespace Fomm.PackageManager.FomodBuilder
       get
       {
         if (m_booIsAchive.HasValue)
+        {
           return m_booIsAchive.Value;
+        }
 
         if ((m_sstSources.Count == 0) || LastSource.Path.StartsWith(NEW_PREFIX))
+        {
           m_booIsAchive = false;
+        }
         else
         {
           m_booIsAchive = Archive.IsArchive(LastSource);
@@ -290,7 +296,7 @@ namespace Fomm.PackageManager.FomodBuilder
     {
       get
       {
-        return (FileSystemTreeNode)base.Parent;
+        return (FileSystemTreeNode) base.Parent;
       }
     }
 
@@ -319,7 +325,9 @@ namespace Fomm.PackageManager.FomodBuilder
       get
       {
         if (m_sstSources.Count > 0)
+        {
           return m_sstSources[m_sstSources.Count - 1];
+        }
         return null;
       }
     }
@@ -335,8 +343,8 @@ namespace Fomm.PackageManager.FomodBuilder
     public FileSystemTreeNode(FileSystemTreeNode p_tndCopy)
       : base(p_tndCopy.Text)
     {
-      this.Name = p_tndCopy.Name;
-      this.m_sstSources = new SourceSet(p_tndCopy.m_sstSources);
+      Name = p_tndCopy.Name;
+      m_sstSources = new SourceSet(p_tndCopy.m_sstSources);
     }
 
     /// <summary>
@@ -347,8 +355,11 @@ namespace Fomm.PackageManager.FomodBuilder
     public FileSystemTreeNode(string p_strName, string p_strPath)
       : base(p_strName)
     {
-      if (!p_strPath.StartsWith(Archive.ARCHIVE_PREFIX) && !p_strPath.StartsWith(NEW_PREFIX) && !Directory.Exists(p_strPath) && !File.Exists(p_strPath))
+      if (!p_strPath.StartsWith(Archive.ARCHIVE_PREFIX) && !p_strPath.StartsWith(NEW_PREFIX) &&
+          !Directory.Exists(p_strPath) && !File.Exists(p_strPath))
+      {
         throw new FileNotFoundException("The given path is not valid.", p_strPath);
+      }
       m_sstSources.Add(p_strPath, false);
     }
 
@@ -380,9 +391,11 @@ namespace Fomm.PackageManager.FomodBuilder
     /// A value greater than 0 if this node is greater than the other.</returns>
     public int CompareTo(FileSystemTreeNode other)
     {
-      Int32 intResult = other.IsDirectory.CompareTo(this.IsDirectory);
+      var intResult = other.IsDirectory.CompareTo(IsDirectory);
       if (intResult == 0)
-        intResult = this.Text.CompareTo(other.Text);
+      {
+        intResult = Text.CompareTo(other.Text);
+      }
       return intResult;
     }
 

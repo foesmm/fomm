@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using Fomm.Games.Fallout3.Tools;
 using Fomm.PackageManager;
 using System.IO;
 using Fomm.Games.Fallout3.Tools.TESsnip;
@@ -7,39 +9,25 @@ using System.Windows.Forms;
 using Fomm.Games.Fallout3.Tools.BSA;
 using System.Collections.Generic;
 using Fomm.Games.Fallout3.Tools.AutoSorter;
+using ScriptCompiler = Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler.ScriptCompiler;
 
 namespace Fomm.Games.Fallout3.Script
 {
   public class Fallout3ModInstallScript : ModInstallScript
   {
-    private BsaManager m_bamBsaManager = null;
-    private TextureManager m_txmTextureManager = null;
-
     #region Properties
 
     /// <summary>
     /// Gets the <see cref="BsaManager"/> this script is using.
     /// </summary>
     /// <value>The <see cref="BsaManager"/> this script is using.</value>
-    public BsaManager BsaManager
-    {
-      get
-      {
-        return m_bamBsaManager;
-      }
-    }
+    public BsaManager BsaManager { get; private set; }
 
     /// <summary>
     /// Gets the <see cref="TextureManager"/> this script is using.
     /// </summary>
     /// <value>The <see cref="TextureManager"/> this script is using.</value>
-    public TextureManager TextureManager
-    {
-      get
-      {
-        return m_txmTextureManager;
-      }
-    }
+    public TextureManager TextureManager { get; private set; }
 
     #endregion
 
@@ -53,8 +41,8 @@ namespace Fomm.Games.Fallout3.Script
       : base(p_fomodMod, p_mibInstaller)
     {
       //m_misScript = new ModInstallScript(p_fomodMod);
-      m_bamBsaManager = new BsaManager();
-      m_txmTextureManager = new TextureManager();
+      BsaManager = new BsaManager();
+      TextureManager = new TextureManager();
     }
 
     #endregion
@@ -68,7 +56,7 @@ namespace Fomm.Games.Fallout3.Script
     public void SetupScriptCompiler(Plugin[] p_plgPlugins)
     {
       PermissionsManager.CurrentPermissions.Assert();
-      Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler.ScriptCompiler.Setup(p_plgPlugins);
+      ScriptCompiler.Setup(p_plgPlugins);
     }
 
     /// <summary>
@@ -76,7 +64,7 @@ namespace Fomm.Games.Fallout3.Script
     /// </summary>
     public void CompileResultScript(SubRecord sr, out Record r2, out string msg)
     {
-      Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler.ScriptCompiler.CompileResultScript(sr, out r2, out msg);
+      ScriptCompiler.CompileResultScript(sr, out r2, out msg);
     }
 
     /// <summary>
@@ -84,7 +72,7 @@ namespace Fomm.Games.Fallout3.Script
     /// </summary>
     public void CompileScript(Record r2, out string msg)
     {
-      Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler.ScriptCompiler.Compile(r2, out msg);
+      ScriptCompiler.Compile(r2, out msg);
     }
 
     #endregion
@@ -94,7 +82,7 @@ namespace Fomm.Games.Fallout3.Script
     /// <summary>
     /// Indicates whether or not FOSE is present.
     /// </summary>
-    /// <returns><lang cref="true"/> if FOSE is installed; <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if FOSE is installed; <lang langref="false"/> otherwise.</returns>
     public virtual bool ScriptExtenderPresent()
     {
       PermissionsManager.CurrentPermissions.Assert();
@@ -104,27 +92,32 @@ namespace Fomm.Games.Fallout3.Script
     /// <summary>
     /// Gets the version of the sript extender that is installed.
     /// </summary>
-    /// <returns>The version of the sript extender that is installed, or <lang cref="null"/> if no
+    /// <returns>The version of the sript extender that is installed, or <lang langref="null"/> if no
     /// sript extender is installed.</returns>
     public virtual Version GetScriptExtenderVersion()
     {
       PermissionsManager.CurrentPermissions.Assert();
       if (!File.Exists("fose_loader.exe"))
+      {
         return null;
-      return new Version(System.Diagnostics.FileVersionInfo.GetVersionInfo("fose_loader.exe").FileVersion.Replace(", ", "."));
+      }
+      return
+        new Version(FileVersionInfo.GetVersionInfo("fose_loader.exe").FileVersion.Replace(", ", "."));
     }
 
     /// <summary>
     /// Gets the version of GECK that is installed.
     /// </summary>
-    /// <returns>The version of GECK, or <lang cref="null"/> if GECK
+    /// <returns>The version of GECK, or <lang langref="null"/> if GECK
     /// is not installed.</returns>
     public Version GetGeckVersion()
     {
       PermissionsManager.CurrentPermissions.Assert();
       if (!File.Exists("geck.exe"))
+      {
         return null;
-      return new Version(System.Diagnostics.FileVersionInfo.GetVersionInfo("geck.exe").FileVersion.Replace(", ", "."));
+      }
+      return new Version(FileVersionInfo.GetVersionInfo("geck.exe").FileVersion.Replace(", ", "."));
     }
 
     #endregion
@@ -134,8 +127,8 @@ namespace Fomm.Games.Fallout3.Script
     /// <summary>
     /// Determines if the plugins have been auto-sorted.
     /// </summary>
-    /// <returns><lang cref="true"/> if the plugins have been auto-sorted;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the plugins have been auto-sorted;
+    /// <lang langref="false"/> otherwise.</returns>
     public bool IsLoadOrderAutoSorted()
     {
       PermissionsManager.CurrentPermissions.Assert();
@@ -183,7 +176,8 @@ namespace Fomm.Games.Fallout3.Script
     /// <returns>The specified value as a string.</returns>
     public virtual string GetFalloutIniString(string p_strSection, string p_strKey)
     {
-      return GetSettingsString(((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOIniPath, p_strSection, p_strKey);
+      return GetSettingsString(((Fallout3GameMode.SettingsFilesSet) Program.GameMode.SettingsFiles).FOIniPath,
+                               p_strSection, p_strKey);
     }
 
     /// <summary>
@@ -194,7 +188,8 @@ namespace Fomm.Games.Fallout3.Script
     /// <returns>The specified value as an integer.</returns>
     public virtual int GetFalloutIniInt(string p_strSection, string p_strKey)
     {
-      return GetSettingsInt(((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOIniPath, p_strSection, p_strKey);
+      return GetSettingsInt(((Fallout3GameMode.SettingsFilesSet) Program.GameMode.SettingsFiles).FOIniPath, p_strSection,
+                            p_strKey);
     }
 
     /// <summary>
@@ -205,7 +200,8 @@ namespace Fomm.Games.Fallout3.Script
     /// <returns>The specified value as a string.</returns>
     public virtual string GetPrefsIniString(string p_strSection, string p_strKey)
     {
-      return GetSettingsString(((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOPrefsIniPath, p_strSection, p_strKey);
+      return GetSettingsString(((Fallout3GameMode.SettingsFilesSet) Program.GameMode.SettingsFiles).FOPrefsIniPath,
+                               p_strSection, p_strKey);
     }
 
     /// <summary>
@@ -216,7 +212,8 @@ namespace Fomm.Games.Fallout3.Script
     /// <returns>The specified value as an integer.</returns>
     public virtual int GetPrefsIniInt(string p_strSection, string p_strKey)
     {
-      return GetSettingsInt(((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOPrefsIniPath, p_strSection, p_strKey);
+      return GetSettingsInt(((Fallout3GameMode.SettingsFilesSet) Program.GameMode.SettingsFiles).FOPrefsIniPath,
+                            p_strSection, p_strKey);
     }
 
     /// <summary>
@@ -227,7 +224,8 @@ namespace Fomm.Games.Fallout3.Script
     /// <returns>The specified value as a string.</returns>
     public virtual string GetGeckIniString(string p_strSection, string p_strKey)
     {
-      return GetSettingsString(((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).GeckIniPath, p_strSection, p_strKey);
+      return GetSettingsString(((Fallout3GameMode.SettingsFilesSet) Program.GameMode.SettingsFiles).GeckIniPath,
+                               p_strSection, p_strKey);
     }
 
     /// <summary>
@@ -238,7 +236,8 @@ namespace Fomm.Games.Fallout3.Script
     /// <returns>The specified value as an integer.</returns>
     public virtual int GetGeckIniInt(string p_strSection, string p_strKey)
     {
-      return GetSettingsInt(((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).GeckIniPath, p_strSection, p_strKey);
+      return GetSettingsInt(((Fallout3GameMode.SettingsFilesSet) Program.GameMode.SettingsFiles).GeckIniPath,
+                            p_strSection, p_strKey);
     }
 
     /// <summary>
@@ -249,7 +248,8 @@ namespace Fomm.Games.Fallout3.Script
     /// <returns>The specified value as a string.</returns>
     public virtual string GetGeckPrefsIniString(string p_strSection, string p_strKey)
     {
-      return GetSettingsString(((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).GeckPrefsIniPath, p_strSection, p_strKey);
+      return GetSettingsString(((Fallout3GameMode.SettingsFilesSet) Program.GameMode.SettingsFiles).GeckPrefsIniPath,
+                               p_strSection, p_strKey);
     }
 
     /// <summary>
@@ -260,7 +260,8 @@ namespace Fomm.Games.Fallout3.Script
     /// <returns>The specified value as an integer.</returns>
     public virtual int GetGeckPrefsIniInt(string p_strSection, string p_strKey)
     {
-      return GetSettingsInt(((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).GeckPrefsIniPath, p_strSection, p_strKey);
+      return GetSettingsInt(((Fallout3GameMode.SettingsFilesSet) Program.GameMode.SettingsFiles).GeckPrefsIniPath,
+                            p_strSection, p_strKey);
     }
 
     #endregion
@@ -274,11 +275,12 @@ namespace Fomm.Games.Fallout3.Script
     /// <param name="p_strKey">The key in the Ini file to edit.</param>
     /// <param name="p_strValue">The value to which to set the key.</param>
     /// <param name="p_booSaveOld">Not used.</param>
-    /// <returns><lang cref="true"/> if the value was set; <lang cref="false"/>
+    /// <returns><lang langref="true"/> if the value was set; <lang langref="false"/>
     /// if the user chose not to overwrite the existing value.</returns>
     public virtual bool EditFalloutINI(string p_strSection, string p_strKey, string p_strValue, bool p_booSaveOld)
     {
-      return EditINI(((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOIniPath, p_strSection, p_strKey, p_strValue);
+      return EditINI(((Fallout3GameMode.SettingsFilesSet) Program.GameMode.SettingsFiles).FOIniPath, p_strSection,
+                     p_strKey, p_strValue);
     }
 
     /// <summary>
@@ -288,11 +290,12 @@ namespace Fomm.Games.Fallout3.Script
     /// <param name="p_strKey">The key in the Ini file to edit.</param>
     /// <param name="p_strValue">The value to which to set the key.</param>
     /// <param name="p_booSaveOld">Not used.</param>
-    /// <returns><lang cref="true"/> if the value was set; <lang cref="false"/>
+    /// <returns><lang langref="true"/> if the value was set; <lang langref="false"/>
     /// if the user chose not to overwrite the existing value.</returns>
     public virtual bool EditPrefsINI(string p_strSection, string p_strKey, string p_strValue, bool p_booSaveOld)
     {
-      return EditINI(((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).FOPrefsIniPath, p_strSection, p_strKey, p_strValue);
+      return EditINI(((Fallout3GameMode.SettingsFilesSet) Program.GameMode.SettingsFiles).FOPrefsIniPath, p_strSection,
+                     p_strKey, p_strValue);
     }
 
     /// <summary>
@@ -302,11 +305,12 @@ namespace Fomm.Games.Fallout3.Script
     /// <param name="p_strKey">The key in the Ini file to edit.</param>
     /// <param name="p_strValue">The value to which to set the key.</param>
     /// <param name="p_booSaveOld">Not used.</param>
-    /// <returns><lang cref="true"/> if the value was set; <lang cref="false"/>
+    /// <returns><lang langref="true"/> if the value was set; <lang langref="false"/>
     /// if the user chose not to overwrite the existing value.</returns>
     public virtual bool EditGeckINI(string p_strSection, string p_strKey, string p_strValue, bool p_booSaveOld)
     {
-      return EditINI(((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).GeckIniPath, p_strSection, p_strKey, p_strValue);
+      return EditINI(((Fallout3GameMode.SettingsFilesSet) Program.GameMode.SettingsFiles).GeckIniPath, p_strSection,
+                     p_strKey, p_strValue);
     }
 
     /// <summary>
@@ -316,11 +320,12 @@ namespace Fomm.Games.Fallout3.Script
     /// <param name="p_strKey">The key in the Ini file to edit.</param>
     /// <param name="p_strValue">The value to which to set the key.</param>
     /// <param name="p_booSaveOld">Not used.</param>
-    /// <returns><lang cref="true"/> if the value was set; <lang cref="false"/>
+    /// <returns><lang langref="true"/> if the value was set; <lang langref="false"/>
     /// if the user chose not to overwrite the existing value.</returns>
     public virtual bool EditGeckPrefsINI(string p_strSection, string p_strKey, string p_strValue, bool p_booSaveOld)
     {
-      return EditINI(((Fallout3GameMode.SettingsFilesSet)Program.GameMode.SettingsFiles).GeckPrefsIniPath, p_strSection, p_strKey, p_strValue);
+      return EditINI(((Fallout3GameMode.SettingsFilesSet) Program.GameMode.SettingsFiles).GeckPrefsIniPath, p_strSection,
+                     p_strKey, p_strValue);
     }
 
     #endregion
@@ -337,11 +342,14 @@ namespace Fomm.Games.Fallout3.Script
     /// <param name="p_strValueKey">The key of the game-specific value to unedit.</param>
     public override bool UneditGameSpecificValue(string p_strFomodBaseName, string p_strValueKey)
     {
-      string[] strKey = p_strValueKey.Split(new char[] { ':' }, 2);
+      var strKey = p_strValueKey.Split(new[]
+      {
+        ':'
+      }, 2);
       switch (strKey[0])
       {
         case "sdp":
-          string[] strShaderInfo = strKey[1].Split('/');
+          var strShaderInfo = strKey[1].Split('/');
           UneditShader(Int32.Parse(strShaderInfo[0]), strShaderInfo[1]);
           return true;
       }
@@ -360,30 +368,37 @@ namespace Fomm.Games.Fallout3.Script
     /// <param name="p_intPackage">The package containing the shader to edit.</param>
     /// <param name="p_strShaderName">The shader to edit.</param>
     /// <param name="p_bteData">The value to which to edit the shader.</param>
-    /// <returns><lang cref="true"/> if the value was set; <lang cref="false"/>
+    /// <returns><lang langref="true"/> if the value was set; <lang langref="false"/>
     /// if the user chose not to overwrite the existing value.</returns>
     /// <exception cref="ShaderException">Thrown if the shader could not be edited.</exception>
     public virtual bool EditShader(int p_intPackage, string p_strShaderName, byte[] p_bteData)
     {
-      string strShaderKey = String.Format("sdp:{0}/{1}", p_intPackage, p_strShaderName);
-      string strOldMod = InstallLog.Current.GetCurrentGameSpecifcValueEditorModName(strShaderKey);
-      string strMessage = null;
+      var strShaderKey = String.Format("sdp:{0}/{1}", p_intPackage, p_strShaderName);
+      var strOldMod = InstallLog.Current.GetCurrentGameSpecifcValueEditorModName(strShaderKey);
       if (strOldMod != null)
       {
-        strMessage = String.Format("Shader '{0}' in package '{1}' has already been overwritten by '{2}'\n" +
-                      "Overwrite the changes?", p_strShaderName, p_intPackage, strOldMod);
-        if (System.Windows.Forms.MessageBox.Show(strMessage, "Confirm Overwrite", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+        var strMessage = String.Format("Shader '{0}' in package '{1}' has already been overwritten by '{2}'\n" +
+                                          "Overwrite the changes?", p_strShaderName, p_intPackage, strOldMod);
+        if (
+          System.Windows.Forms.MessageBox.Show(strMessage, "Confirm Overwrite", MessageBoxButtons.YesNo,
+                                               MessageBoxIcon.Question) != DialogResult.Yes)
+        {
           return false;
+        }
       }
 
       PermissionsManager.CurrentPermissions.Assert();
       byte[] oldData;
       if (!SDPArchives.EditShader(p_intPackage, p_strShaderName, p_bteData, out oldData))
+      {
         throw new ShaderException("Failed to edit the shader");
+      }
 
       //if we are overwriting an original shader, back it up
       if ((strOldMod == null) || (oldData != null))
+      {
         Installer.MergeModule.BackupOriginalGameSpecificValueEdit(strShaderKey, oldData);
+      }
 
       Installer.MergeModule.AddGameSpecificValueEdit(strShaderKey, p_bteData);
       return true;
@@ -401,18 +416,18 @@ namespace Fomm.Games.Fallout3.Script
     /// <exception cref="ShaderException">Thrown if the shader could not be unedited.</exception>
     protected void UneditShader(int p_intPackage, string p_strShaderName)
     {
-      string strLoweredShaderName = p_strShaderName.ToLowerInvariant();
-
-      string strShaderKey = String.Format("sdp:{0}/{1}", p_intPackage, p_strShaderName);
-      string strKey = InstallLog.Current.GetModKey(Fomod.BaseName);
-      string strCurrentOwnerKey = InstallLog.Current.GetCurrentGameSpecifcValueEditorModKey(strShaderKey);
+      var strShaderKey = String.Format("sdp:{0}/{1}", p_intPackage, p_strShaderName);
+      var strKey = InstallLog.Current.GetModKey(Fomod.BaseName);
+      var strCurrentOwnerKey = InstallLog.Current.GetCurrentGameSpecifcValueEditorModKey(strShaderKey);
       //if we didn't edit the shader, then leave it alone
       if (!strKey.Equals(strCurrentOwnerKey))
+      {
         return;
+      }
 
       //if we did edit the shader, replace it with the shader we overwrote
       // if we didn't overwrite the shader, then just delete it
-      byte[] btePreviousData = InstallLog.Current.GetPreviousGameSpecifcValueData(strShaderKey);
+      var btePreviousData = InstallLog.Current.GetPreviousGameSpecifcValueData(strShaderKey);
       if (btePreviousData != null)
       {
         /*TODO: I'm not sure if this is the strictly correct way to unedit a shader
@@ -456,7 +471,9 @@ namespace Fomm.Games.Fallout3.Script
 
         PermissionsManager.CurrentPermissions.Assert();
         if (!SDPArchives.RestoreShader(p_intPackage, p_strShaderName, btePreviousData, 0))
+        {
           throw new ShaderException("Failed to unedit the shader");
+        }
       }
       //TODO: how do we delete a shader? Right now, if there was no previous shader the current shader
       // remains
@@ -473,18 +490,22 @@ namespace Fomm.Games.Fallout3.Script
     /// </summary>
     /// <param name="p_strValue">The value to retrieve from the file.</param>
     /// <returns>The specified value from the RendererInfo.txt file, or
-    /// <lang cref="null"/> if the value is not found.</returns>
+    /// <lang langref="null"/> if the value is not found.</returns>
     public virtual string GetRendererInfo(string p_strValue)
     {
       PermissionsManager.CurrentPermissions.Assert();
-      string[] strLines = File.ReadAllLines(((Fallout3GameMode)Program.GameMode).FORendererFile);
-      for (int i = 1; i < strLines.Length; i++)
+      var strLines = File.ReadAllLines(((Fallout3GameMode) Program.GameMode).FORendererFile);
+      for (var i = 1; i < strLines.Length; i++)
       {
         if (!strLines[i].Contains(":"))
+        {
           continue;
-        string strCurrentValue = strLines[i].Remove(strLines[i].IndexOf(':')).Trim();
+        }
+        var strCurrentValue = strLines[i].Remove(strLines[i].IndexOf(':')).Trim();
         if (strCurrentValue.Equals(p_strValue))
+        {
           return strLines[i].Substring(strLines[i].IndexOf(':') + 1).Trim();
+        }
       }
       return null;
     }
@@ -492,11 +513,11 @@ namespace Fomm.Games.Fallout3.Script
     /// <summary>
     /// Determines if archive invalidation is active.
     /// </summary>
-    /// <returns><lang cref="true"/> if archive invalidation is active;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if archive invalidation is active;
+    /// <lang langref="false"/> otherwise.</returns>
     public virtual bool IsAIActive()
     {
-      return Tools.ArchiveInvalidation.IsActive();
+      return ArchiveInvalidation.IsActive();
     }
 
     #endregion
@@ -508,16 +529,21 @@ namespace Fomm.Games.Fallout3.Script
     /// </summary>
     public override void Dispose()
     {
-      if (m_txmTextureManager != null)
-        m_txmTextureManager.Dispose();
-      if (m_bamBsaManager != null)
-        m_bamBsaManager.Dispose();
+      if (TextureManager != null)
+      {
+        TextureManager.Dispose();
+      }
+      if (BsaManager != null)
+      {
+        BsaManager.Dispose();
+      }
       base.Dispose();
     }
 
     #endregion
 
     #region upgrade functions
+
     /// <summary>
     /// Writes the file represented by the given byte array to the given path.
     /// </summary>
@@ -531,7 +557,7 @@ namespace Fomm.Games.Fallout3.Script
     /// </remarks>
     /// <param name="p_strPath">The path where the file is to be created.</param>
     /// <param name="p_bteData">The data that is to make up the file.</param>
-    /// <returns><lang cref="true"/> if the file was written; <lang cref="false"/> if the user chose
+    /// <returns><lang langref="true"/> if the file was written; <lang langref="false"/> if the user chose
     /// not to overwrite an existing file.</returns>
     /// <exception cref="IllegalFilePathException">Thrown if <paramref name="p_strPath"/> is
     /// not safe.</exception>
@@ -543,17 +569,19 @@ namespace Fomm.Games.Fallout3.Script
       IList<string> lstInstallers = InstallLog.Current.GetInstallingMods(p_strPath);
       if (lstInstallers.Contains(Fomod.BaseName))
       {
-        string strWritePath = null;
+        string strWritePath;
         if (!lstInstallers[lstInstallers.Count - 1].Equals(Fomod.BaseName))
         {
-          string strDirectory = Path.GetDirectoryName(p_strPath);
-          string strBackupPath = Path.Combine(Program.GameMode.OverwriteDirectory, strDirectory);
-          string strOldModKey = InstallLog.Current.GetModKey(Fomod.BaseName);
-          string strFile = strOldModKey + "_" + Path.GetFileName(p_strPath);
+          var strDirectory = Path.GetDirectoryName(p_strPath);
+          var strBackupPath = Path.Combine(Program.GameMode.OverwriteDirectory, strDirectory);
+          var strOldModKey = InstallLog.Current.GetModKey(Fomod.BaseName);
+          var strFile = strOldModKey + "_" + Path.GetFileName(p_strPath);
           strWritePath = Path.Combine(strBackupPath, strFile);
         }
         else
+        {
           strWritePath = Path.Combine(Program.GameMode.PluginsPath, p_strPath);
+        }
         Installer.TransactionalFileManager.WriteAllBytes(strWritePath, p_bteData);
         Installer.MergeModule.AddFile(p_strPath);
         return true;

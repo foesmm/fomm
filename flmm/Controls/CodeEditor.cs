@@ -22,16 +22,16 @@ namespace Fomm.Controls
     public CodeEditor()
     {
       SetHighlighting("C#");
-      
+
       Document.FoldingManager.FoldingStrategy = new CodeFoldingStrategy();
-      m_tmrFoldUpdater.Elapsed += new ElapsedEventHandler(UpdateFolds);
+      m_tmrFoldUpdater.Elapsed += UpdateFolds;
       m_tmrFoldUpdater.Interval = 2000;
     }
 
     #endregion
 
     /// <summary>
-    /// Raises the <see cref="Control.Load"/> event.
+    /// Raises the <see cref="System.Windows.Forms.Control.Load"/> event.
     /// </summary>
     /// <remarks>
     /// This sets the synchronizing object on the timers to our form. Doing so allows the timers
@@ -40,7 +40,7 @@ namespace Fomm.Controls
     /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
     protected override void OnLoad(EventArgs e)
     {
-      m_tmrFoldUpdater.SynchronizingObject = this.FindForm();
+      m_tmrFoldUpdater.SynchronizingObject = FindForm();
       base.OnLoad(e);
     }
 

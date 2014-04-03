@@ -20,12 +20,12 @@ namespace Fomm.InstallLogUpgraders
       InstallLog.Current.SetInstallLogVersion(InstallLog.CURRENT_VERSION);
       InstallLog.Current.Save();
 
-      XmlDocument xmlInstallLog = new XmlDocument();
+      var xmlInstallLog = new XmlDocument();
       xmlInstallLog.Load(InstallLog.Current.InstallLogPath);
 
-      XmlNode xndRoot = xmlInstallLog.SelectSingleNode("installLog");
-      XmlNode xndSdpEdits = xndRoot.SelectSingleNode("sdpEdits");
-      
+      var xndRoot = xmlInstallLog.SelectSingleNode("installLog");
+      var xndSdpEdits = xndRoot.SelectSingleNode("sdpEdits");
+
       ProgressWorker.OverallProgressStep = 1;
       ProgressWorker.OverallProgressMaximum = xndSdpEdits.ChildNodes.Count;
       ProgressWorker.ShowItemProgress = false;
@@ -33,12 +33,13 @@ namespace Fomm.InstallLogUpgraders
       //remove the sdp edit node...
       xndSdpEdits.ParentNode.RemoveChild(xndSdpEdits);
       //...and replace it with the game-specific edits node
-      XmlNode xndGameSpecificsValueEdits = xndRoot.AppendChild(xmlInstallLog.CreateElement("gameSpecificEdits"));
+      var xndGameSpecificsValueEdits = xndRoot.AppendChild(xmlInstallLog.CreateElement("gameSpecificEdits"));
       foreach (XmlNode xndSdpEdit in xndSdpEdits.ChildNodes)
       {
         ProgressWorker.StepOverallProgress();
-        XmlNode xndGameSpecificsValueEdit = xndGameSpecificsValueEdits.AppendChild(xmlInstallLog.CreateElement("edit"));
-        string strValueKey = String.Format("sdp:{0}/{1}", xndGameSpecificsValueEdits.Attributes["package"].Value, xndGameSpecificsValueEdits.Attributes["shader"].Value);
+        var xndGameSpecificsValueEdit = xndGameSpecificsValueEdits.AppendChild(xmlInstallLog.CreateElement("edit"));
+        var strValueKey = String.Format("sdp:{0}/{1}", xndGameSpecificsValueEdits.Attributes["package"].Value,
+                                           xndGameSpecificsValueEdits.Attributes["shader"].Value);
         xndGameSpecificsValueEdit.Attributes.Append(xmlInstallLog.CreateAttribute("key")).Value = strValueKey;
         xndGameSpecificsValueEdit.AppendChild(xndSdpEdit.FirstChild.Clone());
       }

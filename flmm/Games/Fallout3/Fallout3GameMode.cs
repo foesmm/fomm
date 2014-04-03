@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Drawing;
 using System.Text;
@@ -6,6 +7,13 @@ using System.Windows.Forms;
 using System.Threading;
 using System.Collections.Generic;
 using Fomm.Controls;
+using Fomm.Games.Fallout3.Tools;
+using Fomm.Games.Fallout3.Tools.AutoSorter;
+using Fomm.Games.Fallout3.Tools.BSA;
+using Fomm.Games.Fallout3.Tools.CriticalRecords;
+using Fomm.Games.Fallout3.Tools.GraphicsSettings;
+using Fomm.Games.Fallout3.Tools.InstallTweaker;
+using Fomm.Games.Fallout3.Tools.TESsnip;
 using Fomm.PackageManager;
 using Fomm.PackageManager.XmlConfiguredInstall;
 using Fomm.PackageManager.XmlConfiguredInstall.Parsers;
@@ -13,10 +21,9 @@ using Fomm.Games.Fallout3.Settings;
 using Fomm.Games.Fallout3.Script;
 using Fomm.Games.Fallout3.Script.XmlConfiguredInstall;
 using Fomm.Games.Fallout3.Script.XmlConfiguredInstall.Parsers;
-using Fomm.Games.Fallout3.Tools.CriticalRecords;
 using Fomm.Games.Fallout3.PluginFormatProviders;
-using Fomm.Games.Fallout3.Tools.TESsnip;
 using Fomm.Commands;
+using Microsoft.Win32;
 
 namespace Fomm.Games.Fallout3
 {
@@ -104,20 +111,22 @@ namespace Fomm.Games.Fallout3
       #endregion
     }
 
-    private string m_strSavesPath = null;
+    private string m_strSavesPath;
     private Dictionary<string, string> m_dicAdditionalPaths = new Dictionary<string, string>();
-    private SettingsFilesSet m_sfsSettingsFiles = null;
-    private Dictionary<string, IPluginFormatProvider> m_dicPluginFormatProviders = new Dictionary<string, IPluginFormatProvider>();
+    private SettingsFilesSet m_sfsSettingsFiles;
+
+    private Dictionary<string, IPluginFormatProvider> m_dicPluginFormatProviders =
+      new Dictionary<string, IPluginFormatProvider>();
+
     private List<Command<MainForm>> m_lstTools = new List<Command<MainForm>>();
     private List<Command<MainForm>> m_lstGameSettingsTools = new List<Command<MainForm>>();
     private List<Command<MainForm>> m_lstRightClickTools = new List<Command<MainForm>>();
     private List<Command<MainForm>> m_lstLoadOrderTools = new List<Command<MainForm>>();
     private List<Command<MainForm>> m_lstGameLaunchCommands = new List<Command<MainForm>>();
     private List<SettingsPage> m_lstSettingsPages = new List<SettingsPage>();
-    private Fallout3PluginManager m_pmgPluginManager = null;
+    private Fallout3PluginManager m_pmgPluginManager;
 
     #region Properties
-
 
     /// <summary>
     /// Gets the name of the game whose plugins are being managed.
@@ -139,11 +148,15 @@ namespace Fomm.Games.Fallout3
     {
       get
       {
-        string strModDirectory = Properties.Settings.Default.fallout3ModDirectory;
+        var strModDirectory = Properties.Settings.Default.fallout3ModDirectory;
         if (String.IsNullOrEmpty(strModDirectory))
+        {
           throw new Exception("The Mod Directory for Fallout 3 Mods has not been set.");
+        }
         if (!Directory.Exists(strModDirectory))
+        {
           Directory.CreateDirectory(strModDirectory);
+        }
         return strModDirectory;
       }
     }
@@ -156,9 +169,11 @@ namespace Fomm.Games.Fallout3
     {
       get
       {
-        string strCache = Path.Combine(ModDirectory, "cache");
+        var strCache = Path.Combine(ModDirectory, "cache");
         if (!Directory.Exists(strCache))
+        {
           Directory.CreateDirectory(strCache);
+        }
         return strCache;
       }
     }
@@ -172,7 +187,9 @@ namespace Fomm.Games.Fallout3
       get
       {
         if (String.IsNullOrEmpty(Properties.Settings.Default.fallout3LaunchCommand) && File.Exists("fose_loader.exe"))
+        {
           return new Command<MainForm>("Launch FOSE", "Launches Fallout 3 using FOSE.", LaunchGame);
+        }
         return new Command<MainForm>("Launch Fallout 3", "Launches Fallout 3 using FOSE.", LaunchGame);
       }
     }
@@ -185,12 +202,13 @@ namespace Fomm.Games.Fallout3
     {
       get
       {
-        string strFalloutEsm = Path.Combine(PluginsPath, "fallout3.esm");
-        return System.Drawing.Icon.ExtractAssociatedIcon(strFalloutEsm);
+        var strFalloutEsm = Path.Combine(PluginsPath, "fallout3.esm");
+        return Icon.ExtractAssociatedIcon(strFalloutEsm);
       }
     }
 
-    string pp;
+    private string pp;
+
     /// <summary>
     /// Gets the path to the game directory were pluings are to be installed.
     /// </summary>
@@ -200,7 +218,9 @@ namespace Fomm.Games.Fallout3
       get
       {
         if (pp == null)
+        {
           pp = Path.Combine(Environment.CurrentDirectory, "Data");
+        }
         return pp;
       }
     }
@@ -231,11 +251,15 @@ namespace Fomm.Games.Fallout3
     {
       get
       {
-        string strDirectory = Properties.Settings.Default.fallout3InstallInfoDirectory;
+        var strDirectory = Properties.Settings.Default.fallout3InstallInfoDirectory;
         if (String.IsNullOrEmpty(strDirectory))
+        {
           throw new Exception("The InstallInfoDirectory for Fallout 3 has not been set.");
+        }
         if (!Directory.Exists(strDirectory))
+        {
           Directory.CreateDirectory(strDirectory);
+        }
         return strDirectory;
       }
     }
@@ -308,7 +332,7 @@ namespace Fomm.Games.Fallout3
     {
       get
       {
-        return (CriticalRecordPluginFormatProvider)m_dicPluginFormatProviders["ConflictDetector"];
+        return (CriticalRecordPluginFormatProvider) m_dicPluginFormatProviders["ConflictDetector"];
       }
       set
       {
@@ -445,9 +469,16 @@ namespace Fomm.Games.Fallout3
       get
       {
         if (File.Exists("Fallout3.exe"))
-          return new Version(System.Diagnostics.FileVersionInfo.GetVersionInfo("Fallout3.exe").FileVersion.Replace(", ", "."));
+        {
+          return
+            new Version(FileVersionInfo.GetVersionInfo("Fallout3.exe").FileVersion.Replace(", ", "."));
+        }
         if (File.Exists("Fallout3ng.exe"))
-          return new Version(System.Diagnostics.FileVersionInfo.GetVersionInfo("Fallout3ng.exe").FileVersion.Replace(", ", "."));
+        {
+          return
+            new Version(FileVersionInfo.GetVersionInfo("Fallout3ng.exe")
+                              .FileVersion.Replace(", ", "."));
+        }
         return null;
       }
     }
@@ -495,33 +526,45 @@ namespace Fomm.Games.Fallout3
     /// 
     /// This method also checks for DLCs, and cleans up any missing FOMods.
     /// </remarks>
-    /// <returns><lang cref="true"/> if the game mode was able to initialize;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the game mode was able to initialize;
+    /// <lang langref="false"/> otherwise.</returns>
     public override bool Init()
     {
       if (!Properties.Settings.Default.fallout3DoneSetup)
       {
-        SetupForm sfmSetup = new SetupForm();
+        var sfmSetup = new SetupForm();
         if (sfmSetup.ShowDialog() == DialogResult.Cancel)
+        {
           return false;
+        }
         Properties.Settings.Default.fallout3DoneSetup = true;
         Properties.Settings.Default.Save();
       }
 
       CheckForDLCs();
 
-      if (!File.Exists(((SettingsFilesSet)SettingsFiles).FOIniPath))
-        MessageBox.Show("You have no Fallout INI file. Please run Fallout 3 to initialize the file before installing any mods or turning on Archive Invalidation.", "Missing INI", MessageBoxButtons.OK, MessageBoxIcon.Information);
+      if (!File.Exists(((SettingsFilesSet) SettingsFiles).FOIniPath))
+      {
+        MessageBox.Show(
+          "You have no Fallout INI file. Please run Fallout 3 to initialize the file before installing any mods or turning on Archive Invalidation.",
+          "Missing INI", MessageBoxButtons.OK, MessageBoxIcon.Information);
+      }
       if (File.Exists("FO3Edit.exe"))
+      {
         m_lstTools.Add(new Command<MainForm>("FO3Edit", "Launches FO3Edit, if it is installed.", LaunchFO3Edit));
-      m_lstTools.Add(new CheckedCommand<MainForm>("Archive Invalidation", "Toggles Archive Invalidation.", Fallout3.Tools.ArchiveInvalidation.IsActive(), ToggleArchiveInvalidation));
+      }
+      m_lstTools.Add(new CheckedCommand<MainForm>("Archive Invalidation", "Toggles Archive Invalidation.",
+                                                  ArchiveInvalidation.IsActive(),
+                                                  ToggleArchiveInvalidation));
 
       ScanForReadonlyPlugins();
       ScanForReadonlyFiles();
 
-      FOMMMigrator m = new FOMMMigrator();
+      var m = new FOMMMigrator();
       if (!m.Migrate())
+      {
         return false;
+      }
 
       return true;
     }
@@ -559,16 +602,20 @@ namespace Fomm.Games.Fallout3
     /// </summary>
     protected virtual void SetupPaths()
     {
-      ((SettingsFilesSet)SettingsFiles).FOIniPath = Path.Combine(UserGameDataPath, "Fallout.ini");
-      ((SettingsFilesSet)SettingsFiles).FOPrefsIniPath = Path.Combine(UserGameDataPath, "FalloutPrefs.ini");
-      ((SettingsFilesSet)SettingsFiles).GeckIniPath = Path.Combine(UserGameDataPath, "GECKCustom.ini");
-      ((SettingsFilesSet)SettingsFiles).GeckPrefsIniPath = Path.Combine(UserGameDataPath, "GECKPrefs.ini");
+      ((SettingsFilesSet) SettingsFiles).FOIniPath = Path.Combine(UserGameDataPath, "Fallout.ini");
+      ((SettingsFilesSet) SettingsFiles).FOPrefsIniPath = Path.Combine(UserGameDataPath, "FalloutPrefs.ini");
+      ((SettingsFilesSet) SettingsFiles).GeckIniPath = Path.Combine(UserGameDataPath, "GECKCustom.ini");
+      ((SettingsFilesSet) SettingsFiles).GeckPrefsIniPath = Path.Combine(UserGameDataPath, "GECKPrefs.ini");
 
       m_dicAdditionalPaths["FORendererFile"] = Path.Combine(UserGameDataPath, "RendererInfo.txt");
-      m_dicAdditionalPaths["PluginsFile"] = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Fallout3/plugins.txt");
-      m_dicAdditionalPaths["DLCDir"] = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Microsoft\\xlive\\DLC");
+      m_dicAdditionalPaths["PluginsFile"] =
+        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Fallout3/plugins.txt");
+      m_dicAdditionalPaths["DLCDir"] =
+        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Microsoft\\xlive\\DLC");
 
-      m_strSavesPath = Path.Combine(UserGameDataPath, NativeMethods.GetPrivateProfileString("General", "SLocalSavePath", "Games", ((SettingsFilesSet)SettingsFiles).FOIniPath));
+      m_strSavesPath = Path.Combine(UserGameDataPath,
+                                    NativeMethods.GetPrivateProfileString("General", "SLocalSavePath", "Games",
+                                                                          ((SettingsFilesSet) SettingsFiles).FOIniPath));
     }
 
     /// <summary>
@@ -584,10 +631,15 @@ namespace Fomm.Games.Fallout3
     /// </summary>
     protected virtual void SetupLaunchCommands()
     {
-      m_lstGameLaunchCommands.Add(new Command<MainForm>("Launch Fallout 3", "Launches plain Fallout 3.", LaunchFallout3Plain));
+      m_lstGameLaunchCommands.Add(new Command<MainForm>("Launch Fallout 3", "Launches plain Fallout 3.",
+                                                        LaunchFallout3Plain));
       if (File.Exists("fose_loader.exe"))
-        m_lstGameLaunchCommands.Add(new Command<MainForm>("Launch FOSE", "Launches Fallout 3 with FOSE.", LaunchFallout3FOSE));
-      m_lstGameLaunchCommands.Add(new Command<MainForm>("Launch Custom Fallout 3", "Launches Fallout 3 with custom command.", LaunchFallout3Custom));
+      {
+        m_lstGameLaunchCommands.Add(new Command<MainForm>("Launch FOSE", "Launches Fallout 3 with FOSE.",
+                                                          LaunchFallout3FOSE));
+      }
+      m_lstGameLaunchCommands.Add(new Command<MainForm>("Launch Custom Fallout 3",
+                                                        "Launches Fallout 3 with custom command.", LaunchFallout3Custom));
     }
 
     /// <summary>
@@ -601,16 +653,24 @@ namespace Fomm.Games.Fallout3
       m_lstTools.Add(new Command<MainForm>("Shader Editor", "A shader (SDP) editor.", LaunchShaderEditTool));
       m_lstTools.Add(new Command<MainForm>("CREditor", "Edits critical records in an ESP/ESM.", LaunchCREditorTool));
       m_lstTools.Add(new Command<MainForm>("Install Tweaker", "Advanced Fallout 3 tweaking.", LaunchInstallTweakerTool));
-      m_lstTools.Add(new Command<MainForm>("Conflict Detector", "Checks for conflicts with mod-author specified critical records.", LaunchConflictDetector));
+      m_lstTools.Add(new Command<MainForm>("Conflict Detector",
+                                           "Checks for conflicts with mod-author specified critical records.",
+                                           LaunchConflictDetector));
       m_lstTools.Add(new Command<MainForm>("Save Games", "Save game info viewer.", LaunchSaveGamesViewer));
 
-      m_lstGameSettingsTools.Add(new Command<MainForm>("Graphics Settings", "Changes the graphics settings.", LaunchGraphicsSettingsTool));
+      m_lstGameSettingsTools.Add(new Command<MainForm>("Graphics Settings", "Changes the graphics settings.",
+                                                       LaunchGraphicsSettingsTool));
 
-      m_lstRightClickTools.Add(new Command<MainForm>("Open in TESsnip...", "Open the selected plugins in TESsnip.", LaunchTESsnipToolWithSelectedPlugins));
-      m_lstRightClickTools.Add(new Command<MainForm>("Open in CREditor...", "Open the selected plugins in TESsnip.", LaunchCREditorToolWithSelectedPlugins));
+      m_lstRightClickTools.Add(new Command<MainForm>("Open in TESsnip...", "Open the selected plugins in TESsnip.",
+                                                     LaunchTESsnipToolWithSelectedPlugins));
+      m_lstRightClickTools.Add(new Command<MainForm>("Open in CREditor...", "Open the selected plugins in TESsnip.",
+                                                     LaunchCREditorToolWithSelectedPlugins));
 
-      m_lstLoadOrderTools.Add(new Command<MainForm>("Load Order Report...", "Generates a report on the current load order, as compared to the BOSS recomendation.", LaunchLoadOrderReport));
-      m_lstLoadOrderTools.Add(new Command<MainForm>("BOSS Auto Sort", "Auto-sorts the plugins using BOSS's masterlist.", LaunchSortPlugins));
+      m_lstLoadOrderTools.Add(new Command<MainForm>("Load Order Report...",
+                                                    "Generates a report on the current load order, as compared to the BOSS recomendation.",
+                                                    LaunchLoadOrderReport));
+      m_lstLoadOrderTools.Add(new Command<MainForm>("BOSS Auto Sort", "Auto-sorts the plugins using BOSS's masterlist.",
+                                                    LaunchSortPlugins));
     }
 
     #endregion
@@ -621,31 +681,20 @@ namespace Fomm.Games.Fallout3
 
     public bool PrelaunchCheckOrder()
     {
-      bool retVal = true;
-      List<string> keys;
-      string key;
-      int i = 0;
+      var retVal = true;
+      int i;
 
       // Do checks
-      keys = new List<string>(this.fullModList.Keys);
+      List<string> keys = new List<string>(fullModList.Keys);
       for (i = 0; i < keys.Count; i++)
       {
         if (!retVal)
         {
           break;
         }
-        key = keys[i];
+        var key = keys[i];
 
-        switch (getPluginDependencyStatus(key, true))
-        {
-          case 0:
-            retVal = true;
-          break;
-
-          default:
-            retVal = false;
-          break;
-        }
+        retVal = (getPluginDependencyStatus(key, true) != 0);
       }
 
       return retVal;
@@ -661,14 +710,13 @@ namespace Fomm.Games.Fallout3
     {
       if (PrelaunchCheckOrder())
       {
-
         if (p_eeaArguments.Argument.HasOpenUtilityWindows)
         {
           MessageBox.Show("Please close all utility windows before launching fallout");
           return;
         }
-        string command = Properties.Settings.Default.fallout3LaunchCommand;
-        string args = Properties.Settings.Default.fallout3LaunchCommandArgs;
+        var command = Properties.Settings.Default.fallout3LaunchCommand;
+        var args = Properties.Settings.Default.fallout3LaunchCommandArgs;
         if (String.IsNullOrEmpty(command))
         {
           MessageBox.Show("No custom launch command has been set", "Error");
@@ -676,20 +724,18 @@ namespace Fomm.Games.Fallout3
         }
         try
         {
-          System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
+          var psi = new ProcessStartInfo();
           psi.Arguments = args;
           psi.FileName = command;
           psi.WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath(command));
-          if (System.Diagnostics.Process.Start(psi) == null)
+          if (Process.Start(psi) == null)
           {
             MessageBox.Show("Failed to launch '" + command + "'");
-            return;
           }
         }
         catch (Exception ex)
         {
           MessageBox.Show("Failed to launch '" + command + "'\n" + ex.Message);
-          return;
         }
       }
     }
@@ -716,19 +762,17 @@ namespace Fomm.Games.Fallout3
         }
         try
         {
-          System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
+          var psi = new ProcessStartInfo();
           psi.FileName = "fose_loader.exe";
           psi.WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath("fose_loader.exe"));
-          if (System.Diagnostics.Process.Start(psi) == null)
+          if (Process.Start(psi) == null)
           {
             MessageBox.Show("Failed to launch 'fose_loader.exe'");
-            return;
           }
         }
         catch (Exception ex)
         {
           MessageBox.Show("Failed to launch 'fose_loader.exe'\n" + ex.Message);
-          return;
         }
       }
     }
@@ -748,26 +792,20 @@ namespace Fomm.Games.Fallout3
           MessageBox.Show("Please close all utility windows before launching fallout");
           return;
         }
-        string command;
-        if (File.Exists("fallout3.exe"))
-          command = "fallout3.exe";
-        else
-          command = "fallout3ng.exe";
+        var command = File.Exists("fallout3.exe") ? "fallout3.exe" : "fallout3ng.exe";
         try
         {
-          System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
+          var psi = new ProcessStartInfo();
           psi.FileName = command;
           psi.WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath(command));
-          if (System.Diagnostics.Process.Start(psi) == null)
+          if (Process.Start(psi) == null)
           {
             MessageBox.Show("Failed to launch '" + command + "'");
-            return;
           }
         }
         catch (Exception ex)
         {
           MessageBox.Show("Failed to launch '" + command + "'\n" + ex.Message);
-          return;
         }
       }
     }
@@ -780,37 +818,41 @@ namespace Fomm.Games.Fallout3
     /// main mod management form.</param>
     public virtual void LaunchGame(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
-      string command = Properties.Settings.Default.fallout3LaunchCommand;
-      string args = Properties.Settings.Default.fallout3LaunchCommandArgs;
+      var command = Properties.Settings.Default.fallout3LaunchCommand;
+      var args = Properties.Settings.Default.fallout3LaunchCommandArgs;
 
       if (PrelaunchCheckOrder())
       {
         if (String.IsNullOrEmpty(command))
         {
           if (File.Exists("fose_loader.exe"))
+          {
             command = "fose_loader.exe";
+          }
           else if (File.Exists("fallout3.exe"))
+          {
             command = "fallout3.exe";
+          }
           else
+          {
             command = "fallout3ng.exe";
+          }
           args = null;
         }
         try
         {
-          System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
+          var psi = new ProcessStartInfo();
           psi.Arguments = args;
           psi.FileName = command;
           psi.WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath(command));
-          if (System.Diagnostics.Process.Start(psi) == null)
+          if (Process.Start(psi) == null)
           {
             MessageBox.Show("Failed to launch '" + command + "'");
-            return;
           }
         }
         catch (Exception ex)
         {
           MessageBox.Show("Failed to launch '" + command + "'\n" + ex.Message);
-          return;
         }
       }
     }
@@ -827,17 +869,26 @@ namespace Fomm.Games.Fallout3
     /// main mod management form.</param>
     public void LaunchSortPlugins(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
-      if (MessageBox.Show(p_eeaArguments.Argument, "This is currently a beta feature, and the load order template may not be optimal.\n" +
-        "Ensure you have a backup of your load order before running this tool.\n" +
-        "War you sure you wish to continue?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) return;
+      if (MessageBox.Show(p_eeaArguments.Argument,
+                          "This is currently a beta feature, and the load order template may not be optimal.\n" +
+                          "Ensure you have a backup of your load order before running this tool.\n" +
+                          "War you sure you wish to continue?", "Warning", MessageBoxButtons.YesNo,
+                          MessageBoxIcon.Warning) != DialogResult.Yes)
+      {
+        return;
+      }
 
-      string[] plugins = PluginManager.OrderedPluginList;
-      for (int i = 0; i < plugins.Length; i++)
+      var plugins = PluginManager.OrderedPluginList;
+      for (var i = 0; i < plugins.Length; i++)
+      {
         plugins[i] = Path.GetFileName(plugins[i]);
-      Tools.AutoSorter.LoadOrderSorter losSorter = new Tools.AutoSorter.LoadOrderSorter();
+      }
+      var losSorter = new LoadOrderSorter();
       if (!losSorter.HasMasterList)
       {
-        if (DialogResult.Yes == MessageBox.Show("There is no BOSS masterlist present, would you like to fetch the latest one?", "Update BOSS", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+        if (DialogResult.Yes ==
+            MessageBox.Show("There is no BOSS masterlist present, would you like to fetch the latest one?",
+                            "Update BOSS", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
         {
           if (updateBOSS())
           {
@@ -847,7 +898,8 @@ namespace Fomm.Games.Fallout3
             }
             else
             {
-              MessageBox.Show("BOSS masterlist still missing!", "BOSS update error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+              MessageBox.Show("BOSS masterlist still missing!", "BOSS update error", MessageBoxButtons.OK,
+                              MessageBoxIcon.Exclamation);
               return;
             }
           }
@@ -859,24 +911,27 @@ namespace Fomm.Games.Fallout3
       }
 
       losSorter.SortList(plugins);
-      for (int i = 0; i < plugins.Length; i++)
+      for (var i = 0; i < plugins.Length; i++)
+      {
         PluginManager.SetLoadOrder(Path.Combine(PluginsPath, plugins[i]), i);
+      }
       p_eeaArguments.Argument.RefreshPluginList();
     }
 
     public virtual bool updateBOSS()
     {
-      bool ret = false;
+      var ret = false;
 
       try
       {
-        Tools.AutoSorter.Fallout3BOSSUpdater bupUpdater = new Tools.AutoSorter.Fallout3BOSSUpdater();
-        bupUpdater.UpdateMasterlist(Fomm.Games.Fallout3.Tools.AutoSorter.LoadOrderSorter.LoadOrderTemplatePath);
+        var bupUpdater = new Fallout3BOSSUpdater();
+        bupUpdater.UpdateMasterlist(LoadOrderSorter.LoadOrderTemplatePath);
         ret = true;
       }
       catch (Exception e)
       {
-        MessageBox.Show("There was an error updating BOSS\n" + e.Message, "BOSS update error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+        MessageBox.Show("There was an error updating BOSS\n" + e.Message, "BOSS update error", MessageBoxButtons.OK,
+                        MessageBoxIcon.Exclamation);
       }
 
       return ret;
@@ -890,10 +945,12 @@ namespace Fomm.Games.Fallout3
     /// main mod management form.</param>
     public void LaunchLoadOrderReport(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
-      Tools.AutoSorter.LoadOrderSorter losSorter = new Tools.AutoSorter.LoadOrderSorter();
+      var losSorter = new LoadOrderSorter();
       if (!losSorter.HasMasterList)
       {
-        if (DialogResult.Yes == MessageBox.Show("There is no BOSS masterlist present, would you like to fetch the latest one?", "Update BOSS", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+        if (DialogResult.Yes ==
+            MessageBox.Show("There is no BOSS masterlist present, would you like to fetch the latest one?",
+                            "Update BOSS", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
         {
           if (updateBOSS())
           {
@@ -903,7 +960,8 @@ namespace Fomm.Games.Fallout3
             }
             else
             {
-              MessageBox.Show("BOSS masterlist still missing!", "BOSS update error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+              MessageBox.Show("BOSS masterlist still missing!", "BOSS update error", MessageBoxButtons.OK,
+                              MessageBoxIcon.Exclamation);
               return;
             }
           }
@@ -914,19 +972,19 @@ namespace Fomm.Games.Fallout3
         }
       }
 
-      string[] plugins = PluginManager.OrderedPluginList;
-      bool[] active = new bool[plugins.Length];
-      bool[] corrupt = new bool[plugins.Length];
-      string[][] masters = new string[plugins.Length][];
-      Tools.TESsnip.Plugin p;
-      List<string> mlist = new List<string>();
-      for (int i = 0; i < plugins.Length; i++)
+      var plugins = PluginManager.OrderedPluginList;
+      var active = new bool[plugins.Length];
+      var corrupt = new bool[plugins.Length];
+      var masters = new string[plugins.Length][];
+      var mlist = new List<string>();
+      for (var i = 0; i < plugins.Length; i++)
       {
         active[i] = PluginManager.IsPluginActive(plugins[i]);
         plugins[i] = Path.GetFileName(plugins[i]);
+        Plugin p;
         try
         {
-          p = new Tools.TESsnip.Plugin(Path.Combine(PluginsPath, plugins[i]), true);
+          p = new Plugin(Path.Combine(PluginsPath, plugins[i]), true);
         }
         catch
         {
@@ -935,9 +993,12 @@ namespace Fomm.Games.Fallout3
         }
         if (p != null)
         {
-          foreach (Tools.TESsnip.SubRecord sr in ((Tools.TESsnip.Record)p.Records[0]).SubRecords)
+          foreach (var sr in ((Record) p.Records[0]).SubRecords)
           {
-            if (sr.Name != "MAST") continue;
+            if (sr.Name != "MAST")
+            {
+              continue;
+            }
             mlist.Add(sr.GetStrData().ToLowerInvariant());
           }
           if (mlist.Count > 0)
@@ -948,8 +1009,8 @@ namespace Fomm.Games.Fallout3
         }
       }
 
-      string s = losSorter.GenerateReport(plugins, active, corrupt, masters);
-      PackageManager.TextEditor.ShowEditor(s, Fomm.PackageManager.TextEditorType.Text, false);
+      var s = losSorter.GenerateReport(plugins, active, corrupt, masters);
+      TextEditor.ShowEditor(s, TextEditorType.Text, false);
     }
 
     #endregion
@@ -965,12 +1026,16 @@ namespace Fomm.Games.Fallout3
     public void LaunchTESsnipToolWithSelectedPlugins(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
       if (p_eeaArguments.Argument.SelectedPlugins.Count == 0)
+      {
         return;
-      List<string> lstPlugins = new List<string>();
-      foreach (string strPluginName in p_eeaArguments.Argument.SelectedPlugins)
+      }
+      var lstPlugins = new List<string>();
+      foreach (var strPluginName in p_eeaArguments.Argument.SelectedPlugins)
+      {
         lstPlugins.Add(Path.Combine(Program.GameMode.PluginsPath, strPluginName));
-      Tools.TESsnip.TESsnip tes = new Tools.TESsnip.TESsnip(lstPlugins.ToArray());
-      tes.FormClosed += delegate(object sender2, FormClosedEventArgs e2)
+      }
+      var tes = new TESsnip(lstPlugins.ToArray());
+      tes.FormClosed += delegate
       {
         p_eeaArguments.Argument.RefreshPluginList();
         GC.Collect();
@@ -987,11 +1052,16 @@ namespace Fomm.Games.Fallout3
     public void LaunchCREditorToolWithSelectedPlugins(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
       if (p_eeaArguments.Argument.SelectedPlugins.Count == 0)
+      {
         return;
-      List<string> lstPlugins = new List<string>();
-      foreach (string strPluginName in p_eeaArguments.Argument.SelectedPlugins)
+      }
+      var lstPlugins = new List<string>();
+      foreach (var strPluginName in p_eeaArguments.Argument.SelectedPlugins)
+      {
         lstPlugins.Add(Path.Combine(Program.GameMode.PluginsPath, strPluginName));
-      Tools.CriticalRecords.CriticalRecordsForm crfEditor = new Tools.CriticalRecords.CriticalRecordsForm(lstPlugins.ToArray());
+      }
+      var crfEditor =
+        new CriticalRecordsForm(lstPlugins.ToArray());
       crfEditor.Show();
     }
 
@@ -1007,7 +1077,7 @@ namespace Fomm.Games.Fallout3
     /// main mod management form.</param>
     public void LaunchGraphicsSettingsTool(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
-      Tools.GraphicsSettings.GraphicsSettings gsfGraphicsSettingsForm = new Tools.GraphicsSettings.GraphicsSettings();
+      var gsfGraphicsSettingsForm = new GraphicsSettings();
       gsfGraphicsSettingsForm.ShowDialog();
     }
 
@@ -1025,24 +1095,23 @@ namespace Fomm.Games.Fallout3
     {
       if (!File.Exists("FO3Edit.exe"))
       {
-        MessageBox.Show(p_eeaArguments.Argument, "Could not find FO3Edit. Please install it.", "Missing FO3Edit", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+        MessageBox.Show(p_eeaArguments.Argument, "Could not find FO3Edit. Please install it.", "Missing FO3Edit",
+                        MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         return;
       }
       try
       {
-        System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
+        var psi = new ProcessStartInfo();
         psi.FileName = "FO3Edit.exe";
         psi.WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath(psi.FileName));
-        if (System.Diagnostics.Process.Start(psi) == null)
+        if (Process.Start(psi) == null)
         {
           MessageBox.Show("Failed to launch FO3Edit.");
-          return;
         }
       }
       catch (Exception ex)
       {
         MessageBox.Show("Failed to launch FO3Edit." + Environment.NewLine + ex.Message);
-        return;
       }
     }
 
@@ -1054,19 +1123,23 @@ namespace Fomm.Games.Fallout3
     /// main mod management form.</param>
     public virtual void LaunchSaveGamesViewer(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
-      List<string> lstActive = new List<string>();
+      var lstActive = new List<string>();
       //the original implementation populated the inactive list with all plugins
       // we only populate it with inactive plugins - hopefully that's OK
-      List<string> lstInactive = new List<string>();
+      var lstInactive = new List<string>();
 
-      foreach (string strPlugin in PluginManager.OrderedPluginList)
+      foreach (var strPlugin in PluginManager.OrderedPluginList)
       {
         if (PluginManager.IsPluginActive(strPlugin))
+        {
           lstActive.Add(Path.GetFileName(strPlugin));
+        }
         else
+        {
           lstInactive.Add(Path.GetFileName(strPlugin));
+        }
       }
-      (new Tools.SaveForm(lstActive.ToArray(), lstInactive.ToArray())).Show();
+      (new SaveForm(lstActive.ToArray(), lstInactive.ToArray())).Show();
     }
 
     /// <summary>
@@ -1077,10 +1150,17 @@ namespace Fomm.Games.Fallout3
     /// main mod management form.</param>
     public void LaunchConflictDetector(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
-      string strMessage = "This is an experimental feature that relies on fomod authors specifying which parts of their plugins are critical." + Environment.NewLine + "Using this feature will not hurt anything, but it is not guaranteed to find any or all conflicts.";
-      if (MessageBox.Show(p_eeaArguments.Argument, strMessage, "Warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Information) == DialogResult.Cancel)
+      var strMessage =
+        "This is an experimental feature that relies on fomod authors specifying which parts of their plugins are critical." +
+        Environment.NewLine +
+        "Using this feature will not hurt anything, but it is not guaranteed to find any or all conflicts.";
+      if (
+        MessageBox.Show(p_eeaArguments.Argument, strMessage, "Warning", MessageBoxButtons.OKCancel,
+                        MessageBoxIcon.Information) == DialogResult.Cancel)
+      {
         return;
-      Tools.PluginConflictDetector pcdDetector = new Tools.PluginConflictDetector(CriticalRecordPluginFormatProvider);
+      }
+      var pcdDetector = new PluginConflictDetector(CriticalRecordPluginFormatProvider);
       pcdDetector.CheckForConflicts();
       p_eeaArguments.Argument.LoadPluginInfo();
     }
@@ -1093,7 +1173,7 @@ namespace Fomm.Games.Fallout3
     /// main mod management form.</param>
     public void LaunchBSABrowserTool(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
-      new Tools.BSA.BSABrowser().Show();
+      new BSABrowser().Show();
     }
 
     /// <summary>
@@ -1104,7 +1184,7 @@ namespace Fomm.Games.Fallout3
     /// main mod management form.</param>
     public void LaunchBSACreatorTool(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
-      new Tools.BSA.BSACreator().Show();
+      new BSACreator().Show();
     }
 
     /// <summary>
@@ -1117,10 +1197,11 @@ namespace Fomm.Games.Fallout3
     {
       if (p_eeaArguments.Argument.IsPackageManagerOpen)
       {
-        MessageBox.Show(p_eeaArguments.Argument, "Please close the Package Manager before running the install tweaker.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        MessageBox.Show(p_eeaArguments.Argument, "Please close the Package Manager before running the install tweaker.",
+                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         return;
       }
-      (new Tools.InstallTweaker.InstallationTweaker()).ShowDialog();
+      (new InstallationTweaker()).ShowDialog();
     }
 
     /// <summary>
@@ -1131,8 +1212,8 @@ namespace Fomm.Games.Fallout3
     /// main mod management form.</param>
     public void LaunchTESsnipTool(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
-      Tools.TESsnip.TESsnip tes = new Tools.TESsnip.TESsnip();
-      tes.FormClosed += delegate(object sender2, FormClosedEventArgs e2)
+      var tes = new TESsnip();
+      tes.FormClosed += delegate
       {
         p_eeaArguments.Argument.RefreshPluginList();
         GC.Collect();
@@ -1159,7 +1240,7 @@ namespace Fomm.Games.Fallout3
     /// main mod management form.</param>
     public void LaunchCREditorTool(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
-      Tools.CriticalRecords.CriticalRecordsForm crfEditor = new Tools.CriticalRecords.CriticalRecordsForm();
+      var crfEditor = new CriticalRecordsForm();
       crfEditor.Show();
       GC.Collect();
     }
@@ -1172,8 +1253,10 @@ namespace Fomm.Games.Fallout3
     /// main mod management form.</param>
     public virtual void ToggleArchiveInvalidation(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
-      if (Fomm.Games.Fallout3.Tools.ArchiveInvalidation.Update())
-        ((CheckedCommand<MainForm>)p_objCommand).IsChecked = Fomm.Games.Fallout3.Tools.ArchiveInvalidation.IsActive();
+      if (ArchiveInvalidation.Update())
+      {
+        ((CheckedCommand<MainForm>) p_objCommand).IsChecked = ArchiveInvalidation.IsActive();
+      }
     }
 
     #endregion
@@ -1295,7 +1378,7 @@ class Script : Fallout3BaseScript {
     /// </summary>
     /// <param name="p_strVersion">The XML configuration file version for which to return a parser extension.</param>
     /// <returns>The appropriate parser extension for the specified configuration file version, or
-    /// <lang cref="null"/> if no extension is available.</returns>
+    /// <lang langref="null"/> if no extension is available.</returns>
     public override ParserExtension CreateParserExtension(string p_strVersion)
     {
       switch (p_strVersion)
@@ -1317,7 +1400,7 @@ class Script : Fallout3BaseScript {
     /// </summary>
     /// <param name="p_strVersion">The XML configuration file version for which to return a parser extension.</param>
     /// <returns>The path to the schema file for the specified configuration file version, or
-    /// <lang cref="null"/> if there is no game-specific schema for the specified configuration
+    /// <lang langref="null"/> if there is no game-specific schema for the specified configuration
     /// file version.</returns>
     public override string GetGameSpecificXMLConfigSchemaPath(string p_strVersion)
     {
@@ -1338,7 +1421,7 @@ class Script : Fallout3BaseScript {
     /// <returns>Command line help for the arguments provided by the game mode.</returns>
     public static string GetCommandLineHelp()
     {
-      StringBuilder stbHelp = new StringBuilder();
+      var stbHelp = new StringBuilder();
       stbHelp.AppendLine("*.dat, *.bsa, *.esm, *.esp, *.sdp");
       stbHelp.AppendLine("Open the specified file in the relevent utility");
       stbHelp.AppendLine();
@@ -1351,8 +1434,8 @@ class Script : Fallout3BaseScript {
     /// Handles the command line arguments that run outside of an instance of FOMM.
     /// </summary>
     /// <param name="p_strArgs">The command line arguments that were passed to the programme.</param>
-    /// <returns><lang cref="true"/> if at least one of the arguments were handled;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if at least one of the arguments were handled;
+    /// <lang langref="false"/> otherwise.</returns>
     public override bool HandleStandaloneArguments(string[] p_strArgs)
     {
       if (!p_strArgs[0].StartsWith("-") && File.Exists(p_strArgs[0]))
@@ -1361,14 +1444,17 @@ class Script : Fallout3BaseScript {
         {
           case ".dat":
           case ".bsa":
-            Application.Run(new Tools.BSA.BSABrowser(p_strArgs[0]));
+            Application.Run(new BSABrowser(p_strArgs[0]));
             return true;
           case ".sdp":
             Application.Run(new Tools.ShaderEdit.MainForm(p_strArgs[0]));
             return true;
           case ".esp":
           case ".esm":
-            Application.Run(new Tools.TESsnip.TESsnip(new string[] { p_strArgs[0] }));
+            Application.Run(new TESsnip(new[]
+            {
+              p_strArgs[0]
+            }));
             return true;
         }
       }
@@ -1377,8 +1463,8 @@ class Script : Fallout3BaseScript {
         switch (p_strArgs[0])
         {
           case "-setup":
-            bool booNewMutex = false;
-            Mutex mutex = new Mutex(true, "fommMainMutex", out booNewMutex);
+            bool booNewMutex;
+            var mutex = new Mutex(true, "fommMainMutex", out booNewMutex);
             if (!booNewMutex)
             {
               MessageBox.Show("fomm is already running", "Error");
@@ -1389,13 +1475,13 @@ class Script : Fallout3BaseScript {
             mutex.Close();
             return true;
           case "-bsa-unpacker":
-            Application.Run(new Tools.BSA.BSABrowser());
+            Application.Run(new BSABrowser());
             return true;
           case "-bsa-creator":
-            Application.Run(new Tools.BSA.BSACreator());
+            Application.Run(new BSACreator());
             return true;
           case "-tessnip":
-            Application.Run(new Tools.TESsnip.TESsnip());
+            Application.Run(new TESsnip());
             return true;
           case "-sdp-editor":
             Application.Run(new Tools.ShaderEdit.MainForm());
@@ -1409,13 +1495,13 @@ class Script : Fallout3BaseScript {
     /// Handles the command line arguments that affect an instance of FOMM.
     /// </summary>
     /// <param name="p_strArgs">The command line arguments that were passed to the programme.</param>
-    /// <returns><lang cref="true"/> if at least one of the arguments were handled;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if at least one of the arguments were handled;
+    /// <lang langref="false"/> otherwise.</returns>
     public override bool HandleInAppArguments(string[] p_strArgs)
     {
-      if (Array.IndexOf<string>(p_strArgs, "-install-tweaker") != -1)
+      if (Array.IndexOf(p_strArgs, "-install-tweaker") != -1)
       {
-        Application.Run(new Tools.InstallTweaker.InstallationTweaker());
+        Application.Run(new InstallationTweaker());
         return true;
       }
       return false;
@@ -1427,22 +1513,29 @@ class Script : Fallout3BaseScript {
     /// Verifies that the given path is a valid working directory for the game mode.
     /// </summary>
     /// <param name="p_strPath">The path to validate as a working directory.</param>
-    /// <returns><lang cref="true"/> if the path is a vlid working directory;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the path is a vlid working directory;
+    /// <lang langref="false"/> otherwise.</returns>
     public virtual bool VerifyWorkingDirectory(string p_strPath)
     {
       if (String.IsNullOrEmpty(p_strPath))
+      {
         return false;
+      }
 
-      string[] strExes = new string[] { Path.Combine(p_strPath, "fallout3.exe"),
-                        Path.Combine(p_strPath, "fallout3ng.exe") };
-      bool booFound = false;
-      foreach (string strExe in strExes)
+      var strExes = new[]
+      {
+        Path.Combine(p_strPath, "fallout3.exe"),
+        Path.Combine(p_strPath, "fallout3ng.exe")
+      };
+      var booFound = false;
+      foreach (var strExe in strExes)
+      {
         if (File.Exists(strExe))
         {
           booFound = true;
           break;
         }
+      }
       return booFound;
     }
 
@@ -1453,17 +1546,19 @@ class Script : Fallout3BaseScript {
     /// This sets the working directory to the Fallout 3 install folder.
     /// </remarks>
     /// <param name="p_strErrorMessage">The out parameter that is set to the error message, if an error occurred.</param>
-    /// <returns><lang cref="true"/> if the working directory was successfully set;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the working directory was successfully set;
+    /// <lang langref="false"/> otherwise.</returns>
     public override bool SetWorkingDirectory(out string p_strErrorMessage)
     {
-      string strWorkingDirectory = Properties.Settings.Default.fallout3WorkingDirectory;
+      var strWorkingDirectory = Properties.Settings.Default.fallout3WorkingDirectory;
 
       if (String.IsNullOrEmpty(strWorkingDirectory) || !Directory.Exists(strWorkingDirectory))
       {
         try
         {
-          strWorkingDirectory = Microsoft.Win32.Registry.GetValue(@"HKEY_LOCAL_MACHINE\Software\Bethesda Softworks\Fallout3", "Installed Path", null) as string;
+          strWorkingDirectory =
+            Registry.GetValue(@"HKEY_LOCAL_MACHINE\Software\Bethesda Softworks\Fallout3",
+                                              "Installed Path", null) as string;
         }
         catch
         {
@@ -1471,13 +1566,16 @@ class Script : Fallout3BaseScript {
         }
       }
 
-      using (WorkingDirectorySelectionForm wdfForm = new WorkingDirectorySelectionForm(
-          "Could not find Fallout 3 directory." + Environment.NewLine +
-          "Fallout's registry entry appears to be missing or incorrect." + Environment.NewLine +
-          "Please enter the path to your Fallout 3 game file, or click \"Auto Detect\" to search" +
-          " for the install directory. Note that Auto Detection can take several minutes.",
-          "Fallout 3 Game Directory:",
-          new string[] { "fallout3.exe", "fallout3ng.exe" }))
+      using (var wdfForm = new WorkingDirectorySelectionForm(
+        "Could not find Fallout 3 directory." + Environment.NewLine +
+        "Fallout's registry entry appears to be missing or incorrect." + Environment.NewLine +
+        "Please enter the path to your Fallout 3 game file, or click \"Auto Detect\" to search" +
+        " for the install directory. Note that Auto Detection can take several minutes.",
+        "Fallout 3 Game Directory:",
+        new[]
+        {
+          "fallout3.exe", "fallout3ng.exe"
+        }))
       {
         while (!VerifyWorkingDirectory(strWorkingDirectory))
         {
@@ -1506,18 +1604,19 @@ class Script : Fallout3BaseScript {
       {
         if (Program.GetFiles(DLCDirectory, "Anchorage.esm", SearchOption.AllDirectories).Length == 1)
         {
-          if (!File.Exists("data\\Anchorage.esm") && !File.Exists("data\\Anchorage - Main.bsa") && !File.Exists("data\\Anchorage - Sounds.bsa"))
+          if (!File.Exists("data\\Anchorage.esm") && !File.Exists("data\\Anchorage - Main.bsa") &&
+              !File.Exists("data\\Anchorage - Sounds.bsa"))
           {
-            string[] f1 = Directory.GetFiles(DLCDirectory, "Anchorage.esm", SearchOption.AllDirectories);
-            string[] f2 = Directory.GetFiles(DLCDirectory, "Anchorage - Main.bsa", SearchOption.AllDirectories);
-            string[] f3 = Directory.GetFiles(DLCDirectory, "Anchorage - Sounds.bsa", SearchOption.AllDirectories);
+            var f1 = Directory.GetFiles(DLCDirectory, "Anchorage.esm", SearchOption.AllDirectories);
+            var f2 = Directory.GetFiles(DLCDirectory, "Anchorage - Main.bsa", SearchOption.AllDirectories);
+            var f3 = Directory.GetFiles(DLCDirectory, "Anchorage - Sounds.bsa", SearchOption.AllDirectories);
             if (f1.Length == 1 && f2.Length == 1 && f3.Length == 1)
             {
               switch (MessageBox.Show("You seem to have bought the DLC Anchorage.\n" +
-                "Would you like to move it to fallout's data directory to allow for offline use and fose compatibility?\n" +
-                "Note that this may cause issues with any save games created after it was purchased but before it was moved.\n" +
-                "Click yes to move, cancel to ignore, and no if you don't want fomm to offer to move any DLC for you again.",
-                "Question", MessageBoxButtons.YesNoCancel))
+                                      "Would you like to move it to fallout's data directory to allow for offline use and fose compatibility?\n" +
+                                      "Note that this may cause issues with any save games created after it was purchased but before it was moved.\n" +
+                                      "Click yes to move, cancel to ignore, and no if you don't want fomm to offer to move any DLC for you again.",
+                                      "Question", MessageBoxButtons.YesNoCancel))
               {
                 case DialogResult.Yes:
                   File.Move(f1[0], "data\\Anchorage.esm");
@@ -1534,18 +1633,19 @@ class Script : Fallout3BaseScript {
         }
         if (Program.GetFiles(DLCDirectory, "ThePitt.esm", SearchOption.AllDirectories).Length == 1)
         {
-          if (!File.Exists("data\\ThePitt.esm") && !File.Exists("data\\ThePitt - Main.bsa") && !File.Exists("data\\ThePitt - Sounds.bsa"))
+          if (!File.Exists("data\\ThePitt.esm") && !File.Exists("data\\ThePitt - Main.bsa") &&
+              !File.Exists("data\\ThePitt - Sounds.bsa"))
           {
-            string[] f1 = Directory.GetFiles(DLCDirectory, "ThePitt.esm", SearchOption.AllDirectories);
-            string[] f2 = Directory.GetFiles(DLCDirectory, "ThePitt - Main.bsa", SearchOption.AllDirectories);
-            string[] f3 = Directory.GetFiles(DLCDirectory, "ThePitt - Sounds.bsa", SearchOption.AllDirectories);
+            var f1 = Directory.GetFiles(DLCDirectory, "ThePitt.esm", SearchOption.AllDirectories);
+            var f2 = Directory.GetFiles(DLCDirectory, "ThePitt - Main.bsa", SearchOption.AllDirectories);
+            var f3 = Directory.GetFiles(DLCDirectory, "ThePitt - Sounds.bsa", SearchOption.AllDirectories);
             if (f1.Length == 1 && f2.Length == 1 && f3.Length == 1)
             {
               switch (MessageBox.Show("You seem to have bought the DLC The Pitt.\n" +
-                "Would you like to move it to fallout's data directory to allow for offline use and fose compatibility?\n" +
-                "Note that this may cause issues with any save games created after it was purchased but before it was moved.\n" +
-                "Click yes to move, cancel to ignore, and no if you don't want fomm to offer to move any DLC for you again.",
-                "Question", MessageBoxButtons.YesNoCancel))
+                                      "Would you like to move it to fallout's data directory to allow for offline use and fose compatibility?\n" +
+                                      "Note that this may cause issues with any save games created after it was purchased but before it was moved.\n" +
+                                      "Click yes to move, cancel to ignore, and no if you don't want fomm to offer to move any DLC for you again.",
+                                      "Question", MessageBoxButtons.YesNoCancel))
               {
                 case DialogResult.Yes:
                   File.Move(f1[0], "data\\ThePitt.esm");
@@ -1565,7 +1665,7 @@ class Script : Fallout3BaseScript {
         {
           if (!File.Exists("Data\\BrokenSteel.esm"))
           {
-            string[][] files = new string[8][];
+            var files = new string[8][];
             files[0] = Directory.GetFiles(DLCDirectory, "BrokenSteel.esm", SearchOption.AllDirectories);
             files[1] = Directory.GetFiles(DLCDirectory, "BrokenSteel - Main.bsa", SearchOption.AllDirectories);
             files[2] = Directory.GetFiles(DLCDirectory, "BrokenSteel - Sounds.bsa", SearchOption.AllDirectories);
@@ -1574,8 +1674,8 @@ class Script : Fallout3BaseScript {
             files[5] = Directory.GetFiles(DLCDirectory, "B27.bik", SearchOption.AllDirectories);
             files[6] = Directory.GetFiles(DLCDirectory, "B28.bik", SearchOption.AllDirectories);
             files[7] = Directory.GetFiles(DLCDirectory, "B29.bik", SearchOption.AllDirectories);
-            bool missing = false;
-            for (int i = 0; i < 8; i++)
+            var missing = false;
+            for (var i = 0; i < 8; i++)
             {
               if (files[i].Length != 1)
               {
@@ -1583,7 +1683,7 @@ class Script : Fallout3BaseScript {
                 break;
               }
               if ((i < 3 && File.Exists(Path.Combine(PluginsPath, Path.GetFileName(files[i][0])))) ||
-              (i > 4 && File.Exists(Path.Combine(PluginsPath, Path.Combine("Video", Path.GetFileName(files[i][0]))))))
+                  (i > 4 && File.Exists(Path.Combine(PluginsPath, Path.Combine("Video", Path.GetFileName(files[i][0]))))))
               {
                 missing = true;
                 break;
@@ -1592,10 +1692,10 @@ class Script : Fallout3BaseScript {
             if (!missing)
             {
               switch (MessageBox.Show("You seem to have bought the DLC Broken Steel.\n" +
-                "Would you like to move it to fallout's data directory to allow for offline use and fose compatibility?\n" +
-                "Note that this may cause issues with any save games created after it was purchased but before it was moved.\n" +
-                "Click yes to move, cancel to ignore, and no if you don't want fomm to offer to move any DLC for you again.",
-                "Question", MessageBoxButtons.YesNoCancel))
+                                      "Would you like to move it to fallout's data directory to allow for offline use and fose compatibility?\n" +
+                                      "Note that this may cause issues with any save games created after it was purchased but before it was moved.\n" +
+                                      "Click yes to move, cancel to ignore, and no if you don't want fomm to offer to move any DLC for you again.",
+                                      "Question", MessageBoxButtons.YesNoCancel))
               {
                 case DialogResult.Yes:
                   if (File.Exists("data\\video\\2 weeks later.bik"))
@@ -1606,13 +1706,14 @@ class Script : Fallout3BaseScript {
                   {
                     File.Move("data\\video\\b09.bik", "data\\Video\\b09.bik.old");
                   }
-                  for (int i = 0; i < 3; i++)
+                  for (var i = 0; i < 3; i++)
                   {
                     File.Move(files[i][0], Path.Combine(PluginsPath, Path.GetFileName(files[i][0])));
                   }
-                  for (int i = 3; i < 8; i++)
+                  for (var i = 3; i < 8; i++)
                   {
-                    File.Move(files[i][0], Path.Combine(PluginsPath, Path.Combine("Video", Path.GetFileName(files[i][0]))));
+                    File.Move(files[i][0],
+                              Path.Combine(PluginsPath, Path.Combine("Video", Path.GetFileName(files[i][0]))));
                   }
                   break;
                 case DialogResult.No:
@@ -1626,18 +1727,19 @@ class Script : Fallout3BaseScript {
 
         if (Program.GetFiles(DLCDirectory, "PointLookout.esm ", SearchOption.AllDirectories).Length == 1)
         {
-          if (!File.Exists("data\\PointLookout.esm ") && !File.Exists("data\\PointLookout - Main.bsa") && !File.Exists("data\\PointLookout - Sounds.bsa"))
+          if (!File.Exists("data\\PointLookout.esm ") && !File.Exists("data\\PointLookout - Main.bsa") &&
+              !File.Exists("data\\PointLookout - Sounds.bsa"))
           {
-            string[] f1 = Directory.GetFiles(DLCDirectory, "PointLookout.esm", SearchOption.AllDirectories);
-            string[] f2 = Directory.GetFiles(DLCDirectory, "PointLookout - Main.bsa", SearchOption.AllDirectories);
-            string[] f3 = Directory.GetFiles(DLCDirectory, "PointLookout - Sounds.bsa", SearchOption.AllDirectories);
+            var f1 = Directory.GetFiles(DLCDirectory, "PointLookout.esm", SearchOption.AllDirectories);
+            var f2 = Directory.GetFiles(DLCDirectory, "PointLookout - Main.bsa", SearchOption.AllDirectories);
+            var f3 = Directory.GetFiles(DLCDirectory, "PointLookout - Sounds.bsa", SearchOption.AllDirectories);
             if (f1.Length == 1 && f2.Length == 1 && f3.Length == 1)
             {
               switch (MessageBox.Show("You seem to have bought the DLC Point lookout.\n" +
-                "Would you like to move it to fallout's data directory to allow for offline use and fose compatibility?\n" +
-                "Note that this may cause issues with any save games created after it was purchased but before it was moved.\n" +
-                "Click yes to move, cancel to ignore, and no if you don't want fomm to offer to move any DLC for you again.",
-                "Question", MessageBoxButtons.YesNoCancel))
+                                      "Would you like to move it to fallout's data directory to allow for offline use and fose compatibility?\n" +
+                                      "Note that this may cause issues with any save games created after it was purchased but before it was moved.\n" +
+                                      "Click yes to move, cancel to ignore, and no if you don't want fomm to offer to move any DLC for you again.",
+                                      "Question", MessageBoxButtons.YesNoCancel))
               {
                 case DialogResult.Yes:
                   File.Move(f1[0], "data\\PointLookout.esm");
@@ -1655,18 +1757,19 @@ class Script : Fallout3BaseScript {
 
         if (Program.GetFiles(DLCDirectory, "Zeta.esm ", SearchOption.AllDirectories).Length == 1)
         {
-          if (!File.Exists("data\\Zeta.esm ") && !File.Exists("data\\Zeta - Main.bsa") && !File.Exists("data\\Zeta - Sounds.bsa"))
+          if (!File.Exists("data\\Zeta.esm ") && !File.Exists("data\\Zeta - Main.bsa") &&
+              !File.Exists("data\\Zeta - Sounds.bsa"))
           {
-            string[] f1 = Directory.GetFiles(DLCDirectory, "Zeta.esm", SearchOption.AllDirectories);
-            string[] f2 = Directory.GetFiles(DLCDirectory, "Zeta - Main.bsa", SearchOption.AllDirectories);
-            string[] f3 = Directory.GetFiles(DLCDirectory, "Zeta - Sounds.bsa", SearchOption.AllDirectories);
+            var f1 = Directory.GetFiles(DLCDirectory, "Zeta.esm", SearchOption.AllDirectories);
+            var f2 = Directory.GetFiles(DLCDirectory, "Zeta - Main.bsa", SearchOption.AllDirectories);
+            var f3 = Directory.GetFiles(DLCDirectory, "Zeta - Sounds.bsa", SearchOption.AllDirectories);
             if (f1.Length == 1 && f2.Length == 1 && f3.Length == 1)
             {
               switch (MessageBox.Show("You seem to have bought the DLC Mothership Zeta.\n" +
-                "Would you like to move it to fallout's data directory to allow for offline use and fose compatibility?\n" +
-                "Note that this may cause issues with any save games created after it was purchased but before it was moved.\n" +
-                "Click yes to move, cancel to ignore, and no if you don't want fomm to offer to move any DLC for you again.",
-                "Question", MessageBoxButtons.YesNoCancel))
+                                      "Would you like to move it to fallout's data directory to allow for offline use and fose compatibility?\n" +
+                                      "Note that this may cause issues with any save games created after it was purchased but before it was moved.\n" +
+                                      "Click yes to move, cancel to ignore, and no if you don't want fomm to offer to move any DLC for you again.",
+                                      "Question", MessageBoxButtons.YesNoCancel))
               {
                 case DialogResult.Yes:
                   File.Move(f1[0], "data\\Zeta.esm");
@@ -1689,22 +1792,36 @@ class Script : Fallout3BaseScript {
     /// </summary>
     protected void ScanForReadonlyFiles()
     {
-      List<string> lstFiles = new List<string>(SettingsFiles.Values);
-      foreach (string strPath in m_dicAdditionalPaths.Values)
-        if (File.Exists(strPath))
-          lstFiles.Add(strPath);
-      foreach (string strFile in lstFiles)
+      var lstFiles = new List<string>(SettingsFiles.Values);
+      foreach (var strPath in m_dicAdditionalPaths.Values)
       {
-        FileInfo fifPlugin = new FileInfo(strFile);
+        if (File.Exists(strPath))
+        {
+          lstFiles.Add(strPath);
+        }
+      }
+      foreach (var strFile in lstFiles)
+      {
+        var fifPlugin = new FileInfo(strFile);
         if (fifPlugin.Exists && ((fifPlugin.Attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly))
         {
-          bool booAsk = Properties.Settings.Default.falloutNewVegasAskAboutReadOnlySettingsFiles;
-          bool booMakeWritable = Properties.Settings.Default.falloutNewVegasUnReadOnlySettingsFiles;
-          bool booRemember = false;
+          var booAsk = Properties.Settings.Default.falloutNewVegasAskAboutReadOnlySettingsFiles;
+          var booMakeWritable = Properties.Settings.Default.falloutNewVegasUnReadOnlySettingsFiles;
+          var booRemember = false;
           if (booAsk)
-            booMakeWritable = (RememberSelectionMessageBox.Show(null, String.Format("'{0}' is read-only, so it can't be managed by {1}. Would you like to make it not read-only?", fifPlugin.Name, Program.ProgrammeAcronym), "Read Only", MessageBoxButtons.YesNo, MessageBoxIcon.Question, out booRemember) == DialogResult.Yes);
+          {
+            booMakeWritable =
+              (RememberSelectionMessageBox.Show(null,
+                                                String.Format(
+                                                  "'{0}' is read-only, so it can't be managed by {1}. Would you like to make it not read-only?",
+                                                  fifPlugin.Name, Program.ProgrammeAcronym), "Read Only",
+                                                MessageBoxButtons.YesNo, MessageBoxIcon.Question, out booRemember) ==
+               DialogResult.Yes);
+          }
           if (booMakeWritable)
+          {
             fifPlugin.Attributes &= ~FileAttributes.ReadOnly;
+          }
           if (booRemember)
           {
             Properties.Settings.Default.falloutNewVegasAskAboutReadOnlySettingsFiles = false;
@@ -1720,17 +1837,23 @@ class Script : Fallout3BaseScript {
     /// </summary>
     protected void ScanForReadonlyPlugins()
     {
-      DirectoryInfo difPluginsDirectory = new DirectoryInfo(Program.GameMode.PluginsPath);
-      List<FileInfo> lstPlugins = new List<FileInfo>(Program.GetFiles(difPluginsDirectory, "*.esp"));
+      var difPluginsDirectory = new DirectoryInfo(Program.GameMode.PluginsPath);
+      var lstPlugins = new List<FileInfo>(Program.GetFiles(difPluginsDirectory, "*.esp"));
       lstPlugins.AddRange(Program.GetFiles(difPluginsDirectory, "*.esm"));
 
-      for (Int32 i = 0; i < lstPlugins.Count; i++)
+      foreach (var fifPlugin in lstPlugins)
       {
-        FileInfo fifPlugin = lstPlugins[i];
         if ((fifPlugin.Attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
         {
-          if (MessageBox.Show(null, String.Format("'{0}' is read-only, so its load order cannot be changed. Would you like to make it not read-only?", fifPlugin.Name), "Read Only", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+          if (
+            MessageBox.Show(null,
+                            String.Format(
+                              "'{0}' is read-only, so its load order cannot be changed. Would you like to make it not read-only?",
+                              fifPlugin.Name), "Read Only", MessageBoxButtons.YesNo, MessageBoxIcon.Question) ==
+            DialogResult.Yes)
+          {
             fifPlugin.Attributes &= ~FileAttributes.ReadOnly;
+          }
         }
       }
     }
@@ -1739,11 +1862,11 @@ class Script : Fallout3BaseScript {
     /// Determines if the specified file is a plugin for the game mode.
     /// </summary>
     /// <param name="p_strPath">The path to the file for which it is to be determined if it is a plugin file.</param>
-    /// <returns><lang cref="true"/> if the specified file is a plugin file in the game mode;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the specified file is a plugin file in the game mode;
+    /// <lang langref="false"/> otherwise.</returns>
     public override bool IsPluginFile(string p_strPath)
     {
-      string strExt = Path.GetExtension(p_strPath).ToLowerInvariant();
+      var strExt = Path.GetExtension(p_strPath).ToLowerInvariant();
       return (strExt == ".esp" || strExt == ".esm");
     }
   }

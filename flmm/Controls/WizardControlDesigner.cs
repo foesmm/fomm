@@ -1,5 +1,4 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 
 namespace Fomm.Controls
 {
@@ -13,18 +12,24 @@ namespace Fomm.Controls
     /// Determines of the control should respond to a mouse click.
     /// </summary>
     /// <param name="point">The point where the mouse was clicked.</param>
-    /// <returns><lang cref="true"/> if the designed control should process the mouse click;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the designed control should process the mouse click;
+    /// <lang langref="false"/> otherwise.</returns>
     protected override bool GetHitTest(Point point)
     {
       if (base.GetHitTest(point))
+      {
         return true;
+      }
 
-      WizardControl wizWizardControl = (WizardControl)Control;
+      var wizWizardControl = (WizardControl) Control;
       if (wizWizardControl.PreviousButton.ClientRectangle.Contains(wizWizardControl.PreviousButton.PointToClient(point)))
+      {
         return true;
+      }
       if (wizWizardControl.NextButton.ClientRectangle.Contains(wizWizardControl.NextButton.PointToClient(point)))
+      {
         return true;
+      }
       return false;
     }
   }

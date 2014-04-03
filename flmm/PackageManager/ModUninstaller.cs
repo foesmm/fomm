@@ -1,17 +1,14 @@
 ﻿using System;
-using ChinhDo.Transactions;
 using System.Windows.Forms;
 using System.IO;
-using fomm.Transactions;
-using System.Collections.Generic;
 using Fomm.PackageManager.ModInstallLog;
 
 namespace Fomm.PackageManager
 {
-  class ModUninstaller : ModInstallerBase
+  internal class ModUninstaller : ModInstallerBase
   {
-    private BackgroundWorkerProgressDialog m_bwdProgress = null;
-    private string m_strBaseName = null;
+    private BackgroundWorkerProgressDialog m_bwdProgress;
+    private string m_strBaseName;
 
     #region Properties
 
@@ -20,7 +17,8 @@ namespace Fomm.PackageManager
     {
       get
       {
-        return "A problem occurred during uninstall: " + Environment.NewLine + "{0}" + Environment.NewLine + "The mod was not uninstalled.";
+        return "A problem occurred during uninstall: " + Environment.NewLine + "{0}" + Environment.NewLine +
+               "The mod was not uninstalled.";
       }
     }
 
@@ -73,20 +71,22 @@ namespace Fomm.PackageManager
     /// Indicates that this script's work has already been completed if
     /// the <see cref="Fomod"/> is already not active.
     /// </summary>
-    /// <returns><lang cref="true"/> if the <see cref="Fomod"/> is not active;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the <see cref="Fomod"/> is not active;
+    /// <lang langref="false"/> otherwise.</returns>
     /// <seealso cref="ModInstallScript.CheckAlreadyDone()"/>
     protected override bool CheckAlreadyDone()
     {
       if (Fomod == null)
+      {
         return false;
+      }
       return !Fomod.IsActive;
     }
 
     /// <summary>
     /// Uninstalls the mod and deactivates it.
     /// </summary>
-    /// <seealso cref="Uninstall(bool p_booSuppressSuccessMessage)"/>
+    /// <seealso cref="Uninstall(bool)"/>
     public void Uninstall()
     {
       Uninstall(false);
@@ -107,30 +107,42 @@ namespace Fomm.PackageManager
     /// This does the actual uninstallation; it removes the files and undoes any edits the
     /// fomod made.
     /// </summary>
-    /// <returns><lang cref="true"/> if the script work was completed successfully and needs to
-    /// be committed; <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the script work was completed successfully and needs to
+    /// be committed; <lang langref="false"/> otherwise.</returns>
     /// <seealso cref="ModInstallScript.DoScript"/>
     protected override bool DoScript()
     {
-      foreach (string strSettingsFile in Program.GameMode.SettingsFiles.Values)
+      foreach (var strSettingsFile in Program.GameMode.SettingsFiles.Values)
+      {
         TransactionalFileManager.Snapshot(strSettingsFile);
-      foreach (string strAdditionalFile in Program.GameMode.AdditionalPaths.Values)
+      }
+      foreach (var strAdditionalFile in Program.GameMode.AdditionalPaths.Values)
+      {
         if (File.Exists(strAdditionalFile))
+        {
           TransactionalFileManager.Snapshot(strAdditionalFile);
+        }
+      }
       TransactionalFileManager.Snapshot(InstallLog.Current.InstallLogPath);
 
-      bool booIsActive = true;
+      bool booIsActive;
       try
       {
         if (Fomod != null)
         {
           MergeModule = InstallLog.Current.GetMergeModule(Fomod.BaseName);
           if (Fomod.HasUninstallScript)
+          {
             Fomod.IsActive = !RunCustomUninstallScript();
+          }
           else
+          {
             Fomod.IsActive = !RunBasicUninstallScript();
+          }
           if (!Fomod.IsActive)
+          {
             InstallLog.Current.UnmergeModule(Fomod.BaseName);
+          }
           booIsActive = Fomod.IsActive;
         }
         else
@@ -143,34 +155,40 @@ namespace Fomm.PackageManager
       catch (Exception e)
       {
         if (Fomod != null)
+        {
           Fomod.IsActive = true;
+        }
         throw e;
       }
       if (booIsActive)
+      {
         return false;
+      }
       return true;
     }
 
     /// <summary>
     /// Runs the custom uninstall script included in the fomod.
     /// </summary>
-    /// <returns><lang cref="true"/> if the uninstallation was successful;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the uninstallation was successful;
+    /// <lang langref="false"/> otherwise.</returns>
     /// <exception cref="FileNotFoundException">Thrown if the uninstall script
     /// cannot be found.</exception>
     protected bool RunCustomUninstallScript()
     {
-      string strScript = Fomod.GetUninstallScript();
+      var strScript = Fomod.GetUninstallScript();
       if (strScript == null)
+      {
         throw new FileNotFoundException("No uninstall script found, even though fomod claimed to have one.");
+      }
       return false;
     }
 
     /// <summary>
     /// Runs the basic uninstall script.
     /// </summary>
-    /// <returns><lang cref="true"/> if the installation was successful;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the installation was successful;
+    /// <lang langref="false"/> otherwise.</returns>
     protected bool RunBasicUninstallScript()
     {
       try
@@ -181,7 +199,9 @@ namespace Fomm.PackageManager
           m_bwdProgress.ItemProgressStep = 1;
           m_bwdProgress.OverallProgressStep = 1;
           if (m_bwdProgress.ShowDialog() == DialogResult.Cancel)
+          {
             return false;
+          }
         }
       }
       finally
@@ -200,49 +220,67 @@ namespace Fomm.PackageManager
     /// </remarks>
     protected void PerformBasicUninstall()
     {
-      List<string> lstFiles = MergeModule.DataFiles;
-      List<InstallLogMergeModule.IniEdit> lstIniEdits = MergeModule.IniEdits;
-      List<InstallLogMergeModule.GameSpecificValueEdit> lstGameSpecificValueEdits = MergeModule.GameSpecificValueEdits;
+      var lstFiles = MergeModule.DataFiles;
+      var lstIniEdits = MergeModule.IniEdits;
+      var lstGameSpecificValueEdits = MergeModule.GameSpecificValueEdits;
       m_bwdProgress.OverallProgressMaximum = lstFiles.Count + lstIniEdits.Count + lstGameSpecificValueEdits.Count;
 
       m_bwdProgress.ItemProgressMaximum = lstFiles.Count;
       m_bwdProgress.ItemMessage = "Uninstalling Files";
-      foreach (string strFile in lstFiles)
+      foreach (var strFile in lstFiles)
       {
         if (m_bwdProgress.Cancelled())
+        {
           return;
+        }
         if (Fomod == null)
+        {
           Script.UninstallDataFile(m_strBaseName, strFile);
+        }
         else
+        {
           Script.UninstallDataFile(strFile);
+        }
         m_bwdProgress.StepItemProgress();
         m_bwdProgress.StepOverallProgress();
       }
 
       m_bwdProgress.ItemProgressMaximum = lstIniEdits.Count;
       m_bwdProgress.ItemMessage = "Undoing Ini Edits";
-      foreach (InstallLogMergeModule.IniEdit iniEdit in lstIniEdits)
+      foreach (var iniEdit in lstIniEdits)
       {
         if (m_bwdProgress.Cancelled())
+        {
           return;
+        }
         if (Fomod == null)
+        {
           Script.UneditIni(m_strBaseName, iniEdit.File, iniEdit.Section, iniEdit.Key);
+        }
         else
+        {
           Script.UneditIni(iniEdit.File, iniEdit.Section, iniEdit.Key);
+        }
         m_bwdProgress.StepItemProgress();
         m_bwdProgress.StepOverallProgress();
       }
 
       m_bwdProgress.ItemProgressMaximum = lstGameSpecificValueEdits.Count;
       m_bwdProgress.ItemMessage = "Undoing Game Specific Value Edits";
-      foreach (InstallLogMergeModule.GameSpecificValueEdit gsvEdit in lstGameSpecificValueEdits)
+      foreach (var gsvEdit in lstGameSpecificValueEdits)
       {
         if (m_bwdProgress.Cancelled())
+        {
           return;
+        }
         if (Fomod == null)
+        {
           Script.UneditGameSpecificValue(m_strBaseName, gsvEdit.Key);
+        }
         else
+        {
           Script.UneditGameSpecificValue(gsvEdit.Key);
+        }
         m_bwdProgress.StepItemProgress();
         m_bwdProgress.StepOverallProgress();
       }

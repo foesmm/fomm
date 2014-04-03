@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
+﻿using System.Collections.Generic;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
@@ -25,6 +21,7 @@ namespace Fomm.PackageManager.FomodBuilder
 {\pntext\f0 4.\tab}Select the format you would like to use for your Readme file.\par
 }
  ";
+
     #region Properties
 
     /// <summary>
@@ -35,9 +32,11 @@ namespace Fomm.PackageManager.FomodBuilder
     {
       get
       {
-        List<string> lstFiles = new List<string>();
+        var lstFiles = new List<string>();
         foreach (ListViewItem lviFile in lvwReadmeFiles.Items)
+        {
           lstFiles.Add(lviFile.Name);
+        }
         return lstFiles;
       }
     }
@@ -50,7 +49,7 @@ namespace Fomm.PackageManager.FomodBuilder
     {
       get
       {
-        return ((KeyValuePair<string, ReadmeFormat>)cbxFormat.SelectedItem).Value;
+        return ((KeyValuePair<string, ReadmeFormat>) cbxFormat.SelectedItem).Value;
       }
     }
 
@@ -116,18 +115,26 @@ namespace Fomm.PackageManager.FomodBuilder
     /// <param name="e">A <see cref="DragEventArgs"/> that describes the event arguments.</param>
     private void lvwReadmeFiles_DragOver(object sender, DragEventArgs e)
     {
-      if (!e.Data.GetDataPresent(typeof(List<SourceFileTree.SourceFileSystemDragData>)))
+      if (!e.Data.GetDataPresent(typeof (List<SourceFileTree.SourceFileSystemDragData>)))
+      {
         return;
-      List<SourceFileTree.SourceFileSystemDragData> lstData = (List<SourceFileTree.SourceFileSystemDragData>)e.Data.GetData(typeof(List<SourceFileTree.SourceFileSystemDragData>));
-      bool booFoundFile = false;
-      foreach (SourceFileTree.SourceFileSystemDragData sddData in lstData)
+      }
+      var lstData =
+        (List<SourceFileTree.SourceFileSystemDragData>)
+          e.Data.GetData(typeof (List<SourceFileTree.SourceFileSystemDragData>));
+      var booFoundFile = false;
+      foreach (var sddData in lstData)
+      {
         if (!sddData.IsDirectory)
         {
           booFoundFile = true;
           break;
         }
+      }
       if (!booFoundFile)
+      {
         return;
+      }
       e.Effect = DragDropEffects.Copy;
     }
 
@@ -141,12 +148,20 @@ namespace Fomm.PackageManager.FomodBuilder
     /// <param name="e">A <see cref="DragEventArgs"/> that describes the event arguments.</param>
     private void lvwReadmeFiles_DragDrop(object sender, DragEventArgs e)
     {
-      if (!e.Data.GetDataPresent(typeof(List<SourceFileTree.SourceFileSystemDragData>)))
+      if (!e.Data.GetDataPresent(typeof (List<SourceFileTree.SourceFileSystemDragData>)))
+      {
         return;
-      List<SourceFileTree.SourceFileSystemDragData> lstData = (List<SourceFileTree.SourceFileSystemDragData>)e.Data.GetData(typeof(List<SourceFileTree.SourceFileSystemDragData>));
-      foreach (SourceFileTree.SourceFileSystemDragData sddData in lstData)
+      }
+      var lstData =
+        (List<SourceFileTree.SourceFileSystemDragData>)
+          e.Data.GetData(typeof (List<SourceFileTree.SourceFileSystemDragData>));
+      foreach (var sddData in lstData)
+      {
         if (!sddData.IsDirectory)
+        {
           lvwReadmeFiles.Items.Add(sddData.Path, Path.GetFileName(sddData.Path), 0);
+        }
+      }
     }
 
     #endregion
@@ -157,22 +172,23 @@ namespace Fomm.PackageManager.FomodBuilder
     /// <returns>A concatenation of all selected file.</returns>
     public string GenerateReadme()
     {
-      StringBuilder stbReadme = new StringBuilder();
-      string strFileName = null;
+      var stbReadme = new StringBuilder();
       foreach (ListViewItem lviFile in lvwReadmeFiles.Items)
       {
-        strFileName = lviFile.Name;
+        var strFileName = lviFile.Name;
         if (strFileName.StartsWith(Archive.ARCHIVE_PREFIX))
         {
-          KeyValuePair<string, string> kvpPath = Archive.ParseArchivePath(strFileName);
-          Archive arcArchive = new Archive(kvpPath.Key);
-          string strFile = Encoding.UTF8.GetString(arcArchive.GetFileContents(kvpPath.Value));
+          var kvpPath = Archive.ParseArchivePath(strFileName);
+          var arcArchive = new Archive(kvpPath.Key);
+          var strFile = Encoding.UTF8.GetString(arcArchive.GetFileContents(kvpPath.Value));
           stbReadme.Append(strFile).AppendLine().AppendLine();
         }
         else
         {
           if (!File.Exists(strFileName))
+          {
             continue;
+          }
           stbReadme.Append(File.ReadAllText(strFileName)).AppendLine().AppendLine();
         }
       }

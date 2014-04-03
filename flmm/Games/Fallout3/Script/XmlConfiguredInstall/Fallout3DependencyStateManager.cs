@@ -15,14 +15,14 @@ namespace Fomm.Games.Fallout3.Script.XmlConfiguredInstall
     /// Gets the installed version of the script extender.
     /// </summary>
     /// <remarks>
-    /// <lang cref="null"/> is returned if the script extender is not installed.
+    /// <lang langref="null"/> is returned if the script extender is not installed.
     /// </remarks>
     /// <value>The installed version of the script extender.</value>
     public Version ScriptExtenderVersion
     {
       get
       {
-        return ((Fallout3ModInstallScript)Script).GetScriptExtenderVersion();
+        return ((Fallout3ModInstallScript) Script).GetScriptExtenderVersion();
       }
     }
 

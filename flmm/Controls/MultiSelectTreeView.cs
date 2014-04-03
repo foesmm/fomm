@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Drawing;
@@ -23,21 +24,13 @@ namespace Fomm.Controls
       /// </summary>
       public class TreeNodeEventArgs : EventArgs
       {
-        private TreeNode m_tndNode = null;
-
         #region Properties
 
         /// <summary>
         /// Gets the <see cref="TreeNode"/> affected by the event.
         /// </summary>
         /// <value>The <see cref="TreeNode"/> affected by the event.</value>
-        public TreeNode TreeNode
-        {
-          get
-          {
-            return m_tndNode;
-          }
-        }
+        public TreeNode TreeNode { get; private set; }
 
         #endregion
 
@@ -49,7 +42,7 @@ namespace Fomm.Controls
         /// <param name="p_tndNode">The <see cref="TreeNode"/> affected by the event.</param>
         public TreeNodeEventArgs(TreeNode p_tndNode)
         {
-          m_tndNode = p_tndNode;
+          TreeNode = p_tndNode;
         }
 
         #endregion
@@ -59,8 +52,13 @@ namespace Fomm.Controls
 
       #region Events
 
-      public event EventHandler<TreeNodeEventArgs> ItemRemoved = delegate { };
-      public event EventHandler<TreeNodeEventArgs> ItemAdded = delegate { };
+      public event EventHandler<TreeNodeEventArgs> ItemRemoved = delegate
+      {
+      };
+
+      public event EventHandler<TreeNodeEventArgs> ItemAdded = delegate
+      {
+      };
 
       /// <summary>
       /// Raises the <see cref="ItemRemoved"/> event.
@@ -68,7 +66,6 @@ namespace Fomm.Controls
       /// <param name="p_tndNode">The <see cref="TreeNode"/> that was removed.</param>
       protected void OnItemRemoved(TreeNode p_tndNode)
       {
-
         ItemRemoved(this, new TreeNodeEventArgs(p_tndNode));
       }
 
@@ -89,7 +86,7 @@ namespace Fomm.Controls
       /// <param name="p_enmNodes">The <see cref="TreeNode"/>s to add to the collection.</param>
       public void AddRange(IEnumerable<TreeNode> p_enmNodes)
       {
-        foreach (TreeNode tndNode in p_enmNodes)
+        foreach (var tndNode in p_enmNodes)
         {
           m_lklNodes.AddLast(tndNode);
           OnItemAdded(tndNode);
@@ -106,10 +103,14 @@ namespace Fomm.Controls
       /// -1 otherwise.</returns>
       public int IndexOf(TreeNode item)
       {
-        LinkedListNode<TreeNode> lndNode = m_lklNodes.First;
-        for (Int32 i = 0; lndNode != null; i++, lndNode = lndNode.Next)
+        var lndNode = m_lklNodes.First;
+        for (var i = 0; lndNode != null; i++, lndNode = lndNode.Next)
+        {
           if (lndNode.Value == item)
+          {
             return i;
+          }
+        }
         return -1;
       }
 
@@ -123,13 +124,21 @@ namespace Fomm.Controls
       public void Insert(int index, TreeNode item)
       {
         if ((index < 0) || (index > m_lklNodes.Count))
+        {
           throw new IndexOutOfRangeException("Index " + index + " is out of range.");
-        LinkedListNode<TreeNode> lndNode = m_lklNodes.First;
-        for (Int32 i = 0; lndNode != null && i < index; i++, lndNode = lndNode.Next) ;
+        }
+        var lndNode = m_lklNodes.First;
+        for (var i = 0; lndNode != null && i < index; i++, lndNode = lndNode.Next)
+        {
+        }
         if (lndNode == null)
+        {
           m_lklNodes.AddLast(item);
+        }
         else
+        {
           m_lklNodes.AddBefore(lndNode, item);
+        }
         OnItemAdded(item);
       }
 
@@ -142,9 +151,13 @@ namespace Fomm.Controls
       public void RemoveAt(int index)
       {
         if ((index < 0) || (index >= m_lklNodes.Count))
+        {
           throw new IndexOutOfRangeException("Index " + index + " is out of range.");
-        LinkedListNode<TreeNode> lndNode = m_lklNodes.First;
-        for (Int32 i = 0; lndNode != null && i < index; i++, lndNode = lndNode.Next) ;
+        }
+        var lndNode = m_lklNodes.First;
+        for (var i = 0; lndNode != null && i < index; i++, lndNode = lndNode.Next)
+        {
+        }
         if (lndNode != null)
         {
           m_lklNodes.Remove(lndNode);
@@ -164,23 +177,34 @@ namespace Fomm.Controls
         get
         {
           if ((index < 0) || (index >= m_lklNodes.Count))
+          {
             throw new IndexOutOfRangeException("Index " + index + " is out of range.");
-          LinkedListNode<TreeNode> lndNode = m_lklNodes.First;
-          for (Int32 i = 0; lndNode != null && i < index; i++, lndNode = lndNode.Next) ;
+          }
+          var lndNode = m_lklNodes.First;
+          for (var i = 0; lndNode != null && i < index; i++, lndNode = lndNode.Next)
+          {
+          }
           return lndNode.Value;
         }
         set
         {
-
           if ((index < 0) || (index >= m_lklNodes.Count))
+          {
             throw new IndexOutOfRangeException("Index " + index + " is out of range.");
-          LinkedListNode<TreeNode> lndNode = m_lklNodes.First;
-          for (Int32 i = 0; lndNode != null && i < index; i++, lndNode = lndNode.Next) ;
+          }
+          var lndNode = m_lklNodes.First;
+          for (var i = 0; lndNode != null && i < index; i++, lndNode = lndNode.Next)
+          {
+          }
           if (value == null)
+          {
             OnItemRemoved(lndNode.Value);
+          }
           lndNode.Value = value;
           if (value != null)
+          {
             OnItemAdded(value);
+          }
         }
       }
 
@@ -203,10 +227,9 @@ namespace Fomm.Controls
       /// </summary>
       public void Clear()
       {
-        TreeNode tndNode = null;
         while (m_lklNodes.First != null)
         {
-          tndNode = m_lklNodes.First.Value;
+          var tndNode = m_lklNodes.First.Value;
           m_lklNodes.RemoveFirst();
           OnItemRemoved(tndNode);
         }
@@ -216,8 +239,8 @@ namespace Fomm.Controls
       /// Determines if the given item is in the collection.
       /// </summary>
       /// <param name="item">The item whose presence in the collection is to be determined.</param>
-      /// <returns><lang cref="true"/> if the item is in the collection;
-      /// <lang cref="false"/> otherwise.</returns>
+      /// <returns><lang langref="true"/> if the item is in the collection;
+      /// <lang langref="false"/> otherwise.</returns>
       public bool Contains(TreeNode item)
       {
         return (IndexOf(item) > -1);
@@ -234,10 +257,14 @@ namespace Fomm.Controls
       public void CopyTo(TreeNode[] array, int arrayIndex)
       {
         if (arrayIndex + m_lklNodes.Count > array.Length)
+        {
           throw new ArgumentException("Given array is too small");
-        LinkedListNode<TreeNode> lndNode = m_lklNodes.First;
-        for (Int32 i = arrayIndex; lndNode != null; i++, lndNode = lndNode.Next)
+        }
+        var lndNode = m_lklNodes.First;
+        for (var i = arrayIndex; lndNode != null; i++, lndNode = lndNode.Next)
+        {
           array[i] = lndNode.Value;
+        }
       }
 
       /// <summary>
@@ -268,14 +295,18 @@ namespace Fomm.Controls
       /// Removes the given item from the collection.
       /// </summary>
       /// <param name="item">The item to remove from the collection.</param>
-      /// <returns><lang cref="true"/> if the item was removed from the collection;
-      /// <lang cref="false"/> if the item couldn't be removed because it was not in the collection.</returns>
+      /// <returns><lang langref="true"/> if the item was removed from the collection;
+      /// <lang langref="false"/> if the item couldn't be removed because it was not in the collection.</returns>
       public bool Remove(TreeNode item)
       {
-        LinkedListNode<TreeNode> lndNode = m_lklNodes.First;
-        for (Int32 i = 0; lndNode != null; i++, lndNode = lndNode.Next)
+        var lndNode = m_lklNodes.First;
+        for (var i = 0; lndNode != null; i++, lndNode = lndNode.Next)
+        {
           if (lndNode.Value == item)
+          {
             break;
+          }
+        }
         if (lndNode != null)
         {
           m_lklNodes.Remove(lndNode);
@@ -297,7 +328,7 @@ namespace Fomm.Controls
 
       #region IEnumerable Members
 
-      System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+      IEnumerator IEnumerable.GetEnumerator()
       {
         return m_lklNodes.GetEnumerator();
       }
@@ -305,8 +336,7 @@ namespace Fomm.Controls
       #endregion
     }
 
-    private TreeNodeCollection m_tncSelectedNodes = null;
-    private TreeNode m_tndFirst = null;
+    private TreeNode m_tndFirst;
 
     #region Properties
 
@@ -314,13 +344,7 @@ namespace Fomm.Controls
     /// Gets the selected <see cref="TreeNode"/>s.
     /// </summary>
     /// <value>The selected <see cref="TreeNode"/>s.</value>
-    public TreeNodeCollection SelectedNodes
-    {
-      get
-      {
-        return m_tncSelectedNodes;
-      }
-    }
+    public TreeNodeCollection SelectedNodes { get; private set; }
 
     #endregion
 
@@ -332,9 +356,11 @@ namespace Fomm.Controls
     public MultiSelectTreeView()
     {
       DoubleBuffered = true;
-      m_tncSelectedNodes = new TreeNodeCollection();
-      m_tncSelectedNodes.ItemAdded += new EventHandler<TreeNodeCollection.TreeNodeEventArgs>(m_tncSelectedNodes_ItemAdded);
-      m_tncSelectedNodes.ItemRemoved += new EventHandler<TreeNodeCollection.TreeNodeEventArgs>(m_tncSelectedNodes_ItemRemoved);
+      SelectedNodes = new TreeNodeCollection();
+      SelectedNodes.ItemAdded +=
+        m_tncSelectedNodes_ItemAdded;
+      SelectedNodes.ItemRemoved +=
+        m_tncSelectedNodes_ItemRemoved;
     }
 
     #endregion
@@ -347,7 +373,8 @@ namespace Fomm.Controls
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
     /// <param name="e">A <see cref="TreeNodeCollection.TreeNodeEventArgs"/> describing the event arguments.</param>
-    private void m_tncSelectedNodes_ItemRemoved(object sender, MultiSelectTreeView.TreeNodeCollection.TreeNodeEventArgs e)
+    private void m_tncSelectedNodes_ItemRemoved(object sender,
+                                                TreeNodeCollection.TreeNodeEventArgs e)
     {
       e.TreeNode.BackColor = Color.Empty;
       e.TreeNode.ForeColor = Color.Empty;
@@ -361,7 +388,7 @@ namespace Fomm.Controls
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
     /// <param name="e">A <see cref="TreeNodeCollection.TreeNodeEventArgs"/> describing the event arguments.</param>
-    private void m_tncSelectedNodes_ItemAdded(object sender, MultiSelectTreeView.TreeNodeCollection.TreeNodeEventArgs e)
+    private void m_tncSelectedNodes_ItemAdded(object sender, TreeNodeCollection.TreeNodeEventArgs e)
     {
       e.TreeNode.BackColor = SystemColors.Highlight;
       e.TreeNode.ForeColor = SystemColors.HighlightText;
@@ -376,7 +403,7 @@ namespace Fomm.Controls
     /// <param name="e">A <see cref="MouseEventArgs"/> describing the event arguments.</param>
     protected override void OnMouseDown(MouseEventArgs e)
     {
-      base.SelectedNode = null;
+      SelectedNode = null;
       base.OnMouseDown(e);
     }
 
@@ -391,14 +418,16 @@ namespace Fomm.Controls
     protected override void OnBeforeSelect(TreeViewCancelEventArgs e)
     {
       base.OnBeforeSelect(e);
-      if (((ModifierKeys & Keys.Control) > 0) && m_tncSelectedNodes.Contains(e.Node))
+      if (((ModifierKeys & Keys.Control) > 0) && SelectedNodes.Contains(e.Node))
       {
         SelectedNodes.Remove(e.Node);
         e.Cancel = true;
       }
 
       if (ModifierKeys != Keys.Shift)
+      {
         m_tndFirst = e.Node;
+      }
     }
 
     /// <summary>
@@ -413,9 +442,13 @@ namespace Fomm.Controls
       if (((ModifierKeys & Keys.Control) > 0))
       {
         if (!SelectedNodes.Contains(e.Node))
+        {
           SelectedNodes.Add(e.Node);
+        }
         else
+        {
           SelectedNodes.Remove(e.Node);
+        }
       }
       else
       {
@@ -427,7 +460,9 @@ namespace Fomm.Controls
         else
         {
           if (SelectedNodes.Count > 0)
+          {
             SelectedNodes.Clear();
+          }
           SelectedNodes.Add(e.Node);
         }
       }
@@ -442,8 +477,8 @@ namespace Fomm.Controls
     /// <returns>The list of nodes visible between the two given node.</returns>
     protected List<TreeNode> FindPath(TreeNode p_tndStart, TreeNode p_tndEnd)
     {
-      List<TreeNode> lstPath = new List<TreeNode>();
-      TreeNode tndPathNode = p_tndStart;
+      var lstPath = new List<TreeNode>();
+      var tndPathNode = p_tndStart;
       while ((tndPathNode != null) && (tndPathNode != p_tndEnd))
       {
         lstPath.Add(tndPathNode);

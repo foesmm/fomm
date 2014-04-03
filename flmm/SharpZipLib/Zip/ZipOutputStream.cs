@@ -38,15 +38,13 @@
 // exception statement from your version.
 
 using System;
-using System.IO;
 using System.Collections;
-using System.Text;
+using System.IO;
+using Fomm.SharpZipLib.Checksums;
+using Fomm.SharpZipLib.Zip.Compression;
+using Fomm.SharpZipLib.Zip.Compression.Streams;
 
-using ICSharpCode.SharpZipLib.Checksums;
-using ICSharpCode.SharpZipLib.Zip.Compression;
-using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
-
-namespace ICSharpCode.SharpZipLib.Zip
+namespace Fomm.SharpZipLib.Zip
 {
   /// <summary>
   /// This is a DeflaterOutputStream that writes the files into a zip
@@ -91,9 +89,10 @@ namespace ICSharpCode.SharpZipLib.Zip
   /// }  
   /// </code>
   /// </example>
-  class ZipOutputStream : DeflaterOutputStream
+  internal class ZipOutputStream : DeflaterOutputStream
   {
     #region Constructors
+
     /// <summary>
     /// Creates a new Zip output stream, writing a zip archive.
     /// </summary>
@@ -104,8 +103,9 @@ namespace ICSharpCode.SharpZipLib.Zip
       : base(baseOutputStream, new Deflater(Deflater.DEFAULT_COMPRESSION, true))
     {
     }
+
     #endregion
-    
+
     /// <summary>
     /// Sets the compression level.  The new level will be activated
     /// immediately.
@@ -114,46 +114,49 @@ namespace ICSharpCode.SharpZipLib.Zip
     /// <exception cref="ArgumentOutOfRangeException">
     /// Level specified is not supported.
     /// </exception>
-    /// <see cref="ICSharpCode.SharpZipLib.Zip.Compression.Deflater"/>
+    /// <see cref="Deflater"/>
     public void SetLevel(int level)
     {
       deflater_.SetLevel(level);
       defaultCompressionLevel = level;
     }
-    
+
     /// <summary>
     /// Write an unsigned short in little endian byte order.
     /// </summary>
     private void WriteLeShort(int value)
     {
-      unchecked {
-        baseOutputStream_.WriteByte((byte)(value & 0xff));
-        baseOutputStream_.WriteByte((byte)((value >> 8) & 0xff));
+      unchecked
+      {
+        baseOutputStream_.WriteByte((byte) (value & 0xff));
+        baseOutputStream_.WriteByte((byte) ((value >> 8) & 0xff));
       }
     }
-    
+
     /// <summary>
     /// Write an int in little endian byte order.
     /// </summary>
     private void WriteLeInt(int value)
     {
-      unchecked {
+      unchecked
+      {
         WriteLeShort(value);
         WriteLeShort(value >> 16);
       }
     }
-    
+
     /// <summary>
     /// Write an int in little endian byte order.
     /// </summary>
     private void WriteLeLong(long value)
     {
-      unchecked {
-        WriteLeInt((int)value);
-        WriteLeInt((int)(value >> 32));
+      unchecked
+      {
+        WriteLeInt((int) value);
+        WriteLeInt((int) (value >> 32));
       }
     }
-    
+
     /// <summary>
     /// Starts a new Zip entry. It automatically closes the previous
     /// entry if present.
@@ -180,27 +183,31 @@ namespace ICSharpCode.SharpZipLib.Zip
     /// </exception>
     public void PutNextEntry(ZipEntry entry)
     {
-      if ( entry == null ) {
+      if (entry == null)
+      {
         throw new ArgumentNullException("entry");
       }
 
-      if (entries == null) {
+      if (entries == null)
+      {
         throw new InvalidOperationException("ZipOutputStream was finished");
       }
-      
-      if (curEntry != null) {
+
+      if (curEntry != null)
+      {
         CloseEntry();
       }
 
-      if (entries.Count == int.MaxValue) {
+      if (entries.Count == int.MaxValue)
+      {
         throw new ZipException("Too many entries for Zip file");
       }
-      
-      CompressionMethod method = entry.CompressionMethod;
-      int compressionLevel = defaultCompressionLevel;
-      
+
+      var method = entry.CompressionMethod;
+      var compressionLevel = defaultCompressionLevel;
+
       // Clear flags that the library manages internally
-      entry.Flags &= (int)GeneralBitFlags.UnicodeText;
+      entry.Flags &= (int) GeneralBitFlags.UnicodeText;
       patchEntryHeader = false;
 
       bool headerInfoAvailable;
@@ -237,129 +244,154 @@ namespace ICSharpCode.SharpZipLib.Zip
         }
       }
 
-      if (headerInfoAvailable == false) {
-        if (CanPatchEntries == false) {
+      if (headerInfoAvailable == false)
+      {
+        if (CanPatchEntries == false)
+        {
           // Only way to record size and compressed size is to append a data descriptor
           // after compressed data.
 
           // Stored entries of this form have already been converted to deflating.
           entry.Flags |= 8;
-        } else {
+        }
+        else
+        {
           patchEntryHeader = true;
         }
       }
 
       entry.Offset = offset;
-      entry.CompressionMethod = (CompressionMethod)method;
-      
+      entry.CompressionMethod = method;
+
       curMethod = method;
       sizePatchPos = -1;
-      
-      if ( (useZip64_ == UseZip64.On) || ((entry.Size < 0) && (useZip64_ == UseZip64.Dynamic)) ) {
+
+      if ((useZip64_ == UseZip64.On) || ((entry.Size < 0) && (useZip64_ == UseZip64.Dynamic)))
+      {
         entry.ForceZip64();
       }
 
       // Write the local file header
       WriteLeInt(ZipConstants.LocalHeaderSignature);
-      
+
       WriteLeShort(entry.Version);
       WriteLeShort(entry.Flags);
-      WriteLeShort((byte)method);
-      WriteLeInt((int)entry.DosTime);
+      WriteLeShort((byte) method);
+      WriteLeInt((int) entry.DosTime);
 
       // TODO: Refactor header writing.  Its done in several places.
-      if (headerInfoAvailable == true) {
-        WriteLeInt((int)entry.Crc);
-        if ( entry.LocalHeaderRequiresZip64 ) {
+      if (headerInfoAvailable)
+      {
+        WriteLeInt((int) entry.Crc);
+        if (entry.LocalHeaderRequiresZip64)
+        {
           WriteLeInt(-1);
           WriteLeInt(-1);
         }
-        else {
-          WriteLeInt((int)entry.CompressedSize);
-          WriteLeInt((int)entry.Size);
+        else
+        {
+          WriteLeInt((int) entry.CompressedSize);
+          WriteLeInt((int) entry.Size);
         }
-      } else {
-        if (patchEntryHeader == true) {
+      }
+      else
+      {
+        if (patchEntryHeader)
+        {
           crcPatchPos = baseOutputStream_.Position;
         }
-        WriteLeInt(0);  // Crc
-        
-        if ( patchEntryHeader ) {
+        WriteLeInt(0); // Crc
+
+        if (patchEntryHeader)
+        {
           sizePatchPos = baseOutputStream_.Position;
         }
 
         // For local header both sizes appear in Zip64 Extended Information
-        if ( entry.LocalHeaderRequiresZip64 || patchEntryHeader ) {
+        if (entry.LocalHeaderRequiresZip64 || patchEntryHeader)
+        {
           WriteLeInt(-1);
           WriteLeInt(-1);
         }
-        else {
-          WriteLeInt(0);  // Compressed size
-          WriteLeInt(0);  // Uncompressed size
+        else
+        {
+          WriteLeInt(0); // Compressed size
+          WriteLeInt(0); // Uncompressed size
         }
       }
 
-      byte[] name = ZipConstants.ConvertToArray(entry.Flags, entry.Name);
-      
-      if (name.Length > 0xFFFF) {
+      var name = ZipConstants.ConvertToArray(entry.Flags, entry.Name);
+
+      if (name.Length > 0xFFFF)
+      {
         throw new ZipException("Entry name too long.");
       }
 
-      ZipExtraData ed = new ZipExtraData(entry.ExtraData);
+      var ed = new ZipExtraData(entry.ExtraData);
 
-      if (entry.LocalHeaderRequiresZip64) {
+      if (entry.LocalHeaderRequiresZip64)
+      {
         ed.StartNewEntry();
-        if (headerInfoAvailable) {
+        if (headerInfoAvailable)
+        {
           ed.AddLeLong(entry.Size);
           ed.AddLeLong(entry.CompressedSize);
         }
-        else {
+        else
+        {
           ed.AddLeLong(-1);
           ed.AddLeLong(-1);
         }
         ed.AddNewEntry(1);
 
-        if ( !ed.Find(1) ) {
+        if (!ed.Find(1))
+        {
           throw new ZipException("Internal error cant find extra data");
         }
-        
-        if ( patchEntryHeader ) {
+
+        if (patchEntryHeader)
+        {
           sizePatchPos = ed.CurrentReadIndex;
         }
       }
-      else {
+      else
+      {
         ed.Delete(1);
       }
-      
-      byte[] extra = ed.GetEntryData();
+
+      var extra = ed.GetEntryData();
 
       WriteLeShort(name.Length);
       WriteLeShort(extra.Length);
 
-      if ( name.Length > 0 ) {
+      if (name.Length > 0)
+      {
         baseOutputStream_.Write(name, 0, name.Length);
       }
-      
-      if ( entry.LocalHeaderRequiresZip64 && patchEntryHeader ) {
+
+      if (entry.LocalHeaderRequiresZip64 && patchEntryHeader)
+      {
         sizePatchPos += baseOutputStream_.Position;
       }
 
-      if ( extra.Length > 0 ) {
+      if (extra.Length > 0)
+      {
         baseOutputStream_.Write(extra, 0, extra.Length);
       }
-      
+
       offset += ZipConstants.LocalHeaderBaseSize + name.Length + extra.Length;
-      
+
       // Activate the entry.
       curEntry = entry;
       crc.Reset();
-      if (method == CompressionMethod.Deflated) {
+      if (method == CompressionMethod.Deflated)
+      {
         deflater_.Reset();
         deflater_.SetLevel(compressionLevel);
       }
       size = 0;
     }
-    
+
     /// <summary>
     /// Closes the current entry, updating header and footer information as required
     /// </summary>
@@ -371,89 +403,108 @@ namespace ICSharpCode.SharpZipLib.Zip
     /// </exception>
     public void CloseEntry()
     {
-      if (curEntry == null) {
+      if (curEntry == null)
+      {
         throw new InvalidOperationException("No open entry");
       }
 
-      long csize = size;
-      
+      var csize = size;
+
       // First finish the deflater, if appropriate
-      if (curMethod == CompressionMethod.Deflated) {
-        if (size > 0) {
+      if (curMethod == CompressionMethod.Deflated)
+      {
+        if (size > 0)
+        {
           base.Finish();
           csize = deflater_.TotalOut;
         }
-        else {
+        else
+        {
           deflater_.Reset();
         }
       }
-      
-      if (curEntry.Size < 0) {
+
+      if (curEntry.Size < 0)
+      {
         curEntry.Size = size;
-      } else if (curEntry.Size != size) {
+      }
+      else if (curEntry.Size != size)
+      {
         throw new ZipException("size was " + size + ", but I expected " + curEntry.Size);
       }
-      
-      if (curEntry.CompressedSize < 0) {
+
+      if (curEntry.CompressedSize < 0)
+      {
         curEntry.CompressedSize = csize;
-      } else if (curEntry.CompressedSize != csize) {
+      }
+      else if (curEntry.CompressedSize != csize)
+      {
         throw new ZipException("compressed size was " + csize + ", but I expected " + curEntry.CompressedSize);
       }
-      
-      if (curEntry.Crc < 0) {
+
+      if (curEntry.Crc < 0)
+      {
         curEntry.Crc = crc.Value;
-      } else if (curEntry.Crc != crc.Value) {
-        throw new ZipException("crc was " + crc.Value +  ", but I expected " + curEntry.Crc);
       }
-      
+      else if (curEntry.Crc != crc.Value)
+      {
+        throw new ZipException("crc was " + crc.Value + ", but I expected " + curEntry.Crc);
+      }
+
       offset += csize;
-        
+
       // Patch the header if possible
-      if (patchEntryHeader == true) {
+      if (patchEntryHeader)
+      {
         patchEntryHeader = false;
 
-        long curPos = baseOutputStream_.Position;
+        var curPos = baseOutputStream_.Position;
         baseOutputStream_.Seek(crcPatchPos, SeekOrigin.Begin);
-        WriteLeInt((int)curEntry.Crc);
-        
-        if ( curEntry.LocalHeaderRequiresZip64 ) {
-          
-          if ( sizePatchPos == -1 ) {
+        WriteLeInt((int) curEntry.Crc);
+
+        if (curEntry.LocalHeaderRequiresZip64)
+        {
+          if (sizePatchPos == -1)
+          {
             throw new ZipException("Entry requires zip64 but this has been turned off");
           }
-          
+
           baseOutputStream_.Seek(sizePatchPos, SeekOrigin.Begin);
           WriteLeLong(curEntry.Size);
           WriteLeLong(curEntry.CompressedSize);
         }
-        else {
-          WriteLeInt((int)curEntry.CompressedSize);
-          WriteLeInt((int)curEntry.Size);
+        else
+        {
+          WriteLeInt((int) curEntry.CompressedSize);
+          WriteLeInt((int) curEntry.Size);
         }
         baseOutputStream_.Seek(curPos, SeekOrigin.Begin);
       }
 
       // Add data descriptor if flagged as required
-      if ((curEntry.Flags & 8) != 0) {
+      if ((curEntry.Flags & 8) != 0)
+      {
         WriteLeInt(ZipConstants.DataDescriptorSignature);
-        WriteLeInt(unchecked((int)curEntry.Crc));
-        
-        if ( curEntry.LocalHeaderRequiresZip64 ) {
+        WriteLeInt(unchecked((int) curEntry.Crc));
+
+        if (curEntry.LocalHeaderRequiresZip64)
+        {
           WriteLeLong(curEntry.CompressedSize);
           WriteLeLong(curEntry.Size);
           offset += ZipConstants.Zip64DataDescriptorSize;
         }
-        else {
-          WriteLeInt((int)curEntry.CompressedSize);
-          WriteLeInt((int)curEntry.Size);
+        else
+        {
+          WriteLeInt((int) curEntry.CompressedSize);
+          WriteLeInt((int) curEntry.Size);
           offset += ZipConstants.DataDescriptorSize;
         }
       }
-      
+
       entries.Add(curEntry);
       curEntry = null;
     }
-    
+
     /// <summary>
     /// Writes the given buffer to the current entry.
     /// </summary>
@@ -464,40 +515,46 @@ namespace ICSharpCode.SharpZipLib.Zip
     /// <exception cref="System.InvalidOperationException">No entry is active.</exception>
     public override void Write(byte[] buffer, int offset, int count)
     {
-      if (curEntry == null) {
+      if (curEntry == null)
+      {
         throw new InvalidOperationException("No open entry.");
       }
-      
-      if ( buffer == null ) {
+
+      if (buffer == null)
+      {
         throw new ArgumentNullException("buffer");
       }
-      
-      if ( offset < 0 ) {
+
+      if (offset < 0)
+      {
         throw new ArgumentOutOfRangeException("offset", "Cannot be negative");
       }
 
-      if ( count < 0 ) {
+      if (count < 0)
+      {
         throw new ArgumentOutOfRangeException("count", "Cannot be negative");
       }
 
-      if ( (buffer.Length - offset) < count ) {
+      if ((buffer.Length - offset) < count)
+      {
         throw new ArgumentException("Invalid offset/count combination");
       }
-      
+
       crc.Update(buffer, offset, count);
       size += count;
-      
-      switch (curMethod) {
+
+      switch (curMethod)
+      {
         case CompressionMethod.Deflated:
           base.Write(buffer, offset, count);
           break;
-        
+
         case CompressionMethod.Stored:
           baseOutputStream_.Write(buffer, offset, count);
           break;
       }
     }
-    
+
     /// <summary>
     /// Finishes the stream.  This will write the central directory at the
     /// end of the zip file and flush the stream.
@@ -514,189 +571,205 @@ namespace ICSharpCode.SharpZipLib.Zip
     /// </exception>
     public override void Finish()
     {
-      if (entries == null)  {
+      if (entries == null)
+      {
         return;
       }
-      
-      if (curEntry != null) {
+
+      if (curEntry != null)
+      {
         CloseEntry();
       }
-      
+
       long numEntries = entries.Count;
       long sizeEntries = 0;
-      
-      foreach (ZipEntry entry in entries) {
-        WriteLeInt(ZipConstants.CentralHeaderSignature); 
+
+      foreach (ZipEntry entry in entries)
+      {
+        WriteLeInt(ZipConstants.CentralHeaderSignature);
         WriteLeShort(ZipConstants.VersionMadeBy);
         WriteLeShort(entry.Version);
         WriteLeShort(entry.Flags);
-        WriteLeShort((short)entry.CompressionMethod);
-        WriteLeInt((int)entry.DosTime);
-        WriteLeInt((int)entry.Crc);
+        WriteLeShort((short) entry.CompressionMethod);
+        WriteLeInt((int) entry.DosTime);
+        WriteLeInt((int) entry.Crc);
 
-        if ( entry.IsZip64Forced() || 
-          (entry.CompressedSize >= uint.MaxValue) )
+        if (entry.IsZip64Forced() ||
+            (entry.CompressedSize >= uint.MaxValue))
         {
           WriteLeInt(-1);
         }
-        else {
-          WriteLeInt((int)entry.CompressedSize);
+        else
+        {
+          WriteLeInt((int) entry.CompressedSize);
         }
 
-        if ( entry.IsZip64Forced() ||
-          (entry.Size >= uint.MaxValue) )
+        if (entry.IsZip64Forced() ||
+            (entry.Size >= uint.MaxValue))
         {
           WriteLeInt(-1);
         }
-        else {
-          WriteLeInt((int)entry.Size);
+        else
+        {
+          WriteLeInt((int) entry.Size);
         }
 
-        byte[] name = ZipConstants.ConvertToArray(entry.Flags, entry.Name);
-        
-        if (name.Length > 0xffff) {
+        var name = ZipConstants.ConvertToArray(entry.Flags, entry.Name);
+
+        if (name.Length > 0xffff)
+        {
           throw new ZipException("Name too long.");
         }
-        
-        ZipExtraData ed = new ZipExtraData(entry.ExtraData);
 
-        if ( entry.CentralHeaderRequiresZip64 ) {
+        var ed = new ZipExtraData(entry.ExtraData);
+
+        if (entry.CentralHeaderRequiresZip64)
+        {
           ed.StartNewEntry();
-          if ( entry.IsZip64Forced() ||
-            (entry.Size >= 0xffffffff) )
+          if (entry.IsZip64Forced() ||
+              (entry.Size >= 0xffffffff))
           {
             ed.AddLeLong(entry.Size);
           }
 
-          if ( entry.IsZip64Forced() ||
-            (entry.CompressedSize >= 0xffffffff) )
+          if (entry.IsZip64Forced() ||
+              (entry.CompressedSize >= 0xffffffff))
           {
             ed.AddLeLong(entry.CompressedSize);
           }
 
-          if ( entry.Offset >= 0xffffffff )
+          if (entry.Offset >= 0xffffffff)
           {
             ed.AddLeLong(entry.Offset);
           }
 
           ed.AddNewEntry(1);
         }
-        else {
+        else
+        {
           ed.Delete(1);
         }
 
-        byte[] extra = ed.GetEntryData();
-        
-        byte[] entryComment = 
-          (entry.Comment != null) ? 
-          ZipConstants.ConvertToArray(entry.Flags, entry.Comment) :
-          new byte[0];
+        var extra = ed.GetEntryData();
 
-        if (entryComment.Length > 0xffff) {
+        var entryComment =
+          (entry.Comment != null)
+            ? ZipConstants.ConvertToArray(entry.Flags, entry.Comment)
+            : new byte[0];
+
+        if (entryComment.Length > 0xffff)
+        {
           throw new ZipException("Comment too long.");
         }
-        
+
         WriteLeShort(name.Length);
         WriteLeShort(extra.Length);
         WriteLeShort(entryComment.Length);
-        WriteLeShort(0);  // disk number
-        WriteLeShort(0);  // internal file attributes
-                  // external file attributes
+        WriteLeShort(0); // disk number
+        WriteLeShort(0); // internal file attributes
+        // external file attributes
 
-        if (entry.ExternalFileAttributes != -1) {
+        if (entry.ExternalFileAttributes != -1)
+        {
           WriteLeInt(entry.ExternalFileAttributes);
-        } else {
-          if (entry.IsDirectory) {                         // mark entry as directory (from nikolam.AT.perfectinfo.com)
-            WriteLeInt(16);
-          } else {
-            WriteLeInt(0);
-          }
+        }
+        else
+        {
+          WriteLeInt(entry.IsDirectory ? 16 : 0);
         }
 
-        if ( entry.Offset >= uint.MaxValue ) {
+        if (entry.Offset >= uint.MaxValue)
+        {
           WriteLeInt(-1);
         }
-        else {
-          WriteLeInt((int)entry.Offset);
-        }
-        
-        if ( name.Length > 0 ) {
-          baseOutputStream_.Write(name,    0, name.Length);
+        else
+        {
+          WriteLeInt((int) entry.Offset);
         }
 
-        if ( extra.Length > 0 ) {
-          baseOutputStream_.Write(extra,   0, extra.Length);
+        if (name.Length > 0)
+        {
+          baseOutputStream_.Write(name, 0, name.Length);
         }
 
-        if ( entryComment.Length > 0 ) {
+        if (extra.Length > 0)
+        {
+          baseOutputStream_.Write(extra, 0, extra.Length);
+        }
+
+        if (entryComment.Length > 0)
+        {
           baseOutputStream_.Write(entryComment, 0, entryComment.Length);
         }
 
         sizeEntries += ZipConstants.CentralHeaderBaseSize + name.Length + extra.Length + entryComment.Length;
       }
-      
-      using ( ZipHelperStream zhs = new ZipHelperStream(baseOutputStream_) ) {
+
+      using (var zhs = new ZipHelperStream(baseOutputStream_))
+      {
         zhs.WriteEndOfCentralDirectory(numEntries, sizeEntries, offset, zipComment);
       }
 
       entries = null;
     }
-    
+
     #region Instance Fields
+
     /// <summary>
     /// The entries for the archive.
     /// </summary>
-    ArrayList entries  = new ArrayList();
-    
+    private ArrayList entries = new ArrayList();
+
     /// <summary>
     /// Used to track the crc of data added to entries.
     /// </summary>
-    Crc32 crc = new Crc32();
-    
+    private Crc32 crc = new Crc32();
+
     /// <summary>
     /// The current entry being added.
     /// </summary>
-    ZipEntry  curEntry;
-    
-    int defaultCompressionLevel = Deflater.DEFAULT_COMPRESSION;
-    
-    CompressionMethod curMethod = CompressionMethod.Deflated;
+    private ZipEntry curEntry;
+
+    private int defaultCompressionLevel = Deflater.DEFAULT_COMPRESSION;
+
+    private CompressionMethod curMethod = CompressionMethod.Deflated;
 
     /// <summary>
     /// Used to track the size of data for an entry during writing.
     /// </summary>
-    long size;
-    
+    private long size;
+
     /// <summary>
     /// Offset to be recorded for each entry in the central header.
     /// </summary>
-    long offset;
-    
+    private long offset;
+
     /// <summary>
     /// Comment for the entire archive recorded in central header.
     /// </summary>
-    byte[] zipComment = new byte[0];
-    
+    private byte[] zipComment = new byte[0];
+
     /// <summary>
     /// Flag indicating that header patching is required for the current entry.
     /// </summary>
-    bool patchEntryHeader;
-    
+    private bool patchEntryHeader;
+
     /// <summary>
     /// Position to patch crc
     /// </summary>
-    long crcPatchPos = -1;
-    
+    private long crcPatchPos = -1;
+
     /// <summary>
     /// Position to patch size.
     /// </summary>
-    long sizePatchPos = -1;
+    private long sizePatchPos = -1;
 
     // Default is dynamic which is not backwards compatible and can cause problems
     // with XP's built in compression which cant read Zip64 archives.
     // However it does avoid the situation were a large file is added and cannot be completed correctly.
     // NOTE: Setting the size for entries before they are added is the best solution!
-    UseZip64 useZip64_ = UseZip64.Dynamic;
+    private UseZip64 useZip64_ = UseZip64.Dynamic;
+
     #endregion
   }
 }

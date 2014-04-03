@@ -1,13 +1,13 @@
-﻿using System;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using System.IO;
 
 namespace Fomm.PackageManager.ModInstallLog
 {
   public abstract class InstallLogBase
   {
-    private static readonly Regex m_rgxCleanPath = new Regex("[" + Path.DirectorySeparatorChar + Path.AltDirectorySeparatorChar + "]{2,}");
-    
+    private static readonly Regex m_rgxCleanPath =
+      new Regex("[" + Path.DirectorySeparatorChar + Path.AltDirectorySeparatorChar + "]{2,}");
+
     /// <summary>
     /// Normalizes the given path.
     /// </summary>
@@ -19,7 +19,7 @@ namespace Fomm.PackageManager.ModInstallLog
     /// <returns>The normalized path.</returns>
     protected string NormalizePath(string p_strPath)
     {
-      string strNormalizedPath = m_rgxCleanPath.Replace(p_strPath, Path.DirectorySeparatorChar.ToString());
+      var strNormalizedPath = m_rgxCleanPath.Replace(p_strPath, Path.DirectorySeparatorChar.ToString());
       strNormalizedPath = strNormalizedPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
       return strNormalizedPath;
     }

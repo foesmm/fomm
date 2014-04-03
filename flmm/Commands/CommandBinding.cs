@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.ComponentModel;
 
 namespace Fomm.Commands
@@ -17,7 +15,7 @@ namespace Fomm.Commands
     /// <returns>The command argument.</returns>
     public delegate T GetCommandArgument();
 
-    private GetCommandArgument m_dlgGetArgument = null;
+    private GetCommandArgument m_dlgGetArgument;
     private readonly object m_objTrigger;
     private readonly Command<T> m_cmdCommand;
 
@@ -61,12 +59,16 @@ namespace Fomm.Commands
     {
       m_dlgGetArgument = p_dlgGetArgument;
       if (p_objTrigger == null)
+      {
         throw new ArgumentNullException("p_objTrigger");
+      }
       if (p_cmdCommand == null)
+      {
         throw new ArgumentNullException("p_cmdCommand");
+      }
       m_objTrigger = p_objTrigger;
       m_cmdCommand = p_cmdCommand;
-      m_cmdCommand.PropertyChanged += new PropertyChangedEventHandler(CommandPropertyChanged);
+      m_cmdCommand.PropertyChanged += CommandPropertyChanged;
     }
 
     #endregion

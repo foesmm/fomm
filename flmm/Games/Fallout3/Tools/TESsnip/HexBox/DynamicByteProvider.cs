@@ -1,26 +1,22 @@
 using System;
 
-namespace Be.Windows.Forms
+namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 {
   /// <summary>
   /// Byte provider for a small amount of data.
   /// </summary>
-  class DynamicByteProvider : IByteProvider
+  internal class DynamicByteProvider : IByteProvider
   {
     /// <summary>
     /// Contains information about changes.
     /// </summary>
-    bool _hasChanges;
-    /// <summary>
-    /// Contains a byte collection.
-    /// </summary>
-    ByteCollection _bytes;
+    private bool _hasChanges;
 
     /// <summary>
     /// Initializes a new instance of the DynamicByteProvider class.
     /// </summary>
     /// <param name="data"></param>
-    public DynamicByteProvider(byte[] data) : this(new ByteCollection(data)) 
+    public DynamicByteProvider(byte[] data) : this(new ByteCollection(data))
     {
     }
 
@@ -30,38 +26,40 @@ namespace Be.Windows.Forms
     /// <param name="bytes"></param>
     public DynamicByteProvider(ByteCollection bytes)
     {
-      _bytes = bytes;
+      Bytes = bytes;
     }
 
     /// <summary>
     /// Raises the Changed event.
     /// </summary>
-    void OnChanged(EventArgs e)
+    private void OnChanged(EventArgs e)
     {
       _hasChanges = true;
 
-      if(Changed != null)
+      if (Changed != null)
+      {
         Changed(this, e);
+      }
     }
 
     /// <summary>
     /// Raises the LengthChanged event.
     /// </summary>
-    void OnLengthChanged(EventArgs e)
+    private void OnLengthChanged(EventArgs e)
     {
-      if(LengthChanged != null)
+      if (LengthChanged != null)
+      {
         LengthChanged(this, e);
+      }
     }
 
     /// <summary>
     /// Gets the byte collection.
     /// </summary>
-    public ByteCollection Bytes
-    {
-      get { return _bytes; }
-    }
+    public ByteCollection Bytes { get; private set; }
 
     #region IByteProvider Members
+
     /// <summary>
     /// True, when changes are done.
     /// </summary>
@@ -88,14 +86,15 @@ namespace Be.Windows.Forms
     /// </summary>
     public event EventHandler LengthChanged;
 
-
     /// <summary>
     /// Reads a byte from the byte collection.
     /// </summary>
     /// <param name="index">the index of the byte to read</param>
     /// <returns>the byte</returns>
     public byte ReadByte(long index)
-    { return _bytes[(int)index]; }
+    {
+      return Bytes[(int) index];
+    }
 
     /// <summary>
     /// Write a byte into the byte collection.
@@ -104,7 +103,7 @@ namespace Be.Windows.Forms
     /// <param name="value">the byte</param>
     public void WriteByte(long index, byte value)
     {
-      _bytes[(int)index] = value;
+      Bytes[(int) index] = value;
       OnChanged(EventArgs.Empty);
     }
 
@@ -114,10 +113,10 @@ namespace Be.Windows.Forms
     /// <param name="index">the start index of the bytes to delete.</param>
     /// <param name="length">the length of bytes to delete.</param>
     public void DeleteBytes(long index, long length)
-    { 
-      int internal_index = (int)Math.Max(0, index);
-      int internal_length = (int)Math.Min((int)Length, length);
-      _bytes.RemoveRange(internal_index, internal_length); 
+    {
+      var internal_index = (int) Math.Max(0, index);
+      var internal_length = (int) Math.Min((int) Length, length);
+      Bytes.RemoveRange(internal_index, internal_length);
 
       OnLengthChanged(EventArgs.Empty);
       OnChanged(EventArgs.Empty);
@@ -129,8 +128,8 @@ namespace Be.Windows.Forms
     /// <param name="index">the start index of the bytes in the byte collection</param>
     /// <param name="bs">the byte array to insert</param>
     public void InsertBytes(long index, byte[] bs)
-    { 
-      _bytes.InsertRange((int)index, bs); 
+    {
+      Bytes.InsertRange((int) index, bs);
 
       OnLengthChanged(EventArgs.Empty);
       OnChanged(EventArgs.Empty);
@@ -143,7 +142,7 @@ namespace Be.Windows.Forms
     {
       get
       {
-        return _bytes.Count;
+        return Bytes.Count;
       }
     }
 
@@ -170,6 +169,7 @@ namespace Be.Windows.Forms
     {
       return true;
     }
+
     #endregion
   }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Fomm.PackageManager.XmlConfiguredInstall
 {
@@ -15,7 +14,6 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     private class DependencyTypePattern
     {
       private PluginType m_ptpType = PluginType.Invalid;
-      private CompositeDependency m_cdpDependency = null;
 
       #region Properties
 
@@ -37,13 +35,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
       /// </summary>
       /// <value>The dependency that must by fufilled for this pattern's plugin type
       /// to be elected.</value>
-      public CompositeDependency Dependency
-      {
-        get
-        {
-          return m_cdpDependency;
-        }
-      }
+      public CompositeDependency Dependency { get; private set; }
 
       #endregion
 
@@ -58,7 +50,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
       public DependencyTypePattern(PluginType p_ptpType, CompositeDependency p_cdpDependency)
       {
         m_ptpType = p_ptpType;
-        m_cdpDependency = p_cdpDependency;
+        Dependency = p_cdpDependency;
       }
 
       #endregion
@@ -84,9 +76,13 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     {
       get
       {
-        foreach (DependencyTypePattern dtpPattern in m_lstPatterns)
+        foreach (var dtpPattern in m_lstPatterns)
+        {
           if (dtpPattern.Dependency.IsFufilled)
+          {
             return dtpPattern.Type;
+          }
+        }
         return m_ptpDefaultType;
       }
     }

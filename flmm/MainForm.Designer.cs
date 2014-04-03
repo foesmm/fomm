@@ -1,3 +1,5 @@
+using Fomm.Controls;
+
 namespace Fomm
 {
   partial class MainForm
@@ -38,7 +40,7 @@ namespace Fomm
       this.checkAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-      this.lvEspList = new L0ki.Controls.ReordableItemListView();
+      this.lvEspList = new ReordableItemListView();
       this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
       this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
       this.rtbPluginInfo = new System.Windows.Forms.RichTextBox();
@@ -411,7 +413,7 @@ namespace Fomm
     private System.Windows.Forms.Button butFileManager;
     private System.Windows.Forms.ToolStripMenuItem gameSettingsToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem changeGameToolStripMenuItem;
-    private L0ki.Controls.ReordableItemListView lvEspList;
+    private ReordableItemListView lvEspList;
   }
 }
 

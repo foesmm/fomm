@@ -25,10 +25,10 @@ using System.Diagnostics;
 using Fomm.PackageManager;
 using Fomm.InstallLogUpgraders;
 using Fomm.PackageManager.Upgrade;
+using Fomm.Properties;
 using SevenZip;
 using Microsoft.Win32;
 using Fomm.Util;
-using System.Collections.Generic;
 using Fomm.PackageManager.ModInstallLog;
 using Fomm.Games;
 using Fomm.Games.Fallout3;
@@ -38,15 +38,40 @@ using System.Text;
 
 namespace Fomm
 {
-  struct Pair<A, B>
+  internal struct Pair<A, B>
   {
     public A a;
     public B b;
 
-    public Pair(A a, B b) { this.a = a; this.b = b; }
+    public Pair(A a, B b)
+    {
+      this.a = a;
+      this.b = b;
+    }
 
-    public A Key { get { return a; } set { a = value; } }
-    public B Value { get { return b; } set { b = value; } }
+    public A Key
+    {
+      get
+      {
+        return a;
+      }
+      set
+      {
+        a = value;
+      }
+    }
+
+    public B Value
+    {
+      get
+      {
+        return b;
+      }
+      set
+      {
+        b = value;
+      }
+    }
 
     public override string ToString()
     {
@@ -54,7 +79,12 @@ namespace Fomm
     }
   }
 
-  class fommException : Exception { public fommException(string msg) : base(msg) { } }
+  internal class fommException : Exception
+  {
+    public fommException(string msg) : base(msg)
+    {
+    }
+  }
 
   public static class Program
   {
@@ -89,9 +119,11 @@ namespace Fomm
     {
       get
       {
-        string strPath = Path.Combine(PersonalDirectory, ProgrammeAcronym);
+        var strPath = Path.Combine(PersonalDirectory, ProgrammeAcronym);
         if (!Directory.Exists(strPath))
+        {
           Directory.CreateDirectory(strPath);
+        }
         return strPath;
       }
     }
@@ -131,15 +163,19 @@ namespace Fomm
     {
       get
       {
-        string strPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+        var strPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
         if (String.IsNullOrEmpty(strPath))
-          return Registry.GetValue(@"HKEY_CURRENT_USER\software\microsoft\windows\currentversion\explorer\user shell folders", "Personal", null).ToString();
+        {
+          return
+            Registry.GetValue(
+              @"HKEY_CURRENT_USER\software\microsoft\windows\currentversion\explorer\user shell folders", "Personal",
+              null).ToString();
+        }
         return strPath;
       }
     }
 
-    private static bool monoMode;
-    public static bool MonoMode { get { return monoMode; } }
+    public static bool MonoMode { get; private set; }
 
     public static GameMode GameMode = null;
 
@@ -150,14 +186,15 @@ namespace Fomm
     /// </summary>
     private static void WriteHelp()
     {
-      StringBuilder stbHelp = new StringBuilder();
+      var stbHelp = new StringBuilder();
       stbHelp.AppendLine("Command line options:");
       stbHelp.AppendLine();
       stbHelp.AppendLine("*.fomod, *.rar, *.7z, *.zip");
       stbHelp.AppendLine("Open the specified file in the relevent utility");
       stbHelp.AppendLine();
       stbHelp.AppendLine("-mono");
-      stbHelp.AppendLine("Run in mono compatibility mode. Disables some features which are known to be broken under mono");
+      stbHelp.AppendLine(
+        "Run in mono compatibility mode. Disables some features which are known to be broken under mono");
       stbHelp.AppendLine();
       stbHelp.AppendLine("-no-uac-check");
       stbHelp.AppendLine("Don't check for vista UAC issues");
@@ -165,10 +202,12 @@ namespace Fomm
       stbHelp.AppendLine();
       stbHelp.AppendLine("-game <game_name>");
       stbHelp.AppendLine("Run the mod manager in the specified mode. Valid values for <game_name> are:");
-      foreach (string strGame in Enum.GetNames(typeof(SupportedGameModes)))
+      foreach (var strGame in Enum.GetNames(typeof (SupportedGameModes)))
+      {
         stbHelp.AppendLine("\t" + strGame);
+      }
 
-      string strGameModeHelp = Fallout3GameMode.GetCommandLineHelp();
+      var strGameModeHelp = Fallout3GameMode.GetCommandLineHelp();
       if (!String.IsNullOrEmpty(strGameModeHelp))
       {
         stbHelp.AppendLine();
@@ -193,16 +232,19 @@ namespace Fomm
     [STAThread]
     private static void Main(string[] args)
     {
-      if (!Properties.Settings.Default.settingsUpgraded)
+      if (!Settings.Default.settingsUpgraded)
       {
-        Properties.Settings.Default.Upgrade();
-        Properties.Settings.Default.settingsUpgraded = true;
-        Properties.Settings.Default.Save();
+        Settings.Default.Upgrade();
+        Settings.Default.settingsUpgraded = true;
+        Settings.Default.Save();
       }
 
-      AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
-      Application.ThreadException += new System.Threading.ThreadExceptionEventHandler(Application_ThreadException);
-      if (Array.IndexOf<string>(args, "-mono") != -1) monoMode = true;
+      AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+      Application.ThreadException += Application_ThreadException;
+      if (Array.IndexOf(args, "-mono") != -1)
+      {
+        MonoMode = true;
+      }
       Directory.SetCurrentDirectory(ExecutableDirectory);
       //Style setup
       Application.EnableVisualStyles();
@@ -214,8 +256,8 @@ namespace Fomm
         return;
       }
 
-      SupportedGameModes sgmSelectedGame = Properties.Settings.Default.rememberedGameMode;
-      bool booChooseGame = true;
+      var sgmSelectedGame = Settings.Default.rememberedGameMode;
+      var booChooseGame = true;
       if ((args.Length > 0) && args[0].StartsWith("-"))
       {
         switch (args[0])
@@ -223,7 +265,7 @@ namespace Fomm
           case "-game":
             try
             {
-              sgmSelectedGame = (SupportedGameModes)Enum.Parse(typeof(SupportedGameModes), args[1], true);
+              sgmSelectedGame = (SupportedGameModes) Enum.Parse(typeof (SupportedGameModes), args[1], true);
               booChooseGame = false;
             }
             catch
@@ -233,12 +275,12 @@ namespace Fomm
         }
       }
 
-      bool booChangeGameMode = false;
+      var booChangeGameMode = false;
       do
       {
-        if (booChangeGameMode || (booChooseGame && !Properties.Settings.Default.rememberGameMode))
+        if (booChangeGameMode || (booChooseGame && !Settings.Default.rememberGameMode))
         {
-          GameModeSelector gmsSelector = new GameModeSelector();
+          var gmsSelector = new GameModeSelector();
           gmsSelector.ShowDialog();
           sgmSelectedGame = gmsSelector.SelectedGameMode;
         }
@@ -246,11 +288,11 @@ namespace Fomm
         {
           case SupportedGameModes.Fallout3:
             GameMode = new Fallout3GameMode();
-          break;
+            break;
 
           case SupportedGameModes.FalloutNV:
             GameMode = new FalloutNewVegasGameMode();
-          break;
+            break;
 
           default:
             MessageBox.Show("Unrecognized game selection.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -263,7 +305,7 @@ namespace Fomm
 
         if (!booChangeGameMode && (args.Length > 0))
         {
-          bool booArgsHandled = true;
+          var booArgsHandled = true;
           if (!args[0].StartsWith("-") && File.Exists(args[0]))
           {
             switch (Path.GetExtension(args[0]).ToLowerInvariant())
@@ -272,18 +314,15 @@ namespace Fomm
               case ".7z":
               case ".zip":
               case ".fomod":
-                mutex = new System.Threading.Mutex(true, "fommMainMutex", out booNewMutex);
+                mutex = new Mutex(true, "fommMainMutex", out booNewMutex);
                 mutex.Close();
                 if (!booNewMutex)
                 {
                   Messaging.TransmitMessage(args[0]);
                   return;
                 }
-                else
-                {
-                  autoLoad = args[0];
-                  break;
-                }
+                autoLoad = args[0];
+                break;
               default:
                 booArgsHandled = false;
                 break;
@@ -294,9 +333,9 @@ namespace Fomm
             switch (args[0])
             {
               case "-u":
-                string strGuid = args[1];
-                string strPath = Environment.GetFolderPath(Environment.SpecialFolder.System);
-                ProcessStartInfo psiInfo = new ProcessStartInfo(strPath + @"\msiexec.exe", "/x " + strGuid);
+                var strGuid = args[1];
+                var strPath = Environment.GetFolderPath(Environment.SpecialFolder.System);
+                var psiInfo = new ProcessStartInfo(strPath + @"\msiexec.exe", "/x " + strGuid);
                 Process.Start(psiInfo);
                 return;
               default:
@@ -305,10 +344,12 @@ namespace Fomm
             }
           }
           if (!booArgsHandled && GameMode.HandleStandaloneArguments(args))
+          {
             return;
+          }
         }
 
-        mutex = new System.Threading.Mutex(true, "fommMainMutex", out booNewMutex);
+        mutex = new Mutex(true, "fommMainMutex", out booNewMutex);
         if (!booNewMutex)
         {
           MessageBox.Show(ProgrammeAcronym + " is already running", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -318,37 +359,43 @@ namespace Fomm
 
         try
         {
-          string strErrorMessage = null;
+          string strErrorMessage;
           if (!GameMode.SetWorkingDirectory(out strErrorMessage))
           {
             MessageBox.Show(null, strErrorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             booChangeGameMode = false;
-            if (Properties.Settings.Default.rememberGameMode)
+            if (Settings.Default.rememberGameMode)
             {
               booChangeGameMode = true;
-              Properties.Settings.Default.rememberGameMode = false;
-              Properties.Settings.Default.Save();
+              Settings.Default.rememberGameMode = false;
+              Settings.Default.Save();
             }
             continue;
           }
 
           //Check that we're in fallout's directory and that we have write access
-          bool cancellaunch = true;
-          if (!Properties.Settings.Default.NoUACCheck || Array.IndexOf<string>(args, "-no-uac-check") == -1)
+          var cancellaunch = true;
+          if (!Settings.Default.NoUACCheck || Array.IndexOf(args, "-no-uac-check") == -1)
           {
             try
             {
               File.Delete("limited");
-              string strVirtualStore = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "VirtualStore\\");
+              var strVirtualStore =
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "VirtualStore\\");
               strVirtualStore = Path.Combine(strVirtualStore, Directory.GetCurrentDirectory().Remove(0, 3));
               strVirtualStore = Path.Combine(strVirtualStore, "limited");
-              if (File.Exists(strVirtualStore)) File.Delete(strVirtualStore);
-              FileStream fs = File.Create("limited");
+              if (File.Exists(strVirtualStore))
+              {
+                File.Delete(strVirtualStore);
+              }
+              var fs = File.Create("limited");
               fs.Close();
               if (File.Exists(strVirtualStore))
               {
-                MessageBox.Show("UAC is preventing Fallout mod manager from obtaining write access to fallout's installation directory.\n" +
-                "Either right click fomm.exe and check the 'run as administrator' checkbox on the comptibility tab, or disable UAC", "Error");
+                MessageBox.Show(
+                  "UAC is preventing Fallout mod manager from obtaining write access to fallout's installation directory.\n" +
+                  "Either right click fomm.exe and check the 'run as administrator' checkbox on the comptibility tab, or disable UAC",
+                  "Error");
                 File.Delete("limited");
               }
               else
@@ -359,7 +406,11 @@ namespace Fomm
             }
             catch
             {
-              MessageBox.Show("Unable to get write permissions for:" + Environment.NewLine + GameMode.PluginsPath + Environment.NewLine + "Please read" + Environment.NewLine + Path.Combine(Program.ProgrammeInfoDirectory, "Readme - fomm.txt") + Environment.NewLine + "for the solution.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+              MessageBox.Show(
+                "Unable to get write permissions for:" + Environment.NewLine + GameMode.PluginsPath +
+                Environment.NewLine + "Please read" + Environment.NewLine +
+                Path.Combine(ProgrammeInfoDirectory, "Readme - fomm.txt") + Environment.NewLine +
+                "for the solution.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
           }
           else
@@ -367,27 +418,39 @@ namespace Fomm
             cancellaunch = false;
           }
 
-          if (cancellaunch) return;
+          if (cancellaunch)
+          {
+            return;
+          }
 
-          if (!Directory.Exists(tmpPath)) Directory.CreateDirectory(tmpPath);
+          if (!Directory.Exists(tmpPath))
+          {
+            Directory.CreateDirectory(tmpPath);
+          }
 
-          string str7zPath = Path.Combine(Program.ProgrammeInfoDirectory, "7z-32bit.dll");
+          var str7zPath = Path.Combine(ProgrammeInfoDirectory, "7z-32bit.dll");
           SevenZipCompressor.SetLibraryPath(str7zPath);
 
           if (!GameMode.Init())
+          {
             return;
+          }
           PermissionsManager.Init();
 
           //check to see if we need to upgrade the install log format
           if (InstallLog.Current.GetInstallLogVersion() != InstallLog.CURRENT_VERSION)
           {
-            InstallLogUpgrader iluUgrader = new InstallLogUpgrader();
+            var iluUgrader = new InstallLogUpgrader();
             try
             {
-              MessageBox.Show("FOMM needs to upgrade some of its files. This could take a few minutes, depending on how many mods are installed.", "Upgrade Required");
+              MessageBox.Show(
+                "FOMM needs to upgrade some of its files. This could take a few minutes, depending on how many mods are installed.",
+                "Upgrade Required");
               if (!iluUgrader.UpgradeInstallLog())
               {
-                MessageBox.Show("FOMM needs to upgrade its files before it can run. Please allow the upgrade to complete, or install an older version of FOMM.", "Upgrade Cancelled", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(
+                  "FOMM needs to upgrade its files before it can run. Please allow the upgrade to complete, or install an older version of FOMM.",
+                  "Upgrade Cancelled", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
               }
             }
@@ -401,19 +464,23 @@ namespace Fomm
           InstallLog.Reload();
 
           //let's uninstall any fomods that have been deleted since we last ran
-          IList<FomodInfo> lstMods = InstallLog.Current.GetVersionedModList();
-          foreach (FomodInfo fifMod in lstMods)
+          var lstMods = InstallLog.Current.GetVersionedModList();
+          foreach (var fifMod in lstMods)
           {
-            string strFomodPath = Path.Combine(GameMode.ModDirectory, fifMod.BaseName + ".fomod");
+            var strFomodPath = Path.Combine(GameMode.ModDirectory, fifMod.BaseName + ".fomod");
             if (!File.Exists(strFomodPath))
             {
-              string strMessage = "'" + fifMod.BaseName + ".fomod' was deleted without being deactivated. " + Environment.NewLine +
-                        "If you don't uninstall the FOMod, FOMM will close and you will " +
-                        "have to put the FOMod back in the mods folder." + Environment.NewLine +
-                        "Would you like to uninstall the missing FOMod?";
-              if (MessageBox.Show(strMessage, "Missing FOMod", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
+              var strMessage = "'" + fifMod.BaseName + ".fomod' was deleted without being deactivated. " +
+                                  Environment.NewLine +
+                                  "If you don't uninstall the FOMod, FOMM will close and you will " +
+                                  "have to put the FOMod back in the mods folder." + Environment.NewLine +
+                                  "Would you like to uninstall the missing FOMod?";
+              if (MessageBox.Show(strMessage, "Missing FOMod", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) ==
+                  DialogResult.No)
+              {
                 return;
-              ModUninstaller mduUninstaller = new ModUninstaller(fifMod.BaseName);
+              }
+              var mduUninstaller = new ModUninstaller(fifMod.BaseName);
               mduUninstaller.Uninstall(true);
             }
           }
@@ -421,7 +488,7 @@ namespace Fomm
           try
           {
             //check to see if any fomod versions have changed, and whether to upgrade them
-            UpgradeScanner upsScanner = new UpgradeScanner();
+            var upsScanner = new UpgradeScanner();
             upsScanner.Scan();
           }
           catch (Exception e)
@@ -434,7 +501,7 @@ namespace Fomm
           {
             try
             {
-              MainForm frmMain = new MainForm(autoLoad);
+              var frmMain = new MainForm(autoLoad);
               Application.Run(frmMain);
               booChangeGameMode = frmMain.ChangeGameMode;
             }
@@ -447,21 +514,27 @@ namespace Fomm
           //backup the install log
           if (File.Exists(InstallLog.Current.InstallLogPath))
           {
-            string strLogPath = InstallLog.Current.InstallLogPath + ".bak";
-            FileInfo fifInstallLog = new FileInfo(InstallLog.Current.InstallLogPath);
+            var strLogPath = InstallLog.Current.InstallLogPath + ".bak";
+            var fifInstallLog = new FileInfo(InstallLog.Current.InstallLogPath);
             FileInfo fifInstallLogBak = null;
             if (File.Exists(strLogPath))
+            {
               fifInstallLogBak = new FileInfo(strLogPath);
+            }
 
             if ((fifInstallLogBak == null) || (fifInstallLogBak.LastWriteTimeUtc != fifInstallLog.LastWriteTimeUtc))
             {
-              for (Int32 i = 4; i > 0; i--)
+              for (var i = 4; i > 0; i--)
               {
                 if (File.Exists(strLogPath + i))
+                {
                   File.Copy(strLogPath + i, strLogPath + (i + 1), true);
+                }
               }
               if (File.Exists(strLogPath))
+              {
                 File.Copy(strLogPath, strLogPath + "1", true);
+              }
               File.Copy(InstallLog.Current.InstallLogPath, InstallLog.Current.InstallLogPath + ".bak", true);
             }
           }
@@ -471,69 +544,89 @@ namespace Fomm
         finally
         {
           if (mutex != null)
+          {
             mutex.Close();
+          }
         }
-      } while (booChangeGameMode);
+      }
+      while (booChangeGameMode);
     }
 
-    static void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)
+    private static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
     {
       HandleException(e.Exception, "Something bad seems to have happened.", "Error");
       Application.ExitThread();
     }
 
-    static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+    private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
     {
       HandleException(e.ExceptionObject as Exception, "Something bad seems to have happened.", "Error");
     }
 
-    static void HandleException(Exception ex, string p_strPromptMessage, string p_strPromptCaption)
+    private static void HandleException(Exception ex, string p_strPromptMessage, string p_strPromptCaption)
     {
       MessageBox.Show(p_strPromptMessage + Environment.NewLine +
-              "As long as it wasn't too bad, a crash dump will have been saved in" + Environment.NewLine +
-              LocalApplicationDataPath + "\\crashdump.txt" + Environment.NewLine +
-              "Please include the contents of that file if you want to make a bug report", p_strPromptCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                      "As long as it wasn't too bad, a crash dump will have been saved in" + Environment.NewLine +
+                      LocalApplicationDataPath + "\\crashdump.txt" + Environment.NewLine +
+                      "Please include the contents of that file if you want to make a bug report", p_strPromptCaption,
+                      MessageBoxButtons.OK, MessageBoxIcon.Error);
       if (ex != null)
       {
         if (PermissionsManager.IsInitialized)
+        {
           PermissionsManager.CurrentPermissions.Assert();
-        string msg = DateTime.Now.ToLongDateString() + " - " + DateTime.Now.ToLongTimeString() + Environment.NewLine +
-          "Fomm " + Version + (monoMode ? " (Mono)" : "") + Environment.NewLine + "OS version: " + Environment.OSVersion.ToString() +
-          Environment.NewLine + Environment.NewLine + ex.ToString() + Environment.NewLine;
+        }
+        var msg = DateTime.Now.ToLongDateString() + " - " + DateTime.Now.ToLongTimeString() + Environment.NewLine +
+                     "Fomm " + Version + (MonoMode ? " (Mono)" : "") + Environment.NewLine + "OS version: " +
+                     Environment.OSVersion +
+                     Environment.NewLine + Environment.NewLine + ex + Environment.NewLine;
         if (ex is BadImageFormatException)
         {
-          BadImageFormatException biex = (BadImageFormatException)ex;
+          var biex = (BadImageFormatException) ex;
           msg += "File Name:\t" + biex.FileName + Environment.NewLine;
           msg += "Fusion Log:\t" + biex.FusionLog + Environment.NewLine;
         }
         while (ex.InnerException != null)
         {
           ex = ex.InnerException;
-          msg += "Inner Exception:" + Environment.NewLine + ex.ToString() + Environment.NewLine;
+          msg += "Inner Exception:" + Environment.NewLine + ex + Environment.NewLine;
         }
-        string strDumpFile = Path.Combine(LocalApplicationDataPath, "crashdump.txt");
+        var strDumpFile = Path.Combine(LocalApplicationDataPath, "crashdump.txt");
         File.WriteAllText(strDumpFile, msg);
       }
     }
 
-
     internal static bool IsSafeFileName(string s)
     {
       s = s.Replace('/', '\\');
-      if (s.IndexOfAny(Path.GetInvalidPathChars()) != -1) return false;
-      if (Path.IsPathRooted(s)) return false;
-      if (s.StartsWith(".") || Array.IndexOf<char>(Path.GetInvalidFileNameChars(), s[0]) != -1) return false;
-      if (s.Contains("\\..\\")) return false;
-      if (s.EndsWith(".") || Array.IndexOf<char>(Path.GetInvalidFileNameChars(), s[s.Length - 1]) != -1) return false;
+      if (s.IndexOfAny(Path.GetInvalidPathChars()) != -1)
+      {
+        return false;
+      }
+      if (Path.IsPathRooted(s))
+      {
+        return false;
+      }
+      if (s.StartsWith(".") || Array.IndexOf(Path.GetInvalidFileNameChars(), s[0]) != -1)
+      {
+        return false;
+      }
+      if (s.Contains("\\..\\"))
+      {
+        return false;
+      }
+      if (s.EndsWith(".") || Array.IndexOf(Path.GetInvalidFileNameChars(), s[s.Length - 1]) != -1)
+      {
+        return false;
+      }
       return true;
     }
 
     internal static string CreateTempDirectory()
     {
-      string tmp;
-      for (int i = 0; i < 32000; i++)
+      for (var i = 0; i < 32000; i++)
       {
-        tmp = Path.Combine(tmpPath, i.ToString());
+        var tmp = Path.Combine(tmpPath, i.ToString());
         if (!Directory.Exists(tmp))
         {
           Directory.CreateDirectory(tmp);
@@ -543,7 +636,11 @@ namespace Fomm
       throw new fommException("Could not create temp folder because directory is full");
     }
 
-    internal static string[] GetFiles(string path, string pattern) { return GetFiles(path, pattern, SearchOption.TopDirectoryOnly); }
+    internal static string[] GetFiles(string path, string pattern)
+    {
+      return GetFiles(path, pattern, SearchOption.TopDirectoryOnly);
+    }
+
     internal static string[] GetFiles(string path, string pattern, SearchOption option)
     {
       try
@@ -555,7 +652,12 @@ namespace Fomm
         return new string[0];
       }
     }
-    internal static FileInfo[] GetFiles(DirectoryInfo info, string pattern) { return GetFiles(info, pattern, SearchOption.TopDirectoryOnly); }
+
+    internal static FileInfo[] GetFiles(DirectoryInfo info, string pattern)
+    {
+      return GetFiles(info, pattern, SearchOption.TopDirectoryOnly);
+    }
+
     internal static FileInfo[] GetFiles(DirectoryInfo info, string pattern, SearchOption option)
     {
       try

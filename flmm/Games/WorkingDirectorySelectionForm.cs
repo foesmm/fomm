@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 using System.IO;
+using Fomm.Properties;
 
 namespace Fomm.Games
 {
@@ -17,9 +13,9 @@ namespace Fomm.Games
   /// </remarks>
   public partial class WorkingDirectorySelectionForm : Form
   {
-    private string[] m_strSearchFiles = null;
-    private BackgroundWorkerProgressDialog m_bwdProgress = null;
-    private string m_strFoundWorkingDirectory = null;
+    private string[] m_strSearchFiles;
+    private BackgroundWorkerProgressDialog m_bwdProgress;
+    private string m_strFoundWorkingDirectory;
 
     #region Properties
 
@@ -49,7 +45,7 @@ namespace Fomm.Games
     {
       m_strSearchFiles = p_strSearchFiles;
       InitializeComponent();
-      this.Icon = Fomm.Properties.Resources.fomm02;
+      Icon = Resources.fomm02;
       autosizeLabel1.Text = p_strMessage;
       label2.Text = p_strLabel;
     }
@@ -69,7 +65,9 @@ namespace Fomm.Games
     {
       fbdWorkingDirectory.SelectedPath = tbxWorkingDirectory.Text;
       if (fbdWorkingDirectory.ShowDialog() != DialogResult.Cancel)
+      {
         tbxWorkingDirectory.Text = fbdWorkingDirectory.SelectedPath;
+      }
     }
 
     /// <summary>
@@ -99,12 +97,18 @@ namespace Fomm.Games
         m_bwdProgress.OverallProgressMarquee = true;
         m_strFoundWorkingDirectory = null;
         if (m_bwdProgress.ShowDialog(this) == DialogResult.Cancel)
+        {
           m_strFoundWorkingDirectory = null;
+        }
       }
       if (!String.IsNullOrEmpty(m_strFoundWorkingDirectory))
+      {
         tbxWorkingDirectory.Text = m_strFoundWorkingDirectory;
+      }
       else
+      {
         MessageBox.Show(this, "Could not find Fallout 3.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+      }
     }
 
     /// <summary>
@@ -112,13 +116,15 @@ namespace Fomm.Games
     /// </summary>
     protected void AutoDetectWokringDirectory()
     {
-      DriveInfo[] difDrives = DriveInfo.GetDrives();
+      var difDrives = DriveInfo.GetDrives();
 
-      foreach (DriveInfo difDrive in difDrives)
+      foreach (var difDrive in difDrives)
       {
         if (difDrive.DriveType == DriveType.CDRom)
+        {
           continue;
-        string strFound = Search(difDrive.Name);
+        }
+        var strFound = Search(difDrive.Name);
         if (!String.IsNullOrEmpty(strFound))
         {
           m_strFoundWorkingDirectory = strFound;
@@ -134,33 +140,48 @@ namespace Fomm.Games
     protected string Search(string p_strPath)
     {
       m_bwdProgress.OverallMessage = p_strPath;
-      foreach (string strSearchFile in m_strSearchFiles)
+      foreach (var strSearchFile in m_strSearchFiles)
       {
         if (m_bwdProgress.Cancelled())
+        {
           return null;
+        }
         try
         {
-          string[] strFoundFiles = Directory.GetFiles(p_strPath, strSearchFile, SearchOption.TopDirectoryOnly);
-          foreach (string strFoundFile in strFoundFiles)
-            if (MessageBox.Show(m_bwdProgress, "Found: " + Path.GetDirectoryName(strFoundFile) + Environment.NewLine + "Is this correct?", "Found File", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+          var strFoundFiles = Directory.GetFiles(p_strPath, strSearchFile, SearchOption.TopDirectoryOnly);
+          foreach (var strFoundFile in strFoundFiles)
+          {
+            if (
+              MessageBox.Show(m_bwdProgress,
+                              "Found: " + Path.GetDirectoryName(strFoundFile) + Environment.NewLine + "Is this correct?",
+                              "Found File", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
               return Path.GetDirectoryName(strFoundFile);
+            }
+          }
         }
-        catch (UnauthorizedAccessException e)
+        catch (UnauthorizedAccessException)
         {
           //we don't have access to the path we are trying to search, so let's bail
           return null;
         }
       }
-      string[] strDirectories = Directory.GetDirectories(p_strPath);
-      foreach (string strDirectory in strDirectories)
+      var strDirectories = Directory.GetDirectories(p_strPath);
+      foreach (var strDirectory in strDirectories)
       {
         if (m_bwdProgress.Cancelled())
+        {
           return null;
+        }
         if (Path.GetFileName(p_strPath).StartsWith("$"))
+        {
           continue;
-        string strFound = Search(strDirectory);
+        }
+        var strFound = Search(strDirectory);
         if (!String.IsNullOrEmpty(strFound))
+        {
           return strFound;
+        }
       }
       return null;
     }

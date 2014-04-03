@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.Drawing;
-using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
 
@@ -21,13 +20,12 @@ namespace Fomm.PackageManager.FomodBuilder
     /// Gets or sets the list of source download locations being managed.
     /// </summary>
     /// <value>The list of source download locations being managed.</value>
-    [Browsable(false)]
-    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public IList<SourceFile> DataSource
     {
       get
       {
-        return (IList<SourceFile>)dgvSourceList.DataSource ?? new List<SourceFile>();
+        return (IList<SourceFile>) dgvSourceList.DataSource ?? new List<SourceFile>();
       }
       set
       {
@@ -61,7 +59,9 @@ namespace Fomm.PackageManager.FomodBuilder
     private void dgvSourceList_CurrentCellDirtyStateChanged(object sender, EventArgs e)
     {
       if (dgvSourceList.IsCurrentCellDirty)
+      {
         dgvSourceList.CommitEdit(DataGridViewDataErrorContexts.Commit);
+      }
     }
 
     /// <summary>
@@ -86,16 +86,24 @@ namespace Fomm.PackageManager.FomodBuilder
     /// <param name="p_intRowIndex"></param>
     private void HandleIncludedChange(Int32 p_intRowIndex)
     {
-      DataGridViewTextBoxCell downloadLocationCell = (DataGridViewTextBoxCell)dgvSourceList.Rows[p_intRowIndex].Cells["clmURL"];
-      DataGridViewCheckBoxCell ckcHidden = (DataGridViewCheckBoxCell)dgvSourceList.Rows[p_intRowIndex].Cells["clmHidden"];
-      DataGridViewCheckBoxCell ckcGenerated = (DataGridViewCheckBoxCell)dgvSourceList.Rows[p_intRowIndex].Cells["clmGenerated"];
+      var downloadLocationCell =
+        (DataGridViewTextBoxCell) dgvSourceList.Rows[p_intRowIndex].Cells["clmURL"];
+      var ckcHidden =
+        (DataGridViewCheckBoxCell) dgvSourceList.Rows[p_intRowIndex].Cells["clmHidden"];
+      var ckcGenerated =
+        (DataGridViewCheckBoxCell) dgvSourceList.Rows[p_intRowIndex].Cells["clmGenerated"];
 
-      DataGridViewCheckBoxCell ckcIncluded = (DataGridViewCheckBoxCell)dgvSourceList.Rows[p_intRowIndex].Cells["clmIncluded"];
-      downloadLocationCell.ReadOnly = (Boolean)ckcIncluded.Value;
-      downloadLocationCell.Style.ForeColor = ((Boolean)ckcIncluded.Value) ? Color.FromKnownColor(KnownColor.InactiveCaptionText) : Color.FromKnownColor(KnownColor.WindowText);
-      downloadLocationCell.Style.Font = ((Boolean)ckcIncluded.Value) ? new Font(downloadLocationCell.InheritedStyle.Font, FontStyle.Italic) : new Font(downloadLocationCell.InheritedStyle.Font, FontStyle.Regular);
-      ckcHidden.ReadOnly = (Boolean)ckcIncluded.Value;
-      ckcGenerated.ReadOnly = (Boolean)ckcIncluded.Value;
+      var ckcIncluded =
+        (DataGridViewCheckBoxCell) dgvSourceList.Rows[p_intRowIndex].Cells["clmIncluded"];
+      downloadLocationCell.ReadOnly = (Boolean) ckcIncluded.Value;
+      downloadLocationCell.Style.ForeColor = ((Boolean) ckcIncluded.Value)
+        ? Color.FromKnownColor(KnownColor.InactiveCaptionText)
+        : Color.FromKnownColor(KnownColor.WindowText);
+      downloadLocationCell.Style.Font = ((Boolean) ckcIncluded.Value)
+        ? new Font(downloadLocationCell.InheritedStyle.Font, FontStyle.Italic)
+        : new Font(downloadLocationCell.InheritedStyle.Font, FontStyle.Regular);
+      ckcHidden.ReadOnly = (Boolean) ckcIncluded.Value;
+      ckcGenerated.ReadOnly = (Boolean) ckcIncluded.Value;
     }
 
     /// <summary>
@@ -117,8 +125,10 @@ namespace Fomm.PackageManager.FomodBuilder
     /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
     private void dgvSourceList_DataSourceChanged(object sender, EventArgs e)
     {
-      for (Int32 i = 0; i < dgvSourceList.RowCount; i++)
+      for (var i = 0; i < dgvSourceList.RowCount; i++)
+      {
         HandleIncludedChange(i);
+      }
     }
   }
 }

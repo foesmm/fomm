@@ -8,11 +8,11 @@ namespace Fomm.Util
   /// A Set implementation.
   /// </summary>
   /// <typeparam name="T">The type of objects in the Set.</typeparam>
-  public class Set<T> : IList<T>, ICollection<T>, IEnumerable<T>, IList, ICollection, IEnumerable
+  public class Set<T> : IList<T>, IList
   {
     private List<T> m_lstList = new List<T>();
-    private IComparer<T> m_cmpComparer = null;
-    
+    private IComparer<T> m_cmpComparer;
+
     #region Constructors
 
     /// <summary>
@@ -67,7 +67,7 @@ namespace Fomm.Util
     /// Finds the first item that matches the given predicate.
     /// </summary>
     /// <param name="match">The predicate against which to match the items.</param>
-    /// <returns>The first item that matches the given predicate, or <lang cref="null"/>
+    /// <returns>The first item that matches the given predicate, or <lang langref="null"/>
     /// if no matching item is found.</returns>
     public T Find(Predicate<T> match)
     {
@@ -80,7 +80,7 @@ namespace Fomm.Util
     /// <returns>An array containing the items in the set.</returns>
     public T[] ToArray()
     {
-      T[] tSet = new T[Count];
+      var tSet = new T[Count];
       CopyTo(tSet, 0);
       return tSet;
     }
@@ -91,8 +91,10 @@ namespace Fomm.Util
     /// <param name="p_enmItems">The items to add.</param>
     public void AddRange(IEnumerable<T> p_enmItems)
     {
-      foreach (T tItem in p_enmItems)
+      foreach (var tItem in p_enmItems)
+      {
         Add(tItem);
+      }
     }
 
     /// <summary>
@@ -101,9 +103,13 @@ namespace Fomm.Util
     public void Sort()
     {
       if (m_cmpComparer != null)
+      {
         m_lstList.Sort(m_cmpComparer);
+      }
       else
+      {
         m_lstList.Sort();
+      }
     }
 
     #region IndexOf
@@ -118,9 +124,13 @@ namespace Fomm.Util
     {
       if (m_cmpComparer != null)
       {
-        for (Int32 i = p_intStartIndex; i < this.Count; i++)
+        for (var i = p_intStartIndex; i < Count; i++)
+        {
           if (m_cmpComparer.Compare(this[i], p_tItem) == 0)
+          {
             return i;
+          }
+        }
         return -1;
       }
       return m_lstList.IndexOf(p_tItem, p_intStartIndex);
@@ -146,9 +156,13 @@ namespace Fomm.Util
     {
       if (m_cmpComparer != null)
       {
-        for (Int32 i = p_intStartIndex; i > 0; i++)
+        for (var i = p_intStartIndex; i > 0; i++)
+        {
           if (m_cmpComparer.Compare(this[i], p_tItem) == 0)
+          {
             return i;
+          }
+        }
         return -1;
       }
       return m_lstList.LastIndexOf(p_tItem, p_intStartIndex);
@@ -223,7 +237,9 @@ namespace Fomm.Util
     public void Add(T p_tItem)
     {
       if (!Contains(p_tItem))
+      {
         m_lstList.Add(p_tItem);
+      }
     }
 
     /// <summary>
@@ -238,8 +254,8 @@ namespace Fomm.Util
     /// Determines if the given item is in the set.
     /// </summary>
     /// <param name="p_tItem">The item to look for in the set.</param>
-    /// <returns><lang cref="true"/> if the item is in the set;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the item is in the set;
+    /// <lang langref="false"/> otherwise.</returns>
     public bool Contains(T p_tItem)
     {
       return IndexOf(p_tItem) > -1;
@@ -268,9 +284,9 @@ namespace Fomm.Util
     }
 
     /// <summary>
-    /// Gets whether the set is read-only. Always <lang cref="false"/>.
+    /// Gets whether the set is read-only. Always <lang langref="false"/>.
     /// </summary>
-    /// <value>Whether the set is read-only. Always <lang cref="false"/>.</value>
+    /// <value>Whether the set is read-only. Always <lang langref="false"/>.</value>
     public bool IsReadOnly
     {
       get
@@ -283,22 +299,23 @@ namespace Fomm.Util
     /// Removes the given item from the set.
     /// </summary>
     /// <param name="p_tItem">The item to remove</param>
-    /// <returns><lang cref="true"/> if the item was removed;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the item was removed;
+    /// <lang langref="false"/> otherwise.</returns>
     public bool Remove(T p_tItem)
     {
       if (m_cmpComparer != null)
       {
-        for (Int32 i = this.Count - 1; i > 0; i--)
+        for (var i = Count - 1; i > 0; i--)
+        {
           if (m_cmpComparer.Compare(this[i], p_tItem) == 0)
           {
             RemoveAt(i);
             return true;
           }
+        }
         return false;
       }
-      else
-        return m_lstList.Remove(p_tItem);
+      return m_lstList.Remove(p_tItem);
     }
 
     #endregion
@@ -324,7 +341,7 @@ namespace Fomm.Util
     /// <returns>An enumerator for this items in the set.</returns>
     IEnumerator IEnumerable.GetEnumerator()
     {
-      return ((IEnumerable)m_lstList).GetEnumerator();
+      return ((IEnumerable) m_lstList).GetEnumerator();
     }
 
     #endregion
@@ -338,8 +355,10 @@ namespace Fomm.Util
     public int Add(object value)
     {
       if (!(value is T))
-        throw new InvalidOperationException("Can only add items of type " + typeof(T) + " to the Set.");
-      Add((T)value);
+      {
+        throw new InvalidOperationException("Can only add items of type " + typeof (T) + " to the Set.");
+      }
+      Add((T) value);
       return IndexOf(value);
     }
 
@@ -347,13 +366,15 @@ namespace Fomm.Util
     /// Determines if the given item is in the set.
     /// </summary>
     /// <param name="value">The item to look for in the set.</param>
-    /// <returns><lang cref="true"/> if the item is in the set;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the item is in the set;
+    /// <lang langref="false"/> otherwise.</returns>
     public bool Contains(object value)
     {
       if (!(value is T))
+      {
         return false;
-      return Contains((T)value);
+      }
+      return Contains((T) value);
     }
 
     /// <summary>
@@ -364,8 +385,10 @@ namespace Fomm.Util
     public int IndexOf(object value)
     {
       if (!(value is T))
+      {
         return -1;
-      return IndexOf((T)value);
+      }
+      return IndexOf((T) value);
     }
 
     /// <summary>
@@ -380,14 +403,16 @@ namespace Fomm.Util
     public void Insert(int index, object value)
     {
       if (!(value is T))
-        throw new InvalidOperationException("Can only add items of type " + typeof(T) + " to the Set.");
-      Insert(index, (T)value);
+      {
+        throw new InvalidOperationException("Can only add items of type " + typeof (T) + " to the Set.");
+      }
+      Insert(index, (T) value);
     }
 
     /// <summary>
-    /// Gets whether the set is fixed size. Always <lang cref="false"/>.
+    /// Gets whether the set is fixed size. Always <lang langref="false"/>.
     /// </summary>
-    /// <value>Whether the set is fixed size. Always <lang cref="false"/>.</value>
+    /// <value>Whether the set is fixed size. Always <lang langref="false"/>.</value>
     public bool IsFixedSize
     {
       get
@@ -403,7 +428,9 @@ namespace Fomm.Util
     public void Remove(object value)
     {
       if (value is T)
-        Remove((T)value);
+      {
+        Remove((T) value);
+      }
     }
 
     /// <summary>
@@ -449,7 +476,7 @@ namespace Fomm.Util
     {
       get
       {
-        return ((ICollection)m_lstList).IsSynchronized;
+        return ((ICollection) m_lstList).IsSynchronized;
       }
     }
 
@@ -461,7 +488,7 @@ namespace Fomm.Util
     {
       get
       {
-        return ((ICollection)m_lstList).SyncRoot;
+        return ((ICollection) m_lstList).SyncRoot;
       }
     }
 

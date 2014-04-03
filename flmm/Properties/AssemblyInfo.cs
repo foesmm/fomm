@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Reflection;
-using System.Runtime.CompilerServices;
+using System.Resources;
 using System.Runtime.InteropServices;
-using System.Security.Permissions;
+using Fomm;
 
 [assembly: AssemblyTitle("FOMM")]
 [assembly: AssemblyDescription("Fallout Mod Manager")]
@@ -12,14 +12,10 @@ using System.Security.Permissions;
 [assembly: AssemblyCopyright("Copyright ©  2010 Timeslip, Q")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-
 [assembly: ComVisible(false)]
-
-[assembly: AssemblyVersion(Fomm.Program.Version)]
-[assembly: AssemblyFileVersion(Fomm.Program.Version)]
-
+[assembly: AssemblyVersion(Program.Version)]
+[assembly: AssemblyFileVersion(Program.Version)]
 [assembly: CLSCompliant(false)]
-
-[assembly: System.Resources.NeutralResourcesLanguage("en")]
+[assembly: NeutralResourcesLanguage("en")]
 
 //[assembly: PermissionSet(SecurityAction.RequestMinimum, Name="FullTrust")]

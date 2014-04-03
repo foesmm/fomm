@@ -28,9 +28,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
   /// </summary>
   public class FileDependency : IDependency
   {
-    private string m_strFile = null;
     private ModFileState m_mfsState = ModFileState.Active;
-    private DependencyStateManager m_dsmStateManager = null;
+    private DependencyStateManager m_dsmStateManager;
 
     #region Properties
 
@@ -38,13 +37,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// Gets the path of the file that must be in the specified <see cref="State"/>.
     /// </summary>
     /// <value>The path of the file that must be in the specified <see cref="State"/>.</value>
-    public string File
-    {
-      get
-      {
-        return m_strFile;
-      }
-    }
+    public string File { get; private set; }
 
     /// <summary>
     /// Gets the <see cref="ModFileState"/> that the specified <see cref="File"/> must be in.
@@ -74,11 +67,13 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
         switch (m_mfsState)
         {
           case ModFileState.Active:
-            return (m_dsmStateManager.InstalledPlugins.ContainsKey(m_strFile) && m_dsmStateManager.InstalledPlugins[m_strFile]);
+            return (m_dsmStateManager.InstalledPlugins.ContainsKey(File) &&
+                    m_dsmStateManager.InstalledPlugins[File]);
           case ModFileState.Inactive:
-            return (m_dsmStateManager.InstalledPlugins.ContainsKey(m_strFile) && !m_dsmStateManager.InstalledPlugins[m_strFile]);
+            return (m_dsmStateManager.InstalledPlugins.ContainsKey(File) &&
+                    !m_dsmStateManager.InstalledPlugins[File]);
           case ModFileState.Missing:
-            return (!m_dsmStateManager.InstalledPlugins.ContainsKey(m_strFile));
+            return (!m_dsmStateManager.InstalledPlugins.ContainsKey(File));
         }
         return false;
       }
@@ -99,8 +94,10 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
       get
       {
         if (IsFufilled)
+        {
           return "Passed";
-        return String.Format("File '{0}' is not {1}.", File, State.ToString());
+        }
+        return String.Format("File '{0}' is not {1}.", File, State);
       }
     }
 
@@ -117,7 +114,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     public FileDependency(string p_strFile, ModFileState p_mfsState, DependencyStateManager p_dsmStateManager)
     {
       m_mfsState = p_mfsState;
-      m_strFile = p_strFile;
+      File = p_strFile;
       m_dsmStateManager = p_dsmStateManager;
     }
 
@@ -129,7 +126,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// <returns>A text representation of the dependency.</returns>
     public override string ToString()
     {
-      return m_strFile + " (" + m_mfsState.ToString() + ") : " + IsFufilled;
+      return File + " (" + m_mfsState + ") : " + IsFufilled;
     }
   }
 }

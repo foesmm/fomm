@@ -37,15 +37,14 @@
 // obligated to do so.  If you do not wish to do so, delete this
 // exception statement from your version.
 
-namespace ICSharpCode.SharpZipLib.Zip.Compression 
+namespace Fomm.SharpZipLib.Zip.Compression
 {
-  
   /// <summary>
   /// This class stores the pending output of the Deflater.
   /// 
   /// author of the original java version : Jochen Hoenicke
   /// </summary>
-  class DeflaterPending : PendingBuffer
+  internal class DeflaterPending : PendingBuffer
   {
     /// <summary>
     /// Construct instance with default buffer size

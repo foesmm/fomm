@@ -13,13 +13,13 @@ namespace Fomm.Controls
   {
     private const int PUSH_BUTTON_WIDTH = 14;
 
-    private static int m_intBorderSize = SystemInformation.Border3DSize.Width * 1;
+    private static int m_intBorderSize = SystemInformation.Border3DSize.Width*1;
     private PushButtonState m_pbsState;
-    private bool m_booSkipNextOpen = false;
-    private Rectangle m_rctDropDownRectangle = new Rectangle();
+    private bool m_booSkipNextOpen;
+    private Rectangle m_rctDropDownRectangle;
     private bool m_booShowSplit = true;
-    private ToolStripItem m_tsiLastPressedButton = null;
-    private Int32 m_intSelectedItemIndex = 0;
+    private ToolStripItem m_tsiLastPressedButton;
+    private Int32 m_intSelectedItemIndex;
 
     #region Properties
 
@@ -36,8 +36,10 @@ namespace Fomm.Controls
         {
           m_booShowSplit = value;
           Invalidate();
-          if (this.Parent != null)
-            this.Parent.PerformLayout();
+          if (Parent != null)
+          {
+            Parent.PerformLayout();
+          }
         }
       }
     }
@@ -80,13 +82,17 @@ namespace Fomm.Controls
         if (base.ContextMenuStrip != value)
         {
           if (base.ContextMenuStrip != null)
-            base.ContextMenuStrip.ItemClicked -= new ToolStripItemClickedEventHandler(ContextMenuStrip_ItemClicked);
+          {
+            base.ContextMenuStrip.ItemClicked -= ContextMenuStrip_ItemClicked;
+          }
           base.ContextMenuStrip = value;
           if (base.ContextMenuStrip != null)
           {
-            base.ContextMenuStrip.ItemClicked += new ToolStripItemClickedEventHandler(ContextMenuStrip_ItemClicked);
+            base.ContextMenuStrip.ItemClicked += ContextMenuStrip_ItemClicked;
             if (m_intSelectedItemIndex >= base.ContextMenuStrip.Items.Count)
+            {
               m_intSelectedItemIndex = 0;
+            }
             m_tsiLastPressedButton = ContextMenuStrip.Items[m_intSelectedItemIndex];
           }
         }
@@ -117,26 +123,35 @@ namespace Fomm.Controls
     /// Gets or sets the index of the selected drop down item.
     /// </summary>
     /// <value>The index of the selected drop down item.</value>
-    [Category("Behavior")]
-    [DefaultValue(0)]
+    [Category("Behavior"), DefaultValue(0)]
     public Int32 SelectedItemIndex
     {
       get
       {
         if (m_tsiLastPressedButton == null)
+        {
           return 0;
+        }
         return ContextMenuStrip.Items.IndexOf(m_tsiLastPressedButton);
       }
       set
       {
         if (value >= ContextMenuStrip.Items.Count)
+        {
           m_intSelectedItemIndex = ContextMenuStrip.Items.Count;
+        }
         else if (value < 0)
+        {
           m_intSelectedItemIndex = 0;
+        }
         else
+        {
           m_intSelectedItemIndex = value;
+        }
         if (ContextMenuStrip != null)
+        {
           m_tsiLastPressedButton = ContextMenuStrip.Items[m_intSelectedItemIndex];
+        }
       }
     }
 
@@ -149,7 +164,7 @@ namespace Fomm.Controls
     /// </summary>
     public SplitButton()
     {
-      this.AutoSize = true;
+      AutoSize = true;
     }
 
     #endregion
@@ -161,9 +176,12 @@ namespace Fomm.Controls
     /// <returns>The preferred size of the control.</returns>
     public override Size GetPreferredSize(Size proposedSize)
     {
-      Size szePreferredSize = base.GetPreferredSize(proposedSize);
-      if (m_booShowSplit && !string.IsNullOrEmpty(Text) && TextRenderer.MeasureText(Text, Font).Width + PUSH_BUTTON_WIDTH > szePreferredSize.Width)
-        return szePreferredSize + new Size(PUSH_BUTTON_WIDTH + m_intBorderSize * 2, 0);
+      var szePreferredSize = base.GetPreferredSize(proposedSize);
+      if (m_booShowSplit && !string.IsNullOrEmpty(Text) &&
+          TextRenderer.MeasureText(Text, Font).Width + PUSH_BUTTON_WIDTH > szePreferredSize.Width)
+      {
+        return szePreferredSize + new Size(PUSH_BUTTON_WIDTH + m_intBorderSize*2, 0);
+      }
       return szePreferredSize;
     }
 
@@ -174,13 +192,14 @@ namespace Fomm.Controls
     /// The we are showing the split, then the down arrow is an input key.
     /// </remarks>
     /// <param name="keyData">The key for which it is to be determined if it is an input key.</param>
-    /// <returns><lang cref="true"/> if the given key is an input key; <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the given key is an input key; <lang langref="false"/> otherwise.</returns>
     protected override bool IsInputKey(Keys keyData)
     {
       if (keyData.Equals(Keys.Down) && m_booShowSplit)
+      {
         return true;
-      else
-        return base.IsInputKey(keyData);
+      }
+      return base.IsInputKey(keyData);
     }
 
     /// <summary>
@@ -199,7 +218,9 @@ namespace Fomm.Controls
       }
 
       if (!State.Equals(PushButtonState.Pressed) && !State.Equals(PushButtonState.Disabled))
+      {
         State = PushButtonState.Default;
+      }
     }
 
     /// <summary>
@@ -214,9 +235,13 @@ namespace Fomm.Controls
       if (m_booShowSplit)
       {
         if (kevent.KeyCode.Equals(Keys.Down))
+        {
           ShowContextMenuStrip();
+        }
         else if (kevent.KeyCode.Equals(Keys.Space) && kevent.Modifiers == Keys.None)
+        {
           State = PushButtonState.Pressed;
+        }
       }
 
       base.OnKeyDown(kevent);
@@ -231,8 +256,10 @@ namespace Fomm.Controls
     /// <param name="e">A <see cref="KeyEventArgs"/> describing the event arguments.</param>
     protected override void OnKeyUp(KeyEventArgs kevent)
     {
-      if (kevent.KeyCode.Equals(Keys.Space) && (Control.MouseButtons == MouseButtons.None))
+      if (kevent.KeyCode.Equals(Keys.Space) && (MouseButtons == MouseButtons.None))
+      {
         State = PushButtonState.Normal;
+      }
       base.OnKeyUp(kevent);
     }
 
@@ -251,7 +278,9 @@ namespace Fomm.Controls
         return;
       }
       if (!State.Equals(PushButtonState.Pressed) && !State.Equals(PushButtonState.Disabled))
+      {
         State = PushButtonState.Normal;
+      }
     }
 
     /// <summary>
@@ -270,9 +299,13 @@ namespace Fomm.Controls
       }
 
       if (m_rctDropDownRectangle.Contains(e.Location))
+      {
         ShowContextMenuStrip();
+      }
       else
+      {
         State = PushButtonState.Pressed;
+      }
     }
 
     /// <summary>
@@ -291,7 +324,9 @@ namespace Fomm.Controls
       }
 
       if (!State.Equals(PushButtonState.Pressed) && !State.Equals(PushButtonState.Disabled))
+      {
         State = PushButtonState.Hot;
+      }
     }
 
     /// <summary>
@@ -310,7 +345,9 @@ namespace Fomm.Controls
       }
 
       if (!State.Equals(PushButtonState.Pressed) && !State.Equals(PushButtonState.Disabled))
+      {
         State = Focused ? PushButtonState.Default : PushButtonState.Normal;
+      }
     }
 
     /// <summary>
@@ -332,7 +369,9 @@ namespace Fomm.Controls
       {
         SetButtonDrawState();
         if (Bounds.Contains(Parent.PointToClient(Cursor.Position)) && !m_rctDropDownRectangle.Contains(mevent.Location))
+        {
           OnClick(new EventArgs());
+        }
       }
     }
 
@@ -352,7 +391,9 @@ namespace Fomm.Controls
       }
 
       if (m_tsiLastPressedButton != null)
+      {
         m_tsiLastPressedButton.PerformClick();
+      }
     }
 
     /// <summary>
@@ -367,15 +408,17 @@ namespace Fomm.Controls
       base.OnPaint(pevent);
 
       if (!m_booShowSplit)
+      {
         return;
+      }
 
-      Graphics gphGraphics = pevent.Graphics;
-      Rectangle rctBounds = this.ClientRectangle;
+      var gphGraphics = pevent.Graphics;
+      var rctBounds = ClientRectangle;
 
       // draw the button background as according to the current state.
       if (State != PushButtonState.Pressed && IsDefault && !Application.RenderWithVisualStyles)
       {
-        Rectangle backgroundBounds = rctBounds;
+        var backgroundBounds = rctBounds;
         backgroundBounds.Inflate(-1, -1);
         ButtonRenderer.DrawButton(gphGraphics, backgroundBounds, State);
 
@@ -383,18 +426,22 @@ namespace Fomm.Controls
         gphGraphics.DrawRectangle(SystemPens.WindowFrame, 0, 0, rctBounds.Width - 1, rctBounds.Height - 1);
       }
       else
+      {
         ButtonRenderer.DrawButton(gphGraphics, rctBounds, State);
+      }
 
       // calculate the current dropdown rectangle.
-      m_rctDropDownRectangle = new Rectangle(rctBounds.Right - PUSH_BUTTON_WIDTH - 1, m_intBorderSize, PUSH_BUTTON_WIDTH, rctBounds.Height - m_intBorderSize * 2);
+      m_rctDropDownRectangle = new Rectangle(rctBounds.Right - PUSH_BUTTON_WIDTH - 1, m_intBorderSize, PUSH_BUTTON_WIDTH,
+                                             rctBounds.Height - m_intBorderSize*2);
 
-      Int32 intInternalBorder = m_intBorderSize;
-      Rectangle rctFocusRect = new Rectangle(intInternalBorder,
-                          intInternalBorder,
-                          rctBounds.Width - m_rctDropDownRectangle.Width - intInternalBorder,
-                          rctBounds.Height - (intInternalBorder * 2));
+      var intInternalBorder = m_intBorderSize;
+      var rctFocusRect = new Rectangle(intInternalBorder,
+                                             intInternalBorder,
+                                             rctBounds.Width - m_rctDropDownRectangle.Width - intInternalBorder,
+                                             rctBounds.Height - (intInternalBorder*2));
 
-      bool booDrawSplitLine = (State == PushButtonState.Hot || State == PushButtonState.Pressed || !Application.RenderWithVisualStyles);
+      var booDrawSplitLine = (State == PushButtonState.Hot || State == PushButtonState.Pressed ||
+                               !Application.RenderWithVisualStyles);
       if (RightToLeft == RightToLeft.Yes)
       {
         m_rctDropDownRectangle.X = rctBounds.Left + 1;
@@ -402,8 +449,10 @@ namespace Fomm.Controls
         if (booDrawSplitLine)
         {
           // draw two lines at the edge of the dropdown button
-          gphGraphics.DrawLine(SystemPens.ButtonShadow, rctBounds.Left + PUSH_BUTTON_WIDTH, m_intBorderSize, rctBounds.Left + PUSH_BUTTON_WIDTH, rctBounds.Bottom - m_intBorderSize);
-          gphGraphics.DrawLine(SystemPens.ButtonFace, rctBounds.Left + PUSH_BUTTON_WIDTH + 1, m_intBorderSize, rctBounds.Left + PUSH_BUTTON_WIDTH + 1, rctBounds.Bottom - m_intBorderSize);
+          gphGraphics.DrawLine(SystemPens.ButtonShadow, rctBounds.Left + PUSH_BUTTON_WIDTH, m_intBorderSize,
+                               rctBounds.Left + PUSH_BUTTON_WIDTH, rctBounds.Bottom - m_intBorderSize);
+          gphGraphics.DrawLine(SystemPens.ButtonFace, rctBounds.Left + PUSH_BUTTON_WIDTH + 1, m_intBorderSize,
+                               rctBounds.Left + PUSH_BUTTON_WIDTH + 1, rctBounds.Bottom - m_intBorderSize);
         }
       }
       else
@@ -411,8 +460,10 @@ namespace Fomm.Controls
         if (booDrawSplitLine)
         {
           // draw two lines at the edge of the dropdown button
-          gphGraphics.DrawLine(SystemPens.ButtonShadow, rctBounds.Right - PUSH_BUTTON_WIDTH, m_intBorderSize, rctBounds.Right - PUSH_BUTTON_WIDTH, rctBounds.Bottom - m_intBorderSize);
-          gphGraphics.DrawLine(SystemPens.ButtonFace, rctBounds.Right - PUSH_BUTTON_WIDTH - 1, m_intBorderSize, rctBounds.Right - PUSH_BUTTON_WIDTH - 1, rctBounds.Bottom - m_intBorderSize);
+          gphGraphics.DrawLine(SystemPens.ButtonShadow, rctBounds.Right - PUSH_BUTTON_WIDTH, m_intBorderSize,
+                               rctBounds.Right - PUSH_BUTTON_WIDTH, rctBounds.Bottom - m_intBorderSize);
+          gphGraphics.DrawLine(SystemPens.ButtonFace, rctBounds.Right - PUSH_BUTTON_WIDTH - 1, m_intBorderSize,
+                               rctBounds.Right - PUSH_BUTTON_WIDTH - 1, rctBounds.Bottom - m_intBorderSize);
         }
       }
 
@@ -420,20 +471,28 @@ namespace Fomm.Controls
       PaintArrow(gphGraphics, m_rctDropDownRectangle);
 
       // Figure out how to draw the text
-      TextFormatFlags tffFormatFlags = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter;
+      var tffFormatFlags = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter;
 
       // If we dont' use mnemonic, set formatFlag to NoPrefix as this will show ampersand.
       if (!UseMnemonic)
+      {
         tffFormatFlags = tffFormatFlags | TextFormatFlags.NoPrefix;
+      }
       else if (!ShowKeyboardCues)
+      {
         tffFormatFlags = tffFormatFlags | TextFormatFlags.HidePrefix;
+      }
 
-      if (!string.IsNullOrEmpty(this.Text))
+      if (!string.IsNullOrEmpty(Text))
+      {
         TextRenderer.DrawText(gphGraphics, Text, Font, rctFocusRect, SystemColors.ControlText, tffFormatFlags);
+      }
 
       // draw the focus rectangle.
       if (State != PushButtonState.Pressed && Focused)
+      {
         ControlPaint.DrawFocusRectangle(gphGraphics, rctFocusRect);
+      }
     }
 
     /// <summary>
@@ -443,12 +502,17 @@ namespace Fomm.Controls
     /// <param name="p_rctDropDownRect">The rectangle in which to paint the arrow.</param>
     private void PaintArrow(Graphics p_gphGraphics, Rectangle p_rctDropDownRect)
     {
-      Point pntMiddle = new Point(Convert.ToInt32(p_rctDropDownRect.Left + p_rctDropDownRect.Width / 2), Convert.ToInt32(p_rctDropDownRect.Top + p_rctDropDownRect.Height / 2));
+      var pntMiddle = new Point(Convert.ToInt32(p_rctDropDownRect.Left + p_rctDropDownRect.Width/2),
+                                  Convert.ToInt32(p_rctDropDownRect.Top + p_rctDropDownRect.Height/2));
 
       //if the width is odd - favor pushing it over one pixel right.
-      pntMiddle.X += (p_rctDropDownRect.Width % 2);
+      pntMiddle.X += (p_rctDropDownRect.Width%2);
 
-      Point[] pntArrowPoints = new Point[] { new Point(pntMiddle.X - 2, pntMiddle.Y - 1), new Point(pntMiddle.X + 3, pntMiddle.Y - 1), new Point(pntMiddle.X, pntMiddle.Y + 2) };
+      var pntArrowPoints = new[]
+      {
+        new Point(pntMiddle.X - 2, pntMiddle.Y - 1), new Point(pntMiddle.X + 3, pntMiddle.Y - 1),
+        new Point(pntMiddle.X, pntMiddle.Y + 2)
+      };
 
       p_gphGraphics.FillPolygon(SystemBrushes.ControlText, pntArrowPoints);
     }
@@ -469,7 +533,7 @@ namespace Fomm.Controls
 
       if (ContextMenuStrip != null)
       {
-        ContextMenuStrip.Closing += new ToolStripDropDownClosingEventHandler(ContextMenuStrip_Closing);
+        ContextMenuStrip.Closing += ContextMenuStrip_Closing;
         ContextMenuStrip.Show(this, new Point(0, Height), ToolStripDropDownDirection.BelowRight);
       }
     }
@@ -483,7 +547,7 @@ namespace Fomm.Controls
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
     /// <param name="e">A <see cref="ToolStripItemClickedEventArgs"/> describing the event arguments.</param>
-    void ContextMenuStrip_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+    private void ContextMenuStrip_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
     {
       m_tsiLastPressedButton = e.ClickedItem;
     }
@@ -493,15 +557,19 @@ namespace Fomm.Controls
     /// </summary>
     /// <param name="sender">The object that raised the event.</param>
     /// <param name="e">A <see cref="ToolStripDropDownClosingEventArgs"/> describing the event arguments.</param>
-    void ContextMenuStrip_Closing(object sender, ToolStripDropDownClosingEventArgs e)
+    private void ContextMenuStrip_Closing(object sender, ToolStripDropDownClosingEventArgs e)
     {
-      ContextMenuStrip cmsDropDownItems = sender as ContextMenuStrip;
+      var cmsDropDownItems = sender as ContextMenuStrip;
       if (cmsDropDownItems != null)
-        cmsDropDownItems.Closing -= new ToolStripDropDownClosingEventHandler(ContextMenuStrip_Closing);
+      {
+        cmsDropDownItems.Closing -= ContextMenuStrip_Closing;
+      }
 
       SetButtonDrawState();
       if (e.CloseReason == ToolStripDropDownCloseReason.AppClicked)
-        m_booSkipNextOpen = (m_rctDropDownRectangle.Contains(this.PointToClient(Cursor.Position)));
+      {
+        m_booSkipNextOpen = (m_rctDropDownRectangle.Contains(PointToClient(Cursor.Position)));
+      }
     }
 
     /// <summary>
@@ -510,11 +578,17 @@ namespace Fomm.Controls
     private void SetButtonDrawState()
     {
       if (Bounds.Contains(Parent.PointToClient(Cursor.Position)))
+      {
         State = PushButtonState.Hot;
+      }
       else if (Focused)
+      {
         State = PushButtonState.Default;
+      }
       else
+      {
         State = PushButtonState.Normal;
+      }
     }
   }
 }

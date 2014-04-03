@@ -33,19 +33,19 @@
 // obligated to do so.  If you do not wish to do so, delete this
 // exception statement from your version.
 
-using System;
 using System.IO;
 
-namespace ICSharpCode.SharpZipLib.Core
+namespace Fomm.SharpZipLib.Core
 {
   /// <summary>
   /// PathFilter filters directories and files using a form of <see cref="System.Text.RegularExpressions.Regex">regular expressions</see>
   /// by full path name.
   /// See <see cref="NameFilter">NameFilter</see> for more detail on filtering.
   /// </summary>
-  class PathFilter : IScanFilter
+  internal class PathFilter : IScanFilter
   {
     #region Constructors
+
     /// <summary>
     /// Initialise a new instance of <see cref="PathFilter"></see>.
     /// </summary>
@@ -54,9 +54,11 @@ namespace ICSharpCode.SharpZipLib.Core
     {
       nameFilter_ = new NameFilter(filter);
     }
+
     #endregion
 
     #region IScanFilter Members
+
     /// <summary>
     /// Test a name to see if it matches the filter.
     /// </summary>
@@ -65,18 +67,22 @@ namespace ICSharpCode.SharpZipLib.Core
     /// <remarks><see cref="Path.GetFullPath(string)"/> is used to get the full path before matching.</remarks>
     public virtual bool IsMatch(string name)
     {
-      bool result = false;
+      var result = false;
 
-      if ( name != null ) {
-        string cooked = (name.Length > 0) ? Path.GetFullPath(name) : "";
+      if (name != null)
+      {
+        var cooked = (name.Length > 0) ? Path.GetFullPath(name) : "";
         result = nameFilter_.IsMatch(cooked);
       }
       return result;
     }
+
     #endregion
 
     #region Instance Fields
-    NameFilter nameFilter_;
+
+    private NameFilter nameFilter_;
+
     #endregion
   }
 }

@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Fomm.Util
+﻿namespace Fomm.Util
 {
-  class SystemUtil
+  internal class SystemUtil
   {
     public delegate void Action();
   }

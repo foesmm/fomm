@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using Fomm.Games.Fallout3.Tools.BSA;
 using Fomm.PackageManager;
 using Fomm.PackageManager.ModInstallLog;
-using System.IO;
 
 namespace Fomm.Games.FalloutNewVegas.Script
 {
@@ -39,7 +39,7 @@ namespace Fomm.Games.FalloutNewVegas.Script
     /// <param name="p_strSection">The section in the Ini file to edit.</param>
     /// <param name="p_strKey">The key in the Ini file to edit.</param>
     /// <param name="p_strValue">The value to which to set the key.</param>
-    /// <returns><lang cref="true"/> if the value was set; <lang cref="false"/>
+    /// <returns><lang langref="true"/> if the value was set; <lang langref="false"/>
     /// if the user chose not to overwrite the existing value.</returns>
     protected override bool EditINI(string p_strFile, string p_strSection, string p_strKey, string p_strValue)
     {
@@ -48,11 +48,13 @@ namespace Fomm.Games.FalloutNewVegas.Script
       IList<string> lstInstallers = InstallLog.Current.GetInstallingMods(p_strFile, p_strSection, p_strKey);
       if (lstInstallers.Contains(Fomod.BaseName))
       {
-        string strLoweredFile = p_strFile.ToLowerInvariant();
-        string strLoweredSection = p_strSection.ToLowerInvariant();
-        string strLoweredKey = p_strKey.ToLowerInvariant();
+        var strLoweredFile = p_strFile.ToLowerInvariant();
+        var strLoweredSection = p_strSection.ToLowerInvariant();
+        var strLoweredKey = p_strKey.ToLowerInvariant();
         if (lstInstallers[lstInstallers.Count - 1].Equals(Fomod.BaseName))
+        {
           NativeMethods.WritePrivateProfileStringA(strLoweredSection, strLoweredKey, p_strValue, strLoweredFile);
+        }
         Installer.MergeModule.AddIniEdit(strLoweredFile, strLoweredSection, strLoweredKey, p_strValue);
         return true;
       }
@@ -79,22 +81,24 @@ namespace Fomm.Games.FalloutNewVegas.Script
     /// <param name="p_intPackage">The package containing the shader to edit.</param>
     /// <param name="p_strShaderName">The shader to edit.</param>
     /// <param name="p_bteData">The value to which to edit the shader.</param>
-    /// <returns><lang cref="true"/> if the value was set; <lang cref="false"/>
+    /// <returns><lang langref="true"/> if the value was set; <lang langref="false"/>
     /// if the user chose not to overwrite the existing value.</returns>
     /// <exception cref="ShaderException">Thrown if the shader could not be edited.</exception>
     public override bool EditShader(int p_intPackage, string p_strShaderName, byte[] p_bteData)
     {
       PermissionsManager.CurrentPermissions.Assert();
 
-      string strShaderKey = String.Format("sdp:{0}/{1}", p_intPackage, p_strShaderName);
+      var strShaderKey = String.Format("sdp:{0}/{1}", p_intPackage, p_strShaderName);
       IList<string> lstInstallers = InstallLog.Current.GetGameSpecifcValueInstallingMods(strShaderKey);
       if (lstInstallers.Contains(Fomod.BaseName))
       {
         if (lstInstallers[lstInstallers.Count - 1].Equals(Fomod.BaseName))
         {
           byte[] oldData;
-          if (!Fallout3.Tools.BSA.SDPArchives.EditShader(p_intPackage, p_strShaderName, p_bteData, out oldData))
+          if (!SDPArchives.EditShader(p_intPackage, p_strShaderName, p_bteData, out oldData))
+          {
             throw new ShaderException("Failed to edit the shader");
+          }
         }
         Installer.MergeModule.AddGameSpecificValueEdit(strShaderKey, p_bteData);
         return true;

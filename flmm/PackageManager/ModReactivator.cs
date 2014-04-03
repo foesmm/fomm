@@ -21,7 +21,8 @@ namespace Fomm.PackageManager
     {
       get
       {
-        return "A problem occurred during reactivation: " + Environment.NewLine + "{0}" + Environment.NewLine + "The mod was not reactivated.";
+        return "A problem occurred during reactivation: " + Environment.NewLine + "{0}" + Environment.NewLine +
+               "The mod was not reactivated.";
       }
     }
 
@@ -70,7 +71,7 @@ namespace Fomm.PackageManager
     /// <summary>
     /// Indicates that this script's work has not already been completed.
     /// </summary>
-    /// <returns><lang cref="false"/>.</returns>
+    /// <returns><lang langref="false"/>.</returns>
     /// <seealso cref="ModInstallScript.CheckAlreadyDone()"/>
     protected override bool CheckAlreadyDone()
     {
@@ -82,8 +83,8 @@ namespace Fomm.PackageManager
     /// or not the script was successful.
     /// </summary>
     /// <param name="p_booSucceeded">Whether or not the script was successful.</param>
-    /// <returns><lang cref="true"/> if the fomod is already active;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the fomod is already active;
+    /// <lang langref="false"/> otherwise.</returns>
     protected override bool DetermineFomodActiveStatus(bool p_booSucceeded)
     {
       return Fomod.IsActive;

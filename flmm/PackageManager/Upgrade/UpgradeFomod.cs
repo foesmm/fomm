@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Fomm.PackageManager.Upgrade
+﻿namespace Fomm.PackageManager.Upgrade
 {
   /// <summary>
   /// A specilised fomod that allows the overriding of the base name.

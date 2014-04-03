@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Fomm.PackageManager.XmlConfiguredInstall
 {
@@ -13,74 +11,37 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
   /// </remarks>
   public class PluginFile : IComparable<PluginFile>
   {
-    private string m_strSource = null;
-    private string m_strDest = null;
-    private bool m_booIsFolder = false;
-    private bool m_booAlwaysInstall = false;
-    private bool m_booInstallIfUsable = false;
-    private Int32 m_intPriority = 0;
-
     #region Properties
 
     /// <summary>
     /// Gets the file's/folder's location in the FOMod.
     /// </summary>
     /// <value>The file's/folder's location in the FOMod.</value>
-    public string Source
-    {
-      get
-      {
-        return m_strSource;
-      }
-    }
+    public string Source { get; private set; }
 
     /// <summary>
     /// Gets where the file/folder should be installed.
     /// </summary>
     /// <value>Where the file/folder should be installed.</value>
-    public string Destination
-    {
-      get
-      {
-        return m_strDest;
-      }
-    }
+    public string Destination { get; private set; }
 
     /// <summary>
     /// Gets whether this item is a folder.
     /// </summary>
     /// <value>Whether this item is a folder.</value>
-    public bool IsFolder
-    {
-      get
-      {
-        return m_booIsFolder;
-      }
-    }
+    public bool IsFolder { get; private set; }
 
     /// <summary>
     /// Gets whether this item should always be installed, regardless of whether or not the plugin is selected.
     /// </summary>
     /// <value>Whether this item should always be installed, regardless of whether or not the plugin is selected.</value>
-    public bool AlwaysInstall
-    {
-      get
-      {
-        return m_booAlwaysInstall;
-      }
-    }
+    public bool AlwaysInstall { get; private set; }
 
     /// <summary>
     /// Gets whether this item should be installed if the plugins is usable, regardless of whether or not the plugin is selected.
     /// </summary>
     /// <value>Whether this item should be installed if the plugins is usable, regardless of whether or not the plugin is selected.</value>
-    public bool InstallIfUsable
-    {
-      get
-      {
-        return m_booInstallIfUsable;
-      }
-    }
+    public bool InstallIfUsable { get; private set; }
 
     /// <summary>
     /// Gets the priority of this item.
@@ -90,13 +51,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// items with lower numbers. This value does not have to be unique.
     /// </remarks>
     /// <value>The priority of this item.</value>
-    public Int32 Priority
-    {
-      get
-      {
-        return m_intPriority;
-      }
-    }
+    public int Priority { get; private set; }
 
     #endregion
 
@@ -111,14 +66,15 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// <param name="p_intPriority">The priority of the item.</param>
     /// <param name="p_booAlwaysInstall">Whether this item should always be installed, regardless of whether or not the plugin is selected.</param>
     /// <param name="p_booInstallIfUsable">Whether this item should be installed when the plugin is not <see cref="PluginType.NotUsable"/>, regardless of whether or not the plugin is selected.</param>
-    public PluginFile(string p_strSource, string p_strDest, bool p_booIsFolder, Int32 p_intPriority, bool p_booAlwaysInstall, bool p_booInstallIfUsable)
+    public PluginFile(string p_strSource, string p_strDest, bool p_booIsFolder, Int32 p_intPriority,
+                      bool p_booAlwaysInstall, bool p_booInstallIfUsable)
     {
-      m_strSource = p_strSource;
-      m_strDest = p_strDest;
-      m_booIsFolder = p_booIsFolder;
-      m_booAlwaysInstall = p_booAlwaysInstall;
-      m_booInstallIfUsable = p_booInstallIfUsable;
-      m_intPriority = p_intPriority;
+      Source = p_strSource;
+      Destination = p_strDest;
+      IsFolder = p_booIsFolder;
+      AlwaysInstall = p_booAlwaysInstall;
+      InstallIfUsable = p_booInstallIfUsable;
+      Priority = p_intPriority;
     }
 
     #endregion
@@ -135,15 +91,17 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     ///or a value greater than 0 if this PluginFile is greater than the given PluginFile.</returns>
     public int CompareTo(PluginFile other)
     {
-      Int32 intResult = m_intPriority.CompareTo(other.Priority);
+      var intResult = Priority.CompareTo(other.Priority);
       if (intResult == 0)
       {
-        intResult = m_booIsFolder.CompareTo(other.IsFolder);
+        intResult = IsFolder.CompareTo(other.IsFolder);
         if (intResult == 0)
         {
-          intResult = m_strSource.CompareTo(other.Source);
+          intResult = Source.CompareTo(other.Source);
           if (intResult == 0)
-            intResult = m_strDest.CompareTo(other.Destination);
+          {
+            intResult = Destination.CompareTo(other.Destination);
+          }
         }
       }
       return intResult;

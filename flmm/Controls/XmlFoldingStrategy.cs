@@ -1,5 +1,4 @@
-﻿using System;
-using ICSharpCode.TextEditor.Document;
+﻿using ICSharpCode.TextEditor.Document;
 using System.Collections.Generic;
 using ICSharpCode.TextEditor;
 
@@ -43,13 +42,19 @@ namespace Fomm.Controls
     protected void AddFold(IDocument p_docDocument, string p_strTagName, TextLocation p_tlcStart, TextLocation p_tlcEnd)
     {
       if (p_tlcStart.Line == p_tlcEnd.Line)
+      {
         return;
-      string strStartLine = p_docDocument.GetText(p_docDocument.GetLineSegment(p_tlcStart.Line));
-      Int32 intStartFoldPos = strStartLine.IndexOf(">", p_tlcStart.Column);
+      }
+      var strStartLine = p_docDocument.GetText(p_docDocument.GetLineSegment(p_tlcStart.Line));
+      var intStartFoldPos = strStartLine.IndexOf(">", p_tlcStart.Column);
       if (intStartFoldPos < 0)
+      {
         intStartFoldPos = strStartLine.Length;
+      }
       else
+      {
         intStartFoldPos++;
+      }
       m_lstFolds.Add(new FoldMarker(p_docDocument, p_tlcStart.Line, intStartFoldPos, p_tlcEnd.Line, p_tlcEnd.Column - 1));
     }
 

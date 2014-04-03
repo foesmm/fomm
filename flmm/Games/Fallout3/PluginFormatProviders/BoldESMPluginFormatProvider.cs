@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Drawing;
 using Fomm.Games.Fallout3.Tools.TESsnip;
 
@@ -10,7 +9,7 @@ namespace Fomm.Games.Fallout3.PluginFormatProviders
   /// </summary>
   public class BoldESMPluginFormatProvider : IPluginFormatProvider
   {
-    private PluginFormat.PluginFormatterManager m_pfmManager = null;
+    private PluginFormat.PluginFormatterManager m_pfmManager;
 
     #region IPluginFormatProvider Members
 
@@ -30,18 +29,19 @@ namespace Fomm.Games.Fallout3.PluginFormatProviders
     /// Determins if the provider has a format for the specified plugin.
     /// </summary>
     /// <param name="p_strPluginName">The name of the plugin for which to check if there is a format.</param>
-    /// <returns><lang cref="true"/> if this provider has a format for the specified plugin;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if this provider has a format for the specified plugin;
+    /// <lang langref="false"/> otherwise.</returns>
     public virtual bool HasFormat(string p_strPluginName)
     {
-      return Properties.Settings.Default.fallout3BoldifyESMs && Plugin.GetIsEsm(Path.Combine(Program.GameMode.PluginsPath, p_strPluginName));
+      return Properties.Settings.Default.fallout3BoldifyESMs &&
+             Plugin.GetIsEsm(Path.Combine(Program.GameMode.PluginsPath, p_strPluginName));
     }
 
     /// <summary>
     /// Gets the provider's format for the specified plugin.
     /// </summary>
     /// <param name="p_strPluginName">The name of the plugin whose format is to be returned.</param>
-    /// <returns>The provider's format for the specified plugin, or <lang cref="null"/> if the
+    /// <returns>The provider's format for the specified plugin, or <lang langref="null"/> if the
     /// provider does not have a format for the speficied plugin.</returns>
     public PluginFormat GetFormat(string p_strPluginName)
     {

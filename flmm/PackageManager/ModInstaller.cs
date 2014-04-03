@@ -1,12 +1,6 @@
 ﻿using System;
-using ChinhDo.Transactions;
-using System.Xml;
-using System.Security;
-using System.Security.Permissions;
 using System.IO;
-using System.Collections.Generic;
 using System.Windows.Forms;
-using fomm.Transactions;
 using Fomm.PackageManager.XmlConfiguredInstall;
 using Fomm.PackageManager.ModInstallLog;
 
@@ -17,24 +11,17 @@ namespace Fomm.PackageManager
   /// </summary>
   public class ModInstaller : ModInstallerBase
   {
-    private BackgroundWorkerProgressDialog m_bwdProgress = null;
-
     #region Properties
 
-    protected BackgroundWorkerProgressDialog ProgressDialog
-    {
-      get
-      {
-        return m_bwdProgress;
-      }
-    }
+    protected BackgroundWorkerProgressDialog ProgressDialog { get; private set; }
 
     /// <seealso cref="ModInstallScript.ExceptionMessage"/>
     protected override string ExceptionMessage
     {
       get
       {
-        return "A problem occurred during install: " + Environment.NewLine + "{0}" + Environment.NewLine + "The mod was not installed.";
+        return "A problem occurred during install: " + Environment.NewLine + "{0}" + Environment.NewLine +
+               "The mod was not installed.";
       }
     }
 
@@ -77,8 +64,8 @@ namespace Fomm.PackageManager
     /// Indicates that this script's work has already been completed if
     /// the <see cref="Fomod"/> is already active.
     /// </summary>
-    /// <returns><lang cref="true"/> if the <see cref="Fomod"/> is active;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the <see cref="Fomod"/> is active;
+    /// <lang langref="false"/> otherwise.</returns>
     /// <seealso cref="ModInstallScript.CheckAlreadyDone()"/>
     protected override bool CheckAlreadyDone()
     {
@@ -98,11 +85,17 @@ namespace Fomm.PackageManager
     /// </summary>
     protected override bool DoScript()
     {
-      foreach (string strSettingsFile in Program.GameMode.SettingsFiles.Values)
+      foreach (var strSettingsFile in Program.GameMode.SettingsFiles.Values)
+      {
         TransactionalFileManager.Snapshot(strSettingsFile);
-      foreach (string strAdditionalFile in Program.GameMode.AdditionalPaths.Values)
+      }
+      foreach (var strAdditionalFile in Program.GameMode.AdditionalPaths.Values)
+      {
         if (File.Exists(strAdditionalFile))
+        {
           TransactionalFileManager.Snapshot(strAdditionalFile);
+        }
+      }
       TransactionalFileManager.Snapshot(InstallLog.Current.InstallLogPath);
 
       try
@@ -110,7 +103,7 @@ namespace Fomm.PackageManager
         MergeModule = new InstallLogMergeModule();
         if (Fomod.HasInstallScript)
         {
-          FomodScript fscInstallScript = Fomod.GetInstallScript();
+          var fscInstallScript = Fomod.GetInstallScript();
           switch (fscInstallScript.Type)
           {
             case FomodScriptType.CSharp:
@@ -138,29 +131,31 @@ namespace Fomm.PackageManager
         throw e;
       }
       if (!Fomod.IsActive)
+      {
         return false;
+      }
       return true;
     }
 
     /// <summary>
     /// Runs the XML configured install script.
     /// </summary>
-    /// <returns><lang cref="true"/> if the installation was successful;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the installation was successful;
+    /// <lang langref="false"/> otherwise.</returns>
     protected bool RunXmlInstallScript()
     {
-      XmlConfiguredScript xmlScript = new XmlConfiguredScript(Script);
+      var xmlScript = new XmlConfiguredScript(Script);
       return xmlScript.Install();
     }
 
     /// <summary>
     /// Runs the custom install script included in the fomod.
     /// </summary>
-    /// <returns><lang cref="true"/> if the installation was successful;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the installation was successful;
+    /// <lang langref="false"/> otherwise.</returns>
     protected bool RunCustomInstallScript()
     {
-      string strScript = Fomod.GetInstallScript().Text;
+      var strScript = Fomod.GetInstallScript().Text;
       return ScriptCompiler.Execute(strScript, this);
     }
 
@@ -168,24 +163,26 @@ namespace Fomm.PackageManager
     /// Runs the basic install script.
     /// </summary>
     /// <param name="p_strMessage">The message to display in the progress dialog.</param>
-    /// <returns><lang cref="true"/> if the installation was successful;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the installation was successful;
+    /// <lang langref="false"/> otherwise.</returns>
     protected bool RunBasicInstallScript(string p_strMessage)
     {
       try
       {
-        using (m_bwdProgress = new BackgroundWorkerProgressDialog(PerformBasicInstall))
+        using (ProgressDialog = new BackgroundWorkerProgressDialog(PerformBasicInstall))
         {
-          m_bwdProgress.OverallMessage = p_strMessage;
-          m_bwdProgress.ShowItemProgress = false;
-          m_bwdProgress.OverallProgressStep = 1;
-          if (m_bwdProgress.ShowDialog() == DialogResult.Cancel)
+          ProgressDialog.OverallMessage = p_strMessage;
+          ProgressDialog.ShowItemProgress = false;
+          ProgressDialog.OverallProgressStep = 1;
+          if (ProgressDialog.ShowDialog() == DialogResult.Cancel)
+          {
             return false;
+          }
         }
       }
       finally
       {
-        m_bwdProgress = null;
+        ProgressDialog = null;
       }
       return true;
     }
@@ -199,19 +196,30 @@ namespace Fomm.PackageManager
     /// </remarks>
     public void PerformBasicInstall()
     {
-      char[] chrDirectorySeperators = new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar };
-      List<string> lstFiles = Fomod.GetFileList();
-      if (m_bwdProgress != null)
-        m_bwdProgress.OverallProgressMaximum = lstFiles.Count;
-      foreach (string strFile in lstFiles)
+      var chrDirectorySeperators = new[]
       {
-        if ((m_bwdProgress != null) && m_bwdProgress.Cancelled())
+        Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar
+      };
+      var lstFiles = Fomod.GetFileList();
+      if (ProgressDialog != null)
+      {
+        ProgressDialog.OverallProgressMaximum = lstFiles.Count;
+      }
+      foreach (var strFile in lstFiles)
+      {
+        if ((ProgressDialog != null) && ProgressDialog.Cancelled())
+        {
           return;
+        }
         Script.InstallFileFromFomod(strFile);
         if (Program.GameMode.IsPluginFile(strFile) && strFile.IndexOfAny(chrDirectorySeperators) == -1)
+        {
           Script.SetPluginActivation(strFile, true);
-        if (m_bwdProgress != null)
-          m_bwdProgress.StepOverallProgress();
+        }
+        if (ProgressDialog != null)
+        {
+          ProgressDialog.StepOverallProgress();
+        }
       }
     }
 

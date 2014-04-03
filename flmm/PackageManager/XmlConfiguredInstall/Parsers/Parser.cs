@@ -15,21 +15,26 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     /// <summary>
     /// Extracts the config version from a XML configuration file.
     /// </summary>
-    protected readonly static Regex m_rgxVersion = new Regex("xsi:noNamespaceSchemaLocation=\"[^\"]*ModConfig(.*?).xsd", RegexOptions.Singleline);
+    protected static readonly Regex m_rgxVersion = new Regex(
+      "xsi:noNamespaceSchemaLocation=\"[^\"]*ModConfig(.*?).xsd", RegexOptions.Singleline);
 
     /// <summary>
     /// Gets the config version used by the given XML configuration file.
     /// </summary>
     /// <param name="p_strXml">The XML files who version is to be determined.</param>
-    /// <returns>The config version used the given XML configuration file, or <lang cref="null"/>
+    /// <returns>The config version used the given XML configuration file, or <lang langref="null"/>
     /// if the given file is not recognized as a configuration file.</returns>
     public static string GetConfigVersion(string p_strXml)
     {
       if (!m_rgxVersion.IsMatch(p_strXml))
+      {
         return null;
-      string strConfigVersion = m_rgxVersion.Match(p_strXml).Groups[1].Value;
+      }
+      var strConfigVersion = m_rgxVersion.Match(p_strXml).Groups[1].Value;
       if (String.IsNullOrEmpty(strConfigVersion))
+      {
         strConfigVersion = "1.0";
+      }
       return strConfigVersion;
     }
 
@@ -43,16 +48,19 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     /// <exception cref="ParserException">Thrown if no parser is found for the given configuration file.</exception>
     public static Parser GetParser(XmlDocument p_xmlConfig, fomod p_fomodMod, DependencyStateManager p_dsmSate)
     {
-      string strConfigVersion = "1.0";
-      string strSchemaName = p_xmlConfig.SelectSingleNode("config").Attributes["xsi:noNamespaceSchemaLocation"].InnerText.ToLowerInvariant();
-      Int32 intStartPos = strSchemaName.LastIndexOf("modconfig") + 9;
+      var strConfigVersion = "1.0";
+      var strSchemaName =
+        p_xmlConfig.SelectSingleNode("config").Attributes["xsi:noNamespaceSchemaLocation"].InnerText.ToLowerInvariant();
+      var intStartPos = strSchemaName.LastIndexOf("modconfig") + 9;
       if (intStartPos > 8)
       {
-        Int32 intLength = strSchemaName.Length - intStartPos - 4;
+        var intLength = strSchemaName.Length - intStartPos - 4;
         if (intLength > 0)
+        {
           strConfigVersion = strSchemaName.Substring(intStartPos, intLength);
+        }
       }
-      ParserExtension pexParserExtension = Program.GameMode.GetParserExtension(strConfigVersion);
+      var pexParserExtension = Program.GameMode.GetParserExtension(strConfigVersion);
       switch (strConfigVersion)
       {
         case "1.0":
@@ -66,13 +74,11 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
         case "5.0":
           return new Parser50(p_xmlConfig, p_fomodMod, p_dsmSate, pexParserExtension);
       }
-      throw new ParserException("Unrecognized Module Configuration version (" + strConfigVersion + "). Perhaps a newer version of FOMM is required.");
+      throw new ParserException("Unrecognized Module Configuration version (" + strConfigVersion +
+                                "). Perhaps a newer version of FOMM is required.");
     }
 
     public ParserExtension m_pexParserExtension = null;
-    private XmlDocument m_xmlConfig = null;
-    private fomod m_fomodMod = null;
-    private DependencyStateManager m_dsmSate = null;
 
     #region Properties
 
@@ -98,37 +104,19 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     /// Gets the xml configuration file.
     /// </summary>
     /// <value>The xml configuration file.</value>
-    protected XmlDocument XmlConfig
-    {
-      get
-      {
-        return m_xmlConfig;
-      }
-    }
+    protected XmlDocument XmlConfig { get; private set; }
 
     /// <summary>
     /// Gets the fomod being installed.
     /// </summary>
     /// <value>The fomod being installed.</value>
-    protected fomod Fomod
-    {
-      get
-      {
-        return m_fomodMod;
-      }
-    }
+    protected fomod Fomod { get; private set; }
 
     /// <summary>
     /// Gets the dependency state manager.
     /// </summary>
     /// <value>The dependency state manager.</value>
-    protected DependencyStateManager StateManager
-    {
-      get
-      {
-        return m_dsmSate;
-      }
-    }
+    protected DependencyStateManager StateManager { get; private set; }
 
     #endregion
 
@@ -141,12 +129,13 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     /// <param name="p_fomodMod">The mod whose configuration file we are parsing.</param>
     /// <param name="p_dsmSate">The state of the install.</param>
     /// <param name="p_pexParserExtension">The parser extension that provides game-specific config file parsing.</param>
-    public Parser(XmlDocument p_xmlConfig, fomod p_fomodMod, DependencyStateManager p_dsmSate, ParserExtension p_pexParserExtension)
+    public Parser(XmlDocument p_xmlConfig, fomod p_fomodMod, DependencyStateManager p_dsmSate,
+                  ParserExtension p_pexParserExtension)
     {
       m_pexParserExtension = p_pexParserExtension;
-      m_xmlConfig = p_xmlConfig;
-      m_fomodMod = p_fomodMod;
-      m_dsmSate = p_dsmSate;
+      XmlConfig = p_xmlConfig;
+      Fomod = p_fomodMod;
+      StateManager = p_dsmSate;
       validateModuleConfig();
     }
 
@@ -162,9 +151,12 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     /// <returns>The module configuration file.</returns>
     private void validateModuleConfig()
     {
-      XmlSchema xscSchema = loadModuleConfigSchema();
-      m_xmlConfig.Schemas.Add(xscSchema);
-      m_xmlConfig.Validate((s, e) => { throw e.Exception; });
+      var xscSchema = loadModuleConfigSchema();
+      XmlConfig.Schemas.Add(xscSchema);
+      XmlConfig.Validate((s, e) =>
+      {
+        throw e.Exception;
+      });
     }
 
     /// <summary>
@@ -173,17 +165,20 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     /// <returns>The module configuration schema.</returns>
     private XmlSchema loadModuleConfigSchema()
     {
-      string strSchemaPath = Program.GameMode.GetXMLConfigSchemaPath(ConfigurationFileVersion);
-      byte[] bteSchema = File.ReadAllBytes(strSchemaPath);
-      XmlSchema xscSchema = null;
-      using (MemoryStream stmSchema = new MemoryStream(bteSchema))
+      var strSchemaPath = Program.GameMode.GetXMLConfigSchemaPath(ConfigurationFileVersion);
+      var bteSchema = File.ReadAllBytes(strSchemaPath);
+      XmlSchema xscSchema;
+      using (var stmSchema = new MemoryStream(bteSchema))
       {
-        XmlReaderSettings xrsSettings = new XmlReaderSettings();
+        var xrsSettings = new XmlReaderSettings();
         xrsSettings.IgnoreComments = true;
         xrsSettings.IgnoreWhitespace = true;
-        using (XmlReader xrdSchemaReader = XmlReader.Create(stmSchema, xrsSettings, strSchemaPath))
+        using (var xrdSchemaReader = XmlReader.Create(stmSchema, xrsSettings, strSchemaPath))
         {
-          xscSchema = XmlSchema.Read(xrdSchemaReader, delegate(object sender, ValidationEventArgs e) { throw e.Exception; });
+          xscSchema = XmlSchema.Read(xrdSchemaReader, delegate(object sender, ValidationEventArgs e)
+          {
+            throw e.Exception;
+          });
         }
         stmSchema.Close();
       }

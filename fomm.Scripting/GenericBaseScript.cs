@@ -2,9 +2,7 @@
 using Fomm.PackageManager;
 using DialogResult = System.Windows.Forms.DialogResult;
 using System.Windows.Forms;
-using System.Drawing;
 using System.IO;
-using Fomm.Games.Fallout3.Tools.TESsnip;
 
 namespace fomm.Scripting
 {
@@ -37,16 +35,9 @@ namespace fomm.Scripting
   /// </summary>
   public abstract class GenericBaseScript
   {
-    private static ModInstaller m_mdiScript = null;
-    private static string m_strLastError = null;
+    private static string m_strLastError;
 
-    protected static ModInstaller Installer
-    {
-      get
-      {
-        return m_mdiScript;
-      }
-    }
+    protected static ModInstaller Installer { get; private set; }
 
     protected static string LastError
     {
@@ -60,7 +51,6 @@ namespace fomm.Scripting
       }
     }
 
-
     /// <summary>
     /// Sets up the script.
     /// </summary>
@@ -72,12 +62,13 @@ namespace fomm.Scripting
     /// to perform its work.</param>
     public static void Setup(ModInstaller p_mdiScript)
     {
-      m_mdiScript = p_mdiScript;
+      Installer = p_mdiScript;
     }
 
     #region Method Execution
 
     protected delegate void GenereicVoidMethodDelegate();
+
     protected delegate object GenereicReturnMethodDelegate();
 
     /// <summary>
@@ -92,7 +83,7 @@ namespace fomm.Scripting
     /// application) there should not be any noticable difference.
     /// </remarks>
     /// <param name="p_gmdMethod">The method to execute.</param>
-    /// <see cref="ExecuteMethod(GenereicReturnMethodDelegate p_gmdMethod)"/>
+    /// <see cref="ExecuteMethod(GenereicReturnMethodDelegate)"/>
     protected static void ExecuteMethod(GenereicVoidMethodDelegate p_gmdMethod)
     {
       try
@@ -103,7 +94,9 @@ namespace fomm.Scripting
       {
         m_strLastError = e.Message;
         if (e.InnerException != null)
+        {
           m_strLastError += "\n" + e.InnerException.Message;
+        }
       }
     }
 
@@ -119,7 +112,7 @@ namespace fomm.Scripting
     /// application) there should not be any noticable difference.
     /// </remarks>
     /// <param name="p_gmdMethod">The method to execute.</param>
-    /// <see cref="ExecuteMethod(GenereicVoidMethodDelegate p_gmdMethod)"/>
+    /// <see cref="ExecuteMethod(GenereicVoidMethodDelegate)"/>
     protected static object ExecuteMethod(GenereicReturnMethodDelegate p_gmdMethod)
     {
       try
@@ -130,7 +123,9 @@ namespace fomm.Scripting
       {
         m_strLastError = e.Message;
         if (e.InnerException != null)
+        {
           m_strLastError += "\n" + e.InnerException.Message;
+        }
       }
       return null;
     }
@@ -158,7 +153,7 @@ namespace fomm.Scripting
     /// <seealso cref="ModInstaller.PerformBasicInstall()"/>
     public static void PerformBasicInstall()
     {
-      ExecuteMethod(() => m_mdiScript.PerformBasicInstall());
+      ExecuteMethod(() => Installer.PerformBasicInstall());
     }
 
     #endregion
@@ -170,11 +165,11 @@ namespace fomm.Scripting
     /// </summary>
     /// <param name="p_strFrom">The path of the file in the FOMod to install.</param>
     /// <param name="p_strTo">The path on the file system where the file is to be created.</param>
-    /// <returns><lang cref="true"/> if the file was written; <lang cref="false"/> otherwise.</returns>
-    /// <seealso cref="ModInstaller.CopyDataFile(string p_strFrom, string p_strTo)"/>
+    /// <returns><lang langref="true"/> if the file was written; <lang langref="false"/> otherwise.</returns>
+    /// <seealso cref="ModInstaller.CopyDataFile(string, string)"/>
     public static bool CopyDataFile(string p_strFrom, string p_strTo)
     {
-      return (bool)(ExecuteMethod(() => m_mdiScript.Script.CopyDataFile(p_strFrom, p_strTo)) ?? false);
+      return (bool) (ExecuteMethod(() => Installer.Script.CopyDataFile(p_strFrom, p_strTo)) ?? false);
     }
 
     /// <summary>
@@ -184,9 +179,11 @@ namespace fomm.Scripting
     /// <seealso cref="fomod.GetFileList()"/>
     public static string[] GetFomodFileList()
     {
-      string[] strFiles = (string[])ExecuteMethod(() => m_mdiScript.Fomod.GetFileList().ToArray());
-      for (Int32 i = strFiles.Length - 1; i >= 0; i--)
+      var strFiles = (string[]) ExecuteMethod(() => Installer.Fomod.GetFileList().ToArray());
+      for (var i = strFiles.Length - 1; i >= 0; i--)
+      {
         strFiles[i] = strFiles[i].Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+      }
       return strFiles;
     }
 
@@ -194,11 +191,11 @@ namespace fomm.Scripting
     /// Installs the speified file from the FOMod to the file system.
     /// </summary>
     /// <param name="p_strFile">The path of the file to install.</param>
-    /// <returns><lang cref="true"/> if the file was written; <lang cref="false"/> otherwise.</returns>
-    /// <seealso cref="ModInstaller.InstallFileFromFomod(string p_strFile)"/>
+    /// <returns><lang langref="true"/> if the file was written; <lang langref="false"/> otherwise.</returns>
+    /// <seealso cref="ModInstaller.InstallFileFromFomod(string)"/>
     public static bool InstallFileFromFomod(string p_strFile)
     {
-      return (bool)(ExecuteMethod(() => m_mdiScript.Script.InstallFileFromFomod(p_strFile)) ?? false);
+      return (bool) (ExecuteMethod(() => Installer.Script.InstallFileFromFomod(p_strFile)) ?? false);
     }
 
     /// <summary>
@@ -206,10 +203,10 @@ namespace fomm.Scripting
     /// </summary>
     /// <param name="p_strFile">The file to retrieve.</param>
     /// <returns>The requested file data.</returns>
-    /// <seealso cref="fomod.GetFile(string p_strFile)"/>
+    /// <seealso cref="fomod.GetFile(string)"/>
     public static byte[] GetFileFromFomod(string p_strFile)
     {
-      return (byte[])ExecuteMethod(() => m_mdiScript.Fomod.GetFile(p_strFile));
+      return (byte[]) ExecuteMethod(() => Installer.Fomod.GetFile(p_strFile));
     }
 
     /// <summary>
@@ -219,33 +216,34 @@ namespace fomm.Scripting
     /// <param name="p_strPattern">The pattern against which to filter the file paths.</param>
     /// <param name="p_booAllFolders">Whether or not to search through subdirectories.</param>
     /// <returns>A filtered list of all files in a user's Data directory.</returns>
-    /// <seealso cref="FileManagement.GetExistingDataFileList(string p_strPath, string p_strPattern, bool p_booAllFolders)"/>
+    /// <seealso cref="FileManagement.GetExistingDataFileList(string, string, bool)"/>
     public static string[] GetExistingDataFileList(string p_strPath, string p_strPattern, bool p_booAllFolders)
     {
-      return (string[])ExecuteMethod(() => FileManagement.GetExistingDataFileList(p_strPath, p_strPattern, p_booAllFolders));
+      return
+        (string[]) ExecuteMethod(() => FileManagement.GetExistingDataFileList(p_strPath, p_strPattern, p_booAllFolders));
     }
 
     /// <summary>
     /// Determines if the specified file exists in the user's Data directory.
     /// </summary>
     /// <param name="p_strPath">The path of the file whose existence is to be verified.</param>
-    /// <returns><lang cref="true"/> if the specified file exists; <lange cref="false"/>
+    /// <returns><lang langref="true"/> if the specified file exists; <lange langref="false"/>
     /// otherwise.</returns>
-    /// <see cref="FileManagement.DataFileExists(string p_strPath)"/>
+    /// <see cref="FileManagement.DataFileExists(string)"/>
     public static bool DataFileExists(string p_strPath)
     {
-      return (bool)(ExecuteMethod(() => FileManagement.DataFileExists(p_strPath)) ?? false);
+      return (bool) (ExecuteMethod(() => FileManagement.DataFileExists(p_strPath)) ?? false);
     }
 
     /// <summary>
     /// Gets the speified file from the user's Data directory.
     /// </summary>
     /// <param name="p_strPath">The path of the file to retrieve.</param>
-    /// <returns>The specified file, or <lang cref="null"/> if the file does not exist.</returns>
-    /// <see cref="FileManagement.GetExistingDataFile(string p_strPath)"/>
+    /// <returns>The specified file, or <lang langref="null"/> if the file does not exist.</returns>
+    /// <see cref="FileManagement.GetExistingDataFile(string)"/>
     public static byte[] GetExistingDataFile(string p_strPath)
     {
-      return (byte[])ExecuteMethod(() => FileManagement.GetExistingDataFile(p_strPath));
+      return (byte[]) ExecuteMethod(() => FileManagement.GetExistingDataFile(p_strPath));
     }
 
     /// <summary>
@@ -257,11 +255,11 @@ namespace fomm.Scripting
     /// </remarks>
     /// <param name="p_strPath">The path where the file is to be created.</param>
     /// <param name="p_bteData">The data that is to make up the file.</param>
-    /// <returns><lang cref="true"/> if the file was written; <lang cref="false"/> otherwise.</returns>
-    /// <seealso cref="ModInstaller.GenerateDataFile(string p_strPath, byte[] p_bteData)"/>
+    /// <returns><lang langref="true"/> if the file was written; <lang langref="false"/> otherwise.</returns>
+    /// <seealso cref="ModInstaller.GenerateDataFile(string, byte[])"/>
     public static bool GenerateDataFile(string p_strPath, byte[] p_bteData)
     {
-      return (bool)(ExecuteMethod(() => m_mdiScript.Script.GenerateDataFile(p_strPath, p_bteData)) ?? false);
+      return (bool) (ExecuteMethod(() => Installer.Script.GenerateDataFile(p_strPath, p_bteData)) ?? false);
     }
 
     #endregion
@@ -274,10 +272,10 @@ namespace fomm.Scripting
     /// Shows a message box with the given message.
     /// </summary>
     /// <param name="p_strMessage">The message to display in the message box.</param>
-    /// <seealso cref="ModScript.MessageBox(string p_strMessage)"/>
+    /// <seealso cref="ModScript.MessageBox(string)"/>
     public static void MessageBox(string p_strMessage)
     {
-      ExecuteMethod(() => m_mdiScript.Script.MessageBox(p_strMessage));
+      ExecuteMethod(() => Installer.Script.MessageBox(p_strMessage));
     }
 
     /// <summary>
@@ -285,10 +283,10 @@ namespace fomm.Scripting
     /// </summary>
     /// <param name="p_strMessage">The message to display in the message box.</param>
     /// <param name="p_strTitle">The message box's title, display in the title bar.</param>
-    /// <seealso cref="ModScript.MessageBox(string p_strMessage, string p_strTitle)"/>
+    /// <seealso cref="ModScript.MessageBox(string, string)"/>
     public static void MessageBox(string p_strMessage, string p_strTitle)
     {
-      ExecuteMethod(() => m_mdiScript.Script.MessageBox(p_strMessage, p_strTitle));
+      ExecuteMethod(() => Installer.Script.MessageBox(p_strMessage, p_strTitle));
     }
 
     /// <summary>
@@ -297,10 +295,10 @@ namespace fomm.Scripting
     /// <param name="p_strMessage">The message to display in the message box.</param>
     /// <param name="p_strTitle">The message box's title, display in the title bar.</param>
     /// <param name="p_mbbButtons">The buttons to show in the message box.</param>
-    /// <seealso cref="ModScript.MessageBox(string p_strMessage, string p_strTitle, MessageBoxButtons p_mbbButtons)"/>
+    /// <seealso cref="ModScript.MessageBox(string, string, MessageBoxButtons)"/>
     public static DialogResult MessageBox(string p_strMessage, string p_strTitle, MessageBoxButtons p_mbbButtons)
     {
-      return (DialogResult)ExecuteMethod(() => m_mdiScript.Script.MessageBox(p_strMessage, p_strTitle, p_mbbButtons));
+      return (DialogResult) ExecuteMethod(() => Installer.Script.MessageBox(p_strMessage, p_strTitle, p_mbbButtons));
     }
 
     #endregion
@@ -312,28 +310,36 @@ namespace fomm.Scripting
     /// <param name="p_strTitle">The title of the selection form.</param>
     /// <param name="p_booSelectMany">Whether more than one item can be selected.</param>
     /// <returns>The indices of the selected items.</returns>
-    /// <seealso cref="Select(string[] p_strItems, string[] p_strPreviews, string[] p_strDescriptions, string p_strTitle, bool p_booSelectMany)"/>
+    /// <seealso cref="Select(string[], string[], string[], string, bool)"/>
     public static int[] Select(SelectOption[] p_sopOptions, string p_strTitle, bool p_booSelectMany)
     {
-      bool booHasPreviews = false;
-      bool booHasDescriptions = false;
-      foreach (SelectOption so in p_sopOptions)
+      var booHasPreviews = false;
+      var booHasDescriptions = false;
+      foreach (var so in p_sopOptions)
       {
         if (so.Preview != null)
+        {
           booHasPreviews = true;
+        }
         if (so.Desc != null)
+        {
           booHasDescriptions = true;
+        }
       }
-      string[] strItems = new string[p_sopOptions.Length];
-      string[] strPreviews = booHasPreviews ? new string[p_sopOptions.Length] : null;
-      string[] strDescriptions = booHasDescriptions ? new string[p_sopOptions.Length] : null;
-      for (int i = 0; i < p_sopOptions.Length; i++)
+      var strItems = new string[p_sopOptions.Length];
+      var strPreviews = booHasPreviews ? new string[p_sopOptions.Length] : null;
+      var strDescriptions = booHasDescriptions ? new string[p_sopOptions.Length] : null;
+      for (var i = 0; i < p_sopOptions.Length; i++)
       {
         strItems[i] = p_sopOptions[i].Item;
         if (booHasPreviews)
+        {
           strPreviews[i] = p_sopOptions[i].Preview;
+        }
         if (booHasDescriptions)
+        {
           strDescriptions[i] = p_sopOptions[i].Desc;
+        }
       }
       return Select(strItems, strPreviews, strDescriptions, p_strTitle, p_booSelectMany);
     }
@@ -355,10 +361,14 @@ namespace fomm.Scripting
     /// <param name="p_strTitle">The title of the selection form.</param>
     /// <param name="p_booSelectMany">Whether more than one item can be selected.</param>
     /// <returns>The indices of the selected items.</returns>
-    /// <seealso cref="ModScript.Select(string[] p_strItems, string[] p_strPreviews, string[] p_strDescriptions, string p_strTitle, bool p_booSelectMany)"/>
-    public static int[] Select(string[] p_strItems, string[] p_strPreviews, string[] p_strDescriptions, string p_strTitle, bool p_booSelectMany)
+    /// <seealso cref="ModScript.Select(string[], string[], string[], string, bool)"/>
+    public static int[] Select(string[] p_strItems, string[] p_strPreviews, string[] p_strDescriptions,
+                               string p_strTitle, bool p_booSelectMany)
     {
-      return (int[])ExecuteMethod(() => m_mdiScript.Script.Select(p_strItems, p_strPreviews, p_strDescriptions, p_strTitle, p_booSelectMany));
+      return
+        (int[])
+          ExecuteMethod(
+            () => Installer.Script.Select(p_strItems, p_strPreviews, p_strDescriptions, p_strTitle, p_booSelectMany));
     }
 
     /// <summary>
@@ -368,7 +378,7 @@ namespace fomm.Scripting
     /// <seealso cref="ModScript.CreateCustomForm()"/>
     public static Form CreateCustomForm()
     {
-      return (Form)ExecuteMethod(() => m_mdiScript.Script.CreateCustomForm());
+      return (Form) ExecuteMethod(() => Installer.Script.CreateCustomForm());
     }
 
     #endregion
@@ -382,18 +392,18 @@ namespace fomm.Scripting
     /// <seealso cref="ModScript.GetFommVersion()"/>
     public static Version GetFommVersion()
     {
-      return (Version)ExecuteMethod(() => m_mdiScript.Script.GetFommVersion());
+      return (Version) ExecuteMethod(() => Installer.Script.GetFommVersion());
     }
 
     /// <summary>
     /// Gets the version of the game that is installed.
     /// </summary>
-    /// <returns>The version of the game, or <lang cref="null"/> if Fallout
+    /// <returns>The version of the game, or <lang langref="null"/> if Fallout
     /// is not installed.</returns>
     /// <seealso cref="ModScript.GetGameVersion()"/>
     public static Version GetGameVersion()
     {
-      return (Version)ExecuteMethod(() => m_mdiScript.Script.GetGameVersion());
+      return (Version) ExecuteMethod(() => Installer.Script.GetGameVersion());
     }
 
     #endregion
@@ -407,7 +417,7 @@ namespace fomm.Scripting
     /// <seealso cref="ModScript.GetAllPlugins()"/>
     public static string[] GetAllPlugins()
     {
-      return (string[])ExecuteMethod(() => m_mdiScript.Script.GetAllPlugins());
+      return (string[]) ExecuteMethod(() => Installer.Script.GetAllPlugins());
     }
 
     #region Plugin Activation Management
@@ -419,7 +429,7 @@ namespace fomm.Scripting
     /// <seealso cref="ModScript.GetActivePlugins()"/>
     public static string[] GetActivePlugins()
     {
-      return (string[])ExecuteMethod(() => m_mdiScript.Script.GetActivePlugins());
+      return (string[]) ExecuteMethod(() => Installer.Script.GetActivePlugins());
     }
 
     /// <summary>
@@ -427,10 +437,10 @@ namespace fomm.Scripting
     /// </summary>
     /// <param name="p_strName">The name of the plugin to activate or deactivate.</param>
     /// <param name="p_booActivate">Whether to activate the plugin.</param>
-    /// <seealso cref="ModInstaller.SetPluginActivation(string p_strName, bool p_booActivate)"/>
+    /// <seealso cref="ModInstaller.SetPluginActivation(string, bool)"/>
     public static void SetPluginActivation(string p_strName, bool p_booActivate)
     {
-      ExecuteMethod(() => m_mdiScript.Script.SetPluginActivation(p_strName, p_booActivate));
+      ExecuteMethod(() => Installer.Script.SetPluginActivation(p_strName, p_booActivate));
     }
 
     #endregion
@@ -446,10 +456,10 @@ namespace fomm.Scripting
     /// </remarks>
     /// <param name="p_intPlugins">The new load order of the plugins. Each entry in this array
     /// contains the current index of a plugin. This array must contain all current indices.</param>
-    /// <seealso cref="ModScript.SetLoadOrder(int[] p_intPlugins)"/>
+    /// <seealso cref="ModScript.SetLoadOrder(int[])"/>
     public static void SetLoadOrder(int[] p_intPlugins)
     {
-      ExecuteMethod(() => m_mdiScript.Script.SetLoadOrder(p_intPlugins));
+      ExecuteMethod(() => Installer.Script.SetLoadOrder(p_intPlugins));
     }
 
     /// <summary>
@@ -465,10 +475,10 @@ namespace fomm.Scripting
     /// load order. Each entry in this array contains the current index of a plugin.</param>
     /// <param name="p_intPosition">The position in the load order to which to move the specified
     /// plugins.</param>
-    /// <seealso cref="ModScript.SetLoadOrder(int[] p_intPlugins, int p_intPosition)"/>
+    /// <seealso cref="ModScript.SetLoadOrder(int[], int)"/>
     public static void SetLoadOrder(int[] p_intPlugins, int p_intPosition)
     {
-      ExecuteMethod(() => m_mdiScript.Script.SetLoadOrder(p_intPlugins, p_intPosition));
+      ExecuteMethod(() => Installer.Script.SetLoadOrder(p_intPlugins, p_intPosition));
     }
 
     #endregion

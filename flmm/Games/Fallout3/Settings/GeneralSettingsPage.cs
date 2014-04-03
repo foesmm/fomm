@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Text;
 using System.Windows.Forms;
 using Fomm.Controls;
-using System.IO;
 
 namespace Fomm.Games.Fallout3.Settings
 {
@@ -33,11 +27,11 @@ namespace Fomm.Games.Fallout3.Settings
     /// <summary>
     /// Validates the entered settings values on this page.
     /// </summary>
-    /// <returns><lang cref="true"/> if the entered settings values are valid;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the entered settings values are valid;
+    /// <lang langref="false"/> otherwise.</returns>
     protected bool ValidateSettings()
     {
-      bool booValid = rdcDirectories.ValidateSettings();
+      var booValid = rdcDirectories.ValidateSettings();
       booValid &= ValidateWorkingDirectory();
       return booValid;
     }
@@ -45,12 +39,12 @@ namespace Fomm.Games.Fallout3.Settings
     /// <summary>
     /// Validates the selected working directory.
     /// </summary>
-    /// <returns><lang cref="true"/> if the selected working directory is valid;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the selected working directory is valid;
+    /// <lang langref="false"/> otherwise.</returns>
     protected bool ValidateWorkingDirectory()
     {
       erpErrors.SetError(butSelectWorkingDirectory, null);
-      if (!((Fallout3GameMode)Program.GameMode).VerifyWorkingDirectory(tbxWorkingDirectory.Text))
+      if (!((Fallout3GameMode) Program.GameMode).VerifyWorkingDirectory(tbxWorkingDirectory.Text))
       {
         erpErrors.SetError(butSelectWorkingDirectory, "Invalid working directory. Could not find Fallout 3.");
         return false;
@@ -77,8 +71,8 @@ namespace Fomm.Games.Fallout3.Settings
     /// <summary>
     /// Persists the settings from the page's controls.
     /// </summary>
-    /// <returns><lang cref="true"/> if ettings were saved;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if ettings were saved;
+    /// <lang langref="false"/> otherwise.</returns>
     public override bool SaveSettings()
     {
       if (ValidateSettings())
@@ -106,8 +100,10 @@ namespace Fomm.Games.Fallout3.Settings
     private void butSelectWorkingDirectory_Click(object sender, EventArgs e)
     {
       fbdWorkingDirectory.SelectedPath = tbxWorkingDirectory.Text;
-      if (fbdWorkingDirectory.ShowDialog(this.FindForm()) == DialogResult.OK)
+      if (fbdWorkingDirectory.ShowDialog(FindForm()) == DialogResult.OK)
+      {
         tbxWorkingDirectory.Text = fbdWorkingDirectory.SelectedPath;
+      }
     }
   }
 }

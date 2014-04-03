@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.ComponentModel;
 using System.Collections.Specialized;
 using System.Collections.Generic;
+using System.Drawing.Design;
 
 namespace Fomm.Util
 {
@@ -9,18 +11,18 @@ namespace Fomm.Util
   /// Extends the <see cref="StringCollection"/> to add implicit conversions to and from
   /// similar data structures.
   /// </summary>
-  [Editor("System.Windows.Forms.Design.StringCollectionEditor", typeof(System.Drawing.Design.UITypeEditor))]
+  [Editor("System.Windows.Forms.Design.StringCollectionEditor", typeof (UITypeEditor))]
   public class SettingsList : StringCollection, IEnumerable<string>
   {
     #region String List Conversions
 
     /// <summary>
     /// This class decorates <see cref="StringEnumerator"/> to make it appear
-    /// as a <see cref="IEnumerator{string}"/>.
+    /// as a IEnumerator{string} />.
     /// </summary>
     private class EnumeratorOfString : IEnumerator<string>
     {
-      private StringEnumerator m_senEnumerator = null;
+      private StringEnumerator m_senEnumerator;
 
       #region Contructors
 
@@ -69,7 +71,7 @@ namespace Fomm.Util
       /// Gets the current value in the enumeration.
       /// </summary>
       /// <value>The current value in the enumeration.</value>
-      object System.Collections.IEnumerator.Current
+      object IEnumerator.Current
       {
         get
         {
@@ -80,7 +82,7 @@ namespace Fomm.Util
       /// <summary>
       /// Moves to the next item in the enumeration.
       /// </summary>
-      /// <returns><lang cref="true"/> if there is another item; <lang cref="false"/> otherwise.</returns>
+      /// <returns><lang langref="true"/> if there is another item; <lang langref="false"/> otherwise.</returns>
       public bool MoveNext()
       {
         return m_senEnumerator.MoveNext();
@@ -105,8 +107,10 @@ namespace Fomm.Util
     public static implicit operator string[](SettingsList arr)
     {
       if (arr == null)
+      {
         return null;
-      List<string> lstValues = new List<string>(arr);
+      }
+      var lstValues = new List<string>(arr);
       return lstValues.ToArray();
     }
 
@@ -118,22 +122,26 @@ namespace Fomm.Util
     public static implicit operator SettingsList(string[] values)
     {
       if (values == null)
+      {
         return null;
-      SettingsList sslValues = new SettingsList();
+      }
+      var sslValues = new SettingsList();
       sslValues.AddRange(values);
       return sslValues;
     }
 
     /// <summary>
-    /// Implicitly converts a <see cref="List{string}"/> to a <see cref="SettingsStringList"/>.
+    /// Implicitly converts a List{string} to a SettingsStringList/>.
     /// </summary>
-    /// <param name="values">The <see cref="List{string}"/> to convert to a <see cref="SettingsStringList"/>.</param>
-    /// <returns>A <see cref="SettingsStringList"/> containing the strings in the given <see cref="List{string}"/>.</returns>
+    /// <param name="values">The List{string} to convert to a SettingsStringList.</param>
+    /// <returns>A SettingsStringList containing the strings in the given List{string}.</returns>
     public static implicit operator SettingsList(List<string> values)
     {
       if (values == null)
+      {
         return null;
-      SettingsList sslValues = new SettingsList();
+      }
+      var sslValues = new SettingsList();
       sslValues.AddRange(values.ToArray());
       return sslValues;
     }
@@ -146,7 +154,6 @@ namespace Fomm.Util
     /// <returns></returns>
     public new IEnumerator<string> GetEnumerator()
     {
-
       return new EnumeratorOfString(base.GetEnumerator());
     }
 
@@ -164,13 +171,14 @@ namespace Fomm.Util
     public static implicit operator Int32[](SettingsList arr)
     {
       if (arr == null)
-        return null;
-      List<Int32> lstValues = new List<Int32>();
-      Int32 intValue = 0;
-      for (Int32 i = 0; i < arr.Count; i++)
       {
-        intValue = 0;
-        Int32.TryParse(arr[i], out intValue);
+        return null;
+      }
+      var lstValues = new List<Int32>();
+      foreach (var s in arr)
+      {
+        int intValue;
+        Int32.TryParse(s, out intValue);
         lstValues.Add(intValue);
       }
       return lstValues.ToArray();
@@ -184,10 +192,14 @@ namespace Fomm.Util
     public static implicit operator SettingsList(Int32[] values)
     {
       if (values == null)
+      {
         return null;
-      SettingsList sslValues = new SettingsList();
-      foreach (Int32 intValue in values)
+      }
+      var sslValues = new SettingsList();
+      foreach (var intValue in values)
+      {
         sslValues.Add(intValue.ToString());
+      }
       return sslValues;
     }
 

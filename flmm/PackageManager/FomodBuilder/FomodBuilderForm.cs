@@ -3,13 +3,10 @@ using System.Windows.Forms;
 using Fomm.Controls;
 using System.ComponentModel;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using System.IO;
+using Fomm.Properties;
 using Fomm.Util;
-using Fomm.PackageManager.XmlConfiguredInstall;
-using System.Xml.Schema;
 using System.Xml;
-using System.Drawing;
 using Fomm.PackageManager.Controls;
 using GeMod.Interface;
 
@@ -45,9 +42,8 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     private ReadmeGeneratorForm m_rgdGenerator = new ReadmeGeneratorForm();
-    private bool m_booInfoEntered = false;
-    private string m_strNewFomodPath = null;
-    private bool m_booLoadedInfo = false;
+    private bool m_booInfoEntered;
+    private bool m_booLoadedInfo;
 
     #region Properties
 
@@ -55,16 +51,10 @@ namespace Fomm.PackageManager.FomodBuilder
     /// Gets the path of the fomod that was built.
     /// </summary>
     /// <remarks>
-    /// This value will be <lang cref="null"/> if the fomod was not successfully built.
+    /// This value will be <lang langref="null"/> if the fomod was not successfully built.
     /// </remarks>
     /// <value>The path of the fomod that was built.</value>
-    public string FomodPath
-    {
-      get
-      {
-        return m_strNewFomodPath;
-      }
-    }
+    public string FomodPath { get; private set; }
 
     #endregion
 
@@ -77,13 +67,13 @@ namespace Fomm.PackageManager.FomodBuilder
     {
       InitializeComponent();
 
-      Icon = Fomm.Properties.Resources.fomm02;
-      Properties.Settings.Default.windowPositions.GetWindowPosition("FomodBuilderForm", this);
+      Icon = Resources.fomm02;
+      Settings.Default.windowPositions.GetWindowPosition("FomodBuilderForm", this);
 
       tbxPFPPath.DataBindings.Add("Enabled", cbxPFP, "Checked");
       butSelectPFPFolder.DataBindings.Add("Enabled", cbxPFP, "Checked");
       fseScriptEditor.DataBindings.Add("Enabled", cbxUseScript, "Checked");
-      tbxPFPPath.Text = Properties.Settings.Default.pfpOutputPath;
+      tbxPFPPath.Text = Settings.Default.pfpOutputPath;
     }
 
     /// <summary>
@@ -94,12 +84,15 @@ namespace Fomm.PackageManager.FomodBuilder
     public FomodBuilderForm(PremadeFomodPack p_pfpPack, string p_strSourcesPath)
       : this()
     {
-      List<KeyValuePair<string, string>> lstCopyInstructions = p_pfpPack.GetCopyInstructions(p_strSourcesPath);
-      string strPremadeSource = Archive.GenerateArchivePath(p_pfpPack.PFPPath, p_pfpPack.PremadePath);
+      var lstCopyInstructions = p_pfpPack.GetCopyInstructions(p_strSourcesPath);
+      var strPremadeSource = Archive.GenerateArchivePath(p_pfpPack.PFPPath, p_pfpPack.PremadePath);
       lstCopyInstructions.Add(new KeyValuePair<string, string>(strPremadeSource, "/"));
 
-      List<SourceFile> lstSourceFiles = p_pfpPack.GetSources();
-      lstSourceFiles.ForEach((s) => { s.Source = Path.Combine(p_strSourcesPath, s.Source); });
+      var lstSourceFiles = p_pfpPack.GetSources();
+      lstSourceFiles.ForEach(s =>
+      {
+        s.Source = Path.Combine(p_strSourcesPath, s.Source);
+      });
       lstSourceFiles.Add(new SourceFile(p_pfpPack.PFPPath, null, true, false, false));
 
       ffsFileStructure.SetCopyInstructions(lstSourceFiles, lstCopyInstructions);
@@ -121,8 +114,8 @@ namespace Fomm.PackageManager.FomodBuilder
     /// <param name="e">A <see cref="CancelEventArgs"/> describing the event arguments.</param>
     protected override void OnClosing(CancelEventArgs e)
     {
-      Properties.Settings.Default.windowPositions.SetWindowPosition("FomodBuilderForm", this);
-      Properties.Settings.Default.Save(); 
+      Settings.Default.windowPositions.SetWindowPosition("FomodBuilderForm", this);
+      Settings.Default.Save();
       base.OnClosing(e);
     }
 
@@ -140,11 +133,17 @@ namespace Fomm.PackageManager.FomodBuilder
     private void vtcFomodData_SelectedTabPageChanged(object sender, VerticalTabControl.TabPageEventArgs e)
     {
       if (e.TabPage == vtpDownloadLocations)
+      {
         UpdateDownloadLocationsList();
+      }
       else if (e.TabPage == vtpReadme)
+      {
         SetReadmeDefault();
+      }
       else if (e.TabPage == vtpScript)
+      {
         SetScriptDefault();
+      }
       else if (e.TabPage == vtpInfo)
       {
         m_booInfoEntered = true;
@@ -165,11 +164,19 @@ namespace Fomm.PackageManager.FomodBuilder
       switch (PerformValidation())
       {
         case ValidationState.Errors:
-          MessageBox.Show(this, "You must correct the errors before saving.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+          MessageBox.Show(this, "You must correct the errors before saving.", "Error", MessageBoxButtons.OK,
+                          MessageBoxIcon.Error);
           return;
         case ValidationState.Warnings:
-          if (MessageBox.Show(this, "There are warnings." + Environment.NewLine + "Warnings can be ignored, but they can indicate missing information that you meant to enter." + Environment.NewLine + "Would you like to continue?", "Warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.Cancel)
+          if (
+            MessageBox.Show(this,
+                            "There are warnings." + Environment.NewLine +
+                            "Warnings can be ignored, but they can indicate missing information that you meant to enter." +
+                            Environment.NewLine + "Would you like to continue?", "Warning", MessageBoxButtons.OKCancel,
+                            MessageBoxIcon.Warning) == DialogResult.Cancel)
+          {
             return;
+          }
           break;
         case ValidationState.Passed:
           break;
@@ -177,45 +184,55 @@ namespace Fomm.PackageManager.FomodBuilder
           throw new InvalidEnumArgumentException("Unexpected value for ValidationState enum.");
       }
 
-      Readme rmeReadme = redReadmeEditor.Readme;
-      FomodScript fscScript = fseScriptEditor.Script;
-      XmlDocument xmlInfo = m_booInfoEntered ? fomod.SaveInfo(finInfo) : null;
+      var rmeReadme = redReadmeEditor.Readme;
+      var fscScript = fseScriptEditor.Script;
+      var xmlInfo = m_booInfoEntered ? fomod.SaveInfo(finInfo) : null;
 
-      Cursor crsOldCursor = Cursor;
+      var crsOldCursor = Cursor;
       Cursor = Cursors.WaitCursor;
-      IList<KeyValuePair<string, string>> lstCopyInstructions = ffsFileStructure.GetCopyInstructions();
+      var lstCopyInstructions = ffsFileStructure.GetCopyInstructions();
       Cursor = crsOldCursor;
 
       if (cbxFomod.Checked)
       {
-        NewFomodBuilder fgnGenerator = new NewFomodBuilder();
-        m_strNewFomodPath = fgnGenerator.BuildFomod(tbxFomodFileName.Text, lstCopyInstructions, rmeReadme, xmlInfo, m_booInfoEntered, finInfo.Screenshot, fscScript);
-        if (String.IsNullOrEmpty(m_strNewFomodPath))
+        var fgnGenerator = new NewFomodBuilder();
+        FomodPath = fgnGenerator.BuildFomod(tbxFomodFileName.Text, lstCopyInstructions, rmeReadme, xmlInfo,
+                                                    m_booInfoEntered, finInfo.Screenshot, fscScript);
+        if (String.IsNullOrEmpty(FomodPath))
+        {
           return;
+        }
       }
       if (cbxPFP.Checked)
       {
-        Properties.Settings.Default.pfpOutputPath = tbxPFPPath.Text;
-        Properties.Settings.Default.Save();
+        Settings.Default.pfpOutputPath = tbxPFPPath.Text;
+        Settings.Default.Save();
 
-        string strVersion = "1.0";
-        string strMachineVersion = "1.0";
-        XmlDocument xmlInfoTmp = fomod.SaveInfo(finInfo);
+        var strVersion = "1.0";
+        var strMachineVersion = "1.0";
+        var xmlInfoTmp = fomod.SaveInfo(finInfo);
         if (xmlInfoTmp != null)
         {
-          XmlNode xndVersion = xmlInfoTmp.SelectSingleNode("/fomod/Version");
+          var xndVersion = xmlInfoTmp.SelectSingleNode("/fomod/Version");
           if (xndVersion != null)
           {
             strVersion = xndVersion.InnerText;
-            XmlAttribute xatVersion = xndVersion.Attributes["MachineVersion"];
+            var xatVersion = xndVersion.Attributes["MachineVersion"];
             if (xatVersion != null)
+            {
               strMachineVersion = xatVersion.Value;
+            }
           }
         }
-        PremadeFomodPackBuilder fpbPackBuilder = new PremadeFomodPackBuilder();
-        string strPFPPAth = fpbPackBuilder.BuildPFP(tbxFomodFileName.Text, strVersion, strMachineVersion, lstCopyInstructions, sdsDownloadLocations.DataSource, tbxHowTo.Text, rmeReadme, xmlInfo, m_booInfoEntered, finInfo.Screenshot, fscScript, tbxPFPPath.Text);
+        var fpbPackBuilder = new PremadeFomodPackBuilder();
+        var strPFPPAth = fpbPackBuilder.BuildPFP(tbxFomodFileName.Text, strVersion, strMachineVersion,
+                                                    lstCopyInstructions, sdsDownloadLocations.DataSource, tbxHowTo.Text,
+                                                    rmeReadme, xmlInfo, m_booInfoEntered, finInfo.Screenshot, fscScript,
+                                                    tbxPFPPath.Text);
         if (String.IsNullOrEmpty(strPFPPAth))
+        {
           return;
+        }
       }
       DialogResult = DialogResult.OK;
     }
@@ -233,8 +250,8 @@ namespace Fomm.PackageManager.FomodBuilder
     /// <returns>The currnt validation state of the form's data.</returns>
     protected ValidationState PerformValidation()
     {
-      bool booHasErrors = false;
-      bool booHasWarnings = false;
+      var booHasErrors = false;
+      var booHasWarnings = false;
       sspError.Clear();
       sspWarning.Clear();
 
@@ -247,8 +264,9 @@ namespace Fomm.PackageManager.FomodBuilder
 
       //download locations tab validation
       UpdateDownloadLocationsList();
-      IList<SourceFile> lstSourceFiles = (IList<SourceFile>)sdsDownloadLocations.DataSource;
-      foreach (SourceFile sflLocation in lstSourceFiles)
+      var lstSourceFiles = sdsDownloadLocations.DataSource;
+      foreach (var sflLocation in lstSourceFiles)
+      {
         if (String.IsNullOrEmpty(sflLocation.URL) && !sflLocation.Included)
         {
           if (cbxPFP.Checked)
@@ -263,6 +281,7 @@ namespace Fomm.PackageManager.FomodBuilder
           }
           break;
         }
+      }
 
       //readme tab validation
       SetReadmeDefault();
@@ -280,10 +299,10 @@ namespace Fomm.PackageManager.FomodBuilder
         booHasErrors = true;
       }
       else if (String.IsNullOrEmpty(finInfo.Name) ||
-        String.IsNullOrEmpty(finInfo.Author) ||
-        String.IsNullOrEmpty(finInfo.HumanReadableVersion) ||
-        String.IsNullOrEmpty(finInfo.Website) ||
-        String.IsNullOrEmpty(finInfo.Description))
+               String.IsNullOrEmpty(finInfo.Author) ||
+               String.IsNullOrEmpty(finInfo.HumanReadableVersion) ||
+               String.IsNullOrEmpty(finInfo.Website) ||
+               String.IsNullOrEmpty(finInfo.Description))
       {
         sspWarning.SetStatus(vtpInfo, "Missing information.");
         booHasWarnings = true;
@@ -318,9 +337,13 @@ namespace Fomm.PackageManager.FomodBuilder
       }
 
       if (booHasErrors)
+      {
         return ValidationState.Errors;
+      }
       if (booHasWarnings)
+      {
         return ValidationState.Warnings;
+      }
       return ValidationState.Passed;
     }
 
@@ -329,11 +352,11 @@ namespace Fomm.PackageManager.FomodBuilder
     /// <summary>
     /// Validates the source files of the FOMod.
     /// </summary>
-    /// <returns><lang cref="true"/> if the user has entered a file name for the FOMod, and selected
-    /// files to include; <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the user has entered a file name for the FOMod, and selected
+    /// files to include; <lang langref="false"/> otherwise.</returns>
     protected bool ValidateSources()
     {
-      bool booPassed = ValidateFomodFileName();
+      var booPassed = ValidateFomodFileName();
       booPassed &= ValidateFomodFiles();
       return booPassed;
     }
@@ -341,7 +364,7 @@ namespace Fomm.PackageManager.FomodBuilder
     /// <summary>
     /// Ensures that the user has entered a file name.
     /// </summary>
-    /// <returns><lang cref="true"/> if the user has entered a file name; <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the user has entered a file name; <lang langref="false"/> otherwise.</returns>
     protected bool ValidateFomodFileName()
     {
       sspError.SetError(tbxFomodFileName, null);
@@ -356,8 +379,8 @@ namespace Fomm.PackageManager.FomodBuilder
     /// <summary>
     /// Ensures that the user has selected files to include in the FOMod.
     /// </summary>
-    /// <returns><lang cref="true"/> if the user has selected files to include in the FOMod;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the user has selected files to include in the FOMod;
+    /// <lang langref="false"/> otherwise.</returns>
     protected bool ValidateFomodFiles()
     {
       sspError.SetStatus(ffsFileStructure, null);
@@ -389,8 +412,8 @@ namespace Fomm.PackageManager.FomodBuilder
     /// <summary>
     /// Ensures that the user has entered a Premade FOMod Pack save path, if a PFP is being created.
     /// </summary>
-    /// <returns><lang cref="true"/> if the user has entered a path and a Premade FOMod Pack is being created;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the user has entered a path and a Premade FOMod Pack is being created;
+    /// <lang langref="false"/> otherwise.</returns>
     protected bool ValidatePFPSavePath()
     {
       sspError.SetError(cbxPFP, null);
@@ -426,27 +449,31 @@ namespace Fomm.PackageManager.FomodBuilder
     /// </summary>
     protected void UpdateDownloadLocationsList()
     {
-      IList<SourceFile> lstOldLocations = sdsDownloadLocations.DataSource;
-      List<SourceFile> lstLocations = new List<SourceFile>();
-      string[] strSources = ffsFileStructure.Sources;
-      bool booFound = false;
-      LinkedList<string> lklSourceFiles = new LinkedList<string>();
-      foreach (string strSource in strSources)
+      var lstOldLocations = sdsDownloadLocations.DataSource;
+      var lstLocations = new List<SourceFile>();
+      var strSources = ffsFileStructure.Sources;
+      var lklSourceFiles = new LinkedList<string>();
+      foreach (var strSource in strSources)
       {
         lklSourceFiles.Clear();
         if (Archive.IsArchive(strSource))
         {
-          string[] strVolumes = new Archive(strSource).VolumeFileNames;
-          foreach (string strVolumneName in strVolumes)
+          var strVolumes = new Archive(strSource).VolumeFileNames;
+          foreach (var strVolumneName in strVolumes)
+          {
             lklSourceFiles.AddLast(strVolumneName);
+          }
         }
         else
-          lklSourceFiles.AddLast(strSource);
-
-        foreach (string strSourceFile in lklSourceFiles)
         {
-          booFound = false;
-          for (Int32 i = lstOldLocations.Count - 1; i >= 0; i--)
+          lklSourceFiles.AddLast(strSource);
+        }
+
+        foreach (var strSourceFile in lklSourceFiles)
+        {
+          var booFound = false;
+          for (var i = lstOldLocations.Count - 1; i >= 0; i--)
+          {
             if (lstOldLocations[i].Source.Equals(strSourceFile))
             {
               lstLocations.Add(lstOldLocations[i]);
@@ -454,21 +481,32 @@ namespace Fomm.PackageManager.FomodBuilder
               booFound = true;
               break;
             }
+          }
           if (!booFound)
-            foreach (SourceFile sflLocation in lstLocations)
+          {
+            foreach (var sflLocation in lstLocations)
+            {
               if (sflLocation.Source.Equals(strSourceFile))
               {
                 booFound = true;
                 break;
               }
+            }
+          }
           if (!booFound)
+          {
             lstLocations.Add(new SourceFile(strSourceFile, null, false, !strSource.Equals(strSourceFile), false));
+          }
         }
       }
       //make sure all the hidden sources are in the download list
-      foreach (SourceFile sflOldSource in lstOldLocations)
+      foreach (var sflOldSource in lstOldLocations)
+      {
         if (sflOldSource.Hidden && !lstLocations.Contains(sflOldSource))
+        {
           lstLocations.Add(sflOldSource);
+        }
+      }
       sdsDownloadLocations.DataSource = lstLocations;
     }
 
@@ -489,7 +527,9 @@ namespace Fomm.PackageManager.FomodBuilder
     {
       m_rgdGenerator.Sources = ffsFileStructure.Sources;
       if (m_rgdGenerator.ShowDialog(this) == DialogResult.OK)
+      {
         redReadmeEditor.Readme = new Readme(m_rgdGenerator.Format, m_rgdGenerator.GeneratedReadme);
+      }
     }
 
     /// <summary>
@@ -501,41 +541,53 @@ namespace Fomm.PackageManager.FomodBuilder
       if (redReadmeEditor.Readme == null)
       {
         List<KeyValuePair<string, string>> lstReadmes = null;
-        foreach (string strExtension in Readme.ValidExtensions)
+        foreach (var strExtension in Readme.ValidExtensions)
         {
           lstReadmes = ffsFileStructure.FindFomodFiles("readme - " + tbxFomodFileName.Text + strExtension);
           if (lstReadmes.Count > 0)
+          {
             break;
+          }
         }
         if (lstReadmes.Count == 0)
-          foreach (string strExtension in Readme.ValidExtensions)
+        {
+          foreach (var strExtension in Readme.ValidExtensions)
           {
             lstReadmes = ffsFileStructure.FindFomodFiles("*readme*" + strExtension);
             if (lstReadmes.Count > 0)
+            {
               break;
+            }
           }
+        }
         if (lstReadmes.Count == 0)
-          foreach (string strExtension in Readme.ValidExtensions)
+        {
+          foreach (var strExtension in Readme.ValidExtensions)
           {
             lstReadmes = ffsFileStructure.FindFomodFiles("*" + strExtension);
             if (lstReadmes.Count > 0)
+            {
               break;
+            }
           }
+        }
 
         Readme rmeReadme = null;
-        foreach (KeyValuePair<string, string> kvpReadme in lstReadmes)
+        foreach (var kvpReadme in lstReadmes)
         {
           if (Readme.IsValidReadme(kvpReadme.Key))
           {
             string strReadme = null;
             if (kvpReadme.Value.StartsWith(Archive.ARCHIVE_PREFIX))
             {
-              KeyValuePair<string, string> kvpArchiveInfo = Archive.ParseArchivePath(kvpReadme.Value);
-              Archive arcArchive = new Archive(kvpArchiveInfo.Key);
+              var kvpArchiveInfo = Archive.ParseArchivePath(kvpReadme.Value);
+              var arcArchive = new Archive(kvpArchiveInfo.Key);
               strReadme = TextUtil.ByteToString(arcArchive.GetFileContents(kvpArchiveInfo.Value));
             }
             else if (File.Exists(kvpReadme.Value))
+            {
               strReadme = File.ReadAllText(kvpReadme.Value);
+            }
             rmeReadme = new Readme(kvpReadme.Key, strReadme);
             break;
           }
@@ -556,7 +608,9 @@ namespace Fomm.PackageManager.FomodBuilder
     private void cbxUseScript_CheckedChanged(object sender, EventArgs e)
     {
       if (cbxUseScript.Checked)
+      {
         SetScriptDefault();
+      }
     }
 
     /// <summary>
@@ -570,7 +624,7 @@ namespace Fomm.PackageManager.FomodBuilder
       {
         FomodScript fscInstallScript = null;
         string strScriptPath = null;
-        foreach (string strScriptName in FomodScript.ScriptNames)
+        foreach (var strScriptName in FomodScript.ScriptNames)
         {
           strScriptPath = Path.Combine("fomod", strScriptName);
           IList<KeyValuePair<string, string>> lstFiles = ffsFileStructure.FindFomodFiles(strScriptPath);
@@ -585,19 +639,23 @@ namespace Fomm.PackageManager.FomodBuilder
         if (fscInstallScript == null)
         {
           if (cbxUseScript.Checked)
+          {
             fscInstallScript = new FomodScript(FomodScriptType.CSharp, Program.GameMode.DefaultCSharpScript);
+          }
         }
         else
         {
           cbxUseScript.Checked = true;
           if (strScriptPath.StartsWith(Archive.ARCHIVE_PREFIX))
           {
-            KeyValuePair<string, string> kvpArchiveInfo = Archive.ParseArchivePath(strScriptPath);
-            Archive arcArchive = new Archive(kvpArchiveInfo.Key);
+            var kvpArchiveInfo = Archive.ParseArchivePath(strScriptPath);
+            var arcArchive = new Archive(kvpArchiveInfo.Key);
             fscInstallScript.Text = TextUtil.ByteToString(arcArchive.GetFileContents(kvpArchiveInfo.Value));
           }
           else if (File.Exists(strScriptPath))
+          {
             fscInstallScript.Text = File.ReadAllText(strScriptPath);
+          }
         }
 
         fseScriptEditor.Script = fscInstallScript;
@@ -618,41 +676,47 @@ namespace Fomm.PackageManager.FomodBuilder
       if (!m_booLoadedInfo)
       {
         m_booLoadedInfo = true;
-        string strInfoFileName = "fomod" + Path.DirectorySeparatorChar + "info.xml";
+        var strInfoFileName = "fomod" + Path.DirectorySeparatorChar + "info.xml";
         IList<KeyValuePair<string, string>> lstFiles = ffsFileStructure.FindFomodFiles(strInfoFileName);
         if (lstFiles.Count > 0)
         {
-          XmlDocument xmlInfo = new XmlDocument();
-          KeyValuePair<string, string> kvpScript = lstFiles[0];
+          var xmlInfo = new XmlDocument();
+          var kvpScript = lstFiles[0];
           if (kvpScript.Value.StartsWith(Archive.ARCHIVE_PREFIX))
           {
-            KeyValuePair<string, string> kvpArchiveInfo = Archive.ParseArchivePath(kvpScript.Value);
-            Archive arcArchive = new Archive(kvpArchiveInfo.Key);
-            string strInfo = TextUtil.ByteToString(arcArchive.GetFileContents(kvpArchiveInfo.Value));
+            var kvpArchiveInfo = Archive.ParseArchivePath(kvpScript.Value);
+            var arcArchive = new Archive(kvpArchiveInfo.Key);
+            var strInfo = TextUtil.ByteToString(arcArchive.GetFileContents(kvpArchiveInfo.Value));
             xmlInfo.LoadXml(strInfo);
           }
           else if (File.Exists(kvpScript.Value))
+          {
             xmlInfo.Load(kvpScript.Value);
+          }
 
           fomod.LoadInfo(xmlInfo, finInfo, false);
         }
         else if (String.IsNullOrEmpty(finInfo.ModName))
+        {
           finInfo.ModName = tbxFomodFileName.Text;
+        }
 
-        string strScreenshotFileName = "fomod" + Path.DirectorySeparatorChar + "screenshot.*";
+        var strScreenshotFileName = "fomod" + Path.DirectorySeparatorChar + "screenshot.*";
         IList<KeyValuePair<string, string>> lstScreenshotFiles = ffsFileStructure.FindFomodFiles(strScreenshotFileName);
         if (lstScreenshotFiles.Count > 0)
         {
-          KeyValuePair<string, string> kvpScreenshot = lstScreenshotFiles[0];
+          var kvpScreenshot = lstScreenshotFiles[0];
           if (kvpScreenshot.Value.StartsWith(Archive.ARCHIVE_PREFIX))
           {
-            KeyValuePair<string, string> kvpArchiveInfo = Archive.ParseArchivePath(kvpScreenshot.Value);
-            Archive arcArchive = new Archive(kvpArchiveInfo.Key);
-            byte[] bteScreenshot = arcArchive.GetFileContents(kvpArchiveInfo.Value);
+            var kvpArchiveInfo = Archive.ParseArchivePath(kvpScreenshot.Value);
+            var arcArchive = new Archive(kvpArchiveInfo.Key);
+            var bteScreenshot = arcArchive.GetFileContents(kvpArchiveInfo.Value);
             finInfo.Screenshot = new Screenshot(kvpArchiveInfo.Value, bteScreenshot);
           }
           else if (File.Exists(kvpScreenshot.Value))
+          {
             finInfo.Screenshot = new Screenshot(kvpScreenshot.Value, File.ReadAllBytes(kvpScreenshot.Value));
+          }
         }
       }
     }
@@ -672,14 +736,16 @@ namespace Fomm.PackageManager.FomodBuilder
     private void fseScriptEditor_GotXMLAutoCompleteList(object sender, RegeneratableAutoCompleteListEventArgs e)
     {
       if (!String.IsNullOrEmpty(e.ElementPath) &&
-        (Path.GetFileName(e.ElementPath).Equals("file") || Path.GetFileName(e.ElementPath).Equals("folder")) &&
-        (e.AutoCompleteType == AutoCompleteType.AttributeValues) &&
-        (e.Siblings[e.Siblings.Length - 1].Equals("source")))
+          (Path.GetFileName(e.ElementPath).Equals("file") || Path.GetFileName(e.ElementPath).Equals("folder")) &&
+          (e.AutoCompleteType == AutoCompleteType.AttributeValues) &&
+          (e.Siblings[e.Siblings.Length - 1].Equals("source")))
       {
-        string strPrefix = e.LastWord.EndsWith("=") ? "" : e.LastWord;
-        List<KeyValuePair<string, string>> lstFiles = ffsFileStructure.FindFomodFiles(strPrefix + "*");
-        foreach (KeyValuePair<string, string> kvpFile in lstFiles)
+        var strPrefix = e.LastWord.EndsWith("=") ? "" : e.LastWord;
+        var lstFiles = ffsFileStructure.FindFomodFiles(strPrefix + "*");
+        foreach (var kvpFile in lstFiles)
+        {
           e.AutoCompleteList.Add(new XmlCompletionData(AutoCompleteType.AttributeValues, kvpFile.Key, null));
+        }
         e.GenerateOnNextKey = true;
         e.ExtraInsertionCharacters.Add(Path.DirectorySeparatorChar);
       }
@@ -694,7 +760,9 @@ namespace Fomm.PackageManager.FomodBuilder
     {
       fbdPFPPath.SelectedPath = tbxPFPPath.Text;
       if (fbdPFPPath.ShowDialog(this) == DialogResult.OK)
+      {
         tbxPFPPath.Text = fbdPFPPath.SelectedPath;
+      }
     }
   }
 }

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Xml;
-using System.Xml.Schema;
-using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using System.IO;
@@ -55,9 +53,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
       #endregion
     }
 
-    private ModInstallScript m_misInstallScript = null;
-    private BackgroundWorkerProgressDialog m_bwdProgress = null;
-    private DependencyStateManager m_dsmStateManager = null;
+    private ModInstallScript m_misInstallScript;
+    private BackgroundWorkerProgressDialog m_bwdProgress;
+    private DependencyStateManager m_dsmStateManager;
 
     #region Constructors
 
@@ -77,15 +75,15 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// <summary>
     /// Displays the option form and starts the background worker to do the install.
     /// </summary>
-    /// <returns><lang cref="true"/> if the mod installed correctly; <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the mod installed correctly; <lang langref="false"/> otherwise.</returns>
     public bool Install()
     {
-      XmlDocument xmlConfig = new XmlDocument();
-      string strConfig = m_misInstallScript.Fomod.GetInstallScript().Text;
+      var xmlConfig = new XmlDocument();
+      var strConfig = m_misInstallScript.Fomod.GetInstallScript().Text;
       xmlConfig.LoadXml(strConfig);
 
       //remove comments so we don't have to deal with them later
-      XmlNodeList xnlComments = xmlConfig.SelectNodes("//comment()");
+      var xnlComments = xmlConfig.SelectNodes("//comment()");
       foreach (XmlNode xndComment in xnlComments)
       {
         xndComment.ParentNode.RemoveChild(xndComment);
@@ -93,17 +91,17 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
 
       m_dsmStateManager = Program.GameMode.CreateDependencyStateManager(m_misInstallScript);
 
-      Parser prsParser = Parser.GetParser(xmlConfig, m_misInstallScript.Fomod, m_dsmStateManager);
-      CompositeDependency cpdModDependencies = prsParser.GetModDependencies();
+      var prsParser = Parser.GetParser(xmlConfig, m_misInstallScript.Fomod, m_dsmStateManager);
+      var cpdModDependencies = prsParser.GetModDependencies();
       if ((cpdModDependencies != null) && !cpdModDependencies.IsFufilled)
       {
         throw new DependencyException(cpdModDependencies.Message);
       }
 
-      IList<InstallStep> lstSteps = prsParser.GetInstallSteps();
-      HeaderInfo hifHeaderInfo = prsParser.GetHeaderInfo();
-      OptionsForm ofmOptions = new OptionsForm(this, hifHeaderInfo, m_dsmStateManager, lstSteps);
-      bool booPerformInstall = false;
+      var lstSteps = prsParser.GetInstallSteps();
+      var hifHeaderInfo = prsParser.GetHeaderInfo();
+      var ofmOptions = new OptionsForm(this, hifHeaderInfo, m_dsmStateManager, lstSteps);
+      bool booPerformInstall;
       if (lstSteps.Count == 0)
       {
         booPerformInstall = true;
@@ -139,46 +137,62 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     protected void InstallFiles(object p_ifaArgs)
     {
       if (!(p_ifaArgs is InstallFilesArguments))
+      {
         throw new ArgumentException("The given argument obejct is not of type InstallFilesArguments.", "p_ifaArgs");
+      }
 
-      Parser prsParser = ((InstallFilesArguments)p_ifaArgs).Parser;
-      OptionsForm ofmOptions = ((InstallFilesArguments)p_ifaArgs).Form;
+      var prsParser = ((InstallFilesArguments) p_ifaArgs).Parser;
+      var ofmOptions = ((InstallFilesArguments) p_ifaArgs).Form;
 
-      IList<PluginFile> lstRequiredFiles = prsParser.GetRequiredInstallFiles();
-      List<PluginFile> lstInstallFiles = ofmOptions.FilesToInstall;
+      var lstRequiredFiles = prsParser.GetRequiredInstallFiles();
+      var lstInstallFiles = ofmOptions.FilesToInstall;
       m_bwdProgress.OverallProgressMaximum = lstRequiredFiles.Count + lstInstallFiles.Count;
 
-      foreach (PluginFile pflRequiredFile in lstRequiredFiles)
+      foreach (var pflRequiredFile in lstRequiredFiles)
       {
         if (m_bwdProgress.Cancelled())
+        {
           return;
+        }
         if (!InstallPluginFile(pflRequiredFile, true))
+        {
           return;
+        }
         m_bwdProgress.StepOverallProgress();
       }
 
-      List<PluginFile> lstActivateFiles = ofmOptions.PluginsToActivate;
-      foreach (PluginFile plfFile in lstInstallFiles)
+      var lstActivateFiles = ofmOptions.PluginsToActivate;
+      foreach (var plfFile in lstInstallFiles)
       {
         if (m_bwdProgress.Cancelled())
+        {
           return;
+        }
         if (!InstallPluginFile(plfFile, lstActivateFiles.Contains(plfFile)))
+        {
           return;
+        }
         m_bwdProgress.StepOverallProgress();
       }
 
-      IList<ConditionalFileInstallPattern> lstConditionInstallPatterns = prsParser.GetConditionalFileInstallPatterns();
-      foreach (ConditionalFileInstallPattern cipPattern in lstConditionInstallPatterns)
+      var lstConditionInstallPatterns = prsParser.GetConditionalFileInstallPatterns();
+      foreach (var cipPattern in lstConditionInstallPatterns)
       {
         if (cipPattern.Dependency.IsFufilled)
-          foreach (PluginFile plfFile in cipPattern.Files)
+        {
+          foreach (var plfFile in cipPattern.Files)
           {
             if (m_bwdProgress.Cancelled())
+            {
               return;
+            }
             if (!InstallPluginFile(plfFile, true))
+            {
               return;
+            }
             m_bwdProgress.StepOverallProgress();
           }
+        }
       }
     }
 
@@ -188,41 +202,47 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// </summary>
     /// <param name="plfFile">The file to install.</param>
     /// <param name="booActivate">Whether or not to activate any esp/esm files.</param>
-    /// <returns><lang cref="false"/> if the user cancelled the install;
-    /// <lang cref="true"/> otherwise.</returns>
+    /// <returns><lang langref="false"/> if the user cancelled the install;
+    /// <lang langref="true"/> otherwise.</returns>
     protected bool InstallPluginFile(PluginFile plfFile, bool booActivate)
     {
-      string strSource = plfFile.Source;
-      string strDest = plfFile.Destination;
+      var strSource = plfFile.Source;
+      var strDest = plfFile.Destination;
       m_bwdProgress.ItemMessage = "Installing " + (String.IsNullOrEmpty(strDest) ? strSource : strDest);
       if (plfFile.IsFolder)
       {
         CopyDataFolder(strSource, strDest);
 
         if (m_bwdProgress.Cancelled())
+        {
           return false;
+        }
 
         //if the destination length is greater than 0, then nothing in
         // this folder is directly in the Data folder as so cannot be
         // activated
         if (strDest.Length == 0)
         {
-          List<string> lstFiles = GetFomodFolderFileList(strSource);
+          var lstFiles = GetFomodFolderFileList(strSource);
           m_bwdProgress.ItemMessage = "Activating " + (String.IsNullOrEmpty(strDest) ? strSource : strDest);
           m_bwdProgress.ItemProgress = 0;
           m_bwdProgress.ItemProgressMaximum = lstFiles.Count;
 
           if (!strSource.EndsWith("/"))
+          {
             strSource += "/";
-          foreach (string strFile in lstFiles)
+          }
+          foreach (var strFile in lstFiles)
           {
             if (strFile.ToLowerInvariant().EndsWith(".esm") || strFile.ToLowerInvariant().EndsWith(".esp"))
             {
-              string strNewFileName = strFile.Substring(strSource.Length, strFile.Length - strSource.Length);
+              var strNewFileName = strFile.Substring(strSource.Length, strFile.Length - strSource.Length);
               m_misInstallScript.SetPluginActivation(strNewFileName, booActivate);
             }
             if (m_bwdProgress.Cancelled())
+            {
               return false;
+            }
             m_bwdProgress.StepItemProgress();
           }
         }
@@ -239,10 +259,14 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
         if (String.IsNullOrEmpty(strDest))
         {
           if (strSource.ToLowerInvariant().EndsWith(".esm") || strSource.ToLowerInvariant().EndsWith(".esp"))
+          {
             m_misInstallScript.SetPluginActivation(strSource, booActivate);
+          }
         }
         else if (strDest.ToLowerInvariant().EndsWith(".esm") || strDest.ToLowerInvariant().EndsWith(".esp"))
+        {
           m_misInstallScript.SetPluginActivation(strDest, booActivate);
+        }
 
         m_bwdProgress.StepItemProgress();
       }
@@ -260,25 +284,29 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// <param name="p_strTo">The destination for the copied files.</param>
     protected void CopyDataFolder(string p_strFrom, string p_strTo)
     {
-      List<string> lstFOMODFiles = GetFomodFolderFileList(p_strFrom);
+      var lstFOMODFiles = GetFomodFolderFileList(p_strFrom);
       m_bwdProgress.ItemProgress = 0;
       m_bwdProgress.ItemProgressMaximum = lstFOMODFiles.Count;
 
-      String strFrom = p_strFrom.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).ToLowerInvariant();
+      var strFrom = p_strFrom.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).ToLowerInvariant();
       if (!strFrom.EndsWith(Path.DirectorySeparatorChar.ToString()))
+      {
         strFrom += Path.DirectorySeparatorChar;
-      String strTo = p_strTo.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+      }
+      var strTo = p_strTo.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
       if ((strTo.Length > 0) && (!strTo.EndsWith(Path.DirectorySeparatorChar.ToString())))
+      {
         strTo += Path.DirectorySeparatorChar;
-      String strFOMODFile = null;
-      for (Int32 i = 0; i < lstFOMODFiles.Count; i++)
+      }
+      foreach (var file in lstFOMODFiles)
       {
         if (m_bwdProgress.Cancelled())
+        {
           return;
+        }
 
-        strFOMODFile = lstFOMODFiles[i];
-        string strNewFileName = strFOMODFile.Substring(strFrom.Length, strFOMODFile.Length - strFrom.Length);
-        m_misInstallScript.CopyDataFile(strFOMODFile, Path.Combine(strTo, strNewFileName));
+        var strNewFileName = file.Substring(strFrom.Length, file.Length - strFrom.Length);
+        m_misInstallScript.CopyDataFile(file, Path.Combine(strTo, strNewFileName));
 
         m_bwdProgress.StepItemProgress();
       }
@@ -294,17 +322,24 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
       if (m_strFomodFiles == null)
       {
         m_strFomodFiles = m_misInstallScript.Fomod.GetFileList().ToArray();
-        for (Int32 i = m_strFomodFiles.Length - 1; i >= 0; i--)
+        for (var i = m_strFomodFiles.Length - 1; i >= 0; i--)
+        {
           m_strFomodFiles[i] = m_strFomodFiles[i].Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+        }
       }
-      String strPath = p_strPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).ToLowerInvariant();
-      List<string> lstFiles = new List<string>();
-      foreach (string strFile in m_strFomodFiles)
+      var strPath = p_strPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).ToLowerInvariant();
+      var lstFiles = new List<string>();
+      foreach (var strFile in m_strFomodFiles)
+      {
         if (strFile.ToLowerInvariant().StartsWith(strPath))
+        {
           lstFiles.Add(strFile);
+        }
+      }
       return lstFiles;
     }
-    string[] m_strFomodFiles = null;
+
+    private string[] m_strFomodFiles;
 
     #endregion
   }

@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Text;
 using System.Windows.Forms;
+using Fomm.PackageManager;
 
 namespace Fomm.Controls
 {
@@ -48,11 +44,11 @@ namespace Fomm.Controls
     /// <summary>
     /// Validates the syntax of the script.
     /// </summary>
-    /// <returns><lang cref="true"/> if the script syntax is valid; <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the script syntax is valid; <lang langref="false"/> otherwise.</returns>
     public bool ValidateSyntax()
     {
       string stdout;
-      string errors = Fomm.PackageManager.ScriptCompiler.CheckSyntax(cedEditor.Text, out stdout);
+      var errors = ScriptCompiler.CheckSyntax(cedEditor.Text, out stdout);
       return (errors == null);
     }
 
@@ -62,7 +58,7 @@ namespace Fomm.Controls
     protected void CheckSyntax()
     {
       string stdout;
-      string errors = Fomm.PackageManager.ScriptCompiler.CheckSyntax(cedEditor.Text, out stdout);
+      var errors = ScriptCompiler.CheckSyntax(cedEditor.Text, out stdout);
       if (errors != null)
       {
         MessageBox.Show(errors);

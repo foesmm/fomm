@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Fomm.PackageManager.XmlConfiguredInstall
 {
@@ -9,8 +7,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
   /// </summary>
   public class GameVersionDependency : IDependency
   {
-    private DependencyStateManager m_dsmStateManager = null;
-    private Version m_verMinVersion = null;
+    private DependencyStateManager m_dsmStateManager;
+    private Version m_verMinVersion;
 
     #region IDependency Members
 
@@ -27,7 +25,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     {
       get
       {
-        Version verInstalledVersion = m_dsmStateManager.GameVersion;
+        var verInstalledVersion = m_dsmStateManager.GameVersion;
         return ((verInstalledVersion != null) && (verInstalledVersion >= m_verMinVersion));
       }
     }
@@ -45,10 +43,12 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     {
       get
       {
-
-        Version verInstalledVersion = m_dsmStateManager.GameVersion;
+        var verInstalledVersion = m_dsmStateManager.GameVersion;
         if (verInstalledVersion < m_verMinVersion)
-          return String.Format("This mod requires v{0} or higher of the game. You have {1}. Please update your game.", m_verMinVersion, verInstalledVersion);
+        {
+          return String.Format("This mod requires v{0} or higher of the game. You have {1}. Please update your game.",
+                               m_verMinVersion, verInstalledVersion);
+        }
         return "Passed";
       }
     }

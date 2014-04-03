@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using Fomm.Games.Fallout3.Tools.TESsnip;
 using System.IO;
@@ -77,17 +78,25 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     /// </summary>
     protected void loadCriticalData()
     {
-      SubRecord srcCriticalData = getCriticalRecordData();
-      string strCriticalData = srcCriticalData.GetStrData().Trim().Replace("\r\n", "\n").Replace("\n\r", "\n");
-      string[] strCriticalRecords = strCriticalData.Split(new char[] {'\n'}, StringSplitOptions.RemoveEmptyEntries);
-      UInt32 uintFormId = 0;
-      CriticalRecordInfo criInfo = null;
-      foreach (string strCriticalRecord in strCriticalRecords)
+      var srcCriticalData = getCriticalRecordData();
+      var strCriticalData = srcCriticalData.GetStrData().Trim().Replace("\r\n", "\n").Replace("\n\r", "\n");
+      var strCriticalRecords = strCriticalData.Split(new[]
       {
-        if (!UInt32.TryParse(strCriticalRecord.Substring(0, 8), System.Globalization.NumberStyles.HexNumber, null, out uintFormId))
+        '\n'
+      }, StringSplitOptions.RemoveEmptyEntries);
+      foreach (var strCriticalRecord in strCriticalRecords)
+      {
+        UInt32 uintFormId;
+        if (
+          !UInt32.TryParse(strCriticalRecord.Substring(0, 8), NumberStyles.HexNumber, null,
+                           out uintFormId))
+        {
           continue;
-        criInfo = new CriticalRecordInfo();
-        criInfo.Severity = (CriticalRecordInfo.ConflictSeverity)Int32.Parse(strCriticalRecord[9].ToString(), System.Globalization.NumberStyles.HexNumber);
+        }
+        var criInfo = new CriticalRecordInfo();
+        criInfo.Severity =
+          (CriticalRecordInfo.ConflictSeverity)
+            Int32.Parse(strCriticalRecord[9].ToString(), NumberStyles.HexNumber);
         criInfo.Reason = strCriticalRecord.Substring(11);
         m_dicCriticalRecords[uintFormId] = criInfo;
       }
@@ -105,22 +114,26 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
       GroupRecord grcGroup = null;
       Record recCriticalRecords = null;
       SubRecord srcCriticalData = null;
-      foreach (Rec rec in Records)
+      foreach (var rec in Records)
       {
         grcGroup = rec as GroupRecord;
         if (grcGroup == null)
+        {
           continue;
+        }
         if (grcGroup.ContentsType == "MESG")
         {
           foreach (Record recRecord in grcGroup.Records)
           {
-            foreach (SubRecord srcSubRecord in recRecord.SubRecords)
+            foreach (var srcSubRecord in recRecord.SubRecords)
             {
               switch (srcSubRecord.Name)
               {
                 case "EDID":
                   if (srcSubRecord.GetStrData().Equals(CRITICAL_DATA_RECORD_EDID))
+                  {
                     recCriticalRecords = recRecord;
+                  }
                   break;
                 case "DESC":
                   srcCriticalData = srcSubRecord;
@@ -128,7 +141,9 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
               }
             }
             if (recCriticalRecords != null)
+            {
               return srcCriticalData;
+            }
           }
         }
       }
@@ -139,47 +154,58 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
         grcGroup = new GroupRecord("MESG");
         AddRecord(grcGroup);
       }
-      //if there is no fommCriticalRecords record, create one
-      if (recCriticalRecords == null)
+
+      //if there is no fommCriticalRecords record, create one, we returned otherwise.
+      recCriticalRecords = new Record();
+      recCriticalRecords.Name = "MESG";
+      var uintMastersCount = (UInt32) Masters.Count << 24;
+      var uintFormId = uintMastersCount + 1;
+      while (ContainsFormId(uintFormId))
       {
-        recCriticalRecords = new Record();
-        recCriticalRecords.Name = "MESG";
-        UInt32 uintMastersCount = (UInt32)Masters.Count << 24;
-        UInt32 uintFormId = uintMastersCount + 1;
-        while (ContainsFormId(uintFormId))
-          uintFormId++;
-        if ((uintFormId & 0xff000000) != uintMastersCount)
-          throw new PluginFullException("No available Form Id for new MESG record");
-        recCriticalRecords.FormID = uintFormId;
-        recCriticalRecords.Flags2 = 0x00044210;
-        recCriticalRecords.Flags3 = 0x0002000f;
-
-        SubRecord srcSub = new SubRecord();
-        srcSub.Name = "EDID";
-        srcSub.SetStrData(CRITICAL_DATA_RECORD_EDID, true);
-        recCriticalRecords.SubRecords.Add(srcSub);
-
-        srcCriticalData = new SubRecord();
-        srcCriticalData.Name = "DESC";
-        recCriticalRecords.SubRecords.Add(srcCriticalData);
-
-        srcSub = new SubRecord();
-        srcSub.Name = "INAM";
-        srcSub.SetData(new byte[] { 0, 0, 0, 0 });
-        recCriticalRecords.SubRecords.Add(srcSub);
-
-        srcSub = new SubRecord();
-        srcSub.Name = "DNAM";
-        srcSub.SetData(new byte[] { 0, 0, 0, 0 });
-        recCriticalRecords.SubRecords.Add(srcSub);
-
-        srcSub = new SubRecord();
-        srcSub.Name = "TNAM";
-        srcSub.SetData(new byte[] { 0, 0, 0, 1 });
-        recCriticalRecords.SubRecords.Add(srcSub);
-
-        grcGroup.AddRecord(recCriticalRecords);
+        uintFormId++;
       }
+      if ((uintFormId & 0xff000000) != uintMastersCount)
+      {
+        throw new PluginFullException("No available Form Id for new MESG record");
+      }
+      recCriticalRecords.FormID = uintFormId;
+      recCriticalRecords.Flags2 = 0x00044210;
+      recCriticalRecords.Flags3 = 0x0002000f;
+
+      var srcSub = new SubRecord();
+      srcSub.Name = "EDID";
+      srcSub.SetStrData(CRITICAL_DATA_RECORD_EDID, true);
+      recCriticalRecords.SubRecords.Add(srcSub);
+
+      srcCriticalData = new SubRecord();
+      srcCriticalData.Name = "DESC";
+      recCriticalRecords.SubRecords.Add(srcCriticalData);
+
+      srcSub = new SubRecord();
+      srcSub.Name = "INAM";
+      srcSub.SetData(new byte[]
+      {
+        0, 0, 0, 0
+      });
+      recCriticalRecords.SubRecords.Add(srcSub);
+
+      srcSub = new SubRecord();
+      srcSub.Name = "DNAM";
+      srcSub.SetData(new byte[]
+      {
+        0, 0, 0, 0
+      });
+      recCriticalRecords.SubRecords.Add(srcSub);
+
+      srcSub = new SubRecord();
+      srcSub.Name = "TNAM";
+      srcSub.SetData(new byte[]
+      {
+        0, 0, 0, 1
+      });
+      recCriticalRecords.SubRecords.Add(srcSub);
+
+      grcGroup.AddRecord(recCriticalRecords);
 
       return srcCriticalData;
     }
@@ -190,10 +216,12 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     /// <param name="bw">The writer to which to write the plugin data.</param>
     internal override void SaveData(BinaryWriter bw)
     {
-      StringBuilder stbCriticalData = new StringBuilder();
-      foreach (KeyValuePair<UInt32, CriticalRecordInfo> kvpCriticalRecords in m_dicCriticalRecords)
+      var stbCriticalData = new StringBuilder();
+      foreach (var kvpCriticalRecords in m_dicCriticalRecords)
+      {
         stbCriticalData.AppendFormat("{0:x8} {1}", kvpCriticalRecords.Key, kvpCriticalRecords.Value).AppendLine();
-      SubRecord srcCriticalData = getCriticalRecordData();
+      }
+      var srcCriticalData = getCriticalRecordData();
       srcCriticalData.SetStrData(stbCriticalData.ToString(), true);
 
       base.SaveData(bw);
@@ -204,8 +232,8 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     /// </summary>
     /// <param name="p_uintFormId">The record for which it is to be determined whether it is
     /// critical.</param>
-    /// <returns><lang cref="true"/> if the specified record is critical;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the specified record is critical;
+    /// <lang langref="false"/> otherwise.</returns>
     internal bool IsRecordCritical(UInt32 p_uintFormId)
     {
       return m_dicCriticalRecords.ContainsKey(p_uintFormId);
@@ -223,7 +251,9 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     public CriticalRecordInfo GetCriticalRecordInfo(UInt32 p_uintFormId)
     {
       if (!IsRecordCritical(p_uintFormId))
+      {
         return null;
+      }
       return m_dicCriticalRecords[p_uintFormId];
     }
 
@@ -233,7 +263,8 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     /// <param name="p_uintFormId">The form id that is being marked as critical.</param>
     /// <param name="p_csvSeverity">The severity of the conflict.</param>
     /// <param name="p_strReason">The reason the record is being marked as critical.</param>
-    public void SetCriticalRecord(UInt32 p_uintFormId, CriticalRecordInfo.ConflictSeverity p_csvSeverity, string p_strReason)
+    public void SetCriticalRecord(UInt32 p_uintFormId, CriticalRecordInfo.ConflictSeverity p_csvSeverity,
+                                  string p_strReason)
     {
       m_dicCriticalRecords[p_uintFormId] = new CriticalRecordInfo(p_csvSeverity, p_strReason);
     }

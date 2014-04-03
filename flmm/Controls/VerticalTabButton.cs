@@ -7,11 +7,9 @@ namespace Fomm.Controls
   /// The <see cref="PanelToolStripItem"/> wrapper for the control
   /// used as tabs for the <see cref="VerticalTabControl"/>.
   /// </summary>
-  /// <see cref="<see cref="PanelToolStripItem"/>"/>
+  /// <see langref="<see cref="PanelToolStripItem"/>"/>
   public class VerticalTabButton : PanelToolStripItem
   {
-    private VerticalTabPage m_tpgPage = null;
-
     #region Properties
 
     /// <summary>
@@ -22,7 +20,7 @@ namespace Fomm.Controls
     {
       get
       {
-        return (StatusButton)Button;
+        return (StatusButton) Button;
       }
     }
 
@@ -30,13 +28,7 @@ namespace Fomm.Controls
     /// Gets the <see cref="VerticalTabPage"/> associated with this tab.
     /// </summary>
     /// <value>The <see cref="VerticalTabPage"/> associated with this tab.</value>
-    public VerticalTabPage TabPage
-    {
-      get
-      {
-        return m_tpgPage;
-      }
-    }
+    public VerticalTabPage TabPage { get; private set; }
 
     /// <summary>
     /// Gets or sets the text of the tab.
@@ -65,10 +57,10 @@ namespace Fomm.Controls
     internal VerticalTabButton(VerticalTabPage p_tpgPage)
       : base(new StatusButton(), "Click", -1, ToolStripItemDisplayStyle.Text)
     {
-      m_tpgPage = p_tpgPage;
+      TabPage = p_tpgPage;
       StatusButton.Button.FlatStyle = FlatStyle.Flat;
       StatusButton.Button.FlatAppearance.BorderSize = 0;
-      m_tpgPage.BackColorChanged += new EventHandler(m_tpgPage_BackColorChanged);
+      TabPage.BackColorChanged += m_tpgPage_BackColorChanged;
     }
 
     #endregion
@@ -79,7 +71,9 @@ namespace Fomm.Controls
     public override void SetUnselected()
     {
       if (TabPage.Parent != null)
+      {
         StatusButton.BackColor = TabPage.Parent.BackColor;
+      }
     }
 
     /// <summary>
@@ -101,10 +95,12 @@ namespace Fomm.Controls
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
     /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
-    void m_tpgPage_BackColorChanged(object sender, EventArgs e)
+    private void m_tpgPage_BackColorChanged(object sender, EventArgs e)
     {
-      if ((TabPage.Parent != null) && (((VerticalTabControl)TabPage.Parent).SelectedTabPage == TabPage))
+      if ((TabPage.Parent != null) && (((VerticalTabControl) TabPage.Parent).SelectedTabPage == TabPage))
+      {
         StatusButton.BackColor = TabPage.BackColor;
+      }
     }
   }
 }

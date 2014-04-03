@@ -2,7 +2,6 @@
 using System.Windows.Forms;
 using System.IO;
 using System.Xml.Schema;
-using Fomm.PackageManager.XmlConfiguredInstall;
 using System.Text.RegularExpressions;
 using Fomm.Controls;
 using Fomm.PackageManager.XmlConfiguredInstall.Parsers;
@@ -30,7 +29,7 @@ namespace Fomm.PackageManager.Controls
     {
       get
       {
-        FomodScript fscScript = new FomodScript(FomodScriptType.CSharp, null);
+        var fscScript = new FomodScript(FomodScriptType.CSharp, null);
         if (ddtScript.SelectedTabPage == dtpCSharp)
         {
           fscScript.Type = FomodScriptType.CSharp;
@@ -41,9 +40,9 @@ namespace Fomm.PackageManager.Controls
           if (!String.IsNullOrEmpty(xedScript.Text))
           {
             fscScript.Type = FomodScriptType.XMLConfig;
-            string strHeader = "<?xml version=\"1.0\" encoding=\"UTF-16\" ?>" + Environment.NewLine +
-                      "<config xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"http://qconsulting.ca/fo3/ModConfig{0}.xsd\">";
-            strHeader = String.Format(strHeader, cbxVersion.SelectedItem.ToString());
+            var strHeader = "<?xml version=\"1.0\" encoding=\"UTF-16\" ?>" + Environment.NewLine +
+                               "<config xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"http://qconsulting.ca/fo3/ModConfig{0}.xsd\">";
+            strHeader = String.Format(strHeader, cbxVersion.SelectedItem);
             fscScript.Text = xedScript.Text.Replace("<config>", strHeader);
           }
         }
@@ -83,7 +82,7 @@ namespace Fomm.PackageManager.Controls
                   sedScript.Text = null;
                   return;
               }
-              Regex rgxXMLConfigCleanup = new Regex(@"<\?xml[^>]+\?>.*?<config[^>]*>", RegexOptions.Singleline);
+              var rgxXMLConfigCleanup = new Regex(@"<\?xml[^>]+\?>.*?<config[^>]*>", RegexOptions.Singleline);
               ddtScript.SelectedTabPage = dtpXML;
               xedScript.Text = rgxXMLConfigCleanup.Replace(value.Text, "<config>");
               break;
@@ -107,8 +106,10 @@ namespace Fomm.PackageManager.Controls
       get
       {
         if (((ddtScript.SelectedTabPage == dtpCSharp) && !sedScript.ValidateSyntax()) ||
-          ((ddtScript.SelectedTabPage == dtpXML) && !xedScript.ValidateXml()))
+            ((ddtScript.SelectedTabPage == dtpXML) && !xedScript.ValidateXml()))
+        {
           return false;
+        }
         return true;
       }
     }
@@ -156,15 +157,18 @@ namespace Fomm.PackageManager.Controls
     {
       if (Program.GameMode != null)
       {
-        string strSchemaPath = Program.GameMode.GetXMLConfigSchemaPath(cbxVersion.SelectedItem.ToString());
+        var strSchemaPath = Program.GameMode.GetXMLConfigSchemaPath(cbxVersion.SelectedItem.ToString());
         if (File.Exists(strSchemaPath))
         {
-          XmlReaderSettings xrsSettings = new XmlReaderSettings();
+          var xrsSettings = new XmlReaderSettings();
           xrsSettings.IgnoreComments = true;
           xrsSettings.IgnoreWhitespace = true;
-          using (XmlReader xrdSchemaReader = XmlReader.Create(strSchemaPath, xrsSettings))
+          using (var xrdSchemaReader = XmlReader.Create(strSchemaPath, xrsSettings))
           {
-            xedScript.Schema = XmlSchema.Read(xrdSchemaReader, delegate(object sender, ValidationEventArgs e) { throw e.Exception; });
+            xedScript.Schema = XmlSchema.Read(xrdSchemaReader, delegate(object sender, ValidationEventArgs e)
+            {
+              throw e.Exception;
+            });
           }
         }
       }
@@ -182,7 +186,9 @@ namespace Fomm.PackageManager.Controls
     private void xedScript_GotAutoCompleteList(object sender, RegeneratableAutoCompleteListEventArgs e)
     {
       if (GotXMLAutoCompleteList != null)
+      {
         GotXMLAutoCompleteList(this, e);
+      }
     }
   }
 }

@@ -28,7 +28,7 @@ namespace Fomm.Controls
     /// <returns>The type of the item in the collection being edited.</returns>
     protected override Type CreateCollectionItemType()
     {
-      return typeof(DropDownTabPage);
+      return typeof (DropDownTabPage);
     }
 
     /// <summary>
@@ -39,9 +39,12 @@ namespace Fomm.Controls
     /// <returns>The resulting colletion with the new items.</returns>
     protected override object SetItems(object p_objTabPages, object[] p_objValues)
     {
-      DropDownTabControl.TabPageCollection tpcPages = (DropDownTabControl.TabPageCollection)base.SetItems(p_objTabPages, p_objValues);
-      for (Int32 i = 0; i < tpcPages.Count; i++)
+      var tpcPages =
+        (DropDownTabControl.TabPageCollection) base.SetItems(p_objTabPages, p_objValues);
+      for (var i = 0; i < tpcPages.Count; i++)
+      {
         tpcPages[i].PageIndex = i;
+      }
       return tpcPages;
     }
 
@@ -56,10 +59,12 @@ namespace Fomm.Controls
     /// <returns>A new object of the given type.</returns>
     protected override object CreateInstance(Type p_tpeItemType)
     {
-      object objNew = base.CreateInstance(p_tpeItemType);
-      DropDownTabPage dtpPage = objNew as DropDownTabPage;
+      var objNew = base.CreateInstance(p_tpeItemType);
+      var dtpPage = objNew as DropDownTabPage;
       if (dtpPage != null)
+      {
         dtpPage.Text = dtpPage.Name;
+      }
       return objNew;
     }
   }

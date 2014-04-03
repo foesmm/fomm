@@ -1,27 +1,34 @@
 using System;
-using System.IO;
 using System.Collections;
+using System.IO;
 
-namespace Be.Windows.Forms
+namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 {
   /// <summary>
   /// Byte provider for (big) files.
   /// </summary>
-  class FileByteProvider : IByteProvider, IDisposable
+  internal class FileByteProvider : IByteProvider, IDisposable
   {
     #region WriteCollection class
+
     /// <summary>
     /// Represents the write buffer class
     /// </summary>
-    class WriteCollection : DictionaryBase
+    private class WriteCollection : DictionaryBase
     {
       /// <summary>
       /// Gets or sets a byte in the collection
       /// </summary>
       public byte this[long index]
       {
-        get { return (byte)this.Dictionary[index]; }
-        set { Dictionary[index] = value; }
+        get
+        {
+          return (byte) Dictionary[index];
+        }
+        set
+        {
+          Dictionary[index] = value;
+        }
       }
 
       /// <summary>
@@ -30,7 +37,9 @@ namespace Be.Windows.Forms
       /// <param name="index">the index of the byte</param>
       /// <param name="value">the value of the byte</param>
       public void Add(long index, byte value)
-      { Dictionary.Add(index, value); }
+      {
+        Dictionary.Add(index, value);
+      }
 
       /// <summary>
       /// Determines if a byte with the given index exists.
@@ -38,9 +47,11 @@ namespace Be.Windows.Forms
       /// <param name="index">the index of the byte</param>
       /// <returns>true, if the is in the collection</returns>
       public bool Contains(long index)
-      { return Dictionary.Contains(index); }
-
+      {
+        return Dictionary.Contains(index);
+      }
     }
+
     #endregion
 
     /// <summary>
@@ -51,12 +62,12 @@ namespace Be.Windows.Forms
     /// <summary>
     /// Contains all changes
     /// </summary>
-    WriteCollection _writes = new WriteCollection();
+    private WriteCollection _writes = new WriteCollection();
 
     /// <summary>
     /// Contains the file stream.
     /// </summary>
-    FileStream _fileStream;
+    private FileStream _fileStream;
 
     /// <summary>
     /// Terminates the instance of the FileByteProvider class.
@@ -70,10 +81,12 @@ namespace Be.Windows.Forms
     /// Raises the Changed event.
     /// </summary>
     /// <remarks>Never used.</remarks>
-    void OnChanged(EventArgs e)
+    private void OnChanged(EventArgs e)
     {
-      if(Changed != null)
+      if (Changed != null)
+      {
         Changed(this, e);
+      }
     }
 
     /// <summary>
@@ -81,8 +94,8 @@ namespace Be.Windows.Forms
     /// </summary>
     /// <returns>true, if there are some changes</returns>
     public bool HasChanges()
-    { 
-      return (_writes.Count > 0); 
+    {
+      return (_writes.Count > 0);
     }
 
     /// <summary>
@@ -90,22 +103,27 @@ namespace Be.Windows.Forms
     /// </summary>
     public void ApplyChanges()
     {
-      if(!HasChanges())
-        return;
-
-      IDictionaryEnumerator en = _writes.GetEnumerator();
-      while(en.MoveNext())
+      if (!HasChanges())
       {
-        long index = (long)en.Key;
-        byte value = (byte)en.Value;
-        if(_fileStream.Position != index)
-          _fileStream.Position = index;
-        _fileStream.Write(new byte[]{value}, 0, 1);
+        return;
+      }
+
+      var en = _writes.GetEnumerator();
+      while (en.MoveNext())
+      {
+        var index = (long) en.Key;
+        var value = (byte) en.Value;
+        _fileStream.Position = index;
+        _fileStream.Write(new[]
+        {
+          value
+        }, 0, 1);
       }
       _writes.Clear();
     }
 
     #region IByteProvider Members
+
     /// <summary>
     /// Never used.
     /// </summary>
@@ -120,13 +138,14 @@ namespace Be.Windows.Forms
     /// <returns>the byte</returns>
     public byte ReadByte(long index)
     {
-      if(_writes.Contains(index))
+      if (_writes.Contains(index))
+      {
         return _writes[index];
+      }
 
-      if(_fileStream.Position != index)
-        _fileStream.Position = index;
+      _fileStream.Position = index;
 
-      byte res = (byte)_fileStream.ReadByte();
+      var res = (byte) _fileStream.ReadByte();
       return res;
     }
 
@@ -146,10 +165,14 @@ namespace Be.Windows.Forms
     /// </summary>
     public void WriteByte(long index, byte value)
     {
-      if(_writes.Contains(index))
+      if (_writes.Contains(index))
+      {
         _writes[index] = value;
+      }
       else
+      {
         _writes.Add(index, value);
+      }
 
       OnChanged(EventArgs.Empty);
     }
@@ -166,7 +189,7 @@ namespace Be.Windows.Forms
     /// Not supported
     /// </summary>
     public void InsertBytes(long index, byte[] bs)
-    {  
+    {
       throw new NotSupportedException("FileByteProvider.InsertBytes");
     }
 
@@ -193,15 +216,17 @@ namespace Be.Windows.Forms
     {
       return false;
     }
+
     #endregion
 
     #region IDisposable Members
+
     /// <summary>
     /// Releases the file handle used by the FileByteProvider.
     /// </summary>
     public void Dispose()
     {
-      if(_fileStream != null)
+      if (_fileStream != null)
       {
         _fileStream.Close();
         _fileStream = null;
@@ -209,6 +234,7 @@ namespace Be.Windows.Forms
 
       GC.SuppressFinalize(this);
     }
+
     #endregion
   }
 }

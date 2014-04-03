@@ -32,16 +32,19 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
     /// <returns>The current verison of the BOSS Fallout 3 Masterlist.</returns>
     public Int32 GetMasterlistVersion()
     {
-      string strVersionPage = null;
-      using (WebClient wclGetter = new WebClient())
+      string strVersionPage;
+      using (var wclGetter = new WebClient())
       {
-        string strMasterListUrl = MasterListURL;
-        Int32 intLastDividerPos = strMasterListUrl.LastIndexOfAny(new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar });
-        string strVersionUrl = strMasterListUrl.Substring(0, intLastDividerPos);
+        var strMasterListUrl = MasterListURL;
+        var intLastDividerPos = strMasterListUrl.LastIndexOfAny(new[]
+        {
+          Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar
+        });
+        var strVersionUrl = strMasterListUrl.Substring(0, intLastDividerPos);
         strVersionPage = wclGetter.DownloadString(strVersionUrl);
       }
 
-      string strWebVersion = m_rgxVersion.Match(strVersionPage).Groups[1].Value.Trim();
+      var strWebVersion = m_rgxVersion.Match(strVersionPage).Groups[1].Value.Trim();
       return Int32.Parse(strWebVersion);
     }
 
@@ -50,13 +53,13 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
     /// </summary>
     public void UpdateMasterlist(string p_strPath)
     {
-      string strMasterlist = null;
-      using (WebClient wclGetter = new WebClient())
+      string strMasterlist;
+      using (var wclGetter = new WebClient())
       {
         //the substring is to remove the 3byte EFBBBF Byte Order Mark (BOM)
         strMasterlist = TextUtil.ByteToString(wclGetter.DownloadData(MasterListURL));
       }
-      File.WriteAllText(p_strPath, GetMasterlistVersion().ToString() + Environment.NewLine + strMasterlist);
+      File.WriteAllText(p_strPath, GetMasterlistVersion() + Environment.NewLine + strMasterlist);
     }
   }
 }

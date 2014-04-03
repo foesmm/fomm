@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Fomm.PackageManager.XmlConfiguredInstall
 {
@@ -10,34 +8,19 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
   /// </summary>
   public class ConditionalFileInstallPattern
   {
-    private IList<PluginFile> m_lstFiles = null;
-    private CompositeDependency m_cdpDependency = null;
-
     #region Properties
 
     /// <summary>
     /// Gets the dependency that must by fufilled for this pattern's files to be installed.
     /// </summary>
     /// <value>The dependency that must by fufilled for this pattern's files to be installed.</value>
-    public CompositeDependency Dependency
-    {
-      get
-      {
-        return m_cdpDependency;
-      }
-    }
+    public CompositeDependency Dependency { get; private set; }
 
     /// <summary>
     /// Gets the list of files that are to be installed if the pattern's dependency is fufilled.
     /// </summary>
     /// <value>The list of files that are to be installed if the pattern's dependency is fufilled.</value>
-    public IList<PluginFile> Files
-    {
-      get
-      {
-        return m_lstFiles;
-      }
-    }
+    public IList<PluginFile> Files { get; private set; }
 
     #endregion
 
@@ -50,8 +33,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     /// <param name="p_lstFiles">The files that are to be installed if the given dependency is fufilled.</param>
     public ConditionalFileInstallPattern(CompositeDependency p_cdpDependency, IList<PluginFile> p_lstFiles)
     {
-      m_cdpDependency = p_cdpDependency;
-      m_lstFiles = p_lstFiles;
+      Dependency = p_cdpDependency;
+      Files = p_lstFiles;
     }
 
     #endregion

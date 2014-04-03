@@ -1,7 +1,4 @@
-﻿using System;
-using ChinhDo.Transactions;
-using System.Xml;
-using Fomm.PackageManager;
+﻿using ChinhDo.Transactions;
 using fomm.Transactions;
 using System.Windows.Forms;
 using Fomm.PackageManager.ModInstallLog;
@@ -17,10 +14,6 @@ namespace Fomm.InstallLogUpgraders
   /// </remarks>
   internal abstract class Upgrader
   {
-    private static object m_objLock = new object();
-    private BackgroundWorkerProgressDialog m_pgdProgress = null;
-    private TxFileManager m_tfmFileManager = null;
-
     #region Properties
 
     /// <summary>
@@ -29,35 +22,16 @@ namespace Fomm.InstallLogUpgraders
     /// </summary>
     /// <value>The <see cref="BackgroundWorkerProgressDialog"/> that performs
     /// the upgrade and shows progress.</value>
-    protected BackgroundWorkerProgressDialog ProgressWorker
-    {
-      get
-      {
-        return m_pgdProgress;
-      }
-    }
+    protected BackgroundWorkerProgressDialog ProgressWorker { get; private set; }
 
     /// <summary>
     /// Gets the transactional file manager to be used in the upgrade.
     /// </summary>
-    protected TxFileManager FileManager
-    {
-      get
-      {
-        return m_tfmFileManager;
-      }
-    }
+    protected TxFileManager FileManager { get; private set; }
 
     #endregion
 
     #region Constructor
-
-    /// <summary>
-    /// The deafult constructor.
-    /// </summary>
-    internal Upgrader()
-    {
-    }
 
     #endregion
 
@@ -68,26 +42,26 @@ namespace Fomm.InstallLogUpgraders
     /// Sets up the resources required to upgrade the install log, and then
     /// call <see cref="DoUpgrade()"/> so implementers can do the upgrade.
     /// </remarks>
-    /// <returns><lang cref="true"/> if the upgrade completed; <lang cref="false"/>
+    /// <returns><lang langref="true"/> if the upgrade completed; <lang langref="false"/>
     /// if the user cancelled.</returns>
     internal bool PerformUpgrade()
     {
-      m_tfmFileManager = new TxFileManager();
-      bool booComplete = false;
-      using (TransactionScope tsTransaction = new TransactionScope())
+      FileManager = new TxFileManager();
+      var booComplete = false;
+      using (var tsTransaction = new TransactionScope())
       {
-        m_tfmFileManager.Snapshot(InstallLog.Current.InstallLogPath);
+        FileManager.Snapshot(InstallLog.Current.InstallLogPath);
 
-        using (m_pgdProgress = new BackgroundWorkerProgressDialog(DoUpgrade))
+        using (ProgressWorker = new BackgroundWorkerProgressDialog(DoUpgrade))
         {
-          m_pgdProgress.OverallMessage = "Upgrading FOMM Files";
-          if (m_pgdProgress.ShowDialog() == DialogResult.OK)
+          ProgressWorker.OverallMessage = "Upgrading FOMM Files";
+          if (ProgressWorker.ShowDialog() == DialogResult.OK)
           {
             booComplete = true;
             tsTransaction.Complete();
           }
         }
-        m_tfmFileManager = null;
+        FileManager = null;
       }
       return booComplete;
     }

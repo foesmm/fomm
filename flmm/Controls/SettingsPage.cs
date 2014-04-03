@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 using System.Drawing;
 
 namespace Fomm.Controls
@@ -34,8 +33,8 @@ namespace Fomm.Controls
     /// <summary>
     /// Persists the settings from the page's controls.
     /// </summary>
-    /// <returns><lang cref="true"/> if ettings were saved;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if ettings were saved;
+    /// <lang langref="false"/> otherwise.</returns>
     public virtual bool SaveSettings()
     {
       return false;

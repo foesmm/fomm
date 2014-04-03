@@ -21,8 +21,8 @@ namespace Fomm.Games.Fallout3.Script.XmlConfiguredInstall.Parsers
       switch (p_xndDependency.Name)
       {
         case "foseDependancy":
-          Version verMinFoseVersion = new Version(p_xndDependency.Attributes["version"].InnerText);
-          return new FoseDependency((Fallout3DependencyStateManager)p_dsmSate, verMinFoseVersion);
+          var verMinFoseVersion = new Version(p_xndDependency.Attributes["version"].InnerText);
+          return new FoseDependency((Fallout3DependencyStateManager) p_dsmSate, verMinFoseVersion);
       }
       return null;
     }

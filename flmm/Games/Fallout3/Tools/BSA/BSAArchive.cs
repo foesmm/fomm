@@ -1,18 +1,28 @@
 using System;
-using System.Collections.Generic;
+using System.Text;
+using Fomm.Properties;
+using Fomm.SharpZipLib.Checksums;
+using Fomm.SharpZipLib.Zip.Compression;
 using StringList = System.Collections.Generic.List<string>;
 using HashTable = System.Collections.Generic.Dictionary<ulong, Fomm.Games.Fallout3.Tools.BSA.BSAArchive.BSAFileInfo>;
 using System.IO;
-using System.IO.Compression;
 
 namespace Fomm.Games.Fallout3.Tools.BSA
 {
-  class BSAArchive
+  internal class BSAArchive
   {
-    internal class BSALoadException : Exception { }
+    internal class BSALoadException : Exception
+    {
+    }
 
     [Flags]
-    private enum FileFlags : int { Meshes = 1, Textures = 2 }
+    private enum FileFlags
+    {
+      [UsedImplicitly]
+      Meshes = 1,
+      [UsedImplicitly]
+      Textures = 2
+    }
 
     internal struct BSAFileInfo
     {
@@ -32,30 +42,32 @@ namespace Fomm.Games.Fallout3.Tools.BSA
           size ^= 1 << 30;
           compressed = !bsa.defaultCompressed;
         }
-        else compressed = bsa.defaultCompressed;
-
+        else
+        {
+          compressed = bsa.defaultCompressed;
+        }
       }
 
       internal byte[] GetRawData()
       {
         bsa.br.BaseStream.Seek(offset, SeekOrigin.Begin);
-        if (bsa.SkipNames) bsa.br.BaseStream.Position += bsa.br.ReadByte() + 1;
+        if (bsa.SkipNames)
+        {
+          bsa.br.BaseStream.Position += bsa.br.ReadByte() + 1;
+        }
         if (compressed)
         {
-          byte[] b = new byte[size - 4];
-          byte[] output = new byte[bsa.br.ReadUInt32()];
+          var b = new byte[size - 4];
+          var output = new byte[bsa.br.ReadUInt32()];
           bsa.br.Read(b, 0, size - 4);
 
-          ICSharpCode.SharpZipLib.Zip.Compression.Inflater inf = new ICSharpCode.SharpZipLib.Zip.Compression.Inflater();
+          var inf = new Inflater();
           inf.SetInput(b, 0, b.Length);
           inf.Inflate(output);
 
           return output;
         }
-        else
-        {
-          return bsa.br.ReadBytes(size);
-        }
+        return bsa.br.ReadBytes(size);
       }
     }
 
@@ -116,7 +128,7 @@ namespace Fomm.Games.Fallout3.Tools.BSA
         fileCount = br.ReadInt32();
         totalFolderNameLength = br.ReadInt32();
         totalFileNameLength = br.ReadInt32();
-        fileFlags = (FileFlags)br.ReadInt32();
+        fileFlags = (FileFlags) br.ReadInt32();
       }
     }
 
@@ -124,55 +136,66 @@ namespace Fomm.Games.Fallout3.Tools.BSA
     private bool defaultCompressed;
     private bool SkipNames;
     private HashTable files;
-    private string[] fileNames;
-    public string[] FileNames { get { return fileNames; } }
+
+    public string[] FileNames { get; private set; }
 
     internal BSAArchive(string path)
     {
-      BSAHeader4 header;
-      br = new BinaryReader(File.OpenRead(path), System.Text.Encoding.Default);
-      header = new BSAHeader4(br);
-      if (header.bsaVersion != 0x68 && header.bsaVersion != 0x67) throw new BSALoadException();
+      br = new BinaryReader(File.OpenRead(path), Encoding.Default);
+      var header = new BSAHeader4(br);
+      if (header.bsaVersion != 0x68 && header.bsaVersion != 0x67)
+      {
+        throw new BSALoadException();
+      }
       defaultCompressed = (header.archiveFlags & 4) > 0;
       SkipNames = (header.archiveFlags & 0x100) > 0 && header.bsaVersion == 0x68;
       files = new HashTable();
 
       //Read folder info
-      BSAFolderInfo4[] folderInfo = new BSAFolderInfo4[header.folderCount];
-      BSAFileInfo4[] fileInfo = new BSAFileInfo4[header.fileCount];
-      fileNames = new string[header.fileCount];
-      for (int i = 0; i < header.folderCount; i++) folderInfo[i] = new BSAFolderInfo4(br);
-      int count = 0;
+      var folderInfo = new BSAFolderInfo4[header.folderCount];
+      var fileInfo = new BSAFileInfo4[header.fileCount];
+      FileNames = new string[header.fileCount];
+      for (var i = 0; i < header.folderCount; i++)
+      {
+        folderInfo[i] = new BSAFolderInfo4(br);
+      }
+      var count = 0;
       for (uint i = 0; i < header.folderCount; i++)
       {
         folderInfo[i].path = new string(br.ReadChars(br.ReadByte() - 1));
         br.BaseStream.Position++;
         folderInfo[i].offset = count;
-        for (int j = 0; j < folderInfo[i].count; j++) fileInfo[count + j] = new BSAFileInfo4(br);
+        for (var j = 0; j < folderInfo[i].count; j++)
+        {
+          fileInfo[count + j] = new BSAFileInfo4(br);
+        }
         count += folderInfo[i].count;
       }
       for (uint i = 0; i < header.fileCount; i++)
       {
         fileInfo[i].path = "";
         char c;
-        while ((c = br.ReadChar()) != '\0') fileInfo[i].path += c;
-      }
-
-      for (int i = 0; i < header.folderCount; i++)
-      {
-        for (int j = 0; j < folderInfo[i].count; j++)
+        while ((c = br.ReadChar()) != '\0')
         {
-          BSAFileInfo4 fi4 = fileInfo[folderInfo[i].offset + j];
-          string ext = Path.GetExtension(fi4.path);
-          BSAFileInfo fi = new BSAFileInfo(this, (int)fi4.offset, fi4.size);
-          string fpath = Path.Combine(folderInfo[i].path, Path.GetFileNameWithoutExtension(fi4.path));
-          ulong hash = GenHash(fpath, ext);
-          files[hash] = fi;
-          fileNames[folderInfo[i].offset + j] = fpath + ext;
+          fileInfo[i].path += c;
         }
       }
 
-      Array.Sort<string>(fileNames);
+      for (var i = 0; i < header.folderCount; i++)
+      {
+        for (var j = 0; j < folderInfo[i].count; j++)
+        {
+          var fi4 = fileInfo[folderInfo[i].offset + j];
+          var ext = Path.GetExtension(fi4.path);
+          var fi = new BSAFileInfo(this, (int) fi4.offset, fi4.size);
+          var fpath = Path.Combine(folderInfo[i].path, Path.GetFileNameWithoutExtension(fi4.path));
+          var hash = GenHash(fpath, ext);
+          files[hash] = fi;
+          FileNames[folderInfo[i].offset + j] = fpath + ext;
+        }
+      }
+
+      Array.Sort(FileNames);
     }
 
     private static ulong GenHash(string file)
@@ -180,6 +203,7 @@ namespace Fomm.Games.Fallout3.Tools.BSA
       file = file.ToLowerInvariant().Replace('/', '\\');
       return GenHash(Path.ChangeExtension(file, null), Path.GetExtension(file));
     }
+
     private static ulong GenHash(string file, string ext)
     {
       file = file.ToLower();
@@ -187,35 +211,39 @@ namespace Fomm.Games.Fallout3.Tools.BSA
       ulong hash = 0;
       if (file.Length > 0)
       {
-        hash = (ulong)(
-           (((byte)file[file.Length - 1]) * 0x1) +
-          ((file.Length > 2 ? (byte)file[file.Length - 2] : (byte)0) * 0x100) +
-           (file.Length * 0x10000) +
-          (((byte)file[0]) * 0x1000000)
-        );
+        hash = (ulong) (
+          (((byte) file[file.Length - 1])*0x1) +
+          ((file.Length > 2 ? (byte) file[file.Length - 2] : 0)*0x100) +
+          (file.Length*0x10000) +
+          (((byte) file[0])*0x1000000)
+          );
       }
       if (file.Length > 3)
       {
-        hash += (ulong)(GenHash2(file.Substring(1, file.Length - 3)) * 0x100000000);
+        hash += (ulong) (GenHash2(file.Substring(1, file.Length - 3))*0x100000000);
       }
       if (ext.Length > 0)
       {
-        hash += (ulong)(GenHash2(ext) * 0x100000000);
+        hash += (ulong) (GenHash2(ext)*0x100000000);
         byte i = 0;
         switch (ext)
         {
-          case ".nif": i = 1; break;
-          //case ".kf": i=2; break;
-          case ".dds": i = 3; break;
-          //case ".wav": i=4; break;
+          case ".nif":
+            i = 1;
+            break;
+            //case ".kf": i=2; break;
+          case ".dds":
+            i = 3;
+            break;
+            //case ".wav": i=4; break;
         }
         if (i != 0)
         {
-          byte a = (byte)(((i & 0xfc) << 5) + (byte)((hash & 0xff000000) >> 24));
-          byte b = (byte)(((i & 0xfe) << 6) + (byte)(hash & 0xff));
-          byte c = (byte)((i << 7) + (byte)((hash & 0xff00) >> 8));
+          var a = (byte) (((i & 0xfc) << 5) + (byte) ((hash & 0xff000000) >> 24));
+          var b = (byte) (((i & 0xfe) << 6) + (byte) (hash & 0xff));
+          var c = (byte) ((i << 7) + (byte) ((hash & 0xff00) >> 8));
           hash -= hash & 0xFF00FFFF;
-          hash += (uint)((a << 24) + b + (c << 8));
+          hash += (uint) ((a << 24) + b + (c << 8));
         }
       }
       return hash;
@@ -224,17 +252,20 @@ namespace Fomm.Games.Fallout3.Tools.BSA
     private static uint GenHash2(string s)
     {
       uint hash = 0;
-      for (int i = 0; i < s.Length; i++)
+      foreach (var c in s)
       {
         hash *= 0x1003f;
-        hash += (byte)s[i];
+        hash += (byte) c;
       }
       return hash;
     }
 
     internal void Dispose()
     {
-      if (files != null) files.Clear();
+      if (files != null)
+      {
+        files.Clear();
+      }
       if (br != null)
       {
         br.Close();
@@ -244,9 +275,12 @@ namespace Fomm.Games.Fallout3.Tools.BSA
 
     internal byte[] GetFile(string path)
     {
-      ulong hash = GenHash(path);
-      if (!files.ContainsKey(hash)) return null;
-      else return files[hash].GetRawData();
+      var hash = GenHash(path);
+      if (!files.ContainsKey(hash))
+      {
+        return null;
+      }
+      return files[hash].GetRawData();
     }
   }
 
@@ -259,32 +293,39 @@ namespace Fomm.Games.Fallout3.Tools.BSA
 
     private static bool ReplaceShader(string file, string shader, byte[] newdata, out byte[] OldData, uint crc)
     {
-      string tempshader = Path.Combine(Program.tmpPath, "tempshader");
+      var tempshader = Path.Combine(Program.tmpPath, "tempshader");
 
-      DateTime timeStamp = File.GetLastWriteTime(file);
+      var timeStamp = File.GetLastWriteTime(file);
       File.Delete(tempshader);
       File.Move(file, tempshader);
-      BinaryReader br = new BinaryReader(File.OpenRead(tempshader), System.Text.Encoding.Default);
-      BinaryWriter bw = new BinaryWriter(File.Create(file), System.Text.Encoding.Default);
+      var br = new BinaryReader(File.OpenRead(tempshader), Encoding.Default);
+      var bw = new BinaryWriter(File.Create(file), Encoding.Default);
       bw.Write(br.ReadInt32());
-      int num = br.ReadInt32();
+      var num = br.ReadInt32();
       bw.Write(num);
-      long sizeoffset = br.BaseStream.Position;
+      var sizeoffset = br.BaseStream.Position;
       bw.Write(br.ReadInt32());
-      bool found = false;
+      var found = false;
       OldData = null;
-      for (int i = 0; i < num; i++)
+      for (var i = 0; i < num; i++)
       {
-        char[] name = br.ReadChars(0x100);
-        int size = br.ReadInt32();
-        byte[] data = br.ReadBytes(size);
+        var name = br.ReadChars(0x100);
+        var size = br.ReadInt32();
+        var data = br.ReadBytes(size);
 
         bw.Write(name);
-        string sname = "";
-        for (int i2 = 0; i2 < 100; i2++) { if (name[i2] == '\0') break; sname += name[i2]; }
+        var sname = "";
+        for (var i2 = 0; i2 < 100; i2++)
+        {
+          if (name[i2] == '\0')
+          {
+            break;
+          }
+          sname += name[i2];
+        }
         if (!found && sname == shader)
         {
-          ICSharpCode.SharpZipLib.Checksums.Crc32 ccrc = new ICSharpCode.SharpZipLib.Checksums.Crc32();
+          var ccrc = new Crc32();
           ccrc.Update(data);
           if (crc == 0 || ccrc.Value == crc)
           {
@@ -306,7 +347,7 @@ namespace Fomm.Games.Fallout3.Tools.BSA
         }
       }
       bw.BaseStream.Position = sizeoffset;
-      bw.Write((int)(bw.BaseStream.Length - 12));
+      bw.Write((int) (bw.BaseStream.Length - 12));
       br.Close();
       bw.Close();
       File.Delete(tempshader);
@@ -316,40 +357,55 @@ namespace Fomm.Games.Fallout3.Tools.BSA
 
     internal static bool EditShader(int package, string name, byte[] newData, out byte[] oldData)
     {
-      string path = GetPath(package);
-      if (!File.Exists(path)) { oldData = null; return false; }
+      var path = GetPath(package);
+      if (!File.Exists(path))
+      {
+        oldData = null;
+        return false;
+      }
       return ReplaceShader(path, name, newData, out oldData, 0);
     }
 
     internal static bool RestoreShader(int package, string name, byte[] data, uint crc)
     {
       byte[] unused;
-      string path = GetPath(package);
-      if (!File.Exists(path)) return false;
+      var path = GetPath(package);
+      if (!File.Exists(path))
+      {
+        return false;
+      }
       return ReplaceShader(path, name, data, out unused, crc);
     }
 
     internal static byte[] GetShader(int package, string shader)
     {
-      string file = GetPath(package);
+      var file = GetPath(package);
       if (!File.Exists(file))
-        return null;
-
-      BinaryReader br = new BinaryReader(File.OpenRead(file), System.Text.Encoding.Default);
-      br.ReadInt32();
-      int num = br.ReadInt32();
-      long sizeoffset = br.BaseStream.Position;
-      br.ReadInt32();
-      bool found = false;
-      byte[] OldData = null;
-      for (int i = 0; i < num; i++)
       {
-        char[] name = br.ReadChars(0x100);
-        int size = br.ReadInt32();
-        byte[] data = br.ReadBytes(size);
+        return null;
+      }
 
-        string sname = "";
-        for (int i2 = 0; i2 < 100; i2++) { if (name[i2] == '\0') break; sname += name[i2]; }
+      var br = new BinaryReader(File.OpenRead(file), Encoding.Default);
+      br.ReadInt32();
+      var num = br.ReadInt32();
+      br.ReadInt32();
+      var found = false;
+      byte[] OldData = null;
+      for (var i = 0; i < num; i++)
+      {
+        var name = br.ReadChars(0x100);
+        var size = br.ReadInt32();
+        var data = br.ReadBytes(size);
+
+        var sname = "";
+        for (var i2 = 0; i2 < 100; i2++)
+        {
+          if (name[i2] == '\0')
+          {
+            break;
+          }
+          sname += name[i2];
+        }
         if (!found && sname == shader)
         {
           found = true;

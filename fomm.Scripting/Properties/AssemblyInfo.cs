@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using Fomm;
 
 [assembly: AssemblyTitle("fomm.Scripting")]
 [assembly: AssemblyDescription("Handler for running .fomod scripts")]
@@ -11,9 +11,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("Copyright ©  2009 Timeslip")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-
-[assembly: AssemblyVersion(Fomm.Program.Version)]
-[assembly: AssemblyFileVersion(Fomm.Program.Version)]
-
+[assembly: AssemblyVersion(Program.Version)]
+[assembly: AssemblyFileVersion(Program.Version)]
 [assembly: ComVisible(false)]
 [assembly: CLSCompliant(false)]

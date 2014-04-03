@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Fomm.Util;
+﻿using Fomm.Util;
 using System.IO;
 
 namespace Fomm.Games
@@ -16,10 +14,7 @@ namespace Fomm.Games
     /// Gets the list of active plugins.
     /// </summary>
     /// <value>The list of active plugins.</value>
-    public abstract Set<string> ActivePluginList
-    {
-      get;
-    }
+    public abstract Set<string> ActivePluginList { get; }
 
     public abstract void SetActivePlugins(Set<string> p_lstActivePlugins);
 
@@ -29,10 +24,12 @@ namespace Fomm.Games
     /// <param name="p_strPath">The path to the plugin to activate.</param>
     public void ActivatePlugin(string p_strPath)
     {
-      Set<string> setPlugins = ActivePluginList;
-      string strPath = p_strPath;
+      var setPlugins = ActivePluginList;
+      var strPath = p_strPath;
       if (Path.GetFileName(strPath).Equals(strPath))
+      {
         strPath = Path.Combine(Program.GameMode.PluginsPath, strPath);
+      }
       setPlugins.Add(strPath);
       SetActivePlugins(setPlugins);
     }
@@ -43,10 +40,12 @@ namespace Fomm.Games
     /// <param name="p_strPath">The path to the plugin to deactivate.</param>
     public void DeactivatePlugin(string p_strPath)
     {
-      Set<string> setPlugins = ActivePluginList;
-      string strPath = p_strPath;
+      var setPlugins = ActivePluginList;
+      var strPath = p_strPath;
       if (Path.GetFileName(strPath).Equals(strPath))
+      {
         strPath = Path.Combine(Program.GameMode.PluginsPath, strPath);
+      }
       setPlugins.Remove(strPath);
       SetActivePlugins(setPlugins);
     }
@@ -55,8 +54,8 @@ namespace Fomm.Games
     /// Determines if the specified plugin is active.
     /// </summary>
     /// <param name="p_strPath">The path to the plugin whose active state is to be determined.</param>
-    /// <returns><lange cref="true"/> if the specified plugin is active;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lange langref="true"/> if the specified plugin is active;
+    /// <lang langref="false"/> otherwise.</returns>
     public abstract bool IsPluginActive(string p_strPath);
 
     #endregion
@@ -67,10 +66,7 @@ namespace Fomm.Games
     /// Gets an ordered list of plugins.
     /// </summary>
     /// <value>An ordered list of plugins.</value>
-    public abstract string[] OrderedPluginList
-    {
-      get;
-    }
+    public abstract string[] OrderedPluginList { get; }
 
     /// <summary>
     /// Sorts the list of plugins paths.
@@ -116,8 +112,8 @@ namespace Fomm.Games
     /// Determines if the specified plugin is critical to the current game.
     /// </summary>
     /// <param name="p_strPluginPath">The full path to the plugin for which it is to be determined whether or not it is critical.</param>
-    /// <returns><lang cref="true"/> if the specified pluing is critical;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the specified pluing is critical;
+    /// <lang langref="false"/> otherwise.</returns>
     public abstract bool IsCriticalPlugin(string p_strPluginPath);
   }
 }

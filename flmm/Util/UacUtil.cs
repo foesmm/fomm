@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Fomm.Util
 {
+
   #region Enumerations
 
   /// <summary>
@@ -67,18 +68,18 @@ namespace Fomm.Util
     /// <param name="ProcessHandle">The process whose token is to be opened.</param>
     /// <param name="DesiredAccess">The desired access token we wish to open.</param>
     /// <param name="TokenHandle">The output parameter for the opened token.</param>
-    /// <returns><lang cref="true"/> if the desired token was opened;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the desired token was opened;
+    /// <lang langref="false"/> otherwise.</returns>
     [DllImport("advapi32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
-    static extern bool OpenProcessToken(IntPtr ProcessHandle, UInt32 DesiredAccess, out IntPtr TokenHandle);
+    private static extern bool OpenProcessToken(IntPtr ProcessHandle, UInt32 DesiredAccess, out IntPtr TokenHandle);
 
     /// <summary>
     /// Gets the current process's handle.
     /// </summary>
     /// <returns>The cur</returns>
     [DllImport("kernel32.dll", SetLastError = true)]
-    static extern IntPtr GetCurrentProcess();
+    private static extern IntPtr GetCurrentProcess();
 
     /// <summary>
     /// Gets information about the specified process access token.
@@ -88,11 +89,11 @@ namespace Fomm.Util
     /// <param name="TokenInformation">The structure into which the information will be copied.</param>
     /// <param name="TokenInformationLength">The length of the information data structure.</param>
     /// <param name="ReturnLength">The length of the return information.</param>
-    /// <returns><lang cref="true"/> if the information was successfully retrieved;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the information was successfully retrieved;
+    /// <lang langref="false"/> otherwise.</returns>
     [DllImport("advapi32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
-    static extern bool GetTokenInformation(
+    private static extern bool GetTokenInformation(
       IntPtr TokenHandle,
       TOKEN_INFORMATION_CLASS TokenInformationClass,
       IntPtr TokenInformation,
@@ -103,11 +104,11 @@ namespace Fomm.Util
     /// Closes the given handle.
     /// </summary>
     /// <param name="hObject">The handle to close.</param>
-    /// <returns><lang cref="true"/> if the was closed;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the was closed;
+    /// <lang langref="false"/> otherwise.</returns>
     [DllImport("kernel32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
-    static extern bool CloseHandle(IntPtr hObject);
+    private static extern bool CloseHandle(IntPtr hObject);
 
     /// <summary>
     /// Loads the specified library.
@@ -128,11 +129,11 @@ namespace Fomm.Util
     {
       get
       {
-        IntPtr hmodule = LoadLibrary("kernel32");
+        var hmodule = LoadLibrary("kernel32");
 
         //a function that only exists on Vista and above
         // this is a hack, as the function we use may not exist on some future OS
-        string strFunction = "CreateThreadpoolWait";
+        var strFunction = "CreateThreadpoolWait";
         return ((hmodule.ToInt32() != 0) && (GetProcAddress(hmodule, strFunction).ToInt32() != 0));
       }
     }
@@ -141,14 +142,14 @@ namespace Fomm.Util
     /// Gets whether or not the current process is elevated.
     /// </summary>
     /// <remarks>
-    /// This return <lang cref="true"/> if:
+    /// This return <lang langref="true"/> if:
     /// The current OS supports UAC, UAC is on, and the process is being run as an elevated user.
     /// OR
     /// The current OS supports UAC, UAC is off, and the process is being run by an administrator.
     /// OR
     /// The current OS doesn't support UAC.
     /// 
-    /// Otherwise, this returns <lang cref="false"/>.
+    /// Otherwise, this returns <lang langref="false"/>.
     /// </remarks>
     /// <value>Whether or not the current process is elevated.</value>
     public static bool IsElevated
@@ -156,33 +157,42 @@ namespace Fomm.Util
       get
       {
         if (!IsUACOperatingSystem)
+        {
           return true;
+        }
 
-        bool booCallSucceeded = false;
-        IntPtr hToken = IntPtr.Zero;
+        bool booCallSucceeded;
+        IntPtr hToken;
 
-        IntPtr ptrProcessHandle = GetCurrentProcess();
+        var ptrProcessHandle = GetCurrentProcess();
         if (ptrProcessHandle == IntPtr.Zero)
+        {
           throw new Exception("Could not get hanlde to current process.");
+        }
 
-        if (!(booCallSucceeded = OpenProcessToken(ptrProcessHandle, TOKEN_QUERY, out hToken)))
+        if (!(OpenProcessToken(ptrProcessHandle, TOKEN_QUERY, out hToken)))
+        {
           throw new Exception("Could not open process token.");
+        }
 
         try
         {
           TOKEN_ELEVATION tevTokenElevation;
           tevTokenElevation.TokenIsElevated = 0;
 
-          UInt32 uintReturnLength = 0;
-          Int32 intTokenElevationSize = Marshal.SizeOf(tevTokenElevation);
-          IntPtr pteTokenElevation = Marshal.AllocHGlobal(intTokenElevationSize);
+          var intTokenElevationSize = Marshal.SizeOf(tevTokenElevation);
+          var pteTokenElevation = Marshal.AllocHGlobal(intTokenElevationSize);
           try
           {
             Marshal.StructureToPtr(tevTokenElevation, pteTokenElevation, true);
-            booCallSucceeded = GetTokenInformation(hToken, TOKEN_INFORMATION_CLASS.TokenElevation, pteTokenElevation, (UInt32)intTokenElevationSize, out uintReturnLength);
+            UInt32 uintReturnLength;
+            booCallSucceeded = GetTokenInformation(hToken, TOKEN_INFORMATION_CLASS.TokenElevation, pteTokenElevation,
+                                                   (UInt32) intTokenElevationSize, out uintReturnLength);
             if ((!booCallSucceeded) || (intTokenElevationSize != uintReturnLength))
+            {
               throw new Exception("Could not get token information.");
-            tevTokenElevation = (TOKEN_ELEVATION)Marshal.PtrToStructure(pteTokenElevation, typeof(TOKEN_ELEVATION));
+            }
+            tevTokenElevation = (TOKEN_ELEVATION) Marshal.PtrToStructure(pteTokenElevation, typeof (TOKEN_ELEVATION));
           }
           finally
           {

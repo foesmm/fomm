@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Text;
 using System.Windows.Forms;
 using System.IO;
 
@@ -31,8 +26,8 @@ namespace Fomm.Games.Fallout3.Settings
     /// <summary>
     /// Validates the specified directory.
     /// </summary>
-    /// <returns><lang cref="true"/> if the specified directory is valid;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the specified directory is valid;
+    /// <lang langref="false"/> otherwise.</returns>
     protected bool ValidateDirectory(string p_strPath, string p_strPathName, Control p_ctlErrorControl)
     {
       erpValidator.SetError(p_ctlErrorControl, null);
@@ -43,7 +38,11 @@ namespace Fomm.Games.Fallout3.Settings
       }
       if (!Directory.Exists(p_strPath))
       {
-        if (MessageBox.Show(this, String.Format("The selected {0} does not exist.{1}Would you like to create it?", p_strPathName, Environment.NewLine), "Missing Directory", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+        if (
+          MessageBox.Show(this,
+                          String.Format("The selected {0} does not exist.{1}Would you like to create it?", p_strPathName,
+                                        Environment.NewLine), "Missing Directory", MessageBoxButtons.YesNo,
+                          MessageBoxIcon.Question) == DialogResult.Yes)
         {
           Directory.CreateDirectory(p_strPath);
           return true;
@@ -57,8 +56,8 @@ namespace Fomm.Games.Fallout3.Settings
     /// <summary>
     /// Validates the selected mod directory.
     /// </summary>
-    /// <returns><lang cref="true"/> if the selected mod directory is valid;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the selected mod directory is valid;
+    /// <lang langref="false"/> otherwise.</returns>
     protected bool ValidateModDirectory()
     {
       return ValidateDirectory(tbxModDirectory.Text, "Mod Directory", butSelectModDirectory);
@@ -67,8 +66,8 @@ namespace Fomm.Games.Fallout3.Settings
     /// <summary>
     /// Validates the selected install info directory.
     /// </summary>
-    /// <returns><lang cref="true"/> if the selected install info directory is valid;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the selected install info directory is valid;
+    /// <lang langref="false"/> otherwise.</returns>
     protected bool ValidateInstallInfoDirectory()
     {
       return ValidateDirectory(tbxInstallInfo.Text, "Install Info Directory", butSelectInfoDirectory);
@@ -77,13 +76,12 @@ namespace Fomm.Games.Fallout3.Settings
     /// <summary>
     /// Validates the settings on this control.
     /// </summary>
-    /// <returns><lang cref="true"/> if the settings are valid;
-    /// <lang cref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true"/> if the settings are valid;
+    /// <lang langref="false"/> otherwise.</returns>
     public bool ValidateSettings()
     {
       return ValidateModDirectory() && ValidateInstallInfoDirectory();
     }
-
 
     #endregion
 
@@ -95,17 +93,23 @@ namespace Fomm.Games.Fallout3.Settings
       tbxModDirectory.Text = Properties.Settings.Default.fallout3ModDirectory;
       if (String.IsNullOrEmpty(tbxModDirectory.Text))
       {
-        string strDefault = Path.Combine(Path.GetDirectoryName(Program.GameMode.PluginsPath), "mods");
-        if (strDefault.StartsWith(Path.Combine(Path.GetPathRoot(strDefault), "Program Files"), StringComparison.InvariantCultureIgnoreCase))
-          strDefault = Path.Combine(Path.GetPathRoot(Program.GameMode.PluginsPath), "Games\\Fallout 3\\mods"); ;
+        var strDefault = Path.Combine(Path.GetDirectoryName(Program.GameMode.PluginsPath), "mods");
+        if (strDefault.StartsWith(Path.Combine(Path.GetPathRoot(strDefault), "Program Files"),
+                                  StringComparison.InvariantCultureIgnoreCase))
+        {
+          strDefault = Path.Combine(Path.GetPathRoot(Program.GameMode.PluginsPath), "Games\\Fallout 3\\mods");
+        }
         tbxModDirectory.Text = strDefault;
       }
       tbxInstallInfo.Text = Properties.Settings.Default.fallout3InstallInfoDirectory;
       if (String.IsNullOrEmpty(tbxInstallInfo.Text))
       {
-        string strDefault = Path.Combine(Path.GetDirectoryName(Program.GameMode.PluginsPath), "Install Info");
-        if (strDefault.StartsWith(Path.Combine(Path.GetPathRoot(strDefault), "Program Files"), StringComparison.InvariantCultureIgnoreCase))
-          strDefault = Path.Combine(Path.GetPathRoot(Program.GameMode.PluginsPath), "Games\\Fallout 3\\Install Info"); ;
+        var strDefault = Path.Combine(Path.GetDirectoryName(Program.GameMode.PluginsPath), "Install Info");
+        if (strDefault.StartsWith(Path.Combine(Path.GetPathRoot(strDefault), "Program Files"),
+                                  StringComparison.InvariantCultureIgnoreCase))
+        {
+          strDefault = Path.Combine(Path.GetPathRoot(Program.GameMode.PluginsPath), "Games\\Fallout 3\\Install Info");
+        }
         tbxInstallInfo.Text = strDefault;
       }
     }
@@ -131,7 +135,9 @@ namespace Fomm.Games.Fallout3.Settings
     {
       fbdDirectory.SelectedPath = tbxModDirectory.Text;
       if (fbdDirectory.ShowDialog(this) == DialogResult.OK)
+      {
         tbxModDirectory.Text = fbdDirectory.SelectedPath;
+      }
     }
 
     /// <summary>
@@ -146,7 +152,9 @@ namespace Fomm.Games.Fallout3.Settings
     {
       fbdDirectory.SelectedPath = tbxInstallInfo.Text;
       if (fbdDirectory.ShowDialog(this) == DialogResult.OK)
+      {
         tbxInstallInfo.Text = fbdDirectory.SelectedPath;
+      }
     }
   }
 }

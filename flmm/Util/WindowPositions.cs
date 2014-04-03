@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Xml.Serialization;
 using System.Drawing;
 using System.Windows.Forms;
@@ -81,24 +80,26 @@ namespace Fomm.Util
       /// <param name="reader">The xml reader from which to deserialize the object.</param>
       public void ReadXml(XmlReader reader)
       {
-        bool booIsEmpty = reader.IsEmptyElement;
+        var booIsEmpty = reader.IsEmptyElement;
         reader.ReadStartElement();
         if (booIsEmpty)
+        {
           return;
+        }
 
         reader.ReadStartElement("location");
-        XmlSerializer xsrSerializer = new XmlSerializer(Location.GetType());
-        Location = (Point)xsrSerializer.Deserialize(reader);
+        var xsrSerializer = new XmlSerializer(Location.GetType());
+        Location = (Point) xsrSerializer.Deserialize(reader);
         reader.ReadEndElement();
 
         reader.ReadStartElement("size");
         xsrSerializer = new XmlSerializer(Size.GetType());
-        Size = (Size)xsrSerializer.Deserialize(reader);
+        Size = (Size) xsrSerializer.Deserialize(reader);
         reader.ReadEndElement();
 
         reader.ReadStartElement("isMaximized");
         xsrSerializer = new XmlSerializer(IsMaximized.GetType());
-        IsMaximized = (bool)xsrSerializer.Deserialize(reader);
+        IsMaximized = (bool) xsrSerializer.Deserialize(reader);
         reader.ReadEndElement();
 
         reader.ReadEndElement();
@@ -111,7 +112,7 @@ namespace Fomm.Util
       public void WriteXml(XmlWriter writer)
       {
         writer.WriteStartElement("location");
-        XmlSerializer xsrSerializer = new XmlSerializer(Location.GetType());
+        var xsrSerializer = new XmlSerializer(Location.GetType());
         xsrSerializer.Serialize(writer, Location);
         writer.WriteEndElement();
 
@@ -139,20 +140,26 @@ namespace Fomm.Util
     public void GetWindowPosition(string p_strWindowName, Form p_frmWindow)
     {
       if (!m_dicPositions.ContainsKey(p_strWindowName))
+      {
         return;
-      LocationInfo lifPosition = m_dicPositions[p_strWindowName];
+      }
+      var lifPosition = m_dicPositions[p_strWindowName];
       if (lifPosition.IsMaximized)
+      {
         p_frmWindow.WindowState = FormWindowState.Maximized;
+      }
       else
       {
-        Screen[] scrScreens = Screen.AllScreens;
-        foreach (Screen scrScreen in scrScreens)
+        var scrScreens = Screen.AllScreens;
+        foreach (var scrScreen in scrScreens)
+        {
           if (scrScreen.WorkingArea.Contains(lifPosition.Location))
           {
             p_frmWindow.Location = lifPosition.Location;
             p_frmWindow.StartPosition = FormStartPosition.Manual;
             break;
           }
+        }
         p_frmWindow.ClientSize = lifPosition.Size;
       }
     }
@@ -165,8 +172,11 @@ namespace Fomm.Util
     public void SetWindowPosition(string p_strWindowName, Form p_frmWindow)
     {
       if (p_frmWindow.WindowState == FormWindowState.Minimized)
+      {
         return;
-      m_dicPositions[p_strWindowName] = new LocationInfo(p_frmWindow.Location, p_frmWindow.ClientSize, p_frmWindow.WindowState == FormWindowState.Maximized);
+      }
+      m_dicPositions[p_strWindowName] = new LocationInfo(p_frmWindow.Location, p_frmWindow.ClientSize,
+                                                         p_frmWindow.WindowState == FormWindowState.Maximized);
     }
 
     #region IXmlSerializable Members
@@ -186,17 +196,19 @@ namespace Fomm.Util
     /// <param name="reader">The xml reader from which to deserialize the object.</param>
     public void ReadXml(XmlReader reader)
     {
-      bool booIsEmpty = reader.IsEmptyElement;
+      var booIsEmpty = reader.IsEmptyElement;
       reader.ReadStartElement();
       if (booIsEmpty)
+      {
         return;
+      }
       while (reader.MoveToContent() == XmlNodeType.Element && reader.LocalName == "position")
       {
-        string strWindowName = reader["window"];
+        var strWindowName = reader["window"];
         reader.ReadStartElement("position");
 
-        XmlSerializer xsrLocationInfo = new XmlSerializer(typeof(LocationInfo));
-        m_dicPositions[strWindowName] = (LocationInfo)xsrLocationInfo.Deserialize(reader);
+        var xsrLocationInfo = new XmlSerializer(typeof (LocationInfo));
+        m_dicPositions[strWindowName] = (LocationInfo) xsrLocationInfo.Deserialize(reader);
 
         reader.ReadEndElement();
       }
@@ -209,12 +221,12 @@ namespace Fomm.Util
     /// <param name="reader">The xml writer to which to serialize the object.</param>
     public void WriteXml(XmlWriter writer)
     {
-      foreach (KeyValuePair<string, LocationInfo> kvpPosition in m_dicPositions)
+      foreach (var kvpPosition in m_dicPositions)
       {
         writer.WriteStartElement("position");
         writer.WriteAttributeString("window", kvpPosition.Key);
 
-        XmlSerializer xsrLocationInfo = new XmlSerializer(typeof(LocationInfo));
+        var xsrLocationInfo = new XmlSerializer(typeof (LocationInfo));
         xsrLocationInfo.Serialize(writer, kvpPosition.Value);
 
         writer.WriteEndElement();

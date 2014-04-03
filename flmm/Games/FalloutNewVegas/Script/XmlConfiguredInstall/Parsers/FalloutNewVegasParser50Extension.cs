@@ -1,5 +1,4 @@
 ﻿using System;
-using Fomm.PackageManager.XmlConfiguredInstall.Parsers;
 using System.Xml;
 using Fomm.PackageManager.XmlConfiguredInstall;
 using Fomm.Games.Fallout3.Script.XmlConfiguredInstall.Parsers;
@@ -23,8 +22,8 @@ namespace Fomm.Games.FalloutNewVegas.Script.XmlConfiguredInstall.Parsers
       switch (p_xndDependency.Name)
       {
         case "nvseDependency":
-          Version verMinNvseVersion = new Version(p_xndDependency.Attributes["version"].InnerText);
-          return new NvseDependency((Fallout3DependencyStateManager)p_dsmSate, verMinNvseVersion);
+          var verMinNvseVersion = new Version(p_xndDependency.Attributes["version"].InnerText);
+          return new NvseDependency((Fallout3DependencyStateManager) p_dsmSate, verMinNvseVersion);
       }
       return null;
     }

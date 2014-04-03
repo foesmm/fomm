@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows.Forms;
-using Fomm.Controls;
 using System.ComponentModel;
 using System.Drawing;
+using Fomm.Properties;
 
 namespace Fomm.PackageManager
 {
@@ -20,36 +21,38 @@ namespace Fomm.PackageManager
     public ViewReadmeForm(Readme p_rmeReadme)
     {
       InitializeComponent();
-      this.Icon = Fomm.Properties.Resources.fomm02;
-      Properties.Settings.Default.windowPositions.GetWindowPosition("ReadmeViewer", this);
+      Icon = Resources.fomm02;
+      Settings.Default.windowPositions.GetWindowPosition("ReadmeViewer", this);
 
       switch (p_rmeReadme.Format)
       {
         case ReadmeFormat.PlainText:
         case ReadmeFormat.RichText:
-          RichTextBox rtbReadme = new RichTextBox();
+          var rtbReadme = new RichTextBox();
           rtbReadme.Multiline = true;
           rtbReadme.ScrollBars = RichTextBoxScrollBars.Vertical;
           rtbReadme.BorderStyle = BorderStyle.None;
           rtbReadme.BackColor = SystemColors.Control;
           rtbReadme.ReadOnly = true;
           rtbReadme.TabStop = false;
-          rtbReadme.LinkClicked += new LinkClickedEventHandler(rtbReadme_LinkClicked);
+          rtbReadme.LinkClicked += rtbReadme_LinkClicked;
           if (p_rmeReadme.Format == ReadmeFormat.PlainText)
           {
             rtbReadme.Font = new Font(FontFamily.GenericMonospace, rtbReadme.Font.Size, rtbReadme.Font.Style);
-            rtbReadme.Text = p_rmeReadme.Text;            
+            rtbReadme.Text = p_rmeReadme.Text;
           }
           else
+          {
             rtbReadme.Rtf = p_rmeReadme.Text;
+          }
           rtbReadme.Dock = DockStyle.Fill;
           Controls.Add(rtbReadme);
           break;
         case ReadmeFormat.HTML:
-          WebBrowser wbrBrowser = new WebBrowser();
+          var wbrBrowser = new WebBrowser();
           Controls.Add(wbrBrowser);
           wbrBrowser.Dock = DockStyle.Fill;
-          wbrBrowser.DocumentCompleted += delegate(object o, WebBrowserDocumentCompletedEventArgs arg)
+          wbrBrowser.DocumentCompleted += delegate
           {
             Text = String.IsNullOrEmpty(wbrBrowser.DocumentTitle) ? "Readme" : wbrBrowser.DocumentTitle;
           };
@@ -69,9 +72,9 @@ namespace Fomm.PackageManager
     /// </remarks>
     /// <param name="sender">The object that trigger the event.</param>
     /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
-    void rtbReadme_LinkClicked(object sender, LinkClickedEventArgs e)
+    private void rtbReadme_LinkClicked(object sender, LinkClickedEventArgs e)
     {
-      System.Diagnostics.Process.Start(e.LinkText);
+      Process.Start(e.LinkText);
     }
 
     #endregion
@@ -85,8 +88,8 @@ namespace Fomm.PackageManager
     /// <param name="e">A <see cref="CancelEventArgs"/> describing the event arguments.</param>
     protected override void OnClosing(CancelEventArgs e)
     {
-      Properties.Settings.Default.windowPositions.SetWindowPosition("ReadmeViewer", this);
-      Properties.Settings.Default.Save(); 
+      Settings.Default.windowPositions.SetWindowPosition("ReadmeViewer", this);
+      Settings.Default.Save();
       base.OnClosing(e);
     }
   }
