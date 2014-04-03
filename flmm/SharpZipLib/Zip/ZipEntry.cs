@@ -228,7 +228,7 @@ namespace Fomm.SharpZipLib.Zip
       }
 
       DateTime = DateTime.Now;
-      this.Name = name;
+      Name = name;
       versionMadeBy = (ushort) madeByInfo;
       versionToExtract = (ushort) versionRequiredToExtract;
       this.method = method;
