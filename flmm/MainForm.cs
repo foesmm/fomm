@@ -475,11 +475,11 @@ namespace Fomm
           }
         }
 
-        for (var i = 0; i < indicies.Length; i++)
+        foreach (int index in indicies)
         {
           Program.GameMode.PluginManager.SetLoadOrder(
-            Path.Combine(Program.GameMode.PluginsPath, lvEspList.Items[indicies[i]].Text), intLoadOrder++);
-          items.Add(lvEspList.Items[indicies[i]]);
+            Path.Combine(Program.GameMode.PluginsPath, lvEspList.Items[index].Text), intLoadOrder++);
+          items.Add(lvEspList.Items[index]);
           items[items.Count - 1].Selected = true;
         }
 
@@ -564,9 +564,9 @@ namespace Fomm
              .CompareTo(int.Parse(b.SubItems[1].Text, NumberStyles.AllowHexSpecifier));
       });
 
-      for (var i = 0; i < lvis.Length; i++)
+      foreach (ListViewItem item in lvis)
       {
-        sb.AppendLine(lvis[i].Text);
+        sb.AppendLine(item.Text);
       }
 
       sb.AppendLine();
@@ -682,11 +682,11 @@ namespace Fomm
 
         var order = new string[lvEspList.Items.Count];
         var upto = 0;
-        for (var i = 0; i < lines.Length; i++)
+        foreach (string line in lines)
         {
-          if (File.Exists(Path.Combine(Program.GameMode.PluginsPath, lines[i])))
+          if (File.Exists(Path.Combine(Program.GameMode.PluginsPath, line)))
           {
-            order[upto++] = lines[i];
+            order[upto++] = line;
           }
         }
 
@@ -775,10 +775,10 @@ namespace Fomm
                           MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
         {
           lvEspList.SelectedItems.Clear();
-          for (var i = 0; i < files.Length; i++)
+          foreach (ListViewItem file in files)
           {
-            File.Delete(Path.Combine(Program.GameMode.PluginsPath, files[i].Text));
-            lvEspList.Items.Remove(files[i]);
+            File.Delete(Path.Combine(Program.GameMode.PluginsPath, file.Text));
+            lvEspList.Items.Remove(file);
           }
           RefreshIndexCounts();
         }

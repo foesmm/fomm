@@ -117,9 +117,8 @@ namespace Fomm.SharpZipLib.Zip.Compression
       var blCount = new int[MAX_BITLEN + 1];
       var nextCode = new int[MAX_BITLEN + 1];
 
-      for (var i = 0; i < codeLengths.Length; i++)
+      foreach (int bits in codeLengths)
       {
-        int bits = codeLengths[i];
         if (bits > 0)
         {
           blCount[bits]++;

@@ -298,16 +298,15 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
       {
         strTo += Path.DirectorySeparatorChar;
       }
-      for (var i = 0; i < lstFOMODFiles.Count; i++)
+      foreach (string file in lstFOMODFiles)
       {
         if (m_bwdProgress.Cancelled())
         {
           return;
         }
 
-        var strFOMODFile = lstFOMODFiles[i];
-        var strNewFileName = strFOMODFile.Substring(strFrom.Length, strFOMODFile.Length - strFrom.Length);
-        m_misInstallScript.CopyDataFile(strFOMODFile, Path.Combine(strTo, strNewFileName));
+        var strNewFileName = file.Substring(strFrom.Length, file.Length - strFrom.Length);
+        m_misInstallScript.CopyDataFile(file, Path.Combine(strTo, strNewFileName));
 
         m_bwdProgress.StepItemProgress();
       }

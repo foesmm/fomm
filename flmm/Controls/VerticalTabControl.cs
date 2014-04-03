@@ -559,11 +559,11 @@ namespace Fomm.Controls
     {
       var ctlPage = e.TabPage;
       ctlPage.TabButton.Selected -= TabSelected;
-      for (var i = 0; i < m_tpcPages.Count; i++)
+      foreach (VerticalTabPage tabPage in m_tpcPages)
       {
-        if (m_tpcPages[i].PageIndex > ctlPage.PageIndex)
+        if (tabPage.PageIndex > ctlPage.PageIndex)
         {
-          m_tpcPages[i].PageIndex--;
+          tabPage.PageIndex--;
         }
       }
       m_ptsTabContainer.removeToolStripItem(ctlPage.TabButton);

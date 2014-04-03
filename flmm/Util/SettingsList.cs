@@ -175,10 +175,10 @@ namespace Fomm.Util
         return null;
       }
       var lstValues = new List<Int32>();
-      for (var i = 0; i < arr.Count; i++)
+      foreach (string s in arr)
       {
         int intValue;
-        Int32.TryParse(arr[i], out intValue);
+        Int32.TryParse(s, out intValue);
         lstValues.Add(intValue);
       }
       return lstValues.ToArray();

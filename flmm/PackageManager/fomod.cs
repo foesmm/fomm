@@ -343,31 +343,31 @@ namespace Fomm.PackageManager
       isActive = (InstallLog.Current.GetModKey(baseName) != null);
 
       //check for script
-      for (var i = 0; i < FomodScript.ScriptNames.Length; i++)
+      foreach (string name in FomodScript.ScriptNames)
       {
-        if (ContainsFile("fomod/" + FomodScript.ScriptNames[i]))
+        if (ContainsFile("fomod/" + name))
         {
-          m_strScriptPath = "fomod/" + FomodScript.ScriptNames[i];
+          m_strScriptPath = "fomod/" + name;
           break;
         }
       }
 
       //check for readme
-      for (var i = 0; i < Readme.ValidExtensions.Length; i++)
+      foreach (string ext in Readme.ValidExtensions)
       {
-        if (ContainsFile("readme - " + baseName + Readme.ValidExtensions[i]))
+        if (ContainsFile("readme - " + baseName + ext))
         {
-          m_strReadmePath = "Readme - " + Path.GetFileNameWithoutExtension(path) + Readme.ValidExtensions[i];
+          m_strReadmePath = "Readme - " + Path.GetFileNameWithoutExtension(path) + ext;
           break;
         }
       }
       if (String.IsNullOrEmpty(m_strReadmePath))
       {
-        for (var i = 0; i < Readme.ValidExtensions.Length; i++)
+        foreach (string ext in Readme.ValidExtensions)
         {
-          if (ContainsFile("docs/readme - " + baseName + Readme.ValidExtensions[i]))
+          if (ContainsFile("docs/readme - " + baseName + ext))
           {
-            m_strReadmePath = "docs/Readme - " + Path.GetFileNameWithoutExtension(path) + Readme.ValidExtensions[i];
+            m_strReadmePath = "docs/Readme - " + Path.GetFileNameWithoutExtension(path) + ext;
             break;
           }
         }
@@ -378,11 +378,11 @@ namespace Fomm.PackageManager
       {
         ".png", ".jpg", ".bmp"
       };
-      for (var i = 0; i < extensions.Length; i++)
+      foreach (string ext in extensions)
       {
-        if (ContainsFile("fomod/screenshot" + extensions[i]))
+        if (ContainsFile("fomod/screenshot" + ext))
         {
-          m_strScreenshotPath = "fomod/screenshot" + extensions[i];
+          m_strScreenshotPath = "fomod/screenshot" + ext;
           break;
         }
       }
@@ -855,9 +855,9 @@ namespace Fomm.PackageManager
       if ((p_finFomodInfo.Groups != null) && (p_finFomodInfo.Groups.Length > 0))
       {
         xelTemp = xmlInfo.CreateElement("Groups");
-        for (var i = 0; i < p_finFomodInfo.Groups.Length; i++)
+        foreach (string group in p_finFomodInfo.Groups)
         {
-          xelTemp.AppendChild(xmlInfo.CreateElement("element")).InnerText = p_finFomodInfo.Groups[i];
+          xelTemp.AppendChild(xmlInfo.CreateElement("element")).InnerText = group;
         }
         xelRoot.AppendChild(xelTemp);
       }

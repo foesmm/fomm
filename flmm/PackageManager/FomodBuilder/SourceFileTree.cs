@@ -231,27 +231,27 @@ namespace Fomm.PackageManager.FomodBuilder
             var kvpPath = Archive.ParseArchivePath(p_strFile);
             var arcArchive = new Archive(kvpPath.Key);
             var strFolders = arcArchive.GetDirectories(kvpPath.Value);
-            for (var i = 0; i < strFolders.Length; i++)
+            foreach (string folder in strFolders)
             {
-              addSourceFile(tndFile, Archive.GenerateArchivePath(kvpPath.Key, strFolders[i]));
+              addSourceFile(tndFile, Archive.GenerateArchivePath(kvpPath.Key, folder));
             }
             var strFiles = arcArchive.GetFiles(kvpPath.Value);
-            for (var i = 0; i < strFiles.Length; i++)
+            foreach (string file in strFiles)
             {
-              addSourceFile(tndFile, Archive.GenerateArchivePath(kvpPath.Key, strFiles[i]));
+              addSourceFile(tndFile, Archive.GenerateArchivePath(kvpPath.Key, file));
             }
           }
           else if (!p_strFile.StartsWith(FileSystemTreeNode.NEW_PREFIX))
           {
             var strFolders = Directory.GetDirectories(p_strFile);
-            for (var i = 0; i < strFolders.Length; i++)
+            foreach (string folder in strFolders)
             {
-              addSourceFile(tndFile, strFolders[i]);
+              addSourceFile(tndFile, folder);
             }
             var strFiles = Directory.GetFiles(p_strFile);
-            for (var i = 0; i < strFiles.Length; i++)
+            foreach (string file in strFiles)
             {
-              addSourceFile(tndFile, strFiles[i]);
+              addSourceFile(tndFile, file);
             }
           }
         }
@@ -273,14 +273,14 @@ namespace Fomm.PackageManager.FomodBuilder
         {
           var arcArchive = new Archive(p_strFile);
           var strFolders = arcArchive.GetDirectories("/");
-          for (var i = 0; i < strFolders.Length; i++)
+          foreach (string folder in strFolders)
           {
-            addSourceFile(tndFile, Archive.GenerateArchivePath(p_strFile, strFolders[i]));
+            addSourceFile(tndFile, Archive.GenerateArchivePath(p_strFile, folder));
           }
           var strFiles = arcArchive.GetFiles("/");
-          for (var i = 0; i < strFiles.Length; i++)
+          foreach (string file in strFiles)
           {
-            addSourceFile(tndFile, Archive.GenerateArchivePath(p_strFile, strFiles[i]));
+            addSourceFile(tndFile, Archive.GenerateArchivePath(p_strFile, file));
           }
         }
       }
@@ -354,27 +354,27 @@ namespace Fomm.PackageManager.FomodBuilder
           var kvpPath = Archive.ParseArchivePath(strPath);
           var arcArchive = new Archive(kvpPath.Key);
           var strFolders = arcArchive.GetDirectories(kvpPath.Value);
-          for (var i = 0; i < strFolders.Length; i++)
+          foreach (string folder in strFolders)
           {
-            addSourceFile(tndFolder, Archive.GenerateArchivePath(kvpPath.Key, strFolders[i]));
+            addSourceFile(tndFolder, Archive.GenerateArchivePath(kvpPath.Key, folder));
           }
           var strFiles = arcArchive.GetFiles(kvpPath.Value);
-          for (var i = 0; i < strFiles.Length; i++)
+          foreach (string file in strFiles)
           {
-            addSourceFile(tndFolder, Archive.GenerateArchivePath(kvpPath.Key, strFiles[i]));
+            addSourceFile(tndFolder, Archive.GenerateArchivePath(kvpPath.Key, file));
           }
         }
         else if (!strPath.StartsWith(FileSystemTreeNode.NEW_PREFIX))
         {
           var strFolders = Directory.GetDirectories(strPath);
-          for (var i = 0; i < strFolders.Length; i++)
+          foreach (string folder in strFolders)
           {
-            addSourceFile(tndFolder, strFolders[i]);
+            addSourceFile(tndFolder, folder);
           }
           var strFiles = Directory.GetFiles(strPath);
-          for (var i = 0; i < strFiles.Length; i++)
+          foreach (string file in strFiles)
           {
-            addSourceFile(tndFolder, strFiles[i]);
+            addSourceFile(tndFolder, file);
           }
         }
       }

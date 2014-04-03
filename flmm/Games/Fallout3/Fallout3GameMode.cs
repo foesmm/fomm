@@ -1841,9 +1841,8 @@ class Script : Fallout3BaseScript {
       var lstPlugins = new List<FileInfo>(Program.GetFiles(difPluginsDirectory, "*.esp"));
       lstPlugins.AddRange(Program.GetFiles(difPluginsDirectory, "*.esm"));
 
-      for (var i = 0; i < lstPlugins.Count; i++)
+      foreach (var fifPlugin in lstPlugins)
       {
-        var fifPlugin = lstPlugins[i];
         if ((fifPlugin.Attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
         {
           if (

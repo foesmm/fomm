@@ -202,9 +202,9 @@ namespace Fomm.Games.Fallout3.Script
     {
       if (m_booDdsParserInited)
       {
-        for (var i = 0; i < m_lstTextures.Count; i++)
+        foreach (IntPtr tex in m_lstTextures)
         {
-          NativeMethods.ddsRelease(m_lstTextures[i]);
+          NativeMethods.ddsRelease(tex);
         }
         m_lstTextures = null;
         NativeMethods.ddsClose();

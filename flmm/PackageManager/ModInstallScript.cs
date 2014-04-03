@@ -376,10 +376,10 @@ namespace Fomm.PackageManager
         Program.GameMode.PluginManager.SetLoadOrder(Path.Combine(Program.GameMode.PluginsPath, strPluginNames[i]),
                                                     intLoadOrder++);
       }
-      for (var i = 0; i < p_intPlugins.Length; i++)
+      foreach (int plugin in p_intPlugins)
       {
         Program.GameMode.PluginManager.SetLoadOrder(
-          Path.Combine(Program.GameMode.PluginsPath, strPluginNames[p_intPlugins[i]]), intLoadOrder++);
+          Path.Combine(Program.GameMode.PluginsPath, strPluginNames[plugin]), intLoadOrder++);
       }
       for (var i = p_intPosition; i < strPluginNames.Length; i++)
       {

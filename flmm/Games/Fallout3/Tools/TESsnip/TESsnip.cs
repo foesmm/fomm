@@ -61,9 +61,9 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       InitializeComponent();
       Icon = Resources.fomm02;
       Properties.Settings.Default.windowPositions.GetWindowPosition("TESsnip", this);
-      for (var i = 0; i < mods.Length; i++)
+      foreach (string s in mods)
       {
-        LoadPlugin(mods[i]);
+        LoadPlugin(s);
       }
     }
 
@@ -1000,9 +1000,9 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
           }
           else
           {
-            for (var i = 0; i < gr.Records.Count; i++)
+            foreach (Rec rec in gr.Records)
             {
-              toParse.Enqueue(gr.Records[i]);
+              toParse.Enqueue(rec);
             }
             gr.Records.Clear();
           }
@@ -1565,9 +1565,9 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
           var gr = (GroupRecord) rec;
           if (gr.ContentsType == "LVLI" || gr.ContentsType == "LVLN" || gr.ContentsType == "LVLC")
           {
-            for (var i = 0; i < gr.Records.Count; i++)
+            foreach (Rec r in gr.Records)
             {
-              recs.Enqueue(gr.Records[i]);
+              recs.Enqueue(r);
             }
           }
         }
@@ -1618,15 +1618,15 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
               sb3.Length = 0;
               break;
             case "LVLN":
-              for (var i = 0; i < r.SubRecords.Count; i++)
+              foreach (SubRecord sub in r.SubRecords)
               {
-                if (r.SubRecords[i].Name == "LVLO")
+                if (sub.Name == "LVLO")
                 {
-                  if (r.SubRecords[i].Size != 12)
+                  if (sub.Size != 12)
                   {
                     continue;
                   }
-                  var data = r.SubRecords[i].GetReadonlyData();
+                  var data = sub.GetReadonlyData();
                   var formid = TypeConverter.h2i(data[4], data[5], data[6], data[7]);
                   if ((formid & 0xff000000) != mask)
                   {
@@ -1646,15 +1646,15 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
               sb3.Length = 0;
               break;
             case "LVLC":
-              for (var i = 0; i < r.SubRecords.Count; i++)
+              foreach (SubRecord sub in r.SubRecords)
               {
-                if (r.SubRecords[i].Name == "LVLO")
+                if (sub.Name == "LVLO")
                 {
-                  if (r.SubRecords[i].Size != 12)
+                  if (sub.Size != 12)
                   {
                     continue;
                   }
-                  var data = r.SubRecords[i].GetReadonlyData();
+                  var data = sub.GetReadonlyData();
                   var formid = TypeConverter.h2i(data[4], data[5], data[6], data[7]);
                   if ((formid & 0xff000000) != mask)
                   {
@@ -1874,9 +1874,9 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         if (recs.Peek() is GroupRecord)
         {
           var gr = (GroupRecord) recs.Dequeue();
-          for (var i = 0; i < gr.Records.Count; i++)
+          foreach (Rec rec in gr.Records)
           {
-            recs.Enqueue(gr.Records[i]);
+            recs.Enqueue(rec);
           }
         }
         else
@@ -1942,15 +1942,15 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       Fixups = new uint[masters.Count + 1];
       for (var i = 0; i < masters.Count; i++)
       {
-        for (var j = 0; j < plugins.Length; j++)
+        foreach (Plugin pl in plugins)
         {
-          if (masters[i] == plugins[j].Name.ToLowerInvariant())
+          if (masters[i] == pl.Name.ToLowerInvariant())
           {
-            FormIDLookup[i] = plugins[j];
+            FormIDLookup[i] = pl;
             uint fixup = 0;
-            if (plugins[j].Records.Count > 0 && plugins[j].Records[0].Name == "TES4")
+            if (pl.Records.Count > 0 && pl.Records[0].Name == "TES4")
             {
-              foreach (var sr in ((Record) plugins[j].Records[0]).SubRecords)
+              foreach (var sr in ((Record) pl.Records[0]).SubRecords)
               {
                 if (sr.Name == "MAST")
                 {

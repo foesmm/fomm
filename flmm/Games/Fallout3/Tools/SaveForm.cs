@@ -328,9 +328,9 @@ namespace Fomm.Games.Fallout3.Tools
         return;
       }
       var sw = new StreamWriter(ofd.FileName);
-      for (var i = 0; i < sf.plugins.Length; i++)
+      foreach (string plugin in sf.plugins)
       {
-        sw.WriteLine("[X] " + sf.plugins[i]);
+        sw.WriteLine("[X] " + plugin);
       }
       sw.Close();
     }

@@ -154,9 +154,9 @@ namespace fomm.Scripting
         return new string[0];
       }
       s += " ";
-      for (var i = 0; i < s.Length; i++)
+      foreach (char c in s)
       {
-        switch (s[i])
+        switch (c)
         {
           case '%':
             WasLastSpace = false;
@@ -200,7 +200,7 @@ namespace fomm.Scripting
 
             if (InQuotes)
             {
-              CurrentWord += s[i];
+              CurrentWord += c;
             }
             else if (!WasLastSpace)
             {
@@ -217,13 +217,13 @@ namespace fomm.Scripting
             }
             else
             {
-              CurrentWord += s[i];
+              CurrentWord += c;
             }
             break;
           case '"':
             if (InQuotes && WasLastEscape)
             {
-              CurrentWord += s[i];
+              CurrentWord += c;
             }
             else
             {
@@ -239,7 +239,7 @@ namespace fomm.Scripting
           case '\\':
             if (InQuotes && WasLastEscape)
             {
-              CurrentWord += s[i];
+              CurrentWord += c;
               WasLastEscape = false;
             }
             else if (InQuotes)
@@ -248,14 +248,14 @@ namespace fomm.Scripting
             }
             else
             {
-              CurrentWord += s[i];
+              CurrentWord += c;
             }
             WasLastSpace = false;
             break;
           default:
             WasLastEscape = false;
             WasLastSpace = false;
-            CurrentWord += s[i];
+            CurrentWord += c;
             break;
         }
         if (DoubleBreak)
@@ -276,7 +276,6 @@ namespace fomm.Scripting
 
     private static void Warn(string Message)
     {
-      //if(Settings.ShowScriptWarnings)
       MessageBox.Show(Message + " on line " + cLine, "Error in script");
     }
 

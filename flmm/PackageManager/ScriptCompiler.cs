@@ -133,17 +133,17 @@ class ScriptRunner {
         if (errors != null)
         {
           sb.AppendLine("Errors:");
-          for (var i = 0; i < errors.Length; i++)
+          foreach (string error in errors)
           {
-            sb.AppendLine(errors[i]);
+            sb.AppendLine(error);
           }
         }
         if (warnings != null)
         {
           sb.AppendLine("Warnings:");
-          for (var i = 0; i < warnings.Length; i++)
+          foreach (string warning in warnings)
           {
-            sb.AppendLine(warnings[i]);
+            sb.AppendLine(warning);
           }
         }
         return sb.ToString();

@@ -352,14 +352,14 @@ namespace Fomm.Games.Fallout3.Tools.ShaderEdit
       {
         return;
       }
-      for (var i = 0; i < shaders.Count; i++)
+      foreach (Shader shader in shaders)
       {
-        var path = Path.Combine(folderBrowserDialog1.SelectedPath, shaders[i].name);
+        var path = Path.Combine(folderBrowserDialog1.SelectedPath, shader.name);
         if (File.Exists(path))
         {
           MessageBox.Show("File " + path + " already exists, skipping.", "Error");
         }
-        File.WriteAllBytes(path, shaders[i].data);
+        File.WriteAllBytes(path, shader.data);
       }
     }
 

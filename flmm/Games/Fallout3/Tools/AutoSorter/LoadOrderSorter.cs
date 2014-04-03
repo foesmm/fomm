@@ -261,12 +261,12 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
           }
           if (active[i] && ri.requires != null)
           {
-            for (var k = 0; k < ri.requires.Length; k++)
+            foreach (string r in ri.requires)
             {
               var found = false;
               for (var j = 0; j < lplugins.Length; j++)
               {
-                if (lplugins[j] == ri.requires[k])
+                if (lplugins[j] == r)
                 {
                   if (active[j])
                   {
@@ -277,21 +277,21 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
               }
               if (!found)
               {
-                sb.AppendLine("! This plugin requires '" + ri.requires[k] + "', which was not found");
+                sb.AppendLine("! This plugin requires '" + r + "', which was not found");
               }
             }
           }
           if (active[i] && ri.conflicts != null)
           {
-            for (var k = 0; k < ri.conflicts.Length; k++)
+            foreach (string conflict in ri.conflicts)
             {
               for (var j = 0; j < lplugins.Length; j++)
               {
-                if (lplugins[j] == ri.conflicts[k])
+                if (lplugins[j] == conflict)
                 {
                   if (active[j])
                   {
-                    sb.AppendLine("! This plugin conflicts with '" + ri.conflicts[k] + "'");
+                    sb.AppendLine("! This plugin conflicts with '" + conflict + "'");
                   }
                   break;
                 }
@@ -300,9 +300,9 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
           }
           if (ri.comments != null)
           {
-            for (var k = 0; k < ri.comments.Length; k++)
+            foreach (string comment in ri.comments)
             {
-              sb.AppendLine("  " + ri.comments[k]);
+              sb.AppendLine("  " + comment);
             }
           }
         }
@@ -318,9 +318,9 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
         var dup = (string[]) plugins.Clone();
         SortList(dup);
         sb.AppendLine("The order that the current template suggests is as follows:");
-        for (var i = 0; i < dup.Length; i++)
+        foreach (string ds in dup)
         {
-          sb.AppendLine(dup[i]);
+          sb.AppendLine(ds);
         }
       }
       return sb.ToString();

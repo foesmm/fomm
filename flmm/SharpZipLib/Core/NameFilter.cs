@@ -212,24 +212,24 @@ namespace Fomm.SharpZipLib.Core
       }
 
       var items = SplitQuoted(filter_);
-      for (var i = 0; i < items.Length; ++i)
+      foreach (string item in items)
       {
-        if ((items[i] != null) && (items[i].Length > 0))
+        if ((item != null) && (item.Length > 0))
         {
-          var include = (items[i][0] != '-');
+          var include = (item[0] != '-');
           string toCompile;
 
-          if (items[i][0] == '+')
+          if (item[0] == '+')
           {
-            toCompile = items[i].Substring(1, items[i].Length - 1);
+            toCompile = item.Substring(1, item.Length - 1);
           }
-          else if (items[i][0] == '-')
+          else if (item[0] == '-')
           {
-            toCompile = items[i].Substring(1, items[i].Length - 1);
+            toCompile = item.Substring(1, item.Length - 1);
           }
           else
           {
-            toCompile = items[i];
+            toCompile = item;
           }
 
           // NOTE: Regular expressions can fail to compile here for a number of reasons that cause an exception

@@ -259,10 +259,10 @@ namespace Fomm.Games.Fallout3.Tools.BSA
     private static uint GenHash2(string s)
     {
       uint hash = 0;
-      for (var i = 0; i < s.Length; i++)
+      foreach (char c in s)
       {
         hash *= 0x1003f;
-        hash += (byte) s[i];
+        hash += (byte) c;
       }
       return hash;
     }

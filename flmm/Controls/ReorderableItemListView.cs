@@ -305,9 +305,9 @@ namespace Fomm.Controls
       }
 
       // Remove old items
-      for (var index = 0; index < _ItemsToMove.Count; index++)
+      foreach (ListViewItem item in _ItemsToMove)
       {
-        Items.Remove(_ItemsToMove[index]);
+        Items.Remove(item);
       }
 
       // Insert new items

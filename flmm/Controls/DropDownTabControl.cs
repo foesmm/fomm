@@ -605,11 +605,11 @@ namespace Fomm.Controls
       ctlPage.PageIndexChanged -= PageIndexChanged;
       ctlPage.TextChanged -= PageTextChanged;
       m_cbxSelector.Items.Remove(ctlPage);
-      for (var i = 0; i < m_tpcPages.Count; i++)
+      foreach (DropDownTabPage page in m_tpcPages)
       {
-        if (m_tpcPages[i].PageIndex > ctlPage.PageIndex)
+        if (page.PageIndex > ctlPage.PageIndex)
         {
-          m_tpcPages[i].PageIndex--;
+          page.PageIndex--;
         }
       }
       if (SelectedTabPage == ctlPage)

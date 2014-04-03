@@ -877,9 +877,9 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
             args[i] = smt.Dequeue();
           }
           EmitFunctionCall(ref args, true, hadRef);
-          for (var i = 0; i < args.Length; i++)
+          foreach (Token arg in args)
           {
-            smt.Enqueue(args[i]);
+            smt.Enqueue(arg);
           }
           break;
         default:
