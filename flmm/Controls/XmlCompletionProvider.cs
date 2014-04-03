@@ -146,7 +146,6 @@ namespace Fomm.Controls
     private XmlSchemaSet m_xstSchema;
     private XmlSchema m_xshSchema;
     private AutoCompleteType m_actCompleteType = AutoCompleteType.Element;
-    private XmlEditor m_xedEditor;
 
     private Dictionary<AutoCompleteType, List<char>> m_dicExtraCompletionCharacters =
       new Dictionary<AutoCompleteType, List<char>>();
@@ -628,7 +627,6 @@ namespace Fomm.Controls
       ImageList.Images.Add(Resources.xml);
       ImageList.Images.Add(Resources.Properties);
       ImageList.Images.Add(Resources.EnumItem);
-      m_xedEditor = p_xedEditor;
     }
 
     #endregion

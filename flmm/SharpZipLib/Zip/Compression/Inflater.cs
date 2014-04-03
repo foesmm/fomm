@@ -164,18 +164,6 @@ namespace Fomm.SharpZipLib.Zip.Compression
     private bool isLastBlock;
 
     /// <summary>
-    /// The total number of inflated bytes.
-    /// </summary>
-    private long totalOut;
-
-    /// <summary>
-    /// The total number of bytes set with setInput().  This is not the
-    /// value returned by the TotalIn property, since this also includes the
-    /// unprocessed input.
-    /// </summary>
-    private long totalIn;
-
-    /// <summary>
     /// This variable stores the noHeader flag that was given to the constructor.
     /// True means, that the inflated stream doesn't contain a Zlib header or 
     /// footer.
@@ -230,8 +218,6 @@ namespace Fomm.SharpZipLib.Zip.Compression
     public void Reset()
     {
       mode = noHeader ? DECODE_BLOCKS : DECODE_HEADER;
-      totalIn = 0;
-      totalOut = 0;
       input.Reset();
       outputWindow.Reset();
       dynHeader = null;
@@ -624,7 +610,6 @@ namespace Fomm.SharpZipLib.Zip.Compression
     public void SetInput(byte[] buffer, int index, int count)
     {
       input.SetInput(buffer, index, count);
-      totalIn += count;
     }
 
     /// <summary>
@@ -743,7 +728,6 @@ namespace Fomm.SharpZipLib.Zip.Compression
             adler.Update(buffer, offset, more);
             offset += more;
             bytesCopied += more;
-            totalOut += more;
             count -= more;
             if (count == 0)
             {
