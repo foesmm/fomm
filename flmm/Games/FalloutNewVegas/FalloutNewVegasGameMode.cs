@@ -280,7 +280,11 @@ namespace Fomm.Games.FalloutNewVegas
     /// </summary>
     protected override void SetupSettingsPages()
     {
-      SettingsPages.Add(new GeneralSettingsPage());
+      var gsp = new GeneralSettingsPage();
+      gsp.Text = "Fallout: New Vegas";
+      gsp.BackColor = Color.FromKnownColor(KnownColor.Transparent);
+
+      SettingsPages.Add(gsp);
     }
 
     /// <summary>

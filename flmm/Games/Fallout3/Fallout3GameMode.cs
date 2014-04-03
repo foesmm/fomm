@@ -623,7 +623,11 @@ namespace Fomm.Games.Fallout3
     /// </summary>
     protected virtual void SetupSettingsPages()
     {
-      m_lstSettingsPages.Add(new GeneralSettingsPage());
+      var gsp = new GeneralSettingsPage();
+      gsp.Text = "Fallout 3";
+      gsp.BackColor = Color.FromKnownColor(KnownColor.Transparent);
+
+      m_lstSettingsPages.Add(gsp);
     }
 
     /// <summary>
