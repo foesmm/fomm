@@ -75,7 +75,7 @@ namespace Fomm.SharpZipLib.Zip
 #if NET_1_0 || NET_1_1 || NETCF_1_0
       invalidPathChars = Path.InvalidPathChars;
 #else
-      char[] invalidPathChars = Path.GetInvalidPathChars();
+      var invalidPathChars = Path.GetInvalidPathChars();
 #endif
       var howMany = invalidPathChars.Length + 2;
 

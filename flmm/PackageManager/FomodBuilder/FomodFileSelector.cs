@@ -505,7 +505,7 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
         }
         if (tndFolder != null)
         {
-          foreach (SourceFileTree.SourceFileSystemDragData path in lstPaths)
+          foreach (var path in lstPaths)
           {
             addFomodFile(tndFolder, path.Path);
           }
@@ -513,7 +513,7 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
         }
         else
         {
-          foreach (SourceFileTree.SourceFileSystemDragData path in lstPaths)
+          foreach (var path in lstPaths)
           {
             addFomodFile(null, path.Path);
           }
@@ -521,7 +521,7 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
       }
       else
       {
-        foreach (SourceFileTree.SourceFileSystemDragData path in lstPaths)
+        foreach (var path in lstPaths)
         {
           addFomodFile(null, path.Path);
         }
@@ -624,12 +624,12 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
           var kvpPath = Archive.ParseArchivePath(strSource);
           var arcArchive = new Archive(kvpPath.Key);
           var strFolders = arcArchive.GetDirectories(kvpPath.Value);
-          foreach (string folder in strFolders)
+          foreach (var folder in strFolders)
           {
             addFomodFile(p_tndNode, Archive.GenerateArchivePath(kvpPath.Key, folder));
           }
           var strFiles = arcArchive.GetFiles(kvpPath.Value);
-          foreach (string file in strFiles)
+          foreach (var file in strFiles)
           {
             addFomodFile(p_tndNode, Archive.GenerateArchivePath(kvpPath.Key, file));
           }
@@ -637,12 +637,12 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
         else if (!strSource.StartsWith(FileSystemTreeNode.NEW_PREFIX))
         {
           var strFolders = Directory.GetDirectories(strSource);
-          foreach (string folder in strFolders)
+          foreach (var folder in strFolders)
           {
             addFomodFile(p_tndNode, folder);
           }
           var strFiles = Directory.GetFiles(strSource);
-          foreach (string file in strFiles)
+          foreach (var file in strFiles)
           {
             addFomodFile(p_tndNode, file);
           }

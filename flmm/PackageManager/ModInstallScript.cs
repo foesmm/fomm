@@ -376,7 +376,7 @@ namespace Fomm.PackageManager
         Program.GameMode.PluginManager.SetLoadOrder(Path.Combine(Program.GameMode.PluginsPath, strPluginNames[i]),
                                                     intLoadOrder++);
       }
-      foreach (int plugin in p_intPlugins)
+      foreach (var plugin in p_intPlugins)
       {
         Program.GameMode.PluginManager.SetLoadOrder(
           Path.Combine(Program.GameMode.PluginsPath, strPluginNames[plugin]), intLoadOrder++);
@@ -596,7 +596,7 @@ namespace Fomm.PackageManager
        * 3. Delete the temp file
        */
 
-      string tmpFN = Fomod.ExtractToTemp(fnFrom);
+      var tmpFN = Fomod.ExtractToTemp(fnFrom);
       if (GenerateDataFilePrep(fnTo, out strDataPath))
       {
         Installer.TransactionalFileManager.Copy(tmpFN, strDataPath, true);

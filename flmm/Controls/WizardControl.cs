@@ -87,19 +87,19 @@ namespace Fomm.Controls
       TabsVisible = false;
       BackColor = Color.FromKnownColor(KnownColor.Control);
 
-      Panel mPnlNavigation = new Panel();
+      var mPnlNavigation = new Panel();
       mPnlNavigation.Dock = DockStyle.Bottom;
       mPnlNavigation.Height = 23 + 2*12;
       mPnlNavigation.DataBindings.Add("BackColor", this, "BackColor");
 
-      Panel mPnlNavigationLight = new Panel();
+      var mPnlNavigationLight = new Panel();
       mPnlNavigationLight.BackColor = SystemColors.ControlLightLight;
       mPnlNavigationLight.Dock = DockStyle.Top;
       mPnlNavigationLight.Location = new Point(0, 1);
       mPnlNavigationLight.Size = new Size(444, 1);
       mPnlNavigationLight.TabIndex = 1;
 
-      Panel mPnlNavigationShadow = new Panel();
+      var mPnlNavigationShadow = new Panel();
       mPnlNavigationShadow.BackColor = SystemColors.ControlDark;
       mPnlNavigationShadow.Dock = DockStyle.Top;
       mPnlNavigationShadow.Location = new Point(0, 0);
@@ -111,7 +111,7 @@ namespace Fomm.Controls
 
       Controls.Add(mPnlNavigation);
 
-      Button mButCancel = new Button();
+      var mButCancel = new Button();
       mButCancel.Text = "Cancel";
       mButCancel.Anchor = AnchorStyles.Right | AnchorStyles.Bottom;
       mButCancel.Size = new Size(75, 23);

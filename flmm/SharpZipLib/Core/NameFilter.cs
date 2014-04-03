@@ -212,7 +212,7 @@ namespace Fomm.SharpZipLib.Core
       }
 
       var items = SplitQuoted(filter_);
-      foreach (string item in items)
+      foreach (var item in items)
       {
         if ((item != null) && (item.Length > 0))
         {

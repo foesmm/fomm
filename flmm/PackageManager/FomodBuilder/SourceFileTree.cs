@@ -231,12 +231,12 @@ namespace Fomm.PackageManager.FomodBuilder
             var kvpPath = Archive.ParseArchivePath(p_strFile);
             var arcArchive = new Archive(kvpPath.Key);
             var strFolders = arcArchive.GetDirectories(kvpPath.Value);
-            foreach (string folder in strFolders)
+            foreach (var folder in strFolders)
             {
               addSourceFile(tndFile, Archive.GenerateArchivePath(kvpPath.Key, folder));
             }
             var strFiles = arcArchive.GetFiles(kvpPath.Value);
-            foreach (string file in strFiles)
+            foreach (var file in strFiles)
             {
               addSourceFile(tndFile, Archive.GenerateArchivePath(kvpPath.Key, file));
             }
@@ -244,12 +244,12 @@ namespace Fomm.PackageManager.FomodBuilder
           else if (!p_strFile.StartsWith(FileSystemTreeNode.NEW_PREFIX))
           {
             var strFolders = Directory.GetDirectories(p_strFile);
-            foreach (string folder in strFolders)
+            foreach (var folder in strFolders)
             {
               addSourceFile(tndFile, folder);
             }
             var strFiles = Directory.GetFiles(p_strFile);
-            foreach (string file in strFiles)
+            foreach (var file in strFiles)
             {
               addSourceFile(tndFile, file);
             }
@@ -273,12 +273,12 @@ namespace Fomm.PackageManager.FomodBuilder
         {
           var arcArchive = new Archive(p_strFile);
           var strFolders = arcArchive.GetDirectories("/");
-          foreach (string folder in strFolders)
+          foreach (var folder in strFolders)
           {
             addSourceFile(tndFile, Archive.GenerateArchivePath(p_strFile, folder));
           }
           var strFiles = arcArchive.GetFiles("/");
-          foreach (string file in strFiles)
+          foreach (var file in strFiles)
           {
             addSourceFile(tndFile, Archive.GenerateArchivePath(p_strFile, file));
           }
@@ -354,12 +354,12 @@ namespace Fomm.PackageManager.FomodBuilder
           var kvpPath = Archive.ParseArchivePath(strPath);
           var arcArchive = new Archive(kvpPath.Key);
           var strFolders = arcArchive.GetDirectories(kvpPath.Value);
-          foreach (string folder in strFolders)
+          foreach (var folder in strFolders)
           {
             addSourceFile(tndFolder, Archive.GenerateArchivePath(kvpPath.Key, folder));
           }
           var strFiles = arcArchive.GetFiles(kvpPath.Value);
-          foreach (string file in strFiles)
+          foreach (var file in strFiles)
           {
             addSourceFile(tndFolder, Archive.GenerateArchivePath(kvpPath.Key, file));
           }
@@ -367,12 +367,12 @@ namespace Fomm.PackageManager.FomodBuilder
         else if (!strPath.StartsWith(FileSystemTreeNode.NEW_PREFIX))
         {
           var strFolders = Directory.GetDirectories(strPath);
-          foreach (string folder in strFolders)
+          foreach (var folder in strFolders)
           {
             addSourceFile(tndFolder, folder);
           }
           var strFiles = Directory.GetFiles(strPath);
-          foreach (string file in strFiles)
+          foreach (var file in strFiles)
           {
             addSourceFile(tndFolder, file);
           }

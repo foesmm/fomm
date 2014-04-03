@@ -261,7 +261,7 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
           }
           if (active[i] && ri.requires != null)
           {
-            foreach (string r in ri.requires)
+            foreach (var r in ri.requires)
             {
               var found = false;
               for (var j = 0; j < lplugins.Length; j++)
@@ -283,7 +283,7 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
           }
           if (active[i] && ri.conflicts != null)
           {
-            foreach (string conflict in ri.conflicts)
+            foreach (var conflict in ri.conflicts)
             {
               for (var j = 0; j < lplugins.Length; j++)
               {
@@ -300,7 +300,7 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
           }
           if (ri.comments != null)
           {
-            foreach (string comment in ri.comments)
+            foreach (var comment in ri.comments)
             {
               sb.AppendLine("  " + comment);
             }
@@ -318,7 +318,7 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
         var dup = (string[]) plugins.Clone();
         SortList(dup);
         sb.AppendLine("The order that the current template suggests is as follows:");
-        foreach (string ds in dup)
+        foreach (var ds in dup)
         {
           sb.AppendLine(ds);
         }

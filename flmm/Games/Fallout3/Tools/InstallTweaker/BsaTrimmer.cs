@@ -13,7 +13,7 @@ namespace Fomm.Games.Fallout3.Tools.InstallTweaker
     private static void Commit(BinaryWriter bw, long offset, byte[] data, long offset2, int add, bool parse)
     {
       var newsize = 0;
-      IntPtr pdata = parse ? NativeMethods.ddsShrink(data, data.Length, out newsize) : IntPtr.Zero;
+      var pdata = parse ? NativeMethods.ddsShrink(data, data.Length, out newsize) : IntPtr.Zero;
       byte[] newdata;
       if (pdata == IntPtr.Zero)
       {

@@ -298,7 +298,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
       {
         strTo += Path.DirectorySeparatorChar;
       }
-      foreach (string file in lstFOMODFiles)
+      foreach (var file in lstFOMODFiles)
       {
         if (m_bwdProgress.Cancelled())
         {

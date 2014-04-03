@@ -25,7 +25,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       Text += RecName;
       tbName.Text = RecName;
       Text += " (hex mode)";
-      DynamicByteProvider dbytes = new DynamicByteProvider(data);
+      var dbytes = new DynamicByteProvider(data);
       bytes = dbytes.Bytes;
       hexBox1.ByteProvider = dbytes;
       Canceled = true;

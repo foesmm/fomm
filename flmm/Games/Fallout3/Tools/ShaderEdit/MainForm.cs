@@ -352,7 +352,7 @@ namespace Fomm.Games.Fallout3.Tools.ShaderEdit
       {
         return;
       }
-      foreach (Shader shader in shaders)
+      foreach (var shader in shaders)
       {
         var path = Path.Combine(folderBrowserDialog1.SelectedPath, shader.name);
         if (File.Exists(path))

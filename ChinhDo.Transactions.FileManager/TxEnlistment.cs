@@ -208,7 +208,7 @@ namespace ChinhDo.Transactions
 
       public void Commit(Enlistment enlistment)
       {
-        foreach (RollbackOperation op in _journal)
+        foreach (var op in _journal)
         {
           op.CleanUp();
         }

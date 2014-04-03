@@ -133,7 +133,7 @@ class ScriptRunner {
         if (errors != null)
         {
           sb.AppendLine("Errors:");
-          foreach (string error in errors)
+          foreach (var error in errors)
           {
             sb.AppendLine(error);
           }
@@ -141,7 +141,7 @@ class ScriptRunner {
         if (warnings != null)
         {
           sb.AppendLine("Warnings:");
-          foreach (string warning in warnings)
+          foreach (var warning in warnings)
           {
             sb.AppendLine(warning);
           }

@@ -177,7 +177,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 
       InitDecompressor();
 
-      string s = ReadRecName(br);
+      var s = ReadRecName(br);
       if (s != "TES4")
       {
         throw new Exception("File is not a valid TES4 plugin (Missing TES4 record)");
@@ -197,7 +197,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         }
       }
       br.BaseStream.Position = 4;
-      uint recsize = br.ReadUInt32();
+      var recsize = br.ReadUInt32();
       Records.Add(new Record("TES4", recsize, br, IsOblivion));
       if (!headerOnly)
       {

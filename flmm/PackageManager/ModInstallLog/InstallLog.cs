@@ -1217,7 +1217,7 @@ namespace Fomm.PackageManager.ModInstallLog
           xndInstallingMod.Attributes["key"].InnerText = p_strModKey;
         }
         var stbData = new StringBuilder(p_bteData.Length*2);
-        foreach (byte b in p_bteData)
+        foreach (var b in p_bteData)
         {
           stbData.Append(b.ToString("x2"));
         }
@@ -1269,7 +1269,7 @@ namespace Fomm.PackageManager.ModInstallLog
       if (xndInstallingMod != null)
       {
         var stbData = new StringBuilder(p_bteData.Length*2);
-        foreach (byte b in p_bteData)
+        foreach (var b in p_bteData)
         {
           stbData.Append(b.ToString("x2"));
         }

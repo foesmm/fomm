@@ -658,14 +658,14 @@ namespace Fomm.PackageManager
     {
       FileStream fsOut;
 
-      string strPath = srcFN.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).ToLowerInvariant();
+      var strPath = srcFN.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).ToLowerInvariant();
 
       if (!m_dicFileInfo.ContainsKey(strPath))
       {
         throw new FileNotFoundException("The requested file does not exist in the archive.", srcFN);
       }
 
-      ArchiveFileInfo afiFile = m_dicFileInfo[strPath];
+      var afiFile = m_dicFileInfo[strPath];
 
       if (IsReadonly)
       {
@@ -705,7 +705,7 @@ namespace Fomm.PackageManager
       }
 
       var afiFile = m_dicFileInfo[strPath];
-      byte[] bteFile = new byte[afiFile.Size];
+      var bteFile = new byte[afiFile.Size];
       using (var msmFile = new MemoryStream(bteFile))
       {
         //check to see if we are on the same thread as the extractor

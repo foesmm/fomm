@@ -154,7 +154,7 @@ namespace fomm.Scripting
         return new string[0];
       }
       s += " ";
-      foreach (char c in s)
+      foreach (var c in s)
       {
         switch (c)
         {
@@ -454,7 +454,7 @@ namespace fomm.Scripting
       var argsperoption = 1 + (Previews ? 1 : 0) + (Descriptions ? 1 : 0);
       //Remove first 2 arguments
       var title = line[1];
-      string[] items = new string[line.Length - 2];
+      var items = new string[line.Length - 2];
       Array.Copy(line, 2, items, 0, line.Length - 2);
       line = items;
       //Check for incorrect number of arguments
@@ -465,8 +465,8 @@ namespace fomm.Scripting
       }
       //Create arrays to pass to the select form
       items = new string[line.Length/argsperoption];
-      string[] previews = Previews ? new string[line.Length/argsperoption] : null;
-      string[] descs = Descriptions ? new string[line.Length/argsperoption] : null;
+      var previews = Previews ? new string[line.Length/argsperoption] : null;
+      var descs = Descriptions ? new string[line.Length/argsperoption] : null;
       for (var i = 0; i < line.Length/argsperoption; i++)
       {
         items[i] = line[i*argsperoption];
@@ -509,7 +509,7 @@ namespace fomm.Scripting
 
     private static string[] FunctionSelectVar(string[] line, bool IsVariable)
     {
-      string Func = IsVariable ? " to function 'SelectVar'" : "to function 'SelectString'";
+      var Func = IsVariable ? " to function 'SelectVar'" : "to function 'SelectString'";
       if (line.Length < 2)
       {
         Warn("Missing arguments" + Func);
@@ -1000,7 +1000,7 @@ namespace fomm.Scripting
       }
       //check for brackets
 
-      int index = func.IndexOf("(");
+      var index = func.IndexOf("(");
       while (index != -1)
       {
         var count = 1;
@@ -1160,7 +1160,7 @@ namespace fomm.Scripting
       }
       //check for brackets
 
-      int index = func.IndexOf("(");
+      var index = func.IndexOf("(");
       while (index != -1)
       {
         var count = 1;

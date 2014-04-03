@@ -305,7 +305,7 @@ namespace Fomm.Controls
       }
 
       // Remove old items
-      foreach (ListViewItem item in _ItemsToMove)
+      foreach (var item in _ItemsToMove)
       {
         Items.Remove(item);
       }

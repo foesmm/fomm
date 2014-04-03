@@ -570,7 +570,7 @@ namespace Fomm.Games.FalloutNewVegas
           MessageBox.Show("Please close all utility windows before launching fallout");
           return;
         }
-        string command = File.Exists("falloutNV.exe") ? "falloutNV.exe" : "falloutNVng.exe";
+        var command = File.Exists("falloutNV.exe") ? "falloutNV.exe" : "falloutNVng.exe";
         var booSteamStarted = StartSteam(p_eeaArguments.Argument);
 
         try

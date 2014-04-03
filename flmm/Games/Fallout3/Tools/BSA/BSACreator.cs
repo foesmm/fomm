@@ -74,7 +74,7 @@ namespace Fomm.Games.Fallout3.Tools.BSA
     private static uint GenHashInternal(string s)
     {
       uint hash = 0;
-      foreach (char c in s)
+      foreach (var c in s)
       {
         hash *= 0x1003f;
         hash += (byte) c;
@@ -449,7 +449,7 @@ namespace Fomm.Games.Fallout3.Tools.BSA
         bw.Write((uint) (bw.BaseStream.Length + GetTotalFileNameLength()));
         bw.BaseStream.Position = bw.BaseStream.Length;
         bw.Write((byte) (fr.name.Length + 1));
-        foreach (char c in fr.name)
+        foreach (var c in fr.name)
         {
           bw.Write((byte) c);
         }
@@ -466,7 +466,7 @@ namespace Fomm.Games.Fallout3.Tools.BSA
       {
         foreach (var fr2 in fr.files)
         {
-          foreach (char c in fr2.name)
+          foreach (var c in fr2.name)
           {
             bw.Write((byte) c);
           }

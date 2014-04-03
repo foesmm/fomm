@@ -343,7 +343,7 @@ namespace Fomm.PackageManager
       isActive = (InstallLog.Current.GetModKey(baseName) != null);
 
       //check for script
-      foreach (string name in FomodScript.ScriptNames)
+      foreach (var name in FomodScript.ScriptNames)
       {
         if (ContainsFile("fomod/" + name))
         {
@@ -353,7 +353,7 @@ namespace Fomm.PackageManager
       }
 
       //check for readme
-      foreach (string ext in Readme.ValidExtensions)
+      foreach (var ext in Readme.ValidExtensions)
       {
         if (ContainsFile("readme - " + baseName + ext))
         {
@@ -363,7 +363,7 @@ namespace Fomm.PackageManager
       }
       if (String.IsNullOrEmpty(m_strReadmePath))
       {
-        foreach (string ext in Readme.ValidExtensions)
+        foreach (var ext in Readme.ValidExtensions)
         {
           if (ContainsFile("docs/readme - " + baseName + ext))
           {
@@ -378,7 +378,7 @@ namespace Fomm.PackageManager
       {
         ".png", ".jpg", ".bmp"
       };
-      foreach (string ext in extensions)
+      foreach (var ext in extensions)
       {
         if (ContainsFile("fomod/screenshot" + ext))
         {
@@ -661,7 +661,7 @@ namespace Fomm.PackageManager
         throw new FileNotFoundException("File doesn't exist in fomod", srcFile);
       }
 
-      string tmpFN = Path.GetTempFileName();
+      var tmpFN = Path.GetTempFileName();
 
       if ((m_arcCacheFile != null) && m_arcCacheFile.ContainsFile(GetPrefixAdjustedPath(srcFile)))
       {
@@ -855,7 +855,7 @@ namespace Fomm.PackageManager
       if ((p_finFomodInfo.Groups != null) && (p_finFomodInfo.Groups.Length > 0))
       {
         xelTemp = xmlInfo.CreateElement("Groups");
-        foreach (string group in p_finFomodInfo.Groups)
+        foreach (var group in p_finFomodInfo.Groups)
         {
           xelTemp.AppendChild(xmlInfo.CreateElement("element")).InnerText = group;
         }

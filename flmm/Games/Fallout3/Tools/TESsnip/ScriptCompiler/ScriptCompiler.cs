@@ -78,7 +78,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
       {
         opcode = ushort.Parse(n.Attributes.GetNamedItem("opcode").Value,
                               NumberStyles.AllowHexSpecifier, null);
-        XmlNode n2 = n.Attributes.GetNamedItem("desc");
+        var n2 = n.Attributes.GetNamedItem("desc");
         desc = n2 == null ? "" : n2.Value;
         n2 = n.Attributes.GetNamedItem("fose");
         if (n2 != null && n2.Value == "true")
@@ -270,7 +270,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
           else if (n.Name == "Func")
           {
             var n2 = n.Attributes.GetNamedItem("short");
-            string sname = n2 != null ? n2.Value : null;
+            var sname = n2 != null ? n2.Value : null;
             AddFunction(n.Attributes.GetNamedItem("name").Value, sname, new FunctionSig(n, false));
           }
           else if (n.Name == "Block")
@@ -877,7 +877,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
             args[i] = smt.Dequeue();
           }
           EmitFunctionCall(ref args, true, hadRef);
-          foreach (Token arg in args)
+          foreach (var arg in args)
           {
             smt.Enqueue(arg);
           }

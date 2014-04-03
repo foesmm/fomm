@@ -792,7 +792,7 @@ namespace Fomm.Games.Fallout3
           MessageBox.Show("Please close all utility windows before launching fallout");
           return;
         }
-        string command = File.Exists("fallout3.exe") ? "fallout3.exe" : "fallout3ng.exe";
+        var command = File.Exists("fallout3.exe") ? "fallout3.exe" : "fallout3ng.exe";
         try
         {
           var psi = new ProcessStartInfo();

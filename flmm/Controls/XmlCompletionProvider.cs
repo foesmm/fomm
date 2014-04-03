@@ -835,7 +835,7 @@ namespace Fomm.Controls
         }
         m_actCompleteType = AutoCompleteType.Attribute;
       }
-      List<KeyValuePair<string, string>> lstComplete = ParseSchema(stkAncestors, lstSiblings, m_actCompleteType);
+      var lstComplete = ParseSchema(stkAncestors, lstSiblings, m_actCompleteType);
 
       var k = new List<XmlCompletionData>();
       if (lstComplete.Count > 0)

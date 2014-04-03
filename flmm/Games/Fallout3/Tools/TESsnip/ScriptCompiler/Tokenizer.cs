@@ -445,7 +445,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
 
     private void PopTokenInternal()
     {
-      Token t = PopTokenInternal2();
+      var t = PopTokenInternal2();
       storedTokens.Enqueue(t);
     }
 

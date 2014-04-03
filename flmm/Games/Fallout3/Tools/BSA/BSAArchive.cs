@@ -149,7 +149,7 @@ namespace Fomm.Games.Fallout3.Tools.BSA
     internal BSAArchive(string path)
     {
       br = new BinaryReader(File.OpenRead(path), Encoding.Default);
-      BSAHeader4 header = new BSAHeader4(br);
+      var header = new BSAHeader4(br);
       if (header.bsaVersion != 0x68 && header.bsaVersion != 0x67)
       {
         throw new BSALoadException();
@@ -259,7 +259,7 @@ namespace Fomm.Games.Fallout3.Tools.BSA
     private static uint GenHash2(string s)
     {
       uint hash = 0;
-      foreach (char c in s)
+      foreach (var c in s)
       {
         hash *= 0x1003f;
         hash += (byte) c;

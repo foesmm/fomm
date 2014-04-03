@@ -52,7 +52,7 @@ namespace Fomm.PackageManager
       string[] groups = Settings.Default.pluginGroups;
       this.groups = new List<string>(groups);
       lgroups = new List<string>(groups.Length);
-      foreach (string group in groups)
+      foreach (var group in groups)
       {
         lgroups.Add(group.ToLowerInvariant());
       }
@@ -157,7 +157,7 @@ namespace Fomm.PackageManager
         var lvg = new ListViewGroup("No group");
         lvModList.Groups.Add(lvg);
 
-        foreach (string group in groups)
+        foreach (var group in groups)
         {
           lvg = new ListViewGroup(group);
           lvModList.Groups.Add(lvg);
@@ -572,7 +572,7 @@ namespace Fomm.PackageManager
         }
       }
       lgroups.Clear();
-      foreach (string group in groups)
+      foreach (var group in groups)
       {
         lgroups.Add(group.ToLowerInvariant());
       }

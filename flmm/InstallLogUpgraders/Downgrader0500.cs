@@ -52,10 +52,10 @@ namespace Fomm.InstallLogUpgraders
        */
 
       // Load the document
-      XDocument doc = XDocument.Load(InstallLog.Current.InstallLogPath);
-      XElement root = doc.Element("installLog");
-      XElement modlist = root.Element("modList");
-      XElement datafiles = root.Element("dataFiles");
+      var doc = XDocument.Load(InstallLog.Current.InstallLogPath);
+      var root = doc.Element("installLog");
+      var modlist = root.Element("modList");
+      var datafiles = root.Element("dataFiles");
 
       // Set current version
       root.SetAttributeValue("fileVersion", InstallLog.CURRENT_VERSION);

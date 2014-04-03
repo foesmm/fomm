@@ -1704,7 +1704,7 @@ namespace Fomm.SharpZipLib.Zip
       uint nameLength = ReadLEUshort();
       uint extraLength = ReadLEUshort();
 
-      long sourcePosition = baseStream_.Position + nameLength + extraLength;
+      var sourcePosition = baseStream_.Position + nameLength + extraLength;
 
       if (skipOver)
       {

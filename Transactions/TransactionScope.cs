@@ -35,8 +35,7 @@ namespace fomm.Transactions
         throw new TransactionException("Complete has already been called.");
       }
 
-      bool booVotedToCommit = m_trnTransaction.Prepare();
-      if (booVotedToCommit && (m_trnTransaction.TransactionInformation.Status == TransactionStatus.Active))
+      if (m_trnTransaction.Prepare() && (m_trnTransaction.TransactionInformation.Status == TransactionStatus.Active))
       {
         m_trnTransaction.Commit();
       }

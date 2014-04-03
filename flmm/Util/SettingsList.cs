@@ -175,7 +175,7 @@ namespace Fomm.Util
         return null;
       }
       var lstValues = new List<Int32>();
-      foreach (string s in arr)
+      foreach (var s in arr)
       {
         int intValue;
         Int32.TryParse(s, out intValue);

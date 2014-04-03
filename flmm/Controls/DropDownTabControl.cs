@@ -507,7 +507,7 @@ namespace Fomm.Controls
       m_tpcPages.TabPageAdded += AddTabPage;
       m_tpcPages.TabPageRemoved += RemoveTabPage;
 
-      Panel mPnlDropDownPanel = new Panel();
+      var mPnlDropDownPanel = new Panel();
       mPnlDropDownPanel.Dock = DockStyle.Top;
       mPnlDropDownPanel.DataBindings.Add("BackColor", this, "BackColor");
 
@@ -605,7 +605,7 @@ namespace Fomm.Controls
       ctlPage.PageIndexChanged -= PageIndexChanged;
       ctlPage.TextChanged -= PageTextChanged;
       m_cbxSelector.Items.Remove(ctlPage);
-      foreach (DropDownTabPage page in m_tpcPages)
+      foreach (var page in m_tpcPages)
       {
         if (page.PageIndex > ctlPage.PageIndex)
         {

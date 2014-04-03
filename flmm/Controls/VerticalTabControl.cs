@@ -559,7 +559,7 @@ namespace Fomm.Controls
     {
       var ctlPage = e.TabPage;
       ctlPage.TabButton.Selected -= TabSelected;
-      foreach (VerticalTabPage tabPage in m_tpcPages)
+      foreach (var tabPage in m_tpcPages)
       {
         if (tabPage.PageIndex > ctlPage.PageIndex)
         {

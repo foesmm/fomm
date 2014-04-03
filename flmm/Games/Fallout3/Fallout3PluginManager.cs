@@ -127,7 +127,7 @@ namespace Fomm.Games.Fallout3
     public override string[] SortPluginList(string[] p_strPlugins)
     {
       var lstPlugins = new List<FileInfo>();
-      foreach (string plugin in p_strPlugins)
+      foreach (var plugin in p_strPlugins)
       {
         var strPlugin = plugin;
         if (!strPlugin.StartsWith(Program.GameMode.PluginsPath, StringComparison.InvariantCultureIgnoreCase) &&
@@ -251,7 +251,7 @@ namespace Fomm.Games.Fallout3
       {
         stbDescription.Append(
           @"\b Masters: \b0 \par \pard{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\sl240\slmult1 ");
-        foreach (string master in masters)
+        foreach (var master in masters)
         {
           stbDescription.AppendFormat("{{\\pntext\\f1\\'B7\\tab}}{0}\\par ", master);
           stbDescription.AppendLine();

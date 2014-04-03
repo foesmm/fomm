@@ -66,7 +66,7 @@ namespace Fomm.Util
       {
         m_lstItems.BinarySearch(item);
       }
-      int intIndex = m_lstItems.BinarySearch(item, m_cmpComparer);
+      var intIndex = m_lstItems.BinarySearch(item, m_cmpComparer);
 
       if (intIndex < 0)
       {
@@ -87,7 +87,7 @@ namespace Fomm.Util
       {
         m_lstItems.BinarySearch(item);
       }
-      int intIndex = m_lstItems.BinarySearch(item, m_cmpComparer);
+      var intIndex = m_lstItems.BinarySearch(item, m_cmpComparer);
       return intIndex > -1;
     }
 
@@ -118,7 +118,7 @@ namespace Fomm.Util
       {
         m_lstItems.BinarySearch(item);
       }
-      int intIndex = m_lstItems.BinarySearch(item, m_cmpComparer);
+      var intIndex = m_lstItems.BinarySearch(item, m_cmpComparer);
       if (intIndex > -1)
       {
         m_lstItems.RemoveAt(intIndex);

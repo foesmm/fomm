@@ -61,7 +61,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       InitializeComponent();
       Icon = Resources.fomm02;
       Properties.Settings.Default.windowPositions.GetWindowPosition("TESsnip", this);
-      foreach (string s in mods)
+      foreach (var s in mods)
       {
         LoadPlugin(s);
       }
@@ -1000,7 +1000,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
           }
           else
           {
-            foreach (Rec rec in gr.Records)
+            foreach (var rec in gr.Records)
             {
               toParse.Enqueue(rec);
             }
@@ -1565,7 +1565,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
           var gr = (GroupRecord) rec;
           if (gr.ContentsType == "LVLI" || gr.ContentsType == "LVLN" || gr.ContentsType == "LVLC")
           {
-            foreach (Rec r in gr.Records)
+            foreach (var r in gr.Records)
             {
               recs.Enqueue(r);
             }
@@ -1618,7 +1618,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
               sb3.Length = 0;
               break;
             case "LVLN":
-              foreach (SubRecord sub in r.SubRecords)
+              foreach (var sub in r.SubRecords)
               {
                 if (sub.Name == "LVLO")
                 {
@@ -1646,7 +1646,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
               sb3.Length = 0;
               break;
             case "LVLC":
-              foreach (SubRecord sub in r.SubRecords)
+              foreach (var sub in r.SubRecords)
               {
                 if (sub.Name == "LVLO")
                 {
@@ -1874,7 +1874,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         if (recs.Peek() is GroupRecord)
         {
           var gr = (GroupRecord) recs.Dequeue();
-          foreach (Rec rec in gr.Records)
+          foreach (var rec in gr.Records)
           {
             recs.Enqueue(rec);
           }
@@ -1942,7 +1942,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       Fixups = new uint[masters.Count + 1];
       for (var i = 0; i < masters.Count; i++)
       {
-        foreach (Plugin pl in plugins)
+        foreach (var pl in plugins)
         {
           if (masters[i] == pl.Name.ToLowerInvariant())
           {
