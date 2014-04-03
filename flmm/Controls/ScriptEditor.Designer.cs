@@ -32,6 +32,7 @@
       this.toolStrip1 = new System.Windows.Forms.ToolStrip();
       this.tsbCheckSyntax = new System.Windows.Forms.ToolStripButton();
       this.cedEditor = new Fomm.Controls.CodeEditor();
+      this.cedEditor.SetHighlighting("C#");
       this.toolStrip1.SuspendLayout();
       this.SuspendLayout();
       // 

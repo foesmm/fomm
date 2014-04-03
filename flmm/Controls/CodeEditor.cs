@@ -21,8 +21,6 @@ namespace Fomm.Controls
     /// </summary>
     public CodeEditor()
     {
-      SetHighlighting("C#");
-
       Document.FoldingManager.FoldingStrategy = new CodeFoldingStrategy();
       m_tmrFoldUpdater.Elapsed += UpdateFolds;
       m_tmrFoldUpdater.Interval = 2000;
