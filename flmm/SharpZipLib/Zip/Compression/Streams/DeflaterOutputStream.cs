@@ -493,15 +493,15 @@ namespace Fomm.SharpZipLib.Zip.Compression.Streams
     /// <param name="buffer">
     ///   The byte array
     /// </param>
-    /// <param name="offset">
+    /// <param name="newOffset">
     ///   The offset into the byte array where to start.
     /// </param>
     /// <param name="count">
     ///   The number of bytes to write.
     /// </param>
-    public override void Write(byte[] buffer, int offset, int count)
+    public override void Write(byte[] buffer, int newOffset, int count)
     {
-      deflater_.SetInput(buffer, offset, count);
+      deflater_.SetInput(buffer, newOffset, count);
       Deflate();
     }
 

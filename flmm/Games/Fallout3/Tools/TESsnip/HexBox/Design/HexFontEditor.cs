@@ -18,9 +18,9 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox.Design
     ///   Edits the value
     /// </summary>
     public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider,
-                                     object value)
+                                     object newValue)
     {
-      this.value = value;
+      value = newValue;
       if (provider != null)
       {
         var service1 =
@@ -36,23 +36,23 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox.Design
           fontDialog.ShowEffects = false;
           fontDialog.ShowHelp = false;
 
-          var font = value as Font;
+          var font = newValue as Font;
           if (font != null)
           {
             fontDialog.Font = font;
           }
           if (fontDialog.ShowDialog() == DialogResult.OK)
           {
-            this.value = fontDialog.Font;
+            value = fontDialog.Font;
           }
 
           fontDialog.Dispose();
         }
       }
 
-      value = this.value;
-      this.value = null;
-      return value;
+      newValue = value;
+      value = null;
+      return newValue;
     }
 
     public override UITypeEditorEditStyle GetEditStyle(ITypeDescriptorContext context)

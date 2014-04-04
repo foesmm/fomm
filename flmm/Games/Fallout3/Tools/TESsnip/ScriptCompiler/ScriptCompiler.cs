@@ -287,25 +287,25 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
       }
     }
 
-    private static void RecursePlugin(Rec r, uint mask, uint id, Dictionary<uint, Record> records,
+    private static void RecursePlugin(Rec rec1, uint mask, uint id, Dictionary<uint, Record> records,
                                       List<Pair<uint, Record>> quests, List<Pair<uint, Record>> refs)
     {
-      if (r is Record)
+      if (rec1 is Record)
       {
-        var r2 = (Record) r;
-        if (r2.descriptiveName == null)
+        var rec2 = (Record) rec1;
+        if (rec2.descriptiveName == null)
         {
           return;
         }
-        if ((r2.FormID & 0xff000000) != mask || r2.descriptiveName == null)
+        if ((rec2.FormID & 0xff000000) != mask || rec2.descriptiveName == null)
         {
           return;
         }
-        records[(r2.FormID & 0xffffff) + id] = r2;
+        records[(rec2.FormID & 0xffffff) + id] = rec2;
 
-        if (r2.Name == "QUST")
+        if (rec2.Name == "QUST")
         {
-          foreach (var sr in r2.SubRecords)
+          foreach (var sr in rec2.SubRecords)
           {
             if (sr.Name == "SCRI")
             {
@@ -315,39 +315,39 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
               {
                 return;
               }
-              quests.Add(new Pair<uint, Record>((formid & 0xffffff) + id, r2));
+              quests.Add(new Pair<uint, Record>((formid & 0xffffff) + id, rec2));
             }
           }
         }
-        else if (r2.Name == "REFR" || r2.Name == "ACHR" || r2.Name == "ACRE")
+        else if (rec2.Name == "REFR" || rec2.Name == "ACHR" || rec2.Name == "ACRE")
         {
-          if (r2.SubRecords.Count > 2 && r2.SubRecords[0].Name == "EDID" && r2.SubRecords[1].Name == "NAME")
+          if (rec2.SubRecords.Count > 2 && rec2.SubRecords[0].Name == "EDID" && rec2.SubRecords[1].Name == "NAME")
           {
-            var bytes = r2.SubRecords[1].GetReadonlyData();
+            var bytes = rec2.SubRecords[1].GetReadonlyData();
             var formid = (TypeConverter.h2i(bytes[0], bytes[1], bytes[2], bytes[3]));
             if ((formid & 0xff000000) != mask)
             {
               return;
             }
-            refs.Add(new Pair<uint, Record>((formid & 0xffffff) + id, r2));
+            refs.Add(new Pair<uint, Record>((formid & 0xffffff) + id, rec2));
           }
         }
       }
       else
       {
-        foreach (var r2 in ((GroupRecord) r).Records)
+        foreach (var r2 in ((GroupRecord) rec1).Records)
         {
           RecursePlugin(r2, mask, id, records, quests, refs);
         }
       }
     }
 
-    private static void RecursePlugin(Rec r, Dictionary<uint, Record> records, List<Pair<uint, Record>> quests,
+    private static void RecursePlugin(Rec rec1, Dictionary<uint, Record> records, List<Pair<uint, Record>> quests,
                                       List<Pair<uint, Record>> refs)
     {
-      if (r is Record)
+      if (rec1 is Record)
       {
-        var r2 = (Record) r;
+        var r2 = (Record) rec1;
         if (r2.descriptiveName == null)
         {
           return;
@@ -378,7 +378,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
       }
       else
       {
-        foreach (var r2 in ((GroupRecord) r).Records)
+        foreach (var r2 in ((GroupRecord) rec1).Records)
         {
           RecursePlugin(r2, records, quests, refs);
         }

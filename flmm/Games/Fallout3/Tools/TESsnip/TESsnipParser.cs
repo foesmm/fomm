@@ -642,15 +642,15 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       return data;
     }
 
-    public void SetData(byte[] data)
+    public void SetData(byte[] newData)
     {
-      if (data.Length != 4)
+      if (newData.Length != 4)
       {
         throw new ArgumentException("data length must be 4");
       }
       for (var i = 0; i < 4; i++)
       {
-        this.data[i] = data[i];
+        data[i] = newData[i];
       }
     }
   }

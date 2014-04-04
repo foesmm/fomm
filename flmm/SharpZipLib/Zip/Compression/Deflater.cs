@@ -309,24 +309,24 @@ namespace Fomm.SharpZipLib.Zip.Compression
     ///   true the change of compression level will occur somewhere near
     ///   before the end of the so far given input.
     /// </summary>
-    /// <param name="level">
+    /// <param name="newLevel">
     ///   the new compression level.
     /// </param>
-    public void SetLevel(int level)
+    public void SetLevel(int newLevel)
     {
-      if (level == DEFAULT_COMPRESSION)
+      if (newLevel == DEFAULT_COMPRESSION)
       {
-        level = 6;
+        newLevel = 6;
       }
-      else if (level < NO_COMPRESSION || level > BEST_COMPRESSION)
+      else if (newLevel < NO_COMPRESSION || newLevel > BEST_COMPRESSION)
       {
-        throw new ArgumentOutOfRangeException("level");
+        throw new ArgumentOutOfRangeException("newLevel");
       }
 
-      if (this.level != level)
+      if (level != newLevel)
       {
-        this.level = level;
-        engine.SetLevel(level);
+        level = newLevel;
+        engine.SetLevel(newLevel);
       }
     }
 

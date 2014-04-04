@@ -20,9 +20,9 @@ namespace Fomm
     private static RecieveMessageDelegate del;
     //private static MessagePasser messagePasser;
 
-    public static void ServerSetup(RecieveMessageDelegate del)
+    public static void ServerSetup(RecieveMessageDelegate newDelegate)
     {
-      Messaging.del = del;
+      del = newDelegate;
       var serverChannel = new IpcChannel("localhost:9090");
       ChannelServices.RegisterChannel(serverChannel, false);
       RemotingConfiguration.RegisterWellKnownServiceType(typeof (MessagePasser), "MessagePasser.rem",

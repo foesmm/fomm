@@ -507,11 +507,11 @@ namespace Fomm.SharpZipLib.Zip
     ///   Writes the given buffer to the current entry.
     /// </summary>
     /// <param name="buffer">The buffer containing data to write.</param>
-    /// <param name="offset">The offset of the first byte to write.</param>
+    /// <param name="newOffset">The offset of the first byte to write.</param>
     /// <param name="count">The number of bytes to write.</param>
     /// <exception cref="ZipException">Archive size is invalid</exception>
     /// <exception cref="System.InvalidOperationException">No entry is active.</exception>
-    public override void Write(byte[] buffer, int offset, int count)
+    public override void Write(byte[] buffer, int newOffset, int count)
     {
       if (curEntry == null)
       {
@@ -523,9 +523,9 @@ namespace Fomm.SharpZipLib.Zip
         throw new ArgumentNullException("buffer");
       }
 
-      if (offset < 0)
+      if (newOffset < 0)
       {
-        throw new ArgumentOutOfRangeException("offset", "Cannot be negative");
+        throw new ArgumentOutOfRangeException("newOffset", "Cannot be negative");
       }
 
       if (count < 0)
@@ -533,22 +533,22 @@ namespace Fomm.SharpZipLib.Zip
         throw new ArgumentOutOfRangeException("count", "Cannot be negative");
       }
 
-      if ((buffer.Length - offset) < count)
+      if ((buffer.Length - newOffset) < count)
       {
         throw new ArgumentException("Invalid offset/count combination");
       }
 
-      crc.Update(buffer, offset, count);
+      crc.Update(buffer, newOffset, count);
       size += count;
 
       switch (curMethod)
       {
         case CompressionMethod.Deflated:
-          base.Write(buffer, offset, count);
+          base.Write(buffer, newOffset, count);
           break;
 
         case CompressionMethod.Stored:
-          baseOutputStream_.Write(buffer, offset, count);
+          baseOutputStream_.Write(buffer, newOffset, count);
           break;
       }
     }
