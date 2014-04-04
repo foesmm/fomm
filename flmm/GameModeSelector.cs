@@ -6,14 +6,14 @@ using Fomm.Properties;
 namespace Fomm
 {
   /// <summary>
-  /// Selects the game for which mods will be managed.
+  ///   Selects the game for which mods will be managed.
   /// </summary>
   public partial class GameModeSelector : Form
   {
     #region Properties
 
     /// <summary>
-    /// Gets the selected game mode.
+    ///   Gets the selected game mode.
     /// </summary>
     /// <value>The selected game mode.</value>
     public SupportedGameModes SelectedGameMode
@@ -37,7 +37,7 @@ namespace Fomm
     #region Constructors
 
     /// <summary>
-    /// The default constructor.
+    ///   The default constructor.
     /// </summary>
     public GameModeSelector()
     {
@@ -59,13 +59,13 @@ namespace Fomm
     #endregion
 
     /// <summary>
-    /// Hanldes the <see cref="Control.Click"/> event of the OK button.
+    ///   Hanldes the <see cref="Control.Click" /> event of the OK button.
     /// </summary>
     /// <remarks>
-    /// This makes the mod manager remember the selected game, if requested.
+    ///   This makes the mod manager remember the selected game, if requested.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void butOK_Click(object sender, EventArgs e)
     {
       Settings.Default.rememberGameMode = cbxRemember.Checked;

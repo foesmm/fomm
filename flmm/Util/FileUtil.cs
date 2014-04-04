@@ -5,35 +5,37 @@ using ChinhDo.Transactions;
 namespace Fomm.Util
 {
   /// <summary>
-  /// A delegate for a function that takes 1 parameter.
+  ///   A delegate for a function that takes 1 parameter.
   /// </summary>
   /// <remarks>
-  /// This duplicates the functionality of the delegate with the same signature
-  /// found in .NET v3.5 and later. It is duplicated here to support pre-3.5 installs.
+  ///   This duplicates the functionality of the delegate with the same signature
+  ///   found in .NET v3.5 and later. It is duplicated here to support pre-3.5 installs.
   /// </remarks>
   /// <typeparam name="T">The type of the parameter of the method that this delegate encapsulates.</typeparam>
   /// <typeparam name="TResult">The type of the return value of the method that this delegate encapsulates.</typeparam>
   /// <param name="p_tValue">The first parameter.</param>
-  /// <returns>A value of type <typeparamref name="TResult"/>.</returns>
+  /// <returns>A value of type <typeparamref name="TResult" />.</returns>
   public delegate TResult Func<T, TResult>(T p_tValue);
 
   /// <summary>
-  /// Utility functions to work with files.
+  ///   Utility functions to work with files.
   /// </summary>
   public class FileUtil
   {
     /// <summary>
-    /// Copies the source to the destination.
+    ///   Copies the source to the destination.
     /// </summary>
     /// <remarks>
-    /// If the source is a directory, it is copied recursively.
+    ///   If the source is a directory, it is copied recursively.
     /// </remarks>
     /// <param name="p_tfmFileManager">The transactional file manager to use to copy the files.</param>
     /// <param name="p_strSource">The path from which to copy.</param>
     /// <param name="p_strDestination">The path to which to copy.</param>
-    /// <param name="p_fncCopyCallback">A callback method that notifies the caller when a file has been copied,
-    /// and provides the opportunity to cancel the copy operation.</param>
-    /// <returns><lang langref="true"/> if the copy operation wasn't cancelled; <lang langref="false"/> otherwise.</returns>
+    /// <param name="p_fncCopyCallback">
+    ///   A callback method that notifies the caller when a file has been copied,
+    ///   and provides the opportunity to cancel the copy operation.
+    /// </param>
+    /// <returns><lang langref="true" /> if the copy operation wasn't cancelled; <lang langref="false" /> otherwise.</returns>
     public static bool Copy(TxFileManager p_tfmFileManager, string p_strSource, string p_strDestination,
                             Func<string, bool> p_fncCopyCallback)
     {
@@ -77,16 +79,18 @@ namespace Fomm.Util
     }
 
     /// <summary>
-    /// Copies the source to the destination.
+    ///   Copies the source to the destination.
     /// </summary>
     /// <remarks>
-    /// If the source is a directory, it is copied recursively.
+    ///   If the source is a directory, it is copied recursively.
     /// </remarks>
     /// <param name="p_strSource">The path from which to copy.</param>
     /// <param name="p_strDestination">The path to which to copy.</param>
-    /// <param name="p_fncCopyCallback">A callback method that notifies the caller when a file has been copied,
-    /// and provides the opportunity to cancel the copy operation.</param>
-    /// <returns><lang langref="true"/> if the copy operation wasn't cancelled; <lang langref="false"/> otherwise.</returns>
+    /// <param name="p_fncCopyCallback">
+    ///   A callback method that notifies the caller when a file has been copied,
+    ///   and provides the opportunity to cancel the copy operation.
+    /// </param>
+    /// <returns><lang langref="true" /> if the copy operation wasn't cancelled; <lang langref="false" /> otherwise.</returns>
     public static bool Copy(string p_strSource, string p_strDestination, Func<string, bool> p_fncCopyCallback)
     {
       if (File.Exists(p_strSource))
@@ -129,11 +133,11 @@ namespace Fomm.Util
     }
 
     /// <summary>
-    /// Forces deletion of the given path.
+    ///   Forces deletion of the given path.
     /// </summary>
     /// <remarks>
-    /// This method is recursive if the given path is a directory. This method will clear read only/system
-    /// attributes if required to delete the path.
+    ///   This method is recursive if the given path is a directory. This method will clear read only/system
+    ///   attributes if required to delete the path.
     /// </remarks>
     /// <param name="p_strPath">The path to delete.</param>
     public static void ForceDelete(string p_strPath)
@@ -168,11 +172,11 @@ namespace Fomm.Util
     }
 
     /// <summary>
-    /// Clears the attributes of the given path.
+    ///   Clears the attributes of the given path.
     /// </summary>
     /// <remarks>
-    /// This sets the path's attributes to <see cref="FileAttributes.Normal"/>. This operation is
-    /// optionally recursive.
+    ///   This sets the path's attributes to <see cref="FileAttributes.Normal" />. This operation is
+    ///   optionally recursive.
     /// </remarks>
     /// <param name="p_strPath">The path whose attributes are to be cleared.</param>
     /// <param name="p_booRecurse">Whether or not to clear the attributes on all children files and folers.</param>
@@ -190,11 +194,11 @@ namespace Fomm.Util
     }
 
     /// <summary>
-    /// Clears the attributes of the given directory.
+    ///   Clears the attributes of the given directory.
     /// </summary>
     /// <remarks>
-    /// This sets the directory's attributes to <see cref="FileAttributes.Normal"/>. This operation is
-    /// optionally recursive.
+    ///   This sets the directory's attributes to <see cref="FileAttributes.Normal" />. This operation is
+    ///   optionally recursive.
     /// </remarks>
     /// <param name="p_difPath">The directory whose attributes are to be cleared.</param>
     /// <param name="p_booRecurse">Whether or not to clear the attributes on all children files and folers.</param>

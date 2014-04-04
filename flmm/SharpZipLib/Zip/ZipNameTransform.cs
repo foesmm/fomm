@@ -41,23 +41,23 @@ using Fomm.SharpZipLib.Core;
 namespace Fomm.SharpZipLib.Zip
 {
   /// <summary>
-  /// ZipNameTransform transforms names as per the Zip file naming convention.
+  ///   ZipNameTransform transforms names as per the Zip file naming convention.
   /// </summary>
-  /// <remarks>The use of absolute names is supported although its use is not valid 
-  /// according to Zip naming conventions, and should not be used if maximum compatability is desired.</remarks>
+  /// <remarks>
+  ///   The use of absolute names is supported although its use is not valid
+  ///   according to Zip naming conventions, and should not be used if maximum compatability is desired.
+  /// </remarks>
   internal class ZipNameTransform : INameTransform
   {
     #region Constructors
 
     /// <summary>
-    /// Initialize a new instance of <see cref="ZipNameTransform"></see>
+    ///   Initialize a new instance of <see cref="ZipNameTransform"></see>
     /// </summary>
-    public ZipNameTransform()
-    {
-    }
+    public ZipNameTransform() {}
 
     /// <summary>
-    /// Initialize a new instance of <see cref="ZipNameTransform"></see>
+    ///   Initialize a new instance of <see cref="ZipNameTransform"></see>
     /// </summary>
     /// <param name="trimPrefix">The string to trim from the front of paths if found.</param>
     public ZipNameTransform(string trimPrefix)
@@ -68,7 +68,7 @@ namespace Fomm.SharpZipLib.Zip
     #endregion
 
     /// <summary>
-    /// Static constructor.
+    ///   Static constructor.
     /// </summary>
     static ZipNameTransform()
     {
@@ -94,7 +94,7 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Transform a windows directory name according to the Zip file naming conventions.
+    ///   Transform a windows directory name according to the Zip file naming conventions.
     /// </summary>
     /// <param name="name">The directory name to transform.</param>
     /// <returns>The transformed name.</returns>
@@ -116,7 +116,7 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Transform a windows file name according to the Zip file naming conventions.
+    ///   Transform a windows file name according to the Zip file naming conventions.
     /// </summary>
     /// <param name="name">The file name to transform.</param>
     /// <returns>The transformed name.</returns>
@@ -163,10 +163,12 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Get/set the path prefix to be trimmed from paths if present.
+    ///   Get/set the path prefix to be trimmed from paths if present.
     /// </summary>
-    /// <remarks>The prefix is trimmed before any conversion from
-    /// a windows path is done.</remarks>
+    /// <remarks>
+    ///   The prefix is trimmed before any conversion from
+    ///   a windows path is done.
+    /// </remarks>
     public string TrimPrefix
     {
       set
@@ -180,7 +182,7 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Force a name to be valid by replacing invalid characters with a fixed value
+    ///   Force a name to be valid by replacing invalid characters with a fixed value
     /// </summary>
     /// <param name="name">The name to force valid</param>
     /// <param name="replacement">The replacement character to use.</param>
@@ -217,16 +219,17 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Test a name to see if it is a valid name for a zip entry.
+    ///   Test a name to see if it is a valid name for a zip entry.
     /// </summary>
     /// <param name="name">The name to test.</param>
     /// <param name="relaxed">If true checking is relaxed about windows file names and absolute paths.</param>
     /// <returns>Returns true if the name is a valid zip name; false otherwise.</returns>
-    /// <remarks>Zip path names are actually in Unix format, and should only contain relative paths.
-    /// This means that any path stored should not contain a drive or
-    /// device letter, or a leading slash.  All slashes should forward slashes '/'.
-    /// An empty name is valid for a file where the input comes from standard input.
-    /// A null name is not considered valid.
+    /// <remarks>
+    ///   Zip path names are actually in Unix format, and should only contain relative paths.
+    ///   This means that any path stored should not contain a drive or
+    ///   device letter, or a leading slash.  All slashes should forward slashes '/'.
+    ///   An empty name is valid for a file where the input comes from standard input.
+    ///   A null name is not considered valid.
     /// </remarks>
     public static bool IsValidName(string name, bool relaxed)
     {

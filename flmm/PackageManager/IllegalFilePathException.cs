@@ -3,18 +3,18 @@
 namespace Fomm.PackageManager
 {
   /// <summary>
-  /// The exception that is thrown when the path being accessed is illegal.
+  ///   The exception that is thrown when the path being accessed is illegal.
   /// </summary>
   public class IllegalFilePathException : Exception
   {
     /// <summary>
-    /// Gets the illegal path.
+    ///   Gets the illegal path.
     /// </summary>
     /// <value>The illegal path.</value>
     public string Path { get; private set; }
 
     /// <summary>
-    /// The default constructor.
+    ///   The default constructor.
     /// </summary>
     /// <param name="p_strPath">The illegal path.</param>
     public IllegalFilePathException(string p_strPath)
@@ -23,7 +23,7 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// A simple contructor that sets the exception's message.
+    ///   A simple contructor that sets the exception's message.
     /// </summary>
     /// <param name="p_strPath">The illegal path.</param>
     /// <param name="message">The exception's message.</param>
@@ -34,7 +34,7 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// A simple constructor the sets the exception's message and inner exception.
+    ///   A simple constructor the sets the exception's message and inner exception.
     /// </summary>
     /// <param name="p_strPath">The illegal path.</param>
     /// <param name="message">The exception's message.</param>

@@ -1,21 +1,21 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 using System.Text.RegularExpressions;
-using System.IO;
 using Fomm.Util;
 
 namespace Fomm.Games.Fallout3.Tools.AutoSorter
 {
   /// <summary>
-  /// Utility class that handles checking for, and retreiving, new
-  /// version of the load order template.
+  ///   Utility class that handles checking for, and retreiving, new
+  ///   version of the load order template.
   /// </summary>
   public class Fallout3BOSSUpdater
   {
     private static Regex m_rgxVersion = new Regex(@"Revision (\d+): ");
 
     /// <summary>
-    /// Gets the URL where the latest masterlist lives.
+    ///   Gets the URL where the latest masterlist lives.
     /// </summary>
     /// <value>The URL where the latest masterlist lives.</value>
     protected virtual string MasterListURL
@@ -27,7 +27,7 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
     }
 
     /// <summary>
-    /// Gets the current verison of the BOSS Fallout 3 Masterlist.
+    ///   Gets the current verison of the BOSS Fallout 3 Masterlist.
     /// </summary>
     /// <returns>The current verison of the BOSS Fallout 3 Masterlist.</returns>
     public Int32 GetMasterlistVersion()
@@ -49,7 +49,7 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
     }
 
     /// <summary>
-    /// Updates the BOSS Fallout 3 Masterlist used by FOMM.
+    ///   Updates the BOSS Fallout 3 Masterlist used by FOMM.
     /// </summary>
     public void UpdateMasterlist(string p_strPath)
     {

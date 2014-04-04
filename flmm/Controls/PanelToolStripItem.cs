@@ -4,13 +4,13 @@ using System.Windows.Forms;
 namespace Fomm.Controls
 {
   /// <summary>
-  /// The object that can be added to <see cref="PanelToolStrip"/>s.
+  ///   The object that can be added to <see cref="PanelToolStrip" />s.
   /// </summary>
   /// <remarks>
-  /// This class is a wrapper for the actual controls that get added to the <see cref="PanelToolStrip"/>.
-  /// The purpose of this wrapper is to provide a single event that gets raised in a consistent manner
-  /// to which commands can be attached. This class also serves to track various metadata about the
-  /// controls.
+  ///   This class is a wrapper for the actual controls that get added to the <see cref="PanelToolStrip" />.
+  ///   The purpose of this wrapper is to provide a single event that gets raised in a consistent manner
+  ///   to which commands can be attached. This class also serves to track various metadata about the
+  ///   controls.
   /// </remarks>
   public class PanelToolStripItem
   {
@@ -23,7 +23,7 @@ namespace Fomm.Controls
     #region Properties
 
     /// <summary>
-    /// Gets or sets the Display style of the PanelToolStripItem.
+    ///   Gets or sets the Display style of the PanelToolStripItem.
     /// </summary>
     /// <value>The Display style of the PanelToolStripItem.</value>
     public ToolStripItemDisplayStyle Display
@@ -39,7 +39,7 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Gets or sets the index of the PanelToolStripItem.
+    ///   Gets or sets the index of the PanelToolStripItem.
     /// </summary>
     /// <value>The index of the PanelToolStripItem.</value>
     public Int32 Index
@@ -62,7 +62,7 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Gets or sets the Enabled of the button.
+    ///   Gets or sets the Enabled of the button.
     /// </summary>
     /// <value>The Enabled of the button.</value>
     public bool Enabled
@@ -78,7 +78,7 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Gets or sets the Visible of the button.
+    ///   Gets or sets the Visible of the button.
     /// </summary>
     /// <value>The Visible of the button.</value>
     public bool Visible
@@ -94,9 +94,9 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Gets the actual control that is to be added to the <see cref="PanelToolStrip"/>.
+    ///   Gets the actual control that is to be added to the <see cref="PanelToolStrip" />.
     /// </summary>
-    /// <value>The actual control that is to be added to the <see cref="PanelToolStrip"/>.</value>
+    /// <value>The actual control that is to be added to the <see cref="PanelToolStrip" />.</value>
     public Control Button { get; private set; }
 
     #endregion
@@ -104,17 +104,22 @@ namespace Fomm.Controls
     #region Constructors
 
     /// <summary>
-    /// A simple constructor.
+    ///   A simple constructor.
     /// </summary>
     /// <remarks>
-    /// This constructor wires the appropriate event <paramref name="p_ctlButton"/> to the
-    /// <see cref="Select"/> event.
+    ///   This constructor wires the appropriate event <paramref name="p_ctlButton" /> to the
+    ///   <see cref="Select" /> event.
     /// </remarks>
-    /// <param name="p_ctlButton">The actual control that is to be added to the <see cref="PanelToolStrip"/>.</param>
-    /// <param name="p_strEvent">The name of the event on the button control to which to bind the <see cref="Selected"/> event.</param>
+    /// <param name="p_ctlButton">The actual control that is to be added to the <see cref="PanelToolStrip" />.</param>
+    /// <param name="p_strEvent">
+    ///   The name of the event on the button control to which to bind the <see cref="Selected" />
+    ///   event.
+    /// </param>
     /// <param name="p_intIndex">The index of this item in the panel.</param>
-    /// <param name="p_tdsDisplayStyle">The <see cref="ToolStripItemDisplayStyle"/> indicating how text and
-    /// images are displayed on this item.</param>
+    /// <param name="p_tdsDisplayStyle">
+    ///   The <see cref="ToolStripItemDisplayStyle" /> indicating how text and
+    ///   images are displayed on this item.
+    /// </param>
     public PanelToolStripItem(Control p_ctlButton, string p_strEvent, Int32 p_intIndex,
                               ToolStripItemDisplayStyle p_tdsDisplayStyle)
     {
@@ -134,15 +139,15 @@ namespace Fomm.Controls
     #endregion
 
     /// <summary>
-    /// The homogeneous event to which commands can be attached to the <see cref="PanelToolStrip"/>'s buttons.
+    ///   The homogeneous event to which commands can be attached to the <see cref="PanelToolStrip" />'s buttons.
     /// </summary>
     public event EventHandler<EventArgs> Selected;
 
     /// <summary>
-    /// Raises the <see cref="Select"/> event.
+    ///   Raises the <see cref="Select" /> event.
     /// </summary>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> desribing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> desribing the event arguments.</param>
     protected virtual void OnSelected(object sender, EventArgs e)
     {
       if (Selected != null)
@@ -152,14 +157,12 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Sets the item as not selected.
+    ///   Sets the item as not selected.
     /// </summary>
-    public virtual void SetUnselected()
-    {
-    }
+    public virtual void SetUnselected() {}
 
     /// <summary>
-    /// Sets the item as selected.
+    ///   Sets the item as selected.
     /// </summary>
     public virtual void SetSelected()
     {

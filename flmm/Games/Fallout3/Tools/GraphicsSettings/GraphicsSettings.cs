@@ -1,15 +1,15 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using System.Security;
 using System.Windows.Forms;
-using System.Runtime.InteropServices;
+using Fomm.Games.Fallout3.Script;
 using Fomm.PackageManager;
 using Fomm.PackageManager.ModInstallLog;
-using Fomm.Games.Fallout3.Script;
 
 namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
 {
   /// <summary>
-  /// The form used to change graphics settings.
+  ///   The form used to change graphics settings.
   /// </summary>
   public partial class GraphicsSettings : Form
   {
@@ -61,7 +61,7 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
     #endregion
 
     /// <summary>
-    /// A container class to simplify working with comboboxes.
+    ///   A container class to simplify working with comboboxes.
     /// </summary>
     private class ComboBoxItem : IComparable<ComboBoxItem>, IComparable<string>, IEquatable<ComboBoxItem>,
                                  IEquatable<string>
@@ -69,25 +69,25 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
       #region Properties
 
       /// <summary>
-      /// Gets or set the display name of the item.
+      ///   Gets or set the display name of the item.
       /// </summary>
       /// <value>The display name of the item.</value>
       public string Name { get; set; }
 
       /// <summary>
-      /// Gets or sets the value of the item.
+      ///   Gets or sets the value of the item.
       /// </summary>
       /// <value>The value of the item.</value>
       public object Value { get; set; }
 
       /// <summary>
-      /// Gets or sets the tag of the item.
+      ///   Gets or sets the tag of the item.
       /// </summary>
       /// <value>The tag of the item.</value>
       public object Tag { get; set; }
 
       /// <summary>
-      /// Gets the value of the item as a string.
+      ///   Gets the value of the item as a string.
       /// </summary>
       /// <value>The value of the item as a string.</value>
       public string ValueAsString
@@ -103,7 +103,7 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
       #region Constructors
 
       /// <summary>
-      /// A simple constructor the sets the itme's name and value to the given value.
+      ///   A simple constructor the sets the itme's name and value to the given value.
       /// </summary>
       /// <param name="p_objValue">The value of ths item.</param>
       public ComboBoxItem(object p_objValue)
@@ -113,7 +113,7 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
       }
 
       /// <summary>
-      /// A simple constructor the sets the itme's name and value.
+      ///   A simple constructor the sets the itme's name and value.
       /// </summary>
       /// <param name="p_strName">The name of the item.</param>
       /// <param name="p_objValue">The value of ths item.</param>
@@ -124,7 +124,7 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
       }
 
       /// <summary>
-      /// A simple constructor the sets the itme's name and value.
+      ///   A simple constructor the sets the itme's name and value.
       /// </summary>
       /// <param name="p_strName">The name of the item.</param>
       /// <param name="p_objValue">The value of ths item.</param>
@@ -139,7 +139,7 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
       #endregion
 
       /// <summary>
-      /// Returns the name of the item as the string representation of the object.
+      ///   Returns the name of the item as the string representation of the object.
       /// </summary>
       /// <returns>The name of the item as the string representation of the object.</returns>
       public override string ToString()
@@ -150,14 +150,16 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
       #region IComparable<ComboBoxItem> Members
 
       /// <summary>
-      /// Compares this item to the given item.
+      ///   Compares this item to the given item.
       /// </summary>
       /// <remarks>Items' equality is determined by their names.</remarks>
       /// <param name="other">The item to which to compare this item.</param>
-      /// <returns>A value less than zero if this instance is less than the given instance,
-      /// or a value of zero  if this instance is equal to the given instance,
-      /// or a value greater than zero if this instance is greater than the given
-      /// instance.</returns>
+      /// <returns>
+      ///   A value less than zero if this instance is less than the given instance,
+      ///   or a value of zero  if this instance is equal to the given instance,
+      ///   or a value greater than zero if this instance is greater than the given
+      ///   instance.
+      /// </returns>
       public int CompareTo(ComboBoxItem other)
       {
         return Name.CompareTo(other.Name);
@@ -168,14 +170,16 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
       #region IComparable<string> Members
 
       /// <summary>
-      /// Compares this item to the given string.
+      ///   Compares this item to the given string.
       /// </summary>
       /// <remarks>Items' equality is determined by their names.</remarks>
       /// <param name="other">The item to which to compare this item.</param>
-      /// <returns>A value less than zero if this instance is less than the given instance,
-      /// or a value of zero  if this instance is equal to the given instance,
-      /// or a value greater than zero if this instance is greater than the given
-      /// instance.</returns>
+      /// <returns>
+      ///   A value less than zero if this instance is less than the given instance,
+      ///   or a value of zero  if this instance is equal to the given instance,
+      ///   or a value greater than zero if this instance is greater than the given
+      ///   instance.
+      /// </returns>
       public int CompareTo(string other)
       {
         return Name.CompareTo(other);
@@ -186,12 +190,14 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
       #region IEquatable<ComboBoxItem> Members
 
       /// <summary>
-      /// Compares this item to the given ComboBoxItem.
+      ///   Compares this item to the given ComboBoxItem.
       /// </summary>
       /// <remarks>Items' equality is determined by their names.</remarks>
       /// <param name="other">The item to which to compare this item.</param>
-      /// <returns><lang langref="true"/> if this item's name is equal to the given
-      /// ComboBoxItem's name; <lang langref="false"/> otherwise.</returns>
+      /// <returns>
+      ///   <lang langref="true" /> if this item's name is equal to the given
+      ///   ComboBoxItem's name; <lang langref="false" /> otherwise.
+      /// </returns>
       public bool Equals(ComboBoxItem other)
       {
         return Name.Equals(other.Name);
@@ -202,12 +208,14 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
       #region IEquatable<string> Members
 
       /// <summary>
-      /// Compares this item to the given string.
+      ///   Compares this item to the given string.
       /// </summary>
       /// <remarks>Items' equality is determined by their names.</remarks>
       /// <param name="other">The item to which to compare this item.</param>
-      /// <returns><lang langref="true"/> if this item's name is equal to the given
-      /// ComboBoxItem's name; <lang langref="false"/> otherwise.</returns>
+      /// <returns>
+      ///   <lang langref="true" /> if this item's name is equal to the given
+      ///   ComboBoxItem's name; <lang langref="false" /> otherwise.
+      /// </returns>
       public bool Equals(string other)
       {
         return Name.Equals(other);
@@ -216,15 +224,17 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
       #endregion
 
       /// <summary>
-      /// Handles equation checking against objects.
+      ///   Handles equation checking against objects.
       /// </summary>
       /// <remarks>
-      /// If the given object is of a recognized type this method delegates to one
-      /// of the types Equals methods.
+      ///   If the given object is of a recognized type this method delegates to one
+      ///   of the types Equals methods.
       /// </remarks>
       /// <param name="obj">The item to which to compare this item.</param>
-      /// <returns><lang langref="true"/> if this item's name is equal to the given
-      /// ComboBoxItem's name; <lang langref="false"/> otherwise.</returns>
+      /// <returns>
+      ///   <lang langref="true" /> if this item's name is equal to the given
+      ///   ComboBoxItem's name; <lang langref="false" /> otherwise.
+      /// </returns>
       public override bool Equals(object obj)
       {
         if (obj is string)
@@ -307,7 +317,7 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
     #region Value Loading
 
     /// <summary>
-    /// Loads the general display settings.
+    ///   Loads the general display settings.
     /// </summary>
     private void LoadGeneralValues()
     {
@@ -319,8 +329,8 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
 
       //aspect ratios
       var intCurrentAspect = NativeMethods.GetPrivateProfileIntA("Launcher", "uLastAspectRatio", 0,
-                                                                   ((Fallout3GameMode.SettingsFilesSet)
-                                                                     Program.GameMode.SettingsFiles).FOPrefsIniPath);
+                                                                 ((Fallout3GameMode.SettingsFilesSet)
+                                                                   Program.GameMode.SettingsFiles).FOPrefsIniPath);
       double dblCurrentRatio = 0;
       for (var i = 0; i < m_cbiAspectRatios.Length; i++)
       {
@@ -334,11 +344,11 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
 
       //screen resolutions
       var intScreenWidth = NativeMethods.GetPrivateProfileIntA("Display", "iSize W", 0,
-                                                                 ((Fallout3GameMode.SettingsFilesSet)
-                                                                   Program.GameMode.SettingsFiles).FOPrefsIniPath);
+                                                               ((Fallout3GameMode.SettingsFilesSet)
+                                                                 Program.GameMode.SettingsFiles).FOPrefsIniPath);
       var intScreenHeight = NativeMethods.GetPrivateProfileIntA("Display", "iSize H", 0,
-                                                                  ((Fallout3GameMode.SettingsFilesSet)
-                                                                    Program.GameMode.SettingsFiles).FOPrefsIniPath);
+                                                                ((Fallout3GameMode.SettingsFilesSet)
+                                                                  Program.GameMode.SettingsFiles).FOPrefsIniPath);
       var strCurrentRes = String.Format("{0}x{1}", intScreenWidth, intScreenHeight);
       LoadResolutions(dblCurrentRatio, strCurrentRes);
       if (!cbxResolution.Items.Contains(strCurrentRes))
@@ -354,8 +364,8 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
       //antialiasing
       var cbiAliasing = new ComboBoxItem("Off (best performance)", 0);
       var intAliasingSamples = NativeMethods.GetPrivateProfileIntA("Display", "iMultiSample", 0,
-                                                                     ((Fallout3GameMode.SettingsFilesSet)
-                                                                       Program.GameMode.SettingsFiles).FOPrefsIniPath);
+                                                                   ((Fallout3GameMode.SettingsFilesSet)
+                                                                     Program.GameMode.SettingsFiles).FOPrefsIniPath);
       cbxAntialiasing.Items.Add(cbiAliasing);
       for (var i = 2; i < Math.Max(4, intAliasingSamples) + 1; i += 2)
       {
@@ -367,8 +377,8 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
       //ansio
       var cbiAniso = new ComboBoxItem("Off (best performance)", 0);
       var intAnisoSamples = NativeMethods.GetPrivateProfileIntA("Display", "iMaxAnisotropy", 0,
-                                                                  ((Fallout3GameMode.SettingsFilesSet)
-                                                                    Program.GameMode.SettingsFiles).FOPrefsIniPath);
+                                                                ((Fallout3GameMode.SettingsFilesSet)
+                                                                  Program.GameMode.SettingsFiles).FOPrefsIniPath);
       cbxAnisotropic.Items.Add(cbiAniso);
       for (var i = 2; i < Math.Max(15, intAnisoSamples) + 1; i++)
       {
@@ -402,14 +412,14 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
     }
 
     /// <summary>
-    /// Loads the details settings.
+    ///   Loads the details settings.
     /// </summary>
     private void LoadDetailValues()
     {
       //texture quality
       var intTextureQuality = NativeMethods.GetPrivateProfileIntA("Display", "iTexMipMapSkip", 0,
-                                                                    ((Fallout3GameMode.SettingsFilesSet)
-                                                                      Program.GameMode.SettingsFiles).FOPrefsIniPath);
+                                                                  ((Fallout3GameMode.SettingsFilesSet)
+                                                                    Program.GameMode.SettingsFiles).FOPrefsIniPath);
       for (var i = 0; i < m_cbiTextureQulities.Length; i++)
       {
         cbxTextureQuality.Items.Add(m_cbiTextureQulities[i]);
@@ -421,8 +431,8 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
 
       //radial blur quality
       var intRadialBlurQuality = NativeMethods.GetPrivateProfileIntA("Imagespace", "iRadialBlurLevel", 0,
-                                                                       ((Fallout3GameMode.SettingsFilesSet)
-                                                                         Program.GameMode.SettingsFiles).FOPrefsIniPath);
+                                                                     ((Fallout3GameMode.SettingsFilesSet)
+                                                                       Program.GameMode.SettingsFiles).FOPrefsIniPath);
       for (var i = 0; i < m_cbiRadialBlurQualities.Length; i++)
       {
         cbxRadialBlurQuality.Items.Add(m_cbiRadialBlurQualities[i]);
@@ -451,7 +461,7 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
     }
 
     /// <summary>
-    /// Loads the water settings.
+    ///   Loads the water settings.
     /// </summary>
     private void LoadWaterValues()
     {
@@ -472,8 +482,8 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
       // iWaterReflectHeight
       // the above values should always be the same
       var intReflectionSize = NativeMethods.GetPrivateProfileIntA("Water", "iWaterReflectWidth", 0,
-                                                                    ((Fallout3GameMode.SettingsFilesSet)
-                                                                      Program.GameMode.SettingsFiles).FOPrefsIniPath);
+                                                                  ((Fallout3GameMode.SettingsFilesSet)
+                                                                    Program.GameMode.SettingsFiles).FOPrefsIniPath);
       for (var i = 0; i < m_cbiReflectionQualities.Length; i++)
       {
         cbxReflectionQuality.Items.Add(m_cbiReflectionQualities[i]);
@@ -518,8 +528,8 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
 
       //water multisamples
       var intSamples = NativeMethods.GetPrivateProfileIntA("Display", "iWaterMultisamples", 0,
-                                                             ((Fallout3GameMode.SettingsFilesSet)
-                                                               Program.GameMode.SettingsFiles).FOPrefsIniPath);
+                                                           ((Fallout3GameMode.SettingsFilesSet)
+                                                             Program.GameMode.SettingsFiles).FOPrefsIniPath);
       for (var i = 0; i < m_cbiWaterMultisamples.Length; i++)
       {
         cbxWaterMultisampling.Items.Add(m_cbiWaterMultisamples[i]);
@@ -531,7 +541,7 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
     }
 
     /// <summary>
-    /// Loads the shadow settings.
+    ///   Loads the shadow settings.
     /// </summary>
     private void LoadShadowValues()
     {
@@ -543,8 +553,8 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
 
       //shadow quality
       var intShadowsRes = NativeMethods.GetPrivateProfileIntA("Display", "iShadowMapResolution", 0,
-                                                                ((Fallout3GameMode.SettingsFilesSet)
-                                                                  Program.GameMode.SettingsFiles).FOPrefsIniPath);
+                                                              ((Fallout3GameMode.SettingsFilesSet)
+                                                                Program.GameMode.SettingsFiles).FOPrefsIniPath);
       for (var i = 0; i < m_cbiShadowQualities.Length; i++)
       {
         cbxShadowQuality.Items.Add(m_cbiShadowQualities[i]);
@@ -556,8 +566,8 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
 
       //shadow filtering
       var intShadowFilter = NativeMethods.GetPrivateProfileIntA("Display", "iShadowFilter", 0,
-                                                                  ((Fallout3GameMode.SettingsFilesSet)
-                                                                    Program.GameMode.SettingsFiles).FOPrefsIniPath);
+                                                                ((Fallout3GameMode.SettingsFilesSet)
+                                                                  Program.GameMode.SettingsFiles).FOPrefsIniPath);
       for (var i = 0; i < m_cbiShadowFilters.Length; i++)
       {
         cbxShadowFiltering.Items.Add(m_cbiShadowFilters[i]);
@@ -579,7 +589,7 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
     }
 
     /// <summary>
-    /// Loads the view distance settings.
+    ///   Loads the view distance settings.
     /// </summary>
     private void LoadViewDistanceValues()
     {
@@ -627,7 +637,7 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
     }
 
     /// <summary>
-    /// Loads the view distant lod settings.
+    ///   Loads the view distant lod settings.
     /// </summary>
     private void LoadDistantLODValues()
     {
@@ -655,11 +665,11 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
     #endregion
 
     /// <summary>
-    /// Loads the available resolutions.
+    ///   Loads the available resolutions.
     /// </summary>
     /// <remarks>
-    /// This queries the system for supported resolutions at the given aspect ratio, and populates
-    /// the resolution dropdown with the results.
+    ///   This queries the system for supported resolutions at the given aspect ratio, and populates
+    ///   the resolution dropdown with the results.
     /// </remarks>
     /// <param name="p_dblSelectedRatio">The aspect ratio to which to limit the available resolutions.</param>
     /// <param name="p_strCurrentRes">The current resolution.</param>
@@ -692,22 +702,22 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
     #region Event Handling
 
     /// <summary>
-    /// Handles the <see cref="ComboBox.SelectedIndexChanged"/> event of the aspect ratio
-    /// dropdown box.
+    ///   Handles the <see cref="ComboBox.SelectedIndexChanged" /> event of the aspect ratio
+    ///   dropdown box.
     /// </summary>
     /// <remarks>
-    /// This causes the resolution dropdown to refresh.
+    ///   This causes the resolution dropdown to refresh.
     /// </remarks>
     /// <param name="sender">The object that triggered the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event's arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event's arguments.</param>
     private void cbxAspectRatio_SelectedIndexChanged(object sender, EventArgs e)
     {
       var intScreenWidth = NativeMethods.GetPrivateProfileIntA("Display", "iSize W", 0,
-                                                                 ((Fallout3GameMode.SettingsFilesSet)
-                                                                   Program.GameMode.SettingsFiles).FOPrefsIniPath);
+                                                               ((Fallout3GameMode.SettingsFilesSet)
+                                                                 Program.GameMode.SettingsFiles).FOPrefsIniPath);
       var intScreenHeight = NativeMethods.GetPrivateProfileIntA("Display", "iSize H", 0,
-                                                                  ((Fallout3GameMode.SettingsFilesSet)
-                                                                    Program.GameMode.SettingsFiles).FOPrefsIniPath);
+                                                                ((Fallout3GameMode.SettingsFilesSet)
+                                                                  Program.GameMode.SettingsFiles).FOPrefsIniPath);
       var strCurrentRes = String.Format("{0}x{1}", intScreenWidth, intScreenHeight);
       LoadResolutions((double) ((ComboBoxItem) cbxAspectRatio.SelectedItem).Tag, strCurrentRes);
       if ((cbxResolution.SelectedItem == null) && (cbxResolution.Items.Count > 0))
@@ -717,14 +727,14 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
     }
 
     /// <summary>
-    /// Handles the <see cref="CheckBox.CheckedChanged"/> event of the water reflections
-    /// checkbox.
+    ///   Handles the <see cref="CheckBox.CheckedChanged" /> event of the water reflections
+    ///   checkbox.
     /// </summary>
     /// <remarks>
-    /// This enables/disables the controls having to to with water reflections, as appropriate.
+    ///   This enables/disables the controls having to to with water reflections, as appropriate.
     /// </remarks>
     /// <param name="sender">The object that triggered the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event's arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event's arguments.</param>
     private void ckbWaterReflections_CheckedChanged(object sender, EventArgs e)
     {
       foreach (Control ctlControl in gbxWaterReflections.Controls)
@@ -734,14 +744,14 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
     }
 
     /// <summary>
-    /// Handles the <see cref="CheckBox.CheckedChanged"/> event of the enable shadows
-    /// checkbox.
+    ///   Handles the <see cref="CheckBox.CheckedChanged" /> event of the enable shadows
+    ///   checkbox.
     /// </summary>
     /// <remarks>
-    /// This enables/disables the controls having to to with shadows, as appropriate.
+    ///   This enables/disables the controls having to to with shadows, as appropriate.
     /// </remarks>
     /// <param name="sender">The object that triggered the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event's arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event's arguments.</param>
     private void ckbEnableShadows_CheckedChanged(object sender, EventArgs e)
     {
       foreach (Control ctlControl in gbxShadows.Controls)
@@ -751,13 +761,13 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
     }
 
     /// <summary>
-    /// Handles the <see cref="Button.Click"/> event of the OK button.
+    ///   Handles the <see cref="Button.Click" /> event of the OK button.
     /// </summary>
     /// <remarks>
-    /// This saves any setting that have changed.
+    ///   This saves any setting that have changed.
     /// </remarks>
     /// <param name="sender">The object that triggered the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event's arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event's arguments.</param>
     private void butOK_Click(object sender, EventArgs e)
     {
       var sinSaver = new SettingsInstaller();
@@ -768,11 +778,11 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
     #endregion
 
     /// <summary>
-    /// The installer used to change the settings.
+    ///   The installer used to change the settings.
     /// </summary>
     /// <remarks>
-    /// This installer treats FOMM as a mod. The advantage of this is that changes that are
-    /// made to the settings are recorded in the install log.
+    ///   This installer treats FOMM as a mod. The advantage of this is that changes that are
+    ///   made to the settings are recorded in the install log.
     /// </remarks>
     private class SettingsInstaller : ModInstallerBase
     {
@@ -789,7 +799,7 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
         }
       }
 
-      /// <seealso cref="ModInstallScript.ExceptionMessage"/>
+      /// <seealso cref="ModInstallScript.ExceptionMessage" />
       protected override string ExceptionMessage
       {
         get
@@ -799,7 +809,7 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
         }
       }
 
-      /// <seealso cref="ModInstallScript.SuccessMessage"/>
+      /// <seealso cref="ModInstallScript.SuccessMessage" />
       protected override string SuccessMessage
       {
         get
@@ -808,7 +818,7 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
         }
       }
 
-      /// <seealso cref="ModInstallScript.FailMessage"/>
+      /// <seealso cref="ModInstallScript.FailMessage" />
       protected override string FailMessage
       {
         get
@@ -822,23 +832,23 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
       #region Constructors
 
       /// <summary>
-      /// A simple constructor that initializes the object.
+      ///   A simple constructor that initializes the object.
       /// </summary>
       internal SettingsInstaller()
-        : base(null)
-      {
-      }
+        : base(null) {}
 
       #endregion
 
       /// <summary>
-      /// Determines if the settings have already been saved.
+      ///   Determines if the settings have already been saved.
       /// </summary>
       /// <remarks>
-      /// This always returns <lang langref="false"/>.
+      ///   This always returns <lang langref="false" />.
       /// </remarks>
-      /// <returns><lang langref="false"/></returns>
-      /// <seealso cref="ModInstallScript.CheckAlreadyDone()"/>
+      /// <returns>
+      ///   <lang langref="false" />
+      /// </returns>
+      /// <seealso cref="ModInstallScript.CheckAlreadyDone()" />
       protected override bool CheckAlreadyDone()
       {
         return false;
@@ -847,14 +857,16 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
       #region Value Saving
 
       /// <summary>
-      /// Sets the specified Ini key to the given value if it differs
-      /// from the current value.
+      ///   Sets the specified Ini key to the given value if it differs
+      ///   from the current value.
       /// </summary>
       /// <param name="p_strSection">The section of the file containing the key to change.</param>
       /// <param name="p_strKey">The key to change.</param>
       /// <param name="p_strValue">The value to which to set the key.</param>
-      /// <returns><lang langref="true"/> if the value differed and so was changed;
-      /// <lang langref="false"/> otherwise.</returns>
+      /// <returns>
+      ///   <lang langref="true" /> if the value differed and so was changed;
+      ///   <lang langref="false" /> otherwise.
+      /// </returns>
       private bool SaveValue(string p_strSection, string p_strKey, string p_strValue)
       {
         if (!Fallout3Script.GetPrefsIniString(p_strSection, p_strKey).Equals(p_strValue))
@@ -867,7 +879,7 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
       }
 
       /// <summary>
-      /// Saves the general display settings.
+      ///   Saves the general display settings.
       /// </summary>
       /// <param name="p_gstSettings">The form used to gather the new settings.</param>
       private void SaveGeneralValues(GraphicsSettings p_gstSettings)
@@ -929,7 +941,7 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
       }
 
       /// <summary>
-      /// Saves the details settings.
+      ///   Saves the details settings.
       /// </summary>
       /// <param name="p_gstSettings">The form used to gather the new settings.</param>
       private void SaveDetailValues(GraphicsSettings p_gstSettings)
@@ -954,7 +966,7 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
       }
 
       /// <summary>
-      /// Saves the water settings.
+      ///   Saves the water settings.
       /// </summary>
       /// <param name="p_gstSettings">The form used to gather the new settings.</param>
       private void SaveWaterValues(GraphicsSettings p_gstSettings)
@@ -1005,7 +1017,7 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
       }
 
       /// <summary>
-      /// Saves the shadow settings.
+      ///   Saves the shadow settings.
       /// </summary>
       /// <param name="p_gstSettings">The form used to gather the new settings.</param>
       private void SaveShadowValues(GraphicsSettings p_gstSettings)
@@ -1029,7 +1041,7 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
       }
 
       /// <summary>
-      /// Saves the view distance settings.
+      ///   Saves the view distance settings.
       /// </summary>
       /// <param name="p_gstSettings">The form used to gather the new settings.</param>
       private void SaveViewDistanceValues(GraphicsSettings p_gstSettings)
@@ -1057,7 +1069,7 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
       }
 
       /// <summary>
-      /// Saves the view distant lod settings.
+      ///   Saves the view distant lod settings.
       /// </summary>
       /// <param name="p_gstSettings">The form used to gather the new settings.</param>
       private void SaveDistantLODValues(GraphicsSettings p_gstSettings)
@@ -1075,11 +1087,11 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
       #endregion
 
       /// <summary>
-      /// Saves the changed settings.
+      ///   Saves the changed settings.
       /// </summary>
       /// <remarks>
-      /// This uses transactions to support rollback in case of a problem. This also
-      /// modifies teh install log to track any changes that were made.
+      ///   This uses transactions to support rollback in case of a problem. This also
+      ///   modifies teh install log to track any changes that were made.
       /// </remarks>
       /// <param name="p_gstSettings">The form used to gather the new settings.</param>
       public void SaveSettings(GraphicsSettings p_gstSettings)
@@ -1089,13 +1101,17 @@ namespace Fomm.Games.Fallout3.Tools.GraphicsSettings
       }
 
       /// <summary>
-      /// This does the actual changing of settings.
+      ///   This does the actual changing of settings.
       /// </summary>
-      /// <returns><lang langref="true"/> if the script work was completed successfully and needs to
-      /// be committed; <lang langref="false"/> otherwise.</returns>
-      /// <exception cref="InvalidOperationException">Thrown if m_gstSettings is
-      /// <lang langref="null"/>.</exception>
-      /// <seealso cref="ModInstallScript.DoScript"/>
+      /// <returns>
+      ///   <lang langref="true" /> if the script work was completed successfully and needs to
+      ///   be committed; <lang langref="false" /> otherwise.
+      /// </returns>
+      /// <exception cref="InvalidOperationException">
+      ///   Thrown if m_gstSettings is
+      ///   <lang langref="null" />.
+      /// </exception>
+      /// <seealso cref="ModInstallScript.DoScript" />
       protected override bool DoScript()
       {
         if (m_gstSettings == null)

@@ -1,28 +1,26 @@
 ﻿using System;
-using SevenZip;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
-using Fomm.Util;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.ComponentModel;
+using Fomm.Util;
+using SevenZip;
 
 namespace Fomm.PackageManager
 {
   /// <summary>
-  /// Encapsulates the interactions with an archive file.
+  ///   Encapsulates the interactions with an archive file.
   /// </summary>
   public class Archive : IDisposable
   {
     /// <summary>
-    /// Raised when the files in the archive have changed.
+    ///   Raised when the files in the archive have changed.
     /// </summary>
-    public event EventHandler FilesChanged = delegate
-    {
-    };
+    public event EventHandler FilesChanged = delegate {};
 
     /// <summary>
-    /// The path prefix use to identify a file as being contained in an archive.
+    ///   The path prefix use to identify a file as being contained in an archive.
     /// </summary>
     public const string ARCHIVE_PREFIX = "arch:";
 
@@ -55,11 +53,11 @@ namespace Fomm.PackageManager
     #region Properties
 
     /// <summary>
-    /// Gets whether or not the archive is read-only.
+    ///   Gets whether or not the archive is read-only.
     /// </summary>
     /// <remarks>
-    /// RAR files are the only read-only archives. This is because FOMM isn't allow to create/edit RAR files
-    /// (from a licensing standpoint).
+    ///   RAR files are the only read-only archives. This is because FOMM isn't allow to create/edit RAR files
+    ///   (from a licensing standpoint).
     /// </remarks>
     /// <value>Whether or not the archive is read-only.</value>
     public bool ReadOnly
@@ -71,13 +69,13 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Gets the path of the archive.
+    ///   Gets the path of the archive.
     /// </summary>
     /// <value>The path of the archive.</value>
     public string ArchivePath { get; private set; }
 
     /// <summary>
-    /// Gets the names of the volumes that make up this archive.
+    ///   Gets the names of the volumes that make up this archive.
     /// </summary>
     /// <value>The names of the volumes that make up this archive.</value>
     public string[] VolumeFileNames
@@ -95,7 +93,7 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Gets whether the archive is solid.
+    ///   Gets whether the archive is solid.
     /// </summary>
     /// <value>Whether the archive is solid.</value>
     public bool IsSolid { get; private set; }
@@ -105,44 +103,46 @@ namespace Fomm.PackageManager
     #region Utility Methods
 
     /// <summary>
-    /// Gets a <see cref="SevenZipExtractor"/> for the given path.
+    ///   Gets a <see cref="SevenZipExtractor" /> for the given path.
     /// </summary>
     /// <remarks>
-    /// This builds a <see cref="SevenZipExtractor"/> for the given path. The path can
-    /// be to a nested archive (an archive in another archive).
-    /// </remarks> 
-    /// <param name="p_strPath">The path to the archive for which to get a <see cref="SevenZipExtractor"/>.</param>
-    /// <returns>A <see cref="SevenZipExtractor"/> for the given path.</returns>
+    ///   This builds a <see cref="SevenZipExtractor" /> for the given path. The path can
+    ///   be to a nested archive (an archive in another archive).
+    /// </remarks>
+    /// <param name="p_strPath">The path to the archive for which to get a <see cref="SevenZipExtractor" />.</param>
+    /// <returns>A <see cref="SevenZipExtractor" /> for the given path.</returns>
     public static SevenZipExtractor GetExtractor(string p_strPath)
     {
       return (SevenZipExtractor) GetExtractor(p_strPath, false);
     }
 
     /// <summary>
-    /// Gets a <see cref="ThreadSafeSevenZipExtractor"/> for the given path.
+    ///   Gets a <see cref="ThreadSafeSevenZipExtractor" /> for the given path.
     /// </summary>
     /// <remarks>
-    /// This builds a <see cref="ThreadSafeSevenZipExtractor"/> for the given path. The path can
-    /// be to a nested archive (an archive in another archive).
-    /// </remarks> 
-    /// <param name="p_strPath">The path to the archive for which to get a <see cref="ThreadSafeSevenZipExtractor"/>.</param>
-    /// <returns>A <see cref="ThreadSafeSevenZipExtractor"/> for the given path.</returns>
+    ///   This builds a <see cref="ThreadSafeSevenZipExtractor" /> for the given path. The path can
+    ///   be to a nested archive (an archive in another archive).
+    /// </remarks>
+    /// <param name="p_strPath">The path to the archive for which to get a <see cref="ThreadSafeSevenZipExtractor" />.</param>
+    /// <returns>A <see cref="ThreadSafeSevenZipExtractor" /> for the given path.</returns>
     public static ThreadSafeSevenZipExtractor GetThreadSafeExtractor(string p_strPath)
     {
       return (ThreadSafeSevenZipExtractor) GetExtractor(p_strPath, true);
     }
 
     /// <summary>
-    /// Gets a <see cref="SevenZipExtractor"/> for the given path.
+    ///   Gets a <see cref="SevenZipExtractor" /> for the given path.
     /// </summary>
     /// <remarks>
-    /// This builds a <see cref="SevenZipExtractor"/> for the given path. The path can
-    /// be to a nested archive (an archive in another archive).
-    /// </remarks> 
-    /// <param name="p_strPath">The path to the archive for which to get a <see cref="SevenZipExtractor"/>.</param>
+    ///   This builds a <see cref="SevenZipExtractor" /> for the given path. The path can
+    ///   be to a nested archive (an archive in another archive).
+    /// </remarks>
+    /// <param name="p_strPath">The path to the archive for which to get a <see cref="SevenZipExtractor" />.</param>
     /// <param name="p_booThreadSafe">Indicates if the returned extractor need to be thread safe.</param>
-    /// <returns>A <see cref="SevenZipExtractor"/> for the given path if the extractor doesn't need to be
-    /// thread safe; a <see cref="ThreadSafeSevenZipExtractor"/> otherwise.</returns>
+    /// <returns>
+    ///   A <see cref="SevenZipExtractor" /> for the given path if the extractor doesn't need to be
+    ///   thread safe; a <see cref="ThreadSafeSevenZipExtractor" /> otherwise.
+    /// </returns>
     private static object GetExtractor(string p_strPath, bool p_booThreadSafe)
     {
       if (p_strPath.StartsWith(ARCHIVE_PREFIX))
@@ -194,11 +194,13 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Determines whether or not the file specified by the given path
-    /// is an archive.
+    ///   Determines whether or not the file specified by the given path
+    ///   is an archive.
     /// </summary>
-    /// <returns><lang langref="true"/> if the specified file is an archive;
-    /// <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the specified file is an archive;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
     public static bool IsArchive(string p_strPath)
     {
       if (!p_strPath.StartsWith(ARCHIVE_PREFIX) && !File.Exists(p_strPath))
@@ -227,14 +229,14 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Changes the directory of the archive referenced in the given path to the specified
-    /// new directory.
+    ///   Changes the directory of the archive referenced in the given path to the specified
+    ///   new directory.
     /// </summary>
     /// <remarks>
-    /// This changes something of the form:
-    ///    arch:old\path\archive.zip//interior/path/file.txt
-    ///  to:
-    ///    arch:new\path\archive.zip//interior/path/file.txt
+    ///   This changes something of the form:
+    ///   arch:old\path\archive.zip//interior/path/file.txt
+    ///   to:
+    ///   arch:new\path\archive.zip//interior/path/file.txt
     /// </remarks>
     /// <param name="p_strArchivePath">The archive path whose directory is to be replaced.</param>
     /// <param name="p_strNewArchiveDirectory">The new directory to put into the given archive path.</param>
@@ -254,7 +256,7 @@ namespace Fomm.PackageManager
         kvpArchive = ParseArchivePath(kvpArchive.Key);
       }
       var strSource = GenerateArchivePath(Path.Combine(strNewDirectory, Path.GetFileName(kvpArchive.Key)),
-                                             kvpArchive.Value);
+                                          kvpArchive.Value);
       while (stkArchives.Count > 0)
       {
         strSource = GenerateArchivePath(strSource, stkArchives.Pop());
@@ -263,8 +265,8 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Parses the given path to extract the path to the archive file, and the path to
-    /// a file within said archive.
+    ///   Parses the given path to extract the path to the archive file, and the path to
+    ///   a file within said archive.
     /// </summary>
     /// <param name="p_strPath">The file path to parse.</param>
     /// <returns>The path to an archive file, and the path to a file within said archive.</returns>
@@ -285,7 +287,7 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Generates a path to a file in an archive.
+    ///   Generates a path to a file in an archive.
     /// </summary>
     /// <param name="p_strArchivePath">The path of the archive file.</param>
     /// <param name="p_strInternalPath">The path of the file in the archive.</param>
@@ -300,7 +302,7 @@ namespace Fomm.PackageManager
     #region Constructors
 
     /// <summary>
-    /// A simple constructor the initializes the object with the given values.
+    ///   A simple constructor the initializes the object with the given values.
     /// </summary>
     /// <param name="p_strPath">The path to the archive file.</param>
     public Archive(string p_strPath)
@@ -331,26 +333,22 @@ namespace Fomm.PackageManager
     #region Read Transactions
 
     /// <summary>
-    /// Raised when a read-only initialization step has started.
+    ///   Raised when a read-only initialization step has started.
     /// </summary>
-    public event CancelEventHandler ReadOnlyInitStepStarted = delegate
-    {
-    };
+    public event CancelEventHandler ReadOnlyInitStepStarted = delegate {};
 
     /// <summary>
-    /// Raised when a read-only initialization step has finished.
+    ///   Raised when a read-only initialization step has finished.
     /// </summary>
-    public event CancelEventHandler ReadOnlyInitStepFinished = delegate
-    {
-    };
+    public event CancelEventHandler ReadOnlyInitStepFinished = delegate {};
 
     /// <summary>
-    /// Gets whether the archive is in read-only mode.
+    ///   Gets whether the archive is in read-only mode.
     /// </summary>
     /// <remarks>
-    /// Read-only mode maintains a single extractor for all operations, greatly increasing
-    /// extraction speed as the extractor isn't created/destroyed for each operation. While
-    /// in read-only mod the underlying file is left open (this class holds a handle to the file).
+    ///   Read-only mode maintains a single extractor for all operations, greatly increasing
+    ///   extraction speed as the extractor isn't created/destroyed for each operation. While
+    ///   in read-only mod the underlying file is left open (this class holds a handle to the file).
     /// </remarks>
     /// <value>Whether the archive is in read-only mode.</value>
     protected bool IsReadonly
@@ -362,7 +360,7 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Gets the number of steps that need to be performed to put the archive into read-only mode.
+    ///   Gets the number of steps that need to be performed to put the archive into read-only mode.
     /// </summary>
     /// <value>The number of steps that need to be performed to put the archive into read-only mode.</value>
     public Int32 ReadOnlyInitStepCount
@@ -381,10 +379,10 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Starts a read-only transaction.
+    ///   Starts a read-only transaction.
     /// </summary>
     /// <remarks>
-    /// This puts the archive into read-only mode.
+    ///   This puts the archive into read-only mode.
     /// </remarks>
     public void BeginReadOnlyTransaction()
     {
@@ -409,13 +407,13 @@ namespace Fomm.PackageManager
     #region Callbacks
 
     /// <summary>
-    /// Called when a file has been extracted from a source archive.
+    ///   Called when a file has been extracted from a source archive.
     /// </summary>
     /// <remarks>
-    /// This notifies listeners that a read-only initialization step has finished.
+    ///   This notifies listeners that a read-only initialization step has finished.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void FileExtractionFinished(object sender, FileInfoEventArgs e)
     {
       var ceaArgs = new CancelEventArgs(false);
@@ -424,13 +422,13 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Called when a file is about to be extracted from a source archive.
+    ///   Called when a file is about to be extracted from a source archive.
     /// </summary>
     /// <remarks>
-    /// This notifies listeners that a read-only initialization step has started.
+    ///   This notifies listeners that a read-only initialization step has started.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">A <see cref="FileNameEventArgs"/> describing the event arguments.</param>
+    /// <param name="e">A <see cref="FileNameEventArgs" /> describing the event arguments.</param>
     private void FileExtractionStarted(object sender, FileInfoEventArgs e)
     {
       var ceaArgs = new CancelEventArgs(false);
@@ -441,10 +439,10 @@ namespace Fomm.PackageManager
     #endregion
 
     /// <summary>
-    /// Ends a read-only transaction.
+    ///   Ends a read-only transaction.
     /// </summary>
     /// <remarks>
-    /// This takes the archive out of read-only mode, and releases any used resources.
+    ///   This takes the archive out of read-only mode, and releases any used resources.
     /// </remarks>
     public void EndReadOnlyTransaction()
     {
@@ -463,7 +461,7 @@ namespace Fomm.PackageManager
     #endregion
 
     /// <summary>
-    /// Caches information about the files in the archive.
+    ///   Caches information about the files in the archive.
     /// </summary>
     protected void LoadFileIndices()
     {
@@ -486,11 +484,13 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Determins if the given path is a directory in this archive.
+    ///   Determins if the given path is a directory in this archive.
     /// </summary>
     /// <param name="p_strPath">The path to examine.</param>
-    /// <returns><lang langref="true"/> if the given path is a directory in this archive;
-    /// <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the given path is a directory in this archive;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
     public bool IsDirectory(string p_strPath)
     {
       var strPath = p_strPath.Trim(new[]
@@ -530,7 +530,7 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Gets a list of directories that are in the specified directory in this archive.
+    ///   Gets a list of directories that are in the specified directory in this archive.
     /// </summary>
     /// <param name="p_strDirectory">The directory in the archive whose descendents are to be returned.</param>
     /// <returns>A list of directories that are in the specified directory in this archive.</returns>
@@ -564,7 +564,7 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Gets a list of files that are in the specified directory in this archive.
+    ///   Gets a list of files that are in the specified directory in this archive.
     /// </summary>
     /// <param name="p_strDirectory">The directory in the archive whose descendents are to be returned.</param>
     /// <returns>A list of files that are in the specified directory in this archive.</returns>
@@ -604,7 +604,7 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Gets a list of files that are in the specified directory and match the given pattern in this archive.
+    ///   Gets a list of files that are in the specified directory and match the given pattern in this archive.
     /// </summary>
     /// <param name="p_strDirectory">The directory in the archive whose descendents are to be returned.</param>
     /// <param name="p_strPattern">The filename pattern of the files to be returned.</param>
@@ -628,11 +628,13 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Determins if the archive contains the specified file.
+    ///   Determins if the archive contains the specified file.
     /// </summary>
     /// <param name="p_strPath">The path of the file whose presence in the archive is to be determined.</param>
-    /// <returns><lang langref="true"/> if the file is in the archive;
-    /// <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the file is in the archive;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
     public bool ContainsFile(string p_strPath)
     {
       var strPath = p_strPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).ToLowerInvariant();
@@ -678,7 +680,7 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Gets the contents of the specified file in the archive.
+    ///   Gets the contents of the specified file in the archive.
     /// </summary>
     /// <param name="p_strPath">The file whose contents are to be retrieved.</param>
     /// <returns>The contents of the specified file in the archive.</returns>
@@ -732,10 +734,10 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Replaces the specified file in the archive with the given data.
+    ///   Replaces the specified file in the archive with the given data.
     /// </summary>
     /// <remarks>
-    /// If the specified file doesn't exist in the archive, the file is added.
+    ///   If the specified file doesn't exist in the archive, the file is added.
     /// </remarks>
     /// <param name="p_strFileName">The path to the file to replace in the archive.</param>
     /// <param name="p_strData">The new file data.</param>
@@ -745,17 +747,21 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Replaces the specified file in the archive with the given data.
+    ///   Replaces the specified file in the archive with the given data.
     /// </summary>
     /// <remarks>
-    /// If the specified file doesn't exist in the archive, the file is added.
+    ///   If the specified file doesn't exist in the archive, the file is added.
     /// </remarks>
     /// <param name="p_strFileName">The path to the file to replace in the archive.</param>
     /// <param name="p_bteData">The new file data.</param>
-    /// <exception cref="InvalidOperationException">Thrown if modification of archives of the current
-    /// archive type is not supported.</exception>
-    /// <exception cref="InvalidOperationException">Thrown if modification of archive is attempted
-    /// while the archive is in a ready only transaction.</exception>
+    /// <exception cref="InvalidOperationException">
+    ///   Thrown if modification of archives of the current
+    ///   archive type is not supported.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    ///   Thrown if modification of archive is attempted
+    ///   while the archive is in a ready only transaction.
+    /// </exception>
     public void ReplaceFile(string p_strFileName, byte[] p_bteData)
     {
       if (IsReadonly)
@@ -795,16 +801,20 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Deletes the specified file from the archive.
+    ///   Deletes the specified file from the archive.
     /// </summary>
     /// <remarks>
-    /// If the specified file doesn't exist in the archive, nothing is done.
+    ///   If the specified file doesn't exist in the archive, nothing is done.
     /// </remarks>
     /// <param name="p_strFileName">The path to the file to delete from the archive.</param>
-    /// <exception cref="InvalidOperationException">Thrown if modification of archives of the current
-    /// archive type is not supported.</exception>
-    /// <exception cref="InvalidOperationException">Thrown if modification of archive is attempted
-    /// while the archive is in a ready only transaction.</exception>
+    /// <exception cref="InvalidOperationException">
+    ///   Thrown if modification of archives of the current
+    ///   archive type is not supported.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    ///   Thrown if modification of archive is attempted
+    ///   while the archive is in a ready only transaction.
+    /// </exception>
     public void DeleteFile(string p_strFileName)
     {
       if (IsReadonly)
@@ -836,7 +846,7 @@ namespace Fomm.PackageManager
     #region IDisposable Members
 
     /// <summary>
-    /// Disposes of the resources used by the object.
+    ///   Disposes of the resources used by the object.
     /// </summary>
     public void Dispose()
     {

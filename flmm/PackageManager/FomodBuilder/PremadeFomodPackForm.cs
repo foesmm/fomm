@@ -2,30 +2,30 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Text;
 using System.Windows.Forms;
-using System.IO;
 using Fomm.Properties;
 
 namespace Fomm.PackageManager.FomodBuilder
 {
   /// <summary>
-  /// Gathers information required to make a FOMod from a Premade FOMod Pack (PFP).
+  ///   Gathers information required to make a FOMod from a Premade FOMod Pack (PFP).
   /// </summary>
   public partial class PremadeFomodPackForm : Form
   {
     /// <summary>
-    /// The open PFP modes.
+    ///   The open PFP modes.
     /// </summary>
     public enum OpenPFPMode
     {
       /// <summary>
-      /// Indicates the PFP is being opened to install it as a FOMod.
+      ///   Indicates the PFP is being opened to install it as a FOMod.
       /// </summary>
       Install,
 
       /// <summary>
-      /// Indicates the PFP is being opened for editing.
+      ///   Indicates the PFP is being opened for editing.
       /// </summary>
       Edit
     }
@@ -35,7 +35,7 @@ namespace Fomm.PackageManager.FomodBuilder
     #region Properties
 
     /// <summary>
-    /// Gets or sets the path to the selected PFP.
+    ///   Gets or sets the path to the selected PFP.
     /// </summary>
     /// <value>The path to the selected PFP.</value>
     public string PFPPath
@@ -51,11 +51,13 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// Gets or sets the path to the directory containing the source files
-    /// required for the PFP.
+    ///   Gets or sets the path to the directory containing the source files
+    ///   required for the PFP.
     /// </summary>
-    /// <value>The path to the directory containing the source files
-    /// required for the PFP.</value>
+    /// <value>
+    ///   The path to the directory containing the source files
+    ///   required for the PFP.
+    /// </value>
     public string SourcesPath
     {
       get
@@ -73,7 +75,7 @@ namespace Fomm.PackageManager.FomodBuilder
     #region Constructors
 
     /// <summary>
-    /// The default constructor.
+    ///   The default constructor.
     /// </summary>
     public PremadeFomodPackForm(OpenPFPMode p_omdMode)
     {
@@ -88,11 +90,11 @@ namespace Fomm.PackageManager.FomodBuilder
     #endregion
 
     /// <summary>
-    /// Hanldes the <see cref="Control.Click"/> event of the select PFP
-    /// button.
+    ///   Hanldes the <see cref="Control.Click" /> event of the select PFP
+    ///   button.
     /// </summary>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void butPFP_Click(object sender, EventArgs e)
     {
       if (ofdPFP.ShowDialog(this) == DialogResult.OK)
@@ -102,11 +104,11 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// Hanldes the <see cref="Control.Click"/> event of the select source folder
-    /// button.
+    ///   Hanldes the <see cref="Control.Click" /> event of the select source folder
+    ///   button.
     /// </summary>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void butSources_Click(object sender, EventArgs e)
     {
       if (fbdSources.ShowDialog(this) == DialogResult.OK)
@@ -116,12 +118,12 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// Validates the selected paths.
+    ///   Validates the selected paths.
     /// </summary>
     /// <remarks>
-    /// This makes sure the selected PFP file is a valid PFP, and that all required sources are present.
+    ///   This makes sure the selected PFP file is a valid PFP, and that all required sources are present.
     /// </remarks>
-    /// <returns><lang langref="true"/> if the selected paths are valid; <lang langref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true" /> if the selected paths are valid; <lang langref="false" /> otherwise.</returns>
     protected bool ValidateFiles()
     {
       erpError.Clear();
@@ -161,7 +163,7 @@ namespace Fomm.PackageManager.FomodBuilder
         foreach (var sflSource in lstSources)
         {
           var booSourceMissing = !File.Exists(Path.Combine(tbxSources.Text, sflSource.Source)) &&
-                                  !Directory.Exists(Path.Combine(tbxSources.Text, sflSource.Source));
+                                 !Directory.Exists(Path.Combine(tbxSources.Text, sflSource.Source));
           if ((!sflSource.Hidden || sflSource.Generated) && booSourceMissing)
           {
             lstMissingSources.Add(sflSource);
@@ -224,7 +226,7 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// Shows an HTML page.
+    ///   Shows an HTML page.
     /// </summary>
     protected void ShowHTML(string p_strHTML)
     {

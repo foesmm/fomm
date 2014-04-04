@@ -44,36 +44,36 @@ using Fomm.SharpZipLib.Zip.Compression.Streams;
 namespace Fomm.SharpZipLib.Zip.Compression
 {
   /// <summary>
-  /// Inflater is used to decompress data that has been compressed according
-  /// to the "deflate" standard described in rfc1951.
-  /// 
-  /// By default Zlib (rfc1950) headers and footers are expected in the input.
-  /// You can use constructor <code> public Inflater(bool noHeader)</code> passing true
-  /// if there is no Zlib header information
-  ///
-  /// The usage is as following.  First you have to set some input with
-  /// <code>SetInput()</code>, then Inflate() it.  If inflate doesn't
-  /// inflate any bytes there may be three reasons:
-  /// <ul>
-  /// <li>IsNeedingInput() returns true because the input buffer is empty.
-  /// You have to provide more input with <code>SetInput()</code>.
-  /// NOTE: IsNeedingInput() also returns true when, the stream is finished.
-  /// </li>
-  /// <li>IsNeedingDictionary() returns true, you have to provide a preset
-  ///    dictionary with <code>SetDictionary()</code>.</li>
-  /// <li>IsFinished returns true, the inflater has finished.</li>
-  /// </ul>
-  /// Once the first output byte is produced, a dictionary will not be
-  /// needed at a later stage.
-  ///
-  /// author of the original java version : John Leuner, Jochen Hoenicke
+  ///   Inflater is used to decompress data that has been compressed according
+  ///   to the "deflate" standard described in rfc1951.
+  ///   By default Zlib (rfc1950) headers and footers are expected in the input.
+  ///   You can use constructor <code> public Inflater(bool noHeader)</code> passing true
+  ///   if there is no Zlib header information
+  ///   The usage is as following.  First you have to set some input with
+  ///   <code>SetInput()</code>, then Inflate() it.  If inflate doesn't
+  ///   inflate any bytes there may be three reasons:
+  ///   <ul>
+  ///     <li>
+  ///       IsNeedingInput() returns true because the input buffer is empty.
+  ///       You have to provide more input with <code>SetInput()</code>.
+  ///       NOTE: IsNeedingInput() also returns true when, the stream is finished.
+  ///     </li>
+  ///     <li>
+  ///       IsNeedingDictionary() returns true, you have to provide a preset
+  ///       dictionary with <code>SetDictionary()</code>.
+  ///     </li>
+  ///     <li>IsFinished returns true, the inflater has finished.</li>
+  ///   </ul>
+  ///   Once the first output byte is produced, a dictionary will not be
+  ///   needed at a later stage.
+  ///   author of the original java version : John Leuner, Jochen Hoenicke
   /// </summary>
   internal class Inflater
   {
     #region Constants/Readonly
 
     /// <summary>
-    /// Copy lengths for literal codes 257..285
+    ///   Copy lengths for literal codes 257..285
     /// </summary>
     private static readonly int[] CPLENS =
     {
@@ -82,7 +82,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
     };
 
     /// <summary>
-    /// Extra bits for literal codes 257..285
+    ///   Extra bits for literal codes 257..285
     /// </summary>
     private static readonly int[] CPLEXT =
     {
@@ -91,7 +91,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
     };
 
     /// <summary>
-    /// Copy offsets for distance codes 0..29
+    ///   Copy offsets for distance codes 0..29
     /// </summary>
     private static readonly int[] CPDIST =
     {
@@ -101,7 +101,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
     };
 
     /// <summary>
-    /// Extra bits for distance codes
+    ///   Extra bits for distance codes
     /// </summary>
     private static readonly int[] CPDEXT =
     {
@@ -111,7 +111,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
     };
 
     /// <summary>
-    /// These are the possible states for an inflater
+    ///   These are the possible states for an inflater
     /// </summary>
     private const int DECODE_HEADER = 0;
 
@@ -133,22 +133,22 @@ namespace Fomm.SharpZipLib.Zip.Compression
     #region Instance Fields
 
     /// <summary>
-    /// This variable contains the current state.
+    ///   This variable contains the current state.
     /// </summary>
     private int mode;
 
     /// <summary>
-    /// The adler checksum of the dictionary or of the decompressed
-    /// stream, as it is written in the header resp. footer of the
-    /// compressed stream. 
-    /// Only valid if mode is DECODE_DICT or DECODE_CHKSUM.
+    ///   The adler checksum of the dictionary or of the decompressed
+    ///   stream, as it is written in the header resp. footer of the
+    ///   compressed stream.
+    ///   Only valid if mode is DECODE_DICT or DECODE_CHKSUM.
     /// </summary>
     private int readAdler;
 
     /// <summary>
-    /// The number of bits needed to complete the current state.  This
-    /// is valid, if mode is DECODE_DICT, DECODE_CHKSUM,
-    /// DECODE_HUFFMAN_LENBITS or DECODE_HUFFMAN_DISTBITS.
+    ///   The number of bits needed to complete the current state.  This
+    ///   is valid, if mode is DECODE_DICT, DECODE_CHKSUM,
+    ///   DECODE_HUFFMAN_LENBITS or DECODE_HUFFMAN_DISTBITS.
     /// </summary>
     private int neededBits;
 
@@ -157,16 +157,16 @@ namespace Fomm.SharpZipLib.Zip.Compression
     private int uncomprLen;
 
     /// <summary>
-    /// True, if the last block flag was set in the last block of the
-    /// inflated stream.  This means that the stream ends after the
-    /// current block.
+    ///   True, if the last block flag was set in the last block of the
+    ///   inflated stream.  This means that the stream ends after the
+    ///   current block.
     /// </summary>
     private bool isLastBlock;
 
     /// <summary>
-    /// This variable stores the noHeader flag that was given to the constructor.
-    /// True means, that the inflated stream doesn't contain a Zlib header or 
-    /// footer.
+    ///   This variable stores the noHeader flag that was given to the constructor.
+    ///   True means, that the inflated stream doesn't contain a Zlib header or
+    ///   footer.
     /// </summary>
     private bool noHeader;
 
@@ -181,24 +181,20 @@ namespace Fomm.SharpZipLib.Zip.Compression
     #region Constructors
 
     /// <summary>
-    /// Creates a new inflater or RFC1951 decompressor
-    /// RFC1950/Zlib headers and footers will be expected in the input data
+    ///   Creates a new inflater or RFC1951 decompressor
+    ///   RFC1950/Zlib headers and footers will be expected in the input data
     /// </summary>
-    public Inflater() : this(false)
-    {
-    }
+    public Inflater() : this(false) {}
 
     /// <summary>
-    /// Creates a new inflater.
+    ///   Creates a new inflater.
     /// </summary>
     /// <param name="noHeader">
-    /// True if no RFC1950/Zlib header and footer fields are expected in the input data
-    /// 
-    /// This is used for GZIPed/Zipped input.
-    /// 
-    /// For compatibility with
-    /// Sun JDK you should provide one byte of input more than needed in
-    /// this case.
+    ///   True if no RFC1950/Zlib header and footer fields are expected in the input data
+    ///   This is used for GZIPed/Zipped input.
+    ///   For compatibility with
+    ///   Sun JDK you should provide one byte of input more than needed in
+    ///   this case.
     /// </param>
     public Inflater(bool noHeader)
     {
@@ -212,8 +208,8 @@ namespace Fomm.SharpZipLib.Zip.Compression
     #endregion
 
     /// <summary>
-    /// Resets the inflater so that a new stream can be decompressed.  All
-    /// pending input and output will be discarded.
+    ///   Resets the inflater so that a new stream can be decompressed.  All
+    ///   pending input and output will be discarded.
     /// </summary>
     public void Reset()
     {
@@ -228,13 +224,13 @@ namespace Fomm.SharpZipLib.Zip.Compression
     }
 
     /// <summary>
-    /// Decodes a zlib/RFC1950 header.
+    ///   Decodes a zlib/RFC1950 header.
     /// </summary>
     /// <returns>
-    /// False if more input is needed.
+    ///   False if more input is needed.
     /// </returns>
     /// <exception cref="SharpZipBaseException">
-    /// The header is invalid.
+    ///   The header is invalid.
     /// </exception>
     private bool DecodeHeader()
     {
@@ -278,10 +274,10 @@ namespace Fomm.SharpZipLib.Zip.Compression
     }
 
     /// <summary>
-    /// Decodes the dictionary checksum after the deflate header.
+    ///   Decodes the dictionary checksum after the deflate header.
     /// </summary>
     /// <returns>
-    /// False if more input is needed.
+    ///   False if more input is needed.
     /// </returns>
     private bool DecodeDict()
     {
@@ -300,14 +296,14 @@ namespace Fomm.SharpZipLib.Zip.Compression
     }
 
     /// <summary>
-    /// Decodes the huffman encoded symbols in the input stream.
+    ///   Decodes the huffman encoded symbols in the input stream.
     /// </summary>
     /// <returns>
-    /// false if more input is needed, true if output window is
-    /// full or the current block ends.
+    ///   false if more input is needed, true if output window is
+    ///   full or the current block ends.
     /// </returns>
     /// <exception cref="SharpZipBaseException">
-    /// if deflated stream is invalid.
+    ///   if deflated stream is invalid.
     /// </exception>
     private bool DecodeHuffman()
     {
@@ -413,13 +409,13 @@ namespace Fomm.SharpZipLib.Zip.Compression
     }
 
     /// <summary>
-    /// Decodes the adler checksum after the deflate stream.
+    ///   Decodes the adler checksum after the deflate stream.
     /// </summary>
     /// <returns>
-    /// false if more input is needed.
+    ///   false if more input is needed.
     /// </returns>
     /// <exception cref="SharpZipBaseException">
-    /// If checksum doesn't match.
+    ///   If checksum doesn't match.
     /// </exception>
     private bool DecodeChksum()
     {
@@ -445,13 +441,13 @@ namespace Fomm.SharpZipLib.Zip.Compression
     }
 
     /// <summary>
-    /// Decodes the deflated stream.
+    ///   Decodes the deflated stream.
     /// </summary>
     /// <returns>
-    /// false if more input is needed, or if finished.
+    ///   false if more input is needed, or if finished.
     /// </returns>
     /// <exception cref="SharpZipBaseException">
-    /// if deflated stream is invalid.
+    ///   if deflated stream is invalid.
     /// </exception>
     private bool Decode()
     {
@@ -577,11 +573,11 @@ namespace Fomm.SharpZipLib.Zip.Compression
     }
 
     /// <summary>
-    /// Sets the input.  This should only be called, if needsInput()
-    /// returns true.
+    ///   Sets the input.  This should only be called, if needsInput()
+    ///   returns true.
     /// </summary>
     /// <param name="buffer">
-    /// the input.
+    ///   the input.
     /// </param>
     public void SetInput(byte[] buffer)
     {
@@ -589,23 +585,23 @@ namespace Fomm.SharpZipLib.Zip.Compression
     }
 
     /// <summary>
-    /// Sets the input.  This should only be called, if needsInput()
-    /// returns true.
+    ///   Sets the input.  This should only be called, if needsInput()
+    ///   returns true.
     /// </summary>
     /// <param name="buffer">
-    /// The source of input data
+    ///   The source of input data
     /// </param>
     /// <param name="index">
-    /// The index into buffer where the input starts.
+    ///   The index into buffer where the input starts.
     /// </param>
     /// <param name="count">
-    /// The number of bytes of input to use.
+    ///   The number of bytes of input to use.
     /// </param>
     /// <exception cref="System.InvalidOperationException">
-    /// No input is needed.
+    ///   No input is needed.
     /// </exception>
     /// <exception cref="System.ArgumentOutOfRangeException">
-    /// The index and/or count are wrong.
+    ///   The index and/or count are wrong.
     /// </exception>
     public void SetInput(byte[] buffer, int index, int count)
     {
@@ -613,23 +609,23 @@ namespace Fomm.SharpZipLib.Zip.Compression
     }
 
     /// <summary>
-    /// Inflates the compressed stream to the output buffer.  If this
-    /// returns 0, you should check, whether IsNeedingDictionary(),
-    /// IsNeedingInput() or IsFinished() returns true, to determine why no
-    /// further output is produced.
+    ///   Inflates the compressed stream to the output buffer.  If this
+    ///   returns 0, you should check, whether IsNeedingDictionary(),
+    ///   IsNeedingInput() or IsFinished() returns true, to determine why no
+    ///   further output is produced.
     /// </summary>
     /// <param name="buffer">
-    /// the output buffer.
+    ///   the output buffer.
     /// </param>
     /// <returns>
-    /// The number of bytes written to the buffer, 0 if no further
-    /// output can be produced.
+    ///   The number of bytes written to the buffer, 0 if no further
+    ///   output can be produced.
     /// </returns>
     /// <exception cref="System.ArgumentOutOfRangeException">
-    /// if buffer has length 0.
+    ///   if buffer has length 0.
     /// </exception>
     /// <exception cref="System.FormatException">
-    /// if deflated stream is invalid.
+    ///   if deflated stream is invalid.
     /// </exception>
     public int Inflate(byte[] buffer)
     {
@@ -642,31 +638,31 @@ namespace Fomm.SharpZipLib.Zip.Compression
     }
 
     /// <summary>
-    /// Inflates the compressed stream to the output buffer.  If this
-    /// returns 0, you should check, whether needsDictionary(),
-    /// needsInput() or finished() returns true, to determine why no
-    /// further output is produced.
+    ///   Inflates the compressed stream to the output buffer.  If this
+    ///   returns 0, you should check, whether needsDictionary(),
+    ///   needsInput() or finished() returns true, to determine why no
+    ///   further output is produced.
     /// </summary>
     /// <param name="buffer">
-    /// the output buffer.
+    ///   the output buffer.
     /// </param>
     /// <param name="offset">
-    /// the offset in buffer where storing starts.
+    ///   the offset in buffer where storing starts.
     /// </param>
     /// <param name="count">
-    /// the maximum number of bytes to output.
+    ///   the maximum number of bytes to output.
     /// </param>
     /// <returns>
-    /// the number of bytes written to the buffer, 0 if no further output can be produced.
+    ///   the number of bytes written to the buffer, 0 if no further output can be produced.
     /// </returns>
     /// <exception cref="System.ArgumentOutOfRangeException">
-    /// if count is less than 0.
+    ///   if count is less than 0.
     /// </exception>
     /// <exception cref="System.ArgumentOutOfRangeException">
-    /// if the index and / or count are wrong.
+    ///   if the index and / or count are wrong.
     /// </exception>
     /// <exception cref="System.FormatException">
-    /// if deflated stream is invalid.
+    ///   if deflated stream is invalid.
     /// </exception>
     public int Inflate(byte[] buffer, int offset, int count)
     {
@@ -741,9 +737,9 @@ namespace Fomm.SharpZipLib.Zip.Compression
     }
 
     /// <summary>
-    /// Returns true, if the input buffer is empty.
-    /// You should then call setInput(). 
-    /// NOTE: This method also returns true when the stream is finished.
+    ///   Returns true, if the input buffer is empty.
+    ///   You should then call setInput().
+    ///   NOTE: This method also returns true when the stream is finished.
     /// </summary>
     public bool IsNeedingInput
     {
@@ -754,7 +750,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
     }
 
     /// <summary>
-    /// Returns true, if a preset dictionary is needed to inflate the input.
+    ///   Returns true, if a preset dictionary is needed to inflate the input.
     /// </summary>
     public bool IsNeedingDictionary
     {
@@ -765,8 +761,8 @@ namespace Fomm.SharpZipLib.Zip.Compression
     }
 
     /// <summary>
-    /// Returns true, if the inflater has finished.  This means, that no
-    /// input is needed and no output can be produced.
+    ///   Returns true, if the inflater has finished.  This means, that no
+    ///   input is needed and no output can be produced.
     /// </summary>
     public bool IsFinished
     {

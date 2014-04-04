@@ -40,7 +40,7 @@ using Fomm.SharpZipLib.Zip.Compression.Streams;
 namespace Fomm.SharpZipLib.Zip.Compression
 {
   /// <summary>
-  /// Huffman tree used for inflation
+  ///   Huffman tree used for inflation
   /// </summary>
   internal class InflaterHuffmanTree
   {
@@ -57,12 +57,12 @@ namespace Fomm.SharpZipLib.Zip.Compression
     #endregion
 
     /// <summary>
-    /// Literal length tree
+    ///   Literal length tree
     /// </summary>
     public static readonly InflaterHuffmanTree defLitLenTree;
 
     /// <summary>
-    /// Distance tree
+    ///   Distance tree
     /// </summary>
     public static readonly InflaterHuffmanTree defDistTree;
 
@@ -100,10 +100,10 @@ namespace Fomm.SharpZipLib.Zip.Compression
     #region Constructors
 
     /// <summary>
-    /// Constructs a Huffman tree from the array of code lengths.
+    ///   Constructs a Huffman tree from the array of code lengths.
     /// </summary>
-    /// <param name = "codeLengths">
-    /// the array of code lengths
+    /// <param name="codeLengths">
+    ///   the array of code lengths
     /// </param>
     public InflaterHuffmanTree(byte[] codeLengths)
     {
@@ -198,14 +198,14 @@ namespace Fomm.SharpZipLib.Zip.Compression
     }
 
     /// <summary>
-    /// Reads the next symbol from input.  The symbol is encoded using the
-    /// huffman tree.
+    ///   Reads the next symbol from input.  The symbol is encoded using the
+    ///   huffman tree.
     /// </summary>
     /// <param name="input">
-    /// input the input source.
+    ///   input the input source.
     /// </param>
     /// <returns>
-    /// the next symbol, or -1 if not enough input is available.
+    ///   the next symbol, or -1 if not enough input is available.
     /// </returns>
     public int GetSymbol(StreamManipulator input)
     {

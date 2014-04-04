@@ -4,13 +4,13 @@ using System.Drawing;
 namespace Fomm
 {
   /// <summary>
-  /// The format to apply to a plugin in the main form list.
+  ///   The format to apply to a plugin in the main form list.
   /// </summary>
   /// <remarks>
-  /// The plugin format system allows several different participants to contribute to the styling
-  /// of plugins in the master list.
+  ///   The plugin format system allows several different participants to contribute to the styling
+  ///   of plugins in the master list.
   /// </remarks>
-  /// <seealso cref="PluginFormat.PluginFormatterManager"/>
+  /// <seealso cref="PluginFormat.PluginFormatterManager" />
   public partial class PluginFormat : IComparable<PluginFormat>, IEquatable<PluginFormat>
   {
     private Int32 m_intIndex = -1;
@@ -22,21 +22,21 @@ namespace Fomm
     #region Properties
 
     /// <summary>
-    /// Gets the font family to apply to the plugin item.
+    ///   Gets the font family to apply to the plugin item.
     /// </summary>
     /// <remarks>
-    /// If this value is <lang langref="null"/> then no change should be made to
-    /// the plugin's item's font family.
+    ///   If this value is <lang langref="null" /> then no change should be made to
+    ///   the plugin's item's font family.
     /// </remarks>
     /// <value>The font family to apply to the plugin item.</value>
     public FontFamily FontFamily { get; private set; }
 
     /// <summary>
-    /// Gets the font size to apply to the plugin item.
+    ///   Gets the font size to apply to the plugin item.
     /// </summary>
     /// <remarks>
-    /// If this value is <lang langref="null"/> then no change should be made to
-    /// the plugin's item's font size.
+    ///   If this value is <lang langref="null" /> then no change should be made to
+    ///   the plugin's item's font size.
     /// </remarks>
     /// <value>The font size to apply to the plugin item.</value>
     public float? FontSizeEM
@@ -48,11 +48,11 @@ namespace Fomm
     }
 
     /// <summary>
-    /// Gets the font style to apply to the plugin item.
+    ///   Gets the font style to apply to the plugin item.
     /// </summary>
     /// <remarks>
-    /// If this value is <lang langref="null"/> then no change should be made to
-    /// the plugin's item's font style.
+    ///   If this value is <lang langref="null" /> then no change should be made to
+    ///   the plugin's item's font style.
     /// </remarks>
     /// <value>The font style to apply to the plugin item.</value>
     public FontStyle? FontStyle
@@ -64,11 +64,11 @@ namespace Fomm
     }
 
     /// <summary>
-    /// Gets the font colour to apply to the plugin item.
+    ///   Gets the font colour to apply to the plugin item.
     /// </summary>
     /// <remarks>
-    /// If this value is <lang langref="null"/> then no change should be made to
-    /// the plugin's item's font colour.
+    ///   If this value is <lang langref="null" /> then no change should be made to
+    ///   the plugin's item's font colour.
     /// </remarks>
     /// <value>The font colour to apply to the plugin item.</value>
     public Color? Colour
@@ -80,11 +80,11 @@ namespace Fomm
     }
 
     /// <summary>
-    /// Gets the highlight to apply to the plugin item.
+    ///   Gets the highlight to apply to the plugin item.
     /// </summary>
     /// <remarks>
-    /// If this value is <lang langref="null"/> then no change should be made to
-    /// the plugin's item's highlight.
+    ///   If this value is <lang langref="null" /> then no change should be made to
+    ///   the plugin's item's highlight.
     /// </remarks>
     /// <value>The highlight to apply to the plugin item.</value>
     public Color? Highlight
@@ -96,11 +96,11 @@ namespace Fomm
     }
 
     /// <summary>
-    /// Gets the message to show for the plugin.
+    ///   Gets the message to show for the plugin.
     /// </summary>
     /// <remarks>
-    /// If this value is <lang langref="null"/> then no change should be made to
-    /// the plugin's description.
+    ///   If this value is <lang langref="null" /> then no change should be made to
+    ///   the plugin's description.
     /// </remarks>
     /// <value>The message to show for the plugin.</value>
     public string Message { get; private set; }
@@ -110,16 +110,17 @@ namespace Fomm
     #region Constructors
 
     /// <summary>
-    /// The default constructor.
+    ///   The default constructor.
     /// </summary>
-    protected PluginFormat()
-    {
-    }
+    protected PluginFormat() {}
 
     /// <summary>
-    /// A simple constructor that initializes the object with the given values.
+    ///   A simple constructor that initializes the object with the given values.
     /// </summary>
-    /// <param name="p_intIndex">An indexer that allows the <see cref="PluginFormatterManager"/> to strictly order formats. This parameter is provided by the <see cref="PluginFormatterManager"/></param>
+    /// <param name="p_intIndex">
+    ///   An indexer that allows the <see cref="PluginFormatterManager" /> to strictly order formats.
+    ///   This parameter is provided by the <see cref="PluginFormatterManager" />
+    /// </param>
     /// <param name="p_ffmFontFamily">The font family to apply to the plugin item.</param>
     /// <param name="p_fltFontSizeEM">The font size to apply to the plugin item.</param>
     /// <param name="p_fstFontStyle">The font style to apply to the plugin item.</param>
@@ -141,7 +142,7 @@ namespace Fomm
     #endregion
 
     /// <summary>
-    /// Merges the font properties of this format with the given base font.
+    ///   Merges the font properties of this format with the given base font.
     /// </summary>
     /// <param name="p_fntBaseFont">The font to modify as per the state of this format.</param>
     /// <returns>A font that is the result of altering the base font as described by the format.</returns>
@@ -156,9 +157,9 @@ namespace Fomm
     }
 
     /// <summary>
-    /// Merges the properties of the given <see cref="PluginFormat"/> with this format.
+    ///   Merges the properties of the given <see cref="PluginFormat" /> with this format.
     /// </summary>
-    /// <param name="p_pftFormat">The <see cref="PluginFormat"/> whose properties are to be merged with this object's.</param>
+    /// <param name="p_pftFormat">The <see cref="PluginFormat" /> whose properties are to be merged with this object's.</param>
     public void Merge(PluginFormat p_pftFormat)
     {
       FontFamily = p_pftFormat.FontFamily ?? FontFamily;
@@ -183,15 +184,16 @@ namespace Fomm
     #region IComparable<PluginFormat> Members
 
     /// <summary>
-    /// Compares this <see cref="PluginFormat"/> to the given <see cref="PluginFormat"/>
+    ///   Compares this <see cref="PluginFormat" /> to the given <see cref="PluginFormat" />
     /// </summary>
     /// <remarks>
-    /// <see cref="PluginFormat"/>s are strictly ordered by their <see cref="PluginFormat.m_intIndex"/>.
+    ///   <see cref="PluginFormat" />s are strictly ordered by their <see cref="PluginFormat.m_intIndex" />.
     /// </remarks>
-    /// <param name="other">The <see cref="PluginFormat"/> to which to compare this one.</param>
-    /// <returns>A value less than 0 if this instance is less than <paramref name="other"/>, or
-    /// 0 if this instance is equal to <paramref name="other"/>, or
-    /// a value greater than 0 if this instance is greater than <paramref name="other"/>.
+    /// <param name="other">The <see cref="PluginFormat" /> to which to compare this one.</param>
+    /// <returns>
+    ///   A value less than 0 if this instance is less than <paramref name="other" />, or
+    ///   0 if this instance is equal to <paramref name="other" />, or
+    ///   a value greater than 0 if this instance is greater than <paramref name="other" />.
     /// </returns>
     public int CompareTo(PluginFormat other)
     {
@@ -203,15 +205,17 @@ namespace Fomm
     #region IEquatable<PluginFormat> Members
 
     /// <summary>
-    /// Determines if the given <see cref="PluginFormat"/> is equal to this one.
+    ///   Determines if the given <see cref="PluginFormat" /> is equal to this one.
     /// </summary>
     /// <remarks>
-    /// Two <see cref="PluginFormat"/>s are equal if and only if their
-    /// <see cref="PluginFormat.m_intIndex"/>s are equal.
+    ///   Two <see cref="PluginFormat" />s are equal if and only if their
+    ///   <see cref="PluginFormat.m_intIndex" />s are equal.
     /// </remarks>
-    /// <param name="other">The <see cref="PluginFormat"/> to which to compare this one.</param>
-    /// <returns><lang langref="true"/> if the given <see cref="PluginFormat"/> is equal to this one;
-    /// <lang langref="false"/> otherwise.</returns>
+    /// <param name="other">The <see cref="PluginFormat" /> to which to compare this one.</param>
+    /// <returns>
+    ///   <lang langref="true" /> if the given <see cref="PluginFormat" /> is equal to this one;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
     public bool Equals(PluginFormat other)
     {
       return CompareTo(other) == 0;

@@ -42,14 +42,12 @@ using System;
 namespace Fomm.SharpZipLib.Zip.Compression
 {
   /// <summary>
-  /// This is the Deflater class.  The deflater class compresses input
-  /// with the deflate algorithm described in RFC 1951.  It has several
-  /// compression levels and three different strategies described below.
-  ///
-  /// This class is <i>not</i> thread safe.  This is inherent in the API, due
-  /// to the split of deflate and setInput.
-  /// 
-  /// author of the original java version : Jochen Hoenicke
+  ///   This is the Deflater class.  The deflater class compresses input
+  ///   with the deflate algorithm described in RFC 1951.  It has several
+  ///   compression levels and three different strategies described below.
+  ///   This class is <i>not</i> thread safe.  This is inherent in the API, due
+  ///   to the split of deflate and setInput.
+  ///   author of the original java version : Jochen Hoenicke
   /// </summary>
   internal class Deflater
   {
@@ -95,29 +93,29 @@ namespace Fomm.SharpZipLib.Zip.Compression
     #region Public Constants
 
     /// <summary>
-    /// The best and slowest compression level.  This tries to find very
-    /// long and distant string repetitions.
+    ///   The best and slowest compression level.  This tries to find very
+    ///   long and distant string repetitions.
     /// </summary>
     public const int BEST_COMPRESSION = 9;
 
     /// <summary>
-    /// The worst but fastest compression level.
+    ///   The worst but fastest compression level.
     /// </summary>
     public const int BEST_SPEED = 1;
 
     /// <summary>
-    /// The default compression level.
+    ///   The default compression level.
     /// </summary>
     public const int DEFAULT_COMPRESSION = -1;
 
     /// <summary>
-    /// This level won't compress at all but output uncompressed blocks.
+    ///   This level won't compress at all but output uncompressed blocks.
     /// </summary>
     public const int NO_COMPRESSION = 0;
 
     /// <summary>
-    /// The compression method.  This is the only method supported so far.
-    /// There is no need to use this constant at all.
+    ///   The compression method.  This is the only method supported so far.
+    ///   There is no need to use this constant at all.
     /// </summary>
     public const int DEFLATED = 8;
 
@@ -144,35 +142,31 @@ namespace Fomm.SharpZipLib.Zip.Compression
     #region Constructors
 
     /// <summary>
-    /// Creates a new deflater with default compression level.
+    ///   Creates a new deflater with default compression level.
     /// </summary>
-    public Deflater() : this(DEFAULT_COMPRESSION, false)
-    {
-    }
+    public Deflater() : this(DEFAULT_COMPRESSION, false) {}
 
     /// <summary>
-    /// Creates a new deflater with given compression level.
+    ///   Creates a new deflater with given compression level.
     /// </summary>
     /// <param name="level">
-    /// the compression level, a value between NO_COMPRESSION
-    /// and BEST_COMPRESSION, or DEFAULT_COMPRESSION.
+    ///   the compression level, a value between NO_COMPRESSION
+    ///   and BEST_COMPRESSION, or DEFAULT_COMPRESSION.
     /// </param>
     /// <exception cref="System.ArgumentOutOfRangeException">if lvl is out of range.</exception>
-    public Deflater(int level) : this(level, false)
-    {
-    }
+    public Deflater(int level) : this(level, false) {}
 
     /// <summary>
-    /// Creates a new deflater with given compression level.
+    ///   Creates a new deflater with given compression level.
     /// </summary>
     /// <param name="level">
-    /// the compression level, a value between NO_COMPRESSION
-    /// and BEST_COMPRESSION.
+    ///   the compression level, a value between NO_COMPRESSION
+    ///   and BEST_COMPRESSION.
     /// </param>
     /// <param name="noZlibHeaderOrFooter">
-    /// true, if we should suppress the Zlib/RFC1950 header at the
-    /// beginning and the adler checksum at the end of the output.  This is
-    /// useful for the GZIP/PKZIP formats.
+    ///   true, if we should suppress the Zlib/RFC1950 header at the
+    ///   beginning and the adler checksum at the end of the output.  This is
+    ///   useful for the GZIP/PKZIP formats.
     /// </param>
     /// <exception cref="System.ArgumentOutOfRangeException">if lvl is out of range.</exception>
     public Deflater(int level, bool noZlibHeaderOrFooter)
@@ -197,9 +191,9 @@ namespace Fomm.SharpZipLib.Zip.Compression
     #endregion
 
     /// <summary>
-    /// Resets the deflater.  The deflater acts afterwards as if it was
-    /// just created with the same compression level and strategy as it
-    /// had before.
+    ///   Resets the deflater.  The deflater acts afterwards as if it was
+    ///   just created with the same compression level and strategy as it
+    ///   had before.
     /// </summary>
     public void Reset()
     {
@@ -210,16 +204,16 @@ namespace Fomm.SharpZipLib.Zip.Compression
     }
 
     /// <summary>
-    /// Gets the number of output bytes so far.
+    ///   Gets the number of output bytes so far.
     /// </summary>
     public long TotalOut { get; private set; }
 
     /// <summary>
-    /// Flushes the current input block.  Further calls to deflate() will
-    /// produce enough output to inflate everything in the current input
-    /// block.  This is not part of Sun's JDK so I have made it package
-    /// private.  It is used by DeflaterOutputStream to implement
-    /// flush().
+    ///   Flushes the current input block.  Further calls to deflate() will
+    ///   produce enough output to inflate everything in the current input
+    ///   block.  This is not part of Sun's JDK so I have made it package
+    ///   private.  It is used by DeflaterOutputStream to implement
+    ///   flush().
     /// </summary>
     public void Flush()
     {
@@ -227,9 +221,9 @@ namespace Fomm.SharpZipLib.Zip.Compression
     }
 
     /// <summary>
-    /// Finishes the deflater with the current input block.  It is an error
-    /// to give more input after this method was called.  This method must
-    /// be called to force all bytes to be flushed.
+    ///   Finishes the deflater with the current input block.  It is an error
+    ///   to give more input after this method was called.  This method must
+    ///   be called to force all bytes to be flushed.
     /// </summary>
     public void Finish()
     {
@@ -237,8 +231,8 @@ namespace Fomm.SharpZipLib.Zip.Compression
     }
 
     /// <summary>
-    /// Returns true if the stream was finished and no more output bytes
-    /// are available.
+    ///   Returns true if the stream was finished and no more output bytes
+    ///   are available.
     /// </summary>
     public bool IsFinished
     {
@@ -249,10 +243,10 @@ namespace Fomm.SharpZipLib.Zip.Compression
     }
 
     /// <summary>
-    /// Returns true, if the input buffer is empty.
-    /// You should then call setInput(). 
-    /// NOTE: This method can also return true when the stream
-    /// was finished.
+    ///   Returns true, if the input buffer is empty.
+    ///   You should then call setInput().
+    ///   NOTE: This method can also return true when the stream
+    ///   was finished.
     /// </summary>
     public bool IsNeedingInput
     {
@@ -263,19 +257,19 @@ namespace Fomm.SharpZipLib.Zip.Compression
     }
 
     /// <summary>
-    /// Sets the data which should be compressed next.  This should be only
-    /// called when needsInput indicates that more input is needed.
-    /// If you call setInput when needsInput() returns false, the
-    /// previous input that is still pending will be thrown away.
-    /// The given byte array should not be changed, before needsInput() returns
-    /// true again.
-    /// This call is equivalent to <code>setInput(input, 0, input.length)</code>.
+    ///   Sets the data which should be compressed next.  This should be only
+    ///   called when needsInput indicates that more input is needed.
+    ///   If you call setInput when needsInput() returns false, the
+    ///   previous input that is still pending will be thrown away.
+    ///   The given byte array should not be changed, before needsInput() returns
+    ///   true again.
+    ///   This call is equivalent to <code>setInput(input, 0, input.length)</code>.
     /// </summary>
     /// <param name="input">
-    /// the buffer containing the input data.
+    ///   the buffer containing the input data.
     /// </param>
     /// <exception cref="System.InvalidOperationException">
-    /// if the buffer was finished() or ended().
+    ///   if the buffer was finished() or ended().
     /// </exception>
     public void SetInput(byte[] input)
     {
@@ -283,22 +277,22 @@ namespace Fomm.SharpZipLib.Zip.Compression
     }
 
     /// <summary>
-    /// Sets the data which should be compressed next.  This should be
-    /// only called when needsInput indicates that more input is needed.
-    /// The given byte array should not be changed, before needsInput() returns
-    /// true again.
+    ///   Sets the data which should be compressed next.  This should be
+    ///   only called when needsInput indicates that more input is needed.
+    ///   The given byte array should not be changed, before needsInput() returns
+    ///   true again.
     /// </summary>
     /// <param name="input">
-    /// the buffer containing the input data.
+    ///   the buffer containing the input data.
     /// </param>
     /// <param name="offset">
-    /// the start of the data.
+    ///   the start of the data.
     /// </param>
     /// <param name="count">
-    /// the number of data bytes of input.
+    ///   the number of data bytes of input.
     /// </param>
     /// <exception cref="System.InvalidOperationException">
-    /// if the buffer was Finish()ed or if previous input is still pending.
+    ///   if the buffer was Finish()ed or if previous input is still pending.
     /// </exception>
     public void SetInput(byte[] input, int offset, int count)
     {
@@ -310,13 +304,13 @@ namespace Fomm.SharpZipLib.Zip.Compression
     }
 
     /// <summary>
-    /// Sets the compression level.  There is no guarantee of the exact
-    /// position of the change, but if you call this when needsInput is
-    /// true the change of compression level will occur somewhere near
-    /// before the end of the so far given input.
+    ///   Sets the compression level.  There is no guarantee of the exact
+    ///   position of the change, but if you call this when needsInput is
+    ///   true the change of compression level will occur somewhere near
+    ///   before the end of the so far given input.
     /// </summary>
     /// <param name="level">
-    /// the new compression level.
+    ///   the new compression level.
     /// </param>
     public void SetLevel(int level)
     {
@@ -337,13 +331,13 @@ namespace Fomm.SharpZipLib.Zip.Compression
     }
 
     /// <summary>
-    /// Sets the compression strategy. Strategy is one of
-    /// DEFAULT_STRATEGY, HUFFMAN_ONLY and FILTERED.  For the exact
-    /// position where the strategy is changed, the same as for
-    /// SetLevel() applies.
+    ///   Sets the compression strategy. Strategy is one of
+    ///   DEFAULT_STRATEGY, HUFFMAN_ONLY and FILTERED.  For the exact
+    ///   position where the strategy is changed, the same as for
+    ///   SetLevel() applies.
     /// </summary>
     /// <param name="strategy">
-    /// The new compression strategy.
+    ///   The new compression strategy.
     /// </param>
     public void SetStrategy(DeflateStrategy strategy)
     {
@@ -351,14 +345,14 @@ namespace Fomm.SharpZipLib.Zip.Compression
     }
 
     /// <summary>
-    /// Deflates the current input block with to the given array.
+    ///   Deflates the current input block with to the given array.
     /// </summary>
     /// <param name="output">
-    /// The buffer where compressed data is stored
+    ///   The buffer where compressed data is stored
     /// </param>
     /// <returns>
-    /// The number of compressed bytes added to the output, or 0 if either
-    /// IsNeedingInput() or IsFinished returns true or length is zero.
+    ///   The number of compressed bytes added to the output, or 0 if either
+    ///   IsNeedingInput() or IsFinished returns true or length is zero.
     /// </returns>
     public int Deflate(byte[] output)
     {
@@ -366,26 +360,26 @@ namespace Fomm.SharpZipLib.Zip.Compression
     }
 
     /// <summary>
-    /// Deflates the current input block to the given array.
+    ///   Deflates the current input block to the given array.
     /// </summary>
     /// <param name="output">
-    /// Buffer to store the compressed data.
+    ///   Buffer to store the compressed data.
     /// </param>
     /// <param name="offset">
-    /// Offset into the output array.
+    ///   Offset into the output array.
     /// </param>
     /// <param name="length">
-    /// The maximum number of bytes that may be stored.
+    ///   The maximum number of bytes that may be stored.
     /// </param>
     /// <returns>
-    /// The number of compressed bytes added to the output, or 0 if either
-    /// needsInput() or finished() returns true or length is zero.
+    ///   The number of compressed bytes added to the output, or 0 if either
+    ///   needsInput() or finished() returns true or length is zero.
     /// </returns>
     /// <exception cref="System.InvalidOperationException">
-    /// If Finish() was previously called.
+    ///   If Finish() was previously called.
     /// </exception>
     /// <exception cref="System.ArgumentOutOfRangeException">
-    /// If offset or length don't match the array length.
+    ///   If offset or length don't match the array length.
     /// </exception>
     public int Deflate(byte[] output, int offset, int length)
     {
@@ -487,27 +481,27 @@ namespace Fomm.SharpZipLib.Zip.Compression
     #region Instance Fields
 
     /// <summary>
-    /// Compression level.
+    ///   Compression level.
     /// </summary>
     private int level;
 
     /// <summary>
-    /// If true no Zlib/RFC1950 headers or footers are generated
+    ///   If true no Zlib/RFC1950 headers or footers are generated
     /// </summary>
     private bool noZlibHeaderOrFooter;
 
     /// <summary>
-    /// The current state.
+    ///   The current state.
     /// </summary>
     private int state;
 
     /// <summary>
-    /// The pending output.
+    ///   The pending output.
     /// </summary>
     private DeflaterPending pending;
 
     /// <summary>
-    /// The deflater engine.
+    ///   The deflater engine.
     /// </summary>
     private DeflaterEngine engine;
 

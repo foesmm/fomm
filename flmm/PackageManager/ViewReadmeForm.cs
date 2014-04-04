@@ -1,23 +1,23 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Windows.Forms;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
+using System.Windows.Forms;
 using Fomm.Properties;
 
 namespace Fomm.PackageManager
 {
   /// <summary>
-  /// The FOMod readme viewer.
+  ///   The FOMod readme viewer.
   /// </summary>
   public partial class ViewReadmeForm : Form
   {
     #region Contructors
 
     /// <summary>
-    /// The default constructor.
+    ///   The default constructor.
     /// </summary>
-    /// <param name="p_rmeReadme">The <see cref="Readme"/> to be viewed.</param>
+    /// <param name="p_rmeReadme">The <see cref="Readme" /> to be viewed.</param>
     public ViewReadmeForm(Readme p_rmeReadme)
     {
       InitializeComponent();
@@ -65,13 +65,13 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Handles the <see cref="RichTextBox.LinkClicked"/> event of the readme text box.
+    ///   Handles the <see cref="RichTextBox.LinkClicked" /> event of the readme text box.
     /// </summary>
     /// <remarks>
-    /// Launches clicked links using the default browser.
+    ///   Launches clicked links using the default browser.
     /// </remarks>
     /// <param name="sender">The object that trigger the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void rtbReadme_LinkClicked(object sender, LinkClickedEventArgs e)
     {
       Process.Start(e.LinkText);
@@ -80,12 +80,12 @@ namespace Fomm.PackageManager
     #endregion
 
     /// <summary>
-    /// Raises the <see cref="Form.Closing"/> event.
+    ///   Raises the <see cref="Form.Closing" /> event.
     /// </summary>
     /// <remarks>
-    /// Saves the window's position.
+    ///   Saves the window's position.
     /// </remarks>
-    /// <param name="e">A <see cref="CancelEventArgs"/> describing the event arguments.</param>
+    /// <param name="e">A <see cref="CancelEventArgs" /> describing the event arguments.</param>
     protected override void OnClosing(CancelEventArgs e)
     {
       Settings.Default.windowPositions.SetWindowPosition("ReadmeViewer", this);

@@ -38,16 +38,17 @@ using System.IO;
 namespace Fomm.SharpZipLib.Core
 {
   /// <summary>
-  /// PathFilter filters directories and files using a form of <see cref="System.Text.RegularExpressions.Regex">regular expressions</see>
-  /// by full path name.
-  /// See <see cref="NameFilter">NameFilter</see> for more detail on filtering.
+  ///   PathFilter filters directories and files using a form of
+  ///   <see cref="System.Text.RegularExpressions.Regex">regular expressions</see>
+  ///   by full path name.
+  ///   See <see cref="NameFilter">NameFilter</see> for more detail on filtering.
   /// </summary>
   internal class PathFilter : IScanFilter
   {
     #region Constructors
 
     /// <summary>
-    /// Initialise a new instance of <see cref="PathFilter"></see>.
+    ///   Initialise a new instance of <see cref="PathFilter"></see>.
     /// </summary>
     /// <param name="filter">The <see cref="NameFilter">filter</see> expression to apply.</param>
     public PathFilter(string filter)
@@ -60,11 +61,11 @@ namespace Fomm.SharpZipLib.Core
     #region IScanFilter Members
 
     /// <summary>
-    /// Test a name to see if it matches the filter.
+    ///   Test a name to see if it matches the filter.
     /// </summary>
     /// <param name="name">The name to test.</param>
     /// <returns>True if the name matches, false otherwise.</returns>
-    /// <remarks><see cref="Path.GetFullPath(string)"/> is used to get the full path before matching.</remarks>
+    /// <remarks><see cref="Path.GetFullPath(string)" /> is used to get the full path before matching.</remarks>
     public virtual bool IsMatch(string name)
     {
       var result = false;

@@ -6,18 +6,18 @@ using Fomm.PackageManager.ModInstallLog;
 namespace Fomm.InstallLogUpgraders
 {
   /// <summary>
-  /// Upgrades the Install Log to the current version from version 0.1.1.0.
+  ///   Upgrades the Install Log to the current version from version 0.1.1.0.
   /// </summary>
   internal class Downgrader0500 : Upgrader
   {
     /// <summary>
-    /// Downgrades the Install Log to the current version from version 0.5.0.0.
+    ///   Downgrades the Install Log to the current version from version 0.5.0.0.
     /// </summary>
     /// <remarks>
-    /// NMM pointlessly changed the XML format in a way incompatible with FOMM
-    /// without a lot of effort.  Since it will painlessly (and silently) update
-    /// this file to 0.5.0.0 if needed, we will (not silently) bring it back
-    /// down to 0.2.0.0 if needed.
+    ///   NMM pointlessly changed the XML format in a way incompatible with FOMM
+    ///   without a lot of effort.  Since it will painlessly (and silently) update
+    ///   this file to 0.5.0.0 if needed, we will (not silently) bring it back
+    ///   down to 0.2.0.0 if needed.
     /// </remarks>
     protected override void DoUpgrade()
     {

@@ -7,9 +7,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 {
   internal class RecordXmlException : Exception
   {
-    public RecordXmlException(string msg) : base(msg)
-    {
-    }
+    public RecordXmlException(string msg) : base(msg) {}
   }
 
   internal enum ElementValueType
@@ -330,7 +328,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
     public static Dictionary<string, RecordStructure> Records;
 
     private static string xmlPath = Path.Combine(Program.ProgrammeInfoDirectory,
-                                                           "Fallout3\\TESsnip\\RecordStructure.xml");
+                                                 "Fallout3\\TESsnip\\RecordStructure.xml");
 
     public static void Load()
     {

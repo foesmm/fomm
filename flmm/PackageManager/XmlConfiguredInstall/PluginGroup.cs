@@ -5,43 +5,43 @@ using System.Windows.Forms;
 namespace Fomm.PackageManager.XmlConfiguredInstall
 {
   /// <summary>
-  /// The possible plugin group types.
+  ///   The possible plugin group types.
   /// </summary>
   public enum GroupType
   {
     /// <summary>
-    /// At least one plugin in the group must be selected.
+    ///   At least one plugin in the group must be selected.
     /// </summary>
     SelectAtLeastOne,
 
     /// <summary>
-    /// At most one plugin in the group must be selected.
+    ///   At most one plugin in the group must be selected.
     /// </summary>
     SelectAtMostOne,
 
     /// <summary>
-    /// Exactly one plugin in the group must be selected.
+    ///   Exactly one plugin in the group must be selected.
     /// </summary>
     SelectExactlyOne,
 
     /// <summary>
-    /// All plugins in the group must be selected.
+    ///   All plugins in the group must be selected.
     /// </summary>
     SelectAll,
 
     /// <summary>
-    /// Any number of plugins in the group may be selected.
+    ///   Any number of plugins in the group may be selected.
     /// </summary>
     SelectAny,
 
     /// <summary>
-    /// This state should not be used.
+    ///   This state should not be used.
     /// </summary>
     Inavlid
   }
 
   /// <summary>
-  /// Represents a group of plugins.
+  ///   Represents a group of plugins.
   /// </summary>
   public class PluginGroup
   {
@@ -52,13 +52,13 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     #region Properties
 
     /// <summary>
-    /// Gets or sets the name of the group.
+    ///   Gets or sets the name of the group.
     /// </summary>
     /// <value>The name of the group.</value>
     public string Name { get; protected set; }
 
     /// <summary>
-    /// Gets or sets the type of the group.
+    ///   Gets or sets the type of the group.
     /// </summary>
     /// <value>The type of the group.</value>
     public GroupType Type
@@ -74,7 +74,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     }
 
     /// <summary>
-    /// Gets the plugins that are part of this group.
+    ///   Gets the plugins that are part of this group.
     /// </summary>
     /// <value>The plugins that are part of this group.</value>
     public IList<PluginInfo> Plugins
@@ -120,7 +120,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     #region Constructors
 
     /// <summary>
-    /// A simple constructor that initializes the object with the given values.
+    ///   A simple constructor that initializes the object with the given values.
     /// </summary>
     /// <param name="p_strName">The name of the group.</param>
     /// <param name="p_gtpType">The plugins that are part of this group.</param>
@@ -135,7 +135,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     #endregion
 
     /// <summary>
-    /// Adds the given plugin to the group.
+    ///   Adds the given plugin to the group.
     /// </summary>
     /// <param name="p_pifPlugin">The plugin to add to the group.</param>
     public void addPlugin(PluginInfo p_pifPlugin)

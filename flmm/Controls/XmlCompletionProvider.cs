@@ -1,40 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
-using Fomm.Properties;
-using ICSharpCode.TextEditor.Gui.CompletionWindow;
-using System.Text.RegularExpressions;
-using System.Xml.Schema;
-using System.Windows.Forms;
-using ICSharpCode.TextEditor;
-using System.Text;
 using System.Drawing;
 using System.IO;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Windows.Forms;
+using System.Xml.Schema;
+using Fomm.Properties;
+using ICSharpCode.TextEditor;
+using ICSharpCode.TextEditor.Gui.CompletionWindow;
 
 namespace Fomm.Controls
 {
   /// <summary>
-  /// The possible types of completion selections.
+  ///   The possible types of completion selections.
   /// </summary>
   public enum AutoCompleteType
   {
     /// <summary>
-    /// Indicates that the selections are XML elements.
+    ///   Indicates that the selections are XML elements.
     /// </summary>
     Element,
 
     /// <summary>
-    /// Indicates that the selections are XML attributes.
+    ///   Indicates that the selections are XML attributes.
     /// </summary>
     Attribute,
 
     /// <summary>
-    /// Indicates that the selections are values for an XML attribute.
+    ///   Indicates that the selections are values for an XML attribute.
     /// </summary>
     AttributeValues
   }
 
   /// <summary>
-  /// The event arguments for events that allow extending the code completion list.
+  ///   The event arguments for events that allow extending the code completion list.
   /// </summary>
   public class AutoCompleteListEventArgs : EventArgs
   {
@@ -44,34 +44,34 @@ namespace Fomm.Controls
     #region Properties
 
     /// <summary>
-    /// Gets the list of code completions.
+    ///   Gets the list of code completions.
     /// </summary>
     /// <remarks>
-    /// This property can be used to add or remove code completions.
+    ///   This property can be used to add or remove code completions.
     /// </remarks>
     /// <value>The list of code completions.</value>
     public List<XmlCompletionData> AutoCompleteList { get; private set; }
 
     /// <summary>
-    /// Gets the path to the current element in the XML.
+    ///   Gets the path to the current element in the XML.
     /// </summary>
     /// <value>The path to the current element in the XML.</value>
     public string ElementPath { get; private set; }
 
     /// <summary>
-    /// Gets the siblings of the current XML object being completed.
+    ///   Gets the siblings of the current XML object being completed.
     /// </summary>
     /// <remarks>
-    /// If the current object being completed is an element, than the siblings are sibling elements.
-    /// If the current object is an attribute, than the siblings are the other attributes in the current tag.
-    /// If the current object is an attribute value, there is only one sibling: to attribute whose value
-    /// is being completed.
+    ///   If the current object being completed is an element, than the siblings are sibling elements.
+    ///   If the current object is an attribute, than the siblings are the other attributes in the current tag.
+    ///   If the current object is an attribute value, there is only one sibling: to attribute whose value
+    ///   is being completed.
     /// </remarks>
     /// <value>The siblings of the current XML object being completed.</value>
     public string[] Siblings { get; private set; }
 
     /// <summary>
-    /// Gets the type of object being completed.
+    ///   Gets the type of object being completed.
     /// </summary>
     /// <value>The type of object being completed.</value>
     public AutoCompleteType AutoCompleteType
@@ -83,13 +83,13 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Gets the word that has been entered thus far for the autocompletion string.
+    ///   Gets the word that has been entered thus far for the autocompletion string.
     /// </summary>
     /// <value>The word that has been entered thus far for the autocompletion string.</value>
     public string LastWord { get; private set; }
 
     /// <summary>
-    /// Gets a list of extra characters that should be treated as insertion characters.
+    ///   Gets a list of extra characters that should be treated as insertion characters.
     /// </summary>
     /// <value>A list of extra characters that should be treated as insertion characters.</value>
     public List<char> ExtraInsertionCharacters
@@ -105,7 +105,7 @@ namespace Fomm.Controls
     #region Constructors
 
     /// <summary>
-    /// A simple constructor that initializes the object with the given values.
+    ///   A simple constructor that initializes the object with the given values.
     /// </summary>
     /// <param name="p_lstAutoCompleteList">The list of code completions.</param>
     /// <param name="p_strElementPath">The path to the current element in the XML.</param>
@@ -126,15 +126,15 @@ namespace Fomm.Controls
   }
 
   /// <summary>
-  /// Provides the code completion selections for an XML base on a specified schema.
+  ///   Provides the code completion selections for an XML base on a specified schema.
   /// </summary>
   public class XmlCompletionProvider : ICompletionDataProvider
   {
     /// <summary>
-    /// Raised when the code completion option6s have been retrieved.
+    ///   Raised when the code completion option6s have been retrieved.
     /// </summary>
     /// <remarks>
-    /// Handling this event allows the addition/removal of code completion items.
+    ///   Handling this event allows the addition/removal of code completion items.
     /// </remarks>
     public event EventHandler<AutoCompleteListEventArgs> GotAutoCompleteList;
 
@@ -153,7 +153,7 @@ namespace Fomm.Controls
     #region Properties
 
     /// <summary>
-    /// Sets the XML Schema used to get the code completion selections.
+    ///   Sets the XML Schema used to get the code completion selections.
     /// </summary>
     /// <value>The XML Schema used to get the code completion selections.</value>
     public XmlSchema Schema
@@ -186,12 +186,14 @@ namespace Fomm.Controls
     #region XML Schema Parsing
 
     /// <summary>
-    /// Finds the element specified in the given stack, starting from the given XML particle.
+    ///   Finds the element specified in the given stack, starting from the given XML particle.
     /// </summary>
     /// <param name="p_xspParticle">The particle at which to being the search.</param>
     /// <param name="p_stkCode">A stack describing a path to an XML element.</param>
-    /// <returns>The element specified by the given stack, or <lang langref="null"/> if no such
-    /// element could be found.</returns>
+    /// <returns>
+    ///   The element specified by the given stack, or <lang langref="null" /> if no such
+    ///   element could be found.
+    /// </returns>
     private XmlSchemaElement findElement(XmlSchemaParticle p_xspParticle, Stack<string> p_stkCode)
     {
       if (p_xspParticle is XmlSchemaElement)
@@ -236,11 +238,13 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Gets the documentation associated with the given XML element.
+    ///   Gets the documentation associated with the given XML element.
     /// </summary>
     /// <param name="p_xsaAnnotatedElement">The element for which to retrieve the documentations.</param>
-    /// <returns>The documentation associated with the given XML element, or <lang langref="null"/>
-    /// if there is no documentation in the schema.</returns>
+    /// <returns>
+    ///   The documentation associated with the given XML element, or <lang langref="null" />
+    ///   if there is no documentation in the schema.
+    /// </returns>
     private string GetDocumentation(XmlSchemaAnnotated p_xsaAnnotatedElement)
     {
       var xsaAnnotation = p_xsaAnnotatedElement.Annotation;
@@ -264,12 +268,14 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Gets the child elements of the given XML particle that are eligible to
-    /// be the next element in the XML document.
+    ///   Gets the child elements of the given XML particle that are eligible to
+    ///   be the next element in the XML document.
     /// </summary>
     /// <param name="p_xspParticle">The particle whoe children are to be retrieved.</param>
-    /// <returns>A list of the child elements of the given XML particle that are eligible to
-    /// be the next element in the XML document.</returns>
+    /// <returns>
+    ///   A list of the child elements of the given XML particle that are eligible to
+    ///   be the next element in the XML document.
+    /// </returns>
     private List<KeyValuePair<string, string>> GetChildrenElements(XmlSchemaParticle p_xspParticle)
     {
       if (p_xspParticle is XmlSchemaElement)
@@ -318,17 +324,19 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Determines if the given XML particle contains the given sibling elements, and populates
-    /// the list of elements that are eligible to be the next element in the XML document.
+    ///   Determines if the given XML particle contains the given sibling elements, and populates
+    ///   the list of elements that are eligible to be the next element in the XML document.
     /// </summary>
     /// <remarks>
-    /// A particle contains the siblings if the siblings are children of the given particle.
+    ///   A particle contains the siblings if the siblings are children of the given particle.
     /// </remarks>
-    /// <param name="p_xspParticle">That XML particle for which it is to be determined if it
-    /// contains the given sibling element.</param>
+    /// <param name="p_xspParticle">
+    ///   That XML particle for which it is to be determined if it
+    ///   contains the given sibling element.
+    /// </param>
     /// <param name="p_lstChoices">The list of elements that are eligible to be the next element in the XML document.</param>
     /// <param name="p_lstSiblings">A list of sibling elements.</param>
-    /// <returns><lang langref="true"/> if the given siblings are contained by the given particle.</returns>
+    /// <returns><lang langref="true" /> if the given siblings are contained by the given particle.</returns>
     private bool ContainsSiblings(XmlSchemaParticle p_xspParticle, ref List<KeyValuePair<string, string>> p_lstChoices,
                                   List<string> p_lstSiblings)
     {
@@ -365,9 +373,7 @@ namespace Fomm.Controls
             for (intLastSiblingCount = p_lstSiblings.Count - 1;
                  (intLastSiblingCount > -1) &&
                  p_lstSiblings[intLastSiblingCount].Equals(p_lstSiblings[p_lstSiblings.Count - 1]);
-                 intLastSiblingCount--)
-            {
-            }
+                 intLastSiblingCount--) {}
             intLastSiblingCount = p_lstSiblings.Count - intLastSiblingCount - 1;
 
             var lstChoices = new List<KeyValuePair<string, string>>();
@@ -453,7 +459,7 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Gets the list of possible next values.
+    ///   Gets the list of possible next values.
     /// </summary>
     /// <param name="p_xseElement">The current elment in the XML document.</param>
     /// <param name="p_lstSiblings">The siblings of the current XML element.</param>
@@ -511,9 +517,7 @@ namespace Fomm.Controls
                                                                          (XmlSchemaAnnotated) xsoAttribute)));
                 }
               }
-              else if (xsoAttribute.ToString() == "System.Xml.Schema.XmlSchemaAttributeGroupRef")
-              {
-              }
+              else if (xsoAttribute.ToString() == "System.Xml.Schema.XmlSchemaAttributeGroupRef") {}
             }
           }
           break;
@@ -577,7 +581,7 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Parse the current XML Schema to generate a list of autocomplete values.
+    ///   Parse the current XML Schema to generate a list of autocomplete values.
     /// </summary>
     /// <param name="p_stkCode">A stack describing the path to the current XML element in the document.</param>
     /// <param name="p_lstSiblings">The siblings of the current XML element.</param>
@@ -618,7 +622,7 @@ namespace Fomm.Controls
     #region Constructors
 
     /// <summary>
-    /// The default constructor.
+    ///   The default constructor.
     /// </summary>
     public XmlCompletionProvider(XmlEditor p_xedEditor)
     {
@@ -636,7 +640,7 @@ namespace Fomm.Controls
     #region Properties
 
     /// <summary>
-    /// Gets the index of the default image to use for aucompletion items.
+    ///   Gets the index of the default image to use for aucompletion items.
     /// </summary>
     /// <value>The index of the default image to use for aucompletion items.</value>
     public int DefaultIndex
@@ -648,13 +652,13 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Gets the image list to use for the autocompletion window.
+    ///   Gets the image list to use for the autocompletion window.
     /// </summary>
     /// <value>The image list to use for the autocompletion window.</value>
     public ImageList ImageList { get; private set; }
 
     /// <summary>
-    /// Gets the preselection.
+    ///   Gets the preselection.
     /// </summary>
     /// <value>The preselection.</value>
     public string PreSelection { get; private set; }
@@ -662,12 +666,14 @@ namespace Fomm.Controls
     #endregion
 
     /// <summary>
-    /// Generate the list of possible code copmletion values.
+    ///   Generate the list of possible code copmletion values.
     /// </summary>
     /// <param name="p_strFileName">The name of the file being edited.</param>
     /// <param name="p_txaTextArea">The area containing the document being edited.</param>
-    /// <param name="p_chrCharTyped">The character that was typed that triggered the request for
-    /// the code completion list.</param>
+    /// <param name="p_chrCharTyped">
+    ///   The character that was typed that triggered the request for
+    ///   the code completion list.
+    /// </param>
     /// <returns>The list of possible code copmletion values.</returns>
     public ICompletionData[] GenerateCompletionData(string p_strFileName, TextArea p_txaTextArea, char p_chrCharTyped)
     {
@@ -686,9 +692,7 @@ namespace Fomm.Controls
         var intQuoteCount = 0;
         for (var intStartPos = intOpenTagPos;
              (intStartPos = strText.IndexOf('"', intStartPos + 1)) > -1;
-             intQuoteCount++)
-        {
-        }
+             intQuoteCount++) {}
         booInsideValue = (intQuoteCount%2 == 1);
       }
 
@@ -853,7 +857,7 @@ namespace Fomm.Controls
             : strLastWord.Substring(0, strLastWord.Length - 1);
         }
         var aclArgs = new AutoCompleteListEventArgs(k, stbPath.ToString(), lstSiblings.ToArray(),
-                                                                          m_actCompleteType, strLastWord);
+                                                    m_actCompleteType, strLastWord);
         GotAutoCompleteList(this, aclArgs);
         m_dicExtraCompletionCharacters[m_actCompleteType] = aclArgs.ExtraInsertionCharacters;
       }
@@ -862,17 +866,19 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Inserts the selected completion value.
+    ///   Inserts the selected completion value.
     /// </summary>
     /// <remarks>
-    /// If we are closing a tag, we request a reformatting of the line.
+    ///   If we are closing a tag, we request a reformatting of the line.
     /// </remarks>
     /// <param name="p_cdtData">The code completion selection that was chosen.</param>
     /// <param name="p_txaTextArea">The area containing the document being edited.</param>
     /// <param name="p_intInsertionOffset">Where the selection should be inserted into the document.</param>
     /// <param name="p_chrKey">The character that was used to choose this completion selection.</param>
-    /// <returns><lang langref="true"/> if the insertion of <paramref name="p_chrKey"/> was handled;
-    /// <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the insertion of <paramref name="p_chrKey" /> was handled;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
     public bool InsertAction(ICompletionData p_cdtData, TextArea p_txaTextArea, int p_intInsertionOffset, char p_chrKey)
     {
       p_txaTextArea.Caret.Position = p_txaTextArea.Document.OffsetToPosition(p_intInsertionOffset);
@@ -890,11 +896,13 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Determines if the given character should trigger selection of the current code completion
-    /// item in the code completion window.
+    ///   Determines if the given character should trigger selection of the current code completion
+    ///   item in the code completion window.
     /// </summary>
-    /// <param name="p_chrKey">The key for which it is to be determined if it should trigger selection of the current code completion
-    /// item in the code completion window.</param>
+    /// <param name="p_chrKey">
+    ///   The key for which it is to be determined if it should trigger selection of the current code completion
+    ///   item in the code completion window.
+    /// </param>
     /// <returns>The type of key for the given character.</returns>
     public CompletionDataProviderKeyResult ProcessKey(char p_chrKey)
     {

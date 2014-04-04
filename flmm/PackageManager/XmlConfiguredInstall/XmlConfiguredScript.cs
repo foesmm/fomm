@@ -1,36 +1,36 @@
 ﻿using System;
-using System.Xml;
-using System.Windows.Forms;
 using System.Collections.Generic;
 using System.IO;
+using System.Windows.Forms;
+using System.Xml;
 using Fomm.PackageManager.XmlConfiguredInstall.Parsers;
 
 namespace Fomm.PackageManager.XmlConfiguredInstall
 {
   /// <summary>
-  /// The xml mod configuration script.
+  ///   The xml mod configuration script.
   /// </summary>
   /// <remarks>
-  /// This runs a script that is customized by an xml file in the fomod.
+  ///   This runs a script that is customized by an xml file in the fomod.
   /// </remarks>
   public class XmlConfiguredScript
   {
     /// <summary>
-    /// The arguments that are needed by the <see cref="InstallFiles"/> method
-    /// that is used by the background worker.
+    ///   The arguments that are needed by the <see cref="InstallFiles" /> method
+    ///   that is used by the background worker.
     /// </summary>
     protected class InstallFilesArguments
     {
       #region Properties
 
       /// <summary>
-      /// Gets or sets the xml configuration parser.
+      ///   Gets or sets the xml configuration parser.
       /// </summary>
       /// <value>The xml configuration parser.</value>
       public Parser Parser { get; protected set; }
 
       /// <summary>
-      /// Gets or sets the options form used to selected what needs to be installed.
+      ///   Gets or sets the options form used to selected what needs to be installed.
       /// </summary>
       /// <value>The options form used to selected what needs to be installed.</value>
       public OptionsForm Form { get; protected set; }
@@ -40,7 +40,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
       #region Constructors
 
       /// <summary>
-      /// A simple constructor that initializes the object with the given values.
+      ///   A simple constructor that initializes the object with the given values.
       /// </summary>
       /// <param name="p_xmlConfig">The xml configuration file.</param>
       /// <param name="p_ofmForm">The options form used to selected what needs to be installed.</param>
@@ -60,9 +60,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     #region Constructors
 
     /// <summary>
-    /// A simple constructor.
+    ///   A simple constructor.
     /// </summary>
-    /// <param name="misInstaller">The <see cref="ModInstallScript"/> that is installing the mod.</param>
+    /// <param name="misInstaller">The <see cref="ModInstallScript" /> that is installing the mod.</param>
     public XmlConfiguredScript(ModInstallScript misInstaller)
     {
       m_misInstallScript = misInstaller;
@@ -73,9 +73,9 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     #region Install Methods
 
     /// <summary>
-    /// Displays the option form and starts the background worker to do the install.
+    ///   Displays the option form and starts the background worker to do the install.
     /// </summary>
-    /// <returns><lang langref="true"/> if the mod installed correctly; <lang langref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true" /> if the mod installed correctly; <lang langref="false" /> otherwise.</returns>
     public bool Install()
     {
       var xmlConfig = new XmlDocument();
@@ -131,7 +131,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     }
 
     /// <summary>
-    /// Installs and activates files are required. This method is used by the background worker.
+    ///   Installs and activates files are required. This method is used by the background worker.
     /// </summary>
     /// <param name="p_ifaArgs">The arguments used to configure what is installed.</param>
     protected void InstallFiles(object p_ifaArgs)
@@ -197,13 +197,15 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     }
 
     /// <summary>
-    /// Installs the given <see cref="OptionsForm.PluginFile"/>, and activates any
-    /// esm/esp files it encompasses as requested.
+    ///   Installs the given <see cref="OptionsForm.PluginFile" />, and activates any
+    ///   esm/esp files it encompasses as requested.
     /// </summary>
     /// <param name="plfFile">The file to install.</param>
     /// <param name="booActivate">Whether or not to activate any esp/esm files.</param>
-    /// <returns><lang langref="false"/> if the user cancelled the install;
-    /// <lang langref="true"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="false" /> if the user cancelled the install;
+    ///   <lang langref="true" /> otherwise.
+    /// </returns>
     protected bool InstallPluginFile(PluginFile plfFile, bool booActivate)
     {
       var strSource = plfFile.Source;
@@ -278,7 +280,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     #region Helper Methods
 
     /// <summary>
-    /// Recursively copies all files and folders from one location to another.
+    ///   Recursively copies all files and folders from one location to another.
     /// </summary>
     /// <param name="p_strFrom">The source from whence to copy the files.</param>
     /// <param name="p_strTo">The destination for the copied files.</param>
@@ -313,7 +315,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     }
 
     /// <summary>
-    /// Gets a list of all files in the specified FOMod folder.
+    ///   Gets a list of all files in the specified FOMod folder.
     /// </summary>
     /// <param name="p_strPath">The FOMod folder whose file list is to be retrieved.</param>
     /// <returns>The list of all files in the specified FOMod folder.</returns>

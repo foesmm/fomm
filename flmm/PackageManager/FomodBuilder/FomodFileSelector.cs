@@ -1,22 +1,22 @@
 ﻿using System;
-using System.Windows.Forms;
-using System.Collections.Generic;
 using System.Collections;
-using System.IO;
-using System.Drawing;
-using Fomm.Controls;
-using System.Text.RegularExpressions;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
+using System.IO;
+using System.Text.RegularExpressions;
+using System.Windows.Forms;
+using Fomm.Controls;
 
 namespace Fomm.PackageManager.FomodBuilder
 {
   /// <summary>
-  /// Enables the selection and ordering of files for the creation of a fomod.
+  ///   Enables the selection and ordering of files for the creation of a fomod.
   /// </summary>
   public partial class FomodFileSelector : UserControl, IStatusProviderAware
   {
     /// <summary>
-    /// The rich-text formated content of the help box.
+    ///   The rich-text formated content of the help box.
     /// </summary>
     private const string HELP_STRING =
       @"{\rtf1\ansi\ansicpg1252\deff0\deflang4105{\fonttbl{\f0\fnil\fcharset0 Arial;}{\f1\fnil\fcharset2 Symbol;}}
@@ -34,7 +34,7 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
     #region Properties
 
     /// <summary>
-    /// Gets or sets the sources listed in the control.
+    ///   Gets or sets the sources listed in the control.
     /// </summary>
     /// <value>The sources listed in the control.</value>
     public string[] Sources
@@ -50,7 +50,7 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
     #region Constructors
 
     /// <summary>
-    /// The default constructor.
+    ///   The default constructor.
     /// </summary>
     public FomodFileSelector()
     {
@@ -66,7 +66,7 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
     #region Path Mapping
 
     /// <summary>
-    /// Populates the file selector based on the given sources and copy instructions.
+    ///   Populates the file selector based on the given sources and copy instructions.
     /// </summary>
     /// <param name="p_lstSources"></param>
     public void SetCopyInstructions(IList<SourceFile> p_lstSources,
@@ -162,7 +162,7 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
     }
 
     /// <summary>
-    /// Finds the deepest nod in the fomod file system along the given path.
+    ///   Finds the deepest nod in the fomod file system along the given path.
     /// </summary>
     /// <param name="p_strPath">The path for which to find the deepest node.</param>
     /// <returns>The deepest nod in the fomod file structure that is along the given path.</returns>
@@ -206,11 +206,13 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
     }
 
     /// <summary>
-    /// Gets a list of path mappings, from source to destination, required to
-    /// create the specified fomod file structure.
+    ///   Gets a list of path mappings, from source to destination, required to
+    ///   create the specified fomod file structure.
     /// </summary>
-    /// <returns>A list of path mappings, from source to destination, required to
-    /// create the specified fomod file structure.</returns>
+    /// <returns>
+    ///   A list of path mappings, from source to destination, required to
+    ///   create the specified fomod file structure.
+    /// </returns>
     public IList<KeyValuePair<string, string>> GetCopyInstructions()
     {
       var lstPathNodes = new List<FileSystemTreeNode>();
@@ -236,8 +238,8 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
     }
 
     /// <summary>
-    /// Walks the given tree to generate a list of path mappings, from source to destination, required to
-    /// create the specified fomod file structure.
+    ///   Walks the given tree to generate a list of path mappings, from source to destination, required to
+    ///   create the specified fomod file structure.
     /// </summary>
     /// <param name="p_lstPaths">The list of mappings.</param>
     /// <param name="p_tncNodes">The tree to use to generate the mappings.</param>
@@ -263,7 +265,7 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
     #region Tree Copy
 
     /// <summary>
-    /// Copies the tree rooted at the given node.
+    ///   Copies the tree rooted at the given node.
     /// </summary>
     /// <param name="p_tndSource">The root of the tree to copy.</param>
     /// <returns>The root of the copied tree.</returns>
@@ -275,8 +277,8 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
     }
 
     /// <summary>
-    /// Copies the tree rooted at the given source node to the tree rooted
-    /// at the given destination node.
+    ///   Copies the tree rooted at the given source node to the tree rooted
+    ///   at the given destination node.
     /// </summary>
     /// <param name="p_tndSource">The root of the tree to copy.</param>
     /// <param name="p_tndDest">The root of the tree to which to copy.</param>
@@ -293,11 +295,11 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
     #endregion
 
     /// <summary>
-    /// Processes the tree rooted at the given node to romve any superfluous nodes and sources.
+    ///   Processes the tree rooted at the given node to romve any superfluous nodes and sources.
     /// </summary>
     /// <remarks>
-    /// This method cleans up the given tree so that the most efficient set of mappings
-    /// needed to create the fomod file structure can be generated.
+    ///   This method cleans up the given tree so that the most efficient set of mappings
+    ///   needed to create the fomod file structure can be generated.
     /// </remarks>
     /// <param name="p_tndNode">The node at which the fomod file structure tree is rooted.</param>
     private void ProcessTree(FileSystemTreeNode p_tndNode)
@@ -449,13 +451,13 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
     #region Fomod
 
     /// <summary>
-    /// Handles the <see cref="Control.DragOver"/> event of the fomod tree view.
+    ///   Handles the <see cref="Control.DragOver" /> event of the fomod tree view.
     /// </summary>
     /// <remarks>
-    /// This determines if the item being dragged can be dropped at the current location.
+    ///   This determines if the item being dragged can be dropped at the current location.
     /// </remarks>
     /// <param name="sender">The object that triggered the event.</param>
-    /// <param name="e">A <see cref="DragEventArgs"/> that describes the event arguments.</param>
+    /// <param name="e">A <see cref="DragEventArgs" /> that describes the event arguments.</param>
     private void tvwFomod_DragOver(object sender, DragEventArgs e)
     {
       if (!e.Data.GetDataPresent(typeof (List<SourceFileTree.SourceFileSystemDragData>)))
@@ -476,13 +478,13 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
     }
 
     /// <summary>
-    /// Handles the <see cref="Control.DragDrop"/> event of the fomod tree view.
+    ///   Handles the <see cref="Control.DragDrop" /> event of the fomod tree view.
     /// </summary>
     /// <remarks>
-    /// This handles adding the dropped file/folder to the fomod tree.
+    ///   This handles adding the dropped file/folder to the fomod tree.
     /// </remarks>
     /// <param name="sender">The object that triggered the event.</param>
-    /// <param name="e">A <see cref="DragEventArgs"/> that describes the event arguments.</param>
+    /// <param name="e">A <see cref="DragEventArgs" /> that describes the event arguments.</param>
     private void tvwFomod_DragDrop(object sender, DragEventArgs e)
     {
       if (!e.Data.GetDataPresent(typeof (List<SourceFileTree.SourceFileSystemDragData>)))
@@ -531,12 +533,14 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
     }
 
     /// <summary>
-    /// This adds a file/folder to the fomod file structure.
+    ///   This adds a file/folder to the fomod file structure.
     /// </summary>
     /// <param name="p_tndRoot">The node to which to add the file/folder.</param>
     /// <param name="p_strFile">The path to add to the fomod file structure.</param>
-    /// <returns>The node that was added for the specified file/folder. <lang langref="null"/>
-    /// is returned if the given path is invalid.</returns>
+    /// <returns>
+    ///   The node that was added for the specified file/folder. <lang langref="null" />
+    ///   is returned if the given path is invalid.
+    /// </returns>
     private FileSystemTreeNode addFomodFile(TreeNode p_tndRoot, string p_strFile)
     {
       if (!p_strFile.StartsWith(Archive.ARCHIVE_PREFIX) && !p_strFile.StartsWith(FileSystemTreeNode.NEW_PREFIX))
@@ -602,7 +606,7 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
     }
 
     /// <summary>
-    /// Populates the given node with its children.
+    ///   Populates the given node with its children.
     /// </summary>
     /// <param name="p_tndNode">The node to populate with children.</param>
     protected void PopulateNodeWithChildren(FileSystemTreeNode p_tndNode)
@@ -651,13 +655,13 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
     }
 
     /// <summary>
-    /// Handles the <see cref="TreeView.BeforeExpand"/> event of the fomod tree view.
+    ///   Handles the <see cref="TreeView.BeforeExpand" /> event of the fomod tree view.
     /// </summary>
     /// <remarks>
-    /// This handles retrieving the sub-files and sub-folders to display in the tree view.
+    ///   This handles retrieving the sub-files and sub-folders to display in the tree view.
     /// </remarks>
     /// <param name="sender">The object that triggered the event.</param>
-    /// <param name="e">A <see cref="TreeViewCancelEventArgs"/> that describes the event arguments.</param>
+    /// <param name="e">A <see cref="TreeViewCancelEventArgs" /> that describes the event arguments.</param>
     private void tvwFomod_BeforeExpand(object sender, TreeViewCancelEventArgs e)
     {
       var crsOldCursor = Cursor;
@@ -670,10 +674,10 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
     }
 
     /// <summary>
-    /// Handles the <see cref="TreeView.AfterLabelEdit"/> event of the fomod tree view.
+    ///   Handles the <see cref="TreeView.AfterLabelEdit" /> event of the fomod tree view.
     /// </summary>
     /// <param name="sender">The object that triggered the event.</param>
-    /// <param name="e">A <see cref="TreeViewCancelEventArgs"/> that describes the event arguments.</param>
+    /// <param name="e">A <see cref="TreeViewCancelEventArgs" /> that describes the event arguments.</param>
     private void tvwFomod_AfterLabelEdit(object sender, NodeLabelEditEventArgs e)
     {
       if (e.Label == null)
@@ -695,20 +699,20 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
     #region Fomod Context Menu
 
     /// <summary>
-    /// Handles the <see cref="Control.Click"/> event of the rename context menu item.
+    ///   Handles the <see cref="Control.Click" /> event of the rename context menu item.
     /// </summary>
     /// <param name="sender">The object that triggered the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> that describes the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> that describes the event arguments.</param>
     private void renameToolStripMenuItem_Click(object sender, EventArgs e)
     {
       tvwFomod.SelectedNode.BeginEdit();
     }
 
     /// <summary>
-    /// Handles the <see cref="Control.Click"/> event of the delete context menu item.
+    ///   Handles the <see cref="Control.Click" /> event of the delete context menu item.
     /// </summary>
     /// <param name="sender">The object that triggered the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> that describes the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> that describes the event arguments.</param>
     private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
     {
       var tndNode = tvwFomod.SelectedNode;
@@ -729,13 +733,13 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
     }
 
     /// <summary>
-    /// Handles the <see cref="Control.KeyDown"/> event of the fomod tree view.
+    ///   Handles the <see cref="Control.KeyDown" /> event of the fomod tree view.
     /// </summary>
     /// <remarks>
-    /// This delegates the key press to the fomod tree nodes' context menu.
+    ///   This delegates the key press to the fomod tree nodes' context menu.
     /// </remarks>
     /// <param name="sender">The object that triggered the event.</param>
-    /// <param name="e">A <see cref="KeyEventArgs"/> that describes the event arguments.</param>
+    /// <param name="e">A <see cref="KeyEventArgs" /> that describes the event arguments.</param>
     private void tvwFomod_KeyDown(object sender, KeyEventArgs e)
     {
       foreach (ToolStripItem item in cmsFomodNode.Items)
@@ -748,10 +752,10 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
     }
 
     /// <summary>
-    /// Handles the <see cref="Control.Click"/> event of the new folder context menu item.
+    ///   Handles the <see cref="Control.Click" /> event of the new folder context menu item.
     /// </summary>
     /// <param name="sender">The object that triggered the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> that describes the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> that describes the event arguments.</param>
     private void newFolderToolStripMenuItem_Click(object sender, EventArgs e)
     {
       TreeNode tndNode = null;
@@ -774,13 +778,13 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
     }
 
     /// <summary>
-    /// Handles the <see cref="Control.MouseDown"/> event of the fomod tree view.
+    ///   Handles the <see cref="Control.MouseDown" /> event of the fomod tree view.
     /// </summary>
     /// <remarks>
-    /// This selects the node under the cursor when the user right-clicks.
+    ///   This selects the node under the cursor when the user right-clicks.
     /// </remarks>
     /// <param name="sender">The object that triggered the event.</param>
-    /// <param name="e">A <see cref="MouseEventArgs"/> that describes the event arguments.</param>
+    /// <param name="e">A <see cref="MouseEventArgs" /> that describes the event arguments.</param>
     private void tvwFomod_MouseDown(object sender, MouseEventArgs e)
     {
       if (e.Button == MouseButtons.Right)
@@ -791,14 +795,14 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
     }
 
     /// <summary>
-    /// Handles the <see cref="MenuStrip.Opening"/> event of the node context menu.
+    ///   Handles the <see cref="MenuStrip.Opening" /> event of the node context menu.
     /// </summary>
     /// <remarks>
-    /// This enables/disables the new folder menu item dependent upon whether the clicked
-    /// node is a folder.
+    ///   This enables/disables the new folder menu item dependent upon whether the clicked
+    ///   node is a folder.
     /// </remarks>
     /// <param name="sender">The object that triggered the event.</param>
-    /// <param name="e">A <see cref="CancelEventArgs"/> that describes the event arguments.</param>
+    /// <param name="e">A <see cref="CancelEventArgs" /> that describes the event arguments.</param>
     private void cmsFomodNode_Opening(object sender, CancelEventArgs e)
     {
       nodeNewFolderToolStripMenuItem.Enabled = ((FileSystemTreeNode) tvwFomod.SelectedNode).IsDirectory;
@@ -807,13 +811,13 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
     #endregion
 
     /// <summary>
-    /// Handles the <see cref="Control.Click"/> event of the help link.
+    ///   Handles the <see cref="Control.Click" /> event of the help link.
     /// </summary>
     /// <remarks>
-    /// This shows/hides the help box as appropriate.
+    ///   This shows/hides the help box as appropriate.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="LinkLabelLinkClickedEventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="LinkLabelLinkClickedEventArgs" /> describing the event arguments.</param>
     private void lnkHelp_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
     {
       rtbHelp.Visible = !rtbHelp.Visible;
@@ -823,11 +827,13 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
     #region Find Fomod Files
 
     /// <summary>
-    /// Finds all files in the fomod file structure matching the given pattern.
+    ///   Finds all files in the fomod file structure matching the given pattern.
     /// </summary>
     /// <param name="p_strPattern">The pattern of the files to find.</param>
-    /// <returns>Returns pairs of values representing the found files. The key of the pair is the fomod file path,
-    /// and the value is the source path for the file.</returns>
+    /// <returns>
+    ///   Returns pairs of values representing the found files. The key of the pair is the fomod file path,
+    ///   and the value is the source path for the file.
+    /// </returns>
     public List<KeyValuePair<string, string>> FindFomodFiles(string p_strPattern)
     {
       var strPatterns =
@@ -855,14 +861,16 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
     }
 
     /// <summary>
-    /// The recursive method that searches the fomod file structure for files in the specified directory
-    /// matching the given pattern.
+    ///   The recursive method that searches the fomod file structure for files in the specified directory
+    ///   matching the given pattern.
     /// </summary>
     /// <param name="p_tndRoot">The node from which to being searching.</param>
     /// <param name="p_queDirectories">The path to the directory in which to search.</param>
     /// <param name="p_rgxFileNamePattern">The pattern of the files to find.</param>
-    /// <returns>Returns pairs of values representing the found files. The key of the pair is the fomod file path,
-    /// and the value is the source path for the file.</returns>
+    /// <returns>
+    ///   Returns pairs of values representing the found files. The key of the pair is the fomod file path,
+    ///   and the value is the source path for the file.
+    /// </returns>
     private List<KeyValuePair<string, string>> FindFomodFiles(FileSystemTreeNode p_tndRoot,
                                                               Queue<string> p_queDirectories, Regex p_rgxFileNamePattern)
     {
@@ -893,9 +901,9 @@ Remeber, you can customize the FOMod file structure by doing any of the followin
     #region IStatusProviderAware Members
 
     /// <summary>
-    /// Gets the label upon which to display status message from <see cref="SiteStatusProvider"/>s.
+    ///   Gets the label upon which to display status message from <see cref="SiteStatusProvider" />s.
     /// </summary>
-    /// <value>The label upon which to display status message from <see cref="SiteStatusProvider"/>s.</value>
+    /// <value>The label upon which to display status message from <see cref="SiteStatusProvider" />s.</value>
     public Control StatusProviderSite
     {
       get

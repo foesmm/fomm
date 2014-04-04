@@ -1,23 +1,23 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Security;
 using System.Security.Permissions;
-using System.IO;
-using System.Collections.Generic;
 
 namespace Fomm.PackageManager
 {
   /// <summary>
-  /// Manages the permissions required by the application to install a mod.
+  ///   Manages the permissions required by the application to install a mod.
   /// </summary>
   /// <remarks>
-  /// This must be initialized before a custom script is called.
+  ///   This must be initialized before a custom script is called.
   /// </remarks>
   internal class PermissionsManager
   {
     private static PermissionSet permissions;
 
     /// <summary>
-    /// Initializes the permissions manager with the permissions required by an install script.
+    ///   Initializes the permissions manager with the permissions required by an install script.
     /// </summary>
     internal static void Init()
     {
@@ -46,7 +46,7 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Gets the current permissions set.
+    ///   Gets the current permissions set.
     /// </summary>
     /// <value>The current permissions set.</value>
     internal static PermissionSet CurrentPermissions
@@ -62,7 +62,7 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Gets whether or not the permissions manager has been initialized.
+    ///   Gets whether or not the permissions manager has been initialized.
     /// </summary>
     /// <value>Whether or not the permissions manager has been initialized.</value>
     internal static bool IsInitialized

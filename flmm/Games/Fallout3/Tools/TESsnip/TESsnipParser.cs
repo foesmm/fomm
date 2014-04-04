@@ -9,9 +9,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
 {
   public class TESParserException : Exception
   {
-    public TESParserException(string msg) : base(msg)
-    {
-    }
+    public TESParserException(string msg) : base(msg) {}
   }
 
   public abstract class BaseRecord
@@ -321,9 +319,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
           new FileInfo(FilePath).LastWriteTime = timestamp;
         }
       }
-      catch
-      {
-      }
+      catch {}
     }
 
     internal override void SaveData(BinaryWriter bw)
@@ -970,9 +966,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
              "Size: " + Size + " bytes (Excluding header)";
     }
 
-    public override void DeleteRecord(BaseRecord br)
-    {
-    }
+    public override void DeleteRecord(BaseRecord br) {}
 
     public override void AddRecord(BaseRecord br)
     {

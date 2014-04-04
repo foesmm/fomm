@@ -4,27 +4,27 @@ using System.Text;
 namespace Fomm.PackageManager.XmlConfiguredInstall
 {
   /// <summary>
-  /// The possible relations of dependencies.
+  ///   The possible relations of dependencies.
   /// </summary>
   public enum DependencyOperator
   {
     /// <summary>
-    /// Indicates all contained dependencies must be satisfied in order for this dependency to be satisfied.
+    ///   Indicates all contained dependencies must be satisfied in order for this dependency to be satisfied.
     /// </summary>
     And,
 
     /// <summary>
-    /// Indicates at least one listed dependency must be satisfied in order for this dependency to be satisfied.
+    ///   Indicates at least one listed dependency must be satisfied in order for this dependency to be satisfied.
     /// </summary>
     Or
   }
 
   /// <summary>
-  /// A dependency that requires a combination of sub-dependencies to be fufilled.
+  ///   A dependency that requires a combination of sub-dependencies to be fufilled.
   /// </summary>
   /// <remarks>
-  /// The combination of sub-dependencies that must be fufilled is determined by an
-  /// operator (e.g., and, or).
+  ///   The combination of sub-dependencies that must be fufilled is determined by an
+  ///   operator (e.g., and, or).
   /// </remarks>
   public class CompositeDependency : IDependency
   {
@@ -34,11 +34,13 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     #region Properties
 
     /// <summary>
-    /// Gets the <see cref="DependencyOperator"/> specifying which of the sub-dependencies
-    /// must be fufilled in order for this dependency to be fufilled.
+    ///   Gets the <see cref="DependencyOperator" /> specifying which of the sub-dependencies
+    ///   must be fufilled in order for this dependency to be fufilled.
     /// </summary>
-    /// <value>The <see cref="DependencyOperator"/> specifying which of the sub-dependencies
-    /// must be fufilled in order for this dependency to be fufilled.</value>
+    /// <value>
+    ///   The <see cref="DependencyOperator" /> specifying which of the sub-dependencies
+    ///   must be fufilled in order for this dependency to be fufilled.
+    /// </value>
     public DependencyOperator Operator
     {
       get
@@ -48,7 +50,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     }
 
     /// <summary>
-    /// Gets the sub-dependencies.
+    ///   Gets the sub-dependencies.
     /// </summary>
     /// <value>The sub-dependencies.</value>
     public IList<IDependency> Dependencies
@@ -60,11 +62,12 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     }
 
     /// <summary>
-    /// Determines if the given composite dependency if fufilled.
+    ///   Determines if the given composite dependency if fufilled.
     /// </summary>
     /// <remarks>
-    /// A composite dependency is fufilled if and only if its contained dependencies
-    /// are fufilled in the combination specified by the <see cref="Operator"/>.</remarks>
+    ///   A composite dependency is fufilled if and only if its contained dependencies
+    ///   are fufilled in the combination specified by the <see cref="Operator" />.
+    /// </remarks>
     public bool IsFufilled
     {
       get
@@ -88,14 +91,14 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     }
 
     /// <summary>
-    /// Gets a message describing whether or not the dependency is fufilled.
+    ///   Gets a message describing whether or not the dependency is fufilled.
     /// </summary>
     /// <remarks>
-    /// If the dependency is fufilled the message is "Passed." If the dependency is not fufilled the
-    /// message is a list of the sub-dependecies' messages.
+    ///   If the dependency is fufilled the message is "Passed." If the dependency is not fufilled the
+    ///   message is a list of the sub-dependecies' messages.
     /// </remarks>
     /// <value>A message describing whether or not the dependency is fufilled.</value>
-    /// <seealso cref="IDependency.Message"/>
+    /// <seealso cref="IDependency.Message" />
     public string Message
     {
       get
@@ -146,10 +149,12 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     #region Constructors
 
     /// <summary>
-    /// A simple constructor that initializes the object with the given values.
+    ///   A simple constructor that initializes the object with the given values.
     /// </summary>
-    /// <param name="p_dopOperator">The operator that specifies what combination of sub-dependencies
-    /// must be fufilled in order for this dependancy to be fufilled.</param>
+    /// <param name="p_dopOperator">
+    ///   The operator that specifies what combination of sub-dependencies
+    ///   must be fufilled in order for this dependancy to be fufilled.
+    /// </param>
     public CompositeDependency(DependencyOperator p_dopOperator)
     {
       m_dopOperator = p_dopOperator;
@@ -158,7 +163,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     #endregion
 
     /// <summary>
-    /// Generates a text representation of the dependency.
+    ///   Generates a text representation of the dependency.
     /// </summary>
     /// <returns>A text representation of the dependency.</returns>
     public override string ToString()

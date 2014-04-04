@@ -7,21 +7,23 @@ using Fomm.PackageManager;
 namespace Fomm.Games.Fallout3.Script
 {
   /// <summary>
-  /// Encapsulates the management of BSA files.
+  ///   Encapsulates the management of BSA files.
   /// </summary>
   public class BsaManager : IDisposable
   {
     private static readonly Dictionary<string, BSAArchive> m_dicBSAs = new Dictionary<string, BSAArchive>();
 
     /// <summary>
-    /// Gets the specified file from the specified BSA.
+    ///   Gets the specified file from the specified BSA.
     /// </summary>
     /// <param name="p_strBsa">The BSA from which to extract the specified file.</param>
     /// <param name="p_strFile">The files to extract form the specified BSA.</param>
     /// <returns>The data of the specified file.</returns>
-    /// <exception cref="IllegalFilePathException">Thrown if <paramref name="p_strBsa"/>
-    /// contains illegal characters or refers to a file outside of the Data directory, or
-    /// if <paramref name="p_strFile"/> refers to an unsafe location.</exception>
+    /// <exception cref="IllegalFilePathException">
+    ///   Thrown if <paramref name="p_strBsa" />
+    ///   contains illegal characters or refers to a file outside of the Data directory, or
+    ///   if <paramref name="p_strFile" /> refers to an unsafe location.
+    /// </exception>
     /// <exception cref="BSAArchive.BSALoadException">Thrown if the specified BSA cannot be loaded.</exception>
     public byte[] GetDataFileFromBSA(string p_strBsa, string p_strFile)
     {
@@ -41,12 +43,14 @@ namespace Fomm.Games.Fallout3.Script
     }
 
     /// <summary>
-    /// Retrieves the list of files in the specified BSA.
+    ///   Retrieves the list of files in the specified BSA.
     /// </summary>
     /// <param name="p_strBsa">The BSA whose file listing is requested.</param>
     /// <returns>The list of files contained in the specified BSA.</returns>
-    /// <exception cref="IllegalFilePathException">Thrown if <paramref name="p_strBsa"/>
-    /// contains illegal characters or refers to a file outside of the Data directory.</exception>
+    /// <exception cref="IllegalFilePathException">
+    ///   Thrown if <paramref name="p_strBsa" />
+    ///   contains illegal characters or refers to a file outside of the Data directory.
+    /// </exception>
     /// <exception cref="BSAArchive.BSALoadException">Thrown if the specified BSA cannot be loaded.</exception>
     public string[] GetBSAFileList(string p_strBsa)
     {
@@ -66,10 +70,10 @@ namespace Fomm.Games.Fallout3.Script
     #region IDisposable Members
 
     /// <summary>
-    /// Disposes the BSA manager.
+    ///   Disposes the BSA manager.
     /// </summary>
     /// <remarks>
-    /// This method ensures that all BSAs have been released.
+    ///   This method ensures that all BSAs have been released.
     /// </remarks>
     public void Dispose()
     {

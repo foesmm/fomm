@@ -10,9 +10,9 @@ namespace Fomm.PackageManager
     #region Properties
 
     /// <summary>
-    /// Gets or sets the <see cref="Readme"/> being edited.
+    ///   Gets or sets the <see cref="Readme" /> being edited.
     /// </summary>
-    /// <value>The <see cref="Readme"/> being edited.</value>
+    /// <value>The <see cref="Readme" /> being edited.</value>
     public Readme Readme
     {
       get
@@ -30,7 +30,7 @@ namespace Fomm.PackageManager
     #region Constructors
 
     /// <summary>
-    /// The default constructor.
+    ///   The default constructor.
     /// </summary>
     public EditReadmeForm()
     {
@@ -43,12 +43,12 @@ namespace Fomm.PackageManager
     #endregion
 
     /// <summary>
-    /// Raises the <see cref="Form.Closing"/> event.
+    ///   Raises the <see cref="Form.Closing" /> event.
     /// </summary>
     /// <remarks>
-    /// Saves the window's position.
+    ///   Saves the window's position.
     /// </remarks>
-    /// <param name="e">A <see cref="CancelEventArgs"/> describing the event arguments.</param>
+    /// <param name="e">A <see cref="CancelEventArgs" /> describing the event arguments.</param>
     protected override void OnClosing(CancelEventArgs e)
     {
       Settings.Default.windowPositions.SetWindowPosition("EditReadmeForm", this);
@@ -57,10 +57,10 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Handles the <see cref="Control.Click"/> event of the OK button.
+    ///   Handles the <see cref="Control.Click" /> event of the OK button.
     /// </summary>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void butOK_Click(object sender, EventArgs e)
     {
       DialogResult = DialogResult.OK;

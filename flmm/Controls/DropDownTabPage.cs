@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Windows.Forms;
 using System.ComponentModel;
+using System.Windows.Forms;
 
 namespace Fomm.Controls
 {
   /// <summary>
-  /// A page in a <see cref="DropDownTabControl"/>.
+  ///   A page in a <see cref="DropDownTabControl" />.
   /// </summary>
   public class DropDownTabPage : Panel
   {
@@ -16,9 +16,9 @@ namespace Fomm.Controls
     #region Properties
 
     /// <summary>
-    /// Gets or sets the index of this page in the <see cref="DropDownTabControl"/>.
+    ///   Gets or sets the index of this page in the <see cref="DropDownTabControl" />.
     /// </summary>
-    /// <value>The index of this page in the <see cref="DropDownTabControl"/>.</value>
+    /// <value>The index of this page in the <see cref="DropDownTabControl" />.</value>
     [Category("Behavior")]
     public Int32 PageIndex
     {
@@ -40,7 +40,7 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Gets or sets the text that appears in this page's tab.
+    ///   Gets or sets the text that appears in this page's tab.
     /// </summary>
     /// <value>The text that appears in this page's tab.</value>
     [Browsable(true), Category("Appearance")]

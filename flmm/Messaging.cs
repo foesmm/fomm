@@ -34,7 +34,7 @@ namespace Fomm
       var channel = new IpcChannel();
       ChannelServices.RegisterChannel(channel, false);
       var remoteType = new WellKnownClientTypeEntry(typeof (MessagePasser),
-                                                                         "ipc://localhost:9090/MessagePasser.rem");
+                                                    "ipc://localhost:9090/MessagePasser.rem");
       RemotingConfiguration.RegisterWellKnownClientType(remoteType);
       var passer = new MessagePasser();
       passer.SendMessage(s);

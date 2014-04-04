@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Xml;
-using Fomm.PackageManager.XmlConfiguredInstall;
-using Fomm.Games.Fallout3.Script.XmlConfiguredInstall.Parsers;
 using Fomm.Games.Fallout3.Script.XmlConfiguredInstall;
+using Fomm.Games.Fallout3.Script.XmlConfiguredInstall.Parsers;
+using Fomm.PackageManager.XmlConfiguredInstall;
 
 namespace Fomm.Games.FalloutNewVegas.Script.XmlConfiguredInstall.Parsers
 {
   /// <summary>
-  /// The Fallout: New Vegas parser extension for version 5.0 XML configuration files.
+  ///   The Fallout: New Vegas parser extension for version 5.0 XML configuration files.
   /// </summary>
   public class FalloutNewVegasParser50Extension : Fallout3Parser10Extension
   {
     /// <summary>
-    /// Parses the given dependency.
+    ///   Parses the given dependency.
     /// </summary>
     /// <param name="p_xndDependency">The dependency to parse.</param>
     /// <param name="p_dsmSate">The state manager for this install.</param>

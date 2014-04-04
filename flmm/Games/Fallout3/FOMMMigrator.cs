@@ -1,27 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.Win32;
-using System.Windows.Forms;
 using System.IO;
-using Fomm.Util;
+using System.Windows.Forms;
 using ChinhDo.Transactions;
 using fomm.Transactions;
+using Fomm.Util;
+using Microsoft.Win32;
 
 namespace Fomm.Games.Fallout3
 {
   /// <summary>
-  /// This migrates files used by the mod manager from they're old FOMM (pre 0.13.0)
-  /// locations to the new locations.
+  ///   This migrates files used by the mod manager from they're old FOMM (pre 0.13.0)
+  ///   locations to the new locations.
   /// </summary>
   public class FOMMMigrator
   {
     private BackgroundWorkerProgressDialog m_bwdProgress;
 
     /// <summary>
-    /// Starts the migration, if necessary.
+    ///   Starts the migration, if necessary.
     /// </summary>
-    /// <returns><lang langref="false"/> if the migration failed;
-    /// <lang langref="true"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="false" /> if the migration failed;
+    ///   <lang langref="true" /> otherwise.
+    /// </returns>
     public bool Migrate()
     {
       if (Properties.Settings.Default.migratedFromPre0130)
@@ -89,7 +91,7 @@ namespace Fomm.Games.Fallout3
     }
 
     /// <summary>
-    /// This performs the mirgration.
+    ///   This performs the mirgration.
     /// </summary>
     /// <param name="p_objArgs">The path to the old FOMM installation.</param>
     protected void DoMigration(object p_objArgs)
@@ -133,7 +135,7 @@ namespace Fomm.Games.Fallout3
                      StringComparison.InvariantCultureIgnoreCase))
       {
         var strOverwriteFiles = Directory.GetFiles(Path.Combine(strOldFOMMLocation, "overwrites"), "*.*",
-                                                        SearchOption.AllDirectories);
+                                                   SearchOption.AllDirectories);
         m_bwdProgress.ItemMessage = "Copying overwrites...";
         m_bwdProgress.ItemProgressMaximum = strOverwriteFiles.Length;
         m_bwdProgress.ItemProgress = 0;
@@ -169,14 +171,16 @@ namespace Fomm.Games.Fallout3
     }
 
     /// <summary>
-    /// Called when an overwrite file has been copied as part of the migration.
+    ///   Called when an overwrite file has been copied as part of the migration.
     /// </summary>
     /// <remarks>
-    /// This allows the user to cancel the operation.
+    ///   This allows the user to cancel the operation.
     /// </remarks>
     /// <param name="p_strFile">The file that was copied.</param>
-    /// <returns><lang langref="true"/> if the user has cancelled;
-    /// <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the user has cancelled;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
     protected bool OverwriteFileCopied(string p_strFile)
     {
       return m_bwdProgress.Cancelled();

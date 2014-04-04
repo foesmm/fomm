@@ -11,36 +11,35 @@ namespace Fomm.Games.FalloutNewVegas.Script
     #region Constructors
 
     /// <summary>
-    /// A simple constructor that initializes the object.
+    ///   A simple constructor that initializes the object.
     /// </summary>
-    /// <param name="p_fomodMod">The <see cref="fomod"/> against which to run the script.</param>
+    /// <param name="p_fomodMod">The <see cref="fomod" /> against which to run the script.</param>
     public FalloutNewVegasModUpgradeScript(fomod p_fomodMod, ModInstallerBase p_mibInstaller)
-      : base(p_fomodMod, p_mibInstaller)
-    {
-    }
+      : base(p_fomodMod, p_mibInstaller) {}
 
     #endregion
 
     #region Ini Editing
 
     /// <summary>
-    /// Sets the specified value in the specified Ini file to the given value.
+    ///   Sets the specified value in the specified Ini file to the given value.
     /// </summary>
     /// <remarks>
-    /// This method edits the specified Ini value, if the latest edit is owned
-    /// by the fomod being upgraded. If the latest edit is not owned by the fomod
-    /// being upgraded, the edit is simply archived in the appropriate location in the
-    /// install log.
-    /// 
-    /// If the edit was not previously installed by the fomod, then the normal install rules apply,
-    /// including confirming overwrite if applicable.
+    ///   This method edits the specified Ini value, if the latest edit is owned
+    ///   by the fomod being upgraded. If the latest edit is not owned by the fomod
+    ///   being upgraded, the edit is simply archived in the appropriate location in the
+    ///   install log.
+    ///   If the edit was not previously installed by the fomod, then the normal install rules apply,
+    ///   including confirming overwrite if applicable.
     /// </remarks>
     /// <param name="p_strFile">The Ini file to edit.</param>
     /// <param name="p_strSection">The section in the Ini file to edit.</param>
     /// <param name="p_strKey">The key in the Ini file to edit.</param>
     /// <param name="p_strValue">The value to which to set the key.</param>
-    /// <returns><lang langref="true"/> if the value was set; <lang langref="false"/>
-    /// if the user chose not to overwrite the existing value.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the value was set; <lang langref="false" />
+    ///   if the user chose not to overwrite the existing value.
+    /// </returns>
     protected override bool EditINI(string p_strFile, string p_strSection, string p_strKey, string p_strValue)
     {
       PermissionsManager.CurrentPermissions.Assert();
@@ -67,22 +66,23 @@ namespace Fomm.Games.FalloutNewVegas.Script
     #region Shader Editing
 
     /// <summary>
-    /// Edits the specified shader with the specified data.
+    ///   Edits the specified shader with the specified data.
     /// </summary>
     /// <remarks>
-    /// This method edits the specified shader, if the latest edit is owned
-    /// by the fomod being upgraded. If the latest edit is not owned by the fomod
-    /// being upgraded, the edit is simply archived in the appropriate location in the
-    /// install log.
-    /// 
-    /// If the edit was not previously installed by the fomod, then the normal install rules apply,
-    /// including confirming overwrite if applicable.
+    ///   This method edits the specified shader, if the latest edit is owned
+    ///   by the fomod being upgraded. If the latest edit is not owned by the fomod
+    ///   being upgraded, the edit is simply archived in the appropriate location in the
+    ///   install log.
+    ///   If the edit was not previously installed by the fomod, then the normal install rules apply,
+    ///   including confirming overwrite if applicable.
     /// </remarks>
     /// <param name="p_intPackage">The package containing the shader to edit.</param>
     /// <param name="p_strShaderName">The shader to edit.</param>
     /// <param name="p_bteData">The value to which to edit the shader.</param>
-    /// <returns><lang langref="true"/> if the value was set; <lang langref="false"/>
-    /// if the user chose not to overwrite the existing value.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the value was set; <lang langref="false" />
+    ///   if the user chose not to overwrite the existing value.
+    /// </returns>
     /// <exception cref="ShaderException">Thrown if the shader could not be edited.</exception>
     public override bool EditShader(int p_intPackage, string p_strShaderName, byte[] p_bteData)
     {

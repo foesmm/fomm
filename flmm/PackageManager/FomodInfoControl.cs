@@ -1,14 +1,14 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Windows.Forms;
 using System.IO;
+using System.Windows.Forms;
 using Fomm.Properties;
 using GeMod.Interface;
 
 namespace Fomm.PackageManager
 {
   /// <summary>
-  /// Encapsulates the editing of FOMod info.
+  ///   Encapsulates the editing of FOMod info.
   /// </summary>
   public partial class FomodInfoControl : UserControl, IFomodInfo
   {
@@ -17,7 +17,7 @@ namespace Fomm.PackageManager
     #region Properties
 
     /// <summary>
-    /// Gets or sets the screenshot used by the fomod.
+    ///   Gets or sets the screenshot used by the fomod.
     /// </summary>
     /// <value>The screenshot used by the fomod.</value>
     public Screenshot Screenshot
@@ -38,7 +38,7 @@ namespace Fomm.PackageManager
     #region Constructors
 
     /// <summary>
-    /// The default constructor.
+    ///   The default constructor.
     /// </summary>
     public FomodInfoControl()
     {
@@ -60,9 +60,7 @@ namespace Fomm.PackageManager
           clbGroups.ResumeLayout();
         }
       }
-      catch
-      {
-      }
+      catch {}
     }
 
     #endregion
@@ -70,13 +68,13 @@ namespace Fomm.PackageManager
     #region Screenshot
 
     /// <summary>
-    /// Handles the <see cref="Control.CLick"/> event of the set screenshot button.
+    ///   Handles the <see cref="Control.CLick" /> event of the set screenshot button.
     /// </summary>
     /// <remarks>
-    /// Sets the screenshot for the fomod.
+    ///   Sets the screenshot for the fomod.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void butSetScreenshot_Click(object sender, EventArgs e)
     {
       if (ofdScreenshot.ShowDialog() == DialogResult.OK)
@@ -87,13 +85,13 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Handles the <see cref="Control.CLick"/> event of the clear screenshot button.
+    ///   Handles the <see cref="Control.CLick" /> event of the clear screenshot button.
     /// </summary>
     /// <remarks>
-    /// Removes the screenshot from the fomod.
+    ///   Removes the screenshot from the fomod.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void butClearScreenshot_Click(object sender, EventArgs e)
     {
       pbxScreenshot.Image = null;
@@ -105,10 +103,12 @@ namespace Fomm.PackageManager
     #region Validation
 
     /// <summary>
-    /// Ensures that the version is valid, if present.
+    ///   Ensures that the version is valid, if present.
     /// </summary>
-    /// <returns><lang langref="true"/> if the version is valid or not present;
-    /// <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the version is valid or not present;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
     protected bool ValidateMachineVersion()
     {
       erpErrors.SetError(tbMVersion, null);
@@ -128,20 +128,22 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Handles the <see cref="Control.Validating"/> event of the machine version textbox.
+    ///   Handles the <see cref="Control.Validating" /> event of the machine version textbox.
     /// </summary>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">A <see cref="CancelEventArgs"/> describing the event arguments.</param>
+    /// <param name="e">A <see cref="CancelEventArgs" /> describing the event arguments.</param>
     private void tbMVersion_Validating(object sender, CancelEventArgs e)
     {
       ValidateMachineVersion();
     }
 
     /// <summary>
-    /// Ensures that the URL is valid, if present.
+    ///   Ensures that the URL is valid, if present.
     /// </summary>
-    /// <returns><lang langref="true"/> if the website is valid or not present;
-    /// <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the website is valid or not present;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
     protected bool ValidateWebsite()
     {
       erpErrors.SetError(tbWebsite, null);
@@ -159,23 +161,25 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Handles the <see cref="Control.Validating"/> event of the website textbox.
+    ///   Handles the <see cref="Control.Validating" /> event of the website textbox.
     /// </summary>
     /// <remarks>
-    /// Ensures that the URL is valid, if present.
+    ///   Ensures that the URL is valid, if present.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">A <see cref="CancelEventArgs"/> describing the event arguments.</param>
+    /// <param name="e">A <see cref="CancelEventArgs" /> describing the event arguments.</param>
     private void tbWebsite_Validating(object sender, CancelEventArgs e)
     {
       ValidateWebsite();
     }
 
     /// <summary>
-    /// Ensures that the version is valid, if present.
+    ///   Ensures that the version is valid, if present.
     /// </summary>
-    /// <returns><lang langref="true"/> if the version is valid or not present;
-    /// <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the version is valid or not present;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
     protected bool ValidateMinFommVersion()
     {
       erpErrors.SetError(tbMinFommVersion, null);
@@ -201,22 +205,22 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Handles the <see cref="Control.Validating"/> event of the minimum FOMM version textbox.
+    ///   Handles the <see cref="Control.Validating" /> event of the minimum FOMM version textbox.
     /// </summary>
     /// <remarks>
-    /// Ensures that the version is valid, if present.
+    ///   Ensures that the version is valid, if present.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">A <see cref="CancelEventArgs"/> describing the event arguments.</param>
+    /// <param name="e">A <see cref="CancelEventArgs" /> describing the event arguments.</param>
     private void tbMinFommVersion_Validating(object sender, CancelEventArgs e)
     {
       ValidateMinFommVersion();
     }
 
     /// <summary>
-    /// Validate the controls on this control.
+    ///   Validate the controls on this control.
     /// </summary>
-    /// <returns><lang langref="true"/> if all controls passed validation; <lang langref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true" /> if all controls passed validation; <lang langref="false" /> otherwise.</returns>
     public bool PerformValidation()
     {
       var booIsValid = ValidateMachineVersion();
@@ -228,9 +232,9 @@ namespace Fomm.PackageManager
     #endregion
 
     /// <summary>
-    /// Loads the info from the given <see cref="fomod"/> into the edit form.
+    ///   Loads the info from the given <see cref="fomod" /> into the edit form.
     /// </summary>
-    /// <param name="p_fomodMod">The <see cref="fomod"/> whose info is to be edited.</param>
+    /// <param name="p_fomodMod">The <see cref="fomod" /> whose info is to be edited.</param>
     public void LoadFomod(fomod p_fomodMod)
     {
       ModName = p_fomodMod.ModName;
@@ -248,11 +252,13 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Saves the edited info to the given fomod.
+    ///   Saves the edited info to the given fomod.
     /// </summary>
-    /// <param name="p_fomodMod">The <see cref="fomod"/> to which to save the info.</param>
-    /// <returns><lang langref="false"/> if the info failed validation and was not saved;
-    /// <lang langref="true"/> otherwise.</returns>
+    /// <param name="p_fomodMod">The <see cref="fomod" /> to which to save the info.</param>
+    /// <returns>
+    ///   <lang langref="false" /> if the info failed validation and was not saved;
+    ///   <lang langref="true" /> otherwise.
+    /// </returns>
     public bool SaveFomod(fomod p_fomodMod)
     {
       if (!ValidateChildren())
@@ -283,13 +289,13 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Raises the <see cref="Control.Resize"/> event.
+    ///   Raises the <see cref="Control.Resize" /> event.
     /// </summary>
     /// <remarks>
-    /// This handle the resizing of the screenshot piture box, as anchoring it screws up the
-    /// autoscrolling (don't know why).
+    ///   This handle the resizing of the screenshot piture box, as anchoring it screws up the
+    ///   autoscrolling (don't know why).
     /// </remarks>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     protected override void OnResize(EventArgs e)
     {
       base.OnResize(e);
@@ -300,7 +306,7 @@ namespace Fomm.PackageManager
     #region IFomodInfo Members
 
     /// <summary>
-    /// Gets or sets the human readable Version of the mod.
+    ///   Gets or sets the human readable Version of the mod.
     /// </summary>
     /// <value>The human readable Version of the mod.</value>
     public string HumanReadableVersion
@@ -316,7 +322,7 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Gets or sets the machine Version of the mod.
+    ///   Gets or sets the machine Version of the mod.
     /// </summary>
     /// <value>The machine Version of the mod.</value>
     public Version MachineVersion
@@ -336,7 +342,7 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Gets or sets the required FOMM version of the mod.
+    ///   Gets or sets the required FOMM version of the mod.
     /// </summary>
     /// <value>The required FOMM version of the mod.</value>
     public Version MinFommVersion
@@ -356,7 +362,7 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Gets or sets the FOMM groups to which the fomod belongs.
+    ///   Gets or sets the FOMM groups to which the fomod belongs.
     /// </summary>
     /// <value>The FOMM groups to which the fomod belongs.</value>
     public string[] Groups
@@ -383,7 +389,7 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Gets or sets the name of the mod.
+    ///   Gets or sets the name of the mod.
     /// </summary>
     /// <value>The name of the mod.</value>
     public string ModName
@@ -399,7 +405,7 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Gets or sets the author of the mod.
+    ///   Gets or sets the author of the mod.
     /// </summary>
     /// <value>The author of the mod.</value>
     public string Author
@@ -415,7 +421,7 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Gets or sets the Description of the mod.
+    ///   Gets or sets the Description of the mod.
     /// </summary>
     /// <value>The Description of the mod.</value>
     public string Description
@@ -431,7 +437,7 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Gets or sets the Website of the mod.
+    ///   Gets or sets the Website of the mod.
     /// </summary>
     /// <value>The Website of the mod.</value>
     public string Website
@@ -447,7 +453,7 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Gets or sets the Email of the mod.
+    ///   Gets or sets the Email of the mod.
     /// </summary>
     /// <value>The Email of the mod.</value>
     public string Email

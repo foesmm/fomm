@@ -1,12 +1,18 @@
 ﻿using System;
-using System.Diagnostics;
-using System.IO;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
-using System.Threading;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
+using System.IO;
+using System.Text;
+using System.Threading;
+using System.Windows.Forms;
+using Fomm.Commands;
 using Fomm.Controls;
+using Fomm.Games.Fallout3.PluginFormatProviders;
+using Fomm.Games.Fallout3.Script;
+using Fomm.Games.Fallout3.Script.XmlConfiguredInstall;
+using Fomm.Games.Fallout3.Script.XmlConfiguredInstall.Parsers;
+using Fomm.Games.Fallout3.Settings;
 using Fomm.Games.Fallout3.Tools;
 using Fomm.Games.Fallout3.Tools.AutoSorter;
 using Fomm.Games.Fallout3.Tools.BSA;
@@ -17,23 +23,17 @@ using Fomm.Games.Fallout3.Tools.TESsnip;
 using Fomm.PackageManager;
 using Fomm.PackageManager.XmlConfiguredInstall;
 using Fomm.PackageManager.XmlConfiguredInstall.Parsers;
-using Fomm.Games.Fallout3.Settings;
-using Fomm.Games.Fallout3.Script;
-using Fomm.Games.Fallout3.Script.XmlConfiguredInstall;
-using Fomm.Games.Fallout3.Script.XmlConfiguredInstall.Parsers;
-using Fomm.Games.Fallout3.PluginFormatProviders;
-using Fomm.Commands;
 using Microsoft.Win32;
 
 namespace Fomm.Games.Fallout3
 {
   /// <summary>
-  /// Provides information required for the programme to manage Fallout 3 plugins.
+  ///   Provides information required for the programme to manage Fallout 3 plugins.
   /// </summary>
   public class Fallout3GameMode : GameMode
   {
     /// <summary>
-    /// This class provides strongly-typed access to this game mode's settings files.
+    ///   This class provides strongly-typed access to this game mode's settings files.
     /// </summary>
     public class SettingsFilesSet : Dictionary<string, string>
     {
@@ -45,7 +45,7 @@ namespace Fomm.Games.Fallout3
       #region Properties
 
       /// <summary>
-      /// Gets or sets the path to the Fallout.ini file.
+      ///   Gets or sets the path to the Fallout.ini file.
       /// </summary>
       /// <value>The path to the Fallout.ini file.</value>
       public string FOIniPath
@@ -61,7 +61,7 @@ namespace Fomm.Games.Fallout3
       }
 
       /// <summary>
-      /// Gets or sets the path to the FalloutPrefs.ini file.
+      ///   Gets or sets the path to the FalloutPrefs.ini file.
       /// </summary>
       /// <value>The path to the FalloutPrefs.ini file.</value>
       public string FOPrefsIniPath
@@ -77,7 +77,7 @@ namespace Fomm.Games.Fallout3
       }
 
       /// <summary>
-      /// Gets or sets the path to the Geck.ini file.
+      ///   Gets or sets the path to the Geck.ini file.
       /// </summary>
       /// <value>The path to the Geck.ini file.</value>
       public string GeckIniPath
@@ -93,7 +93,7 @@ namespace Fomm.Games.Fallout3
       }
 
       /// <summary>
-      /// Gets or sets the path to the GeckPrefs.ini file.
+      ///   Gets or sets the path to the GeckPrefs.ini file.
       /// </summary>
       /// <value>The path to the GeckPrefs.ini file.</value>
       public string GeckPrefsIniPath
@@ -129,7 +129,7 @@ namespace Fomm.Games.Fallout3
     #region Properties
 
     /// <summary>
-    /// Gets the name of the game whose plugins are being managed.
+    ///   Gets the name of the game whose plugins are being managed.
     /// </summary>
     /// <value>The name of the game whose plugins are being managed.</value>
     public override string GameName
@@ -141,7 +141,7 @@ namespace Fomm.Games.Fallout3
     }
 
     /// <summary>
-    /// Gets the modDirectory of the GameMode.
+    ///   Gets the modDirectory of the GameMode.
     /// </summary>
     /// <value>The modDirectory of the GameMode.</value>
     public override string ModDirectory
@@ -162,7 +162,7 @@ namespace Fomm.Games.Fallout3
     }
 
     /// <summary>
-    /// Gets the modInfoCacheDirectory of the GameMode.
+    ///   Gets the modInfoCacheDirectory of the GameMode.
     /// </summary>
     /// <value>The modInfoCacheDirectory of the GameMode.</value>
     public override string ModInfoCacheDirectory
@@ -179,7 +179,7 @@ namespace Fomm.Games.Fallout3
     }
 
     /// <summary>
-    /// Gets the game launch command.
+    ///   Gets the game launch command.
     /// </summary>
     /// <value>The game launch command.</value>
     public override Command<MainForm> LaunchCommand
@@ -195,7 +195,7 @@ namespace Fomm.Games.Fallout3
     }
 
     /// <summary>
-    /// Gets the icon used for the plugin file type.
+    ///   Gets the icon used for the plugin file type.
     /// </summary>
     /// <value>The icon used for the plugin file type.</value>
     public override Icon PluginFileIcon
@@ -210,7 +210,7 @@ namespace Fomm.Games.Fallout3
     private string pp;
 
     /// <summary>
-    /// Gets the path to the game directory were pluings are to be installed.
+    ///   Gets the path to the game directory were pluings are to be installed.
     /// </summary>
     /// <value>The path to the game directory were pluings are to be installed.</value>
     public override string PluginsPath
@@ -226,10 +226,10 @@ namespace Fomm.Games.Fallout3
     }
 
     /// <summary>
-    /// Gets the path to the plugins.txt file.
+    ///   Gets the path to the plugins.txt file.
     /// </summary>
     /// <remarks>
-    /// plugins.txt is a Fallout 3 file that tracks active plugins.
+    ///   plugins.txt is a Fallout 3 file that tracks active plugins.
     /// </remarks>
     /// <value>The path to the plugins.txt file.</value>
     public string PluginsFilePath
@@ -241,10 +241,10 @@ namespace Fomm.Games.Fallout3
     }
 
     /// <summary>
-    /// Gets the directory where installation information is stored for this game mode.
+    ///   Gets the directory where installation information is stored for this game mode.
     /// </summary>
     /// <remarks>
-    /// This is where install logs, overwrites, and the like are stored.
+    ///   This is where install logs, overwrites, and the like are stored.
     /// </remarks>
     /// <value>The directory where installation information is stored for this game mode.</value>
     public override string InstallInfoDirectory
@@ -265,7 +265,7 @@ namespace Fomm.Games.Fallout3
     }
 
     /// <summary>
-    /// Gets the settings files used in the game mode.
+    ///   Gets the settings files used in the game mode.
     /// </summary>
     /// <value>The settings files used in the game mode.</value>
     public override IDictionary<string, string> SettingsFiles
@@ -277,7 +277,7 @@ namespace Fomm.Games.Fallout3
     }
 
     /// <summary>
-    /// Gets any other paths used in the game mode.
+    ///   Gets any other paths used in the game mode.
     /// </summary>
     /// <value>Any other paths used in the game mode.</value>
     public override IDictionary<string, string> AdditionalPaths
@@ -289,9 +289,9 @@ namespace Fomm.Games.Fallout3
     }
 
     /// <summary>
-    /// Gets the <see cref="IPluginFormatProvider"/>s provided by the game mode.
+    ///   Gets the <see cref="IPluginFormatProvider" />s provided by the game mode.
     /// </summary>
-    /// <value>The <see cref="IPluginFormatProvider"/>s provided by the game mode.</value>
+    /// <value>The <see cref="IPluginFormatProvider" />s provided by the game mode.</value>
     public override IList<IPluginFormatProvider> PluginFormatProviders
     {
       get
@@ -301,7 +301,7 @@ namespace Fomm.Games.Fallout3
     }
 
     /// <summary>
-    /// Gets the path to the game's save game files.
+    ///   Gets the path to the game's save game files.
     /// </summary>
     /// <value>The path to the game's save game files.</value>
     public override string SavesPath
@@ -313,7 +313,7 @@ namespace Fomm.Games.Fallout3
     }
 
     /// <summary>
-    /// Gets the path to the directory where Windows live install the DLCs.
+    ///   Gets the path to the directory where Windows live install the DLCs.
     /// </summary>
     /// <value>The path to the directory where Windows live install the DLCs.</value>
     private string DLCDirectory
@@ -325,7 +325,7 @@ namespace Fomm.Games.Fallout3
     }
 
     /// <summary>
-    /// Gets or sets the CriticalRecordPluginFormatProvider.
+    ///   Gets or sets the CriticalRecordPluginFormatProvider.
     /// </summary>
     /// <value>The CriticalRecordPluginFormatProvider.</value>
     protected CriticalRecordPluginFormatProvider CriticalRecordPluginFormatProvider
@@ -341,7 +341,7 @@ namespace Fomm.Games.Fallout3
     }
 
     /// <summary>
-    /// Sets the BoldESMPluginFormatProvider.
+    ///   Sets the BoldESMPluginFormatProvider.
     /// </summary>
     /// <value>The BoldESMPluginFormatProvider.</value>
     protected BoldESMPluginFormatProvider BoldESMPluginFormatProvider
@@ -363,7 +363,7 @@ namespace Fomm.Games.Fallout3
     #region Tool Injection
 
     /// <summary>
-    /// Gets the list of tools to add to the tools menu.
+    ///   Gets the list of tools to add to the tools menu.
     /// </summary>
     /// <value>The list of tools to add to the tools menu.</value>
     public override IList<Command<MainForm>> Tools
@@ -375,7 +375,7 @@ namespace Fomm.Games.Fallout3
     }
 
     /// <summary>
-    /// Gets the list of tools to add to the game settings menu.
+    ///   Gets the list of tools to add to the game settings menu.
     /// </summary>
     /// <value>The list of tools to add to the game settings menu.</value>
     public override IList<Command<MainForm>> GameSettingsTools
@@ -387,7 +387,7 @@ namespace Fomm.Games.Fallout3
     }
 
     /// <summary>
-    /// Gets the list of tools to add to the right-click menu.
+    ///   Gets the list of tools to add to the right-click menu.
     /// </summary>
     /// <value>The list of tools to add to the right-click menu.</value>
     public override IList<Command<MainForm>> RightClickTools
@@ -399,7 +399,7 @@ namespace Fomm.Games.Fallout3
     }
 
     /// <summary>
-    /// Gets the list of tools to add to the load order menu.
+    ///   Gets the list of tools to add to the load order menu.
     /// </summary>
     /// <value>The list of tools to add to the load order menu.</value>
     public override IList<Command<MainForm>> LoadOrderTools
@@ -411,7 +411,7 @@ namespace Fomm.Games.Fallout3
     }
 
     /// <summary>
-    /// Gets the list of game launch commands.
+    ///   Gets the list of game launch commands.
     /// </summary>
     /// <value>The list of game launch commands.</value>
     public override IList<Command<MainForm>> GameLaunchCommands
@@ -425,7 +425,7 @@ namespace Fomm.Games.Fallout3
     #endregion
 
     /// <summary>
-    /// Gets the settings pages that privode management of game mode-specific settings.
+    ///   Gets the settings pages that privode management of game mode-specific settings.
     /// </summary>
     /// <value>The settings pages that privode management of game mode-specific settings.</value>
     public override IList<SettingsPage> SettingsPages
@@ -437,7 +437,7 @@ namespace Fomm.Games.Fallout3
     }
 
     /// <summary>
-    /// Gets the plugin manager for this game mode.
+    ///   Gets the plugin manager for this game mode.
     /// </summary>
     /// <value>The plugin manager for this game mode.</value>
     public override PluginManager PluginManager
@@ -449,7 +449,7 @@ namespace Fomm.Games.Fallout3
     }
 
     /// <summary>
-    /// Gets the Fallout 3 rederer info file.
+    ///   Gets the Fallout 3 rederer info file.
     /// </summary>
     /// <value>The Fallout 3 rederer info file.</value>
     public string FORendererFile
@@ -461,7 +461,7 @@ namespace Fomm.Games.Fallout3
     }
 
     /// <summary>
-    /// Gets the version of the installed game.
+    ///   Gets the version of the installed game.
     /// </summary>
     /// <value>The version of the installed game.</value>
     public override Version GameVersion
@@ -477,14 +477,14 @@ namespace Fomm.Games.Fallout3
         {
           return
             new Version(FileVersionInfo.GetVersionInfo("Fallout3ng.exe")
-                              .FileVersion.Replace(", ", "."));
+                                       .FileVersion.Replace(", ", "."));
         }
         return null;
       }
     }
 
     /// <summary>
-    /// Gets the path to the per user Fallout 3 data.
+    ///   Gets the path to the per user Fallout 3 data.
     /// </summary>
     /// <value>The path to the per user Fallout 3 data.</value>
     protected virtual string UserGameDataPath
@@ -497,7 +497,7 @@ namespace Fomm.Games.Fallout3
 
     #endregion
 
-    override public void PostInit()
+    public override void PostInit()
     {
       m_sfsSettingsFiles = CreateSettingsFileSet();
       m_pmgPluginManager = CreatePluginManager();
@@ -511,16 +511,17 @@ namespace Fomm.Games.Fallout3
     #region Initialization
 
     /// <summary>
-    /// This initializes the game mode.
+    ///   This initializes the game mode.
     /// </summary>
     /// <remarks>
-    /// This gets the user to specify the directories where the programme will store info
-    /// such as install logs, if the directories have not already been setup.
-    /// 
-    /// This method also checks for DLCs, and cleans up any missing FOMods.
+    ///   This gets the user to specify the directories where the programme will store info
+    ///   such as install logs, if the directories have not already been setup.
+    ///   This method also checks for DLCs, and cleans up any missing FOMods.
     /// </remarks>
-    /// <returns><lang langref="true"/> if the game mode was able to initialize;
-    /// <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the game mode was able to initialize;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
     public override bool Init()
     {
       if (!Properties.Settings.Default.fallout3DoneSetup)
@@ -563,7 +564,7 @@ namespace Fomm.Games.Fallout3
     }
 
     /// <summary>
-    /// Creates the plugin manager that will be used by this game mode.
+    ///   Creates the plugin manager that will be used by this game mode.
     /// </summary>
     /// <returns>The plugin manager that will be used by this game mode.</returns>
     protected virtual Fallout3PluginManager CreatePluginManager()
@@ -572,7 +573,7 @@ namespace Fomm.Games.Fallout3
     }
 
     /// <summary>
-    /// Creates the settings file set that will be used by this game mode.
+    ///   Creates the settings file set that will be used by this game mode.
     /// </summary>
     /// <returns>The settings file set that will be used by this game mode.</returns>
     protected virtual SettingsFilesSet CreateSettingsFileSet()
@@ -581,7 +582,7 @@ namespace Fomm.Games.Fallout3
     }
 
     /// <summary>
-    /// Sets up the plugin format providers for this game mode.
+    ///   Sets up the plugin format providers for this game mode.
     /// </summary>
     protected virtual void SetupPluginFormatProviders()
     {
@@ -591,7 +592,7 @@ namespace Fomm.Games.Fallout3
     }
 
     /// <summary>
-    /// Sets up the paths for this game mode.
+    ///   Sets up the paths for this game mode.
     /// </summary>
     protected virtual void SetupPaths()
     {
@@ -612,7 +613,7 @@ namespace Fomm.Games.Fallout3
     }
 
     /// <summary>
-    /// Gets up the game-specific settings pages.
+    ///   Gets up the game-specific settings pages.
     /// </summary>
     protected virtual void SetupSettingsPages()
     {
@@ -624,7 +625,7 @@ namespace Fomm.Games.Fallout3
     }
 
     /// <summary>
-    /// Sets up the launch commands for the game.
+    ///   Sets up the launch commands for the game.
     /// </summary>
     protected virtual void SetupLaunchCommands()
     {
@@ -640,7 +641,7 @@ namespace Fomm.Games.Fallout3
     }
 
     /// <summary>
-    /// Sets up the tools for this game mode.
+    ///   Sets up the tools for this game mode.
     /// </summary>
     protected virtual void SetupTools()
     {
@@ -698,11 +699,16 @@ namespace Fomm.Games.Fallout3
     }
 
     /// <summary>
-    /// Launches the game with a custom command.
+    ///   Launches the game with a custom command.
     /// </summary>
     /// <param name="p_objCommand">The command that is executing.</param>
-    /// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
-    /// main mod management form.</param>
+    /// <param name="p_eeaArguments">
+    ///   An <see cref="ExecutedEventArgs
+    ///   
+    ///   <MainForm>
+    ///     "/> containing the
+    ///     main mod management form.
+    /// </param>
     public void LaunchFallout3Custom(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
       if (PrelaunchCheckOrder())
@@ -738,11 +744,16 @@ namespace Fomm.Games.Fallout3
     }
 
     /// <summary>
-    /// Launches the game, with FOSE.
+    ///   Launches the game, with FOSE.
     /// </summary>
     /// <param name="p_objCommand">The command that is executing.</param>
-    /// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
-    /// main mod management form.</param>
+    /// <param name="p_eeaArguments">
+    ///   An <see cref="ExecutedEventArgs
+    ///   
+    ///   <MainForm>
+    ///     "/> containing the
+    ///     main mod management form.
+    /// </param>
     public void LaunchFallout3FOSE(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
       if (PrelaunchCheckOrder())
@@ -775,11 +786,16 @@ namespace Fomm.Games.Fallout3
     }
 
     /// <summary>
-    /// Launches the game, without FOSE.
+    ///   Launches the game, without FOSE.
     /// </summary>
     /// <param name="p_objCommand">The command that is executing.</param>
-    /// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
-    /// main mod management form.</param>
+    /// <param name="p_eeaArguments">
+    ///   An <see cref="ExecutedEventArgs
+    ///   
+    ///   <MainForm>
+    ///     "/> containing the
+    ///     main mod management form.
+    /// </param>
     public void LaunchFallout3Plain(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
       if (PrelaunchCheckOrder())
@@ -808,11 +824,16 @@ namespace Fomm.Games.Fallout3
     }
 
     /// <summary>
-    /// Launches the game, using FOSE if present.
+    ///   Launches the game, using FOSE if present.
     /// </summary>
     /// <param name="p_objCommand">The command that is executing.</param>
-    /// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
-    /// main mod management form.</param>
+    /// <param name="p_eeaArguments">
+    ///   An <see cref="ExecutedEventArgs
+    ///   
+    ///   <MainForm>
+    ///     "/> containing the
+    ///     main mod management form.
+    /// </param>
     public virtual void LaunchGame(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
       var command = Properties.Settings.Default.fallout3LaunchCommand;
@@ -859,11 +880,16 @@ namespace Fomm.Games.Fallout3
     #region Load Order Menu
 
     /// <summary>
-    /// Auto-sorts the plugins using BOSS's masterlist.
+    ///   Auto-sorts the plugins using BOSS's masterlist.
     /// </summary>
     /// <param name="p_objCommand">The command that is executing.</param>
-    /// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
-    /// main mod management form.</param>
+    /// <param name="p_eeaArguments">
+    ///   An <see cref="ExecutedEventArgs
+    ///   
+    ///   <MainForm>
+    ///     "/> containing the
+    ///     main mod management form.
+    /// </param>
     public void LaunchSortPlugins(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
       if (MessageBox.Show(p_eeaArguments.Argument,
@@ -935,11 +961,16 @@ namespace Fomm.Games.Fallout3
     }
 
     /// <summary>
-    /// Generates a report on the current load order, as compared to the BOSS recomendation.
+    ///   Generates a report on the current load order, as compared to the BOSS recomendation.
     /// </summary>
     /// <param name="p_objCommand">The command that is executing.</param>
-    /// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
-    /// main mod management form.</param>
+    /// <param name="p_eeaArguments">
+    ///   An <see cref="ExecutedEventArgs
+    ///   
+    ///   <MainForm>
+    ///     "/> containing the
+    ///     main mod management form.
+    /// </param>
     public void LaunchLoadOrderReport(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
       var losSorter = new LoadOrderSorter();
@@ -1015,11 +1046,16 @@ namespace Fomm.Games.Fallout3
     #region Right Click Menu
 
     /// <summary>
-    /// Launches the TESsnip tool, passing it the given plugins.
+    ///   Launches the TESsnip tool, passing it the given plugins.
     /// </summary>
     /// <param name="p_objCommand">The command that is executing.</param>
-    /// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
-    /// main mod management form.</param>
+    /// <param name="p_eeaArguments">
+    ///   An <see cref="ExecutedEventArgs
+    ///   
+    ///   <MainForm>
+    ///     "/> containing the
+    ///     main mod management form.
+    /// </param>
     public void LaunchTESsnipToolWithSelectedPlugins(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
       if (p_eeaArguments.Argument.SelectedPlugins.Count == 0)
@@ -1041,11 +1077,16 @@ namespace Fomm.Games.Fallout3
     }
 
     /// <summary>
-    /// Launches the CREditor tool, passing it the given plugins.
+    ///   Launches the CREditor tool, passing it the given plugins.
     /// </summary>
     /// <param name="p_objCommand">The command that is executing.</param>
-    /// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
-    /// main mod management form.</param>
+    /// <param name="p_eeaArguments">
+    ///   An <see cref="ExecutedEventArgs
+    ///   
+    ///   <MainForm>
+    ///     "/> containing the
+    ///     main mod management form.
+    /// </param>
     public void LaunchCREditorToolWithSelectedPlugins(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
       if (p_eeaArguments.Argument.SelectedPlugins.Count == 0)
@@ -1067,11 +1108,16 @@ namespace Fomm.Games.Fallout3
     #region Game Settings Menu
 
     /// <summary>
-    /// Launches the Graphics Settings tool.
+    ///   Launches the Graphics Settings tool.
     /// </summary>
     /// <param name="p_objCommand">The command that is executing.</param>
-    /// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
-    /// main mod management form.</param>
+    /// <param name="p_eeaArguments">
+    ///   An <see cref="ExecutedEventArgs
+    ///   
+    ///   <MainForm>
+    ///     "/> containing the
+    ///     main mod management form.
+    /// </param>
     public void LaunchGraphicsSettingsTool(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
       var gsfGraphicsSettingsForm = new GraphicsSettings();
@@ -1083,11 +1129,16 @@ namespace Fomm.Games.Fallout3
     #region Tools Menu
 
     /// <summary>
-    /// Launches FO3Edit, if present.
+    ///   Launches FO3Edit, if present.
     /// </summary>
     /// <param name="p_objCommand">The command that is executing.</param>
-    /// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
-    /// main mod management form.</param>
+    /// <param name="p_eeaArguments">
+    ///   An <see cref="ExecutedEventArgs
+    ///   
+    ///   <MainForm>
+    ///     "/> containing the
+    ///     main mod management form.
+    /// </param>
     public virtual void LaunchFO3Edit(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
       if (!File.Exists("FO3Edit.exe"))
@@ -1113,11 +1164,16 @@ namespace Fomm.Games.Fallout3
     }
 
     /// <summary>
-    /// Launches the save games viewer.
+    ///   Launches the save games viewer.
     /// </summary>
     /// <param name="p_objCommand">The command that is executing.</param>
-    /// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
-    /// main mod management form.</param>
+    /// <param name="p_eeaArguments">
+    ///   An <see cref="ExecutedEventArgs
+    ///   
+    ///   <MainForm>
+    ///     "/> containing the
+    ///     main mod management form.
+    /// </param>
     public virtual void LaunchSaveGamesViewer(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
       var lstActive = new List<string>();
@@ -1140,11 +1196,16 @@ namespace Fomm.Games.Fallout3
     }
 
     /// <summary>
-    /// Launches the conflict detector tool.
+    ///   Launches the conflict detector tool.
     /// </summary>
     /// <param name="p_objCommand">The command that is executing.</param>
-    /// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
-    /// main mod management form.</param>
+    /// <param name="p_eeaArguments">
+    ///   An <see cref="ExecutedEventArgs
+    ///   
+    ///   <MainForm>
+    ///     "/> containing the
+    ///     main mod management form.
+    /// </param>
     public void LaunchConflictDetector(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
       var strMessage =
@@ -1163,33 +1224,48 @@ namespace Fomm.Games.Fallout3
     }
 
     /// <summary>
-    /// Launches the BSA Browser.
+    ///   Launches the BSA Browser.
     /// </summary>
     /// <param name="p_objCommand">The command that is executing.</param>
-    /// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
-    /// main mod management form.</param>
+    /// <param name="p_eeaArguments">
+    ///   An <see cref="ExecutedEventArgs
+    ///   
+    ///   <MainForm>
+    ///     "/> containing the
+    ///     main mod management form.
+    /// </param>
     public void LaunchBSABrowserTool(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
       new BSABrowser().Show();
     }
 
     /// <summary>
-    /// Launches the BSA Creator.
+    ///   Launches the BSA Creator.
     /// </summary>
     /// <param name="p_objCommand">The command that is executing.</param>
-    /// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
-    /// main mod management form.</param>
+    /// <param name="p_eeaArguments">
+    ///   An <see cref="ExecutedEventArgs
+    ///   
+    ///   <MainForm>
+    ///     "/> containing the
+    ///     main mod management form.
+    /// </param>
     public void LaunchBSACreatorTool(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
       new BSACreator().Show();
     }
 
     /// <summary>
-    /// Launches the Install Tweaker tool.
+    ///   Launches the Install Tweaker tool.
     /// </summary>
     /// <param name="p_objCommand">The command that is executing.</param>
-    /// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
-    /// main mod management form.</param>
+    /// <param name="p_eeaArguments">
+    ///   An <see cref="ExecutedEventArgs
+    ///   
+    ///   <MainForm>
+    ///     "/> containing the
+    ///     main mod management form.
+    /// </param>
     public void LaunchInstallTweakerTool(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
       if (p_eeaArguments.Argument.IsPackageManagerOpen)
@@ -1202,11 +1278,16 @@ namespace Fomm.Games.Fallout3
     }
 
     /// <summary>
-    /// Launches the TESsnip tool.
+    ///   Launches the TESsnip tool.
     /// </summary>
     /// <param name="p_objCommand">The command that is executing.</param>
-    /// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
-    /// main mod management form.</param>
+    /// <param name="p_eeaArguments">
+    ///   An <see cref="ExecutedEventArgs
+    ///   
+    ///   <MainForm>
+    ///     "/> containing the
+    ///     main mod management form.
+    /// </param>
     public void LaunchTESsnipTool(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
       var tes = new TESsnip();
@@ -1219,22 +1300,32 @@ namespace Fomm.Games.Fallout3
     }
 
     /// <summary>
-    /// Launches the Shader Edit tool.
+    ///   Launches the Shader Edit tool.
     /// </summary>
     /// <param name="p_objCommand">The command that is executing.</param>
-    /// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
-    /// main mod management form.</param>
+    /// <param name="p_eeaArguments">
+    ///   An <see cref="ExecutedEventArgs
+    ///   
+    ///   <MainForm>
+    ///     "/> containing the
+    ///     main mod management form.
+    /// </param>
     public void LaunchShaderEditTool(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
       new Tools.ShaderEdit.MainForm().Show();
     }
 
     /// <summary>
-    /// Launches the CREditor tool.
+    ///   Launches the CREditor tool.
     /// </summary>
     /// <param name="p_objCommand">The command that is executing.</param>
-    /// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
-    /// main mod management form.</param>
+    /// <param name="p_eeaArguments">
+    ///   An <see cref="ExecutedEventArgs
+    ///   
+    ///   <MainForm>
+    ///     "/> containing the
+    ///     main mod management form.
+    /// </param>
     public void LaunchCREditorTool(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
       var crfEditor = new CriticalRecordsForm();
@@ -1243,11 +1334,16 @@ namespace Fomm.Games.Fallout3
     }
 
     /// <summary>
-    /// Toggles archive invalidation.
+    ///   Toggles archive invalidation.
     /// </summary>
     /// <param name="p_objCommand">The command that is executing.</param>
-    /// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
-    /// main mod management form.</param>
+    /// <param name="p_eeaArguments">
+    ///   An <see cref="ExecutedEventArgs
+    ///   
+    ///   <MainForm>
+    ///     "/> containing the
+    ///     main mod management form.
+    /// </param>
     public virtual void ToggleArchiveInvalidation(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
       if (ArchiveInvalidation.Update())
@@ -1263,7 +1359,7 @@ namespace Fomm.Games.Fallout3
     #region Scripts
 
     /// <summary>
-    /// Gets the default script for a mod.
+    ///   Gets the default script for a mod.
     /// </summary>
     /// <value>The default script for a mod.</value>
     public override string DefaultCSharpScript
@@ -1338,44 +1434,48 @@ class Script : Fallout3BaseScript {
     }
 
     /// <summary>
-    /// Creates a mod install script for the given <see cref="fomod"/>.
+    ///   Creates a mod install script for the given <see cref="fomod" />.
     /// </summary>
     /// <param name="p_fomodMod">The mod for which to create an installer script.</param>
     /// <param name="p_mibInstaller">The installer for which the script is being created.</param>
-    /// <returns>A mod install script for the given <see cref="fomod"/>.</returns>
+    /// <returns>A mod install script for the given <see cref="fomod" />.</returns>
     public override ModInstallScript CreateInstallScript(fomod p_fomodMod, ModInstallerBase p_mibInstaller)
     {
       return new Fallout3ModInstallScript(p_fomodMod, p_mibInstaller);
     }
 
     /// <summary>
-    /// Creates a mod upgrade script for the given <see cref="fomod"/>.
+    ///   Creates a mod upgrade script for the given <see cref="fomod" />.
     /// </summary>
     /// <param name="p_fomodMod">The mod for which to create an installer script.</param>
     /// <param name="p_mibInstaller">The installer for which the script is being created.</param>
-    /// <returns>A mod upgrade script for the given <see cref="fomod"/>.</returns>
+    /// <returns>A mod upgrade script for the given <see cref="fomod" />.</returns>
     public override ModInstallScript CreateUpgradeScript(fomod p_fomodMod, ModInstallerBase p_mibInstaller)
     {
       return new Fallout3ModUpgradeScript(p_fomodMod, p_mibInstaller);
     }
 
     /// <summary>
-    /// Creates a <see cref="DependencyStateManager"/> for the given <see cref="ModInstallScript"/>.
+    ///   Creates a <see cref="DependencyStateManager" /> for the given <see cref="ModInstallScript" />.
     /// </summary>
-    /// <param name="p_misInstallScript">The <see cref="ModInstallScript"/> for which the
-    /// <see cref="DependencyStateManager"/> is being created.</param>
-    /// <returns>A <see cref="DependencyStateManager"/> for the given <see cref="ModInstallScript"/>.</returns>
+    /// <param name="p_misInstallScript">
+    ///   The <see cref="ModInstallScript" /> for which the
+    ///   <see cref="DependencyStateManager" /> is being created.
+    /// </param>
+    /// <returns>A <see cref="DependencyStateManager" /> for the given <see cref="ModInstallScript" />.</returns>
     public override DependencyStateManager CreateDependencyStateManager(ModInstallScript p_misInstallScript)
     {
       return new Fallout3DependencyStateManager(p_misInstallScript);
     }
 
     /// <summary>
-    /// The factory method that creates the appropriate parser extension for the specified configuration file version.
+    ///   The factory method that creates the appropriate parser extension for the specified configuration file version.
     /// </summary>
     /// <param name="p_strVersion">The XML configuration file version for which to return a parser extension.</param>
-    /// <returns>The appropriate parser extension for the specified configuration file version, or
-    /// <lang langref="null"/> if no extension is available.</returns>
+    /// <returns>
+    ///   The appropriate parser extension for the specified configuration file version, or
+    ///   <lang langref="null" /> if no extension is available.
+    /// </returns>
     public override ParserExtension CreateParserExtension(string p_strVersion)
     {
       switch (p_strVersion)
@@ -1393,12 +1493,14 @@ class Script : Fallout3BaseScript {
     }
 
     /// <summary>
-    /// Gets the path to the schema file for the specified configuration file version.
+    ///   Gets the path to the schema file for the specified configuration file version.
     /// </summary>
     /// <param name="p_strVersion">The XML configuration file version for which to return a parser extension.</param>
-    /// <returns>The path to the schema file for the specified configuration file version, or
-    /// <lang langref="null"/> if there is no game-specific schema for the specified configuration
-    /// file version.</returns>
+    /// <returns>
+    ///   The path to the schema file for the specified configuration file version, or
+    ///   <lang langref="null" /> if there is no game-specific schema for the specified configuration
+    ///   file version.
+    /// </returns>
     public override string GetGameSpecificXMLConfigSchemaPath(string p_strVersion)
     {
       return Path.Combine(Program.ProgrammeInfoDirectory, String.Format(@"Fallout3\ModConfig{0}.xsd", p_strVersion));
@@ -1409,11 +1511,11 @@ class Script : Fallout3BaseScript {
     #region Command Line Arguments
 
     /// <summary>
-    /// Return command line help for the arguments provided by the game mode.
+    ///   Return command line help for the arguments provided by the game mode.
     /// </summary>
     /// <remarks>
-    /// This method should only return the text required to describe the arguments. All header,
-    /// footer, and context text is already provided.
+    ///   This method should only return the text required to describe the arguments. All header,
+    ///   footer, and context text is already provided.
     /// </remarks>
     /// <returns>Command line help for the arguments provided by the game mode.</returns>
     public static string GetCommandLineHelp()
@@ -1428,11 +1530,13 @@ class Script : Fallout3BaseScript {
     }
 
     /// <summary>
-    /// Handles the command line arguments that run outside of an instance of FOMM.
+    ///   Handles the command line arguments that run outside of an instance of FOMM.
     /// </summary>
     /// <param name="p_strArgs">The command line arguments that were passed to the programme.</param>
-    /// <returns><lang langref="true"/> if at least one of the arguments were handled;
-    /// <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if at least one of the arguments were handled;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
     public override bool HandleStandaloneArguments(string[] p_strArgs)
     {
       if (!p_strArgs[0].StartsWith("-") && File.Exists(p_strArgs[0]))
@@ -1489,11 +1593,13 @@ class Script : Fallout3BaseScript {
     }
 
     /// <summary>
-    /// Handles the command line arguments that affect an instance of FOMM.
+    ///   Handles the command line arguments that affect an instance of FOMM.
     /// </summary>
     /// <param name="p_strArgs">The command line arguments that were passed to the programme.</param>
-    /// <returns><lang langref="true"/> if at least one of the arguments were handled;
-    /// <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if at least one of the arguments were handled;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
     public override bool HandleInAppArguments(string[] p_strArgs)
     {
       if (Array.IndexOf(p_strArgs, "-install-tweaker") != -1)
@@ -1507,11 +1613,13 @@ class Script : Fallout3BaseScript {
     #endregion
 
     /// <summary>
-    /// Verifies that the given path is a valid working directory for the game mode.
+    ///   Verifies that the given path is a valid working directory for the game mode.
     /// </summary>
     /// <param name="p_strPath">The path to validate as a working directory.</param>
-    /// <returns><lang langref="true"/> if the path is a vlid working directory;
-    /// <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the path is a vlid working directory;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
     public virtual bool VerifyWorkingDirectory(string p_strPath)
     {
       if (String.IsNullOrEmpty(p_strPath))
@@ -1537,14 +1645,16 @@ class Script : Fallout3BaseScript {
     }
 
     /// <summary>
-    /// Sets the working directory for the programme.
+    ///   Sets the working directory for the programme.
     /// </summary>
     /// <remarks>
-    /// This sets the working directory to the Fallout 3 install folder.
+    ///   This sets the working directory to the Fallout 3 install folder.
     /// </remarks>
     /// <param name="p_strErrorMessage">The out parameter that is set to the error message, if an error occurred.</param>
-    /// <returns><lang langref="true"/> if the working directory was successfully set;
-    /// <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the working directory was successfully set;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
     public override bool SetWorkingDirectory(out string p_strErrorMessage)
     {
       var strWorkingDirectory = Properties.Settings.Default.fallout3WorkingDirectory;
@@ -1555,7 +1665,7 @@ class Script : Fallout3BaseScript {
         {
           strWorkingDirectory =
             Registry.GetValue(@"HKEY_LOCAL_MACHINE\Software\Bethesda Softworks\Fallout3",
-                                              "Installed Path", null) as string;
+                              "Installed Path", null) as string;
         }
         catch
         {
@@ -1592,8 +1702,8 @@ class Script : Fallout3BaseScript {
     }
 
     /// <summary>
-    /// This checks for DLCs isntall by Windows Live, and optionally moves them so
-    /// they are compatible with FOSE.
+    ///   This checks for DLCs isntall by Windows Live, and optionally moves them so
+    ///   they are compatible with FOSE.
     /// </summary>
     protected void CheckForDLCs()
     {
@@ -1785,7 +1895,7 @@ class Script : Fallout3BaseScript {
     }
 
     /// <summary>
-    /// This chaecks for any files that are readonly.
+    ///   This chaecks for any files that are readonly.
     /// </summary>
     protected void ScanForReadonlyFiles()
     {
@@ -1830,7 +1940,7 @@ class Script : Fallout3BaseScript {
     }
 
     /// <summary>
-    /// This chaecks for any FOMods that are readonly, and so can't have they're load order changed.
+    ///   This chaecks for any FOMods that are readonly, and so can't have they're load order changed.
     /// </summary>
     protected void ScanForReadonlyPlugins()
     {
@@ -1856,11 +1966,13 @@ class Script : Fallout3BaseScript {
     }
 
     /// <summary>
-    /// Determines if the specified file is a plugin for the game mode.
+    ///   Determines if the specified file is a plugin for the game mode.
     /// </summary>
     /// <param name="p_strPath">The path to the file for which it is to be determined if it is a plugin file.</param>
-    /// <returns><lang langref="true"/> if the specified file is a plugin file in the game mode;
-    /// <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the specified file is a plugin file in the game mode;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
     public override bool IsPluginFile(string p_strPath)
     {
       var strExt = Path.GetExtension(p_strPath).ToLowerInvariant();

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Windows.Forms;
 using System.IO;
+using System.Windows.Forms;
 using Fomm.Properties;
 
 namespace Fomm.Games.Fallout3.Tools.InstallTweaker

@@ -1,23 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Text;
 using Fomm.Games.Fallout3.Tools.TESsnip;
-using System.IO;
 
 namespace Fomm.Games.Fallout3.Tools.CriticalRecords
 {
   /// <summary>
-  /// A <see cref="Plugin"/> that contains information about critical records.
+  ///   A <see cref="Plugin" /> that contains information about critical records.
   /// </summary>
   /// <remarks>
-  /// This class simply adds helper methods for interacting with the critical records data stored
-  /// in a well-known MESG record.
+  ///   This class simply adds helper methods for interacting with the critical records data stored
+  ///   in a well-known MESG record.
   /// </remarks>
   public class CriticalRecordPlugin : Plugin
   {
     /// <summary>
-    /// The well-known name of the MESG record that contains the critical record data.
+    ///   The well-known name of the MESG record that contains the critical record data.
     /// </summary>
     private const string CRITICAL_DATA_RECORD_EDID = "fommCriticalRecords";
 
@@ -26,7 +26,7 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     #region Properties
 
     /// <summary>
-    /// Gets whether the plugin has any critical record data.
+    ///   Gets whether the plugin has any critical record data.
     /// </summary>
     /// <value>Whether the plugin has any critical record data.</value>
     internal bool HasCriticalRecordData
@@ -50,7 +50,7 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     #region Constructors
 
     /// <summary>
-    /// A simple contructor that loads the critical record data.
+    ///   A simple contructor that loads the critical record data.
     /// </summary>
     /// <param name="p_bteData">The plugin data.</param>
     /// <param name="p_strPluginName">The name of the plugin.</param>
@@ -61,7 +61,7 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     }
 
     /// <summary>
-    /// A simple contructor that loads the critical record data.
+    ///   A simple contructor that loads the critical record data.
     /// </summary>
     /// <param name="p_strPath">The path to the plugin file.</param>
     /// <param name="p_booHeaderOnly">Whether to only load the header.</param>
@@ -74,7 +74,7 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     #endregion
 
     /// <summary>
-    /// Loads the critical record data from the well-known record.
+    ///   Loads the critical record data from the well-known record.
     /// </summary>
     protected void loadCriticalData()
     {
@@ -103,10 +103,10 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     }
 
     /// <summary>
-    /// Gets the well-known MESG record's subrecord data containg the critical record info.
+    ///   Gets the well-known MESG record's subrecord data containg the critical record info.
     /// </summary>
     /// <remarks>
-    /// If the required record is not found, it is created.
+    ///   If the required record is not found, it is created.
     /// </remarks>
     /// <returns>The well-known MESG record's subrecord data containg the critical record info.</returns>
     protected SubRecord getCriticalRecordData()
@@ -211,7 +211,7 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     }
 
     /// <summary>
-    /// Populates the well-known record and then saves the plugin as usual.
+    ///   Populates the well-known record and then saves the plugin as usual.
     /// </summary>
     /// <param name="bw">The writer to which to write the plugin data.</param>
     internal override void SaveData(BinaryWriter bw)
@@ -228,23 +228,27 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     }
 
     /// <summary>
-    /// Determines if the specified record is marked as critical.
+    ///   Determines if the specified record is marked as critical.
     /// </summary>
-    /// <param name="p_uintFormId">The record for which it is to be determined whether it is
-    /// critical.</param>
-    /// <returns><lang langref="true"/> if the specified record is critical;
-    /// <lang langref="false"/> otherwise.</returns>
+    /// <param name="p_uintFormId">
+    ///   The record for which it is to be determined whether it is
+    ///   critical.
+    /// </param>
+    /// <returns>
+    ///   <lang langref="true" /> if the specified record is critical;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
     internal bool IsRecordCritical(UInt32 p_uintFormId)
     {
       return m_dicCriticalRecords.ContainsKey(p_uintFormId);
     }
 
     /// <summary>
-    /// Gets the info about the specified critical record.
+    ///   Gets the info about the specified critical record.
     /// </summary>
     /// <remarks>
-    /// The ifno includes the reason the record was marked as critical, and the severity of
-    /// any conflicts with the record.
+    ///   The ifno includes the reason the record was marked as critical, and the severity of
+    ///   any conflicts with the record.
     /// </remarks>
     /// <param name="p_uintFormId">The record for which  to retrieve the critical record info.</param>
     /// <returns>The info about the specified critical record.</returns>
@@ -258,7 +262,7 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     }
 
     /// <summary>
-    /// Marks a record as critical, supplying a reason to the critical marking.
+    ///   Marks a record as critical, supplying a reason to the critical marking.
     /// </summary>
     /// <param name="p_uintFormId">The form id that is being marked as critical.</param>
     /// <param name="p_csvSeverity">The severity of the conflict.</param>
@@ -270,7 +274,7 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     }
 
     /// <summary>
-    /// Unsets the sepecifed record as critical.
+    ///   Unsets the sepecifed record as critical.
     /// </summary>
     /// <param name="p_uintFormId">The form id that is being unmarked as critical.</param>
     public void UnsetCriticalRecord(UInt32 p_uintFormId)

@@ -1,62 +1,62 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Xml;
 using System.IO;
+using System.Xml;
 using Fomm.Util;
 using GeMod.Interface;
 
 namespace Fomm.PackageManager.FomodBuilder
 {
   /// <summary>
-  /// This class builds fomods.
+  ///   This class builds fomods.
   /// </summary>
   public class NewFomodBuilder : FomodGenerator
   {
     /// <summary>
-    /// The arguments object to pass to the background worker when building a fomod.
+    ///   The arguments object to pass to the background worker when building a fomod.
     /// </summary>
     protected class BuildFomodArgs : GenerateFomodArgs
     {
       #region Properties
 
       /// <summary>
-      /// Gets the fomodName.
+      ///   Gets the fomodName.
       /// </summary>
       /// <value>The fomodName.</value>
       public string FomodName { get; private set; }
 
       /// <summary>
-      /// Gets the copy instructions that need to be executed to create the fomod.
+      ///   Gets the copy instructions that need to be executed to create the fomod.
       /// </summary>
       /// <value>The copy instructions that need to be executed to create the fomod.</value>
       public IList<KeyValuePair<string, string>> CopyInstructions { get; private set; }
 
       /// <summary>
-      /// Gets the readme.
+      ///   Gets the readme.
       /// </summary>
       /// <value>The readme.</value>
       public Readme Readme { get; private set; }
 
       /// <summary>
-      /// Gets the info file.
+      ///   Gets the info file.
       /// </summary>
       /// <value>The info file.</value>
       public XmlDocument InfoFile { get; private set; }
 
       /// <summary>
-      /// Gets the setScreenshot.
+      ///   Gets the setScreenshot.
       /// </summary>
       /// <value>The setScreenshot.</value>
       public bool SetScreenshot { get; private set; }
 
       /// <summary>
-      /// Gets the screenshot.
+      ///   Gets the screenshot.
       /// </summary>
       /// <value>The screenshot.</value>
       public Screenshot Screenshot { get; private set; }
 
       /// <summary>
-      /// Gets the script.
+      ///   Gets the script.
       /// </summary>
       /// <value>The script.</value>
       public FomodScript Script { get; private set; }
@@ -66,16 +66,16 @@ namespace Fomm.PackageManager.FomodBuilder
       #region Constructors
 
       /// <summary>
-      /// A simple constructor that initializes the object with the given values.
+      ///   A simple constructor that initializes the object with the given values.
       /// </summary>
-      /// <param name="p_strFomodName">The value with which to initialize the <see cref="FomodName"/> property.</param>
-      /// <param name="p_lstCopyPaths">The value with which to initialize the <see cref="CopyPaths"/> property.</param>
-      /// <param name="p_rmeReadme">The value with which to initialize the <see cref="Readme"/> property.</param>
-      /// <param name="p_xmlInfo">The value with which to initialize the <see cref="Info"/> property.</param>
-      /// <param name="p_booSetScreenshot">The value with which to initialize the <see cref="SetScreenshot"/> property.</param>
-      /// <param name="p_shtScreenshot">The value with which to initialize the <see cref="Screenshot"/> property.</param>
-      /// <param name="p_fscScript">The value with which to initialize the <see cref="Script"/> property.</param>
-      /// <param name="p_strPackedPath">The value with which to initialize the <see cref="PackedPath"/> property.</param>
+      /// <param name="p_strFomodName">The value with which to initialize the <see cref="FomodName" /> property.</param>
+      /// <param name="p_lstCopyPaths">The value with which to initialize the <see cref="CopyPaths" /> property.</param>
+      /// <param name="p_rmeReadme">The value with which to initialize the <see cref="Readme" /> property.</param>
+      /// <param name="p_xmlInfo">The value with which to initialize the <see cref="Info" /> property.</param>
+      /// <param name="p_booSetScreenshot">The value with which to initialize the <see cref="SetScreenshot" /> property.</param>
+      /// <param name="p_shtScreenshot">The value with which to initialize the <see cref="Screenshot" /> property.</param>
+      /// <param name="p_fscScript">The value with which to initialize the <see cref="Script" /> property.</param>
+      /// <param name="p_strPackedPath">The value with which to initialize the <see cref="PackedPath" /> property.</param>
       public BuildFomodArgs(string p_strFomodName, IList<KeyValuePair<string, string>> p_lstCopyPaths,
                             Readme p_rmeReadme, XmlDocument p_xmlInfo, bool p_booSetScreenshot,
                             Screenshot p_shtScreenshot, FomodScript p_fscScript, string p_strPackedPath)
@@ -96,11 +96,11 @@ namespace Fomm.PackageManager.FomodBuilder
     #region Build Fomod
 
     /// <summary>
-    /// Builds a fomod using the given information.
+    ///   Builds a fomod using the given information.
     /// </summary>
     /// <remarks>
-    /// This method uses a <see cref="BackgroundWorkerProgressDialog"/> to display progress and
-    /// allow cancellation.
+    ///   This method uses a <see cref="BackgroundWorkerProgressDialog" /> to display progress and
+    ///   allow cancellation.
     /// </remarks>
     /// <param name="p_strFileName">The name of the fomod file, excluding extension.</param>
     /// <param name="p_lstCopyInstructions">The list of files to copy into the fomod.</param>
@@ -109,7 +109,7 @@ namespace Fomm.PackageManager.FomodBuilder
     /// <param name="p_booSetScreenshot">Whether or not to set the fomod's screenshot.</param>
     /// <param name="p_shtScreenshot">The fomod screenshot.</param>
     /// <param name="p_fscScript">The fomod install script.</param>
-    /// <returns>The path to the new fomod if it was successfully built; <lang langref="null"/> otherwise.</returns>
+    /// <returns>The path to the new fomod if it was successfully built; <lang langref="null" /> otherwise.</returns>
     public string BuildFomod(string p_strFileName, IList<KeyValuePair<string, string>> p_lstCopyInstructions,
                              Readme p_rmeReadme, XmlDocument p_xmlInfo, bool p_booSetScreenshot,
                              Screenshot p_shtScreenshot, FomodScript p_fscScript)
@@ -128,12 +128,12 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// This builds the fomod based on the given data.
+    ///   This builds the fomod based on the given data.
     /// </summary>
     /// <remarks>
-    /// This method is called by a <see cref="BackgroundWorkerProgressDialog"/>.
+    ///   This method is called by a <see cref="BackgroundWorkerProgressDialog" />.
     /// </remarks>
-    /// <param name="p_objArgs">A <see cref="BuildFomodArgs"/> describing the fomod to build.</param>
+    /// <param name="p_objArgs">A <see cref="BuildFomodArgs" /> describing the fomod to build.</param>
     protected override void DoGenerateFomod(object p_objArgs)
     {
       var bfaArgs = p_objArgs as BuildFomodArgs;
@@ -244,11 +244,11 @@ namespace Fomm.PackageManager.FomodBuilder
     #region Helper Methods
 
     /// <summary>
-    /// Creates the temporary directories to which the source archives will be extracted.
+    ///   Creates the temporary directories to which the source archives will be extracted.
     /// </summary>
     /// <remarks>
-    /// This method looks through the copy instructions needed to be executed to build the fomod and creates
-    /// a temporary directory for every unique archive listed as a source.
+    ///   This method looks through the copy instructions needed to be executed to build the fomod and creates
+    ///   a temporary directory for every unique archive listed as a source.
     /// </remarks>
     /// <param name="p_lstCopyPaths">The list of copy instructions needed to be executed to build the fomod.</param>
     protected Dictionary<string, string> CreateExtractionDirectories(IList<KeyValuePair<string, string>> p_lstCopyPaths)
@@ -275,7 +275,7 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// Creates the temporary folder in which the fomod is to be built.
+    ///   Creates the temporary folder in which the fomod is to be built.
     /// </summary>
     /// <returns>The temporary folder in which the fomod is to be built.</returns>
     protected string CreateFomodDirectory()
@@ -290,7 +290,7 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// This executes the given copy instruction, using the specified path as the destination.
+    ///   This executes the given copy instruction, using the specified path as the destination.
     /// </summary>
     /// <param name="p_strFomodFolder">The destination folder for the copy instruction.</param>
     /// <param name="p_dicSources">The list of sources and the directories to which they are extracted.</param>

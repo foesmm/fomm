@@ -1,14 +1,14 @@
 ﻿using System;
-using System.Diagnostics;
-using Fomm.Games.Fallout3.Tools;
-using Fomm.PackageManager;
-using System.IO;
-using Fomm.Games.Fallout3.Tools.TESsnip;
-using Fomm.PackageManager.ModInstallLog;
-using System.Windows.Forms;
-using Fomm.Games.Fallout3.Tools.BSA;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Windows.Forms;
+using Fomm.Games.Fallout3.Tools;
 using Fomm.Games.Fallout3.Tools.AutoSorter;
+using Fomm.Games.Fallout3.Tools.BSA;
+using Fomm.Games.Fallout3.Tools.TESsnip;
+using Fomm.PackageManager;
+using Fomm.PackageManager.ModInstallLog;
 using ScriptCompiler = Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler.ScriptCompiler;
 
 namespace Fomm.Games.Fallout3.Script
@@ -18,15 +18,15 @@ namespace Fomm.Games.Fallout3.Script
     #region Properties
 
     /// <summary>
-    /// Gets the <see cref="BsaManager"/> this script is using.
+    ///   Gets the <see cref="BsaManager" /> this script is using.
     /// </summary>
-    /// <value>The <see cref="BsaManager"/> this script is using.</value>
+    /// <value>The <see cref="BsaManager" /> this script is using.</value>
     public BsaManager BsaManager { get; private set; }
 
     /// <summary>
-    /// Gets the <see cref="TextureManager"/> this script is using.
+    ///   Gets the <see cref="TextureManager" /> this script is using.
     /// </summary>
-    /// <value>The <see cref="TextureManager"/> this script is using.</value>
+    /// <value>The <see cref="TextureManager" /> this script is using.</value>
     public TextureManager TextureManager { get; private set; }
 
     #endregion
@@ -34,9 +34,9 @@ namespace Fomm.Games.Fallout3.Script
     #region Constructors
 
     /// <summary>
-    /// A simple constructor that initializes the object.
+    ///   A simple constructor that initializes the object.
     /// </summary>
-    /// <param name="p_fomodMod">The <see cref="fomod"/> against which to run the script.</param>
+    /// <param name="p_fomodMod">The <see cref="fomod" /> against which to run the script.</param>
     public Fallout3ModInstallScript(fomod p_fomodMod, ModInstallerBase p_mibInstaller)
       : base(p_fomodMod, p_mibInstaller)
     {
@@ -50,7 +50,7 @@ namespace Fomm.Games.Fallout3.Script
     #region FO3 Script Compilation
 
     /// <summary>
-    /// Sets up the script compiler for the given plugins.
+    ///   Sets up the script compiler for the given plugins.
     /// </summary>
     /// <param name="p_plgPlugins">The plugins for which to set up the script compiler.</param>
     public void SetupScriptCompiler(Plugin[] p_plgPlugins)
@@ -60,7 +60,7 @@ namespace Fomm.Games.Fallout3.Script
     }
 
     /// <summary>
-    /// Compiles the result script.
+    ///   Compiles the result script.
     /// </summary>
     public void CompileResultScript(SubRecord sr, out Record r2, out string msg)
     {
@@ -68,7 +68,7 @@ namespace Fomm.Games.Fallout3.Script
     }
 
     /// <summary>
-    /// Compiles a script.
+    ///   Compiles a script.
     /// </summary>
     public void CompileScript(Record r2, out string msg)
     {
@@ -80,9 +80,9 @@ namespace Fomm.Games.Fallout3.Script
     #region Version Checking
 
     /// <summary>
-    /// Indicates whether or not FOSE is present.
+    ///   Indicates whether or not FOSE is present.
     /// </summary>
-    /// <returns><lang langref="true"/> if FOSE is installed; <lang langref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true" /> if FOSE is installed; <lang langref="false" /> otherwise.</returns>
     public virtual bool ScriptExtenderPresent()
     {
       PermissionsManager.CurrentPermissions.Assert();
@@ -90,10 +90,12 @@ namespace Fomm.Games.Fallout3.Script
     }
 
     /// <summary>
-    /// Gets the version of the sript extender that is installed.
+    ///   Gets the version of the sript extender that is installed.
     /// </summary>
-    /// <returns>The version of the sript extender that is installed, or <lang langref="null"/> if no
-    /// sript extender is installed.</returns>
+    /// <returns>
+    ///   The version of the sript extender that is installed, or <lang langref="null" /> if no
+    ///   sript extender is installed.
+    /// </returns>
     public virtual Version GetScriptExtenderVersion()
     {
       PermissionsManager.CurrentPermissions.Assert();
@@ -106,10 +108,12 @@ namespace Fomm.Games.Fallout3.Script
     }
 
     /// <summary>
-    /// Gets the version of GECK that is installed.
+    ///   Gets the version of GECK that is installed.
     /// </summary>
-    /// <returns>The version of GECK, or <lang langref="null"/> if GECK
-    /// is not installed.</returns>
+    /// <returns>
+    ///   The version of GECK, or <lang langref="null" /> if GECK
+    ///   is not installed.
+    /// </returns>
     public Version GetGeckVersion()
     {
       PermissionsManager.CurrentPermissions.Assert();
@@ -125,10 +129,12 @@ namespace Fomm.Games.Fallout3.Script
     #region Load Order Management
 
     /// <summary>
-    /// Determines if the plugins have been auto-sorted.
+    ///   Determines if the plugins have been auto-sorted.
     /// </summary>
-    /// <returns><lang langref="true"/> if the plugins have been auto-sorted;
-    /// <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the plugins have been auto-sorted;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
     public bool IsLoadOrderAutoSorted()
     {
       PermissionsManager.CurrentPermissions.Assert();
@@ -136,13 +142,17 @@ namespace Fomm.Games.Fallout3.Script
     }
 
     /// <summary>
-    /// Determins where in the load order the specified plugin would be inserted
-    /// if the plugins were auto-sorted.
+    ///   Determins where in the load order the specified plugin would be inserted
+    ///   if the plugins were auto-sorted.
     /// </summary>
-    /// <param name="p_strPlugin">The name of the plugin whose auto-sort insertion
-    /// point is to be determined.</param>
-    /// <returns>The index where the specified plugin would be inserted were the
-    /// plugins to be auto-sorted.</returns>
+    /// <param name="p_strPlugin">
+    ///   The name of the plugin whose auto-sort insertion
+    ///   point is to be determined.
+    /// </param>
+    /// <returns>
+    ///   The index where the specified plugin would be inserted were the
+    ///   plugins to be auto-sorted.
+    /// </returns>
     public int GetAutoInsertionPoint(string p_strPlugin)
     {
       PermissionsManager.CurrentPermissions.Assert();
@@ -150,10 +160,10 @@ namespace Fomm.Games.Fallout3.Script
     }
 
     /// <summary>
-    /// Auto-sorts the specified plugins.
+    ///   Auto-sorts the specified plugins.
     /// </summary>
     /// <remarks>
-    /// This is, apparently, a beta function. Use with caution.
+    ///   This is, apparently, a beta function. Use with caution.
     /// </remarks>
     /// <param name="p_strPlugins">The list of plugins to auto-sort.</param>
     public void AutoSortPlugins(string[] p_strPlugins)
@@ -169,7 +179,7 @@ namespace Fomm.Games.Fallout3.Script
     #region Ini File Value Retrieval
 
     /// <summary>
-    /// Retrieves the specified Fallout.ini value as a string.
+    ///   Retrieves the specified Fallout.ini value as a string.
     /// </summary>
     /// <param name="p_strSection">The section containing the value to retrieve.</param>
     /// <param name="p_strKey">The key of the value to retrieve.</param>
@@ -181,7 +191,7 @@ namespace Fomm.Games.Fallout3.Script
     }
 
     /// <summary>
-    /// Retrieves the specified Fallout.ini value as an integer.
+    ///   Retrieves the specified Fallout.ini value as an integer.
     /// </summary>
     /// <param name="p_strSection">The section containing the value to retrieve.</param>
     /// <param name="p_strKey">The key of the value to retrieve.</param>
@@ -193,7 +203,7 @@ namespace Fomm.Games.Fallout3.Script
     }
 
     /// <summary>
-    /// Retrieves the specified FalloutPrefs.ini value as a string.
+    ///   Retrieves the specified FalloutPrefs.ini value as a string.
     /// </summary>
     /// <param name="p_strSection">The section containing the value to retrieve.</param>
     /// <param name="p_strKey">The key of the value to retrieve.</param>
@@ -205,7 +215,7 @@ namespace Fomm.Games.Fallout3.Script
     }
 
     /// <summary>
-    /// Retrieves the specified FalloutPrefs.ini value as an integer.
+    ///   Retrieves the specified FalloutPrefs.ini value as an integer.
     /// </summary>
     /// <param name="p_strSection">The section containing the value to retrieve.</param>
     /// <param name="p_strKey">The key of the value to retrieve.</param>
@@ -217,7 +227,7 @@ namespace Fomm.Games.Fallout3.Script
     }
 
     /// <summary>
-    /// Retrieves the specified GECKCustom.ini value as a string.
+    ///   Retrieves the specified GECKCustom.ini value as a string.
     /// </summary>
     /// <param name="p_strSection">The section containing the value to retrieve.</param>
     /// <param name="p_strKey">The key of the value to retrieve.</param>
@@ -229,7 +239,7 @@ namespace Fomm.Games.Fallout3.Script
     }
 
     /// <summary>
-    /// Retrieves the specified GECKCustom.ini value as an integer.
+    ///   Retrieves the specified GECKCustom.ini value as an integer.
     /// </summary>
     /// <param name="p_strSection">The section containing the value to retrieve.</param>
     /// <param name="p_strKey">The key of the value to retrieve.</param>
@@ -241,7 +251,7 @@ namespace Fomm.Games.Fallout3.Script
     }
 
     /// <summary>
-    /// Retrieves the specified GECKPrefs.ini value as a string.
+    ///   Retrieves the specified GECKPrefs.ini value as a string.
     /// </summary>
     /// <param name="p_strSection">The section containing the value to retrieve.</param>
     /// <param name="p_strKey">The key of the value to retrieve.</param>
@@ -253,7 +263,7 @@ namespace Fomm.Games.Fallout3.Script
     }
 
     /// <summary>
-    /// Retrieves the specified GECKPrefs.ini value as an integer.
+    ///   Retrieves the specified GECKPrefs.ini value as an integer.
     /// </summary>
     /// <param name="p_strSection">The section containing the value to retrieve.</param>
     /// <param name="p_strKey">The key of the value to retrieve.</param>
@@ -269,14 +279,16 @@ namespace Fomm.Games.Fallout3.Script
     #region Ini Editing
 
     /// <summary>
-    /// Sets the specified value in the Fallout.ini file to the given value. 
+    ///   Sets the specified value in the Fallout.ini file to the given value.
     /// </summary>
     /// <param name="p_strSection">The section in the Ini file to edit.</param>
     /// <param name="p_strKey">The key in the Ini file to edit.</param>
     /// <param name="p_strValue">The value to which to set the key.</param>
     /// <param name="p_booSaveOld">Not used.</param>
-    /// <returns><lang langref="true"/> if the value was set; <lang langref="false"/>
-    /// if the user chose not to overwrite the existing value.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the value was set; <lang langref="false" />
+    ///   if the user chose not to overwrite the existing value.
+    /// </returns>
     public virtual bool EditFalloutINI(string p_strSection, string p_strKey, string p_strValue, bool p_booSaveOld)
     {
       return EditINI(((Fallout3GameMode.SettingsFilesSet) Program.GameMode.SettingsFiles).FOIniPath, p_strSection,
@@ -284,14 +296,16 @@ namespace Fomm.Games.Fallout3.Script
     }
 
     /// <summary>
-    /// Sets the specified value in the FalloutPrefs.ini file to the given value. 
+    ///   Sets the specified value in the FalloutPrefs.ini file to the given value.
     /// </summary>
     /// <param name="p_strSection">The section in the Ini file to edit.</param>
     /// <param name="p_strKey">The key in the Ini file to edit.</param>
     /// <param name="p_strValue">The value to which to set the key.</param>
     /// <param name="p_booSaveOld">Not used.</param>
-    /// <returns><lang langref="true"/> if the value was set; <lang langref="false"/>
-    /// if the user chose not to overwrite the existing value.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the value was set; <lang langref="false" />
+    ///   if the user chose not to overwrite the existing value.
+    /// </returns>
     public virtual bool EditPrefsINI(string p_strSection, string p_strKey, string p_strValue, bool p_booSaveOld)
     {
       return EditINI(((Fallout3GameMode.SettingsFilesSet) Program.GameMode.SettingsFiles).FOPrefsIniPath, p_strSection,
@@ -299,14 +313,16 @@ namespace Fomm.Games.Fallout3.Script
     }
 
     /// <summary>
-    /// Sets the specified value in the GECKCustom.ini file to the given value. 
+    ///   Sets the specified value in the GECKCustom.ini file to the given value.
     /// </summary>
     /// <param name="p_strSection">The section in the Ini file to edit.</param>
     /// <param name="p_strKey">The key in the Ini file to edit.</param>
     /// <param name="p_strValue">The value to which to set the key.</param>
     /// <param name="p_booSaveOld">Not used.</param>
-    /// <returns><lang langref="true"/> if the value was set; <lang langref="false"/>
-    /// if the user chose not to overwrite the existing value.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the value was set; <lang langref="false" />
+    ///   if the user chose not to overwrite the existing value.
+    /// </returns>
     public virtual bool EditGeckINI(string p_strSection, string p_strKey, string p_strValue, bool p_booSaveOld)
     {
       return EditINI(((Fallout3GameMode.SettingsFilesSet) Program.GameMode.SettingsFiles).GeckIniPath, p_strSection,
@@ -314,14 +330,16 @@ namespace Fomm.Games.Fallout3.Script
     }
 
     /// <summary>
-    /// Sets the specified value in the GECKPrefs.ini file to the given value. 
+    ///   Sets the specified value in the GECKPrefs.ini file to the given value.
     /// </summary>
     /// <param name="p_strSection">The section in the Ini file to edit.</param>
     /// <param name="p_strKey">The key in the Ini file to edit.</param>
     /// <param name="p_strValue">The value to which to set the key.</param>
     /// <param name="p_booSaveOld">Not used.</param>
-    /// <returns><lang langref="true"/> if the value was set; <lang langref="false"/>
-    /// if the user chose not to overwrite the existing value.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the value was set; <lang langref="false" />
+    ///   if the user chose not to overwrite the existing value.
+    /// </returns>
     public virtual bool EditGeckPrefsINI(string p_strSection, string p_strKey, string p_strValue, bool p_booSaveOld)
     {
       return EditINI(((Fallout3GameMode.SettingsFilesSet) Program.GameMode.SettingsFiles).GeckPrefsIniPath, p_strSection,
@@ -335,10 +353,12 @@ namespace Fomm.Games.Fallout3.Script
     #region Game-Specific Value Management
 
     /// <summary>
-    /// Undoes the edit made to the spcified game-specific value.
+    ///   Undoes the edit made to the spcified game-specific value.
     /// </summary>
-    /// <param name="p_strFomodBaseName">The base name of the <see cref="fomod"/> whose file
-    /// is being uninstalled.</param>
+    /// <param name="p_strFomodBaseName">
+    ///   The base name of the <see cref="fomod" /> whose file
+    ///   is being uninstalled.
+    /// </param>
     /// <param name="p_strValueKey">The key of the game-specific value to unedit.</param>
     public override bool UneditGameSpecificValue(string p_strFomodBaseName, string p_strValueKey)
     {
@@ -363,13 +383,15 @@ namespace Fomm.Games.Fallout3.Script
     #region Shader Editing
 
     /// <summary>
-    /// Edits the specified shader with the specified data.
+    ///   Edits the specified shader with the specified data.
     /// </summary>
     /// <param name="p_intPackage">The package containing the shader to edit.</param>
     /// <param name="p_strShaderName">The shader to edit.</param>
     /// <param name="p_bteData">The value to which to edit the shader.</param>
-    /// <returns><lang langref="true"/> if the value was set; <lang langref="false"/>
-    /// if the user chose not to overwrite the existing value.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the value was set; <lang langref="false" />
+    ///   if the user chose not to overwrite the existing value.
+    /// </returns>
     /// <exception cref="ShaderException">Thrown if the shader could not be edited.</exception>
     public virtual bool EditShader(int p_intPackage, string p_strShaderName, byte[] p_bteData)
     {
@@ -378,7 +400,7 @@ namespace Fomm.Games.Fallout3.Script
       if (strOldMod != null)
       {
         var strMessage = String.Format("Shader '{0}' in package '{1}' has already been overwritten by '{2}'\n" +
-                                          "Overwrite the changes?", p_strShaderName, p_intPackage, strOldMod);
+                                       "Overwrite the changes?", p_strShaderName, p_intPackage, strOldMod);
         if (
           System.Windows.Forms.MessageBox.Show(strMessage, "Confirm Overwrite", MessageBoxButtons.YesNo,
                                                MessageBoxIcon.Question) != DialogResult.Yes)
@@ -409,7 +431,7 @@ namespace Fomm.Games.Fallout3.Script
     #region Shader Unediting
 
     /// <summary>
-    /// Undoes the edit made to the specified shader.
+    ///   Undoes the edit made to the specified shader.
     /// </summary>
     /// <param name="p_intPackage">The package containing the shader to edit.</param>
     /// <param name="p_strShaderName">The shader to edit.</param>
@@ -486,11 +508,13 @@ namespace Fomm.Games.Fallout3.Script
     #region Misc Info
 
     /// <summary>
-    /// Gets the specified value from the RendererInfo.txt file.
+    ///   Gets the specified value from the RendererInfo.txt file.
     /// </summary>
     /// <param name="p_strValue">The value to retrieve from the file.</param>
-    /// <returns>The specified value from the RendererInfo.txt file, or
-    /// <lang langref="null"/> if the value is not found.</returns>
+    /// <returns>
+    ///   The specified value from the RendererInfo.txt file, or
+    ///   <lang langref="null" /> if the value is not found.
+    /// </returns>
     public virtual string GetRendererInfo(string p_strValue)
     {
       PermissionsManager.CurrentPermissions.Assert();
@@ -511,10 +535,12 @@ namespace Fomm.Games.Fallout3.Script
     }
 
     /// <summary>
-    /// Determines if archive invalidation is active.
+    ///   Determines if archive invalidation is active.
     /// </summary>
-    /// <returns><lang langref="true"/> if archive invalidation is active;
-    /// <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if archive invalidation is active;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
     public virtual bool IsAIActive()
     {
       return ArchiveInvalidation.IsActive();
@@ -525,7 +551,7 @@ namespace Fomm.Games.Fallout3.Script
     #region IDisposable Members
 
     /// <summary>
-    /// Cleans up used resources.
+    ///   Cleans up used resources.
     /// </summary>
     public override void Dispose()
     {
@@ -545,22 +571,25 @@ namespace Fomm.Games.Fallout3.Script
     #region upgrade functions
 
     /// <summary>
-    /// Writes the file represented by the given byte array to the given path.
+    ///   Writes the file represented by the given byte array to the given path.
     /// </summary>
     /// <remarks>
-    /// This method writes the given data as a file at the given path, if it is owned
-    /// by the fomod being upgraded. If the specified data file is not owned by the fomod
-    /// being upgraded, the file is instead written to the overwrites directory.
-    /// 
-    /// If the file was not previously installed by the fomod, then the normal install rules apply,
-    /// including confirming overwrite if applicable.
+    ///   This method writes the given data as a file at the given path, if it is owned
+    ///   by the fomod being upgraded. If the specified data file is not owned by the fomod
+    ///   being upgraded, the file is instead written to the overwrites directory.
+    ///   If the file was not previously installed by the fomod, then the normal install rules apply,
+    ///   including confirming overwrite if applicable.
     /// </remarks>
     /// <param name="p_strPath">The path where the file is to be created.</param>
     /// <param name="p_bteData">The data that is to make up the file.</param>
-    /// <returns><lang langref="true"/> if the file was written; <lang langref="false"/> if the user chose
-    /// not to overwrite an existing file.</returns>
-    /// <exception cref="IllegalFilePathException">Thrown if <paramref name="p_strPath"/> is
-    /// not safe.</exception>
+    /// <returns>
+    ///   <lang langref="true" /> if the file was written; <lang langref="false" /> if the user chose
+    ///   not to overwrite an existing file.
+    /// </returns>
+    /// <exception cref="IllegalFilePathException">
+    ///   Thrown if <paramref name="p_strPath" /> is
+    ///   not safe.
+    /// </exception>
     public override bool GenerateDataFile(string p_strPath, byte[] p_bteData)
     {
       PermissionsManager.CurrentPermissions.Assert();

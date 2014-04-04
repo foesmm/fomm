@@ -4,7 +4,7 @@ using Fomm.PackageManager.XmlConfiguredInstall;
 namespace Fomm.Games.Fallout3.Script.XmlConfiguredInstall
 {
   /// <summary>
-  /// A dependency that requires a minimum version of FOSE to be installed.
+  ///   A dependency that requires a minimum version of FOSE to be installed.
   /// </summary>
   public class FoseDependency : IDependency
   {
@@ -14,14 +14,14 @@ namespace Fomm.Games.Fallout3.Script.XmlConfiguredInstall
     #region IDependency Members
 
     /// <summary>
-    /// Gets whether or not the dependency is fufilled.
+    ///   Gets whether or not the dependency is fufilled.
     /// </summary>
     /// <remarks>
-    /// The dependency is fufilled if the specified minimum version of
-    /// FOSE is installed.
+    ///   The dependency is fufilled if the specified minimum version of
+    ///   FOSE is installed.
     /// </remarks>
     /// <value>Whether or not the dependency is fufilled.</value>
-    /// <seealso cref="IDependency.IsFufilled"/>
+    /// <seealso cref="IDependency.IsFufilled" />
     public bool IsFufilled
     {
       get
@@ -32,15 +32,15 @@ namespace Fomm.Games.Fallout3.Script.XmlConfiguredInstall
     }
 
     /// <summary>
-    /// Gets a message describing whether or not the dependency is fufilled.
+    ///   Gets a message describing whether or not the dependency is fufilled.
     /// </summary>
     /// <remarks>
-    /// If the dependency is fufilled the message is "Passed." If the dependency is not fufilled the
-    /// message informs the user of the installed version and gives the URL from whence to obtain
-    /// an update.
+    ///   If the dependency is fufilled the message is "Passed." If the dependency is not fufilled the
+    ///   message informs the user of the installed version and gives the URL from whence to obtain
+    ///   an update.
     /// </remarks>
     /// <value>A message describing whether or not the dependency is fufilled.</value>
-    /// <seealso cref="IDependency.Message"/>
+    /// <seealso cref="IDependency.Message" />
     public string Message
     {
       get
@@ -67,7 +67,7 @@ namespace Fomm.Games.Fallout3.Script.XmlConfiguredInstall
     #region Constructors
 
     /// <summary>
-    /// A simple constructor that initializes the object with the given values.
+    ///   A simple constructor that initializes the object with the given values.
     /// </summary>
     /// <param name="p_dsmStateManager">The manager that reports the currect install state.</param>
     /// <param name="p_verVersion">The minimum required version of FOSE.</param>
@@ -80,7 +80,7 @@ namespace Fomm.Games.Fallout3.Script.XmlConfiguredInstall
     #endregion
 
     /// <summary>
-    /// Generates a text representation of the dependency.
+    ///   Generates a text representation of the dependency.
     /// </summary>
     /// <returns>A text representation of the dependency.</returns>
     public override string ToString()

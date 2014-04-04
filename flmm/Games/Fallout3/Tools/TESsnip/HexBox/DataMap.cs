@@ -9,9 +9,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 
     #region ICollection Members
 
-    public void CopyTo(Array array, int index)
-    {
-    }
+    public void CopyTo(Array array, int index) {}
 
     public int Count
     {
@@ -100,9 +98,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
         _current = null;
       }
 
-      public void Dispose()
-      {
-      }
+      public void Dispose() {}
     }
 
     #endregion

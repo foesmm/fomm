@@ -1,16 +1,16 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Drawing;
-using System.Windows.Forms;
 using System.IO;
+using System.Windows.Forms;
 using Fomm.Games.Fallout3.Tools.TESsnip;
 
 namespace Fomm.Games.Fallout3.Tools.CriticalRecords
 {
   /// <summary>
-  /// The form that allows selection of critical records in a mod.
+  ///   The form that allows selection of critical records in a mod.
   /// </summary>
-  /// <seealso cref="fomod.CriticalRecords"/>
+  /// <seealso cref="fomod.CriticalRecords" />
   public partial class CriticalRecordsForm : Form
   {
     private bool m_booPopulatingForm;
@@ -18,7 +18,7 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     #region Constructors
 
     /// <summary>
-    /// The default constructor.
+    ///   The default constructor.
     /// </summary>
     public CriticalRecordsForm()
     {
@@ -43,7 +43,7 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     }
 
     /// <summary>
-    /// A simple constructor that initializes the form with the given values.
+    ///   A simple constructor that initializes the form with the given values.
     /// </summary>
     /// <param name="p_fomodMod">The mod whose plugins are going to have records marked as critical.</param>
     public CriticalRecordsForm(string[] p_strPlugins)
@@ -63,7 +63,7 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     #region Record Loading
 
     /// <summary>
-    /// Loads the specified plugin.
+    ///   Loads the specified plugin.
     /// </summary>
     /// <param name="p_strPlugin">The plugin whose records are to be loaded.</param>
     private void LoadPlugin(string p_strPlugin)
@@ -78,7 +78,7 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     }
 
     /// <summary>
-    /// Reloads the plugin of the given node.
+    ///   Reloads the plugin of the given node.
     /// </summary>
     /// <param name="p_tndPluginNode">The node whose plugin records are to be reloaded.</param>
     private void ReloadPlugin(TreeNode p_tndPluginNode)
@@ -97,10 +97,10 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     }
 
     /// <summary>
-    /// Creates the tree of records for the given plugin using the given node.
+    ///   Creates the tree of records for the given plugin using the given node.
     /// </summary>
-    /// <param name="p_plgPlugin">The <see cref="Plugin"/> for which to build a record tree.</param>
-    /// <param name="p_tndNode">The <see cref="TreeNode"/> at which to root the record tree.</param>
+    /// <param name="p_plgPlugin">The <see cref="Plugin" /> for which to build a record tree.</param>
+    /// <param name="p_tndNode">The <see cref="TreeNode" /> at which to root the record tree.</param>
     private void CreatePluginTree(CriticalRecordPlugin p_crpPlugin, TreeNode p_tndNode)
     {
       p_tndNode.Tag = p_crpPlugin;
@@ -111,11 +111,11 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     }
 
     /// <summary>
-    /// Recursively builds the tree of records for the given record using the given node.
+    ///   Recursively builds the tree of records for the given record using the given node.
     /// </summary>
-    /// <param name="p_plgPlugin">The <see cref="Plugin"/> for which to build a record tree.</param>
-    /// <param name="p_recRecord">The <see cref="Rec"/> for which to build a record tree.</param>
-    /// <param name="p_tndNode">The <see cref="TreeNode"/> at which to build the record tree.</param>
+    /// <param name="p_plgPlugin">The <see cref="Plugin" /> for which to build a record tree.</param>
+    /// <param name="p_recRecord">The <see cref="Rec" /> for which to build a record tree.</param>
+    /// <param name="p_tndNode">The <see cref="TreeNode" /> at which to build the record tree.</param>
     private void WalkPluginTree(CriticalRecordPlugin p_crpPlugin, Rec p_recRecord, TreeNode p_tndNode)
     {
       if (p_recRecord.Name.Equals("TES4"))
@@ -150,14 +150,14 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     #endregion
 
     /// <summary>
-    /// Handles the <see cref="TreeView.AfterSelect"/> event of the record tree view.
+    ///   Handles the <see cref="TreeView.AfterSelect" /> event of the record tree view.
     /// </summary>
     /// <remarks>
-    /// This sets up the edit section of the form if the selected node is a record
-    /// that can be marked as critical.
+    ///   This sets up the edit section of the form if the selected node is a record
+    ///   that can be marked as critical.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">A <see cref="TreeViewEventArgs"/> describing the event arguments.</param>
+    /// <param name="e">A <see cref="TreeViewEventArgs" /> describing the event arguments.</param>
     private void tvwRecords_AfterSelect(object sender, TreeViewEventArgs e)
     {
       var tndRoot = e.Node;
@@ -190,13 +190,13 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     }
 
     /// <summary>
-    /// Handles the events of the edit panel.
+    ///   Handles the events of the edit panel.
     /// </summary>
     /// <remarks>
-    /// This persists the changes made to the criticality of the selected record.
+    ///   This persists the changes made to the criticality of the selected record.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void criticalInfoChanged(object sender, EventArgs e)
     {
       if (m_booPopulatingForm)
@@ -234,13 +234,13 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     #region Menu Handling
 
     /// <summary>
-    /// Handles the <see cref="ToolStripMenuItem.Click"/> event of the open menu item.
+    ///   Handles the <see cref="ToolStripMenuItem.Click" /> event of the open menu item.
     /// </summary>
     /// <remarks>
-    /// This opens a plugin for editing.
+    ///   This opens a plugin for editing.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void openNewPluginToolStripMenuItem_Click(object sender, EventArgs e)
     {
       if (OpenModDialog.ShowDialog() == DialogResult.OK)
@@ -253,13 +253,13 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     }
 
     /// <summary>
-    /// Handles the <see cref="ToolStripMenuItem.Click"/> event of the save menu item.
+    ///   Handles the <see cref="ToolStripMenuItem.Click" /> event of the save menu item.
     /// </summary>
     /// <remarks>
-    /// This save the current plugin.
+    ///   This save the current plugin.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void saveToolStripMenuItem_Click(object sender, EventArgs e)
     {
       if (tvwRecords.SelectedNode == null)
@@ -280,13 +280,13 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     }
 
     /// <summary>
-    /// Handles the <see cref="ToolStripMenuItem.Click"/> event of the close menu item.
+    ///   Handles the <see cref="ToolStripMenuItem.Click" /> event of the close menu item.
     /// </summary>
     /// <remarks>
-    /// This closes the current plugin without saving.
+    ///   This closes the current plugin without saving.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void closeToolStripMenuItem_Click(object sender, EventArgs e)
     {
       if (tvwRecords.SelectedNode == null)
@@ -305,13 +305,13 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     }
 
     /// <summary>
-    /// Handles the <see cref="ToolStripMenuItem.Click"/> event of the close all menu item.
+    ///   Handles the <see cref="ToolStripMenuItem.Click" /> event of the close all menu item.
     /// </summary>
     /// <remarks>
-    /// This closes all open plugins without saving.
+    ///   This closes all open plugins without saving.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void closeAllToolStripMenuItem_Click(object sender, EventArgs e)
     {
       if (MessageBox.Show(this, "This will close all open plugins, and you will lose any unsaved changes.\n" +
@@ -327,12 +327,12 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     #endregion
 
     /// <summary>
-    /// Raising the <see cref="Fomr.Closing"/> event of the form.
+    ///   Raising the <see cref="Fomr.Closing" /> event of the form.
     /// </summary>
     /// <remarks>
-    /// This cleans up the controls and save the current windows location.
+    ///   This cleans up the controls and save the current windows location.
     /// </remarks>
-    /// <param name="e">The <see cref="CancelEventArgs"/> that will be passed to the event.</param>
+    /// <param name="e">The <see cref="CancelEventArgs" /> that will be passed to the event.</param>
     protected override void OnClosing(CancelEventArgs e)
     {
       tvwRecords.Nodes.Clear();

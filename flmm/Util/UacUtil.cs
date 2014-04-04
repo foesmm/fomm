@@ -7,7 +7,7 @@ namespace Fomm.Util
   #region Enumerations
 
   /// <summary>
-  /// The TOKEN_ELEVATION enum.
+  ///   The TOKEN_ELEVATION enum.
   /// </summary>
   public struct TOKEN_ELEVATION
   {
@@ -15,7 +15,7 @@ namespace Fomm.Util
   }
 
   /// <summary>
-  /// The TOKEN_INFORMATION_CLASS enum.
+  ///   The TOKEN_INFORMATION_CLASS enum.
   /// </summary>
   public enum TOKEN_INFORMATION_CLASS
   {
@@ -53,44 +53,48 @@ namespace Fomm.Util
   #endregion
 
   /// <summary>
-  /// Utility class for getting information about UAC.
+  ///   Utility class for getting information about UAC.
   /// </summary>
   public class UacUtil
   {
     /// <summary>
-    /// Constant from the Windows SDK.
+    ///   Constant from the Windows SDK.
     /// </summary>
     public const uint TOKEN_QUERY = 0x0008;
 
     /// <summary>
-    /// Opens the access token of a process.
+    ///   Opens the access token of a process.
     /// </summary>
     /// <param name="ProcessHandle">The process whose token is to be opened.</param>
     /// <param name="DesiredAccess">The desired access token we wish to open.</param>
     /// <param name="TokenHandle">The output parameter for the opened token.</param>
-    /// <returns><lang langref="true"/> if the desired token was opened;
-    /// <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the desired token was opened;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
     [DllImport("advapi32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     private static extern bool OpenProcessToken(IntPtr ProcessHandle, UInt32 DesiredAccess, out IntPtr TokenHandle);
 
     /// <summary>
-    /// Gets the current process's handle.
+    ///   Gets the current process's handle.
     /// </summary>
     /// <returns>The cur</returns>
     [DllImport("kernel32.dll", SetLastError = true)]
     private static extern IntPtr GetCurrentProcess();
 
     /// <summary>
-    /// Gets information about the specified process access token.
+    ///   Gets information about the specified process access token.
     /// </summary>
     /// <param name="TokenHandle">The handle to the token about which to get the information.</param>
     /// <param name="TokenInformationClass">The type of infromation we want.</param>
     /// <param name="TokenInformation">The structure into which the information will be copied.</param>
     /// <param name="TokenInformationLength">The length of the information data structure.</param>
     /// <param name="ReturnLength">The length of the return information.</param>
-    /// <returns><lang langref="true"/> if the information was successfully retrieved;
-    /// <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the information was successfully retrieved;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
     [DllImport("advapi32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     private static extern bool GetTokenInformation(
@@ -101,17 +105,19 @@ namespace Fomm.Util
       out uint ReturnLength);
 
     /// <summary>
-    /// Closes the given handle.
+    ///   Closes the given handle.
     /// </summary>
     /// <param name="hObject">The handle to close.</param>
-    /// <returns><lang langref="true"/> if the was closed;
-    /// <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the was closed;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
     [DllImport("kernel32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     private static extern bool CloseHandle(IntPtr hObject);
 
     /// <summary>
-    /// Loads the specified library.
+    ///   Loads the specified library.
     /// </summary>
     /// <param name="lpFileName">The library to load.</param>
     /// <returns>A handle to the loaded library.</returns>
@@ -122,7 +128,7 @@ namespace Fomm.Util
     public static extern IntPtr GetProcAddress(IntPtr hmodule, string procName);
 
     /// <summary>
-    /// Gets whether the OS has UAC.
+    ///   Gets whether the OS has UAC.
     /// </summary>
     /// <value>Whether the OS has UAC.</value>
     public static bool IsUACOperatingSystem
@@ -139,17 +145,16 @@ namespace Fomm.Util
     }
 
     /// <summary>
-    /// Gets whether or not the current process is elevated.
+    ///   Gets whether or not the current process is elevated.
     /// </summary>
     /// <remarks>
-    /// This return <lang langref="true"/> if:
-    /// The current OS supports UAC, UAC is on, and the process is being run as an elevated user.
-    /// OR
-    /// The current OS supports UAC, UAC is off, and the process is being run by an administrator.
-    /// OR
-    /// The current OS doesn't support UAC.
-    /// 
-    /// Otherwise, this returns <lang langref="false"/>.
+    ///   This return <lang langref="true" /> if:
+    ///   The current OS supports UAC, UAC is on, and the process is being run as an elevated user.
+    ///   OR
+    ///   The current OS supports UAC, UAC is off, and the process is being run by an administrator.
+    ///   OR
+    ///   The current OS doesn't support UAC.
+    ///   Otherwise, this returns <lang langref="false" />.
     /// </remarks>
     /// <value>Whether or not the current process is elevated.</value>
     public static bool IsElevated

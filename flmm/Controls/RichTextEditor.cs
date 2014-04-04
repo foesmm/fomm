@@ -1,17 +1,17 @@
 ﻿using System;
-using System.Windows.Forms;
-using System.Drawing.Text;
 using System.Drawing;
+using System.Drawing.Text;
+using System.Windows.Forms;
 
 namespace Fomm.Controls
 {
   /// <summary>
-  /// A rict text editor, with a toolbar.
+  ///   A rict text editor, with a toolbar.
   /// </summary>
   public partial class RichTextEditor : UserControl
   {
     /// <summary>
-    /// The default picklist of font sizes.
+    ///   The default picklist of font sizes.
     /// </summary>
     private readonly Int32[] FONT_SIZES =
     {
@@ -26,7 +26,7 @@ namespace Fomm.Controls
     #region Properties
 
     /// <summary>
-    /// Gets or sets the text of the rich text editor, including RTF formatting codes.
+    ///   Gets or sets the text of the rich text editor, including RTF formatting codes.
     /// </summary>
     /// <value>The text of the rich text editor, including RTF formatting codes.</value>
     public string Rtf
@@ -42,7 +42,7 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Gets or sets the text of the rich text editor as plain text.
+    ///   Gets or sets the text of the rich text editor as plain text.
     /// </summary>
     /// <value>The text of the rich text editor as plain text.</value>
     public string Text
@@ -62,7 +62,7 @@ namespace Fomm.Controls
     #region Constructors
 
     /// <summary>
-    /// The default constructor.
+    ///   The default constructor.
     /// </summary>
     public RichTextEditor()
     {
@@ -107,7 +107,7 @@ namespace Fomm.Controls
     #region Change Font
 
     /// <summary>
-    /// Changes the font of the current selection.
+    ///   Changes the font of the current selection.
     /// </summary>
     protected void ChangeFont(string p_strFontFamilyName, float p_fltFontSize)
     {
@@ -146,10 +146,10 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Handles the <see cref="ComboBox.SelectedIndexChanged"/> event of the font selector.
+    ///   Handles the <see cref="ComboBox.SelectedIndexChanged" /> event of the font selector.
     /// </summary>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void tscbFont_SelectedIndexChanged(object sender, EventArgs e)
     {
       m_intLastFontIndex = tscbFont.SelectedIndex;
@@ -160,14 +160,14 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Handles the <see cref="Control.Leave"/> event of the font selector.
+    ///   Handles the <see cref="Control.Leave" /> event of the font selector.
     /// </summary>
     /// <remarks>
-    /// This selects the previously selected font if the contents of the font selector don't match a
-    /// font in the list.
+    ///   This selects the previously selected font if the contents of the font selector don't match a
+    ///   font in the list.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void tscbFont_Leave(object sender, EventArgs e)
     {
       if (tscbFont.SelectedIndex < 0)
@@ -177,10 +177,10 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Handles the <see cref="ComboBox.TextChanged"/> event of the font size selector.
+    ///   Handles the <see cref="ComboBox.TextChanged" /> event of the font size selector.
     /// </summary>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void tscbFontSize_TextChanged(object sender, EventArgs e)
     {
       float fltFontSize;
@@ -192,14 +192,14 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Handles the <see cref="Control.Leave"/> event of the font size selector.
+    ///   Handles the <see cref="Control.Leave" /> event of the font size selector.
     /// </summary>
     /// <remarks>
-    /// This selects the previously selected font size if the contents of the font selector is not
-    /// a valid number.
+    ///   This selects the previously selected font size if the contents of the font selector is not
+    ///   a valid number.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void tscbFontSize_Leave(object sender, EventArgs e)
     {
       float fltFontSize;
@@ -214,7 +214,7 @@ namespace Fomm.Controls
     #region Change font style
 
     /// <summary>
-    /// Changes the font style of the current selection.
+    ///   Changes the font style of the current selection.
     /// </summary>
     public void ChangeFontStyle(FontStyle p_fstStyle, bool p_booAddStyle)
     {
@@ -225,9 +225,9 @@ namespace Fomm.Controls
       // if there is text selected, and only one style in the selection, change it
       if (len <= 1 && rtbTextbox.SelectionFont != null)
       {
-        rtbTextbox.SelectionFont = p_booAddStyle ?
-          new Font(rtbTextbox.SelectionFont, rtbTextbox.SelectionFont.Style | p_fstStyle) :
-          new Font(rtbTextbox.SelectionFont, rtbTextbox.SelectionFont.Style & ~p_fstStyle);
+        rtbTextbox.SelectionFont = p_booAddStyle
+          ? new Font(rtbTextbox.SelectionFont, rtbTextbox.SelectionFont.Style | p_fstStyle)
+          : new Font(rtbTextbox.SelectionFont, rtbTextbox.SelectionFont.Style & ~p_fstStyle);
         return;
       }
 
@@ -236,9 +236,9 @@ namespace Fomm.Controls
       for (var i = 0; i < len; ++i)
       {
         rtbTemp.Select(rtbTempStart + i, 1);
-        rtbTemp.SelectionFont = p_booAddStyle ?
-          new Font(rtbTemp.SelectionFont, rtbTemp.SelectionFont.Style | p_fstStyle) :
-          new Font(rtbTemp.SelectionFont, rtbTemp.SelectionFont.Style & ~p_fstStyle);
+        rtbTemp.SelectionFont = p_booAddStyle
+          ? new Font(rtbTemp.SelectionFont, rtbTemp.SelectionFont.Style | p_fstStyle)
+          : new Font(rtbTemp.SelectionFont, rtbTemp.SelectionFont.Style & ~p_fstStyle);
       }
 
       // replace and reselect
@@ -248,10 +248,10 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Handles the <see cref="Control.Click"/> events of the font style buttons.
+    ///   Handles the <see cref="Control.Click" /> events of the font style buttons.
     /// </summary>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void FontStyleChanged(object sender, EventArgs e)
     {
       var tsbFontStyle = (ToolStripButton) sender;
@@ -263,13 +263,13 @@ namespace Fomm.Controls
     #region Text Justification
 
     /// <summary>
-    /// Handles the <see cref="Control.Click"/> events of the text justification buttons.
+    ///   Handles the <see cref="Control.Click" /> events of the text justification buttons.
     /// </summary>
     /// <remarks>
-    /// The <see cref="RichTextBox"/> doesn't support full justification.
+    ///   The <see cref="RichTextBox" /> doesn't support full justification.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void JustifyText(object sender, EventArgs e)
     {
       foreach (var tsbJustification in m_tsbJustifications)
@@ -284,7 +284,7 @@ namespace Fomm.Controls
     #region Update Toolbar
 
     /// <summary>
-    /// Gets the details of the font at the caret's current position.
+    ///   Gets the details of the font at the caret's current position.
     /// </summary>
     /// <returns>A font with all the characteristics of the font at the current caret position.</returns>
     public Font GetFontDetails()
@@ -358,7 +358,7 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Update the toolbar button statuses to math the font at the current caret position.
+    ///   Update the toolbar button statuses to math the font at the current caret position.
     /// </summary>
     public void UpdateToolbar()
     {
@@ -390,10 +390,10 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Handles the <see cref="Textbox.SelectionChanged"/> event of the rich text box.
+    ///   Handles the <see cref="Textbox.SelectionChanged" /> event of the rich text box.
     /// </summary>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void rtbTextbox_SelectionChanged(object sender, EventArgs e)
     {
       UpdateToolbar();
@@ -402,13 +402,13 @@ namespace Fomm.Controls
     #endregion
 
     /// <summary>
-    /// Handles the <see cref="Control.KeyDown"/> event of the rich text box.
+    ///   Handles the <see cref="Control.KeyDown" /> event of the rich text box.
     /// </summary>
     /// <remarks>
-    /// This handles the processing of shortcut key combinations.
+    ///   This handles the processing of shortcut key combinations.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">A <see cref="KeyEventArgs"/> describing the event arguments.</param>
+    /// <param name="e">A <see cref="KeyEventArgs" /> describing the event arguments.</param>
     private void rtbTextbox_KeyDown(object sender, KeyEventArgs e)
     {
       if (e.Control)

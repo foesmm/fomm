@@ -22,10 +22,10 @@ using System.Windows.Forms;
 namespace Fomm.Controls
 {
   /// <summary>
-  /// An extended version of the standard ListView designed to allow the user
-  /// to reorder items in the control by drag and drop.
+  ///   An extended version of the standard ListView designed to allow the user
+  ///   to reorder items in the control by drag and drop.
   /// </summary>
-  /// <see cref="ListView"/>
+  /// <see cref="ListView" />
   internal class ReordableItemListView : ListView
   {
     #region Constants
@@ -81,7 +81,7 @@ namespace Fomm.Controls
     #region Methods
 
     /// <summary>
-    /// Draw a line with insertion marks at each end
+    ///   Draw a line with insertion marks at each end
     /// </summary>
     /// <param name="X1">Starting position (X) of the line</param>
     /// <param name="X2">Ending position (X) of the line</param>
@@ -112,7 +112,7 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Determines if the specified Point is in the top half of the specified ListViewItem
+    ///   Determines if the specified Point is in the top half of the specified ListViewItem
     /// </summary>
     /// <param name="location">The point to check</param>
     /// <param name="itemToCheck">The ListViewItem whose bounds are to be checked</param>
@@ -125,12 +125,12 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Wrapper function to get the ListViewItem at the specified Point
+    ///   Wrapper function to get the ListViewItem at the specified Point
     /// </summary>
     /// <param name="location">The location to retrieve the ListViewItem from</param>
     /// <returns>
-    /// The ListViewItem at the specified point, or the last item in the control if the
-    /// point is lower than it
+    ///   The ListViewItem at the specified point, or the last item in the control if the
+    ///   point is lower than it
     /// </returns>
     private ListViewItem GetItemAtPoint(Point location)
     {
@@ -141,7 +141,7 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Removes the drag indicator from being displayed
+    ///   Removes the drag indicator from being displayed
     /// </summary>
     private void ResetDragIndicator()
     {
@@ -151,7 +151,7 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Clears the SelectedItems that are being dragged
+    ///   Clears the SelectedItems that are being dragged
     /// </summary>
     private void ResetDragItems()
     {

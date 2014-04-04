@@ -4,26 +4,24 @@ using System.ComponentModel.Design;
 namespace Fomm.Controls
 {
   /// <summary>
-  /// Handles the editing of the <see cref="VerticalTabControl.TabPage"/> collection
-  /// is the designer.
+  ///   Handles the editing of the <see cref="VerticalTabControl.TabPage" /> collection
+  ///   is the designer.
   /// </summary>
   public class VerticalTabPageCollectionEditor : CollectionEditor
   {
     #region Constructors
 
     /// <summary>
-    /// A simple constructor that initializes the object with the given values.
+    ///   A simple constructor that initializes the object with the given values.
     /// </summary>
     /// <param name="p_tpeType">The type of the ovjects in the collection being edited.</param>
     public VerticalTabPageCollectionEditor(Type p_tpeType)
-      : base(p_tpeType)
-    {
-    }
+      : base(p_tpeType) {}
 
     #endregion
 
     /// <summary>
-    /// Gets the type of the item in the collection being edited.
+    ///   Gets the type of the item in the collection being edited.
     /// </summary>
     /// <returns>The type of the item in the collection being edited.</returns>
     protected override Type CreateCollectionItemType()
@@ -32,7 +30,7 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Sets the collection to the set of given items.
+    ///   Sets the collection to the set of given items.
     /// </summary>
     /// <param name="p_objTabPages">The collection being edited.</param>
     /// <param name="p_objValues">The array of items to which to set the collection being edited.</param>
@@ -49,11 +47,11 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Creates an instance of an item for use in the collection being edited.
+    ///   Creates an instance of an item for use in the collection being edited.
     /// </summary>
     /// <remarks>
-    /// This sets the text of the created <see cref="VerticalTabPage"/> to its
-    /// name.
+    ///   This sets the text of the created <see cref="VerticalTabPage" /> to its
+    ///   name.
     /// </remarks>
     /// <param name="p_tpeItemType">The type of the item to be created.</param>
     /// <returns>A new object of the given type.</returns>

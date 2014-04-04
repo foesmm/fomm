@@ -5,19 +5,19 @@ using System.IO;
 namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 {
   /// <summary>
-  /// Byte provider for (big) files.
+  ///   Byte provider for (big) files.
   /// </summary>
   internal class FileByteProvider : IByteProvider, IDisposable
   {
     #region WriteCollection class
 
     /// <summary>
-    /// Represents the write buffer class
+    ///   Represents the write buffer class
     /// </summary>
     private class WriteCollection : DictionaryBase
     {
       /// <summary>
-      /// Gets or sets a byte in the collection
+      ///   Gets or sets a byte in the collection
       /// </summary>
       public byte this[long index]
       {
@@ -32,7 +32,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
       }
 
       /// <summary>
-      /// Adds a byte into the collection
+      ///   Adds a byte into the collection
       /// </summary>
       /// <param name="index">the index of the byte</param>
       /// <param name="value">the value of the byte</param>
@@ -42,7 +42,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
       }
 
       /// <summary>
-      /// Determines if a byte with the given index exists.
+      ///   Determines if a byte with the given index exists.
       /// </summary>
       /// <param name="index">the index of the byte</param>
       /// <returns>true, if the is in the collection</returns>
@@ -55,22 +55,22 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     #endregion
 
     /// <summary>
-    /// Occurs, when the write buffer contains new changes.
+    ///   Occurs, when the write buffer contains new changes.
     /// </summary>
     public event EventHandler Changed;
 
     /// <summary>
-    /// Contains all changes
+    ///   Contains all changes
     /// </summary>
     private WriteCollection _writes = new WriteCollection();
 
     /// <summary>
-    /// Contains the file stream.
+    ///   Contains the file stream.
     /// </summary>
     private FileStream _fileStream;
 
     /// <summary>
-    /// Terminates the instance of the FileByteProvider class.
+    ///   Terminates the instance of the FileByteProvider class.
     /// </summary>
     ~FileByteProvider()
     {
@@ -78,7 +78,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// Raises the Changed event.
+    ///   Raises the Changed event.
     /// </summary>
     /// <remarks>Never used.</remarks>
     private void OnChanged(EventArgs e)
@@ -90,7 +90,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// Returns a value if there are some changes.
+    ///   Returns a value if there are some changes.
     /// </summary>
     /// <returns>true, if there are some changes</returns>
     public bool HasChanges()
@@ -99,7 +99,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// Updates the file with all changes the write buffer contains.
+    ///   Updates the file with all changes the write buffer contains.
     /// </summary>
     public void ApplyChanges()
     {
@@ -125,14 +125,14 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     #region IByteProvider Members
 
     /// <summary>
-    /// Never used.
+    ///   Never used.
     /// </summary>
 #pragma warning disable 0067
     public event EventHandler LengthChanged;
 #pragma warning restore 0067
 
     /// <summary>
-    /// Reads a byte from the file.
+    ///   Reads a byte from the file.
     /// </summary>
     /// <param name="index">the index of the byte to read</param>
     /// <returns>the byte</returns>
@@ -150,7 +150,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// Gets the length of the file.
+    ///   Gets the length of the file.
     /// </summary>
     public long Length
     {
@@ -161,7 +161,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// Writes a byte into write buffer
+    ///   Writes a byte into write buffer
     /// </summary>
     public void WriteByte(long index, byte value)
     {
@@ -178,7 +178,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// Not supported
+    ///   Not supported
     /// </summary>
     public void DeleteBytes(long index, long length)
     {
@@ -186,7 +186,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// Not supported
+    ///   Not supported
     /// </summary>
     public void InsertBytes(long index, byte[] bs)
     {
@@ -194,7 +194,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// Returns true
+    ///   Returns true
     /// </summary>
     public bool SupportsWriteByte()
     {
@@ -202,7 +202,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// Returns false
+    ///   Returns false
     /// </summary>
     public bool SupportsInsertBytes()
     {
@@ -210,7 +210,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// Returns false
+    ///   Returns false
     /// </summary>
     public bool SupportsDeleteBytes()
     {
@@ -222,7 +222,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     #region IDisposable Members
 
     /// <summary>
-    /// Releases the file handle used by the FileByteProvider.
+    ///   Releases the file handle used by the FileByteProvider.
     /// </summary>
     public void Dispose()
     {

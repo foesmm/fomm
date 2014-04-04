@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using System.IO;
 using Fomm.Properties;
 
 namespace Fomm.Games.FalloutNewVegas.Tools
@@ -42,7 +42,7 @@ namespace Fomm.Games.FalloutNewVegas.Tools
           }
           image = new Bitmap(ImageWidth, ImageHeight, PixelFormat.Format24bppRgb);
           var bd = image.LockBits(new Rectangle(0, 0, ImageWidth, ImageHeight), ImageLockMode.WriteOnly,
-                                         PixelFormat.Format24bppRgb);
+                                  PixelFormat.Format24bppRgb);
           Marshal.Copy(ImageData, 0, bd.Scan0, ImageData.Length);
           image.UnlockBits(bd);
           return image;

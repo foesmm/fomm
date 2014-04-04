@@ -5,33 +5,33 @@ using System.IO;
 namespace Fomm.PackageManager
 {
   /// <summary>
-  /// The possible formats for the readme file.
+  ///   The possible formats for the readme file.
   /// </summary>
   public enum ReadmeFormat
   {
     /// <summary>
-    /// Plain text.
+    ///   Plain text.
     /// </summary>
     PlainText,
 
     /// <summary>
-    /// Rich text format.
+    ///   Rich text format.
     /// </summary>
     RichText,
 
     /// <summary>
-    /// HTML
+    ///   HTML
     /// </summary>
     HTML
   }
 
   /// <summary>
-  /// Describes the readme file of a fomod.
+  ///   Describes the readme file of a fomod.
   /// </summary>
   public class Readme
   {
     /// <summary>
-    /// The mapping of valid extensions to their respective readme formats.
+    ///   The mapping of valid extensions to their respective readme formats.
     /// </summary>
     private static Dictionary<string, ReadmeFormat> m_dicFormats = new Dictionary<string, ReadmeFormat>
     {
@@ -50,7 +50,7 @@ namespace Fomm.PackageManager
     };
 
     /// <summary>
-    /// Get the list of valid extensions.
+    ///   Get the list of valid extensions.
     /// </summary>
     /// <value>The list of valid extensions.</value>
     public static string[] ValidExtensions
@@ -66,7 +66,7 @@ namespace Fomm.PackageManager
     #region Properties
 
     /// <summary>
-    /// Gets or sets the extension of the readme.
+    ///   Gets or sets the extension of the readme.
     /// </summary>
     /// <value>The extension of the readme.</value>
     public string Extension
@@ -98,7 +98,7 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Gets or sets the readme format.
+    ///   Gets or sets the readme format.
     /// </summary>
     /// <value>The readme format.</value>
     public ReadmeFormat Format
@@ -114,7 +114,7 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Gets or sets the readme text.
+    ///   Gets or sets the readme text.
     /// </summary>
     /// <value>The readme text.</value>
     public string Text { get; set; }
@@ -124,7 +124,7 @@ namespace Fomm.PackageManager
     #region Constructors
 
     /// <summary>
-    /// A simple constructor that initializes the object with the given values.
+    ///   A simple constructor that initializes the object with the given values.
     /// </summary>
     /// <param name="p_fmtFormat">The readme format.</param>
     /// <param name="p_strText">The readme text.</param>
@@ -135,9 +135,9 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// A simple constructor that initializes the object with the given values.
+    ///   A simple constructor that initializes the object with the given values.
     /// </summary>
-    /// <param name="p_strPath">The path of the readme file. This is used to determine the <see cref="Format"/>.</param>
+    /// <param name="p_strPath">The path of the readme file. This is used to determine the <see cref="Format" />.</param>
     /// <param name="p_strText">The readme text.</param>
     public Readme(string p_strPath, string p_strText)
     {
@@ -148,11 +148,13 @@ namespace Fomm.PackageManager
     #endregion
 
     /// <summary>
-    /// Determines if the specified readme file is of a recognized format.
+    ///   Determines if the specified readme file is of a recognized format.
     /// </summary>
     /// <param name="p_strPath">The path of the readme file.</param>
-    /// <returns><lang langref="true"/> if the given path has a valid extension;
-    /// <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the given path has a valid extension;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
     public static bool IsValidReadme(string p_strPath)
     {
       if (String.IsNullOrEmpty(p_strPath))
@@ -163,11 +165,13 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Determines if the given extension is a valid readme extension.
+    ///   Determines if the given extension is a valid readme extension.
     /// </summary>
     /// <param name="p_strExtension">The extension whose validity is to be determined.</param>
-    /// <returns><lang langref="true"/> if the given extension is a valid readme extension;
-    /// <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the given extension is a valid readme extension;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
     public static bool IsValidExtension(string p_strExtension)
     {
       var strLoweredValue = (p_strExtension ?? "").ToLowerInvariant();

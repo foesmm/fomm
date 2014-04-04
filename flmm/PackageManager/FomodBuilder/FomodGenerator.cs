@@ -1,29 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Xml;
-using Fomm.Properties;
-using SevenZip;
 using System.IO;
 using System.Windows.Forms;
+using System.Xml;
+using Fomm.Properties;
 using Fomm.Util;
 using GeMod.Interface;
+using SevenZip;
 
 namespace Fomm.PackageManager.FomodBuilder
 {
   /// <summary>
-  /// This class builds fomods and premade fomod packs.
+  ///   This class builds fomods and premade fomod packs.
   /// </summary>
   public abstract class FomodGenerator
   {
     /// <summary>
-    /// The arguments object to pass to the background worker when generating a fomod.
+    ///   The arguments object to pass to the background worker when generating a fomod.
     /// </summary>
     protected abstract class GenerateFomodArgs
     {
       #region Properties
 
       /// <summary>
-      /// Gets or sets the path where the packed file will be created.
+      ///   Gets or sets the path where the packed file will be created.
       /// </summary>
       /// <value>The path where the packed file will be created.</value>
       public string PackedPath { get; set; }
@@ -33,9 +33,9 @@ namespace Fomm.PackageManager.FomodBuilder
       #region Constructors
 
       /// <summary>
-      /// A simple constructor that initializes the object with the given values.
+      ///   A simple constructor that initializes the object with the given values.
       /// </summary>
-      /// <param name="p_strPackedPath">The value with which to initialize the <see cref="PackedPath"/> property.</param>
+      /// <param name="p_strPackedPath">The value with which to initialize the <see cref="PackedPath" /> property.</param>
       public GenerateFomodArgs(string p_strPackedPath)
       {
         PackedPath = p_strPackedPath;
@@ -49,15 +49,17 @@ namespace Fomm.PackageManager.FomodBuilder
     #region Properties
 
     /// <summary>
-    /// Gets the <see cref="BackgroundWorkerProgressDialog"/> used to generate
-    /// the fomod.
+    ///   Gets the <see cref="BackgroundWorkerProgressDialog" /> used to generate
+    ///   the fomod.
     /// </summary>
-    /// <value>The <see cref="BackgroundWorkerProgressDialog"/> used to generate
-    /// the fomod.</value>
+    /// <value>
+    ///   The <see cref="BackgroundWorkerProgressDialog" /> used to generate
+    ///   the fomod.
+    /// </value>
     protected BackgroundWorkerProgressDialog ProgressDialog { get; private set; }
 
     /// <summary>
-    /// Gets the overall message to display in the progress dialog.
+    ///   Gets the overall message to display in the progress dialog.
     /// </summary>
     protected virtual string OverallProgressMessage
     {
@@ -72,17 +74,18 @@ namespace Fomm.PackageManager.FomodBuilder
     #region Fomod Generation
 
     /// <summary>
-    /// This starts the <see cref="BackgroundWorkerProgressDialog"/> to build the fomod.
+    ///   This starts the <see cref="BackgroundWorkerProgressDialog" /> to build the fomod.
     /// </summary>
     /// <remarks>
-    /// This method is called by implementers of this abstract class to instantiate the
-    /// <see cref="BackgroundWorkerProgressDialog"/> that will be used to generate the fomod. The
-    /// <see cref="BackgroundWorkerProgressDialog"/> calls <see cref="DoGenerateFomod(object)"/>,
-    /// which must be overridden in the implementer, to actually do the work.
-    /// 
+    ///   This method is called by implementers of this abstract class to instantiate the
+    ///   <see cref="BackgroundWorkerProgressDialog" /> that will be used to generate the fomod. The
+    ///   <see cref="BackgroundWorkerProgressDialog" /> calls <see cref="DoGenerateFomod(object)" />,
+    ///   which must be overridden in the implementer, to actually do the work.
     /// </remarks>
-    /// <param name="p_gfaArgs">The arguments to pass the the <see cref="DoGenerateFomod(object)"/>
-    /// method.</param>
+    /// <param name="p_gfaArgs">
+    ///   The arguments to pass the the <see cref="DoGenerateFomod(object)" />
+    ///   method.
+    /// </param>
     /// <returns>The atual path of the generated fomod.</returns>
     protected string GenerateFomod(GenerateFomodArgs p_gfaArgs)
     {
@@ -119,10 +122,12 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// This method is overridden by implementers to perform the actual fomod generation.
+    ///   This method is overridden by implementers to perform the actual fomod generation.
     /// </summary>
-    /// <param name="p_objArgs">The arguments the implementer passed to
-    /// <see cref="GenerateFomod(GenerateFomodArgs)"/>.</param>
+    /// <param name="p_objArgs">
+    ///   The arguments the implementer passed to
+    ///   <see cref="GenerateFomod(GenerateFomodArgs)" />.
+    /// </param>
     protected abstract void DoGenerateFomod(object p_objArgs);
 
     #endregion
@@ -130,11 +135,11 @@ namespace Fomm.PackageManager.FomodBuilder
     #region Helper Methods
 
     /// <summary>
-    /// Creates a temporary directory.
+    ///   Creates a temporary directory.
     /// </summary>
     /// <remarks>
-    /// This method tracks every directory it creates so they can be deleted upon completion of the
-    /// fomod generation.
+    ///   This method tracks every directory it creates so they can be deleted upon completion of the
+    ///   fomod generation.
     /// </remarks>
     /// <returns>The path to the new temporary directory.</returns>
     protected string CreateTemporaryDirectory()
@@ -145,13 +150,17 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// Determines if the file specified by the given path exists. If so, it
-    /// prompts the user if they would like to use a different path.
+    ///   Determines if the file specified by the given path exists. If so, it
+    ///   prompts the user if they would like to use a different path.
     /// </summary>
-    /// <param name="newpath">The path for which it is to be detemined if a file exists.
-    /// It is updated with the new path if the given path was already in use.</param>
-    /// <returns><lang langref="true"/> if the returned value of <see cref="newpath"/> does not
-    /// specify an existing file; <lang langref="false"/> otherwise.</returns>
+    /// <param name="newpath">
+    ///   The path for which it is to be detemined if a file exists.
+    ///   It is updated with the new path if the given path was already in use.
+    /// </param>
+    /// <returns>
+    ///   <lang langref="true" /> if the returned value of <see cref="newpath" /> does not
+    ///   specify an existing file; <lang langref="false" /> otherwise.
+    /// </returns>
     protected bool CheckFileName(ref string newpath)
     {
       var strNewPath = newpath;
@@ -186,7 +195,7 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// Creates a fomod file at the given path from the given directory.
+    ///   Creates a fomod file at the given path from the given directory.
     /// </summary>
     /// <param name="p_strFomodFolder">The folder from which to create the fomod.</param>
     /// <param name="p_strPackedFomodPath">The path of the new fomod file to create.</param>
@@ -221,8 +230,8 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// This creates a script file in the specified folder using the given <see cref="FomodScript"/>
-    /// metadata.
+    ///   This creates a script file in the specified folder using the given <see cref="FomodScript" />
+    ///   metadata.
     /// </summary>
     /// <param name="p_strFomodFomodFolder">The folder in which to create the script file.</param>
     /// <param name="p_fscScript">The metadata to use to create the file.</param>
@@ -240,13 +249,13 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// This creates a screenshot file in the specified folder using the given <see cref="Screenshot"/>
-    /// metadata.
+    ///   This creates a screenshot file in the specified folder using the given <see cref="Screenshot" />
+    ///   metadata.
     /// </summary>
     /// <remarks>
-    /// The file is only created if <paramref name="p_booSetScreenshot"/> is <lang langref="true"/>. If
-    /// <paramref name="p_booSetScreenshot"/> is <lang langref="true"/> and <paramref name="p_shtScreenshot"/>
-    /// is <lang langref="null"/>, then any existing screenshot files will be deleted.
+    ///   The file is only created if <paramref name="p_booSetScreenshot" /> is <lang langref="true" />. If
+    ///   <paramref name="p_booSetScreenshot" /> is <lang langref="true" /> and <paramref name="p_shtScreenshot" />
+    ///   is <lang langref="null" />, then any existing screenshot files will be deleted.
     /// </remarks>
     /// <param name="p_strFomodFomodFolder">The folder in which to create the screenshot file.</param>
     /// <param name="p_booSetScreenshot">Whether or not to create the file.</param>
@@ -260,7 +269,7 @@ namespace Fomm.PackageManager.FomodBuilder
       if (p_booSetScreenshot)
       {
         var strScreenshots = Directory.GetFiles(p_strFomodFomodFolder, "screenshot.*",
-                                                     SearchOption.TopDirectoryOnly);
+                                                SearchOption.TopDirectoryOnly);
         foreach (var strScreenshot in strScreenshots)
         {
           FileUtil.ForceDelete(strScreenshot);
@@ -275,7 +284,7 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// This writes the given fomod info file in the specified directory.
+    ///   This writes the given fomod info file in the specified directory.
     /// </summary>
     /// <param name="p_strFomodFomodFolder">The folder in which to create the fomod info file.</param>
     /// <param name="p_xmlInfo">The file to write.</param>
@@ -293,8 +302,8 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// This creates a readme file in the specified folder using the given <see cref="Readme"/>
-    /// metadata.
+    ///   This creates a readme file in the specified folder using the given <see cref="Readme" />
+    ///   metadata.
     /// </summary>
     /// <param name="p_strFomodFomodFolder">The folder in which to create the readme file.</param>
     /// <param name="p_rmeReadme">The metadata to use to create the file.</param>
@@ -317,7 +326,7 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// This unpacks the specified archive to the specified path.
+    ///   This unpacks the specified archive to the specified path.
     /// </summary>
     /// <param name="p_strArchivePath">The path to the archive to unpack.</param>
     /// <param name="p_strExtractionPath">The path to the directory to which to unpack the archive.</param>
@@ -341,14 +350,14 @@ namespace Fomm.PackageManager.FomodBuilder
     #region Callbacks
 
     /// <summary>
-    /// Updates the progress window when a file is copied.
+    ///   Updates the progress window when a file is copied.
     /// </summary>
     /// <remarks>
-    /// This is passed as the callback method for the <see cref="FileUtil.Copy"/> used to
-    /// execute the copy instructions.
+    ///   This is passed as the callback method for the <see cref="FileUtil.Copy" /> used to
+    ///   execute the copy instructions.
     /// </remarks>
     /// <param name="p_strFile">The file the was copied.</param>
-    /// <returns><lang langref="true"/> if the user cancelled the operation; <lang langref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true" /> if the user cancelled the operation; <lang langref="false" /> otherwise.</returns>
     protected bool FileCopied(string p_strFile)
     {
       ProgressDialog.StepItemProgress();
@@ -356,52 +365,52 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// Called when a file has been extracted from a source archive.
+    ///   Called when a file has been extracted from a source archive.
     /// </summary>
     /// <remarks>
-    /// This steps the progress of the create fomod from archive progress dialog.
+    ///   This steps the progress of the create fomod from archive progress dialog.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void FileExtractionFinished(object sender, FileInfoEventArgs e)
     {
       ProgressDialog.StepItemProgress();
     }
 
     /// <summary>
-    /// Called when a file is about to be extracted from a source archive.
+    ///   Called when a file is about to be extracted from a source archive.
     /// </summary>
     /// <remarks>
-    /// This cancels the compression if the user has clicked the cancel button of the progress dialog.
+    ///   This cancels the compression if the user has clicked the cancel button of the progress dialog.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">A <see cref="FileNameEventArgs"/> describing the event arguments.</param>
+    /// <param name="e">A <see cref="FileNameEventArgs" /> describing the event arguments.</param>
     private void FileExtractionStarted(object sender, FileInfoEventArgs e)
     {
       e.Cancel = ProgressDialog.Cancelled();
     }
 
     /// <summary>
-    /// Called when a file has been added to a new fomod.
+    ///   Called when a file has been added to a new fomod.
     /// </summary>
     /// <remarks>
-    /// This steps the progress of the create fomod from folder progress dialog.
+    ///   This steps the progress of the create fomod from folder progress dialog.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     protected void FileCompressionFinished(object sender, EventArgs e)
     {
       ProgressDialog.StepItemProgress();
     }
 
     /// <summary>
-    /// Called when a file is about to be added to a new fomod.
+    ///   Called when a file is about to be added to a new fomod.
     /// </summary>
     /// <remarks>
-    /// This cancels the compression if the user has clicked the cancel button of the progress dialog.
+    ///   This cancels the compression if the user has clicked the cancel button of the progress dialog.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">A <see cref="FileNameEventArgs"/> describing the event arguments.</param>
+    /// <param name="e">A <see cref="FileNameEventArgs" /> describing the event arguments.</param>
     protected void FileCompressionStarted(object sender, FileNameEventArgs e)
     {
       e.Cancel = ProgressDialog.Cancelled();

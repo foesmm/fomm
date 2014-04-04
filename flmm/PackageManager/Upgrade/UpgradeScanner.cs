@@ -7,7 +7,7 @@ using Fomm.PackageManager.ModInstallLog;
 namespace Fomm.PackageManager.Upgrade
 {
   /// <summary>
-  /// Checks to see if any fomods' versions have changed.
+  ///   Checks to see if any fomods' versions have changed.
   /// </summary>
   public class UpgradeScanner
   {
@@ -16,12 +16,12 @@ namespace Fomm.PackageManager.Upgrade
       Environment.NewLine + "Selecting No will replace the FOMod in FOMM's plugin list, but won't change any files.";
 
     /// <summary>
-    /// Scans the mods folder for fomods that have versions that differ from their versions in the install log.
+    ///   Scans the mods folder for fomods that have versions that differ from their versions in the install log.
     /// </summary>
     /// <remarks>
-    /// If fomods with versions that differ from those in the install log are found, the use is asked whether
-    /// to replace or upgrade the fomod. Replacing the fomod merely changes the version in the install log,
-    /// but makes no system changes. Upgrading the fomod performs an in-place upgrade.
+    ///   If fomods with versions that differ from those in the install log are found, the use is asked whether
+    ///   to replace or upgrade the fomod. Replacing the fomod merely changes the version in the install log,
+    ///   but makes no system changes. Upgrading the fomod performs an in-place upgrade.
     /// </remarks>
     public void Scan()
     {
@@ -53,7 +53,7 @@ namespace Fomm.PackageManager.Upgrade
     }
 
     /// <summary>
-    /// Upgrades the given fomods.
+    ///   Upgrades the given fomods.
     /// </summary>
     /// <param name="p_lstModsToUpgrade">The list of fomods to upgrade.</param>
     private void Upgrade(IList<fomod> p_lstModsToUpgrade)
@@ -66,7 +66,7 @@ namespace Fomm.PackageManager.Upgrade
     }
 
     /// <summary>
-    /// Replaces the given fomods in the install log.
+    ///   Replaces the given fomods in the install log.
     /// </summary>
     /// <param name="p_lstModsToReplace">The list of fomods to replace.</param>
     protected void Replace(IList<fomod> p_lstModsToReplace)

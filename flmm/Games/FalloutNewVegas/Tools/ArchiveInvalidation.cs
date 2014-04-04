@@ -1,9 +1,6 @@
 using System;
-using System.IO;
 using System.Collections.Generic;
-using MessageBox = System.Windows.Forms.MessageBox;
-using MessageBoxButtons = System.Windows.Forms.MessageBoxButtons;
-using DialogResult = System.Windows.Forms.DialogResult;
+using System.IO;
 using System.Windows.Forms;
 
 namespace Fomm.Games.FalloutNewVegas.Tools
@@ -145,8 +142,8 @@ namespace Fomm.Games.FalloutNewVegas.Tools
                                                     ','
                                                   }, StringSplitOptions.RemoveEmptyEntries));
       var intInvalidate = NativeMethods.GetPrivateProfileIntA("Archive", "bInvalidateOlderFiles", 0,
-                                                                ((FalloutNewVegasGameMode.SettingsFilesSet)
-                                                                  Program.GameMode.SettingsFiles).FOIniPath);
+                                                              ((FalloutNewVegasGameMode.SettingsFilesSet)
+                                                                Program.GameMode.SettingsFiles).FOIniPath);
       return bsas.Contains(AiBsa) || (intInvalidate != 0);
     }
   }

@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
-using System.Windows.Forms;
 using System.IO;
 using System.Runtime.Remoting;
 using System.Text;
+using System.Windows.Forms;
 using Fomm.Commands;
 using Fomm.Properties;
 
@@ -19,13 +19,13 @@ namespace Fomm
     #region Properties
 
     /// <summary>
-    /// Gets whether or not to change the game mode.
+    ///   Gets whether or not to change the game mode.
     /// </summary>
     /// <value>Whether or not to change the game mode.</value>
     public bool ChangeGameMode { get; private set; }
 
     /// <summary>
-    /// Gets whether there are any open utility windows.
+    ///   Gets whether there are any open utility windows.
     /// </summary>
     /// <value>Whether there are any open utility windows.</value>
     public bool HasOpenUtilityWindows
@@ -46,7 +46,7 @@ namespace Fomm
     }
 
     /// <summary>
-    /// Gets a list of currently selected plugins.
+    ///   Gets a list of currently selected plugins.
     /// </summary>
     /// <value>A list of currently selected plugins.</value>
     public IList<string> SelectedPlugins
@@ -63,7 +63,7 @@ namespace Fomm
     }
 
     /// <summary>
-    /// Gets whether the package manager is open.
+    ///   Gets whether the package manager is open.
     /// </summary>
     /// <value>Whether the package manager is open.</value>
     public bool IsPackageManagerOpen
@@ -131,7 +131,7 @@ namespace Fomm
     #endregion
 
     /// <summary>
-    /// Adds the game-specific tools to the Tool menu.
+    ///   Adds the game-specific tools to the Tool menu.
     /// </summary>
     protected void SetupTools()
     {
@@ -292,13 +292,13 @@ namespace Fomm
     private FileManager.FileManager m_fmgFileManagerForm;
 
     /// <summary>
-    /// Handles the <see cref="Button.Click"/> event of the file manager button.
+    ///   Handles the <see cref="Button.Click" /> event of the file manager button.
     /// </summary>
     /// <remarks>
-    /// Displays the file manager.
+    ///   Displays the file manager.
     /// </remarks>
     /// <param name="sender">The object that trigger the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void butFileManager_Click(object sender, EventArgs e)
     {
       if (m_fmgFileManagerForm != null)
@@ -805,26 +805,26 @@ namespace Fomm
     }
 
     /// <summary>
-    /// Handles the <see cref="RichTextBox.LinkClicked"/> event of the plugin info text box.
+    ///   Handles the <see cref="RichTextBox.LinkClicked" /> event of the plugin info text box.
     /// </summary>
     /// <remarks>
-    /// Launches clicked links using the default browser.
+    ///   Launches clicked links using the default browser.
     /// </remarks>
     /// <param name="sender">The object that trigger the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void rtbPluginInfo_LinkClicked(object sender, LinkClickedEventArgs e)
     {
       Process.Start(e.LinkText);
     }
 
     /// <summary>
-    /// Handles the <see cref="Control.Click"/> event of the change game mode menu item.
+    ///   Handles the <see cref="Control.Click" /> event of the change game mode menu item.
     /// </summary>
     /// <remarks>
-    /// Re-launched the mod manager and allows the selection of a new game mode.
+    ///   Re-launched the mod manager and allows the selection of a new game mode.
     /// </remarks>
     /// <param name="sender">The object that trigger the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void changeGameToolStripMenuItem_Click(object sender, EventArgs e)
     {
       ChangeGameMode = true;

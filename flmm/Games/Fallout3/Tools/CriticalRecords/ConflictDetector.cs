@@ -6,14 +6,14 @@ using Fomm.Games.Fallout3.Tools.TESsnip;
 namespace Fomm.Games.Fallout3.Tools.CriticalRecords
 {
   /// <summary>
-  /// Describes the arguments for the <see cref="ConflictDetector.PluginProcessed"/> event.
+  ///   Describes the arguments for the <see cref="ConflictDetector.PluginProcessed" /> event.
   /// </summary>
   public class PluginProcessedEventArgs : EventArgs
   {
     #region Properties
 
     /// <summary>
-    /// Gets or sets whether the conflict detection should be cancelled.
+    ///   Gets or sets whether the conflict detection should be cancelled.
     /// </summary>
     /// <value>Whether the conflict detection should be cancelled.</value>
     public bool Cancel { get; set; }
@@ -23,7 +23,7 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     #region Constructors
 
     /// <summary>
-    /// The default constructor.
+    ///   The default constructor.
     /// </summary>
     public PluginProcessedEventArgs()
     {
@@ -34,32 +34,32 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
   }
 
   /// <summary>
-  /// Describes the arguments for the <see cref="ConflictDetector.ConflictDetected"/> event.
+  ///   Describes the arguments for the <see cref="ConflictDetector.ConflictDetected" /> event.
   /// </summary>
   public class ConflictDetectedEventArgs : EventArgs
   {
     #region Properties
 
     /// <summary>
-    /// Gets the conflicted plugin.
+    ///   Gets the conflicted plugin.
     /// </summary>
     /// <value>The conflicted plugin.</value>
     public Plugin ConflictedPlugin { get; protected set; }
 
     /// <summary>
-    /// Gets the conflicting plugin.
+    ///   Gets the conflicting plugin.
     /// </summary>
     /// <value>The conflicting plugin.</value>
     public Plugin ConflictingPlugin { get; protected set; }
 
     /// <summary>
-    /// Gets the overridden form id.
+    ///   Gets the overridden form id.
     /// </summary>
     /// <value>The overridden form id.</value>
     public UInt32 FormId { get; protected set; }
 
     /// <summary>
-    /// Gets the conflict info.
+    ///   Gets the conflict info.
     /// </summary>
     /// <value>The conflict info.</value>
     public CriticalRecordInfo ConflictInfo { get; protected set; }
@@ -69,12 +69,12 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     #region Constructors
 
     /// <summary>
-    /// A simple constructor that initializes the object with the given values.
+    ///   A simple constructor that initializes the object with the given values.
     /// </summary>
     /// <param name="p_plgConflictedPlugin">The plugin that is conflicted.</param>
     /// <param name="p_plgConflictingPlugin">The plugin that is conflicting.</param>
     /// <param name="p_uintFormId">The form id that is overridden.</param>
-    /// <param name="p_criInfo">The <see cref="CriticalRecordInfo"/> describing the conflict.</param>
+    /// <param name="p_criInfo">The <see cref="CriticalRecordInfo" /> describing the conflict.</param>
     public ConflictDetectedEventArgs(Plugin p_plgConflictedPlugin, Plugin p_plgConflictingPlugin, UInt32 p_uintFormId,
                                      CriticalRecordInfo p_criInfo)
     {
@@ -88,12 +88,12 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
   }
 
   /// <summary>
-  /// Detects critical record conflicts.
+  ///   Detects critical record conflicts.
   /// </summary>
   public class ConflictDetector
   {
     /// <summary>
-    /// The list of plugins not to process.
+    ///   The list of plugins not to process.
     /// </summary>
     protected List<string> SKIP_PLUGINS = new List<string>
     {
@@ -108,17 +108,17 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     #region Events
 
     /// <summary>
-    /// Raised after a plugin has been examined for conflicts.
+    ///   Raised after a plugin has been examined for conflicts.
     /// </summary>
     public event EventHandler<PluginProcessedEventArgs> PluginProcessed;
 
     /// <summary>
-    /// Raised when a conflict is detected.
+    ///   Raised when a conflict is detected.
     /// </summary>
     public event EventHandler<ConflictDetectedEventArgs> ConflictDetected;
 
     /// <summary>
-    /// Raises the <see cref="PluginProcessed"/> event.
+    ///   Raises the <see cref="PluginProcessed" /> event.
     /// </summary>
     protected void OnPluginProcessed()
     {
@@ -131,19 +131,19 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     }
 
     /// <summary>
-    /// Raises the <see cref="ConflictDetected"/> event.
+    ///   Raises the <see cref="ConflictDetected" /> event.
     /// </summary>
     /// <param name="p_plgConflictedPlugin">The plugin that is conflicted.</param>
     /// <param name="p_plgConflictingPlugin">The plugin that is conflicting.</param>
     /// <param name="p_uintFormId">The form id that is overridden.</param>
-    /// <param name="p_criInfo">The <see cref="CriticalRecordInfo"/> describing the conflict.</param>
+    /// <param name="p_criInfo">The <see cref="CriticalRecordInfo" /> describing the conflict.</param>
     protected void OnConflictDetected(Plugin p_plgConflictedPlugin, Plugin p_plgConflictingPlugin, UInt32 p_uintFormId,
                                       CriticalRecordInfo p_criInfo)
     {
       if (ConflictDetected != null)
       {
         var cdaArgs = new ConflictDetectedEventArgs(p_plgConflictedPlugin, p_plgConflictingPlugin,
-                                                                          p_uintFormId, p_criInfo);
+                                                    p_uintFormId, p_criInfo);
         ConflictDetected(this, cdaArgs);
       }
     }
@@ -153,7 +153,7 @@ namespace Fomm.Games.Fallout3.Tools.CriticalRecords
     private bool m_booCancelled;
 
     /// <summary>
-    /// Checks for conflicts with mod-author specified critical records. Used by background worker dialog.
+    ///   Checks for conflicts with mod-author specified critical records. Used by background worker dialog.
     /// </summary>
     public void DetectConflicts(IList<string> p_lstOrderedPlugins)
     {

@@ -1,5 +1,5 @@
-﻿using System.Text.RegularExpressions;
-using System.IO;
+﻿using System.IO;
+using System.Text.RegularExpressions;
 
 namespace Fomm.PackageManager.ModInstallLog
 {
@@ -9,11 +9,11 @@ namespace Fomm.PackageManager.ModInstallLog
       new Regex("[" + Path.DirectorySeparatorChar + Path.AltDirectorySeparatorChar + "]{2,}");
 
     /// <summary>
-    /// Normalizes the given path.
+    ///   Normalizes the given path.
     /// </summary>
     /// <remarks>
-    /// This removes multiple consecutive path separators and makes sure all path
-    /// separators are <see cref="Path.DirectorySeparatorChar"/>.
+    ///   This removes multiple consecutive path separators and makes sure all path
+    ///   separators are <see cref="Path.DirectorySeparatorChar" />.
     /// </remarks>
     /// <param name="p_strPath">The path to normalize.</param>
     /// <returns>The normalized path.</returns>

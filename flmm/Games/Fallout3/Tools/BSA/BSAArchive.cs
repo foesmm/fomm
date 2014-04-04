@@ -1,25 +1,24 @@
 using System;
+using System.IO;
 using System.Text;
 using Fomm.Properties;
 using Fomm.SharpZipLib.Checksums;
 using Fomm.SharpZipLib.Zip.Compression;
 using StringList = System.Collections.Generic.List<string>;
 using HashTable = System.Collections.Generic.Dictionary<ulong, Fomm.Games.Fallout3.Tools.BSA.BSAArchive.BSAFileInfo>;
-using System.IO;
 
 namespace Fomm.Games.Fallout3.Tools.BSA
 {
   internal class BSAArchive
   {
-    internal class BSALoadException : Exception
-    {
-    }
+    internal class BSALoadException : Exception {}
 
     [Flags]
     private enum FileFlags
     {
       [UsedImplicitly]
       Meshes = 1,
+
       [UsedImplicitly]
       Textures = 2
     }

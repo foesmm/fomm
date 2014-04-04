@@ -19,22 +19,22 @@
  */
 
 using System;
-using System.Windows.Forms;
-using System.IO;
 using System.Diagnostics;
-using Fomm.PackageManager;
-using Fomm.InstallLogUpgraders;
-using Fomm.PackageManager.Upgrade;
-using Fomm.Properties;
-using SevenZip;
-using Microsoft.Win32;
-using Fomm.Util;
-using Fomm.PackageManager.ModInstallLog;
+using System.IO;
+using System.Text;
+using System.Threading;
+using System.Windows.Forms;
 using Fomm.Games;
 using Fomm.Games.Fallout3;
-using System.Threading;
 using Fomm.Games.FalloutNewVegas;
-using System.Text;
+using Fomm.InstallLogUpgraders;
+using Fomm.PackageManager;
+using Fomm.PackageManager.ModInstallLog;
+using Fomm.PackageManager.Upgrade;
+using Fomm.Properties;
+using Fomm.Util;
+using Microsoft.Win32;
+using SevenZip;
 
 namespace Fomm
 {
@@ -81,9 +81,7 @@ namespace Fomm
 
   internal class fommException : Exception
   {
-    public fommException(string msg) : base(msg)
-    {
-    }
+    public fommException(string msg) : base(msg) {}
   }
 
   public static class Program
@@ -97,10 +95,10 @@ namespace Fomm
     #region Properties
 
     /// <summary>
-    /// Gets the programme acronym.
+    ///   Gets the programme acronym.
     /// </summary>
     /// <remarks>
-    /// This is used whe creating temporary files, folders, etc.
+    ///   This is used whe creating temporary files, folders, etc.
     /// </remarks>
     /// <value>The programme acronym.</value>
     public static string ProgrammeAcronym
@@ -112,7 +110,7 @@ namespace Fomm
     }
 
     /// <summary>
-    /// Gets the path to where per user application data is stored.
+    ///   Gets the path to where per user application data is stored.
     /// </summary>
     /// <value>The path to where per user application data is stored.</value>
     public static string LocalApplicationDataPath
@@ -129,7 +127,7 @@ namespace Fomm
     }
 
     /// <summary>
-    /// Gets the path to the directory where programme data is stored.
+    ///   Gets the path to the directory where programme data is stored.
     /// </summary>
     /// <value>The path to the directory where programme data is stored.</value>
     public static string ProgrammeInfoDirectory
@@ -141,7 +139,7 @@ namespace Fomm
     }
 
     /// <summary>
-    /// Gets the programme's executable directory.
+    ///   Gets the programme's executable directory.
     /// </summary>
     /// <value>The programme's executable directory.</value>
     public static string ExecutableDirectory
@@ -153,10 +151,10 @@ namespace Fomm
     }
 
     /// <summary>
-    /// Gets the Personal directory of the current user.
+    ///   Gets the Personal directory of the current user.
     /// </summary>
     /// <remarks>
-    /// Typically, this is the Documents folder of the current user.
+    ///   Typically, this is the Documents folder of the current user.
     /// </remarks>
     /// <value>The Personal directory of the current user.</value>
     public static string PersonalDirectory
@@ -182,7 +180,7 @@ namespace Fomm
     #endregion
 
     /// <summary>
-    /// Prints command line argument help.
+    ///   Prints command line argument help.
     /// </summary>
     private static void WriteHelp()
     {
@@ -227,7 +225,7 @@ namespace Fomm
     }
 
     /// <summary>
-    /// The main entry point for the application.
+    ///   The main entry point for the application.
     /// </summary>
     [STAThread]
     private static void Main(string[] args)
@@ -268,9 +266,7 @@ namespace Fomm
               sgmSelectedGame = (SupportedGameModes) Enum.Parse(typeof (SupportedGameModes), args[1], true);
               booChooseGame = false;
             }
-            catch
-            {
-            }
+            catch {}
             break;
         }
       }
@@ -430,7 +426,7 @@ namespace Fomm
           }
 
           var str7zPath = Path.Combine(ProgrammeInfoDirectory, "7z-32bit.dll");
-          SevenZipCompressor.SetLibraryPath(str7zPath);
+          SevenZipBase.SetLibraryPath(str7zPath);
 
           if (!GameMode.Init())
           {
@@ -472,10 +468,10 @@ namespace Fomm
             if (!File.Exists(strFomodPath))
             {
               var strMessage = "'" + fifMod.BaseName + ".fomod' was deleted without being deactivated. " +
-                                  Environment.NewLine +
-                                  "If you don't uninstall the FOMod, FOMM will close and you will " +
-                                  "have to put the FOMod back in the mods folder." + Environment.NewLine +
-                                  "Would you like to uninstall the missing FOMod?";
+                               Environment.NewLine +
+                               "If you don't uninstall the FOMod, FOMM will close and you will " +
+                               "have to put the FOMod back in the mods folder." + Environment.NewLine +
+                               "Would you like to uninstall the missing FOMod?";
               if (MessageBox.Show(strMessage, "Missing FOMod", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) ==
                   DialogResult.No)
               {
@@ -580,9 +576,9 @@ namespace Fomm
           PermissionsManager.CurrentPermissions.Assert();
         }
         var msg = DateTime.Now.ToLongDateString() + " - " + DateTime.Now.ToLongTimeString() + Environment.NewLine +
-                     "Fomm " + Version + (MonoMode ? " (Mono)" : "") + Environment.NewLine + "OS version: " +
-                     Environment.OSVersion +
-                     Environment.NewLine + Environment.NewLine + ex + Environment.NewLine;
+                  "Fomm " + Version + (MonoMode ? " (Mono)" : "") + Environment.NewLine + "OS version: " +
+                  Environment.OSVersion +
+                  Environment.NewLine + Environment.NewLine + ex + Environment.NewLine;
         if (ex is BadImageFormatException)
         {
           var biex = (BadImageFormatException) ex;

@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Windows.Forms;
 using System.ComponentModel;
+using System.Windows.Forms;
 
 namespace Fomm.Commands
 {
   /// <summary>
-  /// A class that binds a command to a <see cref="Button"/>.
+  ///   A class that binds a command to a <see cref="Button" />.
   /// </summary>
   /// <typeparam name="T">The type of the command argument.</typeparam>
   public class ButtonCommandBinding<T> : CommandBinding<T>
@@ -13,9 +13,9 @@ namespace Fomm.Commands
     #region Properties
 
     /// <summary>
-    /// Gets the <see cref="Button"/> that is bound to the command.
+    ///   Gets the <see cref="Button" /> that is bound to the command.
     /// </summary>
-    /// <value>The <see cref="Button"/> that is bound to the command.</value>
+    /// <value>The <see cref="Button" /> that is bound to the command.</value>
     public Button Button
     {
       get
@@ -29,7 +29,7 @@ namespace Fomm.Commands
     #region Constructors
 
     /// <summary>
-    /// A simple constructor that intializes the object with the given values.
+    ///   A simple constructor that intializes the object with the given values.
     /// </summary>
     /// <param name="p_butButton">The button to bind to the command.</param>
     /// <param name="p_cmdCommand">The command to bind to the trigger.</param>
@@ -45,9 +45,9 @@ namespace Fomm.Commands
     #endregion
 
     /// <summary>
-    /// Alters properties on the Trigger in response to property changes on the command.
+    ///   Alters properties on the Trigger in response to property changes on the command.
     /// </summary>
-    /// <param name="e">A <see cref="PropertyChangedEventArgs"/> describing the changed property.</param>
+    /// <param name="e">A <see cref="PropertyChangedEventArgs" /> describing the changed property.</param>
     protected override void OnCommandPropertyChanged(PropertyChangedEventArgs e)
     {
       switch (e.PropertyName)
@@ -59,13 +59,13 @@ namespace Fomm.Commands
     }
 
     /// <summary>
-    /// Handles the <see cref="Control.Click"/> event of the menu item.
+    ///   Handles the <see cref="Control.Click" /> event of the menu item.
     /// </summary>
     /// <remarks>
-    /// This executes the event.
+    ///   This executes the event.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void Button_Click(object sender, EventArgs e)
     {
       Execute();

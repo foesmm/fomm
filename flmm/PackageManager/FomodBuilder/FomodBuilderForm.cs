@@ -1,42 +1,42 @@
 ﻿using System;
-using System.Windows.Forms;
-using Fomm.Controls;
-using System.ComponentModel;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
+using System.Windows.Forms;
+using System.Xml;
+using Fomm.Controls;
+using Fomm.PackageManager.Controls;
 using Fomm.Properties;
 using Fomm.Util;
-using System.Xml;
-using Fomm.PackageManager.Controls;
 using GeMod.Interface;
 
 namespace Fomm.PackageManager.FomodBuilder
 {
   /// <summary>
-  /// This form builds a FOMod form existing files.
+  ///   This form builds a FOMod form existing files.
   /// </summary>
   public partial class FomodBuilderForm : Form
   {
     /// <summary>
-    /// The possible validation states of the form.
+    ///   The possible validation states of the form.
     /// </summary>
     protected enum ValidationState
     {
       /// <summary>
-      /// Indicates there are no errors or warnings.
+      ///   Indicates there are no errors or warnings.
       /// </summary>
       Passed,
 
       /// <summary>
-      /// Indicates there are warnings.
+      ///   Indicates there are warnings.
       /// </summary>
       /// <remarks>
-      /// Warnings are non-fatal errors.
+      ///   Warnings are non-fatal errors.
       /// </remarks>
       Warnings,
 
       /// <summary>
-      /// Indicates there are errors.
+      ///   Indicates there are errors.
       /// </summary>
       Errors
     }
@@ -48,10 +48,10 @@ namespace Fomm.PackageManager.FomodBuilder
     #region Properties
 
     /// <summary>
-    /// Gets the path of the fomod that was built.
+    ///   Gets the path of the fomod that was built.
     /// </summary>
     /// <remarks>
-    /// This value will be <lang langref="null"/> if the fomod was not successfully built.
+    ///   This value will be <lang langref="null" /> if the fomod was not successfully built.
     /// </remarks>
     /// <value>The path of the fomod that was built.</value>
     public string FomodPath { get; private set; }
@@ -61,7 +61,7 @@ namespace Fomm.PackageManager.FomodBuilder
     #region Constructors
 
     /// <summary>
-    /// The default constructor.
+    ///   The default constructor.
     /// </summary>
     public FomodBuilderForm()
     {
@@ -77,7 +77,7 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// The PFP edit constructor.
+    ///   The PFP edit constructor.
     /// </summary>
     /// <param name="p_pfpPack">The PFP to edit.</param>
     /// <param name="p_strSourcesPath">The path to the directory contains the required source files.</param>
@@ -106,12 +106,12 @@ namespace Fomm.PackageManager.FomodBuilder
     #endregion
 
     /// <summary>
-    /// Raises the <see cref="Form.Closing"/> event.
+    ///   Raises the <see cref="Form.Closing" /> event.
     /// </summary>
     /// <remarks>
-    /// Saves the window's position.
+    ///   Saves the window's position.
     /// </remarks>
-    /// <param name="e">A <see cref="CancelEventArgs"/> describing the event arguments.</param>
+    /// <param name="e">A <see cref="CancelEventArgs" /> describing the event arguments.</param>
     protected override void OnClosing(CancelEventArgs e)
     {
       Settings.Default.windowPositions.SetWindowPosition("FomodBuilderForm", this);
@@ -122,14 +122,14 @@ namespace Fomm.PackageManager.FomodBuilder
     #region Navigation
 
     /// <summary>
-    /// Handles the <see cref="VerticalTabControl.SelectedTabPageChanged"/> event of the main
-    /// navigation tab control.
+    ///   Handles the <see cref="VerticalTabControl.SelectedTabPageChanged" /> event of the main
+    ///   navigation tab control.
     /// </summary>
     /// <remarks>
-    /// This handles initialization of tabs as the selected tab changes.
+    ///   This handles initialization of tabs as the selected tab changes.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">A <see cref="VerticalTabControl.TabPageEventArgs"/> describing the event arguments.</param>
+    /// <param name="e">A <see cref="VerticalTabControl.TabPageEventArgs" /> describing the event arguments.</param>
     private void vtcFomodData_SelectedTabPageChanged(object sender, VerticalTabControl.TabPageEventArgs e)
     {
       if (e.TabPage == vtpDownloadLocations)
@@ -152,13 +152,13 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// Handles the <see cref="Control.Click"/> event of the OK button.
+    ///   Handles the <see cref="Control.Click" /> event of the OK button.
     /// </summary>
     /// <remarks>
-    /// This ensures that the information is valid before creating the FOMod/Premade FOMod Pack.
+    ///   This ensures that the information is valid before creating the FOMod/Premade FOMod Pack.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">A <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">A <see cref="EventArgs" /> describing the event arguments.</param>
     private void butOK_Click(object sender, EventArgs e)
     {
       switch (PerformValidation())
@@ -197,7 +197,7 @@ namespace Fomm.PackageManager.FomodBuilder
       {
         var fgnGenerator = new NewFomodBuilder();
         FomodPath = fgnGenerator.BuildFomod(tbxFomodFileName.Text, lstCopyInstructions, rmeReadme, xmlInfo,
-                                                    m_booInfoEntered, finInfo.Screenshot, fscScript);
+                                            m_booInfoEntered, finInfo.Screenshot, fscScript);
         if (String.IsNullOrEmpty(FomodPath))
         {
           return;
@@ -226,9 +226,9 @@ namespace Fomm.PackageManager.FomodBuilder
         }
         var fpbPackBuilder = new PremadeFomodPackBuilder();
         var strPFPPAth = fpbPackBuilder.BuildPFP(tbxFomodFileName.Text, strVersion, strMachineVersion,
-                                                    lstCopyInstructions, sdsDownloadLocations.DataSource, tbxHowTo.Text,
-                                                    rmeReadme, xmlInfo, m_booInfoEntered, finInfo.Screenshot, fscScript,
-                                                    tbxPFPPath.Text);
+                                                 lstCopyInstructions, sdsDownloadLocations.DataSource, tbxHowTo.Text,
+                                                 rmeReadme, xmlInfo, m_booInfoEntered, finInfo.Screenshot, fscScript,
+                                                 tbxPFPPath.Text);
         if (String.IsNullOrEmpty(strPFPPAth))
         {
           return;
@@ -242,10 +242,10 @@ namespace Fomm.PackageManager.FomodBuilder
     #region Validation
 
     /// <summary>
-    /// Validates the data on this form.
+    ///   Validates the data on this form.
     /// </summary>
     /// <remarks>
-    /// This method validates the form data, and displays any errors or warnings.
+    ///   This method validates the form data, and displays any errors or warnings.
     /// </remarks>
     /// <returns>The currnt validation state of the form's data.</returns>
     protected ValidationState PerformValidation()
@@ -350,10 +350,12 @@ namespace Fomm.PackageManager.FomodBuilder
     #region Sources Tab
 
     /// <summary>
-    /// Validates the source files of the FOMod.
+    ///   Validates the source files of the FOMod.
     /// </summary>
-    /// <returns><lang langref="true"/> if the user has entered a file name for the FOMod, and selected
-    /// files to include; <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the user has entered a file name for the FOMod, and selected
+    ///   files to include; <lang langref="false" /> otherwise.
+    /// </returns>
     protected bool ValidateSources()
     {
       var booPassed = ValidateFomodFileName();
@@ -362,9 +364,9 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// Ensures that the user has entered a file name.
+    ///   Ensures that the user has entered a file name.
     /// </summary>
-    /// <returns><lang langref="true"/> if the user has entered a file name; <lang langref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true" /> if the user has entered a file name; <lang langref="false" /> otherwise.</returns>
     protected bool ValidateFomodFileName()
     {
       sspError.SetError(tbxFomodFileName, null);
@@ -377,10 +379,12 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// Ensures that the user has selected files to include in the FOMod.
+    ///   Ensures that the user has selected files to include in the FOMod.
     /// </summary>
-    /// <returns><lang langref="true"/> if the user has selected files to include in the FOMod;
-    /// <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the user has selected files to include in the FOMod;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
     protected bool ValidateFomodFiles()
     {
       sspError.SetStatus(ffsFileStructure, null);
@@ -393,13 +397,13 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// Handles the <see cref="Control.Validating"/> event of the file name textbox.
+    ///   Handles the <see cref="Control.Validating" /> event of the file name textbox.
     /// </summary>
     /// <remarks>
-    /// This validates the file name.
+    ///   This validates the file name.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">A <see cref="CancelEventArgs"/> describing the event arguments.</param>
+    /// <param name="e">A <see cref="CancelEventArgs" /> describing the event arguments.</param>
     private void tbxFomodFileName_Validating(object sender, CancelEventArgs e)
     {
       ValidateFomodFileName();
@@ -410,10 +414,12 @@ namespace Fomm.PackageManager.FomodBuilder
     #region Save Locations Tab
 
     /// <summary>
-    /// Ensures that the user has entered a Premade FOMod Pack save path, if a PFP is being created.
+    ///   Ensures that the user has entered a Premade FOMod Pack save path, if a PFP is being created.
     /// </summary>
-    /// <returns><lang langref="true"/> if the user has entered a path and a Premade FOMod Pack is being created;
-    /// <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the user has entered a path and a Premade FOMod Pack is being created;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
     protected bool ValidatePFPSavePath()
     {
       sspError.SetError(cbxPFP, null);
@@ -426,13 +432,13 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// Handles the <see cref="Control.Validating"/> event of the Premade FOMod Pack save path textbox.
+    ///   Handles the <see cref="Control.Validating" /> event of the Premade FOMod Pack save path textbox.
     /// </summary>
     /// <remarks>
-    /// This validates the Premade FOMod Pack save path.
+    ///   This validates the Premade FOMod Pack save path.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">A <see cref="CancelEventArgs"/> describing the event arguments.</param>
+    /// <param name="e">A <see cref="CancelEventArgs" /> describing the event arguments.</param>
     private void tbxPFPPath_Validating(object sender, CancelEventArgs e)
     {
       ValidatePFPSavePath();
@@ -445,7 +451,7 @@ namespace Fomm.PackageManager.FomodBuilder
     #region Download Locations
 
     /// <summary>
-    /// Populates the source download location list with the selected sources.
+    ///   Populates the source download location list with the selected sources.
     /// </summary>
     protected void UpdateDownloadLocationsList()
     {
@@ -515,14 +521,14 @@ namespace Fomm.PackageManager.FomodBuilder
     #region Readme
 
     /// <summary>
-    /// Handles the <see cref="Control.Click"/> event of the generate readme button.
+    ///   Handles the <see cref="Control.Click" /> event of the generate readme button.
     /// </summary>
     /// <remarks>
-    /// This display the <see cref="ReadmeGeneratorForm"/>, then selects the approriate readme
-    /// editor and sets its text, based on the form's output.
+    ///   This display the <see cref="ReadmeGeneratorForm" />, then selects the approriate readme
+    ///   editor and sets its text, based on the form's output.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void butGenerateReadme_Click(object sender, EventArgs e)
     {
       m_rgdGenerator.Sources = ffsFileStructure.Sources;
@@ -533,8 +539,8 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// If no readme has been entered, this method looks for a readme file in the selected
-    /// files, and, if one is found, uses it to populate the readme editor.
+    ///   If no readme has been entered, this method looks for a readme file in the selected
+    ///   files, and, if one is found, uses it to populate the readme editor.
     /// </summary>
     protected void SetReadmeDefault()
     {
@@ -601,10 +607,10 @@ namespace Fomm.PackageManager.FomodBuilder
     #region Script
 
     /// <summary>
-    /// Handles the <see cref="CheckBox.CheckChanged"/> event of the use script check box.
+    ///   Handles the <see cref="CheckBox.CheckChanged" /> event of the use script check box.
     /// </summary>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void cbxUseScript_CheckedChanged(object sender, EventArgs e)
     {
       if (cbxUseScript.Checked)
@@ -614,9 +620,9 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// If no script has been entered, this method looks for a script file in the selected
-    /// files, and, if one is found, uses it to populate the script editor. If one is not found,
-    /// the script is populated with the default value.
+    ///   If no script has been entered, this method looks for a script file in the selected
+    ///   files, and, if one is found, uses it to populate the script editor. If one is not found,
+    ///   the script is populated with the default value.
     /// </summary>
     protected void SetScriptDefault()
     {
@@ -667,9 +673,9 @@ namespace Fomm.PackageManager.FomodBuilder
     #region Info
 
     /// <summary>
-    /// If no info has been entered, this method looks for an info file in the selected
-    /// files, and, if one is found, uses it to populate the info editor. If one is not found,
-    /// the editor is populated with default values.
+    ///   If no info has been entered, this method looks for an info file in the selected
+    ///   files, and, if one is found, uses it to populate the info editor. If one is not found,
+    ///   the editor is populated with default values.
     /// </summary>
     protected void SetInfoDefault()
     {
@@ -724,15 +730,15 @@ namespace Fomm.PackageManager.FomodBuilder
     #endregion
 
     /// <summary>
-    /// Handles the <see cref="FomodScriptEditor.GotXMLAutoCompleteList"/> event of the script
-    /// editor.
+    ///   Handles the <see cref="FomodScriptEditor.GotXMLAutoCompleteList" /> event of the script
+    ///   editor.
     /// </summary>
     /// <remarks>
-    /// This methods populates the code completion list with the file paths in the FOMod file structure
-    /// when the value being completed is the source value of a file tag.
+    ///   This methods populates the code completion list with the file paths in the FOMod file structure
+    ///   when the value being completed is the source value of a file tag.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">A <see cref="RegeneratableAutoCompleteListEventArgs"/> decribing the event arguments.</param>
+    /// <param name="e">A <see cref="RegeneratableAutoCompleteListEventArgs" /> decribing the event arguments.</param>
     private void fseScriptEditor_GotXMLAutoCompleteList(object sender, RegeneratableAutoCompleteListEventArgs e)
     {
       if (!String.IsNullOrEmpty(e.ElementPath) &&
@@ -752,10 +758,10 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// Handles the <see cref="Control.Click"/> event of the select PFP folder button.
+    ///   Handles the <see cref="Control.Click" /> event of the select PFP folder button.
     /// </summary>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void butSelectPFPFolder_Click(object sender, EventArgs e)
     {
       fbdPFPPath.SelectedPath = tbxPFPPath.Text;

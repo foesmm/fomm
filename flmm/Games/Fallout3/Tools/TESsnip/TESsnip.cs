@@ -1,9 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Windows.Forms;
-using System.Collections.Generic;
 using System.Text;
+using System.Windows.Forms;
 using Fomm.Properties;
 
 namespace Fomm.Games.Fallout3.Tools.TESsnip
@@ -381,9 +381,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
             {
               MatchRecordAddConditionals(conditions, subs[subi], sss[ssi].elements);
             }
-            catch
-            {
-            }
+            catch {}
           }
           subi++;
           ssi++;

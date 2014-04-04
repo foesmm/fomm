@@ -6,14 +6,14 @@ using Fomm.Properties;
 namespace Fomm.Games.Fallout3
 {
   /// <summary>
-  /// This is the setup form for the Fallout 3 game mode.
+  ///   This is the setup form for the Fallout 3 game mode.
   /// </summary>
   public partial class SetupForm : Form
   {
     #region Contructors
 
     /// <summary>
-    /// The default constructor.
+    ///   The default constructor.
     /// </summary>
     public SetupForm()
     {
@@ -27,13 +27,13 @@ namespace Fomm.Games.Fallout3
     #region Navigation
 
     /// <summary>
-    /// Handles the <see cref="WizardControl.SelectedTabPageChanged"/> event of the wizard control.
+    ///   Handles the <see cref="WizardControl.SelectedTabPageChanged" /> event of the wizard control.
     /// </summary>
     /// <remarks>
-    /// This validates each page as it is navigated away from.
+    ///   This validates each page as it is navigated away from.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">A <see cref="VerticalTabControl.TabPageEventArgs"/> describing the event arguments.</param>
+    /// <param name="e">A <see cref="VerticalTabControl.TabPageEventArgs" /> describing the event arguments.</param>
     private void wizSetup_SelectedTabPageChanged(object sender, VerticalTabControl.TabPageEventArgs e)
     {
       if (e.TabPage == vtpDirectories)
@@ -46,13 +46,13 @@ namespace Fomm.Games.Fallout3
     }
 
     /// <summary>
-    /// Handles the <see cref="WizardControl.Cancelled"/> event of the wizard control.
+    ///   Handles the <see cref="WizardControl.Cancelled" /> event of the wizard control.
     /// </summary>
     /// <remarks>
-    /// This cancels the wizard.
+    ///   This cancels the wizard.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void wizSetup_Cancelled(object sender, EventArgs e)
     {
       if (
@@ -64,13 +64,13 @@ namespace Fomm.Games.Fallout3
     }
 
     /// <summary>
-    /// Handles the <see cref="WizardControl.Finished"/> event of the wizard control.
+    ///   Handles the <see cref="WizardControl.Finished" /> event of the wizard control.
     /// </summary>
     /// <remarks>
-    /// This finishes the wizard and persists the selected values.
+    ///   This finishes the wizard and persists the selected values.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void wizSetup_Finished(object sender, EventArgs e)
     {
       if (rdcDirectories.ValidateSettings())

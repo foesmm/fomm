@@ -40,20 +40,20 @@ using Fomm.SharpZipLib.Core;
 namespace Fomm.SharpZipLib.Zip
 {
   /// <summary>
-  /// Describes the arguments for the <see cref="FastZip.EntryExtracted"/> event.
+  ///   Describes the arguments for the <see cref="FastZip.EntryExtracted" /> event.
   /// </summary>
   public class ZipEventArgs : EventArgs
   {
     #region Properties
 
     /// <summary>
-    /// Gets the name of the entry that was operated on.
+    ///   Gets the name of the entry that was operated on.
     /// </summary>
     /// <value>The name of the entry that was operated on.</value>
     public string Entry { get; protected set; }
 
     /// <summary>
-    /// Gets or sets whether the zip operation should be cancelled.
+    ///   Gets or sets whether the zip operation should be cancelled.
     /// </summary>
     /// <value>Whether the zip operation should be cancelled.</value>
     public bool Cancel { get; set; }
@@ -63,7 +63,7 @@ namespace Fomm.SharpZipLib.Zip
     #region Constructors
 
     /// <summary>
-    /// A simple constructor that initializes the object with the given values.
+    ///   A simple constructor that initializes the object with the given values.
     /// </summary>
     /// <param name="p_strEntry">The name of the entry that was operated on.</param>
     public ZipEventArgs(string p_strEntry)
@@ -76,7 +76,7 @@ namespace Fomm.SharpZipLib.Zip
   }
 
   /// <summary>
-  /// FastZip provides facilities for creating and extracting zip files.
+  ///   FastZip provides facilities for creating and extracting zip files.
   /// </summary>
   internal class FastZip
   {
@@ -87,18 +87,18 @@ namespace Fomm.SharpZipLib.Zip
     #region Events
 
     /// <summary>
-    /// Raised when a <see cref="ZipEntry"/> has been extracted.
+    ///   Raised when a <see cref="ZipEntry" /> has been extracted.
     /// </summary>
     public event EventHandler<ZipEventArgs> EntryExtracted;
 
-    /// <summary>
-    /// Raised when a <see cref="ZipEntry"/> has been added to an archive.
-    /// </summary>
     //public event EventHandler<ZipEventArgs> EntryAdded;
     /// <summary>
-    /// Raises the <see cref="EntryExtracted"/> event.
+    ///   Raised when a <see cref="ZipEntry" /> has been added to an archive.
     /// </summary>
-    /// <param name="p_zeEntry">The <see cref="ZipEntry"/> that was extracted.</param>
+    /// <summary>
+    ///   Raises the <see cref="EntryExtracted" /> event.
+    /// </summary>
+    /// <param name="p_zeEntry">The <see cref="ZipEntry" /> that was extracted.</param>
     protected void OnEntryExtracted(ZipEntry p_zeEntry)
     {
       if (EntryExtracted != null)
@@ -109,10 +109,6 @@ namespace Fomm.SharpZipLib.Zip
       }
     }
 
-    /// <summary>
-    /// Raises the <see cref="EntryAdded"/> event.
-    /// </summary>
-    /// <param name="p_zeEntry">The <see cref="ZipEntry"/> that was added.</param>
     /*protected void OnEntryAdded(ZipEntry p_zeEntry)
     {
       if (EntryAdded != null)
@@ -128,7 +124,11 @@ namespace Fomm.SharpZipLib.Zip
     #region CreateZip
 
     /// <summary>
-    /// Create a zip file/archive.
+    ///   Raises the <see cref="EntryAdded" /> event.
+    /// </summary>
+    /// <param name="p_zeEntry">The <see cref="ZipEntry" /> that was added.</param>
+    /// <summary>
+    ///   Create a zip file/archive.
     /// </summary>
     /// <param name="zipFileName">The name of the zip file to create.</param>
     /// <param name="sourceDirectory">The directory to obtain files and directories from.</param>
@@ -140,7 +140,7 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Create a zip archive sending output to the <paramref name="outputStream"/> passed.
+    ///   Create a zip archive sending output to the <paramref name="outputStream" /> passed.
     /// </summary>
     /// <param name="outputStream">The stream to write archive data to.</param>
     /// <param name="sourceDirectory">The directory to source files from.</param>
@@ -165,7 +165,7 @@ namespace Fomm.SharpZipLib.Zip
     #region ExtractZip
 
     /// <summary>
-    /// Extract the contents of a zip file.
+    ///   Extract the contents of a zip file.
     /// </summary>
     /// <param name="zipFileName">The zip file to extract from.</param>
     /// <param name="targetDirectory">The directory to save extracted information in.</param>
@@ -176,7 +176,7 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Extract the contents of a zip file.
+    ///   Extract the contents of a zip file.
     /// </summary>
     /// <param name="zipFileName">The zip file to extract from.</param>
     /// <param name="targetDirectory">The directory to save extracted information in.</param>

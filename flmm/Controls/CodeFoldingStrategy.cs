@@ -1,15 +1,15 @@
-﻿using ICSharpCode.TextEditor.Document;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using ICSharpCode.TextEditor.Document;
 
 namespace Fomm.Controls
 {
   /// <summary>
-  /// Handles the folding of programming languages that use { }.
+  ///   Handles the folding of programming languages that use { }.
   /// </summary>
   public class CodeFoldingStrategy : IFoldingStrategy
   {
     /// <summary>
-    /// Generates the list of markers indicating where the XML should be folded.
+    ///   Generates the list of markers indicating where the XML should be folded.
     /// </summary>
     /// <param name="document">The document to fold.</param>
     /// <param name="fileName">The file name of the document to fold.</param>

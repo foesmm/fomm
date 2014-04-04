@@ -6,14 +6,14 @@ using Fomm.Properties;
 namespace Fomm
 {
   /// <summary>
-  /// A message box that a remeber last selection checkbox. 
+  ///   A message box that a remeber last selection checkbox.
   /// </summary>
   public partial class RememberSelectionMessageBox : Form
   {
     #region Show Methods
 
     /// <summary>
-    /// SHows the message box.
+    ///   SHows the message box.
     /// </summary>
     /// <param name="p_ctlParent">The parent of the message box.</param>
     /// <param name="p_strMessage">The message to display.</param>
@@ -45,7 +45,7 @@ namespace Fomm
     #region Properties
 
     /// <summary>
-    /// Gets whether the remember selection checkbox is checked.
+    ///   Gets whether the remember selection checkbox is checked.
     /// </summary>
     /// <value>Whether the remember selection checkbox is checked.</value>
     public bool RememberSelection
@@ -61,7 +61,7 @@ namespace Fomm
     #region Constructors
 
     /// <summary>
-    /// The default constructor.
+    ///   The default constructor.
     /// </summary>
     protected RememberSelectionMessageBox()
     {
@@ -71,7 +71,7 @@ namespace Fomm
     #endregion
 
     /// <summary>
-    /// Sets up the form.
+    ///   Sets up the form.
     /// </summary>
     /// <param name="p_strMessage">The message to display.</param>
     /// <param name="p_strCaption">The windows title.</param>
@@ -262,13 +262,13 @@ namespace Fomm
     }
 
     /// <summary>
-    /// Handles the <see cref="Control.Click"/> event of the message box's buttons.
+    ///   Handles the <see cref="Control.Click" /> event of the message box's buttons.
     /// </summary>
     /// <remarks>
-    /// This set the appropriate <see cref="DialogResult"/>.
+    ///   This set the appropriate <see cref="DialogResult" />.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event properties.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event properties.</param>
     private void Button_Click(object sender, EventArgs e)
     {
       DialogResult = (DialogResult) ((Button) sender).Tag;

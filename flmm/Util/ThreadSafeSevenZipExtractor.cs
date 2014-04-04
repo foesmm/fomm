@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
-using System.IO;
-using SevenZip;
 using System.Collections.ObjectModel;
+using System.IO;
+using System.Threading;
+using SevenZip;
 
 namespace Fomm.Util
 {
   /// <summary>
-  /// A wrapper for the <see cref="SevenZipExtractor"/> class that makes using it
-  /// thread safe.
+  ///   A wrapper for the <see cref="SevenZipExtractor" /> class that makes using it
+  ///   thread safe.
   /// </summary>
   public class ThreadSafeSevenZipExtractor : IDisposable
   {
@@ -22,20 +22,20 @@ namespace Fomm.Util
     #region Properties
 
     /// <summary>
-    /// Gets the <see cref="SevenZipExtractor"/> that is being made thread safe.
+    ///   Gets the <see cref="SevenZipExtractor" /> that is being made thread safe.
     /// </summary>
-    /// <value>The <see cref="SevenZipExtractor"/> that is being made thread safe.</value>
+    /// <value>The <see cref="SevenZipExtractor" /> that is being made thread safe.</value>
     public SevenZipExtractor Extractor { get; private set; }
 
     /// <summary>
-    /// Gets the list of data describing the files in the archive.
+    ///   Gets the list of data describing the files in the archive.
     /// </summary>
     /// <remarks>
-    /// This wrapper property ensures the operation executes on the same thread in which the
-    /// <see cref="SevenZipExtractor"/> was created.
+    ///   This wrapper property ensures the operation executes on the same thread in which the
+    ///   <see cref="SevenZipExtractor" /> was created.
     /// </remarks>
     /// <value>The list of data describing the files in the archive.</value>
-    /// <seealso cref="SevenZipExtractor.ArchiveFileData"/>
+    /// <seealso cref="SevenZipExtractor.ArchiveFileData" />
     public ReadOnlyCollection<ArchiveFileInfo> ArchiveFileData
     {
       get
@@ -53,14 +53,14 @@ namespace Fomm.Util
     }
 
     /// <summary>
-    /// Gets whether the archive is solid.
+    ///   Gets whether the archive is solid.
     /// </summary>
     /// <remarks>
-    /// This wrapper property ensures the operation executes on the same thread in which the
-    /// <see cref="SevenZipExtractor"/> was created.
+    ///   This wrapper property ensures the operation executes on the same thread in which the
+    ///   <see cref="SevenZipExtractor" /> was created.
     /// </remarks>
-    /// <value><lang langref="true"/> if the archive is solid; <lang langref="false"/> otherwise.</value>
-    /// <seealso cref="SevenZipExtractor.IsSolid"/>
+    /// <value><lang langref="true" /> if the archive is solid; <lang langref="false" /> otherwise.</value>
+    /// <seealso cref="SevenZipExtractor.IsSolid" />
     public bool IsSolid
     {
       get
@@ -82,7 +82,7 @@ namespace Fomm.Util
     #region Constructors
 
     /// <summary>
-    /// Creates a thread safe extractor for the file at the given path.
+    ///   Creates a thread safe extractor for the file at the given path.
     /// </summary>
     /// <param name="p_strPath">The path to the file for which to create an extractor.</param>
     public ThreadSafeSevenZipExtractor(string p_strPath)
@@ -92,7 +92,7 @@ namespace Fomm.Util
     }
 
     /// <summary>
-    /// Creates a thread safe extractor for the given stream.
+    ///   Creates a thread safe extractor for the given stream.
     /// </summary>
     /// <param name="p_stmArchive">The stream for which to create an extractor.</param>
     public ThreadSafeSevenZipExtractor(Stream p_stmArchive)
@@ -102,7 +102,7 @@ namespace Fomm.Util
     }
 
     /// <summary>
-    /// Initializes the thread safe extractor.
+    ///   Initializes the thread safe extractor.
     /// </summary>
     protected void Init()
     {
@@ -121,12 +121,12 @@ namespace Fomm.Util
     #endregion
 
     /// <summary>
-    /// The run method of the thread on which the <see cref="SevenZipExtractor"/> is created.
+    ///   The run method of the thread on which the <see cref="SevenZipExtractor" /> is created.
     /// </summary>
     /// <remarks>
-    /// This method creates a <see cref="SevenZipExtractor"/> and then watches for events to execute.
-    /// Other methods signal the thread that an action needs to be taken, and this thread executes said
-    /// actions.
+    ///   This method creates a <see cref="SevenZipExtractor" /> and then watches for events to execute.
+    ///   Other methods signal the thread that an action needs to be taken, and this thread executes said
+    ///   actions.
     /// </remarks>
     protected void RunThread()
     {
@@ -157,11 +157,11 @@ namespace Fomm.Util
     }
 
     /// <summary>
-    /// Extracts the specified file to the given stream.
+    ///   Extracts the specified file to the given stream.
     /// </summary>
     /// <remarks>
-    /// This wrapper property ensures the operation executes on the same thread in which the
-    /// <see cref="SevenZipExtractor"/> was created.
+    ///   This wrapper property ensures the operation executes on the same thread in which the
+    ///   <see cref="SevenZipExtractor" /> was created.
     /// </remarks>
     /// <param name="p_intIndex">The index of the file to extract from the archive.</param>
     /// <param name="p_stmFile">The stream to which to extract the file.</param>
@@ -179,10 +179,10 @@ namespace Fomm.Util
     #region IDisposable Members
 
     /// <summary>
-    /// Ensures all used resources are released.
+    ///   Ensures all used resources are released.
     /// </summary>
     /// <remarks>
-    /// This terminates the thread upon which the <see cref="SevenZipExtractor"/> was created.
+    ///   This terminates the thread upon which the <see cref="SevenZipExtractor" /> was created.
     /// </remarks>
     public void Dispose()
     {

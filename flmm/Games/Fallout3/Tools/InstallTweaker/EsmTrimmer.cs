@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using Fomm.Games.Fallout3.Tools.TESsnip;
 using System.IO;
+using Fomm.Games.Fallout3.Tools.TESsnip;
 
 namespace Fomm.Games.Fallout3.Tools.InstallTweaker
 {

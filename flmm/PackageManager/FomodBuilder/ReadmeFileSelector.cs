@@ -1,17 +1,17 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Windows.Forms;
-using System.IO;
 
 namespace Fomm.PackageManager.FomodBuilder
 {
   /// <summary>
-  /// A control for selecting files to concatenate into one Readme file.
+  ///   A control for selecting files to concatenate into one Readme file.
   /// </summary>
   public partial class ReadmeFileSelector : UserControl
   {
     /// <summary>
-    /// The rich-text formated content of the help box.
+    ///   The rich-text formated content of the help box.
     /// </summary>
     private const string HELP_STRING = @"{\rtf1\ansi\ansicpg1252\deff0\deflang4105{\fonttbl{\f0\fnil\fcharset0 Arial;}}
 {\*\generator Msftedit 5.41.21.2509;}\viewkind4\uc1\pard{\pntext\f0 1.\tab}{\*\pn\pnlvlbody\pnf0\pnindent0\pnstart1\pndec{\pntxta.}}
@@ -25,7 +25,7 @@ namespace Fomm.PackageManager.FomodBuilder
     #region Properties
 
     /// <summary>
-    /// Gets the list of files used to generate the readme.
+    ///   Gets the list of files used to generate the readme.
     /// </summary>
     /// <value>The list of files used to generate the readme.</value>
     public List<string> ReadmeFileList
@@ -42,7 +42,7 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// Gets the selected format for the readme.
+    ///   Gets the selected format for the readme.
     /// </summary>
     /// <value>The selected format for the readme.</value>
     public ReadmeFormat Format
@@ -54,7 +54,7 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// Sets the source files of the selector.
+    ///   Sets the source files of the selector.
     /// </summary>
     /// <value>The source files of the selector.</value>
     public string[] Sources
@@ -70,7 +70,7 @@ namespace Fomm.PackageManager.FomodBuilder
     #region Constructors
 
     /// <summary>
-    /// The default constructor.
+    ///   The default constructor.
     /// </summary>
     public ReadmeFileSelector()
     {
@@ -90,13 +90,13 @@ namespace Fomm.PackageManager.FomodBuilder
     #endregion
 
     /// <summary>
-    /// Handles the <see cref="Control.Click"/> event of the help link.
+    ///   Handles the <see cref="Control.Click" /> event of the help link.
     /// </summary>
     /// <remarks>
-    /// This shows/hides the help box as appropriate.
+    ///   This shows/hides the help box as appropriate.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="LinkLabelLinkClickedEventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="LinkLabelLinkClickedEventArgs" /> describing the event arguments.</param>
     private void lnkHelp_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
     {
       rtbHelp.Visible = !rtbHelp.Visible;
@@ -106,13 +106,13 @@ namespace Fomm.PackageManager.FomodBuilder
     #region Drag and Drop
 
     /// <summary>
-    /// Handles the <see cref="Control.DragOver"/> event of the readme file list.
+    ///   Handles the <see cref="Control.DragOver" /> event of the readme file list.
     /// </summary>
     /// <remarks>
-    /// This determines if the item being dragged can be dropped at the current location.
+    ///   This determines if the item being dragged can be dropped at the current location.
     /// </remarks>
     /// <param name="sender">The object that triggered the event.</param>
-    /// <param name="e">A <see cref="DragEventArgs"/> that describes the event arguments.</param>
+    /// <param name="e">A <see cref="DragEventArgs" /> that describes the event arguments.</param>
     private void lvwReadmeFiles_DragOver(object sender, DragEventArgs e)
     {
       if (!e.Data.GetDataPresent(typeof (List<SourceFileTree.SourceFileSystemDragData>)))
@@ -139,13 +139,13 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// Handles the <see cref="Control.DragDrop"/> event of the readme file list.
+    ///   Handles the <see cref="Control.DragDrop" /> event of the readme file list.
     /// </summary>
     /// <remarks>
-    /// This handles adding the dropped file to the fomod tree.
+    ///   This handles adding the dropped file to the fomod tree.
     /// </remarks>
     /// <param name="sender">The object that triggered the event.</param>
-    /// <param name="e">A <see cref="DragEventArgs"/> that describes the event arguments.</param>
+    /// <param name="e">A <see cref="DragEventArgs" /> that describes the event arguments.</param>
     private void lvwReadmeFiles_DragDrop(object sender, DragEventArgs e)
     {
       if (!e.Data.GetDataPresent(typeof (List<SourceFileTree.SourceFileSystemDragData>)))
@@ -167,7 +167,7 @@ namespace Fomm.PackageManager.FomodBuilder
     #endregion
 
     /// <summary>
-    /// Generates a single readme by concatenating all of the selected files.
+    ///   Generates a single readme by concatenating all of the selected files.
     /// </summary>
     /// <returns>A concatenation of all selected file.</returns>
     public string GenerateReadme()

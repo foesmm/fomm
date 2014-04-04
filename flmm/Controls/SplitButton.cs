@@ -1,13 +1,13 @@
 ﻿using System;
-using System.Windows.Forms;
-using System.Drawing;
 using System.ComponentModel;
+using System.Drawing;
+using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 
 namespace Fomm.Controls
 {
   /// <summary>
-  /// A split button control.
+  ///   A split button control.
   /// </summary>
   public class SplitButton : Button
   {
@@ -24,7 +24,7 @@ namespace Fomm.Controls
     #region Properties
 
     /// <summary>
-    /// Sets whether or not to display the split.
+    ///   Sets whether or not to display the split.
     /// </summary>
     /// <value>Whether or not to display the split.</value>
     [DefaultValue(true)]
@@ -45,7 +45,7 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Gets or sets the pushed state of the button.
+    ///   Gets or sets the pushed state of the button.
     /// </summary>
     /// <value>The pushed state of the button.</value>
     private PushButtonState State
@@ -65,12 +65,12 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Gets or sets the <see cref="ContextMenuStrip"/> for this control.
+    ///   Gets or sets the <see cref="ContextMenuStrip" /> for this control.
     /// </summary>
     /// <remarks>
-    /// This context menu is used to display the options when the arrow of the split button is clicked.
+    ///   This context menu is used to display the options when the arrow of the split button is clicked.
     /// </remarks>
-    /// <value>The <see cref="ContextMenuStrip"/> for this control.</value>
+    /// <value>The <see cref="ContextMenuStrip" /> for this control.</value>
     public override ContextMenuStrip ContextMenuStrip
     {
       get
@@ -100,11 +100,11 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Gets or sets the button text.
+    ///   Gets or sets the button text.
     /// </summary>
     /// <remarks>
-    /// The button text is the text of the last selected item. If there are no items, then it is the button
-    /// text.
+    ///   The button text is the text of the last selected item. If there are no items, then it is the button
+    ///   text.
     /// </remarks>
     /// <value>The button text.</value>
     public override string Text
@@ -120,7 +120,7 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Gets or sets the index of the selected drop down item.
+    ///   Gets or sets the index of the selected drop down item.
     /// </summary>
     /// <value>The index of the selected drop down item.</value>
     [Category("Behavior"), DefaultValue(0)]
@@ -158,7 +158,7 @@ namespace Fomm.Controls
     #endregion
 
     /// <summary>
-    /// Gets the preferred size of the control.
+    ///   Gets the preferred size of the control.
     /// </summary>
     /// <param name="proposedSize">The desired size.</param>
     /// <returns>The preferred size of the control.</returns>
@@ -174,13 +174,13 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Determines if the given key is considered an input key by the control.
+    ///   Determines if the given key is considered an input key by the control.
     /// </summary>
     /// <remarks>
-    /// The we are showing the split, then the down arrow is an input key.
+    ///   The we are showing the split, then the down arrow is an input key.
     /// </remarks>
     /// <param name="keyData">The key for which it is to be determined if it is an input key.</param>
-    /// <returns><lang langref="true"/> if the given key is an input key; <lang langref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true" /> if the given key is an input key; <lang langref="false" /> otherwise.</returns>
     protected override bool IsInputKey(Keys keyData)
     {
       if (keyData.Equals(Keys.Down) && m_booShowSplit)
@@ -191,12 +191,12 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Raises the <see cref="Control.GotFocus"/> event.
+    ///   Raises the <see cref="Control.GotFocus" /> event.
     /// </summary>
     /// <remarks>
-    /// This changes the state of the control based on whether or not it has focus.
+    ///   This changes the state of the control based on whether or not it has focus.
     /// </remarks>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     protected override void OnGotFocus(EventArgs e)
     {
       if (!m_booShowSplit)
@@ -212,12 +212,12 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Raises the <see cref="Control.KeyDown"/> event.
+    ///   Raises the <see cref="Control.KeyDown" /> event.
     /// </summary>
     /// <remarks>
-    /// This displays the context menu if the down key is pressed.
+    ///   This displays the context menu if the down key is pressed.
     /// </remarks>
-    /// <param name="e">A <see cref="KeyEventArgs"/> describing the event arguments.</param>
+    /// <param name="e">A <see cref="KeyEventArgs" /> describing the event arguments.</param>
     protected override void OnKeyDown(KeyEventArgs kevent)
     {
       if (m_booShowSplit)
@@ -236,12 +236,12 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Raises the <see cref="Control.KeyUp"/> event.
+    ///   Raises the <see cref="Control.KeyUp" /> event.
     /// </summary>
     /// <remarks>
-    /// This changes the state as appropriate.
+    ///   This changes the state as appropriate.
     /// </remarks>
-    /// <param name="e">A <see cref="KeyEventArgs"/> describing the event arguments.</param>
+    /// <param name="e">A <see cref="KeyEventArgs" /> describing the event arguments.</param>
     protected override void OnKeyUp(KeyEventArgs kevent)
     {
       if (kevent.KeyCode.Equals(Keys.Space) && (MouseButtons == MouseButtons.None))
@@ -252,12 +252,12 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Raises the <see cref="Control.LostFocus"/> event.
+    ///   Raises the <see cref="Control.LostFocus" /> event.
     /// </summary>
     /// <remarks>
-    /// This changes the state of the control based on whether or not it has focus.
+    ///   This changes the state of the control based on whether or not it has focus.
     /// </remarks>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     protected override void OnLostFocus(EventArgs e)
     {
       if (!m_booShowSplit)
@@ -272,12 +272,12 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Raises the <see cref="Control.MouseDown"/> event.
+    ///   Raises the <see cref="Control.MouseDown" /> event.
     /// </summary>
     /// <remarks>
-    /// This displays the context menu if the arrow portion of the button is pressed.
+    ///   This displays the context menu if the arrow portion of the button is pressed.
     /// </remarks>
-    /// <param name="e">A <see cref="MouseEventArgs"/> describing the event arguments.</param>
+    /// <param name="e">A <see cref="MouseEventArgs" /> describing the event arguments.</param>
     protected override void OnMouseDown(MouseEventArgs e)
     {
       if (!m_booShowSplit)
@@ -297,12 +297,12 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Raises the <see cref="Control.MouseEnter"/> event.
+    ///   Raises the <see cref="Control.MouseEnter" /> event.
     /// </summary>
     /// <remarks>
-    /// This updates the state as appropriate.
+    ///   This updates the state as appropriate.
     /// </remarks>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     protected override void OnMouseEnter(EventArgs e)
     {
       if (!m_booShowSplit)
@@ -318,12 +318,12 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Raises the <see cref="Control.MouseLeave"/> event.
+    ///   Raises the <see cref="Control.MouseLeave" /> event.
     /// </summary>
     /// <remarks>
-    /// This updates the state as appropriate.
+    ///   This updates the state as appropriate.
     /// </remarks>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     protected override void OnMouseLeave(EventArgs e)
     {
       if (!m_booShowSplit)
@@ -339,12 +339,12 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Raises the <see cref="Control.MouseUp"/> event.
+    ///   Raises the <see cref="Control.MouseUp" /> event.
     /// </summary>
     /// <remarks>
-    /// This updates the state as appropriate.
+    ///   This updates the state as appropriate.
     /// </remarks>
-    /// <param name="e">A <see cref="MouseEventArgs"/> describing the event arguments.</param>
+    /// <param name="e">A <see cref="MouseEventArgs" /> describing the event arguments.</param>
     protected override void OnMouseUp(MouseEventArgs mevent)
     {
       if (!m_booShowSplit)
@@ -364,12 +364,12 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Raises the <see cref="Control.MouseDown"/> event.
+    ///   Raises the <see cref="Control.MouseDown" /> event.
     /// </summary>
     /// <remarks>
-    /// This activates the last clicked menu item.
+    ///   This activates the last clicked menu item.
     /// </remarks>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     protected override void OnClick(EventArgs e)
     {
       if (!m_booShowSplit)
@@ -385,12 +385,12 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Raises the <see cref="Control.Paint"/> event.
+    ///   Raises the <see cref="Control.Paint" /> event.
     /// </summary>
     /// <remarks>
-    /// This paints the button to look split.
+    ///   This paints the button to look split.
     /// </remarks>
-    /// <param name="e">A <see cref="PaintEventArgs"/> describing the event arguments.</param>
+    /// <param name="e">A <see cref="PaintEventArgs" /> describing the event arguments.</param>
     protected override void OnPaint(PaintEventArgs pevent)
     {
       base.OnPaint(pevent);
@@ -424,12 +424,12 @@ namespace Fomm.Controls
 
       var intInternalBorder = m_intBorderSize;
       var rctFocusRect = new Rectangle(intInternalBorder,
-                                             intInternalBorder,
-                                             rctBounds.Width - m_rctDropDownRectangle.Width - intInternalBorder,
-                                             rctBounds.Height - (intInternalBorder*2));
+                                       intInternalBorder,
+                                       rctBounds.Width - m_rctDropDownRectangle.Width - intInternalBorder,
+                                       rctBounds.Height - (intInternalBorder*2));
 
       var booDrawSplitLine = (State == PushButtonState.Hot || State == PushButtonState.Pressed ||
-                               !Application.RenderWithVisualStyles);
+                              !Application.RenderWithVisualStyles);
       if (RightToLeft == RightToLeft.Yes)
       {
         m_rctDropDownRectangle.X = rctBounds.Left + 1;
@@ -484,14 +484,14 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Paints the drop down arrow.
+    ///   Paints the drop down arrow.
     /// </summary>
     /// <param name="p_gphGraphics">The graphics object to use to paint the arrow.</param>
     /// <param name="p_rctDropDownRect">The rectangle in which to paint the arrow.</param>
     private void PaintArrow(Graphics p_gphGraphics, Rectangle p_rctDropDownRect)
     {
       var pntMiddle = new Point(Convert.ToInt32(p_rctDropDownRect.Left + p_rctDropDownRect.Width/2),
-                                  Convert.ToInt32(p_rctDropDownRect.Top + p_rctDropDownRect.Height/2));
+                                Convert.ToInt32(p_rctDropDownRect.Top + p_rctDropDownRect.Height/2));
 
       //if the width is odd - favor pushing it over one pixel right.
       pntMiddle.X += (p_rctDropDownRect.Width%2);
@@ -506,7 +506,7 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Displays the context menu strip.
+    ///   Displays the context menu strip.
     /// </summary>
     private void ShowContextMenuStrip()
     {
@@ -527,24 +527,24 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Handles the <see cref="ContextMenuStrip.ItemClicked"/> event.
+    ///   Handles the <see cref="ContextMenuStrip.ItemClicked" /> event.
     /// </summary>
     /// <remarks>
-    /// This remembers the last clicked item so that when the non-drop down part of the split
-    /// button is clicked the correct drop down item can be activated.
+    ///   This remembers the last clicked item so that when the non-drop down part of the split
+    ///   button is clicked the correct drop down item can be activated.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">A <see cref="ToolStripItemClickedEventArgs"/> describing the event arguments.</param>
+    /// <param name="e">A <see cref="ToolStripItemClickedEventArgs" /> describing the event arguments.</param>
     private void ContextMenuStrip_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
     {
       m_tsiLastPressedButton = e.ClickedItem;
     }
 
     /// <summary>
-    /// Handles the <see cref="Control.Closing"/> event of the drop down items content menu.
+    ///   Handles the <see cref="Control.Closing" /> event of the drop down items content menu.
     /// </summary>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">A <see cref="ToolStripDropDownClosingEventArgs"/> describing the event arguments.</param>
+    /// <param name="e">A <see cref="ToolStripDropDownClosingEventArgs" /> describing the event arguments.</param>
     private void ContextMenuStrip_Closing(object sender, ToolStripDropDownClosingEventArgs e)
     {
       var cmsDropDownItems = sender as ContextMenuStrip;
@@ -561,7 +561,7 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Sets the button's state as appropriate based on the mouse cursor position.
+    ///   Sets the button's state as appropriate based on the mouse cursor position.
     /// </summary>
     private void SetButtonDrawState()
     {

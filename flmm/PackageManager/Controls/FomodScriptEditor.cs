@@ -1,30 +1,30 @@
 ﻿using System;
-using System.Windows.Forms;
 using System.IO;
-using System.Xml.Schema;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
+using System.Xml;
+using System.Xml.Schema;
 using Fomm.Controls;
 using Fomm.PackageManager.XmlConfiguredInstall.Parsers;
-using System.Xml;
 
 namespace Fomm.PackageManager.Controls
 {
   public partial class FomodScriptEditor : UserControl
   {
     /// <summary>
-    /// Raised when the code completion options for the XML config script have been retrieved.
+    ///   Raised when the code completion options for the XML config script have been retrieved.
     /// </summary>
     /// <remarks>
-    /// Handling this event allows the addition/removal of code completion items.
+    ///   Handling this event allows the addition/removal of code completion items.
     /// </remarks>
     public event EventHandler<RegeneratableAutoCompleteListEventArgs> GotXMLAutoCompleteList;
 
     #region Properties
 
     /// <summary>
-    /// Gets or sets the <see cref="FomodScript"/> being edited.
+    ///   Gets or sets the <see cref="FomodScript" /> being edited.
     /// </summary>
-    /// <value>The <see cref="FomodScript"/> being edited.</value>
+    /// <value>The <see cref="FomodScript" /> being edited.</value>
     public FomodScript Script
     {
       get
@@ -41,7 +41,7 @@ namespace Fomm.PackageManager.Controls
           {
             fscScript.Type = FomodScriptType.XMLConfig;
             var strHeader = "<?xml version=\"1.0\" encoding=\"UTF-16\" ?>" + Environment.NewLine +
-                               "<config xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"http://qconsulting.ca/fo3/ModConfig{0}.xsd\">";
+                            "<config xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"http://qconsulting.ca/fo3/ModConfig{0}.xsd\">";
             strHeader = String.Format(strHeader, cbxVersion.SelectedItem);
             fscScript.Text = xedScript.Text.Replace("<config>", strHeader);
           }
@@ -98,7 +98,7 @@ namespace Fomm.PackageManager.Controls
     }
 
     /// <summary>
-    /// Gets whether or not the script being edited is valid.
+    ///   Gets whether or not the script being edited is valid.
     /// </summary>
     /// <value>Whether or not the script being edited is valid.</value>
     public bool IsValid
@@ -119,7 +119,7 @@ namespace Fomm.PackageManager.Controls
     #region Constructors
 
     /// <summary>
-    /// The default constructor.
+    ///   The default constructor.
     /// </summary>
     public FomodScriptEditor()
     {
@@ -138,20 +138,20 @@ namespace Fomm.PackageManager.Controls
     #endregion
 
     /// <summary>
-    /// Handles the <see cref="ComboBox.SelectedIndexChanged"/> event of the XML config version drop down list.
+    ///   Handles the <see cref="ComboBox.SelectedIndexChanged" /> event of the XML config version drop down list.
     /// </summary>
     /// <param name="sender">The object the raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void cbxVersion_SelectedIndexChanged(object sender, EventArgs e)
     {
       LoadConfigSchema();
     }
 
     /// <summary>
-    /// This loads the selected version of the XML configuration script's schema into the XML editor.
+    ///   This loads the selected version of the XML configuration script's schema into the XML editor.
     /// </summary>
     /// <remarks>
-    /// Loading the schema into the editor allows for validation and auto-completion.
+    ///   Loading the schema into the editor allows for validation and auto-completion.
     /// </remarks>
     protected void LoadConfigSchema()
     {
@@ -175,14 +175,14 @@ namespace Fomm.PackageManager.Controls
     }
 
     /// <summary>
-    /// Handles the <see cref="XmlCompletionProvider.GotAutoCompleteList"/> event of the
-    /// xml config editor.
+    ///   Handles the <see cref="XmlCompletionProvider.GotAutoCompleteList" /> event of the
+    ///   xml config editor.
     /// </summary>
     /// <remarks>
-    /// This raises the editor's <see cref="GotXMLAutoCompleteList"/> event.
+    ///   This raises the editor's <see cref="GotXMLAutoCompleteList" /> event.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="RegeneratableAutoCompleteListEventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="RegeneratableAutoCompleteListEventArgs" /> describing the event arguments.</param>
     private void xedScript_GotAutoCompleteList(object sender, RegeneratableAutoCompleteListEventArgs e)
     {
       if (GotXMLAutoCompleteList != null)

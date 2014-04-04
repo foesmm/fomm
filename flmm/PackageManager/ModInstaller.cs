@@ -1,13 +1,13 @@
 ﻿using System;
 using System.IO;
 using System.Windows.Forms;
-using Fomm.PackageManager.XmlConfiguredInstall;
 using Fomm.PackageManager.ModInstallLog;
+using Fomm.PackageManager.XmlConfiguredInstall;
 
 namespace Fomm.PackageManager
 {
   /// <summary>
-  /// Installs a <see cref="fomod"/>.
+  ///   Installs a <see cref="fomod" />.
   /// </summary>
   public class ModInstaller : ModInstallerBase
   {
@@ -15,7 +15,7 @@ namespace Fomm.PackageManager
 
     protected BackgroundWorkerProgressDialog ProgressDialog { get; private set; }
 
-    /// <seealso cref="ModInstallScript.ExceptionMessage"/>
+    /// <seealso cref="ModInstallScript.ExceptionMessage" />
     protected override string ExceptionMessage
     {
       get
@@ -25,7 +25,7 @@ namespace Fomm.PackageManager
       }
     }
 
-    /// <seealso cref="ModInstallScript.SuccessMessage"/>
+    /// <seealso cref="ModInstallScript.SuccessMessage" />
     protected override string SuccessMessage
     {
       get
@@ -34,7 +34,7 @@ namespace Fomm.PackageManager
       }
     }
 
-    /// <seealso cref="ModInstallScript.FailMessage"/>
+    /// <seealso cref="ModInstallScript.FailMessage" />
     protected override string FailMessage
     {
       get
@@ -48,32 +48,32 @@ namespace Fomm.PackageManager
     #region Constructors
 
     /// <summary>
-    /// A simple constructor that initializes the object.
+    ///   A simple constructor that initializes the object.
     /// </summary>
-    /// <param name="p_fomodMod">The <see cref="fomod"/> to be installed.</param>
+    /// <param name="p_fomodMod">The <see cref="fomod" /> to be installed.</param>
     internal ModInstaller(fomod p_fomodMod)
-      : base(p_fomodMod)
-    {
-    }
+      : base(p_fomodMod) {}
 
     #endregion
 
     #region Install Methods
 
     /// <summary>
-    /// Indicates that this script's work has already been completed if
-    /// the <see cref="Fomod"/> is already active.
+    ///   Indicates that this script's work has already been completed if
+    ///   the <see cref="Fomod" /> is already active.
     /// </summary>
-    /// <returns><lang langref="true"/> if the <see cref="Fomod"/> is active;
-    /// <lang langref="false"/> otherwise.</returns>
-    /// <seealso cref="ModInstallScript.CheckAlreadyDone()"/>
+    /// <returns>
+    ///   <lang langref="true" /> if the <see cref="Fomod" /> is active;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
+    /// <seealso cref="ModInstallScript.CheckAlreadyDone()" />
     protected override bool CheckAlreadyDone()
     {
       return Fomod.IsActive;
     }
 
     /// <summary>
-    /// Installs the mod and activates it.
+    ///   Installs the mod and activates it.
     /// </summary>
     internal void Install()
     {
@@ -81,7 +81,7 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Installs the mod and activates it.
+    ///   Installs the mod and activates it.
     /// </summary>
     protected override bool DoScript()
     {
@@ -138,10 +138,12 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Runs the XML configured install script.
+    ///   Runs the XML configured install script.
     /// </summary>
-    /// <returns><lang langref="true"/> if the installation was successful;
-    /// <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the installation was successful;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
     protected bool RunXmlInstallScript()
     {
       var xmlScript = new XmlConfiguredScript(Script);
@@ -149,10 +151,12 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Runs the custom install script included in the fomod.
+    ///   Runs the custom install script included in the fomod.
     /// </summary>
-    /// <returns><lang langref="true"/> if the installation was successful;
-    /// <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the installation was successful;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
     protected bool RunCustomInstallScript()
     {
       var strScript = Fomod.GetInstallScript().Text;
@@ -160,11 +164,13 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Runs the basic install script.
+    ///   Runs the basic install script.
     /// </summary>
     /// <param name="p_strMessage">The message to display in the progress dialog.</param>
-    /// <returns><lang langref="true"/> if the installation was successful;
-    /// <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the installation was successful;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
     protected bool RunBasicInstallScript(string p_strMessage)
     {
       try
@@ -188,11 +194,11 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Performs a basic install of the mod.
+    ///   Performs a basic install of the mod.
     /// </summary>
     /// <remarks>
-    /// A basic install installs all of the file in the mod to the Data directory
-    /// or activates all esp and esm files.
+    ///   A basic install installs all of the file in the mod to the Data directory
+    ///   or activates all esp and esm files.
     /// </remarks>
     public void PerformBasicInstall()
     {

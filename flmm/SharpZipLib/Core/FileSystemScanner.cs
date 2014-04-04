@@ -42,14 +42,14 @@ namespace Fomm.SharpZipLib.Core
   #region EventArgs
 
   /// <summary>
-  /// Event arguments for scanning.
+  ///   Event arguments for scanning.
   /// </summary>
   internal class ScanEventArgs : EventArgs
   {
     #region Constructors
 
     /// <summary>
-    /// Initialise a new instance of <see cref="ScanEventArgs"/>
+    ///   Initialise a new instance of <see cref="ScanEventArgs" />
     /// </summary>
     /// <param name="name">The file or directory name.</param>
     public ScanEventArgs(string name)
@@ -60,12 +60,12 @@ namespace Fomm.SharpZipLib.Core
     #endregion
 
     /// <summary>
-    /// The file or directory name for this event.
+    ///   The file or directory name for this event.
     /// </summary>
     public string Name { get; private set; }
 
     /// <summary>
-    /// Get set a value indicating if scanning should continue or not.
+    ///   Get set a value indicating if scanning should continue or not.
     /// </summary>
     public bool ContinueRunning
     {
@@ -87,14 +87,14 @@ namespace Fomm.SharpZipLib.Core
   #region Delegates
 
   /// <summary>
-  /// Delegate invoked before starting to process a file.
+  ///   Delegate invoked before starting to process a file.
   /// </summary>
   /// <param name="sender">The source of the event</param>
   /// <param name="e">The event arguments.</param>
   internal delegate void ProcessFileHandler(object sender, ScanEventArgs e);
 
   /// <summary>
-  /// Delegate invoked when a file has been completely processed.
+  ///   Delegate invoked when a file has been completely processed.
   /// </summary>
   /// <param name="sender">The source of the event</param>
   /// <param name="e">The event arguments.</param>
@@ -103,14 +103,14 @@ namespace Fomm.SharpZipLib.Core
   #endregion
 
   /// <summary>
-  /// FileSystemScanner provides facilities scanning of files and directories.
+  ///   FileSystemScanner provides facilities scanning of files and directories.
   /// </summary>
   internal class FileSystemScanner
   {
     #region Constructors
 
     /// <summary>
-    /// Initialise a new instance of <see cref="FileSystemScanner"></see>
+    ///   Initialise a new instance of <see cref="FileSystemScanner"></see>
     /// </summary>
     /// <param name="fileFilter">The <see cref="PathFilter">file filter</see> to apply.</param>
     /// <param name="directoryFilter">The <see cref="PathFilter"> directory filter</see> to apply.</param>
@@ -125,14 +125,14 @@ namespace Fomm.SharpZipLib.Core
     #region Delegates
 
     /// <summary>
-    /// Delegate to invoke when a file is processed.
+    ///   Delegate to invoke when a file is processed.
     /// </summary>
     public ProcessFileHandler ProcessFile;
 
     #endregion
 
     /// <summary>
-    /// Raise the ProcessFile event.
+    ///   Raise the ProcessFile event.
     /// </summary>
     /// <param name="file">The file name.</param>
     private void OnProcessFile(string file)
@@ -148,7 +148,7 @@ namespace Fomm.SharpZipLib.Core
     }
 
     /// <summary>
-    /// Scan a directory.
+    ///   Scan a directory.
     /// </summary>
     /// <param name="directory">The base directory to scan.</param>
     /// <param name="recurse">True to recurse subdirectories, false to scan a single directory.</param>
@@ -209,17 +209,17 @@ namespace Fomm.SharpZipLib.Core
     #region Instance Fields
 
     /// <summary>
-    /// The file filter currently in use.
+    ///   The file filter currently in use.
     /// </summary>
     private IScanFilter fileFilter_;
 
     /// <summary>
-    /// The directory filter currently in use.
+    ///   The directory filter currently in use.
     /// </summary>
     private IScanFilter directoryFilter_;
 
     /// <summary>
-    /// Flag indicating if scanning should continue running.
+    ///   Flag indicating if scanning should continue running.
     /// </summary>
     private bool alive_;
 

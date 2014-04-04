@@ -3,7 +3,7 @@
 namespace Fomm.PackageManager.XmlConfiguredInstall
 {
   /// <summary>
-  /// A dependency that requires a specified flag to have a specific value.
+  ///   A dependency that requires a specified flag to have a specific value.
   /// </summary>
   public class FlagDependency : IDependency
   {
@@ -12,25 +12,25 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     #region Properties
 
     /// <summary>
-    /// Gets or sets the name of the flag that must have a specific value.
+    ///   Gets or sets the name of the flag that must have a specific value.
     /// </summary>
     /// <value>The name of the flag that must have a specific value.</value>
     public string FlagName { get; protected set; }
 
     /// <summary>
-    /// Gets or sets the value the flag that must have.
+    ///   Gets or sets the value the flag that must have.
     /// </summary>
     /// <value>The value the flag that must have.</value>
     public string Value { get; protected set; }
 
     /// <summary>
-    /// Gets whether or not the dependency is fufilled.
+    ///   Gets whether or not the dependency is fufilled.
     /// </summary>
     /// <remarks>
-    /// The dependency is fufilled if the specified flag has the specified value.
+    ///   The dependency is fufilled if the specified flag has the specified value.
     /// </remarks>
     /// <value>Whether or not the dependency is fufilled.</value>
-    /// <seealso cref="IDependency.IsFufilled"/>
+    /// <seealso cref="IDependency.IsFufilled" />
     public bool IsFufilled
     {
       get
@@ -46,15 +46,15 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     }
 
     /// <summary>
-    /// Gets a message describing whether or not the dependency is fufilled.
+    ///   Gets a message describing whether or not the dependency is fufilled.
     /// </summary>
     /// <remarks>
-    /// If the dependency is fufilled the message is "Passed." If the dependency is not fufilled the
-    /// message uses the pattern:
-    ///    Flag '&lt;flag>' is not &lt;value>.
+    ///   If the dependency is fufilled the message is "Passed." If the dependency is not fufilled the
+    ///   message uses the pattern:
+    ///   Flag '&lt;flag>' is not &lt;value>.
     /// </remarks>
     /// <value>A message describing whether or not the dependency is fufilled.</value>
-    /// <seealso cref="IDependency.Message"/>
+    /// <seealso cref="IDependency.Message" />
     public string Message
     {
       get
@@ -72,7 +72,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     #region Constructors
 
     /// <summary>
-    /// A simple constructor that initializes the object with the given values.
+    ///   A simple constructor that initializes the object with the given values.
     /// </summary>
     /// <param name="p_strFile">The name of the falge that must have a specific value.</param>
     /// <param name="p_mfsState">The state in which the specified file must be.</param>
@@ -87,7 +87,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     #endregion
 
     /// <summary>
-    /// Generates a text representation of the dependency.
+    ///   Generates a text representation of the dependency.
     /// </summary>
     /// <returns>A text representation of the dependency.</returns>
     public override string ToString()

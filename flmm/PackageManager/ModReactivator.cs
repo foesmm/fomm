@@ -4,19 +4,19 @@ using Fomm.PackageManager.Upgrade;
 namespace Fomm.PackageManager
 {
   /// <summary>
-  /// Performs a reactivation of a <see cref="fomod"/>.
+  ///   Performs a reactivation of a <see cref="fomod" />.
   /// </summary>
   /// <remarks>
-  /// A reactivation is almost the same as an in-place upgrade. The only differences are
-  /// that a reactivation is never already done (<see cref="CheckAlreadyDone()"/> always
-  /// returns false), and failure doesn't imply the mod is deactivated.
+  ///   A reactivation is almost the same as an in-place upgrade. The only differences are
+  ///   that a reactivation is never already done (<see cref="CheckAlreadyDone()" /> always
+  ///   returns false), and failure doesn't imply the mod is deactivated.
   /// </remarks>
-  /// <seealso cref="ModUpgrader"/>
+  /// <seealso cref="ModUpgrader" />
   public class ModReactivator : ModUpgrader
   {
     #region Properties
 
-    /// <seealso cref="ModInstallScript.ExceptionMessage"/>
+    /// <seealso cref="ModInstallScript.ExceptionMessage" />
     protected override string ExceptionMessage
     {
       get
@@ -26,7 +26,7 @@ namespace Fomm.PackageManager
       }
     }
 
-    /// <seealso cref="ModInstallScript.SuccessMessage"/>
+    /// <seealso cref="ModInstallScript.SuccessMessage" />
     protected override string SuccessMessage
     {
       get
@@ -35,7 +35,7 @@ namespace Fomm.PackageManager
       }
     }
 
-    /// <seealso cref="ModInstallScript.FailMessage"/>
+    /// <seealso cref="ModInstallScript.FailMessage" />
     protected override string FailMessage
     {
       get
@@ -44,7 +44,7 @@ namespace Fomm.PackageManager
       }
     }
 
-    /// <seealso cref="ModUpgrader.ProgressMessage"/>
+    /// <seealso cref="ModUpgrader.ProgressMessage" />
     protected override string ProgressMessage
     {
       get
@@ -58,33 +58,33 @@ namespace Fomm.PackageManager
     #region Constructors
 
     /// <summary>
-    /// A simple constructor that initializes the object.
+    ///   A simple constructor that initializes the object.
     /// </summary>
-    /// <param name="p_fomodMod">The <see cref="fomod"/> to be reactivated.</param>
+    /// <param name="p_fomodMod">The <see cref="fomod" /> to be reactivated.</param>
     internal ModReactivator(fomod p_fomodMod)
-      : base(p_fomodMod)
-    {
-    }
+      : base(p_fomodMod) {}
 
     #endregion
 
     /// <summary>
-    /// Indicates that this script's work has not already been completed.
+    ///   Indicates that this script's work has not already been completed.
     /// </summary>
-    /// <returns><lang langref="false"/>.</returns>
-    /// <seealso cref="ModInstallScript.CheckAlreadyDone()"/>
+    /// <returns><lang langref="false" />.</returns>
+    /// <seealso cref="ModInstallScript.CheckAlreadyDone()" />
     protected override bool CheckAlreadyDone()
     {
       return false;
     }
 
     /// <summary>
-    /// Determines whether or not the fomod should be activated, based on whether
-    /// or not the script was successful.
+    ///   Determines whether or not the fomod should be activated, based on whether
+    ///   or not the script was successful.
     /// </summary>
     /// <param name="p_booSucceeded">Whether or not the script was successful.</param>
-    /// <returns><lang langref="true"/> if the fomod is already active;
-    /// <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the fomod is already active;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
     protected override bool DetermineFomodActiveStatus(bool p_booSucceeded)
     {
       return Fomod.IsActive;

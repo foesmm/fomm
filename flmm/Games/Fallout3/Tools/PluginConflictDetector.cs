@@ -1,17 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
-using Fomm.Games.Fallout3.Tools.CriticalRecords;
-using System.Text;
-using Fomm.PackageManager.ModInstallLog;
-using Fomm.PackageManager;
 using System.IO;
+using System.Text;
 using System.Windows.Forms;
 using Fomm.Games.Fallout3.PluginFormatProviders;
+using Fomm.Games.Fallout3.Tools.CriticalRecords;
+using Fomm.PackageManager;
+using Fomm.PackageManager.ModInstallLog;
 
 namespace Fomm.Games.Fallout3.Tools
 {
   /// <summary>
-  /// Checks for conflicts with mod-author specified critical records.
+  ///   Checks for conflicts with mod-author specified critical records.
   /// </summary>
   public class PluginConflictDetector
   {
@@ -21,7 +21,7 @@ namespace Fomm.Games.Fallout3.Tools
     #region Constructors
 
     /// <summary>
-    /// A simple constructor that initializes the obejct with the given values.
+    ///   A simple constructor that initializes the obejct with the given values.
     /// </summary>
     /// <param name="p_frmMainForm">The main plugin management form.</param>
     public PluginConflictDetector(CriticalRecordPluginFormatProvider p_pfpFormatProvider)
@@ -32,7 +32,7 @@ namespace Fomm.Games.Fallout3.Tools
     #endregion
 
     /// <summary>
-    /// Checks for conflicts with mod-author specified critical records.
+    ///   Checks for conflicts with mod-author specified critical records.
     /// </summary>
     public void CheckForConflicts()
     {
@@ -49,10 +49,10 @@ namespace Fomm.Games.Fallout3.Tools
     }
 
     /// <summary>
-    /// Launches the conflict detector.
+    ///   Launches the conflict detector.
     /// </summary>
     /// <remarks>
-    ///  This method is called by a <see cref="BackgroundWorkerProgressDialog"/>.
+    ///   This method is called by a <see cref="BackgroundWorkerProgressDialog" />.
     /// </remarks>
     private void CheckForCriticalRecordConflicts()
     {
@@ -68,13 +68,13 @@ namespace Fomm.Games.Fallout3.Tools
     }
 
     /// <summary>
-    /// Called when the conflict detector has processed a plugin.
+    ///   Called when the conflict detector has processed a plugin.
     /// </summary>
     /// <remarks>
-    /// This updates the detector progress bar.
+    ///   This updates the detector progress bar.
     /// </remarks>
     /// <param name="sender">The object that trigger the event.</param>
-    /// <param name="e">A <see cref="PluginProcessedEventArgs"/> describing the event arguments.</param>
+    /// <param name="e">A <see cref="PluginProcessedEventArgs" /> describing the event arguments.</param>
     private void cdrDetector_PluginProcessed(object sender, PluginProcessedEventArgs e)
     {
       m_bwdProgress.StepOverallProgress();
@@ -82,14 +82,14 @@ namespace Fomm.Games.Fallout3.Tools
     }
 
     /// <summary>
-    /// Called when the conflict detector has found a conflict.
+    ///   Called when the conflict detector has found a conflict.
     /// </summary>
     /// <remarks>
-    /// This adds a message to the appropriate plugin's info box, and changes the plugin's
-    /// node's background colour as appropriate.
+    ///   This adds a message to the appropriate plugin's info box, and changes the plugin's
+    ///   node's background colour as appropriate.
     /// </remarks>
     /// <param name="sender">The object that trigger the event.</param>
-    /// <param name="e">A <see cref="ConflictDetectedEventArgs"/> describing the event arguments.</param>
+    /// <param name="e">A <see cref="ConflictDetectedEventArgs" /> describing the event arguments.</param>
     private void cdrDetector_ConflictDetected(object sender, ConflictDetectedEventArgs e)
     {
       var stbMessage = new StringBuilder();

@@ -1,11 +1,11 @@
 ﻿using System;
-using ICSharpCode.TextEditor.Gui.CompletionWindow;
 using ICSharpCode.TextEditor;
+using ICSharpCode.TextEditor.Gui.CompletionWindow;
 
 namespace Fomm.Controls
 {
   /// <summary>
-  /// Describes a selection in a code completion dialog.
+  ///   Describes a selection in a code completion dialog.
   /// </summary>
   public class XmlCompletionData : DefaultCompletionData
   {
@@ -14,7 +14,7 @@ namespace Fomm.Controls
     #region Properties
 
     /// <summary>
-    /// Gets the type of the completion.
+    ///   Gets the type of the completion.
     /// </summary>
     /// <value>The type of the completion.</value>
     public AutoCompleteType CompletionType
@@ -30,7 +30,7 @@ namespace Fomm.Controls
     #region Constructors
 
     /// <summary>
-    /// A simple constructor that initializes the object with the given values.
+    ///   A simple constructor that initializes the object with the given values.
     /// </summary>
     /// <param name="p_actType">The type of the completion.</param>
     /// <param name="p_strName">The name of the selection.</param>
@@ -46,12 +46,14 @@ namespace Fomm.Controls
     #endregion
 
     /// <summary>
-    /// Inserts this selection into the document.
+    ///   Inserts this selection into the document.
     /// </summary>
     /// <param name="textArea">The text area into which to insert the selection.</param>
     /// <param name="ch">The character that was used to choose this completion selection.</param>
-    /// <returns><lang langref="true"/> if the insertion of <paramref name="p_chrKey"/> was handled;
-    /// <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the insertion of <paramref name="p_chrKey" /> was handled;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
     public override bool InsertAction(TextArea textArea, char ch)
     {
       switch (m_actCompletionType)
