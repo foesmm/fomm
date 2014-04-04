@@ -3,13 +3,13 @@
 namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
 {
   /// <summary>
-  /// This base class allows for game-modes to inject some game-specific parsing of
-  /// XML based mod config files.
+  ///   This base class allows for game-modes to inject some game-specific parsing of
+  ///   XML based mod config files.
   /// </summary>
   public class ParserExtension
   {
     /// <summary>
-    /// Parses the given dependency.
+    ///   Parses the given dependency.
     /// </summary>
     /// <param name="p_xndDependency">The dependency to parse.</param>
     /// <param name="p_dsmSate">The state manager for this install.</param>

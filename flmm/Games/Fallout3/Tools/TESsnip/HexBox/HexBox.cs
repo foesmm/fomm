@@ -20,17 +20,17 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
   #region HexCasing enumeration
 
   /// <summary>
-  /// Specifies the case of hex characters in the HexBox control
+  ///   Specifies the case of hex characters in the HexBox control
   /// </summary>
   internal enum HexCasing
   {
     /// <summary>
-    /// Converts all characters to uppercase.
+    ///   Converts all characters to uppercase.
     /// </summary>
     Upper = 0,
 
     /// <summary>
-    /// Converts all characters to lowercase.
+    ///   Converts all characters to lowercase.
     /// </summary>
     Lower = 1
   }
@@ -40,7 +40,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
   #region BytePositionInfo structure
 
   /// <summary>
-  /// Represents a position in the HexBox control
+  ///   Represents a position in the HexBox control
   /// </summary>
   internal struct BytePositionInfo
   {
@@ -74,7 +74,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
   #endregion
 
   /// <summary>
-  /// Represents a hex box control.
+  ///   Represents a hex box control.
   /// </summary>
   [ToolboxBitmap(typeof (HexBox), "HexBox.bmp")]
   internal class HexBox : Control
@@ -82,43 +82,43 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     #region IKeyInterpreter interface
 
     /// <summary>
-    /// Defines a user input handler such as for mouse and keyboard input
+    ///   Defines a user input handler such as for mouse and keyboard input
     /// </summary>
     private interface IKeyInterpreter
     {
       /// <summary>
-      /// Activates mouse events
+      ///   Activates mouse events
       /// </summary>
       void Activate();
 
       /// <summary>
-      /// Deactivate mouse events
+      ///   Deactivate mouse events
       /// </summary>
       void Deactivate();
 
       /// <summary>
-      /// Preprocesses WM_KEYUP window message.
+      ///   Preprocesses WM_KEYUP window message.
       /// </summary>
       /// <param name="m">the Message object to process.</param>
       /// <returns>True, if the message was processed.</returns>
       bool PreProcessWmKeyUp(ref Message m);
 
       /// <summary>
-      /// Preprocesses WM_CHAR window message.
+      ///   Preprocesses WM_CHAR window message.
       /// </summary>
       /// <param name="m">the Message object to process.</param>
       /// <returns>True, if the message was processed.</returns>
       bool PreProcessWmChar(ref Message m);
 
       /// <summary>
-      /// Preprocesses WM_KEYDOWN window message.
+      ///   Preprocesses WM_KEYDOWN window message.
       /// </summary>
       /// <param name="m">the Message object to process.</param>
       /// <returns>True, if the message was processed.</returns>
       bool PreProcessWmKeyDown(ref Message m);
 
       /// <summary>
-      /// Gives some information about where to place the caret.
+      ///   Gives some information about where to place the caret.
       /// </summary>
       /// <param name="byteIndex">the index of the byte</param>
       /// <returns>the position where the caret is to place.</returns>
@@ -130,8 +130,8 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     #region EmptyKeyInterpreter class
 
     /// <summary>
-    /// Represents an empty input handler without any functionality. 
-    /// If is set ByteProvider to null, then this interpreter is used.
+    ///   Represents an empty input handler without any functionality.
+    ///   If is set ByteProvider to null, then this interpreter is used.
     /// </summary>
     private class EmptyKeyInterpreter : IKeyInterpreter
     {
@@ -144,13 +144,9 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 
       #region IKeyInterpreter Members
 
-      public void Activate()
-      {
-      }
+      public void Activate() {}
 
-      public void Deactivate()
-      {
-      }
+      public void Deactivate() {}
 
       public bool PreProcessWmKeyUp(ref Message m)
       {
@@ -180,34 +176,34 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     #region KeyInterpreter class
 
     /// <summary>
-    /// Handles user input such as mouse and keyboard input during hex view edit
+    ///   Handles user input such as mouse and keyboard input during hex view edit
     /// </summary>
     private class KeyInterpreter : IKeyInterpreter
     {
       #region Fields
 
       /// <summary>
-      /// Contains the parent HexBox control
+      ///   Contains the parent HexBox control
       /// </summary>
       protected HexBox _hexBox;
 
       /// <summary>
-      /// Contains True, if shift key is down
+      ///   Contains True, if shift key is down
       /// </summary>
       protected bool _shiftDown;
 
       /// <summary>
-      /// Contains True, if mouse is down
+      ///   Contains True, if mouse is down
       /// </summary>
       private bool _mouseDown;
 
       /// <summary>
-      /// Contains the selection start position info
+      ///   Contains the selection start position info
       /// </summary>
       private BytePositionInfo _bpiStart;
 
       /// <summary>
-      /// Contains the current mouse selection position info
+      ///   Contains the current mouse selection position info
       /// </summary>
       private BytePositionInfo _bpi;
 
@@ -895,7 +891,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 
           _hexBox.ReleaseSelection();
 
-          var currentByte = isInsertMode ? (byte)0 : _hexBox._byteProvider.ReadByte(pos);
+          var currentByte = isInsertMode ? (byte) 0 : _hexBox._byteProvider.ReadByte(pos);
 
           var sCb = currentByte.ToString("X", Thread.CurrentThread.CurrentCulture);
           if (sCb.Length == 1)
@@ -913,7 +909,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
             sNewCb = sCb.Substring(0, 1) + sNewCb;
           }
           var newcb = byte.Parse(sNewCb, NumberStyles.AllowHexSpecifier,
-                                  Thread.CurrentThread.CurrentCulture);
+                                 Thread.CurrentThread.CurrentCulture);
           if (isInsertMode)
           {
             _hexBox._byteProvider.InsertBytes(pos, new[]
@@ -1149,7 +1145,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     #region StringKeyInterpreter class
 
     /// <summary>
-    /// Handles user input such as mouse and keyboard input during string view edit
+    ///   Handles user input such as mouse and keyboard input during string view edit
     /// </summary>
     private class StringKeyInterpreter : KeyInterpreter
     {
@@ -1301,162 +1297,163 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     #region Fields
 
     /// <summary>
-    /// Contains the hole content bounds of all text
+    ///   Contains the hole content bounds of all text
     /// </summary>
     private Rectangle _recContent;
 
     /// <summary>
-    /// Contains the line info bounds
+    ///   Contains the line info bounds
     /// </summary>
     private Rectangle _recLineInfo;
 
     /// <summary>
-    /// Contains the hex data bounds
+    ///   Contains the hex data bounds
     /// </summary>
     private Rectangle _recHex;
 
     /// <summary>
-    /// Contains the string view bounds
+    ///   Contains the string view bounds
     /// </summary>
     private Rectangle _recStringView;
 
     /// <summary>
-    /// Contains string format information for text drawing
+    ///   Contains string format information for text drawing
     /// </summary>
     private StringFormat _stringFormat;
 
     /// <summary>
-    /// Contains the width and height of a single char
+    ///   Contains the width and height of a single char
     /// </summary>
     private SizeF _charSize;
 
     /// <summary>
-    /// Contains the maximum of visible bytes.
+    ///   Contains the maximum of visible bytes.
     /// </summary>
     private int _iHexMaxBytes;
 
     /// <summary>
-    /// Contains the scroll bars minimum value
+    ///   Contains the scroll bars minimum value
     /// </summary>
     private long _scrollVmin;
 
     /// <summary>
-    /// Contains the scroll bars maximum value
+    ///   Contains the scroll bars maximum value
     /// </summary>
     private long _scrollVmax;
 
     /// <summary>
-    /// Contains the scroll bars current position
+    ///   Contains the scroll bars current position
     /// </summary>
     private long _scrollVpos;
 
     /// <summary>
-    /// Contains a vertical scroll
+    ///   Contains a vertical scroll
     /// </summary>
     private VScrollBar _vScrollBar;
 
     /// <summary>
-    /// Contains a timer for thumbtrack scrolling
+    ///   Contains a timer for thumbtrack scrolling
     /// </summary>
     private Timer _thumbTrackTimer = new Timer();
 
     /// <summary>
-    /// Contains the thumbtrack scrolling position
+    ///   Contains the thumbtrack scrolling position
     /// </summary>
     private long _thumbTrackPosition;
 
     /// <summary>
-    /// Contains the thumptrack delay for scrolling in milliseconds.
+    ///   Contains the thumptrack delay for scrolling in milliseconds.
     /// </summary>
     private const int THUMPTRACKDELAY = 50;
 
     /// <summary>
-    /// Contains the Enviroment.TickCount of the last refresh
+    ///   Contains the Enviroment.TickCount of the last refresh
     /// </summary>
     private int _lastThumbtrack;
 
     /// <summary>
-    /// Contains the border큦 left shift
+    ///   Contains the border큦 left shift
     /// </summary>
     private int _recBorderLeft = SystemInformation.Border3DSize.Width;
 
     /// <summary>
-    /// Contains the border큦 right shift
+    ///   Contains the border큦 right shift
     /// </summary>
     private int _recBorderRight = SystemInformation.Border3DSize.Width;
 
     /// <summary>
-    /// Contains the border큦 top shift
+    ///   Contains the border큦 top shift
     /// </summary>
     private int _recBorderTop = SystemInformation.Border3DSize.Height;
 
     /// <summary>
-    /// Contains the border bottom shift
+    ///   Contains the border bottom shift
     /// </summary>
     private int _recBorderBottom = SystemInformation.Border3DSize.Height;
 
     /// <summary>
-    /// Contains the index of the first visible byte
+    ///   Contains the index of the first visible byte
     /// </summary>
     private long _startByte;
 
     /// <summary>
-    /// Contains the index of the last visible byte
+    ///   Contains the index of the last visible byte
     /// </summary>
     private long _endByte;
 
     /// <summary>
-    /// Contains the current byte position
+    ///   Contains the current byte position
     /// </summary>
     private long _bytePos = -1;
 
     /// <summary>
-    /// Contains the current char position in one byte
+    ///   Contains the current char position in one byte
     /// </summary>
     /// <example>
-    /// "1A"
-    /// "1" = char position of 0
-    /// "A" = char position of 1
+    ///   "1A"
+    ///   "1" = char position of 0
+    ///   "A" = char position of 1
     /// </example>
     private int _byteCharacterPos;
 
     /// <summary>
-    /// Contains string format information for hex values
+    ///   Contains string format information for hex values
     /// </summary>
     private string _hexStringFormat = "X";
 
     /// <summary>
-    /// Contains the current key interpreter
+    ///   Contains the current key interpreter
     /// </summary>
     private IKeyInterpreter _keyInterpreter;
 
     /// <summary>
-    /// Contains an empty key interpreter without functionality
+    ///   Contains an empty key interpreter without functionality
     /// </summary>
     private EmptyKeyInterpreter _eki;
 
     /// <summary>
-    /// Contains the default key interpreter
+    ///   Contains the default key interpreter
     /// </summary>
     private KeyInterpreter _ki;
 
     /// <summary>
-    /// Contains the string key interpreter
+    ///   Contains the string key interpreter
     /// </summary>
     private StringKeyInterpreter _ski;
 
     /// <summary>
-    /// Contains True if caret is visible
+    ///   Contains True if caret is visible
     /// </summary>
     private bool _caretVisible;
 
     /// <summary>
-    /// Contains true, if the find (Find method) should be aborted.
+    ///   Contains true, if the find (Find method) should be aborted.
     /// </summary>
     private bool _abortFind;
 
     /// <summary>
-    /// Contains a state value about Insert or Write mode. When this value is true and the ByteProvider SupportsInsert is true bytes are inserted instead of overridden.
+    ///   Contains a state value about Insert or Write mode. When this value is true and the ByteProvider SupportsInsert is
+    ///   true bytes are inserted instead of overridden.
     /// </summary>
     private bool _insertActive;
 
@@ -1465,97 +1462,97 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     #region Events
 
     /// <summary>
-    /// Occurs, when the value of InsertActive property has changed.
+    ///   Occurs, when the value of InsertActive property has changed.
     /// </summary>
     [Description("Occurs, when the value of InsertActive property has changed.")]
     public event EventHandler InsertActiveChanged;
 
     /// <summary>
-    /// Occurs, when the value of ReadOnly property has changed.
+    ///   Occurs, when the value of ReadOnly property has changed.
     /// </summary>
     [Description("Occurs, when the value of ReadOnly property has changed.")]
     public event EventHandler ReadOnlyChanged;
 
     /// <summary>
-    /// Occurs, when the value of ByteProvider property has changed.
+    ///   Occurs, when the value of ByteProvider property has changed.
     /// </summary>
     [Description("Occurs, when the value of ByteProvider property has changed.")]
     public event EventHandler ByteProviderChanged;
 
     /// <summary>
-    /// Occurs, when the value of SelectionStart property has changed.
+    ///   Occurs, when the value of SelectionStart property has changed.
     /// </summary>
     [Description("Occurs, when the value of SelectionStart property has changed.")]
     public event EventHandler SelectionStartChanged;
 
     /// <summary>
-    /// Occurs, when the value of SelectionLength property has changed.
+    ///   Occurs, when the value of SelectionLength property has changed.
     /// </summary>
     [Description("Occurs, when the value of SelectionLength property has changed.")]
     public event EventHandler SelectionLengthChanged;
 
     /// <summary>
-    /// Occurs, when the value of LineInfoVisible property has changed.
+    ///   Occurs, when the value of LineInfoVisible property has changed.
     /// </summary>
     [Description("Occurs, when the value of LineInfoVisible property has changed.")]
     public event EventHandler LineInfoVisibleChanged;
 
     /// <summary>
-    /// Occurs, when the value of StringViewVisible property has changed.
+    ///   Occurs, when the value of StringViewVisible property has changed.
     /// </summary>
     [Description("Occurs, when the value of StringViewVisible property has changed.")]
     public event EventHandler StringViewVisibleChanged;
 
     /// <summary>
-    /// Occurs, when the value of BorderStyle property has changed.
+    ///   Occurs, when the value of BorderStyle property has changed.
     /// </summary>
     [Description("Occurs, when the value of BorderStyle property has changed.")]
     public event EventHandler BorderStyleChanged;
 
     /// <summary>
-    /// Occurs, when the value of BytesPerLine property has changed.
+    ///   Occurs, when the value of BytesPerLine property has changed.
     /// </summary>
     [Description("Occurs, when the value of BytesPerLine property has changed.")]
     public event EventHandler BytesPerLineChanged;
 
     /// <summary>
-    /// Occurs, when the value of UseFixedBytesPerLine property has changed.
+    ///   Occurs, when the value of UseFixedBytesPerLine property has changed.
     /// </summary>
     [Description("Occurs, when the value of UseFixedBytesPerLine property has changed.")]
     public event EventHandler UseFixedBytesPerLineChanged;
 
     /// <summary>
-    /// Occurs, when the value of VScrollBarVisible property has changed.
+    ///   Occurs, when the value of VScrollBarVisible property has changed.
     /// </summary>
     [Description("Occurs, when the value of VScrollBarVisible property has changed.")]
     public event EventHandler VScrollBarVisibleChanged;
 
     /// <summary>
-    /// Occurs, when the value of HexCasing property has changed.
+    ///   Occurs, when the value of HexCasing property has changed.
     /// </summary>
     [Description("Occurs, when the value of HexCasing property has changed.")]
     public event EventHandler HexCasingChanged;
 
     /// <summary>
-    /// Occurs, when the value of HorizontalByteCount property has changed.
+    ///   Occurs, when the value of HorizontalByteCount property has changed.
     /// </summary>
     [Description("Occurs, when the value of HorizontalByteCount property has changed.")]
     public event EventHandler HorizontalByteCountChanged;
 
     /// <summary>
-    /// Occurs, when the value of VerticalByteCount property has changed.
+    ///   Occurs, when the value of VerticalByteCount property has changed.
     /// </summary>
     [Description("Occurs, when the value of VerticalByteCount property has changed.")]
     public event EventHandler VerticalByteCountChanged;
 
     /// <summary>
-    /// Occurs, when the value of CurrentLine property has changed.
+    ///   Occurs, when the value of CurrentLine property has changed.
     /// </summary>
     [Description("Occurs, when the value of CurrentLine property has changed.")]
     public event EventHandler CurrentLineChanged;
 
     /// <summary>
-    /// Occurs, when the value of CurrentPositionInLine property has changed.
+    ///   Occurs, when the value of CurrentPositionInLine property has changed.
     /// </summary>
     [Description("Occurs, when the value of CurrentPositionInLine property has changed.")]
     public event EventHandler CurrentPositionInLineChanged;
@@ -1565,7 +1562,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     #region Ctors
 
     /// <summary>
-    /// Initializes a new instance of a HexBox class.
+    ///   Initializes a new instance of a HexBox class.
     /// </summary>
     public HexBox()
     {
@@ -1642,7 +1639,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// Performs the thumbtrack scrolling after an delay.
+    ///   Performs the thumbtrack scrolling after an delay.
     /// </summary>
     private void PerformScrollThumbTrack(object sender, EventArgs e)
     {
@@ -1812,7 +1809,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// Scrolls the selection start byte into view
+    ///   Scrolls the selection start byte into view
     /// </summary>
     public void ScrollByteIntoView()
     {
@@ -1822,7 +1819,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// Scrolls the specific byte into view
+    ///   Scrolls the specific byte into view
     /// </summary>
     /// <param name="index">the index of the byte</param>
     public void ScrollByteIntoView(long index)
@@ -1875,7 +1872,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// Selects the hex box.
+    ///   Selects the hex box.
     /// </summary>
     /// <param name="start">the start index of the selection</param>
     /// <param name="length">the length of the selection</param>
@@ -2074,7 +2071,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
       var hPos = (iX/3 + 1);
 
       var bytePos = Math.Min(_byteProvider.Length,
-                              _startByte + (HorizontalByteCount*(iY + 1) - HorizontalByteCount) + hPos - 1);
+                             _startByte + (HorizontalByteCount*(iY + 1) - HorizontalByteCount) + hPos - 1);
       var byteCharaterPos = (iX%3);
       if (byteCharaterPos > 1)
       {
@@ -2105,7 +2102,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
       var hPos = iX + 1;
 
       var bytePos = Math.Min(_byteProvider.Length,
-                              _startByte + (HorizontalByteCount*(iY + 1) - HorizontalByteCount) + hPos - 1);
+                             _startByte + (HorizontalByteCount*(iY + 1) - HorizontalByteCount) + hPos - 1);
       var byteCharacterPos = 0;
 
       if (bytePos < 0)
@@ -2120,7 +2117,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     #region PreProcessMessage methods
 
     /// <summary>
-    /// Preprocesses windows messages.
+    ///   Preprocesses windows messages.
     /// </summary>
     /// <param name="m">the message to process.</param>
     /// <returns>true, if the message was processed</returns>
@@ -2151,13 +2148,15 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     #region Find methods
 
     /// <summary>
-    /// Searches the current ByteProvider
+    ///   Searches the current ByteProvider
     /// </summary>
     /// <param name="bytes">the array of bytes to find</param>
     /// <param name="startIndex">the start index</param>
-    /// <returns>the SelectionStart property value if find was successfull or
-    /// -1 if there is no match
-    /// -2 if Find was aborted.</returns>
+    /// <returns>
+    ///   the SelectionStart property value if find was successfull or
+    ///   -1 if there is no match
+    ///   -2 if Find was aborted.
+    /// </returns>
     public long Find(byte[] bytes, long startIndex)
     {
       var match = 0;
@@ -2202,7 +2201,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// Aborts a working Find method.
+    ///   Aborts a working Find method.
     /// </summary>
     public void AbortFind()
     {
@@ -2210,7 +2209,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// Gets a value that indicates the current position during Find method execution.
+    ///   Gets a value that indicates the current position during Find method execution.
     /// </summary>
     [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public long CurrentFindingPosition { get; private set; }
@@ -2220,7 +2219,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     #region Copy, Cut and Paste methods
 
     /// <summary>
-    /// Copies the current selection in the hex box to the Clipboard.
+    ///   Copies the current selection in the hex box to the Clipboard.
     /// </summary>
     public void Copy()
     {
@@ -2256,7 +2255,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// Return true if Copy method could be invoked.
+    ///   Return true if Copy method could be invoked.
     /// </summary>
     public bool CanCopy()
     {
@@ -2269,7 +2268,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// Moves the current selection in the hex box to the Clipboard.
+    ///   Moves the current selection in the hex box to the Clipboard.
     /// </summary>
     public void Cut()
     {
@@ -2290,7 +2289,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// Return true if Cut method could be invoked.
+    ///   Return true if Cut method could be invoked.
     /// </summary>
     public bool CanCut()
     {
@@ -2311,7 +2310,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// Replaces the current selection in the hex box with the contents of the Clipboard.
+    ///   Replaces the current selection in the hex box with the contents of the Clipboard.
     /// </summary>
     public void Paste()
     {
@@ -2354,7 +2353,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// Return true if Paste method could be invoked.
+    ///   Return true if Paste method could be invoked.
     /// </summary>
     public bool CanPaste()
     {
@@ -2391,7 +2390,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     #region Paint methods
 
     /// <summary>
-    /// Paints the background.
+    ///   Paints the background.
     /// </summary>
     /// <param name="e">A PaintEventArgs that contains the event data.</param>
     protected override void OnPaintBackground(PaintEventArgs pevent)
@@ -2452,7 +2451,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// Paints the hex box.
+    ///   Paints the hex box.
     /// </summary>
     /// <param name="e">A PaintEventArgs that contains the event data.</param>
     protected override void OnPaint(PaintEventArgs e)
@@ -2596,7 +2595,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 
       var isKeyInterpreterActive = _keyInterpreter == null || _keyInterpreter.GetType() == typeof (KeyInterpreter);
       var isStringKeyInterpreterActive = _keyInterpreter != null &&
-                                          _keyInterpreter.GetType() == typeof (StringKeyInterpreter);
+                                         _keyInterpreter.GetType() == typeof (StringKeyInterpreter);
 
       for (var i = startByte; i < intern_endByte + 1; i++)
       {
@@ -2960,7 +2959,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     #region Overridden properties
 
     /// <summary>
-    /// Gets or sets the background color for the control.
+    ///   Gets or sets the background color for the control.
     /// </summary>
     [DefaultValue(typeof (Color), "White")]
     public override Color BackColor
@@ -2976,7 +2975,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// The font used to display text in the hexbox.
+    ///   The font used to display text in the hexbox.
     /// </summary>
     [Editor(typeof (HexFontEditor), typeof (UITypeEditor))]
     public override Font Font
@@ -2992,7 +2991,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// Not used.
+    ///   Not used.
     /// </summary>
     [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden),
      EditorBrowsable(EditorBrowsableState.Never), Bindable(false)]
@@ -3009,7 +3008,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// Not used.
+    ///   Not used.
     /// </summary>
     [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden),
      EditorBrowsable(EditorBrowsableState.Never), Bindable(false)]
@@ -3030,7 +3029,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     #region Properties
 
     /// <summary>
-    /// Gets or sets the background color for the disabled control.
+    ///   Gets or sets the background color for the disabled control.
     /// </summary>
     [Category("Appearance"), DefaultValue(typeof (Color), "WhiteSmoke")]
     public Color BackColorDisabled
@@ -3048,10 +3047,10 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     private Color _backColorDisabled = Color.FromName("WhiteSmoke");
 
     /// <summary>
-    /// Gets or sets if the count of bytes in one line is fix.
+    ///   Gets or sets if the count of bytes in one line is fix.
     /// </summary>
     /// <remarks>
-    /// When set to True, BytesPerLine property determine the maximum count of bytes in one line.
+    ///   When set to True, BytesPerLine property determine the maximum count of bytes in one line.
     /// </remarks>
     [DefaultValue(false), Category("Hex"), Description("Gets or sets if the count of bytes in one line is fix.")]
     public bool ReadOnly
@@ -3076,10 +3075,10 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     private bool _readOnly;
 
     /// <summary>
-    /// Gets or sets the maximum count of bytes in one line.
+    ///   Gets or sets the maximum count of bytes in one line.
     /// </summary>
     /// <remarks>
-    /// UsedFixedBytesPerLine property must set to true
+    ///   UsedFixedBytesPerLine property must set to true
     /// </remarks>
     [DefaultValue(16), Category("Hex"), Description("Gets or sets the maximum count of bytes in one line.")]
     public int BytesPerLine
@@ -3106,10 +3105,10 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     private int _bytesPerLine = 16;
 
     /// <summary>
-    /// Gets or sets if the count of bytes in one line is fix.
+    ///   Gets or sets if the count of bytes in one line is fix.
     /// </summary>
     /// <remarks>
-    /// When set to True, BytesPerLine property determine the maximum count of bytes in one line.
+    ///   When set to True, BytesPerLine property determine the maximum count of bytes in one line.
     /// </remarks>
     [DefaultValue(false), Category("Hex"), Description("Gets or sets if the count of bytes in one line is fix.")]
     public bool UseFixedBytesPerLine
@@ -3136,7 +3135,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     private bool _useFixedBytesPerLine;
 
     /// <summary>
-    /// Gets or sets the visibility of a vertical scroll bar.
+    ///   Gets or sets the visibility of a vertical scroll bar.
     /// </summary>
     [DefaultValue(false), Category("Hex"), Description("Gets or sets the visibility of a vertical scroll bar.")]
     public bool VScrollBarVisible
@@ -3173,7 +3172,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     private bool _vScrollBarVisible;
 
     /// <summary>
-    /// Gets or sets the ByteProvider.
+    ///   Gets or sets the ByteProvider.
     /// </summary>
     [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public IByteProvider ByteProvider
@@ -3249,7 +3248,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     private IByteProvider _byteProvider;
 
     /// <summary>
-    /// Gets or sets the visibility of a line info.
+    ///   Gets or sets the visibility of a line info.
     /// </summary>
     [DefaultValue(false), Category("Hex"), Description("Gets or sets the visibility of a line info.")]
     public bool LineInfoVisible
@@ -3276,7 +3275,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     private bool _lineInfoVisible;
 
     /// <summary>
-    /// Gets or sets the hex box큦 border style.
+    ///   Gets or sets the hex box큦 border style.
     /// </summary>
     [DefaultValue(typeof (BorderStyle), "Fixed3D"), Category("Hex"),
      Description("Gets or sets the hex box큦 border style.")]
@@ -3317,7 +3316,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     private BorderStyle _borderStyle = BorderStyle.Fixed3D;
 
     /// <summary>
-    /// Gets or sets the visibility of the string view.
+    ///   Gets or sets the visibility of the string view.
     /// </summary>
     [DefaultValue(false), Category("Hex"), Description("Gets or sets the visibility of the string view.")]
     public bool StringViewVisible
@@ -3344,7 +3343,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     private bool _stringViewVisible;
 
     /// <summary>
-    /// Gets or sets whether the HexBox control displays the hex characters in upper or lower case.
+    ///   Gets or sets whether the HexBox control displays the hex characters in upper or lower case.
     /// </summary>
     [DefaultValue(typeof (HexCasing), "Upper"), Category("Hex"),
      Description("Gets or sets whether the HexBox control displays the hex characters in upper or lower case.")]
@@ -3375,7 +3374,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// Gets and sets the starting point of the bytes selected in the hex box.
+    ///   Gets and sets the starting point of the bytes selected in the hex box.
     /// </summary>
     [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public long SelectionStart
@@ -3393,7 +3392,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// Gets and sets the number of bytes selected in the hex box.
+    ///   Gets and sets the number of bytes selected in the hex box.
     /// </summary>
     [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public long SelectionLength
@@ -3413,7 +3412,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     private long _selectionLength;
 
     /// <summary>
-    /// Gets or sets the line info color. When this property is null, then ForeColor property is used.
+    ///   Gets or sets the line info color. When this property is null, then ForeColor property is used.
     /// </summary>
     [DefaultValue(typeof (Color), "Empty"), Category("Hex"),
      Description("Gets or sets the line info color. When this property is null, then ForeColor property is used.")]
@@ -3433,7 +3432,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     private Color _lineInfoForeColor = Color.Empty;
 
     /// <summary>
-    /// Gets or sets the background color for the selected bytes.
+    ///   Gets or sets the background color for the selected bytes.
     /// </summary>
     [DefaultValue(typeof (Color), "Blue"), Category("Hex"),
      Description("Gets or sets the background color for the selected bytes.")]
@@ -3453,7 +3452,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     private Color _selectionBackColor = Color.Blue;
 
     /// <summary>
-    /// Gets or sets the foreground color for the selected bytes.
+    ///   Gets or sets the foreground color for the selected bytes.
     /// </summary>
     [DefaultValue(typeof (Color), "White"), Category("Hex"),
      Description("Gets or sets the foreground color for the selected bytes.")]
@@ -3473,7 +3472,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     private Color _selectionForeColor = Color.White;
 
     /// <summary>
-    /// Gets or sets the visibility of a shadow selection.
+    ///   Gets or sets the visibility of a shadow selection.
     /// </summary>
     [DefaultValue(true), Category("Hex"), Description("Gets or sets the visibility of a shadow selection.")]
     public bool ShadowSelectionVisible
@@ -3496,11 +3495,11 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     private bool _shadowSelectionVisible = true;
 
     /// <summary>
-    /// Gets or sets the color of the shadow selection. 
+    ///   Gets or sets the color of the shadow selection.
     /// </summary>
     /// <remarks>
-    /// A alpha component must be given! 
-    /// Default alpha = 100
+    ///   A alpha component must be given!
+    ///   Default alpha = 100
     /// </remarks>
     [Category("Hex"), Description("Gets or sets the color of the shadow selection.")]
     public Color ShadowSelectionColor
@@ -3519,25 +3518,25 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     private Color _shadowSelectionColor = Color.FromArgb(100, 60, 188, 255);
 
     /// <summary>
-    /// Gets the number bytes drawn horizontally.
+    ///   Gets the number bytes drawn horizontally.
     /// </summary>
     [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public int HorizontalByteCount { get; private set; }
 
     /// <summary>
-    /// Gets the number bytes drawn vertically.
+    ///   Gets the number bytes drawn vertically.
     /// </summary>
     [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public int VerticalByteCount { get; private set; }
 
     /// <summary>
-    /// Gets the current line
+    ///   Gets the current line
     /// </summary>
     [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public long CurrentLine { get; private set; }
 
     /// <summary>
-    /// Gets the current position in the current line
+    ///   Gets the current position in the current line
     /// </summary>
     [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public long CurrentPositionInLine
@@ -3551,7 +3550,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     private int _currentPositionInLine;
 
     /// <summary>
-    /// Gets the a value if insertion mode is active or not.
+    ///   Gets the a value if insertion mode is active or not.
     /// </summary>
     [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public bool InsertActive
@@ -3654,7 +3653,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// Raises the InsertActiveChanged event.
+    ///   Raises the InsertActiveChanged event.
     /// </summary>
     /// <param name="e">An EventArgs that contains the event data.</param>
     protected virtual void OnInsertActiveChanged(EventArgs e)
@@ -3666,7 +3665,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// Raises the ReadOnlyChanged event.
+    ///   Raises the ReadOnlyChanged event.
     /// </summary>
     /// <param name="e">An EventArgs that contains the event data.</param>
     protected virtual void OnReadOnlyChanged(EventArgs e)
@@ -3678,7 +3677,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// Raises the ByteProviderChanged event.
+    ///   Raises the ByteProviderChanged event.
     /// </summary>
     /// <param name="e">An EventArgs that contains the event data.</param>
     protected virtual void OnByteProviderChanged(EventArgs e)
@@ -3690,7 +3689,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// Raises the SelectionStartChanged event.
+    ///   Raises the SelectionStartChanged event.
     /// </summary>
     /// <param name="e">An EventArgs that contains the event data.</param>
     protected virtual void OnSelectionStartChanged(EventArgs e)
@@ -3702,7 +3701,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// Raises the SelectionLengthChanged event.
+    ///   Raises the SelectionLengthChanged event.
     /// </summary>
     /// <param name="e">An EventArgs that contains the event data.</param>
     protected virtual void OnSelectionLengthChanged(EventArgs e)
@@ -3714,7 +3713,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// Raises the LineInfoVisibleChanged event.
+    ///   Raises the LineInfoVisibleChanged event.
     /// </summary>
     /// <param name="e">An EventArgs that contains the event data.</param>
     protected virtual void OnLineInfoVisibleChanged(EventArgs e)
@@ -3726,7 +3725,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// Raises the StringViewVisibleChanged event.
+    ///   Raises the StringViewVisibleChanged event.
     /// </summary>
     /// <param name="e">An EventArgs that contains the event data.</param>
     protected virtual void OnStringViewVisibleChanged(EventArgs e)
@@ -3738,7 +3737,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// Raises the BorderStyleChanged event.
+    ///   Raises the BorderStyleChanged event.
     /// </summary>
     /// <param name="e">An EventArgs that contains the event data.</param>
     protected virtual void OnBorderStyleChanged(EventArgs e)
@@ -3750,7 +3749,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// Raises the UseFixedBytesPerLineChanged event.
+    ///   Raises the UseFixedBytesPerLineChanged event.
     /// </summary>
     /// <param name="e">An EventArgs that contains the event data.</param>
     protected virtual void OnUseFixedBytesPerLineChanged(EventArgs e)
@@ -3762,7 +3761,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// Raises the BytesPerLineChanged event.
+    ///   Raises the BytesPerLineChanged event.
     /// </summary>
     /// <param name="e">An EventArgs that contains the event data.</param>
     protected virtual void OnBytesPerLineChanged(EventArgs e)
@@ -3774,7 +3773,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// Raises the VScrollBarVisibleChanged event.
+    ///   Raises the VScrollBarVisibleChanged event.
     /// </summary>
     /// <param name="e">An EventArgs that contains the event data.</param>
     protected virtual void OnVScrollBarVisibleChanged(EventArgs e)
@@ -3786,7 +3785,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// Raises the HexCasingChanged event.
+    ///   Raises the HexCasingChanged event.
     /// </summary>
     /// <param name="e">An EventArgs that contains the event data.</param>
     protected virtual void OnHexCasingChanged(EventArgs e)
@@ -3798,7 +3797,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// Raises the HorizontalByteCountChanged event.
+    ///   Raises the HorizontalByteCountChanged event.
     /// </summary>
     /// <param name="e">An EventArgs that contains the event data.</param>
     protected virtual void OnHorizontalByteCountChanged(EventArgs e)
@@ -3810,7 +3809,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// Raises the VerticalByteCountChanged event.
+    ///   Raises the VerticalByteCountChanged event.
     /// </summary>
     /// <param name="e">An EventArgs that contains the event data.</param>
     protected virtual void OnVerticalByteCountChanged(EventArgs e)
@@ -3822,7 +3821,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// Raises the CurrentLineChanged event.
+    ///   Raises the CurrentLineChanged event.
     /// </summary>
     /// <param name="e">An EventArgs that contains the event data.</param>
     protected virtual void OnCurrentLineChanged(EventArgs e)
@@ -3834,7 +3833,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// Raises the CurrentPositionInLineChanged event.
+    ///   Raises the CurrentPositionInLineChanged event.
     /// </summary>
     /// <param name="e">An EventArgs that contains the event data.</param>
     protected virtual void OnCurrentPositionInLineChanged(EventArgs e)
@@ -3846,7 +3845,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// Raises the MouseDown event.
+    ///   Raises the MouseDown event.
     /// </summary>
     /// <param name="e">An EventArgs that contains the event data.</param>
     protected override void OnMouseDown(MouseEventArgs e)
@@ -3864,7 +3863,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// Raises the MouseWhell event
+    ///   Raises the MouseWhell event
     /// </summary>
     /// <param name="e">An EventArgs that contains the event data.</param>
     protected override void OnMouseWheel(MouseEventArgs e)
@@ -3876,7 +3875,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// Raises the Resize event.
+    ///   Raises the Resize event.
     /// </summary>
     /// <param name="e">An EventArgs that contains the event data.</param>
     protected override void OnResize(EventArgs e)
@@ -3886,7 +3885,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// Raises the GotFocus event.
+    ///   Raises the GotFocus event.
     /// </summary>
     /// <param name="e">An EventArgs that contains the event data.</param>
     protected override void OnGotFocus(EventArgs e)
@@ -3899,7 +3898,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// Raises the LostFocus event.
+    ///   Raises the LostFocus event.
     /// </summary>
     /// <param name="e">An EventArgs that contains the event data.</param>
     protected override void OnLostFocus(EventArgs e)

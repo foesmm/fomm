@@ -4,7 +4,7 @@ using System.Drawing;
 namespace Fomm.PackageManager.XmlConfiguredInstall
 {
   /// <summary>
-  /// This class describes the header of the XML configured script options form.
+  ///   This class describes the header of the XML configured script options form.
   /// </summary>
   public class HeaderInfo
   {
@@ -17,13 +17,13 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     #region Properties
 
     /// <summary>
-    /// Gets the title of the form.
+    ///   Gets the title of the form.
     /// </summary>
     /// <value>The title of the form.</value>
     public string Title { get; private set; }
 
     /// <summary>
-    /// Gets the colour of the title of the form.
+    ///   Gets the colour of the title of the form.
     /// </summary>
     /// <value>The colour of the title of the form.</value>
     public Color TextColour
@@ -35,13 +35,13 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     }
 
     /// <summary>
-    /// Gets the image to display in the header.
+    ///   Gets the image to display in the header.
     /// </summary>
     /// <value>The image to display in the header.</value>
     public Image Image { get; private set; }
 
     /// <summary>
-    /// Gets the position of the title in the header.
+    ///   Gets the position of the title in the header.
     /// </summary>
     /// <value>The position of the title in the header.</value>
     public TextPosition TextPosition
@@ -53,7 +53,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     }
 
     /// <summary>
-    /// Gets whether or not to display the image in the header.
+    ///   Gets whether or not to display the image in the header.
     /// </summary>
     /// <value>Whether or not to display the image in the header.</value>
     public bool ShowImage
@@ -65,7 +65,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     }
 
     /// <summary>
-    /// Gets whether or not to display the fade effect in the header.
+    ///   Gets whether or not to display the fade effect in the header.
     /// </summary>
     /// <value>Whether or not to display the fade effect in the header.</value>
     public bool ShowFade
@@ -77,7 +77,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     }
 
     /// <summary>
-    /// Gets the desired height of the header.
+    ///   Gets the desired height of the header.
     /// </summary>
     /// <value>The desired height of the header.</value>
     public Int32 Height
@@ -93,7 +93,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     #region Constructors
 
     /// <summary>
-    /// A simple constructor that initializes the object with the given values.
+    ///   A simple constructor that initializes the object with the given values.
     /// </summary>
     /// <param name="p_strTitle">The title of the form.</param>
     /// <param name="p_clrColour">The colour of the title of the form.</param>

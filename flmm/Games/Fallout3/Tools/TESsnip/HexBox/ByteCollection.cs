@@ -3,19 +3,17 @@ using System.Collections;
 namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
 {
   /// <summary>
-  /// Represents a collection of bytes.
+  ///   Represents a collection of bytes.
   /// </summary>
   internal class ByteCollection : CollectionBase
   {
     /// <summary>
-    /// Initializes a new instance of ByteCollection class.
+    ///   Initializes a new instance of ByteCollection class.
     /// </summary>
-    public ByteCollection()
-    {
-    }
+    public ByteCollection() {}
 
     /// <summary>
-    /// Initializes a new instance of ByteCollection class.
+    ///   Initializes a new instance of ByteCollection class.
     /// </summary>
     /// <param name="bs">an array of bytes to add to collection</param>
     public ByteCollection(byte[] bs)
@@ -24,7 +22,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// Gets or sets the value of a byte
+    ///   Gets or sets the value of a byte
     /// </summary>
     public byte this[int index]
     {
@@ -39,7 +37,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// Adds a range of bytes to the collection.
+    ///   Adds a range of bytes to the collection.
     /// </summary>
     /// <param name="bs">the bytes to add</param>
     public void AddRange(byte[] bs)
@@ -48,7 +46,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// Removes a range of bytes from the collection.
+    ///   Removes a range of bytes from the collection.
     /// </summary>
     /// <param name="index">the index of the start byte</param>
     /// <param name="count">the count of the bytes to remove</param>
@@ -58,7 +56,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// Inserts a range of bytes to the collection.
+    ///   Inserts a range of bytes to the collection.
     /// </summary>
     /// <param name="index">the index of start byte</param>
     /// <param name="bs">an array of bytes to insert</param>
@@ -68,7 +66,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox
     }
 
     /// <summary>
-    /// Gets all bytes in the array
+    ///   Gets all bytes in the array
     /// </summary>
     /// <returns>an array of bytes.</returns>
     public byte[] GetBytes()

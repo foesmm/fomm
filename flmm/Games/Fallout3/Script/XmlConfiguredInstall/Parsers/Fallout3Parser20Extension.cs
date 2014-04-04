@@ -5,12 +5,12 @@ using Fomm.PackageManager.XmlConfiguredInstall;
 namespace Fomm.Games.Fallout3.Script.XmlConfiguredInstall.Parsers
 {
   /// <summary>
-  /// The Fallout 3 parser extension for version 2.0 XML configuration files.
+  ///   The Fallout 3 parser extension for version 2.0 XML configuration files.
   /// </summary>
   public class Fallout3Parser20Extension : Fallout3Parser10Extension
   {
     /// <summary>
-    /// Parses the given dependency.
+    ///   Parses the given dependency.
     /// </summary>
     /// <param name="p_xndDependency">The dependency to parse.</param>
     /// <param name="p_dsmSate">The state manager for this install.</param>

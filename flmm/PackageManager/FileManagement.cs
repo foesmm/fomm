@@ -5,16 +5,18 @@ namespace Fomm.PackageManager
   public static class FileManagement
   {
     /// <summary>
-    /// Verifies if the given path is safe to be written to.
+    ///   Verifies if the given path is safe to be written to.
     /// </summary>
     /// <remarks>
-    /// A path is safe to be written to if it contains no charaters
-    /// disallowed by the operating system, and if is is in the Data
-    /// directory or one of its sub-directories.
+    ///   A path is safe to be written to if it contains no charaters
+    ///   disallowed by the operating system, and if is is in the Data
+    ///   directory or one of its sub-directories.
     /// </remarks>
     /// <param name="p_strPath">The path whose safety is to be verified.</param>
-    /// <returns><lang langref="true"/> if the given path is safe to write to;
-    /// <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the given path is safe to write to;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
     private static bool IsSafeFilePath(string p_strPath)
     {
       if (p_strPath.IndexOfAny(Path.GetInvalidPathChars()) != -1)
@@ -37,11 +39,11 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Ensures that the given path is safe to be accessed.
+    ///   Ensures that the given path is safe to be accessed.
     /// </summary>
     /// <param name="p_strPath">The path whose safety is to be verified.</param>
     /// <exception cref="IllegalFilePathException">Thrown if the given path is not safe.</exception>
-    /// <seealso cref="IsSafeFilePath"/>
+    /// <seealso cref="IsSafeFilePath" />
     internal static void AssertFilePathIsSafe(string p_strPath)
     {
       if (!IsSafeFilePath(p_strPath))
@@ -51,11 +53,13 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Determines if the specified file exists in the user's Data directory.
+    ///   Determines if the specified file exists in the user's Data directory.
     /// </summary>
     /// <param name="p_strPath">The path of the file whose existence is to be verified.</param>
-    /// <returns><lang langref="true"/> if the specified file exists; <lange langref="false"/>
-    /// otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the specified file exists; <lange langref="false" />
+    ///   otherwise.
+    /// </returns>
     /// <exception cref="IllegalFilePathException">Thrown if the given path is not safe.</exception>
     public static bool DataFileExists(string p_strPath)
     {
@@ -66,7 +70,7 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Gets a filtered list of all files in a user's Data directory.
+    ///   Gets a filtered list of all files in a user's Data directory.
     /// </summary>
     /// <param name="p_strPath">The subdirectory of the Data directory from which to get the listing.</param>
     /// <param name="p_strPattern">The pattern against which to filter the file paths.</param>
@@ -82,7 +86,7 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Gets the speified file from the user's Data directory.
+    ///   Gets the speified file from the user's Data directory.
     /// </summary>
     /// <param name="p_strPath">The path of the file to retrieve.</param>
     /// <returns>The specified file.</returns>

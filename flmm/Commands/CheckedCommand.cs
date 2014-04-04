@@ -4,7 +4,7 @@ using System.ComponentModel;
 namespace Fomm.Commands
 {
   /// <summary>
-  /// A command that can be in an on or off state.
+  ///   A command that can be in an on or off state.
   /// </summary>
   /// <typeparam name="T">The type of the command argument.</typeparam>
   public class CheckedCommand<T> : Command<T>
@@ -14,7 +14,7 @@ namespace Fomm.Commands
     #region Properties
 
     /// <summary>
-    /// Gets or sets whether the command is checked.
+    ///   Gets or sets whether the command is checked.
     /// </summary>
     /// <value>Whether the command is checked.</value>
     public bool IsChecked
@@ -38,25 +38,31 @@ namespace Fomm.Commands
     #region Constructors
 
     /// <summary>
-    /// A simple constructor that initializes the object with the given values.
+    ///   A simple constructor that initializes the object with the given values.
     /// </summary>
     /// <param name="p_strName">The name of the command.</param>
     /// <param name="p_strDescription">The description of the command.</param>
-    /// <param name="p_eehExecute">An <see cref="EventHandler<ExecutedEventArgs<T>>"/> that will be
-    /// perform the command work.</param>
+    /// <param name="p_eehExecute">
+    ///   An <see cref="EventHandler<ExecutedEventArgs
+    ///   <T>
+    ///     >"/> that will be
+    ///     perform the command work.
+    /// </param>
     public CheckedCommand(string p_strName, string p_strDescription, EventHandler<ExecutedEventArgs<T>> p_eehExecute)
-      : base(p_strName, p_strDescription, p_eehExecute)
-    {
-    }
+      : base(p_strName, p_strDescription, p_eehExecute) {}
 
     /// <summary>
-    /// A simple constructor that initializes the object with the given values.
+    ///   A simple constructor that initializes the object with the given values.
     /// </summary>
     /// <param name="p_strName">The name of the command.</param>
     /// <param name="p_strDescription">The description of the command.</param>
     /// <param name="p_booIsChecked">Whether the command is checked.</param>
-    /// <param name="p_eehExecute">An <see cref="EventHandler<ExecutedEventArgs<T>>"/> that will be
-    /// perform the command work.</param>
+    /// <param name="p_eehExecute">
+    ///   An <see cref="EventHandler<ExecutedEventArgs
+    ///   <T>
+    ///     >"/> that will be
+    ///     perform the command work.
+    /// </param>
     public CheckedCommand(string p_strName, string p_strDescription, bool p_booIsChecked,
                           EventHandler<ExecutedEventArgs<T>> p_eehExecute)
       : base(p_strName, p_strDescription, p_eehExecute)

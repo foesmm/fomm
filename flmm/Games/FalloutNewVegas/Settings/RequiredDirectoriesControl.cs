@@ -1,18 +1,18 @@
 ﻿using System;
-using System.Windows.Forms;
 using System.IO;
+using System.Windows.Forms;
 
 namespace Fomm.Games.FalloutNewVegas.Settings
 {
   /// <summary>
-  /// A control that encapsulates the management of the critical directory settings.
+  ///   A control that encapsulates the management of the critical directory settings.
   /// </summary>
   public partial class RequiredDirectoriesControl : UserControl
   {
     #region
 
     /// <summary>
-    /// The default constructor.
+    ///   The default constructor.
     /// </summary>
     public RequiredDirectoriesControl()
     {
@@ -24,10 +24,12 @@ namespace Fomm.Games.FalloutNewVegas.Settings
     #region Validation
 
     /// <summary>
-    /// Validates the specified directory.
+    ///   Validates the specified directory.
     /// </summary>
-    /// <returns><lang langref="true"/> if the specified directory is valid;
-    /// <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the specified directory is valid;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
     protected bool ValidateDirectory(string p_strPath, string p_strPathName, Control p_ctlErrorControl)
     {
       erpValidator.SetError(p_ctlErrorControl, null);
@@ -54,30 +56,36 @@ namespace Fomm.Games.FalloutNewVegas.Settings
     }
 
     /// <summary>
-    /// Validates the selected mod directory.
+    ///   Validates the selected mod directory.
     /// </summary>
-    /// <returns><lang langref="true"/> if the selected mod directory is valid;
-    /// <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the selected mod directory is valid;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
     protected bool ValidateModDirectory()
     {
       return ValidateDirectory(tbxModDirectory.Text, "Mod Directory", butSelectModDirectory);
     }
 
     /// <summary>
-    /// Validates the selected install info directory.
+    ///   Validates the selected install info directory.
     /// </summary>
-    /// <returns><lang langref="true"/> if the selected install info directory is valid;
-    /// <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the selected install info directory is valid;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
     protected bool ValidateInstallInfoDirectory()
     {
       return ValidateDirectory(tbxInstallInfo.Text, "Install Info Directory", butSelectInfoDirectory);
     }
 
     /// <summary>
-    /// Validates the settings on this control.
+    ///   Validates the settings on this control.
     /// </summary>
-    /// <returns><lang langref="true"/> if the settings are valid;
-    /// <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the settings are valid;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
     public bool ValidateSettings()
     {
       return ValidateModDirectory() && ValidateInstallInfoDirectory();
@@ -86,7 +94,7 @@ namespace Fomm.Games.FalloutNewVegas.Settings
     #endregion
 
     /// <summary>
-    /// Loads the user's settings into the control.
+    ///   Loads the user's settings into the control.
     /// </summary>
     public void LoadSettings()
     {
@@ -115,7 +123,7 @@ namespace Fomm.Games.FalloutNewVegas.Settings
     }
 
     /// <summary>
-    /// Persists the settings on this control.
+    ///   Persists the settings on this control.
     /// </summary>
     public void SaveSettings()
     {
@@ -124,13 +132,13 @@ namespace Fomm.Games.FalloutNewVegas.Settings
     }
 
     /// <summary>
-    /// Handles the <see cref="Control.Click"/> event of the select mod directory button.
+    ///   Handles the <see cref="Control.Click" /> event of the select mod directory button.
     /// </summary>
     /// <remarks>
-    /// This opens the folder selection dialog for the mod directory.
+    ///   This opens the folder selection dialog for the mod directory.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void butSelectModDirectory_Click(object sender, EventArgs e)
     {
       fbdDirectory.SelectedPath = tbxModDirectory.Text;
@@ -141,13 +149,13 @@ namespace Fomm.Games.FalloutNewVegas.Settings
     }
 
     /// <summary>
-    /// Handles the <see cref="Control.Click"/> event of the select install info button.
+    ///   Handles the <see cref="Control.Click" /> event of the select install info button.
     /// </summary>
     /// <remarks>
-    /// This opens the folder selection dialog for the install info directory.
+    ///   This opens the folder selection dialog for the install info directory.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void butSelectInfoDirectory_Click(object sender, EventArgs e)
     {
       fbdDirectory.SelectedPath = tbxInstallInfo.Text;

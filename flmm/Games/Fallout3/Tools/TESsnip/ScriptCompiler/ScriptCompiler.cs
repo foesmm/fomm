@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
-using System.Xml;
-using BinaryWriter = System.IO.BinaryWriter;
-using MemoryStream = System.IO.MemoryStream;
 using System.Windows.Forms;
+using System.Xml;
 
 //TODO: ret value and paramter validation
 //TODO: ref.local needs to emit 66 if the var type is float/ref?
@@ -183,7 +181,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
       new Dictionary<string, Dictionary<string, ushort>>();
 
     private static string xmlPath = Path.Combine(Program.ProgrammeInfoDirectory,
-                                                           "Fallout3\\TESsnip\\ScriptCompiler\\ScriptFunctions.xml");
+                                                 "Fallout3\\TESsnip\\ScriptCompiler\\ScriptFunctions.xml");
 
     private static void AddFunction(string name, string sname, FunctionSig sig)
     {
@@ -782,9 +780,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
 
     private class ExpressionParseException : Exception
     {
-      public ExpressionParseException(string msg) : base(msg)
-      {
-      }
+      public ExpressionParseException(string msg) : base(msg) {}
     }
 
     private enum ExpressionType
@@ -847,7 +843,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
           {
             AddError("A reference assignment must consist of a single edid or function");
           }
-          EmitByte(lv.type == VarType.Int ? (byte)0x73 : (byte)0x66);
+          EmitByte(lv.type == VarType.Int ? (byte) 0x73 : (byte) 0x66);
           Emit((ushort) lv.index);
           break;
         case TokenType.Global:
@@ -1402,7 +1398,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
         if (smt[1].type == TokenType.Local)
         {
           var lv = locals[smt[1].token];
-          EmitByte(lv.type == VarType.Int ? (byte)0x73 : (byte)0x66);
+          EmitByte(lv.type == VarType.Int ? (byte) 0x73 : (byte) 0x66);
           Emit((ushort) lv.index);
           EmitExpression(TrimStatement(smt, 3), (lv.type == VarType.Ref) ? ExpressionType.Ref : ExpressionType.Numeric);
         }

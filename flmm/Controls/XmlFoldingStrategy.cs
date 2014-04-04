@@ -1,11 +1,11 @@
-﻿using ICSharpCode.TextEditor.Document;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using ICSharpCode.TextEditor;
+using ICSharpCode.TextEditor.Document;
 
 namespace Fomm.Controls
 {
   /// <summary>
-  /// Handles the folding of XML.
+  ///   Handles the folding of XML.
   /// </summary>
   public class XmlFoldingStrategy : IFoldingStrategy
   {
@@ -14,7 +14,7 @@ namespace Fomm.Controls
     #region IFoldingStrategy Members
 
     /// <summary>
-    /// Generates the list of markers indicating where the XML should be folded.
+    ///   Generates the list of markers indicating where the XML should be folded.
     /// </summary>
     /// <param name="document">The document to fold.</param>
     /// <param name="fileName">The file name of the document to fold.</param>
@@ -30,10 +30,10 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Adds a fold for the specified tag spanning the specified lines.
+    ///   Adds a fold for the specified tag spanning the specified lines.
     /// </summary>
     /// <remarks>
-    /// This method is called by the <see cref="XmlParser"/> whenever a complete tag is found.
+    ///   This method is called by the <see cref="XmlParser" /> whenever a complete tag is found.
     /// </remarks>
     /// <param name="p_docDocument">The document in which to make the fold.</param>
     /// <param name="p_strTagName">The name of the tag being folded.</param>

@@ -1,38 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Xml;
 using System.IO;
 using System.Windows.Forms;
+using System.Xml;
 using Fomm.Util;
 
 namespace Fomm.PackageManager.FomodBuilder
 {
   /// <summary>
-  /// This class builds fomods and premade fomod packs.
+  ///   This class builds fomods and premade fomod packs.
   /// </summary>
   public class FomodFromSourceBuilder : FomodGenerator
   {
     /// <summary>
-    /// The arguments object to pass to the background worker when building a fomod.
+    ///   The arguments object to pass to the background worker when building a fomod.
     /// </summary>
     protected class BuildFomodArgs : GenerateFomodArgs
     {
       #region Properties
 
       /// <summary>
-      /// Gets or sets the fomodName.
+      ///   Gets or sets the fomodName.
       /// </summary>
       /// <value>The fomodName.</value>
       public string FomodName { get; private set; }
 
       /// <summary>
-      /// Gets the source folder from which to make the fomod.
+      ///   Gets the source folder from which to make the fomod.
       /// </summary>
       /// <value>The source folder from which to make the fomod.</value>
       public string SourcePath { get; private set; }
 
       /// <summary>
-      /// Gets the URL of the mod's website.
+      ///   Gets the URL of the mod's website.
       /// </summary>
       /// <value>The URL of the mod's website.</value>
       public string Url { get; private set; }
@@ -42,12 +42,12 @@ namespace Fomm.PackageManager.FomodBuilder
       #region Constructors
 
       /// <summary>
-      /// A simple constructor that initializes the object with the given values.
+      ///   A simple constructor that initializes the object with the given values.
       /// </summary>
-      /// <param name="p_strFomodName">The value with which to initialize the <see cref="FomodName"/> property.</param>
-      /// <param name="p_strSourcePath">The value with which to initialize the <see cref="SourcePath"/> property.</param>
-      /// <param name="p_strUrl">The value with which to initialize the <see cref="Url"/> property.</param>
-      /// <param name="p_strPackedFomodPath">The value with which to initialize the <see cref="PackedFomodPath"/> property.</param>
+      /// <param name="p_strFomodName">The value with which to initialize the <see cref="FomodName" /> property.</param>
+      /// <param name="p_strSourcePath">The value with which to initialize the <see cref="SourcePath" /> property.</param>
+      /// <param name="p_strUrl">The value with which to initialize the <see cref="Url" /> property.</param>
+      /// <param name="p_strPackedFomodPath">The value with which to initialize the <see cref="PackedFomodPath" /> property.</param>
       public BuildFomodArgs(string p_strFomodName, string p_strSourcePath, string p_strUrl, string p_strPackedFomodPath)
         : base(p_strPackedFomodPath)
       {
@@ -62,13 +62,13 @@ namespace Fomm.PackageManager.FomodBuilder
     #region Build Fomod From Source
 
     /// <summary>
-    /// Creates a fomod from a source.
+    ///   Creates a fomod from a source.
     /// </summary>
     /// <remarks>
-    /// The source can be a folder or an archive.
+    ///   The source can be a folder or an archive.
     /// </remarks>
     /// <param name="p_strPath">The path to the source from which to create the fomod.</param>
-    /// <returns>The path to the new fomod if it was successfully built; <lang langref="null"/> otherwise.</returns>
+    /// <returns>The path to the new fomod if it was successfully built; <lang langref="null" /> otherwise.</returns>
     public IList<string> BuildFomodFromSource(string p_strPath)
     {
       var strSource = p_strPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
@@ -195,12 +195,12 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// This builds the fomod based on the given data.
+    ///   This builds the fomod based on the given data.
     /// </summary>
     /// <remarks>
-    /// This method is called by a <see cref="BackgroundWorkerProgressDialog"/>.
+    ///   This method is called by a <see cref="BackgroundWorkerProgressDialog" />.
     /// </remarks>
-    /// <param name="p_objArgs">A <see cref="BuildFomodArgs"/> describing the fomod to build.</param>
+    /// <param name="p_objArgs">A <see cref="BuildFomodArgs" /> describing the fomod to build.</param>
     protected override void DoGenerateFomod(object p_objArgs)
     {
       var bfaArgs = p_objArgs as BuildFomodArgs;
@@ -278,7 +278,7 @@ namespace Fomm.PackageManager.FomodBuilder
 
       // 4) Create readme
       var strReadmes = Directory.GetFiles(strSource, "readme - " + bfaArgs.FomodName + ".*",
-                                               SearchOption.TopDirectoryOnly);
+                                          SearchOption.TopDirectoryOnly);
       if (strReadmes.Length == 0)
       {
         strReadmes = Directory.GetFiles(strSource, "*readme*.*", SearchOption.AllDirectories);
@@ -341,10 +341,10 @@ namespace Fomm.PackageManager.FomodBuilder
     #region Helper Methods
 
     /// <summary>
-    /// This method removes any extraneous files from the source.
+    ///   This method removes any extraneous files from the source.
     /// </summary>
     /// <remarks>
-    /// This removes OS-specific metadat files, such as desktop.ini and thumbs.db.
+    ///   This removes OS-specific metadat files, such as desktop.ini and thumbs.db.
     /// </remarks>
     /// <param name="p_strSourcePath">The path from which to removed extraneous files.</param>
     protected void DeleteUnwantedFiles(string p_strSourcePath)
@@ -366,12 +366,12 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// This descends through the file structure until a FOMod structure is located.
+    ///   This descends through the file structure until a FOMod structure is located.
     /// </summary>
     /// <remarks>
-    /// This bypasses any top-level container folders. For example, a mod may be in an archive Mod.zip.
-    /// That archive, instead of directly containing the fomod directory and files, will mave a top-level
-    /// 'Mod' folder that contains the fomod files. The method will bypasses that folder.
+    ///   This bypasses any top-level container folders. For example, a mod may be in an archive Mod.zip.
+    ///   That archive, instead of directly containing the fomod directory and files, will mave a top-level
+    ///   'Mod' folder that contains the fomod files. The method will bypasses that folder.
     /// </remarks>
     /// <param name="p_strSourcePath">The directory through which to seach for the fomod files.</param>
     /// <returns>The path to the fomod files.</returns>

@@ -5,14 +5,14 @@ using Fomm.PackageManager;
 namespace Fomm.Controls
 {
   /// <summary>
-  /// Text editor for the script of a fomod.
+  ///   Text editor for the script of a fomod.
   /// </summary>
   public partial class ScriptEditor : UserControl
   {
     #region Properties
 
     /// <summary>
-    /// Gets or sets the text of the editor.
+    ///   Gets or sets the text of the editor.
     /// </summary>
     /// <value>The text of the editor.</value>
     public override string Text
@@ -32,7 +32,7 @@ namespace Fomm.Controls
     #region Constructors
 
     /// <summary>
-    /// The default constructor.
+    ///   The default constructor.
     /// </summary>
     public ScriptEditor()
     {
@@ -42,9 +42,9 @@ namespace Fomm.Controls
     #endregion
 
     /// <summary>
-    /// Validates the syntax of the script.
+    ///   Validates the syntax of the script.
     /// </summary>
-    /// <returns><lang langref="true"/> if the script syntax is valid; <lang langref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true" /> if the script syntax is valid; <lang langref="false" /> otherwise.</returns>
     public bool ValidateSyntax()
     {
       string stdout;
@@ -53,7 +53,7 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Checks the syntax of the script.
+    ///   Checks the syntax of the script.
     /// </summary>
     protected void CheckSyntax()
     {
@@ -70,10 +70,10 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Handles the <see cref="Control.Click"/> event of the check syntax button.
+    ///   Handles the <see cref="Control.Click" /> event of the check syntax button.
     /// </summary>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event argument.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event argument.</param>
     private void tsbCheckSyntax_Click(object sender, EventArgs e)
     {
       CheckSyntax();

@@ -8,14 +8,14 @@ using System.Windows.Forms.Design;
 namespace Fomm.Games.Fallout3.Tools.TESsnip.HexBox.Design
 {
   /// <summary>
-  /// Display only fixed-piched fonts
+  ///   Display only fixed-piched fonts
   /// </summary>
   internal class HexFontEditor : FontEditor
   {
     private object value;
 
     /// <summary>
-    /// Edits the value
+    ///   Edits the value
     /// </summary>
     public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider,
                                      object value)

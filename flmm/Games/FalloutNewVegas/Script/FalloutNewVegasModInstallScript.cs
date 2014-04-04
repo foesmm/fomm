@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
-using Fomm.PackageManager;
 using System.IO;
 using Fomm.Games.Fallout3.Script;
+using Fomm.PackageManager;
 
 namespace Fomm.Games.FalloutNewVegas.Script
 {
@@ -11,22 +11,20 @@ namespace Fomm.Games.FalloutNewVegas.Script
     #region Constructors
 
     /// <summary>
-    /// A simple constructor that initializes the object.
+    ///   A simple constructor that initializes the object.
     /// </summary>
-    /// <param name="p_fomodMod">The <see cref="fomod"/> against which to run the script.</param>
+    /// <param name="p_fomodMod">The <see cref="fomod" /> against which to run the script.</param>
     public FalloutNewVegasModInstallScript(fomod p_fomodMod, ModInstallerBase p_mibInstaller)
-      : base(p_fomodMod, p_mibInstaller)
-    {
-    }
+      : base(p_fomodMod, p_mibInstaller) {}
 
     #endregion
 
     #region Version Checking
 
     /// <summary>
-    /// Indicates whether or not NVSE is present.
+    ///   Indicates whether or not NVSE is present.
     /// </summary>
-    /// <returns><lang langref="true"/> if NVSE is installed; <lang langref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true" /> if NVSE is installed; <lang langref="false" /> otherwise.</returns>
     public override bool ScriptExtenderPresent()
     {
       PermissionsManager.CurrentPermissions.Assert();
@@ -34,10 +32,12 @@ namespace Fomm.Games.FalloutNewVegas.Script
     }
 
     /// <summary>
-    /// Gets the version of the sript extender that is installed.
+    ///   Gets the version of the sript extender that is installed.
     /// </summary>
-    /// <returns>The version of the sript extender that is installed, or <lang langref="null"/> if no
-    /// sript extender is installed.</returns>
+    /// <returns>
+    ///   The version of the sript extender that is installed, or <lang langref="null" /> if no
+    ///   sript extender is installed.
+    /// </returns>
     public override Version GetScriptExtenderVersion()
     {
       PermissionsManager.CurrentPermissions.Assert();
@@ -56,14 +56,16 @@ namespace Fomm.Games.FalloutNewVegas.Script
     #region Ini Editing
 
     /// <summary>
-    /// Sets the specified value in the Fallout.ini file to the given value. 
+    ///   Sets the specified value in the Fallout.ini file to the given value.
     /// </summary>
     /// <param name="p_strSection">The section in the Ini file to edit.</param>
     /// <param name="p_strKey">The key in the Ini file to edit.</param>
     /// <param name="p_strValue">The value to which to set the key.</param>
     /// <param name="p_booSaveOld">Not used.</param>
-    /// <returns><lang langref="true"/> if the value was set; <lang langref="false"/>
-    /// if the user chose not to overwrite the existing value.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the value was set; <lang langref="false" />
+    ///   if the user chose not to overwrite the existing value.
+    /// </returns>
     public override bool EditFalloutINI(string p_strSection, string p_strKey, string p_strValue, bool p_booSaveOld)
     {
       EditINI(((FalloutNewVegasGameMode.SettingsFilesSet) Program.GameMode.SettingsFiles).FODefaultIniPath, p_strSection,

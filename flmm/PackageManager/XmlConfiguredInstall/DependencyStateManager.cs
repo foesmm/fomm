@@ -4,22 +4,22 @@ using System.Collections.Generic;
 namespace Fomm.PackageManager.XmlConfiguredInstall
 {
   /// <summary>
-  /// This class manages the state of the installation.
+  ///   This class manages the state of the installation.
   /// </summary>
   public abstract class DependencyStateManager
   {
     /// <summary>
-    /// Describe the owner and value of a condition flag.
+    ///   Describe the owner and value of a condition flag.
     /// </summary>
     private class FlagValue
     {
       /// <summary>
-      /// The value of the flag.
+      ///   The value of the flag.
       /// </summary>
       public string Value;
 
       /// <summary>
-      /// The owner of the flag.
+      ///   The owner of the flag.
       /// </summary>
       public PluginInfo Owner;
     }
@@ -29,18 +29,18 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     #region Properties
 
     /// <summary>
-    /// Gets the install script being used to perform the install.
+    ///   Gets the install script being used to perform the install.
     /// </summary>
     /// <value>The install script being used to perform the install.</value>
     protected ModInstallScript Script { get; private set; }
 
     /// <summary>
-    /// A dictionary listed all installed plugins, and indicating which are active.
+    ///   A dictionary listed all installed plugins, and indicating which are active.
     /// </summary>
     public Dictionary<string, bool> InstalledPlugins { get; protected set; }
 
     /// <summary>
-    /// Gets the current values of the flags that have been set.
+    ///   Gets the current values of the flags that have been set.
     /// </summary>
     /// <value>The current values of the flags that have been set.</value>
     public Dictionary<string, string> FlagValues
@@ -57,10 +57,10 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     }
 
     /// <summary>
-    /// Gets the installed version of the current game.
+    ///   Gets the installed version of the current game.
     /// </summary>
     /// <remarks>
-    /// <lang langref="null"/> is returned if the game is not installed.
+    ///   <lang langref="null" /> is returned if the game is not installed.
     /// </remarks>
     /// <value>The installed version of the current game.</value>
     public Version GameVersion
@@ -72,10 +72,10 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     }
 
     /// <summary>
-    /// Gets the installed version of FOMM.
+    ///   Gets the installed version of FOMM.
     /// </summary>
     /// <remarks>
-    /// <lang langref="null"/> is returned if FOMM is not installed.
+    ///   <lang langref="null" /> is returned if FOMM is not installed.
     /// </remarks>
     /// <value>The installed version of FOMM.</value>
     public Version FommVersion
@@ -91,7 +91,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     #region Constructors
 
     /// <summary>
-    /// A simple constructor that initializes the object with the given values.
+    ///   A simple constructor that initializes the object with the given values.
     /// </summary>
     /// <param name="p_misInstallScript">The install script.</param>
     public DependencyStateManager(ModInstallScript p_misInstallScript)
@@ -110,7 +110,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     #endregion
 
     /// <summary>
-    /// Determins if the specified plugin is active.
+    ///   Determins if the specified plugin is active.
     /// </summary>
     /// <param name="p_strFile">The plugin whose state is to be dtermined.</param>
     /// <returns>true if the specified plugin is active; false otherwise.</returns>
@@ -128,7 +128,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     }
 
     /// <summary>
-    /// Gets a list of all active installed plugins.
+    ///   Gets a list of all active installed plugins.
     /// </summary>
     /// <returns>A list of all active installed plugins.</returns>
     protected string[] GetActiveInstalledPlugins()
@@ -152,7 +152,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     private string[] m_strActiveInstalledPlugins;
 
     /// <summary>
-    /// Sets the value of a conditional flag.
+    ///   Sets the value of a conditional flag.
     /// </summary>
     /// <param name="p_strFlagName">The name of the falg whose value is to be set.</param>
     /// <param name="p_strValue">The value to which to set the flag.</param>
@@ -168,7 +168,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     }
 
     /// <summary>
-    /// Removes the specified flag if the given plugin is the owner of the current value.
+    ///   Removes the specified flag if the given plugin is the owner of the current value.
     /// </summary>
     /// <param name="p_strFlagName">The name of the flag to remove.</param>
     /// <param name="p_pifPlugin">The owner of the flag to remove.</param>

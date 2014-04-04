@@ -41,7 +41,7 @@ using Fomm.SharpZipLib.Core;
 namespace Fomm.SharpZipLib.Zip
 {
   /// <summary>
-  /// Basic implementation of <see cref="IEntryFactory"></see>
+  ///   Basic implementation of <see cref="IEntryFactory"></see>
   /// </summary>
   internal class ZipEntryFactory : IEntryFactory
   {
@@ -52,9 +52,9 @@ namespace Fomm.SharpZipLib.Zip
     #region Constructors
 
     /// <summary>
-    /// Initialise a new instance of the <see cref="ZipEntryFactory"/> class.
+    ///   Initialise a new instance of the <see cref="ZipEntryFactory" /> class.
     /// </summary>
-    /// <remarks>A default <see cref="INameTransform"/>, and the LastWriteTime for files is used.</remarks>
+    /// <remarks>A default <see cref="INameTransform" />, and the LastWriteTime for files is used.</remarks>
     public ZipEntryFactory()
     {
       nameTransform_ = new ZipNameTransform();
@@ -65,10 +65,10 @@ namespace Fomm.SharpZipLib.Zip
     #region Properties
 
     /// <summary>
-    /// Get / set the <see cref="INameTransform"/> to be used when creating new <see cref="ZipEntry"/> values.
+    ///   Get / set the <see cref="INameTransform" /> to be used when creating new <see cref="ZipEntry" /> values.
     /// </summary>
     /// <remarks>
-    /// Setting this property to null will cause a default <see cref="ZipNameTransform">name transform</see> to be used.
+    ///   Setting this property to null will cause a default <see cref="ZipNameTransform">name transform</see> to be used.
     /// </remarks>
     public INameTransform NameTransform
     {
@@ -94,21 +94,21 @@ namespace Fomm.SharpZipLib.Zip
     #region IEntryFactory Members
 
     /// <summary>
-    /// Make a new <see cref="ZipEntry"/> for a file.
+    ///   Make a new <see cref="ZipEntry" /> for a file.
     /// </summary>
     /// <param name="fileName">The name of the file to create a new entry for.</param>
-    /// <returns>Returns a new <see cref="ZipEntry"/> based on the <paramref name="fileName"/>.</returns>
+    /// <returns>Returns a new <see cref="ZipEntry" /> based on the <paramref name="fileName" />.</returns>
     public ZipEntry MakeFileEntry(string fileName)
     {
       return MakeFileEntry(fileName, true);
     }
 
     /// <summary>
-    /// Make a new <see cref="ZipEntry"/> from a name.
+    ///   Make a new <see cref="ZipEntry" /> from a name.
     /// </summary>
     /// <param name="fileName">The name of the file to create a new entry for.</param>
     /// <param name="useFileSystem">If true entry detail is retrieved from the file system if the file exists.</param>
-    /// <returns>Returns a new <see cref="ZipEntry"/> based on the <paramref name="fileName"/>.</returns>
+    /// <returns>Returns a new <see cref="ZipEntry" /> based on the <paramref name="fileName" />.</returns>
     public ZipEntry MakeFileEntry(string fileName, bool useFileSystem)
     {
       var result = new ZipEntry(nameTransform_.TransformFile(fileName));
@@ -142,7 +142,7 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Make a new <see cref="ZipEntry"></see> for a directory.
+    ///   Make a new <see cref="ZipEntry"></see> for a directory.
     /// </summary>
     /// <param name="directoryName">The raw untransformed name for the new directory</param>
     /// <returns>Returns a new <see cref="ZipEntry"></see> representing a directory.</returns>
@@ -152,7 +152,7 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Make a new <see cref="ZipEntry"></see> for a directory.
+    ///   Make a new <see cref="ZipEntry"></see> for a directory.
     /// </summary>
     /// <param name="directoryName">The raw untransformed name for the new directory</param>
     /// <param name="useFileSystem">If true entry detail is retrieved from the file system if the file exists.</param>

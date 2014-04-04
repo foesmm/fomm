@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Fomm.Util
 {
   /// <summary>
-  /// A Set implementation.
+  ///   A Set implementation.
   /// </summary>
   /// <typeparam name="T">The type of objects in the Set.</typeparam>
   public class Set<T> : IList<T>, IList
@@ -16,14 +16,12 @@ namespace Fomm.Util
     #region Constructors
 
     /// <summary>
-    /// The default constructor.
+    ///   The default constructor.
     /// </summary>
-    public Set()
-    {
-    }
+    public Set() {}
 
     /// <summary>
-    /// A constructor that fills the set with the given items.
+    ///   A constructor that fills the set with the given items.
     /// </summary>
     /// <param name="p_enmItems">the items to add to the set.</param>
     public Set(IEnumerable<T> p_enmItems)
@@ -32,7 +30,7 @@ namespace Fomm.Util
     }
 
     /// <summary>
-    /// A constructor that fills the set with the given items, and allows the specification of a custom comparer.
+    ///   A constructor that fills the set with the given items, and allows the specification of a custom comparer.
     /// </summary>
     /// <param name="p_enmItems">the items to add to the set.</param>
     /// <param name="p_cmpComparer">The comparer to use when determining if an item is already in the set.</param>
@@ -43,7 +41,7 @@ namespace Fomm.Util
     }
 
     /// <summary>
-    /// A constructor that allows the specification of a custom comparer.
+    ///   A constructor that allows the specification of a custom comparer.
     /// </summary>
     /// <param name="p_cmpComparer">The comparer to use when determining if an item is already in the set.</param>
     public Set(IComparer<T> p_cmpComparer)
@@ -52,7 +50,7 @@ namespace Fomm.Util
     }
 
     /// <summary>
-    /// The copy constructor.
+    ///   The copy constructor.
     /// </summary>
     /// <param name="p_setCopy">The set to copy.</param>
     public Set(Set<T> p_setCopy)
@@ -64,18 +62,20 @@ namespace Fomm.Util
     #endregion
 
     /// <summary>
-    /// Finds the first item that matches the given predicate.
+    ///   Finds the first item that matches the given predicate.
     /// </summary>
     /// <param name="match">The predicate against which to match the items.</param>
-    /// <returns>The first item that matches the given predicate, or <lang langref="null"/>
-    /// if no matching item is found.</returns>
+    /// <returns>
+    ///   The first item that matches the given predicate, or <lang langref="null" />
+    ///   if no matching item is found.
+    /// </returns>
     public T Find(Predicate<T> match)
     {
       return m_lstList.Find(match);
     }
 
     /// <summary>
-    /// Gets an array containing the items in the set.
+    ///   Gets an array containing the items in the set.
     /// </summary>
     /// <returns>An array containing the items in the set.</returns>
     public T[] ToArray()
@@ -86,7 +86,7 @@ namespace Fomm.Util
     }
 
     /// <summary>
-    /// Adds the given items to the set.
+    ///   Adds the given items to the set.
     /// </summary>
     /// <param name="p_enmItems">The items to add.</param>
     public void AddRange(IEnumerable<T> p_enmItems)
@@ -98,7 +98,7 @@ namespace Fomm.Util
     }
 
     /// <summary>
-    /// Sorts the set.
+    ///   Sorts the set.
     /// </summary>
     public void Sort()
     {
@@ -115,7 +115,7 @@ namespace Fomm.Util
     #region IndexOf
 
     /// <summary>
-    /// Determines the first index of the specified item.
+    ///   Determines the first index of the specified item.
     /// </summary>
     /// <param name="p_tItem">The item whose index in the set is to be found.</param>
     /// <param name="p_intStartIndex">The zero-based index where to start the search.</param>
@@ -137,7 +137,7 @@ namespace Fomm.Util
     }
 
     /// <summary>
-    /// Determines the last index of the specified item.
+    ///   Determines the last index of the specified item.
     /// </summary>
     /// <param name="p_tItem">The item whose index in the set is to be found.</param>
     /// <returns>The last index of the specified item, or -1 if the item is not in the set.</returns>
@@ -147,7 +147,7 @@ namespace Fomm.Util
     }
 
     /// <summary>
-    /// Determines the last index of the specified item.
+    ///   Determines the last index of the specified item.
     /// </summary>
     /// <param name="p_tItem">The item whose index in the set is to be found.</param>
     /// <param name="p_intStartIndex">The zero-based index where to start the search.</param>
@@ -173,7 +173,7 @@ namespace Fomm.Util
     #region IList<T> Members
 
     /// <summary>
-    /// Determines the first index of the specified item.
+    ///   Determines the first index of the specified item.
     /// </summary>
     /// <param name="p_tItem">The item whose index in the set is to be found.</param>
     /// <returns>The first index of the specified item, or -1 if the item is not in the set.</returns>
@@ -183,10 +183,10 @@ namespace Fomm.Util
     }
 
     /// <summary>
-    /// Inserts the given item at the specifed index. Cannot be used with a set.
+    ///   Inserts the given item at the specifed index. Cannot be used with a set.
     /// </summary>
     /// <remarks>
-    /// This operation doesn't make sense in a set.
+    ///   This operation doesn't make sense in a set.
     /// </remarks>
     /// <param name="index">The index at which to insert the item.</param>
     /// <param name="item">The item to insert.</param>
@@ -197,7 +197,7 @@ namespace Fomm.Util
     }
 
     /// <summary>
-    /// Removes the item form the set at the given index.
+    ///   Removes the item form the set at the given index.
     /// </summary>
     /// <param name="index">The index of the item to remove from the set.</param>
     public void RemoveAt(int index)
@@ -206,10 +206,10 @@ namespace Fomm.Util
     }
 
     /// <summary>
-    /// Gets or sets the item ate the specified index. Indexed setting cannot be used with a set.
+    ///   Gets or sets the item ate the specified index. Indexed setting cannot be used with a set.
     /// </summary>
     /// <remarks>
-    /// The setting of an indexed item doesn't make sense in a set.
+    ///   The setting of an indexed item doesn't make sense in a set.
     /// </remarks>
     /// <param name="index">The index of the item to get or set.</param>
     /// <returns>Nothing.</returns>
@@ -231,7 +231,7 @@ namespace Fomm.Util
     #region ICollection<T> Members
 
     /// <summary>
-    /// Adds the given item to the set.
+    ///   Adds the given item to the set.
     /// </summary>
     /// <param name="p_tItem">The item to add.</param>
     public void Add(T p_tItem)
@@ -243,7 +243,7 @@ namespace Fomm.Util
     }
 
     /// <summary>
-    /// Empties the set.
+    ///   Empties the set.
     /// </summary>
     public void Clear()
     {
@@ -251,18 +251,20 @@ namespace Fomm.Util
     }
 
     /// <summary>
-    /// Determines if the given item is in the set.
+    ///   Determines if the given item is in the set.
     /// </summary>
     /// <param name="p_tItem">The item to look for in the set.</param>
-    /// <returns><lang langref="true"/> if the item is in the set;
-    /// <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the item is in the set;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
     public bool Contains(T p_tItem)
     {
       return IndexOf(p_tItem) > -1;
     }
 
     /// <summary>
-    /// Copies the contents of the set to the given array, starting at the given index.
+    ///   Copies the contents of the set to the given array, starting at the given index.
     /// </summary>
     /// <param name="array">The array into which to copy the items.</param>
     /// <param name="arrayIndex">The index in the array at which to start copying the items.</param>
@@ -272,7 +274,7 @@ namespace Fomm.Util
     }
 
     /// <summary>
-    /// Gets the number of items in the set.
+    ///   Gets the number of items in the set.
     /// </summary>
     /// <value>The number of items in the set.</value>
     public int Count
@@ -284,9 +286,9 @@ namespace Fomm.Util
     }
 
     /// <summary>
-    /// Gets whether the set is read-only. Always <lang langref="false"/>.
+    ///   Gets whether the set is read-only. Always <lang langref="false" />.
     /// </summary>
-    /// <value>Whether the set is read-only. Always <lang langref="false"/>.</value>
+    /// <value>Whether the set is read-only. Always <lang langref="false" />.</value>
     public bool IsReadOnly
     {
       get
@@ -296,11 +298,13 @@ namespace Fomm.Util
     }
 
     /// <summary>
-    /// Removes the given item from the set.
+    ///   Removes the given item from the set.
     /// </summary>
     /// <param name="p_tItem">The item to remove</param>
-    /// <returns><lang langref="true"/> if the item was removed;
-    /// <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the item was removed;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
     public bool Remove(T p_tItem)
     {
       if (m_cmpComparer != null)
@@ -323,7 +327,7 @@ namespace Fomm.Util
     #region IEnumerable<T> Members
 
     /// <summary>
-    /// Gets an enumerator for this items in the set.
+    ///   Gets an enumerator for this items in the set.
     /// </summary>
     /// <returns>An enumerator for this items in the set.</returns>
     public IEnumerator<T> GetEnumerator()
@@ -336,7 +340,7 @@ namespace Fomm.Util
     #region IEnumerable Members
 
     /// <summary>
-    /// Gets an enumerator for this items in the set.
+    ///   Gets an enumerator for this items in the set.
     /// </summary>
     /// <returns>An enumerator for this items in the set.</returns>
     IEnumerator IEnumerable.GetEnumerator()
@@ -349,7 +353,7 @@ namespace Fomm.Util
     #region IList Members
 
     /// <summary>
-    /// Adds the given item to the set.
+    ///   Adds the given item to the set.
     /// </summary>
     /// <param name="value">The item to add.</param>
     public int Add(object value)
@@ -363,11 +367,13 @@ namespace Fomm.Util
     }
 
     /// <summary>
-    /// Determines if the given item is in the set.
+    ///   Determines if the given item is in the set.
     /// </summary>
     /// <param name="value">The item to look for in the set.</param>
-    /// <returns><lang langref="true"/> if the item is in the set;
-    /// <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the item is in the set;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
     public bool Contains(object value)
     {
       if (!(value is T))
@@ -378,7 +384,7 @@ namespace Fomm.Util
     }
 
     /// <summary>
-    /// Determines the first index of the specified item.
+    ///   Determines the first index of the specified item.
     /// </summary>
     /// <param name="value">The item whose index in the set is to be found.</param>
     /// <returns>The first index of the specified item, or -1 if the item is not in the set.</returns>
@@ -392,10 +398,10 @@ namespace Fomm.Util
     }
 
     /// <summary>
-    /// Inserts the given item at the specifed index. Cannot be used with a set.
+    ///   Inserts the given item at the specifed index. Cannot be used with a set.
     /// </summary>
     /// <remarks>
-    /// This operation doesn't make sense in a set.
+    ///   This operation doesn't make sense in a set.
     /// </remarks>
     /// <param name="index">The index at which to insert the item.</param>
     /// <param name="value">The item to insert.</param>
@@ -410,9 +416,9 @@ namespace Fomm.Util
     }
 
     /// <summary>
-    /// Gets whether the set is fixed size. Always <lang langref="false"/>.
+    ///   Gets whether the set is fixed size. Always <lang langref="false" />.
     /// </summary>
-    /// <value>Whether the set is fixed size. Always <lang langref="false"/>.</value>
+    /// <value>Whether the set is fixed size. Always <lang langref="false" />.</value>
     public bool IsFixedSize
     {
       get
@@ -422,7 +428,7 @@ namespace Fomm.Util
     }
 
     /// <summary>
-    /// Removes the given item from the set.
+    ///   Removes the given item from the set.
     /// </summary>
     /// <param name="value">The item to remove</param>
     public void Remove(object value)
@@ -434,10 +440,10 @@ namespace Fomm.Util
     }
 
     /// <summary>
-    /// Gets or sets the item ate the specified index. Indexed setting cannot be used with a set.
+    ///   Gets or sets the item ate the specified index. Indexed setting cannot be used with a set.
     /// </summary>
     /// <remarks>
-    /// The setting of an indexed item doesn't make sense in a set.
+    ///   The setting of an indexed item doesn't make sense in a set.
     /// </remarks>
     /// <param name="index">The index of the item to get or set.</param>
     /// <returns>Nothing.</returns>
@@ -459,7 +465,7 @@ namespace Fomm.Util
     #region ICollection Members
 
     /// <summary>
-    /// Copies the contents of the set to the given array, starting at the given index.
+    ///   Copies the contents of the set to the given array, starting at the given index.
     /// </summary>
     /// <param name="array">The array into which to copy the items.</param>
     /// <param name="arrayIndex">The index in the array at which to start copying the items.</param>
@@ -469,7 +475,7 @@ namespace Fomm.Util
     }
 
     /// <summary>
-    /// Gets whether the set is synchronized.
+    ///   Gets whether the set is synchronized.
     /// </summary>
     /// <value>Whether the set is synchronized.</value>
     public bool IsSynchronized
@@ -481,7 +487,7 @@ namespace Fomm.Util
     }
 
     /// <summary>
-    /// Gets the sync root of the set.
+    ///   Gets the sync root of the set.
     /// </summary>
     /// <value>The sync root of the set.</value>
     public object SyncRoot
@@ -495,7 +501,7 @@ namespace Fomm.Util
     #endregion
 
     /// <summary>
-    /// Returns a string representation of the set.
+    ///   Returns a string representation of the set.
     /// </summary>
     /// <returns>A string representation of the set.</returns>
     public override string ToString()

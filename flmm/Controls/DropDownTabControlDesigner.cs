@@ -1,15 +1,15 @@
 ﻿using System;
-using System.Windows.Forms.Design;
-using System.ComponentModel.Design;
-using System.Drawing;
 using System.Collections;
 using System.ComponentModel;
+using System.ComponentModel.Design;
+using System.Drawing;
+using System.Windows.Forms.Design;
 
 namespace Fomm.Controls
 {
   /// <summary>
-  /// The designer that controls how the <see cref="DropDownTabControl"/> behaves
-  /// and is designed.
+  ///   The designer that controls how the <see cref="DropDownTabControl" /> behaves
+  ///   and is designed.
   /// </summary>
   public class DropDownTabControlDesigner : ParentControlDesigner
   {
@@ -20,9 +20,9 @@ namespace Fomm.Controls
     #region Properties
 
     /// <summary>
-    /// Gets the <see cref="DropDownTabControl"/> being designed.
+    ///   Gets the <see cref="DropDownTabControl" /> being designed.
     /// </summary>
-    /// <value>The <see cref="DropDownTabControl"/> being designed.</value>
+    /// <value>The <see cref="DropDownTabControl" /> being designed.</value>
     protected DropDownTabControl DesignedTabControl
     {
       get
@@ -32,7 +32,7 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Gets the design verbs implemented by this designer.
+    ///   Gets the design verbs implemented by this designer.
     /// </summary>
     /// <value>The design verbs implemented by this designer.</value>
     public override DesignerVerbCollection Verbs
@@ -45,7 +45,7 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Gets the designer host.
+    ///   Gets the designer host.
     /// </summary>
     /// <value>The designer host.</value>
     public IDesignerHost DesignerHost
@@ -61,7 +61,7 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Gets the selection service.
+    ///   Gets the selection service.
     /// </summary>
     /// <value>The selection service.</value>
     public ISelectionService SelectionService
@@ -81,7 +81,7 @@ namespace Fomm.Controls
     #region Constructors
 
     /// <summary>
-    /// The default constructor.
+    ///   The default constructor.
     /// </summary>
     public DropDownTabControlDesigner()
     {
@@ -96,7 +96,7 @@ namespace Fomm.Controls
     #endregion
 
     /// <summary>
-    /// Enables or disables verbs dependent upon the current state of the control.
+    ///   Enables or disables verbs dependent upon the current state of the control.
     /// </summary>
     protected void EnableVerbs()
     {
@@ -104,13 +104,13 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// The event handler for the "Add Tab Page" verb.
+    ///   The event handler for the "Add Tab Page" verb.
     /// </summary>
     /// <remarks>
-    /// Adds a new tab page to the control.
+    ///   Adds a new tab page to the control.
     /// </remarks>
     /// <param name="sender">The object that triggered the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void AddTabPage(object sender, EventArgs e)
     {
       var tpcOldPages = DesignedTabControl.TabPages;
@@ -130,13 +130,13 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// The event handler for the "Remove Tab Page" verb.
+    ///   The event handler for the "Remove Tab Page" verb.
     /// </summary>
     /// <remarks>
-    /// Removes the current tab page from the control.
+    ///   Removes the current tab page from the control.
     /// </remarks>
     /// <param name="sender">The object that triggered the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void RemoveTabPage(object sender, EventArgs e)
     {
       if (DesignedTabControl.SelectedIndex < 0)
@@ -159,11 +159,13 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Determines of the control should respond to a mouse click.
+    ///   Determines of the control should respond to a mouse click.
     /// </summary>
     /// <param name="point">The point where the mouse was clicked.</param>
-    /// <returns><lang langref="true"/> if the designed control should process the mouse click;
-    /// <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the designed control should process the mouse click;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
     protected override bool GetHitTest(Point point)
     {
       var ddtTabControl = (DropDownTabControl) Control;
@@ -171,7 +173,7 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Adds default tag pages to a new <see cref="DropDownTabControl"/>.
+    ///   Adds default tag pages to a new <see cref="DropDownTabControl" />.
     /// </summary>
     /// <param name="defaultValues">The values with which to instantiate the control.</param>
     public override void InitializeNewComponent(IDictionary defaultValues)

@@ -179,9 +179,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip.ScriptCompiler
 
     private void SkipLine()
     {
-      while (input.Count > 0 && input.Dequeue() != '\n')
-      {
-      }
+      while (input.Count > 0 && input.Dequeue() != '\n') {}
       Line++;
     }
 

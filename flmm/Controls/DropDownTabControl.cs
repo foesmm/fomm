@@ -1,21 +1,21 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Windows.Forms;
-using System.Collections.Generic;
 using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
+using System.Windows.Forms;
 
 namespace Fomm.Controls
 {
   /// <summary>
-  /// A tab control whose tabs are in a drop down box.
+  ///   A tab control whose tabs are in a drop down box.
   /// </summary>
   [DefaultProperty("SelectedPage"), DefaultEvent("SelectedIndexChanged"), Designer(typeof (DropDownTabControlDesigner))]
   public class DropDownTabControl : ScrollableControl
   {
     /// <summary>
-    /// Raised when the selected tab page index has changed.
+    ///   Raised when the selected tab page index has changed.
     /// </summary>
     [Category("Action")]
     public event EventHandler SelectedIndexChanged
@@ -31,14 +31,14 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// The event arguments for when a tab page is added or removed from the control.
+    ///   The event arguments for when a tab page is added or removed from the control.
     /// </summary>
     public class TabPageEventArgs : EventArgs
     {
       #region Properties
 
       /// <summary>
-      /// Gets the tab page that was affected by the event.
+      ///   Gets the tab page that was affected by the event.
       /// </summary>
       /// <value>The tab page that was affected by the event.</value>
       public DropDownTabPage TabPage { get; private set; }
@@ -48,7 +48,7 @@ namespace Fomm.Controls
       #region Constructors
 
       /// <summary>
-      /// A simple consturctor that initializes the object with the given values.
+      ///   A simple consturctor that initializes the object with the given values.
       /// </summary>
       /// <param name="p_tpgPage">The tab page that was affected by the event.</param>
       public TabPageEventArgs(DropDownTabPage p_tpgPage)
@@ -60,19 +60,19 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// A collection of <see cref="DropDownTabPage"/>s.
+    ///   A collection of <see cref="DropDownTabPage" />s.
     /// </summary>
     public class TabPageCollection : IList<DropDownTabPage>, IList
     {
       #region Events
 
       /// <summary>
-      /// Raised when a <see cref="DropDownTabPage"/> is added to the collection.
+      ///   Raised when a <see cref="DropDownTabPage" /> is added to the collection.
       /// </summary>
       public event EventHandler<TabPageEventArgs> TabPageAdded;
 
       /// <summary>
-      /// Raised when a <see cref="DropDownTabPage"/> is removed from the collection.
+      ///   Raised when a <see cref="DropDownTabPage" /> is removed from the collection.
       /// </summary>
       public event EventHandler<TabPageEventArgs> TabPageRemoved;
 
@@ -83,9 +83,9 @@ namespace Fomm.Controls
       #region Event Raising
 
       /// <summary>
-      /// Raises the <see cref="TabPageAdded"/> event.
+      ///   Raises the <see cref="TabPageAdded" /> event.
       /// </summary>
-      /// <param name="p_tpgPage">The <see cref="DropDownTabPage"/> that was added.</param>
+      /// <param name="p_tpgPage">The <see cref="DropDownTabPage" /> that was added.</param>
       protected void OnTabPageAdded(DropDownTabPage p_tpgPage)
       {
         if (TabPageAdded != null)
@@ -95,9 +95,9 @@ namespace Fomm.Controls
       }
 
       /// <summary>
-      /// Raises the <see cref="TabPageRemoved"/> event.
+      ///   Raises the <see cref="TabPageRemoved" /> event.
       /// </summary>
-      /// <param name="p_tpgPage">The <see cref="DropDownTabPage"/> that was removed.</param>
+      /// <param name="p_tpgPage">The <see cref="DropDownTabPage" /> that was removed.</param>
       protected void OnTabPageRemoved(DropDownTabPage p_tpgPage)
       {
         if (TabPageRemoved != null)
@@ -110,20 +110,20 @@ namespace Fomm.Controls
 
       #region IList<DropDownTabPage> Members
 
-      /// <seealso cref="IList{DropDownTabPage}.IndexOf"/>
+      /// <seealso cref="IList{DropDownTabPage}.IndexOf" />
       public int IndexOf(DropDownTabPage item)
       {
         return m_lstPages.IndexOf(item);
       }
 
-      /// <seealso cref="IList{DropDownTabPage}.Insert"/>
+      /// <seealso cref="IList{DropDownTabPage}.Insert" />
       public void Insert(int index, DropDownTabPage item)
       {
         m_lstPages.Insert(index, item);
         OnTabPageAdded(item);
       }
 
-      /// <seealso cref="IList{DropDownTabPage}.RemoveAt"/>
+      /// <seealso cref="IList{DropDownTabPage}.RemoveAt" />
       public void RemoveAt(int index)
       {
         var tpgPage = m_lstPages[index];
@@ -131,7 +131,7 @@ namespace Fomm.Controls
         OnTabPageRemoved(tpgPage);
       }
 
-      /// <seealso cref="IList{DropDownTabPage}.this"/>
+      /// <seealso cref="IList{DropDownTabPage}.this" />
       public DropDownTabPage this[int index]
       {
         get
@@ -148,14 +148,14 @@ namespace Fomm.Controls
 
       #region ICollection<DropDownTabPage> Members
 
-      /// <seealso cref="ICollection{DropDownTabPage}.Add"/>
+      /// <seealso cref="ICollection{DropDownTabPage}.Add" />
       public void Add(DropDownTabPage item)
       {
         m_lstPages.Add(item);
         OnTabPageAdded(item);
       }
 
-      /// <seealso cref="ICollection{DropDownTabPage}.Clear"/>
+      /// <seealso cref="ICollection{DropDownTabPage}.Clear" />
       public void Clear()
       {
         for (var i = m_lstPages.Count - 1; i >= 0; i--)
@@ -164,19 +164,19 @@ namespace Fomm.Controls
         }
       }
 
-      /// <seealso cref="ICollection{DropDownTabPage}.Contains"/>
+      /// <seealso cref="ICollection{DropDownTabPage}.Contains" />
       public bool Contains(DropDownTabPage item)
       {
         return m_lstPages.Contains(item);
       }
 
-      /// <seealso cref="ICollection{DropDownTabPage}.CopyTo"/>
+      /// <seealso cref="ICollection{DropDownTabPage}.CopyTo" />
       public void CopyTo(DropDownTabPage[] array, int arrayIndex)
       {
         m_lstPages.CopyTo(array, arrayIndex);
       }
 
-      /// <seealso cref="ICollection{DropDownTabPage}.Count"/>
+      /// <seealso cref="ICollection{DropDownTabPage}.Count" />
       public int Count
       {
         get
@@ -185,7 +185,7 @@ namespace Fomm.Controls
         }
       }
 
-      /// <seealso cref="ICollection{DropDownTabPage}.IsReadOnly"/>
+      /// <seealso cref="ICollection{DropDownTabPage}.IsReadOnly" />
       public bool IsReadOnly
       {
         get
@@ -194,7 +194,7 @@ namespace Fomm.Controls
         }
       }
 
-      /// <seealso cref="ICollection{DropDownTabPage}.Remove"/>
+      /// <seealso cref="ICollection{DropDownTabPage}.Remove" />
       public bool Remove(DropDownTabPage item)
       {
         if (m_lstPages.Remove(item))
@@ -209,7 +209,7 @@ namespace Fomm.Controls
 
       #region IEnumerable<DropDownTabPage> Members
 
-      /// <seealso cref="IEnumerator{DropDownTabPage}.GetEnumerator"/>
+      /// <seealso cref="IEnumerator{DropDownTabPage}.GetEnumerator" />
       public IEnumerator<DropDownTabPage> GetEnumerator()
       {
         return m_lstPages.GetEnumerator();
@@ -219,7 +219,7 @@ namespace Fomm.Controls
 
       #region IEnumerable Members
 
-      /// <seealso cref="IEnumerator.GetEnumerator"/>
+      /// <seealso cref="IEnumerator.GetEnumerator" />
       IEnumerator IEnumerable.GetEnumerator()
       {
         return m_lstPages.GetEnumerator();
@@ -229,7 +229,7 @@ namespace Fomm.Controls
 
       #region ICollection Members
 
-      /// <seealso cref="ICollection.CopyTo"/>
+      /// <seealso cref="ICollection.CopyTo" />
       public void CopyTo(Array array, int index)
       {
         if (array == null)
@@ -250,7 +250,7 @@ namespace Fomm.Controls
         }
       }
 
-      /// <seealso cref="ICollection.IsSynchronized"/>
+      /// <seealso cref="ICollection.IsSynchronized" />
       public bool IsSynchronized
       {
         get
@@ -259,7 +259,7 @@ namespace Fomm.Controls
         }
       }
 
-      /// <seealso cref="ICollection.SyncRoot"/>
+      /// <seealso cref="ICollection.SyncRoot" />
       public object SyncRoot
       {
         get
@@ -272,7 +272,7 @@ namespace Fomm.Controls
 
       #region IList Members
 
-      /// <seealso cref="IList.Add"/>
+      /// <seealso cref="IList.Add" />
       public int Add(object value)
       {
         var vtpPage = value as DropDownTabPage;
@@ -286,7 +286,7 @@ namespace Fomm.Controls
         return Count - 1;
       }
 
-      /// <seealso cref="IList.Contains"/>
+      /// <seealso cref="IList.Contains" />
       public bool Contains(object value)
       {
         var vtpPage = value as DropDownTabPage;
@@ -297,7 +297,7 @@ namespace Fomm.Controls
         return Contains(vtpPage);
       }
 
-      /// <seealso cref="IList.IndexOf"/>
+      /// <seealso cref="IList.IndexOf" />
       public int IndexOf(object value)
       {
         var vtpPage = value as DropDownTabPage;
@@ -308,7 +308,7 @@ namespace Fomm.Controls
         return IndexOf(vtpPage);
       }
 
-      /// <seealso cref="IList.Insert"/>
+      /// <seealso cref="IList.Insert" />
       public void Insert(int index, object value)
       {
         var vtpPage = value as DropDownTabPage;
@@ -321,7 +321,7 @@ namespace Fomm.Controls
         Insert(index, vtpPage);
       }
 
-      /// <seealso cref="IList.IsFixedSize"/>
+      /// <seealso cref="IList.IsFixedSize" />
       public bool IsFixedSize
       {
         get
@@ -330,7 +330,7 @@ namespace Fomm.Controls
         }
       }
 
-      /// <seealso cref="IList.Remove"/>
+      /// <seealso cref="IList.Remove" />
       public void Remove(object value)
       {
         var vtpPage = value as DropDownTabPage;
@@ -340,7 +340,7 @@ namespace Fomm.Controls
         }
       }
 
-      /// <seealso cref="IList.this"/>
+      /// <seealso cref="IList.this" />
       object IList.this[int index]
       {
         get
@@ -369,13 +369,13 @@ namespace Fomm.Controls
     #region Properties
 
     /// <summary>
-    /// Gets the tab selector combobox.
+    ///   Gets the tab selector combobox.
     /// </summary>
     /// <value>The tab selector combobox.</value>
     internal ComboBox TabSelector { get; private set; }
 
     /// <summary>
-    /// Gets or sets the text of the tab selector.
+    ///   Gets or sets the text of the tab selector.
     /// </summary>
     public override string Text
     {
@@ -390,14 +390,14 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Gets the tab pages of this control.
+    ///   Gets the tab pages of this control.
     /// </summary>
     /// <value>The tab pages of this control.</value>
     [Editor(typeof (DropDownTabPageCollectionEditor), typeof (UITypeEditor))]
     public TabPageCollection TabPages { get; private set; }
 
     /// <summary>
-    /// Gets or sets the currently selected tab page.
+    ///   Gets or sets the currently selected tab page.
     /// </summary>
     /// <value>The currently selected tab page.</value>
     [TypeConverter(typeof (SelectedDropDownTabPageConverter))]
@@ -423,7 +423,7 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Gets or sets the index of the currently selected tab page.
+    ///   Gets or sets the index of the currently selected tab page.
     /// </summary>
     /// <value>The index of the currently selected tab page.</value>
     [Browsable(false)]
@@ -440,7 +440,7 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Gets or sets the width of the tabs.
+    ///   Gets or sets the width of the tabs.
     /// </summary>
     /// <value>The width of the tabs.</value>
     [Category("Appearance"), DefaultValue(150)]
@@ -457,7 +457,6 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// 
     /// </summary>
     [DefaultValue(KnownColor.Window)]
     public override Color BackColor
@@ -477,7 +476,7 @@ namespace Fomm.Controls
     #region Constructors
 
     /// <summary>
-    /// The default constructor.
+    ///   The default constructor.
     /// </summary>
     public DropDownTabControl()
     {
@@ -508,12 +507,12 @@ namespace Fomm.Controls
     #endregion
 
     /// <summary>
-    /// Raises the <see cref="Control.CreateControl"/> event.
+    ///   Raises the <see cref="Control.CreateControl" /> event.
     /// </summary>
     /// <remarks>
-    /// I can't get the <see cref="ComboBox"/> to be interactive in design mode when its
-    /// style is set to <see cref="ComboBoxStyle.DropDownList"/>, so only set the style
-    /// if we aren't designing.
+    ///   I can't get the <see cref="ComboBox" /> to be interactive in design mode when its
+    ///   style is set to <see cref="ComboBoxStyle.DropDownList" />, so only set the style
+    ///   if we aren't designing.
     /// </remarks>
     protected override void OnCreateControl()
     {
@@ -525,29 +524,29 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Handles the <see cref="DropDownTabButton.Selected"/> event of the tabs.
+    ///   Handles the <see cref="DropDownTabButton.Selected" /> event of the tabs.
     /// </summary>
     /// <remarks>
-    /// This sets the <see cref="DropDownTabButton"/> associated with the tab
-    /// that was clicked as the <see cref="SelectedTabPage"/>.
+    ///   This sets the <see cref="DropDownTabButton" /> associated with the tab
+    ///   that was clicked as the <see cref="SelectedTabPage" />.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     protected void TabSelected(object sender, EventArgs e)
     {
       SelectedTabPage = (DropDownTabPage) TabSelector.SelectedItem;
     }
 
     /// <summary>
-    /// Handles the <see cref="TabPageCollection.TabPageAdded"/> event of this
-    /// control's collection of <see cref="DropDownTabPages"/>.
+    ///   Handles the <see cref="TabPageCollection.TabPageAdded" /> event of this
+    ///   control's collection of <see cref="DropDownTabPages" />.
     /// </summary>
     /// <remarks>
-    /// This wires the added tab page into the control, and adds it to the <see cref="Controls"/>
-    /// collection.
+    ///   This wires the added tab page into the control, and adds it to the <see cref="Controls" />
+    ///   collection.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">A <see cref="DropDownTabControl.TabPageEventArgs"/> describing the event arguments.</param>
+    /// <param name="e">A <see cref="DropDownTabControl.TabPageEventArgs" /> describing the event arguments.</param>
     private void AddTabPage(object sender, TabPageEventArgs e)
     {
       var ctlPage = e.TabPage;
@@ -568,15 +567,15 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Handles the <see cref="TabPageCollection.TabPageRemoved"/> event of this
-    /// control's collection of <see cref="DropDownTabPages"/>.
+    ///   Handles the <see cref="TabPageCollection.TabPageRemoved" /> event of this
+    ///   control's collection of <see cref="DropDownTabPages" />.
     /// </summary>
     /// <remarks>
-    /// This unwires the tab page from the control, and removes it to the <see cref="Controls"/>
-    /// collection.
+    ///   This unwires the tab page from the control, and removes it to the <see cref="Controls" />
+    ///   collection.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">A <see cref="DropDownTabControl.TabPageEventArgs"/> describing the event arguments.</param>
+    /// <param name="e">A <see cref="DropDownTabControl.TabPageEventArgs" /> describing the event arguments.</param>
     private void RemoveTabPage(object sender, TabPageEventArgs e)
     {
       var ctlPage = e.TabPage;
@@ -609,13 +608,13 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Raises the <see cref="Control.ControlAdded"/> event.
+    ///   Raises the <see cref="Control.ControlAdded" /> event.
     /// </summary>
     /// <remarks>
-    /// This ensures that any <see cref="DropDownTabPage"/>s added to this control are added
-    /// from the <see cref="TabPages"/> collection.
+    ///   This ensures that any <see cref="DropDownTabPage" />s added to this control are added
+    ///   from the <see cref="TabPages" /> collection.
     /// </remarks>
-    /// <param name="e">A <see cref="ControlEventArgs"/> describing the event arguments.</param>
+    /// <param name="e">A <see cref="ControlEventArgs" /> describing the event arguments.</param>
     protected override void OnControlAdded(ControlEventArgs e)
     {
       base.OnControlAdded(e);
@@ -630,13 +629,13 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Raises the <see cref="Control.ControlAdded"/> event.
+    ///   Raises the <see cref="Control.ControlAdded" /> event.
     /// </summary>
     /// <remarks>
-    /// This ensures that any <see cref="DropDownTabPage"/>s removed from this control are removed
-    /// from the <see cref="TabPages"/> collection.
+    ///   This ensures that any <see cref="DropDownTabPage" />s removed from this control are removed
+    ///   from the <see cref="TabPages" /> collection.
     /// </remarks>
-    /// <param name="e">A <see cref="ControlEventArgs"/> describing the event arguments.</param>
+    /// <param name="e">A <see cref="ControlEventArgs" /> describing the event arguments.</param>
     protected override void OnControlRemoved(ControlEventArgs e)
     {
       base.OnControlRemoved(e);
@@ -648,10 +647,10 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Inserts the given <see cref="DropDownTabPage"/> into the selector drop box at the correct index based on the
-    /// tab's <see cref="DropDownTabPage.PageIndex"/>.
+    ///   Inserts the given <see cref="DropDownTabPage" /> into the selector drop box at the correct index based on the
+    ///   tab's <see cref="DropDownTabPage.PageIndex" />.
     /// </summary>
-    /// <param name="p_ddpPage">The <see cref="DropDownTabPage"/> to insert.</param>
+    /// <param name="p_ddpPage">The <see cref="DropDownTabPage" /> to insert.</param>
     protected void InsertTabPageInSelector(DropDownTabPage p_ddpPage)
     {
       for (var i = 0; i < TabSelector.Items.Count; i++)
@@ -667,8 +666,8 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// This updates the items int he selector combo box to reflect changes in tab page
-    /// properties.
+    ///   This updates the items int he selector combo box to reflect changes in tab page
+    ///   properties.
     /// </summary>
     protected void UpdateSelector()
     {
@@ -683,26 +682,26 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Handles the <see cref="DropDownTabPage.PageIndexChanged"/>
+    ///   Handles the <see cref="DropDownTabPage.PageIndexChanged" />
     /// </summary>
     /// <remarks>
-    /// This reorders the items in the selector combo box to match the new page order.
+    ///   This reorders the items in the selector combo box to match the new page order.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void PageIndexChanged(object sender, EventArgs e)
     {
       UpdateSelector();
     }
 
     /// <summary>
-    /// Handles the <see cref="DropDownTabPage.PageIndexChanged"/>
+    ///   Handles the <see cref="DropDownTabPage.PageIndexChanged" />
     /// </summary>
     /// <remarks>
-    /// This reorders the items in the selector combo box to match the new page order.
+    ///   This reorders the items in the selector combo box to match the new page order.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void PageTextChanged(object sender, EventArgs e)
     {
       UpdateSelector();

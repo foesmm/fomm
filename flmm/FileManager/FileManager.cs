@@ -1,19 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
-using System.IO;
 using System.Drawing;
+using System.IO;
+using System.Windows.Forms;
 using Fomm.PackageManager.ModInstallLog;
 
 namespace Fomm.FileManager
 {
   /// <summary>
-  /// This form allows for selection of which version of a file is used.
+  ///   This form allows for selection of which version of a file is used.
   /// </summary>
   public partial class FileManager : Form
   {
     /// <summary>
-    /// The default constructor.
+    ///   The default constructor.
     /// </summary>
     public FileManager()
     {
@@ -25,7 +25,7 @@ namespace Fomm.FileManager
     }
 
     /// <summary>
-    /// Loads the installed files into the navigation tree.
+    ///   Loads the installed files into the navigation tree.
     /// </summary>
     protected void LoadFiles()
     {
@@ -69,8 +69,8 @@ namespace Fomm.FileManager
     }
 
     /// <summary>
-    /// Selects the node that coreesponds to the directory that contains
-    /// the specified file.
+    ///   Selects the node that coreesponds to the directory that contains
+    ///   the specified file.
     /// </summary>
     /// <param name="p_tndNode">The node under which to find the selected node.</param>
     /// <param name="p_strFile">The file path whose containing directory node is to be selected.</param>
@@ -90,7 +90,7 @@ namespace Fomm.FileManager
     }
 
     /// <summary>
-    /// Adds the given files to the given tree node.
+    ///   Adds the given files to the given tree node.
     /// </summary>
     /// <param name="p_tndNode">The node under which to add the files.</param>
     /// <param name="p_strFiles">The files to add to the given node.</param>
@@ -132,7 +132,7 @@ namespace Fomm.FileManager
     }
 
     /// <summary>
-    /// Loads the list of mods that installed the file selected in <see cref="lvwFiles"/>.
+    ///   Loads the list of mods that installed the file selected in <see cref="lvwFiles" />.
     /// </summary>
     protected void loadInstallingMods()
     {
@@ -154,13 +154,13 @@ namespace Fomm.FileManager
     }
 
     /// <summary>
-    /// Handles the <see cref="TreeView.AfterSelect"/> event of the folder tree view.
+    ///   Handles the <see cref="TreeView.AfterSelect" /> event of the folder tree view.
     /// </summary>
     /// <remarks>
-    /// This method lists the files in the currently selected directory.
+    ///   This method lists the files in the currently selected directory.
     /// </remarks>
     /// <param name="sender">The object that triggered the event</param>
-    /// <param name="e">A <see cref="TreeViewEventArgs"/> describing the event arguments.</param>
+    /// <param name="e">A <see cref="TreeViewEventArgs" /> describing the event arguments.</param>
     private void tvwFolders_AfterSelect(object sender, TreeViewEventArgs e)
     {
       var tndDirectory = e.Node;
@@ -198,26 +198,26 @@ namespace Fomm.FileManager
     }
 
     /// <summary>
-    /// Handles the <see cref="ListView.SelectedIndexChanged"/> event of the file list view.
+    ///   Handles the <see cref="ListView.SelectedIndexChanged" /> event of the file list view.
     /// </summary>
     /// <remarks>
-    /// This method lists the mods that installed the selected file.
+    ///   This method lists the mods that installed the selected file.
     /// </remarks>
     /// <param name="sender">The object that triggered the event</param>
-    /// <param name="e">A <see cref="TreeViewEventArgs"/> describing the event arguments.</param>
+    /// <param name="e">A <see cref="TreeViewEventArgs" /> describing the event arguments.</param>
     private void lvwFiles_SelectedIndexChanged(object sender, EventArgs e)
     {
       loadInstallingMods();
     }
 
     /// <summary>
-    /// Handles the <see cref="ListView.DragDrop"/> event of the installer list view.
+    ///   Handles the <see cref="ListView.DragDrop" /> event of the installer list view.
     /// </summary>
     /// <remarks>
-    /// This method changes the order of the currently selected file's installers.
+    ///   This method changes the order of the currently selected file's installers.
     /// </remarks>
     /// <param name="sender">The object that triggered the event</param>
-    /// <param name="e">A <see cref="TreeViewEventArgs"/> describing the event arguments.</param>
+    /// <param name="e">A <see cref="TreeViewEventArgs" /> describing the event arguments.</param>
     private void rlvOverwrites_DragDrop(object sender, DragEventArgs e)
     {
       var lstOrderedMods = new List<string>();
@@ -243,26 +243,26 @@ namespace Fomm.FileManager
     }
 
     /// <summary>
-    /// Handles the <see cref="Control.SizeChanged"/> event of the installer list view.
+    ///   Handles the <see cref="Control.SizeChanged" /> event of the installer list view.
     /// </summary>
     /// <remarks>
-    /// This resizes the column so that it is full width.
+    ///   This resizes the column so that it is full width.
     /// </remarks>
     /// <param name="sender">The object that triggered the event</param>
-    /// <param name="e">A <see cref="TreeViewEventArgs"/> describing the event arguments.</param>
+    /// <param name="e">A <see cref="TreeViewEventArgs" /> describing the event arguments.</param>
     private void rlvOverwrites_SizeChanged(object sender, EventArgs e)
     {
       rlvOverwrites.Columns[0].Width = rlvOverwrites.ClientSize.Width - 3;
     }
 
     /// <summary>
-    /// Handles the <see cref="RadioButton.CheckedChanged"/> event of the order by fil radio button.
+    ///   Handles the <see cref="RadioButton.CheckedChanged" /> event of the order by fil radio button.
     /// </summary>
     /// <remarks>
-    /// This reloads the directory tree to to be ordered as requested.
+    ///   This reloads the directory tree to to be ordered as requested.
     /// </remarks>
     /// <param name="sender">The object that triggered the event</param>
-    /// <param name="e">A <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">A <see cref="EventArgs" /> describing the event arguments.</param>
     private void radByFile_CheckedChanged(object sender, EventArgs e)
     {
       LoadFiles();

@@ -6,14 +6,14 @@ using Fomm.Properties;
 namespace Fomm.PackageManager.FomodBuilder
 {
   /// <summary>
-  /// A form that generates a readme by concatenating several selected files.
+  ///   A form that generates a readme by concatenating several selected files.
   /// </summary>
   public partial class ReadmeGeneratorForm : Form
   {
     #region Properties
 
     /// <summary>
-    /// Sets the source files of the generator.
+    ///   Sets the source files of the generator.
     /// </summary>
     /// <value>The source files of the generator.</value>
     public string[] Sources
@@ -25,7 +25,7 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// Gets the selected format for the readme.
+    ///   Gets the selected format for the readme.
     /// </summary>
     /// <value>The selected format for the readme.</value>
     public ReadmeFormat Format
@@ -37,7 +37,7 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// Gets the generated readme.
+    ///   Gets the generated readme.
     /// </summary>
     /// <value>The generated readme.</value>
     public string GeneratedReadme
@@ -53,7 +53,7 @@ namespace Fomm.PackageManager.FomodBuilder
     #region Constructors
 
     /// <summary>
-    /// The default constructor.
+    ///   The default constructor.
     /// </summary>
     public ReadmeGeneratorForm()
     {
@@ -66,12 +66,12 @@ namespace Fomm.PackageManager.FomodBuilder
     #endregion
 
     /// <summary>
-    /// Raises the <see cref="Form.Closing"/> event.
+    ///   Raises the <see cref="Form.Closing" /> event.
     /// </summary>
     /// <remarks>
-    /// Saves the window's position.
+    ///   Saves the window's position.
     /// </remarks>
-    /// <param name="e">A <see cref="CancelEventArgs"/> describing the event arguments.</param>
+    /// <param name="e">A <see cref="CancelEventArgs" /> describing the event arguments.</param>
     protected override void OnClosing(CancelEventArgs e)
     {
       Settings.Default.windowPositions.SetWindowPosition("ReadmeGeneratorForm", this);
@@ -80,10 +80,10 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// Handles the <see cref="Control.Click"/> event of the OK button.
+    ///   Handles the <see cref="Control.Click" /> event of the OK button.
     /// </summary>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void butOK_Click(object sender, EventArgs e)
     {
       DialogResult = DialogResult.OK;

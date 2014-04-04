@@ -4,18 +4,21 @@ using System.Windows.Forms;
 namespace Fomm.Controls
 {
   /// <summary>
-  /// The <see cref="PanelToolStripItem"/> wrapper for the control
-  /// used as tabs for the <see cref="VerticalTabControl"/>.
+  ///   The <see cref="PanelToolStripItem" /> wrapper for the control
+  ///   used as tabs for the <see cref="VerticalTabControl" />.
   /// </summary>
-  /// <see langref="<see cref="PanelToolStripItem"/>"/>
+  /// <see langref="
+  /// 
+  /// <see cref="PanelToolStripItem" />
+  /// "/>
   public class VerticalTabButton : PanelToolStripItem
   {
     #region Properties
 
     /// <summary>
-    /// Gets the <see cref="StatusButton"/> that is used for this tab.
+    ///   Gets the <see cref="StatusButton" /> that is used for this tab.
     /// </summary>
-    /// <value>The <see cref="StatusButton"/> that is used for this tab.</value>
+    /// <value>The <see cref="StatusButton" /> that is used for this tab.</value>
     protected StatusButton StatusButton
     {
       get
@@ -25,13 +28,13 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Gets the <see cref="VerticalTabPage"/> associated with this tab.
+    ///   Gets the <see cref="VerticalTabPage" /> associated with this tab.
     /// </summary>
-    /// <value>The <see cref="VerticalTabPage"/> associated with this tab.</value>
+    /// <value>The <see cref="VerticalTabPage" /> associated with this tab.</value>
     public VerticalTabPage TabPage { get; private set; }
 
     /// <summary>
-    /// Gets or sets the text of the tab.
+    ///   Gets or sets the text of the tab.
     /// </summary>
     /// <value>The text of the tab.</value>
     public string Text
@@ -51,9 +54,9 @@ namespace Fomm.Controls
     #region Consturctors
 
     /// <summary>
-    /// A simple constructor that initializes the object with the given values.
+    ///   A simple constructor that initializes the object with the given values.
     /// </summary>
-    /// <param name="p_tpgPage">The <see cref="VerticalTabPage"/> associated with this tab.</param>
+    /// <param name="p_tpgPage">The <see cref="VerticalTabPage" /> associated with this tab.</param>
     internal VerticalTabButton(VerticalTabPage p_tpgPage)
       : base(new StatusButton(), "Click", -1, ToolStripItemDisplayStyle.Text)
     {
@@ -66,7 +69,7 @@ namespace Fomm.Controls
     #endregion
 
     /// <summary>
-    /// Sets this tab as unselected.
+    ///   Sets this tab as unselected.
     /// </summary>
     public override void SetUnselected()
     {
@@ -77,7 +80,7 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Sets this tab as selected.
+    ///   Sets this tab as selected.
     /// </summary>
     public override void SetSelected()
     {
@@ -86,15 +89,15 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Handles the <see cref="Control.BackColorChanged"/> event of the tab page associated with
-    /// this tab button.
+    ///   Handles the <see cref="Control.BackColorChanged" /> event of the tab page associated with
+    ///   this tab button.
     /// </summary>
     /// <remarks>
-    /// This keeps the button background colour synchronized with the tab page's background colour
-    /// when this is the select tab.
+    ///   This keeps the button background colour synchronized with the tab page's background colour
+    ///   when this is the select tab.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void m_tpgPage_BackColorChanged(object sender, EventArgs e)
     {
       if ((TabPage.Parent != null) && (((VerticalTabControl) TabPage.Parent).SelectedTabPage == TabPage))

@@ -1,9 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.Text;
 using System.Windows.Forms;
-using System.Collections.Generic;
 using Fomm.Properties;
 
 namespace Fomm.Games.Fallout3.Tools.TESsnip

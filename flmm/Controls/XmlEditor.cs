@@ -1,26 +1,26 @@
 ﻿using System;
-using ICSharpCode.TextEditor;
-using System.Text.RegularExpressions;
-using System.Windows.Forms;
-using ICSharpCode.TextEditor.Gui.CompletionWindow;
-using System.Xml.Schema;
-using System.Xml;
-using ICSharpCode.TextEditor.Document;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
+using System.Windows.Forms;
+using System.Xml;
+using System.Xml.Schema;
+using ICSharpCode.TextEditor;
+using ICSharpCode.TextEditor.Document;
+using ICSharpCode.TextEditor.Gui.CompletionWindow;
 
 namespace Fomm.Controls
 {
   /// <summary>
-  /// The event arguments for events that allow extending the code completion list, on regenerating
-  /// the list on the next key press.
+  ///   The event arguments for events that allow extending the code completion list, on regenerating
+  ///   the list on the next key press.
   /// </summary>
   public class RegeneratableAutoCompleteListEventArgs : AutoCompleteListEventArgs
   {
     #region Properties
 
     /// <summary>
-    /// Gets or sets whether the next keys press should cause the code completion list to regenerate.
+    ///   Gets or sets whether the next keys press should cause the code completion list to regenerate.
     /// </summary>
     /// <value>Whether the next keys press should cause the code completion list to regenerate.</value>
     public bool GenerateOnNextKey { get; set; }
@@ -30,37 +30,37 @@ namespace Fomm.Controls
     #region Constructors
 
     /// <summary>
-    /// A copy constructor.
+    ///   A copy constructor.
     /// </summary>
     /// <remarks>
-    /// This constructor creates a <see cref="RegeneratableAutoCompleteListEventArgs"/> based on the given
-    /// <see cref="AutoCompleteListEventArgs"/>.
+    ///   This constructor creates a <see cref="RegeneratableAutoCompleteListEventArgs" /> based on the given
+    ///   <see cref="AutoCompleteListEventArgs" />.
     /// </remarks>
-    /// <param name="p_acaArgs">The <see cref="AutoCompleteListEventArgs"/> on which to base
-    /// this object.</param>
+    /// <param name="p_acaArgs">
+    ///   The <see cref="AutoCompleteListEventArgs" /> on which to base
+    ///   this object.
+    /// </param>
     public RegeneratableAutoCompleteListEventArgs(AutoCompleteListEventArgs p_acaArgs)
       : base(
         p_acaArgs.AutoCompleteList, p_acaArgs.ElementPath, p_acaArgs.Siblings, p_acaArgs.AutoCompleteType,
-        p_acaArgs.LastWord)
-    {
-    }
+        p_acaArgs.LastWord) {}
 
     #endregion
   }
 
   /// <summary>
-  /// An XML text editor.
+  ///   An XML text editor.
   /// </summary>
   /// <remarks>
-  /// This editor provides highlighting, code copmletion, autoindenting, and code folding.
+  ///   This editor provides highlighting, code copmletion, autoindenting, and code folding.
   /// </remarks>
   public class XmlEditor : TextEditorControl
   {
     /// <summary>
-    /// Raised when the code completion options have been retrieved.
+    ///   Raised when the code completion options have been retrieved.
     /// </summary>
     /// <remarks>
-    /// Handling this event allows the addition/removal of code completion items.
+    ///   Handling this event allows the addition/removal of code completion items.
     /// </remarks>
     public event EventHandler<RegeneratableAutoCompleteListEventArgs> GotAutoCompleteList;
 
@@ -80,7 +80,7 @@ namespace Fomm.Controls
     #region Properties
 
     /// <summary>
-    /// Sets the XML Schema used to validate the editor content.
+    ///   Sets the XML Schema used to validate the editor content.
     /// </summary>
     /// <value>The XML Schema used to validate the editor content.</value>
     public XmlSchema Schema
@@ -117,7 +117,7 @@ namespace Fomm.Controls
     #region Constructors
 
     /// <summary>
-    /// The default constructor.
+    ///   The default constructor.
     /// </summary>
     public XmlEditor()
     {
@@ -145,14 +145,14 @@ namespace Fomm.Controls
     #region Code Completion
 
     /// <summary>
-    /// Handles the <see cref="XmlCompletionProvider.GotAutoCompleteList"/> event of the
-    /// completion provider.
+    ///   Handles the <see cref="XmlCompletionProvider.GotAutoCompleteList" /> event of the
+    ///   completion provider.
     /// </summary>
     /// <remarks>
-    /// This raises the editor's <see cref="GotAutoCompleteList"/> event.
+    ///   This raises the editor's <see cref="GotAutoCompleteList" /> event.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="AutoCompleteListEventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="AutoCompleteListEventArgs" /> describing the event arguments.</param>
     private void m_cdpXmlCompletionProvider_GotAutoCompleteList(object sender, AutoCompleteListEventArgs e)
     {
       if (GotAutoCompleteList != null)
@@ -165,10 +165,10 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Called whenever a character is about to be added to the document.
+    ///   Called whenever a character is about to be added to the document.
     /// </summary>
     /// <param name="p_chrChar">The character about to be added.</param>
-    /// <returns><lang langref="true"/> if the character has been handled; <lang langref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true" /> if the character has been handled; <lang langref="false" /> otherwise.</returns>
     private bool TextArea_KeyEventHandler(char p_chrChar)
     {
       if ((m_ccwCodeCompletionWindow != null) && m_ccwCodeCompletionWindow.ProcessKeyEvent(p_chrChar))
@@ -185,7 +185,7 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Displays the code completion window.
+    ///   Displays the code completion window.
     /// </summary>
     /// <param name="p_chrChar">The character that was typed that caused the code window to display.</param>
     public void ShowCodeCompletionWindow(char p_chrChar)
@@ -201,10 +201,10 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Disposes of the code completion window when it closes.
+    ///   Disposes of the code completion window when it closes.
     /// </summary>
     /// <param name="sender">The object that triggered the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void DisposeCodeCompletionWindow(object sender, EventArgs e)
     {
       if (m_ccwCodeCompletionWindow != null)
@@ -216,9 +216,9 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Starts the timers to update the code folds and validate the XML.
+    ///   Starts the timers to update the code folds and validate the XML.
     /// </summary>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     protected override void OnTextChanged(EventArgs e)
     {
       m_tmrFoldUpdater.Stop();
@@ -256,13 +256,13 @@ namespace Fomm.Controls
     #endregion
 
     /// <summary>
-    /// Updates the code folds.
+    ///   Updates the code folds.
     /// </summary>
     /// <remarks>
-    /// This method is called by a timer after a set span after the text in the editor was last changed.
+    ///   This method is called by a timer after a set span after the text in the editor was last changed.
     /// </remarks>
     /// <param name="sender">The object that triggered the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void UpdateFolds(object sender, EventArgs e)
     {
       try
@@ -270,22 +270,20 @@ namespace Fomm.Controls
         Document.FoldingManager.UpdateFoldings(null, null);
         Document.FoldingManager.NotifyFoldingsChanged(null);
       }
-      catch
-      {
-      }
+      catch {}
       m_tmrFoldUpdater.Stop();
     }
 
     #region Validation
 
     /// <summary>
-    /// Validates the XML against the schema, after a given period has elapsed.
+    ///   Validates the XML against the schema, after a given period has elapsed.
     /// </summary>
     /// <remarks>
-    /// This method is called by a timer after a set span after the text in the editor was last changed.
+    ///   This method is called by a timer after a set span after the text in the editor was last changed.
     /// </remarks>
     /// <param name="sender">The object that triggered the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void ValidateOnTimer(object sender, EventArgs e) //ElapsedEventArgs e)
     {
       ValidateXml();
@@ -293,9 +291,9 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Validates the XML against the schema.
+    ///   Validates the XML against the schema.
     /// </summary>
-    /// <returns><lang langref="true"/> if the XML is valid; <lang langref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true" /> if the XML is valid; <lang langref="false" /> otherwise.</returns>
     public bool ValidateXml()
     {
       m_tmrValidator.Stop();
@@ -313,7 +311,7 @@ namespace Fomm.Controls
       }
 
       var stkBadTags = XmlParser.ParseTags(docDocument, docDocument.TotalNumberOfLines - 1, null,
-                                                          HighlightMalformedTag);
+                                           HighlightMalformedTag);
       //this deals with extra tags at beginning of file
       if ((stkBadTags.Count > 0) || m_booMalformedXml)
       {
@@ -332,9 +330,7 @@ namespace Fomm.Controls
       {
         try
         {
-          while (xrdValidator.Read())
-          {
-          }
+          while (xrdValidator.Read()) {}
           if (m_booMalformedXml)
           {
             return false;
@@ -395,7 +391,7 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Highlights any malformed XML tags that are found.
+    ///   Highlights any malformed XML tags that are found.
     /// </summary>
     /// <param name="p_docDocument">The document being validated.</param>
     /// <param name="p_strTagName">The name of the malformed tag.</param>
@@ -409,10 +405,10 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Highlights any XML validation errors that are found.
+    ///   Highlights any XML validation errors that are found.
     /// </summary>
     /// <param name="sender">The object that triggered the event.</param>
-    /// <param name="e">A <see cref="ValidationEventArgs"/> describing the event arguments.</param>
+    /// <param name="e">A <see cref="ValidationEventArgs" /> describing the event arguments.</param>
     private void HighlightValidationErrors(object sender, ValidationEventArgs e)
     {
       m_booMalformedXml = true;
@@ -420,17 +416,17 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Highlights any XML validation errors that are found.
+    ///   Highlights any XML validation errors that are found.
     /// </summary>
     /// <param name="sender">The object that triggered the event.</param>
-    /// <param name="e">A <see cref="ValidationEventArgs"/> describing the event arguments.</param>
+    /// <param name="e">A <see cref="ValidationEventArgs" /> describing the event arguments.</param>
     private void HighlightValidationErrors(string p_strMessage, TextLocation p_tlcStart)
     {
       var docDocument = ActiveTextAreaControl.TextArea.Document;
       var twdWord = docDocument.GetLineSegment(p_tlcStart.Line).GetWord(p_tlcStart.Column);
       var intWordOffest = docDocument.PositionToOffset(p_tlcStart);
       var tmkError = new TextMarker(intWordOffest, (twdWord == null) ? 1 : twdWord.Length,
-                                           TextMarkerType.WaveLine);
+                                    TextMarkerType.WaveLine);
       tmkError.ToolTip = p_strMessage;
       docDocument.MarkerStrategy.AddMarker(tmkError);
     }
@@ -438,10 +434,10 @@ namespace Fomm.Controls
     #endregion
 
     /// <summary>
-    /// Disposes of resources used by the editor.
+    ///   Disposes of resources used by the editor.
     /// </summary>
     /// <remarks>
-    /// This makes sure that the code completion windows is closed.
+    ///   This makes sure that the code completion windows is closed.
     /// </remarks>
     /// <param name="disposing">Whether or not the object is being disposed.</param>
     protected override void Dispose(bool disposing)

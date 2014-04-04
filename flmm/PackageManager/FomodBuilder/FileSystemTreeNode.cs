@@ -1,42 +1,38 @@
 ﻿using System;
-using Fomm.Util;
-using System.Text;
-using System.IO;
-using System.Windows.Forms;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using System.Windows.Forms;
+using Fomm.Util;
 
 namespace Fomm.PackageManager.FomodBuilder
 {
   /// <summary>
-  /// A tree node that encapsulates a file system item.
+  ///   A tree node that encapsulates a file system item.
   /// </summary>
   /// <remarks>
-  /// This tracks the sources of and item.
+  ///   This tracks the sources of and item.
   /// </remarks>
   public class FileSystemTreeNode : TreeNode, IComparable<FileSystemTreeNode>
   {
     /// <summary>
-    /// A set of <see cref="Source"/>s.
+    ///   A set of <see cref="Source" />s.
     /// </summary>
     public class SourceSet : Set<Source>
     {
       #region Contructors
 
       /// <summary>
-      /// The default constructor.
+      ///   The default constructor.
       /// </summary>
-      public SourceSet()
-      {
-      }
+      public SourceSet() {}
 
       /// <summary>
-      /// The copy constructor.
+      ///   The copy constructor.
       /// </summary>
       /// <param name="p_setCopy">The set to copy.</param>
       public SourceSet(Set<Source> p_setCopy)
-        : base(p_setCopy)
-      {
-      }
+        : base(p_setCopy) {}
 
       #endregion
 
@@ -70,12 +66,14 @@ namespace Fomm.PackageManager.FomodBuilder
       }
 
       /// <summary>
-      /// Determines if the set contains a <see cref="Source"/>
-      /// with the given path.
+      ///   Determines if the set contains a <see cref="Source" />
+      ///   with the given path.
       /// </summary>
       /// <param name="p_strSourcePath">The source path to look for in the set.</param>
-      /// <returns><lang langref="true"/> if the set contains a <see cref="Source"/> with
-      /// the given path; <lang langref="false"/> otherwise.</returns>
+      /// <returns>
+      ///   <lang langref="true" /> if the set contains a <see cref="Source" /> with
+      ///   the given path; <lang langref="false" /> otherwise.
+      /// </returns>
       public bool Contains(string p_strSourcePath)
       {
         for (var i = Count - 1; i >= 0; i--)
@@ -90,24 +88,26 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// A file system item source.
+    ///   A file system item source.
     /// </summary>
     public class Source : IEquatable<Source>, IEquatable<string>
     {
       #region Properties
 
       /// <summary>
-      /// Gets the path of the source.
+      ///   Gets the path of the source.
       /// </summary>
       /// <value>The path of the source.</value>
       public string Path { get; private set; }
 
       /// <summary>
-      /// Gets or sets whether the source has been loaded for the
-      /// current node.
+      ///   Gets or sets whether the source has been loaded for the
+      ///   current node.
       /// </summary>
-      /// <value>Whether the source has been loaded for the
-      /// current node.</value>
+      /// <value>
+      ///   Whether the source has been loaded for the
+      ///   current node.
+      /// </value>
       public bool IsLoaded { get; set; }
 
       #endregion
@@ -115,11 +115,13 @@ namespace Fomm.PackageManager.FomodBuilder
       #region Constructors
 
       /// <summary>
-      /// A simple constructor that initializes the object with the given values.
+      ///   A simple constructor that initializes the object with the given values.
       /// </summary>
       /// <param name="p_strPath">The path of the source.</param>
-      /// <param name="p_booIsLoaded">Whether the source has been loaded for the
-      /// current node.</param>
+      /// <param name="p_booIsLoaded">
+      ///   Whether the source has been loaded for the
+      ///   current node.
+      /// </param>
       public Source(string p_strPath, bool p_booIsLoaded)
       {
         Path = p_strPath;
@@ -131,16 +133,18 @@ namespace Fomm.PackageManager.FomodBuilder
       #region IEquatable<Source> Members
 
       /// <summary>
-      /// Determines if this <see cref="Source"/> is equal to the given
-      /// <see cref="Source"/>.
+      ///   Determines if this <see cref="Source" /> is equal to the given
+      ///   <see cref="Source" />.
       /// </summary>
       /// <remarks>
-      /// Two <see cref="Source"/>s are equal if and only if their
-      /// <see cref="Source.Path"/>s are case-insensitively equal.
+      ///   Two <see cref="Source" />s are equal if and only if their
+      ///   <see cref="Source.Path" />s are case-insensitively equal.
       /// </remarks>
-      /// <param name="other">The <see cref="Source"/> to compare to this one.</param>
-      /// <returns><lang langref="true"/> if the two <see cref="Source"/>s are equal;
-      /// <lang langref="false"/> otherwise.</returns>
+      /// <param name="other">The <see cref="Source" /> to compare to this one.</param>
+      /// <returns>
+      ///   <lang langref="true" /> if the two <see cref="Source" />s are equal;
+      ///   <lang langref="false" /> otherwise.
+      /// </returns>
       public bool Equals(Source other)
       {
         return Path.Equals(other.Path, StringComparison.InvariantCultureIgnoreCase);
@@ -151,16 +155,18 @@ namespace Fomm.PackageManager.FomodBuilder
       #region IEquatable<string> Members
 
       /// <summary>
-      /// Determines if this <see cref="Source"/> is equal to the given
-      /// string.
+      ///   Determines if this <see cref="Source" /> is equal to the given
+      ///   string.
       /// </summary>
       /// <remarks>
-      /// A <see cref="Source"/> is equal to a string if and only if the
-      /// <see cref="Source.Path"/> is case-insensitively equal to the string.
+      ///   A <see cref="Source" /> is equal to a string if and only if the
+      ///   <see cref="Source.Path" /> is case-insensitively equal to the string.
       /// </remarks>
-      /// <param name="other">The string to compare to this <see cref="Source"/>.</param>
-      /// <returns><lang langref="true"/> if this <see cref="Source"/> is equal
-      /// to the given string; <lang langref="false"/> otherwise.</returns>
+      /// <param name="other">The string to compare to this <see cref="Source" />.</param>
+      /// <returns>
+      ///   <lang langref="true" /> if this <see cref="Source" /> is equal
+      ///   to the given string; <lang langref="false" /> otherwise.
+      /// </returns>
       public bool Equals(string other)
       {
         return Path.Equals(other);
@@ -175,7 +181,7 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// The prefix used to indicate the node was created by the user.
+    ///   The prefix used to indicate the node was created by the user.
     /// </summary>
     public const string NEW_PREFIX = "new:";
 
@@ -189,7 +195,7 @@ namespace Fomm.PackageManager.FomodBuilder
     #region Properties
 
     /// <summary>
-    /// Gets the path to the node in the current tree.
+    ///   Gets the path to the node in the current tree.
     /// </summary>
     /// <value>The path to the node in the current tree.</value>
     public new string FullPath
@@ -222,7 +228,7 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// Gets whether or not the node represents a directory.
+    ///   Gets whether or not the node represents a directory.
     /// </summary>
     /// <value>Whether or not the node represents a directory.</value>
     public bool IsDirectory
@@ -261,7 +267,7 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// Gets whether or not the node represents an archive.
+    ///   Gets whether or not the node represents an archive.
     /// </summary>
     /// <value>Whether or not the node represents an archive.</value>
     public bool IsArchive
@@ -286,10 +292,10 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// Gets the node's parent.
+    ///   Gets the node's parent.
     /// </summary>
     /// <remarks>
-    /// This casts the parent as a <see cref="FileSystemTreeNode"/>.
+    ///   This casts the parent as a <see cref="FileSystemTreeNode" />.
     /// </remarks>
     /// <value>The node's parent.</value>
     public new FileSystemTreeNode Parent
@@ -301,7 +307,7 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// Gets the sources for the node.
+    ///   Gets the sources for the node.
     /// </summary>
     /// <value>The sources for the node.</value>
     public SourceSet Sources
@@ -313,11 +319,11 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// Gets the last source for the node.
+    ///   Gets the last source for the node.
     /// </summary>
     /// <remarks>
-    /// The last source is the source that will overwrite the other sources. It is the source
-    /// last added.
+    ///   The last source is the source that will overwrite the other sources. It is the source
+    ///   last added.
     /// </remarks>
     /// <value>The last source for the node.</value>
     public Source LastSource
@@ -337,7 +343,7 @@ namespace Fomm.PackageManager.FomodBuilder
     #region Constructors
 
     /// <summary>
-    /// The copy constructor.
+    ///   The copy constructor.
     /// </summary>
     /// <param name="p_tndCopy">The node to copy.</param>
     public FileSystemTreeNode(FileSystemTreeNode p_tndCopy)
@@ -348,7 +354,7 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// A simple constructor that initializes the object with the given values.
+    ///   A simple constructor that initializes the object with the given values.
     /// </summary>
     /// <param name="p_strName">The name of the node.</param>
     /// <param name="p_strPath">The path of the file system item being represented by the node.</param>
@@ -366,7 +372,7 @@ namespace Fomm.PackageManager.FomodBuilder
     #endregion
 
     /// <summary>
-    /// Adds the specified path as a source for the node.
+    ///   Adds the specified path as a source for the node.
     /// </summary>
     /// <param name="p_strSource">The path to add as a source for the node.</param>
     public void AddSource(string p_strSource, bool p_booIsLoaded)
@@ -378,17 +384,19 @@ namespace Fomm.PackageManager.FomodBuilder
     #region IComparable<FileSystemTreeNode> Members
 
     /// <summary>
-    /// Compares this node to another.
+    ///   Compares this node to another.
     /// </summary>
     /// <remarks>
-    /// A directory is less than a file. If the nodes being compared are
-    /// both directories, or both not directories, their display text
-    /// is compared.
-    /// </remarks> 
-    /// <param name="other">The <see cref="FileSystemTreeNode"/> to which to compare this node.</param>
-    /// <returns>A value less than 0 if this node is less than the other.
-    /// 0 if this node is equal to the other.
-    /// A value greater than 0 if this node is greater than the other.</returns>
+    ///   A directory is less than a file. If the nodes being compared are
+    ///   both directories, or both not directories, their display text
+    ///   is compared.
+    /// </remarks>
+    /// <param name="other">The <see cref="FileSystemTreeNode" /> to which to compare this node.</param>
+    /// <returns>
+    ///   A value less than 0 if this node is less than the other.
+    ///   0 if this node is equal to the other.
+    ///   A value greater than 0 if this node is greater than the other.
+    /// </returns>
     public int CompareTo(FileSystemTreeNode other)
     {
       var intResult = other.IsDirectory.CompareTo(IsDirectory);

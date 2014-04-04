@@ -1,15 +1,15 @@
 using System;
 using System.Windows.Forms;
+using Fomm.Controls;
 using Fomm.Properties;
+using Fomm.Util;
 using Microsoft.Win32;
 using SevenZip;
-using Fomm.Controls;
-using Fomm.Util;
 
 namespace Fomm
 {
   /// <summary>
-  /// The settings form.
+  ///   The settings form.
   /// </summary>
   partial class SettingsForm : Form
   {
@@ -18,7 +18,7 @@ namespace Fomm
     #region Constructors
 
     /// <summary>
-    /// The default constructor.
+    ///   The default constructor.
     /// </summary>
     public SettingsForm()
     {
@@ -35,13 +35,13 @@ namespace Fomm
     #region Tool Tip
 
     /// <summary>
-    /// Handles the <see cref="Control.MouseHover"/> event of the tab page control.
+    ///   Handles the <see cref="Control.MouseHover" /> event of the tab page control.
     /// </summary>
     /// <remarks>
-    /// This displays the tool tip for the file associations group box when it is disabled.
+    ///   This displays the tool tip for the file associations group box when it is disabled.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void tpgGeneral_MouseHover(object sender, EventArgs e)
     {
       if (!gbxAssociations.Enabled &&
@@ -55,13 +55,13 @@ namespace Fomm
     }
 
     /// <summary>
-    /// Handles the <see cref="Control.MouseMove"/> event of the tab page control.
+    ///   Handles the <see cref="Control.MouseMove" /> event of the tab page control.
     /// </summary>
     /// <remarks>
-    /// This hides the tool tip for the file associations group box when appropriate.
+    ///   This hides the tool tip for the file associations group box when appropriate.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="MouseEventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="MouseEventArgs" /> describing the event arguments.</param>
     private void tpgGeneral_MouseMove(object sender, MouseEventArgs e)
     {
       if (booToolTipShown && !gbxAssociations.ClientRectangle.Contains(gbxAssociations.PointToClient(Cursor.Position)))
@@ -76,7 +76,7 @@ namespace Fomm
     #region Settings Loading
 
     /// <summary>
-    /// Loads the general settings into the controls.
+    ///   Loads the general settings into the controls.
     /// </summary>
     protected void LoadGeneralSettings()
     {
@@ -143,7 +143,7 @@ namespace Fomm
     }
 
     /// <summary>
-    /// Loads the FOMod settings into the controls.
+    ///   Loads the FOMod settings into the controls.
     /// </summary>
     protected void LoadFOMODSettings()
     {
@@ -161,7 +161,7 @@ namespace Fomm
     }
 
     /// <summary>
-    /// Adds the game mode <see cref="SettingsPage"/>s to the settings form.
+    ///   Adds the game mode <see cref="SettingsPage" />s to the settings form.
     /// </summary>
     protected void LoadGameModeSettings()
     {
@@ -179,13 +179,13 @@ namespace Fomm
     #endregion
 
     /// <summary>
-    /// Hanldes the <see cref="Control.Click"/> event of the OK button.
+    ///   Hanldes the <see cref="Control.Click" /> event of the OK button.
     /// </summary>
     /// <remarks>
-    /// This persists the settings.
+    ///   This persists the settings.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void butOK_Click(object sender, EventArgs e)
     {
       if (!SaveGameModeSettings())
@@ -203,7 +203,7 @@ namespace Fomm
     #region Settings Persistence
 
     /// <summary>
-    /// Adds a shell extension for the file type represented by the specified key.
+    ///   Adds a shell extension for the file type represented by the specified key.
     /// </summary>
     /// <param name="key">The key representing the file type for which to add a shell extension.</param>
     private void AddShellExtension(string key)
@@ -218,7 +218,7 @@ namespace Fomm
     }
 
     /// <summary>
-    /// Removes a shell extension for the file type represented by the specified key.
+    ///   Removes a shell extension for the file type represented by the specified key.
     /// </summary>
     /// <param name="key">The key representing the file type for which to remove a shell extension.</param>
     private void RemoveShellExtension(string key)
@@ -236,7 +236,7 @@ namespace Fomm
     }
 
     /// <summary>
-    /// Persists the general settings.
+    ///   Persists the general settings.
     /// </summary>
     protected void SaveGeneralSettings()
     {
@@ -319,7 +319,7 @@ namespace Fomm
     }
 
     /// <summary>
-    /// Persists the FOMod settings.
+    ///   Persists the FOMod settings.
     /// </summary>
     protected void SaveFOMODSettings()
     {
@@ -333,10 +333,12 @@ namespace Fomm
     }
 
     /// <summary>
-    /// Persists the game-mode specific settings.
+    ///   Persists the game-mode specific settings.
     /// </summary>
-    /// <returns><lang langref="true"/> if ettings were saved;
-    /// <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if ettings were saved;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
     protected bool SaveGameModeSettings()
     {
       var booIsValid = true;

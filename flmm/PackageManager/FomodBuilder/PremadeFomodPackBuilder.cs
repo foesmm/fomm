@@ -1,36 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Xml;
 using System.IO;
-using Fomm.Properties;
-using SevenZip;
 using System.Text;
-using Fomm.Util;
+using System.Xml;
 using Fomm.PackageManager.XmlConfiguredInstall.Parsers;
+using Fomm.Properties;
+using Fomm.Util;
 using GeMod.Interface;
+using SevenZip;
 
 namespace Fomm.PackageManager.FomodBuilder
 {
   /// <summary>
-  /// This class builds premade fomod packs (PFPs).
+  ///   This class builds premade fomod packs (PFPs).
   /// </summary>
   public class PremadeFomodPackBuilder : NewFomodBuilder
   {
     /// <summary>
-    /// The arguments object to pass to the background worker when building a PFP.
+    ///   The arguments object to pass to the background worker when building a PFP.
     /// </summary>
     protected class BuildPFPArgs : BuildFomodArgs
     {
       #region Properties
 
       /// <summary>
-      /// Gets the fomod sources.
+      ///   Gets the fomod sources.
       /// </summary>
       /// <value>The fomod sources.</value>
       public IList<SourceFile> SourceFiles { get; private set; }
 
       /// <summary>
-      /// Gets custom howto steps that should be included in the PFP HowTo.
+      ///   Gets custom howto steps that should be included in the PFP HowTo.
       /// </summary>
       /// <value>Custom howto steps that should be included in the PFP HowTo.</value>
       public string CustomHowToSteps { get; private set; }
@@ -40,18 +40,18 @@ namespace Fomm.PackageManager.FomodBuilder
       #region Constructors
 
       /// <summary>
-      /// A simple constructor that initializes the object with the given values.
+      ///   A simple constructor that initializes the object with the given values.
       /// </summary>
-      /// <param name="p_strFomodName">The value with which to initialize the <see cref="FomodName"/> property.</param>
-      /// <param name="p_lstCopyInstructions">The value with which to initialize the <see cref="CopyInstructions"/> property.</param>
-      /// <param name="p_lstSourceFiles">The value with which to initialize the <see cref="SourceFiles"/> property.</param>
+      /// <param name="p_strFomodName">The value with which to initialize the <see cref="FomodName" /> property.</param>
+      /// <param name="p_lstCopyInstructions">The value with which to initialize the <see cref="CopyInstructions" /> property.</param>
+      /// <param name="p_lstSourceFiles">The value with which to initialize the <see cref="SourceFiles" /> property.</param>
       /// <param name="p_strCustomHowToSteps">Custom howto steps that should be included in the PFP HowTo.</param>
-      /// <param name="p_rmeReadme">The value with which to initialize the <see cref="Readme"/> property.</param>
-      /// <param name="p_xmlInfo">The value with which to initialize the <see cref="Info"/> property.</param>
-      /// <param name="p_booSetScreenshot">The value with which to initialize the <see cref="SetScreenshot"/> property.</param>
-      /// <param name="p_shtScreenshot">The value with which to initialize the <see cref="Screenshot"/> property.</param>
-      /// <param name="p_fscScript">The value with which to initialize the <see cref="Script"/> property.</param>
-      /// <param name="p_strPackedPath">The value with which to initialize the <see cref="PackedPath"/> property.</param>
+      /// <param name="p_rmeReadme">The value with which to initialize the <see cref="Readme" /> property.</param>
+      /// <param name="p_xmlInfo">The value with which to initialize the <see cref="Info" /> property.</param>
+      /// <param name="p_booSetScreenshot">The value with which to initialize the <see cref="SetScreenshot" /> property.</param>
+      /// <param name="p_shtScreenshot">The value with which to initialize the <see cref="Screenshot" /> property.</param>
+      /// <param name="p_fscScript">The value with which to initialize the <see cref="Script" /> property.</param>
+      /// <param name="p_strPackedPath">The value with which to initialize the <see cref="PackedPath" /> property.</param>
       public BuildPFPArgs(string p_strFomodName, IList<KeyValuePair<string, string>> p_lstCopyInstructions,
                           IList<SourceFile> p_lstSourceFiles, string p_strCustomHowToSteps, Readme p_rmeReadme,
                           XmlDocument p_xmlInfo, bool p_booSetScreenshot, Screenshot p_shtScreenshot,
@@ -82,11 +82,11 @@ namespace Fomm.PackageManager.FomodBuilder
     #region Build Fomod
 
     /// <summary>
-    /// Builds a premade fomod pack using the given information.
+    ///   Builds a premade fomod pack using the given information.
     /// </summary>
     /// <remarks>
-    /// This method uses a <see cref="BackgroundWorkerProgressDialog"/> to display progress and
-    /// allow cancellation.
+    ///   This method uses a <see cref="BackgroundWorkerProgressDialog" /> to display progress and
+    ///   allow cancellation.
     /// </remarks>
     /// <param name="p_strFileName">The name of the fomod file, excluding extension.</param>
     /// <param name="p_strVersion">The version of the fomod for which we are creating the PFP.</param>
@@ -99,7 +99,7 @@ namespace Fomm.PackageManager.FomodBuilder
     /// <param name="p_shtScreenshot">The fomod screenshot.</param>
     /// <param name="p_fscScript">The fomod install script.</param>
     /// <param name="p_strPFPPath">The path where the Premade Fomod Pack will be created.</param>
-    /// <returns>The path to the new premade fomod pack if it was successfully built; <lang langref="null"/> otherwise.</returns>
+    /// <returns>The path to the new premade fomod pack if it was successfully built; <lang langref="null" /> otherwise.</returns>
     public string BuildPFP(string p_strFileName, string p_strVersion, string p_strMachineVersion,
                            IList<KeyValuePair<string, string>> p_lstCopyInstructions, IList<SourceFile> p_lstSourceFiles,
                            string p_strCustomHowToSteps, Readme p_rmeReadme, XmlDocument p_xmlInfo,
@@ -136,7 +136,7 @@ namespace Fomm.PackageManager.FomodBuilder
         strVersion = p_strMachineVersion;
       }
       var strPFPPath = Path.Combine(p_strPFPPath,
-                                       String.Format("{0} {1}{2}", p_strFileName, strVersion, strPFPExtension));
+                                    String.Format("{0} {1}{2}", p_strFileName, strVersion, strPFPExtension));
       strPFPPath = GenerateFomod(new BuildPFPArgs(p_strFileName,
                                                   p_lstCopyInstructions,
                                                   p_lstSourceFiles,
@@ -152,12 +152,12 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// This builds the fomod based on the given data.
+    ///   This builds the fomod based on the given data.
     /// </summary>
     /// <remarks>
-    /// This method is called by a <see cref="BackgroundWorkerProgressDialog"/>.
+    ///   This method is called by a <see cref="BackgroundWorkerProgressDialog" />.
     /// </remarks>
-    /// <param name="p_objArgs">A <see cref="BuildFomodArgs"/> describing the fomod to build.</param>
+    /// <param name="p_objArgs">A <see cref="BuildFomodArgs" /> describing the fomod to build.</param>
     protected override void DoGenerateFomod(object p_objArgs)
     {
       var bpaArgs = p_objArgs as BuildPFPArgs;
@@ -326,16 +326,20 @@ namespace Fomm.PackageManager.FomodBuilder
     #endregion
 
     /// <summary>
-    /// Generates the metadata file for the Premade Fomod Pack (PFP).
+    ///   Generates the metadata file for the Premade Fomod Pack (PFP).
     /// </summary>
     /// <remarks>
-    /// The metadata file contains the information for the automated installation of PFPs.
+    ///   The metadata file contains the information for the automated installation of PFPs.
     /// </remarks>
     /// <param name="p_strPFPFolder">The folder in which to create the metadata file.</param>
-    /// <param name="p_lstSourceFiles">The list of source files. It is expected that this
-    /// list only contains sources used by the given instructions.</param>
-    /// <param name="p_lstCopyInstructions">The list of copy instructions to execute to create the fomod.
-    /// This list should not include copy instructions for files included in the PFP.</param>
+    /// <param name="p_lstSourceFiles">
+    ///   The list of source files. It is expected that this
+    ///   list only contains sources used by the given instructions.
+    /// </param>
+    /// <param name="p_lstCopyInstructions">
+    ///   The list of copy instructions to execute to create the fomod.
+    ///   This list should not include copy instructions for files included in the PFP.
+    /// </param>
     /// <param name="p_strCustomHowToSteps">Custom howto steps that should be included in the PFP HowTo.</param>
     protected void CreateMetadataFile(string p_strPFPFolder, IList<SourceFile> p_lstSourceFiles,
                                       IList<KeyValuePair<string, string>> p_lstCopyInstructions,
@@ -410,14 +414,18 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// Creates the howto file explaining how to use the PFP.
+    ///   Creates the howto file explaining how to use the PFP.
     /// </summary>
     /// <param name="p_strPFPFolder">The folder in which to create the howto file.</param>
     /// <param name="p_strModBaseName">The base name of the FOMod for which we are creating a PFP.</param>
-    /// <param name="p_lstSourceFiles">The list of source files. It is expected that this
-    /// list only contains sources used by the given instructions.</param>
-    /// <param name="p_lstCopyInstructions">The list of copy instructions to execute to create the fomod.
-    /// This list should not include copy instructions for files included in the PFP.</param>
+    /// <param name="p_lstSourceFiles">
+    ///   The list of source files. It is expected that this
+    ///   list only contains sources used by the given instructions.
+    /// </param>
+    /// <param name="p_lstCopyInstructions">
+    ///   The list of copy instructions to execute to create the fomod.
+    ///   This list should not include copy instructions for files included in the PFP.
+    /// </param>
     /// <param name="p_strCustomHowToSteps">Custom howto steps that should be included in the PFP HowTo.</param>
     /// <param name="p_fscScript">The FOMod script.</param>
     protected void CreatePFPHowTo(string p_strPFPFolder, string p_strModBaseName, IList<SourceFile> p_lstSourceFiles,
@@ -621,12 +629,12 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// Appends a line to the given <see cref="StringBuilder"/> that is wrapped at 80 characters.
+    ///   Appends a line to the given <see cref="StringBuilder" /> that is wrapped at 80 characters.
     /// </summary>
-    /// <param name="p_stbBuilder">The <see cref="StringBuilder"/> to which to append the string.</param>
+    /// <param name="p_stbBuilder">The <see cref="StringBuilder" /> to which to append the string.</param>
     /// <param name="p_strFormat">The format of the string to append.</param>
     /// <param name="p_objParams">The parameters to use with the given format.</param>
-    /// <returns>The given <see cref="StringBuilder"/>.</returns>
+    /// <returns>The given <see cref="StringBuilder" />.</returns>
     public static StringBuilder AppendWrappedFormat(StringBuilder p_stbBuilder, string p_strFormat,
                                                     params object[] p_objParams)
     {
@@ -643,7 +651,7 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// Creates a Premade Fomod Pack (PFP) file at the given path from the given directory.
+    ///   Creates a Premade Fomod Pack (PFP) file at the given path from the given directory.
     /// </summary>
     /// <param name="p_strPFPFolder">The folder from which to create the PFP.</param>
     /// <param name="p_strPackedPFPPath">The path of the new PFP file to create.</param>

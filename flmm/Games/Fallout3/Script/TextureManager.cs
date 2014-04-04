@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using System.Drawing;
 using Fomm.PackageManager;
 
 namespace Fomm.Games.Fallout3.Script
 {
   /// <summary>
-  /// This class encapsulates the management of textures.
+  ///   This class encapsulates the management of textures.
   /// </summary>
   public class TextureManager : IDisposable
   {
@@ -18,7 +18,7 @@ namespace Fomm.Games.Fallout3.Script
     #region Constructors
 
     /// <summary>
-    /// The default constructor.
+    ///   The default constructor.
     /// </summary>
     internal TextureManager()
     {
@@ -28,7 +28,7 @@ namespace Fomm.Games.Fallout3.Script
     #endregion
 
     /// <summary>
-    /// Loads the given texture.
+    ///   Loads the given texture.
     /// </summary>
     /// <param name="p_bteTexture">The texture to load.</param>
     /// <returns>A pointer to the loaded texture.</returns>
@@ -49,7 +49,7 @@ namespace Fomm.Games.Fallout3.Script
     }
 
     /// <summary>
-    /// Creates a texture with the given dimensions.
+    ///   Creates a texture with the given dimensions.
     /// </summary>
     /// <param name="p_intWidth">The width of the texture.</param>
     /// <param name="p_intHeight">The height of the texture.</param>
@@ -71,12 +71,14 @@ namespace Fomm.Games.Fallout3.Script
     }
 
     /// <summary>
-    /// Saves the specified texture.
+    ///   Saves the specified texture.
     /// </summary>
     /// <param name="p_ptrTexture">The pointer to the texture to save.</param>
     /// <param name="p_intFormat">The format in which to save the texture.</param>
-    /// <param name="p_booMipmaps">Whether or not to create mipmaps (or maybe whether or
-    /// not the given texture contains mipmaps?).</param>
+    /// <param name="p_booMipmaps">
+    ///   Whether or not to create mipmaps (or maybe whether or
+    ///   not the given texture contains mipmaps?).
+    /// </param>
     /// <returns>The saved texture.</returns>
     public byte[] SaveTexture(IntPtr p_ptrTexture, int p_intFormat, bool p_booMipmaps)
     {
@@ -97,7 +99,7 @@ namespace Fomm.Games.Fallout3.Script
     }
 
     /// <summary>
-    /// Copies part of one texture to another.
+    ///   Copies part of one texture to another.
     /// </summary>
     /// <param name="p_ptrSource">A pointer to the texture from which to make the copy.</param>
     /// <param name="p_rctSourceRect">The area of the source texture from which to make the copy.</param>
@@ -117,7 +119,7 @@ namespace Fomm.Games.Fallout3.Script
     }
 
     /// <summary>
-    /// Gets the dimensions of the specified texture.
+    ///   Gets the dimensions of the specified texture.
     /// </summary>
     /// <param name="p_ptrTexture">A pointer to the texture whose dimensions are to be determined.</param>
     /// <param name="p_intWidth">The out parameter that will contain the width of the texture.</param>
@@ -135,7 +137,7 @@ namespace Fomm.Games.Fallout3.Script
     }
 
     /// <summary>
-    /// Retrieves the texture data for the specified texture.
+    ///   Retrieves the texture data for the specified texture.
     /// </summary>
     /// <param name="p_ptrTexture">A pointer to the texture whose data is to be retrieved.</param>
     /// <param name="p_intPitch">The out parameter that will contain the texture's pitch.</param>
@@ -161,7 +163,7 @@ namespace Fomm.Games.Fallout3.Script
     }
 
     /// <summary>
-    /// Sets the data for the specified texture.
+    ///   Sets the data for the specified texture.
     /// </summary>
     /// <param name="p_ptrTexture">A pointer to the texture whose data is to be set.</param>
     /// <param name="p_bteData">The data to which to set the texture.</param>
@@ -176,7 +178,7 @@ namespace Fomm.Games.Fallout3.Script
     }
 
     /// <summary>
-    /// Releases the specified texture.
+    ///   Releases the specified texture.
     /// </summary>
     /// <param name="p_ptrTexture">A pointer to the texture to release.</param>
     public void ReleaseTexture(IntPtr p_ptrTexture)
@@ -193,10 +195,10 @@ namespace Fomm.Games.Fallout3.Script
     #region IDisposable Members
 
     /// <summary>
-    /// Disposes the texture manager.
+    ///   Disposes the texture manager.
     /// </summary>
     /// <remarks>
-    /// This method ensures that all textures have been released.
+    ///   This method ensures that all textures have been released.
     /// </remarks>
     public void Dispose()
     {

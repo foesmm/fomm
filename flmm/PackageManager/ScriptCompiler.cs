@@ -1,14 +1,13 @@
 using System;
+using System.CodeDom.Compiler;
 using System.IO;
+using System.Reflection;
 using System.Security;
 using System.Security.Policy;
-using System.CodeDom.Compiler;
+using System.Text;
 using System.Windows.Forms;
 using Microsoft.CSharp;
-using Assembly = System.Reflection.Assembly;
 using sList = System.Collections.Generic.List<string>;
-using StringBuilder = System.Text.StringBuilder;
-using System.Reflection;
 
 namespace Fomm.PackageManager
 {
@@ -66,7 +65,7 @@ class ScriptRunner {
     private static byte[] Compile(string code, out string[] errors, out string[] warnings, out string stdout)
     {
       cParams.OutputAssembly = ScriptOutputPath + (ScriptCount++) + ".dll";
-        //Compatibility fix for mono, which needs a different assembly name each call
+      //Compatibility fix for mono, which needs a different assembly name each call
       var results = csCompiler.CompileAssemblyFromSource(cParams, code);
       stdout = "";
       for (var i = 0; i < results.Output.Count; i++)
@@ -152,12 +151,14 @@ class ScriptRunner {
     }
 
     /// <summary>
-    /// Executes a custom install script.
+    ///   Executes a custom install script.
     /// </summary>
     /// <param name="script">The script to run.</param>
     /// <param name="p_midInstaller">The installer script to use the execute the custom script.</param>
-    /// <returns><lang langref="true"/> if the script return <lang langref="true"/>;
-    /// <lang langref="null"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the script return <lang langref="true" />;
+    ///   <lang langref="null" /> otherwise.
+    /// </returns>
     public static bool Execute(string script, ModInstaller p_midInstaller)
     {
       if (script.StartsWith("#fommScript"))
@@ -183,7 +184,7 @@ class ScriptRunner {
       if (s == null)
       {
         MessageBox.Show("C# or vb script did not contain a 'Script' class in the root namespace",
-                                             "Error");
+                        "Error");
         return false;
       }
       try
@@ -205,10 +206,10 @@ class ScriptRunner {
       catch (Exception ex)
       {
         MessageBox.Show("An exception occured. The mod may not have been activated completely.\n" +
-                                             "Check" + Environment.NewLine +
-                                             Path.Combine(Program.GameMode.InstallInfoDirectory,
-                                                                    "ScriptException.txt") + Environment.NewLine +
-                                             "for full details", "Error");
+                        "Check" + Environment.NewLine +
+                        Path.Combine(Program.GameMode.InstallInfoDirectory,
+                                     "ScriptException.txt") + Environment.NewLine +
+                        "for full details", "Error");
         var str = ex.ToString();
         while (ex.InnerException != null)
         {

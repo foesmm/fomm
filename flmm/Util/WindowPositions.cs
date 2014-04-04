@@ -1,38 +1,38 @@
 ﻿using System.Collections.Generic;
-using System.Xml.Serialization;
 using System.Drawing;
 using System.Windows.Forms;
-using System.Xml.Schema;
 using System.Xml;
+using System.Xml.Schema;
+using System.Xml.Serialization;
 
 namespace Fomm.Util
 {
   /// <summary>
-  /// Stores the position of windows.
+  ///   Stores the position of windows.
   /// </summary>
   public class WindowPositions : IXmlSerializable
   {
     /// <summary>
-    /// The location info for a window.
+    ///   The location info for a window.
     /// </summary>
     public class LocationInfo : IXmlSerializable
     {
       #region Properties
 
       /// <summary>
-      /// Gets or set where the window is located.
+      ///   Gets or set where the window is located.
       /// </summary>
       /// <value>Where the window is located.</value>
       public Point Location { get; protected set; }
 
       /// <summary>
-      /// Gets or sets the window size.
+      ///   Gets or sets the window size.
       /// </summary>
       /// <value>The window size.</value>
       public Size Size { get; protected set; }
 
       /// <summary>
-      /// Gets or sets whether the window is maximized.
+      ///   Gets or sets whether the window is maximized.
       /// </summary>
       /// <value>Whether the window is maximized.</value>
       public bool IsMaximized { get; protected set; }
@@ -42,14 +42,12 @@ namespace Fomm.Util
       #region Constructors
 
       /// <summary>
-      /// The default constructor.
+      ///   The default constructor.
       /// </summary>
-      public LocationInfo()
-      {
-      }
+      public LocationInfo() {}
 
       /// <summary>
-      /// A simple constructor that initializes the object with the given values.
+      ///   A simple constructor that initializes the object with the given values.
       /// </summary>
       /// <param name="p_pntLocation">Where the window is located.</param>
       /// <param name="p_szeSize">The window size.</param>
@@ -66,16 +64,16 @@ namespace Fomm.Util
       #region IXmlSerializable Members
 
       /// <summary>
-      /// This method is reserved, and returns <lang dref="null"/> as required.
+      ///   This method is reserved, and returns <lang dref="null" /> as required.
       /// </summary>
-      /// <returns><lang dref="null"/>, as required.</returns>
+      /// <returns><lang dref="null" />, as required.</returns>
       public XmlSchema GetSchema()
       {
         return null;
       }
 
       /// <summary>
-      /// Deserializes the object from XML.
+      ///   Deserializes the object from XML.
       /// </summary>
       /// <param name="reader">The xml reader from which to deserialize the object.</param>
       public void ReadXml(XmlReader reader)
@@ -106,7 +104,7 @@ namespace Fomm.Util
       }
 
       /// <summary>
-      /// Serializes the object to XML.
+      ///   Serializes the object to XML.
       /// </summary>
       /// <param name="reader">The xml writer to which to serialize the object.</param>
       public void WriteXml(XmlWriter writer)
@@ -133,7 +131,7 @@ namespace Fomm.Util
     private Dictionary<string, LocationInfo> m_dicPositions = new Dictionary<string, LocationInfo>();
 
     /// <summary>
-    /// Sets the given window's position based on the stored values.
+    ///   Sets the given window's position based on the stored values.
     /// </summary>
     /// <param name="p_strWindowName">The name of the window settings to use to position the given window.</param>
     /// <param name="p_frmWindow">The window to position.</param>
@@ -165,7 +163,7 @@ namespace Fomm.Util
     }
 
     /// <summary>
-    /// Stores the given window's position using the given name.
+    ///   Stores the given window's position using the given name.
     /// </summary>
     /// <param name="p_strWindowName">The name under which to store the window settings.</param>
     /// <param name="p_frmWindow">The window whose settings are to be stored.</param>
@@ -182,16 +180,16 @@ namespace Fomm.Util
     #region IXmlSerializable Members
 
     /// <summary>
-    /// This method is reserved, and returns <lang dref="null"/> as required.
+    ///   This method is reserved, and returns <lang dref="null" /> as required.
     /// </summary>
-    /// <returns><lang dref="null"/>, as required.</returns>
+    /// <returns><lang dref="null" />, as required.</returns>
     public XmlSchema GetSchema()
     {
       return null;
     }
 
     /// <summary>
-    /// Deserializes the object from XML.
+    ///   Deserializes the object from XML.
     /// </summary>
     /// <param name="reader">The xml reader from which to deserialize the object.</param>
     public void ReadXml(XmlReader reader)
@@ -216,7 +214,7 @@ namespace Fomm.Util
     }
 
     /// <summary>
-    /// Serializes the object to XML.
+    ///   Serializes the object to XML.
     /// </summary>
     /// <param name="reader">The xml writer to which to serialize the object.</param>
     public void WriteXml(XmlWriter writer)

@@ -1,15 +1,15 @@
 ﻿using System;
-using System.Windows.Forms;
 using System.IO;
+using System.Windows.Forms;
 using Fomm.Properties;
 
 namespace Fomm.Games
 {
   /// <summary>
-  /// Prompts the user to select the working directory.
+  ///   Prompts the user to select the working directory.
   /// </summary>
   /// <remarks>
-  /// This form also provides an auto-detect feature if the user is unsure of which folder to select.
+  ///   This form also provides an auto-detect feature if the user is unsure of which folder to select.
   /// </remarks>
   public partial class WorkingDirectorySelectionForm : Form
   {
@@ -20,7 +20,7 @@ namespace Fomm.Games
     #region Properties
 
     /// <summary>
-    /// Gets the selected working directory.
+    ///   Gets the selected working directory.
     /// </summary>
     /// <value>The selected working directory.</value>
     public string WorkingDirectory
@@ -36,7 +36,7 @@ namespace Fomm.Games
     #region Constructors
 
     /// <summary>
-    /// A simple constructor that initializes the object with the given values.
+    ///   A simple constructor that initializes the object with the given values.
     /// </summary>
     /// <param name="p_strMessage">The message to display in the window.</param>
     /// <param name="p_strLabel">The label of the working directory textbox.</param>
@@ -53,14 +53,14 @@ namespace Fomm.Games
     #endregion
 
     /// <summary>
-    /// Handles the <see cref="Control.Click"/> event of the elipses button next to
-    /// the working directory textbox.
+    ///   Handles the <see cref="Control.Click" /> event of the elipses button next to
+    ///   the working directory textbox.
     /// </summary>
     /// <remarks>
-    /// This opens the folder selection dialog so the use can select the working directory.
+    ///   This opens the folder selection dialog so the use can select the working directory.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void butSelect_Click(object sender, EventArgs e)
     {
       fbdWorkingDirectory.SelectedPath = tbxWorkingDirectory.Text;
@@ -71,24 +71,24 @@ namespace Fomm.Games
     }
 
     /// <summary>
-    /// Handles the <see cref="Control.Click"/> event of the OK button.
+    ///   Handles the <see cref="Control.Click" /> event of the OK button.
     /// </summary>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void butOK_Click(object sender, EventArgs e)
     {
       DialogResult = DialogResult.OK;
     }
 
     /// <summary>
-    /// Handles the <see cref="Control.Click"/> event of the auto-detect button.
+    ///   Handles the <see cref="Control.Click" /> event of the auto-detect button.
     /// </summary>
     /// <remarks>
-    /// This launches the auto-detection algorithm on another process using the
-    /// <see cref="BackgroundWorkerProgressDialog"/> class.
+    ///   This launches the auto-detection algorithm on another process using the
+    ///   <see cref="BackgroundWorkerProgressDialog" /> class.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void butAutoDetect_Click(object sender, EventArgs e)
     {
       using (m_bwdProgress = new BackgroundWorkerProgressDialog(AutoDetectWokringDirectory))
@@ -112,7 +112,7 @@ namespace Fomm.Games
     }
 
     /// <summary>
-    /// This searches for the working directory.
+    ///   This searches for the working directory.
     /// </summary>
     protected void AutoDetectWokringDirectory()
     {
@@ -134,7 +134,7 @@ namespace Fomm.Games
     }
 
     /// <summary>
-    /// This recursively searches the specified directory for the search files.
+    ///   This recursively searches the specified directory for the search files.
     /// </summary>
     /// <param name="p_strPath">The path of the direcotry to recursively search.</param>
     protected string Search(string p_strPath)

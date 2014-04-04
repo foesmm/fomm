@@ -1,17 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
+using System.Xml;
 using Fomm.Games.Fallout3.Tools.BSA;
 using Fomm.PackageManager;
-using System.Xml;
-using System.IO;
-using System.Collections.Generic;
-using Fomm.SharpZipLib.Checksums;
 using Fomm.PackageManager.ModInstallLog;
+using Fomm.SharpZipLib.Checksums;
 
 namespace Fomm.InstallLogUpgraders
 {
   /// <summary>
-  /// Upgrades the Install Log to the current version from version 0.0.0.0.
+  ///   Upgrades the Install Log to the current version from version 0.0.0.0.
   /// </summary>
   internal class Upgrader0000 : Upgrader
   {
@@ -21,7 +21,7 @@ namespace Fomm.InstallLogUpgraders
     #region Constructors
 
     /// <summary>
-    /// The default constructor.
+    ///   The default constructor.
     /// </summary>
     public Upgrader0000()
     {
@@ -32,17 +32,17 @@ namespace Fomm.InstallLogUpgraders
     #endregion
 
     /// <summary>
-    /// Upgrades the Install Log to the current version from version 0.0.0.0.
+    ///   Upgrades the Install Log to the current version from version 0.0.0.0.
     /// </summary>
     /// <remarks>
-    /// This method is called by a background worker to perform the actual upgrade.
+    ///   This method is called by a background worker to perform the actual upgrade.
     /// </remarks>
     protected override void DoUpgrade()
     {
       InstallLog.Current.Reset();
 
       var strModInstallFiles = Directory.GetFiles(Program.GameMode.ModDirectory, "*.XMl",
-                                                       SearchOption.TopDirectoryOnly);
+                                                  SearchOption.TopDirectoryOnly);
       ProgressWorker.OverallProgressStep = 1;
       ProgressWorker.OverallProgressMaximum = strModInstallFiles.Length;
       ProgressWorker.ItemProgressStep = 1;
@@ -132,11 +132,11 @@ namespace Fomm.InstallLogUpgraders
     private List<string> m_lstSeenShader = new List<string>();
 
     /// <summary>
-    /// Upgrades the sdp edits log entries.
+    ///   Upgrades the sdp edits log entries.
     /// </summary>
     /// <remarks>
-    /// This analyses the mods and determines, as best as possible, who edited which shaders, and attempts
-    /// to reconstruct the install order. The resulting information is then put in the new install log.
+    ///   This analyses the mods and determines, as best as possible, who edited which shaders, and attempts
+    ///   to reconstruct the install order. The resulting information is then put in the new install log.
     /// </remarks>
     /// <param name="p_xmlModInstallLog">The current mod install log we are parsing to upgrade.</param>
     /// <param name="p_strModBaseName">The base name of the mod whose install log is being parsed.</param>
@@ -158,7 +158,7 @@ namespace Fomm.InstallLogUpgraders
           // so let's assume it is the lastest mod to have made the edit...
           InstallLog.Current.AddGameSpecificValueEdit(p_strModBaseName, strShaderKey,
                                                       SDPArchives.GetShader(intPackage,
-                                                                                                          strShader));
+                                                                            strShader));
           //...and backup the old value as the original value
           InstallLog.Current.PrependAfterOriginalGameSpecificValueEdit(InstallLog.ORIGINAL_VALUES, strShaderKey,
                                                                        bteOldValue);
@@ -203,11 +203,11 @@ namespace Fomm.InstallLogUpgraders
     }
 
     /// <summary>
-    /// Upgrades the ini edits log entries.
+    ///   Upgrades the ini edits log entries.
     /// </summary>
     /// <remarks>
-    /// This analyses the mods and determines, as best as possible, who edited which keys, and attempts
-    /// to reconstruct the install order. The resulting information is then put in the new install log.
+    ///   This analyses the mods and determines, as best as possible, who edited which keys, and attempts
+    ///   to reconstruct the install order. The resulting information is then put in the new install log.
     /// </remarks>
     /// <param name="p_xmlModInstallLog">The current mod install log we are parsing to upgrade.</param>
     /// <param name="p_strModBaseName">The base name of the mod whose install log is being parsed.</param>
@@ -251,12 +251,12 @@ namespace Fomm.InstallLogUpgraders
     #region Installed Files Upgrade
 
     /// <summary>
-    /// Makes the specified mod the owner of the specified file.
+    ///   Makes the specified mod the owner of the specified file.
     /// </summary>
     /// <remarks>
-    /// Moves the node representing that the specified mod installed the specified file to the end,
-    /// indicating in was the last mod to install the file. It also deletes the mod's backup of the file
-    /// from the overwrites folder.
+    ///   Moves the node representing that the specified mod installed the specified file to the end,
+    ///   indicating in was the last mod to install the file. It also deletes the mod's backup of the file
+    ///   from the overwrites folder.
     /// </remarks>
     /// <param name="p_strModName">The base name of the mod that is being made the file owner.</param>
     /// <param name="p_strDataRealtivePath">The path of the file whose owner is changing..</param>
@@ -271,14 +271,14 @@ namespace Fomm.InstallLogUpgraders
     }
 
     /// <summary>
-    /// Determines if we already know who owns the specified file.
+    ///   Determines if we already know who owns the specified file.
     /// </summary>
     /// <remarks>
-    /// We know who owns a specified file if the file has at least one installing mod, and
-    /// the last installing mod doesn't have a corresponding file in the overwrites folder.
+    ///   We know who owns a specified file if the file has at least one installing mod, and
+    ///   the last installing mod doesn't have a corresponding file in the overwrites folder.
     /// </remarks>
     /// <param name="p_strDataRelativePath">The file for which it is to be determined if the owner is known.</param>
-    /// <returns><lang langref="true"/> if the owner is known; <lang langref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true" /> if the owner is known; <lang langref="false" /> otherwise.</returns>
     private bool FileOwnerIsKnown(string p_strDataRelativePath)
     {
       var strModKey = InstallLog.Current.GetCurrentFileOwnerKey(p_strDataRelativePath);
@@ -293,12 +293,12 @@ namespace Fomm.InstallLogUpgraders
     }
 
     /// <summary>
-    /// Upgrades the installed files log entries.
+    ///   Upgrades the installed files log entries.
     /// </summary>
     /// <remarks>
-    /// This analyses the mods and determines, as best as possible, who owns which files, and attempts
-    /// to reconstruct the install order. It populates the overwrites folder with the files that, as far
-    /// as can be determined, belong there. This resulting information is then put in the new install log.
+    ///   This analyses the mods and determines, as best as possible, who owns which files, and attempts
+    ///   to reconstruct the install order. It populates the overwrites folder with the files that, as far
+    ///   as can be determined, belong there. This resulting information is then put in the new install log.
     /// </remarks>
     /// <param name="p_xmlModInstallLog">The current mod install log we are parsing to upgrade.</param>
     /// <param name="p_strModInstallLogPath">The path to the current mod install log.</param>

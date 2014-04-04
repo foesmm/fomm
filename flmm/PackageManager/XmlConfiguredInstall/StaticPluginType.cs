@@ -1,7 +1,7 @@
 ﻿namespace Fomm.PackageManager.XmlConfiguredInstall
 {
   /// <summary>
-  /// A plugin type that doesn't change.
+  ///   A plugin type that doesn't change.
   /// </summary>
   public class StaticPluginType : IPluginType
   {
@@ -10,7 +10,7 @@
     #region Properties
 
     /// <summary>
-    /// Gets the plugin type.
+    ///   Gets the plugin type.
     /// </summary>
     /// <value>The plugin type.</value>
     public PluginType Type
@@ -26,7 +26,7 @@
     #region Constructor
 
     /// <summary>
-    /// A simple constructor that initializes the object with the given values.
+    ///   A simple constructor that initializes the object with the given values.
     /// </summary>
     /// <param name="p_ptpType">The plugin type.</param>
     public StaticPluginType(PluginType p_ptpType)

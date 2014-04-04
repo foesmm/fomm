@@ -3,7 +3,7 @@
 namespace Fomm.PackageManager.XmlConfiguredInstall
 {
   /// <summary>
-  /// A step in the XML configured install of a mod.
+  ///   A step in the XML configured install of a mod.
   /// </summary>
   public class InstallStep
   {
@@ -12,13 +12,13 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     #region Properties
 
     /// <summary>
-    /// Gets the name of the step.
+    ///   Gets the name of the step.
     /// </summary>
     /// <value>The name of the step.</value>
     public string Name { get; private set; }
 
     /// <summary>
-    /// Gets whether this step is visible.
+    ///   Gets whether this step is visible.
     /// </summary>
     /// <value>Whether this step is visible.</value>
     public bool Visible
@@ -34,7 +34,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     }
 
     /// <summary>
-    /// Gets the grouped list of plugins to display in this step.
+    ///   Gets the grouped list of plugins to display in this step.
     /// </summary>
     /// <value>The grouped list of plugins to display in this step.</value>
     public IList<PluginGroup> GroupedPlugins { get; private set; }
@@ -44,10 +44,13 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     #region Constructors
 
     /// <summary>
-    /// A simple constructor that initializes the object with the given values.
+    ///   A simple constructor that initializes the object with the given values.
     /// </summary>
     /// <param name="p_strName">The name of the install step.</param>
-    /// <param name="p_cdpVisibilityDependency">The <see cref="CompositeDependency"/> that determines the visibility of this step.</param>
+    /// <param name="p_cdpVisibilityDependency">
+    ///   The <see cref="CompositeDependency" /> that determines the visibility of this
+    ///   step.
+    /// </param>
     /// <param name="p_lstGroupedPlugins">The grouped list of plugins to display in this step.</param>
     public InstallStep(string p_strName, CompositeDependency p_cdpVisibilityDependency,
                        IList<PluginGroup> p_lstGroupedPlugins)

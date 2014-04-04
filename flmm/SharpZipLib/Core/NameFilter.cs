@@ -41,25 +41,26 @@ using System.Text.RegularExpressions;
 namespace Fomm.SharpZipLib.Core
 {
   /// <summary>
-  /// NameFilter is a string matching class which allows for both positive and negative
-  /// matching.
-  /// A filter is a sequence of independant <see cref="Regex">regular expressions</see> separated by semi-colons ';'.
-  /// To include a semi-colon it may be quoted as in \;. Each expression can be prefixed by a plus '+' sign or
-  /// a minus '-' sign to denote the expression is intended to include or exclude names.
-  /// If neither a plus or minus sign is found include is the default.
-  /// A given name is tested for inclusion before checking exclusions.  Only names matching an include spec 
-  /// and not matching an exclude spec are deemed to match the filter.
-  /// An empty filter matches any name.
+  ///   NameFilter is a string matching class which allows for both positive and negative
+  ///   matching.
+  ///   A filter is a sequence of independant <see cref="Regex">regular expressions</see> separated by semi-colons ';'.
+  ///   To include a semi-colon it may be quoted as in \;. Each expression can be prefixed by a plus '+' sign or
+  ///   a minus '-' sign to denote the expression is intended to include or exclude names.
+  ///   If neither a plus or minus sign is found include is the default.
+  ///   A given name is tested for inclusion before checking exclusions.  Only names matching an include spec
+  ///   and not matching an exclude spec are deemed to match the filter.
+  ///   An empty filter matches any name.
   /// </summary>
-  /// <example>The following expression includes all name ending in '.dat' with the exception of 'dummy.dat'
-  /// "+\.dat$;-^dummy\.dat$"
+  /// <example>
+  ///   The following expression includes all name ending in '.dat' with the exception of 'dummy.dat'
+  ///   "+\.dat$;-^dummy\.dat$"
   /// </example>
   internal class NameFilter : IScanFilter
   {
     #region Constructors
 
     /// <summary>
-    /// Construct an instance based on the filter expression passed
+    ///   Construct an instance based on the filter expression passed
     /// </summary>
     /// <param name="filter">The filter expression.</param>
     public NameFilter(string filter)
@@ -73,10 +74,10 @@ namespace Fomm.SharpZipLib.Core
     #endregion
 
     /// <summary>
-    /// Split a string into its component pieces
+    ///   Split a string into its component pieces
     /// </summary>
     /// <param name="original">The original string</param>
-    /// <returns>Returns a <see cref="T:System.String[]"/> containing the individual filter elements.</returns>
+    /// <returns>Returns a <see cref="T:System.String[]" /> containing the individual filter elements.</returns>
     public static string[] SplitQuoted(string original)
     {
       var escape = '\\';
@@ -132,7 +133,7 @@ namespace Fomm.SharpZipLib.Core
     }
 
     /// <summary>
-    /// Convert this filter to its string equivalent.
+    ///   Convert this filter to its string equivalent.
     /// </summary>
     /// <returns>The string equivalent for this filter.</returns>
     public override string ToString()
@@ -141,7 +142,7 @@ namespace Fomm.SharpZipLib.Core
     }
 
     /// <summary>
-    /// Test a value to see if it is included by the filter.
+    ///   Test a value to see if it is included by the filter.
     /// </summary>
     /// <param name="name">The value to test.</param>
     /// <returns>True if the value is included, false otherwise.</returns>
@@ -167,7 +168,7 @@ namespace Fomm.SharpZipLib.Core
     }
 
     /// <summary>
-    /// Test a value to see if it is excluded by the filter.
+    ///   Test a value to see if it is excluded by the filter.
     /// </summary>
     /// <param name="name">The value to test.</param>
     /// <returns>True if the value is excluded, false otherwise.</returns>
@@ -188,7 +189,7 @@ namespace Fomm.SharpZipLib.Core
     #region IScanFilter Members
 
     /// <summary>
-    /// Test a value to see if it matches the filter.
+    ///   Test a value to see if it matches the filter.
     /// </summary>
     /// <param name="name">The value to test.</param>
     /// <returns>True if the value matches, false otherwise.</returns>
@@ -200,7 +201,7 @@ namespace Fomm.SharpZipLib.Core
     #endregion
 
     /// <summary>
-    /// Compile this filter.
+    ///   Compile this filter.
     /// </summary>
     private void Compile()
     {

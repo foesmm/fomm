@@ -1,33 +1,33 @@
 ﻿using System;
-using System.Drawing;
-using System.Windows.Forms;
-using System.IO;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
+using System.Windows.Forms;
 
 namespace Fomm.PackageManager.FomodBuilder
 {
   /// <summary>
-  /// A tree of source files for a fomod.
+  ///   A tree of source files for a fomod.
   /// </summary>
   public partial class SourceFileTree : UserControl
   {
     /// <summary>
-    /// Class used to pass dragged file system objects to other controls.
+    ///   Class used to pass dragged file system objects to other controls.
     /// </summary>
     public class SourceFileSystemDragData
     {
       #region Properties
 
       /// <summary>
-      /// Gets the path of the source file system object being dragged.
+      ///   Gets the path of the source file system object being dragged.
       /// </summary>
       /// <value>The path of the source file system object being dragged.</value>
       public string Path { get; private set; }
 
       /// <summary>
-      /// Gets whether or not the <see cref="Path"/> is a directory.
+      ///   Gets whether or not the <see cref="Path" /> is a directory.
       /// </summary>
-      /// <value>Whether or not the <see cref="Path"/> is a directory.</value>
+      /// <value>Whether or not the <see cref="Path" /> is a directory.</value>
       public bool IsDirectory { get; private set; }
 
       #endregion
@@ -35,7 +35,7 @@ namespace Fomm.PackageManager.FomodBuilder
       #region Constructors
 
       /// <summary>
-      /// A simple constructor that initializes the object.
+      ///   A simple constructor that initializes the object.
       /// </summary>
       /// <param name="p_strPath">The path of the source file system object being dragged.</param>
       public SourceFileSystemDragData(string p_strPath, bool p_booIsDirectory)
@@ -50,7 +50,7 @@ namespace Fomm.PackageManager.FomodBuilder
     #region Properties
 
     /// <summary>
-    /// Gets or sets the sources listed in the control.
+    ///   Gets or sets the sources listed in the control.
     /// </summary>
     /// <value>The sources listed in the control.</value>
     public string[] Sources
@@ -76,7 +76,7 @@ namespace Fomm.PackageManager.FomodBuilder
     #region Constructors
 
     /// <summary>
-    /// The default constructor.
+    ///   The default constructor.
     /// </summary>
     public SourceFileTree()
     {
@@ -89,13 +89,13 @@ namespace Fomm.PackageManager.FomodBuilder
     #region Source
 
     /// <summary>
-    /// Handles the <see cref="Control.DragEnter"/> event of the source tree view.
+    ///   Handles the <see cref="Control.DragEnter" /> event of the source tree view.
     /// </summary>
     /// <remarks>
-    /// This determines if the item being dragged can be dropped at the current location.
+    ///   This determines if the item being dragged can be dropped at the current location.
     /// </remarks>
     /// <param name="sender">The object that triggered the event.</param>
-    /// <param name="e">A <see cref="DragEventArgs"/> that describes the event arguments.</param>
+    /// <param name="e">A <see cref="DragEventArgs" /> that describes the event arguments.</param>
     private void tvwSource_DragEnter(object sender, DragEventArgs e)
     {
       if (e.Data.GetDataPresent(DataFormats.FileDrop))
@@ -116,7 +116,7 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// Addes the specified files to the source tree.
+    ///   Addes the specified files to the source tree.
     /// </summary>
     /// <param name="p_strFileNames">The paths to add to the source tree.</param>
     protected void AddSourceFiles(string[] p_strFileNames)
@@ -131,13 +131,13 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// Handles the <see cref="Control.DragDrop"/> event of the source tree view.
+    ///   Handles the <see cref="Control.DragDrop" /> event of the source tree view.
     /// </summary>
     /// <remarks>
-    /// This handles adding the dropped file/folder to the source tree.
+    ///   This handles adding the dropped file/folder to the source tree.
     /// </remarks>
     /// <param name="sender">The object that triggered the event.</param>
-    /// <param name="e">A <see cref="DragEventArgs"/> that describes the event arguments.</param>
+    /// <param name="e">A <see cref="DragEventArgs" /> that describes the event arguments.</param>
     private void tvwSource_DragDrop(object sender, DragEventArgs e)
     {
       if (!e.Data.GetDataPresent(DataFormats.FileDrop))
@@ -149,7 +149,7 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// Adds the given file to the source tree.
+    ///   Adds the given file to the source tree.
     /// </summary>
     /// <param name="p_strFile">The file to add.</param>
     protected void AddFileToSource(string p_strFile)
@@ -165,7 +165,7 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// This adds a file/folder to the source file structure.
+    ///   This adds a file/folder to the source file structure.
     /// </summary>
     /// <param name="p_tndRoot">The node to which to add the file/folder.</param>
     /// <param name="p_strFile">The path to add to the source file structure.</param>
@@ -272,13 +272,13 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// Handles the <see cref="TreeView.ItemDrag"/> event of the source tree view.
+    ///   Handles the <see cref="TreeView.ItemDrag" /> event of the source tree view.
     /// </summary>
     /// <remarks>
-    /// This starts the drag operation of item in the source tree view.
+    ///   This starts the drag operation of item in the source tree view.
     /// </remarks>
     /// <param name="sender">The object that triggered the event.</param>
-    /// <param name="e">A <see cref="ItemDragEventArgs"/> that describes the event arguments.</param>
+    /// <param name="e">A <see cref="ItemDragEventArgs" /> that describes the event arguments.</param>
     private void tvwSource_ItemDrag(object sender, ItemDragEventArgs e)
     {
       var lstData = new List<SourceFileSystemDragData>();
@@ -298,14 +298,14 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// Handles the <see cref="TreeView.QueryContinueDrag"/> event of the source tree view.
+    ///   Handles the <see cref="TreeView.QueryContinueDrag" /> event of the source tree view.
     /// </summary>
     /// <remarks>
-    /// This aborts the drag operation of an item from the source tree view if the action is iterrup6ted
-    /// or stopped over something other than the fomod tree view.
+    ///   This aborts the drag operation of an item from the source tree view if the action is iterrup6ted
+    ///   or stopped over something other than the fomod tree view.
     /// </remarks>
     /// <param name="sender">The object that triggered the event.</param>
-    /// <param name="e">A <see cref="ItemDragEventArgs"/> that describes the event arguments.</param>
+    /// <param name="e">A <see cref="ItemDragEventArgs" /> that describes the event arguments.</param>
     private void tvwSource_QueryContinueDrag(object sender, QueryContinueDragEventArgs e)
     {
       if ((e.Action != DragAction.Drop) && ((MouseButtons & MouseButtons.Left) != MouseButtons.Left))
@@ -315,13 +315,13 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// Handles the <see cref="TreeView.BeforeExpand"/> event of the source tree view.
+    ///   Handles the <see cref="TreeView.BeforeExpand" /> event of the source tree view.
     /// </summary>
     /// <remarks>
-    /// This handles retrieving the sub-files and sub-folders to display in the tree view.
+    ///   This handles retrieving the sub-files and sub-folders to display in the tree view.
     /// </remarks>
     /// <param name="sender">The object that triggered the event.</param>
-    /// <param name="e">A <see cref="TreeViewCancelEventArgs"/> that describes the event arguments.</param>
+    /// <param name="e">A <see cref="TreeViewCancelEventArgs" /> that describes the event arguments.</param>
     private void tvwSource_BeforeExpand(object sender, TreeViewCancelEventArgs e)
     {
       var crsOldCursor = Cursor;
@@ -369,10 +369,10 @@ namespace Fomm.PackageManager.FomodBuilder
     #endregion
 
     /// <summary>
-    /// Handles the <see cref="Control.Click"/> event of the add files button.
+    ///   Handles the <see cref="Control.Click" /> event of the add files button.
     /// </summary>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void butAddFiles_Click(object sender, EventArgs e)
     {
       if (ofdFileChooser.ShowDialog(this) == DialogResult.OK)
@@ -385,10 +385,10 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// Handles the <see cref="Control.Click"/> event of the add older button.
+    ///   Handles the <see cref="Control.Click" /> event of the add older button.
     /// </summary>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void butAddFolder_Click(object sender, EventArgs e)
     {
       if (fbdFolderChooser.ShowDialog(this) == DialogResult.OK)

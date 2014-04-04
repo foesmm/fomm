@@ -3,28 +3,28 @@
 namespace Fomm.PackageManager.XmlConfiguredInstall
 {
   /// <summary>
-  /// The possible states of a mod file.
+  ///   The possible states of a mod file.
   /// </summary>
   public enum ModFileState
   {
     /// <summary>
-    /// Indicates the mod file is not installed.
+    ///   Indicates the mod file is not installed.
     /// </summary>
     Missing,
 
     /// <summary>
-    /// Indicates the mod file is installed, but not active.
+    ///   Indicates the mod file is installed, but not active.
     /// </summary>
     Inactive,
 
     /// <summary>
-    /// Indicates the mod file is installed and active.
+    ///   Indicates the mod file is installed and active.
     /// </summary>
     Active
   }
 
   /// <summary>
-  /// A dependency that requires a specified file to be in a specified <see cref="ModFileState"/>.
+  ///   A dependency that requires a specified file to be in a specified <see cref="ModFileState" />.
   /// </summary>
   public class FileDependency : IDependency
   {
@@ -34,15 +34,15 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     #region Properties
 
     /// <summary>
-    /// Gets the path of the file that must be in the specified <see cref="State"/>.
+    ///   Gets the path of the file that must be in the specified <see cref="State" />.
     /// </summary>
-    /// <value>The path of the file that must be in the specified <see cref="State"/>.</value>
+    /// <value>The path of the file that must be in the specified <see cref="State" />.</value>
     public string File { get; private set; }
 
     /// <summary>
-    /// Gets the <see cref="ModFileState"/> that the specified <see cref="File"/> must be in.
+    ///   Gets the <see cref="ModFileState" /> that the specified <see cref="File" /> must be in.
     /// </summary>
-    /// <value>The <see cref="ModFileState"/> that the specified <see cref="File"/> must be in.</value>
+    /// <value>The <see cref="ModFileState" /> that the specified <see cref="File" /> must be in.</value>
     public ModFileState State
     {
       get
@@ -52,14 +52,14 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     }
 
     /// <summary>
-    /// Gets whether or not the dependency is fufilled.
+    ///   Gets whether or not the dependency is fufilled.
     /// </summary>
     /// <remarks>
-    /// The dependency is fufilled if the specified <see cref="File"/> is in the
-    /// specified <see cref="State"/>.
+    ///   The dependency is fufilled if the specified <see cref="File" /> is in the
+    ///   specified <see cref="State" />.
     /// </remarks>
     /// <value>Whether or not the dependency is fufilled.</value>
-    /// <seealso cref="IDependency.IsFufilled"/>
+    /// <seealso cref="IDependency.IsFufilled" />
     public bool IsFufilled
     {
       get
@@ -80,15 +80,15 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     }
 
     /// <summary>
-    /// Gets a message describing whether or not the dependency is fufilled.
+    ///   Gets a message describing whether or not the dependency is fufilled.
     /// </summary>
     /// <remarks>
-    /// If the dependency is fufilled the message is "Passed." If the dependency is not fufilled the
-    /// message uses the pattern:
-    ///    File '&lt;file>' is not &lt;state>.
+    ///   If the dependency is fufilled the message is "Passed." If the dependency is not fufilled the
+    ///   message uses the pattern:
+    ///   File '&lt;file>' is not &lt;state>.
     /// </remarks>
     /// <value>A message describing whether or not the dependency is fufilled.</value>
-    /// <seealso cref="IDependency.Message"/>
+    /// <seealso cref="IDependency.Message" />
     public string Message
     {
       get
@@ -106,7 +106,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     #region Constructors
 
     /// <summary>
-    /// A simple constructor that initializes the object with the given values.
+    ///   A simple constructor that initializes the object with the given values.
     /// </summary>
     /// <param name="p_strFile">The file that must be is the specified state.</param>
     /// <param name="p_mfsState">The state in which the specified file must be.</param>
@@ -121,7 +121,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     #endregion
 
     /// <summary>
-    /// Generates a text representation of the dependency.
+    ///   Generates a text representation of the dependency.
     /// </summary>
     /// <returns>A text representation of the dependency.</returns>
     public override string ToString()

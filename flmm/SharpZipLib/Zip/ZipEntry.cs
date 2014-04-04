@@ -42,124 +42,124 @@ using System;
 namespace Fomm.SharpZipLib.Zip
 {
   /// <summary>
-  /// Defines known values for the <see cref="HostSystemID"/> property.
+  ///   Defines known values for the <see cref="HostSystemID" /> property.
   /// </summary>
   internal enum HostSystemID
   {
     /// <summary>
-    /// Host system = MSDOS
+    ///   Host system = MSDOS
     /// </summary>
     Msdos = 0,
 
     /// <summary>
-    /// Host system = Amiga
+    ///   Host system = Amiga
     /// </summary>
     Amiga = 1,
 
     /// <summary>
-    /// Host system = Open VMS
+    ///   Host system = Open VMS
     /// </summary>
     OpenVms = 2,
 
     /// <summary>
-    /// Host system = Unix
+    ///   Host system = Unix
     /// </summary>
     Unix = 3,
 
     /// <summary>
-    /// Host system = VMCms
+    ///   Host system = VMCms
     /// </summary>
     VMCms = 4,
 
     /// <summary>
-    /// Host system = Atari ST
+    ///   Host system = Atari ST
     /// </summary>
     AtariST = 5,
 
     /// <summary>
-    /// Host system = OS2
+    ///   Host system = OS2
     /// </summary>
     OS2 = 6,
 
     /// <summary>
-    /// Host system = Macintosh
+    ///   Host system = Macintosh
     /// </summary>
     Macintosh = 7,
 
     /// <summary>
-    /// Host system = ZSystem
+    ///   Host system = ZSystem
     /// </summary>
     ZSystem = 8,
 
     /// <summary>
-    /// Host system = Cpm
+    ///   Host system = Cpm
     /// </summary>
     Cpm = 9,
 
     /// <summary>
-    /// Host system = Windows NT
+    ///   Host system = Windows NT
     /// </summary>
     WindowsNT = 10,
 
     /// <summary>
-    /// Host system = MVS
+    ///   Host system = MVS
     /// </summary>
     MVS = 11,
 
     /// <summary>
-    /// Host system = VSE
+    ///   Host system = VSE
     /// </summary>
     Vse = 12,
 
     /// <summary>
-    /// Host system = Acorn RISC
+    ///   Host system = Acorn RISC
     /// </summary>
     AcornRisc = 13,
 
     /// <summary>
-    /// Host system = VFAT
+    ///   Host system = VFAT
     /// </summary>
     Vfat = 14,
 
     /// <summary>
-    /// Host system = Alternate MVS
+    ///   Host system = Alternate MVS
     /// </summary>
     AlternateMvs = 15,
 
     /// <summary>
-    /// Host system = BEOS
+    ///   Host system = BEOS
     /// </summary>
     BeOS = 16,
 
     /// <summary>
-    /// Host system = Tandem
+    ///   Host system = Tandem
     /// </summary>
     Tandem = 17,
 
     /// <summary>
-    /// Host system = OS400
+    ///   Host system = OS400
     /// </summary>
     OS400 = 18,
 
     /// <summary>
-    /// Host system = OSX
+    ///   Host system = OSX
     /// </summary>
     OSX = 19,
 
     /// <summary>
-    /// Host system = WinZIP AES
+    ///   Host system = WinZIP AES
     /// </summary>
     WinZipAES = 99,
   }
 
   /// <summary>
-  /// This class represents an entry in a zip archive.  This can be a file
-  /// or a directory
-  /// ZipFile and ZipInputStream will give you instances of this class as 
-  /// information about the members in an archive.  ZipOutputStream
-  /// uses an instance of this class when creating an entry in a Zip file.
-  /// <br/>
-  /// <br/>Author of the original java version : Jochen Hoenicke
+  ///   This class represents an entry in a zip archive.  This can be a file
+  ///   or a directory
+  ///   ZipFile and ZipInputStream will give you instances of this class as
+  ///   information about the members in an archive.  ZipOutputStream
+  ///   uses an instance of this class when creating an entry in a Zip file.
+  ///   <br />
+  ///   <br />Author of the original java version : Jochen Hoenicke
   /// </summary>
   internal class ZipEntry : ICloneable
   {
@@ -177,37 +177,35 @@ namespace Fomm.SharpZipLib.Zip
     #region Constructors
 
     /// <summary>
-    /// Creates a zip entry with the given name.
+    ///   Creates a zip entry with the given name.
     /// </summary>
     /// <param name="name">
-    /// The name for this entry. Can include directory components.
-    /// The convention for names is 'unix' style paths with relative names only.
-    /// There are with no device names and path elements are separated by '/' characters.
+    ///   The name for this entry. Can include directory components.
+    ///   The convention for names is 'unix' style paths with relative names only.
+    ///   There are with no device names and path elements are separated by '/' characters.
     /// </param>
     /// <exception cref="ArgumentNullException">
-    /// The name passed is null
+    ///   The name passed is null
     /// </exception>
     public ZipEntry(string name)
-      : this(name, 0, ZipConstants.VersionMadeBy, CompressionMethod.Deflated)
-    {
-    }
+      : this(name, 0, ZipConstants.VersionMadeBy, CompressionMethod.Deflated) {}
 
     /// <summary>
-    /// Initializes an entry with the given name and made by information
+    ///   Initializes an entry with the given name and made by information
     /// </summary>
     /// <param name="name">Name for this entry</param>
     /// <param name="madeByInfo">Version and HostSystem Information</param>
     /// <param name="versionRequiredToExtract">Minimum required zip feature version required to extract this entry</param>
     /// <param name="method">Compression method for this entry.</param>
     /// <exception cref="ArgumentNullException">
-    /// The name passed is null
+    ///   The name passed is null
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// versionRequiredToExtract should be 0 (auto-calculate) or > 10
+    ///   versionRequiredToExtract should be 0 (auto-calculate) or > 10
     /// </exception>
     /// <remarks>
-    /// This constructor is used by the ZipFile class when reading from the central header
-    /// It is not generally useful, use the constructor specifying the name only.
+    ///   This constructor is used by the ZipFile class when reading from the central header
+    ///   It is not generally useful, use the constructor specifying the name only.
     /// </remarks>
     internal ZipEntry(string name, int versionRequiredToExtract, int madeByInfo,
                       CompressionMethod method)
@@ -237,7 +235,7 @@ namespace Fomm.SharpZipLib.Zip
     #endregion
 
     /// <summary>
-    /// Get a value indicating wether the entry has a CRC value available.
+    ///   Get a value indicating wether the entry has a CRC value available.
     /// </summary>
     public bool HasCrc
     {
@@ -248,8 +246,8 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Get / set a flag indicating wether entry name and comment text are
-    /// encoded in <a href="http://www.unicode.org">unicode UTF8</a>.
+    ///   Get / set a flag indicating wether entry name and comment text are
+    ///   encoded in <a href="http://www.unicode.org">unicode UTF8</a>.
     /// </summary>
     /// <remarks>This is an assistant that interprets the <see cref="Flags">flags</see> property.</remarks>
     public bool IsUnicodeText
@@ -268,33 +266,33 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Get/Set general purpose bit flag for entry
+    ///   Get/Set general purpose bit flag for entry
     /// </summary>
     /// <remarks>
-    /// General purpose bit flag<br/>
-    /// <br/>
-    /// Bit 0: If set, indicates the file is encrypted<br/>
-    /// Bit 1-2 Only used for compression type 6 Imploding, and 8, 9 deflating<br/>
-    /// Imploding:<br/>
-    /// Bit 1 if set indicates an 8K sliding dictionary was used.  If clear a 4k dictionary was used<br/>
-    /// Bit 2 if set indicates 3 Shannon-Fanno trees were used to encode the sliding dictionary, 2 otherwise<br/>
-    /// <br/>
-    /// Deflating:<br/>
-    ///   Bit 2    Bit 1<br/>
-    ///     0        0       Normal compression was used<br/>
-    ///     0        1       Maximum compression was used<br/>
-    ///     1        0       Fast compression was used<br/>
-    ///     1        1       Super fast compression was used<br/>
-    /// <br/>
-    /// Bit 3: If set, the fields crc-32, compressed size
-    /// and uncompressed size are were not able to be written during zip file creation
-    /// The correct values are held in a data descriptor immediately following the compressed data. <br/>
-    /// Bit 4: Reserved for use by PKZIP for enhanced deflating<br/>
-    /// Bit 5: If set indicates the file contains compressed patch data<br/>
-    /// Bit 6: If set indicates strong encryption was used.<br/>
-    /// Bit 7-10: Unused or reserved<br/>
-    /// Bit 11: If set the name and comments for this entry are in <a href="http://www.unicode.org">unicode</a>.<br/>
-    /// Bit 12-15: Unused or reserved<br/>
+    ///   General purpose bit flag<br />
+    ///   <br />
+    ///   Bit 0: If set, indicates the file is encrypted<br />
+    ///   Bit 1-2 Only used for compression type 6 Imploding, and 8, 9 deflating<br />
+    ///   Imploding:<br />
+    ///   Bit 1 if set indicates an 8K sliding dictionary was used.  If clear a 4k dictionary was used<br />
+    ///   Bit 2 if set indicates 3 Shannon-Fanno trees were used to encode the sliding dictionary, 2 otherwise<br />
+    ///   <br />
+    ///   Deflating:<br />
+    ///   Bit 2    Bit 1<br />
+    ///   0        0       Normal compression was used<br />
+    ///   0        1       Maximum compression was used<br />
+    ///   1        0       Fast compression was used<br />
+    ///   1        1       Super fast compression was used<br />
+    ///   <br />
+    ///   Bit 3: If set, the fields crc-32, compressed size
+    ///   and uncompressed size are were not able to be written during zip file creation
+    ///   The correct values are held in a data descriptor immediately following the compressed data. <br />
+    ///   Bit 4: Reserved for use by PKZIP for enhanced deflating<br />
+    ///   Bit 5: If set indicates the file contains compressed patch data<br />
+    ///   Bit 6: If set indicates strong encryption was used.<br />
+    ///   Bit 7-10: Unused or reserved<br />
+    ///   Bit 11: If set the name and comments for this entry are in <a href="http://www.unicode.org">unicode</a>.<br />
+    ///   Bit 12-15: Unused or reserved<br />
     /// </remarks>
     /// <seealso cref="IsUnicodeText"></seealso>
     /// <seealso cref="IsCrypted"></seealso>
@@ -311,7 +309,7 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Get/Set index of this entry in Zip file
+    ///   Get/Set index of this entry in Zip file
     /// </summary>
     /// <remarks>This is only valid when the entry is part of a <see cref="ZipFile"></see></remarks>
     public long ZipFileIndex
@@ -327,7 +325,7 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Get/set offset for use in central header
+    ///   Get/set offset for use in central header
     /// </summary>
     public long Offset
     {
@@ -342,9 +340,9 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Get/Set external file attributes as an integer.
-    /// The values of this are operating system dependant see
-    /// <see cref="HostSystem">HostSystem</see> for details
+    ///   Get/Set external file attributes as an integer.
+    ///   The values of this are operating system dependant see
+    ///   <see cref="HostSystem">HostSystem</see> for details
     /// </summary>
     public int ExternalFileAttributes
     {
@@ -365,7 +363,7 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Get a value indicating this entry is for a DOS/Windows system.
+    ///   Get a value indicating this entry is for a DOS/Windows system.
     /// </summary>
     public bool IsDOSEntry
     {
@@ -377,13 +375,15 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Test the external attributes for this <see cref="ZipEntry"/> to
-    /// see if the external attributes are Dos based (including WINNT and variants)
-    /// and match the values
+    ///   Test the external attributes for this <see cref="ZipEntry" /> to
+    ///   see if the external attributes are Dos based (including WINNT and variants)
+    ///   and match the values
     /// </summary>
     /// <param name="attributes">The attributes to test.</param>
-    /// <returns>Returns true if the external attributes are known to be DOS/Windows 
-    /// based and have the same attributes set as the value passed.</returns>
+    /// <returns>
+    ///   Returns true if the external attributes are known to be DOS/Windows
+    ///   based and have the same attributes set as the value passed.
+    /// </returns>
     private bool HasDosAttributes(int attributes)
     {
       var result = false;
@@ -400,41 +400,40 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Gets the compatability information for the <see cref="ExternalFileAttributes">external file attribute</see>
-    /// If the external file attributes are compatible with MS-DOS and can be read
-    /// by PKZIP for DOS version 2.04g then this value will be zero.  Otherwise the value
-    /// will be non-zero and identify the host system on which the attributes are compatible.
+    ///   Gets the compatability information for the <see cref="ExternalFileAttributes">external file attribute</see>
+    ///   If the external file attributes are compatible with MS-DOS and can be read
+    ///   by PKZIP for DOS version 2.04g then this value will be zero.  Otherwise the value
+    ///   will be non-zero and identify the host system on which the attributes are compatible.
     /// </summary>
-    ///     
     /// <remarks>
-    /// The values for this as defined in the Zip File format and by others are shown below.  The values are somewhat
-    /// misleading in some cases as they are not all used as shown.  You should consult the relevant documentation
-    /// to obtain up to date and correct information.  The modified appnote by the infozip group is
-    /// particularly helpful as it documents a lot of peculiarities.  The document is however a little dated.
-    /// <list type="table">
-    /// <item>0 - MS-DOS and OS/2 (FAT / VFAT / FAT32 file systems)</item>
-    /// <item>1 - Amiga</item>
-    /// <item>2 - OpenVMS</item>
-    /// <item>3 - Unix</item>
-    /// <item>4 - VM/CMS</item>
-    /// <item>5 - Atari ST</item>
-    /// <item>6 - OS/2 HPFS</item>
-    /// <item>7 - Macintosh</item>
-    /// <item>8 - Z-System</item>
-    /// <item>9 - CP/M</item>
-    /// <item>10 - Windows NTFS</item>
-    /// <item>11 - MVS (OS/390 - Z/OS)</item>
-    /// <item>12 - VSE</item>
-    /// <item>13 - Acorn Risc</item>
-    /// <item>14 - VFAT</item>
-    /// <item>15 - Alternate MVS</item>
-    /// <item>16 - BeOS</item>
-    /// <item>17 - Tandem</item>
-    /// <item>18 - OS/400</item>
-    /// <item>19 - OS/X (Darwin)</item>
-    /// <item>99 - WinZip AES</item>
-    /// <item>remainder - unused</item>
-    /// </list>
+    ///   The values for this as defined in the Zip File format and by others are shown below.  The values are somewhat
+    ///   misleading in some cases as they are not all used as shown.  You should consult the relevant documentation
+    ///   to obtain up to date and correct information.  The modified appnote by the infozip group is
+    ///   particularly helpful as it documents a lot of peculiarities.  The document is however a little dated.
+    ///   <list type="table">
+    ///     <item>0 - MS-DOS and OS/2 (FAT / VFAT / FAT32 file systems)</item>
+    ///     <item>1 - Amiga</item>
+    ///     <item>2 - OpenVMS</item>
+    ///     <item>3 - Unix</item>
+    ///     <item>4 - VM/CMS</item>
+    ///     <item>5 - Atari ST</item>
+    ///     <item>6 - OS/2 HPFS</item>
+    ///     <item>7 - Macintosh</item>
+    ///     <item>8 - Z-System</item>
+    ///     <item>9 - CP/M</item>
+    ///     <item>10 - Windows NTFS</item>
+    ///     <item>11 - MVS (OS/390 - Z/OS)</item>
+    ///     <item>12 - VSE</item>
+    ///     <item>13 - Acorn Risc</item>
+    ///     <item>14 - VFAT</item>
+    ///     <item>15 - Alternate MVS</item>
+    ///     <item>16 - BeOS</item>
+    ///     <item>17 - Tandem</item>
+    ///     <item>18 - OS/400</item>
+    ///     <item>19 - OS/X (Darwin)</item>
+    ///     <item>99 - WinZip AES</item>
+    ///     <item>remainder - unused</item>
+    ///   </list>
     /// </remarks>
     public int HostSystem
     {
@@ -445,33 +444,33 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Get minimum Zip feature version required to extract this entry
-    /// </summary>    
+    ///   Get minimum Zip feature version required to extract this entry
+    /// </summary>
     /// <remarks>
-    /// Minimum features are defined as:<br/>
-    /// 1.0 - Default value<br/>
-    /// 1.1 - File is a volume label<br/>
-    /// 2.0 - File is a folder/directory<br/>
-    /// 2.0 - File is compressed using Deflate compression<br/>
-    /// 2.0 - File is encrypted using traditional encryption<br/>
-    /// 2.1 - File is compressed using Deflate64<br/>
-    /// 2.5 - File is compressed using PKWARE DCL Implode<br/>
-    /// 2.7 - File is a patch data set<br/>
-    /// 4.5 - File uses Zip64 format extensions<br/>
-    /// 4.6 - File is compressed using BZIP2 compression<br/>
-    /// 5.0 - File is encrypted using DES<br/>
-    /// 5.0 - File is encrypted using 3DES<br/>
-    /// 5.0 - File is encrypted using original RC2 encryption<br/>
-    /// 5.0 - File is encrypted using RC4 encryption<br/>
-    /// 5.1 - File is encrypted using AES encryption<br/>
-    /// 5.1 - File is encrypted using corrected RC2 encryption<br/>
-    /// 5.1 - File is encrypted using corrected RC2-64 encryption<br/>
-    /// 6.1 - File is encrypted using non-OAEP key wrapping<br/>
-    /// 6.2 - Central directory encryption (not confirmed yet)<br/>
-    /// 6.3 - File is compressed using LZMA<br/>
-    /// 6.3 - File is compressed using PPMD+<br/>
-    /// 6.3 - File is encrypted using Blowfish<br/>
-    /// 6.3 - File is encrypted using Twofish<br/>
+    ///   Minimum features are defined as:<br />
+    ///   1.0 - Default value<br />
+    ///   1.1 - File is a volume label<br />
+    ///   2.0 - File is a folder/directory<br />
+    ///   2.0 - File is compressed using Deflate compression<br />
+    ///   2.0 - File is encrypted using traditional encryption<br />
+    ///   2.1 - File is compressed using Deflate64<br />
+    ///   2.5 - File is compressed using PKWARE DCL Implode<br />
+    ///   2.7 - File is a patch data set<br />
+    ///   4.5 - File uses Zip64 format extensions<br />
+    ///   4.6 - File is compressed using BZIP2 compression<br />
+    ///   5.0 - File is encrypted using DES<br />
+    ///   5.0 - File is encrypted using 3DES<br />
+    ///   5.0 - File is encrypted using original RC2 encryption<br />
+    ///   5.0 - File is encrypted using RC4 encryption<br />
+    ///   5.1 - File is encrypted using AES encryption<br />
+    ///   5.1 - File is encrypted using corrected RC2 encryption<br />
+    ///   5.1 - File is encrypted using corrected RC2-64 encryption<br />
+    ///   6.1 - File is encrypted using non-OAEP key wrapping<br />
+    ///   6.2 - Central directory encryption (not confirmed yet)<br />
+    ///   6.3 - File is compressed using LZMA<br />
+    ///   6.3 - File is compressed using PPMD+<br />
+    ///   6.3 - File is encrypted using Blowfish<br />
+    ///   6.3 - File is encrypted using Twofish<br />
     /// </remarks>
     /// <seealso cref="CanDecompress"></seealso>
     public int Version
@@ -505,10 +504,12 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Get a value indicating wether this entry can be decompressed by the library.
+    ///   Get a value indicating wether this entry can be decompressed by the library.
     /// </summary>
-    /// <remarks>This is based on the <see cref="Version"></see> and 
-    /// wether the <see cref="IsCompressionMethodSupported()">compression method</see> is supported.</remarks>
+    /// <remarks>
+    ///   This is based on the <see cref="Version"></see> and
+    ///   wether the <see cref="IsCompressionMethodSupported()">compression method</see> is supported.
+    /// </remarks>
     public bool CanDecompress
     {
       get
@@ -523,7 +524,7 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Force this entry to be recorded using Zip64 extensions.
+    ///   Force this entry to be recorded using Zip64 extensions.
     /// </summary>
     public void ForceZip64()
     {
@@ -531,19 +532,19 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Get a value indicating wether Zip64 extensions were forced.
+    ///   Get a value indicating wether Zip64 extensions were forced.
     /// </summary>
-    /// <returns>A <see cref="bool"/> value of true if Zip64 extensions have been forced on; false if not.</returns>
+    /// <returns>A <see cref="bool" /> value of true if Zip64 extensions have been forced on; false if not.</returns>
     public bool IsZip64Forced()
     {
       return forceZip64_;
     }
 
     /// <summary>
-    /// Gets a value indicating if the entry requires Zip64 extensions 
-    /// to store the full entry values.
+    ///   Gets a value indicating if the entry requires Zip64 extensions
+    ///   to store the full entry values.
     /// </summary>
-    /// <value>A <see cref="bool"/> value of true if a local header requires Zip64 extensions; false if not.</value>
+    /// <value>A <see cref="bool" /> value of true if a local header requires Zip64 extensions; false if not.</value>
     public bool LocalHeaderRequiresZip64
     {
       get
@@ -566,7 +567,7 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Get a value indicating wether the central directory entry requires Zip64 extensions to be stored.
+    ///   Get a value indicating wether the central directory entry requires Zip64 extensions to be stored.
     /// </summary>
     public bool CentralHeaderRequiresZip64
     {
@@ -577,10 +578,10 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Get/Set DosTime value.
+    ///   Get/Set DosTime value.
     /// </summary>
     /// <remarks>
-    /// The MS-DOS date format can only represent dates between 1/1/1980 and 12/31/2107.
+    ///   The MS-DOS date format can only represent dates between 1/1/1980 and 12/31/2107.
     /// </remarks>
     public long DosTime
     {
@@ -605,10 +606,10 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Gets/Sets the time of last modification of the entry.
+    ///   Gets/Sets the time of last modification of the entry.
     /// </summary>
     /// <remarks>
-    /// The <see cref="DosTime"></see> property is updated to match this as far as possible.
+    ///   The <see cref="DosTime"></see> property is updated to match this as far as possible.
     /// </remarks>
     public DateTime DateTime
     {
@@ -661,24 +662,26 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Returns the entry name.
+    ///   Returns the entry name.
     /// </summary>
     /// <remarks>
-    /// The unix naming convention is followed.
-    /// Path components in the entry should always separated by forward slashes ('/').
-    /// Dos device names like C: should also be removed.
-    /// See the <see cref="ZipNameTransform"/> class, or <see cref="CleanName(string)"/>
-    ///</remarks>
+    ///   The unix naming convention is followed.
+    ///   Path components in the entry should always separated by forward slashes ('/').
+    ///   Dos device names like C: should also be removed.
+    ///   See the <see cref="ZipNameTransform" /> class, or <see cref="CleanName(string)" />
+    /// </remarks>
     public string Name { get; private set; }
 
     /// <summary>
-    /// Gets/Sets the size of the uncompressed data.
+    ///   Gets/Sets the size of the uncompressed data.
     /// </summary>
     /// <returns>
-    /// The size or -1 if unknown.
+    ///   The size or -1 if unknown.
     /// </returns>
-    /// <remarks>Setting the size before adding an entry to an archive can help
-    /// avoid compatability problems with some archivers which dont understand Zip64 extensions.</remarks>
+    /// <remarks>
+    ///   Setting the size before adding an entry to an archive can help
+    ///   avoid compatability problems with some archivers which dont understand Zip64 extensions.
+    /// </remarks>
     public long Size
     {
       get
@@ -693,10 +696,10 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Gets/Sets the size of the compressed data.
+    ///   Gets/Sets the size of the compressed data.
     /// </summary>
     /// <returns>
-    /// The compressed entry size or -1 if unknown.
+    ///   The compressed entry size or -1 if unknown.
     /// </returns>
     public long CompressedSize
     {
@@ -712,13 +715,13 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Gets/Sets the crc of the uncompressed data.
+    ///   Gets/Sets the crc of the uncompressed data.
     /// </summary>
     /// <exception cref="System.ArgumentOutOfRangeException">
-    /// Crc is not in the range 0..0xffffffffL
+    ///   Crc is not in the range 0..0xffffffffL
     /// </exception>
     /// <returns>
-    /// The crc value or -1 if unknown.
+    ///   The crc value or -1 if unknown.
     /// </returns>
     public long Crc
     {
@@ -738,13 +741,13 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Gets/Sets the compression method. Only Deflated and Stored are supported.
+    ///   Gets/Sets the compression method. Only Deflated and Stored are supported.
     /// </summary>
     /// <returns>
-    /// The compression method for this entry
+    ///   The compression method for this entry
     /// </returns>
-    /// <see cref="Zip.CompressionMethod.Deflated"/>
-    /// <see cref="Zip.CompressionMethod.Stored"/>
+    /// <see cref="Zip.CompressionMethod.Deflated" />
+    /// <see cref="Zip.CompressionMethod.Stored" />
     public CompressionMethod CompressionMethod
     {
       get
@@ -763,13 +766,13 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Gets/Sets the extra data.
+    ///   Gets/Sets the extra data.
     /// </summary>
     /// <exception cref="System.ArgumentOutOfRangeException">
-    /// Extra data is longer than 64KB (0xffff) bytes.
+    ///   Extra data is longer than 64KB (0xffff) bytes.
     /// </exception>
     /// <returns>
-    /// Extra data or null if not set.
+    ///   Extra data or null if not set.
     /// </returns>
     public byte[] ExtraData
     {
@@ -800,10 +803,11 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Process extra data fields updating the entry based on the contents.
+    ///   Process extra data fields updating the entry based on the contents.
     /// </summary>
-    /// <param name="localHeader">True if the extra data fields should be handled
-    /// for a local header, rather than for a central header.
+    /// <param name="localHeader">
+    ///   True if the extra data fields should be handled
+    ///   for a local header, rather than for a central header.
     /// </param>
     internal void ProcessExtraData(bool localHeader)
     {
@@ -899,17 +903,17 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Gets/Sets the entry comment.
+    ///   Gets/Sets the entry comment.
     /// </summary>
     /// <exception cref="System.ArgumentOutOfRangeException">
-    /// If comment is longer than 0xffff.
+    ///   If comment is longer than 0xffff.
     /// </exception>
     /// <returns>
-    /// The comment or null if not set.
+    ///   The comment or null if not set.
     /// </returns>
     /// <remarks>
-    /// A comment is only available for entries when read via the <see cref="ZipFile"/> class.
-    /// The <see cref="ZipInputStream"/> class doesnt have the comment data available.
+    ///   A comment is only available for entries when read via the <see cref="ZipFile" /> class.
+    ///   The <see cref="ZipInputStream" /> class doesnt have the comment data available.
     /// </remarks>
     public string Comment
     {
@@ -940,14 +944,14 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Gets a value indicating if the entry is a directory.
-    /// however.
+    ///   Gets a value indicating if the entry is a directory.
+    ///   however.
     /// </summary>
     /// <remarks>
-    /// A directory is determined by an entry name with a trailing slash '/'.
-    /// The external file attributes can also indicate an entry is for a directory.
-    /// Currently only dos/windows attributes are tested in this manner.
-    /// The trailing slash convention should always be followed.
+    ///   A directory is determined by an entry name with a trailing slash '/'.
+    ///   The external file attributes can also indicate an entry is for a directory.
+    ///   Currently only dos/windows attributes are tested in this manner.
+    ///   The trailing slash convention should always be followed.
     /// </remarks>
     public bool IsDirectory
     {
@@ -964,11 +968,11 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Get a value of true if the entry appears to be a file; false otherwise
+    ///   Get a value of true if the entry appears to be a file; false otherwise
     /// </summary>
     /// <remarks>
-    /// This only takes account of DOS/Windows attributes.  Other operating systems are ignored.
-    /// For linux and others the result may be incorrect.
+    ///   This only takes account of DOS/Windows attributes.  Other operating systems are ignored.
+    ///   For linux and others the result may be incorrect.
     /// </remarks>
     public bool IsFile
     {
@@ -979,7 +983,7 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Test entry to see if data can be extracted.
+    ///   Test entry to see if data can be extracted.
     /// </summary>
     /// <returns>Returns true if data can be extracted for this entry; false otherwise.</returns>
     public bool IsCompressionMethodSupported()
@@ -990,9 +994,9 @@ namespace Fomm.SharpZipLib.Zip
     #region ICloneable Members
 
     /// <summary>
-    /// Creates a copy of this zip entry.
+    ///   Creates a copy of this zip entry.
     /// </summary>
-    /// <returns>An <see cref="Object"/> that is a copy of the current instance.</returns>
+    /// <returns>An <see cref="Object" /> that is a copy of the current instance.</returns>
     public object Clone()
     {
       var result = (ZipEntry) MemberwiseClone();
@@ -1010,17 +1014,17 @@ namespace Fomm.SharpZipLib.Zip
     #endregion
 
     /// <summary>
-    /// Gets a string representation of this ZipEntry.
+    ///   Gets a string representation of this ZipEntry.
     /// </summary>
-    /// <returns>A readable textual representation of this <see cref="ZipEntry"/></returns>
+    /// <returns>A readable textual representation of this <see cref="ZipEntry" /></returns>
     public override string ToString()
     {
       return Name;
     }
 
     /// <summary>
-    /// Test a <see cref="CompressionMethod">compression method</see> to see if this library
-    /// supports extracting data compressed with that method
+    ///   Test a <see cref="CompressionMethod">compression method</see> to see if this library
+    ///   supports extracting data compressed with that method
     /// </summary>
     /// <param name="method">The compression method to test.</param>
     /// <returns>Returns true if the compression method is supported; false otherwise</returns>

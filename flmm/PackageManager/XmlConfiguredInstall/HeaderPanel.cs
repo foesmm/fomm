@@ -1,39 +1,39 @@
 ﻿using System;
-using System.Windows.Forms;
-using System.Drawing;
 using System.ComponentModel;
+using System.Drawing;
 using System.Drawing.Imaging;
+using System.Windows.Forms;
 
 namespace Fomm.PackageManager.XmlConfiguredInstall
 {
   /// <summary>
-  /// The posible positions of the title text.
+  ///   The posible positions of the title text.
   /// </summary>
   public enum TextPosition
   {
     /// <summary>
-    /// Indicates the text should be on the left side of the header.
+    ///   Indicates the text should be on the left side of the header.
     /// </summary>
     Left,
 
     /// <summary>
-    /// Indicates the text should be on the right side of the header.
+    ///   Indicates the text should be on the right side of the header.
     /// </summary>
     Right,
 
     /// <summary>
-    /// Indicates the text should be on the right side of the image in the header.
+    ///   Indicates the text should be on the right side of the image in the header.
     /// </summary>
     RightOfImage
   }
 
   /// <summary>
-  /// A panel that displays an image and title.
+  ///   A panel that displays an image and title.
   /// </summary>
   public class HeaderPanel : UserControl
   {
     /// <summary>
-    /// A label that has a transparent backgroun.
+    ///   A label that has a transparent backgroun.
     /// </summary>
     private class TransparentLabel : UserControl
     {
@@ -43,7 +43,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
       #region Properties
 
       /// <summary>
-      /// Gets or sets the text of the label.
+      ///   Gets or sets the text of the label.
       /// </summary>
       /// <value>The text of the label.</value>
       public override string Text
@@ -60,7 +60,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
       }
 
       /// <summary>
-      /// Gets or sets the font of the label.
+      ///   Gets or sets the font of the label.
       /// </summary>
       /// <value>The font of the label.</value>
       public override Font Font
@@ -79,18 +79,16 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
       #endregion
 
       /// <summary>
-      /// Raises the <see cref="Control.OnPaintBackground"/> event.
+      ///   Raises the <see cref="Control.OnPaintBackground" /> event.
       /// </summary>
       /// <remarks>
-      /// We don't want a backgroun, so this method does nothing.
+      ///   We don't want a backgroun, so this method does nothing.
       /// </remarks>
-      /// <param name="e">A <see cref="PaintEventArgs"/> describing the event arguments.</param>
-      protected override void OnPaintBackground(PaintEventArgs e)
-      {
-      }
+      /// <param name="e">A <see cref="PaintEventArgs" /> describing the event arguments.</param>
+      protected override void OnPaintBackground(PaintEventArgs e) {}
 
       /// <summary>
-      /// Adjusts the size of the label whenever properties affecting size change.
+      ///   Adjusts the size of the label whenever properties affecting size change.
       /// </summary>
       private void updateLayout()
       {
@@ -101,12 +99,12 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
       }
 
       /// <summary>
-      /// Raises the <see cref="Control.OnPaint"/> event.
+      ///   Raises the <see cref="Control.OnPaint" /> event.
       /// </summary>
       /// <remarks>
-      /// This paints what is behind the label, and then oerlays that with the label's text.
+      ///   This paints what is behind the label, and then oerlays that with the label's text.
       /// </remarks>
-      /// <param name="e">A <see cref="PaintEventArgs"/> describing the event arguments.</param>
+      /// <param name="e">A <see cref="PaintEventArgs" /> describing the event arguments.</param>
       protected override void OnPaint(PaintEventArgs e)
       {
         if (!m_booPaintOnce)
@@ -142,7 +140,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     #region Properties
 
     /// <summary>
-    /// Gets or sets whether to show the fade effect.
+    ///   Gets or sets whether to show the fade effect.
     /// </summary>
     /// <value>Whether to show the fade effect.</value>
     [Browsable(true), Category("Appearance"), DefaultValue(true),
@@ -164,7 +162,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     }
 
     /// <summary>
-    /// Gets or sets where to position the title text.
+    ///   Gets or sets where to position the title text.
     /// </summary>
     /// <value>Where to position the title text.</value>
     [Browsable(true), Category("Appearance"), DefaultValue(TextPosition.RightOfImage),
@@ -186,7 +184,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     }
 
     /// <summary>
-    /// Gets or sets the title text.
+    ///   Gets or sets the title text.
     /// </summary>
     /// <value>The title text.</value>
     [Browsable(true), DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
@@ -207,7 +205,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     }
 
     /// <summary>
-    /// Gets or sets the source location of the image to display.
+    ///   Gets or sets the source location of the image to display.
     /// </summary>
     /// <value>The source location of the image to display.</value>
     [Browsable(true), Category("Appearance"), DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
@@ -230,7 +228,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     }
 
     /// <summary>
-    /// Gets or sets the image to display.
+    ///   Gets or sets the image to display.
     /// </summary>
     /// <value>The image to display.</value>
     [Browsable(true), Category("Appearance"), DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
@@ -258,7 +256,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     }
 
     /// <summary>
-    /// Gets or sets the height of the header panel.
+    ///   Gets or sets the height of the header panel.
     /// </summary>
     /// <value>The height of the header panel.</value>
     public new Int32 Height
@@ -282,7 +280,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     #region Constructors
 
     /// <summary>
-    /// The default constructor.
+    ///   The default constructor.
     /// </summary>
     public HeaderPanel()
     {
@@ -302,7 +300,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     #endregion
 
     /// <summary>
-    /// Positions the controls per the properties.
+    ///   Positions the controls per the properties.
     /// </summary>
     private void updateLayout()
     {
@@ -333,12 +331,12 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     }
 
     /// <summary>
-    /// Raises the <see cref="Control.FontChanged"/> event.
+    ///   Raises the <see cref="Control.FontChanged" /> event.
     /// </summary>
     /// <remarks>
-    /// This method updates the font of the label.
+    ///   This method updates the font of the label.
     /// </remarks>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     protected override void OnFontChanged(EventArgs e)
     {
       base.OnFontChanged(e);
@@ -347,12 +345,12 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     }
 
     /// <summary>
-    /// Raises the <see cref="Control.Reszie"/> event.
+    ///   Raises the <see cref="Control.Reszie" /> event.
     /// </summary>
     /// <remarks>
-    /// This forces the label to refresh if it hasn't already done so.
+    ///   This forces the label to refresh if it hasn't already done so.
     /// </remarks>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     protected override void OnResize(EventArgs e)
     {
       base.OnResize(e);
@@ -363,11 +361,11 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     }
 
     /// <summary>
-    /// Resizes the source image to fit into the header.
+    ///   Resizes the source image to fit into the header.
     /// </summary>
     /// <remarks>
-    /// The piture box automatically sizes the image to fit; however, resizing ourselves gives us
-    /// a significant performance advantage when creating the fade effect.
+    ///   The piture box automatically sizes the image to fit; however, resizing ourselves gives us
+    ///   a significant performance advantage when creating the fade effect.
     /// </remarks>
     /// <param name="p_imgSource">The image to resize.</param>
     /// <param name="p_szeSize">The size to which to resize the image.</param>
@@ -382,7 +380,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     }
 
     /// <summary>
-    /// Loads the image into the header, and adjust the picture box to display the image correctly.
+    ///   Loads the image into the header, and adjust the picture box to display the image correctly.
     /// </summary>
     private void loadImage()
     {
@@ -403,7 +401,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     }
 
     /// <summary>
-    /// Generates the fade effect.
+    ///   Generates the fade effect.
     /// </summary>
     private void Fade()
     {

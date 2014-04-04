@@ -1,23 +1,23 @@
 ﻿using System;
-using System.Windows.Forms;
-using System.Drawing;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace Fomm.PackageManager.FomodBuilder
 {
   /// <summary>
-  /// A control that allows the specification of download locations for source files.
+  ///   A control that allows the specification of download locations for source files.
   /// </summary>
   /// <remarks>
-  /// Source files are used to build FOMods and PFPs.
+  ///   Source files are used to build FOMods and PFPs.
   /// </remarks>
   public partial class SourceDownloadSelector : UserControl
   {
     #region Properties
 
     /// <summary>
-    /// Gets or sets the list of source download locations being managed.
+    ///   Gets or sets the list of source download locations being managed.
     /// </summary>
     /// <value>The list of source download locations being managed.</value>
     [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -38,7 +38,7 @@ namespace Fomm.PackageManager.FomodBuilder
     #region Constructors
 
     /// <summary>
-    /// The default constructor.
+    ///   The default constructor.
     /// </summary>
     public SourceDownloadSelector()
     {
@@ -48,14 +48,14 @@ namespace Fomm.PackageManager.FomodBuilder
     #endregion
 
     /// <summary>
-    /// Handles the <see cref="DataGridView.CurrentCellDirtyStateChanged"/> event of the
-    /// source list grid.
+    ///   Handles the <see cref="DataGridView.CurrentCellDirtyStateChanged" /> event of the
+    ///   source list grid.
     /// </summary>
     /// <remarks>
-    /// This commits changes.
+    ///   This commits changes.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void dgvSourceList_CurrentCellDirtyStateChanged(object sender, EventArgs e)
     {
       if (dgvSourceList.IsCurrentCellDirty)
@@ -65,11 +65,11 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// Handles the <see cref="DataGridView.CellValueChanged"/> event of the
-    /// source list grid.
+    ///   Handles the <see cref="DataGridView.CellValueChanged" /> event of the
+    ///   source list grid.
     /// </summary>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="DataGridViewCellEventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="DataGridViewCellEventArgs" /> describing the event arguments.</param>
     private void dgvSourceList_CellValueChanged(object sender, DataGridViewCellEventArgs e)
     {
       if (dgvSourceList.Columns[e.ColumnIndex].Name == "clmIncluded")
@@ -80,8 +80,8 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// This changes the appearance of the specified row dependent upon whether the source
-    /// has been marked as included.
+    ///   This changes the appearance of the specified row dependent upon whether the source
+    ///   has been marked as included.
     /// </summary>
     /// <param name="p_intRowIndex"></param>
     private void HandleIncludedChange(Int32 p_intRowIndex)
@@ -107,22 +107,22 @@ namespace Fomm.PackageManager.FomodBuilder
     }
 
     /// <summary>
-    /// Handles the <see cref="DataGridView.RowsAdded"/> event of the
-    /// source list grid.
+    ///   Handles the <see cref="DataGridView.RowsAdded" /> event of the
+    ///   source list grid.
     /// </summary>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="DataGridViewRowsAddedEventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="DataGridViewRowsAddedEventArgs" /> describing the event arguments.</param>
     private void dgvSourceList_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
     {
       HandleIncludedChange(e.RowIndex);
     }
 
     /// <summary>
-    /// Handles the <see cref="DataGridView.DataSourceChanged"/> event of the
-    /// source list grid.
+    ///   Handles the <see cref="DataGridView.DataSourceChanged" /> event of the
+    ///   source list grid.
     /// </summary>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void dgvSourceList_DataSourceChanged(object sender, EventArgs e)
     {
       for (var i = 0; i < dgvSourceList.RowCount; i++)

@@ -1,17 +1,17 @@
 ﻿using System;
-using System.Xml;
 using System.Collections.Generic;
+using System.Xml;
 
 namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
 {
   /// <summary>
-  /// Parses version 4.0 mod configuration files.
+  ///   Parses version 4.0 mod configuration files.
   /// </summary>
   public class Parser40 : Parser30
   {
     #region Properties
 
-    /// <seealso cref="Parser.ConfigurationFileVersion"/>
+    /// <seealso cref="Parser.ConfigurationFileVersion" />
     protected override string ConfigurationFileVersion
     {
       get
@@ -25,7 +25,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     #region Constructors
 
     /// <summary>
-    /// A simple constructor that initializes teh object with the given values.
+    ///   A simple constructor that initializes teh object with the given values.
     /// </summary>
     /// <param name="p_xmlConfig">The modules configuration file.</param>
     /// <param name="p_fomodMod">The mod whose configuration file we are parsing.</param>
@@ -33,15 +33,13 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     /// <param name="p_pexParserExtension">The parser extension that provides game-specific config file parsing.</param>
     public Parser40(XmlDocument p_xmlConfig, fomod p_fomodMod, DependencyStateManager p_dsmSate,
                     ParserExtension p_pexParserExtension)
-      : base(p_xmlConfig, p_fomodMod, p_dsmSate, p_pexParserExtension)
-    {
-    }
+      : base(p_xmlConfig, p_fomodMod, p_dsmSate, p_pexParserExtension) {}
 
     #endregion
 
     #region Abstract Method Implementations
 
-    /// <seealso cref="Parser.GetInstallSteps()"/>
+    /// <seealso cref="Parser.GetInstallSteps()" />
     public override IList<InstallStep> GetInstallSteps()
     {
       var lstSteps = new List<InstallStep>();
@@ -92,7 +90,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     #region Parsing Methods
 
     /// <summary>
-    /// Creates an install step based on the given info.
+    ///   Creates an install step based on the given info.
     /// </summary>
     /// <param name="p_xndStep">The configuration file node corresponding to the install step to add.</param>
     /// <returns>The added install step.</returns>

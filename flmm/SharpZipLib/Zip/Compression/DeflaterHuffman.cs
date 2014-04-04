@@ -42,12 +42,10 @@ using System;
 namespace Fomm.SharpZipLib.Zip.Compression
 {
   /// <summary>
-  /// This is the DeflaterHuffman class.
-  /// 
-  /// This class is <i>not</i> thread safe.  This is inherent in the API, due
-  /// to the split of Deflate and SetInput.
-  /// 
-  /// author of the original java version : Jochen Hoenicke
+  ///   This is the DeflaterHuffman class.
+  ///   This class is <i>not</i> thread safe.  This is inherent in the API, due
+  ///   to the split of Deflate and SetInput.
+  ///   author of the original java version : Jochen Hoenicke
   /// </summary>
   internal class DeflaterHuffman
   {
@@ -133,7 +131,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
       #endregion
 
       /// <summary>
-      /// Resets the internal state of the tree
+      ///   Resets the internal state of the tree
       /// </summary>
       public void Reset()
       {
@@ -155,7 +153,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
       }
 
       /// <summary>
-      /// Set static codes and length
+      ///   Set static codes and length
       /// </summary>
       /// <param name="staticCodes">new codes</param>
       /// <param name="staticLengths">length for new codes</param>
@@ -166,7 +164,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
       }
 
       /// <summary>
-      /// Build dynamic codes and lengths
+      ///   Build dynamic codes and lengths
       /// </summary>
       public void BuildCodes()
       {
@@ -344,7 +342,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
       }
 
       /// <summary>
-      /// Get encoded length
+      ///   Get encoded length
       /// </summary>
       /// <returns>Encoded length, the sum of frequencies * lengths</returns>
       public int GetEncodedLength()
@@ -358,8 +356,8 @@ namespace Fomm.SharpZipLib.Zip.Compression
       }
 
       /// <summary>
-      /// Scan a literal or distance tree to determine the frequencies of the codes
-      /// in the bit length tree.
+      ///   Scan a literal or distance tree to determine the frequencies of the codes
+      ///   in the bit length tree.
       /// </summary>
       public void CalcBLFreq(Tree blTree)
       {
@@ -419,7 +417,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
       }
 
       /// <summary>
-      /// Write tree values
+      ///   Write tree values
       /// </summary>
       /// <param name="blTree">Tree to write</param>
       public void WriteTree(Tree blTree)
@@ -539,9 +537,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
         do
         {
           // Find the first bit length which could increase:
-          while (bl_counts[--incrBitLen] == 0)
-          {
-          }
+          while (bl_counts[--incrBitLen] == 0) {}
 
           // Move this node one down and remove a corresponding
           // number of overflow nodes.
@@ -597,7 +593,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
     #region Instance Fields
 
     /// <summary>
-    /// Pending buffer to use
+    ///   Pending buffer to use
     /// </summary>
     public DeflaterPending pending;
 
@@ -656,7 +652,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
     }
 
     /// <summary>
-    /// Construct instance with pending buffer
+    ///   Construct instance with pending buffer
     /// </summary>
     /// <param name="pending">Pending buffer to use</param>
     public DeflaterHuffman(DeflaterPending pending)
@@ -672,8 +668,8 @@ namespace Fomm.SharpZipLib.Zip.Compression
     }
 
     /// <summary>
-    /// Reset internal state
-    /// </summary>    
+    ///   Reset internal state
+    /// </summary>
     public void Reset()
     {
       last_lit = 0;
@@ -684,7 +680,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
     }
 
     /// <summary>
-    /// Write all trees to pending buffer
+    ///   Write all trees to pending buffer
     /// </summary>
     /// <param name="blTreeCodes">The number/rank of treecodes to send.</param>
     public void SendAllTrees(int blTreeCodes)
@@ -710,7 +706,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
     }
 
     /// <summary>
-    /// Compress current buffer writing data to pending buffer
+    ///   Compress current buffer writing data to pending buffer
     /// </summary>
     public void CompressBlock()
     {
@@ -771,7 +767,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
     }
 
     /// <summary>
-    /// Flush block to output with no compression
+    ///   Flush block to output with no compression
     /// </summary>
     /// <param name="stored">Data to write</param>
     /// <param name="storedOffset">Index of first byte to write</param>
@@ -793,8 +789,8 @@ namespace Fomm.SharpZipLib.Zip.Compression
     }
 
     /// <summary>
-    /// Flush block to output with compression
-    /// </summary>    
+    ///   Flush block to output with compression
+    /// </summary>
     /// <param name="stored">Data to flush</param>
     /// <param name="storedOffset">Index of first byte to flush</param>
     /// <param name="storedLength">Count of bytes to flush</param>
@@ -871,7 +867,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
     }
 
     /// <summary>
-    /// Get value indicating if internal buffer is full
+    ///   Get value indicating if internal buffer is full
     /// </summary>
     /// <returns>true if buffer is full</returns>
     public bool IsFull()
@@ -880,7 +876,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
     }
 
     /// <summary>
-    /// Add literal to buffer
+    ///   Add literal to buffer
     /// </summary>
     /// <param name="literal">Literal value to add to buffer.</param>
     /// <returns>Value indicating internal buffer is full</returns>
@@ -900,7 +896,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
     }
 
     /// <summary>
-    /// Add distance code and length to literal and distance trees
+    ///   Add distance code and length to literal and distance trees
     /// </summary>
     /// <param name="distance">Distance code</param>
     /// <param name="length">Length</param>
@@ -931,7 +927,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
     }
 
     /// <summary>
-    /// Reverse the bits of a 16 bit value.
+    ///   Reverse the bits of a 16 bit value.
     /// </summary>
     /// <param name="toReverse">Value to reverse bits</param>
     /// <returns>Value with bits reversed</returns>

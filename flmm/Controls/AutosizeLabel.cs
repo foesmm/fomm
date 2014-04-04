@@ -1,16 +1,16 @@
 ﻿using System;
-using System.Windows.Forms;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace Fomm.Controls
 {
   /// <summary>
-  /// A multiline label that resizes with the content.
+  ///   A multiline label that resizes with the content.
   /// </summary>
   public class AutosizeLabel : RichTextBox
   {
     /// <summary>
-    /// The default constructor.
+    ///   The default constructor.
     /// </summary>
     public AutosizeLabel()
     {
@@ -26,9 +26,9 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Resizes the label as the content size changes.
+    ///   Resizes the label as the content size changes.
     /// </summary>
-    /// <param name="e">A <see cref="ContentsResizedEventArgs"/> describing the event arguments.</param>
+    /// <param name="e">A <see cref="ContentsResizedEventArgs" /> describing the event arguments.</param>
     protected override void OnContentsResized(ContentsResizedEventArgs e)
     {
       Height = e.NewRectangle.Height + 5;
@@ -36,9 +36,9 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Makes sure all text doesn't look disabled.
+    ///   Makes sure all text doesn't look disabled.
     /// </summary>
-    /// <param name="e">A <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">A <see cref="EventArgs" /> describing the event arguments.</param>
     protected override void OnTextChanged(EventArgs e)
     {
       base.OnTextChanged(e);
@@ -46,7 +46,7 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Forces the text color not to look disabled.
+    ///   Forces the text color not to look disabled.
     /// </summary>
     protected void SetTextColor()
     {

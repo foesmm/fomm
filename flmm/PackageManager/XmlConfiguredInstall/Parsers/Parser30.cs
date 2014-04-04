@@ -1,20 +1,20 @@
 ﻿using System;
-using System.Xml;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Windows.Forms;
 using System.Globalization;
+using System.Windows.Forms;
+using System.Xml;
 
 namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
 {
   /// <summary>
-  /// Parses version 3.0 mod configuration files.
+  ///   Parses version 3.0 mod configuration files.
   /// </summary>
   public class Parser30 : Parser20
   {
     #region Properties
 
-    /// <seealso cref="Parser.ConfigurationFileVersion"/>
+    /// <seealso cref="Parser.ConfigurationFileVersion" />
     protected override string ConfigurationFileVersion
     {
       get
@@ -28,7 +28,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     #region Constructors
 
     /// <summary>
-    /// A simple constructor that initializes teh object with the given values.
+    ///   A simple constructor that initializes teh object with the given values.
     /// </summary>
     /// <param name="p_xmlConfig">The modules configuration file.</param>
     /// <param name="p_fomodMod">The mod whose configuration file we are parsing.</param>
@@ -36,15 +36,13 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     /// <param name="p_pexParserExtension">The parser extension that provides game-specific config file parsing.</param>
     public Parser30(XmlDocument p_xmlConfig, fomod p_fomodMod, DependencyStateManager p_dsmSate,
                     ParserExtension p_pexParserExtension)
-      : base(p_xmlConfig, p_fomodMod, p_dsmSate, p_pexParserExtension)
-    {
-    }
+      : base(p_xmlConfig, p_fomodMod, p_dsmSate, p_pexParserExtension) {}
 
     #endregion
 
     #region Abstract Method Implementations
 
-    /// <seealso cref="Parser.GetModDependencies()"/>
+    /// <seealso cref="Parser.GetModDependencies()" />
     public override CompositeDependency GetModDependencies()
     {
       var xndModDependencies = XmlConfig.SelectSingleNode("/config/moduleDependencies");
@@ -55,7 +53,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
       return loadDependency(xndModDependencies);
     }
 
-    /// <seealso cref="Parser.GetHeaderInfo()"/>
+    /// <seealso cref="Parser.GetHeaderInfo()" />
     public override HeaderInfo GetHeaderInfo()
     {
       var xndTitle = XmlConfig.SelectSingleNode("/config/moduleName");
@@ -91,7 +89,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     #region Parsing Methods
 
     /// <summary>
-    /// Gets the mod plugins, organized into their groups.
+    ///   Gets the mod plugins, organized into their groups.
     /// </summary>
     /// <returns>The mod plugins, organized into their groups.</returns>
     public override IList<PluginGroup> loadGroupedPlugins(XmlNode p_xndFileGroups)
@@ -139,7 +137,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     }
 
     /// <summary>
-    /// Creates a plugin group based on the given info.
+    ///   Creates a plugin group based on the given info.
     /// </summary>
     /// <param name="p_xndGroup">The configuration file node corresponding to the group to add.</param>
     /// <returns>The added group.</returns>
@@ -168,10 +166,10 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     }
 
     /// <summary>
-    /// Reads the dependency information from the given node.
+    ///   Reads the dependency information from the given node.
     /// </summary>
     /// <param name="p_xndCompositeDependency">The node from which to load the dependency information.</param>
-    /// <returns>A <see cref="CompositeDependency"/> representing the dependency described in the given node.</returns>
+    /// <returns>A <see cref="CompositeDependency" /> representing the dependency described in the given node.</returns>
     protected override CompositeDependency loadDependency(XmlNode p_xndCompositeDependency)
     {
       if (p_xndCompositeDependency == null)

@@ -1,50 +1,46 @@
 ﻿using System;
-using System.Windows.Forms;
-using System.Drawing;
 using System.ComponentModel;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace Fomm.Controls
 {
   /// <summary>
-  /// A wizard control.
+  ///   A wizard control.
   /// </summary>
   [DefaultProperty("SelectedPage"), DefaultEvent("SelectedTabPageChanged"), Designer(typeof (WizardControlDesigner))]
   public class WizardControl : VerticalTabControl
   {
     /// <summary>
-    /// Raised when the finish button is clicked.
+    ///   Raised when the finish button is clicked.
     /// </summary>
     [Category("Action")]
-    public event EventHandler Finished = delegate
-    {
-    };
+    public event EventHandler Finished = delegate {};
 
     /// <summary>
-    /// Raised when the cancel button is clicked.
+    ///   Raised when the cancel button is clicked.
     /// </summary>
     [Category("Action")]
-    public event EventHandler Cancelled = delegate
-    {
-    };
+    public event EventHandler Cancelled = delegate {};
 
     #region Properties
 
     /// <summary>
-    /// Gets the wizard's previous button.
+    ///   Gets the wizard's previous button.
     /// </summary>
     /// <value>The wizard's previous button.</value>
     [Browsable(false)]
     public Button PreviousButton { get; private set; }
 
     /// <summary>
-    /// Gets the wizard's next button.
+    ///   Gets the wizard's next button.
     /// </summary>
     /// <value>The wizard's next button.</value>
     [Browsable(false)]
     public Button NextButton { get; private set; }
 
     /// <summary>
-    /// Gets or sets whether the tabs are visible.
+    ///   Gets or sets whether the tabs are visible.
     /// </summary>
     /// <value>Whether the tabs are visible.</value>
     [Category("Appearance"), DefaultValue(false)]
@@ -65,7 +61,7 @@ namespace Fomm.Controls
     #region Constructors
 
     /// <summary>
-    /// The default constructor.
+    ///   The default constructor.
     /// </summary>
     public WizardControl()
     {
@@ -121,12 +117,12 @@ namespace Fomm.Controls
     #endregion
 
     /// <summary>
-    /// Raises the <see cref="Control.ControlAdded"/> event.
+    ///   Raises the <see cref="Control.ControlAdded" /> event.
     /// </summary>
     /// <remarks>
-    /// This ensures that the wizard buttons are enabled/disabled correctly.
+    ///   This ensures that the wizard buttons are enabled/disabled correctly.
     /// </remarks>
-    /// <param name="e">A <see cref="ControlEventArgs"/> describing the event arguments.</param>
+    /// <param name="e">A <see cref="ControlEventArgs" /> describing the event arguments.</param>
     protected override void OnControlAdded(ControlEventArgs e)
     {
       base.OnControlAdded(e);
@@ -137,12 +133,12 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Raises the <see cref="Control.ControlRemoved"/> event.
+    ///   Raises the <see cref="Control.ControlRemoved" /> event.
     /// </summary>
     /// <remarks>
-    /// This ensures that the wizard buttons are enabled/disabled correctly.
+    ///   This ensures that the wizard buttons are enabled/disabled correctly.
     /// </remarks>
-    /// <param name="e">A <see cref="ControlEventArgs"/> describing the event arguments.</param>
+    /// <param name="e">A <see cref="ControlEventArgs" /> describing the event arguments.</param>
     protected override void OnControlRemoved(ControlEventArgs e)
     {
       base.OnControlRemoved(e);
@@ -155,26 +151,26 @@ namespace Fomm.Controls
     #region Page Navigation
 
     /// <summary>
-    /// Handles the <see cref="Control.Click"/> event of the cancel button.
+    ///   Handles the <see cref="Control.Click" /> event of the cancel button.
     /// </summary>
     /// <remarks>
-    /// This raises the <see cref="Cancelled"/> event.
+    ///   This raises the <see cref="Cancelled" /> event.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void Cancel_Click(object sender, EventArgs e)
     {
       Cancelled(this, new EventArgs());
     }
 
     /// <summary>
-    /// This navigates to the page whose index is <see cref="p_intJumpSize"/>
-    /// away from the current page's index.
+    ///   This navigates to the page whose index is <see cref="p_intJumpSize" />
+    ///   away from the current page's index.
     /// </summary>
     /// <remarks>
-    /// This makes sure that the selected index resulting from the jump is never 
-    /// out of bounds. It also enables/disables buttons and changes button text as
-    /// appropriate.
+    ///   This makes sure that the selected index resulting from the jump is never
+    ///   out of bounds. It also enables/disables buttons and changes button text as
+    ///   appropriate.
     /// </remarks>
     /// <param name="p_intJumpSize">The number of pages to jump.</param>
     protected void MovePage(Int32 p_intJumpSize)
@@ -195,26 +191,26 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Handles the <see cref="Control.Click"/> event of the previous button.
+    ///   Handles the <see cref="Control.Click" /> event of the previous button.
     /// </summary>
     /// <remarks>
-    /// This navigates to the previous page, if there is one.
+    ///   This navigates to the previous page, if there is one.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void Previous_Click(object sender, EventArgs e)
     {
       MovePage(-1);
     }
 
     /// <summary>
-    /// Handles the <see cref="Control.Click"/> event of the next button.
+    ///   Handles the <see cref="Control.Click" /> event of the next button.
     /// </summary>
     /// <remarks>
-    /// This navigates to the next page, if there is one.
+    ///   This navigates to the next page, if there is one.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void Next_Click(object sender, EventArgs e)
     {
       if (NextButton.Text.Equals("Finish"))

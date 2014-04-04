@@ -43,17 +43,17 @@ namespace Fomm.SharpZipLib.Zip
   // Its just a sketch of an idea at the moment.
 
   /// <summary>
-  /// ExtraData tagged value interface.
+  ///   ExtraData tagged value interface.
   /// </summary>
   internal interface ITaggedData
   {
     /// <summary>
-    /// Get the ID for this tagged data value.
+    ///   Get the ID for this tagged data value.
     /// </summary>
     short TagID { get; }
 
     /// <summary>
-    /// Set the contents of this instance from the data passed.
+    ///   Set the contents of this instance from the data passed.
     /// </summary>
     /// <param name="data">The data to extract contents from.</param>
     /// <param name="offset">The offset to begin extracting data from.</param>
@@ -61,19 +61,19 @@ namespace Fomm.SharpZipLib.Zip
     void SetData(byte[] data, int offset, int count);
 
     /// <summary>
-    /// Get the data representing this instance.
+    ///   Get the data representing this instance.
     /// </summary>
     /// <returns>Returns the data for this instance.</returns>
     byte[] GetData();
   }
 
   /// <summary>
-  /// A factory that creates <see cref="ITaggedData">tagged data</see> instances.
+  ///   A factory that creates <see cref="ITaggedData">tagged data</see> instances.
   /// </summary>
   internal interface ITaggedDataFactory
   {
     /// <summary>
-    /// Get data for a specific tag value.
+    ///   Get data for a specific tag value.
     /// </summary>
     /// <param name="tag">The tag ID to find.</param>
     /// <param name="data">The data to search.</param>
@@ -83,23 +83,22 @@ namespace Fomm.SharpZipLib.Zip
     ITaggedData Create(short tag, byte[] data, int offset, int count);
   }
 
-  /// 
   /// <summary>
-  /// A class to handle the extra data field for Zip entries
+  ///   A class to handle the extra data field for Zip entries
   /// </summary>
   /// <remarks>
-  /// Extra data contains 0 or more values each prefixed by a header tag and length.
-  /// They contain zero or more bytes of actual data.
-  /// The data is held internally using a copy on write strategy.  This is more efficient but
-  /// means that for extra data created by passing in data can have the values modified by the caller
-  /// in some circumstances.
+  ///   Extra data contains 0 or more values each prefixed by a header tag and length.
+  ///   They contain zero or more bytes of actual data.
+  ///   The data is held internally using a copy on write strategy.  This is more efficient but
+  ///   means that for extra data created by passing in data can have the values modified by the caller
+  ///   in some circumstances.
   /// </remarks>
   internal sealed class ZipExtraData : IDisposable
   {
     #region Constructors
 
     /// <summary>
-    /// Initialise with known extra data.
+    ///   Initialise with known extra data.
     /// </summary>
     /// <param name="data">The extra data.</param>
     public ZipExtraData(byte[] data)
@@ -117,7 +116,7 @@ namespace Fomm.SharpZipLib.Zip
     #endregion
 
     /// <summary>
-    /// Get the raw extra data value
+    ///   Get the raw extra data value
     /// </summary>
     /// <returns>Returns the raw byte[] extra data this instance represents.</returns>
     public byte[] GetEntryData()
@@ -131,7 +130,7 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Gets the current extra data length.
+    ///   Gets the current extra data length.
     /// </summary>
     public int Length
     {
@@ -142,21 +141,23 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Get the length of the last value found by <see cref="Find"/>
+    ///   Get the length of the last value found by <see cref="Find" />
     /// </summary>
-    /// <remarks>This is only valid if <see cref="Find"/> has previously returned true.</remarks>
+    /// <remarks>This is only valid if <see cref="Find" /> has previously returned true.</remarks>
     public int ValueLength { get; private set; }
 
     /// <summary>
-    /// Get the index for the current read value.
+    ///   Get the index for the current read value.
     /// </summary>
-    /// <remarks>This is only valid if <see cref="Find"/> has previously returned true.
-    /// Initially the result will be the index of the first byte of actual data.  The value is updated after calls to
-    /// <see cref="ReadInt"/>, <see cref="ReadShort"/> and <see cref="ReadLong"/>. </remarks>
+    /// <remarks>
+    ///   This is only valid if <see cref="Find" /> has previously returned true.
+    ///   Initially the result will be the index of the first byte of actual data.  The value is updated after calls to
+    ///   <see cref="ReadInt" />, <see cref="ReadShort" /> and <see cref="ReadLong" />.
+    /// </remarks>
     public int CurrentReadIndex { get; private set; }
 
     /// <summary>
-    /// Get the number of bytes remaining to be read for the current value;
+    ///   Get the number of bytes remaining to be read for the current value;
     /// </summary>
     public int UnreadCount
     {
@@ -173,7 +174,7 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Find an extra data value
+    ///   Find an extra data value
     /// </summary>
     /// <param name="headerID">The identifier for the value to find.</param>
     /// <returns>Returns true if the value was found; false otherwise.</returns>
@@ -210,7 +211,7 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Add a new entry to extra data
+    ///   Add a new entry to extra data
     /// </summary>
     /// <param name="headerID">The ID for this entry.</param>
     /// <param name="fieldData">The data to add.</param>
@@ -261,18 +262,21 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Start adding a new entry.
+    ///   Start adding a new entry.
     /// </summary>
-    /// <remarks>Add data using <see cref="AddData(byte[])"/>, <see cref="AddLeShort"/>, <see cref="AddLeInt"/>, or <see cref="AddLeLong"/>.
-    /// The new entry is completed and actually added by calling <see cref="AddNewEntry"/></remarks>
-    /// <seealso cref="AddEntry(ITaggedData)"/>
+    /// <remarks>
+    ///   Add data using <see cref="AddData(byte[])" />, <see cref="AddLeShort" />, <see cref="AddLeInt" />, or
+    ///   <see cref="AddLeLong" />.
+    ///   The new entry is completed and actually added by calling <see cref="AddNewEntry" />
+    /// </remarks>
+    /// <seealso cref="AddEntry(ITaggedData)" />
     public void StartNewEntry()
     {
       newEntry_ = new MemoryStream();
     }
 
     /// <summary>
-    /// Add entry data added since <see cref="StartNewEntry"/> using the ID passed.
+    ///   Add entry data added since <see cref="StartNewEntry" /> using the ID passed.
     /// </summary>
     /// <param name="headerID">The identifier to use for this entry.</param>
     public void AddNewEntry(int headerID)
@@ -283,10 +287,10 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Add a short value in little endian order to the pending new entry.
+    ///   Add a short value in little endian order to the pending new entry.
     /// </summary>
     /// <param name="toAdd">The data to add.</param>
-    /// <seealso cref="StartNewEntry"/>
+    /// <seealso cref="StartNewEntry" />
     public void AddLeShort(int toAdd)
     {
       unchecked
@@ -297,10 +301,10 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Add an integer value in little endian order to the pending new entry.
+    ///   Add an integer value in little endian order to the pending new entry.
     /// </summary>
     /// <param name="toAdd">The data to add.</param>
-    /// <seealso cref="StartNewEntry"/>
+    /// <seealso cref="StartNewEntry" />
     public void AddLeInt(int toAdd)
     {
       unchecked
@@ -311,10 +315,10 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Add a long value in little endian order to the pending new entry.
+    ///   Add a long value in little endian order to the pending new entry.
     /// </summary>
     /// <param name="toAdd">The data to add.</param>
-    /// <seealso cref="StartNewEntry"/>
+    /// <seealso cref="StartNewEntry" />
     public void AddLeLong(long toAdd)
     {
       unchecked
@@ -325,7 +329,7 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Delete an extra data field.
+    ///   Delete an extra data field.
     /// </summary>
     /// <param name="headerID">The identifier of the field to delete.</param>
     /// <returns>Returns true if the field was found and deleted.</returns>
@@ -351,7 +355,7 @@ namespace Fomm.SharpZipLib.Zip
     #region Reading Support
 
     /// <summary>
-    /// Read a long in little endian form from the last <see cref="Find">found</see> data value
+    ///   Read a long in little endian form from the last <see cref="Find">found</see> data value
     /// </summary>
     /// <returns>Returns the long value read.</returns>
     public long ReadLong()
@@ -361,7 +365,7 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Read an integer in little endian form from the last <see cref="Find">found</see> data value.
+    ///   Read an integer in little endian form from the last <see cref="Find">found</see> data value.
     /// </summary>
     /// <returns>Returns the integer read.</returns>
     public int ReadInt()
@@ -375,7 +379,7 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Read a short value in little endian form from the last <see cref="Find">found</see> data value.
+    ///   Read a short value in little endian form from the last <see cref="Find">found</see> data value.
     /// </summary>
     /// <returns>Returns the short value read.</returns>
     public int ReadShort()
@@ -387,7 +391,7 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Read a byte from an extra data
+    ///   Read a byte from an extra data
     /// </summary>
     /// <returns>The byte value read or -1 if the end of data has been reached.</returns>
     public int ReadByte()
@@ -402,7 +406,7 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Skip data during reading.
+    ///   Skip data during reading.
     /// </summary>
     /// <param name="amount">The number of bytes to skip.</param>
     public void Skip(int amount)
@@ -413,7 +417,7 @@ namespace Fomm.SharpZipLib.Zip
 
     // ReSharper disable UnusedParameter.Local
     private void ReadCheck(int length)
-    // ReSharper restore UnusedParameter.Local
+      // ReSharper restore UnusedParameter.Local
     {
       if ((readValueStart_ > data_.Length) ||
           (readValueStart_ < 4))
@@ -428,7 +432,7 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Internal form of <see cref="ReadShort"/> that reads data at any location.
+    ///   Internal form of <see cref="ReadShort" /> that reads data at any location.
     /// </summary>
     /// <returns>Returns the short value read.</returns>
     private int ReadShortInternal()
@@ -455,7 +459,7 @@ namespace Fomm.SharpZipLib.Zip
     #region IDisposable Members
 
     /// <summary>
-    /// Dispose of this instance.
+    ///   Dispose of this instance.
     /// </summary>
     public void Dispose()
     {

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.ComponentModel;
+using System.IO;
+using System.Text;
+using System.Windows.Forms;
 using ChinhDo.Transactions;
 using Fomm.PackageManager.ModInstallLog;
 using fomm.Transactions;
-using System.Windows.Forms;
-using System.Text;
-using System.IO;
 
 namespace Fomm.PackageManager
 {
@@ -21,7 +21,7 @@ namespace Fomm.PackageManager
     public ModInstallScript Script { get; private set; }
 
     /// <summary>
-    /// Gets the transactional file manager the script is using.
+    ///   Gets the transactional file manager the script is using.
     /// </summary>
     /// <value>The transactional file manager the script is using.</value>
     public TxFileManager TransactionalFileManager
@@ -38,7 +38,7 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Gets or sets the merge module we are using.
+    ///   Gets or sets the merge module we are using.
     /// </summary>
     /// <value>The merge module we are using.</value>
     public InstallLogMergeModule MergeModule
@@ -54,36 +54,36 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Gets the mod that is being scripted against.
+    ///   Gets the mod that is being scripted against.
     /// </summary>
     /// <value>The mod that is being scripted against.</value>
     public fomod Fomod { get; private set; }
 
     /// <summary>
-    /// Gets the message to display to the user when an exception is caught.
+    ///   Gets the message to display to the user when an exception is caught.
     /// </summary>
     /// <remarks>
-    /// In order to display the exception message, the placeholder {0} should be used.
+    ///   In order to display the exception message, the placeholder {0} should be used.
     /// </remarks>
     /// <value>The message to display to the user when an exception is caught.</value>
     protected abstract string ExceptionMessage { get; }
 
     /// <summary>
-    /// Gets the message to display upon failure of the script.
+    ///   Gets the message to display upon failure of the script.
     /// </summary>
     /// <remarks>
-    /// If the value of this property is <lang langref="null"/> then no message will be
-    /// displayed.
+    ///   If the value of this property is <lang langref="null" /> then no message will be
+    ///   displayed.
     /// </remarks>
     /// <value>The message to display upon failure of the script.</value>
     protected abstract string FailMessage { get; }
 
     /// <summary>
-    /// Gets the message to display upon success of the script.
+    ///   Gets the message to display upon success of the script.
     /// </summary>
     /// <remarks>
-    /// If the value of this property is <lang langref="null"/> then no message will be
-    /// displayed.
+    ///   If the value of this property is <lang langref="null" /> then no message will be
+    ///   displayed.
     /// </remarks>
     /// <value>The message to display upon success of the script.</value>
     protected abstract string SuccessMessage { get; }
@@ -93,9 +93,9 @@ namespace Fomm.PackageManager
     #region Constructors
 
     /// <summary>
-    /// A simple constructor that initializes the object.
+    ///   A simple constructor that initializes the object.
     /// </summary>
-    /// <param name="p_fomodMod">The <see cref="fomod"/> to be installed or uninstalled.</param>
+    /// <param name="p_fomodMod">The <see cref="fomod" /> to be installed or uninstalled.</param>
     public ModInstallerBase(fomod p_fomodMod)
     {
       Fomod = p_fomodMod;
@@ -106,28 +106,32 @@ namespace Fomm.PackageManager
     #region Installer Execution
 
     /// <summary>
-    /// Checks to see if the script work has already been done.
+    ///   Checks to see if the script work has already been done.
     /// </summary>
-    /// <returns><lang langref="true"/> if the script work has already been done and the script
-    /// doesn't need to execute; <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the script work has already been done and the script
+    ///   doesn't need to execute; <lang langref="false" /> otherwise.
+    /// </returns>
     protected virtual bool CheckAlreadyDone()
     {
       return true;
     }
 
     /// <summary>
-    /// Does the script-specific work.
+    ///   Does the script-specific work.
     /// </summary>
     /// <remarks>
-    /// This is the method that needs to be overridden by implementers to do
-    /// their script-specific work.
+    ///   This is the method that needs to be overridden by implementers to do
+    ///   their script-specific work.
     /// </remarks>
-    /// <returns><lang langref="true"/> if the script work was completed successfully and needs to
-    /// be committed; <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the script work was completed successfully and needs to
+    ///   be committed; <lang langref="false" /> otherwise.
+    /// </returns>
     protected abstract bool DoScript();
 
     /// <summary>
-    /// Runs the install script.
+    ///   Runs the install script.
     /// </summary>
     protected bool Run()
     {
@@ -135,16 +139,18 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Runs the install script.
+    ///   Runs the install script.
     /// </summary>
     /// <remarks>
-    /// This contains the boilerplate code that needs to be done for all install-type
-    /// scripts. Implementers must override the <see cref="DoScript()"/> method to
-    /// implement their script-specific functionality.
+    ///   This contains the boilerplate code that needs to be done for all install-type
+    ///   scripts. Implementers must override the <see cref="DoScript()" /> method to
+    ///   implement their script-specific functionality.
     /// </remarks>
-    /// <param name="p_booSuppressSuccessMessage">Indicates whether to
-    /// supress the success message. This is useful for batch installs.</param>
-    /// <seealso cref="DoScript()"/>
+    /// <param name="p_booSuppressSuccessMessage">
+    ///   Indicates whether to
+    ///   supress the success message. This is useful for batch installs.
+    /// </param>
+    /// <seealso cref="DoScript()" />
     protected bool Run(bool p_booSuppressSuccessMessage, bool p_booSetFOModReadOnly)
     {
       var booSuccess = false;
@@ -275,36 +281,36 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Handles the <see cref="fomod.ReadOnlyInitStepFinished"/> event of the FOMod.
+    ///   Handles the <see cref="fomod.ReadOnlyInitStepFinished" /> event of the FOMod.
     /// </summary>
     /// <remarks>
-    /// This steps the progress in the progress dialog.
+    ///   This steps the progress in the progress dialog.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">A <see cref="CancelEventArgs"/> describing the event arguments.</param>
+    /// <param name="e">A <see cref="CancelEventArgs" /> describing the event arguments.</param>
     private void Fomod_ReadOnlyInitStepFinished(object sender, CancelEventArgs e)
     {
       m_bwdProgress.StepOverallProgress();
     }
 
     /// <summary>
-    /// Handles the <see cref="fomod.ReadOnlyInitStepStarted"/> event of the FOMod.
+    ///   Handles the <see cref="fomod.ReadOnlyInitStepStarted" /> event of the FOMod.
     /// </summary>
     /// <remarks>
-    /// This cancels the operation if the user has clicked cancel.
+    ///   This cancels the operation if the user has clicked cancel.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">A <see cref="CancelEventArgs"/> describing the event arguments.</param>
+    /// <param name="e">A <see cref="CancelEventArgs" /> describing the event arguments.</param>
     private void Fomod_ReadOnlyInitStepStarted(object sender, CancelEventArgs e)
     {
       e.Cancel = m_bwdProgress.Cancelled();
     }
 
     /// <summary>
-    /// Puts the FOMod into read-only mode.
+    ///   Puts the FOMod into read-only mode.
     /// </summary>
     /// <remarks>
-    /// This method is called by a <see cref="BackgroundWorkerProgressDialog"/>.
+    ///   This method is called by a <see cref="BackgroundWorkerProgressDialog" />.
     /// </remarks>
     private void BeginFOModReadOnlyTransaction()
     {

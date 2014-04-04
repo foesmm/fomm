@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Windows.Forms;
 using System.IO;
+using System.Windows.Forms;
 using Fomm.PackageManager.ModInstallLog;
 
 namespace Fomm.PackageManager
@@ -12,7 +12,7 @@ namespace Fomm.PackageManager
 
     #region Properties
 
-    /// <seealso cref="ModInstallScript.ExceptionMessage"/>
+    /// <seealso cref="ModInstallScript.ExceptionMessage" />
     protected override string ExceptionMessage
     {
       get
@@ -22,7 +22,7 @@ namespace Fomm.PackageManager
       }
     }
 
-    /// <seealso cref="ModInstallScript.SuccessMessage"/>
+    /// <seealso cref="ModInstallScript.SuccessMessage" />
     protected override string SuccessMessage
     {
       get
@@ -31,7 +31,7 @@ namespace Fomm.PackageManager
       }
     }
 
-    /// <seealso cref="ModInstallScript.FailMessage"/>
+    /// <seealso cref="ModInstallScript.FailMessage" />
     protected override string FailMessage
     {
       get
@@ -45,18 +45,16 @@ namespace Fomm.PackageManager
     #region Constructors
 
     /// <summary>
-    /// A simple constructor that initializes the object.
+    ///   A simple constructor that initializes the object.
     /// </summary>
-    /// <param name="p_fomodMod">The <see cref="fomod"/> to be uninstalled.</param>
+    /// <param name="p_fomodMod">The <see cref="fomod" /> to be uninstalled.</param>
     public ModUninstaller(fomod p_fomodMod)
-      : base(p_fomodMod)
-    {
-    }
+      : base(p_fomodMod) {}
 
     /// <summary>
-    /// A simple constructor that initializes the object.
+    ///   A simple constructor that initializes the object.
     /// </summary>
-    /// <param name="p_strFomodBaseName">The base name of the <see cref="fomod"/> to be uninstalled.</param>
+    /// <param name="p_strFomodBaseName">The base name of the <see cref="fomod" /> to be uninstalled.</param>
     public ModUninstaller(string p_strFomodBaseName)
       : base(null)
     {
@@ -68,12 +66,14 @@ namespace Fomm.PackageManager
     #region Uninstall Methods
 
     /// <summary>
-    /// Indicates that this script's work has already been completed if
-    /// the <see cref="Fomod"/> is already not active.
+    ///   Indicates that this script's work has already been completed if
+    ///   the <see cref="Fomod" /> is already not active.
     /// </summary>
-    /// <returns><lang langref="true"/> if the <see cref="Fomod"/> is not active;
-    /// <lang langref="false"/> otherwise.</returns>
-    /// <seealso cref="ModInstallScript.CheckAlreadyDone()"/>
+    /// <returns>
+    ///   <lang langref="true" /> if the <see cref="Fomod" /> is not active;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
+    /// <seealso cref="ModInstallScript.CheckAlreadyDone()" />
     protected override bool CheckAlreadyDone()
     {
       if (Fomod == null)
@@ -84,32 +84,36 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Uninstalls the mod and deactivates it.
+    ///   Uninstalls the mod and deactivates it.
     /// </summary>
-    /// <seealso cref="Uninstall(bool)"/>
+    /// <seealso cref="Uninstall(bool)" />
     public void Uninstall()
     {
       Uninstall(false);
     }
 
     /// <summary>
-    /// Uninstalls the mod and deactivates it.
+    ///   Uninstalls the mod and deactivates it.
     /// </summary>
-    /// <param name="p_booSuppressSuccessMessage">Indicates whether to
-    /// supress the success message. This is useful for batch uninstalls.</param>
-    /// <seealso cref="Uninstall()"/>
+    /// <param name="p_booSuppressSuccessMessage">
+    ///   Indicates whether to
+    ///   supress the success message. This is useful for batch uninstalls.
+    /// </param>
+    /// <seealso cref="Uninstall()" />
     public void Uninstall(bool p_booSuppressSuccessMessage)
     {
       Run(p_booSuppressSuccessMessage, false);
     }
 
     /// <summary>
-    /// This does the actual uninstallation; it removes the files and undoes any edits the
-    /// fomod made.
+    ///   This does the actual uninstallation; it removes the files and undoes any edits the
+    ///   fomod made.
     /// </summary>
-    /// <returns><lang langref="true"/> if the script work was completed successfully and needs to
-    /// be committed; <lang langref="false"/> otherwise.</returns>
-    /// <seealso cref="ModInstallScript.DoScript"/>
+    /// <returns>
+    ///   <lang langref="true" /> if the script work was completed successfully and needs to
+    ///   be committed; <lang langref="false" /> otherwise.
+    /// </returns>
+    /// <seealso cref="ModInstallScript.DoScript" />
     protected override bool DoScript()
     {
       foreach (var strSettingsFile in Program.GameMode.SettingsFiles.Values)
@@ -168,12 +172,16 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Runs the custom uninstall script included in the fomod.
+    ///   Runs the custom uninstall script included in the fomod.
     /// </summary>
-    /// <returns><lang langref="true"/> if the uninstallation was successful;
-    /// <lang langref="false"/> otherwise.</returns>
-    /// <exception cref="FileNotFoundException">Thrown if the uninstall script
-    /// cannot be found.</exception>
+    /// <returns>
+    ///   <lang langref="true" /> if the uninstallation was successful;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
+    /// <exception cref="FileNotFoundException">
+    ///   Thrown if the uninstall script
+    ///   cannot be found.
+    /// </exception>
     protected bool RunCustomUninstallScript()
     {
       var strScript = Fomod.GetUninstallScript();
@@ -185,10 +193,12 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Runs the basic uninstall script.
+    ///   Runs the basic uninstall script.
     /// </summary>
-    /// <returns><lang langref="true"/> if the installation was successful;
-    /// <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the installation was successful;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
     protected bool RunBasicUninstallScript()
     {
       try
@@ -212,11 +222,11 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Performs a basic uninstall of the mod.
+    ///   Performs a basic uninstall of the mod.
     /// </summary>
     /// <remarks>
-    /// A basic uninstall removes all of the files that were installed by the mod,
-    /// and undos all of the edits the mod made during install.
+    ///   A basic uninstall removes all of the files that were installed by the mod,
+    ///   and undos all of the edits the mod made during install.
     /// </remarks>
     protected void PerformBasicUninstall()
     {

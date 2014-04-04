@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Xml;
 using System.IO;
+using System.Xml;
 
 namespace Fomm.PackageManager
 {
   /// <summary>
-  /// Encapsulates a Premade FOMod Pack (PFP).
+  ///   Encapsulates a Premade FOMod Pack (PFP).
   /// </summary>
   public class PremadeFomodPack
   {
@@ -16,22 +16,26 @@ namespace Fomm.PackageManager
     #region Validation
 
     /// <summary>
-    /// Determines if the specified file is a valid PFP.
+    ///   Determines if the specified file is a valid PFP.
     /// </summary>
     /// <param name="p_strPFPPath">The path of the file to validate as a PFP.</param>
-    /// <returns>An error string describing why the specified file is not a valid PFP, or
-    /// <lang langref="null"/> if the specified file is a valid PFP.</returns>
+    /// <returns>
+    ///   An error string describing why the specified file is not a valid PFP, or
+    ///   <lang langref="null" /> if the specified file is a valid PFP.
+    /// </returns>
     public static string ValidatePFP(string p_strPFPPath)
     {
       return ValidatePFP(new Archive(p_strPFPPath));
     }
 
     /// <summary>
-    /// Determines if the given archive is a valid PFP.
+    ///   Determines if the given archive is a valid PFP.
     /// </summary>
     /// <param name="p_arcPFP">The archive to validate as a PFP.</param>
-    /// <returns>An error string describing why the specified file is not a valid PFP, or
-    /// <lang langref="null"/> if the given archive is a valid PFP.</returns>
+    /// <returns>
+    ///   An error string describing why the specified file is not a valid PFP, or
+    ///   <lang langref="null" /> if the given archive is a valid PFP.
+    /// </returns>
     protected static string ValidatePFP(Archive p_arcPFP)
     {
       if (!p_arcPFP.ContainsFile("metadata.xml"))
@@ -63,7 +67,7 @@ namespace Fomm.PackageManager
     #region Properties
 
     /// <summary>
-    /// Gets the path of the PFP file.
+    ///   Gets the path of the PFP file.
     /// </summary>
     /// <value>The path of the PFP file.</value>
     public string PFPPath
@@ -75,7 +79,7 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Gets the name of the FOMod this PFP will create.
+    ///   Gets the name of the FOMod this PFP will create.
     /// </summary>
     /// <value>The name of the FOMod this PFP will create.</value>
     public string FomodName
@@ -87,7 +91,7 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Gets the path to the Premade folder if the PFP.
+    ///   Gets the path to the Premade folder if the PFP.
     /// </summary>
     /// <value>The path to the Premade folder if the PFP.</value>
     public string PremadePath { get; private set; }
@@ -97,7 +101,7 @@ namespace Fomm.PackageManager
     #region Constructors
 
     /// <summary>
-    /// A simple constructor that initializes the object with the given values.
+    ///   A simple constructor that initializes the object with the given values.
     /// </summary>
     /// <param name="p_strPFPPath">The path to the PFP file.</param>
     public PremadeFomodPack(string p_strPFPPath)
@@ -127,15 +131,14 @@ namespace Fomm.PackageManager
     #endregion
 
     /// <summary>
-    /// Gets the copy instructions for the PFP.
+    ///   Gets the copy instructions for the PFP.
     /// </summary>
     /// <remarks>
-    /// The returned copy instructions are made relative to the given source path. This means that
-    /// all instructions will be adjusted to assume the source files are in the directory specified
-    /// by <paramref name="p_strSourcesPath"/>. If you want the copy instructions as they are stored
-    /// in the PFP, pass in <lang langref="null/"/>.
-    /// 
-    /// Note that copy instructions are strictly ordered.
+    ///   The returned copy instructions are made relative to the given source path. This means that
+    ///   all instructions will be adjusted to assume the source files are in the directory specified
+    ///   by <paramref name="p_strSourcesPath" />. If you want the copy instructions as they are stored
+    ///   in the PFP, pass in <lang langref="null/" />.
+    ///   Note that copy instructions are strictly ordered.
     /// </remarks>
     /// <param name="p_strSourcesPath">The path to the directory containing the source files.</param>
     /// <returns>The copy instructions for the PFP.</returns>
@@ -146,7 +149,9 @@ namespace Fomm.PackageManager
       foreach (XmlNode xndInstruction in xndIntructions.ChildNodes)
       {
         var strSource = xndInstruction.Attributes["source"].Value;
-        strSource = strSource.StartsWith(Archive.ARCHIVE_PREFIX) ? Archive.ChangeArchiveDirectory(strSource, p_strSourcesPath) : Path.Combine(p_strSourcesPath, strSource);
+        strSource = strSource.StartsWith(Archive.ARCHIVE_PREFIX)
+          ? Archive.ChangeArchiveDirectory(strSource, p_strSourcesPath)
+          : Path.Combine(p_strSourcesPath, strSource);
         var strDestination = xndInstruction.Attributes["destination"].Value;
         lstCopyInstructions.Add(new KeyValuePair<string, string>(strSource, strDestination));
       }
@@ -154,7 +159,7 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Gets the list of sources required by the PFP.
+    ///   Gets the list of sources required by the PFP.
     /// </summary>
     /// <returns>The list of sources required by the PFP.</returns>
     public List<SourceFile> GetSources()
@@ -181,7 +186,7 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Gets the custom howto steps specified by the PFP.
+    ///   Gets the custom howto steps specified by the PFP.
     /// </summary>
     /// <returns>The custom howto steps specified by the PFP.</returns>
     public string GetCustomHowToSteps()

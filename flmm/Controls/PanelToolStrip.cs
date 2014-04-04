@@ -1,24 +1,24 @@
 ﻿using System;
-using System.Windows.Forms;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Windows.Forms;
 using Fomm.Properties;
 using Fomm.Util;
 
 namespace Fomm.Controls
 {
   /// <summary>
-  /// This is a tool strip control.
+  ///   This is a tool strip control.
   /// </summary>
   /// <remarks>
-  /// It is implemented as a simple panel to allow the use of any control as
-  /// tool strip "buttons."
+  ///   It is implemented as a simple panel to allow the use of any control as
+  ///   tool strip "buttons."
   /// </remarks>
   public class PanelToolStrip : Panel
   {
     /// <summary>
-    /// The directions the toolstrip can be oriented.
+    ///   The directions the toolstrip can be oriented.
     /// </summary>
     public enum Orientation
     {
@@ -29,21 +29,21 @@ namespace Fomm.Controls
     #region Region Internal ToolStripPanel Class
 
     /// <summary>
-    /// This is the inside panel that actually contains the toolstrip items.
+    ///   This is the inside panel that actually contains the toolstrip items.
     /// </summary>
     protected class ToolStripPanel : Panel
     {
       #region ItemComparer Class
 
       /// <summary>
-      /// A comparer that orders controls base on their oreder in a given list.
+      ///   A comparer that orders controls base on their oreder in a given list.
       /// </summary>
       protected class ItemComparer : IComparer<Control>
       {
         private List<Control> m_lstOrderAdded;
 
         /// <summary>
-        /// A simple contructor.
+        ///   A simple contructor.
         /// </summary>
         /// <param name="p_lstOrderAdded">The list dictating the order of the controls.</param>
         public ItemComparer(List<Control> p_lstOrderAdded)
@@ -53,7 +53,7 @@ namespace Fomm.Controls
 
         #region IComparer<Control> Members
 
-        /// <seealso cref="IComparer{T}.Compare"/>
+        /// <seealso cref="IComparer{T}.Compare" />
         public int Compare(Control x, Control y)
         {
           if (x == null)
@@ -84,7 +84,7 @@ namespace Fomm.Controls
       #region Properties
 
       /// <summary>
-      /// Gets or sets the scrollAmount of the ToolStripPanel.
+      ///   Gets or sets the scrollAmount of the ToolStripPanel.
       /// </summary>
       /// <value>The scrollAmount of the ToolStripPanel.</value>
       public Int32 ScrollAmount
@@ -100,7 +100,7 @@ namespace Fomm.Controls
       }
 
       /// <summary>
-      /// Gets or sets the direction of the ToolStripPanel.
+      ///   Gets or sets the direction of the ToolStripPanel.
       /// </summary>
       /// <value>The direction of the ToolStripPanel.</value>
       public Orientation Direction
@@ -116,25 +116,25 @@ namespace Fomm.Controls
       }
 
       /// <summary>
-      /// Gets whether an up scroll control is needed.
+      ///   Gets whether an up scroll control is needed.
       /// </summary>
       /// <value>Whether an up scroll control is needed.</value>
       public bool NeedScroll { get; private set; }
 
       /// <summary>
-      /// Gets whether the up scroll should be enabled.
+      ///   Gets whether the up scroll should be enabled.
       /// </summary>
       /// <value>Whether the up scroll should be enabled.</value>
       public bool EnableUpScroll { get; private set; }
 
       /// <summary>
-      /// Gets whether the down scroll should be enabled.
+      ///   Gets whether the down scroll should be enabled.
       /// </summary>
       /// <value>Whether the down scroll should be enabled.</value>
       public bool EnableDownScroll { get; private set; }
 
       /// <summary>
-      /// Gets or sets the flatStyle of the ToolStripItems.
+      ///   Gets or sets the flatStyle of the ToolStripItems.
       /// </summary>
       /// <value>The flatStyle of the ToolStripItems.</value>
       public FlatStyle ButtonFlatStyle
@@ -150,7 +150,7 @@ namespace Fomm.Controls
       }
 
       /// <summary>
-      /// Gets or sets the BorderWidth of the ToolStripItems.
+      ///   Gets or sets the BorderWidth of the ToolStripItems.
       /// </summary>
       /// <value>The BorderWidth of the ToolStripItems.</value>
       public int ButtonBorderWidth { get; set; }
@@ -208,12 +208,12 @@ namespace Fomm.Controls
       #region Control Addition/Removal
 
       /// <summary>
-      /// Controls the addition of controls to the panel.
+      ///   Controls the addition of controls to the panel.
       /// </summary>
       /// <remarks>
-      /// This makes sure the added toolstrip items are sized, positioned, and ordered correctly.
+      ///   This makes sure the added toolstrip items are sized, positioned, and ordered correctly.
       /// </remarks>
-      /// <param name="e">A <see cref="ControlEventArgs"/> describing the event arguments.</param>
+      /// <param name="e">A <see cref="ControlEventArgs" /> describing the event arguments.</param>
       protected override void OnControlAdded(ControlEventArgs e)
       {
         var ctlButton = e.Control;
@@ -248,9 +248,9 @@ namespace Fomm.Controls
       }
 
       /// <summary>
-      /// Adds a <see cref="PanelToolStripItem"/> to the panel.
+      ///   Adds a <see cref="PanelToolStripItem" /> to the panel.
       /// </summary>
-      /// <param name="p_pdiItem">The <see cref="PanelToolStripItem"/> to add.</param>
+      /// <param name="p_pdiItem">The <see cref="PanelToolStripItem" /> to add.</param>
       public void addToolStripItem(PanelToolStripItem p_pdiItem)
       {
         p_pdiItem.Selected += psiButton_Selected;
@@ -258,9 +258,9 @@ namespace Fomm.Controls
       }
 
       /// <summary>
-      /// Removes a <see cref="PanelToolStripItem"/> to the panel.
+      ///   Removes a <see cref="PanelToolStripItem" /> to the panel.
       /// </summary>
-      /// <param name="p_pdiItem">The <see cref="PanelToolStripItem"/> to remove.</param>
+      /// <param name="p_pdiItem">The <see cref="PanelToolStripItem" /> to remove.</param>
       public void removeToolStripItem(PanelToolStripItem p_pdiItem)
       {
         p_pdiItem.Selected -= psiButton_Selected;
@@ -272,7 +272,7 @@ namespace Fomm.Controls
       #region Scrolling
 
       /// <summary>
-      /// Scrolls the toolstrip items up by one unit of <see cref="ScrollAmount"/> pixels.
+      ///   Scrolls the toolstrip items up by one unit of <see cref="ScrollAmount" /> pixels.
       /// </summary>
       public void scrollUp()
       {
@@ -301,7 +301,7 @@ namespace Fomm.Controls
       }
 
       /// <summary>
-      /// Scrolls the toolstrip items down by one unit of <see cref="ScrollAmount"/> pixels.
+      ///   Scrolls the toolstrip items down by one unit of <see cref="ScrollAmount" /> pixels.
       /// </summary>
       public void scrollDown()
       {
@@ -330,7 +330,7 @@ namespace Fomm.Controls
       }
 
       /// <summary>
-      /// This checks to see if the scroll up button needs to be enabled.
+      ///   This checks to see if the scroll up button needs to be enabled.
       /// </summary>
       protected void checkScrollUp()
       {
@@ -348,7 +348,7 @@ namespace Fomm.Controls
       }
 
       /// <summary>
-      /// This checks to see if the scroll down button needs to be enabled.
+      ///   This checks to see if the scroll down button needs to be enabled.
       /// </summary>
       protected void checkScrollDown()
       {
@@ -366,8 +366,8 @@ namespace Fomm.Controls
       }
 
       /// <summary>
-      /// This checks to see if we need scroll buttons, and, if so,
-      /// which buttons need to be enabled.
+      ///   This checks to see if we need scroll buttons, and, if so,
+      ///   which buttons need to be enabled.
       /// </summary>
       public void checkScroll()
       {
@@ -410,10 +410,10 @@ namespace Fomm.Controls
       #endregion
 
       /// <summary>
-      /// Handles the colour change of the toolstrip items when selected/unselected.
+      ///   Handles the colour change of the toolstrip items when selected/unselected.
       /// </summary>
       /// <param name="sender">The object that triggered the event.</param>
-      /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+      /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
       private void psiButton_Selected(object sender, EventArgs e)
       {
         var ctlButton = ((PanelToolStripItem) sender).Button;
@@ -452,7 +452,7 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Gets or sets how many pixels the tool strip scrolls per tick.
+    ///   Gets or sets how many pixels the tool strip scrolls per tick.
     /// </summary>
     /// <value>How many pixels the tool strip scrolls per tick.</value>
     [Category("Behavior"), DefaultValue(5)]
@@ -470,10 +470,10 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Gets or sets the timerScrollAmountRatio of the PanelToolStrip.
+    ///   Gets or sets the timerScrollAmountRatio of the PanelToolStrip.
     /// </summary>
     /// <remarks>
-    /// The suggested value for this property is 5 times the ScrollAmount.
+    ///   The suggested value for this property is 5 times the ScrollAmount.
     /// </remarks>
     /// <value>The timerScrollAmountRatio of the PanelToolStrip.</value>
     [Category("Behavior"), DefaultValue(25)]
@@ -491,10 +491,10 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Gets or sets the direction the tool strip is oriented.
+    ///   Gets or sets the direction the tool strip is oriented.
     /// </summary>
     /// <value>
-    /// The direction the tool strip is oriented.
+    ///   The direction the tool strip is oriented.
     /// </value>
     [Category("Appearance"), DefaultValue(Orientation.Vertical)]
     public Orientation Direction
@@ -518,10 +518,10 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Gest or sets the minimum width or height of the scroll buttons.
+    ///   Gest or sets the minimum width or height of the scroll buttons.
     /// </summary>
     /// <value>
-    /// The minimum width or height of the scroll buttons.
+    ///   The minimum width or height of the scroll buttons.
     /// </value>
     [Category("Appearance"), DefaultValue(20)]
     public Int32 MinimumScrollButtonWidth
@@ -537,7 +537,7 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Gets or sets the background colour of the conrol.
+    ///   Gets or sets the background colour of the conrol.
     /// </summary>
     /// <value>The background colour of the conrol.</value>
     public override Color BackColor
@@ -553,7 +553,7 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Gets or sets the image displayed on the scroll down button.
+    ///   Gets or sets the image displayed on the scroll down button.
     /// </summary>
     /// <value>The image displayed on the scroll down button.</value>
     [Category("Appearance")]
@@ -570,7 +570,7 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Gets or sets the scroll down button image alignment.
+    ///   Gets or sets the scroll down button image alignment.
     /// </summary>
     /// <value>The scroll down button image alignment.</value>
     [Category("Appearance"), DefaultValue(ContentAlignment.MiddleCenter)]
@@ -587,7 +587,7 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Gets or sets the scroll down button text.
+    ///   Gets or sets the scroll down button text.
     /// </summary>
     /// <value>The scroll down button text.</value>
     [Category("Appearance"), DefaultValue("")]
@@ -604,7 +604,7 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Gets or sets the scroll down button text alignment.
+    ///   Gets or sets the scroll down button text alignment.
     /// </summary>
     /// <value>The scroll down button text alignment.</value>
     [Category("Appearance"), DefaultValue(ContentAlignment.MiddleCenter)]
@@ -621,7 +621,7 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Gets or sets the position of the text and image relative to each other on the scroll bown button.
+    ///   Gets or sets the position of the text and image relative to each other on the scroll bown button.
     /// </summary>
     /// <value>The position of the text and image relative to each other on the scroll bown button.</value>
     [Category("Appearance"), DefaultValue(TextImageRelation.ImageAboveText)]
@@ -638,7 +638,7 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Gets or sets the image displayed on the scroll Up button.
+    ///   Gets or sets the image displayed on the scroll Up button.
     /// </summary>
     /// <value>The image displayed on the scroll Up button.</value>
     [Category("Appearance")]
@@ -655,7 +655,7 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Gets or sets the scroll Up button image alignment.
+    ///   Gets or sets the scroll Up button image alignment.
     /// </summary>
     /// <value>The scroll Up button image alignment.</value>
     [Category("Appearance"), DefaultValue(ContentAlignment.MiddleCenter)]
@@ -672,7 +672,7 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Gets or sets the scroll Up button text.
+    ///   Gets or sets the scroll Up button text.
     /// </summary>
     /// <value>The scroll Up button text.</value>
     [Category("Appearance"), DefaultValue("")]
@@ -689,7 +689,7 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Gets or sets the scroll Up button text alignment.
+    ///   Gets or sets the scroll Up button text alignment.
     /// </summary>
     /// <value>The scroll Up button text alignment.</value>
     [Category("Appearance"), DefaultValue(ContentAlignment.MiddleCenter)]
@@ -706,7 +706,7 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Gets or sets the position of the text and image relative to each other on the scroll bown button.
+    ///   Gets or sets the position of the text and image relative to each other on the scroll bown button.
     /// </summary>
     /// <value>The position of the text and image relative to each other on the scroll bown button.</value>
     [Category("Appearance"), DefaultValue(TextImageRelation.ImageAboveText)]
@@ -727,7 +727,7 @@ namespace Fomm.Controls
     #region Constructors
 
     /// <summary>
-    /// The default constructor.
+    ///   The default constructor.
     /// </summary>
     public PanelToolStrip()
     {
@@ -777,9 +777,9 @@ namespace Fomm.Controls
     #region Control Addition/Removal
 
     /// <summary>
-    /// Adds a <see cref="PanelToolStripItem"/>.
+    ///   Adds a <see cref="PanelToolStripItem" />.
     /// </summary>
-    /// <param name="p_pdiItem">The <see cref="PanelToolStripItem"/> to add.</param>
+    /// <param name="p_pdiItem">The <see cref="PanelToolStripItem" /> to add.</param>
     public void addToolStripItem(PanelToolStripItem p_pdiItem)
     {
       if (m_pnlToolStrip.Direction == Orientation.Horizontal)
@@ -794,17 +794,19 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Adds a <see cref="Control"/> to the toolstrip.
+    ///   Adds a <see cref="Control" /> to the toolstrip.
     /// </summary>
     /// <remarks>
-    /// This method creates a <see cref="PanelToolStripItem"/> base on the given
-    /// values and adds it to the toolstrip.
+    ///   This method creates a <see cref="PanelToolStripItem" /> base on the given
+    ///   values and adds it to the toolstrip.
     /// </remarks>
-    /// <param name="p_ctlButton">The <see cref="Control"/> to add.</param>
+    /// <param name="p_ctlButton">The <see cref="Control" /> to add.</param>
     /// <param name="p_strEventName">Event Name</param>
     /// <param name="p_intIndex">The index at which to insert the added item.</param>
-    /// <param name="p_tdsDisplayStyle">The <see cref="ToolStripItemDisplayStyle"/> indicating how text and
-    /// images are displayed on the added item.</param>
+    /// <param name="p_tdsDisplayStyle">
+    ///   The <see cref="ToolStripItemDisplayStyle" /> indicating how text and
+    ///   images are displayed on the added item.
+    /// </param>
     public void addToolStripItem(Control p_ctlButton, string p_strEventName, Int32 p_intIndex,
                                  ToolStripItemDisplayStyle p_tdsDisplayStyle)
     {
@@ -812,19 +814,19 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Removes a <see cref="PanelToolStripItem"/>.
+    ///   Removes a <see cref="PanelToolStripItem" />.
     /// </summary>
-    /// <param name="p_pdiItem">The <see cref="PanelToolStripItem"/> to remove.</param>
+    /// <param name="p_pdiItem">The <see cref="PanelToolStripItem" /> to remove.</param>
     public void removeToolStripItem(PanelToolStripItem p_pdiItem)
     {
       m_pnlToolStrip.removeToolStripItem(p_pdiItem);
     }
 
     /// <summary>
-    /// This ensures that all the scrolling controls are properly positioned whenever a new control is added.
+    ///   This ensures that all the scrolling controls are properly positioned whenever a new control is added.
     /// </summary>
     /// <param name="sender">The object that triggered the event.</param>
-    /// <param name="e">A <see cref="ControlEventArgs"/> describing the event arguments.</param>
+    /// <param name="e">A <see cref="ControlEventArgs" /> describing the event arguments.</param>
     private void m_pnlToolStrip_ControlAdded(object sender, ControlEventArgs e)
     {
       checkScroll();
@@ -835,8 +837,8 @@ namespace Fomm.Controls
     #region ToolStripPanel Positioning
 
     /// <summary>
-    /// This positions the contained <see cref="ToolStripPanel"/> so that is isn't hidden
-    /// by the scroll controls, and so its scrollbar is not visible.
+    ///   This positions the contained <see cref="ToolStripPanel" /> so that is isn't hidden
+    ///   by the scroll controls, and so its scrollbar is not visible.
     /// </summary>
     protected void positionToolStripPanel()
     {
@@ -898,12 +900,12 @@ namespace Fomm.Controls
     #region Scrolling
 
     /// <summary>
-    /// Raises the resize event.
+    ///   Raises the resize event.
     /// </summary>
     /// <remarks>
-    /// This redraws the contain toolstrip panel to conform to our new dimensions.
+    ///   This redraws the contain toolstrip panel to conform to our new dimensions.
     /// </remarks>
-    /// <param name="eventargs">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="eventargs">An <see cref="EventArgs" /> describing the event arguments.</param>
     protected override void OnResize(EventArgs eventargs)
     {
       base.OnResize(eventargs);
@@ -928,11 +930,11 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// This checks to see if the scroll contrls should be visible.
+    ///   This checks to see if the scroll contrls should be visible.
     /// </summary>
     /// <remarks>
-    /// This makes the scroll controls visible or not as required, and ensures that
-    /// the contained <see cref="ToolStripPanel"/> is correctly positioned.
+    ///   This makes the scroll controls visible or not as required, and ensures that
+    ///   the contained <see cref="ToolStripPanel" /> is correctly positioned.
     /// </remarks>
     protected void checkScroll()
     {
@@ -945,10 +947,10 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// This starts the scrolling whenever the mouse is over a scroll control.
+    ///   This starts the scrolling whenever the mouse is over a scroll control.
     /// </summary>
     /// <param name="sender">The scroll control that triggered the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     protected void scrollStart(object sender, EventArgs e)
     {
       m_tmrScrollTimer.Tag = sender;
@@ -956,20 +958,20 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// This stops the scrolling whenever the mouse leaves a scroll control.
+    ///   This stops the scrolling whenever the mouse leaves a scroll control.
     /// </summary>
     /// <param name="sender">The scroll control that triggered the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     protected void scrollStop(object sender, EventArgs e)
     {
       m_tmrScrollTimer.Stop();
     }
 
     /// <summary>
-    /// This scrolls the toolstrip while the mouse is over a scroll control.
+    ///   This scrolls the toolstrip while the mouse is over a scroll control.
     /// </summary>
     /// <param name="sender">The object that triggered the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void m_tmrScrollTimer_Tick(object sender, EventArgs e)
     {
       if (m_tmrScrollTimer.Tag == m_butUp)

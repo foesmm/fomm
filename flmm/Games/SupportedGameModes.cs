@@ -1,7 +1,7 @@
 ﻿namespace Fomm.Games
 {
   /// <summary>
-  /// The list of support games.
+  ///   The list of support games.
   /// </summary>
   public enum SupportedGameModes
   {

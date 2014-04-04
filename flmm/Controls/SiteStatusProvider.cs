@@ -3,20 +3,20 @@
 namespace Fomm.Controls
 {
   /// <summary>
-  /// A provider that allows the display of a status at a site specified by the control
-  /// upon which the status is being set.
+  ///   A provider that allows the display of a status at a site specified by the control
+  ///   upon which the status is being set.
   /// </summary>
   public class SiteStatusProvider : ErrorProvider
   {
     /// <summary>
-    /// Sets the status on the given control.
+    ///   Sets the status on the given control.
     /// </summary>
     /// <remarks>
-    /// This method is a synonym for <see cref="SetError(Control, string)"/>.
+    ///   This method is a synonym for <see cref="SetError(Control, string)" />.
     /// </remarks>
     /// <param name="p_ctlControl">Control</param>
     /// <param name="p_strMessage">The status message to display for the control.</param>
-    /// <seealso cref="SetError(Control, string)"/>
+    /// <seealso cref="SetError(Control, string)" />
     public void SetStatus(Control p_ctlControl, string p_strMessage)
     {
       var ctlSite = p_ctlControl;
@@ -28,14 +28,14 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    /// Sets the status on the given control.
+    ///   Sets the status on the given control.
     /// </summary>
     /// <remarks>
-    /// This method is a synonym for <see cref="SetStatus(Control, string)"/>.
+    ///   This method is a synonym for <see cref="SetStatus(Control, string)" />.
     /// </remarks>
     /// <param name="p_ctlControl">Control</param>
     /// <param name="p_strMessage">The status message to display for the control.</param>
-    /// <seealso cref="SetStatus(Control, string)"/>
+    /// <seealso cref="SetStatus(Control, string)" />
     public new void SetError(Control p_ctlControl, string p_strMessage)
     {
       var ctlSite = p_ctlControl;

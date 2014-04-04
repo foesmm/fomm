@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Windows.Forms;
 using System.Collections.Generic;
+using System.Windows.Forms;
 
 namespace Fomm.PackageManager.XmlConfiguredInstall
 {
   /// <summary>
-  /// The form that displays the options that were specified in the XML configuration file.
+  ///   The form that displays the options that were specified in the XML configuration file.
   /// </summary>
   public partial class OptionsForm : Form
   {
@@ -15,7 +15,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     private Int32 m_intCurrentStep;
 
     /// <summary>
-    /// A simple constructor that initializes the object with the given values.
+    ///   A simple constructor that initializes the object with the given values.
     /// </summary>
     /// <param name="p_xcsScript">The install script.</param>
     /// <param name="p_hifHeaderInfo">Information describing the form header.</param>
@@ -51,10 +51,10 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     #region Form Members
 
     /// <summary>
-    /// Gets the list of files and folders that need to be installed.
+    ///   Gets the list of files and folders that need to be installed.
     /// </summary>
     /// <remarks>
-    /// The list returned is base upon the plugins that the user selected.
+    ///   The list returned is base upon the plugins that the user selected.
     /// </remarks>
     /// <value>The list of files and folders that need to be installed.</value>
     public List<PluginFile> FilesToInstall
@@ -75,10 +75,10 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     }
 
     /// <summary>
-    /// Gets the list of files, and folders that may contain files, that need to be activated.
+    ///   Gets the list of files, and folders that may contain files, that need to be activated.
     /// </summary>
     /// <remarks>
-    /// The list returned is base upon the plugins that the user selected.
+    ///   The list returned is base upon the plugins that the user selected.
     /// </remarks>
     /// <value>The list of files, and folders that may contain files, that need to be activated.</value>
     public List<PluginFile> PluginsToActivate
@@ -99,13 +99,13 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     }
 
     /// <summary>
-    /// Handles the Click event of the cancel button.
+    ///   Handles the Click event of the cancel button.
     /// </summary>
     /// <remarks>
-    /// This cancels the dialog.
+    ///   This cancels the dialog.
     /// </remarks>
     /// <param name="sender">The object that triggered the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void butCancel_Click(object sender, EventArgs e)
     {
       DialogResult = DialogResult.Cancel;
@@ -114,7 +114,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     #region Navigation
 
     /// <summary>
-    /// This updates the back/next button states.
+    ///   This updates the back/next button states.
     /// </summary>
     protected void SetWizardButtonStates()
     {
@@ -144,8 +144,8 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     }
 
     /// <summary>
-    /// Advances the wizard to the next visible step, or finishes the wizard if the current step
-    /// is the last visible step.
+    ///   Advances the wizard to the next visible step, or finishes the wizard if the current step
+    ///   is the last visible step.
     /// </summary>
     protected void StepForward()
     {
@@ -172,7 +172,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     }
 
     /// <summary>
-    /// Moves the wizard to the previous visible step.
+    ///   Moves the wizard to the previous visible step.
     /// </summary>
     protected void StepBack()
     {
@@ -194,33 +194,33 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     }
 
     /// <summary>
-    /// Handles the <see cref="Control.Click"/> event of the next button.
+    ///   Handles the <see cref="Control.Click" /> event of the next button.
     /// </summary>
     /// <param name="sender">The object that triggered the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void butNext_Click(object sender, EventArgs e)
     {
       StepForward();
     }
 
     /// <summary>
-    /// Handles the <see cref="Control.Click"/> event of the back button.
+    ///   Handles the <see cref="Control.Click" /> event of the back button.
     /// </summary>
     /// <param name="sender">The object that triggered the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void butBack_Click(object sender, EventArgs e)
     {
       StepBack();
     }
 
     /// <summary>
-    /// Handles the <see cref="OptionFormStep.ItemChecked"/> event of the option form steps.
+    ///   Handles the <see cref="OptionFormStep.ItemChecked" /> event of the option form steps.
     /// </summary>
     /// <remarks>
-    /// This updates the back/next button states.
+    ///   This updates the back/next button states.
     /// </remarks>
     /// <param name="sender">The object that triggered the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void ofsStep_ItemChecked(object sender, EventArgs e)
     {
       SetWizardButtonStates();

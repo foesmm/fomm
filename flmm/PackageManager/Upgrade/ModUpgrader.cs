@@ -6,17 +6,16 @@ using Fomm.PackageManager.ModInstallLog;
 namespace Fomm.PackageManager.Upgrade
 {
   /// <summary>
-  /// Performs an in-place upgrade of a <see cref="fomod"/>.
+  ///   Performs an in-place upgrade of a <see cref="fomod" />.
   /// </summary>
   /// <remarks>
-  /// An in-place upgrade installs one fomod over top of another. This differs from deactivating the old
-  /// fomod and activating the new fomod in that a deactivation/activation will cause the new fomod's
-  /// files/changes to overwrite existing data, whereas an in-place upgrade puts the new fomod's data
-  /// in same priority as that of the old fomod.
-  /// 
-  /// For example, assume Mod A (v1.0) installs File1, and Mod B overwrites File1 with a new version. If
-  /// Mod A (v1.0) is upgraded with Mod A (v2.0), Mod A (v2.0)'s File1 will be place in the overwrite
-  /// directory and Mod B's File1 will still be the version used.
+  ///   An in-place upgrade installs one fomod over top of another. This differs from deactivating the old
+  ///   fomod and activating the new fomod in that a deactivation/activation will cause the new fomod's
+  ///   files/changes to overwrite existing data, whereas an in-place upgrade puts the new fomod's data
+  ///   in same priority as that of the old fomod.
+  ///   For example, assume Mod A (v1.0) installs File1, and Mod B overwrites File1 with a new version. If
+  ///   Mod A (v1.0) is upgraded with Mod A (v2.0), Mod A (v2.0)'s File1 will be place in the overwrite
+  ///   directory and Mod B's File1 will still be the version used.
   /// </remarks>
   public class ModUpgrader : ModInstaller
   {
@@ -25,7 +24,7 @@ namespace Fomm.PackageManager.Upgrade
 
     #region Properties
 
-    /// <seealso cref="ModInstallScript.ExceptionMessage"/>
+    /// <seealso cref="ModInstallScript.ExceptionMessage" />
     protected override string ExceptionMessage
     {
       get
@@ -35,7 +34,7 @@ namespace Fomm.PackageManager.Upgrade
       }
     }
 
-    /// <seealso cref="ModInstallScript.SuccessMessage"/>
+    /// <seealso cref="ModInstallScript.SuccessMessage" />
     protected override string SuccessMessage
     {
       get
@@ -44,7 +43,7 @@ namespace Fomm.PackageManager.Upgrade
       }
     }
 
-    /// <seealso cref="ModInstallScript.FailMessage"/>
+    /// <seealso cref="ModInstallScript.FailMessage" />
     protected override string FailMessage
     {
       get
@@ -54,7 +53,7 @@ namespace Fomm.PackageManager.Upgrade
     }
 
     /// <summary>
-    /// Gets the message to display inthe progress dialog.
+    ///   Gets the message to display inthe progress dialog.
     /// </summary>
     /// <value>The message to display inthe progress dialog.</value>
     protected virtual string ProgressMessage
@@ -70,18 +69,16 @@ namespace Fomm.PackageManager.Upgrade
     #region Constructors
 
     /// <summary>
-    /// A simple constructor that initializes the object.
+    ///   A simple constructor that initializes the object.
     /// </summary>
-    /// <param name="p_fomodMod">The <see cref="fomod"/> to be upgraded.</param>
+    /// <param name="p_fomodMod">The <see cref="fomod" /> to be upgraded.</param>
     internal ModUpgrader(fomod p_fomodMod)
-      : this(p_fomodMod, p_fomodMod.BaseName)
-    {
-    }
+      : this(p_fomodMod, p_fomodMod.BaseName) {}
 
     /// <summary>
-    /// A simple constructor that initializes the object.
+    ///   A simple constructor that initializes the object.
     /// </summary>
-    /// <param name="p_fomodMod">The <see cref="fomod"/> to be upgraded.</param>
+    /// <param name="p_fomodMod">The <see cref="fomod" /> to be upgraded.</param>
     internal ModUpgrader(fomod p_fomodMod, string p_strOldBaseName)
       : base(new UpgradeFomod(p_fomodMod.filepath))
     {
@@ -94,13 +91,15 @@ namespace Fomm.PackageManager.Upgrade
     #region Install Methods
 
     /// <summary>
-    /// Indicates that this script's work has already been completed if
-    /// the <see cref="fomod"/>'s installed version is equal to the
-    /// current <see cref="Fomod"/>'s version.
+    ///   Indicates that this script's work has already been completed if
+    ///   the <see cref="fomod" />'s installed version is equal to the
+    ///   current <see cref="Fomod" />'s version.
     /// </summary>
-    /// <returns><lang langref="true"/> if the <see cref="Fomod"/>'s installed version is equal to the
-    /// current <see cref="Fomod"/>'s version; <lang langref="false"/> otherwise.</returns>
-    /// <seealso cref="ModInstallScript.CheckAlreadyDone()"/>
+    /// <returns>
+    ///   <lang langref="true" /> if the <see cref="Fomod" />'s installed version is equal to the
+    ///   current <see cref="Fomod" />'s version; <lang langref="false" /> otherwise.
+    /// </returns>
+    /// <seealso cref="ModInstallScript.CheckAlreadyDone()" />
     protected override bool CheckAlreadyDone()
     {
       var fifInfo = InstallLog.Current.GetModInfo(Fomod.BaseName);
@@ -109,7 +108,7 @@ namespace Fomm.PackageManager.Upgrade
     }
 
     /// <summary>
-    /// Performs an in-place upgrade of the <see cref="fomod"/>.
+    ///   Performs an in-place upgrade of the <see cref="fomod" />.
     /// </summary>
     internal void Upgrade()
     {
@@ -117,7 +116,7 @@ namespace Fomm.PackageManager.Upgrade
     }
 
     /// <summary>
-    /// Performs an in-place upgrade of the <see cref="fomod"/>.
+    ///   Performs an in-place upgrade of the <see cref="fomod" />.
     /// </summary>
     protected override bool DoScript()
     {
@@ -188,12 +187,14 @@ namespace Fomm.PackageManager.Upgrade
     }
 
     /// <summary>
-    /// Determines whether or not the fomod should be activated, based on whether
-    /// or not the script was successful.
+    ///   Determines whether or not the fomod should be activated, based on whether
+    ///   or not the script was successful.
     /// </summary>
     /// <param name="p_booSucceeded">Whether or not the script was successful.</param>
-    /// <returns><lang langref="true"/> if the script was successful;
-    /// <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the script was successful;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
     protected virtual bool DetermineFomodActiveStatus(bool p_booSucceeded)
     {
       return p_booSucceeded;
@@ -202,11 +203,11 @@ namespace Fomm.PackageManager.Upgrade
     #endregion
 
     /// <summary>
-    /// This undoes any changes that were made by the previous version of the fomod being upgraded, but
-    /// were not made by the current version.
+    ///   This undoes any changes that were made by the previous version of the fomod being upgraded, but
+    ///   were not made by the current version.
     /// </summary>
     /// <remarks>
-    /// This method is used for the background worker.
+    ///   This method is used for the background worker.
     /// </remarks>
     private void ReconcileDifferences()
     {

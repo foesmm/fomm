@@ -36,16 +36,16 @@
 namespace Fomm.SharpZipLib.Core
 {
   /// <summary>
-  /// WindowsPathUtils provides simple utilities for handling windows paths.
+  ///   WindowsPathUtils provides simple utilities for handling windows paths.
   /// </summary>
   internal abstract class WindowsPathUtils
   {
     /// <summary>
-    /// Remove any path root present in the path
+    ///   Remove any path root present in the path
     /// </summary>
-    /// <param name="path">A <see cref="string"/> containing path information.</param>
+    /// <param name="path">A <see cref="string" /> containing path information.</param>
     /// <returns>The path with the root removed if it was present; path otherwise.</returns>
-    /// <remarks>Unlike the <see cref="System.IO.Path"/> class the path isnt otherwise checked for validity.</remarks>
+    /// <remarks>Unlike the <see cref="System.IO.Path" /> class the path isnt otherwise checked for validity.</remarks>
     public static string DropPathRoot(string path)
     {
       var result = path;

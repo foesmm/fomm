@@ -1,10 +1,10 @@
 ﻿namespace Fomm.PackageManager.Upgrade
 {
   /// <summary>
-  /// A specilised fomod that allows the overriding of the base name.
+  ///   A specilised fomod that allows the overriding of the base name.
   /// </summary>
   /// <remarks>
-  /// This is used when upgrading a fomod to a fomod that has a different base name.
+  ///   This is used when upgrading a fomod to a fomod that has a different base name.
   /// </remarks>
   internal class UpgradeFomod : fomod
   {
@@ -13,7 +13,7 @@
     #region Properties
 
     /// <summary>
-    /// Gets the current base name of the fomod.
+    ///   Gets the current base name of the fomod.
     /// </summary>
     /// <value>The current base name of the fomod.</value>
     internal override string BaseName
@@ -25,11 +25,11 @@
     }
 
     /// <summary>
-    /// Gets the original base name of the fomod.
+    ///   Gets the original base name of the fomod.
     /// </summary>
     /// <remarks>
-    /// This always returns the value that the <see cref="Fomod.BaseName"/> property
-    /// would be expected to return.
+    ///   This always returns the value that the <see cref="Fomod.BaseName" /> property
+    ///   would be expected to return.
     /// </remarks>
     /// <value>The original base name of the fomod.</value>
     internal string OriginalBaseName
@@ -45,18 +45,16 @@
     #region Constructors
 
     /// <summary>
-    /// A simple constructor that initializes the object.
+    ///   A simple constructor that initializes the object.
     /// </summary>
     /// <param name="path">The path to the fomod file.</param>
     internal UpgradeFomod(string path)
-      : base(path)
-    {
-    }
+      : base(path) {}
 
     #endregion
 
     /// <summary>
-    /// Sets the base name of the fomod.
+    ///   Sets the base name of the fomod.
     /// </summary>
     /// <param name="p_strBaseName">The new base name of the fomod.</param>
     internal void SetBaseName(string p_strBaseName)

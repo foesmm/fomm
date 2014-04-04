@@ -2,21 +2,21 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using Fomm.Games.Fallout3.Tools.TESsnip;
 using System.Text;
+using Fomm.Games.Fallout3.Tools.TESsnip;
 using Fomm.Util;
 
 namespace Fomm.Games.Fallout3
 {
   /// <summary>
-  /// Activates/deactivates Fallout 3 plugins.
+  ///   Activates/deactivates Fallout 3 plugins.
   /// </summary>
   public class Fallout3PluginManager : PluginManager
   {
     #region Plugin Activation/Deactivation
 
     /// <summary>
-    /// Gets the set of active plugins.
+    ///   Gets the set of active plugins.
     /// </summary>
     /// <value>The set of active plugins.</value>
     public override Set<string> ActivePluginList
@@ -50,7 +50,7 @@ namespace Fomm.Games.Fallout3
     }
 
     /// <summary>
-    /// Commits any changes made to plugin activation status.
+    ///   Commits any changes made to plugin activation status.
     /// </summary>
     /// <param name="p_setActivePlugins">The complete set of active plugins.</param>
     public override void SetActivePlugins(Set<string> p_setActivePlugins)
@@ -69,11 +69,13 @@ namespace Fomm.Games.Fallout3
     }
 
     /// <summary>
-    /// Determines if the specified plugin is active.
+    ///   Determines if the specified plugin is active.
     /// </summary>
     /// <param name="p_strPath">The path to the plugin whose active state is to be determined.</param>
-    /// <returns><lange langref="true"/> if the specified plugin is active;
-    /// <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lange langref="true" /> if the specified plugin is active;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
     public override bool IsPluginActive(string p_strPath)
     {
       var strPluginFilename = Path.GetFileName(p_strPath);
@@ -86,7 +88,7 @@ namespace Fomm.Games.Fallout3
     #region Plugin Ordering
 
     /// <summary>
-    /// Gets an ordered list of plugins.
+    ///   Gets an ordered list of plugins.
     /// </summary>
     /// <value>An ordered list of plugins.</value>
     public override string[] OrderedPluginList
@@ -117,10 +119,10 @@ namespace Fomm.Games.Fallout3
     }
 
     /// <summary>
-    /// Sorts the list of plugins paths.
+    ///   Sorts the list of plugins paths.
     /// </summary>
     /// <remarks>
-    /// This sorts the plugin paths based on the load order of the plugins the paths represent.
+    ///   This sorts the plugin paths based on the load order of the plugins the paths represent.
     /// </remarks>
     /// <param name="p_strPlugins">The list of plugin paths to sort.</param>
     /// <returns>The sorted list of plugin paths.</returns>
@@ -157,7 +159,7 @@ namespace Fomm.Games.Fallout3
     }
 
     /// <summary>
-    /// Sets the load order of the specifid plugin.
+    ///   Sets the load order of the specifid plugin.
     /// </summary>
     /// <param name="p_strPluginPath">The full path to the plugin file whose load order is to be set.</param>
     /// <param name="p_intPluginLoadOrderIndex">The new load order index of the plugin.</param>
@@ -172,7 +174,7 @@ namespace Fomm.Games.Fallout3
     #endregion
 
     /// <summary>
-    /// Gets the plugin info for the specified plugin.
+    ///   Gets the plugin info for the specified plugin.
     /// </summary>
     /// <param name="p_strPluginPath">The full path to the plugin for which to get the info.</param>
     /// <returns>The plugin info for the specified plugin.</returns>
@@ -262,17 +264,22 @@ namespace Fomm.Games.Fallout3
       var pifInfo = new PluginInfo(stbDescription.ToString(), null);
       if (pic != null)
       {
-        pifInfo.Picture = Bitmap.FromStream(new MemoryStream(pic));
+        pifInfo.Picture = Image.FromStream(new MemoryStream(pic));
       }
       return pifInfo;
     }
 
     /// <summary>
-    /// Determines if the specified plugin is critical to the current game.
+    ///   Determines if the specified plugin is critical to the current game.
     /// </summary>
-    /// <param name="p_strPluginPath">The full path to the plugin for which it is to be determined whether or not it is critical.</param>
-    /// <returns><lang langref="true"/> if the specified pluing is critical;
-    /// <lang langref="false"/> otherwise.</returns>
+    /// <param name="p_strPluginPath">
+    ///   The full path to the plugin for which it is to be determined whether or not it is
+    ///   critical.
+    /// </param>
+    /// <returns>
+    ///   <lang langref="true" /> if the specified pluing is critical;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
     public override bool IsCriticalPlugin(string p_strPluginPath)
     {
       return Path.GetFileName(p_strPluginPath).Equals("fallout3.esm", StringComparison.OrdinalIgnoreCase);

@@ -1,21 +1,21 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
-using System.Windows.Forms;
 using System.IO;
+using System.Windows.Forms;
+using Fomm.PackageManager.FomodBuilder;
 using Fomm.PackageManager.Upgrade;
 using Fomm.Properties;
-using SevenZip;
-using Fomm.PackageManager.FomodBuilder;
 using Fomm.Util;
-using System.ComponentModel;
+using SevenZip;
 
 namespace Fomm.PackageManager
 {
   /// <summary>
-  /// The mod manager window.
+  ///   The mod manager window.
   /// </summary>
   internal partial class PackageManager : Form
   {
@@ -70,7 +70,7 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// This removes any old cache files.
+    ///   This removes any old cache files.
     /// </summary>
     protected void CheckFOModCache()
     {
@@ -78,7 +78,7 @@ namespace Fomm.PackageManager
       foreach (var strCache in strCaches)
       {
         var strFOModPath = Path.Combine(Program.GameMode.ModDirectory,
-                                           Path.GetFileNameWithoutExtension(strCache) + ".fomod");
+                                        Path.GetFileNameWithoutExtension(strCache) + ".fomod");
         if (!File.Exists(strFOModPath) || (File.GetLastWriteTimeUtc(strCache) < File.GetLastWriteTimeUtc(strFOModPath)))
         {
           FileUtil.ForceDelete(strCache);
@@ -228,10 +228,10 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Logins into the websites.
+    ///   Logins into the websites.
     /// </summary>
     /// <remarks>
-    /// If needed, credentials are gathered from the user.
+    ///   If needed, credentials are gathered from the user.
     /// </remarks>
     private void WebsiteLogin()
     {
@@ -267,10 +267,10 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Updates the UI elements to reflect the current mod's state.
+    ///   Updates the UI elements to reflect the current mod's state.
     /// </summary>
     /// <remarks>
-    /// This updates elements such as button text and the displayed description.
+    ///   This updates elements such as button text and the displayed description.
     /// </remarks>
     protected void UpdateModStateText()
     {
@@ -303,7 +303,9 @@ namespace Fomm.PackageManager
       }
       var mod = (fomod) lvModList.SelectedItems[0].Tag;
       var esfEditor = new EditScriptForm();
-      esfEditor.Script = !mod.HasInstallScript ? new FomodScript(FomodScriptType.CSharp, Program.GameMode.DefaultCSharpScript) : mod.GetInstallScript();
+      esfEditor.Script = !mod.HasInstallScript
+        ? new FomodScript(FomodScriptType.CSharp, Program.GameMode.DefaultCSharpScript)
+        : mod.GetInstallScript();
       if (esfEditor.ShowDialog(this) == DialogResult.OK)
       {
         mod.SetScript(esfEditor.Script);
@@ -371,10 +373,10 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Activates the given fomod.
+    ///   Activates the given fomod.
     /// </summary>
     /// <remarks>
-    /// This method checks to see if the given fomod could be an upgrade for another fomod.
+    ///   This method checks to see if the given fomod could be an upgrade for another fomod.
     /// </remarks>
     /// <param name="mod">The fomod to activate.</param>
     private void ActivateFomod(fomod mod)
@@ -418,7 +420,7 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Activates, Reactivates, or Deactivates the selected mod as appropriate.
+    ///   Activates, Reactivates, or Deactivates the selected mod as appropriate.
     /// </summary>
     /// <param name="mod">The mod to act upon.</param>
     /// <param name="p_booReactivate">If this is a reativation request.</param>
@@ -480,7 +482,7 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Creates a fomod from a source archive.
+    ///   Creates a fomod from a source archive.
     /// </summary>
     /// <param name="p_strPath">The path to the archive from which to create the fomod.</param>
     public void AddNewFomod(string p_strPath)
@@ -810,14 +812,14 @@ namespace Fomm.PackageManager
     #region Fomod Extraction
 
     /// <summary>
-    /// Handles the <see cref="Button.Click"/> event of the extract button.
+    ///   Handles the <see cref="Button.Click" /> event of the extract button.
     /// </summary>
     /// <remarks>
-    /// This queries the user for the destinations directory, and then launches the
-    /// background process to extract the fomod.
+    ///   This queries the user for the destinations directory, and then launches the
+    ///   background process to extract the fomod.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void butExtractFomod_Click(object sender, EventArgs e)
     {
       if (lvModList.SelectedItems.Count != 1)
@@ -831,7 +833,7 @@ namespace Fomm.PackageManager
         using (m_bwdProgress = new BackgroundWorkerProgressDialog(UnpackFomod))
         {
           var strOutput = Path.Combine(fbdExtractFomod.SelectedPath,
-                                          Path.GetFileNameWithoutExtension(fomodMod.filepath));
+                                       Path.GetFileNameWithoutExtension(fomodMod.filepath));
           if (!Directory.Exists(strOutput))
           {
             Directory.CreateDirectory(strOutput);
@@ -844,13 +846,15 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Unpacks the given fomod to the specified directory.
+    ///   Unpacks the given fomod to the specified directory.
     /// </summary>
     /// <remarks>
-    /// This method is used by the background worker.
+    ///   This method is used by the background worker.
     /// </remarks>
-    /// <param name="p_objArgs">A Pair{fomod, string} containing the fomod to extract
-    /// and the direcotry to which to extract it.</param>
+    /// <param name="p_objArgs">
+    ///   A Pair{fomod, string} containing the fomod to extract
+    ///   and the direcotry to which to extract it.
+    /// </param>
     private void UnpackFomod(object p_objArgs)
     {
       if (!(p_objArgs is Pair<fomod, string>))
@@ -875,26 +879,26 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Called when a file has been extracted from a fomod.
+    ///   Called when a file has been extracted from a fomod.
     /// </summary>
     /// <remarks>
-    /// This steps the progress of the create fomod from archive progress dialog.
+    ///   This steps the progress of the create fomod from archive progress dialog.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void UnpackFomod_FileExtractionFinished(object sender, FileInfoEventArgs e)
     {
       m_bwdProgress.StepItemProgress();
     }
 
     /// <summary>
-    /// Called when a file is about to be extracted from a fomod.
+    ///   Called when a file is about to be extracted from a fomod.
     /// </summary>
     /// <remarks>
-    /// This cancels the compression if the user has clicked the cancel button of the progress dialog.
+    ///   This cancels the compression if the user has clicked the cancel button of the progress dialog.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">A <see cref="FileNameEventArgs"/> describing the event arguments.</param>
+    /// <param name="e">A <see cref="FileNameEventArgs" /> describing the event arguments.</param>
     private void UnpackFomod_FileExtractionStarted(object sender, FileInfoEventArgs e)
     {
       e.Cancel = m_bwdProgress.Cancelled();
@@ -903,13 +907,13 @@ namespace Fomm.PackageManager
     #endregion
 
     /// <summary>
-    /// Handles the <see cref="Control.Click"/> event of the add fomod button.
+    ///   Handles the <see cref="Control.Click" /> event of the add fomod button.
     /// </summary>
     /// <remarks>
-    /// Adds a fomod to the package manager.
+    ///   Adds a fomod to the package manager.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void addFOMODToolStripMenuItem_Click(object sender, EventArgs e)
     {
       if (openFileDialog1.ShowDialog() != DialogResult.OK)
@@ -920,13 +924,13 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Handles the <see cref="Control.Click"/> event of the create fomod from folder button.
+    ///   Handles the <see cref="Control.Click" /> event of the create fomod from folder button.
     /// </summary>
     /// <remarks>
-    /// Creates a fomod from a folder.
+    ///   Creates a fomod from a folder.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void createFromFolderToolStripMenuItem_Click(object sender, EventArgs e)
     {
       var fbd = new FolderBrowserDialog();
@@ -944,13 +948,13 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Handles the <see cref="Control.Click"/> event of the create fomod button.
+    ///   Handles the <see cref="Control.Click" /> event of the create fomod button.
     /// </summary>
     /// <remarks>
-    /// Creates a fomod using the fomod builder.
+    ///   Creates a fomod using the fomod builder.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void createFOMODToolStripMenuItem_Click(object sender, EventArgs e)
     {
       var fbfBuilder = new FomodBuilderForm();
@@ -964,13 +968,13 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Handles the <see cref="Control.Click"/> event of the add pfp button.
+    ///   Handles the <see cref="Control.Click" /> event of the add pfp button.
     /// </summary>
     /// <remarks>
-    /// Creates a FOMod from a PFP.
+    ///   Creates a FOMod from a PFP.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void addPFPToolStripMenuItem_Click(object sender, EventArgs e)
     {
       var pkfPFPForm = new PremadeFomodPackForm(PremadeFomodPackForm.OpenPFPMode.Install);
@@ -986,7 +990,7 @@ namespace Fomm.PackageManager
 
       var fgnGenerator = new NewFomodBuilder();
       var strNewFomodPath = fgnGenerator.BuildFomod(pfpPack.FomodName, lstCopyInstructions, null, null, false, null,
-                                                       null);
+                                                    null);
       if (!String.IsNullOrEmpty(strNewFomodPath))
       {
         AddFomod(strNewFomodPath, true);
@@ -994,13 +998,13 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Handles the <see cref="Control.Click"/> event of the edit pfp button.
+    ///   Handles the <see cref="Control.Click" /> event of the edit pfp button.
     /// </summary>
     /// <remarks>
-    /// Edits a PFP.
+    ///   Edits a PFP.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void editPFPToolStripMenuItem_Click(object sender, EventArgs e)
     {
       var pkfPFPForm = new PremadeFomodPackForm(PremadeFomodPackForm.OpenPFPMode.Edit);
@@ -1021,11 +1025,11 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Exports the list of mods being managed by FOMM.
+    ///   Exports the list of mods being managed by FOMM.
     /// </summary>
     /// <remarks>
-    /// The list of mods is export to a file of the user's choosing. Optionally, only active mods
-    /// can be exported.
+    ///   The list of mods is export to a file of the user's choosing. Optionally, only active mods
+    ///   can be exported.
     /// </remarks>
     /// <param name="p_booActiveOnly">Whether only active mods should be exported.</param>
     protected void ExportModList(bool p_booActiveOnly)
@@ -1063,7 +1067,9 @@ namespace Fomm.PackageManager
         {
           if (lvModList.Items[i].Checked || !p_booActiveOnly)
           {
-            swrModList.WriteLine("[{0}] {1,-" + intMaxNameLength + "}\t{2,-" + intMaxVersionLength + "}\t{3}", (lvModList.Items[i].Checked ? "X" : " "), lvModList.Items[i].Text, lvModList.Items[i].SubItems[1].Text, ((fomod) lvModList.Items[i].Tag).filepath);
+            swrModList.WriteLine("[{0}] {1,-" + intMaxNameLength + "}\t{2,-" + intMaxVersionLength + "}\t{3}",
+                                 (lvModList.Items[i].Checked ? "X" : " "), lvModList.Items[i].Text,
+                                 lvModList.Items[i].SubItems[1].Text, ((fomod) lvModList.Items[i].Tag).filepath);
           }
         }
       }
@@ -1074,20 +1080,20 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Handles the <see cref="Control.Click"/> event of the Export Mod List menu item.
+    ///   Handles the <see cref="Control.Click" /> event of the Export Mod List menu item.
     /// </summary>
     /// <param name="sender">The object that triggered the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void exportModListToolStripMenuItem_Click(object sender, EventArgs e)
     {
       ExportModList(false);
     }
 
     /// <summary>
-    /// Handles the <see cref="Control.Click"/> event of the Export Active Mod List menu item.
+    ///   Handles the <see cref="Control.Click" /> event of the Export Active Mod List menu item.
     /// </summary>
     /// <param name="sender">The object that triggered the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void exportActiveModListToolStripMenuItem_Click(object sender, EventArgs e)
     {
       ExportModList(true);

@@ -5,23 +5,21 @@ using System.Windows.Forms;
 namespace Fomm.PackageManager.XmlConfiguredInstall
 {
   /// <summary>
-  /// Displays the optional plugin groups for a specific step in a mod's install.
+  ///   Displays the optional plugin groups for a specific step in a mod's install.
   /// </summary>
   public partial class OptionFormStep : UserControl
   {
     /// <summary>
-    /// Raised when an option is checked.
+    ///   Raised when an option is checked.
     /// </summary>
-    public event EventHandler ItemChecked = delegate
-    {
-    };
+    public event EventHandler ItemChecked = delegate {};
 
     private DependencyStateManager m_dsmStateManager;
 
     #region Constructors
 
     /// <summary>
-    /// A simple constructor that initializes the object with the given values.
+    ///   A simple constructor that initializes the object with the given values.
     /// </summary>
     /// <param name="p_dsmStateManager">The install state manager.</param>
     /// <param name="p_lstGroups">The plugin groups to display.</param>
@@ -43,10 +41,10 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     #region Control Members
 
     /// <summary>
-    /// Gets the list of files and folders that need to be installed.
+    ///   Gets the list of files and folders that need to be installed.
     /// </summary>
     /// <remarks>
-    /// The list returned is base upon the plugins that the user selected.
+    ///   The list returned is base upon the plugins that the user selected.
     /// </remarks>
     /// <value>The list of files and folders that need to be installed.</value>
     public List<PluginFile> FilesToInstall
@@ -78,10 +76,10 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     }
 
     /// <summary>
-    /// Gets the list of files, and folders that may contain files, that need to be activated.
+    ///   Gets the list of files, and folders that may contain files, that need to be activated.
     /// </summary>
     /// <remarks>
-    /// The list returned is base upon the plugins that the user selected.
+    ///   The list returned is base upon the plugins that the user selected.
     /// </remarks>
     /// <value>The list of files, and folders that may contain files, that need to be activated.</value>
     public List<PluginFile> PluginsToActivate
@@ -123,7 +121,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     }
 
     /// <summary>
-    /// Loads the plugins into the form.
+    ///   Loads the plugins into the form.
     /// </summary>
     /// <param name="p_lstGroups">The list of grouped plugins.</param>
     private void loadPlugins(IList<PluginGroup> p_lstGroups)
@@ -141,7 +139,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     }
 
     /// <summary>
-    /// Checks the plugins that should be checked by default.
+    ///   Checks the plugins that should be checked by default.
     /// </summary>
     private void checkDefaults()
     {
@@ -210,7 +208,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     }
 
     /// <summary>
-    /// Sizes the column of the list view of plugins to fill the control.
+    ///   Sizes the column of the list view of plugins to fill the control.
     /// </summary>
     private void adjustListViewColumnWidth()
     {
@@ -218,10 +216,10 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     }
 
     /// <summary>
-    /// Adds a group to the list of plugins.
+    ///   Adds a group to the list of plugins.
     /// </summary>
     /// <param name="p_pgpGroup">The plugin group to add.</param>
-    /// <returns>The new <see cref="ListViewGroup"/> representing the group.</returns>
+    /// <returns>The new <see cref="ListViewGroup" /> representing the group.</returns>
     private ListViewGroup addGroup(PluginGroup p_pgpGroup)
     {
       ListViewGroup lvgGroup = null;
@@ -262,7 +260,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     }
 
     /// <summary>
-    /// Adds a plugin to the list of plugins.
+    ///   Adds a plugin to the list of plugins.
     /// </summary>
     /// <param name="p_lvgGroup">The group to which to add the plugin.</param>
     /// <param name="p_pifPlugin">The plugin to add.</param>
@@ -291,26 +289,26 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     }
 
     /// <summary>
-    /// Handles the SizeChanged event of the list view of plugins.
+    ///   Handles the SizeChanged event of the list view of plugins.
     /// </summary>
     /// <remarks>
-    /// This ensures that the column of the list view of plugins fills the control.
+    ///   This ensures that the column of the list view of plugins fills the control.
     /// </remarks>
     /// <param name="sender">The object that triggered the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void lvwPlugins_SizeChanged(object sender, EventArgs e)
     {
       adjustListViewColumnWidth();
     }
 
     /// <summary>
-    /// Handles the SelectedIndexChanged event of the list view of plugins.
+    ///   Handles the SelectedIndexChanged event of the list view of plugins.
     /// </summary>
     /// <remarks>
-    /// This changes the displayed description to that of the selected plugin.
+    ///   This changes the displayed description to that of the selected plugin.
     /// </remarks>
     /// <param name="sender">The object that triggered the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void lvwPlugins_SelectedIndexChanged(object sender, EventArgs e)
     {
       if (lvwPlugins.SelectedItems.Count > 0)
@@ -328,13 +326,13 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     }
 
     /// <summary>
-    /// Handles the ItemCheck event of the list view of plugins.
+    ///   Handles the ItemCheck event of the list view of plugins.
     /// </summary>
     /// <remarks>
-    /// This enforces any restrictions on the selection of plugins.
+    ///   This enforces any restrictions on the selection of plugins.
     /// </remarks>
     /// <param name="sender">The object that triggered the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void lvwPlugins_ItemCheck(object sender, ItemCheckEventArgs e)
     {
       var pifPlugin = (PluginInfo) lvwPlugins.Items[e.Index].Tag;
@@ -429,13 +427,13 @@ namespace Fomm.PackageManager.XmlConfiguredInstall
     }
 
     /// <summary>
-    /// Handles the ItemChecked event of the list view of plugins.
+    ///   Handles the ItemChecked event of the list view of plugins.
     /// </summary>
     /// <remarks>
-    /// This enforces any restrictions on the selection of plugins.
+    ///   This enforces any restrictions on the selection of plugins.
     /// </remarks>
     /// <param name="sender">The object that triggered the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void lvwPlugins_ItemChecked(object sender, ItemCheckedEventArgs e)
     {
       var lviItem = e.Item;

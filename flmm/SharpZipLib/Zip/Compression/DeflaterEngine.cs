@@ -43,25 +43,25 @@ using Fomm.SharpZipLib.Checksums;
 namespace Fomm.SharpZipLib.Zip.Compression
 {
   /// <summary>
-  /// Strategies for deflater
+  ///   Strategies for deflater
   /// </summary>
   internal enum DeflateStrategy
   {
     /// <summary>
-    /// The default strategy
+    ///   The default strategy
     /// </summary>
     Default = 0,
 
     /// <summary>
-    /// This strategy will only allow longer string repetitions.  It is
-    /// useful for random data with a small character set.
+    ///   This strategy will only allow longer string repetitions.  It is
+    ///   useful for random data with a small character set.
     /// </summary>
     Filtered = 1,
 
     /// <summary>
-    /// This strategy will not look for string repetitions at all.  It
-    /// only encodes with Huffman trees (which means, that more common
-    /// characters get a smaller encoding.
+    ///   This strategy will not look for string repetitions at all.  It
+    ///   only encodes with Huffman trees (which means, that more common
+    ///   characters get a smaller encoding.
     /// </summary>
     HuffmanOnly = 2
   }
@@ -80,8 +80,8 @@ namespace Fomm.SharpZipLib.Zip.Compression
   // 
 
   /// <summary>
-  /// Low level compression engine for deflate algorithm which uses a 32K sliding window
-  /// with secondary compression from Huffman/Shannon-Fano codes.
+  ///   Low level compression engine for deflate algorithm which uses a 32K sliding window
+  ///   with secondary compression from Huffman/Shannon-Fano codes.
   /// </summary>
   internal class DeflaterEngine
   {
@@ -94,11 +94,12 @@ namespace Fomm.SharpZipLib.Zip.Compression
     #region Constructors
 
     /// <summary>
-    /// Construct instance with pending buffer
+    ///   Construct instance with pending buffer
     /// </summary>
     /// <param name="pending">
-    /// Pending buffer to use
-    /// </param>>
+    ///   Pending buffer to use
+    /// </param>
+    /// >
     public DeflaterEngine(DeflaterPending pending)
     {
       this.pending = pending;
@@ -117,7 +118,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
     #endregion
 
     /// <summary>
-    /// Deflate drives actual compression of data
+    ///   Deflate drives actual compression of data
     /// </summary>
     /// <param name="flush">True to flush input buffers</param>
     /// <param name="finish">Finish deflation with the current input.</param>
@@ -156,8 +157,8 @@ namespace Fomm.SharpZipLib.Zip.Compression
     }
 
     /// <summary>
-    /// Sets input data to be deflated.  Should only be called when <code>NeedsInput()</code>
-    /// returns true
+    ///   Sets input data to be deflated.  Should only be called when <code>NeedsInput()</code>
+    ///   returns true
     /// </summary>
     /// <param name="buffer">The buffer containing input data.</param>
     /// <param name="offset">The offset of the first byte of data.</param>
@@ -200,8 +201,8 @@ namespace Fomm.SharpZipLib.Zip.Compression
     }
 
     /// <summary>
-    /// Determines if more <see cref="SetInput">input</see> is needed.
-    /// </summary>    
+    ///   Determines if more <see cref="SetInput">input</see> is needed.
+    /// </summary>
     /// <returns>Return true if input is needed via <see cref="SetInput">SetInput</see></returns>
     public bool NeedsInput()
     {
@@ -209,8 +210,8 @@ namespace Fomm.SharpZipLib.Zip.Compression
     }
 
     /// <summary>
-    /// Reset internal state
-    /// </summary>    
+    ///   Reset internal state
+    /// </summary>
     public void Reset()
     {
       huffman.Reset();
@@ -232,16 +233,16 @@ namespace Fomm.SharpZipLib.Zip.Compression
     }
 
     /// <summary>
-    /// Reset Adler checksum
-    /// </summary>    
+    ///   Reset Adler checksum
+    /// </summary>
     public void ResetAdler()
     {
       adler.Reset();
     }
 
     /// <summary>
-    /// Get current value of Adler checksum
-    /// </summary>    
+    ///   Get current value of Adler checksum
+    /// </summary>
     public int Adler
     {
       get
@@ -251,8 +252,8 @@ namespace Fomm.SharpZipLib.Zip.Compression
     }
 
     /// <summary>
-    /// Get/set the <see cref="DeflateStrategy">deflate strategy</see>
-    /// </summary>    
+    ///   Get/set the <see cref="DeflateStrategy">deflate strategy</see>
+    /// </summary>
     public DeflateStrategy Strategy
     {
       set
@@ -262,7 +263,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
     }
 
     /// <summary>
-    /// Set the deflate level (0-9)
+    ///   Set the deflate level (0-9)
     /// </summary>
     /// <param name="level">The value to set the level to.</param>
     public void SetLevel(int level)
@@ -319,7 +320,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
     }
 
     /// <summary>
-    /// Fill the window
+    ///   Fill the window
     /// </summary>
     public void FillWindow()
     {
@@ -367,8 +368,8 @@ namespace Fomm.SharpZipLib.Zip.Compression
     }
 
     /// <summary>
-    /// Inserts the current string in the head hash and returns the previous
-    /// value for this hash.
+    ///   Inserts the current string in the head hash and returns the previous
+    ///   value for this hash.
     /// </summary>
     /// <returns>The previous hash value</returns>
     private int InsertString()
@@ -420,12 +421,11 @@ namespace Fomm.SharpZipLib.Zip.Compression
     }
 
     /// <summary>
-    /// Find the best (longest) string in the window matching the 
-    /// string starting at strstart.
-    ///
-    /// Preconditions:
-    /// <code>
-    /// strstart + MAX_MATCH &lt;= window.length.</code>
+    ///   Find the best (longest) string in the window matching the
+    ///   string starting at strstart.
+    ///   Preconditions:
+    ///   <code>
+    ///  strstart + MAX_MATCH &lt;= window.length.</code>
     /// </summary>
     /// <param name="curMatch"></param>
     /// <returns>True if a match greater than the minimum length is found</returns>
@@ -737,19 +737,19 @@ namespace Fomm.SharpZipLib.Zip.Compression
     private int ins_h;
 
     /// <summary>
-    /// Hashtable, hashing three characters to an index for window, so
-    /// that window[index]..window[index+2] have this hash code.  
-    /// Note that the array should really be unsigned short, so you need
-    /// to and the values with 0xffff.
+    ///   Hashtable, hashing three characters to an index for window, so
+    ///   that window[index]..window[index+2] have this hash code.
+    ///   Note that the array should really be unsigned short, so you need
+    ///   to and the values with 0xffff.
     /// </summary>
     private short[] head;
 
     /// <summary>
-    /// <code>prev[index &amp; WMASK]</code> points to the previous index that has the
-    /// same hash code as the string starting at index.  This way 
-    /// entries with the same hash code are in a linked list.
-    /// Note that the array should really be unsigned short, so you need
-    /// to and the values with 0xffff.
+    ///   <code>prev[index &amp; WMASK]</code> points to the previous index that has the
+    ///   same hash code as the string starting at index.  This way
+    ///   entries with the same hash code are in a linked list.
+    ///   Note that the array should really be unsigned short, so you need
+    ///   to and the values with 0xffff.
     /// </summary>
     private short[] prev;
 
@@ -761,21 +761,21 @@ namespace Fomm.SharpZipLib.Zip.Compression
     private int blockStart;
 
     /// <summary>
-    /// Points to the current character in the window.
+    ///   Points to the current character in the window.
     /// </summary>
     private int strstart;
 
     /// <summary>
-    /// lookahead is the number of characters starting at strstart in
-    /// window that are valid.
-    /// So window[strstart] until window[strstart+lookahead-1] are valid
-    /// characters.
+    ///   lookahead is the number of characters starting at strstart in
+    ///   window that are valid.
+    ///   So window[strstart] until window[strstart+lookahead-1] are valid
+    ///   characters.
     /// </summary>
     private int lookahead;
 
     /// <summary>
-    /// This array contains the part of the uncompressed stream that 
-    /// is of relevance.  The current character is indexed by strstart.
+    ///   This array contains the part of the uncompressed stream that
+    ///   is of relevance.  The current character is indexed by strstart.
     /// </summary>
     private byte[] window;
 
@@ -783,22 +783,22 @@ namespace Fomm.SharpZipLib.Zip.Compression
     private int max_chain, max_lazy, niceLength, goodLength;
 
     /// <summary>
-    /// The current compression function.
+    ///   The current compression function.
     /// </summary>
     private int compressionFunction;
 
     /// <summary>
-    /// The input data for compression.
+    ///   The input data for compression.
     /// </summary>
     private byte[] inputBuf;
 
     /// <summary>
-    /// The offset into inputBuf, where input data starts.
+    ///   The offset into inputBuf, where input data starts.
     /// </summary>
     private int inputOff;
 
     /// <summary>
-    /// The end offset of the input data.
+    ///   The end offset of the input data.
     /// </summary>
     private int inputEnd;
 
@@ -806,7 +806,7 @@ namespace Fomm.SharpZipLib.Zip.Compression
     private DeflaterHuffman huffman;
 
     /// <summary>
-    /// The adler checksum
+    ///   The adler checksum
     /// </summary>
     private Adler32 adler;
 

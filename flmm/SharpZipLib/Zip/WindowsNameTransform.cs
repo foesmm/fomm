@@ -41,12 +41,12 @@ using Fomm.SharpZipLib.Core;
 namespace Fomm.SharpZipLib.Zip
 {
   /// <summary>
-  /// WindowsNameTransform transforms ZipFile names to windows compatible ones.
+  ///   WindowsNameTransform transforms ZipFile names to windows compatible ones.
   /// </summary>
   internal class WindowsNameTransform : INameTransform
   {
     /// <summary>
-    /// Initialises a new instance of <see cref="WindowsNameTransform"/>
+    ///   Initialises a new instance of <see cref="WindowsNameTransform" />
     /// </summary>
     /// <param name="baseDirectory"></param>
     public WindowsNameTransform(string baseDirectory)
@@ -60,7 +60,7 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Transform a Zip directory name to a windows directory name.
+    ///   Transform a Zip directory name to a windows directory name.
     /// </summary>
     /// <param name="name">The directory name to transform.</param>
     /// <returns>The transformed name.</returns>
@@ -82,7 +82,7 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Transform a Zip format file name to a windows style one.
+    ///   Transform a Zip format file name to a windows style one.
     /// </summary>
     /// <param name="name">The file name to transform.</param>
     /// <returns>The transformed name.</returns>
@@ -105,7 +105,7 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Initialise static class information.
+    ///   Initialise static class information.
     /// </summary>
     static WindowsNameTransform()
     {
@@ -124,7 +124,7 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Force a name to be valid by replacing invalid characters with a fixed value
+    ///   Force a name to be valid by replacing invalid characters with a fixed value
     /// </summary>
     /// <param name="name">The name to make valid</param>
     /// <param name="replacement">The replacement character to use for any invalid characters.</param>
@@ -191,7 +191,7 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    ///  The maximum windows path name permitted.
+    ///   The maximum windows path name permitted.
     /// </summary>
     /// <remarks>This may not valid for all windows systems - CE?, etc but I cant find the equivalent in the CLR.</remarks>
     private const int MaxPath = 260;

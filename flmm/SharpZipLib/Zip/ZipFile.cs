@@ -53,17 +53,17 @@ namespace Fomm.SharpZipLib.Zip
   #region Update Definitions
 
   /// <summary>
-  /// The possible ways of <see cref="ZipFile.CommitUpdate()">applying updates</see> to an archive.
+  ///   The possible ways of <see cref="ZipFile.CommitUpdate()">applying updates</see> to an archive.
   /// </summary>
   internal enum FileUpdateMode
   {
     /// <summary>
-    /// Perform all updates on temporary files ensuring that the original file is saved.
+    ///   Perform all updates on temporary files ensuring that the original file is saved.
     /// </summary>
     Safe,
 
     /// <summary>
-    /// Update the archive directly, which is faster but less safe.
+    ///   Update the archive directly, which is faster but less safe.
     /// </summary>
     Direct,
   }
@@ -73,19 +73,17 @@ namespace Fomm.SharpZipLib.Zip
   #region ZipFile Class
 
   /// <summary>
-  /// This class represents a Zip archive.  You can ask for the contained
-  /// entries, or get an input stream for a file entry.  The entry is
-  /// automatically decompressed.
-  /// 
-  /// You can also update the archive adding or deleting entries.
-  /// 
-  /// This class is thread safe for input:  You can open input streams for arbitrary
-  /// entries in different threads.
-  /// <br/>
-  /// <br/>Author of the original java version : Jochen Hoenicke
+  ///   This class represents a Zip archive.  You can ask for the contained
+  ///   entries, or get an input stream for a file entry.  The entry is
+  ///   automatically decompressed.
+  ///   You can also update the archive adding or deleting entries.
+  ///   This class is thread safe for input:  You can open input streams for arbitrary
+  ///   entries in different threads.
+  ///   <br />
+  ///   <br />Author of the original java version : Jochen Hoenicke
   /// </summary>
   /// <example>
-  /// <code>
+  ///   <code>
   /// using System;
   /// using System.Text;
   /// using System.Collections;
@@ -120,15 +118,15 @@ namespace Fomm.SharpZipLib.Zip
     #region Constructors
 
     /// <summary>
-    /// Opens a Zip file with the given name for reading.
+    ///   Opens a Zip file with the given name for reading.
     /// </summary>
     /// <param name="name">The name of the file to open.</param>
     /// <exception cref="ArgumentNullException">The argument supplied is null.</exception>
     /// <exception cref="IOException">
-    /// An i/o error occurs
+    ///   An i/o error occurs
     /// </exception>
     /// <exception cref="ZipException">
-    /// The file doesn't contain a valid zip archive.
+    ///   The file doesn't contain a valid zip archive.
     /// </exception>
     public ZipFile(string name)
     {
@@ -154,7 +152,7 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Initialises a default <see cref="ZipFile"/> instance with no entries and no file storage.
+    ///   Initialises a default <see cref="ZipFile" /> instance with no entries and no file storage.
     /// </summary>
     internal ZipFile()
     {
@@ -167,7 +165,7 @@ namespace Fomm.SharpZipLib.Zip
     #region Destructors and Closing
 
     /// <summary>
-    /// Finalize this instance.
+    ///   Finalize this instance.
     /// </summary>
     ~ZipFile()
     {
@@ -175,11 +173,12 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Closes the ZipFile.  If the stream is <see cref="IsStreamOwner">owned</see> then this also closes the underlying input stream.
-    /// Once closed, no further instance methods should be called.
+    ///   Closes the ZipFile.  If the stream is <see cref="IsStreamOwner">owned</see> then this also closes the underlying
+    ///   input stream.
+    ///   Once closed, no further instance methods should be called.
     /// </summary>
     /// <exception cref="System.IO.IOException">
-    /// An i/o error occurs.
+    ///   An i/o error occurs.
     /// </exception>
     public void Close()
     {
@@ -192,12 +191,16 @@ namespace Fomm.SharpZipLib.Zip
     #region Creators
 
     /// <summary>
-    /// Create a new <see cref="ZipFile"/> whose data will be stored on a stream.
+    ///   Create a new <see cref="ZipFile" /> whose data will be stored on a stream.
     /// </summary>
     /// <param name="outStream">The stream providing data storage.</param>
-    /// <returns>Returns the newly created <see cref="ZipFile"/></returns>
-    /// <exception cref="ArgumentNullException"><paramref name="outStream"> is null</paramref></exception>
-    /// <exception cref="ArgumentException"><paramref name="outStream"> doesnt support writing.</paramref></exception>
+    /// <returns>Returns the newly created <see cref="ZipFile" /></returns>
+    /// <exception cref="ArgumentNullException">
+    ///   <paramref name="outStream"> is null</paramref>
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    ///   <paramref name="outStream"> doesnt support writing.</paramref>
+    /// </exception>
     public static ZipFile Create(Stream outStream)
     {
       if (outStream == null)
@@ -225,17 +228,17 @@ namespace Fomm.SharpZipLib.Zip
     #region Properties
 
     /// <summary>
-    /// Get/set a flag indicating if the underlying stream is owned by the ZipFile instance.
-    /// If the flag is true then the stream will be closed when <see cref="Close">Close</see> is called.
+    ///   Get/set a flag indicating if the underlying stream is owned by the ZipFile instance.
+    ///   If the flag is true then the stream will be closed when <see cref="Close">Close</see> is called.
     /// </summary>
     /// <remarks>
-    /// The default value is true in all cases.
+    ///   The default value is true in all cases.
     /// </remarks>
     public bool IsStreamOwner { get; private set; }
 
     /// <summary>
-    /// Get a value indicating wether
-    /// this archive is embedded in another file or not.
+    ///   Get a value indicating wether
+    ///   this archive is embedded in another file or not.
     /// </summary>
     public bool IsEmbeddedArchive
     {
@@ -247,12 +250,12 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Get a value indicating that this archive is a new one.
+    ///   Get a value indicating that this archive is a new one.
     /// </summary>
     public bool IsNewArchive { get; private set; }
 
     /// <summary>
-    /// Gets the name of this zip file.
+    ///   Gets the name of this zip file.
     /// </summary>
     public string Name { get; private set; }
 
@@ -261,11 +264,11 @@ namespace Fomm.SharpZipLib.Zip
     #region Input Handling
 
     /// <summary>
-    /// Gets an enumerator for the Zip entries in this Zip file.
+    ///   Gets an enumerator for the Zip entries in this Zip file.
     /// </summary>
-    /// <returns>Returns an <see cref="IEnumerator"/> for this archive.</returns>
+    /// <returns>Returns an <see cref="IEnumerator" /> for this archive.</returns>
     /// <exception cref="ObjectDisposedException">
-    /// The Zip file has been closed.
+    ///   The Zip file has been closed.
     /// </exception>
     public IEnumerator GetEnumerator()
     {
@@ -278,13 +281,13 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Return the index of the entry with a matching name
+    ///   Return the index of the entry with a matching name
     /// </summary>
     /// <param name="name">Entry name to find</param>
     /// <param name="ignoreCase">If true the comparison is case insensitive</param>
     /// <returns>The index position of the matching entry or -1 if not found</returns>
     /// <exception cref="ObjectDisposedException">
-    /// The Zip file has been closed.
+    ///   The Zip file has been closed.
     /// </exception>
     public int FindEntry(string name, bool ignoreCase)
     {
@@ -305,17 +308,17 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Searches for a zip entry in this archive with the given name.
-    /// String comparisons are case insensitive
+    ///   Searches for a zip entry in this archive with the given name.
+    ///   String comparisons are case insensitive
     /// </summary>
     /// <param name="name">
-    /// The name to find. May contain directory components separated by slashes ('/').
+    ///   The name to find. May contain directory components separated by slashes ('/').
     /// </param>
     /// <returns>
-    /// A clone of the zip entry, or null if no entry with that name exists.
+    ///   A clone of the zip entry, or null if no entry with that name exists.
     /// </returns>
     /// <exception cref="ObjectDisposedException">
-    /// The Zip file has been closed.
+    ///   The Zip file has been closed.
     /// </exception>
     public ZipEntry GetEntry(string name)
     {
@@ -329,19 +332,19 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Gets an input stream for reading the given zip entry data in an uncompressed form.
-    /// Normally the <see cref="ZipEntry"/> should be an entry returned by GetEntry().
+    ///   Gets an input stream for reading the given zip entry data in an uncompressed form.
+    ///   Normally the <see cref="ZipEntry" /> should be an entry returned by GetEntry().
     /// </summary>
-    /// <param name="entry">The <see cref="ZipEntry"/> to obtain a data <see cref="Stream"/> for</param>
-    /// <returns>An input <see cref="Stream"/> containing data for this <see cref="ZipEntry"/></returns>
+    /// <param name="entry">The <see cref="ZipEntry" /> to obtain a data <see cref="Stream" /> for</param>
+    /// <returns>An input <see cref="Stream" /> containing data for this <see cref="ZipEntry" /></returns>
     /// <exception cref="ObjectDisposedException">
-    /// The ZipFile has already been closed
+    ///   The ZipFile has already been closed
     /// </exception>
     /// <exception cref="ZipException">
-    /// The compression method for the entry is unknown
+    ///   The compression method for the entry is unknown
     /// </exception>
     /// <exception cref="IndexOutOfRangeException">
-    /// The entry is not found in the ZipFile
+    ///   The entry is not found in the ZipFile
     /// </exception>
     public Stream GetInputStream(ZipEntry entry)
     {
@@ -368,20 +371,20 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Creates an input stream reading a zip entry
+    ///   Creates an input stream reading a zip entry
     /// </summary>
     /// <param name="entryIndex">The index of the entry to obtain an input stream for.</param>
     /// <returns>
-    /// An input <see cref="Stream"/> containing data for this <paramref name="entryIndex"/>
+    ///   An input <see cref="Stream" /> containing data for this <paramref name="entryIndex" />
     /// </returns>
     /// <exception cref="ObjectDisposedException">
-    /// The ZipFile has already been closed
+    ///   The ZipFile has already been closed
     /// </exception>
     /// <exception cref="ZipException">
-    /// The compression method for the entry is unknown
+    ///   The compression method for the entry is unknown
     /// </exception>
     /// <exception cref="IndexOutOfRangeException">
-    /// The entry is not found in the ZipFile
+    ///   The entry is not found in the ZipFile
     /// </exception>
     public Stream GetInputStream(long entryIndex)
     {
@@ -424,10 +427,10 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Test a local header against that provided from the central directory
+    ///   Test a local header against that provided from the central directory
     /// </summary>
     /// <param name="entry">
-    /// The entry to test against
+    ///   The entry to test against
     /// </param>
     /// <param name="tests">The type of <see cref="HeaderTest">tests</see> to carry out.</param>
     /// <returns>The offset of the entries data in the file</returns>
@@ -722,7 +725,7 @@ namespace Fomm.SharpZipLib.Zip
     private const int DefaultBufferSize = 4096;
 
     /// <summary>
-    /// The kind of update to apply.
+    ///   The kind of update to apply.
     /// </summary>
     private enum UpdateCommand
     {
@@ -734,7 +737,7 @@ namespace Fomm.SharpZipLib.Zip
     #region Properties
 
     /// <summary>
-    /// Get / set the <see cref="INameTransform"/> to apply to names when updating.
+    ///   Get / set the <see cref="INameTransform" /> to apply to names when updating.
     /// </summary>
     public INameTransform NameTransform
     {
@@ -745,8 +748,8 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Get/set the <see cref="IEntryFactory"/> used to generate <see cref="ZipEntry"/> values
-    /// during updates.
+    ///   Get/set the <see cref="IEntryFactory" /> used to generate <see cref="ZipEntry" /> values
+    ///   during updates.
     /// </summary>
     public IEntryFactory EntryFactory
     {
@@ -757,7 +760,7 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Get / set a value indicating how Zip64 Extension usage is determined when adding entries.
+    ///   Get / set a value indicating how Zip64 Extension usage is determined when adding entries.
     /// </summary>
     public UseZip64 UseZip64
     {
@@ -776,7 +779,7 @@ namespace Fomm.SharpZipLib.Zip
     #region Deferred Updating
 
     /// <summary>
-    /// Begin updating this <see cref="ZipFile"/> archive.
+    ///   Begin updating this <see cref="ZipFile" /> archive.
     /// </summary>
     /// <param name="archiveStorage">The <see cref="IArchiveStorage">archive storage</see> for use during the update.</param>
     /// <param name="dataSource">The <see cref="IDynamicDataSource">data source</see> to utilise during updating.</param>
@@ -825,9 +828,9 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Begin updating this <see cref="ZipFile"/> archive.
+    ///   Begin updating this <see cref="ZipFile" /> archive.
     /// </summary>
-    /// <seealso cref="BeginUpdate(IArchiveStorage)"/>
+    /// <seealso cref="BeginUpdate(IArchiveStorage)" />
     /// <seealso cref="CommitUpdate"></seealso>
     /// <seealso cref="AbortUpdate"></seealso>
     public void BeginUpdate()
@@ -843,7 +846,7 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Commit current updates, updating this archive.
+    ///   Commit current updates, updating this archive.
     /// </summary>
     /// <seealso cref="BeginUpdate()"></seealso>
     /// <seealso cref="AbortUpdate"></seealso>
@@ -914,7 +917,7 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Add a file entry with data.
+    ///   Add a file entry with data.
     /// </summary>
     /// <param name="dataSource">The source of the data for this entry.</param>
     /// <param name="entryName">The name to give to the entry.</param>
@@ -962,7 +965,7 @@ namespace Fomm.SharpZipLib.Zip
     #region Deleting Entries
 
     /// <summary>
-    /// Delete a <see cref="ZipEntry"/> from the archive.
+    ///   Delete a <see cref="ZipEntry" /> from the archive.
     /// </summary>
     /// <param name="entry">The entry to delete.</param>
     public void Delete(ZipEntry entry)
@@ -1000,7 +1003,7 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Write an unsigned short in little endian byte order.
+    ///   Write an unsigned short in little endian byte order.
     /// </summary>
     private void WriteLEUshort(ushort value)
     {
@@ -1009,7 +1012,7 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Write an int in little endian byte order.
+    ///   Write an int in little endian byte order.
     /// </summary>
     private void WriteLEInt(int value)
     {
@@ -1018,7 +1021,7 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Write an unsigned int in little endian byte order.
+    ///   Write an unsigned int in little endian byte order.
     /// </summary>
     private void WriteLEUint(uint value)
     {
@@ -1027,7 +1030,7 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Write a long in little endian byte order.
+    ///   Write a long in little endian byte order.
     /// </summary>
     private void WriteLeLong(long value)
     {
@@ -1273,7 +1276,7 @@ namespace Fomm.SharpZipLib.Zip
       }
       else
       {
-        WriteLEUint(entry.IsDirectory ? (uint)16 : 0);
+        WriteLEUint(entry.IsDirectory ? (uint) 16 : 0);
       }
 
       if (entry.Offset >= 0xffffffff)
@@ -1328,7 +1331,7 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Get a raw memory buffer.
+    ///   Get a raw memory buffer.
     /// </summary>
     /// <returns>Returns a raw memory buffer.</returns>
     private byte[] GetBuffer()
@@ -1417,7 +1420,7 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Get the size of the source descriptor for a <see cref="ZipUpdate"/>.
+    ///   Get the size of the source descriptor for a <see cref="ZipUpdate" />.
     /// </summary>
     /// <param name="update">The update to get the size for.</param>
     /// <returns>The descriptor size, zero if there isnt one.</returns>
@@ -1566,7 +1569,7 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Get an output stream for the specified <see cref="ZipEntry"/>
+    ///   Get an output stream for the specified <see cref="ZipEntry" />
     /// </summary>
     /// <param name="entry">The entry to get an output stream for.</param>
     /// <returns>The output stream obtained for the entry.</returns>
@@ -1740,13 +1743,13 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Class used to sort updates.
+    ///   Class used to sort updates.
     /// </summary>
     private class UpdateComparer : IComparer
     {
       /// <summary>
-      /// Compares two objects and returns a value indicating whether one is 
-      /// less than, equal to or greater than the other.
+      ///   Compares two objects and returns a value indicating whether one is
+      ///   less than, equal to or greater than the other.
       /// </summary>
       /// <param name="x">First object to compare</param>
       /// <param name="y">Second object to compare.</param>
@@ -1990,7 +1993,7 @@ namespace Fomm.SharpZipLib.Zip
     #region ZipUpdate class
 
     /// <summary>
-    /// Represents a pending update to a Zip file.
+    ///   Represents a pending update to a Zip file.
     /// </summary>
     private class ZipUpdate
     {
@@ -2010,7 +2013,7 @@ namespace Fomm.SharpZipLib.Zip
       }
 
       /// <summary>
-      /// Copy an existing entry.
+      ///   Copy an existing entry.
       /// </summary>
       /// <param name="entry">The existing entry to copy.</param>
       public ZipUpdate(ZipEntry entry)
@@ -2022,13 +2025,13 @@ namespace Fomm.SharpZipLib.Zip
       #endregion
 
       /// <summary>
-      /// Get the <see cref="ZipEntry"/> for this update.
+      ///   Get the <see cref="ZipEntry" /> for this update.
       /// </summary>
       /// <remarks>This is the source or original entry.</remarks>
       public ZipEntry Entry { get; private set; }
 
       /// <summary>
-      /// Get the <see cref="ZipEntry"/> that will be written to the updated/new file.
+      ///   Get the <see cref="ZipEntry" /> that will be written to the updated/new file.
       /// </summary>
       public ZipEntry OutEntry
       {
@@ -2044,7 +2047,7 @@ namespace Fomm.SharpZipLib.Zip
       }
 
       /// <summary>
-      /// Get the command for this update.
+      ///   Get the command for this update.
       /// </summary>
       public UpdateCommand Command
       {
@@ -2055,7 +2058,7 @@ namespace Fomm.SharpZipLib.Zip
       }
 
       /// <summary>
-      /// Get/set the location of the size patch for this update.
+      ///   Get/set the location of the size patch for this update.
       /// </summary>
       public long SizePatchOffset
       {
@@ -2070,7 +2073,7 @@ namespace Fomm.SharpZipLib.Zip
       }
 
       /// <summary>
-      /// Get /set the location of the crc patch for this update.
+      ///   Get /set the location of the crc patch for this update.
       /// </summary>
       public long CrcPatchOffset
       {
@@ -2141,10 +2144,12 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Releases the unmanaged resources used by the this instance and optionally releases the managed resources.
+    ///   Releases the unmanaged resources used by the this instance and optionally releases the managed resources.
     /// </summary>
-    /// <param name="disposing">true to release both managed and unmanaged resources;
-    /// false to release only unmanaged resources.</param>
+    /// <param name="disposing">
+    ///   true to release both managed and unmanaged resources;
+    ///   false to release only unmanaged resources.
+    /// </param>
     protected virtual void Dispose(bool disposing)
     {
       DisposeInternal();
@@ -2157,11 +2162,11 @@ namespace Fomm.SharpZipLib.Zip
     #region Reading
 
     /// <summary>
-    /// Read an unsigned short in little endian byte order.
+    ///   Read an unsigned short in little endian byte order.
     /// </summary>
     /// <returns>Returns the value read.</returns>
     /// <exception cref="EndOfStreamException">
-    /// The stream ends prematurely
+    ///   The stream ends prematurely
     /// </exception>
     private ushort ReadLEUshort()
     {
@@ -2183,14 +2188,14 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Read a uint in little endian byte order.
+    ///   Read a uint in little endian byte order.
     /// </summary>
     /// <returns>Returns the value read.</returns>
     /// <exception cref="IOException">
-    /// An i/o error occurs.
+    ///   An i/o error occurs.
     /// </exception>
     /// <exception cref="System.IO.EndOfStreamException">
-    /// The file ends prematurely
+    ///   The file ends prematurely
     /// </exception>
     private uint ReadLEUint()
     {
@@ -2214,13 +2219,13 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Search for and read the central directory of a zip file filling the entries array.
+    ///   Search for and read the central directory of a zip file filling the entries array.
     /// </summary>
     /// <exception cref="System.IO.IOException">
-    /// An i/o error occurs.
+    ///   An i/o error occurs.
     /// </exception>
     /// <exception cref="ZipException">
-    /// The central directory is malformed or cannot be found
+    ///   The central directory is malformed or cannot be found
     /// </exception>
     private void ReadEntries()
     {
@@ -2239,8 +2244,8 @@ namespace Fomm.SharpZipLib.Zip
       }
 
       var locatedEndOfCentralDir = LocateBlockWithSignature(ZipConstants.EndOfCentralDirectorySignature,
-                                                             baseStream_.Length, ZipConstants.EndOfCentralRecordBaseSize,
-                                                             0xffff);
+                                                            baseStream_.Length, ZipConstants.EndOfCentralRecordBaseSize,
+                                                            0xffff);
 
       if (locatedEndOfCentralDir < 0)
       {
@@ -2281,7 +2286,7 @@ namespace Fomm.SharpZipLib.Zip
         isZip64 = true;
 
         var offset = LocateBlockWithSignature(ZipConstants.Zip64CentralDirLocatorSignature, locatedEndOfCentralDir, 0,
-                                               0x1000);
+                                              0x1000);
         if (offset < 0)
         {
           throw new ZipException("Cannot find Zip64 locator");
@@ -2395,17 +2400,17 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Locate the data for a given entry.
+    ///   Locate the data for a given entry.
     /// </summary>
     /// <returns>
-    /// The start offset of the data.
+    ///   The start offset of the data.
     /// </returns>
     /// <exception cref="System.IO.EndOfStreamException">
-    /// The stream ends prematurely
+    ///   The stream ends prematurely
     /// </exception>
     /// <exception cref="ZipException">
-    /// The local header signature is invalid, the entry and central header file name lengths are different
-    /// or the local and entry compression methods dont match
+    ///   The local header signature is invalid, the entry and central header file name lengths are different
+    ///   or the local and entry compression methods dont match
     /// </exception>
     private long LocateEntry(ZipEntry entry)
     {
@@ -2448,7 +2453,7 @@ namespace Fomm.SharpZipLib.Zip
     #region Support Classes
 
     /// <summary>
-    /// An <see cref="IEnumerator">enumerator</see> for <see cref="ZipEntry">Zip entries</see>
+    ///   An <see cref="IEnumerator">enumerator</see> for <see cref="ZipEntry">Zip entries</see>
     /// </summary>
     private class ZipEntryEnumerator : IEnumerator
     {
@@ -2492,8 +2497,8 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// An <see cref="UncompressedStream"/> is a stream that you can write uncompressed data
-    /// to and flush, but cannot read, seek or do anything else to.
+    ///   An <see cref="UncompressedStream" /> is a stream that you can write uncompressed data
+    ///   to and flush, but cannot read, seek or do anything else to.
     /// </summary>
     private class UncompressedStream : Stream
     {
@@ -2507,7 +2512,7 @@ namespace Fomm.SharpZipLib.Zip
       #endregion
 
       /// <summary>
-      /// Close this stream instance.
+      ///   Close this stream instance.
       /// </summary>
       public override void Close()
       {
@@ -2515,7 +2520,7 @@ namespace Fomm.SharpZipLib.Zip
       }
 
       /// <summary>
-      /// Gets a value indicating whether the current stream supports reading.
+      ///   Gets a value indicating whether the current stream supports reading.
       /// </summary>
       public override bool CanRead
       {
@@ -2526,7 +2531,7 @@ namespace Fomm.SharpZipLib.Zip
       }
 
       /// <summary>
-      /// Write any buffered data to underlying storage.
+      ///   Write any buffered data to underlying storage.
       /// </summary>
       public override void Flush()
       {
@@ -2534,7 +2539,7 @@ namespace Fomm.SharpZipLib.Zip
       }
 
       /// <summary>
-      /// Gets a value indicating whether the current stream supports writing.
+      ///   Gets a value indicating whether the current stream supports writing.
       /// </summary>
       public override bool CanWrite
       {
@@ -2545,7 +2550,7 @@ namespace Fomm.SharpZipLib.Zip
       }
 
       /// <summary>
-      /// Gets a value indicating whether the current stream supports seeking.
+      ///   Gets a value indicating whether the current stream supports seeking.
       /// </summary>
       public override bool CanSeek
       {
@@ -2556,7 +2561,7 @@ namespace Fomm.SharpZipLib.Zip
       }
 
       /// <summary>
-      /// Get the length in bytes of the stream.
+      ///   Get the length in bytes of the stream.
       /// </summary>
       public override long Length
       {
@@ -2567,7 +2572,7 @@ namespace Fomm.SharpZipLib.Zip
       }
 
       /// <summary>
-      /// Gets or sets the position within the current stream.
+      ///   Gets or sets the position within the current stream.
       /// </summary>
       public override long Position
       {
@@ -2576,19 +2581,25 @@ namespace Fomm.SharpZipLib.Zip
           return baseStream_.Position;
         }
 
-        set
-        {
-        }
+        set {}
       }
 
       /// <summary>
-      /// Reads a sequence of bytes from the current stream and advances the position within the stream by the number of bytes read.
+      ///   Reads a sequence of bytes from the current stream and advances the position within the stream by the number of bytes
+      ///   read.
       /// </summary>
-      /// <param name="buffer">An array of bytes. When this method returns, the buffer contains the specified byte array with the values between offset and (offset + count - 1) replaced by the bytes read from the current source.</param>
-      /// <param name="offset">The zero-based byte offset in buffer at which to begin storing the data read from the current stream.</param>
+      /// <param name="buffer">
+      ///   An array of bytes. When this method returns, the buffer contains the specified byte array with the
+      ///   values between offset and (offset + count - 1) replaced by the bytes read from the current source.
+      /// </param>
+      /// <param name="offset">
+      ///   The zero-based byte offset in buffer at which to begin storing the data read from the current
+      ///   stream.
+      /// </param>
       /// <param name="count">The maximum number of bytes to be read from the current stream.</param>
       /// <returns>
-      /// The total number of bytes read into the buffer. This can be less than the number of bytes requested if that many bytes are not currently available, or zero (0) if the end of the stream has been reached.
+      ///   The total number of bytes read into the buffer. This can be less than the number of bytes requested if that many
+      ///   bytes are not currently available, or zero (0) if the end of the stream has been reached.
       /// </returns>
       /// <exception cref="T:System.ArgumentException">The sum of offset and count is larger than the buffer length. </exception>
       /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed. </exception>
@@ -2602,15 +2613,21 @@ namespace Fomm.SharpZipLib.Zip
       }
 
       /// <summary>
-      /// Sets the position within the current stream.
+      ///   Sets the position within the current stream.
       /// </summary>
       /// <param name="offset">A byte offset relative to the origin parameter.</param>
-      /// <param name="origin">A value of type <see cref="T:System.IO.SeekOrigin"></see> indicating the reference point used to obtain the new position.</param>
+      /// <param name="origin">
+      ///   A value of type <see cref="T:System.IO.SeekOrigin"></see> indicating the reference point used to
+      ///   obtain the new position.
+      /// </param>
       /// <returns>
-      /// The new position within the current stream.
+      ///   The new position within the current stream.
       /// </returns>
       /// <exception cref="T:System.IO.IOException">An I/O error occurs. </exception>
-      /// <exception cref="T:System.NotSupportedException">The stream does not support seeking, such as if the stream is constructed from a pipe or console output. </exception>
+      /// <exception cref="T:System.NotSupportedException">
+      ///   The stream does not support seeking, such as if the stream is
+      ///   constructed from a pipe or console output.
+      /// </exception>
       /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed. </exception>
       public override long Seek(long offset, SeekOrigin origin)
       {
@@ -2618,18 +2635,20 @@ namespace Fomm.SharpZipLib.Zip
       }
 
       /// <summary>
-      /// Sets the length of the current stream.
+      ///   Sets the length of the current stream.
       /// </summary>
       /// <param name="value">The desired length of the current stream in bytes.</param>
-      /// <exception cref="T:System.NotSupportedException">The stream does not support both writing and seeking, such as if the stream is constructed from a pipe or console output. </exception>
+      /// <exception cref="T:System.NotSupportedException">
+      ///   The stream does not support both writing and seeking, such as if the
+      ///   stream is constructed from a pipe or console output.
+      /// </exception>
       /// <exception cref="T:System.IO.IOException">An I/O error occurs. </exception>
       /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed. </exception>
-      public override void SetLength(long value)
-      {
-      }
+      public override void SetLength(long value) {}
 
       /// <summary>
-      /// Writes a sequence of bytes to the current stream and advances the current position within this stream by the number of bytes written.
+      ///   Writes a sequence of bytes to the current stream and advances the current position within this stream by the number
+      ///   of bytes written.
       /// </summary>
       /// <param name="buffer">An array of bytes. This method copies count bytes from buffer to the current stream.</param>
       /// <param name="offset">The zero-based byte offset in buffer at which to begin copying bytes to the current stream.</param>
@@ -2653,17 +2672,17 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// A <see cref="PartialInputStream"/> is an <see cref="InflaterInputStream"/>
-    /// whose data is only a part or subsection of a file.
+    ///   A <see cref="PartialInputStream" /> is an <see cref="InflaterInputStream" />
+    ///   whose data is only a part or subsection of a file.
     /// </summary>
     private class PartialInputStream : Stream
     {
       #region Constructors
 
       /// <summary>
-      /// Initialise a new instance of the <see cref="PartialInputStream"/> class.
+      ///   Initialise a new instance of the <see cref="PartialInputStream" /> class.
       /// </summary>
-      /// <param name="zipFile">The <see cref="ZipFile"/> containing the underlying stream to use for IO.</param>
+      /// <param name="zipFile">The <see cref="ZipFile" /> containing the underlying stream to use for IO.</param>
       /// <param name="start">The start of the partial data.</param>
       /// <param name="length">The length of the partial data.</param>
       public PartialInputStream(ZipFile zipFile, long start, long length)
@@ -2689,7 +2708,7 @@ namespace Fomm.SharpZipLib.Zip
       #endregion
 
       /// <summary>
-      /// Read a byte from this stream.
+      ///   Read a byte from this stream.
       /// </summary>
       /// <returns>Returns the byte read or -1 on end of stream.</returns>
       public override int ReadByte()
@@ -2708,10 +2727,10 @@ namespace Fomm.SharpZipLib.Zip
       }
 
       /// <summary>
-      /// Close this <see cref="PartialInputStream">partial input stream</see>.
+      ///   Close this <see cref="PartialInputStream">partial input stream</see>.
       /// </summary>
       /// <remarks>
-      /// The underlying stream is not closed.  Close the parent ZipFile class to do that.
+      ///   The underlying stream is not closed.  Close the parent ZipFile class to do that.
       /// </remarks>
       public override void Close()
       {
@@ -2719,13 +2738,21 @@ namespace Fomm.SharpZipLib.Zip
       }
 
       /// <summary>
-      /// Reads a sequence of bytes from the current stream and advances the position within the stream by the number of bytes read.
+      ///   Reads a sequence of bytes from the current stream and advances the position within the stream by the number of bytes
+      ///   read.
       /// </summary>
-      /// <param name="buffer">An array of bytes. When this method returns, the buffer contains the specified byte array with the values between offset and (offset + count - 1) replaced by the bytes read from the current source.</param>
-      /// <param name="offset">The zero-based byte offset in buffer at which to begin storing the data read from the current stream.</param>
+      /// <param name="buffer">
+      ///   An array of bytes. When this method returns, the buffer contains the specified byte array with the
+      ///   values between offset and (offset + count - 1) replaced by the bytes read from the current source.
+      /// </param>
+      /// <param name="offset">
+      ///   The zero-based byte offset in buffer at which to begin storing the data read from the current
+      ///   stream.
+      /// </param>
       /// <param name="count">The maximum number of bytes to be read from the current stream.</param>
       /// <returns>
-      /// The total number of bytes read into the buffer. This can be less than the number of bytes requested if that many bytes are not currently available, or zero (0) if the end of the stream has been reached.
+      ///   The total number of bytes read into the buffer. This can be less than the number of bytes requested if that many
+      ///   bytes are not currently available, or zero (0) if the end of the stream has been reached.
       /// </returns>
       /// <exception cref="T:System.ArgumentException">The sum of offset and count is larger than the buffer length. </exception>
       /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed. </exception>
@@ -2757,7 +2784,8 @@ namespace Fomm.SharpZipLib.Zip
       }
 
       /// <summary>
-      /// Writes a sequence of bytes to the current stream and advances the current position within this stream by the number of bytes written.
+      ///   Writes a sequence of bytes to the current stream and advances the current position within this stream by the number
+      ///   of bytes written.
       /// </summary>
       /// <param name="buffer">An array of bytes. This method copies count bytes from buffer to the current stream.</param>
       /// <param name="offset">The zero-based byte offset in buffer at which to begin copying bytes to the current stream.</param>
@@ -2774,10 +2802,13 @@ namespace Fomm.SharpZipLib.Zip
       }
 
       /// <summary>
-      /// When overridden in a derived class, sets the length of the current stream.
+      ///   When overridden in a derived class, sets the length of the current stream.
       /// </summary>
       /// <param name="value">The desired length of the current stream in bytes.</param>
-      /// <exception cref="T:System.NotSupportedException">The stream does not support both writing and seeking, such as if the stream is constructed from a pipe or console output. </exception>
+      /// <exception cref="T:System.NotSupportedException">
+      ///   The stream does not support both writing and seeking, such as if the
+      ///   stream is constructed from a pipe or console output.
+      /// </exception>
       /// <exception cref="T:System.IO.IOException">An I/O error occurs. </exception>
       /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed. </exception>
       public override void SetLength(long value)
@@ -2786,15 +2817,21 @@ namespace Fomm.SharpZipLib.Zip
       }
 
       /// <summary>
-      /// When overridden in a derived class, sets the position within the current stream.
+      ///   When overridden in a derived class, sets the position within the current stream.
       /// </summary>
       /// <param name="offset">A byte offset relative to the origin parameter.</param>
-      /// <param name="origin">A value of type <see cref="T:System.IO.SeekOrigin"></see> indicating the reference point used to obtain the new position.</param>
+      /// <param name="origin">
+      ///   A value of type <see cref="T:System.IO.SeekOrigin"></see> indicating the reference point used to
+      ///   obtain the new position.
+      /// </param>
       /// <returns>
-      /// The new position within the current stream.
+      ///   The new position within the current stream.
       /// </returns>
       /// <exception cref="T:System.IO.IOException">An I/O error occurs. </exception>
-      /// <exception cref="T:System.NotSupportedException">The stream does not support seeking, such as if the stream is constructed from a pipe or console output. </exception>
+      /// <exception cref="T:System.NotSupportedException">
+      ///   The stream does not support seeking, such as if the stream is
+      ///   constructed from a pipe or console output.
+      /// </exception>
       /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed. </exception>
       public override long Seek(long offset, SeekOrigin origin)
       {
@@ -2829,7 +2866,7 @@ namespace Fomm.SharpZipLib.Zip
       }
 
       /// <summary>
-      /// Clears all buffers for this stream and causes any buffered data to be written to the underlying device.
+      ///   Clears all buffers for this stream and causes any buffered data to be written to the underlying device.
       /// </summary>
       /// <exception cref="T:System.IO.IOException">An I/O error occurs. </exception>
       public override void Flush()
@@ -2838,7 +2875,7 @@ namespace Fomm.SharpZipLib.Zip
       }
 
       /// <summary>
-      /// Gets or sets the position within the current stream.
+      ///   Gets or sets the position within the current stream.
       /// </summary>
       /// <value></value>
       /// <returns>The current position within the stream.</returns>
@@ -2869,7 +2906,7 @@ namespace Fomm.SharpZipLib.Zip
       }
 
       /// <summary>
-      /// Gets the length in bytes of the stream.
+      ///   Gets the length in bytes of the stream.
       /// </summary>
       /// <value></value>
       /// <returns>A long value representing the length of the stream in bytes.</returns>
@@ -2884,7 +2921,7 @@ namespace Fomm.SharpZipLib.Zip
       }
 
       /// <summary>
-      /// Gets a value indicating whether the current stream supports writing.
+      ///   Gets a value indicating whether the current stream supports writing.
       /// </summary>
       /// <value>false</value>
       /// <returns>true if the stream supports writing; otherwise, false.</returns>
@@ -2897,7 +2934,7 @@ namespace Fomm.SharpZipLib.Zip
       }
 
       /// <summary>
-      /// Gets a value indicating whether the current stream supports seeking.
+      ///   Gets a value indicating whether the current stream supports seeking.
       /// </summary>
       /// <value>true</value>
       /// <returns>true if the stream supports seeking; otherwise, false.</returns>
@@ -2910,7 +2947,7 @@ namespace Fomm.SharpZipLib.Zip
       }
 
       /// <summary>
-      /// Gets a value indicating whether the current stream supports reading.
+      ///   Gets a value indicating whether the current stream supports reading.
       /// </summary>
       /// <value>true.</value>
       /// <returns>true if the stream supports reading; otherwise, false.</returns>
@@ -2924,7 +2961,7 @@ namespace Fomm.SharpZipLib.Zip
 
 #if !NET_1_0 && !NET_1_1 && !NETCF_1_0
       /// <summary>
-      /// Gets a value that determines whether the current stream can time out.
+      ///   Gets a value that determines whether the current stream can time out.
       /// </summary>
       /// <value></value>
       /// <returns>A value that determines whether the current stream can time out.</returns>
@@ -2956,43 +2993,43 @@ namespace Fomm.SharpZipLib.Zip
   #region DataSources
 
   /// <summary>
-  /// Provides a static way to obtain a source of data for an entry.
+  ///   Provides a static way to obtain a source of data for an entry.
   /// </summary>
   internal interface IStaticDataSource
   {
     /// <summary>
-    /// Get a source of data by creating a new stream.
+    ///   Get a source of data by creating a new stream.
     /// </summary>
-    /// <returns>Returns a <see cref="Stream"/> to use for compression input.</returns>
+    /// <returns>Returns a <see cref="Stream" /> to use for compression input.</returns>
     /// <remarks>Ideally a new stream is created and opened to achieve this, to avoid locking problems.</remarks>
     Stream GetSource();
   }
 
   /// <summary>
-  /// Represents a source of data that can dynamically provide
-  /// multiple <see cref="Stream">data sources</see> based on the parameters passed.
+  ///   Represents a source of data that can dynamically provide
+  ///   multiple <see cref="Stream">data sources</see> based on the parameters passed.
   /// </summary>
   internal interface IDynamicDataSource
   {
     /// <summary>
-    /// Get a data source.
+    ///   Get a data source.
     /// </summary>
-    /// <param name="entry">The <see cref="ZipEntry"/> to get a source for.</param>
+    /// <param name="entry">The <see cref="ZipEntry" /> to get a source for.</param>
     /// <param name="name">The name for data if known.</param>
-    /// <returns>Returns a <see cref="Stream"/> to use for compression input.</returns>
+    /// <returns>Returns a <see cref="Stream" /> to use for compression input.</returns>
     /// <remarks>Ideally a new stream is created and opened to achieve this, to avoid locking problems.</remarks>
     Stream GetSource(ZipEntry entry, string name);
   }
 
   /// <summary>
-  /// Default implementation of <see cref="IDynamicDataSource"/> for files stored on disk.
+  ///   Default implementation of <see cref="IDynamicDataSource" /> for files stored on disk.
   /// </summary>
   internal class DynamicDiskDataSource : IDynamicDataSource
   {
     #region IDataSource Members
 
     /// <summary>
-    /// Get a <see cref="Stream"/> providing data for an entry.
+    ///   Get a <see cref="Stream" /> providing data for an entry.
     /// </summary>
     /// <param name="entry">The entry to provide data for.</param>
     /// <param name="name">The file name for data if known.</param>
@@ -3017,38 +3054,38 @@ namespace Fomm.SharpZipLib.Zip
   #region Archive Storage
 
   /// <summary>
-  /// Defines facilities for data storage when updating Zip Archives.
+  ///   Defines facilities for data storage when updating Zip Archives.
   /// </summary>
   internal interface IArchiveStorage
   {
     /// <summary>
-    /// Get the <see cref="FileUpdateMode"/> to apply during updates.
+    ///   Get the <see cref="FileUpdateMode" /> to apply during updates.
     /// </summary>
     FileUpdateMode UpdateMode { get; }
 
     /// <summary>
-    /// Get an empty <see cref="Stream"/> that can be used for temporary output.
+    ///   Get an empty <see cref="Stream" /> that can be used for temporary output.
     /// </summary>
-    /// <returns>Returns a temporary output <see cref="Stream"/></returns>
+    /// <returns>Returns a temporary output <see cref="Stream" /></returns>
     /// <seealso cref="ConvertTemporaryToFinal"></seealso>
     Stream GetTemporaryOutput();
 
     /// <summary>
-    /// Convert a temporary output stream to a final stream.
+    ///   Convert a temporary output stream to a final stream.
     /// </summary>
-    /// <returns>The resulting final <see cref="Stream"/></returns>
-    /// <seealso cref="GetTemporaryOutput"/>
+    /// <returns>The resulting final <see cref="Stream" /></returns>
+    /// <seealso cref="GetTemporaryOutput" />
     Stream ConvertTemporaryToFinal();
 
     /// <summary>
-    /// Make a temporary copy of the original stream.
+    ///   Make a temporary copy of the original stream.
     /// </summary>
-    /// <param name="stream">The <see cref="Stream"/> to copy.</param>
-    /// <returns>Returns a temporary output <see cref="Stream"/> that is a copy of the input.</returns>
+    /// <param name="stream">The <see cref="Stream" /> to copy.</param>
+    /// <returns>Returns a temporary output <see cref="Stream" /> that is a copy of the input.</returns>
     Stream MakeTemporaryCopy(Stream stream);
 
     /// <summary>
-    /// Return a stream suitable for performing direct updates on the original source.
+    ///   Return a stream suitable for performing direct updates on the original source.
     /// </summary>
     /// <param name="stream">The current stream.</param>
     /// <returns>Returns a stream suitable for direct updating.</returns>
@@ -3056,20 +3093,20 @@ namespace Fomm.SharpZipLib.Zip
     Stream OpenForDirectUpdate(Stream stream);
 
     /// <summary>
-    /// Dispose of this instance.
+    ///   Dispose of this instance.
     /// </summary>
     void Dispose();
   }
 
   /// <summary>
-  /// An abstract <see cref="IArchiveStorage"/> suitable for extension by inheritance.
+  ///   An abstract <see cref="IArchiveStorage" /> suitable for extension by inheritance.
   /// </summary>
   internal abstract class BaseArchiveStorage : IArchiveStorage
   {
     #region Constructors
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="BaseArchiveStorage"/> class.
+    ///   Initializes a new instance of the <see cref="BaseArchiveStorage" /> class.
     /// </summary>
     /// <param name="updateMode">The update mode.</param>
     protected BaseArchiveStorage(FileUpdateMode updateMode)
@@ -3082,41 +3119,43 @@ namespace Fomm.SharpZipLib.Zip
     #region IArchiveStorage Members
 
     /// <summary>
-    /// Gets a temporary output <see cref="Stream"/>
+    ///   Gets a temporary output <see cref="Stream" />
     /// </summary>
     /// <returns>Returns the temporary output stream.</returns>
     /// <seealso cref="ConvertTemporaryToFinal"></seealso>
     public abstract Stream GetTemporaryOutput();
 
     /// <summary>
-    /// Converts the temporary <see cref="Stream"/> to its final form.
+    ///   Converts the temporary <see cref="Stream" /> to its final form.
     /// </summary>
-    /// <returns>Returns a <see cref="Stream"/> that can be used to read
-    /// the final storage for the archive.</returns>
-    /// <seealso cref="GetTemporaryOutput"/>
+    /// <returns>
+    ///   Returns a <see cref="Stream" /> that can be used to read
+    ///   the final storage for the archive.
+    /// </returns>
+    /// <seealso cref="GetTemporaryOutput" />
     public abstract Stream ConvertTemporaryToFinal();
 
     /// <summary>
-    /// Make a temporary copy of a <see cref="Stream"/>.
+    ///   Make a temporary copy of a <see cref="Stream" />.
     /// </summary>
-    /// <param name="stream">The <see cref="Stream"/> to make a copy of.</param>
-    /// <returns>Returns a temporary output <see cref="Stream"/> that is a copy of the input.</returns>
+    /// <param name="stream">The <see cref="Stream" /> to make a copy of.</param>
+    /// <returns>Returns a temporary output <see cref="Stream" /> that is a copy of the input.</returns>
     public abstract Stream MakeTemporaryCopy(Stream stream);
 
     /// <summary>
-    /// Return a stream suitable for performing direct updates on the original source.
+    ///   Return a stream suitable for performing direct updates on the original source.
     /// </summary>
-    /// <param name="stream">The <see cref="Stream"/> to open for direct update.</param>
+    /// <param name="stream">The <see cref="Stream" /> to open for direct update.</param>
     /// <returns>Returns a stream suitable for direct updating.</returns>
     public abstract Stream OpenForDirectUpdate(Stream stream);
 
     /// <summary>
-    /// Disposes this instance.
+    ///   Disposes this instance.
     /// </summary>
     public abstract void Dispose();
 
     /// <summary>
-    /// Gets the update mode applicable.
+    ///   Gets the update mode applicable.
     /// </summary>
     /// <value>The update mode.</value>
     public FileUpdateMode UpdateMode
@@ -3137,14 +3176,14 @@ namespace Fomm.SharpZipLib.Zip
   }
 
   /// <summary>
-  /// An <see cref="IArchiveStorage"/> implementation suitable for hard disks.
+  ///   An <see cref="IArchiveStorage" /> implementation suitable for hard disks.
   /// </summary>
   internal class DiskArchiveStorage : BaseArchiveStorage
   {
     #region Constructors
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="DiskArchiveStorage"/> class.
+    ///   Initializes a new instance of the <see cref="DiskArchiveStorage" /> class.
     /// </summary>
     /// <param name="file">The file.</param>
     /// <param name="updateMode">The update mode.</param>
@@ -3160,20 +3199,18 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="DiskArchiveStorage"/> class.
+    ///   Initializes a new instance of the <see cref="DiskArchiveStorage" /> class.
     /// </summary>
     /// <param name="file">The file.</param>
     public DiskArchiveStorage(ZipFile file)
-      : this(file, FileUpdateMode.Safe)
-    {
-    }
+      : this(file, FileUpdateMode.Safe) {}
 
     #endregion
 
     #region IArchiveStorage Members
 
     /// <summary>
-    /// Gets a temporary output <see cref="Stream"/> for performing updates on.
+    ///   Gets a temporary output <see cref="Stream" /> for performing updates on.
     /// </summary>
     /// <returns>Returns the temporary output stream.</returns>
     public override Stream GetTemporaryOutput()
@@ -3195,10 +3232,12 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Converts a temporary <see cref="Stream"/> to its final form.
+    ///   Converts a temporary <see cref="Stream" /> to its final form.
     /// </summary>
-    /// <returns>Returns a <see cref="Stream"/> that can be used to read
-    /// the final storage for the archive.</returns>
+    /// <returns>
+    ///   Returns a <see cref="Stream" /> that can be used to read
+    ///   the final storage for the archive.
+    /// </returns>
     public override Stream ConvertTemporaryToFinal()
     {
       if (temporaryStream_ == null)
@@ -3237,10 +3276,10 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Make a temporary copy of a stream.
+    ///   Make a temporary copy of a stream.
     /// </summary>
-    /// <param name="stream">The <see cref="Stream"/> to copy.</param>
-    /// <returns>Returns a temporary output <see cref="Stream"/> that is a copy of the input.</returns>
+    /// <param name="stream">The <see cref="Stream" /> to copy.</param>
+    /// <returns>Returns a temporary output <see cref="Stream" /> that is a copy of the input.</returns>
     public override Stream MakeTemporaryCopy(Stream stream)
     {
       stream.Close();
@@ -3255,11 +3294,11 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Return a stream suitable for performing direct updates on the original source.
+    ///   Return a stream suitable for performing direct updates on the original source.
     /// </summary>
     /// <param name="stream">The current stream.</param>
     /// <returns>Returns a stream suitable for direct updating.</returns>
-    /// <remarks>If the <paramref name="current"/> stream is not null this is used as is.</remarks>
+    /// <remarks>If the <paramref name="current" /> stream is not null this is used as is.</remarks>
     public override Stream OpenForDirectUpdate(Stream stream)
     {
       Stream result;
@@ -3283,7 +3322,7 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Disposes this instance.
+    ///   Disposes this instance.
     /// </summary>
     public override void Dispose()
     {
@@ -3323,9 +3362,8 @@ namespace Fomm.SharpZipLib.Zip
                 // Try and create the file.
                 // ReSharper disable UnusedVariable
                 using (var stream = File.Create(newName))
-                // ReSharper restore UnusedVariable
-                {
-                }
+                  // ReSharper restore UnusedVariable
+                {}
                 result = newName;
               }
               catch
@@ -3355,26 +3393,24 @@ namespace Fomm.SharpZipLib.Zip
   }
 
   /// <summary>
-  /// An <see cref="IArchiveStorage"/> implementation suitable for in memory streams.
+  ///   An <see cref="IArchiveStorage" /> implementation suitable for in memory streams.
   /// </summary>
   internal class MemoryArchiveStorage : BaseArchiveStorage
   {
     #region Constructors
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MemoryArchiveStorage"/> class.
+    ///   Initializes a new instance of the <see cref="MemoryArchiveStorage" /> class.
     /// </summary>
     public MemoryArchiveStorage()
-      : base(FileUpdateMode.Direct)
-    {
-    }
+      : base(FileUpdateMode.Direct) {}
 
     #endregion
 
     #region IArchiveStorage Members
 
     /// <summary>
-    /// Gets the temporary output <see cref="Stream"/>
+    ///   Gets the temporary output <see cref="Stream" />
     /// </summary>
     /// <returns>Returns the temporary output stream.</returns>
     public override Stream GetTemporaryOutput()
@@ -3384,10 +3420,12 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Converts the temporary <see cref="Stream"/> to its final form.
+    ///   Converts the temporary <see cref="Stream" /> to its final form.
     /// </summary>
-    /// <returns>Returns a <see cref="Stream"/> that can be used to read
-    /// the final storage for the archive.</returns>
+    /// <returns>
+    ///   Returns a <see cref="Stream" /> that can be used to read
+    ///   the final storage for the archive.
+    /// </returns>
     public override Stream ConvertTemporaryToFinal()
     {
       if (temporaryStream_ == null)
@@ -3400,10 +3438,10 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Make a temporary copy of the original stream.
+    ///   Make a temporary copy of the original stream.
     /// </summary>
-    /// <param name="stream">The <see cref="Stream"/> to copy.</param>
-    /// <returns>Returns a temporary output <see cref="Stream"/> that is a copy of the input.</returns>
+    /// <param name="stream">The <see cref="Stream" /> to copy.</param>
+    /// <returns>Returns a temporary output <see cref="Stream" /> that is a copy of the input.</returns>
     public override Stream MakeTemporaryCopy(Stream stream)
     {
       temporaryStream_ = new MemoryStream();
@@ -3413,12 +3451,14 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Return a stream suitable for performing direct updates on the original source.
+    ///   Return a stream suitable for performing direct updates on the original source.
     /// </summary>
     /// <param name="stream">The original source stream</param>
     /// <returns>Returns a stream suitable for direct updating.</returns>
-    /// <remarks>If the <paramref name="stream"/> passed is not null this is used;
-    /// otherwise a new <see cref="MemoryStream"/> is returned.</remarks>
+    /// <remarks>
+    ///   If the <paramref name="stream" /> passed is not null this is used;
+    ///   otherwise a new <see cref="MemoryStream" /> is returned.
+    /// </remarks>
     public override Stream OpenForDirectUpdate(Stream stream)
     {
       Stream result;
@@ -3443,7 +3483,7 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Disposes this instance.
+    ///   Disposes this instance.
     /// </summary>
     public override void Dispose()
     {

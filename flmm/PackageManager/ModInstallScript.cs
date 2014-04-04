@@ -1,15 +1,15 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 using Fomm.PackageManager.ModInstallLog;
-using System.Drawing;
 using Fomm.Util;
 
 namespace Fomm.PackageManager
 {
   /// <summary>
-  /// the base script for scripts that install or uninstall mods.
+  ///   the base script for scripts that install or uninstall mods.
   /// </summary>
   public abstract class ModInstallScript : IDisposable
   {
@@ -26,7 +26,7 @@ namespace Fomm.PackageManager
     #region Properties
 
     /// <summary>
-    /// Gets the list of active plugins.
+    ///   Gets the list of active plugins.
     /// </summary>
     /// <value>The list of active plugins.</value>
     protected Set<string> ActivePlugins
@@ -44,17 +44,19 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Gets the mod that is being scripted against.
+    ///   Gets the mod that is being scripted against.
     /// </summary>
     /// <value>The mod that is being scripted against.</value>
     public fomod Fomod { get; private set; }
 
     /// <summary>
-    /// Gets or sets a value indicating whether to overwrite
-    /// all Ini values.
+    ///   Gets or sets a value indicating whether to overwrite
+    ///   all Ini values.
     /// </summary>
-    /// <value>A value indicating whether to overwrite
-    /// all Ini values.</value>
+    /// <value>
+    ///   A value indicating whether to overwrite
+    ///   all Ini values.
+    /// </value>
     public bool OverwriteAllIni
     {
       get
@@ -68,11 +70,13 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether to overwrite
-    /// all files.
+    ///   Gets or sets a value indicating whether to overwrite
+    ///   all files.
     /// </summary>
-    /// <value>A value indicating whether to overwrite
-    /// all files.</value>
+    /// <value>
+    ///   A value indicating whether to overwrite
+    ///   all files.
+    /// </value>
     protected bool OverwriteAllFiles
     {
       get
@@ -92,9 +96,9 @@ namespace Fomm.PackageManager
     #region Constructors
 
     /// <summary>
-    /// A simple constructor that initializes the object.
+    ///   A simple constructor that initializes the object.
     /// </summary>
-    /// <param name="p_fomodMod">The <see cref="fomod"/> to be installed or uninstalled.</param>
+    /// <param name="p_fomodMod">The <see cref="fomod" /> to be installed or uninstalled.</param>
     public ModInstallScript(fomod p_fomodMod, ModInstallerBase p_mibInstaller)
     {
       Fomod = p_fomodMod;
@@ -121,7 +125,7 @@ namespace Fomm.PackageManager
     #region MessageBox
 
     /// <summary>
-    /// Shows a message box with the given message.
+    ///   Shows a message box with the given message.
     /// </summary>
     /// <param name="p_strMessage">The message to display in the message box.</param>
     public void MessageBox(string p_strMessage)
@@ -131,7 +135,7 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Shows a message box with the given message and title.
+    ///   Shows a message box with the given message and title.
     /// </summary>
     /// <param name="p_strMessage">The message to display in the message box.</param>
     /// <param name="p_strTitle">The message box's title, display in the title bar.</param>
@@ -142,7 +146,7 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Shows a message box with the given message, title, and buttons.
+    ///   Shows a message box with the given message, title, and buttons.
     /// </summary>
     /// <param name="p_strMessage">The message to display in the message box.</param>
     /// <param name="p_strTitle">The message box's title, display in the title bar.</param>
@@ -156,15 +160,14 @@ namespace Fomm.PackageManager
     #endregion
 
     /// <summary>
-    /// Displays a selection form to the user.
+    ///   Displays a selection form to the user.
     /// </summary>
     /// <remarks>
-    /// The items, previews, and descriptions are repectively ordered. In other words,
-    /// the i-th item in <paramref name="p_strItems"/> uses the i-th preview in
-    /// <paramref name="p_strPreviews"/> and the i-th description in <paramref name="p_strDescriptions"/>.
-    /// 
-    /// Similarly, the idices return as results correspond to the indices of the items in
-    /// <paramref name="p_strItems"/>.
+    ///   The items, previews, and descriptions are repectively ordered. In other words,
+    ///   the i-th item in <paramref name="p_strItems" /> uses the i-th preview in
+    ///   <paramref name="p_strPreviews" /> and the i-th description in <paramref name="p_strDescriptions" />.
+    ///   Similarly, the idices return as results correspond to the indices of the items in
+    ///   <paramref name="p_strItems" />.
     /// </remarks>
     /// <param name="p_strItems">The items from which to select.</param>
     /// <param name="p_strPreviews">The preview image file names for the items.</param>
@@ -219,7 +222,7 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Creates a form that can be used in custom mod scripts.
+    ///   Creates a form that can be used in custom mod scripts.
     /// </summary>
     /// <returns>A form that can be used in custom mod scripts.</returns>
     public Form CreateCustomForm()
@@ -233,7 +236,7 @@ namespace Fomm.PackageManager
     #region Version Checking
 
     /// <summary>
-    /// Gets the version of FOMM.
+    ///   Gets the version of FOMM.
     /// </summary>
     /// <returns>The version of FOMM.</returns>
     public Version GetFommVersion()
@@ -242,10 +245,12 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Gets the version of Fallout that is installed.
+    ///   Gets the version of Fallout that is installed.
     /// </summary>
-    /// <returns>The version of Fallout, or <lang langref="null"/> if Fallout
-    /// is not installed.</returns>
+    /// <returns>
+    ///   The version of Fallout, or <lang langref="null" /> if Fallout
+    ///   is not installed.
+    /// </returns>
     public Version GetGameVersion()
     {
       PermissionsManager.CurrentPermissions.Assert();
@@ -257,7 +262,7 @@ namespace Fomm.PackageManager
     #region Plugin Management
 
     /// <summary>
-    /// Gets a list of all installed plugins.
+    ///   Gets a list of all installed plugins.
     /// </summary>
     /// <returns>A list of all installed plugins.</returns>
     public string[] GetAllPlugins()
@@ -276,7 +281,7 @@ namespace Fomm.PackageManager
     #region Plugin Activation Info
 
     /// <summary>
-    /// Retrieves a list of currently active plugins.
+    ///   Retrieves a list of currently active plugins.
     /// </summary>
     /// <returns>A list of currently active plugins.</returns>
     public string[] GetActivePlugins()
@@ -297,19 +302,25 @@ namespace Fomm.PackageManager
     #region Load Order Management
 
     /// <summary>
-    /// Sets the load order of the plugins.
+    ///   Sets the load order of the plugins.
     /// </summary>
     /// <remarks>
-    /// Each plugin will be moved from its current index to its indice's position
-    /// in <paramref name="p_intPlugins"/>.
+    ///   Each plugin will be moved from its current index to its indice's position
+    ///   in <paramref name="p_intPlugins" />.
     /// </remarks>
-    /// <param name="p_intPlugins">The new load order of the plugins. Each entry in this array
-    /// contains the current index of a plugin. This array must contain all current indices.</param>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="p_intPlugins"/> does not
-    /// contain all current plugins.</exception>
-    /// <exception cref="IndexOutOfRangeException">Thrown if an index in <paramref name="p_intPlugins"/>
-    /// is outside the range of current plugins. In other words, it is thrown if an entry in
-    /// <paramref name="p_intPlugins"/> refers to a non-existant plugin.</exception>
+    /// <param name="p_intPlugins">
+    ///   The new load order of the plugins. Each entry in this array
+    ///   contains the current index of a plugin. This array must contain all current indices.
+    /// </param>
+    /// <exception cref="ArgumentException">
+    ///   Thrown if <paramref name="p_intPlugins" /> does not
+    ///   contain all current plugins.
+    /// </exception>
+    /// <exception cref="IndexOutOfRangeException">
+    ///   Thrown if an index in <paramref name="p_intPlugins" />
+    ///   is outside the range of current plugins. In other words, it is thrown if an entry in
+    ///   <paramref name="p_intPlugins" /> refers to a non-existant plugin.
+    /// </exception>
     public void SetLoadOrder(int[] p_intPlugins)
     {
       var strPluginNames = GetAllPlugins();
@@ -335,18 +346,22 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Moves the specified plugins to the given position in the load order.
+    ///   Moves the specified plugins to the given position in the load order.
     /// </summary>
     /// <remarks>
-    /// Note that the order of the given list of plugins is not maintained. They are re-ordered
-    /// to be in the same order as they are in the before-operation load order. This, I think,
-    /// is somewhat counter-intuitive and may change, though likely not so as to not break
-    /// backwards compatibility.
+    ///   Note that the order of the given list of plugins is not maintained. They are re-ordered
+    ///   to be in the same order as they are in the before-operation load order. This, I think,
+    ///   is somewhat counter-intuitive and may change, though likely not so as to not break
+    ///   backwards compatibility.
     /// </remarks>
-    /// <param name="p_intPlugins">The list of plugins to move to the given position in the
-    /// load order. Each entry in this array contains the current index of a plugin.</param>
-    /// <param name="p_intPosition">The position in the load order to which to move the specified
-    /// plugins.</param>
+    /// <param name="p_intPlugins">
+    ///   The list of plugins to move to the given position in the
+    ///   load order. Each entry in this array contains the current index of a plugin.
+    /// </param>
+    /// <param name="p_intPosition">
+    ///   The position in the load order to which to move the specified
+    ///   plugins.
+    /// </param>
     public void SetLoadOrder(int[] p_intPlugins, int p_intPosition)
     {
       var strPluginNames = GetAllPlugins();
@@ -384,13 +399,15 @@ namespace Fomm.PackageManager
     #region Plugin Activation
 
     /// <summary>
-    /// Sets the activated status of a plugin (i.e., and esp or esm file).
+    ///   Sets the activated status of a plugin (i.e., and esp or esm file).
     /// </summary>
     /// <param name="p_strName">The name of the plugin to activate or deactivate.</param>
     /// <param name="p_booActivate">Whether to activate the plugin.</param>
     /// <exception cref="IllegalFilePathException">Thrown if the given path is not safe.</exception>
-    /// <exception cref="FileNotFoundException">Thrown if the given plugin name
-    /// is invalid or does not exist.</exception>
+    /// <exception cref="FileNotFoundException">
+    ///   Thrown if the given plugin name
+    ///   is invalid or does not exist.
+    /// </exception>
     public void SetPluginActivation(string p_strName, bool p_booActivate)
     {
       if (p_strName.IndexOfAny(Path.GetInvalidFileNameChars()) != -1)
@@ -415,7 +432,7 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Commits the list of active plugins.
+    ///   Commits the list of active plugins.
     /// </summary>
     public void CommitActivePlugins()
     {
@@ -434,16 +451,18 @@ namespace Fomm.PackageManager
     #region File Creation
 
     /// <summary>
-    /// Verifies if the given file can be written.
+    ///   Verifies if the given file can be written.
     /// </summary>
     /// <remarks>
-    /// This method checks if the given path is valid. If so, and the file does not
-    /// exist, the file can be written. If the file does exist, than the user is
-    /// asked to overwrite the file.
+    ///   This method checks if the given path is valid. If so, and the file does not
+    ///   exist, the file can be written. If the file does exist, than the user is
+    ///   asked to overwrite the file.
     /// </remarks>
     /// <param name="p_strPath">The file path, relative to the Data folder, whose writability is to be verified.</param>
-    /// <returns><lang langref="true"/> if the location specified by <paramref name="p_strPath"/>
-    /// can be written; <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the location specified by <paramref name="p_strPath" />
+    ///   can be written; <lang langref="false" /> otherwise.
+    /// </returns>
     protected bool TestDoOverwrite(string p_strPath)
     {
       var strDataPath = Path.Combine(Program.GameMode.PluginsPath, p_strPath);
@@ -599,45 +618,57 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Installs the speified file from the FOMod to the file system.
+    ///   Installs the speified file from the FOMod to the file system.
     /// </summary>
     /// <param name="p_strFile">The path of the file to install.</param>
-    /// <returns><lang langref="true"/> if the file was written; <lang langref="false"/> if the user chose
-    /// not to overwrite an existing file.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the file was written; <lang langref="false" /> if the user chose
+    ///   not to overwrite an existing file.
+    /// </returns>
     public bool InstallFileFromFomod(string p_strFile)
     {
       return InstallFile(p_strFile);
     }
 
     /// <summary>
-    /// Installs the speified file from the FOMod to the specified location on the file system.
+    ///   Installs the speified file from the FOMod to the specified location on the file system.
     /// </summary>
     /// <param name="p_strFrom">The path of the file in the FOMod to install.</param>
     /// <param name="p_strTo">The path on the file system where the file is to be created.</param>
-    /// <returns><lang langref="true"/> if the file was written; <lang langref="false"/> if the user chose
-    /// not to overwrite an existing file.</returns>
-    /// <exception cref="FileNotFoundException">Thrown if the file referenced by
-    /// <paramref name="p_strFrom"/> is not in the FOMod.</exception>
-    /// <exception cref="IllegalFilePathException">Thrown if <paramref name="p_strTo"/> is
-    /// not safe.</exception>
+    /// <returns>
+    ///   <lang langref="true" /> if the file was written; <lang langref="false" /> if the user chose
+    ///   not to overwrite an existing file.
+    /// </returns>
+    /// <exception cref="FileNotFoundException">
+    ///   Thrown if the file referenced by
+    ///   <paramref name="p_strFrom" /> is not in the FOMod.
+    /// </exception>
+    /// <exception cref="IllegalFilePathException">
+    ///   Thrown if <paramref name="p_strTo" /> is
+    ///   not safe.
+    /// </exception>
     public bool CopyDataFile(string p_strFrom, string p_strTo)
     {
       return InstallFile(p_strFrom, p_strTo);
     }
 
     /// <summary>
-    /// Writes the file represented by the given byte array to the given path.
+    ///   Writes the file represented by the given byte array to the given path.
     /// </summary>
     /// <remarks>
-    /// This method writes the given data as a file at the given path. If the file
-    /// already exists the user is prompted to overwrite the file.
+    ///   This method writes the given data as a file at the given path. If the file
+    ///   already exists the user is prompted to overwrite the file.
     /// </remarks>
     /// <param name="p_strPath">The path where the file is to be created.</param>
     /// <param name="p_bteData">The data that is to make up the file.</param>
-    /// <returns><lang langref="true"/> if the file was written; <lang langref="false"/> if the user chose
-    /// not to overwrite an existing file.</returns>
-    /// <exception cref="IllegalFilePathException">Thrown if <paramref name="p_strPath"/> is
-    /// not safe.</exception>
+    /// <returns>
+    ///   <lang langref="true" /> if the file was written; <lang langref="false" /> if the user chose
+    ///   not to overwrite an existing file.
+    /// </returns>
+    /// <exception cref="IllegalFilePathException">
+    ///   Thrown if <paramref name="p_strPath" /> is
+    ///   not safe.
+    /// </exception>
     public virtual bool GenerateDataFile(string p_strPath, byte[] p_bteData)
     {
       PermissionsManager.CurrentPermissions.Assert();
@@ -709,37 +740,38 @@ namespace Fomm.PackageManager
     #region File Removal
 
     /// <summary>
-    /// Uninstalls the specified file.
+    ///   Uninstalls the specified file.
     /// </summary>
     /// <remarks>
-    /// If the mod we are uninstalling doesn't own the file, then its version is removed
-    /// from the overwrites directory. If the mod we are uninstalling overwrote a file when it
-    /// installed the specified file, then the overwritten file is restored. Otherwise
-    /// the file is deleted.
+    ///   If the mod we are uninstalling doesn't own the file, then its version is removed
+    ///   from the overwrites directory. If the mod we are uninstalling overwrote a file when it
+    ///   installed the specified file, then the overwritten file is restored. Otherwise
+    ///   the file is deleted.
     /// </remarks>
     /// <param name="p_strPath">The path to the file that is to be uninstalled.</param>
-    /// <seealso cref="UninstallDataFile(string, string)"/>
+    /// <seealso cref="UninstallDataFile(string, string)" />
     public void UninstallDataFile(string p_strFile)
     {
       UninstallDataFile(Fomod.BaseName, p_strFile);
     }
 
     /// <summary>
-    /// Uninstalls the specified file.
+    ///   Uninstalls the specified file.
     /// </summary>
     /// <remarks>
-    /// If the mod we are uninstalling doesn't own the file, then its version is removed
-    /// from the overwrites directory. If the mod we are uninstalling overwrote a file when it
-    /// installed the specified file, then the overwritten file is restored. Otherwise
-    /// the file is deleted.
-    /// 
-    /// This variant of <see cref="UninstallDataFile"/> is for use when uninstalling a file
-    /// for a mod whose FOMod is missing.
+    ///   If the mod we are uninstalling doesn't own the file, then its version is removed
+    ///   from the overwrites directory. If the mod we are uninstalling overwrote a file when it
+    ///   installed the specified file, then the overwritten file is restored. Otherwise
+    ///   the file is deleted.
+    ///   This variant of <see cref="UninstallDataFile" /> is for use when uninstalling a file
+    ///   for a mod whose FOMod is missing.
     /// </remarks>
-    /// <param name="p_strFomodBaseName">The base name of the <see cref="fomod"/> whose file
-    /// is being uninstalled.</param>
+    /// <param name="p_strFomodBaseName">
+    ///   The base name of the <see cref="fomod" /> whose file
+    ///   is being uninstalled.
+    /// </param>
     /// <param name="p_strPath">The path to the file that is to be uninstalled.</param>
-    /// <seealso cref="UninstallDataFile(string)"/>
+    /// <seealso cref="UninstallDataFile(string)" />
     public void UninstallDataFile(string p_strFomodBaseName, string p_strFile)
     {
       PermissionsManager.CurrentPermissions.Assert();
@@ -807,7 +839,7 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Deletes any empty directories found between the start path and the end directory.
+    ///   Deletes any empty directories found between the start path and the end directory.
     /// </summary>
     /// <param name="p_strStartPath">The path from which to start looking for empty directories.</param>
     /// <param name="p_strStopDirectory">The directory at which to stop looking.</param>
@@ -842,7 +874,7 @@ namespace Fomm.PackageManager
     #region Ini File Value Retrieval
 
     /// <summary>
-    /// Retrieves the specified settings value as a string.
+    ///   Retrieves the specified settings value as a string.
     /// </summary>
     /// <param name="p_strSettingsFileName">The name of the settings file from which to retrieve the value.</param>
     /// <param name="p_strSection">The section containing the value to retrieve.</param>
@@ -855,7 +887,7 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Retrieves the specified settings value as an integer.
+    ///   Retrieves the specified settings value as an integer.
     /// </summary>
     /// <param name="p_strSettingsFileName">The name of the settings file from which to retrieve the value.</param>
     /// <param name="p_strSection">The section containing the value to retrieve.</param>
@@ -872,14 +904,16 @@ namespace Fomm.PackageManager
     #region Ini Editing
 
     /// <summary>
-    /// Sets the specified value in the specified Ini file to the given value.
+    ///   Sets the specified value in the specified Ini file to the given value.
     /// </summary>
     /// <param name="p_strSettingsFileName">The name of the settings file to edit.</param>
     /// <param name="p_strSection">The section in the Ini file to edit.</param>
     /// <param name="p_strKey">The key in the Ini file to edit.</param>
     /// <param name="p_strValue">The value to which to set the key.</param>
-    /// <returns><lang langref="true"/> if the value was set; <lang langref="false"/>
-    /// if the user chose not to overwrite the existing value.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the value was set; <lang langref="false" />
+    ///   if the user chose not to overwrite the existing value.
+    /// </returns>
     protected virtual bool EditINI(string p_strSettingsFileName, string p_strSection, string p_strKey, string p_strValue)
     {
       var strFile = p_strSettingsFileName;
@@ -943,30 +977,32 @@ namespace Fomm.PackageManager
     #region Ini Unediting
 
     /// <summary>
-    /// Undoes the edit made to the spcified key.
+    ///   Undoes the edit made to the spcified key.
     /// </summary>
     /// <param name="p_strSettingsFileName">The name of the settings file to unedit.</param>
     /// <param name="p_strSection">The section in the Ini file to unedit.</param>
     /// <param name="p_strKey">The key in the Ini file to unedit.</param>
-    /// <seealso cref="UneditIni(string, string, string, string)"/>
+    /// <seealso cref="UneditIni(string, string, string, string)" />
     public void UneditIni(string p_strSettingsFileName, string p_strSection, string p_strKey)
     {
       UneditIni(Fomod.BaseName, p_strSettingsFileName, p_strSection, p_strKey);
     }
 
     /// <summary>
-    /// Undoes the edit made to the spcified key.
+    ///   Undoes the edit made to the spcified key.
     /// </summary>
     /// <remarks>
-    ///  This variant of <see cref="UneditIni"/> is for use when uninstalling a file
-    /// for a mod whose FOMod is missing.
+    ///   This variant of <see cref="UneditIni" /> is for use when uninstalling a file
+    ///   for a mod whose FOMod is missing.
     /// </remarks>
-    /// <param name="p_strFomodBaseName">The base name of the <see cref="fomod"/> whose file
-    /// is being uninstalled.</param>
+    /// <param name="p_strFomodBaseName">
+    ///   The base name of the <see cref="fomod" /> whose file
+    ///   is being uninstalled.
+    /// </param>
     /// <param name="p_strSettingsFileName">The name of the settings file to unedit.</param>
     /// <param name="p_strSection">The section in the Ini file to unedit.</param>
     /// <param name="p_strKey">The key in the Ini file to unedit.</param>
-    /// <seealso cref="UneditIni(string, string, string)"/>
+    /// <seealso cref="UneditIni(string, string, string)" />
     public void UneditIni(string p_strFomodBaseName, string p_strSettingsFileName, string p_strSection, string p_strKey)
     {
       var strLoweredFile = p_strSettingsFileName.ToLowerInvariant();
@@ -975,7 +1011,7 @@ namespace Fomm.PackageManager
 
       var strKey = InstallLog.Current.GetModKey(p_strFomodBaseName);
       var strCurrentOwnerKey = InstallLog.Current.GetCurrentIniEditorModKey(strLoweredFile, strLoweredSection,
-                                                                               strLoweredKey);
+                                                                            strLoweredKey);
       //if we didn't edit the value, then leave it alone
       if (!strKey.Equals(strCurrentOwnerKey))
       {
@@ -1001,26 +1037,28 @@ namespace Fomm.PackageManager
     #region Game-Specific Value Management
 
     /// <summary>
-    /// Undoes the edit made to the spcified game-specific value.
+    ///   Undoes the edit made to the spcified game-specific value.
     /// </summary>
     /// <param name="p_strValueKey">The key of the game-specific value to unedit.</param>
-    /// <seealso cref="UneditGameSpecificValue(string, string)"/>
+    /// <seealso cref="UneditGameSpecificValue(string, string)" />
     public bool UneditGameSpecificValue(string p_strValueKey)
     {
       return UneditGameSpecificValue(Fomod.BaseName, p_strValueKey);
     }
 
     /// <summary>
-    /// Undoes the edit made to the spcified game-specific value.
+    ///   Undoes the edit made to the spcified game-specific value.
     /// </summary>
     /// <remarks>
-    ///  This variant of <see cref="UneditGameSpecificValue"/> is for use when uninstalling a file
-    /// for a mod whose FOMod is missing.
+    ///   This variant of <see cref="UneditGameSpecificValue" /> is for use when uninstalling a file
+    ///   for a mod whose FOMod is missing.
     /// </remarks>
-    /// <param name="p_strFomodBaseName">The base name of the <see cref="fomod"/> whose file
-    /// is being uninstalled.</param>
+    /// <param name="p_strFomodBaseName">
+    ///   The base name of the <see cref="fomod" /> whose file
+    ///   is being uninstalled.
+    /// </param>
     /// <param name="p_strValueKey">The key of the game-specific value to unedit.</param>
-    /// <seealso cref="UneditGameSpecificValue(string)"/>
+    /// <seealso cref="UneditGameSpecificValue(string)" />
     public abstract bool UneditGameSpecificValue(string p_strFomodBaseName, string p_strValueKey);
 
     #endregion
@@ -1028,7 +1066,7 @@ namespace Fomm.PackageManager
     #region IDisposable Members
 
     /// <summary>
-    /// Cleans up used resources.
+    ///   Cleans up used resources.
     /// </summary>
     public virtual void Dispose()
     {

@@ -1,19 +1,19 @@
 ﻿using System;
-using System.Xml;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Xml;
 
 namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
 {
   /// <summary>
-  /// Parses version 1.0 mod configuration files.
+  ///   Parses version 1.0 mod configuration files.
   /// </summary>
   public class Parser10 : Parser
   {
     #region Properties
 
-    /// <seealso cref="Parser.ConfigurationFileVersion"/>
+    /// <seealso cref="Parser.ConfigurationFileVersion" />
     protected override string ConfigurationFileVersion
     {
       get
@@ -27,7 +27,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     #region Constructors
 
     /// <summary>
-    /// A simple constructor that initializes teh object with the given values.
+    ///   A simple constructor that initializes teh object with the given values.
     /// </summary>
     /// <param name="p_xmlConfig">The modules configuration file.</param>
     /// <param name="p_fomodMod">The mod whose configuration file we are parsing.</param>
@@ -35,15 +35,13 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     /// <param name="p_pexParserExtension">The parser extension that provides game-specific config file parsing.</param>
     public Parser10(XmlDocument p_xmlConfig, fomod p_fomodMod, DependencyStateManager p_dsmSate,
                     ParserExtension p_pexParserExtension)
-      : base(p_xmlConfig, p_fomodMod, p_dsmSate, p_pexParserExtension)
-    {
-    }
+      : base(p_xmlConfig, p_fomodMod, p_dsmSate, p_pexParserExtension) {}
 
     #endregion
 
     #region Abstract Method Implementations
 
-    /// <seealso cref="Parser.GetModDependencies()"/>
+    /// <seealso cref="Parser.GetModDependencies()" />
     public override CompositeDependency GetModDependencies()
     {
       var cpdDependency = new CompositeDependency(DependencyOperator.And);
@@ -81,7 +79,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
       return cpdDependency;
     }
 
-    /// <seealso cref="Parser.GetInstallSteps()"/>
+    /// <seealso cref="Parser.GetInstallSteps()" />
     public override IList<InstallStep> GetInstallSteps()
     {
       var xndGroups = XmlConfig.SelectSingleNode("/config/optionalFileGroups");
@@ -94,20 +92,20 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
       return lstSteps;
     }
 
-    /// <seealso cref="Parser.GetRequiredInstallFiles()"/>
+    /// <seealso cref="Parser.GetRequiredInstallFiles()" />
     public override IList<PluginFile> GetRequiredInstallFiles()
     {
       var xnlRequiredInstallFiles = XmlConfig.SelectNodes("/config/requiredInstallFiles/*");
       return readFileInfo(xnlRequiredInstallFiles);
     }
 
-    /// <seealso cref="Parser.GetConditionalFileInstallPatterns()"/>
+    /// <seealso cref="Parser.GetConditionalFileInstallPatterns()" />
     public override IList<ConditionalFileInstallPattern> GetConditionalFileInstallPatterns()
     {
       return new List<ConditionalFileInstallPattern>();
     }
 
-    /// <seealso cref="Parser.GetHeaderInfo()"/>
+    /// <seealso cref="Parser.GetHeaderInfo()" />
     public override HeaderInfo GetHeaderInfo()
     {
       var imgScreenshot = Fomod.GetScreenshotImage();
@@ -121,7 +119,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     #region Parsing Methods
 
     /// <summary>
-    /// Gets the mod plugins, organized into their groups.
+    ///   Gets the mod plugins, organized into their groups.
     /// </summary>
     /// <returns>The mod plugins, organized into their groups.</returns>
     public virtual IList<PluginGroup> loadGroupedPlugins(XmlNode p_xndFileGroups)
@@ -138,7 +136,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     }
 
     /// <summary>
-    /// Creates a plugin group based on the given info.
+    ///   Creates a plugin group based on the given info.
     /// </summary>
     /// <param name="p_xndGroup">The configuration file node corresponding to the group to add.</param>
     /// <returns>The added group.</returns>
@@ -157,7 +155,7 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     }
 
     /// <summary>
-    /// Reads a plugin's information from the configuration file.
+    ///   Reads a plugin's information from the configuration file.
     /// </summary>
     /// <param name="p_xndPlugin">The configuration file node corresponding to the plugin to read.</param>
     /// <returns>The plugin information.</returns>
@@ -208,10 +206,10 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     }
 
     /// <summary>
-    /// Reads the dependency information from the given node.
+    ///   Reads the dependency information from the given node.
     /// </summary>
     /// <param name="p_xndCompositeDependency">The node from which to load the dependency information.</param>
-    /// <returns>A <see cref="CompositeDependency"/> representing the dependency described in the given node.</returns>
+    /// <returns>A <see cref="CompositeDependency" /> representing the dependency described in the given node.</returns>
     protected virtual CompositeDependency loadDependency(XmlNode p_xndCompositeDependency)
     {
       var dopOperator =
@@ -238,10 +236,10 @@ namespace Fomm.PackageManager.XmlConfiguredInstall.Parsers
     }
 
     /// <summary>
-    /// Reads the file info from the given XML nodes.
+    ///   Reads the file info from the given XML nodes.
     /// </summary>
     /// <param name="p_xnlFiles">The list of XML nodes containing the file info to read.</param>
-    /// <returns>An ordered list of <see cref="PluginFile"/>s representing the data in the given list.</returns>
+    /// <returns>An ordered list of <see cref="PluginFile" />s representing the data in the given list.</returns>
     protected List<PluginFile> readFileInfo(XmlNodeList p_xnlFiles)
     {
       var lstFiles = new List<PluginFile>();

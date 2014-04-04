@@ -39,14 +39,14 @@ using System.IO;
 namespace Fomm.SharpZipLib.Zip
 {
   /// <summary>
-  /// This class assists with writing/reading from Zip files.
+  ///   This class assists with writing/reading from Zip files.
   /// </summary>
   internal class ZipHelperStream : Stream
   {
     #region Constructors
 
     /// <summary>
-    /// Initialise a new instance of <see cref="ZipHelperStream"/>.
+    ///   Initialise a new instance of <see cref="ZipHelperStream" />.
     /// </summary>
     /// <param name="stream">The stream to use.</param>
     public ZipHelperStream(Stream stream)
@@ -138,10 +138,10 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Close the stream.
+    ///   Close the stream.
     /// </summary>
     /// <remarks>
-    /// The underlying stream is closed only if <see cref="IsStreamOwner"/> is true.
+    ///   The underlying stream is closed only if <see cref="IsStreamOwner" /> is true.
     /// </remarks>
     public override void Close()
     {
@@ -157,7 +157,7 @@ namespace Fomm.SharpZipLib.Zip
     #endregion
 
     /// <summary>
-    /// Locates a block with the desired <paramref name="signature"/>.
+    ///   Locates a block with the desired <paramref name="signature" />.
     /// </summary>
     /// <param name="signature">The signature to find.</param>
     /// <param name="endLocation">Location, marking the end of block.</param>
@@ -189,7 +189,7 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Write Zip64 end of central directory records (File header and locator).
+    ///   Write Zip64 end of central directory records (File header and locator).
     /// </summary>
     /// <param name="noOfEntries">The number of entries in the central directory.</param>
     /// <param name="sizeEntries">The size of entries in the central directory.</param>
@@ -223,7 +223,7 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Write the required records to end the central directory.
+    ///   Write the required records to end the central directory.
     /// </summary>
     /// <param name="noOfEntries">The number of entries in the directory.</param>
     /// <param name="sizeEntries">The size of the entries in the directory.</param>
@@ -295,14 +295,14 @@ namespace Fomm.SharpZipLib.Zip
     #region LE value reading/writing
 
     /// <summary>
-    /// Read an unsigned short in little endian byte order.
+    ///   Read an unsigned short in little endian byte order.
     /// </summary>
     /// <returns>Returns the value read.</returns>
     /// <exception cref="IOException">
-    /// An i/o error occurs.
+    ///   An i/o error occurs.
     /// </exception>
     /// <exception cref="EndOfStreamException">
-    /// The file ends prematurely
+    ///   The file ends prematurely
     /// </exception>
     public int ReadLEShort()
     {
@@ -323,14 +323,14 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Read an int in little endian byte order.
+    ///   Read an int in little endian byte order.
     /// </summary>
     /// <returns>Returns the value read.</returns>
     /// <exception cref="IOException">
-    /// An i/o error occurs.
+    ///   An i/o error occurs.
     /// </exception>
     /// <exception cref="System.IO.EndOfStreamException">
-    /// The file ends prematurely
+    ///   The file ends prematurely
     /// </exception>
     public int ReadLEInt()
     {
@@ -338,7 +338,7 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Write an unsigned short in little endian byte order.
+    ///   Write an unsigned short in little endian byte order.
     /// </summary>
     /// <param name="value">The value to write.</param>
     public void WriteLEShort(int value)
@@ -348,7 +348,7 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Write a ushort in little endian byte order.
+    ///   Write a ushort in little endian byte order.
     /// </summary>
     /// <param name="value">The value to write.</param>
     public void WriteLEUshort(ushort value)
@@ -358,7 +358,7 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Write an int in little endian byte order.
+    ///   Write an int in little endian byte order.
     /// </summary>
     /// <param name="value">The value to write.</param>
     public void WriteLEInt(int value)
@@ -368,7 +368,7 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Write a uint in little endian byte order.
+    ///   Write a uint in little endian byte order.
     /// </summary>
     /// <param name="value">The value to write.</param>
     public void WriteLEUint(uint value)
@@ -378,7 +378,7 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Write a long in little endian byte order.
+    ///   Write a long in little endian byte order.
     /// </summary>
     /// <param name="value">The value to write.</param>
     public void WriteLELong(long value)
@@ -390,7 +390,7 @@ namespace Fomm.SharpZipLib.Zip
     #endregion
 
     /// <summary>
-    /// Write a data descriptor.
+    ///   Write a data descriptor.
     /// </summary>
     /// <param name="entry">The entry to write a descriptor for.</param>
     /// <returns>Returns the number of descriptor bytes written.</returns>

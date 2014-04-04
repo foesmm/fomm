@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Fomm.PackageManager;
 using System.IO;
+using Fomm.PackageManager;
 using Fomm.PackageManager.ModInstallLog;
 
 namespace Fomm.FileManager
@@ -14,7 +14,7 @@ namespace Fomm.FileManager
 
     #region Properties
 
-    /// <seealso cref="ModInstallScript.ExceptionMessage"/>
+    /// <seealso cref="ModInstallScript.ExceptionMessage" />
     protected override string ExceptionMessage
     {
       get
@@ -23,7 +23,7 @@ namespace Fomm.FileManager
       }
     }
 
-    /// <seealso cref="ModInstallScript.SuccessMessage"/>
+    /// <seealso cref="ModInstallScript.SuccessMessage" />
     protected override string SuccessMessage
     {
       get
@@ -32,7 +32,7 @@ namespace Fomm.FileManager
       }
     }
 
-    /// <seealso cref="ModInstallScript.FailMessage"/>
+    /// <seealso cref="ModInstallScript.FailMessage" />
     protected override string FailMessage
     {
       get
@@ -46,38 +46,40 @@ namespace Fomm.FileManager
     #region Constructors
 
     /// <summary>
-    /// A simple constructor that initializes the object.
+    ///   A simple constructor that initializes the object.
     /// </summary>
     internal ModInstallReorderer()
-      : base(null)
-    {
-    }
+      : base(null) {}
 
     #endregion
 
     /// <summary>
-    /// Checks to see if the script work has already been done.
+    ///   Checks to see if the script work has already been done.
     /// </summary>
     /// <remarks>
-    /// This always returns <lang langref="false"/>.
+    ///   This always returns <lang langref="false" />.
     /// </remarks>
-    /// <returns><lang langref="true"/> if the script work has already been done and the script
-    /// doesn't need to execute; <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the script work has already been done and the script
+    ///   doesn't need to execute; <lang langref="false" /> otherwise.
+    /// </returns>
     protected override bool CheckAlreadyDone()
     {
       return false;
     }
 
     /// <summary>
-    /// Reorders the installers of the specified file.
+    ///   Reorders the installers of the specified file.
     /// </summary>
     /// <remarks>
-    /// This changes the version of the specified file that is in the user's data directory.
+    ///   This changes the version of the specified file that is in the user's data directory.
     /// </remarks>
     /// <param name="p_strFile">The file whose installers are to be reordered.</param>
     /// <param name="p_lstOrderedMods">The new order of the file's installers.</param>
-    /// <returns><lang langref="true"/> if the file installers were reordered;
-    /// <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the file installers were reordered;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
     internal bool ReorderFileInstallers(string p_strFile, List<string> p_lstOrderedMods)
     {
       m_strFile = p_strFile;
@@ -86,13 +88,17 @@ namespace Fomm.FileManager
     }
 
     /// <summary>
-    /// This does the moving of files and log alteration.
+    ///   This does the moving of files and log alteration.
     /// </summary>
-    /// <returns><lang langref="true"/> if the script work was completed successfully and needs to
-    /// be committed; <lang langref="false"/> otherwise.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if m_strFile or m_lstOrderedMods are
-    /// <lang langref="null"/>.</exception>
-    /// <seealso cref="ModInstallScript.DoScript"/>
+    /// <returns>
+    ///   <lang langref="true" /> if the script work was completed successfully and needs to
+    ///   be committed; <lang langref="false" /> otherwise.
+    /// </returns>
+    /// <exception cref="InvalidOperationException">
+    ///   Thrown if m_strFile or m_lstOrderedMods are
+    ///   <lang langref="null" />.
+    /// </exception>
+    /// <seealso cref="ModInstallScript.DoScript" />
     protected override bool DoScript()
     {
       if ((m_strFile == null) || (m_lstOrderedMods == null))

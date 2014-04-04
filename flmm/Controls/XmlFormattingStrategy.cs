@@ -1,16 +1,16 @@
-﻿using ICSharpCode.TextEditor.Document;
-using System.Text;
+﻿using System.Text;
 using ICSharpCode.TextEditor;
+using ICSharpCode.TextEditor.Document;
 
 namespace Fomm.Controls
 {
   /// <summary>
-  /// Handles the smart indenting of XML.
+  ///   Handles the smart indenting of XML.
   /// </summary>
   public class XmlFormattingStrategy : DefaultFormattingStrategy
   {
     /// <summary>
-    /// Indents the specified line based on the current depth of the XML hierarchy.
+    ///   Indents the specified line based on the current depth of the XML hierarchy.
     /// </summary>
     /// <param name="p_txaTextArea">The text area containing the line to indent.</param>
     /// <param name="p_intLineNumber">The line number of the line to indent.</param>

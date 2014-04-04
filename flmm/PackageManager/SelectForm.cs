@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
 using Fomm.Properties;
-using Image = System.Drawing.Image;
 
 namespace Fomm.PackageManager
 {
@@ -163,7 +163,7 @@ namespace Fomm.PackageManager
     private void bPreview_Click(object sender, EventArgs e)
     {
       var imgfrm = new ImageForm(Previews[selectedIndex]);
-      imgfrm.Text = (string)lbSelect.SelectedItem;
+      imgfrm.Text = (string) lbSelect.SelectedItem;
       imgfrm.ShowDialog();
     }
 

@@ -66,7 +66,7 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
     }
 
     /// <summary>
-    /// Loads the master list.
+    ///   Loads the master list.
     /// </summary>
     public void LoadList()
     {
@@ -340,11 +340,13 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
     }
 
     /// <summary>
-    /// Determins if the given list of plugins has been auto-sorted.
+    ///   Determins if the given list of plugins has been auto-sorted.
     /// </summary>
     /// <param name="plugins">The plugins whose order is to be verified.</param>
-    /// <returns><lang langref="true"/> if the plugins have been auto-sorted;
-    /// <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the plugins have been auto-sorted;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
     public bool CheckList(string[] plugins)
     {
       if (!HasMasterList)

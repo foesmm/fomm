@@ -1,16 +1,16 @@
 using System;
-using System.Text;
-using System.Xml;
-using System.Drawing;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
+using System.IO;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Xml;
+using Fomm.PackageManager.ModInstallLog;
 using Fomm.Properties;
 using Fomm.Util;
-using System.IO;
-using Fomm.PackageManager.ModInstallLog;
-using SevenZip;
-using System.ComponentModel;
 using GeMod.Interface;
-using System.Text.RegularExpressions;
+using SevenZip;
 
 /*
  * Installed data XML Structure
@@ -37,9 +37,7 @@ namespace Fomm.PackageManager
 
     private class fomodLoadException : Exception
     {
-      public fomodLoadException(string msg) : base(msg)
-      {
-      }
+      public fomodLoadException(string msg) : base(msg) {}
     }
 
     private Archive m_arcCacheFile;
@@ -78,77 +76,77 @@ namespace Fomm.PackageManager
     #region Properties
 
     /// <summary>
-    /// Gets the path to the fomod's cache file.
+    ///   Gets the path to the fomod's cache file.
     /// </summary>
     /// <value>The path to the fomod's cache file.</value>
     public string CachePath { get; private set; }
 
     /// <summary>
-    /// Gets the path prefix of the FOMod.
+    ///   Gets the path prefix of the FOMod.
     /// </summary>
     /// <remarks>
-    /// The path prefix is used to present the FOMod file structure as if it were rooted at the prefix. This
-    /// normalizes the file structure of FOMods and adjusts for incorrectly packaged FOMods.
+    ///   The path prefix is used to present the FOMod file structure as if it were rooted at the prefix. This
+    ///   normalizes the file structure of FOMods and adjusts for incorrectly packaged FOMods.
     /// </remarks>
     /// <value>The path prefix of the FOMod.</value>
     protected string PathPrefix { get; private set; }
 
     /// <summary>
-    /// Gets or sets the name of the fomod.
+    ///   Gets or sets the name of the fomod.
     /// </summary>
     /// <value>The name of the fomod.</value>
     public string ModName { get; set; }
 
     /// <summary>
-    /// Gets or sets the human readable form of the fomod's version.
+    ///   Gets or sets the human readable form of the fomod's version.
     /// </summary>
     /// <value>The human readable form of the fomod's version.</value>
     public string HumanReadableVersion { get; set; }
 
     /// <summary>
-    /// Gets or sets the version of the fomod.
+    ///   Gets or sets the version of the fomod.
     /// </summary>
     /// <value>The version of the fomod.</value>
     public Version MachineVersion { get; set; }
 
     /// <summary>
-    /// Gets or sets the author of the fomod.
+    ///   Gets or sets the author of the fomod.
     /// </summary>
     /// <value>The author of the fomod.</value>
     public string Author { get; set; }
 
     /// <summary>
-    /// Gets or sets the description of the fomod.
+    ///   Gets or sets the description of the fomod.
     /// </summary>
     /// <value>The description of the fomod.</value>
     public string Description { get; set; }
 
     /// <summary>
-    /// Gets or sets the minimum version of FOMM required to load the fomod.
+    ///   Gets or sets the minimum version of FOMM required to load the fomod.
     /// </summary>
     /// <value>The minimum version of FOMM required to load the fomod.</value>
     public Version MinFommVersion { get; set; }
 
     /// <summary>
-    /// Gets or sets the contact email of the fomod.
+    ///   Gets or sets the contact email of the fomod.
     /// </summary>
     /// <value>The contact email of the fomod.</value>
     public string Email { get; set; }
 
     /// <summary>
-    /// Gets or sets the website of the fomod.
+    ///   Gets or sets the website of the fomod.
     /// </summary>
     /// <value>The website of the fomod.</value>
     public string Website { get; set; }
 
     /// <summary>
-    /// Gets or sets the FOMM groups to which the fomod belongs.
+    ///   Gets or sets the FOMM groups to which the fomod belongs.
     /// </summary>
     /// <value>The FOMM groups to which the fomod belongs.</value>
     public string[] Groups { get; set; }
 
     /// <summary>
-    /// Gets the base name of the fomod.
+    ///   Gets the base name of the fomod.
     /// </summary>
     /// <value>The base name of the fomod.</value>
     internal virtual string BaseName
@@ -160,22 +158,22 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Gets the fomod file.
+    ///   Gets the fomod file.
     /// </summary>
     /// <remarks>
-    /// The fomod file is a compressed file.
+    ///   The fomod file is a compressed file.
     /// </remarks>
     /// <value>The fomod file.</value>
     internal Archive FomodFile { get; private set; }
 
     /// <summary>
-    /// Gets whether the mod has metadata.
+    ///   Gets whether the mod has metadata.
     /// </summary>
     /// <value>Whether the mod has metadata.</value>
     public bool HasInfo { get; private set; }
 
     /// <summary>
-    /// Gets or sets whether the mod is active.
+    ///   Gets or sets whether the mod is active.
     /// </summary>
     /// <value>Whether the mod is active.</value>
     public bool IsActive
@@ -191,7 +189,7 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Gets whether the mod has a custom install script.
+    ///   Gets whether the mod has a custom install script.
     /// </summary>
     /// <value>Whether the mod has a custom install script.</value>
     public bool HasInstallScript
@@ -203,10 +201,10 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Gets whether or not this fomod requires a script.
+    ///   Gets whether or not this fomod requires a script.
     /// </summary>
     /// <remarks>
-    /// A FOMod requires a script if it contains plugins in subfolders.
+    ///   A FOMod requires a script if it contains plugins in subfolders.
     /// </remarks>
     /// <value>Whether or not this fomod requires a script.</value>
     public bool RequiresScript
@@ -226,7 +224,7 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Gets whether the mod has a screenshot.
+    ///   Gets whether the mod has a screenshot.
     /// </summary>
     /// <value>Whether the mod has a screenshot.</value>
     public bool HasScreenshot
@@ -238,7 +236,7 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Gets whether the mod has a custom uninstall script.
+    ///   Gets whether the mod has a custom uninstall script.
     /// </summary>
     /// <value>Whether the mod has a custom uninstall script.</value>
     public bool HasUninstallScript
@@ -250,7 +248,7 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Gets whether the mod has a readme file.
+    ///   Gets whether the mod has a readme file.
     /// </summary>
     /// <value>Whether the mod has a readme file.</value>
     public bool HasReadme
@@ -262,7 +260,7 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Gets the number of steps that need to be performed to put the FOMod into read-only mode.
+    ///   Gets the number of steps that need to be performed to put the FOMod into read-only mode.
     /// </summary>
     /// <value>The number of steps that need to be performed to put the FOMod into read-only mode.</value>
     public Int32 ReadOnlyInitStepCount
@@ -278,16 +276,14 @@ namespace Fomm.PackageManager
     #region Constructors
 
     /// <summary>
-    /// A simple constructor that initializes the object.
+    ///   A simple constructor that initializes the object.
     /// </summary>
     /// <param name="path">The path to the fomod file.</param>
     internal fomod(string path)
-      : this(path, true)
-    {
-    }
+      : this(path, true) {}
 
     /// <summary>
-    /// A simple constructor that initializes the object.
+    ///   A simple constructor that initializes the object.
     /// </summary>
     /// <param name="path">The path to the fomod file.</param>
     internal fomod(string path, bool p_booUseCache)
@@ -414,14 +410,14 @@ namespace Fomm.PackageManager
     #region Archive Interaction
 
     /// <summary>
-    /// This finds where in the archive the FOMod file structure begins.
+    ///   This finds where in the archive the FOMod file structure begins.
     /// </summary>
     /// <remarks>
-    /// This methods finds the path prefix to the folder containing the core files and folders of the FOMod. If
-    /// there are any files that are above the core folder, than they are given new file names inside the
-    /// core folder.
+    ///   This methods finds the path prefix to the folder containing the core files and folders of the FOMod. If
+    ///   there are any files that are above the core folder, than they are given new file names inside the
+    ///   core folder.
     /// </remarks>
-    /// <seealso cref="PathPrefix"/>
+    /// <seealso cref="PathPrefix" />
     protected void FindPathPrefix()
     {
       m_dicMovedArchiveFiles.Clear();
@@ -460,27 +456,27 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Handles the <see cref="Archive.FilesChanged"/> event of the FOMod's archive.
+    ///   Handles the <see cref="Archive.FilesChanged" /> event of the FOMod's archive.
     /// </summary>
     /// <remarks>
-    /// This ensures that the path prefix that points to the folder in the archive that contains the core files
-    /// and folders of the FOMod is updated when the archive changes.
+    ///   This ensures that the path prefix that points to the folder in the archive that contains the core files
+    ///   and folders of the FOMod is updated when the archive changes.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void Archive_FilesChanged(object sender, EventArgs e)
     {
       FindPathPrefix();
     }
 
     /// <summary>
-    /// Determines if the FOMod contains the given file.
+    ///   Determines if the FOMod contains the given file.
     /// </summary>
     /// <remarks>
-    /// This method accounts for the <see cref="PathPrefix"/>.
-    /// </remarks> 
+    ///   This method accounts for the <see cref="PathPrefix" />.
+    /// </remarks>
     /// <param name="p_strPath">The filename whose existence in the FOMod is to be determined.</param>
-    /// <returns><lang langref="true"/> if the specified file is in the FOMod; <lang langref="false"/> otherwise.</returns>
+    /// <returns><lang langref="true" /> if the specified file is in the FOMod; <lang langref="false" /> otherwise.</returns>
     public bool ContainsFile(string p_strPath)
     {
       var strPath = p_strPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
@@ -497,7 +493,7 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// This method adjusts the given path to account for the <see cref="PathPrefix"/>.
+    ///   This method adjusts the given path to account for the <see cref="PathPrefix" />.
     /// </summary>
     /// <param name="p_strPath">The path to adjust.</param>
     /// <returns>The adjusted path.</returns>
@@ -514,11 +510,11 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Retrieves the list of files in this FOMod.
+    ///   Retrieves the list of files in this FOMod.
     /// </summary>
     /// <remarks>
-    /// This method accounts for the <see cref="PathPrefix"/>.
-    /// </remarks> 
+    ///   This method accounts for the <see cref="PathPrefix" />.
+    /// </remarks>
     /// <returns>The list of files in this FOMod.</returns>
     public List<string> GetFileList()
     {
@@ -544,11 +540,11 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Gets the contents of the specified file.
+    ///   Gets the contents of the specified file.
     /// </summary>
     /// <remarks>
-    /// This method accounts for the <see cref="PathPrefix"/>.
-    /// </remarks> 
+    ///   This method accounts for the <see cref="PathPrefix" />.
+    /// </remarks>
     /// <param name="p_strPath">The path of the file whose contents are to be retrieved.</param>
     /// <returns>The contents of the specified file.</returns>
     public byte[] GetFileContents(string p_strPath)
@@ -561,11 +557,11 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Deletes the specified file.
+    ///   Deletes the specified file.
     /// </summary>
     /// <remarks>
-    /// This method accounts for the <see cref="PathPrefix"/>.
-    /// </remarks> 
+    ///   This method accounts for the <see cref="PathPrefix" />.
+    /// </remarks>
     /// <param name="p_strPath">The path of the file to delete.</param>
     protected void DeleteFile(string p_strPath)
     {
@@ -580,11 +576,11 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Replaces the specified file with the given data.
+    ///   Replaces the specified file with the given data.
     /// </summary>
     /// <remarks>
-    /// This method accounts for the <see cref="PathPrefix"/>.
-    /// </remarks> 
+    ///   This method accounts for the <see cref="PathPrefix" />.
+    /// </remarks>
     /// <param name="p_strPath">The path of the file to replace.</param>
     /// <param name="p_bteData">The new file data.</param>
     protected void ReplaceFile(string p_strPath, byte[] p_bteData)
@@ -601,11 +597,11 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Replaces the specified file with the given text.
+    ///   Replaces the specified file with the given text.
     /// </summary>
     /// <remarks>
-    /// This method accounts for the <see cref="PathPrefix"/>.
-    /// </remarks> 
+    ///   This method accounts for the <see cref="PathPrefix" />.
+    /// </remarks>
     /// <param name="p_strPath">The path of the file to replace.</param>
     /// <param name="p_strData">The new file text.</param>
     protected void ReplaceFile(string p_strPath, string p_strData)
@@ -653,7 +649,7 @@ namespace Fomm.PackageManager
     #region Fomod Info Persistence
 
     /// <summary>
-    /// Loads the fomod info from the given info file into the given fomod info object.
+    ///   Loads the fomod info from the given info file into the given fomod info object.
     /// </summary>
     /// <param name="p_xmlInfo">The XML info file from which to read the info.</param>
     /// <param name="p_finFomodInfo">The fomod info object to populate with the info.</param>
@@ -663,12 +659,14 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Loads the fomod info from the given info file into the given fomod info object.
+    ///   Loads the fomod info from the given info file into the given fomod info object.
     /// </summary>
     /// <param name="p_xmlInfo">The XML info file from which to read the info.</param>
     /// <param name="p_finFomodInfo">The fomod info object to populate with the info.</param>
-    /// <param name="p_booOverwriteExisitngValues">Whether or not to overwrite any existing values
-    /// in the given <see cref="IFomodInfo"/>.</param>
+    /// <param name="p_booOverwriteExisitngValues">
+    ///   Whether or not to overwrite any existing values
+    ///   in the given <see cref="IFomodInfo" />.
+    /// </param>
     public static void LoadInfo(XmlDocument p_xmlInfo, IFomodInfo p_finFomodInfo, bool p_booOverwriteExisitngValues)
     {
       XmlNode xndRoot = null;
@@ -764,7 +762,7 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Serializes the fomod info contained in the given fomod info object into an XML document.
+    ///   Serializes the fomod info contained in the given fomod info object into an XML document.
     /// </summary>
     /// <param name="p_finFomodInfo">The fomod info object to serialize.</param>
     /// <returns>An XML file containing the fomod info.</returns>
@@ -864,20 +862,18 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Gets the custom uninstall script.
+    ///   Gets the custom uninstall script.
     /// </summary>
     /// <remarks>
-    /// Currently, custom uninstall scripts are not supported.
-    /// 
-    /// Indeed, if they were added significant change would have to be made
-    /// to the acessibility of methods, and safeties of one sort or another
-    /// would have to be put in place to insure everything is cleaned up
-    /// nicely.
-    /// 
-    /// Implementing a custom uninstall script to support re-configuration
-    /// of an installed mod seems to be a bad idea. If re-configuring an
-    /// installed mod is a desired feature it should be implemented separately,
-    /// and be more closey aligned to a mod install than a mod uninstall.
+    ///   Currently, custom uninstall scripts are not supported.
+    ///   Indeed, if they were added significant change would have to be made
+    ///   to the acessibility of methods, and safeties of one sort or another
+    ///   would have to be put in place to insure everything is cleaned up
+    ///   nicely.
+    ///   Implementing a custom uninstall script to support re-configuration
+    ///   of an installed mod seems to be a bad idea. If re-configuring an
+    ///   installed mod is a desired feature it should be implemented separately,
+    ///   and be more closey aligned to a mod install than a mod uninstall.
     /// </remarks>
     /// <returns></returns>
     internal string GetUninstallScript()
@@ -1061,7 +1057,7 @@ namespace Fomm.PackageManager
     #region Read Transactions
 
     /// <summary>
-    /// Raised when a read-only initialization step has started.
+    ///   Raised when a read-only initialization step has started.
     /// </summary>
     public event CancelEventHandler ReadOnlyInitStepStarted
     {
@@ -1076,7 +1072,7 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Raised when a read-only initialization step has finished.
+    ///   Raised when a read-only initialization step has finished.
     /// </summary>
     public event CancelEventHandler ReadOnlyInitStepFinished
     {
@@ -1091,12 +1087,11 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Starts a read-only transaction.
+    ///   Starts a read-only transaction.
     /// </summary>
     /// <remarks>
-    /// This puts the FOMod into read-only mode.
-    /// 
-    /// Read-only mode can greatly increase the speed at which multiple file are extracted.
+    ///   This puts the FOMod into read-only mode.
+    ///   Read-only mode can greatly increase the speed at which multiple file are extracted.
     /// </remarks>
     public void BeginReadOnlyTransaction()
     {
@@ -1104,12 +1099,11 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Ends a read-only transaction.
+    ///   Ends a read-only transaction.
     /// </summary>
     /// <remarks>
-    /// This takes the FOMod out of read-only mode.
-    /// 
-    /// Read-only mode can greatly increase the speed at which multiple file are extracted.
+    ///   This takes the FOMod out of read-only mode.
+    ///   Read-only mode can greatly increase the speed at which multiple file are extracted.
     /// </remarks>
     public void EndReadOnlyTransaction()
     {
@@ -1119,14 +1113,18 @@ namespace Fomm.PackageManager
     #endregion
 
     /// <summary>
-    /// Retrieves the specified file from the fomod.
+    ///   Retrieves the specified file from the fomod.
     /// </summary>
     /// <param name="p_strFile">The file to retrieve.</param>
     /// <returns>The requested file data.</returns>
-    /// <exception cref="FileNotFoundException">Thrown if the specified file
-    /// is not in the fomod.</exception>
-    /// <exception cref="DecompressionException">Thrown if the specified file
-    /// cannot be extracted from the zip.</exception>
+    /// <exception cref="FileNotFoundException">
+    ///   Thrown if the specified file
+    ///   is not in the fomod.
+    /// </exception>
+    /// <exception cref="DecompressionException">
+    ///   Thrown if the specified file
+    ///   cannot be extracted from the zip.
+    /// </exception>
     public byte[] GetFile(string p_strFile)
     {
       PermissionsManager.CurrentPermissions.Assert();
@@ -1138,14 +1136,18 @@ namespace Fomm.PackageManager
     }
 
     /// <summary>
-    /// Retrieves the specified image from the fomod.
+    ///   Retrieves the specified image from the fomod.
     /// </summary>
     /// <param name="p_strFile">The path of the image to extract.</param>
     /// <returns>The request image.</returns>
-    /// <exception cref="FileNotFoundException">Thrown if the specified file
-    /// is not in the fomod.</exception>
-    /// <exception cref="DecompressionException">Thrown if the specified file
-    /// cannot be extracted from the zip.</exception>
+    /// <exception cref="FileNotFoundException">
+    ///   Thrown if the specified file
+    ///   is not in the fomod.
+    /// </exception>
+    /// <exception cref="DecompressionException">
+    ///   Thrown if the specified file
+    ///   cannot be extracted from the zip.
+    /// </exception>
     public Image GetImage(string p_strFile)
     {
       PermissionsManager.CurrentPermissions.Assert();
@@ -1165,9 +1167,9 @@ namespace Fomm.PackageManager
     #region Mod Info
 
     /// <summary>
-    /// Fills in missing info about the mod from the given info.
+    ///   Fills in missing info about the mod from the given info.
     /// </summary>
-    /// <param name="p_mifInfo">A <see cref="ModInfo"/> describing the info of the mod.</param>
+    /// <param name="p_mifInfo">A <see cref="ModInfo" /> describing the info of the mod.</param>
     public void SetMissingInfo(ModInfo p_mifInfo)
     {
       if (p_mifInfo == null)

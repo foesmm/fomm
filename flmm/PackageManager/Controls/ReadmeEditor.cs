@@ -6,16 +6,16 @@ using System.Windows.Forms;
 namespace Fomm.PackageManager.Controls
 {
   /// <summary>
-  /// An editor for <see cref="Readme"/> files.
+  ///   An editor for <see cref="Readme" /> files.
   /// </summary>
   public partial class ReadmeEditor : UserControl
   {
     #region Properties
 
     /// <summary>
-    /// Gets or sets the <see cref="Readme"/> being edited.
+    ///   Gets or sets the <see cref="Readme" /> being edited.
     /// </summary>
-    /// <value>The <see cref="Readme"/> being edited.</value>
+    /// <value>The <see cref="Readme" /> being edited.</value>
     public Readme Readme
     {
       get
@@ -81,7 +81,7 @@ namespace Fomm.PackageManager.Controls
     #region Constructors
 
     /// <summary>
-    /// The default constructor.
+    ///   The default constructor.
     /// </summary>
     public ReadmeEditor()
     {
@@ -93,7 +93,7 @@ namespace Fomm.PackageManager.Controls
     #endregion
 
     /// <summary>
-    /// Shows a preview of the HTML readme.
+    ///   Shows a preview of the HTML readme.
     /// </summary>
     protected void ShowHTMLPreview()
     {
@@ -113,23 +113,23 @@ namespace Fomm.PackageManager.Controls
     }
 
     /// <summary>
-    /// Hanldes the <see cref="Control.Click"/> event of the PReview menu item.
+    ///   Hanldes the <see cref="Control.Click" /> event of the PReview menu item.
     /// </summary>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="EventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="EventArgs" /> describing the event arguments.</param>
     private void tsbPreview_Click(object sender, EventArgs e)
     {
       ShowHTMLPreview();
     }
 
     /// <summary>
-    /// Handles the <see cref="Control.KeyPress"/> event of the plain text readme textbox.
+    ///   Handles the <see cref="Control.KeyPress" /> event of the plain text readme textbox.
     /// </summary>
     /// <remarks>
-    /// This selects all text when Ctrl-A is pressed.
+    ///   This selects all text when Ctrl-A is pressed.
     /// </remarks>
     /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">An <see cref="KeyPressEventArgs"/> describing the event arguments.</param>
+    /// <param name="e">An <see cref="KeyPressEventArgs" /> describing the event arguments.</param>
     private void tbxReadme_KeyPress(object sender, KeyPressEventArgs e)
     {
       //character 1 is equivalent to Ctrl-A

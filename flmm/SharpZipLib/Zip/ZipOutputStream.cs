@@ -47,74 +47,72 @@ using Fomm.SharpZipLib.Zip.Compression.Streams;
 namespace Fomm.SharpZipLib.Zip
 {
   /// <summary>
-  /// This is a DeflaterOutputStream that writes the files into a zip
-  /// archive one after another.  It has a special method to start a new
-  /// zip entry.  The zip entries contains information about the file name
-  /// size, compressed size, CRC, etc.
-  /// 
-  /// It includes support for Stored and Deflated entries.
-  /// This class is not thread safe.
-  /// <br/>
-  /// <br/>Author of the original java version : Jochen Hoenicke
+  ///   This is a DeflaterOutputStream that writes the files into a zip
+  ///   archive one after another.  It has a special method to start a new
+  ///   zip entry.  The zip entries contains information about the file name
+  ///   size, compressed size, CRC, etc.
+  ///   It includes support for Stored and Deflated entries.
+  ///   This class is not thread safe.
+  ///   <br />
+  ///   <br />Author of the original java version : Jochen Hoenicke
   /// </summary>
-  /// <example> This sample shows how to create a zip file
-  /// <code>
-  /// using System;
-  /// using System.IO;
+  /// <example>
+  ///   This sample shows how to create a zip file
+  ///   <code>
+  ///  using System;
+  ///  using System.IO;
+  ///  
+  ///  using ICSharpCode.SharpZipLib.Core;
+  ///  using ICSharpCode.SharpZipLib.Zip;
+  ///  
+  ///  class MainClass
+  ///  {
+  ///    public static void Main(string[] args)
+  ///    {
+  ///      string[] filenames = Directory.GetFiles(args[0]);
+  ///      byte[] buffer = new byte[4096];
+  ///      
+  ///      using ( ZipOutputStream s = new ZipOutputStream(File.Create(args[1])) ) {
+  ///      
+  ///        s.SetLevel(9); // 0 - store only to 9 - means best compression
+  ///      
+  ///        foreach (string file in filenames) {
+  ///          ZipEntry entry = new ZipEntry(file);
+  ///          s.PutNextEntry(entry);
   /// 
-  /// using ICSharpCode.SharpZipLib.Core;
-  /// using ICSharpCode.SharpZipLib.Zip;
-  /// 
-  /// class MainClass
-  /// {
-  ///   public static void Main(string[] args)
-  ///   {
-  ///     string[] filenames = Directory.GetFiles(args[0]);
-  ///     byte[] buffer = new byte[4096];
-  ///     
-  ///     using ( ZipOutputStream s = new ZipOutputStream(File.Create(args[1])) ) {
-  ///     
-  ///       s.SetLevel(9); // 0 - store only to 9 - means best compression
-  ///     
-  ///       foreach (string file in filenames) {
-  ///         ZipEntry entry = new ZipEntry(file);
-  ///         s.PutNextEntry(entry);
-  ///
-  ///         using (FileStream fs = File.OpenRead(file)) {
-  ///            StreamUtils.Copy(fs, s, buffer);
-  ///         }
-  ///       }
-  ///     }
-  ///   }
-  /// }  
-  /// </code>
+  ///          using (FileStream fs = File.OpenRead(file)) {
+  ///             StreamUtils.Copy(fs, s, buffer);
+  ///          }
+  ///        }
+  ///      }
+  ///    }
+  ///  }  
+  ///  </code>
   /// </example>
   internal class ZipOutputStream : DeflaterOutputStream
   {
     #region Constructors
 
     /// <summary>
-    /// Creates a new Zip output stream, writing a zip archive.
+    ///   Creates a new Zip output stream, writing a zip archive.
     /// </summary>
     /// <param name="baseOutputStream">
-    /// The output stream to which the archive contents are written.
+    ///   The output stream to which the archive contents are written.
     /// </param>
     public ZipOutputStream(Stream baseOutputStream)
-      : base(baseOutputStream, new Deflater(Deflater.DEFAULT_COMPRESSION, true))
-    {
-    }
+      : base(baseOutputStream, new Deflater(Deflater.DEFAULT_COMPRESSION, true)) {}
 
     #endregion
 
     /// <summary>
-    /// Sets the compression level.  The new level will be activated
-    /// immediately.
+    ///   Sets the compression level.  The new level will be activated
+    ///   immediately.
     /// </summary>
     /// <param name="level">The new compression level (1 to 9).</param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Level specified is not supported.
+    ///   Level specified is not supported.
     /// </exception>
-    /// <see cref="Deflater"/>
+    /// <see cref="Deflater" />
     public void SetLevel(int level)
     {
       deflater_.SetLevel(level);
@@ -122,7 +120,7 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Write an unsigned short in little endian byte order.
+    ///   Write an unsigned short in little endian byte order.
     /// </summary>
     private void WriteLeShort(int value)
     {
@@ -134,7 +132,7 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Write an int in little endian byte order.
+    ///   Write an int in little endian byte order.
     /// </summary>
     private void WriteLeInt(int value)
     {
@@ -146,7 +144,7 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Write an int in little endian byte order.
+    ///   Write an int in little endian byte order.
     /// </summary>
     private void WriteLeLong(long value)
     {
@@ -158,28 +156,28 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Starts a new Zip entry. It automatically closes the previous
-    /// entry if present.
-    /// All entry elements bar name are optional, but must be correct if present.
-    /// If the compression method is stored and the output is not patchable
-    /// the compression for that entry is automatically changed to deflate level 0
+    ///   Starts a new Zip entry. It automatically closes the previous
+    ///   entry if present.
+    ///   All entry elements bar name are optional, but must be correct if present.
+    ///   If the compression method is stored and the output is not patchable
+    ///   the compression for that entry is automatically changed to deflate level 0
     /// </summary>
     /// <param name="entry">
-    /// the entry.
+    ///   the entry.
     /// </param>
     /// <exception cref="System.ArgumentNullException">
-    /// if entry passed is null.
+    ///   if entry passed is null.
     /// </exception>
     /// <exception cref="System.IO.IOException">
-    /// if an I/O error occured.
+    ///   if an I/O error occured.
     /// </exception>
     /// <exception cref="System.InvalidOperationException">
-    /// if stream was finished
+    ///   if stream was finished
     /// </exception>
     /// <exception cref="ZipException">
-    /// Too many entries in the Zip file<br/>
-    /// Entry name is too long<br/>
-    /// Finish has already been called<br/>
+    ///   Too many entries in the Zip file<br />
+    ///   Entry name is too long<br />
+    ///   Finish has already been called<br />
     /// </exception>
     public void PutNextEntry(ZipEntry entry)
     {
@@ -393,13 +391,13 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Closes the current entry, updating header and footer information as required
+    ///   Closes the current entry, updating header and footer information as required
     /// </summary>
     /// <exception cref="System.IO.IOException">
-    /// An I/O error occurs.
+    ///   An I/O error occurs.
     /// </exception>
     /// <exception cref="System.InvalidOperationException">
-    /// No entry is active.
+    ///   No entry is active.
     /// </exception>
     public void CloseEntry()
     {
@@ -506,7 +504,7 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Writes the given buffer to the current entry.
+    ///   Writes the given buffer to the current entry.
     /// </summary>
     /// <param name="buffer">The buffer containing data to write.</param>
     /// <param name="offset">The offset of the first byte to write.</param>
@@ -556,18 +554,18 @@ namespace Fomm.SharpZipLib.Zip
     }
 
     /// <summary>
-    /// Finishes the stream.  This will write the central directory at the
-    /// end of the zip file and flush the stream.
+    ///   Finishes the stream.  This will write the central directory at the
+    ///   end of the zip file and flush the stream.
     /// </summary>
     /// <remarks>
-    /// This is automatically called when the stream is closed.
+    ///   This is automatically called when the stream is closed.
     /// </remarks>
     /// <exception cref="System.IO.IOException">
-    /// An I/O error occurs.
+    ///   An I/O error occurs.
     /// </exception>
     /// <exception cref="ZipException">
-    /// Comment exceeds the maximum length<br/>
-    /// Entry name exceeds the maximum length
+    ///   Comment exceeds the maximum length<br />
+    ///   Entry name exceeds the maximum length
     /// </exception>
     public override void Finish()
     {
@@ -716,17 +714,17 @@ namespace Fomm.SharpZipLib.Zip
     #region Instance Fields
 
     /// <summary>
-    /// The entries for the archive.
+    ///   The entries for the archive.
     /// </summary>
     private ArrayList entries = new ArrayList();
 
     /// <summary>
-    /// Used to track the crc of data added to entries.
+    ///   Used to track the crc of data added to entries.
     /// </summary>
     private Crc32 crc = new Crc32();
 
     /// <summary>
-    /// The current entry being added.
+    ///   The current entry being added.
     /// </summary>
     private ZipEntry curEntry;
 
@@ -735,32 +733,32 @@ namespace Fomm.SharpZipLib.Zip
     private CompressionMethod curMethod = CompressionMethod.Deflated;
 
     /// <summary>
-    /// Used to track the size of data for an entry during writing.
+    ///   Used to track the size of data for an entry during writing.
     /// </summary>
     private long size;
 
     /// <summary>
-    /// Offset to be recorded for each entry in the central header.
+    ///   Offset to be recorded for each entry in the central header.
     /// </summary>
     private long offset;
 
     /// <summary>
-    /// Comment for the entire archive recorded in central header.
+    ///   Comment for the entire archive recorded in central header.
     /// </summary>
     private byte[] zipComment = new byte[0];
 
     /// <summary>
-    /// Flag indicating that header patching is required for the current entry.
+    ///   Flag indicating that header patching is required for the current entry.
     /// </summary>
     private bool patchEntryHeader;
 
     /// <summary>
-    /// Position to patch crc
+    ///   Position to patch crc
     /// </summary>
     private long crcPatchPos = -1;
 
     /// <summary>
-    /// Position to patch size.
+    ///   Position to patch size.
     /// </summary>
     private long sizePatchPos = -1;
 

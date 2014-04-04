@@ -1,37 +1,37 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Drawing;
+using System.IO;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Windows.Forms;
+using Fomm.Commands;
+using Fomm.Games.Fallout3;
 using Fomm.Games.Fallout3.Tools;
 using Fomm.Games.Fallout3.Tools.AutoSorter;
 using Fomm.Games.Fallout3.Tools.BSA;
 using Fomm.Games.Fallout3.Tools.TESsnip;
+using Fomm.Games.FalloutNewVegas.PluginFormatProviders;
+using Fomm.Games.FalloutNewVegas.Script;
+using Fomm.Games.FalloutNewVegas.Script.XmlConfiguredInstall.Parsers;
 using Fomm.Games.FalloutNewVegas.Settings;
-using System.Text;
-using System.Windows.Forms;
-using System.Threading;
-using System.Collections.Generic;
 using Fomm.Games.FalloutNewVegas.Tools.AutoSorter;
 using Fomm.PackageManager;
 using Fomm.PackageManager.XmlConfiguredInstall.Parsers;
-using Fomm.Games.FalloutNewVegas.Script.XmlConfiguredInstall.Parsers;
-using Fomm.Games.FalloutNewVegas.Script;
-using Fomm.Games.Fallout3;
-using Fomm.Games.FalloutNewVegas.PluginFormatProviders;
 using Microsoft.Win32;
-using Fomm.Commands;
-using System.Text.RegularExpressions;
 using SaveForm = Fomm.Games.FalloutNewVegas.Tools.SaveForm;
 
 namespace Fomm.Games.FalloutNewVegas
 {
   /// <summary>
-  /// Provides information required for the programme to manage Fallout: New Vegas plugins.
+  ///   Provides information required for the programme to manage Fallout: New Vegas plugins.
   /// </summary>
   public class FalloutNewVegasGameMode : Fallout3GameMode
   {
     /// <summary>
-    /// This class provides strongly-typed access to this game mode's settings files.
+    ///   This class provides strongly-typed access to this game mode's settings files.
     /// </summary>
     public new class SettingsFilesSet : Fallout3GameMode.SettingsFilesSet
     {
@@ -40,7 +40,7 @@ namespace Fomm.Games.FalloutNewVegas
       #region Properties
 
       /// <summary>
-      /// Gets or sets the path to the fallout_default.ini file.
+      ///   Gets or sets the path to the fallout_default.ini file.
       /// </summary>
       /// <value>The path to the fallout_default.ini file.</value>
       public string FODefaultIniPath
@@ -61,7 +61,7 @@ namespace Fomm.Games.FalloutNewVegas
     #region Properties
 
     /// <summary>
-    /// Gets the name of the game whose plugins are being managed.
+    ///   Gets the name of the game whose plugins are being managed.
     /// </summary>
     /// <value>The name of the game whose plugins are being managed.</value>
     public override string GameName
@@ -73,7 +73,7 @@ namespace Fomm.Games.FalloutNewVegas
     }
 
     /// <summary>
-    /// Gets the modDirectory of the GameMode.
+    ///   Gets the modDirectory of the GameMode.
     /// </summary>
     /// <value>The modDirectory of the GameMode.</value>
     public override string ModDirectory
@@ -94,7 +94,7 @@ namespace Fomm.Games.FalloutNewVegas
     }
 
     /// <summary>
-    /// Gets the game launch command.
+    ///   Gets the game launch command.
     /// </summary>
     /// <value>The game launch command.</value>
     public override Command<MainForm> LaunchCommand
@@ -111,7 +111,7 @@ namespace Fomm.Games.FalloutNewVegas
     }
 
     /// <summary>
-    /// Gets the icon used for the plugin file type.
+    ///   Gets the icon used for the plugin file type.
     /// </summary>
     /// <value>The icon used for the plugin file type.</value>
     public override Icon PluginFileIcon
@@ -124,10 +124,10 @@ namespace Fomm.Games.FalloutNewVegas
     }
 
     /// <summary>
-    /// Gets the directory where installation information is stored for this game mode.
+    ///   Gets the directory where installation information is stored for this game mode.
     /// </summary>
     /// <remarks>
-    /// This is where install logs, overwrites, and the like are stored.
+    ///   This is where install logs, overwrites, and the like are stored.
     /// </remarks>
     /// <value>The directory where installation information is stored for this game mode.</value>
     public override string InstallInfoDirectory
@@ -148,7 +148,7 @@ namespace Fomm.Games.FalloutNewVegas
     }
 
     /// <summary>
-    /// Gets the version of the installed game.
+    ///   Gets the version of the installed game.
     /// </summary>
     /// <value>The version of the installed game.</value>
     public override Version GameVersion
@@ -159,20 +159,20 @@ namespace Fomm.Games.FalloutNewVegas
         {
           return
             new Version(FileVersionInfo.GetVersionInfo("FalloutNV.exe")
-                              .FileVersion.Replace(", ", "."));
+                                       .FileVersion.Replace(", ", "."));
         }
         if (File.Exists("FalloutNVng.exe"))
         {
           return
             new Version(FileVersionInfo.GetVersionInfo("FalloutNVng.exe")
-                              .FileVersion.Replace(", ", "."));
+                                       .FileVersion.Replace(", ", "."));
         }
         return null;
       }
     }
 
     /// <summary>
-    /// Gets the path to the per user Fallout: New Vegas data.
+    ///   Gets the path to the per user Fallout: New Vegas data.
     /// </summary>
     /// <value>The path to the per user Fallout: New Vegas data.</value>
     protected override string UserGameDataPath
@@ -188,16 +188,17 @@ namespace Fomm.Games.FalloutNewVegas
     #region Initialization
 
     /// <summary>
-    /// This initializes the game mode.
+    ///   This initializes the game mode.
     /// </summary>
     /// <remarks>
-    /// This gets the user to specify the directories where the programme will store info
-    /// such as install logs, if the directories have not already been setup.
-    /// 
-    /// This method also checks for DLCs, and cleans up any missing FOMods.
+    ///   This gets the user to specify the directories where the programme will store info
+    ///   such as install logs, if the directories have not already been setup.
+    ///   This method also checks for DLCs, and cleans up any missing FOMods.
     /// </remarks>
-    /// <returns><lang langref="true"/> if the game mode was able to initialize;
-    /// <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the game mode was able to initialize;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
     public override bool Init()
     {
       if (!Properties.Settings.Default.falloutNewVegasDoneSetup)
@@ -233,7 +234,7 @@ namespace Fomm.Games.FalloutNewVegas
     }
 
     /// <summary>
-    /// Creates the plugin manager that will be used by this game mode.
+    ///   Creates the plugin manager that will be used by this game mode.
     /// </summary>
     /// <returns>The plugin manager that will be used by this game mode.</returns>
     protected override Fallout3PluginManager CreatePluginManager()
@@ -242,7 +243,7 @@ namespace Fomm.Games.FalloutNewVegas
     }
 
     /// <summary>
-    /// Creates the settings file set that will be used by this game mode.
+    ///   Creates the settings file set that will be used by this game mode.
     /// </summary>
     /// <returns>The settings file set that will be used by this game mode.</returns>
     protected override Fallout3GameMode.SettingsFilesSet CreateSettingsFileSet()
@@ -251,7 +252,7 @@ namespace Fomm.Games.FalloutNewVegas
     }
 
     /// <summary>
-    /// Sets up the plugin format providers for this game mode.
+    ///   Sets up the plugin format providers for this game mode.
     /// </summary>
     protected override void SetupPluginFormatProviders()
     {
@@ -261,7 +262,7 @@ namespace Fomm.Games.FalloutNewVegas
     }
 
     /// <summary>
-    /// Sets up the paths for this game mode.
+    ///   Sets up the paths for this game mode.
     /// </summary>
     protected override void SetupPaths()
     {
@@ -272,7 +273,7 @@ namespace Fomm.Games.FalloutNewVegas
     }
 
     /// <summary>
-    /// Gets up the game-specific settings pages.
+    ///   Gets up the game-specific settings pages.
     /// </summary>
     protected override void SetupSettingsPages()
     {
@@ -284,7 +285,7 @@ namespace Fomm.Games.FalloutNewVegas
     }
 
     /// <summary>
-    /// Sets up the launch commands for the game.
+    ///   Sets up the launch commands for the game.
     /// </summary>
     protected override void SetupLaunchCommands()
     {
@@ -301,7 +302,7 @@ namespace Fomm.Games.FalloutNewVegas
     }
 
     /// <summary>
-    /// Sets up the tools for this game mode.
+    ///   Sets up the tools for this game mode.
     /// </summary>
     protected override void SetupTools()
     {
@@ -358,11 +359,13 @@ namespace Fomm.Games.FalloutNewVegas
     #region Steam Helpers
 
     /// <summary>
-    /// This ensures that the steam client has loaded.
+    ///   This ensures that the steam client has loaded.
     /// </summary>
     /// <param name="p_eeaArguments">The main mod management form.</param>
-    /// <returns><lang langref="true"/> if Steam is running;
-    /// <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if Steam is running;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
     public bool StartSteam(MainForm p_eeaArguments)
     {
       foreach (var clsProcess in Process.GetProcesses())
@@ -410,9 +413,7 @@ namespace Fomm.Games.FalloutNewVegas
             }
           }
         }
-        catch (Exception)
-        {
-        }
+        catch (Exception) {}
       }
       MessageBox.Show(p_eeaArguments,
                       "Unable to start Steam automatically." + Environment.NewLine +
@@ -422,7 +423,7 @@ namespace Fomm.Games.FalloutNewVegas
     }
 
     /// <summary>
-    /// This finds the SteamAppId for FO:NV.
+    ///   This finds the SteamAppId for FO:NV.
     /// </summary>
     /// <returns>The SteamAppId for FO:NV</returns>
     /// <exception cref="Exception">Thrown is the id cannot be found.</exception>
@@ -466,11 +467,16 @@ namespace Fomm.Games.FalloutNewVegas
     #endregion
 
     /// <summary>
-    /// Launches the game with a custom command.
+    ///   Launches the game with a custom command.
     /// </summary>
     /// <param name="p_objCommand">The command that is executing.</param>
-    /// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
-    /// main mod management form.</param>
+    /// <param name="p_eeaArguments">
+    ///   An <see cref="ExecutedEventArgs
+    ///   
+    ///   <MainForm>
+    ///     "/> containing the
+    ///     main mod management form.
+    /// </param>
     public void LaunchFalloutNVCustom(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
       if (PrelaunchCheckOrder())
@@ -507,11 +513,16 @@ namespace Fomm.Games.FalloutNewVegas
     }
 
     /// <summary>
-    /// Launches the game, with NVSE.
+    ///   Launches the game, with NVSE.
     /// </summary>
     /// <param name="p_objCommand">The command that is executing.</param>
-    /// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
-    /// main mod management form.</param>
+    /// <param name="p_eeaArguments">
+    ///   An <see cref="ExecutedEventArgs
+    ///   
+    ///   <MainForm>
+    ///     "/> containing the
+    ///     main mod management form.
+    /// </param>
     public void LaunchFalloutNVNVSE(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
       if (PrelaunchCheckOrder())
@@ -556,11 +567,16 @@ namespace Fomm.Games.FalloutNewVegas
     }
 
     /// <summary>
-    /// Launches the game, without NVSE.
+    ///   Launches the game, without NVSE.
     /// </summary>
     /// <param name="p_objCommand">The command that is executing.</param>
-    /// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
-    /// main mod management form.</param>
+    /// <param name="p_eeaArguments">
+    ///   An <see cref="ExecutedEventArgs
+    ///   
+    ///   <MainForm>
+    ///     "/> containing the
+    ///     main mod management form.
+    /// </param>
     public void LaunchFalloutNVPlain(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
       if (PrelaunchCheckOrder())
@@ -596,11 +612,16 @@ namespace Fomm.Games.FalloutNewVegas
     }
 
     /// <summary>
-    /// Launches the game, using NVSE if present.
+    ///   Launches the game, using NVSE if present.
     /// </summary>
     /// <param name="p_objCommand">The command that is executing.</param>
-    /// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
-    /// main mod management form.</param>
+    /// <param name="p_eeaArguments">
+    ///   An <see cref="ExecutedEventArgs
+    ///   
+    ///   <MainForm>
+    ///     "/> containing the
+    ///     main mod management form.
+    /// </param>
     public override void LaunchGame(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
       var command = Properties.Settings.Default.falloutNewVegasLaunchCommand;
@@ -623,11 +644,16 @@ namespace Fomm.Games.FalloutNewVegas
     #region Tools Menu
 
     /// <summary>
-    /// Launches FNVEdit, if present.
+    ///   Launches FNVEdit, if present.
     /// </summary>
     /// <param name="p_objCommand">The command that is executing.</param>
-    /// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
-    /// main mod management form.</param>
+    /// <param name="p_eeaArguments">
+    ///   An <see cref="ExecutedEventArgs
+    ///   
+    ///   <MainForm>
+    ///     "/> containing the
+    ///     main mod management form.
+    /// </param>
     public virtual void LaunchFNVEdit(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
       if (!File.Exists("FNVEdit.exe"))
@@ -653,11 +679,16 @@ namespace Fomm.Games.FalloutNewVegas
     }
 
     /// <summary>
-    /// Launches the save games viewer.
+    ///   Launches the save games viewer.
     /// </summary>
     /// <param name="p_objCommand">The command that is executing.</param>
-    /// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
-    /// main mod management form.</param>
+    /// <param name="p_eeaArguments">
+    ///   An <see cref="ExecutedEventArgs
+    ///   
+    ///   <MainForm>
+    ///     "/> containing the
+    ///     main mod management form.
+    /// </param>
     public override void LaunchSaveGamesViewer(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
       var lstActive = new List<string>();
@@ -680,11 +711,16 @@ namespace Fomm.Games.FalloutNewVegas
     }
 
     /// <summary>
-    /// Toggles archive invalidation.
+    ///   Toggles archive invalidation.
     /// </summary>
     /// <param name="p_objCommand">The command that is executing.</param>
-    /// <param name="p_eeaArguments">An <see cref="ExecutedEventArgs<MainForm>"/> containing the
-    /// main mod management form.</param>
+    /// <param name="p_eeaArguments">
+    ///   An <see cref="ExecutedEventArgs
+    ///   
+    ///   <MainForm>
+    ///     "/> containing the
+    ///     main mod management form.
+    /// </param>
     public override void ToggleArchiveInvalidation(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
       if (FalloutNewVegas.Tools.ArchiveInvalidation.Update())
@@ -701,7 +737,7 @@ namespace Fomm.Games.FalloutNewVegas
     #region Scripts
 
     /// <summary>
-    /// Gets the default script for a mod.
+    ///   Gets the default script for a mod.
     /// </summary>
     /// <value>The default script for a mod.</value>
     public override string DefaultCSharpScript
@@ -713,33 +749,35 @@ namespace Fomm.Games.FalloutNewVegas
     }
 
     /// <summary>
-    /// Creates a mod install script for the given <see cref="fomod"/>.
+    ///   Creates a mod install script for the given <see cref="fomod" />.
     /// </summary>
     /// <param name="p_fomodMod">The mod for which to create an installer script.</param>
     /// <param name="p_mibInstaller">The installer for which the script is being created.</param>
-    /// <returns>A mod install script for the given <see cref="fomod"/>.</returns>
+    /// <returns>A mod install script for the given <see cref="fomod" />.</returns>
     public override ModInstallScript CreateInstallScript(fomod p_fomodMod, ModInstallerBase p_mibInstaller)
     {
       return new FalloutNewVegasModInstallScript(p_fomodMod, p_mibInstaller);
     }
 
     /// <summary>
-    /// Creates a mod upgrade script for the given <see cref="fomod"/>.
+    ///   Creates a mod upgrade script for the given <see cref="fomod" />.
     /// </summary>
     /// <param name="p_fomodMod">The mod for which to create an installer script.</param>
     /// <param name="p_mibInstaller">The installer for which the script is being created.</param>
-    /// <returns>A mod upgrade script for the given <see cref="fomod"/>.</returns>
+    /// <returns>A mod upgrade script for the given <see cref="fomod" />.</returns>
     public override ModInstallScript CreateUpgradeScript(fomod p_fomodMod, ModInstallerBase p_mibInstaller)
     {
       return new FalloutNewVegasModUpgradeScript(p_fomodMod, p_mibInstaller);
     }
 
     /// <summary>
-    /// The factory method that creates the appropriate parser extension for the specified configuration file version.
+    ///   The factory method that creates the appropriate parser extension for the specified configuration file version.
     /// </summary>
     /// <param name="p_strVersion">The XML configuration file version for which to return a parser extension.</param>
-    /// <returns>The appropriate parser extension for the specified configuration file version, or
-    /// <lang langref="null"/> if no extension is available.</returns>
+    /// <returns>
+    ///   The appropriate parser extension for the specified configuration file version, or
+    ///   <lang langref="null" /> if no extension is available.
+    /// </returns>
     public override ParserExtension CreateParserExtension(string p_strVersion)
     {
       switch (p_strVersion)
@@ -752,12 +790,14 @@ namespace Fomm.Games.FalloutNewVegas
     }
 
     /// <summary>
-    /// Gets the path to the schema file for the specified configuration file version.
+    ///   Gets the path to the schema file for the specified configuration file version.
     /// </summary>
     /// <param name="p_strVersion">The XML configuration file version for which to return a parser extension.</param>
-    /// <returns>The path to the schema file for the specified configuration file version, or
-    /// <lang langref="null"/> if there is no game-specific schema for the specified configuration
-    /// file version.</returns>
+    /// <returns>
+    ///   The path to the schema file for the specified configuration file version, or
+    ///   <lang langref="null" /> if there is no game-specific schema for the specified configuration
+    ///   file version.
+    /// </returns>
     public override string GetGameSpecificXMLConfigSchemaPath(string p_strVersion)
     {
       return Path.Combine(Program.ProgrammeInfoDirectory, String.Format(@"FalloutNV\ModConfig{0}.xsd", p_strVersion));
@@ -768,11 +808,11 @@ namespace Fomm.Games.FalloutNewVegas
     #region Command Line Arguments
 
     /// <summary>
-    /// Return command line help for the arguments provided by the game mode.
+    ///   Return command line help for the arguments provided by the game mode.
     /// </summary>
     /// <remarks>
-    /// This method should only return the text required to describe the arguments. All header,
-    /// footer, and context text is already provided.
+    ///   This method should only return the text required to describe the arguments. All header,
+    ///   footer, and context text is already provided.
     /// </remarks>
     /// <returns>Command line help for the arguments provided by the game mode.</returns>
     public new static string GetCommandLineHelp()
@@ -787,11 +827,13 @@ namespace Fomm.Games.FalloutNewVegas
     }
 
     /// <summary>
-    /// Handles the command line arguments that run outside of an instance of FOMM.
+    ///   Handles the command line arguments that run outside of an instance of FOMM.
     /// </summary>
     /// <param name="p_strArgs">The command line arguments that were passed to the programme.</param>
-    /// <returns><lang langref="true"/> if at least one of the arguments were handled;
-    /// <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if at least one of the arguments were handled;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
     public override bool HandleStandaloneArguments(string[] p_strArgs)
     {
       if (!p_strArgs[0].StartsWith("-") && File.Exists(p_strArgs[0]))
@@ -848,11 +890,13 @@ namespace Fomm.Games.FalloutNewVegas
     }
 
     /// <summary>
-    /// Handles the command line arguments that affect an instance of the mod manager.
+    ///   Handles the command line arguments that affect an instance of the mod manager.
     /// </summary>
     /// <param name="p_strArgs">The command line arguments that were passed to the programme.</param>
-    /// <returns><lang langref="true"/> if at least one of the arguments were handled;
-    /// <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if at least one of the arguments were handled;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
     public override bool HandleInAppArguments(string[] p_strArgs)
     {
       return false;
@@ -861,11 +905,13 @@ namespace Fomm.Games.FalloutNewVegas
     #endregion
 
     /// <summary>
-    /// Verifies that the given path is a valid working directory for the game mode.
+    ///   Verifies that the given path is a valid working directory for the game mode.
     /// </summary>
     /// <param name="p_strPath">The path to validate as a working directory.</param>
-    /// <returns><lang langref="true"/> if the path is a vlid working directory;
-    /// <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the path is a vlid working directory;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
     public override bool VerifyWorkingDirectory(string p_strPath)
     {
       if (String.IsNullOrEmpty(p_strPath))
@@ -891,14 +937,16 @@ namespace Fomm.Games.FalloutNewVegas
     }
 
     /// <summary>
-    /// Sets the working directory for the programme.
+    ///   Sets the working directory for the programme.
     /// </summary>
     /// <remarks>
-    /// This sets the working directory to the Fallout 3 install folder.
+    ///   This sets the working directory to the Fallout 3 install folder.
     /// </remarks>
     /// <param name="p_strErrorMessage">The out parameter that is set to the error message, if an error occurred.</param>
-    /// <returns><lang langref="true"/> if the working directory was successfully set;
-    /// <lang langref="false"/> otherwise.</returns>
+    /// <returns>
+    ///   <lang langref="true" /> if the working directory was successfully set;
+    ///   <lang langref="false" /> otherwise.
+    /// </returns>
     public override bool SetWorkingDirectory(out string p_strErrorMessage)
     {
       var strWorkingDirectory = Properties.Settings.Default.falloutNewVegasWorkingDirectory;
@@ -909,7 +957,7 @@ namespace Fomm.Games.FalloutNewVegas
         {
           strWorkingDirectory =
             Registry.GetValue(@"HKEY_LOCAL_MACHINE\Software\Bethesda Softworks\FalloutNV",
-                                              "Installed Path", null) as string;
+                              "Installed Path", null) as string;
         }
         catch
         {

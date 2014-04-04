@@ -1,9 +1,9 @@
 using System;
-using System.IO;
-using System.Windows.Forms;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using System.Windows.Forms;
 using Fomm.Properties;
-using Encoding = System.Text.Encoding;
 
 namespace Fomm.Games.Fallout3.Tools.ShaderEdit
 {
@@ -259,7 +259,7 @@ namespace Fomm.Games.Fallout3.Tools.ShaderEdit
       }
       var text = File.ReadAllText(openFileDialog1.FileName, Encoding.Default);
       var data = NativeMethods.Compile(text, text.Length, HLSLImporterForm.EntryPoint, HLSLImporterForm.Profile,
-                                         HLSLImporterForm.Debug);
+                                       HLSLImporterForm.Debug);
       var size = (data[3] << 24) + (data[2] << 16) + (data[1] << 8) + data[0];
       if (size == 0)
       {

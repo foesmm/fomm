@@ -1,19 +1,19 @@
 ﻿using System;
-using System.Xml;
 using System.Collections.Generic;
+using System.Xml;
 using Fomm.PackageManager.ModInstallLog;
 
 namespace Fomm.InstallLogUpgraders
 {
   /// <summary>
-  /// Reverts the InstallLog to 2.0.0.0.
+  ///   Reverts the InstallLog to 2.0.0.0.
   /// </summary>
   internal class InstallLogUpgrader
   {
     private Dictionary<Version, Upgrader> m_dicUpgraders;
 
     /// <summary>
-    /// The default constructor.
+    ///   The default constructor.
     /// </summary>
     internal InstallLogUpgrader()
     {
@@ -25,13 +25,13 @@ namespace Fomm.InstallLogUpgraders
     }
 
     /// <summary>
-    /// Upgrades the install log.
+    ///   Upgrades the install log.
     /// </summary>
     /// <remarks>
-    /// This creates a <see cref="BackgroundWorkerProgressDialog"/> to do the work
-    /// and display progress.
+    ///   This creates a <see cref="BackgroundWorkerProgressDialog" /> to do the work
+    ///   and display progress.
     /// </remarks>
-    /// <returns><lang langref="false"/> if the user cancelled the upgrade; <lang langref="true"/> otherwise.</returns>
+    /// <returns><lang langref="false" /> if the user cancelled the upgrade; <lang langref="true" /> otherwise.</returns>
     public bool UpgradeInstallLog()
     {
       //this is to handle the few people who already installed a version that used
