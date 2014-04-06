@@ -60,7 +60,7 @@ namespace Fomm
   public static class Program
   {
     // @todo: restore Fomm.ProductInfo.Version
-    public const string Version = "0.14.10.2";
+    public const string Version = Fomm.ProductInfo.Version;
     public static readonly Version MVersion = new Version(Version);
 
     private static readonly string m_strExecutableDirectory = Path.GetDirectoryName(Application.ExecutablePath);
