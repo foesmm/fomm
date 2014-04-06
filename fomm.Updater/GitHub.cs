@@ -36,7 +36,12 @@ namespace Fomm.Updater
       string response = (new System.IO.StreamReader(new System.IO.Compression.GZipStream(request.GetResponse().GetResponseStream(), System.IO.Compression.CompressionMode.Decompress))).ReadToEnd();
       List<object> releases = (List<object>)Json.Deserialize(response);
       Dictionary<string, object> latestRelease = (Dictionary<string, object>)releases[0];
-      string strVersion = latestRelease["tag_name"].ToString();
+      string tag = latestRelease["tag_name"].ToString();
+      string strVersion = tag.ToLower();
+      if (strVersion[0] == 'v')
+      {
+        strVersion = strVersion.Substring(1, strVersion.Length - 1);
+      }
       Version version = null;
       if (Version.TryParse(strVersion, out version))
       {
@@ -49,7 +54,7 @@ namespace Fomm.Updater
         {
           string name = asset["name"].ToString();
           string contentType = asset["content_type"].ToString();
-          Uri url = new Uri(String.Format("https://github.com/{0}/releases/download/{1}/{2}", repo, strVersion, name));
+          Uri url = new Uri(String.Format("https://github.com/{0}/releases/download/{1}/{2}", repo, tag, name));
 
           release.Files.Add(new Release.File(url, name, contentType, IsUpdate(contentType)));
         }
