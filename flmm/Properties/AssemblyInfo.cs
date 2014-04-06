@@ -19,3 +19,4 @@ using Fomm;
 [assembly: NeutralResourcesLanguage("en")]
 
 //[assembly: PermissionSet(SecurityAction.RequestMinimum, Name="FullTrust")]
+[assembly: System.Security.SecurityRules(System.Security.SecurityRuleSet.Level1)]

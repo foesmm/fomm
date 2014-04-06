@@ -15,3 +15,5 @@ using Fomm;
 [assembly: AssemblyFileVersion(Program.Version)]
 [assembly: ComVisible(false)]
 [assembly: CLSCompliant(false)]
+
+[assembly: System.Security.SecurityRules(System.Security.SecurityRuleSet.Level1)]

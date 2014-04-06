@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fomm", "flmm\fomm.csproj", "{4A0302F4-DEA4-4753-98C8-3571742E4EB5}"
 	ProjectSection(ProjectDependencies) = postProject
 		{399F987B-6F9B-44A9-8AC8-BF5711AE8894} = {399F987B-6F9B-44A9-8AC8-BF5711AE8894}
@@ -17,7 +17,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xlive", "xlive\xlive.vcxpro
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Transactions", "Transactions\Transactions.csproj", "{1C72A5C2-0BA6-44AD-A4ED-0F3FAB9C1E54}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebsiteAPIs", "WebsiteAPIs\WebsiteAPIs.csproj", "{C972F01F-2D05-4587-8E3B-53A18B9E1705}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeMod.Interface", "GeMod.Interface\GeMod.Interface.csproj", "{EDF2CF2D-47B1-4851-889E-7F365C9FDDA3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fomm.Updater", "fomm.Updater\fomm.Updater.csproj", "{5F49F9E0-31D0-4374-B19D-0E1F6AB9097A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -97,6 +101,15 @@ Global
 		{1C72A5C2-0BA6-44AD-A4ED-0F3FAB9C1E54}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{1C72A5C2-0BA6-44AD-A4ED-0F3FAB9C1E54}.Release|Win32.ActiveCfg = Release|Any CPU
 		{1C72A5C2-0BA6-44AD-A4ED-0F3FAB9C1E54}.Release|Win32.Build.0 = Release|Any CPU
+		{C972F01F-2D05-4587-8E3B-53A18B9E1705}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C972F01F-2D05-4587-8E3B-53A18B9E1705}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C972F01F-2D05-4587-8E3B-53A18B9E1705}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{C972F01F-2D05-4587-8E3B-53A18B9E1705}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{C972F01F-2D05-4587-8E3B-53A18B9E1705}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C972F01F-2D05-4587-8E3B-53A18B9E1705}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C972F01F-2D05-4587-8E3B-53A18B9E1705}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{C972F01F-2D05-4587-8E3B-53A18B9E1705}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{C972F01F-2D05-4587-8E3B-53A18B9E1705}.Release|Win32.ActiveCfg = Release|Any CPU
 		{EDF2CF2D-47B1-4851-889E-7F365C9FDDA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EDF2CF2D-47B1-4851-889E-7F365C9FDDA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EDF2CF2D-47B1-4851-889E-7F365C9FDDA3}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -109,6 +122,18 @@ Global
 		{EDF2CF2D-47B1-4851-889E-7F365C9FDDA3}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{EDF2CF2D-47B1-4851-889E-7F365C9FDDA3}.Release|Win32.ActiveCfg = Release|Any CPU
 		{EDF2CF2D-47B1-4851-889E-7F365C9FDDA3}.Release|Win32.Build.0 = Release|Any CPU
+		{5F49F9E0-31D0-4374-B19D-0E1F6AB9097A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F49F9E0-31D0-4374-B19D-0E1F6AB9097A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F49F9E0-31D0-4374-B19D-0E1F6AB9097A}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{5F49F9E0-31D0-4374-B19D-0E1F6AB9097A}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{5F49F9E0-31D0-4374-B19D-0E1F6AB9097A}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{5F49F9E0-31D0-4374-B19D-0E1F6AB9097A}.Debug|Win32.Build.0 = Debug|Any CPU
+		{5F49F9E0-31D0-4374-B19D-0E1F6AB9097A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F49F9E0-31D0-4374-B19D-0E1F6AB9097A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F49F9E0-31D0-4374-B19D-0E1F6AB9097A}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{5F49F9E0-31D0-4374-B19D-0E1F6AB9097A}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{5F49F9E0-31D0-4374-B19D-0E1F6AB9097A}.Release|Win32.ActiveCfg = Release|Any CPU
+		{5F49F9E0-31D0-4374-B19D-0E1F6AB9097A}.Release|Win32.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

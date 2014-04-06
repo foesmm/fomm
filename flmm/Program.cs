@@ -2,7 +2,8 @@
  *    Fallout Mod Manager
  *    Copyright (C) 2008, 2009  Timeslip
  *    Copyright (C) 2010  Timeslip, Q
- *    Copyright (C) 2011, 2012, 2013, 2014  Prideslayer
+ *    Copyright (C) 2011, 2012, 2013  Prideslayer
+ *    Copyright (C) 2014  Prideslayer, Niveus Everto
  *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -86,7 +87,8 @@ namespace Fomm
 
   public static class Program
   {
-    public const string Version = "0.14.10.2";
+    // @todo: restore Fomm.ProductInfo.Version
+    public const string Version = Fomm.ProductInfo.Version;
     public static readonly Version MVersion = new Version(Version);
 
     private static readonly string m_strExecutableDirectory = Path.GetDirectoryName(Application.ExecutablePath);
