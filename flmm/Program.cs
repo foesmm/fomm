@@ -60,7 +60,7 @@ namespace Fomm
   public static class Program
   {
     // @todo: restore Fomm.ProductInfo.Version
-    public const string Version = "0.14.10.1";
+    public const string Version = "0.14.10.2";
     public static readonly Version MVersion = new Version(Version);
 
     private static readonly string m_strExecutableDirectory = Path.GetDirectoryName(Application.ExecutablePath);
@@ -380,16 +380,8 @@ namespace Fomm
             return;
           PermissionsManager.Init();
 
-          if (InstallLog.Current.GetInstallLogVersion() > InstallLog.CURRENT_VERSION)
-          {
-            MessageBox.Show("You have run another mod manager, likely NMM, that has corrupted InstallLog.xml.  Delete InstallLog.xml in '" + Program.GameMode.InstallInfoDirectory + "' and rename one of the backups there to fix.", "NMM Douchebaggery");
-            return;
-          }
-
-          InstallLog.Reload();
-
           //check to see if we need to upgrade the install log format
-          if (InstallLog.Current.GetInstallLogVersion() < InstallLog.CURRENT_VERSION)
+          if (InstallLog.Current.GetInstallLogVersion() != InstallLog.CURRENT_VERSION)
           {
             InstallLogUpgrader iluUgrader = new InstallLogUpgrader();
             try
@@ -407,6 +399,8 @@ namespace Fomm
               return;
             }
           }
+
+          InstallLog.Reload();
 
           //let's uninstall any fomods that have been deleted since we last ran
           IList<FomodInfo> lstMods = InstallLog.Current.GetVersionedModList();

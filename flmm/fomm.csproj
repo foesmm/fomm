@@ -84,6 +84,7 @@
     <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.XML" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\CheckedCommand.cs" />
@@ -291,6 +292,7 @@
       <DependentUpon>ImageForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Imports.cs" />
+    <Compile Include="InstallLogUpgraders\Downgrader0500.cs" />
     <Compile Include="InstallLogUpgraders\Upgrader.cs" />
     <Compile Include="InstallLogUpgraders\Upgrader0000.cs" />
     <Compile Include="InstallLogUpgraders\Upgrader0100.cs" />
