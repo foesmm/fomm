@@ -151,7 +151,16 @@ namespace System.IO.Compression
     {
       Stream stream = (Stream)new FileStream(_filename, FileMode.Open, _access == FileAccess.Read ? FileAccess.Read : FileAccess.ReadWrite);
 
-      ZipStorer zip = Open(stream, _access);
+      ZipStorer zip;
+      try
+      {
+        zip = Open(stream, _access);
+      }
+      catch (Exception exc)
+      {
+        stream.Close();
+        throw exc;
+      }
       zip.FileName = _filename;
 
       return zip;

@@ -27,9 +27,19 @@ namespace Fomm.Updater
       //
       InitializeComponent();
 
+      Text = String.Format("{0} Updater v{1}", Fomm.ProductInfo.ShortName, Fomm.ProductInfo.Version);
+
+      label1.Text = "Checking for update";
+
       downloader = new WebClient();
-      downloader.DownloadProgressChanged += updateFileDownloadProgressChanged;
+      downloader.DownloadProgressChanged += (s, e) =>
+      {
+        progressBar1.Maximum = (int)e.TotalBytesToReceive;
+        progressBar1.Value = (int)e.BytesReceived;
+      };
       downloader.DownloadFileCompleted += updateFileDownloaded;
+
+      updateLocation = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "update.zip");
 
       Shown += UpdateForm_Shown;
 
@@ -43,29 +53,45 @@ namespace Fomm.Updater
 
     void UpdateForm_Shown(object sender, EventArgs e)
     {
-      updateLocation = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "update.zip");
+      Release remote = Release.GetLatest(new GitHub());
+      richTextBox1.Text = String.Format("{0}\n\n{1}", remote.Name, remote.Notes);
+
       if (File.Exists(updateLocation))
       {
-        ApplyUpdate();
+        try
+        {
+          PrepareUpdate();
+          updateFileDownloaded(this, null);
+        }
+        catch (Exception exc)
+        {
+          progressBar1.Value = 0;
+          DownloadUpdate(remote.GetUpdateFile());
+        }
+        
       }
       else
       {
-        Release remote = Release.GetLatest(new GitHub());
         Debug.WriteLine(remote.Name);
         Debug.WriteLine(remote.Notes);
         Debug.WriteLine(remote.Version);
         Debug.WriteLine(remote.IsNewer() ? "Newer" : "Older");
         Debug.WriteLine(remote.GetUpdateFile().URL);
 
-        if (true || remote.IsNewer())
+        if (remote.IsNewer())
         {
           DownloadUpdate(remote.GetUpdateFile());
+        }
+        else
+        {
+          label1.Text = "You have latest version";
         }
       }
     }
 
     void DownloadUpdate(Release.File updateFile)
     {
+      label1.Text = String.Format("Downloading: {0}", updateFile.FileName);
       downloader.DownloadFileAsync(updateFile.URL, updateLocation);
     }
 
@@ -77,6 +103,7 @@ namespace Fomm.Updater
 
     bool SelfUpdate()
     {
+      label1.Text = "Updating updater =)";
       string oldUpdater = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, AppDomain.CurrentDomain.FriendlyName);
       ZipStorer.ZipFileEntry updater;
       try
@@ -96,7 +123,7 @@ namespace Fomm.Updater
       return false;
     }
 
-    void ApplyUpdate()
+    void ApplyUpdateAsync()
     {
       PrepareUpdate();
       if (SelfUpdate())
@@ -112,7 +139,7 @@ namespace Fomm.Updater
         if (entry.FilenameInZip == AppDomain.CurrentDomain.FriendlyName) continue;
         updatePackage.ExtractFile(entry, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, entry.FilenameInZip));
         progressBar1.Value += (int)entry.CompressedSize;
-        Text = entry.FilenameInZip;
+        label1.Text = String.Format("Extracting: {0}", entry.FilenameInZip);
       }
 
       CleanUp();
@@ -120,27 +147,35 @@ namespace Fomm.Updater
 
     void CleanUp()
     {
+      label1.Text = "Cleaning up";
+      updatePackage.Close();
+      File.Delete(updateLocation);
       UpdateRegistry();
     }
 
     void UpdateRegistry()
     {
+      label1.Text = "Writting registry";
       UninstallInfo ui = new UninstallInfo(Fomm.ProductInfo.GUID);
       ui.SetVersion(Fomm.ProductInfo.Version);
+      label1.Text = "All operations complete";
     }
 
     void updateFileDownloaded(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
     {
-      if (!e.Cancelled && e.Error == null)
-      {
-        ApplyUpdate();
-      }
+      progressBar1.Value = progressBar1.Maximum;
+      button1.Enabled = true;
+      label1.Text = "Update downloaded";
     }
 
-    void updateFileDownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
+    private void button1_Click(object sender, EventArgs e)
     {
-      progressBar1.Value = e.ProgressPercentage;
+      ApplyUpdateAsync();
     }
 
+    private void button2_Click(object sender, EventArgs e)
+    {
+      Application.Exit();
+    }
   }
 }

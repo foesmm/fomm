@@ -23,3 +23,4 @@ using System.Security.Permissions;
 [assembly: System.Resources.NeutralResourcesLanguage("en")]
 
 //[assembly: PermissionSet(SecurityAction.RequestMinimum, Name="FullTrust")]
+[assembly: System.Security.SecurityRules(System.Security.SecurityRuleSet.Level1)]
