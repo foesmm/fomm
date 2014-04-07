@@ -1,6 +1,10 @@
 Fallout Mod Manager (FOMM)
 ==========================
-[![GitHub version](https://badge.fury.io/gh/niveuseverto%2Ffomm.png)](http://badge.fury.io/gh/niveuseverto%2Ffomm)
+
+REQUIREMENTS
+------------
+
+* .NET Framework 4.0
 
 ORIGINAL VERSION
 ----------------
