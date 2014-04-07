@@ -537,22 +537,6 @@ namespace Fomm.Controls
     }
 
     /// <summary>
-    ///   Gets or sets the background colour of the conrol.
-    /// </summary>
-    /// <value>The background colour of the conrol.</value>
-    public override Color BackColor
-    {
-      get
-      {
-        return m_pnlToolStrip.BackColor;
-      }
-      set
-      {
-        m_pnlToolStrip.BackColor = value;
-      }
-    }
-
-    /// <summary>
     ///   Gets or sets the image displayed on the scroll down button.
     /// </summary>
     /// <value>The image displayed on the scroll down button.</value>
