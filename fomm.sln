@@ -17,7 +17,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xlive", "xlive\xlive.vcxpro
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Transactions", "Transactions\Transactions.csproj", "{1C72A5C2-0BA6-44AD-A4ED-0F3FAB9C1E54}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebsiteAPIs", "WebsiteAPIs\WebsiteAPIs.csproj", "{C972F01F-2D05-4587-8E3B-53A18B9E1705}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fomm.ModSites", "Fomm.ModSites\Fomm.ModSites.csproj", "{C972F01F-2D05-4587-8E3B-53A18B9E1705}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeMod.Interface", "GeMod.Interface\GeMod.Interface.csproj", "{EDF2CF2D-47B1-4851-889E-7F365C9FDDA3}"
 EndProject

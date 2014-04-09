@@ -9,7 +9,7 @@ using System.Diagnostics;
 using GeMod.Interface;
 using CsQuery;
 
-namespace WebsiteAPIs
+namespace Fomm.ModSites
 {
 	#region Supporting Data Structures
 
@@ -118,6 +118,7 @@ namespace WebsiteAPIs
 	/// <summary>
 	/// An API to the Nexus sites.
 	/// </summary>
+  [System.Obsolete("File from old FOMM, will be replaced by NexusMods:BaseAPI")]
 	public class NexusAPI
 	{
 		#region Events

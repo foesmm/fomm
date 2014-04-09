@@ -983,6 +983,10 @@
       <Project>{1C72A5C2-0BA6-44AD-A4ED-0F3FAB9C1E54}</Project>
       <Name>Transactions</Name>
     </ProjectReference>
+    <ProjectReference Include="..\WebsiteAPIs\Fomm.ModSites.csproj">
+      <Project>{c972f01f-2d05-4587-8e3b-53a18b9e1705}</Project>
+      <Name>Fomm.ModSites</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

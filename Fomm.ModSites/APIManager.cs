@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace WebsiteAPIs
+namespace Fomm.ModSites
 {
 	/// <summary>
 	/// Description of APIManager.

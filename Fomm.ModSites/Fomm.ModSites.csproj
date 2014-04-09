@@ -8,8 +8,8 @@
     <ProjectGuid>{C972F01F-2D05-4587-8E3B-53A18B9E1705}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WebsiteAPIs</RootNamespace>
-    <AssemblyName>WebsiteAPIs</AssemblyName>
+    <RootNamespace>Fomm.ModSites</RootNamespace>
+    <AssemblyName>Fomm.ModSites</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />

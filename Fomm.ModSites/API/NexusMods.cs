@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace WebsiteAPIs.API
+namespace Fomm.ModSites.API
 {
 	/// <summary>
 	/// Description of NexusMods.
