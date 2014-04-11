@@ -11,6 +11,8 @@ using Fomm.PackageManager.Upgrade;
 using Fomm.Properties;
 using Fomm.Util;
 using SevenZip;
+using Fomm.ModSites;
+using GeMod.Interface;
 
 namespace Fomm.PackageManager
 {
@@ -26,6 +28,7 @@ namespace Fomm.PackageManager
     private BackgroundWorkerProgressDialog m_bwdProgress;
     private string m_strLastFromFolderPath;
     private Dictionary<string, string> m_dicWebVersions = new Dictionary<string, string>();
+    private DataProviderManager _dataProviderManager = new DataProviderManager();
 
     public PackageManager(MainForm mf)
     {
@@ -88,7 +91,9 @@ namespace Fomm.PackageManager
 
     private void AddFomodToList(fomod mod)
     {
-      string strWebVersion;
+      ModInfo remoteInfo = _dataProviderManager.GetRemoteInfo(mod);
+
+      string strWebVersion = "NA";
       m_dicWebVersions.TryGetValue(mod.BaseName, out strWebVersion);
 
       if (lvModList.Items.ContainsKey(mod.BaseName))

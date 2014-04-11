@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
+using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
@@ -32,7 +33,7 @@ namespace Fomm.PackageManager
 {
   public class fomod : IFomodInfo
   {
-    private const string DEFAULT_AUTHOR = "DEFAULT";
+    private const string DEFAULT_AUTHOR = "UNKNOWN";
     private const string DEFAULT_VERSION = "1.0";
 
     private class fomodLoadException : Exception
@@ -138,6 +139,21 @@ namespace Fomm.PackageManager
     /// </summary>
     /// <value>The website of the fomod.</value>
     public string Website { get; set; }
+
+    /// <summary>
+    ///   ID of Modding Site to check for updates.
+    /// </summary>
+    public string ModSiteId { get; set; }
+
+    /// <summary>
+    ///   Modding Site internal ID for mod.
+    /// </summary>
+    public string ModId { get; set; }
+
+    /// <summary>
+    ///   Mod internal file id (if more then one file)
+    /// </summary>
+    public string FileId { get; set; }
 
     /// <summary>
     ///   Gets or sets the FOMM groups to which the fomod belongs.

@@ -389,7 +389,6 @@
       <DependentUpon>FomodInfoControl.cs</DependentUpon>
     </Compile>
     <Compile Include="PackageManager\FomodScript.cs" />
-    <Compile Include="PackageManager\IFomodInfo.cs" />
     <Compile Include="PackageManager\IllegalFilePathException.cs" />
     <Compile Include="PackageManager\InfoEditor.cs">
       <SubType>Form</SubType>
@@ -983,7 +982,7 @@
       <Project>{1C72A5C2-0BA6-44AD-A4ED-0F3FAB9C1E54}</Project>
       <Name>Transactions</Name>
     </ProjectReference>
-    <ProjectReference Include="..\WebsiteAPIs\Fomm.ModSites.csproj">
+    <ProjectReference Include="..\Fomm.ModSites\Fomm.ModSites.csproj">
       <Project>{c972f01f-2d05-4587-8e3b-53a18b9e1705}</Project>
       <Name>Fomm.ModSites</Name>
     </ProjectReference>

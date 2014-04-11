@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Fomm.PackageManager
+namespace GeMod.Interface
 {
   /// <summary>
   ///   A contract specifying an object that contains information about a fomod.
@@ -54,6 +54,21 @@ namespace Fomm.PackageManager
     /// </summary>
     /// <value>The website of the fomod.</value>
     string Website { get; set; }
+
+    /// <summary>
+    ///   ID of Modding Site to check for updates.
+    /// </summary>
+    string ModSiteId { get; set; }
+
+    /// <summary>
+    ///   Modding Site internal ID for mod.
+    /// </summary>
+    string ModId { get; set; }
+
+    /// <summary>
+    ///   Mod internal file id (if more then one file)
+    /// </summary>
+    string FileId { get; set; }
 
     /// <summary>
     ///   Gets or sets the FOMM groups to which the fomod belongs.
