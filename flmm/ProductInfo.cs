@@ -10,6 +10,6 @@ namespace Fomm
     public static readonly Guid GUID = new Guid("F97B1D1B-F722-4F37-902E-9FB501FADD0E");
     public const string ShortName = "FOMM";
     public const string FullName = "Fallout Mod Manager";
-    public const string Version = "0.14.10.5";
+    public const string Version = "0.14.10.6";
   }
 }
