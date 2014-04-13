@@ -65,6 +65,8 @@ class ScriptRunner {
     private static byte[] Compile(string code, out string[] errors, out string[] warnings, out string stdout)
     {
       cParams.OutputAssembly = ScriptOutputPath + (ScriptCount++) + ".dll";
+      cParams.TempFiles = new TempFileCollection(Environment.GetEnvironmentVariable("TEMP"), true);
+      cParams.IncludeDebugInformation = true;
       //Compatibility fix for mono, which needs a different assembly name each call
       var results = csCompiler.CompileAssemblyFromSource(cParams, code);
       stdout = "";
