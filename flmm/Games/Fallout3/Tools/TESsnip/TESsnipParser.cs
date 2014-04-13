@@ -178,7 +178,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
       var s = ReadRecName(br);
       if (s != "TES4")
       {
-        throw new Exception("File is not a valid TES4 plugin (Missing TES4 record)");
+        throw new Exception(String.Format("File is not a valid TES4 plugin (Missing TES4 record)\nFile: {0}", ((System.IO.FileStream)br.BaseStream).Name));
       }
       br.BaseStream.Position = 20;
       s = ReadRecName(br);
@@ -191,7 +191,7 @@ namespace Fomm.Games.Fallout3.Tools.TESsnip
         s = ReadRecName(br);
         if (s != "HEDR")
         {
-          throw new Exception("File is not a valid TES4 plugin (Missing HEDR subrecord in the TES4 record)");
+          throw new Exception(String.Format("File is not a valid TES4 plugin (Missing HEDR subrecord in the TES4 record)\nFile: {0}", ((System.IO.FileStream)br.BaseStream).Name));
         }
       }
       br.BaseStream.Position = 4;
