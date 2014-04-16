@@ -7,8 +7,8 @@ using System.Xml;
 using Fomm.Controls;
 using Fomm.PackageManager.Controls;
 using Fomm.Properties;
+using Fomm.Shared;
 using Fomm.Util;
-using GeMod.Interface;
 
 namespace Fomm.PackageManager.FomodBuilder
 {

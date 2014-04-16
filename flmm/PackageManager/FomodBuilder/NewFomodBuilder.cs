@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
+using Fomm.Shared;
 using Fomm.Util;
-using GeMod.Interface;
 
 namespace Fomm.PackageManager.FomodBuilder
 {

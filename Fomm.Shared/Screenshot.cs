@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.IO;
 
-namespace GeMod.Interface
+namespace Fomm.Shared
 {
   /// <summary>
   /// Describes the screenshot of a fomod.

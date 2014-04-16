@@ -8,8 +8,8 @@
     <ProjectGuid>{EDF2CF2D-47B1-4851-889E-7F365C9FDDA3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GeMod.Interface</RootNamespace>
-    <AssemblyName>GeMod.Interface</AssemblyName>
+    <RootNamespace>Fomm.Shared</RootNamespace>
+    <AssemblyName>Fomm.Shared</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>

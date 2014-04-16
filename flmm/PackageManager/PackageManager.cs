@@ -9,10 +9,10 @@ using System.Windows.Forms;
 using Fomm.PackageManager.FomodBuilder;
 using Fomm.PackageManager.Upgrade;
 using Fomm.Properties;
+using Fomm.Shared;
 using Fomm.Util;
 using SevenZip;
 using Fomm.ModSites;
-using GeMod.Interface;
 
 namespace Fomm.PackageManager
 {

@@ -9,8 +9,8 @@ using System.Text.RegularExpressions;
 using System.Xml;
 using Fomm.PackageManager.ModInstallLog;
 using Fomm.Properties;
+using Fomm.Shared;
 using Fomm.Util;
-using GeMod.Interface;
 using SevenZip;
 
 /*

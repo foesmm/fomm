@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using GeMod.Interface;
+using Fomm.ModSites.Providers;
+using Fomm.Shared;
 
 namespace Fomm.ModSites
 {
@@ -13,8 +14,8 @@ namespace Fomm.ModSites
 		
 		public DataProviderManager()
 		{
-			_providerList.Add(new Provider.NexusMods());
-			_providerList.Add(new Provider.TaleOfTwoWastelands());
+			_providerList.Add(new NexusMods());
+			_providerList.Add(new TaleOfTwoWastelands());
 		}
 
     public IBaseAPI SelectProvider(IFomodInfo modInfo)

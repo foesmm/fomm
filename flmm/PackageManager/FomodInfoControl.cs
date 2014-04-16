@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Windows.Forms;
 using Fomm.Properties;
-using GeMod.Interface;
+using Fomm.Shared;
 
 namespace Fomm.PackageManager
 {

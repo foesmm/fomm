@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using GeMod.Interface;
+﻿using Fomm.Shared;
 
-namespace Fomm.ModSites.Provider
+namespace Fomm.ModSites.Providers
 {
 	/// <summary>
 	/// Description of TaleOfTwoWastelands.

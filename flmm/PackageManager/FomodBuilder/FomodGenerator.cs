@@ -4,8 +4,8 @@ using System.IO;
 using System.Windows.Forms;
 using System.Xml;
 using Fomm.Properties;
+using Fomm.Shared;
 using Fomm.Util;
-using GeMod.Interface;
 using SevenZip;
 
 namespace Fomm.PackageManager.FomodBuilder

@@ -872,7 +872,9 @@
     <Content Include="data\fomm.chm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="app.config" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
     <Content Include="data\Fallout3\ModConfig1.0.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -896,6 +898,7 @@
     </Content>
     <None Include="fomm.exe.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -977,9 +980,9 @@
       <Project>{E824ACBB-90C8-4C60-9D52-9C8020E98E3E}</Project>
       <Name>ChinhDo.Transactions.FileManager</Name>
     </ProjectReference>
-    <ProjectReference Include="..\GeMod.Interface\GeMod.Interface.csproj">
+    <ProjectReference Include="..\Fomm.Shared\Fomm.Shared.csproj">
       <Project>{EDF2CF2D-47B1-4851-889E-7F365C9FDDA3}</Project>
-      <Name>GeMod.Interface</Name>
+      <Name>Fomm.Shared</Name>
     </ProjectReference>
     <ProjectReference Include="..\Transactions\Transactions.csproj">
       <Project>{1C72A5C2-0BA6-44AD-A4ED-0F3FAB9C1E54}</Project>

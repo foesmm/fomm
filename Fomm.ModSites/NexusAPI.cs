@@ -6,8 +6,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
-using GeMod.Interface;
 using CsQuery;
+using Fomm.Shared;
 
 namespace Fomm.ModSites
 {

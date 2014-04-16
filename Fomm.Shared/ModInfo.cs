@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GeMod.Interface
+namespace Fomm.Shared
 {
   /// <summary>
   /// Encapsulates information about a mod.

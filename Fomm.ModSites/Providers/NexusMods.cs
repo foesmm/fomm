@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using GeMod.Interface;
+﻿using System.Text.RegularExpressions;
+using Fomm.Shared;
 
-namespace Fomm.ModSites.Provider
+namespace Fomm.ModSites.Providers
 {
 	/// <summary>
 	/// Description of NexusMods.

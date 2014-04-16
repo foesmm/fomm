@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Runtime;
-using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 
-namespace GeMod.Interface
+namespace Fomm.Shared
 {
   /// <summary>
   /// Description of ModVersion.

@@ -5,8 +5,8 @@ using System.Text;
 using System.Xml;
 using Fomm.PackageManager.XmlConfiguredInstall.Parsers;
 using Fomm.Properties;
+using Fomm.Shared;
 using Fomm.Util;
-using GeMod.Interface;
 using SevenZip;
 
 namespace Fomm.PackageManager.FomodBuilder

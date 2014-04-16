@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GeMod.Interface
+namespace Fomm.Shared
 {
   /// <summary>
   ///   A contract specifying an object that contains information about a fomod.
@@ -64,11 +64,6 @@ namespace GeMod.Interface
     ///   Modding Site internal ID for mod.
     /// </summary>
     string ModId { get; set; }
-
-    /// <summary>
-    ///   Mod internal file id (if more then one file)
-    /// </summary>
-    string FileId { get; set; }
 
     /// <summary>
     ///   Gets or sets the FOMM groups to which the fomod belongs.

@@ -55,6 +55,10 @@
       <Project>{4A0302F4-DEA4-4753-98C8-3571742E4EB5}</Project>
       <Name>fomm</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Fomm.Shared\Fomm.Shared.csproj">
+      <Project>{edf2cf2d-47b1-4851-889e-7f365c9fdda3}</Project>
+      <Name>Fomm.Shared</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
