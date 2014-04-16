@@ -151,11 +151,6 @@ namespace Fomm.PackageManager
     public string ModId { get; set; }
 
     /// <summary>
-    ///   Mod internal file id (if more then one file)
-    /// </summary>
-    public string FileId { get; set; }
-
-    /// <summary>
     ///   Gets or sets the FOMM groups to which the fomod belongs.
     /// </summary>
     /// <value>The FOMM groups to which the fomod belongs.</value>

@@ -468,6 +468,9 @@ namespace Fomm.PackageManager
       }
     }
 
+    public string ModSiteId { get; set; }
+    public string ModId { get; set; }
+
     #endregion
   }
 }
