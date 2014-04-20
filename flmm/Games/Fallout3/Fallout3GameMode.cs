@@ -895,7 +895,7 @@ namespace Fomm.Games.Fallout3
       if (MessageBox.Show(p_eeaArguments.Argument,
                           "This is currently a beta feature, and the load order template may not be optimal.\n" +
                           "Ensure you have a backup of your load order before running this tool.\n" +
-                          "War you sure you wish to continue?", "Warning", MessageBoxButtons.YesNo,
+                          "Are you sure you wish to continue?", "Warning", MessageBoxButtons.YesNo,
                           MessageBoxIcon.Warning) != DialogResult.Yes)
       {
         return;

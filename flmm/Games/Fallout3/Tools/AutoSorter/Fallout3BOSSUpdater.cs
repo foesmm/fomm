@@ -32,20 +32,7 @@ namespace Fomm.Games.Fallout3.Tools.AutoSorter
     /// <returns>The current verison of the BOSS Fallout 3 Masterlist.</returns>
     public Int32 GetMasterlistVersion()
     {
-      string strVersionPage;
-      using (var wclGetter = new WebClient())
-      {
-        var strMasterListUrl = MasterListURL;
-        var intLastDividerPos = strMasterListUrl.LastIndexOfAny(new[]
-        {
-          Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar
-        });
-        var strVersionUrl = strMasterListUrl.Substring(0, intLastDividerPos);
-        strVersionPage = wclGetter.DownloadString(strVersionUrl);
-      }
-
-      var strWebVersion = m_rgxVersion.Match(strVersionPage).Groups[1].Value.Trim();
-      return Int32.Parse(strWebVersion);
+      return 0;
     }
 
     /// <summary>
