@@ -49,8 +49,7 @@ namespace Fomm.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://better-oblivion-sorting-software.googlecode.com/svn/data/boss-fallout/mast" +
-            "erlist.txt")]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://raw.githubusercontent.com/boss-developers/fallout3/master/masterlist.txt")]
         public string fallout3MasterListUpdateUrl {
             get {
                 return ((string)(this["fallout3MasterListUpdateUrl"]));
@@ -478,8 +477,7 @@ namespace Fomm.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://better-oblivion-sorting-software.googlecode.com/svn/data/boss-fallout-nv/m" +
-            "asterlist.txt")]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://raw.githubusercontent.com/boss-developers/falloutnv/master/masterlist.txt")]
         public string falloutNewVegasMasterListUpdateUrl {
             get {
                 return ((string)(this["falloutNewVegasMasterListUpdateUrl"]));
