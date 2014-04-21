@@ -296,7 +296,6 @@ namespace Fomm
             MessageBox.Show("Unrecognized game selection.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             return;
         }
-        GameMode.PostInit();
 
         Mutex mutex;
         bool booNewMutex;
@@ -371,6 +370,8 @@ namespace Fomm
             }
             continue;
           }
+
+          GameMode.PreInit();
 
           //Check that we're in fallout's directory and that we have write access
           var cancellaunch = true;
