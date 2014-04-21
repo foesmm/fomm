@@ -691,8 +691,7 @@ namespace Fomm.Games.Fallout3
           break;
         }
         var key = keys[i];
-
-        retVal = (getPluginDependencyStatus(key, true) != 0);
+        retVal = (getPluginDependencyStatus(key, true) == 0);
       }
 
       return retVal;
