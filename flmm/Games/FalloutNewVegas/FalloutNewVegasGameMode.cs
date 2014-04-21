@@ -101,12 +101,20 @@ namespace Fomm.Games.FalloutNewVegas
     {
       get
       {
-        if (String.IsNullOrEmpty(Properties.Settings.Default.falloutNewVegasLaunchCommand) &&
-            File.Exists("nvse_loader.exe"))
+        var result = new Command<MainForm>("Launch Fallout: NV", "Launches plain Fallout: New Vegas.", LaunchGame);
+        if (File.Exists("nvse_loader.exe"))
         {
-          return new Command<MainForm>("Launch NVSE", "Launches Fallout: New Vegas using NVSE.", LaunchGame);
+          result = new Command<MainForm>("Launch NVSE", "Launches Fallout: New Vegas using NVSE.", LaunchGame);
         }
-        return new Command<MainForm>("Launch Fallout: NV", "Launches Fallout: New Vegas using NVSE.", LaunchGame);
+        if (File.Exists("fnv4gb.exe"))
+        {
+          result = new Command<MainForm>("Launch FNV4GB", "Launches Fallout: New Vegas with 4GB Patch.", LaunchGame);
+        }
+        if (!String.IsNullOrEmpty(Properties.Settings.Default.falloutNewVegasLaunchCommand))
+        {
+          result = new Command<MainForm>("Launch Custom", "Launches Fallout: New Vegas with custom command.", LaunchGame);
+        }
+        return result;
       }
     }
 
@@ -291,11 +299,18 @@ namespace Fomm.Games.FalloutNewVegas
     {
       GameLaunchCommands.Add(new Command<MainForm>("Launch Fallout: New Vegas", "Launches plain Fallout: New Vegas.",
                                                    LaunchFalloutNVPlain));
+      if (File.Exists("fnv4gb.exe"))
+      {
+        GameLaunchCommands.Add(new Command<MainForm>("Launch 4GB Fallout: New Vegas", "Launches Fallout: New Vegas with 4GB Patch.",
+                                                     LaunchFalloutNV4GB));
+      }
+
       if (File.Exists("nvse_loader.exe"))
       {
-        GameLaunchCommands.Add(new Command<MainForm>("Launch NVSE", "Launches Fallout: New Vegas with NVSE.",
+        GameLaunchCommands.Add(new Command<MainForm>("Launch NVSE Fallout: New Vegas", "Launches Fallout: New Vegas with NVSE.",
                                                      LaunchFalloutNVNVSE));
       }
+
       GameLaunchCommands.Add(new Command<MainForm>("Launch Custom Fallout: New Vegas",
                                                    "Launches Fallout: New Vegas with custom command.",
                                                    LaunchFalloutNVCustom));
@@ -513,6 +528,66 @@ namespace Fomm.Games.FalloutNewVegas
     }
 
     /// <summary>
+    ///   Launches the game, with FNV4GB.
+    /// </summary>
+    /// <param name="p_objCommand">The command that is executing.</param>
+    /// <param name="p_eeaArguments">
+    ///   An <see cref="ExecutedEventArgs
+    ///   
+    ///   <MainForm>
+    ///     "/> containing the
+    ///     main mod management form.
+    /// </param>
+    public void LaunchFalloutNV4GB(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
+    {
+      if (PrelaunchCheckOrder())
+      {
+        if (!File.Exists("fnv4gb.exe"))
+        {
+          MessageBox.Show("FNV4GB does not appear to be installed");
+          return;
+        }
+        if (p_eeaArguments.Argument.HasOpenUtilityWindows)
+        {
+          MessageBox.Show("Please close all utility windows before launching Fallout");
+          return;
+        }
+
+        try
+        {
+          var psi = new ProcessStartInfo();
+          psi.FileName = "fnv4gb.exe";
+          //this configuration force the FO:NV launcher, which
+          // ensures FNV4GB loads
+          var steamAppId = GetSteamAppId();
+          if (steamAppId > 0)
+          {
+            psi.Arguments = String.Format("-SteamAppId {0}", steamAppId);
+          }
+
+          if (psi.EnvironmentVariables.ContainsKey("SteamAppID"))
+          {
+            psi.EnvironmentVariables.Remove("SteamAppID");
+          }
+          if (psi.EnvironmentVariables.ContainsKey("SteamGameId"))
+          {
+            psi.EnvironmentVariables.Remove("SteamGameId");
+          }
+          psi.UseShellExecute = false;
+          psi.WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath("fnv4gb.exe"));
+          if (Process.Start(psi) == null)
+          {
+            MessageBox.Show("Failed to launch 'fnv4gb.exe'");
+          }
+        }
+        catch (Exception ex)
+        {
+          MessageBox.Show("Failed to launch 'fnv4gb.exe'\n" + ex.Message);
+        }
+      }
+    }
+
+    /// <summary>
     ///   Launches the game, with NVSE.
     /// </summary>
     /// <param name="p_objCommand">The command that is executing.</param>
@@ -628,6 +703,10 @@ namespace Fomm.Games.FalloutNewVegas
       if (!String.IsNullOrEmpty(command))
       {
         LaunchFalloutNVCustom(p_objCommand, p_eeaArguments);
+      }
+      else if (File.Exists("fnv4gb.exe"))
+      {
+        LaunchFalloutNV4GB(p_objCommand, p_eeaArguments);
       }
       else if (File.Exists("nvse_loader.exe"))
       {
