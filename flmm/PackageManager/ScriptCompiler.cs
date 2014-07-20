@@ -28,7 +28,6 @@ namespace Fomm.PackageManager
       cParams.GenerateExecutable = false;
       cParams.GenerateInMemory = false;
       cParams.IncludeDebugInformation = false;
-      //cParams.OutputAssembly=ScriptOutputPath;
       cParams.ReferencedAssemblies.Add(Path.Combine(Program.ExecutableDirectory, "fomm.Scripting.dll"));
       cParams.ReferencedAssemblies.Add("System.dll");
       cParams.ReferencedAssemblies.Add("System.Drawing.dll");
@@ -36,7 +35,7 @@ namespace Fomm.PackageManager
       cParams.ReferencedAssemblies.Add("System.Xml.dll");
 
       evidence = new Evidence();
-      evidence.AddHost(new Zone(SecurityZone.Internet));
+      evidence.AddHostEvidence(new Zone(SecurityZone.Internet));
     }
 
     private static void LoadFommScriptObject()
@@ -51,7 +50,7 @@ class ScriptRunner {
         return fommScript.Execute(script, p_midInstaller);
     }
 }");
-      fommScriptRunner = AppDomain.CurrentDomain.Load(data, null, evidence);
+      fommScriptRunner = AppDomain.CurrentDomain.Load(data);
       fommScriptObject = fommScriptRunner.CreateInstance("ScriptRunner");
     }
 
@@ -66,7 +65,8 @@ class ScriptRunner {
     {
       cParams.OutputAssembly = ScriptOutputPath + (ScriptCount++) + ".dll";
       cParams.TempFiles = new TempFileCollection(Environment.GetEnvironmentVariable("TEMP"), true);
-      cParams.IncludeDebugInformation = true;
+      cParams.IncludeDebugInformation = false;
+
       //Compatibility fix for mono, which needs a different assembly name each call
       var results = csCompiler.CompileAssemblyFromSource(cParams, code);
       stdout = "";
@@ -110,7 +110,9 @@ class ScriptRunner {
       {
         return null;
       }
+
       var data = File.ReadAllBytes(results.PathToAssembly);
+      
       File.Delete(results.PathToAssembly);
       return data;
     }
@@ -180,8 +182,8 @@ class ScriptRunner {
         MessageBox.Show("C# script failed to compile", "Error");
         return false;
       }
-      var asm = AppDomain.CurrentDomain.Load(data, null, evidence);
-      //Assembly asm = AppDomain.CurrentDomain.Load(data);
+
+      var asm = AppDomain.CurrentDomain.Load(data);
       var s = asm.CreateInstance("Script");
       if (s == null)
       {

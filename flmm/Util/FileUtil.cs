@@ -139,18 +139,18 @@ namespace Fomm.Util
     ///   This method is recursive if the given path is a directory. This method will clear read only/system
     ///   attributes if required to delete the path.
     /// </remarks>
-    /// <param name="p_strPath">The path to delete.</param>
-    public static void ForceDelete(string p_strPath)
+    /// <param name="pStrPath">The path to delete.</param>
+    public static void ForceDelete(string pStrPath)
     {
       try
       {
-        if (File.Exists(p_strPath))
+        if (File.Exists(pStrPath))
         {
-          File.Delete(p_strPath);
+          File.Delete(pStrPath);
         }
-        else if (Directory.Exists(p_strPath))
+        else if (Directory.Exists(pStrPath))
         {
-          Directory.Delete(p_strPath, true);
+          Directory.Delete(pStrPath, true);
         }
       }
       catch (Exception e)
@@ -159,14 +159,14 @@ namespace Fomm.Util
         {
           throw;
         }
-        ClearAttributes(p_strPath, true);
-        if (File.Exists(p_strPath))
+        ClearAttributes(pStrPath, true);
+        if (File.Exists(pStrPath))
         {
-          File.Delete(p_strPath);
+          File.Delete(pStrPath);
         }
-        else if (Directory.Exists(p_strPath))
+        else if (Directory.Exists(pStrPath))
         {
-          Directory.Delete(p_strPath, true);
+          Directory.Delete(pStrPath, true);
         }
       }
     }
