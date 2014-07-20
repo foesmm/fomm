@@ -457,7 +457,6 @@ namespace Fomm.PackageManager
       butDeactivate.Enabled = mod.IsActive;
       bActivate.Text = !mod.IsActive ? "Activate" : "Reactivate";
 
-      Program.GameMode.buildPluginList();
       mf.RefreshPluginList();
     }
 

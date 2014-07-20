@@ -294,7 +294,7 @@ class Script : GenericBaseScript {
 
     protected Dictionary<string, LoadOrderInfo> fullModList = new Dictionary<string, LoadOrderInfo>();
 
-    public void buildPluginList()
+    public void BuildPluginList()
     {
       var i = 0;
 

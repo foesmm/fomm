@@ -190,7 +190,7 @@ namespace Fomm
         }
       }
 
-      Program.GameMode.buildPluginList();
+      Program.GameMode.BuildPluginList();
       RefreshPluginList();
       exportLoadOrder(Path.Combine(Program.GameMode.InstallInfoDirectory, "load order backup.txt"));
     }
@@ -356,7 +356,7 @@ namespace Fomm
             }
           }
         }
-        Program.GameMode.buildPluginList();
+        Program.GameMode.BuildPluginList();
         rerunPluginFormatters();
       }
     }
@@ -385,6 +385,8 @@ namespace Fomm
 
     public void RefreshPluginList()
     {
+      Program.GameMode.BuildPluginList();
+
       RefreshingList = true;
       lvEspList.BeginUpdate();
       lvEspList.Items.Clear();
