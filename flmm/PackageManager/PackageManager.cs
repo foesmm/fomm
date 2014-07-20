@@ -724,6 +724,7 @@ namespace Fomm.PackageManager
         var mduUninstaller = new ModUninstaller(mod);
         mduUninstaller.Uninstall(true);
       }
+
       foreach (ListViewItem lvi in lvModList.Items)
       {
         lvi.Checked = false;
