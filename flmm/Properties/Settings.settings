@@ -1,7 +1,5 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)"
-              GeneratedClassNamespace="Fomm.Properties" GeneratedClassName="Settings">
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Fomm.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
     <Setting Name="fallout3LastBSAUnpackPath" Type="System.String" Scope="User">
@@ -150,54 +148,54 @@
     </Setting>
     <Setting Name="pluginGroups" Type="Fomm.Util.SettingsList" Scope="User">
       <Value Profile="(Default)">
-        &lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
-        &lt;string&gt;Items&lt;/string&gt;
-        &lt;string&gt;Items/Guns&lt;/string&gt;
-        &lt;string&gt;Items/Armor&lt;/string&gt;
-        &lt;string&gt;Items/Misc&lt;/string&gt;
-        &lt;string&gt;Locations&lt;/string&gt;
-        &lt;string&gt;Locations/Houses&lt;/string&gt;
-        &lt;string&gt;Locations/Interiors&lt;/string&gt;
-        &lt;string&gt;Locations/Exteriors&lt;/string&gt;
-        &lt;string&gt;Gameplay&lt;/string&gt;
-        &lt;string&gt;Gameplay/Perks&lt;/string&gt;
-        &lt;string&gt;Gameplay/Realism&lt;/string&gt;
-        &lt;string&gt;Gameplay/Combat&lt;/string&gt;
-        &lt;string&gt;Gameplay/Loot&lt;/string&gt;
-        &lt;string&gt;Gameplay/Enemies&lt;/string&gt;
-        &lt;string&gt;Quests&lt;/string&gt;
-        &lt;string&gt;Companions&lt;/string&gt;
-        &lt;string&gt;ModResource&lt;/string&gt;
-        &lt;string&gt;UI&lt;/string&gt;
-        &lt;string&gt;Music&lt;/string&gt;
-        &lt;string&gt;Replacers&lt;/string&gt;
-        &lt;string&gt;Replacers/Meshes&lt;/string&gt;
-        &lt;string&gt;Replacers/Textures&lt;/string&gt;
-        &lt;string&gt;Replacers/Sounds&lt;/string&gt;
-        &lt;string&gt;Replacers/Shaders&lt;/string&gt;
-        &lt;string&gt;Tweaks&lt;/string&gt;
-        &lt;string&gt;Fixes&lt;/string&gt;
-        &lt;string&gt;Cosmetic&lt;/string&gt;
-        &lt;string&gt;Cosmetic/Races&lt;/string&gt;
-        &lt;string&gt;Cosmetic/Eyes&lt;/string&gt;
-        &lt;string&gt;Cosmetic/Hair&lt;/string&gt;
-        &lt;/ArrayOfString&gt;
-      </Value>
+          &lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+            &lt;string&gt;Items&lt;/string&gt;
+            &lt;string&gt;Items/Guns&lt;/string&gt;
+            &lt;string&gt;Items/Armor&lt;/string&gt;
+            &lt;string&gt;Items/Misc&lt;/string&gt;
+            &lt;string&gt;Locations&lt;/string&gt;
+            &lt;string&gt;Locations/Houses&lt;/string&gt;
+            &lt;string&gt;Locations/Interiors&lt;/string&gt;
+            &lt;string&gt;Locations/Exteriors&lt;/string&gt;
+            &lt;string&gt;Gameplay&lt;/string&gt;
+            &lt;string&gt;Gameplay/Perks&lt;/string&gt;
+            &lt;string&gt;Gameplay/Realism&lt;/string&gt;
+            &lt;string&gt;Gameplay/Combat&lt;/string&gt;
+            &lt;string&gt;Gameplay/Loot&lt;/string&gt;
+            &lt;string&gt;Gameplay/Enemies&lt;/string&gt;
+            &lt;string&gt;Quests&lt;/string&gt;
+            &lt;string&gt;Companions&lt;/string&gt;
+            &lt;string&gt;ModResource&lt;/string&gt;
+            &lt;string&gt;UI&lt;/string&gt;
+            &lt;string&gt;Music&lt;/string&gt;
+            &lt;string&gt;Replacers&lt;/string&gt;
+            &lt;string&gt;Replacers/Meshes&lt;/string&gt;
+            &lt;string&gt;Replacers/Textures&lt;/string&gt;
+            &lt;string&gt;Replacers/Sounds&lt;/string&gt;
+            &lt;string&gt;Replacers/Shaders&lt;/string&gt;
+            &lt;string&gt;Tweaks&lt;/string&gt;
+            &lt;string&gt;Fixes&lt;/string&gt;
+            &lt;string&gt;Cosmetic&lt;/string&gt;
+            &lt;string&gt;Cosmetic/Races&lt;/string&gt;
+            &lt;string&gt;Cosmetic/Eyes&lt;/string&gt;
+            &lt;string&gt;Cosmetic/Hair&lt;/string&gt;
+          &lt;/ArrayOfString&gt;
+        </Value>
     </Setting>
     <Setting Name="windowPositions" Type="Fomm.Util.WindowPositions" Scope="User">
       <Value Profile="(Default)">
-        &lt;WindowPositions /&gt;
-      </Value>
+          &lt;WindowPositions /&gt;
+        </Value>
     </Setting>
     <Setting Name="PackageManagerColumnWidths" Type="Fomm.Util.SettingsList" Scope="User">
       <Value Profile="(Default)">
-        &lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
-        &lt;string&gt;200&lt;/string&gt;
-        &lt;string&gt;100&lt;/string&gt;
-        &lt;string&gt;100&lt;/string&gt;
-        &lt;string&gt;100&lt;/string&gt;
-        &lt;/ArrayOfString&gt;
-      </Value>
+          &lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+            &lt;string&gt;200&lt;/string&gt;
+            &lt;string&gt;100&lt;/string&gt;
+            &lt;string&gt;100&lt;/string&gt;
+            &lt;string&gt;100&lt;/string&gt;
+          &lt;/ArrayOfString&gt;
+        </Value>
     </Setting>
   </Settings>
 </SettingsFile>

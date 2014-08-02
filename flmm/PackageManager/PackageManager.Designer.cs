@@ -56,11 +56,11 @@ namespace Fomm.PackageManager {
       this.createFOMODToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.editPFPToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.sbtAddFomod = new Fomm.Controls.SplitButton();
-          this.sbtAddFomod.AutoSize = true;
       this.menuStrip1 = new System.Windows.Forms.MenuStrip();
       this.modListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.exportModListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.exportActiveModListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
       this.splitContainer1.Panel1.SuspendLayout();
       this.splitContainer1.Panel2.SuspendLayout();
       this.splitContainer1.SuspendLayout();
@@ -72,8 +72,8 @@ namespace Fomm.PackageManager {
       // 
       // splitContainer1
       // 
-      this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+      this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
       this.splitContainer1.Location = new System.Drawing.Point(12, 27);
@@ -106,10 +106,10 @@ namespace Fomm.PackageManager {
       this.lvModList.TabIndex = 0;
       this.lvModList.UseCompatibleStateImageBehavior = false;
       this.lvModList.View = System.Windows.Forms.View.Details;
-      this.lvModList.ItemActivate += new System.EventHandler(this.lvModList_ItemActivate);
-      this.lvModList.SelectedIndexChanged += new System.EventHandler(this.lvModList_SelectedIndexChanged);
-      this.lvModList.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.lvModList_ItemCheck);
       this.lvModList.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.lvModList_ColumnClick);
+      this.lvModList.ItemActivate += new System.EventHandler(this.lvModList_ItemActivate);
+      this.lvModList.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.lvModList_ItemCheck);
+      this.lvModList.SelectedIndexChanged += new System.EventHandler(this.lvModList_SelectedIndexChanged);
       // 
       // fomodContextMenu
       // 
@@ -273,6 +273,7 @@ namespace Fomm.PackageManager {
       // bDeactivateAll
       // 
       this.bDeactivateAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.bDeactivateAll.Enabled = false;
       this.bDeactivateAll.Location = new System.Drawing.Point(493, 312);
       this.bDeactivateAll.Name = "bDeactivateAll";
       this.bDeactivateAll.Size = new System.Drawing.Size(120, 23);
@@ -434,11 +435,12 @@ namespace Fomm.PackageManager {
       this.MainMenuStrip = this.menuStrip1;
       this.Name = "PackageManager";
       this.Text = "Package Manager";
-      this.Load += new System.EventHandler(this.PackageManager_Load);
       this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.PackageManager_FormClosing);
+      this.Load += new System.EventHandler(this.PackageManager_Load);
       this.splitContainer1.Panel1.ResumeLayout(false);
       this.splitContainer1.Panel2.ResumeLayout(false);
       this.splitContainer1.Panel2.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
       this.splitContainer1.ResumeLayout(false);
       this.fomodContextMenu.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
