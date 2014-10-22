@@ -755,8 +755,6 @@ namespace Fomm.PackageManager
               p_finFomodInfo.Groups = strGroups;
             }
             break;
-          default:
-            throw new fomodLoadException("Unexpected node type '" + xndNode.Name + "' in info.xml");
         }
       }
     }
