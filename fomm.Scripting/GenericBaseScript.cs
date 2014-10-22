@@ -406,6 +406,11 @@ namespace fomm.Scripting
       return (Version) ExecuteMethod(() => Installer.Script.GetGameVersion());
     }
 
+    public static bool MeetsMinimumScriptExtenderVersion(int maj, int minor = 0, int build = 0, int priv = 0)
+    {
+      return (bool) ExecuteMethod(() => Installer.Script.MeetsMinimumScriptExtenderVersion(maj, minor, build, priv));
+    }
+
     #endregion
 
     #region Plugin Management

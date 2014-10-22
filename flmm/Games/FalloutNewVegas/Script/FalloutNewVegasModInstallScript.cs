@@ -8,6 +8,19 @@ namespace Fomm.Games.FalloutNewVegas.Script
 {
   public class FalloutNewVegasModInstallScript : Fallout3ModInstallScript
   {
+    #region Properties
+
+    // extender name
+    public override String ScriptExtenderName
+    {
+      get
+      {
+        return "nvse_loader.exe";
+      }
+    }
+
+    #endregion
+
     #region Constructors
 
     /// <summary>
@@ -16,38 +29,6 @@ namespace Fomm.Games.FalloutNewVegas.Script
     /// <param name="p_fomodMod">The <see cref="fomod" /> against which to run the script.</param>
     public FalloutNewVegasModInstallScript(fomod p_fomodMod, ModInstallerBase p_mibInstaller)
       : base(p_fomodMod, p_mibInstaller) {}
-
-    #endregion
-
-    #region Version Checking
-
-    /// <summary>
-    ///   Indicates whether or not NVSE is present.
-    /// </summary>
-    /// <returns><lang langref="true" /> if NVSE is installed; <lang langref="false" /> otherwise.</returns>
-    public override bool ScriptExtenderPresent()
-    {
-      PermissionsManager.CurrentPermissions.Assert();
-      return File.Exists("nvse_loader.exe");
-    }
-
-    /// <summary>
-    ///   Gets the version of the sript extender that is installed.
-    /// </summary>
-    /// <returns>
-    ///   The version of the sript extender that is installed, or <lang langref="null" /> if no
-    ///   sript extender is installed.
-    /// </returns>
-    public override Version GetScriptExtenderVersion()
-    {
-      PermissionsManager.CurrentPermissions.Assert();
-      if (!File.Exists("nvse_loader.exe"))
-      {
-        return null;
-      }
-      return
-        new Version(FileVersionInfo.GetVersionInfo("nvse_loader.exe").FileVersion.Replace(", ", "."));
-    }
 
     #endregion
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
@@ -42,6 +43,9 @@ namespace Fomm.PackageManager
         return m_setActivePlugins;
       }
     }
+
+    // extender name
+    public abstract String ScriptExtenderName { get; }
 
     /// <summary>
     ///   Gets the mod that is being scripted against.
@@ -255,6 +259,62 @@ namespace Fomm.PackageManager
     {
       PermissionsManager.CurrentPermissions.Assert();
       return Program.GameMode.GameVersion;
+    }
+
+    /// <summary>
+    ///   Indicates whether or not FOSE/NVSE/etc is present.
+    /// </summary>
+    /// <returns><lang langref="true" /> if FOSE/NVSE/etc is installed; <lang langref="false" /> otherwise.</returns>
+    public virtual bool ScriptExtenderPresent()
+    {
+      PermissionsManager.CurrentPermissions.Assert();
+      return File.Exists(ScriptExtenderName);
+    }
+
+    /// <summary>
+    ///   Gets the version of the sript extender that is installed.
+    /// </summary>
+    /// <returns>
+    ///   The version of the sript extender that is installed, or <lang langref="null" /> if no
+    ///   sript extender is installed.
+    /// </returns>
+    public virtual Version GetScriptExtenderVersion()
+    {
+      PermissionsManager.CurrentPermissions.Assert();
+      if (!File.Exists(ScriptExtenderName))
+      {
+        return null;
+      }
+      return
+        new Version(FileVersionInfo.GetVersionInfo(ScriptExtenderName).FileVersion.Replace(", ", "."));
+    }
+
+    /// <summary>
+    ///   Checks the script extender version for compatability.
+    /// </summary>
+    /// <returns>
+    ///   True if the script extender is installed and equal or greater than the supplied version.
+    /// </returns>
+    public virtual bool MeetsMinimumScriptExtenderVersion(int maj, int minor = 0, int build = 0, int priv = 0)
+    {
+      bool ret = false;
+      FileVersionInfo currVer;
+
+      PermissionsManager.CurrentPermissions.Assert();
+      if (File.Exists(ScriptExtenderName))
+      {
+        currVer = FileVersionInfo.GetVersionInfo(ScriptExtenderName);
+
+        if ((currVer.FileMajorPart >= maj) &&
+            (currVer.FileMinorPart >= minor) &&
+            (currVer.FileBuildPart >= build) &&
+            (currVer.FilePrivatePart >= priv))
+        {
+          ret = true;
+        }
+      }
+
+      return ret;
     }
 
     #endregion

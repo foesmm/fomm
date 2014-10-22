@@ -29,6 +29,15 @@ namespace Fomm.Games.Fallout3.Script
     /// <value>The <see cref="TextureManager" /> this script is using.</value>
     public TextureManager TextureManager { get; private set; }
 
+    // extender name
+    public override String ScriptExtenderName
+    {
+      get
+      {
+        return "fose_loader.exe";
+      }
+    }
+
     #endregion
 
     #region Constructors
@@ -78,34 +87,6 @@ namespace Fomm.Games.Fallout3.Script
     #endregion
 
     #region Version Checking
-
-    /// <summary>
-    ///   Indicates whether or not FOSE is present.
-    /// </summary>
-    /// <returns><lang langref="true" /> if FOSE is installed; <lang langref="false" /> otherwise.</returns>
-    public virtual bool ScriptExtenderPresent()
-    {
-      PermissionsManager.CurrentPermissions.Assert();
-      return File.Exists("fose_loader.exe");
-    }
-
-    /// <summary>
-    ///   Gets the version of the sript extender that is installed.
-    /// </summary>
-    /// <returns>
-    ///   The version of the sript extender that is installed, or <lang langref="null" /> if no
-    ///   sript extender is installed.
-    /// </returns>
-    public virtual Version GetScriptExtenderVersion()
-    {
-      PermissionsManager.CurrentPermissions.Assert();
-      if (!File.Exists("fose_loader.exe"))
-      {
-        return null;
-      }
-      return
-        new Version(FileVersionInfo.GetVersionInfo("fose_loader.exe").FileVersion.Replace(", ", "."));
-    }
 
     /// <summary>
     ///   Gets the version of GECK that is installed.
