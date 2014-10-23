@@ -137,10 +137,10 @@ namespace Fomm.PackageManager.FomodBuilder
                 return lstPackedFOModPaths;
               }
             }
+
             //remove the file extension
             var strPackedFomodPath = Path.GetFileNameWithoutExtension(strSource);
-            //remove the .part1 or what have for multipart files
-            strPackedFomodPath = Path.GetFileNameWithoutExtension(strPackedFomodPath);
+
             strPackedFomodPath = Path.Combine(Program.GameMode.ModDirectory, strPackedFomodPath);
             if (!strPackedFomodPath.EndsWith(".fomod", StringComparison.OrdinalIgnoreCase))
             {
@@ -150,14 +150,7 @@ namespace Fomm.PackageManager.FomodBuilder
             if (CheckFileName(ref strNewPath))
             {
               FileUtil.ForceDelete(strNewPath);
-              if (MessageBox.Show("Make a copy of the original file?", "", MessageBoxButtons.YesNo) != DialogResult.Yes)
-              {
-                File.Move(strSource, strNewPath);
-              }
-              else
-              {
-                File.Copy(strSource, strNewPath, true);
-              }
+              File.Copy(strSource, strNewPath, true);
               lstPackedFOModPaths.Add(strNewPath);
             }
           }
@@ -171,8 +164,6 @@ namespace Fomm.PackageManager.FomodBuilder
         {
           //remove the file extension
           strFomodName = Path.GetFileNameWithoutExtension(strSource);
-          //remove the .part1 or what have for multipart files
-          strFomodName = Path.GetFileNameWithoutExtension(strFomodName);
         }
         else
         {
