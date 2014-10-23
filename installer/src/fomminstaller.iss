@@ -7,8 +7,8 @@
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{072C2AEF-16B2-46B7-BA7F-D0CAA7B4F89F}
 AppName=FOMM
-AppVersion=0.14
-;AppVerName=FOMM 0.14
+;AppVersion=0.14
+AppVerName=FOMM 0.14.11.10
 AppPublisher=Prideslayer
 AppPublisherURL=http://www.loverslab.com/topic/17895-fomm-custom-build-014119/
 AppSupportURL=http://www.loverslab.com/topic/17895-fomm-custom-build-014119/
