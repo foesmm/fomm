@@ -32,7 +32,7 @@ namespace Fomm.PackageManager
 {
   public class fomod : IFomodInfo
   {
-    private const string DEFAULT_AUTHOR = "DEFAULT";
+    private const string DEFAULT_AUTHOR = "UNKNOWN";
     private const string DEFAULT_VERSION = "1.0";
 
     private class fomodLoadException : Exception
@@ -44,7 +44,7 @@ namespace Fomm.PackageManager
 
     internal readonly string filepath;
 
-    public static readonly Version DefaultVersion = new Version(1, 0);
+    public static readonly Version DefaultVersion = new Version(1, 0, 0, 0);
     public static readonly Version DefaultMinFommVersion = new Version(0, 0, 0, 0);
 
     private static readonly List<string> StopFolders = new List<string>
@@ -755,8 +755,6 @@ namespace Fomm.PackageManager
               p_finFomodInfo.Groups = strGroups;
             }
             break;
-          default:
-            throw new fomodLoadException("Unexpected node type '" + xndNode.Name + "' in info.xml");
         }
       }
     }
@@ -1172,6 +1170,8 @@ namespace Fomm.PackageManager
     /// <param name="p_mifInfo">A <see cref="ModInfo" /> describing the info of the mod.</param>
     public void SetMissingInfo(ModInfo p_mifInfo)
     {
+      Version mv = null;
+
       if (p_mifInfo == null)
       {
         return;
@@ -1187,6 +1187,7 @@ namespace Fomm.PackageManager
         booUpdated = true;
         Author = p_mifInfo.Author;
       }
+
       if (HumanReadableVersion.Equals(DEFAULT_VERSION) && (MachineVersion == DefaultVersion) &&
           !String.IsNullOrEmpty(p_mifInfo.Version))
       {
@@ -1194,27 +1195,22 @@ namespace Fomm.PackageManager
         var strVersionString = p_mifInfo.Version;
         var rgxCleanVersion = new Regex(@"[^\d\.]");
         strVersionString = rgxCleanVersion.Replace(strVersionString, "");
-        if (!String.IsNullOrEmpty(strVersionString))
+        if (String.IsNullOrEmpty(strVersionString))
         {
-          if (!strVersionString.Contains("."))
-          {
-            strVersionString += ".0";
-          }
-          if (strVersionString.StartsWith("."))
-          {
-            strVersionString = "0" + strVersionString;
-          }
-          if (strVersionString.EndsWith("."))
-          {
-            strVersionString = strVersionString + "0";
-          }
-          MachineVersion = new Version(strVersionString);
+          strVersionString = "0.0.0.0";
+        }
+
+        if (Version.TryParse(strVersionString, out mv))
+        {
+          MachineVersion = mv;
         }
       }
+
       if (!HasScreenshot && (p_mifInfo.Screenshot != null))
       {
         booUpdated = true;
       }
+
       if (String.IsNullOrEmpty(Website) && (p_mifInfo.URL != null))
       {
         booUpdated = true;
