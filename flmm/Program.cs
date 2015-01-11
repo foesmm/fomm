@@ -427,7 +427,16 @@ namespace Fomm
             Directory.CreateDirectory(tmpPath);
           }
 
-          var str7zPath = Path.Combine(ProgrammeInfoDirectory, "7z-32bit.dll");
+          var str7zPath = "";
+          
+          if (Environment.Is64BitProcess)
+          {
+            str7zPath = Path.Combine(ProgrammeInfoDirectory, "7z-64bit.dll");
+          }
+          else
+          {
+            str7zPath = Path.Combine(ProgrammeInfoDirectory, "7z-32bit.dll");
+          }
           SevenZipBase.SetLibraryPath(str7zPath);
 
           if (!GameMode.Init())
