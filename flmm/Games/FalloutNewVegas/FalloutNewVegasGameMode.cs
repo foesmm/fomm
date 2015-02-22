@@ -970,7 +970,7 @@ namespace Fomm.Games.FalloutNewVegas
         "Fallout's registry entry appears to be missing or incorrect." + Environment.NewLine +
         "Please enter the path to your Fallout: New Vegas game file, or click \"Auto Detect\" to search" +
         " for the install directory. Note that Auto Detection can take several minutes.",
-        "Fallout 3 Game Directory:",
+        "Fallout: New Vegas Game Directory:",
         new[]
         {
           "falloutNV.exe", "falloutNVng.exe"
