@@ -162,7 +162,7 @@ namespace Fomm.Games
 
     #endregion
 
-    public abstract void PostInit();
+    public abstract void PreInit();
 
     #region Script
 

@@ -497,7 +497,7 @@ namespace Fomm.Games.Fallout3
 
     #endregion
 
-    public override void PostInit()
+    public override void PreInit()
     {
       m_sfsSettingsFiles = CreateSettingsFileSet();
       m_pmgPluginManager = CreatePluginManager();
