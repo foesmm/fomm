@@ -135,12 +135,13 @@ namespace Fomm.Util
     {
       get
       {
+        //TODO: check for native C# way to check this out
         var hmodule = LoadLibrary("kernel32");
 
         //a function that only exists on Vista and above
         // this is a hack, as the function we use may not exist on some future OS
         var strFunction = "CreateThreadpoolWait";
-        return ((hmodule.ToInt32() != 0) && (GetProcAddress(hmodule, strFunction).ToInt32() != 0));
+        return ((hmodule.ToInt64() != 0) && (GetProcAddress(hmodule, strFunction).ToInt64() != 0));
       }
     }
 
