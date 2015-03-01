@@ -1,5 +1,6 @@
 Fallout Mod Manager (FOMM)
 ==========================
+[![Build status](https://ci.appveyor.com/api/projects/status/9h4n9nldmtxadg3l/branch/master?svg=true)](https://ci.appveyor.com/project/niveuseverto/fomm/branch/master)
 
 REQUIREMENTS
 ------------
