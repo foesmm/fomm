@@ -27,7 +27,6 @@ namespace Fomm {
       this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
       this.cbAssociateFomod = new System.Windows.Forms.CheckBox();
       this.cbAssociateBsa = new System.Windows.Forms.CheckBox();
-      this.cbAssociateSdp = new System.Windows.Forms.CheckBox();
       this.cbShellExtensions = new System.Windows.Forms.CheckBox();
       this.cbDisableIPC = new System.Windows.Forms.CheckBox();
       this.cbDisableUAC = new System.Windows.Forms.CheckBox();
@@ -87,20 +86,10 @@ namespace Fomm {
       this.cbAssociateBsa.Text = "Associate with BSAs";
       this.cbAssociateBsa.UseVisualStyleBackColor = true;
       // 
-      // cbAssociateSdp
-      // 
-      this.cbAssociateSdp.AutoSize = true;
-      this.cbAssociateSdp.Location = new System.Drawing.Point(16, 65);
-      this.cbAssociateSdp.Name = "cbAssociateSdp";
-      this.cbAssociateSdp.Size = new System.Drawing.Size(124, 17);
-      this.cbAssociateSdp.TabIndex = 2;
-      this.cbAssociateSdp.Text = "Associate with SDPs";
-      this.cbAssociateSdp.UseVisualStyleBackColor = true;
-      // 
       // cbShellExtensions
       // 
       this.cbShellExtensions.AutoSize = true;
-      this.cbShellExtensions.Location = new System.Drawing.Point(16, 88);
+      this.cbShellExtensions.Location = new System.Drawing.Point(16, 65);
       this.cbShellExtensions.Name = "cbShellExtensions";
       this.cbShellExtensions.Size = new System.Drawing.Size(231, 17);
       this.cbShellExtensions.TabIndex = 3;
@@ -167,7 +156,6 @@ namespace Fomm {
       // 
       this.gbxAssociations.Controls.Add(this.cbAssociateFomod);
       this.gbxAssociations.Controls.Add(this.cbAssociateBsa);
-      this.gbxAssociations.Controls.Add(this.cbAssociateSdp);
       this.gbxAssociations.Controls.Add(this.cbShellExtensions);
       this.gbxAssociations.Location = new System.Drawing.Point(6, 6);
       this.gbxAssociations.Name = "gbxAssociations";
@@ -419,7 +407,6 @@ namespace Fomm {
     private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
         private System.Windows.Forms.CheckBox cbAssociateFomod;
         private System.Windows.Forms.CheckBox cbAssociateBsa;
-        private System.Windows.Forms.CheckBox cbAssociateSdp;
     private System.Windows.Forms.CheckBox cbShellExtensions;
         private System.Windows.Forms.CheckBox cbDisableIPC;
         private System.Windows.Forms.CheckBox cbDisableUAC;

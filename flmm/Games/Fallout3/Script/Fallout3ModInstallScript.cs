@@ -23,12 +23,6 @@ namespace Fomm.Games.Fallout3.Script
     /// <value>The <see cref="BsaManager" /> this script is using.</value>
     public BsaManager BsaManager { get; private set; }
 
-    /// <summary>
-    ///   Gets the <see cref="TextureManager" /> this script is using.
-    /// </summary>
-    /// <value>The <see cref="TextureManager" /> this script is using.</value>
-    public TextureManager TextureManager { get; private set; }
-
     // extender name
     public override String ScriptExtenderName
     {
@@ -51,7 +45,6 @@ namespace Fomm.Games.Fallout3.Script
     {
       //m_misScript = new ModInstallScript(p_fomodMod);
       BsaManager = new BsaManager();
-      TextureManager = new TextureManager();
     }
 
     #endregion
@@ -536,10 +529,6 @@ namespace Fomm.Games.Fallout3.Script
     /// </summary>
     public override void Dispose()
     {
-      if (TextureManager != null)
-      {
-        TextureManager.Dispose();
-      }
       if (BsaManager != null)
       {
         BsaManager.Dispose();

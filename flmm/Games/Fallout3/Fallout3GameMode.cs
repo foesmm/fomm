@@ -648,7 +648,6 @@ namespace Fomm.Games.Fallout3
       m_lstTools.Add(new Command<MainForm>("BSA Browser", "Views and unpacks BSA files.", LaunchBSABrowserTool));
       m_lstTools.Add(new Command<MainForm>("BSA Creator", "Creates BSA files.", LaunchBSACreatorTool));
       m_lstTools.Add(new Command<MainForm>("TESsnip", "An ESP/ESM editor.", LaunchTESsnipTool));
-      m_lstTools.Add(new Command<MainForm>("Shader Editor", "A shader (SDP) editor.", LaunchShaderEditTool));
       m_lstTools.Add(new Command<MainForm>("CREditor", "Edits critical records in an ESP/ESM.", LaunchCREditorTool));
       m_lstTools.Add(new Command<MainForm>("Install Tweaker", "Advanced Fallout 3 tweaking.", LaunchInstallTweakerTool));
       m_lstTools.Add(new Command<MainForm>("Conflict Detector",
@@ -1299,22 +1298,6 @@ namespace Fomm.Games.Fallout3
     }
 
     /// <summary>
-    ///   Launches the Shader Edit tool.
-    /// </summary>
-    /// <param name="p_objCommand">The command that is executing.</param>
-    /// <param name="p_eeaArguments">
-    ///   An <see cref="ExecutedEventArgs
-    ///   
-    ///   <MainForm>
-    ///     "/> containing the
-    ///     main mod management form.
-    /// </param>
-    public void LaunchShaderEditTool(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
-    {
-      new Tools.ShaderEdit.MainForm().Show();
-    }
-
-    /// <summary>
     ///   Launches the CREditor tool.
     /// </summary>
     /// <param name="p_objCommand">The command that is executing.</param>
@@ -1546,9 +1529,6 @@ class Script : Fallout3BaseScript {
           case ".bsa":
             Application.Run(new BSABrowser(p_strArgs[0]));
             return true;
-          case ".sdp":
-            Application.Run(new Tools.ShaderEdit.MainForm(p_strArgs[0]));
-            return true;
           case ".esp":
           case ".esm":
             Application.Run(new TESsnip(new[]
@@ -1582,9 +1562,6 @@ class Script : Fallout3BaseScript {
             return true;
           case "-tessnip":
             Application.Run(new TESsnip());
-            return true;
-          case "-sdp-editor":
-            Application.Run(new Tools.ShaderEdit.MainForm());
             return true;
         }
       }

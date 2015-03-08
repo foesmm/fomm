@@ -324,7 +324,6 @@ namespace Fomm.Games.FalloutNewVegas
       Tools.Add(new Command<MainForm>("BSA Browser", "Views and unpacks BSA files.", LaunchBSABrowserTool));
       Tools.Add(new Command<MainForm>("BSA Creator", "Creates BSA files.", LaunchBSACreatorTool));
       Tools.Add(new Command<MainForm>("TESsnip", "An ESP/ESM editor.", LaunchTESsnipTool));
-      Tools.Add(new Command<MainForm>("Shader Editor", "A shader (SDP) editor.", LaunchShaderEditTool));
       Tools.Add(new Command<MainForm>("CREditor", "Edits critical records in an ESP/ESM.", LaunchCREditorTool));
       Tools.Add(new Command<MainForm>("Conflict Detector",
                                       "Checks for conflicts with mod-author specified critical records.",
@@ -923,9 +922,6 @@ namespace Fomm.Games.FalloutNewVegas
           case ".bsa":
             Application.Run(new BSABrowser(p_strArgs[0]));
             return true;
-          case ".sdp":
-            Application.Run(new Fallout3.Tools.ShaderEdit.MainForm(p_strArgs[0]));
-            return true;
           case ".esp":
           case ".esm":
             Application.Run(new TESsnip(new[]
@@ -959,9 +955,6 @@ namespace Fomm.Games.FalloutNewVegas
             return true;
           case "-tessnip":
             Application.Run(new TESsnip());
-            return true;
-          case "-sdp-editor":
-            Application.Run(new Fallout3.Tools.ShaderEdit.MainForm());
             return true;
         }
       }
