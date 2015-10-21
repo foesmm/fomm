@@ -66,7 +66,7 @@ namespace fomm.Transactions
     {
       if (TransactionInformation.Status != TransactionStatus.Active)
       {
-        throw new TransactionException("Cannot prepare transaction, as it is not active. Trasnaction Status: " +
+        throw new TransactionException("Cannot prepare transaction, as it is not active. Transaction Status: " +
                                        TransactionInformation.Status);
       }
 
@@ -105,7 +105,7 @@ namespace fomm.Transactions
     {
       if (TransactionInformation.Status != TransactionStatus.Active)
       {
-        throw new TransactionException("Cannot commit transaction, as it is not active. Trasnaction Status: " +
+        throw new TransactionException("Cannot commit transaction, as it is not active. Transaction Status: " +
                                        TransactionInformation.Status);
       }
 
