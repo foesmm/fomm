@@ -9,26 +9,10 @@ static ID3DXBuffer* buffer;
 
 #define SAFERELEASE(a) if(a) { a->Release(); a=0; }
 
-//If we're not going to import the standard runtime library, we don't have memset
-//this is the easiest implementation that makes sure the compiler doesn't optimize it back to a memset
-//Not very efficient, but it's only used on a tiny structure
-static void memset2(void* _ptr, int _size) {
-	_asm {
-		mov ecx, _size;
-		mov ebx, _ptr;
-		xor eax, eax;
-startloop:
-		mov [ebx], al;
-		inc ebx;
-		loop startloop;
-	}
-}
-
 void _stdcall ddsInit(HWND window) {
 	buffer=0;
 	d3d9=Direct3DCreate9(D3D_SDK_VERSION);
-	D3DPRESENT_PARAMETERS params;
-	memset2(&params, sizeof(params));
+	D3DPRESENT_PARAMETERS params = {};
 	params.Windowed=true;
 	params.hDeviceWindow=window;
 	params.BackBufferHeight=128;
