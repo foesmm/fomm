@@ -102,6 +102,19 @@ namespace Fomm
           break;
       }
 
+      key = Registry.GetValue(@"HKEY_CLASSES_ROOT\.sdp", null, null) as string;
+      switch (key)
+      {
+        case "BethesdaSoftworks_ShaderPackage":
+          cbAssociateSdp.Checked = true;
+          break;
+        case null:
+          break;
+        default:
+          cbAssociateSdp.Enabled = false;
+          break;
+      }
+
       key = Registry.GetValue(@"HKEY_CLASSES_ROOT\.fomod", null, null) as string;
       switch (key)
       {
@@ -249,6 +262,25 @@ namespace Fomm
           Registry.SetValue(@"HKEY_CLASSES_ROOT\BethesdaSoftworks_Archive\DefaultIcon", null,
                             Application.ExecutablePath + ",0", RegistryValueKind.String);
           Registry.SetValue(@"HKEY_CLASSES_ROOT\BethesdaSoftworks_Archive\shell\open\command", null,
+                            "\"" + Application.ExecutablePath + "\" \"%1\"", RegistryValueKind.String);
+        }
+
+        if (!cbAssociateSdp.Checked)
+        {
+          if (Array.IndexOf(strKeys, "BethesdaSoftworks_ShaderPackage") != -1)
+          {
+            Registry.ClassesRoot.DeleteSubKeyTree("BethesdaSoftworks_ShaderPackage");
+            Registry.ClassesRoot.DeleteSubKeyTree(".sdp");
+          }
+        }
+        else
+        {
+          Registry.SetValue(@"HKEY_CLASSES_ROOT\.sdp", null, "BethesdaSoftworks_ShaderPackage");
+          Registry.SetValue(@"HKEY_CLASSES_ROOT\BethesdaSoftworks_ShaderPackage", null, "Bethesda Shader Package",
+                            RegistryValueKind.String);
+          Registry.SetValue(@"HKEY_CLASSES_ROOT\BethesdaSoftworks_ShaderPackage\DefaultIcon", null,
+                            Application.ExecutablePath + ",0", RegistryValueKind.String);
+          Registry.SetValue(@"HKEY_CLASSES_ROOT\BethesdaSoftworks_ShaderPackage\shell\open\command", null,
                             "\"" + Application.ExecutablePath + "\" \"%1\"", RegistryValueKind.String);
         }
 
