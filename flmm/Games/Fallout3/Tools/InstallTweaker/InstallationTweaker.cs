@@ -11,6 +11,8 @@ namespace Fomm.Games.Fallout3.Tools.InstallTweaker
   partial class InstallationTweaker : Form
   {
     private static readonly string BackupPath = Path.Combine(Program.GameMode.InstallInfoDirectory, "itBackup\\");
+    private static readonly string esmBackup = Path.Combine(BackupPath, "fallout3.esm");
+    private static readonly string bsaBackup = Path.Combine(BackupPath, "Fallout - Textures.bsa");
     private static readonly string xlivePath = Path.Combine(Program.ProgrammeInfoDirectory, "xlive.dll");
 
     public InstallationTweaker()
@@ -23,6 +25,10 @@ namespace Fomm.Games.Fallout3.Tools.InstallTweaker
         {
           cbDisableLive.Checked = true;
           bXliveSettings.Enabled = true;
+        }
+        if (File.Exists(bsaBackup))
+        {
+          cbShrinkTextures.Checked = true;
         }
         bApply.Enabled = false;
       }
@@ -47,6 +53,7 @@ namespace Fomm.Games.Fallout3.Tools.InstallTweaker
       args.xlive = cbDisableLive.Checked;
       //args.stripedids=cbStripGeck.Checked;
       //args.striprefs=cbRemoveClutter.Checked;
+      args.trimbsa = cbShrinkTextures.Checked;
       args.hwnd = Handle;
       tbDescription.Text = "";
       bApply.Enabled = false;
@@ -69,6 +76,16 @@ namespace Fomm.Games.Fallout3.Tools.InstallTweaker
       }
       File.Delete("xlive.dll");
       File.Delete("xlive.ini");
+      if (File.Exists(esmBackup))
+      {
+        File.Delete("data\\fallout3.esm");
+        File.Move(esmBackup, "data\\fallout3.esm");
+      }
+      if (File.Exists(bsaBackup))
+      {
+        File.Delete("data\\Fallout - Textures.bsa");
+        File.Move(bsaBackup, "data\\Fallout - Textures.bsa");
+      }
       Directory.Delete(BackupPath, true);
       bReset.Enabled = false;
       bApply.Enabled = true;
@@ -101,6 +118,12 @@ namespace Fomm.Games.Fallout3.Tools.InstallTweaker
           File.Delete("xlive.dll"); //In case people are using Quarn's mod
         }
         File.Copy(xlivePath, "xlive.dll");
+      }
+      if (cbShrinkTextures.Checked)
+      {
+        backgroundWorker1.ReportProgress(0, "Parsing Fallout - Textures.bsa");
+        File.Move("data\\Fallout - Textures.bsa", bsaBackup);
+        BsaTrimmer.Trim(args.hwnd, bsaBackup, "data\\Fallout - Textures.bsa", ReportProgress);
       }
       backgroundWorker1.ReportProgress(0, "Complete");
     }
