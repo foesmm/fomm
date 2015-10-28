@@ -306,6 +306,8 @@
     <Compile Include="InstallLogUpgraders\Upgrader.cs" />
     <Compile Include="InstallLogUpgraders\Upgrader0000.cs" />
     <Compile Include="InstallLogUpgraders\Upgrader0100.cs" />
+    <Compile Include="Games\Fallout3\Tools\InstallTweaker\BsaTrimmer.cs" />
+    <Compile Include="Games\Fallout3\Tools\InstallTweaker\EsmTrimmer.cs" />
     <Compile Include="Games\Fallout3\Tools\InstallTweaker\InstallationTweaker.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -461,6 +463,7 @@
       <DependentUpon>PackageManager.cs</DependentUpon>
     </Compile>
     <Compile Include="PackageManager\ScriptCompiler.cs" />
+    <Compile Include="Games\Fallout3\Script\TextureManager.cs" />
     <Compile Include="BackgroundWorkerProgressDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -771,6 +774,14 @@
       <DependentUpon>ProgressForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Games\Fallout3\Tools\ShaderEdit\HLSLImporter.resx">
+      <DependentUpon>HLSLImporter.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Games\Fallout3\Tools\ShaderEdit\MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Games\Fallout3\Tools\TESsnip\DataEdit.resx">
       <DependentUpon>DataEdit.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -787,6 +798,18 @@
       <SubType>Designer</SubType>
       <DependentUpon>TESsnip.cs</DependentUpon>
     </EmbeddedResource>
+    <Compile Include="Games\Fallout3\Tools\ShaderEdit\HLSLImporter.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Games\Fallout3\Tools\ShaderEdit\HLSLImporter.Designer.cs">
+      <DependentUpon>HLSLImporter.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Games\Fallout3\Tools\ShaderEdit\MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Games\Fallout3\Tools\ShaderEdit\MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="SharpZipLib\Checksums\Adler32.cs" />
     <Compile Include="SharpZipLib\Checksums\CRC32.cs" />
     <Compile Include="SharpZipLib\Checksums\IChecksum.cs" />
