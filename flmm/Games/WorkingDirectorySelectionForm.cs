@@ -134,9 +134,9 @@ namespace Fomm.Games
     }
 
     /// <summary>
-    ///   This recursively searches the specified directory for the search files.
+    ///   Recursively searches the specified directory for the search files.
     /// </summary>
-    /// <param name="p_strPath">The path of the direcotry to recursively search.</param>
+    /// <param name="p_strPath">The path of the directory to recursively search.</param>
     protected string Search(string p_strPath)
     {
       m_bwdProgress.OverallMessage = p_strPath;
@@ -165,8 +165,26 @@ namespace Fomm.Games
           //we don't have access to the path we are trying to search, so let's bail
           return null;
         }
+        catch (PathTooLongException)
+        {
+          // Full paths must not exceed 260 characters to maintain compatibility with Windows operating systems.
+          // More Info: https://msdn.microsoft.com/en-us/library/system.io.pathtoolongexception(v=vs.110).aspx
+          continue; // This statement is unnecessary, but makes it clear to the developer what actually happens.
+        }
       }
-      var strDirectories = Directory.GetDirectories(p_strPath);
+      String[] strDirectories;
+
+      try
+      {
+        strDirectories = Directory.GetDirectories(p_strPath);
+      }
+      catch (PathTooLongException)
+      {
+        // Full paths must not exceed 260 characters to maintain compatibility with Windows operating systems.
+        // More Info: https://msdn.microsoft.com/en-us/library/system.io.pathtoolongexception(v=vs.110).aspx
+        return null;
+      }
+      
       foreach (var strDirectory in strDirectories)
       {
         if (m_bwdProgress.Cancelled())
