@@ -291,6 +291,24 @@ namespace fomm.Scripting
 
     #endregion
 
+    #region Shader Editing
+
+    /// <summary>
+    /// Edits the specified shader with the specified data.
+    /// </summary>
+    /// <param name="p_intPackage">The package containing the shader to edit.</param>
+    /// <param name="p_strShaderName">The shader to edit.</param>
+    /// <param name="p_bteData">The value to which to edit the shader.</param>
+    /// <returns><lang langref="true"/> if the value was set; <lang langref="false"/>
+    /// if the user chose not to overwrite the existing value.</returns>
+    /// <seealso cref="ModInstaller.EditShader(int, string, byte[])"/>
+    public static bool EditShader(int p_intPackage, string p_strShaderName, byte[] p_bteData)
+    {
+      return (bool) (ExecuteMethod(() => Script.EditShader(p_intPackage, p_strShaderName, p_bteData)) ?? false);
+    }
+
+    #endregion
+
     #region Script Compilation
 
     /// <summary>
@@ -355,6 +373,125 @@ namespace fomm.Scripting
         LastError = e.Message;
         msg = null;
       }
+    }
+
+    #endregion
+
+    #region Texture Management
+
+    /// <summary>
+    /// Loads the given texture.
+    /// </summary>
+    /// <param name="p_bteTexture">The texture to load.</param>
+    /// <returns>A pointer to the loaded texture.</returns>
+    /// <seealso cref="TextureManager.LoadTexture(byte[])"/>
+    public static IntPtr LoadTexture(byte[] p_bteTexture)
+    {
+      return (IntPtr) ExecuteMethod(() => Script.TextureManager.LoadTexture(p_bteTexture));
+    }
+
+    /// <summary>
+    /// Creates a texture with the given dimensions.
+    /// </summary>
+    /// <param name="p_intWidth">The width of the texture.</param>
+    /// <param name="p_intHeight">The height of the texture.</param>
+    /// <returns>A pointer to the new texture.</returns>
+    /// <seealso cref="TextureManager.CreateTexture(int, int)"/>
+    public static IntPtr CreateTexture(int p_intWidth, int p_intHeight)
+    {
+      return (IntPtr) ExecuteMethod(() => Script.TextureManager.CreateTexture(p_intWidth, p_intHeight));
+    }
+
+    /// <summary>
+    /// Saves the specified texture.
+    /// </summary>
+    /// <param name="p_ptrTexture">The pointer to the texture to save.</param>
+    /// <param name="p_intFormat">The format in which to save the texture.</param>
+    /// <param name="p_booMipmaps">Whether or not to create mipmaps (or maybe whether or
+    /// not the given texture contains mipmaps?).</param>
+    /// <returns>The saved texture.</returns>
+    /// <seealso cref="TextureManager.SaveTexture(IntPtr, int, bool)"/>
+    public static byte[] SaveTexture(IntPtr p_ptrTexture, int p_intFormat, bool p_booMipmaps)
+    {
+      return (byte[]) ExecuteMethod(() => Script.TextureManager.SaveTexture(p_ptrTexture, p_intFormat, p_booMipmaps));
+    }
+
+    /// <summary>
+    /// Copies part of one texture to another.
+    /// </summary>
+    /// <param name="p_ptrSource">A pointer to the texture from which to make the copy.</param>
+    /// <param name="p_rctSourceRect">The area of the source texture from which to make the copy.</param>
+    /// <param name="p_ptrDestination">A pointer to the texture to which to make the copy.</param>
+    /// <param name="p_rctDestinationRect">The area of the destination texture to which to make the copy.</param>
+    /// <seealso cref="TextureManager.CopyTexture(IntPtr, Rectangle, IntPtr, Rectangle)"/>
+    public static void CopyTexture(IntPtr p_ptrSource, Rectangle p_rctSourceRect, IntPtr p_ptrDestination,
+                                   Rectangle p_rctDestinationRect)
+    {
+      ExecuteMethod(
+        () => Script.TextureManager.CopyTexture(p_ptrSource, p_rctSourceRect, p_ptrDestination, p_rctDestinationRect));
+    }
+
+    /// <summary>
+    /// Gets the dimensions of the specified texture.
+    /// </summary>
+    /// <param name="p_ptrTexture">A pointer to the texture whose dimensions are to be determined.</param>
+    /// <param name="p_intWidth">The out parameter that will contain the width of the texture.</param>
+    /// <param name="p_intHeight">The out parameter that will contain the height of the texture.</param>
+    /// <seealso cref="TextureManager.GetTextureSize(IntPtr, out int, out int)"/>
+    public static void GetTextureSize(IntPtr p_ptrTexture, out int p_intWidth, out int p_intHeight)
+    {
+      try
+      {
+        Script.TextureManager.GetTextureSize(p_ptrTexture, out p_intWidth, out p_intHeight);
+      }
+      catch (Exception e)
+      {
+        LastError = e.Message;
+        p_intWidth = -1;
+        p_intHeight = -1;
+      }
+    }
+
+    /// <summary>
+    /// Retrieves the texture data for the specified texture.
+    /// </summary>
+    /// <param name="p_ptrTexture">A pointer to the texture whose data is to be retrieved.</param>
+    /// <param name="p_intPitch">The out parameter that will contain the texture's pitch.</param>
+    /// <returns>The texture data.</returns>
+    /// <seealso cref="TextureManager.GetTextureData(IntPtr, out int)"/>
+    public static byte[] GetTextureData(IntPtr p_ptrTexture, out int p_intPitch)
+    {
+      try
+      {
+        return Script.TextureManager.GetTextureData(p_ptrTexture, out p_intPitch);
+      }
+      catch (Exception e)
+      {
+        LastError = e.Message;
+        p_intPitch = -1;
+      }
+      return null;
+    }
+
+    /// <summary>
+    /// Sets the data for the specified texture.
+    /// </summary>
+    /// <param name="p_ptrTexture">A pointer to the texture whose data is to be set.</param>
+    /// <param name="p_bteData">The data to which to set the texture.</param>
+    /// <seealso cref="TextureManager.SetTextureData(IntPtr, byte[])"/>
+    public static void SetTextureData(IntPtr p_ptrTexture, byte[] p_bteData)
+    {
+      ExecuteMethod(() => Script.TextureManager.SetTextureData(p_ptrTexture, p_bteData));
+    }
+
+    /// <summary>
+    /// Releases the specified texture.
+    /// </summary>
+    /// <param name="p_ptrTexture">A pointer to the texture to release.</param>
+    /// <seealso cref="TextureManager.ReleaseTexture(IntPtr)"/>
+    public static void ReleaseTexture(IntPtr p_ptrTexture)
+    {
+      ExecuteMethod(() => Script.TextureManager.ReleaseTexture(p_ptrTexture));
     }
 
     #endregion
