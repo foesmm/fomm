@@ -117,17 +117,6 @@ namespace Fomm.Util
     private static extern bool CloseHandle(IntPtr hObject);
 
     /// <summary>
-    ///   Loads the specified library.
-    /// </summary>
-    /// <param name="lpFileName">The library to load.</param>
-    /// <returns>A handle to the loaded library.</returns>
-    [DllImport("kernel32.dll", CharSet = CharSet.Ansi, ExactSpelling = false)]
-    public static extern IntPtr LoadLibrary(string lpFileName);
-
-    [DllImport("kernel32.dll", CharSet = CharSet.Ansi, ExactSpelling = true)]
-    public static extern IntPtr GetProcAddress(IntPtr hmodule, string procName);
-
-    /// <summary>
     ///   Gets whether the OS has UAC.
     /// </summary>
     /// <value>Whether the OS has UAC.</value>
@@ -135,13 +124,9 @@ namespace Fomm.Util
     {
       get
       {
-        //TODO: check for native C# way to check this out
-        var hmodule = LoadLibrary("kernel32");
-
-        //a function that only exists on Vista and above
-        // this is a hack, as the function we use may not exist on some future OS
-        var strFunction = "CreateThreadpoolWait";
-        return ((hmodule.ToInt64() != 0) && (GetProcAddress(hmodule, strFunction).ToInt64() != 0));
+        // UAC exists in Vista and later.
+        var versionVista = new Version(6, 0);
+        return Environment.OSVersion.Version >= versionVista;
       }
     }
 
