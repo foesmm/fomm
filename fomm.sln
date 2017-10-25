@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2005
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fomm", "flmm\fomm.csproj", "{4A0302F4-DEA4-4753-98C8-3571742E4EB5}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -65,8 +65,8 @@ Global
 		{F2AC5DA0-5CE0-4C54-A4D1-6B368F81275A}.Release|x64.Build.0 = Release|x64
 		{F2AC5DA0-5CE0-4C54-A4D1-6B368F81275A}.Release|x86.ActiveCfg = Release|Win32
 		{F2AC5DA0-5CE0-4C54-A4D1-6B368F81275A}.Release|x86.Build.0 = Release|Win32
-		{399F987B-6F9B-44A9-8AC8-BF5711AE8894}.Debug|x64.ActiveCfg = Debug|Win32
-		{399F987B-6F9B-44A9-8AC8-BF5711AE8894}.Debug|x64.Build.0 = Debug|Win32
+		{399F987B-6F9B-44A9-8AC8-BF5711AE8894}.Debug|x64.ActiveCfg = Release|Win32
+		{399F987B-6F9B-44A9-8AC8-BF5711AE8894}.Debug|x64.Build.0 = Release|Win32
 		{399F987B-6F9B-44A9-8AC8-BF5711AE8894}.Debug|x86.ActiveCfg = Debug|Win32
 		{399F987B-6F9B-44A9-8AC8-BF5711AE8894}.Debug|x86.Build.0 = Debug|Win32
 		{399F987B-6F9B-44A9-8AC8-BF5711AE8894}.Release|x64.ActiveCfg = Release|Win32
@@ -108,5 +108,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FFEAF1DE-ACA6-4CE0-9289-7F221C27876C}
 	EndGlobalSection
 EndGlobal
