@@ -37,6 +37,7 @@ Source: "fomm.Transactions.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "GeMod.Interface.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "ICSharpCode.TextEditor.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "SevenZipSharp.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "ShaderDisasm.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "data\*"; DestDir: "{app}\data"; Excludes: "*.exp,*.lib"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
