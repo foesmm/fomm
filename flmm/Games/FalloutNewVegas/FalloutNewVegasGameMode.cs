@@ -220,7 +220,7 @@ namespace Fomm.Games.FalloutNewVegas
         Properties.Settings.Default.Save();
       }
 
-      ((SettingsFilesSet) SettingsFiles).FODefaultIniPath = Path.Combine(PluginsPath, @"..\fallout_default.ini");
+      ((SettingsFilesSet)SettingsFiles).FODefaultIniPath = Path.Combine(PluginsPath, @"..\fallout_default.ini");
       if (File.Exists("FNVEdit.exe"))
       {
         Tools.Add(new Command<MainForm>("FNVEdit", "Launches FNVEdit, if it is installed.", LaunchFNVEdit));
@@ -228,7 +228,7 @@ namespace Fomm.Games.FalloutNewVegas
       Tools.Add(new CheckedCommand<MainForm>("Archive Invalidation", "Toggles Archive Invalidation.",
                                              ArchiveInvalidation.IsActive(), ToggleArchiveInvalidation));
 
-      if (!File.Exists(((SettingsFilesSet) SettingsFiles).FOIniPath))
+      if (!File.Exists(((SettingsFilesSet)SettingsFiles).FOIniPath))
       {
         MessageBox.Show(
           "You have no Fallout INI file. Please run Fallout: New Vegas to initialize the file before installing any mods or turning on Archive Invalidation.",
@@ -339,10 +339,7 @@ namespace Fomm.Games.FalloutNewVegas
       RightClickTools.Add(new Command<MainForm>("Open in CREditor...", "Open the selected plugins in TESsnip.",
                                                 LaunchCREditorToolWithSelectedPlugins));
 
-      LoadOrderTools.Add(new Command<MainForm>("Load Order Report...",
-                                               "Generates a report on the current load order, as compared to the BOSS recomendation.",
-                                               LaunchLoadOrderReport));
-      LoadOrderTools.Add(new Command<MainForm>("BOSS Auto Sort", "Auto-sorts the plugins using BOSS's masterlist.",
+      LoadOrderTools.Add(new Command<MainForm>("Launch LOOT (Auto Sort)", "LOOT load order sorting tool.",
                                                LaunchSortPlugins));
     }
 
@@ -392,7 +389,7 @@ namespace Fomm.Games.FalloutNewVegas
       }
 
       var strSteam =
-        (string) Registry.GetValue(@"HKEY_CURRENT_USER\Software\Valve\Steam", "SteamExe", null);
+        (string)Registry.GetValue(@"HKEY_CURRENT_USER\Software\Valve\Steam", "SteamExe", null);
       if (!String.IsNullOrEmpty(strSteam))
       {
         try
@@ -428,7 +425,7 @@ namespace Fomm.Games.FalloutNewVegas
             }
           }
         }
-        catch (Exception) {}
+        catch (Exception) { }
       }
       MessageBox.Show(p_eeaArguments,
                       "Unable to start Steam automatically." + Environment.NewLine +
@@ -450,7 +447,7 @@ namespace Fomm.Games.FalloutNewVegas
       {
         if (strKeyName.StartsWith("steam app", StringComparison.InvariantCultureIgnoreCase))
         {
-          var strDisplayName = (string) keyUninstall.OpenSubKey(strKeyName).GetValue("Displayname");
+          var strDisplayName = (string)keyUninstall.OpenSubKey(strKeyName).GetValue("Displayname");
           if ("fallout: new vegas".Equals(strDisplayName, StringComparison.InvariantCultureIgnoreCase))
           {
             int intAppId;
@@ -476,7 +473,8 @@ namespace Fomm.Games.FalloutNewVegas
           }
         }
       }
-      throw new Exception("Unable to determine Steam App Id for Fallout: New Vegas.");
+
+      return 0;
     }
 
     #endregion
@@ -540,6 +538,19 @@ namespace Fomm.Games.FalloutNewVegas
     /// </param>
     public void LaunchFalloutNV4GB(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
+      var result = MessageBoxHelper.SHMessageBoxCheck(p_eeaArguments.Argument.Handle,
+        "Would you like FOMM to navigate to FNV4GB Patcher (https://www.nexusmods.com/newvegas/mods/62552)?",
+        "FNV4GB deprecated!",
+        MessageBoxHelper.MessageBoxCheckFlags.MB_YESNO,
+        7,
+        "{AC2B7360-8508-438A-B123-47B3862BB663}");
+
+      if (result == 6)
+      {
+        Process.Start("https://www.nexusmods.com/newvegas/mods/62552");
+        return;
+      }
+
       if (PrelaunchCheckOrder())
       {
         if (!File.Exists("fnv4gb.exe"))
@@ -804,7 +815,7 @@ namespace Fomm.Games.FalloutNewVegas
     {
       if (FalloutNewVegas.Tools.ArchiveInvalidation.Update())
       {
-        ((CheckedCommand<MainForm>) p_objCommand).IsChecked =
+        ((CheckedCommand<MainForm>)p_objCommand).IsChecked =
           FalloutNewVegas.Tools.ArchiveInvalidation.IsActive();
       }
     }

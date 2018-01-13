@@ -891,53 +891,39 @@ namespace Fomm.Games.Fallout3
     /// </param>
     public void LaunchSortPlugins(object p_objCommand, ExecutedEventArgs<MainForm> p_eeaArguments)
     {
-      if (MessageBox.Show(p_eeaArguments.Argument,
-                          "This is currently a beta feature, and the load order template may not be optimal.\n" +
-                          "Ensure you have a backup of your load order before running this tool.\n" +
-                          "Are you sure you wish to continue?", "Warning", MessageBoxButtons.YesNo,
-                          MessageBoxIcon.Warning) != DialogResult.Yes)
+      var lootUri = "https://github.com/loot/loot/releases/latest";
+      var lootKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64).OpenSubKey("SOFTWARE\\WOW6432Node\\LOOT");
+      if (lootKey != null)
       {
-        return;
-      }
+        var lootDir = lootKey.GetValue("Installed Path").ToString();
 
-      var plugins = PluginManager.OrderedPluginList;
-      for (var i = 0; i < plugins.Length; i++)
-      {
-        plugins[i] = Path.GetFileName(plugins[i]);
-      }
-      var losSorter = new LoadOrderSorter();
-      if (!losSorter.HasMasterList)
-      {
-        if (DialogResult.Yes ==
-            MessageBox.Show("There is no BOSS masterlist present, would you like to fetch the latest one?",
-                            "Update BOSS", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+        var psi = new ProcessStartInfo
         {
-          if (updateBOSS())
-          {
-            if (losSorter.HasMasterList)
-            {
-              losSorter.LoadList();
-            }
-            else
-            {
-              MessageBox.Show("BOSS masterlist still missing!", "BOSS update error", MessageBoxButtons.OK,
-                              MessageBoxIcon.Exclamation);
-              return;
-            }
-          }
+          FileName = $"{lootDir}\\LOOT.exe",
+          UseShellExecute = false,
+          WorkingDirectory = Path.GetFullPath(lootDir)
+        };
+
+        var p = Process.Start(psi);
+        if (p == null)
+        {
+          MessageBox.Show("Failed to launch 'LOOT.exe'");
         }
         else
         {
-          return;
+          p.WaitForExit();
+          p_eeaArguments.Argument.RefreshPluginList();
         }
       }
-
-      losSorter.SortList(plugins);
-      for (var i = 0; i < plugins.Length; i++)
+      else
       {
-        PluginManager.SetLoadOrder(Path.Combine(PluginsPath, plugins[i]), i);
+        var result = MessageBox.Show($"Would you like to open LOOT website ({lootUri}) in browser?", "LOOT not found", MessageBoxButtons.YesNo,
+          MessageBoxIcon.Error);
+        if (result == DialogResult.Yes)
+        {
+          Process.Start(lootUri);
+        }
       }
-      p_eeaArguments.Argument.RefreshPluginList();
     }
 
     public virtual bool updateBOSS()

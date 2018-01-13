@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2005
+VisualStudioVersion = 15.0.27130.2020
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fomm", "flmm\fomm.csproj", "{4A0302F4-DEA4-4753-98C8-3571742E4EB5}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -24,6 +24,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeMod.Interface", "GeMod.Interface\GeMod.Interface.csproj", "{EDF2CF2D-47B1-4851-889E-7F365C9FDDA3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fomm.Updater", "fomm.Updater\fomm.Updater.csproj", "{5F49F9E0-31D0-4374-B19D-0E1F6AB9097A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FD236460-E5F8-4B96-9EB2-10FDE25F310D}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

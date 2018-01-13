@@ -58,7 +58,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\Debug\</OutputPath>
     <DefineConstants>DEBUG</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DebugType>full</DebugType>
@@ -93,11 +93,13 @@
       <HintPath>..\externals\SevenZipSharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Drawing.Design" />
     <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.XML" />
     <Reference Include="System.Xml.Linq" />
@@ -324,6 +326,7 @@
     <Compile Include="Games\Fallout3\Tools\AutoSorter\LoadOrderSorter.cs" />
     <Compile Include="InstallLogUpgraders\Upgrader0110.cs" />
     <Compile Include="IPluginFormatProvider.cs" />
+    <Compile Include="MessageBoxHelper.cs" />
     <Compile Include="Messaging.cs" />
     <Compile Include="Games\Fallout3\Script\BsaManager.cs" />
     <Compile Include="Games\Fallout3\Tools\CriticalRecords\CriticalRecordsForm.cs">

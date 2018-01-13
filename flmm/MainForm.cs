@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Runtime.Remoting;
 using System.Text;
 using System.Windows.Forms;
@@ -285,7 +286,7 @@ namespace Fomm
           RefreshPluginList();
           PackageManagerForm = null;
         };
-        PackageManagerForm.Show();
+        PackageManagerForm.Show(this);
       }
     }
 
@@ -394,7 +395,7 @@ namespace Fomm
       var lstPluginFilenames = new List<string>(Program.GameMode.PluginManager.OrderedPluginList);
       if (AlphaSortMode)
       {
-        lstPluginFilenames.Sort(delegate(string a, string b)
+        lstPluginFilenames.Sort(delegate (string a, string b)
         {
           return Path.GetFileName(a).CompareTo(Path.GetFileName(b));
         });
@@ -434,7 +435,7 @@ namespace Fomm
         MessageBox.Show("Please close all utility windows before launching fallout");
         return;
       }
-      ((Command<MainForm>) ((Button) sender).Tag).Execute(this);
+      ((Command<MainForm>)((Button)sender).Tag).Execute(this);
     }
 
     private void bHelp_Click(object sender, EventArgs e)
@@ -550,7 +551,7 @@ namespace Fomm
         lvis[i] = lvEspList.CheckedItems[i];
       }
 
-      Array.Sort(lvis, delegate(ListViewItem a, ListViewItem b)
+      Array.Sort(lvis, delegate (ListViewItem a, ListViewItem b)
       {
         return
           int.Parse(a.SubItems[1].Text, NumberStyles.AllowHexSpecifier)

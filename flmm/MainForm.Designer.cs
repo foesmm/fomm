@@ -40,9 +40,6 @@ namespace Fomm
       this.checkAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-      this.lvEspList = new ReordableItemListView();
-      this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-      this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
       this.rtbPluginInfo = new System.Windows.Forms.RichTextBox();
       this.bPackageManager = new System.Windows.Forms.Button();
       this.bHelp = new System.Windows.Forms.Button();
@@ -61,8 +58,12 @@ namespace Fomm
       this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.viewReadmeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.butFileManager = new System.Windows.Forms.Button();
+      this.lvEspList = new Fomm.Controls.ReordableItemListView();
+      this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+      this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
       this.cmsPlugins.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
       this.splitContainer1.Panel1.SuspendLayout();
       this.splitContainer1.Panel2.SuspendLayout();
       this.splitContainer1.SuspendLayout();
@@ -156,39 +157,6 @@ namespace Fomm
       this.splitContainer1.Size = new System.Drawing.Size(399, 562);
       this.splitContainer1.SplitterDistance = 402;
       this.splitContainer1.TabIndex = 11;
-      // 
-      // lvEspList
-      // 
-      this.lvEspList.AllowDrop = true;
-      this.lvEspList.CheckBoxes = true;
-      this.lvEspList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1,
-            this.columnHeader2});
-      this.lvEspList.ContextMenuStrip = this.cmsPlugins;
-      this.lvEspList.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.lvEspList.FullRowSelect = true;
-      this.lvEspList.Location = new System.Drawing.Point(0, 0);
-      this.lvEspList.Name = "lvEspList";
-      this.lvEspList.ShowGroups = false;
-      this.lvEspList.Size = new System.Drawing.Size(399, 402);
-      this.lvEspList.TabIndex = 0;
-      this.lvEspList.UseCompatibleStateImageBehavior = false;
-      this.lvEspList.View = System.Windows.Forms.View.Details;
-      this.lvEspList.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.lvEspList_ColumnClick);
-      this.lvEspList.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.lvEspList_ItemChecked);
-      this.lvEspList.SelectedIndexChanged += new System.EventHandler(this.lvEspList_SelectedIndexChanged);
-      this.lvEspList.DragDrop += new System.Windows.Forms.DragEventHandler(this.lvEspList_DragDrop);
-      this.lvEspList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lvEspList_KeyDown);
-      // 
-      // columnHeader1
-      // 
-      this.columnHeader1.Text = "File";
-      this.columnHeader1.Width = 219;
-      // 
-      // columnHeader2
-      // 
-      this.columnHeader2.Text = "Mod index";
-      this.columnHeader2.Width = 87;
       // 
       // rtbPluginInfo
       // 
@@ -285,7 +253,7 @@ namespace Fomm
       // toolsToolStripMenuItem
       // 
       this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-      this.toolsToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
+      this.toolsToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
       this.toolsToolStripMenuItem.Text = "Tools";
       // 
       // loadOrderToolStripMenuItem
@@ -351,6 +319,39 @@ namespace Fomm
       this.butFileManager.UseVisualStyleBackColor = true;
       this.butFileManager.Click += new System.EventHandler(this.butFileManager_Click);
       // 
+      // lvEspList
+      // 
+      this.lvEspList.AllowDrop = true;
+      this.lvEspList.CheckBoxes = true;
+      this.lvEspList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1,
+            this.columnHeader2});
+      this.lvEspList.ContextMenuStrip = this.cmsPlugins;
+      this.lvEspList.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.lvEspList.FullRowSelect = true;
+      this.lvEspList.Location = new System.Drawing.Point(0, 0);
+      this.lvEspList.Name = "lvEspList";
+      this.lvEspList.ShowGroups = false;
+      this.lvEspList.Size = new System.Drawing.Size(399, 402);
+      this.lvEspList.TabIndex = 0;
+      this.lvEspList.UseCompatibleStateImageBehavior = false;
+      this.lvEspList.View = System.Windows.Forms.View.Details;
+      this.lvEspList.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.lvEspList_ColumnClick);
+      this.lvEspList.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.lvEspList_ItemChecked);
+      this.lvEspList.SelectedIndexChanged += new System.EventHandler(this.lvEspList_SelectedIndexChanged);
+      this.lvEspList.DragDrop += new System.Windows.Forms.DragEventHandler(this.lvEspList_DragDrop);
+      this.lvEspList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lvEspList_KeyDown);
+      // 
+      // columnHeader1
+      // 
+      this.columnHeader1.Text = "File";
+      this.columnHeader1.Width = 219;
+      // 
+      // columnHeader2
+      // 
+      this.columnHeader2.Text = "Mod index";
+      this.columnHeader2.Width = 87;
+      // 
       // MainForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -367,6 +368,7 @@ namespace Fomm
       this.MainMenuStrip = this.menuStrip1;
       this.MinimumSize = new System.Drawing.Size(300, 457);
       this.Name = "MainForm";
+      this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
       this.Text = "Fallout Mod Manager";
       this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
       this.Load += new System.EventHandler(this.MainForm_Load);
@@ -374,6 +376,7 @@ namespace Fomm
       this.cmsPlugins.ResumeLayout(false);
       this.splitContainer1.Panel1.ResumeLayout(false);
       this.splitContainer1.Panel2.ResumeLayout(false);
+      ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
       this.splitContainer1.ResumeLayout(false);
       this.menuStrip1.ResumeLayout(false);
       this.menuStrip1.PerformLayout();

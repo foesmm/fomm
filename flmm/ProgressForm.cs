@@ -44,9 +44,7 @@ namespace Fomm
       // 
       // pbProgress
       // 
-      this.pbProgress.Anchor =
-        ((System.Windows.Forms.AnchorStyles)
-          (((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+      this.pbProgress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.pbProgress.ForeColor = System.Drawing.Color.Lime;
       this.pbProgress.Location = new System.Drawing.Point(12, 12);
@@ -58,9 +56,7 @@ namespace Fomm
       // 
       // pbRatio
       // 
-      this.pbRatio.Anchor =
-        ((System.Windows.Forms.AnchorStyles)
-          (((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+      this.pbRatio.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.pbRatio.ForeColor = System.Drawing.Color.Lime;
       this.pbRatio.Location = new System.Drawing.Point(12, 33);
@@ -109,8 +105,10 @@ namespace Fomm
       this.MinimizeBox = false;
       this.Name = "ProgressForm";
       this.ShowInTaskbar = false;
+      this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
       this.ResumeLayout(false);
       this.PerformLayout();
+
     }
 
     #endregion

@@ -8,11 +8,11 @@
 AppId={{072C2AEF-16B2-46B7-BA7F-D0CAA7B4F89F}
 AppName=FOMM
 ;AppVersion=0.14
-AppVerName=FOMM 0.14.11.13
-AppPublisher=Prideslayer
-AppPublisherURL=http://www.loverslab.com/topic/17895-fomm-custom-build-014119/
-AppSupportURL=http://www.loverslab.com/topic/17895-fomm-custom-build-014119/
-AppUpdatesURL=http://www.loverslab.com/topic/17895-fomm-custom-build-014119/
+AppVerName=FOMM 0.14.14
+AppPublisher=niveuseverto
+AppPublisherURL=https://foesmm.org/
+AppSupportURL=https://foesmm.org/
+AppUpdatesURL=https://foesmm.org/
 DefaultDirName={pf}\FOMM
 DefaultGroupName=FOMM
 AllowNoIcons=yes
@@ -37,12 +37,12 @@ Source: "fomm.Transactions.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "GeMod.Interface.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "ICSharpCode.TextEditor.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "SevenZipSharp.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "data\*"; DestDir: "{app}\data"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "data\*"; DestDir: "{app}\data"; Excludes: "*.exp,*.lib"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
 Name: "{group}\FOMM"; Filename: "{app}\fomm.exe"
-Name: "{group}\{cm:ProgramOnTheWeb,FOMM}"; Filename: "http://www.loverslab.com/topic/17895-fomm-custom-build-014119/"
+Name: "{group}\{cm:ProgramOnTheWeb,FOMM}"; Filename: "https://foesmm.org/"
 Name: "{commondesktop}\FOMM"; Filename: "{app}\fomm.exe"; Tasks: desktopicon
 Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\FOMM"; Filename: "{app}\fomm.exe"; Tasks: quicklaunchicon
 

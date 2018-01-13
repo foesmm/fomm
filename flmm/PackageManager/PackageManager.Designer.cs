@@ -55,11 +55,11 @@ namespace Fomm.PackageManager {
       this.createFromFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.createFOMODToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.editPFPToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.sbtAddFomod = new Fomm.Controls.SplitButton();
       this.menuStrip1 = new System.Windows.Forms.MenuStrip();
       this.modListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.exportModListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.exportActiveModListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.sbtAddFomod = new Fomm.Controls.SplitButton();
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
       this.splitContainer1.Panel1.SuspendLayout();
       this.splitContainer1.Panel2.SuspendLayout();
@@ -366,18 +366,6 @@ namespace Fomm.PackageManager {
       this.editPFPToolStripMenuItem.Text = "Edit PFP";
       this.editPFPToolStripMenuItem.Click += new System.EventHandler(this.editPFPToolStripMenuItem_Click);
       // 
-      // sbtAddFomod
-      // 
-      this.sbtAddFomod.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.sbtAddFomod.AutoSize = true;
-      this.sbtAddFomod.ContextMenuStrip = this.cmsAddFomod;
-      this.sbtAddFomod.Location = new System.Drawing.Point(493, 123);
-      this.sbtAddFomod.Name = "sbtAddFomod";
-      this.sbtAddFomod.Size = new System.Drawing.Size(120, 23);
-      this.sbtAddFomod.TabIndex = 19;
-      this.sbtAddFomod.Text = "Add FOMod";
-      this.sbtAddFomod.UseVisualStyleBackColor = true;
-      // 
       // menuStrip1
       // 
       this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -411,6 +399,18 @@ namespace Fomm.PackageManager {
       this.exportActiveModListToolStripMenuItem.Text = "Export Active Mod List...";
       this.exportActiveModListToolStripMenuItem.Click += new System.EventHandler(this.exportActiveModListToolStripMenuItem_Click);
       // 
+      // sbtAddFomod
+      // 
+      this.sbtAddFomod.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.sbtAddFomod.AutoSize = true;
+      this.sbtAddFomod.ContextMenuStrip = this.cmsAddFomod;
+      this.sbtAddFomod.Location = new System.Drawing.Point(493, 123);
+      this.sbtAddFomod.Name = "sbtAddFomod";
+      this.sbtAddFomod.Size = new System.Drawing.Size(120, 23);
+      this.sbtAddFomod.TabIndex = 19;
+      this.sbtAddFomod.Text = "Add FOMod";
+      this.sbtAddFomod.UseVisualStyleBackColor = true;
+      // 
       // PackageManager
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -434,6 +434,7 @@ namespace Fomm.PackageManager {
       this.Controls.Add(this.bEditScript);
       this.MainMenuStrip = this.menuStrip1;
       this.Name = "PackageManager";
+      this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
       this.Text = "Package Manager";
       this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.PackageManager_FormClosing);
       this.Load += new System.EventHandler(this.PackageManager_Load);
