@@ -8,7 +8,7 @@
 AppId={{072C2AEF-16B2-46B7-BA7F-D0CAA7B4F89F}
 AppName=FOMM
 ;AppVersion=0.14
-AppVerName=FOMM 0.14.14.1
+AppVerName=FOMM 0.14.14.2
 AppPublisher=niveuseverto
 AppPublisherURL=https://foesmm.org/
 AppSupportURL=https://foesmm.org/

@@ -9,7 +9,7 @@ using Fomm;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("FOMM")]
 [assembly: AssemblyProduct("FOMM")]
-[assembly: AssemblyCopyright("Copyright ©  2010 Timeslip, Q")]
+[assembly: AssemblyCopyright("Copyright © 2010 Timeslip, Q, 2018 foesmm.org")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]

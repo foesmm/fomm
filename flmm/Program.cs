@@ -457,9 +457,6 @@ namespace Fomm
                 "Upgrade Required");
               if (!iluUgrader.UpgradeInstallLog())
               {
-                MessageBox.Show(
-                  "FOMM needs to upgrade its files before it can run. Please allow the upgrade to complete, or install an older version of FOMM.",
-                  "Upgrade Cancelled", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
               }
             }

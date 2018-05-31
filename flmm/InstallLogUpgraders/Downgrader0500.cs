@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Xml.Linq;
 using Fomm.PackageManager.ModInstallLog;
@@ -88,23 +89,43 @@ namespace Fomm.InstallLogUpgraders
       // Reset mod entries
       foreach (var el in modlist.Descendants("mod"))
       {
+        var szPath = el.Attribute("path")?.Value;
+        if (szPath == null)
+        {
+          el.Remove();
+          continue;
+        }
+
+        if (szPath.StartsWith("Dummy Mod: "))
+        {
+          szPath = szPath.Substring(11, szPath.Length - 11);
+        }
+        else if (szPath.EndsWith(".fomod", true, CultureInfo.CurrentCulture))
+        {
+          szPath = szPath.Substring(0, szPath.Length - 6).ToLower();
+        }
+
+        if (szPath.Equals("ORIGINAL_VALUE"))
+        {
+          szPath += "S";
+        }
+
+        if (szPath.Equals("MOD_MANAGER_VALUE"))
+        {
+          szPath = InstallLog.FOMM;
+        }
+
         // Set name attribute equal to name element value
-        el.SetAttributeValue("name", el.Element("name").Value);
+        el.SetAttributeValue("name", szPath);
 
         // Remove path attribute
         el.SetAttributeValue("path", null);
 
         // Remove name element
-        el.Element("name").Remove();
+        el.Element("name")?.Remove();
 
         // Remove installdate element
-        el.Element("installDate").Remove();
-
-        // Handle MMV
-        if (el.Attribute("name").Value == "MOD_MANAGER_VALUE")
-        {
-          el.SetAttributeValue("name", InstallLog.FOMM);
-        }
+        el.Element("installDate")?.Remove();
       }
 
       doc.Save(InstallLog.Current.InstallLogPath);

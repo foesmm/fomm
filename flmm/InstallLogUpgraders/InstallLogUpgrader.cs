@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows.Forms;
 using System.Xml;
 using Fomm.PackageManager.ModInstallLog;
 
@@ -55,7 +56,7 @@ namespace Fomm.InstallLogUpgraders
 
       //we only want one upgrade at a time happening to minimize the chances of
       // messed up install logs.
-      bool booUpgraded;
+      bool booUpgraded = false;
       //lock (m_objLock)
       {
         InstallLog.Current.EnableLogFileRefresh = false;
@@ -65,7 +66,15 @@ namespace Fomm.InstallLogUpgraders
                                               verOldVersion + ".");
         }
 
-        booUpgraded = m_dicUpgraders[verOldVersion].PerformUpgrade();
+        try
+        {
+          booUpgraded = m_dicUpgraders[verOldVersion].PerformUpgrade();
+        }
+        catch (Exception exc)
+        {
+          MessageBox.Show(exc.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
         InstallLog.Current.EnableLogFileRefresh = true;
       }
       return booUpgraded;

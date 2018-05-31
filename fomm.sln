@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2020
+VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fomm", "flmm\fomm.csproj", "{4A0302F4-DEA4-4753-98C8-3571742E4EB5}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -150,17 +150,11 @@ Global
 		{5F49F9E0-31D0-4374-B19D-0E1F6AB9097A}.Release|x86.ActiveCfg = Release|x86
 		{5F49F9E0-31D0-4374-B19D-0E1F6AB9097A}.Release|x86.Build.0 = Release|x86
 		{5C344532-46C3-4E79-AC46-A0B85024791D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5C344532-46C3-4E79-AC46-A0B85024791D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5C344532-46C3-4E79-AC46-A0B85024791D}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{5C344532-46C3-4E79-AC46-A0B85024791D}.Debug|x64.Build.0 = Debug|Any CPU
 		{5C344532-46C3-4E79-AC46-A0B85024791D}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{5C344532-46C3-4E79-AC46-A0B85024791D}.Debug|x86.Build.0 = Debug|Any CPU
 		{5C344532-46C3-4E79-AC46-A0B85024791D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5C344532-46C3-4E79-AC46-A0B85024791D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5C344532-46C3-4E79-AC46-A0B85024791D}.Release|x64.ActiveCfg = Release|Any CPU
-		{5C344532-46C3-4E79-AC46-A0B85024791D}.Release|x64.Build.0 = Release|Any CPU
 		{5C344532-46C3-4E79-AC46-A0B85024791D}.Release|x86.ActiveCfg = Release|Any CPU
-		{5C344532-46C3-4E79-AC46-A0B85024791D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
