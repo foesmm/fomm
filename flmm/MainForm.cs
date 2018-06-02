@@ -833,5 +833,10 @@ namespace Fomm
       ChangeGameMode = true;
       Close();
     }
+
+    private void bDiscord_Click(object sender, EventArgs e)
+    {
+      Process.Start("https://discord.gg/9MPxX2y");
+    }
   }
 }

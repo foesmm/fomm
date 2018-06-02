@@ -904,6 +904,7 @@
     <Content Include="data\fomm.chm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="Resources\Discord-Logo-Color.png" />
     <None Include="app.config" />
     <Content Include="data\Fallout3\ModConfig1.0.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

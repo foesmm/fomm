@@ -20,29 +20,32 @@ namespace Fomm.InstallLogUpgraders
     protected override void DoUpgrade()
     {
       var xmlInstallLog = new XmlDocument();
-      xmlInstallLog.LoadXml(InstallLog.Current.InstallLogPath);
+      xmlInstallLog.Load(InstallLog.Current.InstallLogPath);
 
       var xndRoot = xmlInstallLog.SelectSingleNode("installLog");
-      var xndSdpEdits = xndRoot.SelectSingleNode("sdpEdits");
+      if (xndRoot == null) return;
       var lstMods = InstallLog.Current.GetModList();
-
-      ProgressWorker.OverallProgressStep = 1;
-      ProgressWorker.OverallProgressMaximum = lstMods.Count + xndSdpEdits.ChildNodes.Count;
-      ProgressWorker.ShowItemProgress = false;
-
-      //remove the sdp edit node...
-      xndSdpEdits.ParentNode.RemoveChild(xndSdpEdits);
-      //...and replace it with the game-specific edits node
-      var xndGameSpecificsValueEdits = xndRoot.AppendChild(xmlInstallLog.CreateElement("gameSpecificEdits"));
-      foreach (XmlNode xndSdpEdit in xndSdpEdits.ChildNodes)
+      var xndSdpEdits = xndRoot.SelectSingleNode("sdpEdits");
+      if (xndSdpEdits != null)
       {
-        ProgressWorker.StepOverallProgress();
-        var xndGameSpecificsValueEdit = xndGameSpecificsValueEdits.AppendChild(xmlInstallLog.CreateElement("edit"));
-        var strValueKey = String.Format("sdp:{0}/{1}", xndGameSpecificsValueEdits.Attributes["package"].Value,
-                                        xndGameSpecificsValueEdits.Attributes["shader"].Value);
-        xndGameSpecificsValueEdit.Attributes.Append(xmlInstallLog.CreateAttribute("key")).Value = strValueKey;
-        xndGameSpecificsValueEdit.AppendChild(xndSdpEdit.FirstChild.Clone());
+        ProgressWorker.OverallProgressStep = 1;
+        ProgressWorker.OverallProgressMaximum = lstMods.Count + xndSdpEdits.ChildNodes.Count;
+        ProgressWorker.ShowItemProgress = false;
+
+        //remove the sdp edit node...
+        xndSdpEdits.ParentNode.RemoveChild(xndSdpEdits);
+        //...and replace it with the game-specific edits node
+        var xndGameSpecificsValueEdits = xndRoot.AppendChild(xmlInstallLog.CreateElement("gameSpecificEdits"));
+        foreach (XmlNode xndSdpEdit in xndSdpEdits.ChildNodes)
+        {
+          ProgressWorker.StepOverallProgress();
+          var xndGameSpecificsValueEdit = xndGameSpecificsValueEdits.AppendChild(xmlInstallLog.CreateElement("edit"));
+          var strValueKey = $"sdp:{xndGameSpecificsValueEdits.Attributes["package"].Value}/{xndGameSpecificsValueEdits.Attributes["shader"].Value}";
+          xndGameSpecificsValueEdit.Attributes.Append(xmlInstallLog.CreateAttribute("key")).Value = strValueKey;
+          xndGameSpecificsValueEdit.AppendChild(xndSdpEdit.FirstChild.Clone());
+        }
       }
+
       xmlInstallLog.Save(InstallLog.Current.InstallLogPath);
 
       //now update the mod info
