@@ -221,6 +221,7 @@ namespace Fomm.PackageManager {
       // openFileDialog1
       // 
       this.openFileDialog1.Filter = "Compressed archives (fomod, zip, rar, 7z)|*.fomod;*.zip;*.rar;*.7z";
+      this.openFileDialog1.Multiselect = true;
       this.openFileDialog1.RestoreDirectory = true;
       // 
       // cbGroups

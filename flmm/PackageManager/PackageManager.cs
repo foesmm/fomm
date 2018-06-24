@@ -920,7 +920,10 @@ namespace Fomm.PackageManager
       {
         return;
       }
-      AddNewFomod(openFileDialog1.FileName);
+      foreach (var fileName in openFileDialog1.FileNames)
+      {
+        AddNewFomod(fileName);
+      }
     }
 
     /// <summary>
