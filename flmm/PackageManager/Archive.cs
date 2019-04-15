@@ -221,7 +221,7 @@ namespace Fomm.PackageManager
           // ReSharper restore UnusedVariable
         }
       }
-      catch (Exception)
+      catch (Exception e)
       {
         booIsAchive = false;
       }
