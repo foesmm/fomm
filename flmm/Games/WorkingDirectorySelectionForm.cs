@@ -107,7 +107,7 @@ namespace Fomm.Games
       }
       else
       {
-        MessageBox.Show(this, "Could not find Fallout 3.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        MessageBox.Show(this, "Could not find game directory.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
     }
 
